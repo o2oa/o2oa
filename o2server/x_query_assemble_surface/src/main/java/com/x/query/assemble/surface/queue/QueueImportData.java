@@ -100,8 +100,8 @@ public class QueueImportData extends AbstractQueue<String> {
 
 	private void importCms(final ImportRecord record, final ImportModel model) throws Exception {
 		JsonObject jsonObject = gson.fromJson(model.getData(), JsonObject.class);
-		String categoryId = jsonObject.getAsJsonObject("category").getAsJsonObject("id").getAsString();
-		String documentType = jsonObject.getAsJsonObject("documentType").getAsString();
+		String categoryId = jsonObject.getAsJsonObject("category").get("id").getAsString();
+		String documentType = jsonObject.get("documentType").getAsString();
 		boolean reImport = false;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<ImportRecordItem> itemList = emc.listEqualAndEqual(ImportRecordItem.class, ImportRecordItem.recordId_FIELDNAME, record.getId(),
@@ -157,8 +157,8 @@ public class QueueImportData extends AbstractQueue<String> {
 			document.addProperty("documentType", documentType);
 			document.addProperty("docStatus", "published");
 			document.addProperty("isNotice", false);
-			JsonObject srcData = document.getAsJsonObject("srcData");
-			String title = document.getAsJsonObject("title").getAsString();
+			JsonElement srcData = document.get("srcData");
+			String title = document.get("title").getAsString();
 			ImportRecordItem item = new ImportRecordItem();
 			item.setDocTitle(title);
 			item.setDocType(model.getType());
@@ -212,7 +212,7 @@ public class QueueImportData extends AbstractQueue<String> {
 	private void importDynamicTable(ImportRecord record, ImportModel model) throws Exception {
 		JsonElement jsonElement = gson.fromJson(record.getData(), JsonElement.class);
 		JsonObject jsonObject = gson.fromJson(model.getData(), JsonObject.class);
-		String tableId = jsonObject.getAsJsonObject("dynamicTable").getAsJsonObject("id").getAsString();
+		String tableId = jsonObject.getAsJsonObject("dynamicTable").get("id").getAsString();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ImportRecord ir = emc.find(record.getId(), ImportRecord.class);
 			Table table = emc.flag(tableId, Table.class);
@@ -240,8 +240,8 @@ public class QueueImportData extends AbstractQueue<String> {
 
 	private void importProcessPlatform(ImportRecord record, ImportModel model) throws Exception {
 		JsonObject jsonObject = gson.fromJson(model.getData(), JsonObject.class);
-		String processId = jsonObject.getAsJsonObject("process").getAsJsonObject("id").getAsString();
-		String processStatus = jsonObject.getAsJsonObject("processStatus").getAsString();
+		String processId = jsonObject.getAsJsonObject("process").get("id").getAsString();
+		String processStatus = jsonObject.get("processStatus").getAsString();
 		boolean reImport = false;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<ImportRecordItem> itemList = emc.listEqualAndEqual(ImportRecordItem.class, ImportRecordItem.recordId_FIELDNAME, record.getId(),
@@ -297,8 +297,8 @@ public class QueueImportData extends AbstractQueue<String> {
 		final List<ImportRecordItem> itemList = new ArrayList<>();
 		jsonElement.getAsJsonArray().forEach(o -> {
 			JsonObject document = o.getAsJsonObject();
-			JsonObject srcData = document.getAsJsonObject("srcData");
-			String title = document.getAsJsonObject("title").getAsString();
+			JsonElement srcData = document.get("srcData");
+			String title = document.get("title").getAsString();
 			ImportRecordItem item = new ImportRecordItem();
 			item.setDocTitle(title);
 			item.setDocType(model.getType());

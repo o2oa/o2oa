@@ -36,9 +36,6 @@ public class ImportRecordItem extends SliceJpaObject {
 	@FieldDescribe("数据库主键,自动生成.")
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
-	@CheckRemove(citationNotExists =
-	/* 已经没有Stat使用View了 */
-	@CitationNotExist(type = Stat.class, fields = Stat.view_FIELDNAME))
 	private String id = createId();
 
 	/* 以上为 JpaObject 默认字段 */
