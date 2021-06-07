@@ -8,9 +8,9 @@ layout.addReady(function () {
         };
         var uri = new URI(window.location.href);
         var options = uri.get("data");
-        if (options["x-token"]) {
+        if (options[o2.tokenName]) {
             // 删除
-            Cookie.dispose("x-token");
+            Cookie.dispose(o2.tokenName);
             // 写入
             var host = window.location.host; // 域名 
             var domain = null;
@@ -22,9 +22,9 @@ layout.addReady(function () {
                 }
             }
             if (domain) {
-                Cookie.write("x-token", options["x-token"], {domain: domain, path:"/"});
+                Cookie.write(o2.tokenName, options[o2.tokenName], {domain: domain, path:"/"});
             }else {
-                Cookie.write("x-token", options["x-token"]);
+                Cookie.write(o2.tokenName, options[o2.tokenName]);
             }
         }
         var _load = function () {
