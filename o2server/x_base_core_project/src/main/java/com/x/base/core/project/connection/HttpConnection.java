@@ -18,30 +18,31 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 
 public class HttpConnection {
 
-	public static final String Access_Control_Allow_Credentials = "Access-Control-Allow-Credentials";
-	public static final String Access_Control_Allow_Credentials_Value = "true";
-	public static final String Access_Control_Allow_Headers = "Access-Control-Allow-Headers";
-	public static final String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, x-token,Content-Type, x-cipher";
-	public static final String Access_Control_Allow_Methods = "Access-Control-Allow-Methods";
-	public static final String Access_Control_Allow_Methods_Value = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
-	public static final String Cache_Control = "Cache-Control";
-	public static final String Cache_Control_Value = "no-cache, no-transform";
-	public static final String Content_Type = "Content-Type";
-	public static final String Content_Type_Value = "application/json;charset=UTF-8";
-
-	public static final String METHOD_POST = "POST";
-	public static final String METHOD_GET = "GET";
-	public static final String METHOD_PUT = "PUT";
-	public static final String METHOD_DELETE = "DELETE";
+//	public static final String Access_Control_Allow_Credentials = "Access-Control-Allow-Credentials";
+//	public static final String Access_Control_Allow_Credentials_Value = "true";
+//	public static final String Access_Control_Allow_Headers = "Access-Control-Allow-Headers";
+//	public static final String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, x-token,Content-Type, x-cipher";
+//	public static final String Access_Control_Allow_Methods = "Access-Control-Allow-Methods";
+//	public static final String Access_Control_Allow_Methods_Value = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
+//	public static final String Cache_Control = "Cache-Control";
+//	public static final String Cache_Control_Value = "no-cache, no-transform";
+//	public static final String Content_Type = "Content-Type";
+//	public static final String Content_Type_Value = "application/json;charset=UTF-8";
+//
+//	public static final String METHOD_POST = "POST";
+//	public static final String METHOD_GET = "GET";
+//	public static final String METHOD_PUT = "PUT";
+//	public static final String METHOD_DELETE = "DELETE";
 
 	public static String getAsString(String address, List<NameValuePair> heads) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod(METHOD_GET);
+		connection.setRequestMethod(ConnectionAction.METHOD_GET);
 		connection.setDoOutput(false);
 		connection.setDoInput(true);
 		String str = readResultString(connection);
@@ -63,7 +64,7 @@ public class HttpConnection {
 
 	public static String postAsString(String address, List<NameValuePair> heads, String body) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod(METHOD_POST);
+		connection.setRequestMethod(ConnectionAction.METHOD_POST);
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
 		connection.connect();
@@ -89,7 +90,7 @@ public class HttpConnection {
 
 	public static String putAsString(String address, List<NameValuePair> heads, String body) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod(METHOD_PUT);
+		connection.setRequestMethod(ConnectionAction.METHOD_PUT);
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
 		connection.connect();
@@ -115,7 +116,7 @@ public class HttpConnection {
 
 	public static String deleteAsString(String address, List<NameValuePair> heads) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod(METHOD_DELETE);
+		connection.setRequestMethod(ConnectionAction.METHOD_DELETE);
 		connection.setDoOutput(false);
 		connection.setDoInput(true);
 		String str = readResultString(connection);
@@ -141,11 +142,13 @@ public class HttpConnection {
 		HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
 		httpUrlConnection.setUseCaches(false);
 		Map<String, String> map = new HashMap<>();
-		map.put(Access_Control_Allow_Credentials, Access_Control_Allow_Credentials_Value);
-		map.put(Access_Control_Allow_Headers, Access_Control_Allow_Headers_Value);
-		map.put(Access_Control_Allow_Methods, Access_Control_Allow_Methods_Value);
-		map.put(Cache_Control, Cache_Control_Value);
-		map.put(Content_Type, Content_Type_Value);
+		map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS,
+				ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
+		map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS,
+				ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS_VALUE + ", " + Config.person().getTokenName());
+		map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS, ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS_VALUE);
+		map.put(ConnectionAction.CACHE_CONTROL, ConnectionAction.CACHE_CONTROL_VALUE);
+		map.put(ConnectionAction.CONTENT_TYPE, ConnectionAction.CONTENT_TYPE_VALUE);
 		for (NameValuePair o : ListTools.nullToEmpty(heads)) {
 			map.put(o.getName(), Objects.toString(o.getValue()));
 		}
