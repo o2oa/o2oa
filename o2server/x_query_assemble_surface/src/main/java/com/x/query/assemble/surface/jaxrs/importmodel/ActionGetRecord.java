@@ -23,7 +23,7 @@ class ActionGetRecord extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			ImportRecord record = business.pick(recordId, ImportRecord.class);
-			if(record != null){
+			if(record == null){
 				throw new ExceptionEntityNotExist(recordId, ImportRecord.class);
 			}
 			Wo wo = Wo.copier.copy(record);
