@@ -20,8 +20,7 @@ class ActionGetRecordStatus extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String recordId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			ImportRecord record = business.pick(recordId, ImportRecord.class);
+			ImportRecord record = emc.find(recordId, ImportRecord.class);
 			if(record == null){
 				throw new ExceptionEntityNotExist(recordId, ImportRecord.class);
 			}
