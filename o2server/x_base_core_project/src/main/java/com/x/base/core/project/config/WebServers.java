@@ -144,7 +144,8 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
 		/* 平台语言 */
 		map.put("language", Config.person().getLanguage());
-
+		/* 平台TokenName */
+		map.put("tokenName", Config.person().getTokenName());
 		/* RSA */
 		File publicKeyFile = new File(Config.base(), "config/public.key");
 		if (publicKeyFile.exists() && publicKeyFile.isFile()) {
