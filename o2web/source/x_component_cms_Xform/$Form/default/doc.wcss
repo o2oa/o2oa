@@ -1,0 +1,247 @@
+{
+    "doc_toolbar": {
+        "height": "37px",
+        "border-bottom": "0px solid #cccccc"
+    },
+    "doc_toolbar_node": {
+        "height": "29px",
+        "border-bottom": "1px solid #cccccc"
+    },
+    "doc_toolbar_doublePage": {
+        "line-height": "30px",
+        "color": "#0b82ff",
+        "cursor": "pointer",
+        "width": "60px",
+        "text-align": "center",
+        "float": "right"
+    },
+
+    "doc_content": {
+        "min-height": "30.7cm",
+        "overflow": "auto",
+        "padding": "0.3cm 0px"
+    },
+    "doc_page": {
+        "width": "15.6cm",
+        "min-height": "22.5cm",
+        "padding": "3.7cm 2.6cm 3.5cm 2.8cm",
+        "margin": "0.2cm auto 0 auto",
+        "background": "#ffffff",
+        "overflow": "hidden"
+    },
+
+    "doc_layout_page_content": {
+        "overflow": "hidden",
+        "width": "15.6cm",
+        "min-height": "22.5cm",
+        "position": "relative",
+        "font-size": "16pt",
+        "font-family": "'仿宋', serif",
+        "line-height": "1.02cm",
+        "letter-spacing": "-0.01cm"
+    },
+    "doc_sidebar": {
+        "width": "30px",
+        "overflow": "hidden",
+        "position": "absolute"
+    },
+
+    "doc_layout_copiesSecretPriority": {},
+    "doc_layout_copies": {},
+    "doc_layout_secret": {},
+    "doc_layout_priority": {},
+
+    "doc_layout_redHeader": {},
+
+    "doc_layout_filenoup": {},
+    "doc_layout_filenoup_fileno_td": {},
+    "doc_layout_filenoup_fileno": {},
+    "doc_layout_filenoup_signer_td": {},
+    "doc_layout_filenoup_signer_table": {},
+    "doc_layout_filenoup_signerTitle_td": {},
+    "doc_layout_filenoup_signer": {},
+
+    "doc_layout_filenoup_signerContent_td": {},
+    "doc_layout_filenoup_signerContent": {},
+
+    "doc_layout_fileno": {},
+    "doc_layout_redline": {},
+    "doc_layout_subject": {},
+    "doc_layout_mainSend": {},
+    "doc_layout_filetext": {},
+    "doc_layout_attachment": {},
+    "doc_layout_attachment_title_td": {},
+    "doc_layout_attachment_title": {},
+    "doc_layout_attachment_content_td": {},
+    "doc_layout_attachment_content": {},
+
+    "doc_layout_issuance": {},
+    "doc_layout_issuanceUnit": {},
+    "doc_layout_issuanceDate": {},
+    "doc_layout_annotation": {},
+    "doc_layout_edition": {},
+
+    "doc_layout_edition_copyto": {},
+    "doc_layout_edition_copyto_table": {},
+    "doc_layout_edition_copyto_title": {},
+    "doc_layout_edition_copyto_content": {},
+
+    "doc_layout_edition_issuance": {},
+    "doc_layout_edition_issuance_table": {},
+    "doc_layout_edition_issuance_unit": {},
+    "doc_layout_edition_issuance_date": {},
+
+    "historyAreaNode": {
+        "background-color": "#ffffff",
+        "border-top": "0px solid #cccccc",
+        "border-left": "1px solid #cccccc",
+        "border-right": "0px solid #cccccc",
+        "border-bottom": "0px solid #cccccc",
+        "box-shadow": "3px 0px 10px #999999",
+        "padding": "0 0 20px 20px",
+        "position": "absolute",
+        "top": "0px",
+        "left": "0px",
+        "width": "340px"
+    },
+    "historyAreaActionNode": {
+        "height": "20px"
+    },
+    "historyAreaTitleNode": {
+        "height": "40px",
+        "line-height": "40px",
+        "font-size": "14px",
+        "text-align": "center",
+        "font-weight": "bold"
+    },
+    "historyAreaContentNode": {
+        "overflow": "hidden"
+    },
+    "historyItemNode": {
+        "width": "300px",
+        "padding": "10px 10px",
+        "cursor": "pointer",
+        "margin": "20px 20px 0 0",
+        "overflow": "hidden",
+        "border": "1px solid #cccccc",
+        "border-radius": "6px"
+    },
+    "historyItemTitleNode": {
+        "height": "20px",
+        "color": "#333333",
+        "line-height": "20px",
+        "overflow": "hidden"
+    },
+    "historyItemTimeNode": {
+        "height": "20px",
+        "color": "#999999",
+        "line-height": "20px",
+        "font-size": "12px",
+        "overflow": "hidden"
+    },
+    "historyInforNode": {
+        "width": "300px",
+        "padding": "10px",
+        "overflow": "hidden",
+        "border": "1px solid #CCCCCC",
+        "border-radius": "5px",
+        "box-shadow": "2px 2px 5px #CCCCCC",
+        "position": "absolute",
+        "opacity": 1
+    },
+    "historyInforMobileNode": {
+        "width": "100%",
+        "padding": "10px",
+        "overflow": "hidden",
+        "border": "1px solid #CCCCCC",
+        "border-radius": "0px",
+        "box-shadow": "0px 0px 0px #CCCCCC",
+        "position": "absolute",
+        "bottom": "0px",
+        "opacity": 1
+    },
+    "historyListAreaNode": {
+        "width": "260px",
+        "float": "right",
+        "background-color": "#f3f3f3",
+        "border-left": "1px solid #cccccc",
+        "border-top": "1px solid #cccccc",
+        "border-bottom": "1px solid #cccccc",
+        "position": "absolute",
+        "z-index": "20000",
+        "right": "0px",
+        "top": "37px"
+    },
+    "historyListTitleAreaNode":{
+        "height": "80px",
+        "padding": "10px 0px"
+    },
+    "historyListTitleNode": {
+        "font-weight": "bold",
+        "font-size": "14px",
+        "height": "40px",
+        "line-height": "40px",
+        "padding": "0px 10px"
+    },
+    "historyListTitleInsertNode": {
+        "font-size": "12px",
+        "height": "20px",
+        "line-height": "20px",
+        "padding": "0px 10px"
+    },
+    "historyListTitleDeleteNode": {
+        "font-size": "12px",
+        "height": "20px",
+        "line-height": "20px",
+        "padding": "0px 10px"
+    },
+    "historyListContentAreaNode": {
+        "margin": "5px",
+        "border": "1px solid #cccccc",
+        "background-color": "#ffffff",
+        "overflow": "auto"
+    },
+    "historyListItemNode": {
+        "margin-bottom": "10px",
+        "overflow": "hidden",
+        "padding": "5px 10px",
+        "cursor": "pointer"
+    },
+
+    "historyListItemPatchNode": {
+        "overflow": "hidden",
+        "margin-bottom": "10px"
+    },
+    "historyListItemDiffsNode": {
+        "overflow": "hidden"
+    },
+    "historyListItemActionNode": {
+        "height": "55px",
+        "width": "40px",
+        "float": "right",
+        "line-height": "55px",
+        "cursor": "pointer",
+        "color": "#0000FF"
+    },
+    "historyListItemDiffNode": {
+        "overflow": "hidden",
+        "padding": "5px 10px",
+        "cursor": "pointer",
+        "border": "1px solid #ffffff",
+        "border-radius": "5px",
+        "background-color": "#ffffff"
+    },
+    "historyListItemDiffNode_out": {
+        "border": "1px solid #ffffff",
+    },
+    "fullScreen": {
+        "min-height": "100%"
+    },
+    "returnScreen": {
+        "top": "",
+        "left": "",
+        "width": "",
+        "min-height": "",
+        "z-index": ""
+    }
+}
