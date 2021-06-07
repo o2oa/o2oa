@@ -782,7 +782,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_tblGrid = this.createEl(oo_doc, "tblGrid");
         grids.each(function(grid){
             var oo_gridCol = this.createEl(oo_doc, "gridCol");
-            this.setAttrs(oo_gridCol, {"w": grid*20});
+            if (grid) this.setAttrs(oo_gridCol, {"w": grid*20});
             oo_tblGrid.appendChild(oo_gridCol);
         }.bind(this));
         oo_tbl.appendChild(oo_tblGrid);
