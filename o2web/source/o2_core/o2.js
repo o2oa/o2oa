@@ -1492,7 +1492,7 @@ if (window.Promise && !Promise.any){
                     onSuccess: function(responseJSON, responseText){
                         // var xToken = this.getHeader("authorization");
                         // if (!xToken) xToken = this.getHeader("x-token");
-                        var xToken = this.getHeader("x-token");
+                        var xToken = this.getHeader(o2.tokenName);
                         if (xToken){
                             if (window.layout){
                                 if (!layout.session) layout.session = {};
@@ -1526,7 +1526,7 @@ if (window.Promise && !Promise.any){
                     }
                     if (layout.session && layout.session.user){
                         if (layout.session.user.token) {
-                            res.setHeader("x-token", layout.session.user.token);
+                            res.setHeader(o2.tokenName, layout.session.user.token);
                             res.setHeader("authorization", layout.session.user.token);
                         }
                     }

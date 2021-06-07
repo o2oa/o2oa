@@ -44,7 +44,7 @@ function V(httpRequest) {
             this.request.setRequestHeader("Accept", "text/html,application/json,*/*");
             if (debug) this.request.setRequestHeader("x-debugger", "true");
             if (token){
-                this.request.setRequestHeader("x-token", token);
+                this.request.setRequestHeader(o2.tokenName, token);
                 this.request.setRequestHeader("authorization", token);
             }
 
@@ -53,7 +53,7 @@ function V(httpRequest) {
 
         _doneRequest: function(){
             var json = JSON.parse(this.request.responseText);
-            var xToken = this.request.getResponseHeader("x-token");
+            var xToken = this.request.getResponseHeader(o2.tokenName);
             if (xToken){
                 json.xToken = xToken;
             }
