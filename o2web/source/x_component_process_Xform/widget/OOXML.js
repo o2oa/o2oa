@@ -184,6 +184,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.processHr(dom, oo_body, append);
                 }else if (dom.tagName.toLowerCase() === "table") {
                     this.processTable(dom, oo_body, append);
+                }else if (dom.tagName.toLowerCase() === "span") {
+                    if (!oo_body || oo_body.tagName.toString().toLowerCase()!=="w:p") var oo_body = this.createParagraphFromDom(dom, oo_body, append);
+                    this.processRun(dom, oo_body);
                 }else{
                     this.processDom(dom, oo_body, append, divAsP);
                 }
@@ -235,7 +238,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 if (node.nodeValue.trim()) this.processRun(node.parentElement || node.parentNode, oo_p, p, node.nodeValue);
             }else if (node.nodeType===Node.ELEMENT_NODE){
                 if (node.tagName.toLowerCase() === "span") {
-                    this.processRun(node, oo_p, p, node.get("text"));
+                    this.processRun(node, oo_p, p);
                 }else if (node.tagName.toLowerCase() === "br") {
                     this.processRun(node, oo_p, p, "", "br");
                 }else if (node.tagName.toLowerCase() === "div" || node.tagName.toLowerCase() === "p") {
@@ -385,7 +388,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         //if (!w) w = table.style.width;
         if (!w){
             w = table.get("width");
-            if (w) w = this.pxToPt(w);
+            //if (w) w = this.pxToPt(w);
         }
 
         //if (w) w = this.pxToPt(w);
@@ -550,6 +553,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.processHr(dom, oo_body, append);
                 }else if (dom.tagName.toLowerCase() === "table") {
                     this.processTable(dom, oo_body, append);
+                }else if (dom.tagName.toLowerCase() === "span") {
+                    if (!oo_body || oo_body.tagName.toString().toLowerCase()!=="w:p") var oo_body = this.createParagraphFromDom(dom, oo_body, dom.parentElement);
+                    this.processRun(dom, oo_body, append);
                 }else{
                     this.processTableDom(dom, oo_body, append, divAsP);
                 }
@@ -1289,14 +1295,102 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 //nothing
             }
         }
-        this.processRunFont(p, rPrs, font);
+        if (p) this.processRunFont(p, rPrs, font);
         this.processRunFont(span, rPrs, font);
 
+        var runPrs = {"rPrs": rPrs, "font": font};
 
-        var oo_run = this.createRun(oo_p.ownerDocument, {"rPrs": rPrs, "font": font, "text": text, "br": br});
-        oo_p.appendChild(oo_run);
+        if (!text && !br){
+            //if (span.tagName.toString().toLowerCase()==="span"){
+            this.processRunTextDom(span, oo_p, runPrs);
+            //}
+        }else{
+            var oo_run = this.createRun(oo_p.ownerDocument, runPrs);
+            if (text){
+                var oo_t = this.createEl(oo_run.ownerDocument,"t");
+                oo_t.appendChild(oo_run.ownerDocument.createTextNode(text));
+                oo_run.appendChild(oo_t);
+            }
+            oo_p.appendChild(oo_run);
+        }
+    },
+    processRunSpan: function(span, oo_p, runPrs) {
+        //var runPrs = {"rPrs": rPrs, "font": font, "text": text, "br": br};
+        var rPrs = Object.clone(runPrs.rPrs);
+        var font = Object.clone(runPrs.font);
+        var styles = span.getStyles("font-size", "color", "letter-spacing", "font-weight", "font-family")
+        var keys = Object.keys(styles);
+
+        for (var i = 0; i<keys.length; i++){
+            switch (keys[i]){
+                case "font-size":
+                    rPrs.sz = {"val": this.parseFontSize(styles["font-size"])*2};
+                    break;
+                case "color":
+                    rPrs.color = {"val": this.getColorHex(styles["color"])};
+                    break;
+                case "letter-spacing":
+                    //实际测试发现letter-spacing * 0.55 转换word比较合适
+                    rPrs.spacing = {"val": (styles["letter-spacing"].toFloat()*20 || 0)};
+                    break;
+                case "font-weight":
+                    var b = styles["font-weight"];
+                    if (b.toLowerCase()=="normal"){
+                        //nothing
+                    }else if (b.toLowerCase()=="bold") {
+                        rPrs.b = {"val": "true"};
+                    }else{
+                        var n = b.toFloat();
+                        if (n>=600) rPrs.b = {"val": "true"};
+                    }
+                    break;
+                case "font-family":
+                    var fonts = styles["font-family"].split(/,\s*/);
+                    if (!font) font = {};
+                    font.hint = "eastAsia";
+                    font.eastAsia = this.parseFont(fonts[fonts.length-1]);
+                    // font = {
+                    //     "hint": "eastAsia",
+                    //     "eastAsia": this.parseFont(fonts[fonts.length-1])
+                    // }
+                    if (fonts.length>1) font.other = this.parseFont(fonts[0]);
+                    break;
+                default:
+                //nothing
+            }
+        }
+        this.processRunFont(span, rPrs, font);
+        var runPrs = {"rPrs": rPrs, "font": font};
+        this.processRunTextDom(span, oo_p, runPrs);
     },
 
+    processRunTextDom: function(span, oo_p, runPrs){
+        var node = span.firstChild;
+        while (node){
+            if (node.nodeType===Node.ELEMENT_NODE){
+                if (node.tagName.toLowerCase() === "span"){
+                    this.processRunSpan(node, oo_p, runPrs);
+                }else if (node.tagName.toLowerCase() === "br"){
+                    runPrs.br = "br";
+                    var oo_run = this.createRun(oo_p.ownerDocument, runPrs);
+                    oo_p.appendChild(oo_run);
+                }else{
+                    this.processRunTextDom(node, oo_p, runPrs);
+                }
+            }else if (node.nodeType===Node.TEXT_NODE){
+                //if (node.nodeValue.trim()){
+                    var oo_run = this.createRun(oo_p.ownerDocument, runPrs);
+                    var oo_t = this.createEl(oo_p.ownerDocument,"t");
+                    oo_t.appendChild(oo_p.ownerDocument.createTextNode(node.nodeValue));
+                    oo_run.appendChild(oo_t);
+                    oo_p.appendChild(oo_run);
+                //}
+            }else{
+                this.processRunTextDom(node, oo_p, runPrs);
+            }
+            node = node.nextSibling;
+        }
+    },
 
     processPageSection: function(dom_pageRule, oo_body){
         var oo_sectPr = this.getOrCreateEl(oo_body, "sectPr");
