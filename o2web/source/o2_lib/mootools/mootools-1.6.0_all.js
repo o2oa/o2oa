@@ -6432,7 +6432,7 @@ var Request = this.Request = new Class({
             if (this.options.async){
                 if (isWithCredentials) xhr.withCredentials = true;
             }else{
-                xhr.setRequestHeader("x-token", Cookie.read("x-token"));
+                xhr.setRequestHeader(o2.tokenName, Cookie.read(o2.tokenName));
             }
         }else{
             if (isWithCredentials) xhr.withCredentials = true;
