@@ -114,6 +114,7 @@ MWF.xApplication.process.Work.Main = new Class({
             MWF.release(this.appForm);
             this.appForm = null;
             this.form = null;
+            this.$events = {};
         }
         if (data){
             this.parseData(data);
