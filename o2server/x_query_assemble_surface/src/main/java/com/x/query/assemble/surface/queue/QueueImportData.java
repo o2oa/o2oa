@@ -159,41 +159,50 @@ public class QueueImportData extends AbstractQueue<String> {
 			document.addProperty("isNotice", false);
 			JsonElement srcData = document.get("srcData");
 			String title = document.get("title").getAsString();
-			ImportRecordItem item = new ImportRecordItem();
-			item.setDocTitle(title);
-			item.setDocType(model.getType());
-			item.setRecordId(record.getId());
-			item.setModelId(record.getModelId());
-			item.setQuery(record.getQuery());
-			if(srcData!=null) {
-				item.setSrcData(srcData.toString());
-				document.remove("srcData");
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				ImportRecordItem item = new ImportRecordItem();
+				item.setDocTitle(title);
+				item.setDocType(model.getType());
+				item.setRecordId(record.getId());
+				item.setModelId(record.getModelId());
+				item.setQuery(record.getQuery());
+				if(srcData!=null) {
+					item.setSrcData(srcData.toString());
+					document.remove("srcData");
+				}
+				item.setData(document.toString());
+				try {
+					WoId woId = ThisApplication.context().applications().putQuery(x_cms_assemble_control.class,
+							Applications.joinQueryUri("document", "publish", "content"), document).getData(WoId.class);
+					item.setDocId(woId.getId());
+					item.setStatus(ImportRecordItem.STATUS_SUCCESS);
+				} catch (Exception e) {
+					item.setStatus(ImportRecordItem.STATUS_FAILED);
+					item.setDistribution(e.getMessage());
+				}
+
+				emc.beginTransaction(ImportRecordItem.class);
+				emc.persist(item, CheckPersistType.all);
+				emc.commit();
+				itemList.add(item);
+			} catch (Exception e){
+				logger.warn("保存ImportRecordItem异常：{}", e.getMessage());
 			}
-			item.setData(document.toString());
-			try {
-				WoId woId = ThisApplication.context().applications().putQuery(x_cms_assemble_control.class,
-						Applications.joinQueryUri("document", "publish", "content"), document).getData(WoId.class);
-				item.setDocId(woId.getId());
-				item.setStatus(ImportRecordItem.STATUS_SUCCESS);
-			} catch (Exception e) {
-				item.setStatus(ImportRecordItem.STATUS_FAILED);
-				item.setDistribution(e.getMessage());
-			}
-			itemList.add(item);
 		});
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ImportRecord ir = emc.find(record.getId(), ImportRecord.class);
 			boolean hasSuccess = false;
 			boolean hasFailed = false;
 			emc.beginTransaction(ImportRecord.class);
-			emc.beginTransaction(ImportRecordItem.class);
 			for (ImportRecordItem o : itemList) {
+				if (hasFailed && hasSuccess){
+					break;
+				}
 				if(ImportRecordItem.STATUS_FAILED.equals(o.getStatus())){
 					hasFailed = true;
 				}else{
 					hasSuccess = true;
 				}
-				emc.persist(o, CheckPersistType.all);
 			}
 			String status = ImportRecord.STATUS_SUCCESS;
 			if(hasFailed){
@@ -299,48 +308,53 @@ public class QueueImportData extends AbstractQueue<String> {
 			JsonObject document = o.getAsJsonObject();
 			JsonElement srcData = document.get("srcData");
 			String title = document.get("title").getAsString();
-			ImportRecordItem item = new ImportRecordItem();
-			item.setDocTitle(title);
-			item.setDocType(model.getType());
-			item.setRecordId(record.getId());
-			item.setModelId(record.getModelId());
-			item.setQuery(record.getQuery());
-			if(srcData!=null) {
-				item.setSrcData(srcData.toString());
-				document.remove("srcData");
-			}
-			item.setData(document.toString());
-			try {
-				if(PROCESS_STATUS_DRAFT.equals(processStatus)) {
-					List<WorkLog> workLogList = ThisApplication.context().applications().postQuery(x_processplatform_assemble_surface.class,
-							Applications.joinQueryUri("work", "process", processId), document).getDataAsList(WorkLog.class);
-					item.setDocId(workLogList.get(0).getWork());
-					item.setStatus(ImportRecordItem.STATUS_SUCCESS);
-				}else{
-					WoId woId = ThisApplication.context().applications().putQuery(x_processplatform_assemble_surface.class,
-							Applications.joinQueryUri("workcompleted", "process", processId), document).getData(WoId.class);
-					item.setDocId(woId.getId());
-					item.setStatus(ImportRecordItem.STATUS_SUCCESS);
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				ImportRecordItem item = new ImportRecordItem();
+				item.setDocTitle(title);
+				item.setDocType(model.getType());
+				item.setRecordId(record.getId());
+				item.setModelId(record.getModelId());
+				item.setQuery(record.getQuery());
+				if(srcData!=null) {
+					item.setSrcData(srcData.toString());
+					document.remove("srcData");
 				}
-			} catch (Exception e) {
-				item.setStatus(ImportRecordItem.STATUS_FAILED);
-				item.setDistribution(e.getMessage());
+				item.setData(document.toString());
+				try {
+					if(PROCESS_STATUS_DRAFT.equals(processStatus)) {
+						List<WorkLog> workLogList = ThisApplication.context().applications().postQuery(x_processplatform_assemble_surface.class,
+								Applications.joinQueryUri("work", "process", processId), document).getDataAsList(WorkLog.class);
+						item.setDocId(workLogList.get(0).getWork());
+						item.setStatus(ImportRecordItem.STATUS_SUCCESS);
+					}else{
+						WoId woId = ThisApplication.context().applications().putQuery(x_processplatform_assemble_surface.class,
+								Applications.joinQueryUri("workcompleted", "process", processId), document).getData(WoId.class);
+						item.setDocId(woId.getId());
+						item.setStatus(ImportRecordItem.STATUS_SUCCESS);
+					}
+				} catch (Exception e) {
+					item.setStatus(ImportRecordItem.STATUS_FAILED);
+					item.setDistribution(e.getMessage());
+				}
+				emc.beginTransaction(ImportRecordItem.class);
+				emc.persist(item, CheckPersistType.all);
+				emc.commit();
+				itemList.add(item);
+			} catch (Exception e){
+				logger.warn("保存ImportRecordItem异常：{}", e.getMessage());
 			}
-			itemList.add(item);
 		});
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ImportRecord ir = emc.find(record.getId(), ImportRecord.class);
 			boolean hasSuccess = false;
 			boolean hasFailed = false;
 			emc.beginTransaction(ImportRecord.class);
-			emc.beginTransaction(ImportRecordItem.class);
 			for (ImportRecordItem o : itemList) {
 				if(ImportRecordItem.STATUS_FAILED.equals(o.getStatus())){
 					hasFailed = true;
 				}else{
 					hasSuccess = true;
 				}
-				emc.persist(o, CheckPersistType.all);
 			}
 			String status = ImportRecord.STATUS_SUCCESS;
 			if(hasFailed){
