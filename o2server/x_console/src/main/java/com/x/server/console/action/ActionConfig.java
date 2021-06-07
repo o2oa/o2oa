@@ -35,13 +35,13 @@ public class ActionConfig extends ActionBase {
 
 	@SuppressWarnings("deprecation")
 	private byte[] getZip() throws Exception {
-		String address =Config.url_x_program_center_jaxrs("config");
+		String address = Config.url_x_program_center_jaxrs("config");
 		URL url = new URL(address);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setUseCaches(false);
 		connection.setRequestProperty("Content-Type", HttpMediaType.APPLICATION_JSON_UTF_8);
 		EffectivePerson effectivePerson = EffectivePerson.cipher(Config.token().getCipher());
-		connection.setRequestProperty(HttpToken.X_Token, effectivePerson.getToken());
+		connection.setRequestProperty(Config.person().getTokenName(), effectivePerson.getToken());
 		connection.setRequestMethod("GET");
 		connection.setDoOutput(false);
 		connection.setDoInput(true);

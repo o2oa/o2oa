@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.config.Config;
+
 public class FilterTools {
 
 	public static final String Access_Control_Allow_Origin = "Access-Control-Allow-Origin";
@@ -12,7 +14,7 @@ public class FilterTools {
 	public static final String Access_Control_Allow_Methods = "Access-Control-Allow-Methods";
 	public static final String Access_Control_Allow_Methods_Value = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
 	public static final String Access_Control_Allow_Headers = "Access-Control-Allow-Headers";
-	public static final String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, x-token, c-token, Content-Type, Content-Length, x-cipher, x-client, x-debugger, Authorization, P-User-Id, P-Request-Id, P-Page-Id";
+	public static final String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, c-token, Content-Type, Content-Length, x-cipher, x-client, x-debugger, Authorization, P-User-Id, P-Request-Id, P-Page-Id";
 	public static final String Access_Control_Allow_Credentials = "Access-Control-Allow-Credentials";
 	public static final String Access_Control_Expose_Headers = "Access-Control-Expose-Headers";
 	public static final String Access_Control_Max_Age = "Access-Control-Max-Age";
@@ -22,9 +24,10 @@ public class FilterTools {
 		String origin = request.getHeader(ORIGIN);
 		response.addHeader(Access_Control_Allow_Origin, StringUtils.isBlank(origin) ? "*" : origin);
 		response.addHeader(Access_Control_Allow_Methods, Access_Control_Allow_Methods_Value);
-		response.addHeader(Access_Control_Allow_Headers, Access_Control_Allow_Headers_Value);
+		response.addHeader(Access_Control_Allow_Headers,
+				Access_Control_Allow_Headers_Value + ", " + Config.person().getTokenName());
 		response.addHeader(Access_Control_Allow_Credentials, "true");
-		response.setHeader(Access_Control_Expose_Headers, "x-token, c-token");
+		response.setHeader(Access_Control_Expose_Headers, "c-token" + ", " + Config.person().getTokenName());
 		response.setHeader(Access_Control_Max_Age, Access_Control_Max_Age_Value);
 	}
 
