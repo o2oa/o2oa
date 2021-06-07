@@ -272,8 +272,8 @@ MWF.xApplication.Forum.Attachment = new Class({
                     if (layout.mobile) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.actions.getAttachmentUrl(att.data.id, this.options.documentId, function (url) {
-                            var xtoken = Cookie.read("x-token");
-                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
+                            var xtoken = Cookie.read(o2.tokenName);
+                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
                         this.actions.getAttachmentStream(att.data.id, this.options.documentId);
@@ -299,8 +299,8 @@ MWF.xApplication.Forum.Attachment = new Class({
                     if (layout.mobile) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.actions.getAttachmentUrl(att.data.id, this.options.documentId, function (url) {
-                            var xtoken = Cookie.read("x-token");
-                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
+                            var xtoken = Cookie.read(o2.tokenName);
+                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
                         this.actions.getAttachmentData(att.data.id, this.options.documentId);
