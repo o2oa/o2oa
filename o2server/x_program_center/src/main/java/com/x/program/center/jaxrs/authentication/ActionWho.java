@@ -10,10 +10,10 @@ import com.x.base.core.project.Application;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_organization_assemble_authentication;
 import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.HttpToken;
 import com.x.program.center.ThisApplication;
 
 class ActionWho extends BaseAction {
@@ -25,7 +25,7 @@ class ActionWho extends BaseAction {
 				.randomWithWeight(x_organization_assemble_authentication.class.getName());
 		if (app != null) {
 			List<NameValuePair> heads = new ArrayList<>();
-			heads.add(new NameValuePair(HttpToken.X_Token, token));
+			heads.add(new NameValuePair(Config.person().getTokenName(), token));
 			JsonElement jsonElement = HttpConnection.getAsObject(
 					app.getUrlJaxrsRoot() + Applications.joinQueryUri("authentication"), heads, JsonElement.class);
 			result.setData(jsonElement);

@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult.Type;
 import com.x.base.core.project.tools.DefaultCharset;
@@ -39,7 +40,7 @@ public class ConnectionAction {
 	public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
 	public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE = "true";
 	public static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
-	public static final String ACCESS_CONTROL_ALLOW_HEADERS_VALUE = "x-requested-with, x-request, x-token,Content-Type, x-cipher, x-client";
+	public static final String ACCESS_CONTROL_ALLOW_HEADERS_VALUE = "x-requested-with, x-request, Content-Type, x-cipher, x-client";
 	public static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
 	public static final String ACCESS_CONTROL_ALLOW_METHODS_VALUE = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
 
@@ -399,10 +400,11 @@ public class ConnectionAction {
 		return bytes;
 	}
 
-	private static void addHeads(HttpURLConnection connection, List<NameValuePair> heads) {
+	private static void addHeads(HttpURLConnection connection, List<NameValuePair> heads) throws Exception {
 		Map<String, String> map = new TreeMap<>();
 		map.put(ACCESS_CONTROL_ALLOW_CREDENTIALS, ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
-		map.put(ACCESS_CONTROL_ALLOW_HEADERS, ACCESS_CONTROL_ALLOW_HEADERS_VALUE);
+		map.put(ACCESS_CONTROL_ALLOW_HEADERS,
+				ACCESS_CONTROL_ALLOW_HEADERS_VALUE + ", " + Config.person().getTokenName());
 		map.put(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_METHODS_VALUE);
 		map.put(CACHE_CONTROL, CACHE_CONTROL_VALUE);
 		map.put(CONTENT_TYPE, CONTENT_TYPE_VALUE);
@@ -418,10 +420,12 @@ public class ConnectionAction {
 		map.entrySet().forEach((o -> connection.addRequestProperty(o.getKey(), o.getValue())));
 	}
 
-	private static void addHeadsMultiPart(HttpURLConnection connection, List<NameValuePair> heads, String boundary) {
+	private static void addHeadsMultiPart(HttpURLConnection connection, List<NameValuePair> heads, String boundary)
+			throws Exception {
 		Map<String, String> map = new TreeMap<>();
 		map.put(ACCESS_CONTROL_ALLOW_CREDENTIALS, ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
-		map.put(ACCESS_CONTROL_ALLOW_HEADERS, ACCESS_CONTROL_ALLOW_HEADERS_VALUE);
+		map.put(ACCESS_CONTROL_ALLOW_HEADERS,
+				ACCESS_CONTROL_ALLOW_HEADERS_VALUE + ", " + Config.person().getTokenName());
 		map.put(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_METHODS_VALUE);
 		map.put(CACHE_CONTROL, CACHE_CONTROL_VALUE);
 		connection.setRequestProperty(CONTENT_TYPE, String.format("multipart/form-data; boundary=%s", boundary));
