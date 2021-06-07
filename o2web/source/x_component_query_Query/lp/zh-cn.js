@@ -208,11 +208,20 @@ MWF.xApplication.query.Query.LP = {
     "second": "秒",
     "importSuccessTitle": "导入成功",
     "importSuccessContent": "共导入数据{total}条  速度: {speed}条/秒  耗时: {timeStr}",
+
+    "importPartSuccessTitle": "部分导入成功",
+    "importPartSuccessContent": "共导入数据{total}条 出错: {errorCount}条 速度: {speed}条/秒  耗时: {timeStr}",
+
+    "importWaitingTitle": "待导入",
+    "importWaitingContent": "有其他人正在导入或上次导入还未完成，请耐心等候...",
+
     "importFailTitle": "导入失败",
-    "importFailContent": "共有数据{total}条  出错: {errorCount}条  耗时: {timeStr} 请修改后重新导入",
+    "importFailContent": "{errorInfo} 共有数据{total}条，但未执行导入 耗时: {timeStr} 请修改后重新导入",
 
     "importerName": "导入模型名称",
     "importTime": "导入时间",
-    "importCount": "数据条数"
+    "importCount": "数据条数",
+
+    "close": "关闭",
 
 };

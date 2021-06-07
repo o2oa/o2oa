@@ -34,8 +34,6 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
 
-        this.progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar( this );
-
         this.getImporterJSON( function () {
             this.loadMacro( function () {
                 this._loadModuleEvents();
@@ -117,6 +115,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         this.excelUtils.upload( this.getDateColIndexArray(), function (importedData) {
 
+            this.progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar( this );
 
             this.progressBar.showCheckData();
 
@@ -189,7 +188,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                 debugger;
                 var requestJson = JSON.parse(xhr.responseText);
                 this.app.notice(requestJson.message, "error");
-                // this.progressBar.close();
+                this.progressBar.close();
             }.bind(this))
         }.bind(this))
 
@@ -251,11 +250,11 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             "width": 1000,
             "height": 700,
             "buttonList": [
-                // {
-                //     "type": "exportWithError",
-                //     "text": this.lp.showWithExcel,
-                //     "action": function () { _self.exportWithImportDataToExcel(columnList, this.importedData); }
-                // },
+                {
+                    "type": "exportWithError",
+                    "text": this.lp.exportExcel,
+                    "action": function () { _self.exportWithImportDataToExcel(); }
+                },
                 {
                     "type": "cancel",
                     "text": this.lp.cancel,
@@ -449,6 +448,63 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
     showImportingStatus: function(){
         this.progressBar.showImporting( this.recordId );
+    },
+
+    exportWithImportDataToExcel : function () {
+
+        if( !this.excelUtils ){
+            this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+        }
+        if( !this.importerJson ){
+            this.getImporterJSON( function () {
+
+                var resultArr = [];
+                var titleArr = this.getTitleArray();
+                titleArr.push( this.lp.validationInfor );
+                resultArr.push( titleArr );
+
+                this.rowList.each( function( row, lineIndex ){
+
+                    var lineData = row.importedData;
+
+                    htmlArray.push( "<tr>" );
+                    this.json.data.columnList.each( function (columnJson, i) {
+                        htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
+                    });
+                    htmlArray.push( "<td style='"+contentStyle+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
+                    htmlArray.push( "</tr>" );
+
+                }.bind(this));
+
+                importedData.each( function( lineData, lineIndex ){
+                    var array = [];
+                    lineData.each( function (d, i) {
+                        array.push( ( d || '' ).replace(/&#10;/g, "\n") );
+                    });
+                    array.push( lineData.errorTextListExcel ? lineData.errorTextListExcel.join("\n") : ""  );
+
+                    resultArr.push( array );
+                }.bind(this));
+
+                var colWidthArray = this.getColWidthArray();
+                colWidthArray.push(260);
+
+                var arg = {
+                    data : resultArr,
+                    colWidthArray : colWidthArray,
+                    title : this.getFileName()
+                };
+
+                this.fireEvent("export", [arg]);
+
+                this.excelUtils.exportToExcel(
+                    arg.data,
+                    arg.title,
+                    arg.colWidthArray,
+                    this.getDateIndexArray()
+                )
+            }.bind(this))
+        }
     },
 
     downloadTemplate: function(fileName, callback){
@@ -1332,57 +1388,41 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
         this.actions = this.importer.lookupAction;
         this.lp = MWF.xApplication.query.Query.LP;
         this.css = importer.css;
-        this.currentDate = new Date();
         this.createNode();
         this.status = "ready";
     },
-    showCheckData : function(){
-        this.node.show();
-        this.setContentHtml(true);
-        this.setMessageTitle( this.lp.checkDataTitle );
-        this.setMessageText( this.lp.checkDataContent );
-        this.status = "check";
-        this.setSize();
-    },
-    showImporting: function( recordId, callback ){
-        this.node.show();
-        this.setContentHtml();
-        this.recordId = recordId;
-        this.intervalId = window.setInterval( function(){
-            this.actions.getImportModuleRecordStatus( this.recordId, function( json ){
-                var data = json.data;
-                if( data.status != "COMPLETE"){
-                    this.setMessageTitle( this.lp.importDataTitle );
-                    this.setMessageText( this.lp.importDataContent.replace( "{count}", data.executeCount));
-                    this.status = data.status;
-                    this.updateProgress( data.status, data.executeCount, data.count, 0 );
-                }else{
-                    this.status = data.status;
-                    window.clearInterval( this.intervalId );
-                    this.transferComplete( data );
-                    if( callback )callback();
-                }
-            }.bind(this), null)
-        }.bind(this), 500 );
-        this.setSize();
-    },
-    close: function(){
-        this.maskNode.destroy();
-        this.node.destroy();
-    },
-    hide: function(){
-        this.maskNode.hide();
-        this.node.hide();
-    },
-    setSize: function(){
-        var containerSize = this.importer.container.getSize();
-        var nodeSize = this.node.getSize();
-        var top = (containerSize.y - nodeSize.y) / 2;
-        var left = (containerSize.x - nodeSize.x) / 2;
-        this.node.setStyles({
-            "top": (top-40)+"px",
-            "left": left+"px"
-        })
+    createNode: function( noProgress ){
+        var lp = this.lp;
+
+        this.maskNode = new Element("div",{"styles": this.css.maskNode}).inject(this.importer.container);
+
+        this.node = new Element("div", {"styles": this.css.progressBarNode}).inject(this.importer.container);
+
+        this.topNode =  new Element("div",{"styles": this.css.progressTopNode}).inject(this.node);
+
+        this.subjectNode =  new Element("div",{"styles": this.css.progressSubjectNode}).inject(this.topNode);
+
+        this.topCloseAction = new Element("div.topCloseAction", {
+            "styles": this.css.progressTopCloseAction,
+            "text": "x"
+        }).inject(this.topNode);
+        this.topCloseAction.hide();
+        this.topCloseAction.addEvent("click", function(){
+            this.close();
+        }.bind(this))
+
+        this.contentNode = new Element("div",{"styles": this.css.processContentNode}).inject(this.node);
+
+        this.bottomNode = new Element("div", {"styles": this.css.progressBottomNode}).inject(this.node);
+        this.bottomNode.hide();
+
+        this.closeAction = new Element("div.closeAction", {
+            "styles": this.css.progressCloseAction,
+            "text": lp.close
+        }).inject(this.bottomNode);
+        this.closeAction.addEvent("click", function(){
+            this.close();
+        }.bind(this))
     },
     setContentHtml: function(noProgress){
         var lp = this.lp;
@@ -1417,40 +1457,70 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
             this.progressInforNode.setStyles(this.css.progressInforNode)
         }
     },
-    createNode: function( noProgress ){
-        var lp = this.lp;
-
-        // var msg = {
-        //     "subject": lp.readyToImportData,
-        //     "content": contentHTML
-        // };
-
-        this.maskNode = new Element("div",{
-            "styles": this.css.maskNode
-        }).inject(this.importer.container);
-
-        this.node = new Element("div", {
-            "styles": this.css.progressBarNode
-        }).inject(this.importer.container);
-
-        this.subjectNode =  new Element("div",{
-            "styles": this.css.progressSubjectNode
-        }).inject(this.node);
-
-        this.contentNode = new Element("div",{
-            "styles": this.css.processContentNode
-        }).inject(this.node);
-
-        // this.messageItem = layout.desktop.message.addMessage(msg);
-        // this.messageItem.status = "ready";
-        //
-        // window.setTimeout(function(){
-        //     if (!layout.desktop.message.isShow) layout.desktop.message.show();
-        // }.bind(this), 100);
+    showCheckData : function(){
+        this.node.show();
+        this.setContentHtml(true);
+        this.setMessageTitle( this.lp.checkDataTitle );
+        this.setMessageText( this.lp.checkDataContent );
+        this.status = "check";
+        this.setSize();
     },
-    updateProgress: function(type, loaded, total, errorCount){
+    showImporting: function( recordId, callback ){
+        this.node.show();
+        this.setContentHtml();
+        this.recordId = recordId;
+        this.currentDate = new Date();
+        this.intervalId = window.setInterval( function(){
+            this.actions.getImportModuleRecordStatus( this.recordId, function( json ){
+                var data = json.data;
+                this.status = data.status;
+                if( data.status === "待导入" ) { //有其他人正在导入或上次导入还未完成
+                    this.setMessageTitle(this.lp.importWaitingTitle);
+                    this.setMessageText(this.lp.importWaitingContent);
+                }else if( data.status === "导入中" ){ //导入中
+                    this.setMessageTitle( this.lp.importDataTitle );
+                    this.setMessageText( this.lp.importDataContent.replace( "{count}", data.executeCount));
+                    this.updateProgress( data );
+                }else{ //已经结束, 状态有 "导入成功","部分成功","导入失败"
+                    if(this.intervalId)window.clearInterval( this.intervalId );
+                    this.transferComplete( data );
+                    if( callback )callback();
+                }
+            }.bind(this), null)
+        }.bind(this), 500 );
+        this.setSize();
+    },
+    showCloseAction: function(){
+        if( this.bottomNode )this.bottomNode.show();
+        if( this.topCloseAction )this.topCloseAction.show();
+        this.setSize();
+    },
+    close: function(){
+        this.maskNode.destroy();
+        this.node.destroy();
+    },
+    hide: function(){
+        this.maskNode.hide();
+        this.node.hide();
+    },
+    setSize: function(){
+        var containerSize = this.importer.container.getSize();
+        var nodeSize = this.node.getSize();
+        var top = (containerSize.y - nodeSize.y) / 2;
+        var left = (containerSize.x - nodeSize.x) / 2;
+        this.node.setStyles({
+            "top": (top-40)+"px",
+            "left": left+"px"
+        })
+    },
+    updateProgress: function(data){
+        //status, data.executeCount, data.count, data.failCount
         var lp = this.lp;
-        var processed = errorCount ? ( loaded + errorCount ) : loaded;
+
+        var total = data.count.toInt();
+        var processed = data.executeCount.toInt();
+        var failCount = data.failCount.toInt();
+
         var percent = 100*(processed/total);
 
         var sendDate = new Date();
@@ -1460,34 +1530,20 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
         var u = lp.importSpeed;
         speed = speed.round(2);
 
-        if (this.contentNode){
-            var progressNode = this.progressNode; //this.contentNode.getFirst("div").getFirst("div");
-            var progressPercentNode = this.progressPercentNode; //progressNode.getFirst("div");
-            var progressInforNode = this.progressInforNode; //this.contentNode.getFirst("div").getLast("div");
-            progressPercentNode.setStyle("width", ""+percent+"%");
-            if( type == "VALIDATE" ){
-                var text = lp.checkingDataContent.replace("{speed}",speed).replace("{total}",total).replace("{remaining}",( total - loaded ));
-                text += errorCount ? lp.checkingDataErrorContent.replace("{errorCount}",errorCount) : "";
-                // var text = "正检查数据"+": "+speed+u + ",共"+total+"条,剩余"+( total - loaded )+"条";
-                // text += errorCount ? ",出错"+errorCount+"条" : ""
-            }else{
-                var text = lp.importingDataContent.replace("{speed}",speed).replace("{total}",total).replace("{remaining}",( total - loaded ));
-                text += errorCount ? lp.importingDataErrorContent.replace("{errorCount}",errorCount) : "";
-                // var text = "正导入数据"+": "+speed+u + ",共"+total+"条,剩余"+( total - loaded )+"条";
-                // text += errorCount ? ",出错"+errorCount+"条" : ""
-            }
-            progressInforNode.set("text", text);
-        }
+        this.progressPercentNode.setStyle("width", ""+percent+"%");
+
+        var text = lp.importingDataContent.replace("{speed}",speed).replace("{total}",total).replace("{remaining}",( total - processed ));
+        text += failCount ? lp.importingDataErrorContent.replace("{errorCount}",failCount) : "";
+        this.progressInforNode.set("text", text);
+
         this.lastProcessed = processed;
         this.lastTime = new Date();
     },
     transferComplete: function( data ){
         var lp = this.lp;
-        var errorCount = data.errorCount || 0;
-        // var messageItem = this.node; //this.messageItem;
-
         var sendDate = new Date();
         var ms = sendDate.getTime()-this.currentDate.getTime();
+        if(ms<1000)ms = 1000;
 
         var timeStr = "";
         if (ms>3600000){
@@ -1507,7 +1563,7 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
             timeStr = ""+s.toInt()+lp.second;
         }
 
-        if( errorCount == 0 ){
+        if( data.status === "导入成功" ){
             var size = data.count;
             var speed = (size * 1000)/ms ;
             var u = lp.importSpeed;
@@ -1516,36 +1572,31 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
             this.setMessageTitle( lp.importSuccessTitle );
             var text = lp.importSuccessContent.replace("{total}",size).replace("{speed}",speed).replace("{timeStr}",timeStr);
             this.setMessageText( text );
-            // this.setMessageText( "共导入数据"+size+"条  速度"+": "+speed+u+"  "+"耗时"+": "+timeStr);
-        }else{
+        }else if(data.status === "部分成功"){
+            var size = data.count;
+            var speed = (size * 1000)/ms ;
+            var u = lp.importSpeed;
+            speed = speed.round(2);
+
+            this.setMessageTitle( lp.importPartSuccessTitle );
+            var text = lp.importPartSuccessContent.replace("{total}",size).replace("{speed}",speed).replace("{errorCount}",data.failCount).replace("{timeStr}",timeStr);
+            this.setMessageText( text );
+        }else{ //导入失败
             var size = data.count;
             this.setMessageTitle( lp.importFailTitle );
-
-            var text = lp.importFailContent.replace("{total}",size).replace("{errorCount}",errorCount).replace("{timeStr}",timeStr);
+            var text = lp.importFailContent.replace("{errorInfo}",data.distribution || "").replace("{total}",size).replace("{timeStr}",timeStr);
             this.setMessageText( text );
-            // this.setMessageText( "共有数据"+size+"条  出错"+ errorCount +"条  耗时"+": "+timeStr +"  请修改后重新导入");
         }
         this.clearMessageProgress();
+        this.showCloseAction();
     },
     setMessageText: function( text){
-        // var progressPercentNode = this.getProgessNode().getFirst("div");
-        // this.getProgressInforNode().set("text", text);
-        // this.messageItem.dateNode.set("text", (new Date()).format("db"));
         this.progressInforNode.set("text", text);
     },
     setMessageTitle: function( text){
         this.subjectNode.set("text", text);
     },
     clearMessageProgress: function(){
-        // var progressNode = this.getProgessNode();
         this.progressNode.destroy();
     }
-    // getProgessNode : function(){
-    //     if(!this.progressNode)this.progressNode = this.contentNode.getFirst("div").getFirst("div");
-    //     return this.progressNode;
-    // },
-    // getProgressInforNode : function(){
-    //     if(!this.progressInforNode)this.progressInforNode = this.contentNode.getFirst("div").getLast("div");
-    //     return this.progressInforNode;
-    // }
 });
