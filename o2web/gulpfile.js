@@ -257,6 +257,7 @@ function createCMSXFormConcatTask(path, isMin, thisOptions) {
             'source/' + processPath + '/Tab.js',
             'source/' + processPath + '/Table.js',
             'source/' + processPath + '/Textarea.js',
+            'source/' + processPath + '/Documenteditor.js',
             //'source/' + processPath + '/Tree.js',
             //'source/' + processPath + '/View.js',
             // 'source/x_component_process_Work/Processor.js',
