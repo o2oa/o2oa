@@ -207,6 +207,19 @@ MWF.xApplication.query.Query.LP = {
     "second": "second",
     "importSuccessTitle": "Import successful",
     "importSuccessContent": "Import a total of {total} pieces of data Speed: {speed} pieces/sec Time-consuming: {timeStr}",
+
+    "importPartSuccessTitle": "Partially imported successfully",
+    "importPartSuccessContent": "A total of {total} pieces of data were imported. Errors: {errorCount} pieces. Speed: {speed} pieces/sec. Time-consuming: {timeStr}",
+
+    "importWaitingTitle": "To be imported",
+    "importWaitingContent": "Someone else is importing or the last import has not been completed, please be patient...",
+
     "importFailTitle": "Import Failed",
-    "importFailContent": "Total data {total} items Error: {errorCount} items Time-consuming: {timeStr} Please modify and import again"
+    "importFailContent": "{errorInfo} has {total} data in total, but the import has not been performed. Time-consuming: {timeStr} please modify and re-import",
+
+    "importerName": "Import model name",
+    "importTime": "Import Time",
+    "importCount": "Number of data items",
+
+    "close": "Close"
 };
