@@ -290,10 +290,10 @@ MWF.xApplication.query.Query.ImporterItem = new Class({
         return this.app.naviImporterContentNode;
     },
     loadView: function(){
-        MWF.xDesktop.requireApp("query.Query", "ImporterExplorer", function(){
+        MWF.xDesktop.requireApp("query.Query", "ImporterRecord", function(){
             debugger;
             this.viewContent.empty();
-            this.viewer = new MWF.xApplication.query.Query.ImporterExplorer( this.viewContent, this.app, {
+            this.viewer = new MWF.xApplication.query.Query.ImporterRecord( this.viewContent, this.app, {
                 "application": this.view.query,
                 "importerName": this.view.name,
                 "importerId" : this.view.id
