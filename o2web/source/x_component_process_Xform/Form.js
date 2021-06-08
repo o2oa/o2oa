@@ -1564,7 +1564,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.modifedData = {};
         this.setModifedData(data);
 
-        this.workAction.saveData(callback || function () { }, failure, this.businessData.work.id, this.modifedData);
+        if (this.toWordSaveList && this.toWordSaveList.length){
+            var p = [];
+            this.toWordSaveList.each(function(editor){
+                if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
+            });
+            Promise.all(p).then(function(){
+                this.workAction.saveData(callback || function () { }, failure, this.businessData.work.id, this.modifedData);
+            }.bind(this));
+        }else{
+            this.workAction.saveData(callback || function () { }, failure, this.businessData.work.id, this.modifedData);
+        }
 
         this.businessData.originalData = null;
         this.businessData.originalData = Object.clone(data);
@@ -2515,12 +2525,28 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         medias = medias.concat(mds)
                     }
 
-                    _self.submitWork(routeName, opinion, medias, function () {
-                        this.destroy();
-                        processNode.destroy();
-                        if (_self.processDlg) _self.processDlg.close();
-                        delete this;
-                    }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                    var promise;
+                    if (this.toWordSubmitList && this.toWordSubmitList.length){
+                        var p = [];
+                        this.toWordSubmitList.each(function(editor){
+                            if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
+                        });
+                        Promise.all(p).then(function(){
+                            _self.submitWork(routeName, opinion, medias, function () {
+                                this.destroy();
+                                processNode.destroy();
+                                if (_self.processDlg) _self.processDlg.close();
+                                delete this;
+                            }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                        }.bind(this));
+                    }else{
+                        _self.submitWork(routeName, opinion, medias, function () {
+                            this.destroy();
+                            processNode.destroy();
+                            if (_self.processDlg) _self.processDlg.close();
+                            delete this;
+                        }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                    }
                 }
             }, this);
         }.bind(this));
