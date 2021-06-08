@@ -1,0 +1,121 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable' style='table-layout:fixed;'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+//    "mouseoverStyles": "documentNode_over",
+    "mousedownStyles": "documentNode_down",
+    "holdMouseDownStyles" : true
+//    "action": "open"
+  },
+  "items": [
+    {
+      "name": "sequence",
+      "head": {
+        "html": "<th styles='normalThNode' lable='sequence'></th>",
+        "width": "5%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='5%'><div item='sequence'></div></td>",
+        "items": {
+          "sequence" : {
+            "value": "function(){var opt=this.view.paging.options; return ( opt.countPerPage * (opt.currentPage-1) ) + this.index +1}"
+          }
+        }
+      }
+    },
+//    {
+//      "name": "docTitle",
+//      "head": {
+//        "html": "<th styles='normalThNode' lable='docTitle'></th>",
+//        "width": "38%"
+//      },
+//      "content": {
+//        "html": "<td styles='normalTdCenterNode' width='30%' name='title'><div item='docTitle'></div></td>",
+//        "items": {
+//          "docTitle" : {}
+//        }
+//      }
+//    },
+//    {
+//      "name": "docType",
+//      "head": {
+//        "html": "<th styles='normalThNode' lable='docType'></th>",
+//        "width": "14%"
+//      },
+//      "content": {
+//        "html": "<td styles='normalTdCenterNode' width='14%'><div item='docType'></div></td>",
+//        "items": {
+//          "docType" : {
+//            "value": "function(d){ if(d.docType==='cms'){return '内容管理'}else if(d.docType==='process'){return '流程管理'}else{return '自建表'} }"
+//          }
+//        }
+//      }
+//    },
+    {
+      "name": "status",
+      "head": {
+        "html": "<th styles='normalThNode' lable='status'></th>",
+        "width": "5%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='9%'><div item='status'></div></td>",
+        "items": {
+          "status" : {}
+        }
+      }
+    },
+    {
+      "name": "createTime",
+      "head": {
+        "html": "<th styles='normalThNode' lable='importTime'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='9%'><div item='createTime'></div></td>",
+        "items": {
+          "createTime" : {}
+        }
+      }
+    },
+    {
+      "name": "importData",
+      "head": {
+        "html": "<th styles='normalThNode' lable='importData'></th>",
+        "width": "75%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' width='75%'><div item='importData'></div></td>",
+        "items": {
+          "importData" : {
+            "value": "function(d){ var data = JSON.parse(d.srcData||'[]'); return o2.typeOf(data)==='array' ? data.join('  ') : data }"
+          }
+        }
+      }
+    },
+    {
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "5%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='10%'><span styles='documentActionNode' item='open'></span></td>",
+        "items": {
+          "open": {
+            "title": "open",
+            "text": "open",
+            "action": "open",
+            "condition": "function( d ){ return ['cms','process'].contains(d.docType) && d.docId && d.status==='导入成功'}",
+            "styles": "actionNode"
+//            "mouseoverStyles": "actionDeleteNode_over",
+//            "mousedownStyles": "actionDeleteNode_down"
+          }
+        }
+      }
+    }
+  ]
+}

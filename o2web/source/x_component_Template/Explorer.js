@@ -595,8 +595,12 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         }
         var par = Object.merge( this.options.pagingPar, {
             itemSize : itemSize,
-            onJumpingPage : function( par ){
-                this.loadPagingElementList( this.options.pagingPar.countPerPage, par.pageNum, par.itemNum );
+            onJumpingPage : function( arg1, arg2 ){
+                if( o2.typeOf(arg1) === "object" ){
+                    this.loadPagingElementList( this.options.pagingPar.countPerPage, arg1.pageNum, arg1.itemNum );
+                }else{
+                    this.loadPagingElementList( this.options.pagingPar.countPerPage, arg1, arg2 );
+                }
             }.bind(this)
         });
         if( pageNum )par.currentPage = pageNum;
