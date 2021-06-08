@@ -1032,8 +1032,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             if (this.json.toWord=="y"){
                 if (this.json.toWordTrigger=="open") this.docToWord();
-                if (this.json.toWordTrigger=="save")  this.form.addEvent("beforeSave", this.docToWord.bind(this));
-                if (this.json.toWordTrigger=="submit")  this.form.addEvent("beforeProcess", this.docToWord.bind(this));
+                //if (this.json.toWordTrigger=="save")  this.form.addEvent("beforeSave", this.docToWord.bind(this));
+                //if (this.json.toWordTrigger=="submit")  this.form.addEvent("beforeProcess", this.docToWord.bind(this));
+                if (this.json.toWordTrigger=="save") {
+                    if (!this.form.toWordSaveList) this.form.toWordSaveList = [];
+                    this.form.toWordSaveList.push(this);
+                }
+
+                if (this.json.toWordTrigger=="submit") {
+                    if (!this.form.toWordSubmitList) this.form.toWordSubmitList = [];
+                    this.form.toWordSubmitList.push(this);
+                }
             }
             if (!layout.mobile) this.loadSideToolbar();
 
@@ -3322,7 +3331,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      *     //attachmentData 转换后的附件数据
      * })
     */
-    toWord: function(callback, name){
+    toWord: function(callback, name, cb){
 
         var docNmae = name || "";
         if (!docNmae){
@@ -3373,6 +3382,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         }.bind(this));
                     }
                 }.bind(this));
+                if (cb) cb();
             }else{
                 var content = this.getDocumentHtml();
                 o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
@@ -3396,6 +3406,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                                 }.bind(this));
                             }
                         }.bind(this));
+
+                        if (cb) cb();
 
                         //
                         //
@@ -3428,14 +3440,21 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
         }.bind(this));
     },
-    docToWord: function(){
-        var flag = true;
-        if (this.json.toWordConditionScript && this.json.toWordConditionScript.code){
-            flag = !!this.form.Macro.exec(this.json.toWordConditionScript.code, this);
-        }
-        if (flag){
-            this.toWord();
-        }
+    docToWord: function(callback){
+        try {
+            var flag = true;
+            if (this.json.toWordConditionScript && this.json.toWordConditionScript.code){
+                flag = !!this.form.Macro.exec(this.json.toWordConditionScript.code, this);
+            }
+            if (flag){
+                this.toWord(null, "", callback);
+            }else{
+                if (callback) callback();
+            }
+        }catch(e){
+            console.error(e);
+            if (callback) callback();
+        };
     },
     showToWord: function(att_word){
         debugger;
