@@ -590,7 +590,21 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
                 }
             }
         });
-    }
+    },
+    preview: function(){
+        if( this.isNewView ){
+            this.designer.notice( this.designer.lp.saveViewNotice, "error" );
+            return;
+        }
+        this.saveSilence( function () {
+            var url = "../x_desktop/app.html?app=query.Query&status=";
+            url += JSON.stringify({
+                id : this.data.application,
+                importerId : this.data.id
+            });
+            window.open(o2.filterUrl(url),"_blank");
+        }.bind(this));
+    },
 });
 
 

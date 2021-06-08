@@ -7,7 +7,7 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
     options: {
-        "importId": "",
+        "importerId": "",
         "style": "default",
         "viewPageNum" : 1
     },
@@ -26,7 +26,7 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
         debugger;
         this.container.empty();
 
-        this.loadToolbar();
+        this.actionbarAreaNode =  new Element("div.actionbarAreaNode", {"styles": this.css.actionbarAreaNode}).inject(this.container);
 
         this.viewContainerTop = Element("div",{
             "styles" : this.css.viewContainerTop
@@ -38,6 +38,8 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
 
 
         //this.loadTopView();
+
+        this.loadToolbar();
         this.loadView();
     },
     destroy : function(){
@@ -45,34 +47,29 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
         this.view.destroy();
     },
     loadToolbar: function(){
-        var toolbar = new Element("div",{
-            styles : this.css.toolbar
-        }).inject(this.container);
-        this.toolbarTop = toolbar;
+        MWF.require("MWF.widget.Toolbar", function(){
+            this.toolbar = new MWF.widget.Toolbar(this.actionbarAreaNode, {"style": "simple"}, this); //this.exportAreaNode
 
-        var createActionNode = new Element("div",{
-            styles : this.css.toolbarActionNode,
-            text: this.lp.createSubject
-        }).inject(toolbar);
-        createActionNode.addEvents(
-            {
-                "mouseover": function () {
-                    this.node.setStyles(this.obj.css.toolbarActionNode_over);
-                }.bind({obj: this, node: createActionNode}),
-                "mouseout": function () {
-                    this.node.setStyles(this.obj.css.toolbarActionNode);
-                }.bind({obj: this, node: createActionNode}),
-                "click": function () {
-                    if( this.app.access.isAnonymousDynamic() ){
-                        this.app.openLoginForm(
-                            function(){ this.createSubject(); }.bind(this)
-                        );
-                    }else{
-                        this.createSubject();
-                    }
-                }.bind(this)
-            }
-        )
+            var doImportActionNode = new Element("div", {
+                "id": "",
+                "MWFnodetype": "MWFToolBarButton",
+                "MWFButtonImage": this.path+""+this.options.style+"/icon/upload1.png",
+                "title": this.lp.importData,
+                "MWFButtonAction": "doImport",
+                "MWFButtonText": this.lp.importData
+            }).inject(this.actionbarAreaNode); //this.exportAreaNode
+
+            var downLoadActionNode = new Element("div", {
+                "id": "",
+                "MWFnodetype": "MWFToolBarButton",
+                "MWFButtonImage": this.path+""+this.options.style+"/icon/download1.png",
+                "title": this.lp.downloadTemplate,
+                "MWFButtonAction": "downloadTemplate",
+                "MWFButtonText": this.lp.downloadTemplate
+            }).inject(this.actionbarAreaNode); //this.exportAreaNode
+
+            this.toolbar.load();
+        }.bind(this));
     },
     loadView : function(){
 
@@ -121,22 +118,25 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
         var size = this.app.content.getSize();
         this.viewContainer.setStyles({"height":(size.y-121)+"px"});
     },
-    createSubject: function(){
-        var _self = this;
-        var appId = "ForumDocument"+this.app.sectionData.id;
-        if (_self.app.desktop.apps[appId]){
-            _self.app.desktop.apps[appId].setCurrent();
-        }else {
-            this.app.desktop.openApplication(null, "ForumDocument", {
-                "sectionId": this.app.sectionData.id,
-                "appId": appId,
-                "isNew" : true,
-                "isEdited" : true,
-                "onPostPublish" : function(){
-                    //this.view.reload();
+    doImport: function(){
+        MWF.xDesktop.requireApp("query.Query", "Importer", function () {
+            var importer = new MWF.xApplication.query.Query.Importer( this.container, {
+                "id": this.options.importerId
+            }, {
+                "onAfterImport": function () {
+                    if(this.view)this.view.reload();
                 }.bind(this)
-            });
-        }
+            }, this.app);
+            importer.load();
+        }.bind(this));
+    },
+    downloadTemplate: function(){
+        MWF.xDesktop.requireApp("query.Query", "Importer", function () {
+            var importer = new MWF.xApplication.query.Query.Importer(this.container, {
+                "id": this.options.importerId
+            }, {}, this.app);
+            importer.downloadTemplate();
+        }.bind(this));
     }
 });
 
@@ -149,7 +149,7 @@ MWF.xApplication.query.Query.ImporterRecord.View = new Class({
         this.clearBody();
         if(!count)count=30;
         if(!pageNum)pageNum = 1;
-        var filter = { "modelId": this.explorer.options.importId };
+        var filter = { "modelId": this.explorer.options.importerId };
 
         //filter.withTopSubject = false;
         o2.Actions.load("x_query_assemble_surface").ImportModelAction.recordListPaging( pageNum, count, filter, function(json){
