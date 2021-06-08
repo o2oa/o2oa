@@ -151,53 +151,8 @@ MWF.xApplication.query.Query.ImporterView = new Class({
         if(!pageNum)pageNum = 1;
         var filter = { "modelId": this.explorer.options.importId };
 
-        var json = {
-            count: 5,
-            size: 5,
-            data: [
-                {
-                    "name": "导入测试",
-                    "status": "导入成功",
-                    "count": "200",
-                    "createTime": "2020-03-10 09:11:12"
-                },
-                {
-                    "name": "导入测试1",
-                    "status": "导入失败",
-                    "count": "110",
-                    "createTime": "2020-03-10 09:11:10"
-                },
-                {
-                    "name": "导入测试2",
-                    "status": "导入成功",
-                    "count": "200",
-                    "createTime": "2020-03-10 09:11:12"
-                },
-                {
-                    "name": "导入测试3",
-                    "status": "导入失败",
-                    "count": "110",
-                    "createTime": "2020-03-10 09:11:10"
-                },
-                {
-                    "name": "导入测试4",
-                    "status": "导入成功",
-                    "count": "200",
-                    "createTime": "2020-03-10 09:11:12"
-                },
-                {
-                    "name": "导入测试5",
-                    "status": "导入失败",
-                    "count": "110",
-                    "createTime": "2020-03-10 09:11:10"
-                }
-            ]
-        };
-        if( callback )callback(json);
-        return;
-
         //filter.withTopSubject = false;
-        this.actions.listImportModuleRecord( pageNum, count, filter, function(json){
+        o2.Actions.load("x_query_assemble_surface").ImportModelAction.recordListPaging( pageNum, count, filter, function(json){
             if( !json.data )json.data = [];
             if( !json.count )json.count=0;
             if( callback )callback(json);

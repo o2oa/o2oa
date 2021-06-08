@@ -17,10 +17,10 @@
       "name": "name",
       "head": {
         "html": "<th styles='normalThNode' lable='importerName'></th>",
-        "width": "58%"
+        "width": "38%"
       },
       "content": {
-        "html": "<td styles='normalTdNode' width='30%' name='title'><div item='name'></div></td>",
+        "html": "<td styles='normalTdCenterNode' width='30%' name='title'><div item='name'></div></td>",
         "items": {
           "name" : {}
         }
@@ -53,6 +53,19 @@
       }
     },
     {
+      "name": "failCount",
+      "head": {
+        "html": "<th styles='normalThNode' lable='failCount'></th>",
+        "width": "9%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='9%'><div item='failCount'></div></td>",
+        "items": {
+          "failCount" : {}
+        }
+      }
+    },
+    {
       "name": "createTime",
       "head": {
         "html": "<th styles='normalThNode' lable='importTime'></th>",
@@ -62,6 +75,19 @@
         "html": "<td styles='normalTdCenterNode' width='9%'><div item='createTime'></div></td>",
         "items": {
           "createTime" : {}
+        }
+      }
+    },
+    {
+      "name": "updateTime",
+      "head": {
+        "html": "<th styles='normalThNode' lable='updateTime'></th>",
+        "width": "19%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='9%'><div item='updateTime'></div></td>",
+        "items": {
+          "updateTime" : {}
         }
       }
     }
