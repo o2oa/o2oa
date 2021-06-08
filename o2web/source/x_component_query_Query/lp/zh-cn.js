@@ -220,8 +220,11 @@ MWF.xApplication.query.Query.LP = {
 
     "importerName": "导入模型名称",
     "importTime": "导入时间",
-    "importCount": "数据条数",
+    "updateTime": "更新时间",
+    "importCount": "总条数",
 
     "close": "关闭",
+    "failCount": "出错条数",
+    "importRecord": "导入记录"
 
 };
