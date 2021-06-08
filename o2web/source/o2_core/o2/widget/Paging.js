@@ -276,7 +276,9 @@ o2.widget.Paging = new Class({
                 ev.target.setStyles(this.css.pageJumper_over)
             }.bind(this),
             "blur": function (ev) {
-                if( this.value )_self.gotoPage(this.value);
+                var value = this.value;
+                _self.pageJumper.set("value","");
+                if( value )_self.gotoPage(value);
                 ev.target.setStyles(_self.css.pageJumper);
             },
             "keyup": function (e) {
@@ -284,7 +286,9 @@ o2.widget.Paging = new Class({
             },
             "keydown": function (e) {
                 if (e.code == 13 && this.value != "") {
-                    _self.gotoPage(this.value);
+                    var value = this.value;
+                    _self.pageJumper.set("value","");
+                    _self.gotoPage(value);
                     e.stopPropagation();
                     //e.preventDefault();
                 }

@@ -225,6 +225,9 @@ MWF.xApplication.query.Query.LP = {
 
     "close": "关闭",
     "failCount": "出错条数",
-    "importRecord": "导入记录"
+    "importRecord": "导入记录",
+    "sequence": "序号",
+    "importData": "导入数据",
+    "importRecordDetail": "导入详情"
 
 };
