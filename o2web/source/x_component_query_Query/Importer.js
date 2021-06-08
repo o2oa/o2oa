@@ -446,7 +446,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     },
 
     showImportingStatus: function(){
-        this.progressBar.showImporting( this.recordId );
+        this.progressBar.showImporting( this.recordId, function(){
+            this.fireEvent("afterImport")
+        }.bind(this));
     },
 
     exportWithImportDataToExcel : function () {

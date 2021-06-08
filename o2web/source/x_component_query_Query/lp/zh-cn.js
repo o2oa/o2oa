@@ -228,6 +228,7 @@ MWF.xApplication.query.Query.LP = {
     "importRecord": "导入记录",
     "sequence": "序号",
     "importData": "导入数据",
-    "importRecordDetail": "导入详情"
+    "importRecordDetail": "导入详情",
+    "downloadTemplate": "下载模板"
 
 };
