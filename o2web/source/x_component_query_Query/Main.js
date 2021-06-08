@@ -21,6 +21,8 @@ MWF.xApplication.query.Query.Main = new Class({
             this.options.id = this.status.id;
             this.options.viewId = this.status.viewId;
             this.options.statId = this.status.statId;
+            this.options.statementId = this.status.statementId;
+            this.options.importerId = this.status.importerId;
         }
 	},
     loadApplication: function(callback){
