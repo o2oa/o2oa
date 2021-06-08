@@ -44,9 +44,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             "            xmlns:wps=\"http://schemas.microsoft.com/office/word/2010/wordprocessingShape\"\n" +
             "            xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"\n" +
             "            mc:Ignorable=\"w14 w15 w16se w16cid w16 w16cex w16sdtdh wp14\">",
-        "xmlHead": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+        "xmlHead": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>",
+        "divAsP": false
     },
-    initialize: function(container, worklog, processid, options){
+    initialize: function(options){
         this.setOptions(options);
         this.path = "../x_component_process_Xform/widget/$OOXML/WordprocessingML/";
         this.dpi = this.getDPI();
@@ -173,10 +174,26 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         while (dom){
             if (dom.getStyle("display")!=="none"){
                 if (dom.hasClass("doc_layout_redHeader")){
-                    this.processDom(dom, oo_body, append, true);
+                    var node = dom.firstChild;
+                    while (node){
+                        if (node.nodeType===Node.TEXT_NODE){
+                            if (node.nodeValue.trim()) var oo_p = this.createParagraphFromDom(dom, oo_body, append);
+                            this.processRun(dom, oo_p, dom, node.nodeValue);
+                        }else{
+                            this.processDom(dom, oo_body, append, true);
+                        }
+                        node = node.nextSibling;
+                    }
+                    // if (node && node.nodeType===Node.TEXT_NODE && node.nodeValue.trim()){
+                    //     var oo_p = this.createParagraphFromDom(dom, oo_body, append);
+                    //     this.processRun(dom, oo_p, dom, node.nodeValue);
+                    // }
+                    //
+                    // this.processParagraph(dom, oo_body, append);
+
                 }else if (dom.hasClass("doc_layout_filetext")){
                     this.processFiletext(dom, oo_body, append);
-                }else if (dom.tagName.toLowerCase() === "p" || (!!divAsP && dom.tagName.toLowerCase() === "div")){
+                }else if (dom.tagName.toLowerCase() === "p" || ((!!divAsP || !!this.options.divAsP) && dom.tagName.toLowerCase() === "div")){
                     this.processParagraph(dom, oo_body, append);
                     // }else if (dom.tagName.toLowerCase() === "span") {
                     //     this.processRun(dom, oo_body, append);
@@ -543,7 +560,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             if (dom.nodeType===Node.ELEMENT_NODE){
                 if (dom.hasClass("doc_layout_filetext")){
                     this.processFiletext(dom, oo_body, append);
-                }else if (dom.tagName.toLowerCase() === "p" || (!!divAsP && dom.tagName.toLowerCase() === "div")){
+                }else if (dom.tagName.toLowerCase() === "p" || ((!!divAsP || !!this.options.divAsP) && dom.tagName.toLowerCase() === "div")){
                     this.processParagraph(dom, oo_body, append);
                     // }else if (dom.tagName.toLowerCase() === "span") {
                     //     this.processRun(dom, oo_body, append);
