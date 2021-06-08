@@ -62,7 +62,8 @@ class ActionExecute extends BaseAction {
 			record.setStatus(ImportRecord.STATUS_WAIT);
 			emc.persist(record, CheckPersistType.all);
 			emc.commit();
-			wo.setId(wi.getRecordId());
+			wo.setId(record.getId());
+			logger.info(record.getId()+"=="+wi.getRecordId());
 		}
 		try {
 			ThisApplication.queueImportData.send(wo.getId());

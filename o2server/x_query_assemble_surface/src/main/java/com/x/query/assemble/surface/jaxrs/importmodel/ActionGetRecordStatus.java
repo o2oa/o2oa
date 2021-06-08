@@ -20,16 +20,19 @@ class ActionGetRecordStatus extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String recordId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			ImportRecord record = business.pick(recordId, ImportRecord.class);
-			if(record != null){
+			ImportRecord record = emc.find(recordId, ImportRecord.class);
+			if(record == null){
 				throw new ExceptionEntityNotExist(recordId, ImportRecord.class);
 			}
 			Wo wo = new Wo();
 			wo.setCount(record.getCount());
 			wo.setStatus(record.getStatus());
+			wo.setDistribution(record.getDistribution());
 			Long executeCount = emc.countEqual(ImportRecordItem.class, ImportRecordItem.recordId_FIELDNAME, record.getId());
+			Long failCount = emc.countEqualAndEqual(ImportRecordItem.class, ImportRecordItem.recordId_FIELDNAME, record.getId(),
+					ImportRecordItem.status_FIELDNAME, ImportRecordItem.STATUS_FAILED);
 			wo.setExecuteCount(executeCount);
+			wo.setFailCount(failCount);
 			result.setData(wo);
 			return result;
 		}
@@ -43,8 +46,14 @@ class ActionGetRecordStatus extends BaseAction {
 		@FieldDescribe("总数量.")
 		private Integer count;
 
-		@FieldDescribe("已导入数量.")
+		@FieldDescribe("已执行数量.")
 		private Long executeCount;
+
+		@FieldDescribe("失败数量.")
+		private Long failCount;
+
+		@FieldDescribe("导入结果描述.")
+		private String distribution;
 
 		public String getStatus() {
 			return status;
@@ -68,6 +77,22 @@ class ActionGetRecordStatus extends BaseAction {
 
 		public void setExecuteCount(Long executeCount) {
 			this.executeCount = executeCount;
+		}
+
+		public Long getFailCount() {
+			return failCount;
+		}
+
+		public void setFailCount(Long failCount) {
+			this.failCount = failCount;
+		}
+
+		public String getDistribution() {
+			return distribution;
+		}
+
+		public void setDistribution(String distribution) {
+			this.distribution = distribution;
 		}
 	}
 }
