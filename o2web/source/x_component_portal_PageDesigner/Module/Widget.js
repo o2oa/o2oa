@@ -238,7 +238,7 @@ MWF.xApplication.portal.PageDesigner.Module.Widget = MWF.PCWidget = new Class({
 		this.iconNode.getFirst("div").setStyles(this.css.iconNodeIcon);
 		this.iconNode.getLast("div").setStyles(this.css.iconNodeText);
 	},
-    _setEditStyle: function(name, input, oldValue){
+    _setEditStyle_custom: function(name, input, oldValue){
 		if (name==="widgetSelected"){
 			if (this.json.widgetSelected!==oldValue){
                 this.redoSelectedWidget(name, input, oldValue);
