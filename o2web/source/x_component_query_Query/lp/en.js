@@ -221,5 +221,12 @@ MWF.xApplication.query.Query.LP = {
     "importTime": "Import Time",
     "importCount": "Number of data items",
 
-    "close": "Close"
+    "close": "Close",
+    "failCount": "The number of errors",
+    "importRecord": "Import Record",
+    "sequence": "Sequence Number",
+    "importData": "Import Data",
+    "importRecordDetail": "Import Details",
+    "downloadTemplate": "Download Template",
+    "exportErrorDataToExcel": "Export Error Data"
 };

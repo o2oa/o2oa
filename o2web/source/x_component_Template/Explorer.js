@@ -110,6 +110,10 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
             "styles": this.css.viewContentListNode
         }).inject(this.container);
 
+        if( this.options.wrapView ){
+            this.viewWrapNode = new Element("div").inject(this.node);
+        }
+
         if( this.options.scrollEnable ){
             this.setScroll();
         }
@@ -299,7 +303,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
     createViewNode: function () {
         this.fireEvent("queryCreateViewNode");
         this._queryCreateViewNode( );
-        this.viewNode = this.formatElement(this.node, this.template.viewSetting);
+        this.viewNode = this.formatElement(this.viewWrapNode || this.node, this.template.viewSetting);
         this._postCreateViewNode( this.viewNode );
         this.fireEvent("postCreateViewNode");
         if (!this.viewNode)return;
@@ -442,7 +446,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         if (downStyles && ( overStyles || styles)) {
             node.addEvent("mousedown", function (ev) {
                 if( !_self.lockNodeStyle )this.node.setStyles(this.styles);
-                if( _self.mousedownNode && this.holdMouseDownStyles ){
+                if( _self.mousedownNode && this.holdMouseDownStyles && _self.mousedownNode != this.node ){
                     _self.mousedownNode.setStyles( this.normalStyle )
                 }
                 if( this.holdMouseDownStyles ){
@@ -584,13 +588,13 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         if( this.options.pagingPar.position.indexOf("top") > -1 ){
             if( !this.pagingContainerTop ){
                 this.pagingContainerTopCreated = true;
-                this.pagingContainerTop = new Element("div", {"styles":this.css.pagingContainer}).inject( this.viewNode, "before" );
+                this.pagingContainerTop = new Element("div", {"styles":this.css.pagingContainer}).inject( this.viewWrapNode || this.viewNode, "before" );
             }
         }
         if( this.options.pagingPar.position.indexOf("bottom") > -1 ){
             if( !this.pagingContainerBottom ){
                 this.pagingContainerBottomCreated = true;
-                this.pagingContainerBottom = new Element("div", {"styles":this.css.pagingContainer}).inject( this.viewNode, "after" );
+                this.pagingContainerBottom = new Element("div", {"styles":this.css.pagingContainer}).inject( this.viewWrapNode || this.viewNode, "after" );
             }
         }
         var par = Object.merge( this.options.pagingPar, {

@@ -79,7 +79,9 @@
         "color": "#4387cd"
     },
     "processContentNode": {
-        "font-size": "14px"
+        "margin-top": "10px",
+        "font-size": "14px",
+        "padding": "10px"
     },
     "progressInforNode": {
         "height": "30px",
