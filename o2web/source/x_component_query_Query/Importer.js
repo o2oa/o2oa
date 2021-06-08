@@ -2,6 +2,7 @@ MWF.xApplication.query = MWF.xApplication.query || {};
 MWF.xApplication.query.Query = MWF.xApplication.query.Query || {};
 MWF.require("MWF.widget.Common", null, false);
 MWF.require("MWF.xScript.Macro", null, false);
+MWF.require("o2.widget.Dialog", null, false);
 MWF.xDesktop.requireApp("query.Query", "lp."+o2.language, null, false);
 MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     Implements: [Options, Events],
@@ -115,30 +116,30 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         this.excelUtils.upload( this.getDateColIndexArray(), function (importedData) {
 
-            this.progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar( this );
+            this.progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar( this, {
+                "onPostShow": function(){
+                    this.progressBar.showCheckData();
 
-            this.progressBar.showCheckData();
+                    this.importedData = importedData;
 
-            this.importedData = importedData;
+                    if( this.importedData.length > 0 )this.importedData.shift();
 
-            if( this.importedData.length > 0 )this.importedData.shift();
+                    this.fireEvent("beforeImport");
 
-            this.fireEvent("beforeImport");
+                    this.listAllOrgDataByImport( function () {
+                        this.importedData.each( function( lineData, lineIndex ){
+                            this.rowList.push( new MWF.xApplication.query.Query.Importer.Row( this, lineData, lineIndex ) )
+                        }.bind(this));
 
-            this.listAllOrgDataByImport( function () {
-                this.importedData.each( function( lineData, lineIndex ){
-                    this.rowList.push( new MWF.xApplication.query.Query.Importer.Row( this, lineData, lineIndex ) )
-                }.bind(this));
-
-                var isValid = this.json.enableValid ? this.checkImportedData() : this.checkNecessaryImportedData();
-                if( isValid ){
-                    this.doImportData();
-                }else{
-                    this.openImportedErrorDlg();
-                }
-            }.bind(this));
-
-
+                        var isValid = this.json.enableValid ? this.checkImportedData() : this.checkNecessaryImportedData();
+                        if( isValid ){
+                            this.doImportData();
+                        }else{
+                            this.openImportedErrorDlg();
+                        }
+                    }.bind(this));
+                }.bind(this)
+            });
         }.bind(this));
     },
     getData : function(){
@@ -207,39 +208,12 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         return arr.join( " " )
     },
     openImportedErrorDlg : function(){
+        debugger;
         if(this.progressBar)this.progressBar.close();
 
         var _self = this;
 
-        var htmlArray = ["<table "+ this.objectToString( this.css.properties ) +" style='"+this.objectToString( this.css.tableStyles, "style" )+"'>"];
-
-        var titleStyle = this.objectToString( this.css.titleStyles, "style" );
-        htmlArray.push( "<tr>" );
-        this.json.data.columnList.each( function (columnJson, i) {
-            htmlArray.push( "<th style='"+titleStyle+"'>"+columnJson.displayName+"</th>" );
-        });
-        htmlArray.push( "<th style='"+titleStyle+"'> "+this.lp.validationInfor +"</th>" );
-        htmlArray.push( "</tr>" );
-
-        var contentStyles = Object.clone( this.css.contentStyles );
-        if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
-        var contentStyle = this.objectToString( Object.merge( contentStyles, {"text-align":"left"}) , "style" );
-
-        this.rowList.each( function( row, lineIndex ){
-
-            var lineData = row.importedData;
-
-            htmlArray.push( "<tr>" );
-            this.json.data.columnList.each( function (columnJson, i) {
-                htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
-            });
-            htmlArray.push( "<td style='"+contentStyle+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
-            htmlArray.push( "</tr>" );
-
-        }.bind(this));
-        htmlArray.push( "</table>" );
-
-        var div = new Element("div", { style : "padding:10px;", html : htmlArray.join("") });
+        var div = new Element("div", { style : "padding:10px;" });
         var dlg = o2.DL.open({
             "style" : "user",
             "title": this.lp.importFail,
@@ -260,6 +234,36 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                     "action": function () { dlg.close(); }
                 }
             ],
+            "onPostShow": function () {
+                var htmlArray = ["<table "+ this.objectToString( this.css.properties ) +" style='"+this.objectToString( this.css.tableStyles, "style" )+"'>"];
+
+                var titleStyle = this.objectToString( this.css.titleStyles, "style" );
+                htmlArray.push( "<tr>" );
+                this.json.data.columnList.each( function (columnJson, i) {
+                    htmlArray.push( "<th style='"+titleStyle+"'>"+columnJson.displayName+"</th>" );
+                });
+                htmlArray.push( "<th style='"+titleStyle+"'> "+this.lp.validationInfor +"</th>" );
+                htmlArray.push( "</tr>" );
+
+                var contentStyles = Object.clone( this.css.contentStyles );
+                if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
+                var contentStyle = this.objectToString( Object.merge( contentStyles, {"text-align":"left"}) , "style" );
+
+                this.rowList.each( function( row, lineIndex ){
+
+                    var lineData = row.importedData;
+
+                    htmlArray.push( "<tr>" );
+                    this.json.data.columnList.each( function (columnJson, i) {
+                        htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
+                    });
+                    htmlArray.push( "<td style='"+contentStyle+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
+                    htmlArray.push( "</tr>" );
+
+                }.bind(this));
+                htmlArray.push( "</table>" );
+                div.set("html" , htmlArray.join(""));
+            }.bind(this),
             "onPostClose": function(){
                 dlg = null;
             }.bind(this)
@@ -397,6 +401,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
             this.identityMapImported = {};
             if( identityList.length ){
+                identityList = identityList.unique();
                 o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : identityList }, function (json) {
                     json.data.each( function (d) { this.identityMapImported[ d.matchKey ] = d; }.bind(this));
                     identityLoaded = true;
@@ -409,6 +414,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
             this.personMapImported = {};
             if( personList.length ){
+                personList = personList.unique();
                 o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList }, function (json) {
                     json.data.each( function (d) { this.personMapImported[ d.matchKey ] = d; }.bind(this));
                     personLoaded = true;
@@ -421,6 +427,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
             this.unitMapImported = {};
             if( unitList.length ){
+                unitList = unitList.unique();
                 o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList }, function (json) {
                     json.data.each( function (d) { this.unitMapImported[ d.matchKey ] = d; }.bind(this));
                     unitLoaded = true;
@@ -433,6 +440,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
             this.groupMapImported = {};
             if( groupList.length ){
+                groupList = groupList.unique();
                 o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({ groupList : groupList }, function (json) {
                     json.data.each( function (d) { this.groupMapImported[ d.matchKey ] = d; }.bind(this));
                     groupLoaded = true;
@@ -453,58 +461,66 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
     exportWithImportDataToExcel : function () {
 
+        debugger;
+
         if( !this.excelUtils ){
             this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
         }
+
+        var exportTo = function () {
+            var resultArr = [];
+            var titleArr = this.getTitleArray();
+            titleArr.push( this.lp.validationInfor );
+            resultArr.push( titleArr );
+
+            this.rowList.each( function( row, lineIndex ){
+
+                var lineData = row.importedData;
+
+                htmlArray.push( "<tr>" );
+                this.json.data.columnList.each( function (columnJson, i) {
+                    htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
+                });
+                htmlArray.push( "<td style='"+contentStyle+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
+                htmlArray.push( "</tr>" );
+
+            }.bind(this));
+
+            importedData.each( function( lineData, lineIndex ){
+                var array = [];
+                lineData.each( function (d, i) {
+                    array.push( ( d || '' ).replace(/&#10;/g, "\n") );
+                });
+                array.push( lineData.errorTextListExcel ? lineData.errorTextListExcel.join("\n") : ""  );
+
+                resultArr.push( array );
+            }.bind(this));
+
+            var colWidthArray = this.getColWidthArray();
+            colWidthArray.push(260);
+
+            var arg = {
+                data : resultArr,
+                colWidthArray : colWidthArray,
+                title : this.getFileName()
+            };
+
+            this.fireEvent("export", [arg]);
+
+            this.excelUtils.exportToExcel(
+                arg.data,
+                arg.title,
+                arg.colWidthArray,
+                this.getDateIndexArray()
+            )
+        }.bind(this);
+
         if( !this.importerJson ){
             this.getImporterJSON( function () {
-
-                var resultArr = [];
-                var titleArr = this.getTitleArray();
-                titleArr.push( this.lp.validationInfor );
-                resultArr.push( titleArr );
-
-                this.rowList.each( function( row, lineIndex ){
-
-                    var lineData = row.importedData;
-
-                    htmlArray.push( "<tr>" );
-                    this.json.data.columnList.each( function (columnJson, i) {
-                        htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
-                    });
-                    htmlArray.push( "<td style='"+contentStyle+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
-                    htmlArray.push( "</tr>" );
-
-                }.bind(this));
-
-                importedData.each( function( lineData, lineIndex ){
-                    var array = [];
-                    lineData.each( function (d, i) {
-                        array.push( ( d || '' ).replace(/&#10;/g, "\n") );
-                    });
-                    array.push( lineData.errorTextListExcel ? lineData.errorTextListExcel.join("\n") : ""  );
-
-                    resultArr.push( array );
-                }.bind(this));
-
-                var colWidthArray = this.getColWidthArray();
-                colWidthArray.push(260);
-
-                var arg = {
-                    data : resultArr,
-                    colWidthArray : colWidthArray,
-                    title : this.getFileName()
-                };
-
-                this.fireEvent("export", [arg]);
-
-                this.excelUtils.exportToExcel(
-                    arg.data,
-                    arg.title,
-                    arg.colWidthArray,
-                    this.getDateIndexArray()
-                )
+                exportTo();
             }.bind(this))
+        }else{
+            exportTo();
         }
     },
 
@@ -1389,46 +1405,83 @@ MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
 });
 
 MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
-    initialize : function( importer ){
+    Implements: [Options, Events],
+    Extends: o2.widget.Common,
+    options: {},
+    initialize : function( importer, options ){
+        this.setOptions(options);
         this.importer = importer;
         this.actions = this.importer.lookupAction;
         this.lp = MWF.xApplication.query.Query.LP;
         this.css = importer.css;
-        this.createNode();
+        this.openDlg();
         this.status = "ready";
     },
+    openDlg: function () {
+        this.contentNode = new Element("div",{"styles": this.css.processContentNode});
+        this.dlg = o2.DL.open({
+            "style" : "user",
+            "title": this.lp.importRecordDetail,
+            "content": this.contentNode,
+            "offset": {"y": 0},
+            "isMax": false,
+            "width": 500,
+            "height": 200,
+            "buttonList": [
+                {
+                    "type": "exportWithError",
+                    "text": this.lp.exportExcel,
+                    "action": function () { _self.exportWithImportDataToExcel(); }
+                },
+                {
+                    "type": "cancel",
+                    "text": this.lp.close,
+                    "action": function () { this.dlg.close(); }.bind(this)
+                }
+            ],
+            "onPostShow": function(){
+                this.fireEvent("postShow");
+            }.bind(this),
+            "onPostLoad": function () {
+                this.titleAction.hide();
+                this.button.hide();
+            },
+            "onPostClose": function(){
+                this.dlg = null;
+            }.bind(this)
+        });
+    },
     createNode: function( noProgress ){
-        var lp = this.lp;
-
-        this.maskNode = new Element("div",{"styles": this.css.maskNode}).inject(this.importer.container);
-
-        this.node = new Element("div", {"styles": this.css.progressBarNode}).inject(this.importer.container);
-
-        this.topNode =  new Element("div",{"styles": this.css.progressTopNode}).inject(this.node);
-
-        this.subjectNode =  new Element("div",{"styles": this.css.progressSubjectNode}).inject(this.topNode);
-
-        this.topCloseAction = new Element("div.topCloseAction", {
-            "styles": this.css.progressTopCloseAction,
-            "text": "x"
-        }).inject(this.topNode);
-        this.topCloseAction.hide();
-        this.topCloseAction.addEvent("click", function(){
-            this.close();
-        }.bind(this))
-
-        this.contentNode = new Element("div",{"styles": this.css.processContentNode}).inject(this.node);
-
-        this.bottomNode = new Element("div", {"styles": this.css.progressBottomNode}).inject(this.node);
-        this.bottomNode.hide();
-
-        this.closeAction = new Element("div.closeAction", {
-            "styles": this.css.progressCloseAction,
-            "text": lp.close
-        }).inject(this.bottomNode);
-        this.closeAction.addEvent("click", function(){
-            this.close();
-        }.bind(this))
+        // var lp = this.lp;
+        // this.maskNode = new Element("div",{"styles": this.css.maskNode}).inject(this.importer.container);
+        //
+        // this.node = new Element("div", {"styles": this.css.progressBarNode}).inject(this.importer.container);
+        //
+        // this.topNode =  new Element("div",{"styles": this.css.progressTopNode}).inject(this.node);
+        //
+        // this.subjectNode =  new Element("div",{"styles": this.css.progressSubjectNode}).inject(this.topNode);
+        //
+        // this.topCloseAction = new Element("div.topCloseAction", {
+        //     "styles": this.css.progressTopCloseAction,
+        //     "text": "x"
+        // }).inject(this.topNode);
+        // this.topCloseAction.hide();
+        // this.topCloseAction.addEvent("click", function(){
+        //     this.close();
+        // }.bind(this))
+        //
+        // this.contentNode = new Element("div",{"styles": this.css.processContentNode}).inject(this.node);
+        //
+        // this.bottomNode = new Element("div", {"styles": this.css.progressBottomNode}).inject(this.node);
+        // this.bottomNode.hide();
+        //
+        // this.closeAction = new Element("div.closeAction", {
+        //     "styles": this.css.progressCloseAction,
+        //     "text": lp.close
+        // }).inject(this.bottomNode);
+        // this.closeAction.addEvent("click", function(){
+        //     this.close();
+        // }.bind(this))
     },
     setContentHtml: function(noProgress){
         var lp = this.lp;
@@ -1464,15 +1517,15 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
         }
     },
     showCheckData : function(){
-        this.node.show();
+        // this.node.show();
         this.setContentHtml(true);
         this.setMessageTitle( this.lp.checkDataTitle );
         this.setMessageText( this.lp.checkDataContent );
         this.status = "check";
-        this.setSize();
+        // this.setSize();
     },
     showImporting: function( recordId, callback ){
-        this.node.show();
+        // this.node.show();
         this.setContentHtml();
         this.recordId = recordId;
         this.currentDate = new Date();
@@ -1494,31 +1547,32 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
                 }
             }.bind(this), null)
         }.bind(this), 500 );
-        this.setSize();
+        // this.setSize();
     },
     showCloseAction: function(){
-        if( this.bottomNode )this.bottomNode.show();
-        if( this.topCloseAction )this.topCloseAction.show();
-        this.setSize();
+        this.dlg.titleAction.show();
+        this.dlg.button.show();
+
+        // if( this.bottomNode )this.bottomNode.show();
+        // if( this.topCloseAction )this.topCloseAction.show();
+        // this.setSize();
     },
     close: function(){
-        this.maskNode.destroy();
-        this.node.destroy();
+        // this.maskNode.destroy();
+        // this.node.destroy();
+        debugger;
+        this.dlg.close();
     },
-    hide: function(){
-        this.maskNode.hide();
-        this.node.hide();
-    },
-    setSize: function(){
-        var containerSize = this.importer.container.getSize();
-        var nodeSize = this.node.getSize();
-        var top = (containerSize.y - nodeSize.y) / 2;
-        var left = (containerSize.x - nodeSize.x) / 2;
-        this.node.setStyles({
-            "top": (top-40)+"px",
-            "left": left+"px"
-        })
-    },
+    // setSize: function(){
+    //     var containerSize = this.importer.container.getSize();
+    //     var nodeSize = this.node.getSize();
+    //     var top = (containerSize.y - nodeSize.y) / 2;
+    //     var left = (containerSize.x - nodeSize.x) / 2;
+    //     this.node.setStyles({
+    //         "top": (top-40)+"px",
+    //         "left": left+"px"
+    //     })
+    // },
     updateProgress: function(data){
         //status, data.executeCount, data.count, data.failCount
         var lp = this.lp;
@@ -1600,7 +1654,7 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
         this.progressInforNode.set("text", text);
     },
     setMessageTitle: function( text){
-        this.subjectNode.set("text", text);
+        this.dlg.titleText.set("text", text);
     },
     clearMessageProgress: function(){
         this.progressNode.destroy();

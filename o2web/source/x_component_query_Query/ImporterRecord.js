@@ -9,6 +9,7 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
     options: {
         "importerId": "",
         "style": "default",
+        "resizeNode": true,
         "viewPageNum" : 1
     },
     initialize: function (container, app, options) {
@@ -41,6 +42,26 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
 
         this.loadToolbar();
         this.loadView();
+
+        if (this.options.resizeNode){
+            this.setContentHeightFun = this.setContentHeight.bind(this);
+            this.container.addEvent("resize", this.setContentHeightFun);
+            // this.setContentHeightFun();
+        }
+    },
+    setContentHeight: function(){
+        var size = this.container.getSize();
+        var h = size.y;
+        if( this.actionbarAreaNode ){
+            var exportSize = this.actionbarAreaNode.getComputedSize();
+            h = h-exportSize.totalHeight;
+        }
+        var pageSize = this.view.pagingContainerBottom.getComputedSize();
+        h = h-pageSize.totalHeight;
+        this.view.viewWrapNode.setStyles({
+            "height": ""+h+"px",
+            "overflow": "auto"
+        });
     },
     destroy : function(){
         if(this.resizeWindowFun)this.app.removeEvent("resize",this.resizeWindowFun);
@@ -76,10 +97,11 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
         //this.resizeWindow();
         //this.resizeWindowFun = this.resizeWindow.bind(this)
         //this.app.addEvent("resize", this.resizeWindowFun );
-
+       var  _self = this;
         this.view = new MWF.xApplication.query.Query.ImporterRecord.View( this.viewContainer, this.app, this, {
             templateUrl : this.path+this.options.style+"/listItem.json",
             pagingEnable : true,
+            wrapView: true,
             onPostCreateViewBody : function(){
                 this.app.fireEvent("postCreateViewBody");
             }.bind(this),
@@ -102,6 +124,9 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
                     nextPage: "",
                     firstPage: "第一页",
                     lastPage: "最后一页"
+                },
+                onPostLoad: function () {
+                    _self.setContentHeight();
                 }
             }
         } );
@@ -226,7 +251,6 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
             this.createNode();
             this.setBaseInfor();
             this.openDlg();
-            this.loadView();
         }.bind(this))
     },
     createNode: function(){
@@ -235,7 +259,8 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
         this.viewNode = new Element("div", { style : "padding:0px;"}).inject(this.node);
     },
     openDlg: function () {
-        var dlg = o2.DL.open({
+        var _self = this;
+        this.dlg = o2.DL.open({
             "style" : "user",
             "title": this.lp.importRecordDetail,
             "content": this.node,
@@ -244,20 +269,44 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
             "width": 1000,
             "height": 750,
             "buttonList": [
-                // {
-                //     "type": "exportWithError",
-                //     "text": this.lp.exportExcel,
-                //     "action": function () { _self.exportWithImportDataToExcel(); }
-                // },
+                {
+                    "type": "exportWithError",
+                    "text": this.lp.exportErrorDataToExcel,
+                    "action": function () { _self.exportWithImportDataToExcel(); }
+                },
                 {
                     "type": "cancel",
-                    "text": this.lp.cancel,
-                    "action": function () { dlg.close(); }
+                    "text": this.lp.close,
+                    "action": function () { this.dlg.close(); }.bind(this)
                 }
             ],
+            "onResizeCompleted": function () { this.setContentHeight(); }.bind(this),
+            "onMax": function () { this.setContentHeight(); }.bind(this),
+            "onRestore": function () { this.setContentHeight(); }.bind(this),
+            "onPostShow": function () {
+                // if( this.dlg.content.getScrollSize().y - this.dlg.content.getSize().y > 15 ){
+                //     this.dlg.content.setStyles("padding-right","0px");
+                // }
+                this.content.setStyle("overflow","hidden");
+                _self.loadView();
+            },
             "onPostClose": function(){
-                dlg = null;
+                this.dlg = null;
             }.bind(this)
+        });
+    },
+    setContentHeight: function(){
+        var size = this.dlg.content.getSize();
+        var h = size.y;
+        if( this.inforNode ){
+            var inforNodeSize = this.inforNode.getComputedSize();
+            h = h-inforNodeSize.totalHeight;
+        }
+        // var pageSize = this.view.pagingContainerBottom.getComputedSize();
+        // h = h-pageSize.totalHeight;
+        this.view.viewWrapNode.setStyles({
+            "height": ""+h+"px",
+            "overflow": "auto"
         });
     },
     objectToString: function (obj, type) {
@@ -317,6 +366,7 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
         this.view = new MWF.xApplication.query.Query.ImporterRecord.DetailView( this.viewNode, this.app, this, {
             templateUrl : this.path+this.options.style+"/detailListItem.json",
             pagingEnable : true,
+            wrapView: true,
             onPostCreateViewBody : function(){
                 this.app.fireEvent("postCreateViewBody");
             }.bind(this),
@@ -339,9 +389,13 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
                     nextPage: "",
                     firstPage: "第一页",
                     lastPage: "最后一页"
-                }
+                },
+                onPostLoad: function () {
+                    this.setContentHeight()
+                }.bind(this)
             }
         } );
+        this.view.pagingContainerBottom = new Element("div", {"styles":{"float":"left"}}).inject(this.dlg.button);
         this.view.load();
     }
 });
