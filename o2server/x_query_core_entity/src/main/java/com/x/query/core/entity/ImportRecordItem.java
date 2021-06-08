@@ -36,9 +36,6 @@ public class ImportRecordItem extends SliceJpaObject {
 	@FieldDescribe("数据库主键,自动生成.")
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
-	@CheckRemove(citationNotExists =
-	/* 已经没有Stat使用View了 */
-	@CitationNotExist(type = Stat.class, fields = Stat.view_FIELDNAME))
 	private String id = createId();
 
 	/* 以上为 JpaObject 默认字段 */
@@ -99,11 +96,19 @@ public class ImportRecordItem extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String distribution;
 
+	public static final String srcData_FIELDNAME = "srcData";
+	@FieldDescribe("原始数据.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + srcData_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String srcData;
+
 	public static final String data_FIELDNAME = "data";
 	@FieldDescribe("导入数据.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
@@ -177,5 +182,13 @@ public class ImportRecordItem extends SliceJpaObject {
 
 	public void setDistribution(String distribution) {
 		this.distribution = distribution;
+	}
+
+	public String getSrcData() {
+		return srcData;
+	}
+
+	public void setSrcData(String srcData) {
+		this.srcData = srcData;
 	}
 }
