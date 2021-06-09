@@ -2503,10 +2503,10 @@ MWF.xApplication.process.Xform.DatatablePC.ExcelUtils = new Class({
 			var files = fileNode.files;
 			if (files.length) {
 				var file = files.item(0);
-				if( file.name.indexOf(" ") > -1 ){
-					this.form.notice( MWF.xApplication.process.Xform.LP.uploadedFilesCannotHaveSpaces, "error");
-					return false;
-				}
+				// if( file.name.indexOf(" ") > -1 ){
+				// 	this.form.notice( MWF.xApplication.process.Xform.LP.uploadedFilesCannotHaveSpaces, "error");
+				// 	return false;
+				// }
 
 				//第三个参数是日期的列
 				this.importFromExcel( file, function(json){
