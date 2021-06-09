@@ -130,6 +130,11 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         this.node = new Element("div", {
             "styles": this.css.viewContentListNode
         }).inject(this.container);
+
+        if( this.options.wrapView ){
+            this.viewWrapNode = new Element("div").inject(this.node);
+        }
+
         this.createViewNode();
         this.createViewHead();
         this.createViewBody();
@@ -180,6 +185,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         MWF.release(this.items);
         this.items = [];
         this.documents = {};
+        this.viewWrapNode = null;
         this.node.destroy();
         this.container.empty();
         this.isItemsLoaded = false;
