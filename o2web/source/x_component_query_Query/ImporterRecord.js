@@ -193,7 +193,6 @@ MWF.xApplication.query.Query.ImporterRecord.View = new Class({
 
     },
     _openDocument: function( documentData,index ){
-        MWF.xDesktop.requireApp("query.Query","Importer", null, false);
         var detail = new MWF.xApplication.query.Query.ImporterRecord.Detail(
                 this.explorer.container,
                 this.app,

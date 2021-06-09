@@ -1418,6 +1418,7 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
         this.status = "ready";
     },
     openDlg: function () {
+        var _self = this;
         this.contentNode = new Element("div",{"styles": this.css.processContentNode});
         this.dlg = o2.DL.open({
             "style" : "user",
@@ -1429,9 +1430,9 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
             "height": 200,
             "buttonList": [
                 {
-                    "type": "exportWithError",
-                    "text": this.lp.exportExcel,
-                    "action": function () { _self.exportWithImportDataToExcel(); }
+                    "type": "openImportRecordDetail",
+                    "text": this.lp.openImportRecordDetail,
+                    "action": function () { _self.openImportRecordDetail(); }
                 },
                 {
                     "type": "cancel",
@@ -1658,5 +1659,17 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
     },
     clearMessageProgress: function(){
         this.progressNode.destroy();
+    },
+    openImportRecordDetail: function () {
+        MWF.xDesktop.requireApp("query.Query", "ImporterRecord", function () {
+            var detail = new MWF.xApplication.query.Query.ImporterRecord.Detail(
+                this.importer.container,
+                this.importer.app,
+                { recordId: this.recordId }
+            );
+            detail.load();
+            this.dlg.close();
+        }.bind(this), false);
+
     }
 });
