@@ -85,7 +85,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			os = emc.fetchEqual(WorkLog.class, Wo.copier, WorkLog.job_FIELDNAME, job).stream()
 					.filter(o -> (!BooleanUtils.isTrue(o.getSplitting()))
-							&& (Objects.equals(o.getArrivedActivityType(), ActivityType.manual)))
+							&& (Objects.equals(o.getFromActivityType(), ActivityType.manual)))
 					.sorted(Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
