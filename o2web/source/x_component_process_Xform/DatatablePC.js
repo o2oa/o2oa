@@ -2357,6 +2357,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 			this.identityMap = {};
 			if( identityList.length ){
+				identityList = identityList.unique();
 				o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : identityList }, function (json) {
 					json.data.each( function (d) { this.identityMap[ d.matchKey ] = d; }.bind(this));
 					identityLoaded = true;
@@ -2369,6 +2370,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 			this.personMap = {};
 			if( personList.length ){
+				personList = personList.unique();
 				o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList }, function (json) {
 					json.data.each( function (d) { this.personMap[ d.matchKey ] = d; }.bind(this));
 					personLoaded = true;
@@ -2381,6 +2383,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 			this.unitMap = {};
 			if( unitList.length ){
+				unitList = unitList.unique();
 				o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList }, function (json) {
 					json.data.each( function (d) { this.unitMap[ d.matchKey ] = d; }.bind(this));
 					unitLoaded = true;
@@ -2393,6 +2396,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 			this.groupMap = {};
 			if( groupList.length ){
+				groupList = groupList.unique();
 				o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({ groupList : groupList }, function (json) {
 					json.data.each( function (d) { this.groupMap[ d.matchKey ] = d; }.bind(this));
 					groupLoaded = true;
