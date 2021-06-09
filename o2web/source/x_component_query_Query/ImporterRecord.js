@@ -249,13 +249,43 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
             this.data = json.data;
             this.createNode();
             this.setBaseInfor();
+            // if( this.data.status === "部分成功" ){
+                this.createTab();
+            // }
             this.openDlg();
         }.bind(this))
     },
     createNode: function(){
         this.node = new Element("div", { style : "padding:0px;"});
         this.inforNode = new Element("div", { style : "padding:0px;"}).inject(this.node);
+        // if( this.data.status === "部分成功" ){
+            this.tabNode = new Element("div", { "styles": this.css.tabNode }).inject(this.node);
+        // }
         this.viewNode = new Element("div", { style : "padding:0px;"}).inject(this.node);
+    },
+    createTab: function(){
+        [
+            {"text": this.lp.importStatusList[0], "value": ""},
+            {"text": this.lp.importStatusList[1], "value": "导入成功"},
+            {"text": this.lp.importStatusList[2], "value": "导入失败"}
+         ].each(function (obj, i) {
+            var tabItemNode = new Element("div", {
+                "styles": this.css.tabItemNode,
+                "text": obj.text
+            }).inject( this.tabNode );
+            tabItemNode.addEvent("click", function () {
+                if(this.currentTabItem)this.currentTabItem.setStyles(this.css.tabItemNode);
+                this.currentTabItem = tabItemNode;
+                tabItemNode.setStyles(this.css.currentTabItemNode);
+                this.currentStatus = obj.value;
+                this.view.reload();
+            }.bind(this));
+            if(i===0){
+                this.currentTabItem = tabItemNode;
+                tabItemNode.setStyles(this.css.currentTabItemNode);
+            }
+        }.bind(this))
+
     },
     openDlg: function () {
         var _self = this;
@@ -301,8 +331,10 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
             var inforNodeSize = this.inforNode.getComputedSize();
             h = h-inforNodeSize.totalHeight;
         }
-        // var pageSize = this.view.pagingContainerBottom.getComputedSize();
-        // h = h-pageSize.totalHeight;
+        if( this.tabNode ){
+            var tabSize = this.tabNode.getComputedSize();
+            h = h-tabSize.totalHeight;
+        }
         this.view.viewWrapNode.setStyles({
             "height": ""+h+"px",
             "overflow": "auto"
@@ -389,9 +421,8 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
                     firstPage: "第一页",
                     lastPage: "最后一页"
                 },
-                onPostLoad: function () {
-                    this.setContentHeight()
-                }.bind(this)
+                onPostLoad: function () { this.setContentHeight() }.bind(this),
+                onPostReloadLoad: function () { this.setContentHeight() }.bind(this)
             }
         } );
         this.view.pagingContainerBottom = new Element("div", {"styles":{"float":"left"}}).inject(this.dlg.button);
@@ -409,7 +440,8 @@ MWF.xApplication.query.Query.ImporterRecord.DetailView = new Class({
         this.clearBody();
         if(!count)count=30;
         if(!pageNum)pageNum = 1;
-        var filter = { "recordId": this.explorer.options.recordId };
+        var filter = {"recordId": this.explorer.options.recordId};
+        if( this.explorer.currentStatus )filter.status = this.explorer.currentStatus;
 
         //filter.withTopSubject = false;
         o2.Actions.load("x_query_assemble_surface").ImportModelAction.recordItemListPaging( pageNum, count, filter, function(json){

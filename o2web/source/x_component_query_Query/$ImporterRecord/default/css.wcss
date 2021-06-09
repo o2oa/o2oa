@@ -77,8 +77,26 @@
     "font-family": "Microsoft YaHei",
     "font-size": "14px"
   },
-
-
+  "tabNode": {
+     "overflow":"hidden"
+  },
+  "tabItemNode": {
+    "width": "100px",
+    "margin-left": "20px,",
+    "height":"38px",
+    "line-height": "38px",
+    "text-align": "center",
+    "float": "left",
+    "color": "rgb(102, 102, 102)",
+    "font-size": "16px",
+    "font-weight": "500",
+    "cursor": "pointer",
+    "border-bottom": "2px solid rgb(248, 248, 248)"
+  },
+  "currentTabItemNode": {
+    "color": "rgb(59, 116, 180)",
+    "border-bottom": "2px solid rgb(59, 116, 180)"
+  },
   "normalThNode" : {
     "color" : "#333",
     "background-color" : "#f0f0f0",

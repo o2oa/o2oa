@@ -138,6 +138,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         this.createViewNode();
         this.createViewHead();
         this.createViewBody();
+        this.fireEvent("postReloadLoad");
     },
     initSortData: function () {
         this.sortField = null;
