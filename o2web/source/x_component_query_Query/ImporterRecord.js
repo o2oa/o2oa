@@ -249,18 +249,18 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
             this.data = json.data;
             this.createNode();
             this.setBaseInfor();
-            // if( this.data.status === "部分成功" ){
+            if( this.data.status === "部分成功" ){
                 this.createTab();
-            // }
+            }
             this.openDlg();
         }.bind(this))
     },
     createNode: function(){
         this.node = new Element("div", { style : "padding:0px;"});
         this.inforNode = new Element("div", { style : "padding:0px;"}).inject(this.node);
-        // if( this.data.status === "部分成功" ){
+        if( this.data.status === "部分成功" ){
             this.tabNode = new Element("div", { "styles": this.css.tabNode }).inject(this.node);
-        // }
+        }
         this.viewNode = new Element("div", { style : "padding:0px;"}).inject(this.node);
     },
     createTab: function(){
@@ -289,7 +289,7 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
     },
     openDlg: function () {
         var _self = this;
-        this.dlg = o2.DL.open({
+        var opt = {
             "style" : "user",
             "title": this.lp.importRecordDetail,
             "content": this.node,
@@ -322,7 +322,11 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
             "onPostClose": function(){
                 this.dlg = null;
             }.bind(this)
-        });
+        };
+        if( this.data.status === "导入成功" ){
+            opt.buttonList.splice(0, 1);
+        }
+        this.dlg = o2.DL.open(opt);
     },
     setContentHeight: function(){
         var size = this.dlg.content.getSize();
@@ -401,6 +405,7 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
             onPostCreateViewBody : function(){
                 this.app.fireEvent("postCreateViewBody");
             }.bind(this),
+            onPostReloadLoad: function () { this.setContentHeight() }.bind(this),
             pagingPar : {
                 pagingBarUseWidget: true,
                 position : [ "bottom" ],
@@ -421,8 +426,7 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
                     firstPage: "第一页",
                     lastPage: "最后一页"
                 },
-                onPostLoad: function () { this.setContentHeight() }.bind(this),
-                onPostReloadLoad: function () { this.setContentHeight() }.bind(this)
+                onPostLoad: function () { this.setContentHeight() }.bind(this)
             }
         } );
         this.view.pagingContainerBottom = new Element("div", {"styles":{"float":"left"}}).inject(this.dlg.button);
