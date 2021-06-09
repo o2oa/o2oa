@@ -1236,10 +1236,10 @@ MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
             var files = fileNode.files;
             if (files.length) {
                 var file = files.item(0);
-                if( file.name.indexOf(" ") > -1 ){
-                    this.form.notice( this.importer.lp.uploadedFilesCannotHaveSpaces, "error");
-                    return false;
-                }
+                // if( file.name.indexOf(" ") > -1 ){
+                //     this.importer.app.notice( this.importer.lp.uploadedFilesCannotHaveSpaces, "error");
+                //     return false;
+                // }
 
                 //第三个参数是日期的列
                 this.importFromExcel( file, function(json){
