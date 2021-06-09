@@ -37,7 +37,7 @@ public class LogAction extends StandardJaxrsAction {
 	@Path("list/level/{operationLevel}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listLogByOperationLevel( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void listLogByOperationLevel( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("操作级别") @PathParam("operationLevel") String operationLevel) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByLevel.Wo>> result = new ActionResult<>();
@@ -56,7 +56,7 @@ public class LogAction extends StandardJaxrsAction {
 	@Path("list/app/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listLogByAppId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void listLogByAppId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByAppId.Wo>> result = new ActionResult<>();
@@ -75,7 +75,7 @@ public class LogAction extends StandardJaxrsAction {
 	@Path("list/category/{categoryId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listLogByCategoryId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void listLogByCategoryId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByCategory.Wo>> result = new ActionResult<>();
@@ -94,7 +94,7 @@ public class LogAction extends StandardJaxrsAction {
 	@Path("list/document/{documentId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listLogByDocumentId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void listLogByDocumentId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("文档ID") @PathParam("documentId") String documentId) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByDocument.Wo>> result = new ActionResult<>();
@@ -113,7 +113,7 @@ public class LogAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("日志ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
@@ -132,8 +132,8 @@ public class LogAction extends StandardJaxrsAction {
 	@Path("filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listNextWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
+	public void listNextWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
 			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
@@ -145,7 +145,7 @@ public class LogAction extends StandardJaxrsAction {
 			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
-		}		
+		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
@@ -154,9 +154,9 @@ public class LogAction extends StandardJaxrsAction {
 	@Path("filter/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listPrevWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
+	public void listPrevWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
 			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListPrevWithFilter.Wo>> result = new ActionResult<>();
@@ -167,7 +167,26 @@ public class LogAction extends StandardJaxrsAction {
 			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
-		}		
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "按条件对日志分页显示.", action = ActionListPaging.class)
+	@POST
+	@Path("list/filter/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listFilterPaging(@Suspended final AsyncResponse asyncResponse,
+									   @Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+									   @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		ActionResult<List<ActionListPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListPaging().execute(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }
