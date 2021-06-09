@@ -94,7 +94,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
             "isPreviewAtt": (this.json.isPreviewAtt === "y" || this.json.isPreviewAtt === "true"),
             "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
-            "readonly": (this.json.readonly === "y" || this.json.readonly === "true"),
+            "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
@@ -105,6 +105,9 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             //"downloadEvent" : this.json.downloadEvent
         };
         if (this.readonly) options.readonly = true;
+        if (this.form.json && this.form.json.attachmentStyle) {
+            options = Object.merge(options, this.form.json.attachmentStyle);
+        }
 
         this.fireEvent("queryLoadController", [options]);
 
@@ -227,7 +230,9 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     }
                     this.attachmentController.checkActions();
 
+                    this.setAttachmentBusinessData();
                     this.fireEvent("upload", [json.data]);
+                    this.fireEvent("change");
                 }.bind(this))
             }
             this.attachmentController.checkActions();
@@ -309,10 +314,19 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
     },
     deleteAttachment: function (attachment) {
         this.fireEvent("delete", [attachment.data]);
+        var id = attachment.data.id;
         this.form.documentAction.deleteAttachment(attachment.data.id, function (json) {
             this.attachmentController.removeAttachment(attachment);
             //this.form.businessData.attachmentList.erase( attachment.data )
             this.attachmentController.checkActions();
+
+            for( var i=0; i<this.form.businessData.attachmentList.length; i++ ){
+                var attData = this.form.businessData.attachmentList[i];
+                if( attData.id === id ){
+                    this.form.businessData.attachmentList.erase(attData);
+                    break;
+                }
+            }
 
             if (this.form.officeList) {
                 this.form.officeList.each(function (office) {
@@ -323,8 +337,9 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     }
                 }.bind(this));
             }
-
+            this.setAttachmentBusinessData();
             this.fireEvent("afterDelete", [attachment.data]);
+            this.fireEvent("change");
         }.bind(this));
     },
 
@@ -372,7 +387,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         }
         var size = 0;
         if (this.json.attachmentSize) size = this.json.attachmentSize.toFloat();
-        this.attachmentController.doUploadAttachment({ "site": this.json.id }, this.form.documentAction.action, "replaceAttachment",
+        this.attachmentController.doUploadAttachment({ "site": (this.json.site || this.json.id) }, this.form.documentAction.action, "replaceAttachment",
             { "id": attachment.data.id, "documentid": this.form.businessData.document.id }, null, function (o) {
                 this.form.documentAction.getAttachment(attachment.data.id, this.form.businessData.document.id, function (json) {
                     attachment.data = json.data;
@@ -451,6 +466,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                         this.form.documentAction.getAttachmentStream(att.data.id, this.form.businessData.document.id);
                     }
                 }
+                this.fireEvent("download",[att])
             }.bind(this));
         }
     },
@@ -477,6 +493,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     }
 
                 }
+                this.fireEvent("open",[att])
             }.bind(this));
         }
         //this.downloadAttachment(e, node, attachment);
@@ -544,4 +561,87 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         }
         return true;
     }
-}); 
+});
+MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
+    Extends: MWF.CMSAttachment,
+    loadAttachmentController: function () {
+        //MWF.require("MWF.widget.AttachmentController", function() {
+        var options = {
+            "style": this.json.style || "default",
+            "title": MWF.xApplication.process.Xform.LP.attachmentArea,
+            "listStyle": this.json.listStyle || "icon",
+            "size": this.json.size || "max",
+            "resize": (this.json.resize === "y" || this.json.resize === "true"),
+            "attachmentCount": this.json.attachmentCount || 0,
+            "isUpload": (this.json.isUpload === "y" || this.json.isUpload === "true"),
+            "isDelete": (this.json.isDelete === "y" || this.json.isDelete === "true"),
+            "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
+            "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
+            "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
+            "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly),
+            "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
+            "isDeleteOption": this.json.isDelete,
+            "isReplaceOption": this.json.isReplace,
+            "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "ignoreSite": this.json.ignoreSite,
+            "onOrder": function () {
+                this.fireEvent("change");
+            }.bind(this)
+        };
+        if (this.readonly) options.readonly = true;
+        if (this.form.json.attachmentStyle) {
+            options = Object.merge(options, this.form.json.attachmentStyle);
+        }
+
+        this.fireEvent("queryLoadController", [options]);
+
+        this.attachmentController = new MWF.xApplication.process.Xform.AttachmentController(this.node, this, options);
+
+        this.fireEvent("loadController");
+
+        this.attachmentController.load();
+
+        this.fireEvent("postLoadController");
+
+        // var d = this._getBusinessData();
+        // if (d) d.each(function (att) {
+        //     this.attachmentController.addAttachment(att);
+        // }.bind(this));
+        if(this.json.ignoreSite) {
+            ( this._getBusinessData() || [] ).each(function (att) {
+                var flag = this.form.businessData.attachmentList.some(function (attData) {
+                    return att.id === attData.id;
+                }.bind(this));
+                if(flag)this.attachmentController.addAttachment(att);
+            }.bind(this));
+        }else{
+            this.form.businessData.attachmentList.each(function (att) {
+                if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
+            }.bind(this));
+        }
+        this.setAttachmentBusinessData();
+    },
+    setAttachmentBusinessData: function(){
+        if (this.attachmentController) {
+            if (this.attachmentController.attachments.length) {
+                var values = this.attachmentController.attachments.map(function (d) {
+                    return {
+                        "control": d.data.control,
+                        "name": d.data.name,
+                        "id": d.data.id,
+                        "person": d.data.person,
+                        "creatorUid": d.data.creatorUid,
+                        "orderNumber": d.data.orderNumber,
+                        "length": d.data.length,
+                        "extension": d.data.extension,
+                        "lastUpdateTime": d.data.lastUpdateTime,
+                        "activityName": d.data.activityName
+                    };
+                });
+                this._setBusinessData(values);
+            } else {
+                this._setBusinessData([]);
+            }
+        }
+    }
+});
