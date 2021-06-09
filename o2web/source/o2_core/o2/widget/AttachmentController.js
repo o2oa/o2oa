@@ -1129,6 +1129,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     },
 
     openAttachment: function(e, node, attachment){
+        if( !this.options.isDownload )return;
         if (attachment){
             if (this.module) this.module.openAttachment(e, node, attachment);
         }
@@ -1619,6 +1620,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.setEvent();
     },
     openAttachment: function(e){
+	    if( !this.controller.options.isDownload )return;
         if (this.controller.module) this.controller.module.openAttachment(e, null, [this]);
     },
     setActionEnabled: function(action){
