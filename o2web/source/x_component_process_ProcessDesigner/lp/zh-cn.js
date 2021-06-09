@@ -221,7 +221,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"type": "类型",
 		"form": "表单",
 
-		"routeAsOpinion": "使用路由<br>名称作为<br>缺省意见",
+		"routeAsOpinion": "使用路由名称作为缺省意见",
 		"yes": "是",
 		"no": "否",
 		"opinionInfo": "(选择“否”：处理意见没填写则意见为空)",
