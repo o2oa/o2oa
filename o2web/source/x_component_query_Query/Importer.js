@@ -474,25 +474,12 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             resultArr.push( titleArr );
 
             this.rowList.each( function( row, lineIndex ){
-
                 var lineData = row.importedData;
-
-                htmlArray.push( "<tr>" );
-                this.json.data.columnList.each( function (columnJson, i) {
-                    htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
-                });
-                htmlArray.push( "<td style='"+contentStyle+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
-                htmlArray.push( "</tr>" );
-
-            }.bind(this));
-
-            importedData.each( function( lineData, lineIndex ){
                 var array = [];
                 lineData.each( function (d, i) {
                     array.push( ( d || '' ).replace(/&#10;/g, "\n") );
                 });
-                array.push( lineData.errorTextListExcel ? lineData.errorTextListExcel.join("\n") : ""  );
-
+                array.push( row.errorTextListExcel ? row.errorTextListExcel.join("\n") : ""  );
                 resultArr.push( array );
             }.bind(this));
 
