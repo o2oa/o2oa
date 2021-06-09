@@ -230,6 +230,7 @@ MWF.xApplication.query.Query.LP = {
     "importData": "导入数据",
     "importRecordDetail": "导入详情",
     "downloadTemplate": "下载模板",
-    "exportErrorDataToExcel": "导出错误数据"
+    "exportErrorDataToExcel": "导出错误数据",
+    "openImportRecordDetail": "查看导入详情"
 
 };
