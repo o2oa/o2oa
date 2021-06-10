@@ -86,6 +86,12 @@ public class ImportRecord extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Integer count;
 
+	public static final String failCount_FIELDNAME = "failCount";
+	@FieldDescribe("导入失败数量.")
+	@Column(name = ColumnNamePrefix + failCount_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer failCount;
+
 	public static final String distribution_FIELDNAME = "distribution";
 	@FieldDescribe("导入结果描述.")
 	@Lob
@@ -156,5 +162,13 @@ public class ImportRecord extends SliceJpaObject {
 
 	public void setDistribution(String distribution) {
 		this.distribution = distribution;
+	}
+
+	public Integer getFailCount() {
+		return failCount;
+	}
+
+	public void setFailCount(Integer failCount) {
+		this.failCount = failCount;
 	}
 }

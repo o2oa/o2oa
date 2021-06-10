@@ -11,6 +11,7 @@ import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.query.core.entity.*;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.entity.wrap.*;
@@ -28,10 +29,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.query.assemble.designer.Business;
-import com.x.query.core.entity.Query;
-import com.x.query.core.entity.Reveal;
-import com.x.query.core.entity.Stat;
-import com.x.query.core.entity.View;
 
 class ActionCover extends BaseAction {
 
@@ -152,12 +149,30 @@ class ActionCover extends BaseAction {
 			}
 			obj.setQuery(query.getId());
 		}
+		for (WrapImportModel _o : wi.getImportModelList()) {
+			ImportModel obj = business.entityManagerContainer().find(_o.getId(), ImportModel.class);
+			if (null != obj) {
+				WrapImportModel.inCopier.copy(_o, obj);
+			} else {
+				obj = WrapImportModel.inCopier.copy(_o);
+				persistObjects.add(obj);
+			}
+			if (StringUtils.isNotEmpty(obj.getAlias())) {
+				obj.setAlias(
+						this.idleAliasWithQuery(business, null, obj.getAlias(), ImportModel.class, obj.getId()));
+			}
+			if (StringUtils.isNotEmpty(obj.getName())) {
+				obj.setName(this.idleNameWithQuery(business, null, obj.getName(), ImportModel.class, obj.getId()));
+			}
+			obj.setQuery(query.getId());
+		}
 		business.entityManagerContainer().beginTransaction(Query.class);
 		business.entityManagerContainer().beginTransaction(View.class);
 		business.entityManagerContainer().beginTransaction(Stat.class);
 		business.entityManagerContainer().beginTransaction(Reveal.class);
 		business.entityManagerContainer().beginTransaction(Table.class);
 		business.entityManagerContainer().beginTransaction(Statement.class);
+		business.entityManagerContainer().beginTransaction(ImportModel.class);
 		for (JpaObject o : persistObjects) {
 			business.entityManagerContainer().persist(o);
 		}
@@ -176,6 +191,9 @@ class ActionCover extends BaseAction {
 		}
 		if(!wi.getRevealList().isEmpty()){
 			CacheManager.notify(Reveal.class);
+		}
+		if(!wi.getImportModelList().isEmpty()){
+			CacheManager.notify(ImportModel.class);
 		}
 
 		return query;

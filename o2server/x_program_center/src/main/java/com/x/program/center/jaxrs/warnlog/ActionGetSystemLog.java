@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.reflect.TypeToken;
@@ -34,6 +36,10 @@ class ActionGetSystemLog extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String tag) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
+
+		if (BooleanUtils.isFalse(Config.logLevel().getWebLogEnable())){
+			throw new Exception("web log console not enable!");
+		}
 
 		List<Wo> woList = new ArrayList<>();
 		String key = effectivePerson.getDistinguishedName();
