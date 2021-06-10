@@ -98,6 +98,24 @@
       }
     },
     {
+      "name": "errorInfor",
+      "condition": "function( d ){ return ['导入失败','部分成功'].contains(this.explorer.data.status) && ['','导入失败'].contains(this.explorer.currentStatus) }",
+      "head": {
+        "html": "<th styles='normalThNode' lable='errorInfor'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' width='15%'><div item='errorInfor'></div></td>",
+        "items": {
+          "errorInfor" : {
+            "value": "function(d){ return d.distribution || '' }"
+          }
+        }
+      }
+    },
+    {
+
+      "condition": "function( d ){ return ['导入成功','部分成功'].contains(this.explorer.data.status) && ['','导入成功'].contains(this.explorer.currentStatus) }",
       "head": {
         "html": "<th styles='normalThNode' lable='action'></th>",
         "width": "5%"

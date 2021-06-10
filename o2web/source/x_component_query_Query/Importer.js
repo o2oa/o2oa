@@ -1394,7 +1394,10 @@ MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
 MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
     Implements: [Options, Events],
     Extends: o2.widget.Common,
-    options: {},
+    options: {
+        zindex: null,
+        disableDetailButton: false
+    },
     initialize : function( importer, options ){
         this.setOptions(options);
         this.importer = importer;
@@ -1407,7 +1410,7 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
     openDlg: function () {
         var _self = this;
         this.contentNode = new Element("div",{"styles": this.css.processContentNode});
-        this.dlg = o2.DL.open({
+        var opt = {
             "style" : "user",
             "title": this.lp.importRecordDetail,
             "content": this.contentNode,
@@ -1415,6 +1418,7 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
             "isMax": false,
             "width": 500,
             "height": 200,
+            "zindex": this.options.zindex,
             "buttonList": [
                 {
                     "type": "openImportRecordDetail",
@@ -1437,7 +1441,12 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
             "onPostClose": function(){
                 this.dlg = null;
             }.bind(this)
-        });
+        };
+        if( this.options.disableDetailButton ){
+            opt.buttonList.splice(0, 1);
+        }
+        this.dlg = o2.DL.open(opt);
+
     },
     createNode: function( noProgress ){
         // var lp = this.lp;
