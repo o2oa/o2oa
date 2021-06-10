@@ -228,5 +228,6 @@ MWF.xApplication.query.Query.LP = {
     "importData": "Import Data",
     "importRecordDetail": "Import Details",
     "downloadTemplate": "Download Template",
-    "exportErrorDataToExcel": "Export Error Data"
+    "exportErrorDataToExcel": "Export Error Data",
+    "errorInfor": "error message"
 };

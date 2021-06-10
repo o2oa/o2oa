@@ -149,6 +149,7 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
                 "id": this.options.importerId
             }, {
                 "onAfterImport": function () {
+                    debugger;
                     if(this.view)this.view.reload();
                 }.bind(this)
             }, this.app);
@@ -197,7 +198,8 @@ MWF.xApplication.query.Query.ImporterRecord.View = new Class({
                 this.explorer.container,
                 this.app,
                 { recordId: documentData.id }
-            )
+            );
+        detail.recordView = this;
         detail.load();
     },
     _queryCreateViewNode: function(){
@@ -244,19 +246,34 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
         this.app = app;
         this.lp = MWF.xApplication.query.Query.LP;
     },
-    load: function () {
+    load: function (callback) {
         o2.Actions.load("x_query_assemble_surface").ImportModelAction.getRecord(this.options.recordId, function (json) {
             this.data = json.data;
+            this.currentStatus = "";
             this.createNode();
             this.setBaseInfor();
             if( this.data.status === "部分成功" ){
                 this.createTab();
             }
-            this.openDlg();
+            if(!this.dlg)this.openDlg();
+            if(callback)callback();
         }.bind(this))
+    },
+    reload: function(){
+        this.view.destroy();
+        this.node.destroy();
+        this.load(function () {
+            this.loadView();
+            this.dlg.button.getElements("input[type='button']").each(function (button) {
+                if( [this.lp.reExecuteImport,this.lp.exportErrorDataToExcel].contains(button.get("value"))){
+                    button.setStyle("display", this.data.status === "导入成功" ? "none" : "")
+                }
+            }.bind(this))
+        }.bind(this));
     },
     createNode: function(){
         this.node = new Element("div", { style : "padding:0px;"});
+        if(this.dlg)this.node.inject(this.dlg.content);
         this.inforNode = new Element("div", { style : "padding:0px;"}).inject(this.node);
         if( this.data.status === "部分成功" ){
             this.tabNode = new Element("div", { "styles": this.css.tabNode }).inject(this.node);
@@ -299,6 +316,11 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
             "height": 750,
             "buttonList": [
                 {
+                    "type": "reExecute",
+                    "text": this.lp.reExecuteImport,
+                    "action": function () { _self.reExecuteImport(); }
+                },
+                {
                     "type": "exportWithError",
                     "text": this.lp.exportErrorDataToExcel,
                     "action": function () { _self.exportWithImportDataToExcel(); }
@@ -306,12 +328,12 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
                 {
                     "type": "cancel",
                     "text": this.lp.close,
-                    "action": function () { this.dlg.close(); }.bind(this)
+                    "action": function () { _self.dlg.close(); }
                 }
             ],
-            "onResizeCompleted": function () { this.setContentHeight(); }.bind(this),
-            "onMax": function () { this.setContentHeight(); }.bind(this),
-            "onRestore": function () { this.setContentHeight(); }.bind(this),
+            "onResizeCompleted": function () { _self.setContentHeight(); },
+            "onMax": function () { _self.setContentHeight(); },
+            "onRestore": function () { _self.setContentHeight(); },
             "onPostShow": function () {
                 // if( this.dlg.content.getScrollSize().y - this.dlg.content.getSize().y > 15 ){
                 //     this.dlg.content.setStyles("padding-right","0px");
@@ -320,11 +342,11 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
                 _self.loadView();
             },
             "onPostClose": function(){
-                this.dlg = null;
-            }.bind(this)
+                _self.dlg = null;
+            }
         };
         if( this.data.status === "导入成功" ){
-            opt.buttonList.splice(0, 1);
+            opt.buttonList.splice(0, 2);
         }
         this.dlg = o2.DL.open(opt);
     },
@@ -397,6 +419,25 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
 
         this.inforNode.set("html", htmlArray.join(""));
     },
+    reExecuteImport: function(){
+        var _self = this;
+        o2.Actions.load("x_query_assemble_surface").ImportModelAction.reExecuteRecord(this.options.recordId, function () {
+            window.setTimeout(function (json) {
+                MWF.xDesktop.requireApp("query.Query", "Importer", null, false);
+                var importer = new MWF.xApplication.query.Query.Importer( this.container );
+                var progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar(importer, {
+                    "zindex": ( _self.dlg.css.from["z-index"] || "1" ).toInt() + 2,
+                    "disableDetailButton": true,
+                    "onPostShow": function(){
+                        this.showImporting( _self.options.recordId, function(){
+                            _self.reload();
+                            if(_self.recordView)_self.recordView.reload();
+                        });
+                    }
+                });
+            }.bind(this), 500);
+        }.bind(this));
+    },
     loadView: function(){
         this.view = new MWF.xApplication.query.Query.ImporterRecord.DetailView( this.viewNode, this.app, this, {
             templateUrl : this.path+this.options.style+"/detailListItem.json",
@@ -413,7 +454,7 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
                 hasReturn : false,
                 currentPage : this.options.viewPageNum,
                 countPerPage : 15,
-                visiblePages : 9,
+                visiblePages : 7,
                 hasNextPage : true,
                 hasPrevPage : true,
                 hasTruningBar : true,

@@ -126,6 +126,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         this.fireEvent("postLoad");
     },
     reload: function () {
+        debugger;
         this.clear();
         this.node = new Element("div", {
             "styles": this.css.viewContentListNode
@@ -155,9 +156,14 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
             this.destroyScroll()
         }
 
+        this.clear();
+        //delete this;
+    },
+    clear: function () {
         if(this.pagingContainerTop ){
             if( this.pagingContainerTopCreated ){
                 this.pagingContainerTop.destroy();
+                this.pagingContainerTop = null;
             }else{
                 this.pagingContainerTop.empty();
             }
@@ -166,17 +172,15 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         if( this.pagingContainerBottom ){
             if( this.pagingContainerBottomCreated ){
                 this.pagingContainerBottom.destroy();
+                this.pagingContainerBottom = null;
             }else{
                 this.pagingContainerBottom.empty();
             }
         }
 
         if( this.paging )this.paging.destroy();
+        this.paging = null;
 
-        this.clear();
-        //delete this;
-    },
-    clear: function () {
         if( this.documentDragSort ){
             this.documentDragSort.removeLists( this.viewBodyNode || this.viewNode );
             this.documentDragSort.detach();
@@ -1292,6 +1296,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
         }
     },
     gotoPage : function( num ){
+        if(o2.typeOf(num) === "string")num = num.toInt();
         if( num < 1 || num > this.options.pageSize )return;
         this.fireEvent( "jumpingPage", { pageNum : num }  );
         this.options.currentPage = num;

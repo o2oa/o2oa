@@ -232,6 +232,8 @@ MWF.xApplication.query.Query.LP = {
     "downloadTemplate": "下载模板",
     "exportErrorDataToExcel": "导出错误数据",
     "openImportRecordDetail": "查看导入详情",
-    "importStatusList": ["全部","导入成功","导入失败"]
+    "importStatusList": ["全部","导入成功","导入失败"],
+    "errorInfor": "错误信息",
+    "reExecuteImport": "重新执行导入"
 
 };
