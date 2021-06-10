@@ -13,10 +13,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
-import com.x.query.core.entity.Query;
-import com.x.query.core.entity.Reveal;
-import com.x.query.core.entity.Stat;
-import com.x.query.core.entity.View;
+import com.x.query.core.entity.*;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.entity.wrap.*;
@@ -40,11 +37,14 @@ class ActionList extends BaseAction {
 
 			List<WrapStatement> statementList = emc.fetchAll(Statement.class, statementCopier);
 
+			List<WrapImportModel> importModelList = emc.fetchAll(ImportModel.class, importModelCopier);
+
 			ListTools.groupStick(wos, viewList, "id", "query", "viewList");
 			ListTools.groupStick(wos, statList, "id", "query", "statList");
 			ListTools.groupStick(wos, revealList, "id", "query", "revealList");
 			ListTools.groupStick(wos, tableList, "id", "query", "tableList");
 			ListTools.groupStick(wos, statementList, "id", "query", "statementList");
+			ListTools.groupStick(wos, importModelList, "id", "query", "importModelList");
 
 			wos = wos.stream()
 					.sorted(Comparator.comparing(Wo::getAlias, Comparator.nullsLast(String::compareTo))
@@ -69,6 +69,9 @@ class ActionList extends BaseAction {
 
 	public static WrapCopier<Statement, WrapStatement> statementCopier = WrapCopierFactory.wo(Statement.class, WrapStatement.class,
 			JpaObject.singularAttributeField(Statement.class, true, true), null);
+
+	public static WrapCopier<ImportModel, WrapImportModel> importModelCopier = WrapCopierFactory.wo(ImportModel.class, WrapImportModel.class,
+			JpaObject.singularAttributeField(ImportModel.class, true, true), null);
 
 	public static class Wo extends WrapQuery {
 

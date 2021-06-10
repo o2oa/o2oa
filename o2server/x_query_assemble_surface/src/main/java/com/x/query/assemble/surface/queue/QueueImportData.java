@@ -103,14 +103,14 @@ public class QueueImportData extends AbstractQueue<String> {
 		String categoryId = jsonObject.getAsJsonObject("category").get("id").getAsString();
 		String documentType = jsonObject.get("documentType").getAsString();
 		boolean reImport = false;
+		int failCount = 0;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<ImportRecordItem> itemList = emc.listEqualAndEqual(ImportRecordItem.class, ImportRecordItem.recordId_FIELDNAME, record.getId(),
 					ImportRecordItem.status_FIELDNAME, ImportRecordItem.STATUS_FAILED);
 			if(ListTools.isNotEmpty(itemList)){
 				logger.info("重新导入失败的CMS数据：{}", record.getId());
 				reImport = true;
-				boolean hasSuccess = false;
-				boolean hasFailed = false;
+				int count = itemList.size();
 				ImportRecord ir = emc.find(record.getId(), ImportRecord.class);
 				emc.beginTransaction(ImportRecord.class);
 				emc.beginTransaction(ImportRecordItem.class);
@@ -126,22 +126,22 @@ public class QueueImportData extends AbstractQueue<String> {
 								Applications.joinQueryUri("document", "publish", "content"), document).getData(WoId.class);
 						item.setDocId(woId.getId());
 						item.setStatus(ImportRecordItem.STATUS_SUCCESS);
-						hasSuccess = true;
 					} catch (Exception e) {
 						item.setStatus(ImportRecordItem.STATUS_FAILED);
 						item.setDistribution(e.getMessage());
-						hasFailed = true;
+						failCount++;
 					}
 				}
 				String status = ImportRecord.STATUS_SUCCESS;
-				if(hasFailed){
-					if(hasSuccess){
+				if(failCount > 0){
+					if(count > failCount){
 						status = ImportRecord.STATUS_PART_SUCCESS;
 					}else{
 						status = ImportRecord.STATUS_FAILED;
 					}
 				}
 				ir.setStatus(status);
+				ir.setFailCount(failCount);
 				ir.setDistribution("");
 				emc.commit();
 			}
@@ -150,8 +150,8 @@ public class QueueImportData extends AbstractQueue<String> {
 			return;
 		}
 		JsonElement jsonElement = gson.fromJson(record.getData(), JsonElement.class);
-		final List<ImportRecordItem> itemList = new ArrayList<>();
-		jsonElement.getAsJsonArray().forEach(o -> {
+		int count = jsonElement.getAsJsonArray().size();
+		for(JsonElement o : jsonElement.getAsJsonArray()){
 			JsonObject document = o.getAsJsonObject();
 			document.addProperty("categoryId", categoryId);
 			document.addProperty("documentType", documentType);
@@ -179,40 +179,28 @@ public class QueueImportData extends AbstractQueue<String> {
 				} catch (Exception e) {
 					item.setStatus(ImportRecordItem.STATUS_FAILED);
 					item.setDistribution(e.getMessage());
+					failCount++;
 				}
-
 				emc.beginTransaction(ImportRecordItem.class);
 				emc.persist(item, CheckPersistType.all);
 				emc.commit();
-				itemList.add(item);
 			} catch (Exception e){
 				logger.warn("保存ImportRecordItem异常：{}", e.getMessage());
 			}
-		});
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ImportRecord ir = emc.find(record.getId(), ImportRecord.class);
-			boolean hasSuccess = false;
-			boolean hasFailed = false;
 			emc.beginTransaction(ImportRecord.class);
-			for (ImportRecordItem o : itemList) {
-				if (hasFailed && hasSuccess){
-					break;
-				}
-				if(ImportRecordItem.STATUS_FAILED.equals(o.getStatus())){
-					hasFailed = true;
-				}else{
-					hasSuccess = true;
-				}
-			}
 			String status = ImportRecord.STATUS_SUCCESS;
-			if(hasFailed){
-				if(hasSuccess){
+			if(failCount > 0){
+				if(count > failCount){
 					status = ImportRecord.STATUS_PART_SUCCESS;
 				}else{
 					status = ImportRecord.STATUS_FAILED;
 				}
 			}
 			ir.setStatus(status);
+			ir.setFailCount(failCount);
 			ir.setDistribution("");
 			emc.commit();
 		}
@@ -252,14 +240,14 @@ public class QueueImportData extends AbstractQueue<String> {
 		String processId = jsonObject.getAsJsonObject("process").get("id").getAsString();
 		String processStatus = jsonObject.get("processStatus").getAsString();
 		boolean reImport = false;
+		int failCount = 0;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<ImportRecordItem> itemList = emc.listEqualAndEqual(ImportRecordItem.class, ImportRecordItem.recordId_FIELDNAME, record.getId(),
 					ImportRecordItem.status_FIELDNAME, ImportRecordItem.STATUS_FAILED);
 			if(ListTools.isNotEmpty(itemList)){
 				logger.info("重新导入失败的流程工单数据：{}", record.getId());
 				reImport = true;
-				boolean hasSuccess = false;
-				boolean hasFailed = false;
+				int count = itemList.size();
 				ImportRecord ir = emc.find(record.getId(), ImportRecord.class);
 				emc.beginTransaction(ImportRecord.class);
 				emc.beginTransaction(ImportRecordItem.class);
@@ -272,29 +260,28 @@ public class QueueImportData extends AbstractQueue<String> {
 									Applications.joinQueryUri("work", "process", processId), document).getDataAsList(WorkLog.class);
 							item.setDocId(workLogList.get(0).getWork());
 							item.setStatus(ImportRecordItem.STATUS_SUCCESS);
-							hasSuccess = true;
 						}else{
 							WoId woId = ThisApplication.context().applications().putQuery(x_processplatform_assemble_surface.class,
 									Applications.joinQueryUri("workcompleted", "process", processId), document).getData(WoId.class);
 							item.setDocId(woId.getId());
 							item.setStatus(ImportRecordItem.STATUS_SUCCESS);
-							hasSuccess = true;
 						}
 					} catch (Exception e) {
 						item.setStatus(ImportRecordItem.STATUS_FAILED);
 						item.setDistribution(e.getMessage());
-						hasFailed = true;
+						failCount++;
 					}
 				}
 				String status = ImportRecord.STATUS_SUCCESS;
-				if(hasFailed){
-					if(hasSuccess){
+				if(failCount > 0){
+					if(count > failCount){
 						status = ImportRecord.STATUS_PART_SUCCESS;
 					}else{
 						status = ImportRecord.STATUS_FAILED;
 					}
 				}
 				ir.setStatus(status);
+				ir.setFailCount(failCount);
 				ir.setDistribution("");
 				emc.commit();
 			}
@@ -303,8 +290,8 @@ public class QueueImportData extends AbstractQueue<String> {
 			return;
 		}
 		JsonElement jsonElement = gson.fromJson(record.getData(), JsonElement.class);
-		final List<ImportRecordItem> itemList = new ArrayList<>();
-		jsonElement.getAsJsonArray().forEach(o -> {
+		int count = jsonElement.getAsJsonArray().size();
+		for(JsonElement o : jsonElement.getAsJsonArray()){
 			JsonObject document = o.getAsJsonObject();
 			JsonElement srcData = document.get("srcData");
 			String title = document.get("title").getAsString();
@@ -335,36 +322,27 @@ public class QueueImportData extends AbstractQueue<String> {
 				} catch (Exception e) {
 					item.setStatus(ImportRecordItem.STATUS_FAILED);
 					item.setDistribution(e.getMessage());
+					failCount++;
 				}
 				emc.beginTransaction(ImportRecordItem.class);
 				emc.persist(item, CheckPersistType.all);
 				emc.commit();
-				itemList.add(item);
 			} catch (Exception e){
 				logger.warn("保存ImportRecordItem异常：{}", e.getMessage());
 			}
-		});
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ImportRecord ir = emc.find(record.getId(), ImportRecord.class);
-			boolean hasSuccess = false;
-			boolean hasFailed = false;
-			emc.beginTransaction(ImportRecord.class);
-			for (ImportRecordItem o : itemList) {
-				if(ImportRecordItem.STATUS_FAILED.equals(o.getStatus())){
-					hasFailed = true;
-				}else{
-					hasSuccess = true;
-				}
-			}
 			String status = ImportRecord.STATUS_SUCCESS;
-			if(hasFailed){
-				if(hasSuccess){
+			if(failCount > 0){
+				if(count > failCount){
 					status = ImportRecord.STATUS_PART_SUCCESS;
 				}else{
 					status = ImportRecord.STATUS_FAILED;
 				}
 			}
 			ir.setStatus(status);
+			ir.setFailCount(failCount);
 			ir.setDistribution("");
 			emc.commit();
 		}
