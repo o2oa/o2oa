@@ -35,6 +35,9 @@ public class WrapQuery extends Query {
 	@FieldDescribe("展现")
 	private List<WrapReveal> revealList = new ArrayList<>();
 
+	@FieldDescribe("数据导入模型")
+	private List<WrapImportModel> importModelList = new ArrayList<>();
+
 	public List<String> listViewId() throws Exception {
 		return ListTools.extractProperty(this.getViewList(), JpaObject.id_FIELDNAME, String.class, true, true);
 	}
@@ -53,6 +56,10 @@ public class WrapQuery extends Query {
 
 	public List<String> listRevealId() throws Exception {
 		return ListTools.extractProperty(this.getRevealList(), JpaObject.id_FIELDNAME, String.class, true, true);
+	}
+
+	public List<String> listImportModelId() throws Exception {
+		return ListTools.extractProperty(this.getImportModelList(), JpaObject.id_FIELDNAME, String.class, true, true);
 	}
 
 	public List<WrapView> getViewList() {
@@ -93,5 +100,13 @@ public class WrapQuery extends Query {
 
 	public void setStatementList(List<WrapStatement> statementList) {
 		this.statementList = statementList;
+	}
+
+	public List<WrapImportModel> getImportModelList() {
+		return importModelList;
+	}
+
+	public void setImportModelList(List<WrapImportModel> importModelList) {
+		this.importModelList = importModelList;
 	}
 }
