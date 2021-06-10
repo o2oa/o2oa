@@ -105,6 +105,15 @@ public class Business {
 		return statement;
 	}
 
+	private ImportModelFactory importModel;
+
+	public ImportModelFactory importModel() throws Exception {
+		if (null == this.importModel) {
+			this.importModel = new ImportModelFactory(this);
+		}
+		return importModel;
+	}
+
 	private StatFactory stat;
 
 	public StatFactory stat() throws Exception {

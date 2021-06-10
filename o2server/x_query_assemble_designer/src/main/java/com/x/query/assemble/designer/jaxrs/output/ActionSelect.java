@@ -9,10 +9,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.StringTools;
 import com.x.query.assemble.designer.Business;
-import com.x.query.core.entity.Query;
-import com.x.query.core.entity.Reveal;
-import com.x.query.core.entity.Stat;
-import com.x.query.core.entity.View;
+import com.x.query.core.entity.*;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.entity.wrap.*;
@@ -56,6 +53,7 @@ class ActionSelect extends BaseAction {
 				WrapReveal.outCopier.copy(business.entityManagerContainer().list(Reveal.class, wi.listRevealId())));
 		wo.setTableList(WrapTable.outCopier.copy(business.entityManagerContainer().list(Table.class, wi.listTableId())));
 		wo.setStatementList(WrapStatement.outCopier.copy(business.entityManagerContainer().list(Statement.class, wi.listStatementId())));
+		wo.setImportModelList(WrapImportModel.outCopier.copy(business.entityManagerContainer().list(ImportModel.class, wi.listImportModelId())));
 		return wo;
 	}
 

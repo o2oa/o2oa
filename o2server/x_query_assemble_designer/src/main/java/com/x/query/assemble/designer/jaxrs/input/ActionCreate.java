@@ -15,10 +15,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.designer.Business;
-import com.x.query.core.entity.Query;
-import com.x.query.core.entity.Reveal;
-import com.x.query.core.entity.Stat;
-import com.x.query.core.entity.View;
+import com.x.query.core.entity.*;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.entity.wrap.*;
@@ -105,6 +102,22 @@ class ActionCreate extends BaseAction {
 			}
 			persistObjects.add(obj);
 		}
+		for (WrapImportModel _o : wi.getImportModelList()) {
+			ImportModel obj = business.entityManagerContainer().find(_o.getId(), ImportModel.class);
+			if (null != obj) {
+				throw new ExceptionEntityExistForCreate(_o.getId(), ImportModel.class);
+			}
+			obj = WrapImportModel.inCopier.copy(_o);
+			obj.setQuery(query.getId());
+			if (StringUtils.isNotEmpty(obj.getAlias())) {
+				obj.setAlias(
+						this.idleAliasWithQuery(business, null, obj.getAlias(), ImportModel.class, obj.getId()));
+			}
+			if (StringUtils.isNotEmpty(obj.getName())) {
+				obj.setName(this.idleNameWithQuery(business, null, obj.getName(), ImportModel.class, obj.getId()));
+			}
+			persistObjects.add(obj);
+		}
 		for (WrapReveal _o : wi.getRevealList()) {
 			Reveal obj = business.entityManagerContainer().find(_o.getId(), Reveal.class);
 			if (null != obj) {
@@ -120,6 +133,7 @@ class ActionCreate extends BaseAction {
 		business.entityManagerContainer().beginTransaction(Reveal.class);
 		business.entityManagerContainer().beginTransaction(Table.class);
 		business.entityManagerContainer().beginTransaction(Statement.class);
+		business.entityManagerContainer().beginTransaction(ImportModel.class);
 		for (JpaObject o : persistObjects) {
 			business.entityManagerContainer().persist(o);
 		}

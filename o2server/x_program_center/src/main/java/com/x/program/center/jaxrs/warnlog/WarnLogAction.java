@@ -1,6 +1,7 @@
 package com.x.program.center.jaxrs.warnlog;
 
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -31,6 +32,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class WarnLogAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(WarnLogAction.class);
+
+	private static ReentrantLock lock = new ReentrantLock();
 
 	@JaxrsMethodDescribe(value = "获取警告.", action = ActionGet.class)
 	@GET
@@ -149,11 +152,15 @@ public class WarnLogAction extends StandardJaxrsAction {
 							 @JaxrsParameterDescribe("日志标识") @PathParam("tag") String tag) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionGetSystemLog.Wo>> result = new ActionResult<>();
-		try {
-			result = new ActionGetSystemLog().execute(effectivePerson, tag);
-		} catch (Exception e) {
-			e.printStackTrace();
-			result.error(e);
+		if (lock.tryLock()) {
+			try {
+				result = new ActionGetSystemLog().execute(effectivePerson, tag);
+			} catch (Exception e) {
+				e.printStackTrace();
+				result.error(e);
+			} finally {
+				lock.unlock();
+			}
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
