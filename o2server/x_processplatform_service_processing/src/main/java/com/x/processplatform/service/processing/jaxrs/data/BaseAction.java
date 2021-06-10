@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -34,10 +38,6 @@ import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.codehaus.plexus.util.StringUtils;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -196,8 +196,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	private void updateSerial(String serial, WorkCompleted workCompleted, List<Task> tasks, List<TaskCompleted> taskCompleteds,
-			List<Read> reads, List<ReadCompleted> readCompleteds, List<Review> reviews) {
+	private void updateSerial(String serial, WorkCompleted workCompleted, List<Task> tasks,
+			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
+			List<Review> reviews) {
 		if (StringUtils.isNotBlank(serial) && (!Objects.equals(serial, workCompleted.getSerial()))) {
 			workCompleted.setSerial(serial);
 			for (Task o : tasks) {
