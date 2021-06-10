@@ -235,11 +235,29 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.node.set(this.json.properties);
 		},
 		setOuterActionsEvents: function(){
+			var dtIds = this.json.id.split("..");
 
 			//判断不在数据模板中，但是在表单内的Id
 			var getModules = function (idList) {
 				var list = [];
 				idList.each( function (id) {
+					if( id.contains("*") ){ //允许id中包含*，替代当前id的层次
+						var ids = id.split(".");
+						for( var i=0; i<ids.length; i++ ){
+							if( ids[i].contains("*") && dtIds[i] ){
+								var key = ids[i].replace("*", dtIds[i]);
+								key = this.form.Macro.exec("return "+key, this);
+								ids[i] = key.toString();
+							}
+						}
+						id = ids.join("..");
+					}else if( id.contains("./") ){
+						if( id.indexOf("./") === 0 ){
+							var ids = Array.clone(dtIds);
+							ids[ids.length-1] = id.substring(1,id.length-1);
+							id = ids.join("..");
+						}
+					}
 					if( !this.templateJson.hasOwnProperty(id) && this.form.all[id] ){
 						list.push( this.form.all[id] );
 					}
