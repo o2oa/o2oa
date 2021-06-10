@@ -241,6 +241,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var getModules = function (idList) {
 				var list = [];
 				idList.each( function (id) {
+					if(!id)return;
 					if( id.contains("*") ){ //允许id中包含*，替代当前id的层次
 						var ids = id.split(".");
 						for( var i=0; i<ids.length; i++ ){
@@ -252,13 +253,25 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 						}
 						id = ids.join("..");
 					}else if( id.contains("./") ){
-						if( id.indexOf("./") === 0 ){
-							var ids = Array.clone(dtIds);
-							ids[ids.length-1] = id.substring(1,id.length-1);
-							id = ids.join("..");
+
+						debugger;
+						var lastName = id.substring(id.indexOf("./")+2, id.length);
+						var level = (id.substring(0, id.indexOf("./"))+".").split(".").length-1; // /前面有几个.
+
+						var dtIds_copy = Array.clone(dtIds);
+						if( dtIds_copy.length > level*2 ){
+							for( var i=0; i<level; i++ ){
+								dtIds_copy.pop();
+								if( i > 0)dtIds_copy.pop();
+							}
+							id = dtIds_copy.join("..")+".."+lastName;
+						}else{
+							dtIds_copy[dtIds_copy.length-1] = lastName;
+							id = dtIds_copy.join("..")
 						}
 					}
-					if( !this.templateJson.hasOwnProperty(id) && this.form.all[id] ){
+					var tId = id.split("..").getLast();
+					if( !this.templateJson.hasOwnProperty(tId) && this.form.all[id] ){
 						list.push( this.form.all[id] );
 					}
 				}.bind(this));
@@ -1080,9 +1093,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					this.all_templateId[templateJsonId] = module;
 
 					if (module.field) {
-						if(this.data.hasOwnProperty(templateJsonId)){
-							module.setData(this.data[templateJsonId]);
-						}
+						// if(this.data.hasOwnProperty(templateJsonId)){
+						// 	module.setData(this.data[templateJsonId]);
+						// }
 						this.allField[id] = module;
 						this.allField_templateId[templateJsonId] = module;
 						this.fields.push( module );
