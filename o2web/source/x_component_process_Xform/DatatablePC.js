@@ -1331,9 +1331,12 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				this.all_templateId[templateJsonId] = module;
 
 				if (module.field) {
-					if(hasData){
-						module.setData(this.data[templateJsonId]);
-					}else if(this.options.isEdited){
+					// if(hasData){
+					// 	module.setData(this.data[templateJsonId]);
+					// }else if(this.options.isEdited){
+					// 	this.data[templateJsonId] = module.getData();
+					// }
+					if(this.options.isEdited){
 						this.data[templateJsonId] = module.getData();
 					}
 					this.allField[id] = module;
