@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.query.core.entity.*;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.entity.wrap.*;
@@ -27,10 +28,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
-import com.x.query.core.entity.Query;
-import com.x.query.core.entity.Reveal;
-import com.x.query.core.entity.Stat;
-import com.x.query.core.entity.View;
 
 class ActionPrepareCover extends BaseAction {
 
@@ -112,6 +109,19 @@ class ActionPrepareCover extends BaseAction {
 		for (MatchElement<WrapStatement, Statement> m : this.match(business, wi.getStatementList(),
 				ListUtils.union(this.listWithIds(business, wi.getStatementList(), Statement.class),
 						business.statement().listWithQueryObject(exist.getId())))) {
+			if ((null != m.getW()) && (null != m.getT())) {
+				if (!StringUtils.equals(m.getW().getId(), m.getT().getId())) {
+					if (StringUtils.equals(m.getW().getQuery(), m.getT().getQuery())) {
+						wos.add(new Wo(m.getW().getId(), m.getT().getId()));
+					} else {
+						wos.add(new Wo(m.getW().getId(), JpaObject.createId()));
+					}
+				}
+			}
+		}
+		for (MatchElement<WrapImportModel, ImportModel> m : this.match(business, wi.getImportModelList(),
+				ListUtils.union(this.listWithIds(business, wi.getImportModelList(), ImportModel.class),
+						business.importModel().listWithQueryObject(exist.getId())))) {
 			if ((null != m.getW()) && (null != m.getT())) {
 				if (!StringUtils.equals(m.getW().getId(), m.getT().getId())) {
 					if (StringUtils.equals(m.getW().getQuery(), m.getT().getQuery())) {
