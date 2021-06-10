@@ -120,7 +120,7 @@ public class WorkDataHelper {
 		List<Item> currents = converter.disassemble(jsonElement);
 		List<Item> removes = converter.subtract(items, currents);
 		List<Item> adds = converter.subtract(currents, items);
-		if ((currents.size() != 0) && (currents.size() == removes.size()) && adds.size() == 0) {
+		if ((!currents.isEmpty()) && (items.size() == removes.size()) && adds.isEmpty()) {
 			throw new ExceptionWorkDataWillBeEmpty(job);
 		}
 		if ((!removes.isEmpty()) || (!adds.isEmpty())) {
