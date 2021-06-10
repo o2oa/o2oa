@@ -53,6 +53,9 @@ o2.widget.Paging = new Class({
 
         this.fireEvent("postLoad", this);
     },
+    destroy: function(){
+        this.container.empty();
+    },
     createNode: function() {
         var _self = this;
 
