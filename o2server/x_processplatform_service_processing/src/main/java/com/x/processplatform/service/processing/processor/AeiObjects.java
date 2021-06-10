@@ -283,8 +283,13 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public List<Attachment> getAttachments() throws Exception {
 		if (null == this.attachments) {
-			this.attachments = this.business.entityManagerContainer().listEqual(Attachment.class,
+			List<Attachment> os = this.business.entityManagerContainer().listEqual(Attachment.class,
 					Attachment.job_FIELDNAME, this.work.getJob());
+			// 附件需要重新排序,避免每次取得不一样.
+			this.attachments = os.stream().sorted(Comparator
+					.comparing(Attachment::getOrderNumber, Comparator.nullsLast(Integer::compareTo)).thenComparing(
+							Comparator.comparing(Attachment::getCreateTime, Comparator.nullsLast(Date::compareTo))))
+					.collect(Collectors.toList());
 		}
 		return this.attachments;
 	}
@@ -1314,13 +1319,14 @@ public class AeiObjects extends GsonPropertyObject {
 	private void commitData() throws Exception {
 		List<Attachment> os = ListUtils.subtract(this.getAttachments(), this.getDeleteAttachments());
 		os = ListUtils.sum(os, this.getCreateAttachments());
-		Data d = this.getData().removeWork().removeAttachmentList().setAttachmentList(os);
+		Data dataToUpdate = this.getData().removeWork().removeAttachmentList().setAttachmentList(os);
 		if (ListTools.isNotEmpty(this.getCreateWorkCompleteds())) {
-			d.setWork(this.getCreateWorkCompleteds().get(0));
+			dataToUpdate.setWork(this.getCreateWorkCompleteds().get(0));
 		} else {
-			d.setWork(this.getWork());
+			dataToUpdate.setWork(this.getWork());
 		}
-		this.getWorkDataHelper().update(data);
+		// this.getWorkDataHelper().update(data);
+		this.getWorkDataHelper().update(dataToUpdate);
 	}
 
 	private void commitDynamicEntity() throws Exception {
