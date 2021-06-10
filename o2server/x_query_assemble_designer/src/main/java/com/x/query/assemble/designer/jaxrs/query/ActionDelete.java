@@ -18,13 +18,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.designer.Business;
-import com.x.query.core.entity.Query;
-import com.x.query.core.entity.Reveal;
-import com.x.query.core.entity.Reveal_;
-import com.x.query.core.entity.Stat;
-import com.x.query.core.entity.Stat_;
-import com.x.query.core.entity.View;
-import com.x.query.core.entity.View_;
+import com.x.query.core.entity.*;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Statement_;
 import com.x.query.core.entity.schema.Table;
@@ -72,6 +66,11 @@ class ActionDelete extends BaseAction {
 				emc.remove(_o, CheckRemoveType.all);
 			}
 			emc.commit();
+			emc.beginTransaction(ImportModel.class);
+			for (ImportModel _o : this.listImportModel(business, query)) {
+				emc.remove(_o, CheckRemoveType.all);
+			}
+			emc.commit();
 			emc.beginTransaction(Query.class);
 			emc.remove(query, CheckRemoveType.all);
 			emc.commit();
@@ -81,6 +80,7 @@ class ActionDelete extends BaseAction {
 			CacheManager.notify(Query.class);
 			CacheManager.notify(Table.class);
 			CacheManager.notify(Statement.class);
+			CacheManager.notify(ImportModel.class);
 			Wo wo = new Wo();
 			wo.setId(query.getId());
 			result.setData(wo);
@@ -135,6 +135,16 @@ class ActionDelete extends BaseAction {
 		Root<Statement> root = cq.from(Statement.class);
 		Predicate p = cb.equal(root.get(Statement_.query), query.getId());
 		List<Statement> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		return os;
+	}
+
+	private List<ImportModel> listImportModel(Business business, Query query) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(ImportModel.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<ImportModel> cq = cb.createQuery(ImportModel.class);
+		Root<ImportModel> root = cq.from(ImportModel.class);
+		Predicate p = cb.equal(root.get(ImportModel_.query), query.getId());
+		List<ImportModel> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		return os;
 	}
 
