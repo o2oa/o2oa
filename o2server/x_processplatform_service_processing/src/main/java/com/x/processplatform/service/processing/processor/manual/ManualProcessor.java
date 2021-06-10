@@ -611,7 +611,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	private void expireAppointWorkTime(Task task, Manual manual) throws Exception {
 		Integer m = 0;
-		WorkTime wt = new WorkTime();
+		WorkTime wt = Config.workTime();
 		if (BooleanUtils.isTrue(NumberTools.greaterThan(manual.getTaskExpireDay(), 0))) {
 			m += manual.getTaskExpireDay() * wt.minutesOfWorkDay();
 		}
@@ -656,8 +656,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			Integer m = 0;
 			m += expire.getWorkHour() * 60;
 			if (m > 0) {
-				WorkTime wt = new WorkTime();
-				task.setExpireTime(wt.forwardMinutes(new Date(), m));
+				task.setExpireTime(Config.workTime().forwardMinutes(new Date(), m));
 			} else {
 				task.setExpireTime(null);
 			}
@@ -685,9 +684,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 		Task task = new Task(aeiObjects.getWork(), identity, person, unit, fromIdentity, new Date(), null,
 				aeiObjects.getRoutes(), manual.getAllowRapid());
 		// 是第一条待办,进行标记，调度过的待办都标记为非第一个待办
-		if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().getForceJoinAtArrive())){
+		if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().getForceJoinAtArrive())) {
 			task.setFirst(false);
-		}else{
+		} else {
 			task.setFirst(ListTools.isEmpty(aeiObjects.getJoinInquireTaskCompleteds()));
 		}
 		this.calculateExpire(aeiObjects, manual, task);
