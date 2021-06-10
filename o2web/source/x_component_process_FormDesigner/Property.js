@@ -47,9 +47,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 if (this.htmlString){
                     var lp;
                     if( this.options.appType === "cms" ){
-                        lp = MWF.xApplication.process.FormDesigner.LP.propertyTemplate;
-                    }else{
                         lp = MWF.xApplication.cms.FormDesigner.LP.propertyTemplate;
+                    }else{
+                        lp = MWF.xApplication.process.FormDesigner.LP.propertyTemplate;
                     }
                     this.htmlString = o2.bindJson(this.htmlString, {"lp": lp});
                     // this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate});
