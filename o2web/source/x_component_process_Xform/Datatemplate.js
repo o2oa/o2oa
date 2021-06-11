@@ -194,8 +194,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			//获取html模板和json模板
 			this.getTemplate();
 
-			//设置节点外的操作：添加、删除、导入、导出
-			this.setOuterActionsEvents();
+
+			if( !this.form.isLoaded ){ //如果表单还没加载完成
+				//通过表单的afterModulesLoad事件设置节点外的操作：添加、删除、导入、导出
+				this.setOuterActionEvents();
+			}
 
 			//隐藏节点
 			this.node.getChildren().hide();
@@ -234,65 +237,98 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.node.setStyles(this.json.styles);
 			this.node.set(this.json.properties);
 		},
-		setOuterActionsEvents: function(){
-
-			//判断不在数据模板中，但是在表单内的Id
-			var getModules = function (idList) {
-				var list = [];
-				idList.each( function (id) {
-					if( !this.templateJson.hasOwnProperty(id) && this.form.all[id] ){
-						list.push( this.form.all[id] );
+		_getOuterActionModules: function( idList ){ //判断不在数据模板中，但是在表单内的Id
+			var dtIds = this.json.id.split("..");
+			var list = [];
+			idList.each( function (id) {
+				if(!id)return;
+				if( id.contains("*") ){ //允许id中包含*，替代当前id的层次
+					var ids = id.split(".");
+					for( var i=0; i<ids.length; i++ ){
+						if( ids[i].contains("*") && dtIds[i] ){
+							var key = ids[i].replace("*", dtIds[i]);
+							key = this.form.Macro.exec("return "+key, this);
+							ids[i] = key.toString();
+						}
 					}
-				}.bind(this));
-				return list;
-			}.bind(this);
+					id = ids.join("..");
+				}else if( id.contains("./") ){
+
+					debugger;
+					var lastName = id.substring(id.indexOf("./")+2, id.length);
+					var level = (id.substring(0, id.indexOf("./"))+".").split(".").length-1; // /前面有几个.
+
+					var dtIds_copy = Array.clone(dtIds);
+					if( dtIds_copy.length > level*2 ){
+						for( var i=0; i<level; i++ ){
+							dtIds_copy.pop();
+							if( i > 0)dtIds_copy.pop();
+						}
+						id = dtIds_copy.join("..")+".."+lastName;
+					}else{
+						dtIds_copy[dtIds_copy.length-1] = lastName;
+						id = dtIds_copy.join("..")
+					}
+				}
+				var tId = id.split("..").getLast();
+				if( !this.templateJson.hasOwnProperty(tId) && this.form.all[id] ){
+					list.push( this.form.all[id] );
+				}
+			}.bind(this));
+			return list;
+		},
+		_setOuterActionEvents: function(){
+			this.addActionList = this._getOuterActionModules( [].concat(this.addActionIdList, this.outerAddActionIdList) );
+			this.addActionList.each( function (module) {
+				module.node.addEvents({"click": function(e){
+						this._addLine(e);
+					}.bind(this)});
+				if( !this.editable )module.node.hide();
+			}.bind(this));
+
+			this.deleteActionList = this._getOuterActionModules( [].concat( this.outerDeleteActionIdList ) );
+			this.deleteActionList.each( function (module) {
+				module.node.addEvents({"click": function(e){
+						this._deleteSelectedLine(e);
+					}.bind(this)});
+				if( !this.editable )module.node.hide();
+			}.bind(this));
+
+			this.selectAllList = this._getOuterActionModules( this.outerSelectAllIdList );
+			this.selectAllList.each( function (module) {
+				// module.setData(""); //默认不选中
+				module.node.addEvents({"click": function(e){
+						this._checkSelectAll(e);
+					}.bind(this)});
+				if( !this.editable )module.node.hide();
+			}.bind(this));
+			this.selectAllSelector = this.selectAllList[0];
+			if(this.selectAllSelector){
+				this.unselectAll();
+			}
+
+			this.importActionList = this._getOuterActionModules( this.importActionIdList );
+			this.importActionList.each( function (module) {
+				module.node.addEvents({"click": function(e){
+						this.importFromExcel();
+					}.bind(this)});
+				if( !this.editable )module.node.hide();
+			}.bind(this));
+
+			this.exportActionList = this._getOuterActionModules( this.exportActionIdList );
+			this.exportActionList.each( function (module) {
+				module.node.addEvents({"click": function(e){
+						this.exportToExcel();
+					}.bind(this)})
+			}.bind(this));
+		},
+		setOuterActionEvents: function(){
 
 			this.bindEvent = function () {
-				this.addActionList = getModules( [].concat(this.addActionIdList, this.outerAddActionIdList) );
-				this.addActionList.each( function (module) {
-					module.node.addEvents({"click": function(e){
-							this._addLine(e);
-						}.bind(this)});
-					if( !this.editable )module.node.hide();
-				}.bind(this));
-
-				this.deleteActionList = getModules( [].concat( this.outerDeleteActionIdList ) );
-				this.deleteActionList.each( function (module) {
-					module.node.addEvents({"click": function(e){
-							this._deleteSelectedLine(e);
-						}.bind(this)});
-					if( !this.editable )module.node.hide();
-				}.bind(this));
-
-				this.selectAllList = getModules( this.outerSelectAllIdList );
-				this.selectAllList.each( function (module) {
-					// module.setData(""); //默认不选中
-					module.node.addEvents({"click": function(e){
-							this._checkSelectAll(e);
-						}.bind(this)});
-					if( !this.editable )module.node.hide();
-				}.bind(this));
-				this.selectAllSelector = this.selectAllList[0];
-				if(this.selectAllSelector){
-					this.unselectAll();
-				}
-
-				this.importActionList = getModules( this.importActionIdList );
-				this.importActionList.each( function (module) {
-					module.node.addEvents({"click": function(e){
-							this.importFromExcel();
-						}.bind(this)});
-					if( !this.editable )module.node.hide();
-				}.bind(this));
-
-				this.exportActionList = getModules( this.exportActionIdList );
-				this.exportActionList.each( function (module) {
-					module.node.addEvents({"click": function(e){
-							this.exportToExcel();
-						}.bind(this)})
-				}.bind(this));
+				this._setOuterActionEvents();
 
 				this.fireEvent("afterLoad");
+
 				//加载完成以后，删除事件
 				this.form.removeEvent("afterModulesLoad", this.bindEvent );
 			}.bind(this);
@@ -652,13 +688,24 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.data = data;
 
 			if (this.data){
-				for (var i=0; i<this.lineList.length; i++){
-					this.lineList[i].clear();
-				}
+				this.clear();
 			}
 
 			this.lineList = [];
-			this._loadDataTemplate()
+			this._loadDataTemplate(function(){
+				this._setSubDatatemplateOuterEvents();
+			}.bind(this))
+		},
+		_setSubDatatemplateOuterEvents: function(){
+			//告诉下层的数据模板绑定外部事件
+			for (var i=0; i<this.lineList.length; i++){
+				this.lineList[i].setSubDatatemplateOuterActionEvents();
+			}
+		},
+		clear: function(){
+			for (var i=0; i<this.lineList.length; i++){
+				this.lineList[i].clear();
+			}
 		},
 		/**
 		 * @summary 判断数据模板是否为空.
@@ -1013,7 +1060,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		this.importActionList = [];
 		this.exportActionList = [];
 
-
+		this.subDatatemplateModuleList = [];
 	},
 	load: function(){
 		this.node.set("html", this.template.templateHtml);
@@ -1053,6 +1100,8 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 						module.addEvent("change", function(){
 							_self.form.saveFormData();
 						}.bind(this))
+					}else if( json.type==="Datatemplate" ){
+						this.subDatatemplateModuleList.push(module);
 					}
 
 					this.form.modules.push(module);
@@ -1062,9 +1111,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					this.all_templateId[templateJsonId] = module;
 
 					if (module.field) {
-						if(this.data.hasOwnProperty(templateJsonId)){
-							module.setData(this.data[templateJsonId]);
-						}
+						// if(this.data.hasOwnProperty(templateJsonId)){
+						// 	module.setData(this.data[templateJsonId]);
+						// }
 						this.allField[id] = module;
 						this.allField_templateId[templateJsonId] = module;
 						this.fields.push( module );
@@ -1080,6 +1129,14 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			this.data = this.getData();
 			this.options.isNew = false;
 		}
+	},
+	setSubDatatemplateOuterActionEvents: function(){
+		this.subDatatemplateModuleList.each(function(module){
+			//绑定下级模板事件
+			module._setOuterActionEvents();
+			//让下级数据模板再去绑定下级模板外部事件
+			module._setSubDatatemplateOuterEvents();
+		})
 	},
 	getModule: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
@@ -1186,6 +1243,8 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	clear: function () { //把module清除掉
 		for(var key in this.all){
 			var module = this.all[key];
+			//如果嵌套数据模板或者数据表格，还要清除掉下级
+			if(module.clear)module.clear();
 			this.form.modules.erase(module);
 			if (this.form.all[key]) delete this.form.all[key];
 			if (this.form.forms[key])delete this.form.forms[key];
