@@ -14,7 +14,12 @@
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
         </table>
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.outerSideModuleId}}</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;position: relative;">
+            {{$.lp.outerSideModuleId}}
+            <div class="MWFHelp" style="position: absolute;height: 16px;width: 16px;top:4px;right:4px;background: url('../x_component_process_FormDesigner/$Main/default/formtoolbar/question.png')">
+                {{$.lp.datatemplateOuterNote}}
+            </div>
+        </div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitleWithoutWith" width="80px">{{$.lp.addButtonId}}:</td>
@@ -41,7 +46,12 @@
                 </td>
             </tr>
         </table>
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.innerSideModuleId}}</div>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;position: relative;">
+            {{$.lp.innerSideModuleId}}
+            <div class="MWFHelp" style="position: absolute;height: 16px;width: 16px;top:4px;right:4px;background: url('../x_component_process_FormDesigner/$Main/default/formtoolbar/question.png')">
+                {{$.lp.datatemplateInnerNote}}
+            </div>
+        </div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitleWithoutWith" width="80px">{{$.lp.addButtonId}}:</td>
@@ -182,7 +192,7 @@
                     <td class="editTableTitle">{{$.lp.sectionBy}}:</td>
                     <td class="editTableValue">
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}" name="sectionBy" text{(($.sectionBy=='person') || ($.sectionBy!='unit' && $.sectionBy!='activity' && $.sectionBy!='script'))?'checked':''} type="radio" value="person"/>{{$.lp.handler}}<br/>
-                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='department')?'checked':''} type="radio" value="unit"/>{{$.lp.handlerUnit}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='unit')?'checked':''} type="radio" value="unit"/>{{$.lp.handlerUnit}}<br/>
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='activity')?'checked':''} type="radio" value="activity"/>{{$.lp.activityId}}<br/>
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='splitValue')?'checked':''} type="radio" value="splitValue"/>{{$.lp.splitValue}}<br/>
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'block');}"  name="sectionBy" text{($.sectionBy=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}<br/>
