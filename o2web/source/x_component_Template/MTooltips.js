@@ -899,7 +899,7 @@ var MTooltips = new Class({
         return "";
     },
     _customNode : function( node, contentNode ){
-
+        this.fireEvent("customContent", [contentNode, node])
     },
     _setContent : function( contentNode ){
         this.contentNode = contentNode;
