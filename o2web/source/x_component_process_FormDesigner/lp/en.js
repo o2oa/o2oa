@@ -911,7 +911,12 @@ MWF.xApplication.process.FormDesigner.LP = {
         "import" : "Import",
         "datatableEditMode": "Edit Mode",
         "datatableEditModeValue": ["single row","multiple rows"],
-        "onlyPc": "Available on PC only"
+        "onlyPc": "Available on PC only",
+        "datatemplateOuterNote": "Note: The data template can have multiple layers, and the external component identifier must be filled in with the following rules:<br/>" +
+            "1. Single layer or the outermost data template, fill in \"fieldId\" to indicate the direct component on the form.<br/>" +
+            "2. If there are multiple data templates, \"./fieldId\" means components at the same level as the current data template, \"../fieldId\" means components at the same level as the previous data template, and so on .<br/>" +
+            "3. If there is a multi-layer data template, you can also use \"datatemplateId.*.datatemplateId2.*.fieldId\" to indicate the full-level path. datatemplateId indicates the id of the first-level data template, and datatemplateId2 indicates the id of the second-level. ",
+        "datatemplateInnerNote": "Note: Regardless of single-layer or multi-layer data template, directly fill in the component ID."
     },
     "actionBar": {
         "close":"Close",
