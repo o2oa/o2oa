@@ -182,7 +182,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                                 this.processRun(dom, oo_p, dom, node.nodeValue);
                             }
                         }else{
-                            this.processDom(dom, oo_body, append, true);
+                            this.processDom(node, oo_body, append, true);
                         }
                         node = node.nextSibling;
                     }
