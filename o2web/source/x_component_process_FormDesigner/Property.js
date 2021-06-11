@@ -47,9 +47,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 if (this.htmlString){
                     var lp;
                     if( this.options.appType === "cms" ){
-                        lp = MWF.xApplication.process.FormDesigner.LP.propertyTemplate;
-                    }else{
                         lp = MWF.xApplication.cms.FormDesigner.LP.propertyTemplate;
+                    }else{
+                        lp = MWF.xApplication.process.FormDesigner.LP.propertyTemplate;
                     }
                     this.htmlString = o2.bindJson(this.htmlString, {"lp": lp});
                     // this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate});
@@ -96,7 +96,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadViewFilter();
                     this.loadStatementFilter();
                     this.loadDocumentTempleteSelect();
-                    this.loadFieldConfig()
+                    this.loadFieldConfig();
+                    this.loadHelp();
                     // this.loadScriptIncluder();
                     // this.loadDictionaryIncluder();
                     //this.testRestful();
@@ -111,6 +112,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         (new Fx.Scroll(layout.desktop.node)).toTop();
 
 	},
+
 	hide: function(){
 		//this.JsonTemplate = null;
 		//this.propertyNode.set("html", "");
@@ -2398,7 +2400,30 @@ debugger;
 				if (data) script.setScriptItem(data);
 			}
 		}.bind(this));
-	}
+	},
+    loadHelp: function () {
+        var nodes = this.propertyContent.getElements(".MWFHelp");
+        if (nodes.length){
+            nodes.each(function(node){
+                var html = node.get("text");
+                node.empty();
+
+                MWF.xDesktop.requireApp("Template", "MTooltips", function() {
+                    new MTooltips(this.designer.node, node, this.designer, {}, {
+                        "nodeStyles":{
+                            "max-width": "370px",
+                            "width": "370px",
+                            "line-height": "24px",
+                            "font-size": "14px"
+                        },
+                        "onCustomContent": function (content, node) {
+                            content.set("html", html);
+                        }
+                    });
+                }.bind(this))
+            }.bind(this));
+        }
+    }
 });
 MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
     Extends: MWF.xApplication.process.FormDesigner.Property,
