@@ -1359,7 +1359,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
             }
             this.scaleTo(scale);
-        }.bind(this));
+        }.bind(this), "", null, true);
     },
     _historyDoc: function(){
         this.getHistory(function(){
@@ -3331,7 +3331,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      *     //attachmentData 转换后的附件数据
      * })
     */
-    toWord: function(callback, name, cb){
+    toWord: function(callback, name, cb, notSave){
 
         var docNmae = name || "";
         if (!docNmae){
@@ -3387,26 +3387,30 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 var content = this.getDocumentHtml();
                 o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
                     (new o2.OOXML.WML()).load(content).then(function(oo_content){
-                        oo_content.name = fileName
-                        var formData = new FormData();
-                        formData.append("site", this.json.toWordSite || "$doc");
-                        formData.append("fileName", fileName);
-                        formData.append('file', oo_content);
 
-                        o2.Actions.get("x_processplatform_assemble_surface").V2UploadWorkOrWorkCompleted(this.form.businessData.work.id, formData, oo_content, function(json){
-                            if (this.form.businessData.workCompleted){
-                                o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
-                                    if (callback) callback(attjson.data);
-                                    this.showToWord(attjson.data);
-                                }.bind(this));
-                            }else{
-                                o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
-                                    if (callback) callback(attjson.data);
-                                    this.showToWord(attjson.data);
-                                }.bind(this));
-                            }
-                        }.bind(this));
+                        if (!notSave) {
+                            oo_content.name = fileName
+                            var formData = new FormData();
+                            formData.append("site", this.json.toWordSite || "$doc");
+                            formData.append("fileName", fileName);
+                            formData.append('file', oo_content);
 
+                            o2.Actions.get("x_processplatform_assemble_surface").V2UploadWorkOrWorkCompleted(this.form.businessData.work.id, formData, oo_content, function (json) {
+                                if (this.form.businessData.workCompleted) {
+                                    o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id, function (attjson) {
+                                        if (callback) callback(attjson.data);
+                                        this.showToWord(attjson.data);
+                                    }.bind(this));
+                                } else {
+                                    o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id, function (attjson) {
+                                        if (callback) callback(attjson.data);
+                                        this.showToWord(attjson.data);
+                                    }.bind(this));
+                                }
+                            }.bind(this));
+                        }else{
+                            if (callback) callback(oo_content, fileName);
+                        }
                         if (cb) cb();
 
                         //
