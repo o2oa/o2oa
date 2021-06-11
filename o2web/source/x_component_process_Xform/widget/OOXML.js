@@ -177,8 +177,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     var node = dom.firstChild;
                     while (node){
                         if (node.nodeType===Node.TEXT_NODE){
-                            if (node.nodeValue.trim()) var oo_p = this.createParagraphFromDom(dom, oo_body, append);
-                            this.processRun(dom, oo_p, dom, node.nodeValue);
+                            if (node.nodeValue.trim()){
+                                var oo_p = this.createParagraphFromDom(dom, oo_body, append);
+                                this.processRun(dom, oo_p, dom, node.nodeValue);
+                            }
                         }else{
                             this.processDom(dom, oo_body, append, true);
                         }
