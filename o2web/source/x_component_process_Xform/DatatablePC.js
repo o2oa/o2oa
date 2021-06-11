@@ -801,13 +801,16 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.data = data;
 
 			if (this.data){
-				for (var i=0; i<this.lineList.length; i++){
-					this.lineList[i].clear();
-				}
+				this.clear();
 			}
 
 			this.lineList = [];
 			this._loadDatatable()
+		},
+		clear: function(){
+			for (var i=0; i<this.lineList.length; i++){
+				this.lineList[i].clear();
+			}
 		},
 		/**
 		 * @summary 判断数据表格是否为空.
@@ -1331,9 +1334,12 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				this.all_templateId[templateJsonId] = module;
 
 				if (module.field) {
-					if(hasData){
-						module.setData(this.data[templateJsonId]);
-					}else if(this.options.isEdited){
+					// if(hasData){
+					// 	module.setData(this.data[templateJsonId]);
+					// }else if(this.options.isEdited){
+					// 	this.data[templateJsonId] = module.getData();
+					// }
+					if(this.options.isEdited){
 						this.data[templateJsonId] = module.getData();
 					}
 					this.allField[id] = module;
@@ -1534,6 +1540,8 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	clear: function () { //把module清除掉
 		for(var key in this.all){
 			var module = this.all[key];
+			//如果嵌套数据模板或者数据表格，还要清除掉下级
+			if(module.clear)module.clear();
 			this.form.modules.erase(module);
 			if (this.form.all[key]) delete this.form.all[key];
 			if (this.form.forms[key])delete this.form.forms[key];
