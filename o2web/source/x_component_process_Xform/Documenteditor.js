@@ -3407,11 +3407,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                                         this.showToWord(attjson.data);
                                     }.bind(this));
                                 }
+                                if (cb) cb();
                             }.bind(this));
                         }else{
                             if (callback) callback(oo_content, fileName);
+                            if (cb) cb();
                         }
-                        if (cb) cb();
+
 
                         //
                         //
