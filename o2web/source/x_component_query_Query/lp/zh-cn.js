@@ -167,6 +167,7 @@ MWF.xApplication.query.Query.LP = {
     "importValidationColumnTextExcel" : "列{n}：",
     "notValidNumber" : "不是数字",
     "notValidDate" : "不是日期格式",
+    "notValidBoolean": "不是布尔值",
     "fullstop" : "。",
     "notExistInSystem" : "在系统中不存在",
     "uploadedFilesCannotHaveSpaces" : "上传的文件不能带空格",
