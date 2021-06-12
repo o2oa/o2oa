@@ -2281,7 +2281,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 								}.bind(this));
 								break;
 							case "Number":
-								if (parseFloat(d).toString() === "NaN"){
+								if (isNaN(d)){
 									errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
 									errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
 								}
