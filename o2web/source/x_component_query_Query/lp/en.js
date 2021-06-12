@@ -167,6 +167,7 @@ MWF.xApplication.query.Query.LP = {
     "importValidationColumnTextExcel": "Column {n}:",
     "notValidNumber": "Not a number",
     "notValidDate": "Not a date format",
+    "notValidBoolean": "Not a boolean",
     "fullstop": ".",
     "notExistInSystem": "Does not exist in the system",
     "uploadedFilesCannotHaveSpaces": "Uploaded files cannot contain spaces",

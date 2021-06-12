@@ -62,6 +62,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     getImporterJSON: function(callback){
         if (this.json.name){
             this.lookupAction.getImportModule(this.json.name, this.json.application, function(json){
+                this.importerId = json.data.id;
                 this.importerJson = JSON.decode(json.data.data);
                 json.data.data = this.importerJson;
                 this.json = Object.merge(this.json, json.data);
@@ -69,6 +70,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             }.bind(this));
         }else{
             this.lookupAction.getImportModuleById(this.json.id, function(json){
+                this.importerId = json.data.id;
                 this.importerJson = JSON.decode(json.data.data);
                 json.data.data = this.importerJson;
                 this.json.application = json.data.query;
@@ -140,6 +142,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                     }.bind(this));
                 }.bind(this)
             });
+            this.progressBar.importerId = this.importerId;
         }.bind(this));
     },
     getData : function(){
@@ -459,7 +462,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         }.bind(this));
     },
 
-    exportWithImportDataToExcel : function () {
+    exportWithImportDataToExcel : function ( importData ) {
 
         debugger;
 
@@ -473,15 +476,26 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             titleArr.push( this.lp.validationInfor );
             resultArr.push( titleArr );
 
-            this.rowList.each( function( row, lineIndex ){
-                var lineData = row.importedData;
-                var array = [];
-                lineData.each( function (d, i) {
-                    array.push( ( d || '' ).replace(/&#10;/g, "\n") );
+            if( importData ){
+                importData.each( function (lineData, lineIndex) {
+                    var array = [];
+                    lineData.each(function(d, i){
+                        array.push( ( d || '' ).replace(/&#10;/g, "\n") );
+                    });
+                    resultArr.push( array );
                 });
-                array.push( row.errorTextListExcel ? row.errorTextListExcel.join("\n") : ""  );
-                resultArr.push( array );
-            }.bind(this));
+            }else{
+                this.rowList.each( function( row, lineIndex ){
+                    var lineData = row.importedData;
+                    var array = [];
+                    lineData.each( function (d, i) {
+                        array.push( ( d || '' ).replace(/&#10;/g, "\n") );
+                    });
+                    array.push( row.errorTextListExcel ? row.errorTextListExcel.join("\n") : ""  );
+                    resultArr.push( array );
+                }.bind(this));
+            }
+
 
             var colWidthArray = this.getColWidthArray();
             colWidthArray.push(260);
@@ -684,7 +698,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     case "long":
                     case "double":
                         value = value.replace(/&#10;/g,"");
-                        if (parseFloat(value).toString() === "NaN"){
+                        if (isNaN(value)){
                             errorTextList.push( colInfor + value + lp.notValidNumber + lp.fullstop );
                             errorTextListExcel.push( colInforExcel + value + lp.notValidNumber + lp.fullstop );
                         }
@@ -695,7 +709,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     case "doubleList":
                         var arr = this.stringToArray(value);
                         arr.each( function(d, idx){
-                            if (parseFloat(d).toString() === "NaN"){
+                            if (isNaN(d)){
                                 errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
                                 errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
                             }
@@ -704,7 +718,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     case "date":
                     case "dateTime":
                         value = value.replace(/&#10;/g,"");
-                        if( !( isNaN(value) && !isNaN(Date.parse(value) ))){
+                        if( !( new Date(value).isValid() )){
                             errorTextList.push(colInfor + value + lp.notValidDate + lp.fullstop );
                             errorTextListExcel.push( colInforExcel + value + lp.notValidDate + lp.fullstop );
                         }
@@ -713,9 +727,25 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     case "dateTimeList":
                         var  arr = this.stringToArray(value);
                         arr.each( function(d, idx){
-                            if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
+                            if( !( new Date(d).isValid() )){
                                 errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
                                 errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+                            }
+                        }.bind(this));
+                        break;
+                    case "boolean":
+                        value = value.replace(/&#10;/g,"");
+                        if( !["true","false"].contains(value.trim().toLowerCase()) ){
+                            errorTextList.push(colInfor + value + lp.notValidBoolean + lp.fullstop );
+                            errorTextListExcel.push( colInforExcel + value + lp.notValidBoolean + lp.fullstop );
+                        }
+                        break;
+                    case "booleanList":
+                        var  arr = this.stringToArray(value);
+                        arr.each( function(d, idx){
+                            if( !["true","false"].contains(d.trim().toLowerCase())){
+                                errorTextList.push(colInfor + d + lp.notValidBoolean + lp.fullstop );
+                                errorTextListExcel.push( colInforExcel + d + lp.notValidBoolean + lp.fullstop );
                             }
                         }.bind(this));
                         break;
@@ -811,6 +841,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
     },
     checkProcess : function( notCheckName ){
         var lp = this.lp;
+        var json = this.importer.json;
 
         var columnText =  lp.importValidationColumnText;
         var columnTextExcel = lp.importValidationColumnTextExcel;
@@ -990,6 +1021,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         this.importer.fireEvent("afterCreateRowData", [null, this]);
     },
     parseData: function(value, dataType, json){
+        debugger;
         var data;
         var type = this.importer.json.type;
         switch ( dataType ) {
@@ -1014,22 +1046,22 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 }
                 break;
             case "number":
+            case "double":
+                value = value.replace(/&#10;/g,"");
+                data = parseFloat(value);
+                break;
             case "integer":
             case "long":
                 value = value.replace(/&#10;/g,"");
                 data = parseInt( value );
                 break;
-            case "double":
-                value = value.replace(/&#10;/g,"");
-                data = parseFloat(value);
-                break;
             case "numberList":
+            case "doubleList":
+                data = this.stringToArray(value).map( function(d, idx){ return parseFloat( d ); }.bind(this)).clean();
+                break;
             case "integerList":
             case "longList":
                 data = this.stringToArray(value).map( function(d, idx){ return parseInt( d ); }.bind(this)).clean();
-                break;
-            case "doubleList":
-                data = this.stringToArray(value).map( function(d, idx){ return parseFloat( d ); }.bind(this)).clean();
                 break;
             case "date":
                 value = value.replace(/&#10;/g,"");
@@ -1044,6 +1076,13 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 break;
             case "dateTimeList":
                 data = this.stringToArray(value).map( function(d, idx){ return Date.parse(d).format( "db" ); }.bind(this)).clean();
+                break;
+            case "boolean":
+                value = value.replace(/&#10;/g,"");
+                data = value.trim().toLowerCase() !== "false";
+                break;
+            case "booleanList":
+                data = this.stringToArray(value).map( function(d, idx){ return value.trim().toLowerCase() !== "false"; }.bind(this)).clean();
                 break;
             default:
                 data = value.replace(/&#10;/g,"");
@@ -1661,7 +1700,7 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
             var detail = new MWF.xApplication.query.Query.ImporterRecord.Detail(
                 this.importer.container,
                 this.importer.app,
-                { recordId: this.recordId }
+                { importerId: this.importerId, recordId: this.recordId }
             );
             detail.load();
             this.dlg.close();

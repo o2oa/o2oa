@@ -197,7 +197,10 @@ MWF.xApplication.query.Query.ImporterRecord.View = new Class({
         var detail = new MWF.xApplication.query.Query.ImporterRecord.Detail(
                 this.explorer.container,
                 this.app,
-                { recordId: documentData.id }
+                {
+                    importerId: this.explorer.options.importerId,
+                    recordId: documentData.id
+                }
             );
         detail.recordView = this;
         detail.load();
@@ -233,6 +236,7 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
     Implements: [Options, Events],
     options: {
         "style": "default",
+        "importerId": "",
         "recordId" : ""
     },
     initialize: function( container, app, options ){
@@ -323,7 +327,7 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
                 {
                     "type": "exportWithError",
                     "text": this.lp.exportErrorDataToExcel,
-                    "action": function () { _self.exportWithImportDataToExcel(); }
+                    "action": function () { _self.exportErrorDataToExcel(); }
                 },
                 {
                     "type": "cancel",
@@ -435,6 +439,7 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
                         });
                     }
                 });
+                progressBar.importerId = this.optins.importerId;
             }.bind(this), 500);
         }.bind(this));
     },
@@ -472,6 +477,25 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
         } );
         this.view.pagingContainerBottom = new Element("div", {"styles":{"float":"left"}}).inject(this.dlg.button);
         this.view.load();
+    },
+    exportErrorDataToExcel: function () {
+
+        o2.Actions.load("x_query_assemble_surface").ImportModelAction.recordItemListPaging( 1, 100000, {
+            "recordId": this.options.recordId,
+            "status": "导入失败"
+        }, function(json){
+            var errorData = [];
+            json.data.each(function(d){
+                var srcData = JSON.parse(d.srcData);
+                srcData.push( d.distribution || "" ); //错误信息
+                errorData.push( srcData );
+            })
+
+            MWF.xDesktop.requireApp("query.Query", "Importer", null, false);
+            var importer = new MWF.xApplication.query.Query.Importer(this.container, { id: this.options.importerId }, {}, this.app);
+            importer.exportWithImportDataToExcel(errorData);
+        }.bind(this))
+
     }
 });
 
@@ -483,7 +507,7 @@ MWF.xApplication.query.Query.ImporterRecord.DetailView = new Class({
     _getCurrentPageData: function(callback, count, pageNum){
         debugger;
         this.clearBody();
-        if(!count)count=30;
+        if(!count)count=20;
         if(!pageNum)pageNum = 1;
         var filter = {"recordId": this.explorer.options.recordId};
         if( this.explorer.currentStatus )filter.status = this.explorer.currentStatus;
