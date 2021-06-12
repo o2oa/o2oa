@@ -1694,7 +1694,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 							break;
 						case "Calendar":
 							value = d.replace(/&#10;/g,""); //换行符&#10;
-							if( value ){
+							if( value && (new Date(value).isValid()) ){
 								var format;
 								if (!json.format){
 									if (json.selectType==="datetime" || json.selectType==="time"){
@@ -1888,7 +1888,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 							}.bind(this));
 							break;
 						case "Number":
-							if (parseFloat(d).toString() === "NaN"){
+							if (isNaN(d)){
 								errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
 								errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
 							}
