@@ -749,6 +749,16 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                             }
                         }.bind(this));
                         break;
+                    case "json":
+                    case "stringMap":
+                        value = value.replace(/&#10;/g,"");
+                        try{
+                            var d = JSON.parse(value);
+                        }catch (e) {
+                            errorTextList.push(colInfor + value + lp.notValidJson + lp.fullstop );
+                            errorTextListExcel.push( colInforExcel + value + lp.notValidJson + lp.fullstop );
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -1084,6 +1094,11 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             case "booleanList":
                 data = this.stringToArray(value).map( function(d, idx){ return value.trim().toLowerCase() !== "false"; }.bind(this)).clean();
                 break;
+            case "json":
+            case "stringMap":
+                value = value.replace(/&#10;/g,"");
+                data = JSON.parse(value);
+                break;
             default:
                 data = value.replace(/&#10;/g,"");
                 break;
@@ -1101,13 +1116,13 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         Array.each(names, function (n, idx) {
             if( idx === names.length -1 )return;
             if ( !d[n] ){
-                if( this.isNumberString(n) ){
-                    d[n.toInt()] = [];
-                }else{
-                    d[n] = {};
-                }
+                var value = this.isNumberString( names[idx+1] ) ? [] : {};
+                var n1 = this.isNumberString( n ) ? n.toInt() : n;
+                d[n1] = value;
+                d = d[n1];
+            }else{
+                d = d[n];
             }
-            d = d[n];
         }.bind(this));
         d[names[names.length -1]] = data;
     },
@@ -1177,7 +1192,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         }else if( this.importer.json.type === "process" ){
             this.work.srcData = this.importedData;
             return this.work;
-        }else if( this.json.type === "dynamicTable" ){
+        }else if( this.importer.json.type === "dynamicTable" ){
             this.data.srcData = this.importedData;
             return this.data;
         }

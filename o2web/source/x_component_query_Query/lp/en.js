@@ -168,6 +168,7 @@ MWF.xApplication.query.Query.LP = {
     "notValidNumber": "Not a number",
     "notValidDate": "Not a date format",
     "notValidBoolean": "Not a boolean",
+    "notValidJson": "Not a json format",
     "fullstop": ".",
     "notExistInSystem": "Does not exist in the system",
     "uploadedFilesCannotHaveSpaces": "Uploaded files cannot contain spaces",
