@@ -168,6 +168,7 @@ MWF.xApplication.query.Query.LP = {
     "notValidNumber" : "不是数字",
     "notValidDate" : "不是日期格式",
     "notValidBoolean": "不是布尔值",
+    "notValidJson": "不是正确的JSON格式",
     "fullstop" : "。",
     "notExistInSystem" : "在系统中不存在",
     "uploadedFilesCannotHaveSpaces" : "上传的文件不能带空格",

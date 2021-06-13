@@ -439,7 +439,7 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
                         });
                     }
                 });
-                progressBar.importerId = this.optins.importerId;
+                progressBar.importerId = this.options.importerId;
             }.bind(this), 500);
         }.bind(this));
     },
