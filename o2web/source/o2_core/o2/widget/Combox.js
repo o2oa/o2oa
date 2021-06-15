@@ -1,10 +1,10 @@
 o2.widget = o2.widget || {};
 o2.require("o2.widget.Common", null, false);
 o2.widget.Combox = new Class({
-	Implements: [Options, Events],
-	Extends: o2.widget.Common,
-	options: {
-		"style": "default",
+    Implements: [Options, Events],
+    Extends: o2.widget.Common,
+    options: {
+        "style": "default",
         "list": [],
         "optionsMethod": null,
         "splitStr": /,\s*|;\s*|，\s*|；\s*/g,
@@ -13,19 +13,19 @@ o2.widget.Combox = new Class({
         "noDataColor": true,
         "onlySelect": false,
         "count": 0
-	},
-	initialize: function(options){
-		this.setOptions(options);
-		this.splitRegExp = new RegExp(this.options.splitStr);
-		this.path = o2.session.path+"/widget/$Combox/";
-		this.cssPath = o2.session.path+"/widget/$Combox/"+this.options.style+"/css.wcss";
-		this._loadCss();
-		this.values = [];
-		//this.lastValue();
-		this.load();
-	},
+    },
+    initialize: function(options){
+        this.setOptions(options);
+        this.splitRegExp = new RegExp(this.options.splitStr);
+        this.path = o2.session.path+"/widget/$Combox/";
+        this.cssPath = o2.session.path+"/widget/$Combox/"+this.options.style+"/css.wcss";
+        this._loadCss();
+        this.values = [];
+        //this.lastValue();
+        this.load();
+    },
     getSelectList: function(value, callback){
-	    var list = [];
+        var list = [];
 
         if (this.options.list.length){
             if (this.options.onlySelect){
@@ -56,37 +56,37 @@ o2.widget.Combox = new Class({
         }
         //return list;
     },
-	load: function(){
-		if (this.fireEvent("queryLoad")){
-			this.node = new Element("div", {"styles": this.css.comboxNode});
-			this.copyPrototype();
+    load: function(){
+        if (this.fireEvent("queryLoad")){
+            this.node = new Element("div", {"styles": this.css.comboxNode});
+            this.copyPrototype();
 
-			this.setEvent();
+            this.setEvent();
 
-			this.fireEvent("postLoad");
-		}
-	},
+            this.fireEvent("postLoad");
+        }
+    },
     clear: function(){
-	    if (this.input) o2.release(this.input);
-	    this.input = null;
-	    this.node.empty();
+        if (this.input) o2.release(this.input);
+        this.input = null;
+        this.node.empty();
         this.values = [];
     },
     getData: function(){
-	    var node = this.node.getFirst();
-	    var data = [];
-	    while (node){
+        var node = this.node.getFirst();
+        var data = [];
+        while (node){
             var item = node.retrieve("item");
             if (item){
                 if (item.data || item.value){
                     data.push(item.data || item.value);
                 }
             }
-	        node = node.getNext();
+            node = node.getNext();
         }
         return data;
     },
-	copyPrototype: function(){
+    copyPrototype: function(){
         this.inject = this.node.inject.bind(this.node);
         this.setStyle = this.node.setStyle.bind(this.node);
         this.setStyles = this.node.setStyles.bind(this.node);
@@ -98,7 +98,7 @@ o2.widget.Combox = new Class({
         //         this[k] = this.node[k];
         //     }
         // }
-	},
+    },
     setEvent:function(){
         this.node.addEvents({
             "focus": function(e){
@@ -129,7 +129,7 @@ o2.widget.Combox = new Class({
             //     alert(range.toString());
             // }.bind(this)
         });
-	},
+    },
 
     stopEdit: function(){
         if (this.editItem){
@@ -204,7 +204,7 @@ o2.widget.Combox = new Class({
                     //     this.input.node.blur();
                     //     this.input.node.focus();
                     // }else{
-                         this.intoEdit();
+                    this.intoEdit();
                     // }
                 }.bind(this), 10);
             }.bind(this));
@@ -218,7 +218,6 @@ o2.widget.Combox = new Class({
         }
     },
     createItem: function(values, i, data, callback){
-	    ;
         if (values[i]){
             var value = values[i];
 
@@ -231,7 +230,7 @@ o2.widget.Combox = new Class({
                 }
             }
 
-            this.values.push(new o2.widget.Combox.Value(this, itemText, itemData, {
+            var v = new o2.widget.Combox.Value(this, itemText, itemData, {
                 "onLoad": function(){
                     i++;
                     if (values[i]){
@@ -240,7 +239,9 @@ o2.widget.Combox = new Class({
                         if (callback) callback();
                     }
                 }.bind(this)
-            }));
+            }, true);
+            this.values.push(v);
+            v.load();
         }
     },
     addNewValues: function(values, callback){
@@ -294,7 +295,7 @@ o2.widget.Combox = new Class({
 
 o2.widget.Combox.Value = new Class({
     Implements: [Options, Events],
-    initialize: function(combox, value, data, options){
+    initialize: function(combox, value, data, options, delayLoad){
         this.setOptions(options);
         this.combox = combox;
         this.css = this.combox.css;
@@ -302,7 +303,9 @@ o2.widget.Combox.Value = new Class({
         this.data = data || null;
         this.type = "item";
         this.index = this.combox.values.length;
-        this.load();
+        if(!delayLoad){
+            this.load();
+        }
     },
     getItemPosition: function(){
         var i=0;
@@ -326,44 +329,44 @@ o2.widget.Combox.Value = new Class({
             if (callback) callback();
         }
     },
-	load: function(){
+    load: function(){
+
+        this.node = new Element("div", {"styles": this.css.valueItemNode});
+        if (this.combox.input){
+            this.node.inject(this.combox.input.node, "before");
+        }else{
+            this.node.inject(this.combox.node);
+        }
+
+        if (this.getNextItem()){
+            this.node.set("text", this.value+this.combox.options.splitShow);
+        }else{
+            this.node.set("text", this.value);
+        }
+        var prev = this.getPreviousItem();
+        if (prev){
+            prev.node.set("text", prev.value+this.combox.options.splitShow);
+        }
+
+        this.node.store("item", this);
+        this.node.addEvents({
+            "click": function(e){this.edit();e.stopPropagation();}.bind(this),
+            "mouseover": function(e){this.node.setStyles(this.css.valueItemNode_over)}.bind(this),
+            "mouseout": function(e){this.node.setStyles(this.css.valueItemNode)}.bind(this),
+            "mousedown": function(e){e.stopPropagation();}.bind(this),
+            //"mouseup": function(e){document.all.testCombox.innerHTML +="<br>"+this.value+"mouseup"; this.edit(); e.stopPropagation();}.bind(this),
+            "focus": function(e){e.stopPropagation();}
+        });
         this.checkData(function(){
-            this.node = new Element("div", {"styles": this.css.valueItemNode});
-            if (this.combox.input){
-                this.node.inject(this.combox.input.node, "before");
-            }else{
-                this.node.inject(this.combox.node);
-            }
-
-            if (this.getNextItem()){
-                this.node.set("text", this.value+this.combox.options.splitShow);
-            }else{
-                this.node.set("text", this.value);
-            }
-            var prev = this.getPreviousItem();
-            if (prev){
-                prev.node.set("text", prev.value+this.combox.options.splitShow);
-            }
-
-            this.node.store("item", this);
-            this.node.addEvents({
-                "click": function(e){this.edit();e.stopPropagation();}.bind(this),
-                "mouseover": function(e){this.node.setStyles(this.css.valueItemNode_over)}.bind(this),
-                "mouseout": function(e){this.node.setStyles(this.css.valueItemNode)}.bind(this),
-                "mousedown": function(e){e.stopPropagation();}.bind(this),
-                //"mouseup": function(e){document.all.testCombox.innerHTML +="<br>"+this.value+"mouseup"; this.edit(); e.stopPropagation();}.bind(this),
-                "focus": function(e){e.stopPropagation();}
-            });
-
             if (this.options.noDataColor) if (!this.data) this.node.setStyle("color", "#bd0000");
             this.combox.fireEvent("commitInput", [this]);
             this.combox.fireEvent("change", [this]);
             this.fireEvent("load");
         }.bind(this));
-	},
+    },
 
     edit: function(where){
-	    //this.combox.commitInput();
+        //this.combox.commitInput();
         if (!this.input){
             this.input = new o2.widget.Combox.Input(this.combox, this, this.value);
             this.input.node.inject(this.node, "after");
@@ -439,7 +442,7 @@ o2.widget.Combox.Value = new Class({
             //     this.combox.input.node.blur();
             //     this.combox.input.node.focus();
             // }else{
-                this.combox.intoEdit(this);
+            this.combox.intoEdit(this);
             // }
         }.bind(this), 10);
     },
@@ -543,7 +546,7 @@ o2.widget.Combox.Input = new Class({
                 if (e.code===46){ //del
                     var idx = this.node.get("value").length;
                     if (this.node.selectionStart==idx && this.node.selectionEnd==idx){
-                         var item = this.bind.getNextItem();
+                        var item = this.bind.getNextItem();
                         if (item){
                             this.bind.commitInput();
                             item.edit();
@@ -562,11 +565,11 @@ o2.widget.Combox.Input = new Class({
             }.bind(this),
             "blur": function(e){
                 //if (!this.noBlur){
-                    if ((this.combox.editItem == this.bind) || (!this.combox.editItem)){
-                        this.bind.commitInput();
-                    }
-                    this.hideOptionList();
-                    e.stopPropagation();
+                if ((this.combox.editItem == this.bind) || (!this.combox.editItem)){
+                    this.bind.commitInput();
+                }
+                this.hideOptionList();
+                e.stopPropagation();
                 //}
             }.bind(this)
         });

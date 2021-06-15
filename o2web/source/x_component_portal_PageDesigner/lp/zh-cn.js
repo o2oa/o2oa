@@ -263,7 +263,8 @@ MWF.APPPD.LP = {
         "subSource": "子数据源",
         "sourceText": "数据文本",
         "widget": "部件",
-        "widgetmodules": "部件元素"
+        "widgetmodules": "部件元素",
+        "address": "地址"
     },
     "filedConfigurator": {
         "sequence": "序号",
