@@ -1,31 +1,23 @@
 package com.x.base.core.project.config;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import com.x.base.core.project.connection.ActionResponse;
-import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.tools.BaseTools;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.exception.ExceptionCollectConnectError;
 import com.x.base.core.project.exception.ExceptionCollectDisable;
-import com.x.base.core.project.exception.ExceptionCollectValidateFailure;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Collect extends ConfigObject {
 
@@ -36,7 +28,7 @@ public class Collect extends ConfigObject {
 	private static String Default_server = "collect.o2oa.net";
 	private static String Default_appPackServerHost = "apppack.o2oa.net";
 	private static Integer Default_port = 20080;
-	private static Integer Default_appPackServerPort = 8080;
+	private static Integer Default_appPackServerPort = 30088;
 	public static String ADDRESS_COLLECT_LOGIN = "/o2_collect_assemble/jaxrs/authentication/captcha/key/o2/answer/o2";
 	public static String ADDRESS_COLLECT_ECHO = "/o2_collect_assemble/jaxrs/echo";
 	public static String ADDRESS_COLLECT_VALIDATE = "/o2_collect_assemble/jaxrs/unit/validate";
