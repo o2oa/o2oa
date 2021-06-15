@@ -23,6 +23,8 @@ MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Textarea", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Select", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Radio", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Checkbox", null, false);
+MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Address", null, false);
+MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Combox", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Source", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.SourceText", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.SubSource", null, false);
