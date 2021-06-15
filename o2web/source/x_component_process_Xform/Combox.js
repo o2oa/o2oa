@@ -39,7 +39,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         this.field = true;
     },
     _loadNode: function(){
-        if (this.readonly){
+        if (this.readonly || this.json.isReadonly){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -195,6 +195,9 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
 			}.bind(this));
             this.combox.addNewValues(comboxValues);
 		}else{
+		    var contentNode = new Element("div", {
+		        "styles": { "overflow": "hidden"}
+            }).inject(this.node);
             value.each(function(v, i){
                 var text = "";
                 if (typeOf(v)==="object"){
@@ -206,7 +209,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
                 new Element("div", {"styles": {
                     "float": "left",
                     "margin-right": "5px"
-                },"text": text}).inject(this.node.getFirst() || this.node);
+                },"text": text}).inject( contentNode ); //.inject(this.node.getFirst() || this.node);
             }.bind(this));
 		}
     },
