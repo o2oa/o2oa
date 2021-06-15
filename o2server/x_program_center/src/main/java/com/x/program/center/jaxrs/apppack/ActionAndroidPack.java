@@ -1,0 +1,205 @@
+package com.x.program.center.jaxrs.apppack;
+
+import com.google.gson.reflect.TypeToken;
+import com.x.base.core.project.config.Collect;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.ConnectionAction;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DefaultCharset;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * android 打包
+ * Created by fancyLou on 6/15/21.
+ * Copyright © 2021 O2. All rights reserved.
+ */
+public class ActionAndroidPack extends BaseAction  {
+
+    private static Logger logger = LoggerFactory.getLogger(ActionAndroidPack.class);
+
+
+    ActionResult<Wo> execute(String token, String appName, String o2ServerProtocol, String o2ServerHost, String o2ServerPort,
+                             String o2ServerContext, String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+        ActionResult<Wo> result = new ActionResult<Wo>();
+        if (StringUtils.isEmpty(token)) {
+            throw new ExceptionNoToken();
+        }
+        if (StringUtils.isEmpty(appName)) {
+            throw new ExceptionEmptyProperty("appName");
+        }
+        if (StringUtils.isEmpty(o2ServerProtocol)) {
+            throw new ExceptionEmptyProperty("o2ServerProtocol");
+        }
+        if (StringUtils.isEmpty(o2ServerHost)) {
+            throw new ExceptionEmptyProperty("o2ServerHost");
+        }
+        if (StringUtils.isEmpty(o2ServerPort)) {
+            throw new ExceptionEmptyProperty("o2ServerPort");
+        }
+        if (StringUtils.isEmpty(o2ServerContext)) {
+            throw new ExceptionEmptyProperty("o2ServerContext");
+        }
+        /** 文件名编码转换 */
+        if (StringUtils.isEmpty(fileName)) {
+            try {
+                fileName = new String(disposition.getFileName().getBytes(DefaultCharset.charset_iso_8859_1),
+                        DefaultCharset.charset);
+            } catch (Exception e) {
+                logger.error(e);
+            }
+        }
+        fileName = FilenameUtils.getName(fileName);
+        if (StringUtils.isEmpty(fileName)) {
+            throw new ExceptionFileNameEmpty();
+        }
+        String s = postFormData(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, fileName, bytes);
+        Type type = new TypeToken<AppPackResult<IdValue>>() {
+        }.getType();
+        AppPackResult<IdValue> appPackResult = XGsonBuilder.instance().fromJson(s, type);
+        Wo wo = new Wo();
+        if (appPackResult.getResult().equals(AppPackResult.result_failure)) {
+            wo.setValue(false);
+            result.setMessage(appPackResult.getMessage());
+        } else {
+            wo.setValue(true);
+        }
+        result.setData(wo);
+        return result;
+    }
+
+    private String postFormData(String token, String appName, String o2ServerProtocol, String o2ServerHost, String o2ServerPort,
+                              String o2ServerContext, String fileName, byte[] bytes) throws Exception {
+        String boundary = "abcdefghijk";
+        String end = "\r\n";
+        String twoHyphens = "--";
+        String address = Config.collect().appPackServerApi(Collect.ADDRESS_APPPACK_SAVE);
+        logger.info("发起打包请求，url " + address);
+        URL url = new URL(address);
+        HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
+        httpUrlConnection.setUseCaches(false);
+        httpUrlConnection.setRequestMethod(ConnectionAction.METHOD_POST);
+        httpUrlConnection.setDoOutput(true);
+        httpUrlConnection.setDoInput(true);
+        // heads
+        Map<String, String> map = new HashMap<>();
+        map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS,
+                ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
+        map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS,
+                "x-requested-with, x-request, Content-Type, x-cipher, x-client, x-token, token");
+        map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS, ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS_VALUE);
+        map.put(ConnectionAction.CACHE_CONTROL, ConnectionAction.CACHE_CONTROL_VALUE);
+        map.put(ConnectionAction.CONTENT_TYPE, "multipart/form-data;boundary=" + boundary);
+        // 设置字符编码连接参数
+        map.put("Connection", "Keep-Alive");
+        map.put("Charset", "UTF-8");
+        map.put("token", token);
+
+        for (Map.Entry<String, String> en : map.entrySet()) {
+            if (StringUtils.isNotEmpty(en.getValue())) {
+                httpUrlConnection.setRequestProperty(en.getKey(), en.getValue());
+            }
+        }
+        // form data
+        DataOutputStream ds = new DataOutputStream(httpUrlConnection.getOutputStream());
+        // properties
+        writeFormProperties("appName", appName, boundary, end, twoHyphens, ds);
+        writeFormProperties("o2ServerProtocol", o2ServerProtocol, boundary, end, twoHyphens, ds);
+        writeFormProperties("o2ServerHost", o2ServerHost, boundary, end, twoHyphens, ds);
+        writeFormProperties("o2ServerPort", o2ServerPort, boundary, end, twoHyphens, ds);
+        writeFormProperties("o2ServerContext", o2ServerContext, boundary, end, twoHyphens, ds);
+        writeFormProperties("collectName", Config.collect().getName(), boundary, end, twoHyphens, ds);
+
+        // file
+        ds.writeBytes(twoHyphens + boundary + end);
+        ds.writeBytes("Content-Disposition: form-data; " + "name=\"file\";filename=\"" + fileName + "\"" + end);
+        ds.writeBytes(end);
+        ds.write(bytes, 0, bytes.length);
+        ds.writeBytes(end);
+        ds.writeBytes(twoHyphens + boundary+twoHyphens  + end);
+        /* close streams */
+        ds.flush();
+
+        String result = "";
+        try (InputStream input = httpUrlConnection.getInputStream()) {
+            result = IOUtils.toString(input, StandardCharsets.UTF_8);
+        }
+        int code = httpUrlConnection.getResponseCode();
+        if (code != 200) {
+            throw new Exception("connection{url:" + httpUrlConnection.getURL() + "}, response error{responseCode:" + code
+                    + "}, response:" + result + ".");
+        }
+        httpUrlConnection.disconnect();
+        try {
+            ds.close();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+
+        logger.info("打包请求返回，result : "+result);
+
+        return result;
+    }
+
+    private void writeFormProperties(String name, String value, String boundary, String end, String twoHyphens, DataOutputStream ds) throws IOException {
+        ds.writeBytes(twoHyphens + boundary  + end);
+        ds.writeBytes("Content-Disposition: form-data; name=\""+name+"\"");
+        ds.writeBytes(end);
+        ds.writeBytes("Content-Length:"+value.length());
+        ds.writeBytes(end);
+        ds.writeBytes(end);
+        ds.writeBytes(value);
+        ds.writeBytes(end);
+    }
+
+
+    public static class IdValue {
+
+        private String id;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
+
+
+    public static class Wi {
+        // app 桌面名称
+        private String appName;
+
+        // o2oa 服务器信息
+        private String o2ServerProtocol; // 中心服务器协议 http | https
+        private String o2ServerHost; // 中心服务器地址  ip 或 域名
+        private String o2ServerPort; // 中心服务器端口 端口号
+        private String o2ServerContext; //  /x_program_center
+
+        // collect 账号
+        private String collectName;
+
+
+    }
+
+    public static class Wo extends WrapBoolean {
+
+    }
+}
