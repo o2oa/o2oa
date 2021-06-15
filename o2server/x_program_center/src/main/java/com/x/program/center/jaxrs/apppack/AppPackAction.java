@@ -9,6 +9,8 @@ import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,6 +60,33 @@ public class AppPackAction extends BaseAction  {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionPackInfo().execute(token);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+    @JaxrsMethodDescribe(value = "发起 android app 打包.", action = ActionAndroidPack.class)
+    @POST
+    @Path("pack/info/android/start")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    public void androidPackStart(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                                 @JaxrsParameterDescribe("token") @FormDataParam("token") String token,
+                                 @JaxrsParameterDescribe("appName") @FormDataParam("appName") String appName,
+                                 @JaxrsParameterDescribe("o2ServerProtocol") @FormDataParam("o2ServerProtocol") String o2ServerProtocol,
+                                 @JaxrsParameterDescribe("o2ServerHost") @FormDataParam("o2ServerHost") String o2ServerHost,
+                                 @JaxrsParameterDescribe("o2ServerPort") @FormDataParam("o2ServerPort") String o2ServerPort,
+                                 @JaxrsParameterDescribe("o2ServerContext") @FormDataParam("o2ServerContext") String o2ServerContext,
+                           @JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
+                           @JaxrsParameterDescribe("附件标识") @FormDataParam(FILE_FIELD) final byte[] bytes,
+                           @JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition){
+        ActionResult<ActionAndroidPack.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionAndroidPack().execute(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, fileName, bytes, disposition);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
