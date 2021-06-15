@@ -117,6 +117,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		/** 写入systemName */
 		map.put("footer", Config.collect().getFooter());
 		map.put("title", Config.collect().getTitle());
+		map.put("version", Config.version());
 		map.put("appUrl", Config.collect().getAppUrl());
 		/***/
 		if (centerServerConfig.getSslEnable()) {
