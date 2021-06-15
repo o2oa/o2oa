@@ -48,7 +48,7 @@ public class InvokeExecutor {
 		return result;
 	}
 
-	public Object execute(JaxwsObject o) {
+	public Object[] execute(JaxwsObject o) throws Exception {
 		WebservicesClient client = new WebservicesClient();
 		return client.jaxws(o.getAddress(), o.getMethod(), o.getParameters());
 	}
