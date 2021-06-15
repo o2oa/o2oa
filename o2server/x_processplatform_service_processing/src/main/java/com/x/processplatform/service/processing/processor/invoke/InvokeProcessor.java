@@ -55,17 +55,22 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.invokeExecute(aeiObjects.getWork().getActivityToken(), invoke));
 		List<Work> results = new ArrayList<>();
+		boolean passThrough = false;
 		switch (invoke.getInvokeMode()) {
 		case jaxws:
-			this.jaxws(aeiObjects, invoke);
+			// 可以根据返回脚本判断时候流转
+			passThrough = this.jaxws(aeiObjects, invoke);
 			break;
 		case jaxrs:
-			this.jaxrs(aeiObjects, invoke);
+			// 可以根据返回脚本判断时候流转
+			passThrough = this.jaxrs(aeiObjects, invoke);
 			break;
 		default:
 			break;
 		}
-		results.add(aeiObjects.getWork());
+		if (passThrough) {
+			results.add(aeiObjects.getWork());
+		}
 		return results;
 	}
 
@@ -79,29 +84,31 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		return results;
 	}
 
-	private void jaxws(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+	private boolean jaxws(AeiObjects aeiObjects, Invoke invoke) throws Exception {
 		if (BooleanUtils.isTrue(invoke.getInternal())) {
-			this.jaxwsInternal(aeiObjects, invoke);
+			return this.jaxwsInternal(aeiObjects, invoke);
 		} else {
-			this.jaxwsExternal(aeiObjects, invoke);
+			return this.jaxwsExternal(aeiObjects, invoke);
 		}
 	}
 
-	private void jaxwsInternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
-		// nothing
+	private boolean jaxwsInternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+		return true;
 	}
 
-	private void jaxwsExternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+	private boolean jaxwsExternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
 		Object[] parameters = this.jaxwsEvalParameters(aeiObjects, invoke);
 		JaxwsObject jaxwsObject = new JaxwsObject();
 		jaxwsObject.setAddress(invoke.getJaxwsAddress());
 		jaxwsObject.setMethod(invoke.getJaxwsMethod());
 		jaxwsObject.setParameters(parameters);
+		boolean passThrough = false;
 		if (BooleanUtils.isTrue(invoke.getAsync())) {
 			ThisApplication.syncJaxwsInvokeQueue.send(jaxwsObject);
+			passThrough = true;
 		} else {
 			InvokeExecutor executor = new InvokeExecutor();
-			Object response = executor.execute(jaxwsObject);
+			Object[] response = executor.execute(jaxwsObject);
 			if ((StringUtils.isNotEmpty(invoke.getJaxwsResponseScript()))
 					|| (StringUtils.isNotEmpty(invoke.getJaxwsResponseScriptText()))) {
 				ScriptContext scriptContext = aeiObjects.scriptContext();
@@ -110,9 +117,12 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 						Business.EVENT_INVOKEJAXWSRESPONSE);
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXWSRESPONSE,
 						response);
-				cs.eval(scriptContext);
+				passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext));
+			} else {
+				passThrough = true;
 			}
 		}
+		return passThrough;
 	}
 
 	private Object[] jaxwsEvalParameters(AeiObjects aeiObjects, Invoke invoke) throws Exception {
@@ -129,15 +139,15 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		return parameters.toArray();
 	}
 
-	private void jaxrs(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+	private boolean jaxrs(AeiObjects aeiObjects, Invoke invoke) throws Exception {
 		if (BooleanUtils.isTrue(invoke.getInternal())) {
-			this.jaxrsInternal(aeiObjects, invoke);
+			return this.jaxrsInternal(aeiObjects, invoke);
 		} else {
-			this.jaxrsExternal(aeiObjects, invoke);
+			return this.jaxrsExternal(aeiObjects, invoke);
 		}
 	}
 
-	private void jaxrsInternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+	private boolean jaxrsInternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
 		ActionResponse resp = null;
 		Class<?> clz = Class.forName("com.x.base.core.project." + invoke.getInternalProject());
 		String uri = this.jaxrsUrl(aeiObjects, invoke);
@@ -170,6 +180,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				&& ((null == resp) || (!Objects.equals(Type.success, resp.getType())))) {
 			throw new RunningException("invoke url:{} not success, work:{}.", uri, aeiObjects.getWork().getId());
 		}
+		boolean passThrough = false;
 		if (!BooleanUtils.isTrue(invoke.getAsync())) {
 			WrapScriptObject jaxrsResponse = new WrapScriptObject();
 			if (null != resp) {
@@ -183,9 +194,14 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 						Business.EVENT_INVOKEJAXRSRESPONSE);
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
 						jaxrsResponse);
-				cs.eval(scriptContext);
+				passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext));
+			} else {
+				passThrough = true;
 			}
+		} else {
+			passThrough = true;
 		}
+		return passThrough;
 	}
 
 	private ActionResponse jaxrsInternalDelete(AeiObjects aeiObjects, Invoke invoke, Class<?> clz, String uri)
@@ -216,10 +232,10 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			jaxrsObject.setMethod(ConnectionAction.METHOD_GET);
 			jaxrsObject.setContentType(invoke.getJaxrsContentType());
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+			return null;
 		} else {
 			return ThisApplication.context().applications().getQuery(clz, uri);
 		}
-		return null;
 	}
 
 	private ActionResponse jaxrsInternalPut(AeiObjects aeiObjects, Invoke invoke, Class<?> clz, String uri)
@@ -235,10 +251,10 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			jaxrsObject.setMethod(ConnectionAction.METHOD_PUT);
 			jaxrsObject.setContentType(invoke.getJaxrsContentType());
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+			return null;
 		} else {
 			return ThisApplication.context().applications().putQuery(clz, uri, body);
 		}
-		return null;
 	}
 
 	private ActionResponse jaxrsInternalPost(AeiObjects aeiObjects, Invoke invoke, Class<?> clz, String uri)
@@ -254,13 +270,13 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			jaxrsObject.setMethod(ConnectionAction.METHOD_POST);
 			jaxrsObject.setContentType(invoke.getJaxrsContentType());
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+			return null;
 		} else {
 			return ThisApplication.context().applications().postQuery(clz, uri, body);
 		}
-		return null;
 	}
 
-	private void jaxrsExternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+	private boolean jaxrsExternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
 		String result = "";
 		String uri = this.jaxrsUrl(aeiObjects, invoke);
 		JaxrsObject jaxrsObject = new JaxrsObject();
@@ -293,6 +309,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		if ((!BooleanUtils.isTrue(invoke.getAsync())) && (null == result)) {
 			throw new RunningException("invoke address:{} not success, work:{}.", uri, aeiObjects.getWork().getId());
 		}
+		boolean passThrough = false;
 		if (!BooleanUtils.isTrue(invoke.getAsync())) {
 			WrapScriptObject jaxrsResponse = new WrapScriptObject();
 			jaxrsResponse.set(result);
@@ -304,9 +321,14 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 						Business.EVENT_INVOKEJAXRSRESPONSE);
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
 						jaxrsResponse);
-				cs.eval(scriptContext);
+				passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext));
+			} else {
+				passThrough = true;
 			}
+		} else {
+			passThrough = true;
 		}
+		return passThrough;
 	}
 
 	private String jaxrsExternalDelete(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
@@ -317,11 +339,11 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		jaxrsObject.setContentType(invoke.getJaxrsContentType());
 		if (BooleanUtils.isTrue(invoke.getAsync())) {
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+			return null;
 		} else {
 			InvokeExecutor executor = new InvokeExecutor();
 			return executor.execute(jaxrsObject);
 		}
-		return null;
 	}
 
 	private String jaxrsExternalGet(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
@@ -332,11 +354,11 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		jaxrsObject.setContentType(invoke.getJaxrsContentType());
 		if (BooleanUtils.isTrue(invoke.getAsync())) {
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+			return null;
 		} else {
 			InvokeExecutor executor = new InvokeExecutor();
 			return executor.execute(jaxrsObject);
 		}
-		return null;
 	}
 
 	private String jaxrsExternalPut(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
@@ -349,11 +371,11 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		jaxrsObject.setContentType(invoke.getJaxrsContentType());
 		if (BooleanUtils.isTrue(invoke.getAsync())) {
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+			return null;
 		} else {
 			InvokeExecutor executor = new InvokeExecutor();
 			return executor.execute(jaxrsObject);
 		}
-		return null;
 	}
 
 	private String jaxrsExternalPost(AeiObjects aeiObjects, Invoke invoke, String address, JaxrsObject jaxrsObject)
@@ -366,11 +388,11 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		jaxrsObject.setContentType(invoke.getJaxrsContentType());
 		if (BooleanUtils.isTrue(invoke.getAsync())) {
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
+			return null;
 		} else {
 			InvokeExecutor executor = new InvokeExecutor();
 			return executor.execute(jaxrsObject);
 		}
-		return null;
 	}
 
 	private String jaxrsUrl(AeiObjects aeiObjects, Invoke invoke) throws Exception {
