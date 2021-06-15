@@ -1,0 +1,101 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Combox",
+	"count": "0",
+	"splitShow": ", ",
+	"splitStr": ",\\s*|;\\s*|，\\s*|；\\s*",
+	"description": "",
+	"itemType": "values",
+	"itemValues": [],
+	"itemScript": {
+		"code": "",
+		"html": ""
+	},
+	"defaultValue": {
+		"code": "",
+		"html": ""
+	},
+	"compute": "create", //create, show, save
+	"section": "no",
+	"sectionBy": "person",
+	"sectionByScript": {
+		"code": "",
+		"html": ""
+	},
+	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"commitInput": {
+			"code": "",
+			"html": ""
+		},
+		"change": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"buttonStyle": {},
+	"container": ""
+}
