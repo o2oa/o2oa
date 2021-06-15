@@ -68,6 +68,24 @@ MWF.xApplication.cms.Xform.AttachmentController = new Class({
                 o2.Actions.get("x_cms_assemble_control").configAttachment(att.data.id, this.module.form.businessData.document.id, att.data);
             }.bind(this));
         }
+    },
+    sortAttachment: function (node) {
+        var nodes = node.getChildren();
+        nodes.each(function (item, idx) {
+            var att = item.retrieve("att", null);
+            if (att) {
+                att.data.orderNumber = idx;
+                o2.Actions.load("x_cms_assemble_control").FileInfoAction.changeOrderNumber(att.data.id, this.module.form.businessData.document.id, idx);
+            }
+        }.bind(this));
+        this.attachments = this.attachments.sort(function (a1, a2) {
+            if (!a2.data.orderNumber) return 1;
+            if (!a1.data.orderNumber) return -1;
+            return a1.data.orderNumber - a2.data.orderNumber;
+        }.bind(this));
+
+        this.reloadAttachments();
+        this.fireEvent("order");
     }
 });
 MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
@@ -390,6 +408,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         this.attachmentController.doUploadAttachment({ "site": (this.json.site || this.json.id) }, this.form.documentAction.action, "replaceAttachment",
             { "id": attachment.data.id, "documentid": this.form.businessData.document.id }, null, function (o) {
                 this.form.documentAction.getAttachment(attachment.data.id, this.form.businessData.document.id, function (json) {
+                    if (!json.data.control) json.data.control = {};
                     attachment.data = json.data;
                     attachment.reload();
 
