@@ -27,16 +27,16 @@ public class TestAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(TestAction.class);
 
-	@JaxrsMethodDescribe(value = "立即执行已完成工作合并任务.", action = ActionCombine.class)
+	@JaxrsMethodDescribe(value = "立即执行已完成工作合并任务.", action = ActionMerge.class)
 	@GET
-	@Path("combine")
+	@Path("merge")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void combine(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<ActionCombine.Wo> result = new ActionResult<>();
+	public void merge(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionMerge.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCombine().execute(effectivePerson);
+			result = new ActionMerge().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

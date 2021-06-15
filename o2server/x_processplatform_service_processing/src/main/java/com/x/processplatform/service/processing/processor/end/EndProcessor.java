@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,14 +14,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkCompletedProperties;
-import com.x.processplatform.core.entity.content.WorkCompletedProperties.RelatedForm;
-import com.x.processplatform.core.entity.content.WorkCompletedProperties.RelatedScript;
-import com.x.processplatform.core.entity.content.WorkCompletedProperties.StoreForm;
 import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Script;
 import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
@@ -71,9 +61,7 @@ public class EndProcessor extends AbstractEndProcessor {
 			this.mergeRecord(aeiObjects, aeiObjects.getWork(), other);
 			aeiObjects.getWorkLogs().stream()
 					.filter(p -> StringUtils.equals(p.getFromActivityToken(), aeiObjects.getWork().getActivityToken()))
-					.forEach(obj -> {
-						aeiObjects.getDeleteWorkLogs().add(obj);
-					});
+					.forEach(obj -> aeiObjects.getDeleteWorkLogs().add(obj));
 		} else {
 			WorkCompleted workCompleted = this.createWorkCompleted(aeiObjects, aeiObjects.getWork(), end);
 			workCompleted.setAllowRollback(end.getAllowRollback());
@@ -184,128 +172,6 @@ public class EndProcessor extends AbstractEndProcessor {
 		workCompleted.setActivityAlias(end.getAlias());
 		workCompleted.setActivityDescription(end.getDescription());
 		workCompleted.setActivityName(end.getName());
-		if (StringUtils.isNotEmpty(work.getForm())) {
-			Form form = (aeiObjects.business().element().get(work.getForm(), Form.class));
-			if (null != form) {
-				StoreForm storeForm = new StoreForm();
-				StoreForm mobileStoreForm = new StoreForm();
-				storeForm.setForm(new RelatedForm(form, form.getDataOrMobileData()));
-				mobileStoreForm.setForm(new RelatedForm(form, form.getMobileDataOrData()));
-				CompletableFuture<Map<String, RelatedForm>> _relatedForm = CompletableFuture.supplyAsync(() -> {
-					Map<String, RelatedForm> map = new TreeMap<>();
-					try {
-						Form _f;
-						for (String _id : form.getProperties().getRelatedFormList()) {
-							_f = aeiObjects.business().element().get(_id, Form.class);
-							if (null != _f) {
-								map.put(_id, new RelatedForm(_f, _f.getDataOrMobileData()));
-							}
-						}
-					} catch (Exception e) {
-						logger.error(e);
-					}
-					return map;
-				});
-				CompletableFuture<Map<String, RelatedScript>> _relatedScript = CompletableFuture.supplyAsync(() -> {
-					Map<String, RelatedScript> map = new TreeMap<>();
-					try {
-						for (Entry<String, String> entry : form.getProperties().getRelatedScriptMap().entrySet()) {
-							switch (entry.getValue()) {
-							case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
-								Script _pp = aeiObjects.business().element().get(entry.getKey(), Script.class);
-								if (null != _pp) {
-									map.put(entry.getKey(), new RelatedScript(_pp.getId(), _pp.getName(),
-											_pp.getAlias(), _pp.getText(), entry.getValue()));
-								}
-								break;
-							case WorkCompletedProperties.RelatedScript.TYPE_CMS:
-								com.x.cms.core.entity.element.Script _cms = aeiObjects.business().element()
-										.get(entry.getKey(), com.x.cms.core.entity.element.Script.class);
-								if (null != _cms) {
-									map.put(entry.getKey(), new RelatedScript(_cms.getId(), _cms.getName(),
-											_cms.getAlias(), _cms.getText(), entry.getValue()));
-								}
-								break;
-							case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
-								com.x.portal.core.entity.Script _portal = aeiObjects.business().element()
-										.get(entry.getKey(), com.x.portal.core.entity.Script.class);
-								if (null != _portal) {
-									map.put(entry.getKey(), new RelatedScript(_portal.getId(), _portal.getName(),
-											_portal.getAlias(), _portal.getText(), entry.getValue()));
-								}
-								break;
-							default:
-								break;
-							}
-						}
-					} catch (Exception e) {
-						logger.error(e);
-					}
-					return map;
-				});
-				CompletableFuture<Map<String, RelatedForm>> _relatedFormMobile = CompletableFuture.supplyAsync(() -> {
-					Map<String, RelatedForm> map = new TreeMap<>();
-					try {
-						Form _f;
-						for (String _id : form.getProperties().getMobileRelatedFormList()) {
-							_f = aeiObjects.business().element().get(_id, Form.class);
-							if (null != _f) {
-								map.put(_id, new RelatedForm(_f, _f.getMobileDataOrData()));
-							}
-						}
-					} catch (Exception e) {
-						logger.error(e);
-					}
-					return map;
-				});
-				CompletableFuture<Map<String, RelatedScript>> _relatedScriptMobile = CompletableFuture
-						.supplyAsync(() -> {
-							Map<String, RelatedScript> map = new TreeMap<>();
-							try {
-								for (Entry<String, String> entry : form.getProperties().getMobileRelatedScriptMap()
-										.entrySet()) {
-									switch (entry.getValue()) {
-									case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
-										Script _pp = aeiObjects.business().element().get(entry.getKey(), Script.class);
-										if (null != _pp) {
-											map.put(entry.getKey(), new RelatedScript(_pp.getId(), _pp.getName(),
-													_pp.getAlias(), _pp.getText(), entry.getValue()));
-										}
-										break;
-									case WorkCompletedProperties.RelatedScript.TYPE_CMS:
-										com.x.cms.core.entity.element.Script _cms = aeiObjects.business().element()
-												.get(entry.getKey(), com.x.cms.core.entity.element.Script.class);
-										if (null != _cms) {
-											map.put(entry.getKey(), new RelatedScript(_cms.getId(), _cms.getName(),
-													_cms.getAlias(), _cms.getText(), entry.getValue()));
-										}
-										break;
-									case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
-										com.x.portal.core.entity.Script _portal = aeiObjects.business().element()
-												.get(entry.getKey(), com.x.portal.core.entity.Script.class);
-										if (null != _portal) {
-											map.put(entry.getKey(),
-													new RelatedScript(_portal.getId(), _portal.getName(),
-															_portal.getAlias(), _portal.getText(), entry.getValue()));
-										}
-										break;
-									default:
-										break;
-									}
-								}
-							} catch (Exception e) {
-								logger.error(e);
-							}
-							return map;
-						});
-				storeForm.setRelatedFormMap(_relatedForm.get());
-				storeForm.setRelatedScriptMap(_relatedScript.get());
-				mobileStoreForm.setRelatedFormMap(_relatedFormMobile.get());
-				mobileStoreForm.setRelatedScriptMap(_relatedScriptMobile.get());
-				workCompleted.getProperties().setStoreForm(storeForm);
-				workCompleted.getProperties().setMobileStoreForm(mobileStoreForm);
-			}
-		}
 		return workCompleted;
 	}
 }
