@@ -8,7 +8,7 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.schedule.Merge;
 
-class ActionCombine extends BaseAction {
+class ActionMerge extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
