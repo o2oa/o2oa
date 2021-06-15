@@ -301,7 +301,8 @@ MWF.APPPD.LP = {
         "subSource": "SubSource",
         "sourceText": "SourceText",
         "widget": "Widget",
-        "widgetmodules": "WidgetEl"
+        "widgetmodules": "WidgetEl",
+        "address": "Address"
     },
     "filedConfigurator": {
         "sequence": "Sequence",
