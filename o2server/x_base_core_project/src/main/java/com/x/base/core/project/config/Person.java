@@ -17,7 +17,7 @@ import com.x.base.core.project.tools.StringTools;
 
 public class Person extends ConfigObject {
 
-	public static final Boolean DEFAULT_CAPTCHALOGIN = true;
+	public static final Boolean DEFAULT_CAPTCHALOGIN = false;
 	public static final Boolean DEFAULT_CODELOGIN = true;
 	public static final Boolean DEFAULT_BINDLOGIN = true;
 	public static final Boolean DEFAULT_FACELOGIN = true;
