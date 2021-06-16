@@ -253,7 +253,7 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
     load: function (callback) {
         o2.Actions.load("x_query_assemble_surface").ImportModelAction.getRecord(this.options.recordId, function (json) {
             this.data = json.data;
-            this.currentStatus = "";
+            this.currentStatus = ["导入成功","导入失败"].contains(this.data.status) ? this.data.status : "";
             this.createNode();
             this.setBaseInfor();
             if( this.data.status === "部分成功" ){
@@ -495,26 +495,44 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
         this.view.load();
     },
     exportErrorDataToExcel: function () {
-
-        o2.Actions.load("x_query_assemble_surface").ImportModelAction.recordItemListPaging( 1, 100000, {
-            "recordId": this.options.recordId,
-            "status": "导入失败"
-        }, function(json){
-            var errorData = [];
-            json.data.each(function(d){
-                var srcData = JSON.parse(d.srcData);
-                if(o2.typeOf(srcData) === "object"){
-                    srcData.o2ErrorText = d.distribution || ""; //错误信息
-                }else{
-                    srcData.push(d.distribution || "");
-                }
-                errorData.push( srcData );
-            });
-
+        var exportTo = function (errorData) {
             MWF.xDesktop.requireApp("query.Query", "Importer", null, false);
             var importer = new MWF.xApplication.query.Query.Importer(this.container, { id: this.options.importerId }, {}, this.app);
             importer.exportWithImportDataToExcel(errorData);
-        }.bind(this))
+        }.bind(this);
+        if( this.importerJSON.type==='dynamicTable' ) {
+            if (!this.viewData) {
+                this.viewData = JSON.parse(this.data.data);
+            }
+            var errorData = [];
+            this.viewData.each(function(d){
+                var srcData = o2.typeOf(d) === "string" ? JSON.parse(d) : d;
+                if(o2.typeOf(srcData) === "object"){
+                    srcData.o2ErrorText = this.data.distribution || ""; //错误信息
+                }else{
+                    srcData.push(this.data.distribution || "");
+                }
+                errorData.push( srcData );
+            }.bind(this));
+            exportTo(errorData);
+        }else{
+            o2.Actions.load("x_query_assemble_surface").ImportModelAction.recordItemListPaging( 1, 100000, {
+                "recordId": this.options.recordId,
+                "status": "导入失败"
+            }, function(json){
+                var errorData = [];
+                json.data.each(function(d){
+                    var srcData = o2.typeOf(d.srcData) === "string" ? JSON.parse(d.srcData) : d.srcData;
+                    if(o2.typeOf(srcData) === "object"){
+                        srcData.o2ErrorText = d.distribution || ""; //错误信息
+                    }else{
+                        srcData.push(d.distribution || "");
+                    }
+                    errorData.push( srcData );
+                });
+                exportTo(errorData);
+            }.bind(this))
+        }
 
     },
     switchSrcDataCount: function () {
@@ -536,15 +554,36 @@ MWF.xApplication.query.Query.ImporterRecord.DetailView = new Class({
         this.clearBody();
         if(!count)count=20;
         if(!pageNum)pageNum = 1;
-        var filter = {"recordId": this.explorer.options.recordId};
-        if( this.explorer.currentStatus )filter.status = this.explorer.currentStatus;
 
-        //filter.withTopSubject = false;
-        o2.Actions.load("x_query_assemble_surface").ImportModelAction.recordItemListPaging( pageNum, count, filter, function(json){
-            if( !json.data )json.data = [];
-            if( !json.count )json.count=0;
-            if( callback )callback(json);
-        }.bind(this))
+        if( this.explorer.importerJSON.type==='dynamicTable' && this.explorer.currentStatus === "导入失败" ){
+            if( !this.explorer.viewData ){
+                this.explorer.viewData = JSON.parse(this.explorer.data.data);
+            }
+            var data = {
+                data: [],
+                count: this.explorer.viewData.length
+            };
+            var start = count*(pageNum-1), end = count*pageNum;
+            for( var i=start; i<end && i<data.count; i++ ){
+                data.data.push({
+                    status: "导入失败",
+                    createTime: this.explorer.data.createTime,
+                    distribution: this.explorer.data.distribution || "",
+                    srcData : this.explorer.viewData[i] || []
+                });
+            }
+            if( callback )callback(data);
+        }else{
+            var filter = {"recordId": this.explorer.options.recordId};
+            if( this.explorer.currentStatus )filter.status = this.explorer.currentStatus;
+
+            //filter.withTopSubject = false;
+            o2.Actions.load("x_query_assemble_surface").ImportModelAction.recordItemListPaging( pageNum, count, filter, function(json){
+                if( !json.data )json.data = [];
+                if( !json.count )json.count=0;
+                if( callback )callback(json);
+            }.bind(this))
+        }
     },
     _removeDocument: function(documentData, all){
         // this.actions.deleteSubject(documentData.id, function(json){
@@ -617,25 +656,39 @@ MWF.xApplication.query.Query.ImporterRecord.DetailViewLine = new Class({
     },
     _postCreateDocumentNode: function( itemNode, itemData ){
         var importDataTd = itemNode.getElement("[item='importData']");
-        var srcData = JSON.parse(itemData.srcData||'{}');
+        var srcData = o2.typeOf(itemData.srcData)==="string" ? JSON.parse(itemData.srcData||'{}') : itemData.srcData;
 
         var columnList = this.explorer.importerJSON.data.columnList;
         var count = this.explorer.isShowAll ? columnList.length : 5;
+
+        var getText = function (d) {
+            var t = o2.typeOf(d);
+            var text;
+            if( t === "object" ) {
+                text = JSON.stringify(d);
+            }else if( t === "array" ){
+                text = d.join(",");
+            }else if( t === "null" ){
+                text = ""
+            }else{
+                text = d;
+            }
+            return text;
+        };
 
         if(o2.typeOf(srcData)==='object'){
             for( var i=0; i<count; i++ ){
                 var columnJson = columnList[i];
                 new Element("td", {
-                    "text": srcData[columnJson.path] || "",
-                    "styles": this.css.normalTdNode
+                    "text":  getText(srcData[columnJson.path]),
+                    "styles": this.css.normalTdCenterNode
                 }).inject(importDataTd,"before");
             }
         }else{
             for( var i=0; i<count; i++ ){
-                var d = srcData[i];
                 new Element("td", {
-                    "text": d || "",
-                    "styles": this.css.normalTdNode
+                    "text": getText(srcData[i]),
+                    "styles": this.css.normalTdCenterNode
                 }).inject(importDataTd,"before");
             }
         }
