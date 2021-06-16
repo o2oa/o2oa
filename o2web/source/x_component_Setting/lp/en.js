@@ -222,6 +222,7 @@ MWF.xApplication.Setting.LP = {
 
     "mobile_apppack_tips1": "⚠️ Currently, the online packaging function of mobile app only supports Android.",
     "mobile_apppack_tips2": "⚠️ If you need to package online, you must register and log in to [云服务配置] .",
+    "mobile_apppack_tips3": "⚠️ After submitting the information, the current packing status will be displayed. The packing process takes a long time. You can leave the current page first, wait for the packing to complete, and then download the APK file from this page.",
     "mobile_apppack_status_label": "current state",
     "mobile_apppack_form_appName": "App Name",
     "mobile_apppack_form_appName_tip": "App Desktop display name, no more than 6 words",
@@ -241,7 +242,9 @@ MWF.xApplication.Setting.LP = {
     "mobile_apppack_message_o2cloud_not_login": "Please log in to O2 cloud first!",
     "mobile_apppack_message_apppack_server_login_fail": "App package server login failed!",
     "mobile_apppack_message_check_connect_fail": "App packaging service check connection failed!",
-
+    "mobile_apppack_status_order_inline": "In line ......",
+    "mobile_apppack_status_packing": "Packing......",
+    "mobile_apppack_status_pack_end": "Package complete",
     "mobile_apppack_message_appname_not_empty": "App name cannot be empty!",
     "mobile_apppack_message_appname_len_max_6": "App name cannot exceed 6 words!",
     "mobile_apppack_message_app_logo_not_empty": "Logo image cannot be empty!",
