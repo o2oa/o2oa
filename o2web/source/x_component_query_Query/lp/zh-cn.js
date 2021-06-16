@@ -236,6 +236,9 @@ MWF.xApplication.query.Query.LP = {
     "openImportRecordDetail": "查看导入详情",
     "importStatusList": ["全部","导入成功","导入失败"],
     "errorInfor": "错误信息",
-    "reExecuteImport": "重新执行导入"
+    "reExecuteImport": "重新执行导入",
+
+    "showFiveColumn": "(显示前5列)",
+    "showAll": "(显示全部)"
 
 };
