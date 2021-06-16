@@ -1,6 +1,6 @@
 {
   "viewSetting": {
-    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable' style='table-layout:fixed;'></table>"
+    "html": "<table style='min-width:100%' border='0' cellpadding='5' cellspacing='0' styles='editTable'></table>"
   },
   "headSetting": {
     "html": "<tr styles='viewHeadNode'></tr>"
@@ -16,11 +16,10 @@
     {
       "name": "sequence",
       "head": {
-        "html": "<th styles='normalThNode' lable='sequence'></th>",
-        "width": "5%"
+        "html": "<th styles='normalThNode' lable='sequence'></th>"
       },
       "content": {
-        "html": "<td styles='normalTdCenterNode' width='5%'><div item='sequence'></div></td>",
+        "html": "<td styles='normalTdCenterNode'><div item='sequence'></div></td>",
         "items": {
           "sequence" : {
             "value": "function(){var opt=this.view.paging.options; return ( opt.countPerPage * (opt.currentPage-1) ) + this.index +1}"
@@ -59,11 +58,10 @@
     {
       "name": "status",
       "head": {
-        "html": "<th styles='normalThNode' lable='status'></th>",
-        "width": "5%"
+        "html": "<th styles='normalThNode' lable='status'></th>"
       },
       "content": {
-        "html": "<td styles='normalTdCenterNode' width='9%'><div item='status'></div></td>",
+        "html": "<td styles='normalTdCenterNode'><div item='status'></div></td>",
         "items": {
           "status" : {}
         }
@@ -72,11 +70,10 @@
     {
       "name": "createTime",
       "head": {
-        "html": "<th styles='normalThNode' lable='importTime'></th>",
-        "width": "10%"
+        "html": "<th styles='normalThNode' lable='importTime'></th>"
       },
       "content": {
-        "html": "<td styles='normalTdCenterNode' width='9%'><div item='createTime'></div></td>",
+        "html": "<td styles='normalTdCenterNode'><div item='createTime'></div></td>",
         "items": {
           "createTime" : {}
         }
@@ -85,14 +82,14 @@
     {
       "name": "importData",
       "head": {
-        "html": "<th styles='normalThNode' lable='importData'></th>",
-        "width": "75%"
+        "html": "<th styles='normalThNode' lable='importData'></th>"
       },
       "content": {
-        "html": "<td styles='normalTdNode' width='75%'><div item='importData'></div></td>",
+        "html": "<td styles='normalTdNode' item='importData'></td>",
         "items": {
           "importData" : {
-            "value": "function(d){ var data = JSON.parse(d.srcData||'[]'); return o2.typeOf(data)==='array' ? data.join('  ') : data }"
+            "value": "function(d){return ''}"
+//            "value": "function(d){ var data = JSON.parse(d.srcData||'[]'); if(o2.typeOf(data)==='array'){return data.join('  ');}else if(o2.typeOf(data)==='object'){return Object.values(data).join('  ');}else{return data;} }"
           }
         }
       }
@@ -101,11 +98,10 @@
       "name": "errorInfor",
       "condition": "function( d ){ return ['导入失败','部分成功'].contains(this.explorer.data.status) && ['','导入失败'].contains(this.explorer.currentStatus) }",
       "head": {
-        "html": "<th styles='normalThNode' lable='errorInfor'></th>",
-        "width": "15%"
+        "html": "<th styles='normalThNode' lable='errorInfor'></th>"
       },
       "content": {
-        "html": "<td styles='normalTdNode' width='15%'><div item='errorInfor'></div></td>",
+        "html": "<td styles='normalTdNode'><div item='errorInfor'></div></td>",
         "items": {
           "errorInfor" : {
             "value": "function(d){ return d.distribution || '' }"
@@ -115,13 +111,12 @@
     },
     {
 
-      "condition": "function( d ){ return ['导入成功','部分成功'].contains(this.explorer.data.status) && ['','导入成功'].contains(this.explorer.currentStatus) }",
+      "condition": "function( d ){ return ['导入成功','部分成功'].contains(this.explorer.data.status) && ['','导入成功'].contains(this.explorer.currentStatus) && this.explorer.importerJSON.type!=='dynamicTable'}",
       "head": {
-        "html": "<th styles='normalThNode' lable='action'></th>",
-        "width": "5%"
+        "html": "<th styles='normalThNode' lable='action'></th>"
       },
       "content": {
-        "html": "<td styles='normalTdCenterNode' width='10%'><span styles='documentActionNode' item='open'></span></td>",
+        "html": "<td styles='normalTdCenterNode'><span styles='documentActionNode' item='open'></span></td>",
         "items": {
           "open": {
             "title": "open",

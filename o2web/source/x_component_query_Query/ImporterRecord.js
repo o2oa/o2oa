@@ -443,7 +443,23 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
             }.bind(this), 500);
         }.bind(this));
     },
+    getImporterConfig: function(callback){
+        if(this.importerJSON){
+            if(callback)callback();
+        }else{
+            o2.Actions.load("x_query_assemble_surface").ImportModelAction.get(this.options.importerId, function(json){
+                json.data.data = JSON.parse(json.data.data);
+                this.importerJSON = json.data;
+                if(callback)callback();
+            }.bind(this))
+        }
+    },
     loadView: function(){
+        this.getImporterConfig(function () {
+            this._loadView();
+        }.bind(this))
+    },
+    _loadView: function(){
         this.view = new MWF.xApplication.query.Query.ImporterRecord.DetailView( this.viewNode, this.app, this, {
             templateUrl : this.path+this.options.style+"/detailListItem.json",
             pagingEnable : true,
@@ -487,15 +503,26 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
             var errorData = [];
             json.data.each(function(d){
                 var srcData = JSON.parse(d.srcData);
-                srcData.push( d.distribution || "" ); //错误信息
+                if(o2.typeOf(srcData) === "object"){
+                    srcData.o2ErrorText = d.distribution || ""; //错误信息
+                }else{
+                    srcData.push(d.distribution || "");
+                }
                 errorData.push( srcData );
-            })
+            });
 
             MWF.xDesktop.requireApp("query.Query", "Importer", null, false);
             var importer = new MWF.xApplication.query.Query.Importer(this.container, { id: this.options.importerId }, {}, this.app);
             importer.exportWithImportDataToExcel(errorData);
         }.bind(this))
 
+    },
+    switchSrcDataCount: function () {
+        this.isShowAll = !this.isShowAll;
+        debugger;
+        this.view.options.pagingPar.currentPage = this.view.paging.options.currentPage;
+        // this.view.gotoPage( this.view.paging.options.currentPage )
+        this.view.reload();
     }
 });
 
@@ -532,7 +559,8 @@ MWF.xApplication.query.Query.ImporterRecord.DetailView = new Class({
         if (d.docType==="cms"){
             this.openCms(d, e)
         }else if (d.docType==="process"){
-            this.openWorkAndCompleted(d, e)
+            // this.openWorkAndCompleted(d, e)
+            this.openWork(d.docId, e);
         }
     },
     openCms: function(d, e){
@@ -540,7 +568,7 @@ MWF.xApplication.query.Query.ImporterRecord.DetailView = new Class({
         layout.desktop.openApplication(e, "cms.Document", options);
     },
     openWorkAndCompleted: function(d, e){
-        MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(this.data.bundle, function(json){
+        MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(d.docId, function(json){
             var workCompletedCount = json.data.workCompletedList.length;
             var workCount = json.data.workList.length;
             var count = workCount+workCompletedCount;
@@ -669,6 +697,35 @@ MWF.xApplication.query.Query.ImporterRecord.DetailView = new Class({
     _queryCreateViewHead:function(){
     },
     _postCreateViewHead: function( headNode ){
+        // var importDataTh = headNode.getElement("[lable='importData']");
+        var columnList = this.explorer.importerJSON.data.columnList;
+        headNode.getElements("th").each(function(th){
+
+            if(th.get("lable") === 'importData'){
+                var count = this.explorer.isShowAll ? columnList.length : 5;
+                var seeAllAction = new Element("div", {
+                    "text": this.explorer.isShowAll ? "(显示前5列)": "(显示全部)",
+                    "styles": this.css.actionNode_showAll,
+                }).inject(th);
+                seeAllAction.addEvent("click", function () {
+                    this.explorer.switchSrcDataCount();
+                }.bind(this));
+
+                var newTr = new Element("tr").inject(headNode, "after");
+                for( var i=0; i<count; i++ ){
+                    var columnJson = columnList[i];
+                    new Element("th", {
+                        "text": columnJson.displayName,
+                        "styles": this.css.normalThNode
+                    }).inject(newTr);
+                }
+                th.set("colspan", count);
+            }else{
+                th.set("rowspan",2)
+            }
+        }.bind(this));
+
+
     }
 
 });
@@ -678,7 +735,30 @@ MWF.xApplication.query.Query.ImporterRecord.DetailViewLine = new Class({
     _queryCreateDocumentNode:function( itemData ){
     },
     _postCreateDocumentNode: function( itemNode, itemData ){
+        var importDataTd = itemNode.getElement("[item='importData']");
+        var srcData = JSON.parse(itemData.srcData||'{}');
 
+        var columnList = this.explorer.importerJSON.data.columnList;
+        var count = this.explorer.isShowAll ? columnList.length : 5;
+
+        if(o2.typeOf(srcData)==='object'){
+            for( var i=0; i<count; i++ ){
+                var columnJson = columnList[i];
+                new Element("td", {
+                    "text": srcData[columnJson.path] || "",
+                    "styles": this.css.normalTdNode
+                }).inject(importDataTd,"before");
+            }
+        }else{
+            for( var i=0; i<count; i++ ){
+                var d = srcData[i];
+                new Element("td", {
+                    "text": d || "",
+                    "styles": this.css.normalTdNode
+                }).inject(importDataTd,"before");
+            }
+        }
+        importDataTd.destroy()
     },
     open: function (e) {
         this.view._openDocument(this.data, e);
