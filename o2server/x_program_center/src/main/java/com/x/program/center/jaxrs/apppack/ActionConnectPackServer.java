@@ -51,7 +51,7 @@ public class ActionConnectPackServer extends BaseAction {
         }else {
             wo.setStatus(1001);
             wo.setToken(token);
-            wo.setPackUrl(Config.collect().appPackServerApi(Collect.ADDRESS_APPPACK_SAVE));
+            wo.setPackServerUrl(Config.collect().appPackServerUrl());
         }
         result.setData(wo);
         return result;
@@ -161,8 +161,8 @@ public class ActionConnectPackServer extends BaseAction {
         private int status; //   1 o2云服务未启用， 2 o2云未登录， 3 apppack服务未登录 , 1001 成功
         @FieldDescribe( "打包服务器认证token" )
         private String token; // status=1001 会生成token带到前端。
-        @FieldDescribe( "打包服务器打包地址" )
-        private String packUrl;
+        @FieldDescribe( "打包服务器地址" )
+        private String packServerUrl;
 
         public int getStatus() {
             return status;
@@ -180,12 +180,12 @@ public class ActionConnectPackServer extends BaseAction {
             this.token = token;
         }
 
-        public String getPackUrl() {
-            return packUrl;
+        public String getPackServerUrl() {
+            return packServerUrl;
         }
 
-        public void setPackUrl(String packUrl) {
-            this.packUrl = packUrl;
+        public void setPackServerUrl(String packServerUrl) {
+            this.packServerUrl = packServerUrl;
         }
     }
 
