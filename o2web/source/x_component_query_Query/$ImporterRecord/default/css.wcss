@@ -209,6 +209,13 @@
     "color": "rgb(60, 118, 183)",
     "font-size": "14px"
   },
+  "actionNode_showAll": {
+    "color": "rgb(60, 118, 183)",
+    "font-size": "14px",
+    "cursor": "pointer",
+    "margin-left": "10px",
+    "display": "inline-block"
+  },
 
   "tableStyles": {
     "border-top": "1px solid #cfd9df",

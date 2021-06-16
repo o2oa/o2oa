@@ -3,8 +3,7 @@
         "border-top": "1px solid #cfd9df",
         "border-left": "0px",
         "border-right" : "0px",
-        "border-bottom" : "0px",
-        "table-layout" : "fixed"
+        "border-bottom" : "0px"
     },
     "titleStyles": {
         "background-color": "#ffffff",
