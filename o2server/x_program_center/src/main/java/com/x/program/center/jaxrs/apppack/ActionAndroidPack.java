@@ -44,6 +44,9 @@ public class ActionAndroidPack extends BaseAction  {
         if (StringUtils.isEmpty(appName)) {
             throw new ExceptionEmptyProperty("appName");
         }
+        if (appName.length() > 6) {
+            throw new ExceptionAppNameMax6();
+        }
         if (StringUtils.isEmpty(o2ServerProtocol)) {
             throw new ExceptionEmptyProperty("o2ServerProtocol");
         }
@@ -69,6 +72,9 @@ public class ActionAndroidPack extends BaseAction  {
         if (StringUtils.isEmpty(fileName)) {
             throw new ExceptionFileNameEmpty();
         }
+        if (!fileName.toLowerCase().endsWith("png")) {
+            throw new ExceptionFileNotPng();
+        }
         String s = postFormData(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, fileName, bytes);
         Type type = new TypeToken<AppPackResult<IdValue>>() {
         }.getType();
@@ -86,6 +92,7 @@ public class ActionAndroidPack extends BaseAction  {
 
     private String postFormData(String token, String appName, String o2ServerProtocol, String o2ServerHost, String o2ServerPort,
                               String o2ServerContext, String fileName, byte[] bytes) throws Exception {
+        logger.info("发起打包请求，form : " + token + " ," + appName + " ,"+ o2ServerProtocol + " ,"+ o2ServerHost + " ,"+ o2ServerPort + " ,"+ o2ServerContext + " ,"+ fileName);
         String boundary = "abcdefghijk";
         String end = "\r\n";
         String twoHyphens = "--";
@@ -164,7 +171,7 @@ public class ActionAndroidPack extends BaseAction  {
         ds.writeBytes("Content-Length:"+value.length());
         ds.writeBytes(end);
         ds.writeBytes(end);
-        ds.writeBytes(value);
+        ds.write(value.getBytes(StandardCharsets.UTF_8));
         ds.writeBytes(end);
     }
 
