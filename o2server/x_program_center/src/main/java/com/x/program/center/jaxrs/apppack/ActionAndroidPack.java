@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -135,7 +136,7 @@ public class ActionAndroidPack extends BaseAction  {
 
         // file
         ds.writeBytes(twoHyphens + boundary + end);
-        ds.writeBytes("Content-Disposition: form-data; " + "name=\"file\";filename=\"" + fileName + "\"" + end);
+        ds.writeBytes("Content-Disposition: form-data; " + "name=\"file\";filename=\"" + URLEncoder.encode(fileName, DefaultCharset.name) + "\"" + end);
         ds.writeBytes(end);
         ds.write(bytes, 0, bytes.length);
         ds.writeBytes(end);
