@@ -485,8 +485,8 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
                 text: {
                     prePage: "",
                     nextPage: "",
-                    firstPage: "第一页",
-                    lastPage: "最后一页"
+                    firstPage: this.lp.firstPage,
+                    lastPage: this.lp.lastPage
                 },
                 onPostLoad: function () { this.setContentHeight() }.bind(this)
             }
@@ -567,127 +567,8 @@ MWF.xApplication.query.Query.ImporterRecord.DetailView = new Class({
         var options = {"documentId": d.docId};
         layout.desktop.openApplication(e, "cms.Document", options);
     },
-    openWorkAndCompleted: function(d, e){
-        MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(d.docId, function(json){
-            var workCompletedCount = json.data.workCompletedList.length;
-            var workCount = json.data.workList.length;
-            var count = workCount+workCompletedCount;
-            if (count===1){
-                if (workCompletedCount) {
-                    this.openWorkCompleted(json.data.workCompletedList[0].id, e);
-                }else{
-                    this.openWork(json.data.workList[0].id, e);
-                }
-            }else if (count>1){
-                var worksAreaNode = this.createWorksArea();
-                json.data.workCompletedList.each(function(work){
-                    this.createWorkCompletedNode(work, worksAreaNode);
-                }.bind(this));
-                json.data.workList.each(function(work){
-                    this.createWorkNode(work, worksAreaNode);
-                }.bind(this));
-                this.showWorksArea(worksAreaNode, e);
-            }else{
-
-            }
-        }.bind(this));
-    },
-    createWorkNode: function(work, worksAreaNode){
-        var worksAreaContentNode = worksAreaNode.getLast();
-        var node = new Element("div", {"styles": this.css.workAreaNode}).inject(worksAreaContentNode);
-        var actionNode = new Element("div", {"styles": this.css.workAreaActionNode, "text": this.view.lp.open}).inject(node);
-
-        actionNode.store("workId", work.id);
-        actionNode.addEvent("click", function(e){
-            this.openWork(e.target.retrieve("workId"), e);
-            this.mask.hide();
-            worksAreaNode.destroy();
-        }.bind(this));
-
-        var areaNode = new Element("div", {"styles": this.css.workAreaLeftNode}).inject(node);
-
-        var titleNode = new Element("div", {"styles": this.css.workAreaTitleNode, "text": work.title}).inject(areaNode);
-        var contentNode = new Element("div", {"styles": this.css.workAreaContentNode}).inject(areaNode);
-        new Element("div", {"styles": this.css.workAreaContentTitleNode, "text": this.view.lp.activity+": "}).inject(contentNode);
-        new Element("div", {"styles": this.css.workAreaContentTextNode, "text": work.activityName}).inject(contentNode);
-
-        var taskUsers = [];
-        MWF.Actions.get("x_processplatform_assemble_surface").listTaskByWork(work.id, function(json){
-            json.data.each(function(task){
-                taskUsers.push(MWF.name.cn(task.person));
-            }.bind(this));
-            new Element("div", {"styles": this.css.workAreaContentTitleNode, "text": this.view.lp.taskPeople+": "}).inject(contentNode);
-            new Element("div", {"styles": this.css.workAreaContentTextNode, "text": taskUsers.join(", ")}).inject(contentNode);
-        }.bind(this));
-    },
-    createWorkCompletedNode: function(work, worksAreaNode){
-        var worksAreaContentNode = worksAreaNode.getLast();
-
-        var node = new Element("div", {"styles": this.css.workAreaNode}).inject(worksAreaContentNode);
-        var actionNode = new Element("div", {"styles": this.css.workAreaActionNode, "text": this.view.lp.open}).inject(node);
-
-        actionNode.store("workId", work.id);
-        actionNode.addEvent("click", function(e){
-            this.mask.hide();
-            var id = e.target.retrieve("workId");
-            worksAreaNode.destroy();
-            this.openWorkCompleted(id, e);
-        }.bind(this));
-
-        var areaNode = new Element("div", {"styles": this.css.workAreaLeftNode}).inject(node);
-
-        var titleNode = new Element("div", {"styles": this.css.workAreaTitleNode, "text": work.title}).inject(areaNode);
-        var contentNode = new Element("div", {"styles": this.css.workAreaContentNode}).inject(areaNode);
-
-        new Element("div", {"styles": this.css.workAreaContentTitleNode, "text": this.view.lp.activity+": "}).inject(contentNode);
-        new Element("div", {"styles": this.css.workAreaContentTextNode, "text": this.view.lp.processCompleted}).inject(contentNode);
-    },
-    createWorksArea: function(){
-        var worksAreaNode = new Element("div", {"styles": this.css.worksAreaNode});
-        var worksAreaTitleNode = new Element("div", {"styles": this.css.worksAreaTitleNode}).inject(worksAreaNode);
-        var worksAreaTitleCloseNode = new Element("div", {"styles": this.css.worksAreaTitleCloseNode}).inject(worksAreaTitleNode);
-        worksAreaTitleCloseNode.addEvent("click", function(e){
-            this.mask.hide();
-            e.target.getParent().getParent().destroy();
-        }.bind(this));
-        var worksAreaContentNode = new Element("div", {"styles": this.css.worksAreaContentNode}).inject(worksAreaNode);
-
-        return worksAreaNode;
-    },
-    showWorksArea: function(node, e){
-        MWF.require("MWF.widget.Mask", null, false);
-        this.mask = new MWF.widget.Mask({"style": "desktop", "loading": false});
-        this.mask.loadNode(this.view.container);
-
-        node.inject(this.view.node);
-        this.setWorksAreaPosition(node, e.target);
-    },
-    setWorksAreaPosition: function(node, td){
-        var p = td.getPosition(this.view.container);
-        var containerS = this.view.container.getSize();
-        var containerP = this.view.container.getPosition(this.view.container.getOffsetParent());
-        var s = node.getSize();
-        var offX = p.x+s.x-containerS.x;
-        offX = (offX>0) ? offX+20 : 0;
-        var offY = p.y+s.y-containerS.y;
-        offY = (offY>0) ? offY+5 : 0;
-
-        node.position({
-            "relativeTo": td,
-            "position": "lefttop",
-            "edge": "lefttop",
-            "offset": {
-                "x": 0-offX,
-                "y": 0-offY
-            }
-        });
-    },
     openWork: function(id, e){
         var options = {"workId": id};
-        layout.desktop.openApplication(e, "process.Work", options);
-    },
-    openWorkCompleted: function(id, e){
-        var options = {"workCompletedId": id};
         layout.desktop.openApplication(e, "process.Work", options);
     },
     _queryCreateViewNode: function(){
@@ -704,7 +585,7 @@ MWF.xApplication.query.Query.ImporterRecord.DetailView = new Class({
             if(th.get("lable") === 'importData'){
                 var count = this.explorer.isShowAll ? columnList.length : 5;
                 var seeAllAction = new Element("div", {
-                    "text": this.explorer.isShowAll ? "(显示前5列)": "(显示全部)",
+                    "text": this.explorer.isShowAll ? this.lp.showFiveColumn: this.lp.showAll,
                     "styles": this.css.actionNode_showAll,
                 }).inject(th);
                 seeAllAction.addEvent("click", function () {
