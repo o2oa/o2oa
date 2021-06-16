@@ -1,21 +1,20 @@
 package com.x.message.assemble.communicate;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.message.QiyeweixinMessage;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.message.core.entity.Message;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 
@@ -32,7 +31,7 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 				String content = message.getTitle();
 				if (needTransferLink(message.getType())) {
 					String workUrl = getQywxOpenWorkUrl(message.getBody());
-					if (workUrl != null && !"".equals(workUrl)) {
+					if (StringUtils.isNotEmpty(workUrl)) {
 						content = "<a href=\"" + workUrl +"\">" + message.getTitle() + "</a>";
 					}
 				}
@@ -68,8 +67,8 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 			String o2oaUrl = Config.qiyeweixin().getWorkUrl();
 			String corpId = Config.qiyeweixin().getCorpId();
 			String agentId = Config.qiyeweixin().getAgentId();
-			if (work == null || "".equals(work) || o2oaUrl == null || "".equals(o2oaUrl) || corpId == null
-			 || "".equals(corpId) || agentId == null || "".equals(agentId)) {
+			if (StringUtils.isEmpty(work) || StringUtils.isEmpty(o2oaUrl) || StringUtils.isEmpty(corpId)
+					|| StringUtils.isEmpty(agentId)) {
 				return null;
 			}
 			String workUrl = "workmobilewithaction.html?workid=" + work;
@@ -106,39 +105,16 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 	private String getWorkIdFromBody(String messageBody) {
 		try {
 			JsonObject object =new JsonParser().parse(messageBody).getAsJsonObject();
-			return object.get("work").getAsString();
-//			if (messageType.startsWith("task_")) {
-//				JsonObject object =new JsonParser().parse(messageBody).getAsJsonObject();
-//				return object.get("work").getAsString();
-//			}else if (messageType.startsWith("taskCompleted_")) {
-//				JsonObject object =new JsonParser().parse(messageBody).getAsJsonObject();
-//				String work =  object.get("work").getAsString();
-//				String workCompleted = object.get("workCompleted").getAsString();
-//				if (workCompleted != null && !"".equals(workCompleted)) {
-//					return  workCompleted;
-//				}else {
-//					return work;
-//				}
-//			}else if (messageType.startsWith("read_")) {
-//				JsonObject object =new JsonParser().parse(messageBody).getAsJsonObject();
-//				return object.get("work").getAsString();
-//			}else if (messageType.startsWith("readCompleted_")) {
-//				JsonObject object =new JsonParser().parse(messageBody).getAsJsonObject();
-//				String work =  object.get("work").getAsString();
-//				String workCompleted = object.get("workCompleted").getAsString();
-//				if (workCompleted != null && !"".equals(workCompleted)) {
-//					return  workCompleted;
-//				}else {
-//					return work;
-//				}
-//			}else if (messageType.startsWith("review_")) {
-//				JsonObject object =new JsonParser().parse(messageBody).getAsJsonObject();
-//				return object.get("work").getAsString();
-//			}
+			if (object.get("work") != null) {
+				return object.get("work").getAsString();
+			}
+			if (object.get("workCompleted") != null) {
+				return object.get("workCompleted").getAsString();
+			}
 		} catch (Exception e) {
 			logger.error(e);
 		}
-		return "";
+		return null;
 	}
 
 	/**
@@ -150,7 +126,7 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 	private boolean needTransferLink(String messageType) {
 		try {
 			String workUrl = Config.qiyeweixin().getWorkUrl();
-			if (workUrl != null && !"".equals(workUrl) && workMessageTypeList().contains(messageType)) {
+			if (StringUtils.isNotEmpty(workUrl)) {
 				return true;
 			}
 		} catch (Exception e) {
@@ -159,31 +135,31 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 		return false;
 	}
 
-	private List<String> workMessageTypeList() {
-		List<String> list = new ArrayList<>();
-		list.add(MessageConnector.TYPE_WORK_TO_WORKCOMPLETED);
-		list.add(MessageConnector.TYPE_WORK_CREATE);
-		list.add(MessageConnector.TYPE_WORK_DELETE);
-		list.add(MessageConnector.TYPE_WORKCOMPLETED_CREATE);
-		list.add(MessageConnector.TYPE_WORKCOMPLETED_DELETE);
-		list.add(MessageConnector.TYPE_TASK_TO_TASKCOMPLETED);
-		list.add(MessageConnector.TYPE_TASK_CREATE);
-		list.add(MessageConnector.TYPE_TASK_DELETE);
-		list.add(MessageConnector.TYPE_TASK_URGE);
-		list.add(MessageConnector.TYPE_TASK_EXPIRE);
-		list.add(MessageConnector.TYPE_TASK_PRESS);
-		list.add(MessageConnector.TYPE_TASKCOMPLETED_CREATE);
-		list.add(MessageConnector.TYPE_TASKCOMPLETED_DELETE);
-		list.add(MessageConnector.TYPE_READ_TO_READCOMPLETED);
-		list.add(MessageConnector.TYPE_READ_CREATE);
-		list.add(MessageConnector.TYPE_READ_DELETE);
-		list.add(MessageConnector.TYPE_READCOMPLETED_CREATE);
-		list.add(MessageConnector.TYPE_READCOMPLETED_DELETE);
-		list.add(MessageConnector.TYPE_REVIEW_CREATE);
-		list.add(MessageConnector.TYPE_REVIEW_DELETE);
-
-		return list;
-	}
+//	private List<String> workMessageTypeList() {
+//		List<String> list = new ArrayList<>();
+//		list.add(MessageConnector.TYPE_WORK_TO_WORKCOMPLETED);
+//		list.add(MessageConnector.TYPE_WORK_CREATE);
+//		list.add(MessageConnector.TYPE_WORK_DELETE);
+//		list.add(MessageConnector.TYPE_WORKCOMPLETED_CREATE);
+//		list.add(MessageConnector.TYPE_WORKCOMPLETED_DELETE);
+//		list.add(MessageConnector.TYPE_TASK_TO_TASKCOMPLETED);
+//		list.add(MessageConnector.TYPE_TASK_CREATE);
+//		list.add(MessageConnector.TYPE_TASK_DELETE);
+//		list.add(MessageConnector.TYPE_TASK_URGE);
+//		list.add(MessageConnector.TYPE_TASK_EXPIRE);
+//		list.add(MessageConnector.TYPE_TASK_PRESS);
+//		list.add(MessageConnector.TYPE_TASKCOMPLETED_CREATE);
+//		list.add(MessageConnector.TYPE_TASKCOMPLETED_DELETE);
+//		list.add(MessageConnector.TYPE_READ_TO_READCOMPLETED);
+//		list.add(MessageConnector.TYPE_READ_CREATE);
+//		list.add(MessageConnector.TYPE_READ_DELETE);
+//		list.add(MessageConnector.TYPE_READCOMPLETED_CREATE);
+//		list.add(MessageConnector.TYPE_READCOMPLETED_DELETE);
+//		list.add(MessageConnector.TYPE_REVIEW_CREATE);
+//		list.add(MessageConnector.TYPE_REVIEW_DELETE);
+//
+//		return list;
+//	}
 
 	public static class QiyeweixinMessageResp {
 
