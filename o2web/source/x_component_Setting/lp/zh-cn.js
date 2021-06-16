@@ -220,6 +220,7 @@ MWF.xApplication.Setting.LP = {
 
     "mobile_apppack_tips1": "⚠️ 当前移动App在线打包功能只支持Android端。",
     "mobile_apppack_tips2": "⚠️ 需要在线打包，必须先到[云服务配置]中进行注册、登录。",
+    "mobile_apppack_tips3": "⚠️ 提交信息后，会显示当前打包状态，打包过程耗时较长，你可以先离开当前页面，等待打包完成后来本页面下载APK文件。",
     "mobile_apppack_status_label": "当前状态",
     "mobile_apppack_form_appName": "App名称",
     "mobile_apppack_form_appName_tip": "app桌面显示名称，字数不超过6个",
@@ -240,6 +241,9 @@ MWF.xApplication.Setting.LP = {
     "mobile_apppack_message_apppack_server_login_fail": "App打包服务器登录失败！",
     "mobile_apppack_message_check_connect_fail": "App打包服务检查连接失败！",
 
+    "mobile_apppack_status_order_inline": "排队中......",
+    "mobile_apppack_status_packing": "打包中......",
+    "mobile_apppack_status_pack_end": "打包完成",
     "mobile_apppack_message_appname_not_empty": "App名称不能为空！",
     "mobile_apppack_message_appname_len_max_6": "App名称不能超过6个字！",
     "mobile_apppack_message_app_logo_not_empty": "Logo图片不能为空！",

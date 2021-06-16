@@ -146,13 +146,19 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
     loadAppPackInfo: function () {
         this.showLoading();
         o2.Actions.load("x_program_center").AppPackAction.packInfo(this.token, function(json){
+            this.hiddenLoading();
             if (json && json.type === "success") {
-                this.hiddenLoading();
                 this.packInfo = json.data;
                 this.showPackInfoDetail();
             } else {
+                console.log("查询打包信息失败。。。")
                 this.loadConfigProxy();
             }
+        }.bind(this), function(err){
+            console.log("错误拉，没有找到打包信息！");
+            console.log(err);
+            this.hiddenLoading();
+            this.loadConfigProxy();
         }.bind(this));
     },
     showLoading: function() {
@@ -200,7 +206,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.apppackLogoShowImgNode.set("src", this.packServerUrl + this.packInfo.appLogoPath + "?token=" + this.token);
             var status = ""
             if (this.packInfo.packStatus === "0") {
-                status = "排队中..."
+                status = this.lp.mobile_apppack_status_order_inline
                 this.apppackStatusRefreshNode.setStyles({
                     "display": ""
                 });
@@ -213,7 +219,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
                     "display": "none"
                 });
             } else if (this.packInfo.packStatus === "1") {
-                status = "打包中..."
+                status =  this.lp.mobile_apppack_status_packing
                 this.apppackStatusRefreshNode.setStyles({
                     "display": ""
                 });
@@ -226,7 +232,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
                     "display": "none"
                 });
             } else if (this.packInfo.packStatus === "2") {
-                status = "打包完成"
+                status = this.lp.mobile_apppack_status_pack_end
                 this.apppackStatusRefreshNode.setStyles({
                     "display": "none"
                 });
@@ -302,7 +308,6 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
     },
     // 提交打包
     submitPack: function () {
-        console.log("开始提交。。。。");
         var appName = this.apppackAppNameInputNode.get("value");
         console.log(appName);
         if (!appName || appName === "") {
