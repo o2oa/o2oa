@@ -274,7 +274,7 @@ public class QueueImportData extends AbstractQueue<String> {
 							item.setDocId(workLogList.get(0).getWork());
 							item.setStatus(ImportRecordItem.STATUS_SUCCESS);
 						}else{
-							WoId woId = ThisApplication.context().applications().putQuery(x_processplatform_assemble_surface.class,
+							WoId woId = ThisApplication.context().applications().postQuery(x_processplatform_assemble_surface.class,
 									Applications.joinQueryUri("workcompleted", "process", processId), document).getData(WoId.class);
 							item.setDocId(woId.getId());
 							item.setStatus(ImportRecordItem.STATUS_SUCCESS);
@@ -327,7 +327,7 @@ public class QueueImportData extends AbstractQueue<String> {
 						item.setDocId(workLogList.get(0).getWork());
 						item.setStatus(ImportRecordItem.STATUS_SUCCESS);
 					}else{
-						WoId woId = ThisApplication.context().applications().putQuery(x_processplatform_assemble_surface.class,
+						WoId woId = ThisApplication.context().applications().postQuery(x_processplatform_assemble_surface.class,
 								Applications.joinQueryUri("workcompleted", "process", processId), document).getData(WoId.class);
 						item.setDocId(woId.getId());
 						item.setStatus(ImportRecordItem.STATUS_SUCCESS);
