@@ -38,6 +38,7 @@ MWF.xApplication.Setting.LP = {
     "base_footer": "System Subtitle",
     "base_footer_infor": "Your system subtitle, it will be displayed at the bottom of your login page",
     "base_footer_action": "Edit System Subtitle",
+    "base_version": "Current System Version",
 
 
     "base_personSetting": "Configure the basic information of the personnel account of the system",
