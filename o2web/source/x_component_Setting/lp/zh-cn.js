@@ -37,6 +37,7 @@ MWF.xApplication.Setting.LP = {
     "base_footer": "系统副标题",
     "base_footer_infor": "您的系统副标题，它将会显示在您的登录页面下方",
     "base_footer_action": "编辑您的系统副标题",
+    "base_version": "系统当前版本",
 
 
     "base_personSetting": "配置系统的人员账户基本信息",
