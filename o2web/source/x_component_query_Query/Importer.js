@@ -350,7 +350,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         }
     },
     stringToArray: function(string){
-        return string.replace(/&#10;/g,",").split(/\s*,\s*/g ).filter(function(s){
+        return string.replace(/[\n\r]/g,",").replace(/&#10;/g,",").split(/\s*,\s*/g ).filter(function(s){
             return !!s;
         });
     },
@@ -477,13 +477,23 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             resultArr.push( titleArr );
 
             if( importData ){
-                importData.each( function (lineData, lineIndex) {
-                    var array = [];
-                    lineData.each(function(d, i){
-                        array.push( ( d || '' ).replace(/&#10;/g, "\n") );
+
+                    importData.each( function (lineData, lineIndex) {
+                        var array = [];
+                        if( o2.typeOf(lineData)==="array" ) {
+                            lineData.each(function (d, i) {
+                                array.push((d || '').replace(/&#10;/g, "\n"));
+                            });
+                        }else if(o2.typeOf(lineData)==="object"){
+                            this.json.data.columnList.each( function (columnJson, i) {
+                                array.push( lineData[columnJson.path] || "" )
+                            }.bind(this));
+                            if( lineData["o2ErrorText"] ){
+                                array.push( lineData["o2ErrorText"] );
+                            }
+                        }
+                        resultArr.push( array );
                     });
-                    resultArr.push( array );
-                });
             }else{
                 this.rowList.each( function( row, lineIndex ){
                     var lineData = row.importedData;
@@ -1106,7 +1116,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         return data;
     },
     stringToArray: function(string){
-        return string.replace(/&#10;/g,",").split(/\s*,\s*/g ).filter(function(s){
+        return string.replace(/[\n\r]/g,",").replace(/&#10;/g,",").split(/\s*,\s*/g ).filter(function(s){
             return !!s;
         });
     },
@@ -1185,15 +1195,22 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         }).clean()
     },
 
+    getSrcData: function(){
+        var srcData = {};
+        this.importer.json.data.columnList.each( function (columnJson, i) {
+            if(columnJson.path)srcData[ columnJson.path ] = this.importedData[i] || "";
+        }.bind(this));
+        return srcData;
+    },
     getResult: function(){
         if( this.importer.json.type === "cms" ){
-            this.document.srcData = this.importedData;
+            this.document.srcData = this.getSrcData(); //this.importedData;
             return this.document;
         }else if( this.importer.json.type === "process" ){
-            this.work.srcData = this.importedData;
+            this.work.srcData = this.getSrcData(); //this.importedData;
             return this.work;
         }else if( this.importer.json.type === "dynamicTable" ){
-            this.data.srcData = this.importedData;
+            this.data.srcData = this.getSrcData(); //this.importedData;
             return this.data;
         }
     }
