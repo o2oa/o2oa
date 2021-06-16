@@ -2,7 +2,7 @@
   overflow: hidden;padding-bottom: 80px;padding-top: 20px;padding-left: 20px;
 }
 .pack-error-msg {
-  color: #fb4747; font-size:16px; display: none;
+  color: #fb4747; font-size:16px;
 }
 .pack-form-group {
   margin-top: 30px;

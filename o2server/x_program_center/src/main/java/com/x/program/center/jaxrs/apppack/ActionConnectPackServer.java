@@ -38,23 +38,31 @@ public class ActionConnectPackServer extends BaseAction {
         Wo wo = new Wo();
         if (BooleanUtils.isNotTrue(connect())) {
             wo.setStatus(1); // o2云未连接
+            result.setData(wo);
+            return result;
         }
         if (BooleanUtils.isFalse(Config.collect().getEnable())) {
             wo.setStatus(1); // o2云未启用
+            result.setData(wo);
+            return result;
         }
         if (BooleanUtils.isNotTrue(validate(Config.collect().getName(), Config.collect().getPassword()))) {
             wo.setStatus(2); // o2云未登录
+            result.setData(wo);
+            return result;
         }
         String token = login2AppPackServer(Config.collect().getName(), Config.collect().getPassword());
         if (StringUtils.isEmpty(token)) {
             wo.setStatus(3); // 未认证
+            result.setData(wo);
+            return result;
         }else {
             wo.setStatus(1001);
             wo.setToken(token);
             wo.setPackServerUrl(Config.collect().appPackServerUrl());
+            result.setData(wo);
+            return result;
         }
-        result.setData(wo);
-        return result;
     }
 
 
