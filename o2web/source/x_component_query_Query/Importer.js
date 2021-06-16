@@ -493,7 +493,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                             }
                         }
                         resultArr.push( array );
-                    });
+                    }.bind(this));
             }else{
                 this.rowList.each( function( row, lineIndex ){
                     var lineData = row.importedData;

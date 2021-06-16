@@ -116,7 +116,7 @@
         "html": "<th styles='normalThNode' lable='action'></th>"
       },
       "content": {
-        "html": "<td styles='normalTdCenterNode'><span styles='documentActionNode' item='open'></span></td>",
+        "html": "<td styles='normalTdCenterNode'><div styles='documentActionNode' item='open'></div></td>",
         "items": {
           "open": {
             "title": "open",
