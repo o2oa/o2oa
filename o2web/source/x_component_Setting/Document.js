@@ -26,6 +26,9 @@ MWF.xApplication.Setting.Document = new Class({
             "data": {"key": "collectData", "valueKey": "footer", "notEmpty": false},
             "value": this.explorer.collectData.footer
         });
+        this.baseVersionNode = new Element("div",{"styles": this.css.explorerContentItemTitleNode, "text": this.lp.base_version}).inject(this.node);
+        new Element("div", {"styles": this.css.explorerContentInputInforNode, "text": "V" + layout.config.version}).inject(this.node);
+
     },
     "destroy": function(){
         this.node.destroy();
