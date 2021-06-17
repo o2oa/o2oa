@@ -618,6 +618,10 @@ MWF.xApplication.cms.Index.Column = new Class({
 	openCategoryList : function( e ){
 		this.categoryArrow = "down";
 		this.categoryArrowNode.setStyles(this.app.css.categoryArrowNode_down_over );
+		this.categoryContainer.setStyles({
+			"overflow": "visible",
+			"position": "relative"
+		});
 		this.categoryList.setStyles(this.app.css.categoryList_all);
 		window.closeCategoryList = this.closeCategoryList.bind(this);
 		this.app.content.addEvent("click", window.closeCategoryList );
@@ -626,6 +630,10 @@ MWF.xApplication.cms.Index.Column = new Class({
 	closeCategoryList : function( e ){
 		this.categoryArrow = "up";
 		this.categoryArrowNode.setStyles(this.app.css.categoryArrowNode );
+		this.categoryContainer.setStyles({
+			"overflow": "hidden",
+			"position": "static"
+		});
 		this.categoryList.setStyles(this.app.css.categoryList);
 		this.app.content.removeEvent("click" , window.closeCategoryList );
 		e.stopPropagation();
@@ -698,7 +706,13 @@ MWF.xApplication.cms.Index.Column = new Class({
 					var options = {
 						"documentId": documentId,
 						"appId": appId,
-						"readonly": true
+						"readonly": true,
+						"postDelete": function () {
+							try{
+								this.loadList();
+							} catch (e) {
+							}
+						}.bind(_self)
 					};
 					_self.app.desktop.openApplication(null, "cms.Document", options);
 				}
