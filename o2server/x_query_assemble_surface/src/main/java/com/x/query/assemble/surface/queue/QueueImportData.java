@@ -220,15 +220,28 @@ public class QueueImportData extends AbstractQueue<String> {
 			@SuppressWarnings("unchecked")
 			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
 			List<Object> os = new ArrayList<>();
-			if (jsonElement.isJsonArray()) {
-				jsonElement.getAsJsonArray().forEach(o -> os.add(gson.fromJson(o, cls)));
-			} else if (jsonElement.isJsonObject()) {
-				os.add(gson.fromJson(jsonElement, cls));
-			}
+			List<ImportRecordItem> itemList = new ArrayList<>();
+			jsonElement.getAsJsonArray().forEach(o -> {
+				JpaObject jpaObject = gson.fromJson(o, cls);
+				os.add(jpaObject);
+				ImportRecordItem item = new ImportRecordItem();
+				item.setRecordId(record.getId());
+				item.setModelId(record.getModelId());
+				item.setQuery(record.getQuery());
+				item.setSrcData(o.toString());
+				item.setData(o.toString());
+				item.setStatus(ImportRecordItem.STATUS_SUCCESS);
+				item.setDocId(jpaObject.getId());
+				itemList.add(item);
+			});
 			emc.beginTransaction(ImportRecord.class);
 			emc.beginTransaction(cls);
+			emc.beginTransaction(ImportRecordItem.class);
 			for (Object o : os) {
 				emc.persist((JpaObject) o, CheckPersistType.all);
+			}
+			for (ImportRecordItem item : itemList) {
+				emc.persist(item, CheckPersistType.all);
 			}
 			ir.setStatus(ImportRecord.STATUS_SUCCESS);
 			emc.commit();
@@ -261,7 +274,7 @@ public class QueueImportData extends AbstractQueue<String> {
 							item.setDocId(workLogList.get(0).getWork());
 							item.setStatus(ImportRecordItem.STATUS_SUCCESS);
 						}else{
-							WoId woId = ThisApplication.context().applications().putQuery(x_processplatform_assemble_surface.class,
+							WoId woId = ThisApplication.context().applications().postQuery(x_processplatform_assemble_surface.class,
 									Applications.joinQueryUri("workcompleted", "process", processId), document).getData(WoId.class);
 							item.setDocId(woId.getId());
 							item.setStatus(ImportRecordItem.STATUS_SUCCESS);
@@ -314,7 +327,7 @@ public class QueueImportData extends AbstractQueue<String> {
 						item.setDocId(workLogList.get(0).getWork());
 						item.setStatus(ImportRecordItem.STATUS_SUCCESS);
 					}else{
-						WoId woId = ThisApplication.context().applications().putQuery(x_processplatform_assemble_surface.class,
+						WoId woId = ThisApplication.context().applications().postQuery(x_processplatform_assemble_surface.class,
 								Applications.joinQueryUri("workcompleted", "process", processId), document).getData(WoId.class);
 						item.setDocId(woId.getId());
 						item.setStatus(ImportRecordItem.STATUS_SUCCESS);
@@ -333,6 +346,7 @@ public class QueueImportData extends AbstractQueue<String> {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ImportRecord ir = emc.find(record.getId(), ImportRecord.class);
+			emc.beginTransaction(ImportRecord.class);
 			String status = ImportRecord.STATUS_SUCCESS;
 			if(failCount > 0){
 				if(count > failCount){
