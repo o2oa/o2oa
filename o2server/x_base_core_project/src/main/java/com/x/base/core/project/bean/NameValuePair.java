@@ -4,6 +4,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class NameValuePair extends GsonPropertyObject {
 
+	private static final long serialVersionUID = 8114520626624332962L;
+
 	public NameValuePair() {
 
 	}
