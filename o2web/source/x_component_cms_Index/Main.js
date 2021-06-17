@@ -698,7 +698,13 @@ MWF.xApplication.cms.Index.Column = new Class({
 					var options = {
 						"documentId": documentId,
 						"appId": appId,
-						"readonly": true
+						"readonly": true,
+						"postDelete": function () {
+							try{
+								this.loadList();
+							} catch (e) {
+							}
+						}.bind(_self)
 					};
 					_self.app.desktop.openApplication(null, "cms.Document", options);
 				}
