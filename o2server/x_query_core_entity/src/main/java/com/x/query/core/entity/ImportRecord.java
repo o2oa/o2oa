@@ -60,6 +60,12 @@ public class ImportRecord extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false, simplyString = false)
 	private String name;
 
+	public static final String creatorPerson_FIELDNAME = "creatorPerson";
+	@FieldDescribe("创建者")
+	@CheckPersist(allowEmpty = true)
+	@Column(length = length_255B, name = ColumnNamePrefix + creatorPerson_FIELDNAME)
+	private String creatorPerson;
+
 	public static final String modelId_FIELDNAME = "modelId";
 	@FieldDescribe("所属导入模型.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + modelId_FIELDNAME)
@@ -170,5 +176,13 @@ public class ImportRecord extends SliceJpaObject {
 
 	public void setFailCount(Integer failCount) {
 		this.failCount = failCount;
+	}
+
+	public String getCreatorPerson() {
+		return creatorPerson;
+	}
+
+	public void setCreatorPerson(String creatorPerson) {
+		this.creatorPerson = creatorPerson;
 	}
 }
