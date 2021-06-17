@@ -7,6 +7,7 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
     options: {
+        "queryId": "",
         "importerId": "",
         "style": "default",
         "resizeNode": true,
@@ -23,7 +24,12 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
         this.app = app;
         this.lp = MWF.xApplication.query.Query.LP;
     },
-    load: function () {
+    load: function(){
+        this.checkManager( function(){
+            this._load();
+        }.bind(this))
+    },
+    _load: function () {
         debugger;
         this.container.empty();
 
@@ -122,14 +128,15 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
                 text: {
                     prePage: "",
                     nextPage: "",
-                    firstPage: "第一页",
-                    lastPage: "最后一页"
+                    firstPage: this.lp.firstPage,
+                    lastPage: this.lp.lastPage
                 },
                 onPostLoad: function () {
                     _self.setContentHeight();
                 }
             }
         } );
+        this.view.lp = this.lp;
         this.view.load();
     },
     reloadView : function() {
@@ -163,6 +170,34 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
             }, {}, this.app);
             importer.downloadTemplate();
         }.bind(this));
+    },
+    checkManager : function( callback ){
+        if( typeOf(this.isManager) === "boolean" ){
+            if(callback)callback();
+            return;
+        }
+        if( MWF.AC.isQueryManager() ){
+            this.isManager = true;
+            if(callback)callback();
+            return true;
+        }
+        if(this.options.queryId){
+            o2.Actions.load("x_query_assemble_surface").QueryAction.get( this.options.queryId, function (json) {
+                this.isManager = ( json.data.controllerList || [] ).contains( layout.desktop.session.user.distinguishedName );
+                if(callback)callback();
+            }.bind(this))
+        }else if( this.options.importerId ){
+            o2.Actions.load("x_query_assemble_surface").ImportModelAction.get(this.options.importerId, function(json){
+                this.options.queryId = json.data.query;
+                o2.Actions.load("x_query_assemble_surface").QueryAction.get( this.options.queryId, function (json1) {
+                    this.isManager = ( json1.data.controllerList || [] ).contains( layout.desktop.session.user.distinguishedName );
+                    if(callback)callback();
+                }.bind(this))
+            }.bind(this))
+        }else{
+            this.isManager = false;
+            if(callback)callback();
+        }
     }
 });
 
@@ -185,10 +220,10 @@ MWF.xApplication.query.Query.ImporterRecord.View = new Class({
         }.bind(this))
     },
     _removeDocument: function(documentData, all){
-        // this.actions.deleteSubject(documentData.id, function(json){
-        //         //     this.reload();
-        //         //     this.app.notice(this.explorer.lp.deleteDocumentOK, "success");
-        //         // }.bind(this));
+        o2.Actions.load("x_query_assemble_surface").ImportModelAction.deleteRecord(documentData.id, function(json){
+            this.reload();
+            this.app.notice(this.explorer.lp.deleteDocumentOK, "success");
+        }.bind(this));
     },
     _create: function(){
 
@@ -398,24 +433,30 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
         htmlArray.push( "<th style='"+titleStyle+" width:100px;'> "+ this.lp.importerName +"</th>" );
         htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.name +"</td>" );
 
-        htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.status +"</th>" );
-        htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.status +"</td>" );
+        htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.importTime +"</th>" );
+        htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.createTime +"</td>" );
 
         htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.importCount +"</th>" );
         htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.count +"</td>" );
+
+        htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.importPerson +"</th>" );
+        htmlArray.push( "<td style='"+contentStyle+"'> "+ (this.data.creatorPerson||"").split('@')[0] +"</td>" );
 
         htmlArray.push( "</tr>" );
 
         htmlArray.push( "<tr>" );
 
-        htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.importTime +"</th>" );
-        htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.createTime +"</td>" );
+        htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.status +"</th>" );
+        htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.status +"</td>" );
 
         htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.updateTime +"</th>" );
         htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.updateTime +"</td>" );
 
         htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.failCount +"</th>" );
         htmlArray.push( "<td style='"+contentStyle+"'> "+ (o2.typeOf(this.data.failCount)==="null"?"":this.data.failCount) +"</td>" );
+
+        htmlArray.push( "<th style='"+titleStyle+"'> </th>" );
+        htmlArray.push( "<td style='"+contentStyle+"'> </td>" );
 
         htmlArray.push( "</tr>" );
 
@@ -491,6 +532,7 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
                 onPostLoad: function () { this.setContentHeight() }.bind(this)
             }
         } );
+        this.view.lp = this.lp;
         this.view.pagingContainerBottom = new Element("div", {"styles":{"float":"left"}}).inject(this.dlg.button);
         this.view.load();
     },
@@ -590,6 +632,8 @@ MWF.xApplication.query.Query.ImporterRecord.DetailView = new Class({
         //         //     this.reload();
         //         //     this.app.notice(this.explorer.lp.deleteDocumentOK, "success");
         //         // }.bind(this));
+
+
     },
     _create: function(){
 
