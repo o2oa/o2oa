@@ -151,6 +151,7 @@ MWF.xApplication.query.QueryManager.LP = {
         "statConfig":"统计配置",
         "tableConfig":"数据表",
         "statementConfig":"查询配置",
+        "importerConfig": "导入模型",
         "queryProperty":"数据应用属性"
     }
 };
