@@ -66,10 +66,25 @@
       }
     },
     {
+      "name": "creatorPerson",
+      "head": {
+        "html": "<th styles='normalThNode' lable='importPerson'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='9%'><div item='creatorPerson'></div></td>",
+        "items": {
+          "creatorPerson" : {
+            "value": "function(d){ return (d.creatorPerson||'').split('@')[0] }"
+          }
+        }
+      }
+    },
+    {
       "name": "createTime",
       "head": {
         "html": "<th styles='normalThNode' lable='importTime'></th>",
-        "width": "19%"
+        "width": "14%"
       },
       "content": {
         "html": "<td styles='normalTdCenterNode' width='9%'><div item='createTime'></div></td>",
@@ -82,7 +97,7 @@
       "name": "updateTime",
       "head": {
         "html": "<th styles='normalThNode' lable='updateTime'></th>",
-        "width": "19%"
+        "width": "14%"
       },
       "content": {
         "html": "<td styles='normalTdCenterNode' width='9%'><div item='updateTime'></div></td>",
@@ -90,27 +105,27 @@
           "updateTime" : {}
         }
       }
+    },
+    {
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "5%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='10%'>" +
+        " <span styles='documentActionNode' item='remove'></span>" +
+        "</td>",
+        "items": {
+          "remove": {
+            "title": "remove",
+            "action": "remove",
+            "condition": "function( d ){ return this.explorer.isManager || (d.creatorPerson === layout.desktop.session.user.distinguishedName) }",
+            "styles": "actionDeleteNode",
+            "mouseoverStyles": "actionDeleteNode_over",
+            "mousedownStyles": "actionDeleteNode_down"
+          }
+        }
+      }
     }
-//    {
-//      "head": {
-//        "html": "<th styles='normalThNode' lable='action'></th>",
-//        "width": "10%"
-//      },
-//      "content": {
-//        "html": "<td styles='normalTdCenterNode' width='10%'>" +
-//        " <span styles='documentActionNode' item='remove'></span>" +
-//        "</td>",
-//        "items": {
-//          "remove": {
-//            "title": "remove",
-//            "action": "remove",
-//            "condition": "function( d ){ return this.app.isAdmin || (d.creatorName == this.app.userName) }",
-//            "styles": "actionDeleteNode",
-//            "mouseoverStyles": "actionDeleteNode_over",
-//            "mousedownStyles": "actionDeleteNode_down"
-//          }
-//        }
-//      }
-//    }
   ]
 }
