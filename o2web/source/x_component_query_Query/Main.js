@@ -21,6 +21,8 @@ MWF.xApplication.query.Query.Main = new Class({
             this.options.id = this.status.id;
             this.options.viewId = this.status.viewId;
             this.options.statId = this.status.statId;
+            this.options.statementId = this.status.statementId;
+            this.options.importerId = this.status.importerId;
         }
 	},
     loadApplication: function(callback){
@@ -82,6 +84,9 @@ MWF.xApplication.query.Query.Main = new Class({
 
         this.naviStatementTitleNode = new Element("div", {"styles": this.css.naviStatementTitleNode, "text": this.lp.statement}).inject(this.naviContentNode);
         this.naviStatementContentNode = new Element("div", {"styles": this.css.naviStatementContentNode}).inject(this.naviContentNode);
+
+        this.naviImporterTitleNode = new Element("div", {"styles": this.css.naviImporterTitleNode, "text": this.lp.importer}).inject(this.naviContentNode);
+        this.naviImporterContentNode = new Element("div", {"styles": this.css.naviImporterContentNode}).inject(this.naviContentNode);
 
         this.setContentHeightFun = this.setContentHeight.bind(this);
         this.addEvent("resize", this.setContentHeightFun);
@@ -146,6 +151,20 @@ MWF.xApplication.query.Query.Main = new Class({
                 }.bind(this));
             }
         }.bind(this));
+
+        MWF.Actions.load("x_query_assemble_surface").ImportModelAction.listWithQuery(this.options.id, function(json){
+            //this.action.listStat(this.options.id, function(json){
+            if (json.data){
+                json.data.each(function(importer){
+                    debugger;
+                    var item = this.createImporterNaviItem(importer);
+                    if( importer.id === this.options.importerId ){
+                        item.selected()
+                    }
+                }.bind(this));
+            }
+        }.bind(this));
+
     },
     createViewNaviItem: function(view){
         var item = new MWF.xApplication.query.Query.ViewItem(view, this);
@@ -157,6 +176,10 @@ MWF.xApplication.query.Query.Main = new Class({
     },
     createStatementNaviItem: function(statement){
         var item = new MWF.xApplication.query.Query.StatementItem(statement, this);
+        return item;
+    },
+    createImporterNaviItem: function(importer){
+        var item = new MWF.xApplication.query.Query.ImporterItem(importer, this);
         return item;
     },
 
@@ -258,6 +281,26 @@ MWF.xApplication.query.Query.StatementItem = new Class({
                 "statementName": this.view.name,
                 "statementId" : this.view.id
             },{}, this.app);
+        }.bind(this));
+    }
+});
+
+
+MWF.xApplication.query.Query.ImporterItem = new Class({
+    Extends: MWF.xApplication.query.Query.ViewItem,
+    getContentNode: function(){
+        return this.app.naviImporterContentNode;
+    },
+    loadView: function(){
+        MWF.xDesktop.requireApp("query.Query", "ImporterRecord", function(){
+            debugger;
+            this.viewContent.empty();
+            this.viewer = new MWF.xApplication.query.Query.ImporterRecord( this.viewContent, this.app, {
+                "application": this.view.query,
+                "importerName": this.view.name,
+                "importerId" : this.view.id
+            });
+            this.viewer.load()
         }.bind(this));
     }
 });
