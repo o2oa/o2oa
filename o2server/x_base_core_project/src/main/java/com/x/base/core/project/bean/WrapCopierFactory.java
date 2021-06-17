@@ -58,13 +58,13 @@ public class WrapCopierFactory {
 			List<String> copyFieldNames = new ArrayList<>();
 			ListTools.includesExcludes(ListUtils.intersection(origFieldNames, destFieldNames), includes, excludes)
 					.stream().forEach(name -> {
-						if (copyable(origClass, destClass, name)) {
+						if (accessible(origClass, destClass, name)) {
 							copyFieldNames.add(name);
 						}
 					});
 			List<String> eraseFieldNames = new ArrayList<>();
 			ListUtils.subtract(destFieldNames, copyFieldNames).stream().forEach(name -> {
-				if (erasable(destClass, name)) {
+				if (accessible(origClass, destClass, name)) {
 					eraseFieldNames.add(name);
 				}
 			});
@@ -76,7 +76,8 @@ public class WrapCopierFactory {
 		}
 	}
 
-	private static <T, W> boolean copyable(Class<T> origClass, Class<W> destClass, String name) {
+	// 需要erase的属性也必须在orig中有,否则新增加的属性将直接被擦除
+	private static <T, W> boolean accessible(Class<T> origClass, Class<W> destClass, String name) {
 		try {
 			Field origField = FieldUtils.getField(origClass, name, true);
 			Field destField = FieldUtils.getField(destClass, name, true);
@@ -84,19 +85,6 @@ public class WrapCopierFactory {
 					&& (null != MethodUtils.getAccessibleMethod(origClass, getGetterName(origField)))
 					&& (null != MethodUtils.getAccessibleMethod(destClass, getSetterName(destField),
 							destField.getType()))) {
-				return true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	private static <W> boolean erasable(Class<W> destClass, String name) {
-		try {
-			Field destField = FieldUtils.getField(destClass, name, true);
-			if ((null != destField) && (null != MethodUtils.getAccessibleMethod(destClass, getSetterName(destField),
-					destField.getType()))) {
 				return true;
 			}
 		} catch (Exception e) {
@@ -118,7 +106,7 @@ public class WrapCopierFactory {
 			List<String> copyFieldNames = new ArrayList<>();
 			ListTools.includesExcludes(ListUtils.intersection(origFieldNames, destFieldNames), includes, excludes)
 					.stream().forEach(name -> {
-						if (copyable(origClass, destClass, name)) {
+						if (accessible(origClass, destClass, name)) {
 							copyFieldNames.add(name);
 						}
 					});
