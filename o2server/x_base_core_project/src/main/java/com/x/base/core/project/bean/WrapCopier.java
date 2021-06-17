@@ -90,11 +90,12 @@ public class WrapCopier<T, W> {
 		});
 	}
 
-	public W copy(T orig) throws InstantiationException, IllegalAccessException {
+	public W copy(T orig) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException {
 		if (null == orig) {
 			return null;
 		}
-		W w = this.destClass.newInstance();
+		W w = this.destClass.getConstructor().newInstance();
 		return copy(orig, w);
 	}
 
