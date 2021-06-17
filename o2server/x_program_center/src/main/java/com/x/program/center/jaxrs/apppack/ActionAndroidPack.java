@@ -91,6 +91,19 @@ public class ActionAndroidPack extends BaseAction  {
         return result;
     }
 
+    /**
+     * formData 提交打包信息
+     * @param token
+     * @param appName
+     * @param o2ServerProtocol
+     * @param o2ServerHost
+     * @param o2ServerPort
+     * @param o2ServerContext
+     * @param fileName
+     * @param bytes
+     * @return
+     * @throws Exception
+     */
     private String postFormData(String token, String appName, String o2ServerProtocol, String o2ServerHost, String o2ServerPort,
                               String o2ServerContext, String fileName, byte[] bytes) throws Exception {
         logger.info("发起打包请求，form : " + token + " ," + appName + " ,"+ o2ServerProtocol + " ,"+ o2ServerHost + " ,"+ o2ServerPort + " ,"+ o2ServerContext + " ,"+ fileName);
@@ -191,21 +204,6 @@ public class ActionAndroidPack extends BaseAction  {
     }
 
 
-    public static class Wi {
-        // app 桌面名称
-        private String appName;
-
-        // o2oa 服务器信息
-        private String o2ServerProtocol; // 中心服务器协议 http | https
-        private String o2ServerHost; // 中心服务器地址  ip 或 域名
-        private String o2ServerPort; // 中心服务器端口 端口号
-        private String o2ServerContext; //  /x_program_center
-
-        // collect 账号
-        private String collectName;
-
-
-    }
 
     public static class Wo extends WrapBoolean {
 
