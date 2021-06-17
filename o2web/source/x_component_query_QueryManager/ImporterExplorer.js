@@ -151,6 +151,10 @@ MWF.xApplication.query.QueryManager.ImporterExplorer = new Class({
         data.application = id;
         data.applicationName = name;
 
+        var dataJson = (data.data) ? JSON.decode(data.data): "";
+        data.data = dataJson;
+        data.data.id = "";
+
         this.app.restActions.saveImportModel(data, function(){
             if (success) success();
         }.bind(this), function(){
@@ -173,6 +177,10 @@ MWF.xApplication.query.QueryManager.ImporterExplorer = new Class({
         data.isNewImportModel = true;
         data.application = id;
         data.applicationName = name;
+
+        var dataJson = (data.data) ? JSON.decode(data.data): "";
+        data.data = dataJson;
+        data.data.id = "";
 
         this.app.restActions.saveImportModel(data, function(){
             if (success) success();
