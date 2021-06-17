@@ -2,6 +2,7 @@ o2.require("MWF.widget.Dialog", null, false);
 o2.xDesktop.Dialog = o2.DDL = new Class({
 	Extends: o2.widget.Dialog,
     options : {
+	    "zindex": null,
         maxHeightPercent : "98%"
     },
 //	_markShow: function(){
@@ -61,7 +62,17 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
 			this.markNode.setStyle("display", "block");
 		}
 	},
+    setZindex: function(){
+        if( o2.typeOf(this.options.zindex) === "number" && this.options.zindex > 0 ){
+            this.css = Object.clone(this.css);
+            this.css.from["z-index"] = this.options.zindex.toString();
+            this.css.to["z-index"] = this.options.zindex.toString();
+            this.css.mark["z-index"] = (this.options.zindex-1).toString();
+        }
+    },
 	getDialogNode: function(){
+        this.setZindex();
+
         this.width = this.options.width;
         this.height = this.options.height;
 

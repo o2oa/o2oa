@@ -1,31 +1,31 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">字段标题:</td>
+                <td class="editTableTitle">{{$.lp.fieldTitle}}:</td>
                 <td class="editTableValue"><input type="text" name="displayName" value="text{$.displayName}" class="editTableInput"/></td>
             </tr>
         </table>
 
         <div style="border-top: 1px solid #999; margin-top:10px">
-            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">数据</div>
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.data}}</div>
             <div class="MWFDataData" id="text{$.pid}dataDataEditor">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">字段路径:</td>
+                        <td class="editTableTitle">{{$.lp.fieldPath}}:</td>
                         <td class="editTableValue"><input id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">组织对象:</td>
+                        <td class="editTableTitle">{{$.lp.isName}}:</td>
                         <td class="editTableValue">
                             <input name="isName" type="radio" value="true" text{($.isName)===true?'checked':''} onclick="if(this.checked){
                                $('text{$.pid}cmsNamePropertyArea').setStyle('display', '');
-                               $('text{$.pid}processNamePropertyArea').setStyle('display', '');
-                           }"/>是
+                               // $('text{$.pid}processNamePropertyArea').setStyle('display', '');
+                           }"/>{{$.lp.yes}}
                             <input name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''} onclick="if(this.checked){
                                $('text{$.pid}cmsNamePropertyArea').setStyle('display', 'none');
-                               $('text{$.pid}processNamePropertyArea').setStyle('display', 'none');
-                           }"/>否
+                               // $('text{$.pid}processNamePropertyArea').setStyle('display', 'none');
+                           }"/>{{$.lp.no}}
                         </td>
                     </tr>
                 </table>
@@ -33,145 +33,133 @@
         </div>
 
         <div style="margin-top:10px">
-            <div style="display:text{($.vtype!=='querytable')?'block':'none'}" id="text{$.pid}dataTypeSelectedCMSProcessArea" class="text{$.vid}dataTypeSelectedCMSProcessArea">
+            <div style="display:text{($.vtype!=='dynamicTable')?'block':'none'}" id="text{$.pid}dataTypeSelectedCMSProcessArea" class="text{$.vid}dataTypeSelectedCMSProcessArea">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">字段类型:</td>
-                        <td class="editTableValue"><select id="text{$.pid}dataTypeSelectedCMSProcess" name="dataType_CMSProcess">
-<!--                                                           onchange=" var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
-                            <option value="string" selected>string</option>
-                            <option value="date">date</option>
-                            <option value="number">number</option>
-                            <option value="boolean">boolean</option>
-                            <option value="stringList">stringList</option>
-                            <option value="dateList">dateList</option>
-                            <option value="numberList">numberList</option>
-                            <option value="booleanList">booleanList</option>
+                        <td class="editTableTitle">{{$.lp.fieldType}}:</td>
+                        <td class="editTableValue">
+                            <select id="text{$.pid}dataTypeSelectedCMSProcess" name="dataType_CMSProcess"
+                                    onchange="$('text{$.pid}lineBreak_CMSProcess_Tr').setStyle('display',this.options[this.selectedIndex].value==='string'?'':'none');">
+                            <option value="string" text{($.dataType_CMSProcess=='string')?'selected':''}>string</option>
+                            <option value="date" text{($.dataType_CMSProcess=='date')?'selected':''}>date</option>
+                            <option value="dateTime" text{($.dataType_CMSProcess=='dateTime')?'selected':''}>dateTime</option>
+                            <option value="number" text{($.dataType_CMSProcess=='number')?'selected':''}>number</option>
+                            <option value="boolean" text{($.dataType_CMSProcess=='boolean')?'selected':''}>boolean</option>
+                            <option value="stringList" text{($.dataType_CMSProcess=='stringList')?'selected':''}>stringList</option>
+                            <option value="dateList" text{($.dataType_CMSProcess=='dateList')?'selected':''}>dateList</option>
+                            <option value="dateTimeList" text{($.dataType_CMSProcess=='dateTimeList')?'selected':''}>dateTimeList</option>
+                            <option value="numberList" text{($.dataType_CMSProcess=='numberList')?'selected':''}>numberList</option>
+                            <option value="booleanList" text{($.dataType_CMSProcess=='booleanList')?'selected':''}>booleanList</option>
+                            <option value="json" text{($.dataType_CMSProcess=='json')?'selected':''}>json</option>
                         </select></td>
+                    </tr>
+                    <tr id="text{$.pid}lineBreak_CMSProcess_Tr" style="display:text{($.dataType_CMSProcess==='string')?'':'none'}">
+                        <td class="editTableTitle">{{$.lp.lineBreak}}:</td>
+                        <td class="editTableValue">
+                            <input type="text" style="width: 150px;" name="lineBreak_CMSProcess" value="text{$.lineBreak_CMSProcess}" class="editTableInputNoWidth"/>
+                        </td>
                     </tr>
                 </table>
             </div>
-            <div style="display:text{($.vtype=='querytable')?'block':'none'}" id="text{$.pid}dataTypeSelectedQuerytableArea" class="text{$.vid}dataTypeSelectedQuerytableArea">
+            <div style="display:text{($.vtype=='dynamicTable')?'block':'none'}" id="text{$.pid}dataTypeSelectedQuerytableArea" class="text{$.vid}dataTypeSelectedQuerytableArea">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">字段类型:</td>
-                        <td class="editTableValue"><select  id="text{$.pid}dataTypeSelectedQuerytable" name="dataType_Querytable">
-<!--                                                            onchange="var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">-->
-                            <option value="string">string</option>
-                            <option value="integer">integer</option>
-                            <option value="long">long</option>
-                            <option value="double">double</option>
-                            <option value="boolean">boolean</option>
-                            <option value="date">date</option>
-                            <option value="time">time</option>
-                            <option value="dateTime">dateTime</option>
-                            <option value="stringList">stringList</option>
-                            <option value="integerList">integerList</option>
-                            <option value="longList">longList</option>
-                            <option value="doubleList">doubleList</option>
-                            <option value="booleanList">booleanList</option>
-                            <option value="stringLob">stringLob</option>
-                            <option value="stringMap">stringMap</option>
+                        <td class="editTableTitle">{{$.lp.fieldType}}:</td>
+                        <td class="editTableValue">
+                            <select  id="text{$.pid}dataTypeSelectedQuerytable" name="dataType_Querytable"
+                                     onchange="$('text{$.pid}lineBreak_Querytable_Tr').setStyle('display',this.options[this.selectedIndex].value==='string'?'':'none');">
+                             <option value="string" text{($.dataType_Querytable=='string')?'selected':''}>string</option>
+                            <option value="integer" text{($.dataType_Querytable=='integer')?'selected':''}>integer</option>
+                            <option value="long" text{($.dataType_Querytable=='long')?'selected':''}>long</option>
+                            <option value="double" text{($.dataType_Querytable=='double')?'selected':''}>double</option>
+                            <option value="boolean" text{($.dataType_Querytable=='boolean')?'selected':''}>boolean</option>
+                            <option value="date" text{($.dataType_Querytable=='date')?'selected':''}>date</option>
+                            <option value="time" text{($.dataType_Querytable=='time')?'selected':''}>time</option>
+                            <option value="dateTime" text{($.dataType_Querytable=='dateTime')?'selected':''}>dateTime</option>
+                            <option value="stringList" text{($.dataType_Querytable=='stringList')?'selected':''}>stringList</option>
+                            <option value="integerList" text{($.dataType_Querytable=='integerList')?'selected':''}>integerList</option>
+                            <option value="longList" text{($.dataType_Querytable=='longList')?'selected':''}>longList</option>
+                            <option value="doubleList" text{($.dataType_Querytable=='doubleList')?'selected':''}>doubleList</option>
+                            <option value="booleanList" text{($.dataType_Querytable=='booleanList')?'selected':''}>booleanList</option>
+                            <option value="stringLob" text{($.dataType_Querytable=='stringLob')?'selected':''}>stringLob</option>
+                            <option value="stringMap" text{($.dataType_Querytable=='stringMap')?'selected':''}>stringMap</option>
                         </select></td>
+                    </tr>
+                    <tr id="text{$.pid}lineBreak_Querytable_Tr" style="display:text{($.dataType_Querytable==='string')?'':'none'}">
+                        <td class="editTableTitle">{{$.lp.lineBreak}}:</td>
+                        <td class="editTableValue">
+                            <input type="text" style="width: 150px;" name="lineBreak_Querytable" value="text{$.lineBreak_Querytable}" class="editTableInputNoWidth"/>
+                        </td>
                     </tr>
                 </table>
             </div>
 
-            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">校验</div>
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.validation}}</div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">允许空值:</td>
+                    <td class="editTableTitle">{{$.lp.allowEmpty}}:</td>
                     <td class="editTableValue">
-                        <input name="allowEmpty" type="radio" value="true" text{($.allowEmpty)!==false?'checked':''}/>是
-                        <input name="allowEmpty" type="radio" value="false" text{($.allowEmpty)===false?'checked':''}/>否
+                        <input name="allowEmpty" type="radio" value="true" text{($.allowEmpty)!==false?'checked':''}/>{{$.lp.yes}}
+                        <input name="allowEmpty" type="radio" value="false" text{($.allowEmpty)===false?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">校验字段类型:</td>
+                    <td class="editTableTitle">{{$.lp.validFieldType}}:</td>
                     <td class="editTableValue">
-                        <input name="validFieldType" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>是
-                        <input name="validFieldType" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>否
+                        <input name="validFieldType" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>{{$.lp.yes}}
+                        <input name="validFieldType" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
             </table>
 
             <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}cmsFieldProperty" class="text{$.vid}cmsFieldProperty">
-                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">cms文档属性</div>
-                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                    <tr>
-                        <td class="editTableTitle">是否为标题:</td>
-                        <td class="editTableValue">
-                            <input name="isTitle" type="radio" value="true" text{($.isTitle)==true?'checked':''}/>是
-                            <input name="isTitle" type="radio" value="false" text{($.isTitle)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">是否为摘要:</td>
-                        <td class="editTableValue">
-                            <input name="isSummary" type="radio" value="true" text{($.isSummary)==true?'checked':''}/>是
-                            <input name="isSummary" type="radio" value="false" text{($.isSummary)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">是否置顶:</td>
-                        <td class="editTableValue">
-                            <input name="isTop" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
-                            <input name="isTop" type="radio" value="false" text{($.isTop)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                </table>
-
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.cmsProperty}}</div>
                 <div style="display:text{(($.isName)==true)?'block':'none'}" id="text{$.pid}cmsNamePropertyArea">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
-                            <td class="editTableTitle">是否为创建人:</td>
+                            <td class="editTableTitle">{{$.lp.isAuthor}}:</td>
                             <td class="editTableValue">
-                                <input name="isPublisher" type="radio" value="true" text{($.isPublisher)==true?'checked':''}/>是
-                                <input name="isPublisher" type="radio" value="false" text{($.isPublisher)!==false?'checked':''}/>否
+                                <input name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>{{$.lp.yes}}
+                                <input name="isAuthor" type="radio" value="false" text{($.isAuthor)!==true?'checked':''}/>{{$.lp.no}}
                             </td>
                         </tr>
                         <tr>
-                            <td class="editTableTitle">是否为作者:</td>
+                            <td class="editTableTitle">{{$.lp.isReader}}:</td>
                             <td class="editTableValue">
-                                <input name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>是
-                                <input name="isAuthor" type="radio" value="false" text{($.isAuthor)!==false?'checked':''}/>否
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="editTableTitle">是否为读者:</td>
-                            <td class="editTableValue">
-                                <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>是
-                                <input name="isReader" type="radio" value="false" text{($.isReader)!==false?'checked':''}/>否
+                                <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>{{$.lp.yes}}
+                                <input name="isReader" type="radio" value="false" text{($.isReader)!==true?'checked':''}/>{{$.lp.no}}
                             </td>
                         </tr>
                     </table>
                 </div>
             </div>
 
-            <div style="display:text{($.vtype=='process')?'block':'none'}" id="text{$.pid}processFieldProperty" class="text{$.vid}processFieldProperty">
-                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">流程work属性</div>
-                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                    <tr>
-                        <td class="editTableTitle">是否为标题:</td>
-                        <td class="editTableValue">
-                            <input name="isProcessTitle" type="radio" value="true" text{($.isProcessTitle)==true?'checked':''}/>是
-                            <input name="isProcessTitle" type="radio" value="false" text{($.isProcessTitle)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                </table>
+<!--            <div style="display:text{($.vtype=='process')?'block':'none'}" id="text{$.pid}processFieldProperty" class="text{$.vid}processFieldProperty">-->
+<!--                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.workProperty}}</div>-->
+<!--                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--                    <tr>-->
+<!--                        <td class="editTableTitleNoWidth" style="width: 120px;">{{$.lp.isTitle}}:</td>-->
+<!--                        <td class="editTableValue">-->
+<!--                            <input name="isProcessTitle" type="radio" value="true" text{($.isProcessTitle)==true?'checked':''}/>{{$.lp.yes}}-->
+<!--                            <input name="isProcessTitle" type="radio" value="false" text{($.isProcessTitle)!==true?'checked':''}/>{{$.lp.no}}-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </table>-->
 
-                <div style="display:text{(($.isName)==true)?'block':'none'}" id="text{$.pid}processNamePropertyArea">
-                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                        <tr>
-                            <td class="editTableTitle">是否为创建人:</td>
-                            <td class="editTableValue">
-                                <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>是
-                                <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==false?'checked':''}/>否
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+<!--                <div style="display:text{(($.isName)==true)?'block':'none'}" id="text{$.pid}processNamePropertyArea">-->
+<!--                    <div style="display:text{(($.vProcessDrafter)==='importer')?'none':''}" class="text{$.vid}isProcessDrafterArea">-->
+<!--                        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--                            <tr>-->
+<!--                                <td class="editTableTitleNoWidth" style="width: 120px;">{{$.lp.isProcessDrafter}}:</td>-->
+<!--                                <td class="editTableValue">-->
+<!--                                    <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>{{$.lp.yes}}-->
+<!--                                    <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==true?'checked':''}/>{{$.lp.no}}-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
         </div>
 	</div>

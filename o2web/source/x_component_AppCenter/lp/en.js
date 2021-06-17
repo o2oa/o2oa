@@ -56,6 +56,7 @@ MWF.xApplication.AppCenter.LP = {
     "revealList": "Reveal",
     "tableList" : "Table",
     "statementList" :"Statement",
+    "importModelList": "ImportModel",
 
     "selectAll": "All",
     "inverse": "Invert",
