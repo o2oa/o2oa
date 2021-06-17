@@ -875,13 +875,21 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             if (!tmp) actiondown.hide();
         }
     },
+    sortByNumber: function( attachments ){
+        return attachments.sort(function (a1, a2) {
+            if (!a2.data.orderNumber) return 1;
+            if (!a1.data.orderNumber) return -1;
+            return a1.data.orderNumber - a2.data.orderNumber;
+        }.bind(this));
+    },
     orderAttachment: function () {
         if (this.attachments.length) {
-            this.attachments = this.attachments.sort(function (a1, a2) {
-                if (!a2.data.orderNumber) return 1;
-                if (!a1.data.orderNumber) return -1;
-                return a1.data.orderNumber - a2.data.orderNumber;
-            }.bind(this));
+            // this.attachments = this.attachments.sort(function (a1, a2) {
+            //     if (!a2.data.orderNumber) return 1;
+            //     if (!a1.data.orderNumber) return -1;
+            //     return a1.data.orderNumber - a2.data.orderNumber;
+            // }.bind(this));
+            this.attachments = this.sortByNumber(this.attachments);
 
             var lp = MWF.xApplication.process.Xform.LP;
             var css = this.module.form.css;
