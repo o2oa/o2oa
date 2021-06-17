@@ -44,10 +44,7 @@ public class CollectMarket extends BaseAction {
 					Business business = new Business(emc);
 					String token = business.loginCollect();
 					if (StringUtils.isNotEmpty(token)) {
-<<<<<<< HEAD
-=======
 						logger.debug("start sync market data=====");
->>>>>>> wrdp
 						List<Wi> wiList = null;
 						try {
 							ActionResponse response = ConnectionAction.get(
@@ -115,10 +112,7 @@ public class CollectMarket extends BaseAction {
 							}
 							emc.commit();
 						}
-<<<<<<< HEAD
-=======
 						logger.debug("end sync market data=====");
->>>>>>> wrdp
 					}
 				}
 			}
