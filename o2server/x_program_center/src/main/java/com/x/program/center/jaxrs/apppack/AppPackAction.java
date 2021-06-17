@@ -26,7 +26,7 @@ import javax.ws.rs.core.MediaType;
  */
 
 @Path("apppack")
-@JaxrsDescribe("移动客户端打包服务")
+@JaxrsDescribe("移动客户端在线打包服务")
 public class AppPackAction extends BaseAction  {
 
     private static Logger logger = LoggerFactory.getLogger(AppPackAction.class);
@@ -68,7 +68,7 @@ public class AppPackAction extends BaseAction  {
     }
 
 
-    @JaxrsMethodDescribe(value = "发起 android app 打包.", action = ActionAndroidPack.class)
+    @JaxrsMethodDescribe(value = "提交资料，发起 Android app 打包.", action = ActionAndroidPack.class)
     @POST
     @Path("pack/info/android/start")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -94,5 +94,24 @@ public class AppPackAction extends BaseAction  {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+
+
+    @JaxrsMethodDescribe(value = "使用原来的资料重新进行 Android app 打包.", action = ActionAndroidRePack.class)
+    @GET
+    @Path("pack/info/android/repack/{token}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void androidPackReStart(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                         @JaxrsParameterDescribe("token") @PathParam("token") String token) {
+        ActionResult<ActionAndroidRePack.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionAndroidRePack().execute(token);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 
 }
