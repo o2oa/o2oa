@@ -1848,6 +1848,21 @@ MWF.xScript.Environment = function(ev){
         }
     };
 
+    this.importer = {
+        "upload": function (options, callback, async) {
+            MWF.xDesktop.requireApp("query.Query", "Importer", function () {
+                var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                importer.load();
+            }.bind(this));
+        },
+        "downloadTemplate": function(options, fileName){
+            MWF.xDesktop.requireApp("query.Query", "Importer", function () {
+                var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                importer.downloadTemplate(fileName);
+            }.bind(this));
+        }
+    };
+
 
     //include 引用脚本
     //optionsOrName : {
