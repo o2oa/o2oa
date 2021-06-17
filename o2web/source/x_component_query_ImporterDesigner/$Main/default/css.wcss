@@ -78,7 +78,7 @@
     "listViewItemIcon": {
         "height": "24px",
         "width": "26px",
-        "background": "url("+"../x_component_query_ViewDesigner/$Main/default/view.png) no-repeat center center",
+        "background": "url(../x_component_query_ImporterDesigner/$Main/default/importer.png) no-repeat center center",
         "float": "left"
     },
     "listViewItemText": {
@@ -113,7 +113,7 @@
 		"background": "#FFF",
 		"-webkit-user-select": "none",
 		"overflow": "hidden",
-		"background": "url("+"../x_component_process_ViewDesigner/$Main/default/designerBg.png)",
+		"background": "url(../x_component_query_ImporterDesigner/$Main/default/designerBg.png)",
 		"-moz-user-select": "none" 
 	},
 	"propertyTitleNode": {

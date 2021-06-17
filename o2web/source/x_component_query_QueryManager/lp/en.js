@@ -126,6 +126,19 @@ MWF.xApplication.query.QueryManager.LP = {
         "setAppUsableIdentity": "Set AppUsableIdentity",
         "setAppUsableUnit": "Set AppUsableUnit",
     },
+    "importer": {
+         "create": "Create a new import model",
+         "search": "Search imported models",
+         "searchText": "Please enter a keyword",
+
+         "noSelectNoticeText": "This data application has not yet imported a model, you can click here to create an import model",
+         "loaded": "The imported model is loaded",
+
+         "deleteProcessTitle": "Confirm to delete imported model",
+         "deleteProcess": "Are you sure you want to delete the current imported model?",
+         "deletePageTemplateTitle": "Confirm to delete imported model template",
+         "deletePageTemplate": "Are you sure you want to delete the currently imported model template?"
+     },
     "createSelectTemplate": "New: Select Template",
     "templateCategory": "Template Category:",
     "all": "All",
@@ -138,6 +151,7 @@ MWF.xApplication.query.QueryManager.LP = {
         "statConfig":"Statistics",
         "tableConfig":"Data Table",
         "statementConfig":"Statement",
+        "importerConfig":"ImportModel",
         "queryProperty": "Property"
     }
 };

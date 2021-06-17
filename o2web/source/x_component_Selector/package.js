@@ -17,6 +17,9 @@ o2.xApplication.Selector.package = MWF.O2Selector = new Class({
         "dutyUnitLevelBy" : "duty"
     },
     initialize: function(container, options, delayLoad){
+        if( !MWF.xApplication.Selector.LP ){
+            MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
+        }
         //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
         this.loading = true;
         if (!options.title) options.title = MWF.xApplication.Selector.LP.multiSelectTitle;
