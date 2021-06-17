@@ -17,8 +17,11 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
     Extends: MWF.APP$Module,
 
     _loadUserInterface: function(){
-
         this.node.empty();
+
+        this.modules = [];
+        this.moduleList = {};
+
         this.getWidget(function(){
             this.loadWidget();
         }.bind(this));
@@ -29,10 +32,39 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
      * this.form.get("fieldId").reload()
      */
     reload: function(){
-        this.node.empty();
+        this.clean();
+
         this.getWidget(function(){
             this.loadWidget();
         }.bind(this));
+    },
+    clean: function(){
+        (this.modules || []).each(function(module){
+            this.form.modules.erase(module);
+        }.bind(this));
+
+        Object.each(this.moduleList || {}, function (module, formKey) {
+            delete this.form.json.moduleList[formKey];
+        }.bind(this));
+
+        if( this.widgetData && this.widgetData.json.id ){
+            var id = this.widgetData.json.id;
+            // if( this.form.subformLoaded && this.form.subformLoaded.length ){
+            //     this.form.subformLoaded.erase(id);
+            // }
+            if( this.parentpageIdList && this.parentpageIdList.length){
+                this.parentpageIdList.erase(id);
+            }
+        }
+
+        if( this.json && this.json.id && this.form.widgetModules && this.form.widgetModules[ this.json.id ] ){
+            this.form.widgetModules[ this.json.id ] = {};
+        }
+
+        this.modules = [];
+        this.moduleList = {};
+
+        this.node.empty();
     },
     loadCss: function(){
         if (this.widgetData.json.css && this.widgetData.json.css.code){
@@ -94,6 +126,9 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
 
                 this.loadCss();
 
+                this.modules = [];
+                this.moduleList = {};
+
                 this.form.widgetModules =  this.form.widgetModules || {};
                 var widgetModules = this.form.widgetModules[ this.json.id ] = {};
 
@@ -115,6 +150,7 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                         module.id = formKey;
                     }
                     this.form.json.moduleList[formKey] = module;
+                    this.moduleList[formKey] = module;
                 }.bind(this));
 
                 var moduleNodes = this.form._getModuleNodes(this.node);
@@ -127,6 +163,8 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                             this.parentpageIdList = _self.getParentpageIdList();
                         });
                         this.form.modules.push(module);
+                        this.modules.push(module);
+
                         widgetModules[ json.orgiginalId || json.id ] = module;
                     }
                 }.bind(this));
