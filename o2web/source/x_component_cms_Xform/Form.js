@@ -840,6 +840,11 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             this.app.loadApplication();
         } else {
             var options = { "documentId": this.businessData.document.id, "readonly": false }; //this.explorer.app.options.application.allowControl};
+
+            if (this.app.options.postPublish)options.postPublish = this.app.options.postPublish;
+            if (this.app.options.afterPublish)options.afterPublish = this.app.options.afterPublish;
+            if (this.app.options.postDelete)options.postDelete = this.app.options.postDelete;
+
             if (this.app.options.formEditId) options.formEditId = this.app.options.formEditId;
             this.app.desktop.openApplication(null, "cms.Document", options);
             this.app.close();
