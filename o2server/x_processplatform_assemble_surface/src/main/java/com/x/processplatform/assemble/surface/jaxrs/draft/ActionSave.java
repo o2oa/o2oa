@@ -35,7 +35,7 @@ class ActionSave extends BaseAction {
 			String unit = business.organization().unit().getWithIdentity(identity);
 			String person = business.organization().person().getWithIdentity(identity);
 			List<String> identities = business.organization().identity().listWithPerson(person);
-			List<String> units = business.organization().unit().listWithPerson(person);
+			List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
 			List<String> roles = business.organization().role().listWithPerson(person);
 			Application application = business.application().pick(wi.getWork().getApplication());
 			if (null == application) {
