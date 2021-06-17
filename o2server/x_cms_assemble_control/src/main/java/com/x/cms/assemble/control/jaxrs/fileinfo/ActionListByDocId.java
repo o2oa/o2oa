@@ -1,9 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,7 +64,11 @@ public class ActionListByDocId extends BaseAction {
 							}
 						}
 					}
-					wos = wos.stream().sorted(Comparator.comparing(Wo::getCreateTime)).collect(Collectors.toList());
+					wos = wos.stream()
+							.sorted(Comparator.comparing(Wo::getSeqNumber, Comparator.nullsLast(Integer::compareTo))
+									.thenComparing(
+											Comparator.comparing(Wo::getCreateTime, Comparator.nullsLast(Date::compareTo))))
+							.collect(Collectors.toList());
 					CacheManager.put(cacheCategory, cacheKey, wos );
 					result.setData(wos);
 				} catch (Throwable th) {
