@@ -60,6 +60,7 @@ class ActionExecute extends BaseAction {
 			record.setCount(wi.getData().getAsJsonArray().size());
 			record.setData(wi.getData().toString());
 			record.setStatus(ImportRecord.STATUS_WAIT);
+			record.setCreatorPerson(effectivePerson.getDistinguishedName());
 			emc.persist(record, CheckPersistType.all);
 			emc.commit();
 			wo.setId(record.getId());
