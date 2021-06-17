@@ -39,6 +39,7 @@ public class Collect extends ConfigObject {
 	public static String ADDRESS_APPPACK_AUTH = "/auth/collect";
 	public static String ADDRESS_APPPACK_SAVE = "/pack/info/save";
 	public static String ADDRESS_APPPACK_INFO = "/pack/info/collect/%s";
+	public static String ADDRESS_APPPACK_INFO_RESTART = "/pack/info/restart/collect/%s";
 	public static String ADDRESS_APPPACK_DOWNLOAD_APK = "/pack/download/apk/%s";
 
 	public static Collect defaultInstance() {
