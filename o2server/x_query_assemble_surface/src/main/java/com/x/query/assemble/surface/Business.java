@@ -379,4 +379,13 @@ public class Business {
 		}
 		return result;
 	}
+
+	public boolean controllable(EffectivePerson effectivePerson) throws Exception {
+		boolean result = false;
+		if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
+				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))) {
+			result = true;
+		}
+		return result;
+	}
 }

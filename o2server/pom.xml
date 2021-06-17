@@ -886,11 +886,6 @@
 				<artifactId>slf4j-api</artifactId>
 				<version>1.7.25</version>
 			</dependency>
-			<dependency>
-				<groupId>nl.captcha</groupId>
-				<artifactId>simplecaptcha</artifactId>
-				<version>1.2.1</version>
-			</dependency>
 			<!-- dependency> <groupId>cglib</groupId> <artifactId>cglib</artifactId>
 				<version>3.2.0</version> </dependency -->
 			<dependency>
