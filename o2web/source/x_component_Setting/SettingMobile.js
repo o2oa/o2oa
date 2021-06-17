@@ -218,6 +218,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
                 this.apppackReInputBtnNode.setStyles({
                     "display": "none"
                 });
+                this.apppackRePackBtnNode.setStyles({"display": "none"})
             } else if (this.packInfo.packStatus === "1") {
                 status =  this.lp.mobile_apppack_status_packing
                 this.apppackStatusRefreshNode.setStyles({
@@ -231,6 +232,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
                 this.apppackReInputBtnNode.setStyles({
                     "display": "none"
                 });
+                this.apppackRePackBtnNode.setStyles({"display": "none"})
             } else if (this.packInfo.packStatus === "2") {
                 status = this.lp.mobile_apppack_status_pack_end
                 this.apppackStatusRefreshNode.setStyles({
@@ -239,6 +241,17 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
                 this.apppackReInputBtnNode.setStyles({
                     "display": ""
                 });
+                this.apppackReInputBtnNode.addEvents({
+                    "click": function(e) {
+                        this.reInput();
+                    }.bind(this)
+                })
+                this.apppackRePackBtnNode.setStyles({"display": ""})
+                this.apppackRePackBtnNode.addEvents({
+                    "click": function(e) {
+                        this.reSubmitPack();
+                    }.bind(this)
+                })
             }
             this.apppackStatusShowNode.set("text", status);
             
@@ -258,11 +271,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.apppackFormBodyNode.setStyles({
                 "display": "none"
             });
-            this.apppackReInputBtnNode.addEvents({
-                "click": function(e) {
-                    this.reInput();
-                }.bind(this)
-            })
+            
         }
     },
     // 重新输入 提交表单
@@ -305,6 +314,24 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.apppackContextInputNode.set("value", "/x_program_center");
             this.showForm();
         }.bind(this))
+    },
+    // 直接用原有资料重新打包
+    reSubmitPack: function() {
+        this.showLoading();
+        o2.Actions.load("x_program_center").AppPackAction.androidPackReStart(this.token, function (json) {
+            console.log(json)
+            this.hiddenLoading();
+            if (json.data && json.data.value) {
+                // 提交成功 获取最新打包对象信息
+                this.loadAppPackInfo();
+            } else {
+                this.app.notice(json.message, "error", this.contentAreaNode);
+            }
+        }.bind(this), function (error) {
+            this.hiddenLoading();
+            console.log(error);
+            this.app.notice(error, "error", this.contentAreaNode);
+        }.bind(this));
     },
     // 提交打包
     submitPack: function () {
@@ -369,7 +396,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
         formData.append('o2ServerPort', port);
         formData.append('o2ServerContext', context);
         formData.append('token', this.token);
-        //上传文件
+        
         o2.Actions.load("x_program_center").AppPackAction.androidPackStart(formData, "{}",function (json) {
             console.log(json)
             this.hiddenLoading();
@@ -383,7 +410,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.hiddenLoading();
             console.log(error);
             this.app.notice(error, "error", this.contentAreaNode);
-        }.bind(this))
+        }.bind(this));
 
     }
 });
