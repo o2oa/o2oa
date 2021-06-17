@@ -384,6 +384,21 @@ o2.widget.O2Process = new Class({
             attach: this.node,
             transition: 'flyin'
         });
+    },
+    open : function (e) {
+        debugger;
+        if( this.data.id && this.data.application ){
+            var appId = "process.ProcessManager" + this.data.application;
+            if (layout.desktop.apps[appId]){
+                layout.desktop.apps[appId].setCurrent();
+            }else {
+                var options = { "application": {
+                    "id": this.data.application,
+                     "name": this.data.applicationName || ""
+                }};
+                layout.desktop.openApplication(e, "process.ProcessManager", options);
+            }
+        }
     }
 });
 o2.widget.O2CMSCategory = new Class({
@@ -409,6 +424,25 @@ o2.widget.O2CMSCategory = new Class({
             attach: this.node,
             transition: 'flyin'
         });
+    },
+    open : function (e) {
+        debugger;
+        if( this.data.id && this.data.appId ){
+            // var appId = "cms.ColumnManager" + this.data.id;
+            // if (layout.desktop.apps[appId]){
+            //     layout.desktop.apps[appId].setCurrent();
+            // }else {
+                var options = {
+                    "navi":"categoryConfig",
+                    "column":{
+                        "id" : this.data.appId,
+                        "appName": this.data.appName || ""
+                    },
+                    "currentCategoryId":this.data.id
+                };
+                layout.desktop.openApplication(e, "cms.ColumnManager", options);
+            // }
+        }
     }
 });
 
