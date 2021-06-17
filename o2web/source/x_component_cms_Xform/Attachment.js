@@ -69,19 +69,26 @@ MWF.xApplication.cms.Xform.AttachmentController = new Class({
             }.bind(this));
         }
     },
+    sortByNumber: function( attachments ){
+        return attachments.sort(function (a1, a2) {
+            if (!a2.data.seqNumber) return 1;
+            if (!a1.data.seqNumber) return -1;
+            return a1.data.seqNumber - a2.data.seqNumber;
+        }.bind(this));
+    },
     sortAttachment: function (node) {
         var nodes = node.getChildren();
         nodes.each(function (item, idx) {
             var att = item.retrieve("att", null);
             if (att) {
-                att.data.orderNumber = idx;
-                o2.Actions.load("x_cms_assemble_control").FileInfoAction.changeOrderNumber(att.data.id, this.module.form.businessData.document.id, idx);
+                att.data.seqNumber = idx;
+                o2.Actions.load("x_cms_assemble_control").FileInfoAction.changeSeqNumber(att.data.id, this.module.form.businessData.document.id, idx);
             }
         }.bind(this));
         this.attachments = this.attachments.sort(function (a1, a2) {
-            if (!a2.data.orderNumber) return 1;
-            if (!a1.data.orderNumber) return -1;
-            return a1.data.orderNumber - a2.data.orderNumber;
+            if (!a2.data.seqNumber) return 1;
+            if (!a1.data.seqNumber) return -1;
+            return a1.data.seqNumber - a2.data.seqNumber;
         }.bind(this));
 
         this.reloadAttachments();
@@ -522,6 +529,25 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             this.form.documentAction.getAttachmentUrl(attachment.data.id, this.form.businessData.document.id, callback);
         }
     },
+    getTextData: function(){
+        var data = [];
+        this.attachmentController.attachments.each(function(att){
+            var o = {
+                "id": att.data.id,
+                "person": att.data.person,
+                "creatorUid": att.data.creatorUid,
+                "name": att.data.name,
+                "seqNumber": att.data.seqNumber,
+                "length": att.data.length,
+                "extension": att.data.extension,
+                "lastUpdateTime": att.data.lastUpdateTime,
+                "activityName": att.data.activityName,
+                "control" : att.data.control
+            }
+            data.push(o);
+        });
+        return data;
+    },
     validationConfigItem: function (routeName, data) {
         var flag = (data.status == "all") ? true : (routeName == "publish");
         if (flag) {
@@ -650,7 +676,7 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
                         "id": d.data.id,
                         "person": d.data.person,
                         "creatorUid": d.data.creatorUid,
-                        "orderNumber": d.data.orderNumber,
+                        "seqNumber": d.data.seqNumber,
                         "length": d.data.length,
                         "extension": d.data.extension,
                         "lastUpdateTime": d.data.lastUpdateTime,

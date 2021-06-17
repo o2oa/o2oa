@@ -237,8 +237,13 @@ MWF.xApplication.query.Query.LP = {
     "importStatusList": ["全部","导入成功","导入失败"],
     "errorInfor": "错误信息",
     "reExecuteImport": "重新执行导入",
+    "importPerson": "导入人",
 
     "showFiveColumn": "(显示前5列)",
-    "showAll": "(显示全部)"
+    "showAll": "(显示全部)",
+
+    "deleteDocument": "删除后无法恢复，确定要删除该导入记录？",
+    "deleteDocumentTitle": "删除导入记录确认",
+    "deleteDocumentOK": "成功删除导入记录"
 
 };
