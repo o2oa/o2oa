@@ -1045,7 +1045,7 @@ MWF.xApplication.Template.Explorer.ComplexDocument = new Class({
         this.view._openDocument(this.data);
     },
     remove: function (e) {
-        var lp = this.app.lp;
+        var lp = this.lp || this.view.lp || this.app.lp;
         var text = lp.deleteDocument.replace(/{title}/g, this.data.title);
         var _self = this;
         this.node.setStyles(this.css.documentNode_remove);
