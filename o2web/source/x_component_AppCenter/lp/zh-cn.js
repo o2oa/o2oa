@@ -56,6 +56,7 @@ MWF.xApplication.AppCenter.LP = {
     "revealList": "展示",
     "tableList" : "数据表",
     "statementList" :"查询配置",
+    "importModelList": "导入模型",
 
     "selectAll": "全选",
     "inverse": "反选",
