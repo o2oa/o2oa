@@ -801,15 +801,15 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.data = data;
 
 			if (this.data){
-				this.clear();
+				this.clearSubModules();
 			}
 
 			this.lineList = [];
 			this._loadDatatable()
 		},
-		clear: function(){
+		clearSubModules: function(){
 			for (var i=0; i<this.lineList.length; i++){
-				this.lineList[i].clear();
+				this.lineList[i].clearSubModules();
 			}
 		},
 		/**
@@ -1537,11 +1537,11 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		this.init();
 		this.load();
 	},
-	clear: function () { //把module清除掉
+	clearSubModules: function () { //把module清除掉
 		for(var key in this.all){
 			var module = this.all[key];
 			//如果嵌套数据模板或者数据表格，还要清除掉下级
-			if(module.clear)module.clear();
+			if(module.clearSubModules)module.clearSubModules();
 			this.form.modules.erase(module);
 			if (this.form.all[key]) delete this.form.all[key];
 			if (this.form.forms[key])delete this.form.forms[key];
