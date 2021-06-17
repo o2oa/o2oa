@@ -18,6 +18,10 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
 
     _loadUserInterface: function () {
         this.node.empty();
+
+        this.modules = [];
+        this.moduleList = {};
+
         if (this.json.isDelay) {
             if (this.form.subformLoadedCount) {
                 this.form.subformLoadedCount++;
@@ -58,11 +62,36 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
      * })
      */
     reload: function (callback) {
-        this.node.empty();
+        this.clean();
+
         this.getSubform(function () {
             this.loadSubform();
             if (callback) callback();
         }.bind(this));
+    },
+    clean: function(){
+        (this.modules || []).each(function(module){
+            this.form.modules.erase(module);
+        }.bind(this));
+
+        Object.each(this.moduleList || {}, function (module, formKey) {
+            delete this.form.json.moduleList[formKey];
+        }.bind(this));
+
+        if( this.subformData && this.subformData.json.id ){
+            var id = this.subformData.json.id;
+            if( this.form.subformLoaded && this.form.subformLoaded.length ){
+                this.form.subformLoaded.erase(id);
+            }
+            if( this.parentformIdList && this.parentformIdList.length){
+                this.parentformIdList.erase(id);
+            }
+        }
+
+        this.modules = [];
+        this.moduleList = {};
+
+        this.node.empty();
     },
     loadCss: function () {
         if (this.subformData.json.css && this.subformData.json.css.code) {
@@ -134,6 +163,9 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
 
                 this.loadCss();
 
+                this.modules = [];
+                this.moduleList = {};
+
                 this.node.set("html", this.subformData.html);
                 Object.each(this.subformData.json.moduleList, function (module, key) {
                     var formKey = key;
@@ -144,6 +176,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
                         module.id = formKey;
                     }
                     this.form.json.moduleList[formKey] = module;
+                    this.moduleList[formKey] = module;
                 }.bind(this));
 
                 var moduleNodes = this.form._getModuleNodes(this.node);
@@ -156,6 +189,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
                             this.parentformIdList = _self.getParentformIdList();
                         });
                         this.form.modules.push(module);
+                        this.modules.push(module);
                     }
                 }.bind(this));
 
