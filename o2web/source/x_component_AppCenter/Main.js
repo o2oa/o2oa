@@ -495,7 +495,7 @@ MWF.xApplication.AppCenter.Exporter = new Class({
         this.showStatusItemList("processPlatformList", ["processList", "formList", "applicationDictList", "scriptList", "fileList"]);
         this.showStatusItemList("portalList", ["pageList", "scriptList", "widgetList", "fileList"]);
         this.showStatusItemList("cmsList", ["categoryInfoList", "formList", "appDictList", "scriptList"]);
-        this.showStatusItemList("queryList", ["viewList", "statList", "revealList", "tableList", "statementList"]);
+        this.showStatusItemList("queryList", ["viewList", "statList", "revealList", "tableList", "statementList", "importModelList"]);
         this.showStatusItemList("serviceModuleList", ["agentList", "invokeList"]);
 
     },
@@ -966,7 +966,8 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
             "statList": [],
             "revealList": [],
             "statementList": [],
-            "tableList": []
+            "tableList": [],
+            "importModelList": []
         };
     },
     selectElements: function(){
@@ -974,18 +975,20 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
     },
     selectAll: function(){
         var selectData = this.postData;
-        if (selectData.viewList.length || selectData.statList.length || selectData.revealList.length|| selectData.statementList.length|| selectData.tableList.length){
+        if (selectData.viewList.length || selectData.statList.length || selectData.revealList.length|| selectData.statementList.length|| selectData.tableList.length|| selectData.importModelList.length){
             if (selectData.viewList.length===this.data.viewList.length &&
                 selectData.statList.length===this.data.statList.length &&
                 selectData.statementList.length===this.data.statementList.length &&
                 selectData.tableList.length===this.data.tableList.length &&
-                selectData.revealList.length===this.data.revealList.length){
+                selectData.revealList.length===this.data.revealList.length &&
+                selectData.importModelList.length===this.data.importModelList.length){
                 selectData =  {
                     "viewList": [],
                     "statList": [],
                     "revealList": [],
                     "statementList": [],
-                    "tableList": []
+                    "tableList": [],
+                    "importModelList": []
                 };
             }else{
                 selectData =  {
@@ -993,7 +996,8 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
                     "statList": this.data.statList,
                     "revealList": this.data.revealList,
                     "statementList": this.data.statementList,
-                    "tableList": this.data.tableList
+                    "tableList": this.data.tableList,
+                    "importModelList": this.data.importModelList,
                 };
             }
         }else{
@@ -1002,7 +1006,8 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
                 "statList": this.data.statList,
                 "revealList": this.data.revealList,
                 "statementList": this.data.statementList,
-                "tableList": this.data.tableList
+                "tableList": this.data.tableList,
+                "importModelList": this.data.importModelList
             };
         }
         this.checkSelect(selectData);
@@ -1014,15 +1019,17 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
 
         this.postData.statementList = selectData.statementList;
         this.postData.tableList = selectData.tableList;
+        this.postData.importModelList = selectData.importModelList;
 
         this.exporter.selectData.queryList.erase(this.postData);
 
-        if (selectData.viewList.length || selectData.statList.length || selectData.revealList.length|| selectData.statementList.length|| selectData.tableList.length){
+        if (selectData.viewList.length || selectData.statList.length || selectData.revealList.length|| selectData.statementList.length|| selectData.tableList.length|| selectData.importModelList.length){
             this.exporter.selectData.queryList.push(this.postData);
             if (selectData.viewList.length==this.data.viewList.length &&
                 selectData.statList.length==this.data.statList.length &&
                 selectData.statementList.length==this.data.statementList.length &&
                 selectData.tableList.length==this.data.tableList.length &&
+                selectData.importModelList.length==this.data.importModelList.length &&
                 selectData.revealList.length==this.data.revealList.length){
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_all.png) center center no-repeat");
             }else{
@@ -1351,7 +1358,8 @@ MWF.xApplication.AppCenter.Exporter.Element.QuerySelector = new Class({
             "statList": [],
             "revealList": [],
             "tableList": [],
-            "statementList": []
+            "statementList": [],
+            "importModelList": []
         }
     },
     checkSelect: function() {
@@ -1360,6 +1368,7 @@ MWF.xApplication.AppCenter.Exporter.Element.QuerySelector = new Class({
         this.selectData.revealList = this.getCheckedList(this.listRevealContent);
         this.selectData.statementList = this.getCheckedList(this.listStatementContent);
         this.selectData.tableList = this.getCheckedList(this.listTableContent);
+        this.selectData.importModelList = this.getCheckedList(this.listImportModelContent);
         this.element.checkSelect(this.selectData);
         this.hide();
     },
@@ -1371,6 +1380,7 @@ MWF.xApplication.AppCenter.Exporter.Element.QuerySelector = new Class({
 
         this.listTableContent = this.listProcess("tableList");
         this.listStatementContent = this.listProcess("statementList");
+        this.listImportModelContent = this.listProcess("importModelList");
     }
 });
 MWF.xApplication.AppCenter.Exporter.Element.ServiceSelector = new Class({

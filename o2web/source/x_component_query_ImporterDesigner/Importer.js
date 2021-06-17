@@ -47,7 +47,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         if(this.designer.application) this.data.applicationName = this.designer.application.name;
         if(this.designer.application) this.data.application = this.designer.application.id;
 
-        this.isNewImporter = (this.data.name) ? false : true;
+        this.isNewImportModel = (this.data.name) ? false : true;
 
         this.items = [];
         this.calculateItems = [];
@@ -68,7 +68,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
 
         this.excelTitleNode = new Element("div#excelTitleNode", {
             "styles": this.css.excelTitleNode,
-            "text" : "列字段："
+            "text" : this.designer.lp.columnField+":"
         }).inject(this.viewTitleNode);
 
         // this.refreshNode = new Element("div", {"styles": this.css.refreshNode}).inject(this.viewTitleNode);
@@ -96,7 +96,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
 
         this.calculateTitleNode = new Element("div#calculateTitleNode", {
             "styles": this.css.calculateTitleNode,
-            "text" : "计算字段："
+            "text" : this.designer.lp.calculateField+":"
         }).inject(this.viewContentNode);
         this.addCalculateFieldNode = new Element("div#addCalculateFieldNode", {
             "styles": this.css.addCalculateFieldNode,
@@ -123,6 +123,10 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         }.bind(this), 60000);
     },
     parseData: function(){
+        debugger;
+        if( o2.typeOf(this.data.data)==="string"){
+            this.data.data = JSON.parse(this.data.data);
+        }
         this.json = this.data;
         if( !this.json.data.events ){
             var url = "../x_component_query_ImporterDesigner/$Importer/importer.json";
@@ -234,15 +238,15 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
                 "id": id,
                 "displayName": this.designer.lp.unnamed,
             };
-            if (!this.json.data.selectList) this.json.data.selectList = [];
+            if (!this.json.data.columnList) this.json.data.columnList = [];
 
             var column;
-            if( !addToLeft || this.json.data.selectList.length === 0 ){
-                this.json.data.selectList.push(json);
+            if( !addToLeft || this.json.data.columnList.length === 0 ){
+                this.json.data.columnList.push(json);
                 column = new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this, null);
                 this.items.push(column);
             }else{
-                this.json.data.selectList.unshift(json);
+                this.json.data.columnList.unshift(json);
                 column = new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this, this.items[0]);
                 this.items.unshift(column);
             }
@@ -275,9 +279,19 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
 
     loadViewColumns: function(){
         //    for (var i=0; i<10; i++){
-        if (this.json.data.selectList) {
-            this.json.data.selectList.each(function (json, i) {
+        if (this.json.data.columnList) {
+            this.json.data.columnList.each(function (json, i) {
                 this.items.push(new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this, null, i));
+
+            }.bind(this));
+        }
+        //    }
+    },
+    loadViewCalculateFields: function(){
+        //    for (var i=0; i<10; i++){
+        if (this.json.data.calculateFieldList) {
+            this.json.data.calculateFieldList.each(function (json, i) {
+                this.calculateItems.push(new MWF.xApplication.query.ImporterDesigner.Importer.CalculateField(json, this, null, i));
 
             }.bind(this));
         }
@@ -313,6 +327,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         this.loadViewNodes();
         //this.loadViewSelectAllNode();
         this.loadViewColumns();
+        this.loadViewCalculateFields();
 //        this.addTopItemNode.addEvent("click", this.addTopItem.bind(this));
     },
     setViewWidth: function(){
@@ -400,12 +415,74 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         }.bind(this));
     },
     save: function(callback){
-        //if (this.designer.tab.showPage==this.page){
+        debugger;
         if (!this.data.name){
             this.designer.notice(this.designer.lp.notice.inputName, "error");
             return false;
         }
-        //}
+
+        var fieldArr=[], textArr=[], data = this.json.data;
+        var fieldArr2 = [], textArr2 = [];
+        if (this.json.type==="cms"){
+            if( data.documentPublisher !== "importer" ){
+                fieldArr.push("documentPublisherField");
+                textArr.push("publisher");
+            }
+            if( data.documentPublishTime !== "importer" ){
+                fieldArr.push("documentPublisherTimeField");
+                textArr.push("publishTime");
+            }
+        }else if(this.json.type==="process"){
+            if( data.processDrafter !== "importer" ){
+                fieldArr.push("processDrafterField");
+                textArr.push("processDrafter");
+            }
+            if( data.processStatus === "completed" ){
+                fieldArr = fieldArr.concat(["processStartTimeField", "processCompleteTimeField"]);
+                textArr = textArr.concat([ "startTimeField", "completeTimeField"]);
+
+                fieldArr2.push("processForm");
+                textArr2.push("selectForm");
+            }
+        }
+
+        var noteTextArr = [];
+        var lp = this.view.designer.lp.propertyTemplate;
+        if( fieldArr.length || fieldArr2.length){
+
+            fieldArr2.each( function(field, i) {
+                if (!data[field])noteTextArr.push(lp[textArr2[i]]);
+            });
+
+            var columnList = [].concat(data.columnList, data.calculateFieldList);
+            fieldArr.each( function(field, i){
+                if( !data[field] ){
+                    noteTextArr.push( lp[textArr[i]] );
+                }else {
+                    var path = data[field];
+                    var flag = columnList.some(function (c) { return c.path === path;});
+                    if(!flag)noteTextArr.push( lp[textArr[i]] );
+                }
+            }.bind(this));
+        }
+
+
+        if( noteTextArr.length ){
+            var _self = this;
+            var text = MWF.APPDIPD.LP.notice.someFieldIsEmpty.replace("{text}", noteTextArr.join("、"));
+            this.designer.confirm("warn", this.node, MWF.APPDIPD.LP.notice.saveNotice, text, 300, 120, function(){
+                _self._save();
+                this.close();
+            }, function(){
+                this.close();
+            }, null);
+        }else{
+            this._save(callback)
+        }
+    },
+    _save: function(callback){
+        //if (this.designer.tab.showPage==this.page){
+
 
         debugger;
         // var list;
@@ -444,7 +521,10 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
     explode: function(){},
     implode: function(){},
     _setEditStyle: function(name, input, oldValue) {
-
+        debugger;
+        if(name === "data.process"){
+            this.property.loadFormSelect();
+        }
     },
     reloadMaplist: function(){
         if (this.property) Object.each(this.property.maplists, function(map, name){ map.reload(this.json[name]);}.bind(this));
@@ -486,7 +566,7 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         delete d[this.data.id+"viewFilterType"];
         d[d.id+"viewFilterType"]="custom";
 
-        d.data.selectList.each( function( entry ){
+        d.data.columnList.each( function( entry ){
             entry.id = (new MWF.widget.UUID).id;
         }.bind(this));
 
@@ -494,8 +574,37 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
             this.designer.notice(this.designer.lp.notice.saveAs_success, "success", this.node, {"x": "left", "y": "bottom"});
             if (callback) callback();
         }.bind(this));
-    }
-
+    },
+    checkUniqueSetting: function (column, name , value) {
+        debugger;
+        if (value !== "true")return;
+        ([].concat(this.items, this.calculateItems)).each(function (col) {
+            if( col !== column && (col.json[name] === "true" || col.json[name] === true) ){
+                col.json[name] = false;
+                if(col.property){
+                    var radios = col.property.propertyContent.getElements("input[name$='"+name+"']"); //$匹配结尾
+                    radios.each(function (r) {
+                        if (r.value === "true") r.set("checked", false);
+                        if (r.value === "false") r.set("checked", true);
+                    });
+                }
+            }
+        });
+    },
+    preview: function(){
+        if( this.isNewView ){
+            this.designer.notice( this.designer.lp.saveViewNotice, "error" );
+            return;
+        }
+        this.saveSilence( function () {
+            var url = "../x_desktop/app.html?app=query.Query&status=";
+            url += JSON.stringify({
+                id : this.data.application,
+                importerId : this.data.id
+            });
+            window.open(o2.filterUrl(url),"_blank");
+        }.bind(this));
+    },
 });
 
 
@@ -688,11 +797,24 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
             this.close();
         }, null);
     },
-    setEditStyle: function(name, input, oldValue){
-        if (name=="displayName") this.resetTextNode();
-        if (name=="selectType") this.resetTextNode();
-        if (name=="attribute") this.resetTextNode();
-        if (name=="path") this.resetTextNode();
+    _setEditStyle: function(name, input, oldValue){
+        //column
+        debugger;
+        if (name==="displayName") {
+            this.resetTextNode();
+            this.view.property.loadSelectField();
+        }
+        if (name==="path") {
+            this.resetTextNode();
+            this.view.property.loadSelectField();
+        }
+        if (name==="selectType") this.resetTextNode();
+        if (name==="attribute") this.resetTextNode();
+
+        // if (["isTitle","isSummary","isPublisher","isProcessTitle","isProcessDrafter"].contains(name)){
+        //     this.view.checkUniqueSetting(this, name, input.get("value"));
+        // }
+
     },
     resetTextNode: function( index ){
         var listText = (this.json.selectType=="attribute") ? (this.json.attribute || "") : (this.json.path || "");
@@ -735,12 +857,15 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
         //     }.bind(this));
         // }
 
-        if (this.view.json.data.selectList) this.view.json.data.selectList.erase(this.json);
+        if (this.view.json.data.columnList) this.view.json.data.columnList.erase(this.json);
         // if (this.view.json.data.calculate) if (this.view.json.data.calculate.calculateList) this.view.json.data.calculate.calculateList.erase(this.json);
         this.view.items.erase(this);
         if (this.view.property) this.view.property.loadStatColumnSelect();
 
         this.areaNode.destroy();
+
+        this.view.property.loadSelectField();
+
         this.view.selected();
 
         this.view.setViewWidth();
@@ -769,8 +894,8 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
                 };
             }
 
-            var idx = this.view.json.data.selectList.indexOf(this.json);
-            this.view.json.data.selectList.splice(idx, 0, json);
+            var idx = this.view.json.data.columnList.indexOf(this.json);
+            this.view.json.data.columnList.splice(idx, 0, json);
 
             var column = new MWF.xApplication.query.ImporterDesigner.Importer.Column(json, this.view, this);
             this.view.items.splice(idx, 0, column);
@@ -848,12 +973,12 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
                     var column = inObj.retrieve("column");
                     this.listNode.inject(column.listNode, "before");
 
-                    this.view.json.data.selectList.erase(this.json);
+                    this.view.json.data.columnList.erase(this.json);
                     this.view.items.erase(this);
 
-                    var idx = this.view.json.data.selectList.indexOf(column.json);
+                    var idx = this.view.json.data.columnList.indexOf(column.json);
 
-                    this.view.json.data.selectList.splice(idx, 0, this.json);
+                    this.view.json.data.columnList.splice(idx, 0, this.json);
                     this.view.items.splice(idx, 0, this);
 
                     if (this.moveNode) this.moveNode.destroy();
@@ -1093,11 +1218,21 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
     //     if (name=="path") this.resetTextNode();
     // },
     _setEditStyle_custom: function(name, input, oldValue){
+        //calculate
         debugger;
-        if (name=="displayName") this.resetTextNode();
+        if (name=="displayName"){
+            this.resetTextNode();
+            this.view.property.loadSelectField();
+        }
         if (name=="selectType") this.resetTextNode();
         if (name=="attribute") this.resetTextNode();
-        if (name=="path") this.resetTextNode();
+        if (name=="path"){
+            this.resetTextNode();
+            this.view.property.loadSelectField();
+        }
+        // if (["isTitle","isSummary","isPublisher","isProcessTitle","isProcessDrafter"].contains(name)){
+        //     this.view.checkUniqueSetting(this, name, input.get("value"));
+        // }
     },
     resetTextNode: function( index ){
         // var listText = (this.json.selectType=="attribute") ? (this.json.attribute || "") : (this.json.path || "");
@@ -1129,7 +1264,12 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
         if (this.view.property) this.view.property.loadStatColumnSelect();
 
         this.areaNode.destroy();
+
+
+        this.view.property.loadSelectField();
+
         this.view.selected();
+
 
         // this.view.setViewWidth();
 
