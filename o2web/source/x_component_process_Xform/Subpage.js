@@ -4,15 +4,48 @@ MWF.xApplication.process.Xform.Subpage = MWF.APPSubpage =  new Class({
 
     _loadUserInterface: function(){
         this.node.empty();
+
+        this.modules = [];
+        this.moduleList = {};
+
         this.getSubpage(function(){
             this.loadSubpage();
         }.bind(this));
     },
     reload: function(){
-        this.node.empty();
+        this.clean();
+
         this.getSubpage(function(){
             this.loadSubpage();
         }.bind(this));
+    },
+    clean: function(){
+        (this.modules || []).each(function(module){
+            this.form.modules.erase(module);
+        }.bind(this));
+
+        Object.each(this.moduleList || {}, function (module, formKey) {
+            delete this.form.json.moduleList[formKey];
+        }.bind(this));
+
+        if( this.subpageData && this.subpageData.json.id ){
+            var id = this.subpageData.json.id;
+            // if( this.form.subformLoaded && this.form.subformLoaded.length ){
+            //     this.form.subformLoaded.erase(id);
+            // }
+            if( this.parentpageIdList && this.parentpageIdList.length){
+                this.parentpageIdList.erase(id);
+            }
+        }
+
+        if( this.json.id && this.form.subpageModules && this.form.subpageModules[ this.json.id ] ){
+            this.form.subpageModules[ this.json.id ] = {}
+        }
+
+        this.modules = [];
+        this.moduleList = {};
+
+        this.node.empty();
     },
     loadCss: function(){
         if (this.subpageData.json.css && this.subpageData.json.css.code){
@@ -95,6 +128,7 @@ MWF.xApplication.process.Xform.Subpage = MWF.APPSubpage =  new Class({
                         module.id = formKey;
                     }
                     this.form.json.moduleList[formKey] = module;
+                    this.moduleList[formKey] = module;
                 }.bind(this));
 
                 var moduleNodes = this.form._getModuleNodes(this.node);
@@ -107,6 +141,7 @@ MWF.xApplication.process.Xform.Subpage = MWF.APPSubpage =  new Class({
                             this.parentpageIdList = _self.getParentpageIdList();
                         });
                         this.form.modules.push(module);
+                        this.modules.push(module);
                         subpageModules[ json.orgiginalId || json.id ] = module;
                     }
                 }.bind(this));

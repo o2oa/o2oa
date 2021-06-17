@@ -433,11 +433,11 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
         htmlArray.push( "<th style='"+titleStyle+" width:100px;'> "+ this.lp.importerName +"</th>" );
         htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.name +"</td>" );
 
-        htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.importTime +"</th>" );
-        htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.createTime +"</td>" );
-
         htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.importCount +"</th>" );
         htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.count +"</td>" );
+
+        htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.importTime +"</th>" );
+        htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.createTime +"</td>" );
 
         htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.importPerson +"</th>" );
         htmlArray.push( "<td style='"+contentStyle+"'> "+ (this.data.creatorPerson||"").split('@')[0] +"</td>" );
@@ -449,11 +449,11 @@ MWF.xApplication.query.Query.ImporterRecord.Detail = new Class({
         htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.status +"</th>" );
         htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.status +"</td>" );
 
-        htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.updateTime +"</th>" );
-        htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.updateTime +"</td>" );
-
         htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.failCount +"</th>" );
         htmlArray.push( "<td style='"+contentStyle+"'> "+ (o2.typeOf(this.data.failCount)==="null"?"":this.data.failCount) +"</td>" );
+
+        htmlArray.push( "<th style='"+titleStyle+"'> "+ this.lp.updateTime +"</th>" );
+        htmlArray.push( "<td style='"+contentStyle+"'> "+ this.data.updateTime +"</td>" );
 
         htmlArray.push( "<th style='"+titleStyle+"'> </th>" );
         htmlArray.push( "<td style='"+contentStyle+"'> </td>" );
