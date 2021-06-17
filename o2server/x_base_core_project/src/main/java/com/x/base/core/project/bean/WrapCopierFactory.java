@@ -58,13 +58,13 @@ public class WrapCopierFactory {
 			List<String> copyFieldNames = new ArrayList<>();
 			ListTools.includesExcludes(ListUtils.intersection(origFieldNames, destFieldNames), includes, excludes)
 					.stream().forEach(name -> {
-						if (accessible(origClass, destClass, name)) {
+						if (copyable(origClass, destClass, name)) {
 							copyFieldNames.add(name);
 						}
 					});
 			List<String> eraseFieldNames = new ArrayList<>();
 			ListUtils.subtract(destFieldNames, copyFieldNames).stream().forEach(name -> {
-				if (accessible(origClass, destClass, name)) {
+				if (erasable(destClass, name)) {
 					eraseFieldNames.add(name);
 				}
 			});
@@ -76,7 +76,7 @@ public class WrapCopierFactory {
 		}
 	}
 
-	private static <T, W> boolean accessible(Class<T> origClass, Class<W> destClass, String name) {
+	private static <T, W> boolean copyable(Class<T> origClass, Class<W> destClass, String name) {
 		try {
 			Field origField = FieldUtils.getField(origClass, name, true);
 			Field destField = FieldUtils.getField(destClass, name, true);
@@ -84,6 +84,19 @@ public class WrapCopierFactory {
 					&& (null != MethodUtils.getAccessibleMethod(origClass, getGetterName(origField)))
 					&& (null != MethodUtils.getAccessibleMethod(destClass, getSetterName(destField),
 							destField.getType()))) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	private static <W> boolean erasable(Class<W> destClass, String name) {
+		try {
+			Field destField = FieldUtils.getField(destClass, name, true);
+			if ((null != destField) && (null != MethodUtils.getAccessibleMethod(destClass, getSetterName(destField),
+					destField.getType()))) {
 				return true;
 			}
 		} catch (Exception e) {
@@ -105,7 +118,7 @@ public class WrapCopierFactory {
 			List<String> copyFieldNames = new ArrayList<>();
 			ListTools.includesExcludes(ListUtils.intersection(origFieldNames, destFieldNames), includes, excludes)
 					.stream().forEach(name -> {
-						if (accessible(origClass, destClass, name)) {
+						if (copyable(origClass, destClass, name)) {
 							copyFieldNames.add(name);
 						}
 					});
@@ -167,10 +180,10 @@ public class WrapCopierFactory {
 			final int prime = 31;
 			int result = 1;
 			result = prime * result + ((destClass == null) ? 0 : destClass.hashCode());
-			result = prime * result + (ignoreNull ? 1231 : 1237);
+			result = prime * result + ((origClass == null) ? 0 : origClass.hashCode());
 			result = prime * result + ((joinExclude == null) ? 0 : joinExclude.hashCode());
 			result = prime * result + ((joinInclude == null) ? 0 : joinInclude.hashCode());
-			result = prime * result + ((origClass == null) ? 0 : origClass.hashCode());
+			result = prime * result + (ignoreNull ? 1231 : 1237);
 			return result;
 		}
 
