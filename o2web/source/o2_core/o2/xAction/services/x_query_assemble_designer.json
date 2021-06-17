@@ -73,8 +73,8 @@
   "executeStatement" : { "uri": "/jaxrs/statement/{flag}/execute/page/{page}/size/{size}", "method": "POST" },
 
   "listImportModel" : {"uri": "/jaxrs/importmodel/list/query/{flag}"},
-  "getImportModel" : { "uri": "/jaxrs/importmodel/{id}" },
-  "updateImportModel":{ "uri": "/jaxrs/importmodel/{id}", "method": "PUT" },
+  "getImportModel" : { "uri": "/jaxrs/importmodel/{flag}" },
+  "updateImportModel":{ "uri": "/jaxrs/importmodel/{flag}", "method": "PUT" },
   "createImportModel":{ "uri": "/jaxrs/importmodel", "method": "POST" },
   "deleteImportModel" : { "uri": "/jaxrs/importmodel/{flag}", "method": "DELETE" },
 

@@ -1,0 +1,134 @@
+{
+  "viewSetting": {
+    "html": "<table style='min-width:100%' border='0' cellpadding='5' cellspacing='0' styles='editTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+//    "mouseoverStyles": "documentNode_over",
+    "mousedownStyles": "documentNode_down",
+    "holdMouseDownStyles" : true
+//    "action": "open"
+  },
+  "items": [
+    {
+      "name": "sequence",
+      "head": {
+        "html": "<th styles='normalThNode' lable='sequence'></th>"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode'><div item='sequence'></div></td>",
+        "items": {
+          "sequence" : {
+            "value": "function(){var opt=this.view.paging.options; return ( opt.countPerPage * (opt.currentPage-1) ) + this.index +1}"
+          }
+        }
+      }
+    },
+//    {
+//      "name": "docTitle",
+//      "head": {
+//        "html": "<th styles='normalThNode' lable='docTitle'></th>",
+//        "width": "38%"
+//      },
+//      "content": {
+//        "html": "<td styles='normalTdCenterNode' width='30%' name='title'><div item='docTitle'></div></td>",
+//        "items": {
+//          "docTitle" : {}
+//        }
+//      }
+//    },
+//    {
+//      "name": "docType",
+//      "head": {
+//        "html": "<th styles='normalThNode' lable='docType'></th>",
+//        "width": "14%"
+//      },
+//      "content": {
+//        "html": "<td styles='normalTdCenterNode' width='14%'><div item='docType'></div></td>",
+//        "items": {
+//          "docType" : {
+//            "value": "function(d){ if(d.docType==='cms'){return '内容管理'}else if(d.docType==='process'){return '流程管理'}else{return '自建表'} }"
+//          }
+//        }
+//      }
+//    },
+    {
+      "name": "status",
+      "head": {
+        "html": "<th styles='normalThNode' lable='status'></th>"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode'><div item='status'></div></td>",
+        "items": {
+          "status" : {}
+        }
+      }
+    },
+    {
+      "name": "createTime",
+      "head": {
+        "html": "<th styles='normalThNode' lable='importTime'></th>"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode'><div item='createTime'></div></td>",
+        "items": {
+          "createTime" : {}
+        }
+      }
+    },
+    {
+      "name": "importData",
+      "head": {
+        "html": "<th styles='normalThNode' lable='importData'></th>"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='importData'></td>",
+        "items": {
+          "importData" : {
+            "value": "function(d){return ''}"
+//            "value": "function(d){ var data = JSON.parse(d.srcData||'[]'); if(o2.typeOf(data)==='array'){return data.join('  ');}else if(o2.typeOf(data)==='object'){return Object.values(data).join('  ');}else{return data;} }"
+          }
+        }
+      }
+    },
+    {
+      "name": "errorInfor",
+      "condition": "function( d ){ return ['导入失败','部分成功'].contains(this.explorer.data.status) && ['','导入失败'].contains(this.explorer.currentStatus) }",
+      "head": {
+        "html": "<th styles='normalThNode' lable='errorInfor'></th>"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'><div item='errorInfor'></div></td>",
+        "items": {
+          "errorInfor" : {
+            "value": "function(d){ return d.distribution || '' }"
+          }
+        }
+      }
+    },
+    {
+
+      "condition": "function( d ){ return ['导入成功','部分成功'].contains(this.explorer.data.status) && ['','导入成功'].contains(this.explorer.currentStatus) && this.explorer.importerJSON.type!=='dynamicTable'}",
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode'><div styles='documentActionNode' item='open'></div></td>",
+        "items": {
+          "open": {
+            "title": "open",
+            "text": "open",
+            "action": "open",
+            "condition": "function( d ){ return ['cms','process'].contains(d.docType) && d.docId && d.status==='导入成功'}",
+            "styles": "actionNode"
+//            "mouseoverStyles": "actionDeleteNode_over",
+//            "mousedownStyles": "actionDeleteNode_down"
+          }
+        }
+      }
+    }
+  ]
+}
