@@ -1,18 +1,18 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableTitle">字段标题:</td>
+                <td class="editTableTitle">{{$.lp.fieldTitle}}:</td>
                 <td class="editTableValue"><input type="text" name="displayName" value="text{$.displayName}" class="editTableInput"/></td>
             </tr>
         </table>
 
         <div style="border-top: 1px solid #999; margin-top:10px">
-            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">数据</div>
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.data}}</div>
             <div class="MWFDataData" id="text{$.pid}dataDataEditor">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">字段路径:</td>
+                        <td class="editTableTitle">{{$.lp.fieldPath}}:</td>
                         <td class="editTableValue"><input id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
                     </tr>
                 </table>
@@ -20,133 +20,46 @@
         </div>
 
         <div style="margin-top:10px">
-<!--            <div style="display:text{($.vtype!=='querytable')?'block':'none'}" id="text{$.pid}dataTypeSelectedCMSProcessArea" class="text{$.vid}dataTypeSelectedCMSProcessArea">-->
-<!--                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--                    <tr>-->
-<!--                        <td class="editTableTitle">字段类型:</td>-->
-<!--                        <td class="editTableValue"><select id="text{$.pid}dataTypeSelectedCMSProcess" name="dataType_CMSProcess">-->
-<!--&lt;!&ndash;                                                           onchange=" var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">&ndash;&gt;-->
-<!--                            <option value="string" selected>string</option>-->
-<!--                            <option value="date">date</option>-->
-<!--                            <option value="number">number</option>-->
-<!--                            <option value="boolean">boolean</option>-->
-<!--                            <option value="stringList">stringList</option>-->
-<!--                            <option value="dateList">dateList</option>-->
-<!--                            <option value="numberList">numberList</option>-->
-<!--                            <option value="booleanList">booleanList</option>-->
-<!--                        </select></td>-->
-<!--                    </tr>-->
-<!--                </table>-->
-<!--            </div>-->
-<!--            <div style="display:text{($.vtype=='querytable')?'block':'none'}" id="text{$.pid}dataTypeSelectedQuerytableArea" class="text{$.vid}dataTypeSelectedQuerytableArea">-->
-<!--                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--                    <tr>-->
-<!--                        <td class="editTableTitle">字段类型:</td>-->
-<!--                        <td class="editTableValue"><select  id="text{$.pid}dataTypeSelectedQuerytable" name="dataType_Querytable">-->
-<!--&lt;!&ndash;                                                            onchange="var v=this.options[this.selectedIndex].value; if (v){var n = $('text{$.pid}viewColumnPathInput'); n.set('value', v); n.focus();} ">&ndash;&gt;-->
-<!--                            <option value="string">string</option>-->
-<!--                            <option value="integer">integer</option>-->
-<!--                            <option value="long">long</option>-->
-<!--                            <option value="double">double</option>-->
-<!--                            <option value="boolean">boolean</option>-->
-<!--                            <option value="date">date</option>-->
-<!--                            <option value="time">time</option>-->
-<!--                            <option value="dateTime">dateTime</option>-->
-<!--                            <option value="stringList">stringList</option>-->
-<!--                            <option value="integerList">integerList</option>-->
-<!--                            <option value="longList">longList</option>-->
-<!--                            <option value="doubleList">doubleList</option>-->
-<!--                            <option value="booleanList">booleanList</option>-->
-<!--                            <option value="stringLob">stringLob</option>-->
-<!--                            <option value="stringMap">stringMap</option>-->
-<!--                        </select></td>-->
-<!--                    </tr>-->
-<!--                </table>-->
-<!--            </div>-->
-<!--            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--                <tr class="MWFColumnExportGroup">-->
-<!--                    <td class="editTableTitle">组织对象:</td>-->
-<!--                    <td class="editTableValue">-->
-<!--                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>是-->
-<!--                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>否-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td class="editTableTitle">校验字段类型:</td>-->
-<!--                    <td class="editTableValue">-->
-<!--                        <input class="MWFWorkDataCheck" name="validFieldType" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>是-->
-<!--                        <input class="MWFWorkDataCheck" name="validFieldType" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>否-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--            </table>-->
-            <div class="MWFFormulaArea" name="valueScript" title="值脚本"></div>
+            <div class="MWFFormulaArea" name="valueScript" title="{{$.lp.valueScript}}"></div>
             <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}cmsFieldProperty" class="text{$.vid}cmsFieldProperty">
-                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">cms文档属性</div>
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.cmsProperty}}</div>
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">是否为标题:</td>
+                        <td class="editTableTitle">{{$.lp.isAuthor}}:</td>
                         <td class="editTableValue">
-                            <input name="isTitle" type="radio" value="true" text{($.isTitle)==true?'checked':''}/>是
-                            <input name="isTitle" type="radio" value="false" text{($.isTitle)!==false?'checked':''}/>否
+                            <input name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isAuthor" type="radio" value="false" text{($.isAuthor)!==true?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                     <tr>
-                        <td class="editTableTitle">是否为摘要:</td>
+                        <td class="editTableTitle">{{$.lp.isReader}}:</td>
                         <td class="editTableValue">
-                            <input name="isSummary" type="radio" value="true" text{($.isSummary)==true?'checked':''}/>是
-                            <input name="isSummary" type="radio" value="false" text{($.isSummary)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">是否置顶:</td>
-                        <td class="editTableValue">
-                            <input name="isTop" type="radio" value="true" text{($.isTop)==true?'checked':''}/>是
-                            <input name="isTop" type="radio" value="false" text{($.isTop)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">是否为创建人:</td>
-                        <td class="editTableValue">
-                            <input name="isPublisher" type="radio" value="true" text{($.isPublisher)==true?'checked':''}/>是
-                            <input name="isPublisher" type="radio" value="false" text{($.isPublisher)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">是否作者:</td>
-                        <td class="editTableValue">
-                            <input name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>是
-                            <input name="isAuthor" type="radio" value="false" text{($.isAuthor)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">是否读者:</td>
-                        <td class="editTableValue">
-                            <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>是
-                            <input name="isReader" type="radio" value="false" text{($.isReader)!==false?'checked':''}/>否
+                            <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isReader" type="radio" value="false" text{($.isReader)!==true?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                 </table>
             </div>
 
-            <div style="display:text{($.vtype=='process')?'block':'none'}" id="text{$.pid}processFieldProperty" class="text{$.vid}processFieldProperty">
-                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">流程work属性</div>
-                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                    <tr>
-                        <td class="editTableTitle">是否为标题:</td>
-                        <td class="editTableValue">
-                            <input name="isProcessTitle" type="radio" value="true" text{($.isProcessTitle)==true?'checked':''}/>是
-                            <input name="isProcessTitle" type="radio" value="false" text{($.isProcessTitle)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="editTableTitle">是否为流程发起人:</td>
-                        <td class="editTableValue">
-                            <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>是
-                            <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==false?'checked':''}/>否
-                        </td>
-                    </tr>
-                </table>
-            </div>
+<!--            <div style="display:text{($.vtype=='process')?'block':'none'}" id="text{$.pid}processFieldProperty" class="text{$.vid}processFieldProperty">-->
+<!--                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.workProperty}}</div>-->
+<!--                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--                    <tr>-->
+<!--                        <td class="editTableTitleNoWidth" style="width: 120px;">{{$.lp.isTitle}}:</td>-->
+<!--                        <td class="editTableValue">-->
+<!--                            <input name="isProcessTitle" type="radio" value="true" text{($.isProcessTitle)==true?'checked':''}/>{{$.lp.yes}}-->
+<!--                            <input name="isProcessTitle" type="radio" value="false" text{($.isProcessTitle)!==true?'checked':''}/>{{$.lp.no}}-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr style="display:text{(($.vProcessDrafter)==='importer')?'none':''}" class="text{$.vid}isProcessDrafterArea">-->
+<!--                        <td class="editTableTitle">{{$.lp.isProcessDrafter}}:</td>-->
+<!--                        <td class="editTableValue">-->
+<!--                            <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>{{$.lp.yes}}-->
+<!--                            <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==true?'checked':''}/>{{$.lp.no}}-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </div>-->
 
 
         </div>
