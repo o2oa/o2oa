@@ -232,7 +232,13 @@ MWF.xApplication.query.Query.LP = {
     "downloadTemplate": "Download Template",
     "exportErrorDataToExcel": "Export Error Data",
     "errorInfor": "error message",
+    "reExecuteImport": "Re-execute import",
+    "importPerson": "Import Person",
 
     "showFiveColumn": "(Show the first 5 columns)",
-    "showAll": "(show all)"
+    "showAll": "(show all)",
+
+    "deleteDocument": "It cannot be restored after deletion. Are you sure you want to delete the import record?",
+    "deleteDocumentTitle": "Delete Import Record Confirmation",
+    "deleteDocumentOK": "The import record was successfully deleted"
 };
