@@ -217,6 +217,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         var data = {"filterList": filterData};
         if( bundleList )data.bundleList = bundleList;
         if( excelName )data.excelName = excelName;
+        data.key = this.bundleKey;
         action.exportViewWithQuery(this.json.viewName, this.json.application, data, function(json){
             var uri = action.action.actions.getViewExcel.uri;
             uri = uri.replace("{flag}", json.data.id);
