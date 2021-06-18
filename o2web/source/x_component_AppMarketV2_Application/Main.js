@@ -84,6 +84,7 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 		this.initNodeSize();
 		if (this.options.appid){
 			debugger
+			this.loadBbsInfo(this);
 			this.actions.MarketAction.get(this.options.appid,function(json){
 				if (json.data && json.data.icon){					
 					this.appdata = json.data;
@@ -183,10 +184,39 @@ debugger;
 		
 		if (callback) callback();
 	},
+	loadBbsInfo: function(content){
+		var json = null;
+		debugger;
+		var commenturl = content.collectUrl +'/o2_collect_assemble/jaxrs/collect/config/key/(0)?time='+(new Date()).getMilliseconds();
+		debugger;
+		var res = new Request.JSON({
+			url: commenturl,
+			headers : {'x-debugger' : true,'Authorization':content.collectToken,'c-token':content.collectToken},
+			secure: false,
+			method: "get",
+			async: false,
+			withCredentials: true,
+			contentType : 'application/json',
+			crossDomain : true,
+			onSuccess: function(responseJSON, responseText){
+				json = responseJSON;
+				debugger;
+				this.bbsUrlPath = json.data.bbsUrlPath;
+				this.bbsUrl = json.data.bbsUrl;
+			}.bind(this),
+			onFailure: function(xhr){
+				o2.runCallback(callback, "requestFailure", [xhr]);
+			}.bind(this),
+			onError: function(text, error){
+				o2.runCallback(callback, "error", [text, error]);
+			}.bind(this)
+		});
+		res.send();
+	},
 	loadCommentsGrade: function(appdata){
     	debugger;
 		var json = null;
-		var commenturl =  this.lp.commentpath +'/x_bbs_assemble_control/jaxrs/subject/statgrade/sectionName/'+encodeURI(this.lp.title)+'/subjectType/'+encodeURI(appdata.name)+'?time='+(new Date()).getMilliseconds();
+		var commenturl =  this.bbsUrlPath +'/x_bbs_assemble_control/jaxrs/subject/statgrade/sectionName/'+encodeURI(this.lp.title)+'/subjectType/'+encodeURI(appdata.name)+'?time='+(new Date()).getMilliseconds();
 		var res = new Request.JSON({
 			url: commenturl,
 			headers : {'x-debugger' : true,'Authorization':this.collectToken,'c-token':this.collectToken},
@@ -304,7 +334,7 @@ debugger;
 	},
 	recordStatus: function(){
 	    debugger;
-        return {"appid": this.options.appid,"appname":this.options.appname};x
+        return {"appid": this.options.appid,"appname":this.options.appname};
     },
     numberFix:function(data,n){
         var numbers = '';
