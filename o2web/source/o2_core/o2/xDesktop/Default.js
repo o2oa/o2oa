@@ -1725,31 +1725,29 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.badgeNode.set("title", o2.LP.desktop.addLnk).addClass("icon_add_red");
     },
     loadText: function(){
-        debugger;
-        var appNames = this.data.path.split(".");
-        var o = o2.xApplication;
-        appNames.each(function(name){
-            if (!o[name]) o[name] = {};
-            o = o[name];
-        });
+        if (this.data.path){
+            var appNames = this.data.path.split(".");
+            var o = o2.xApplication;
+            appNames.each(function(name){
+                if (!o[name]) o[name] = {};
+                o = o[name];
+            });
 
-        o2.xDesktop.requireApp(this.data.path, "lp." + o2.language, {
-            "onSuccess": function(){
-                if (o.LP && o.LP.title) {
-                    this.textNode.set("text", o.LP.title);
-                }else{
+            o2.xDesktop.requireApp(this.data.path, "lp." + o2.language, {
+                "onSuccess": function(){
+                    if (o.LP && o.LP.title) {
+                        this.textNode.set("text", o.LP.title);
+                    }else{
+                        this.textNode.set("text", this.data.title || this.data.name);
+                    }
+                }.bind(this),
+                "onFailure": function () {
                     this.textNode.set("text", this.data.title || this.data.name);
-                }
-            }.bind(this),
-            "onFailure": function () {
-                this.textNode.set("text", this.data.title || this.data.name);
-            }.bind(this)
-        }, false);
-
-        // var root = "x_component_"+this.data.path.join("_");
-        // var lp = "../"+root+"/lp/"+o2.language+".js";
-        // o2.load(lp, loadModuls);
-
+                }.bind(this)
+            }, false);
+        }else{
+            this.textNode.set("text", this.data.title);
+        }
     },
     setEvent: function(){
         this.node.addEvents({
