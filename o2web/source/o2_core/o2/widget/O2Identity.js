@@ -588,12 +588,12 @@ o2.widget.O2QueryTable = new Class({
     }
 });
 
-o2.widget.O2QueryImportModule = new Class({
+o2.widget.O2QueryImportModel = new Class({
     Extends: o2.widget.O2View,
     getPersonData: function(){
         if (!this.data.query && this.data.id){
             var data = null;
-            o2.Actions.get("x_query_assemble_surface").getImportModuleById(this.data.id, function(json){
+            o2.Actions.get("x_query_assemble_surface").getImportModelById(this.data.id, function(json){
                 data = json.data
             }, null, false);
             this.data = data;

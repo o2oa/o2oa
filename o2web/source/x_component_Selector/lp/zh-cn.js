@@ -22,7 +22,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "noSelectableItemText" : "无待选项",
     "selectScript" : "选择脚本",
     "selectDictionary" : "选择数据字典",
-    "selectImportModule": "选择导入模型",
+    "selectImportModel": "选择导入模型",
 
     "searchDescription" : "搜索内容",
 
