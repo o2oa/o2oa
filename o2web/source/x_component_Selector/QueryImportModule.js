@@ -1,6 +1,6 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
 MWF.xDesktop.requireApp("Selector", "Person", null, false);
-MWF.xApplication.Selector.QueryImportModule = new Class({
+MWF.xApplication.Selector.QueryImportModel = new Class({
     Extends: MWF.xApplication.Selector.Person,
     options: {
         "style": "default",
@@ -12,24 +12,24 @@ MWF.xApplication.Selector.QueryImportModule = new Class({
         "forceSearchInItem" : true
     },
     setInitTitle: function(){
-        this.setOptions({"title": MWF.xApplication.Selector.LP.selectImportModule});
+        this.setOptions({"title": MWF.xApplication.Selector.LP.selectImportModel});
     },
     _init : function(){
-        this.selectType = "queryImportModule";
-        this.className = "QueryImportModule";
+        this.selectType = "queryImportModel";
+        this.className = "QueryImportModel";
     },
     loadSelectItems: function(addToNext){
         this.queryAction.listApplication(function(json){
             if (json.data.length){
                 json.data.each(function(data){
-                    if (!data.importModuleList){
-                        this.queryAction.listImportModule(data.id, function(importModulesJson){
-                            data.importModuleList = importModulesJson.data;
+                    if (!data.importModelList){
+                        this.queryAction.listImportModel(data.id, function(importModelsJson){
+                            data.importModelList = importModelsJson.data;
                         }.bind(this), null, false);
                     }
-                    if (data.importModuleList && data.importModuleList.length){
+                    if (data.importModelList && data.importModelList.length){
                         var category = this._newItemCategory(data, this, this.itemAreaNode);
-                        data.importModuleList.each(function(d){
+                        data.importModelList.each(function(d){
                             d.applicationName = data.name;
                             var item = this._newItem(d, this, category.children);
                             this.items.push(item);
@@ -44,31 +44,31 @@ MWF.xApplication.Selector.QueryImportModule = new Class({
         return true;
     },
     _getChildrenItemIds: function(data){
-        return data.importModuleList || [];
+        return data.importModelList || [];
     },
     _newItemCategory: function(data, selector, item, level){
-        return new MWF.xApplication.Selector.QueryImportModule.ItemCategory(data, selector, item, level)
+        return new MWF.xApplication.Selector.QueryImportModel.ItemCategory(data, selector, item, level)
     },
 
     _listItemByKey: function(callback, failure, key){
         return false;
     },
     _getItem: function(callback, failure, id, async){
-        this.queryAction.getImportModule(function(json){
+        this.queryAction.getImportModel(function(json){
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, ((typeOf(id)==="string") ? id : id.id), async);
     },
     _newItemSelected: function(data, selector, item){
-        return new MWF.xApplication.Selector.QueryImportModule.ItemSelected(data, selector, item)
+        return new MWF.xApplication.Selector.QueryImportModel.ItemSelected(data, selector, item)
     },
     _listItemByPinyin: function(callback, failure, key){
         return false;
     },
     _newItem: function(data, selector, container, level){
-        return new MWF.xApplication.Selector.QueryImportModule.Item(data, selector, container, level);
+        return new MWF.xApplication.Selector.QueryImportModel.Item(data, selector, container, level);
     }
 });
-MWF.xApplication.Selector.QueryImportModule.Item = new Class({
+MWF.xApplication.Selector.QueryImportModel.Item = new Class({
     Extends: MWF.xApplication.Selector.Person.Item,
     _getShowName: function(){
         return this.data.name;
@@ -116,7 +116,7 @@ MWF.xApplication.Selector.QueryImportModule.Item = new Class({
     }
 });
 
-MWF.xApplication.Selector.QueryImportModule.ItemSelected = new Class({
+MWF.xApplication.Selector.QueryImportModel.ItemSelected = new Class({
     Extends: MWF.xApplication.Selector.Person.ItemSelected,
     _getShowName: function(){
         return this.data.name;
@@ -145,7 +145,7 @@ MWF.xApplication.Selector.QueryImportModule.ItemSelected = new Class({
     }
 });
 
-MWF.xApplication.Selector.QueryImportModule.ItemCategory = new Class({
+MWF.xApplication.Selector.QueryImportModel.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Person.ItemCategory,
     _getShowName: function(){
         return this.data.name;
@@ -159,7 +159,7 @@ MWF.xApplication.Selector.QueryImportModule.ItemCategory = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/applicationicon.png)");
     },
     _hasChild: function(){
-        return (this.data.importModuleList && this.data.importModuleList.length);
+        return (this.data.importModelList && this.data.importModelList.length);
     },
     check: function(){}
 });

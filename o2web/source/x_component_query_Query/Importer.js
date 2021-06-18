@@ -61,7 +61,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     },
     getImporterJSON: function(callback){
         if (this.json.name){
-            this.lookupAction.getImportModule(this.json.name, this.json.application, function(json){
+            this.lookupAction.getImportModel(this.json.name, this.json.application, function(json){
                 this.importerId = json.data.id;
                 this.importerJson = JSON.decode(json.data.data);
                 json.data.data = this.importerJson;
@@ -69,7 +69,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                 if (callback) callback();
             }.bind(this));
         }else{
-            this.lookupAction.getImportModuleById(this.json.id, function(json){
+            this.lookupAction.getImportModelById(this.json.id, function(json){
                 this.importerId = json.data.id;
                 this.importerJson = JSON.decode(json.data.data);
                 json.data.data = this.importerJson;
@@ -183,7 +183,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         this.lookupAction.getUUID(function(json){
             this.recordId = json.data;
-            this.lookupAction.executImportModule(this.json.id, {
+            this.lookupAction.executImportModel(this.json.id, {
                 "recordId": this.recordId,
                 "data" : data
             }, function () {
@@ -1598,7 +1598,7 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
         this.recordId = recordId;
         this.currentDate = new Date();
         this.intervalId = window.setInterval( function(){
-            this.actions.getImportModuleRecordStatus( this.recordId, function( json ){
+            this.actions.getImportModelRecordStatus( this.recordId, function( json ){
                 var data = json.data;
                 this.status = data.status;
                 if( data.status === "待导入" ) { //有其他人正在导入或上次导入还未完成
