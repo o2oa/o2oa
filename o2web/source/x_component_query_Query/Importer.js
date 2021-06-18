@@ -9,7 +9,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     Extends: MWF.widget.Common,
     options: {
         "style": "default",
-        "moduleEvents": ["queryLoad", "postLoadJson","postLoad", "beforeImport", "afterImport", "validImport", "beforeCreateRowData", "afterCreateRowData", "saveRow"]
+        "moduleEvents": ["queryLoad", "beforeImport", "afterImport", "validImport", "beforeCreateRowData", "afterCreateRowData"]
     },
     initialize: function(container, json, options, app, parentMacro){
 
