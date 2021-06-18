@@ -317,7 +317,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "htmledit": "HTML编辑器",
         "office": "Office控件",
         "statementSelector": "选择查询视图",
-        "statement": "嵌入查询视图"
+        "statement": "嵌入查询视图",
+        "importer": "数据导入"
     },
     "propertyTemplate": {
         "base": "基本",
@@ -920,7 +921,8 @@ MWF.xApplication.process.FormDesigner.LP = {
             "1、单层或者是最外层的数据模板，填\"fieldId\"，表示表单上的直接组件。<br/>" +
             "2、如果有多层数据模板，\"./fieldId\"表示和当前数据模板同层次的组件，\"../fieldId\"表示和上一层数据模板同层次的组件，以此类推。<br/>" +
             "3、如果有多层数据模板，也可通过\"datatemplateId.*.datatemplateId2.*.fieldId\"来表示全层次路径。datatemplateId表示第一层数据模板的id，datatemplateId2表示第二层的id。",
-        "datatemplateInnerNote": "注:  不管单层还是多层数据模板，直接填写组件的标识。"
+        "datatemplateInnerNote": "注:  不管单层还是多层数据模板，直接填写组件的标识。",
+        "importModule": "导入模型"
     },
     "actionBar": {
         "close":"关闭",

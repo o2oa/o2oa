@@ -319,7 +319,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "htmledit": "Htmleditor",
         "office": "Office",
         "statementSelector": "StatementSelector",
-        "statement": "Statement"
+        "statement": "Statement",
+        "importer": "DataImporter"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -916,7 +917,8 @@ MWF.xApplication.process.FormDesigner.LP = {
             "1. Single layer or the outermost data template, fill in \"fieldId\" to indicate the direct component on the form.<br/>" +
             "2. If there are multiple data templates, \"./fieldId\" means components at the same level as the current data template, \"../fieldId\" means components at the same level as the previous data template, and so on .<br/>" +
             "3. If there is a multi-layer data template, you can also use \"datatemplateId.*.datatemplateId2.*.fieldId\" to indicate the full-level path. datatemplateId indicates the id of the first-level data template, and datatemplateId2 indicates the id of the second-level. ",
-        "datatemplateInnerNote": "Note: Regardless of single-layer or multi-layer data template, directly fill in the component ID."
+        "datatemplateInnerNote": "Note: Regardless of single-layer or multi-layer data template, directly fill in the component ID.",
+        "importModule": "Import Module"
     },
     "actionBar": {
         "close":"Close",
