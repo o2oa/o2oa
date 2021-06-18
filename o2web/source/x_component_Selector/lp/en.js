@@ -22,7 +22,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "noSelectableItemText": "No option to be selected",
     "selectScript": "Select Script",
     "selectDictionary": "Select Data Dictionary",
-    "selectImportModule": "Select Import Module",
+    "selectImportModel": "Select Import Module",
 
     "searchDescription" : "search",
 

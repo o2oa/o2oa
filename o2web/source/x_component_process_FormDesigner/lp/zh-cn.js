@@ -922,7 +922,7 @@ MWF.xApplication.process.FormDesigner.LP = {
             "2、如果有多层数据模板，\"./fieldId\"表示和当前数据模板同层次的组件，\"../fieldId\"表示和上一层数据模板同层次的组件，以此类推。<br/>" +
             "3、如果有多层数据模板，也可通过\"datatemplateId.*.datatemplateId2.*.fieldId\"来表示全层次路径。datatemplateId表示第一层数据模板的id，datatemplateId2表示第二层的id。",
         "datatemplateInnerNote": "注:  不管单层还是多层数据模板，直接填写组件的标识。",
-        "importModule": "导入模型"
+        "importModel": "导入模型"
     },
     "actionBar": {
         "close":"关闭",
