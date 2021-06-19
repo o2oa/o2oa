@@ -1,0 +1,63 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.id}}:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.name}}</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.description}}:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		</table>
+		
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
+
+        <div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.importModel}}:</td>
+                    <td class="editTableValue"><div class="MWFQueryImportModelSelect" name="queryImportModel"></div></td>
+                </tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.downloadTempalte}}:</td>
+					<td class="editTableValue">
+						<input name="allowDownloadTempalte" type="radio" value="true" text{($.allowDownloadTempalte)!==false?'checked':''}
+							   onclick="if (this.checked){ $('text{$.pid}downloadTempalteFieldIdDiv').setStyle('display', '')}" />{{$.lp.enable}}
+						<input name="allowDownloadTempalte" type="radio" value="false" text{($.allowDownloadTempalte)===false?'checked':''}
+							   onclick="if (this.checked){ $('text{$.pid}downloadTempalteFieldIdDiv').setStyle('display', 'none')}"  />{{$.lp.disable}}
+					</td>
+				</tr>
+			</table>
+			<div id="text{$.pid}downloadTempalteFieldIdDiv" style="display: text{($.allowDownloadTempalte!==false)?'':'none'};">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">{{$.lp.downloadTempalteId}}:</td>
+						<td class="editTableValue" style="position: relative;">
+							<input type="text" name="downloadTempalteFieldId" value="text{$.downloadTempalteFieldId}" class="editTableInputNoWidth" style="width:60%;margin-right: 16px;"/>
+							<div class="MWFHelp" style="position: absolute;height: 16px;width: 16px;top:4px;right:4px;background: url('../x_component_process_FormDesigner/$Main/default/formtoolbar/question.png')">
+								{{$.lp.downloadTempalteIdNote}}
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="MWFFormulaArea" name="excelName" title="{{$.lp.exportFileName}}"></div>
+        </div>
+	</div>
+
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+        <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

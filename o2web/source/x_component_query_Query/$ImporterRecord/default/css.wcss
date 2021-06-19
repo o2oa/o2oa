@@ -156,7 +156,6 @@
   "documentActionNode": {
     "font-size" : "12px",
     "height": "20px",
-    "width": "20px",
     "line-height": "20px",
     "color": "#0066cc",
     "cursor": "pointer",
