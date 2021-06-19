@@ -1790,8 +1790,8 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 	},
 	getExcelName: function(){
 		var title;
-		if( this.form.json.excelName && this.form.json.excelName.code ){
-			title = this.form.Macro.exec(this.form.json.excelName.code, this);
+		if( this.datatable.json.excelName && this.datatable.json.excelName.code ){
+			title = this.form.Macro.exec(this.datatable.json.excelName.code, this);
 		}else{
 			title = MWF.xApplication.process.Xform.LP.datatableExportDefaultName;
 		}
