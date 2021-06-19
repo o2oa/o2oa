@@ -47,3 +47,4 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Office", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Comment", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Statement", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.StatementSelector", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Importer", null, false);
