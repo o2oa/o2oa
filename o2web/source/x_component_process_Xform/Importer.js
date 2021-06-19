@@ -36,12 +36,19 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class({
     },
     upload: function () {
 	    debugger;
-	    this.json.queryImportModel;
-        MWF.xDesktop.requireApp("query.Query", "Importer", function () {
-            var importer = new MWF.xApplication.query.Query.Importer(this.form.app.content, {
+	    var options;
+	    if( this.json.queryImportModel.id ){
+            options = {
+                "id" : this.json.queryImportModel.id
+            };
+        }else{
+            options = {
                 "application": this.json.queryImportModel.application || this.json.queryImportModel.appName,
-                "name": this.json.queryImportModel.id || this.json.queryImportModel.alias || this.json.queryImportModel.name
-            }, {}, this.form.app, this.form.Macro);
+                "name": this.json.queryImportModel.alias || this.json.queryImportModel.name
+            }
+        }
+        MWF.xDesktop.requireApp("query.Query", "Importer", function () {
+            var importer = new MWF.xApplication.query.Query.Importer(this.form.app.content, options, {}, this.form.app, this.form.Macro);
             importer.load();
         }.bind(this));
     },
@@ -63,13 +70,31 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class({
         this.form.addEvent("afterModulesLoad", this.bindEvent );
     },
     downloadTemplate: function(){
-        MWF.xDesktop.requireApp("query.Query", "Importer", function () {
-            var importer = new MWF.xApplication.query.Query.Importer(this.form.app.content, {
+
+        var options;
+        if( this.json.queryImportModel.id ){
+            options = {
+                "id" : this.json.queryImportModel.id
+            };
+        }else{
+            options = {
                 "application": this.json.queryImportModel.application || this.json.queryImportModel.appName,
-                "name": this.json.queryImportModel.id || this.json.queryImportModel.alias || this.json.queryImportModel.name
-            }, {}, this.form.app, this.form.Macro);
-            importer.downloadTemplate(fileName);
+                "name": this.json.queryImportModel.alias || this.json.queryImportModel.name
+            }
+        }
+        MWF.xDesktop.requireApp("query.Query", "Importer", function () {
+            var importer = new MWF.xApplication.query.Query.Importer(this.form.app.content, options, {}, this.form.app, this.form.Macro);
+            importer.downloadTemplate( this.getExcelName() );
         }.bind(this));
+    },
+
+    getExcelName: function(){
+	    debugger;
+        var title;
+        if( this.json.excelName && this.json.excelName.code ){
+            title = this.form.Macro.exec(this.json.excelName.code, this);
+        }
+        return title || ""
     }
 	
 }); 
