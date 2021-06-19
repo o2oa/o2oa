@@ -357,21 +357,23 @@ public class Business {
 			if(BooleanUtils.isTrue(o.getAnonymousAccessible())){
 				result = true;
 			}else {
-				if (ListTools.isEmpty(o.getExecutePersonList()) && ListTools.isEmpty(o.getExecuteUnitList())) {
-					result = true;
-				}
-				if (!result) {
-					if (effectivePerson.isManager()
-							|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-							OrganizationDefinition.QueryManager))
-							|| effectivePerson.isPerson(o.getExecutePersonList())) {
+				if (!effectivePerson.isAnonymous()) {
+					if (ListTools.isEmpty(o.getExecutePersonList()) && ListTools.isEmpty(o.getExecuteUnitList())) {
 						result = true;
 					}
-					if ((!result) && ListTools.isNotEmpty(o.getExecuteUnitList())) {
-						List<String> units = this.organization().unit()
-								.listWithPerson(effectivePerson.getDistinguishedName());
-						if (ListTools.containsAny(units, o.getExecuteUnitList())) {
+					if (!result) {
+						if (effectivePerson.isManager()
+								|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+								OrganizationDefinition.QueryManager))
+								|| effectivePerson.isPerson(o.getExecutePersonList())) {
 							result = true;
+						}
+						if ((!result) && ListTools.isNotEmpty(o.getExecuteUnitList())) {
+							List<String> units = this.organization().unit()
+									.listWithPerson(effectivePerson.getDistinguishedName());
+							if (ListTools.containsAny(units, o.getExecuteUnitList())) {
+								result = true;
+							}
 						}
 					}
 				}
