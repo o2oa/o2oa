@@ -264,7 +264,8 @@ MWF.APPPD.LP = {
         "sourceText": "数据文本",
         "widget": "部件",
         "widgetmodules": "部件元素",
-        "address": "地址"
+        "address": "地址",
+        "importer": "数据导入"
     },
     "filedConfigurator": {
         "sequence": "序号",
