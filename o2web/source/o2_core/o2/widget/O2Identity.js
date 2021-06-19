@@ -450,7 +450,7 @@ o2.widget.O2CMSCategory = new Class({
 o2.widget.O2View = new Class({
     Extends: o2.widget.O2Group,
     getPersonData: function(){
-        if (!this.data.query){
+        if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.get("x_query_assemble_surface").getStatById(this.data.id, function(json){
                 data = json.data
@@ -483,7 +483,7 @@ o2.widget.O2CMSView = new Class({
 o2.widget.O2QueryView = new Class({
     Extends: o2.widget.O2View,
     getPersonData: function(){
-        if (!this.data.query){
+        if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.get("x_query_assemble_surface").getViewById(this.data.id, function(json){
                 data = json.data
@@ -510,7 +510,7 @@ o2.widget.O2QueryView = new Class({
 o2.widget.O2QueryStatement = new Class({
     Extends: o2.widget.O2View,
     getPersonData: function(){
-        if (!this.data.query){
+        if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.load("x_query_assemble_designer").StatementAction.get(this.data.id, function(json){
                 data = json.data
@@ -537,7 +537,7 @@ o2.widget.O2QueryStatement = new Class({
 o2.widget.O2QueryStat = new Class({
     Extends: o2.widget.O2View,
     getPersonData: function(){
-        if (!this.data.query){
+        if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.get("x_query_assemble_surface").getStatById(this.data.id, function(json){
                 data = json.data
@@ -560,10 +560,11 @@ o2.widget.O2QueryStat = new Class({
         }
     }
 });
+
 o2.widget.O2QueryTable = new Class({
     Extends: o2.widget.O2View,
     getPersonData: function(){
-        if (!this.data.query){
+        if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.get("x_query_assemble_surface").getTableById(this.data.id, function(json){
                 data = json.data
@@ -586,6 +587,34 @@ o2.widget.O2QueryTable = new Class({
         }
     }
 });
+
+o2.widget.O2QueryImportModel = new Class({
+    Extends: o2.widget.O2View,
+    getPersonData: function(){
+        if (!this.data.query && this.data.id){
+            var data = null;
+            o2.Actions.get("x_query_assemble_surface").getImportModelById(this.data.id, function(json){
+                data = json.data
+            }, null, false);
+            this.data = data;
+            return data;
+        }else{
+            return this.data;
+        }
+    },
+    open : function (e) {
+        if( this.data.id && this.data.query){
+            var appId = "query.ImporterDesigner" + this.data.id;
+            if (layout.desktop.apps[appId]){
+                layout.desktop.apps[appId].setCurrent();
+            }else {
+                var options = {"id": this.data.id,"application": this.data.query, "appId": appId};
+                layout.desktop.openApplication(e, "query.ImporterDesigner", options);
+            }
+        }
+    }
+});
+
 o2.widget.O2FormField = new Class({
     Extends: o2.widget.O2Group,
     getPersonData: function(){
