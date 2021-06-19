@@ -28,21 +28,26 @@
 					<td class="editTableTitle">{{$.lp.downloadTempalte}}:</td>
 					<td class="editTableValue">
 						<input name="allowDownloadTempalte" type="radio" value="true" text{($.allowDownloadTempalte)!==false?'checked':''}
-							   onclick="if (this.checked){ $('text{$.pid}downloadTempalteFieldIdTr').setStyle('display', '')}" />{{$.lp.enable}}
+							   onclick="if (this.checked){ $('text{$.pid}downloadTempalteFieldIdDiv').setStyle('display', '')}" />{{$.lp.enable}}
 						<input name="allowDownloadTempalte" type="radio" value="false" text{($.allowDownloadTempalte)===false?'checked':''}
-							   onclick="if (this.checked){ $('text{$.pid}downloadTempalteFieldIdTr').setStyle('display', 'none')}"  />{{$.lp.disable}}
+							   onclick="if (this.checked){ $('text{$.pid}downloadTempalteFieldIdDiv').setStyle('display', 'none')}"  />{{$.lp.disable}}
 					</td>
 				</tr>
-				<tr id="text{$.pid}downloadTempalteFieldIdTr" style="display: text{($.allowDownloadTempalte!==false)?'':'none'};">
-					<td class="editTableTitle">{{$.lp.downloadTempalteId}}:</td>
-					<td class="editTableValue" style="position: relative;">
-						<input type="text" name="downloadTempalteFieldId" value="text{$.downloadTempalteFieldId}" class="editTableInputNoWidth" style="width:60%;margin-right: 16px;"/>
-						<div class="MWFHelp" style="position: absolute;height: 16px;width: 16px;top:4px;right:4px;background: url('../x_component_process_FormDesigner/$Main/default/formtoolbar/question.png')">
-							{{$.lp.downloadTempalteIdNote}}
-						</div>
-					</td>
-				</tr>
-            </table>
+			</table>
+			<div id="text{$.pid}downloadTempalteFieldIdDiv" style="display: text{($.allowDownloadTempalte!==false)?'':'none'};">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">{{$.lp.downloadTempalteId}}:</td>
+						<td class="editTableValue" style="position: relative;">
+							<input type="text" name="downloadTempalteFieldId" value="text{$.downloadTempalteFieldId}" class="editTableInputNoWidth" style="width:60%;margin-right: 16px;"/>
+							<div class="MWFHelp" style="position: absolute;height: 16px;width: 16px;top:4px;right:4px;background: url('../x_component_process_FormDesigner/$Main/default/formtoolbar/question.png')">
+								{{$.lp.downloadTempalteIdNote}}
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="MWFFormulaArea" name="excelName" title="{{$.lp.exportFileName}}"></div>
         </div>
 	</div>
 

@@ -1381,8 +1381,8 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 	},
 	getExcelName: function(){
 		var title;
-		if( this.form.json.excelName && this.form.json.excelName.code ){
-			title = this.form.Macro.exec(this.form.json.excelName.code, this);
+		if( this.template.json.excelName && this.template.json.excelName.code ){
+			title = this.form.Macro.exec(this.template.json.excelName.code, this);
 		}else{
 			title = MWF.xApplication.process.Xform.LP.datatemplateExportDefaultName;
 		}
