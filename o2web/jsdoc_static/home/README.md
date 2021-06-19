@@ -43,7 +43,7 @@
     <tr>
         <td><a href="module-o2m.html">平台移动APP API - o2m</a></td>
         <td><a href="module-wait.html">表单等待 - wait</a></td>
-        <td></td>
+        <td><a href="module-importer.html">导入数据 - importer</a></td>
     </tr>
 </table>
 
@@ -123,6 +123,11 @@
         <td><a href="MWF.xApplication.process.Xform.DatatablePC.html">数据表格PC端 - DatatablePC</a></td>
         <td><a href="MWF.xApplication.process.Xform.DatatableMobile.html">数据表格移动端 - DatatableMobile</a></td>
     </tr>
+    <tr>
+        <td><a href="MWF.xApplication.process.Xform.Importer.html">数据导入 - Importer</a></td>
+        <td></td>
+        <td></td>
+    </tr>
 </table>
 
 
@@ -197,7 +202,7 @@
     <tr>
         <td><a href="MWF.xApplication.process.Xform.DatatablePC.html">数据表格PC端 - DatatablePC</a></td>
         <td><a href="MWF.xApplication.process.Xform.DatatableMobile.html">数据表格移动端 - DatatableMobile</a></td>
-        <td></td>
+        <td><a href="MWF.xApplication.process.Xform.Importer.html">数据导入 - Importer</a></td>
     </tr>
 </table>
 
@@ -251,7 +256,7 @@
     <tr>
         <td><a href="MWF.xApplication.process.Xform.DatatablePC.html">数据表格PC端 - DatatablePC</a></td>
         <td><a href="MWF.xApplication.process.Xform.DatatableMobile.html">数据表格移动端 - DatatableMobile</a></td>
-        <td></td>
+        <td><a href="MWF.xApplication.process.Xform.Importer.html">数据导入 - Importer</a></td>
     </tr>
 </table>
 

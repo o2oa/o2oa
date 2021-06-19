@@ -20,8 +20,7 @@ MWF.xApplication.query.ImporterDesigner.Main = new Class({
             "unCategory": MWF.APPDIPD.LP.unCategory
         },
         "actions": null,
-        "category": null,
-        "processData": null
+        "category": null
     },
 
     onQueryLoad: function(){

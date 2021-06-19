@@ -34,3 +34,4 @@ MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Statement", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Datagrid", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Datatable", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Datatemplate", null, false);
+MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Importer", null, false);
