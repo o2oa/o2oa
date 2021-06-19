@@ -9,7 +9,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     Extends: MWF.widget.Common,
     options: {
         "style": "default",
-        "moduleEvents": ["queryLoad", "postLoadJson","postLoad", "beforeImport", "afterImport", "validImport", "beforeCreateRowData", "afterCreateRowData", "saveRow"]
+        "moduleEvents": ["queryLoad", "beforeImport", "afterImport", "validImport", "beforeCreateRowData", "afterCreateRowData"]
     },
     initialize: function(container, json, options, app, parentMacro){
 
@@ -32,15 +32,13 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
     },
     load: function(){
-
         this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
 
         this.getImporterJSON( function () {
             this.loadMacro( function () {
                 this._loadModuleEvents();
-                if (this.fireEvent("queryLoad")){
-                    this.importFromExcel()
-                }
+                this.fireEvent("queryLoad");
+                this.importFromExcel()
             }.bind(this))
         }.bind(this))
 
@@ -60,23 +58,27 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         loadingTextNode.set("text", "loading...");
     },
     getImporterJSON: function(callback){
-        if (this.json.name){
-            this.lookupAction.getImportModule(this.json.name, this.json.application, function(json){
-                this.importerId = json.data.id;
-                this.importerJson = JSON.decode(json.data.data);
-                json.data.data = this.importerJson;
-                this.json = Object.merge(this.json, json.data);
-                if (callback) callback();
-            }.bind(this));
+        if( this.importerJson && this.json ){
+            if (callback) callback();
         }else{
-            this.lookupAction.getImportModuleById(this.json.id, function(json){
-                this.importerId = json.data.id;
-                this.importerJson = JSON.decode(json.data.data);
-                json.data.data = this.importerJson;
-                this.json.application = json.data.query;
-                this.json = Object.merge(this.json, json.data);
-                if (callback) callback();
-            }.bind(this));
+            if (this.json.name){
+                this.lookupAction.getImportModel(this.json.name, this.json.application, function(json){
+                    this.importerId = json.data.id;
+                    this.importerJson = JSON.decode(json.data.data);
+                    json.data.data = this.importerJson;
+                    this.json = Object.merge(this.json, json.data);
+                    if (callback) callback();
+                }.bind(this));
+            }else{
+                this.lookupAction.getImportModelById(this.json.id, function(json){
+                    this.importerId = json.data.id;
+                    this.importerJson = JSON.decode(json.data.data);
+                    json.data.data = this.importerJson;
+                    this.json.application = json.data.query;
+                    this.json = Object.merge(this.json, json.data);
+                    if (callback) callback();
+                }.bind(this));
+            }
         }
     },
     _loadModuleEvents : function(){
@@ -126,7 +128,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
                     if( this.importedData.length > 0 )this.importedData.shift();
 
-                    this.fireEvent("beforeImport");
+                    this.fireEvent("beforeImport", [this.importedData]);
 
                     this.listAllOrgDataByImport( function () {
                         this.importedData.each( function( lineData, lineIndex ){
@@ -149,7 +151,6 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         var data = ( this.rowList || [] ).map( function(row){
             return row.getResult();
         });
-        debugger;
         return data;
     },
     doImportData: function(){
@@ -163,33 +164,31 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         this.rowList.each( function(row, index){
             if( row.errorTextList.length )flag = false;
         }.bind(this));
-        if( !flag ){
-            var arg = {
-                validted : false,
-                data : this.importedData,
-                rowList : this.rowList
-            };
-            this.fireEvent( "validImport", [arg] );
 
-            flag = arg.validted;
-        }
+        var arg = {
+            validted : flag,
+            data : this.importedData,
+            rowList : this.rowList
+        };
+        this.fireEvent( "validImport", [arg] );
+
+        flag = arg.validted;
+
         if( !flag ){
             this.openImportedErrorDlg();
             return;
         }
 
         var data = this.getData();
-        console.log();
 
         this.lookupAction.getUUID(function(json){
             this.recordId = json.data;
-            this.lookupAction.executImportModule(this.json.id, {
+            this.lookupAction.executImportModel(this.json.id, {
                 "recordId": this.recordId,
                 "data" : data
             }, function () {
                 this.showImportingStatus()
             }.bind(this), function (xhr) {
-                debugger;
                 var requestJson = JSON.parse(xhr.responseText);
                 this.app.notice(requestJson.message, "error");
                 this.progressBar.close();
@@ -211,7 +210,6 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         return arr.join( " " )
     },
     openImportedErrorDlg : function(){
-        debugger;
         if(this.progressBar)this.progressBar.close();
 
         var _self = this;
@@ -457,14 +455,12 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     },
 
     showImportingStatus: function(){
-        this.progressBar.showImporting( this.recordId, function(){
-            this.fireEvent("afterImport")
+        this.progressBar.showImporting( this.recordId, function( data ){
+            this.fireEvent("afterImport", data)
         }.bind(this));
     },
 
     exportWithImportDataToExcel : function ( importData ) {
-
-        debugger;
 
         if( !this.excelUtils ){
             this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
@@ -839,7 +835,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         }
 
         data = this.document.title;
-        if( data && data > 70){
+        if( data && data.length > 70){
             errorTextList.push(this.getCol("title", false) + '"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
             errorTextListExcel.push(this.getCol("title", false) + '"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
         }
@@ -932,7 +928,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             };
         }
 
-        this.importer.fireEvent("beforeCreateRowData", [null, this]);
+        this.importer.fireEvent("beforeCreateRowData", [this]);
 
         json.data.columnList.each( function (columnJson, i) {
 
@@ -1004,7 +1000,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             }
 
             if( json.data.documentPublishTime === "importer" ){
-                this.document.publishTime = new Date().format(db);
+                this.document.publishTime = new Date().format("db");
             }else{
                 this.setDataWithField(this.document, "documentPublisherTimeField", "publishTime", false);
             }
@@ -1038,10 +1034,9 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         }
 
 
-        this.importer.fireEvent("afterCreateRowData", [null, this]);
+        this.importer.fireEvent("afterCreateRowData", [ this]);
     },
     parseData: function(value, dataType, json){
-        debugger;
         var data;
         var type = this.importer.json.type;
         switch ( dataType ) {
@@ -1598,7 +1593,7 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
         this.recordId = recordId;
         this.currentDate = new Date();
         this.intervalId = window.setInterval( function(){
-            this.actions.getImportModuleRecordStatus( this.recordId, function( json ){
+            this.actions.getImportModelRecordStatus( this.recordId, function( json ){
                 var data = json.data;
                 this.status = data.status;
                 if( data.status === "待导入" ) { //有其他人正在导入或上次导入还未完成
@@ -1611,7 +1606,7 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
                 }else{ //已经结束, 状态有 "导入成功","部分成功","导入失败"
                     if(this.intervalId)window.clearInterval( this.intervalId );
                     this.transferComplete( data );
-                    if( callback )callback();
+                    if( callback )callback( data );
                 }
             }.bind(this), null)
         }.bind(this), 500 );
@@ -1628,7 +1623,6 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
     close: function(){
         // this.maskNode.destroy();
         // this.node.destroy();
-        debugger;
         this.dlg.close();
     },
     // setSize: function(){
