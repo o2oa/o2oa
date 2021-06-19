@@ -238,41 +238,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.node.set(this.json.properties);
 		},
 		_getOuterActionModules: function( idList ){ //判断不在数据模板中，但是在表单内的Id
-			var dtIds = this.json.id.split("..");
 			var list = [];
 			idList.each( function (id) {
-				if(!id)return;
-				if( id.contains("*") ){ //允许id中包含*，替代当前id的层次
-					var ids = id.split(".");
-					for( var i=0; i<ids.length; i++ ){
-						if( ids[i].contains("*") && dtIds[i] ){
-							var key = ids[i].replace("*", dtIds[i]);
-							key = this.form.Macro.exec("return "+key, this);
-							ids[i] = key.toString();
-						}
-					}
-					id = ids.join("..");
-				}else if( id.contains("./") ){
-
-					debugger;
-					var lastName = id.substring(id.indexOf("./")+2, id.length);
-					var level = (id.substring(0, id.indexOf("./"))+".").split(".").length-1; // /前面有几个.
-
-					var dtIds_copy = Array.clone(dtIds);
-					if( dtIds_copy.length > level*2 ){
-						for( var i=0; i<level; i++ ){
-							dtIds_copy.pop();
-							if( i > 0)dtIds_copy.pop();
-						}
-						id = dtIds_copy.join("..")+".."+lastName;
-					}else{
-						dtIds_copy[dtIds_copy.length-1] = lastName;
-						id = dtIds_copy.join("..")
-					}
-				}
+				var module = this._getModuleByPath(id);
 				var tId = id.split("..").getLast();
-				if( !this.templateJson.hasOwnProperty(tId) && this.form.all[id] ){
-					list.push( this.form.all[id] );
+				if( !this.templateJson.hasOwnProperty(tId) && module ){
+					list.push( module );
 				}
 			}.bind(this));
 			return list;

@@ -24,6 +24,24 @@
                     <td class="editTableTitle">{{$.lp.importModel}}:</td>
                     <td class="editTableValue"><div class="MWFQueryImportModelSelect" name="queryImportModel"></div></td>
                 </tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.downloadTempalte}}:</td>
+					<td class="editTableValue">
+						<input name="allowDownloadTempalte" type="radio" value="true" text{($.allowDownloadTempalte)!==false?'checked':''}
+							   onclick="if (this.checked){ $('text{$.pid}downloadTempalteFieldIdTr').setStyle('display', '')}" />{{$.lp.enable}}
+						<input name="allowDownloadTempalte" type="radio" value="false" text{($.allowDownloadTempalte)===false?'checked':''}
+							   onclick="if (this.checked){ $('text{$.pid}downloadTempalteFieldIdTr').setStyle('display', 'none')}"  />{{$.lp.disable}}
+					</td>
+				</tr>
+				<tr id="text{$.pid}downloadTempalteFieldIdTr" style="display: text{($.allowDownloadTempalte!==false)?'':'none'};">
+					<td class="editTableTitle">{{$.lp.downloadTempalteId}}:</td>
+					<td class="editTableValue" style="position: relative;">
+						<input type="text" name="downloadTempalteFieldId" value="text{$.downloadTempalteFieldId}" class="editTableInputNoWidth" style="width:60%;margin-right: 16px;"/>
+						<div class="MWFHelp" style="position: absolute;height: 16px;width: 16px;top:4px;right:4px;background: url('../x_component_process_FormDesigner/$Main/default/formtoolbar/question.png')">
+							{{$.lp.downloadTempalteIdNote}}
+						</div>
+					</td>
+				</tr>
             </table>
         </div>
 	</div>

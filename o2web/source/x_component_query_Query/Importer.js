@@ -839,7 +839,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         }
 
         data = this.document.title;
-        if( data && data > 70){
+        if( data && data.length > 70){
             errorTextList.push(this.getCol("title", false) + '"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
             errorTextListExcel.push(this.getCol("title", false) + '"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
         }
@@ -1004,7 +1004,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             }
 
             if( json.data.documentPublishTime === "importer" ){
-                this.document.publishTime = new Date().format(db);
+                this.document.publishTime = new Date().format("db");
             }else{
                 this.setDataWithField(this.document, "documentPublisherTimeField", "publishTime", false);
             }
