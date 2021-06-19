@@ -1109,6 +1109,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 					if (callback) callback();
 				}.bind(this),
 				onError: function(text, error){
+				    debugger;
 					this.notice("request tools data error: "+error, "error");
 				}.bind(this)
 			});

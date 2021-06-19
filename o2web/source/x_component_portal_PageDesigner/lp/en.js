@@ -302,7 +302,8 @@ MWF.APPPD.LP = {
         "sourceText": "SourceText",
         "widget": "Widget",
         "widgetmodules": "WidgetEl",
-        "address": "Address"
+        "address": "Address",
+        "importer": "DataImport"
     },
     "filedConfigurator": {
         "sequence": "Sequence",

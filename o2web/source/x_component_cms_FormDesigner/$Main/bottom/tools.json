@@ -219,5 +219,10 @@
     "icon": "statement.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.statement,
     "className": "Statement"
+  },
+  "importer": {
+    "icon": "importer.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.importer,
+    "className": "Importer"
   }
 }

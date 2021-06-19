@@ -471,6 +471,46 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     focus: function(){
         this.node.focus();
+    },
+
+    _getModuleByPath: function( path ){
+        /*
+        注: 系统的数据中允许多层路径，id上通过..来区分层次：
+        1、单层或者是最外层，填"fieldId"，表示表单上的直接组件。
+        2、如果有多层数据模板，"./fieldId"表示和当前组件id同层次的组件，"../fieldId"表示和上一层组件同层次的组件，以此类推。
+        3、如果有多层数据模板，也可通过"datatemplateId.*.datatemplateId2.*.fieldId"来表示全层次路径。datatemplateId表示第一层数据模板的id，datatemplateId2表示第二层的id。
+         */
+        if(!path)return;
+        var idList = this.json.id.split("..");
+        if( path.contains("*") ){ //允许path中包含*，替代当前path的层次
+            var paths = path.split(".");
+            for( var i=0; i<paths.length; i++ ){
+                if( paths[i].contains("*") && idList[i] ){
+                    var key = paths[i].replace("*", idList[i]);
+                    key = this.form.Macro.exec("return "+key, this);
+                    paths[i] = (key||"").toString();
+                }
+            }
+            path = paths.join("..");
+        }else if( path.contains("./") ){
+
+            var lastName = path.substring(path.indexOf("./")+2, path.length);
+            var level = (path.substring(0, path.indexOf("./"))+".").split(".").length-1; // /前面有几个.
+
+            var idList_copy = Array.clone(idList);
+            if( idList_copy.length > level*2 ){
+                for( var i=0; i<level; i++ ){
+                    idList_copy.pop();
+                    if( i > 0)idList_copy.pop();
+                }
+                path = idList_copy.join("..")+".."+lastName;
+            }else{
+                idList_copy[idList_copy.length-1] = lastName;
+                path = idList_copy.join("..")
+            }
+        }
+
+        return this.form.all[path];
     }
 
 });

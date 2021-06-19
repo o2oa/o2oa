@@ -114,6 +114,8 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
                 this.loadStatementScript(v); break;
             case "StatementSelector":
                 this.loadStatementSelectorScript(v); break;
+            case "Importer":
+                this.loadImporterScript(v); break;
         }
         this.bindDataId(v);
     },
