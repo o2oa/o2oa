@@ -666,14 +666,16 @@ MWF.xApplication.query.Query.ImporterRecord.DetailView = new Class({
         headNode.getElements("th").each(function(th){
 
             if(th.get("lable") === 'importData'){
-                var count = this.explorer.isShowAll ? columnList.length : 5;
-                var seeAllAction = new Element("div", {
-                    "text": this.explorer.isShowAll ? this.lp.showFiveColumn: this.lp.showAll,
-                    "styles": this.css.actionNode_showAll,
-                }).inject(th);
-                seeAllAction.addEvent("click", function () {
-                    this.explorer.switchSrcDataCount();
-                }.bind(this));
+                var count = this.explorer.isShowAll ? columnList.length : Math.min( columnList.length, 5 );
+                if( columnList.length > 5 ){
+                    var seeAllAction = new Element("div", {
+                        "text": this.explorer.isShowAll ? this.lp.showFiveColumn: this.lp.showAll,
+                        "styles": this.css.actionNode_showAll,
+                    }).inject(th);
+                    seeAllAction.addEvent("click", function () {
+                        this.explorer.switchSrcDataCount();
+                    }.bind(this));
+                }
 
                 var newTr = new Element("tr").inject(headNode, "after");
                 for( var i=0; i<count; i++ ){
@@ -703,7 +705,7 @@ MWF.xApplication.query.Query.ImporterRecord.DetailViewLine = new Class({
         var srcData = o2.typeOf(itemData.srcData)==="string" ? JSON.parse(itemData.srcData||'{}') : itemData.srcData;
 
         var columnList = this.explorer.importerJSON.data.columnList;
-        var count = this.explorer.isShowAll ? columnList.length : 5;
+        var count = this.explorer.isShowAll ? columnList.length : Math.min( columnList.length, 5 );
 
         var getText = function (d) {
             var t = o2.typeOf(d);

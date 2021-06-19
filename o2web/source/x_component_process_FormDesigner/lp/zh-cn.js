@@ -317,7 +317,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "htmledit": "HTML编辑器",
         "office": "Office控件",
         "statementSelector": "选择查询视图",
-        "statement": "嵌入查询视图"
+        "statement": "嵌入查询视图",
+        "importer": "数据导入"
     },
     "propertyTemplate": {
         "base": "基本",
@@ -900,7 +901,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "item": "项",
         "maxItemCount": "最多添加",
         "minItemCount": "最少保留",
-        "dtImportInfor": "注：图片、附件、数据网格、子数据模板不能导入导出。",
+        "dtImportInfor": "注：图片、附件、数据表格、子数据模板不能导入导出。",
         "importButtonId": "导入按钮标识",
         "exportButtonId": "导出按钮标识",
         "importExporConfig": "导入导出字段配置",
@@ -916,11 +917,17 @@ MWF.xApplication.process.FormDesigner.LP = {
         "datatableEditMode": "编辑方式",
         "datatableEditModeValue": ["每次编辑单行","同时编辑多行"],
         "onlyPc": "仅PC端可用",
-        "datatemplateOuterNote": "注: 数据模板可以有多层，外部组件标识填写有下列规则：<br/>" +
+        "datatemplateOuterNote": "注: 位于当前数据模板外部的相关组件标识。数据模板可以有多层，外部组件标识填写有下列规则：<br/>" +
             "1、单层或者是最外层的数据模板，填\"fieldId\"，表示表单上的直接组件。<br/>" +
             "2、如果有多层数据模板，\"./fieldId\"表示和当前数据模板同层次的组件，\"../fieldId\"表示和上一层数据模板同层次的组件，以此类推。<br/>" +
             "3、如果有多层数据模板，也可通过\"datatemplateId.*.datatemplateId2.*.fieldId\"来表示全层次路径。datatemplateId表示第一层数据模板的id，datatemplateId2表示第二层的id。",
-        "datatemplateInnerNote": "注:  不管单层还是多层数据模板，直接填写组件的标识。"
+        "datatemplateInnerNote": "注:  位于当前数据模板内部的相关组件标识，不管单层还是多层数据模板，直接填写组件的标识。",
+        "importModel": "导入模型",
+        "enable": "启用",
+        "disable": "禁用",
+        "downloadTempalte": "下载模板",
+        "downloadTempalteId": "下载模板组件标识",
+        "downloadTempalteIdNote": "您可以在表单上创建一个组件，并在这里填写上组件标识，系统会在该组件的节点(node)绑定下载模板的click事件。"
     },
     "actionBar": {
         "close":"关闭",
