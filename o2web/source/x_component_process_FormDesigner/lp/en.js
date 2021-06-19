@@ -918,7 +918,12 @@ MWF.xApplication.process.FormDesigner.LP = {
             "2. If there are multiple data templates, \"./fieldId\" means components at the same level as the current data template, \"../fieldId\" means components at the same level as the previous data template, and so on .<br/>" +
             "3. If there is a multi-layer data template, you can also use \"datatemplateId.*.datatemplateId2.*.fieldId\" to indicate the full-level path. datatemplateId indicates the id of the first-level data template, and datatemplateId2 indicates the id of the second-level. ",
         "datatemplateInnerNote": "Note: Regardless of single-layer or multi-layer data template, directly fill in the component ID.",
-        "importModel": "Import Model"
+        "importModel": "Import Model",
+        "enable": "enable",
+        "disable": "disable",
+        "downloadTempalte": "Download Template",
+        "downloadTempalteId": "Download template component ID",
+        "downloadTempalteIdNote": "You can create a component on the form and fill in the component ID here. The system will bind the click event of the download template to the node of the component."
     },
     "actionBar": {
         "close":"Close",
