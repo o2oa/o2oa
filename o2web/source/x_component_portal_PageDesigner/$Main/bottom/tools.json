@@ -153,5 +153,10 @@
     "icon": "datatemplate.png",
     "text": MWF.APPPD.LP.modules.datatemplate,
     "className": "Datatemplate"
+  },
+  "importer": {
+    "icon": "importer.png",
+    "text": MWF.APPPD.LP.modules.importer,
+    "className": "Importer"
   }
 }

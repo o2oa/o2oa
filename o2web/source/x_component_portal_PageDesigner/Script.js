@@ -170,6 +170,8 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadStatementScript(v); break;
             case "StatementSelector":
                 this.loadStatementSelectorScript(v); break;
+            case "Importer":
+                this.loadImporterScript(v); break;
         }
         this.bindDataId(v);
     },
@@ -324,6 +326,10 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.loadEventsScript(data);
     },
     loadViewScript: function(data){
+        this.loadEventsScript(data);
+    },
+    loadImporterScript: function(data){
+        this.addScriptItem(data.excelName, "code", data, "excelName");
         this.loadEventsScript(data);
     },
 

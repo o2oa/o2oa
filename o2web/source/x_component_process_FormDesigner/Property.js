@@ -1306,6 +1306,7 @@ debugger;
         var scriptNodes = this.propertyContent.getElements(".MWFScriptSelect");
         var formStyleNodes = this.propertyContent.getElements(".MWFFormStyleSelect");
         var dictionaryNodes = this.propertyContent.getElements(".MWFDictionarySelect");
+        var queryImportModelNodes = this.propertyContent.getElements(".MWFQueryImportModelSelect");
 
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
@@ -1379,6 +1380,15 @@ debugger;
             querystatNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "QueryStat",
+                    "count": 1,
+                    "names": [this.data[node.get("name")]],
+                    "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+
+            queryImportModelNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "QueryImportModel",
                     "count": 1,
                     "names": [this.data[node.get("name")]],
                     "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
