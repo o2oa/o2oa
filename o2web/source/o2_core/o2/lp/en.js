@@ -30,6 +30,7 @@ o2.LP.process = {
 	"repetitionsValue": "Duplicate content item",
 	"repetitionsEvent": "Duplicate event name",
 	"repetitionsId": "Duplicate element identifiers",
+	"repetitionsOrUnvalid": "Duplicate or invalid property name",
 	"notNullId": "Element identifier cannot be null",
 	"editCategory": "Edit Category",
 	"createProcess": "Create Process",
