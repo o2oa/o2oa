@@ -29,6 +29,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
             "creatorDepartmentList": "creatorDepartmentList",
             "activityNameList": "activityNameList",
             "completedTimeMonthList": "completedTimeMonthList",
+            "startTimeMonthList": "startTimeMonthList",
             "key": "key"
         }
     },
