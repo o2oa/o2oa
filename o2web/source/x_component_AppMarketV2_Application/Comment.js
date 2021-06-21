@@ -63,7 +63,6 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
                         data = json.data; //为变量data赋值
                         this.app.collectUrl = data.collectUrl;
                         this.app.collectToken = data.collectToken;
-                        this.loadBbsInfo(this);
                         this.loadCommentsGrade(this,this.commentsGrade.bind(this));
                         //this.loadCommentPower(this,this.commentsPower.bind(this));
                         this.loadCommentPower(this);
@@ -72,7 +71,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
                 }.bind(this),null,false //同步执行
             );
         }else{
-            this.loadBbsInfo(this);
+            //this.loadBbsInfo(this);
             this.loadCommentsGrade(this,this.commentsGrade.bind(this));
             //this.loadCommentPower(this,this.commentsPower.bind(this));
             this.loadCommentPower(this);
@@ -113,14 +112,15 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         res.send();
     },
     loadCommentsGrade: function(content,callback){
+        this.loadBbsInfo(content);
         var json = null;
-        var commenturl =  content.app.lp.commentpath +'/x_bbs_assemble_control/jaxrs/subject/statgrade/sectionName/'+encodeURI(content.app.lp.title)+'/subjectType/'+encodeURI(content.appdata.name)+'?time='+(new Date()).getMilliseconds();
+        var commenturl =  this.bbsUrlPath +'/x_bbs_assemble_control/jaxrs/subject/statgrade/sectionName/'+encodeURI(content.app.lp.title)+'/subjectType/'+encodeURI(content.appdata.name)+'?time='+(new Date()).getMilliseconds();
         var res = new Request.JSON({
             url: commenturl,
             headers : {'x-debugger' : true,'Authorization':content.app.collectToken,'c-token':content.app.collectToken},
             secure: false,
             method: "get",
-            async: true,
+            async: false,
             withCredentials: true,
             contentType : 'application/json',
             crossDomain : true,
@@ -152,7 +152,8 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         }).inject(commentbuttondiv);
         commentbuttondiv.addEvents({
             "click": function(e){
-                window.open(this.bbsUrl);
+                debugger;
+                window.open(content.bbsUrl);
             }
         })
     },
@@ -382,7 +383,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             var iconpersondiv = new Element("div",{"class":"o2_appmarket_application_comment_content_left_icon"}).inject(commentcontentleft);
             new Element("img",{"src":this.content.iconPath+"icon_men.png"}).inject(iconpersondiv);
             debugger;
-            new Element("div",{"class":"o2_appmarket_application_comment_content_left_name","text":percomment.creatorName}).inject(commentcontentleft);
+            new Element("div",{"class":"o2_appmarket_application_comment_content_left_name","text":percomment.creatorNameShort}).inject(commentcontentleft);
             var commentcontentright = new Element("div",{"class":"o2_appmarket_application_comment_content_right"}).inject(commentcontentdiv);
             var commentangulardiv = new Element("div").inject(commentcontentright);
             for (var tmpi=0;tmpi<parseInt(percomment.grade);tmpi++){
@@ -391,6 +392,7 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
             for (var tmpi=0;tmpi<5-parseInt(percomment.grade);tmpi++){
                 new Element("img",{"src":this.content.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(commentangulardiv)
             }
+
             var content = percomment.content;
             var percommentConent = content.replace("<p>","").replace("</p>","");
             new Element("div",{"class":"o2_appmarket_application_comment_content_title","text":percomment.title}).inject(commentcontentright);
