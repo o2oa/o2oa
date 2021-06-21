@@ -926,7 +926,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "downloadTempalteIdNote": "You can create a component on the form and fill in the component ID here. The system will bind the click event of the download template to the node of the component.",
         "province": "Province",
         "city": "City",
-        "county": "County"
+        "county": "County",
+        "useTextFieldNote": "Note: It is recommended to use text components",
+        "useChecboxNote": "Note: It is recommended to use multiple selection components",
+        "checkboxValueNote": "Note: the optional value corresponding to the selected component",
+        "checkboxValueAllNote": "Note: Corresponding to the optional value of select all components"
     },
     "actionBar": {
         "close":"Close",
