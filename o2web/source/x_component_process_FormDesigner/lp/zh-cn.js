@@ -927,7 +927,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "disable": "禁用",
         "downloadTempalte": "下载模板",
         "downloadTempalteId": "下载模板组件标识",
-        "downloadTempalteIdNote": "您可以在表单上创建一个组件，并在这里填写上组件标识，系统会在该组件的节点(node)绑定下载模板的click事件。"
+        "downloadTempalteIdNote": "您可以在表单上创建一个组件，并在这里填写上组件标识，系统会在该组件的节点(node)绑定下载模板的click事件。",
+        "province": "省",
+        "city": "省市",
+        "county": "省市县"
     },
     "actionBar": {
         "close":"关闭",
