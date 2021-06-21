@@ -104,6 +104,17 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
         value = value.toLowerCase();
         var i = (this.combox.editItem) ? this.combox.editItem.getItemPosition() : this.combox.values.length;
         debugger;
+        if(this.json.selectRange==="province"){
+            if( i > 0 ){
+                if (callback) callback([]);
+                return;
+            }
+        }else if(this.json.selectRange==="city"){
+            if( i > 1 ){
+                if (callback) callback([]);
+                return;
+            }
+        }
         switch (i) {
             case 0: //省
                 o2.Actions.get("x_general_assemble_control").listProvince(function(json){
