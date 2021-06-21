@@ -428,7 +428,8 @@
     font-family:MicrosoftYaHei;
     color:rgba(51,51,51,1);
     line-height:21px;
-
+    padding-top:10px;
+    overflow:hidden;
 }
 .comment_dlg_title{
     width:60px;
