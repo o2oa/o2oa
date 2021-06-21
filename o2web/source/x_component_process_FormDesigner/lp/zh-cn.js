@@ -930,7 +930,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "downloadTempalteIdNote": "您可以在表单上创建一个组件，并在这里填写上组件标识，系统会在该组件的节点(node)绑定下载模板的click事件。",
         "province": "省",
         "city": "省市",
-        "county": "省市县"
+        "county": "省市县",
+        "useTextFieldNote": "注：建议使用文本组件",
+        "useChecboxNote": "注：建议使用多选组件",
+        "checkboxValueNote": "注：对应选中组件的可选值",
+        "checkboxValueAllNote": "注：对应全选组件的可选值"
     },
     "actionBar": {
         "close":"关闭",

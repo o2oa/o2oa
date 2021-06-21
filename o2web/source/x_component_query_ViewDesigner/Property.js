@@ -826,6 +826,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         maplists.each(function(node){
             var title = node.get("title");
             var name = node.get("name");
+            var lName = name.toLowerCase();
             var collapse = node.get("collapse");
             var mapObj = this.data[name];
             if (!mapObj) mapObj = {};
@@ -846,7 +847,8 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                         debugger;
 
                         this.module.deletePropertiesOrStyles(name, key);
-                    }.bind(this)
+                    }.bind(this),
+                    "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
                 });
                 maplist.load(mapObj);
                 this.maplists[name] = maplist;
