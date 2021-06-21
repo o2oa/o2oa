@@ -8,7 +8,7 @@ MWF.xApplication.query.QueryManager.ImporterExplorer = new Class({
             "create": MWF.xApplication.query.QueryManager.LP.importer.create,
             "search": MWF.xApplication.query.QueryManager.LP.importer.search,
             "searchText": MWF.xApplication.query.QueryManager.LP.importer.searchText,
-            "noElement": MWF.xApplication.query.QueryManager.LP.importer.noStatNoticeText
+            "noElement": MWF.xApplication.query.QueryManager.LP.importer.noSelectNoticeText
         }
     },
     initialize: function(node, actions, options){
