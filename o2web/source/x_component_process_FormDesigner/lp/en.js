@@ -923,7 +923,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "disable": "disable",
         "downloadTempalte": "Download Template",
         "downloadTempalteId": "Download template component ID",
-        "downloadTempalteIdNote": "You can create a component on the form and fill in the component ID here. The system will bind the click event of the download template to the node of the component."
+        "downloadTempalteIdNote": "You can create a component on the form and fill in the component ID here. The system will bind the click event of the download template to the node of the component.",
+        "province": "Province",
+        "city": "City",
+        "county": "County"
     },
     "actionBar": {
         "close":"Close",
