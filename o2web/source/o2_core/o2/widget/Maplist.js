@@ -10,7 +10,8 @@ o2.widget.Maplist = new Class({
 		"collapse": false,
 		"isAdd": true,
 		"isDelete": true,
-		"isModify": true
+		"isModify": true,
+		"isProperty": false
 	},
 	initialize: function(node, options){
 		this.setOptions(options);
@@ -438,6 +439,14 @@ o2.widget.Maplist.Item = new Class({
 					if (item != this) flag = false;
 				}
 			}.bind(this));
+
+			if(text && this.maplist.options.isProperty){
+				try{
+					new Element("div").set(text, this.value||"")
+				}catch (e) {
+					flag = false;
+				}
+			}
 			
 			if (flag){
 				if (this.key !== text) isChangeed = true;
@@ -446,7 +455,7 @@ o2.widget.Maplist.Item = new Class({
 				this.maplist.notAddItem = true;
 			}else{
 				this.iconNode.setStyle("background", "url("+this.maplist.path+this.maplist.options.style+"/icon/error.png) center center no-repeat");
-				this.iconNode.title = o2.LP.process.repetitions;
+				this.iconNode.title = o2.LP.process.repetitionsOrUnvalid;
 				input.select();
 				return false;
 			}
