@@ -1,0 +1,83 @@
+[
+  {
+    "title" : MWF.xApplication.Attendance.LP.person,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( d ){ return d.o2User.split('@')[0] }",
+    "name": "o2User",
+    "width": "9%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.months,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( data ){ return data.statisticYear + '-' + data.statisticMonth  }",
+    "name": "statisticMonth",
+    "width": "9%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.onDutyTimes,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "onDutyTimes",
+    "name": "onDutyTimes",
+    "width": "9%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.offDutyTimes,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "offDutyTimes",
+    "name": "offDutyTimes",
+    "width": "9%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.onDutyDayCount,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "workDayCount",
+    "name": "workDayCount",
+    "width": "9%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.lateTimes,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "lateTimes",
+    "name": "lateTimes",
+    "width": "9%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.leaveEarlyTimes,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "leaveEarlyTimes",
+    "name": "leaveEarlyTimes",
+    "width": "9%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.notSignedCount,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "notSignedCount",
+    "name": "notSignedCount",
+    "width": "9%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.outsideDutyTimes,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "outsideDutyTimes",
+    "name": "outsideDutyTimes",
+    "width": "9%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.absenteeismTimes,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "absenteeismTimes",
+    "name": "absenteeismTimes",
+    "width": "9%"
+  }
+   
+]
