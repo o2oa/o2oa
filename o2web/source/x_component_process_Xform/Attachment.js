@@ -1855,7 +1855,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     validationConfigItem: function (routeName, data) {
         var flag = (data.status == "all") ? true : (routeName == data.decision);
         if (flag) {
-            var n = this.getData();
+            var n = this.getData() || [];
             var v = (data.valueType == "value") ? n : n.length;
             switch (data.operateor) {
                 case "isnull":
