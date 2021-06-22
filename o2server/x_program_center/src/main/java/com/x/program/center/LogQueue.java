@@ -22,36 +22,52 @@ public class LogQueue extends AbstractQueue<NameValuePair> {
 	protected void execute(NameValuePair pair) {
 		try {
 			if (StringUtils.equals(pair.getName(), PromptErrorLog.class.getName())) {
-				PromptErrorLog o = pair.getValue(PromptErrorLog.class);
-				if (null != o) {
-					this.concrete(PromptErrorLog.class, o);
-				} else {
-					this.clean(PromptErrorLog.class);
-				}
+				doAsPromptErrorLog(pair);
 			} else if (StringUtils.equals(pair.getName(), UnexpectedErrorLog.class.getName())) {
-				UnexpectedErrorLog o = pair.getValue(UnexpectedErrorLog.class);
-				if (null != o) {
-					this.concrete(UnexpectedErrorLog.class, o);
-				} else {
-					this.clean(UnexpectedErrorLog.class);
-				}
+				doAsUnexpectedErrorLog(pair);
 			} else if (StringUtils.equals(pair.getName(), WarnLog.class.getName())) {
-				WarnLog o = pair.getValue(WarnLog.class);
-				if (null != o) {
-					this.concrete(WarnLog.class, o);
-				} else {
-					this.clean(WarnLog.class);
-				}
+				doAsWarnLog(pair);
 			} else if (StringUtils.equals(pair.getName(), ScheduleLog.class.getName())) {
-				ScheduleLog o = pair.getValue(ScheduleLog.class);
-				if (null != o) {
-					this.concrete(ScheduleLog.class, o);
-				} else {
-					this.clean(ScheduleLog.class);
-				}
+				doAsScheduleLog(pair);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void doAsScheduleLog(NameValuePair pair) throws Exception {
+		ScheduleLog o = pair.getValue(ScheduleLog.class);
+		if (null != o) {
+			this.concrete(ScheduleLog.class, o);
+		} else {
+			this.clean(ScheduleLog.class);
+		}
+	}
+
+	private void doAsWarnLog(NameValuePair pair) throws Exception {
+		WarnLog o = pair.getValue(WarnLog.class);
+		if (null != o) {
+			this.concrete(WarnLog.class, o);
+		} else {
+			this.clean(WarnLog.class);
+		}
+	}
+
+	private void doAsUnexpectedErrorLog(NameValuePair pair) throws Exception {
+		UnexpectedErrorLog o = pair.getValue(UnexpectedErrorLog.class);
+		if (null != o) {
+			this.concrete(UnexpectedErrorLog.class, o);
+		} else {
+			this.clean(UnexpectedErrorLog.class);
+		}
+	}
+
+	private void doAsPromptErrorLog(NameValuePair pair) throws Exception {
+		PromptErrorLog o = pair.getValue(PromptErrorLog.class);
+		if (null != o) {
+			this.concrete(PromptErrorLog.class, o);
+		} else {
+			this.clean(PromptErrorLog.class);
 		}
 	}
 
