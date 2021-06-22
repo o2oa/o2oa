@@ -181,7 +181,7 @@ public class InvokeAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "生成令牌.", action = ActionToken.class)
+	@JaxrsMethodDescribe(value = "以当前用户身份生成令牌.", action = ActionToken.class)
 	@POST
 	@Path("token")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

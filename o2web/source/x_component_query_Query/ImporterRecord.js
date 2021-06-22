@@ -117,7 +117,7 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
                 style : "blue_round",
                 hasReturn : false,
                 currentPage : this.options.viewPageNum,
-                countPerPage : 30,
+                countPerPage : 15,
                 visiblePages : 9,
                 hasNextPage : true,
                 hasPrevPage : true,
@@ -208,7 +208,7 @@ MWF.xApplication.query.Query.ImporterRecord.View = new Class({
     },
     _getCurrentPageData: function(callback, count, pageNum){
         this.clearBody();
-        if(!count)count=30;
+        if(!count)count=15;
         if(!pageNum)pageNum = 1;
         var filter = { "modelId": this.explorer.options.importerId };
 
@@ -594,7 +594,7 @@ MWF.xApplication.query.Query.ImporterRecord.DetailView = new Class({
     _getCurrentPageData: function(callback, count, pageNum){
         debugger;
         this.clearBody();
-        if(!count)count=20;
+        if(!count)count=15;
         if(!pageNum)pageNum = 1;
 
         if( this.explorer.importerJSON.type==='dynamicTable' && this.explorer.currentStatus === "导入失败" ){
