@@ -633,6 +633,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         //if (this.readList) if (this.currentTab == "read") this.readList.refresh();
         //if (this.readedList) if (this.currentTab == "readed") this.readedList.refresh();
         //if (this.reviewList) if (this.currentTab == "review") this.reviewList.refresh();
+        if (this.draftList) if (this.currentTab === "draft") this.draftList.refresh();
     },
 
     createTaskCompletedList: function (filterData) {
