@@ -1,6 +1,7 @@
 package com.x.program.center.schedule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.quartz.JobExecutionContext;
@@ -20,27 +21,29 @@ public class Cleanup extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(Cleanup.class);
 
-	private List<Class<? extends JpaObject>> list = new ArrayList<>();
+	private static List<Class<? extends JpaObject>> list = Arrays.asList(ScheduleLog.class, PromptErrorLog.class,
+			UnexpectedErrorLog.class, WarnLog.class);
 
-	private volatile int tag = 0;
+	private static volatile int tag = 0;
 
 	public Cleanup() {
-		list.add(ScheduleLog.class);
-		list.add(PromptErrorLog.class);
-		list.add(UnexpectedErrorLog.class);
-		list.add(WarnLog.class);
+		// nothing
 	}
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
 			if (pirmaryCenter()) {
-				ThisApplication.logQueue.send(new NameValuePair(list.get(tag).getName(), null));
-				tag = (tag + 1) % list.size();
+				send();
 			}
 		} catch (Exception e) {
 			logger.error(e);
 			throw new JobExecutionException(e);
 		}
+	}
+
+	private static void send() throws Exception {
+		ThisApplication.logQueue.send(new NameValuePair(list.get(tag).getName(), null));
+		tag = (tag + 1) % list.size();
 	}
 }
