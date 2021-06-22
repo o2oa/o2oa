@@ -31,8 +31,6 @@ class ActionExecuteToken extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionExecuteToken.class);
 
-	private static final String SPLIT = "#";
-
 	ActionResult<Object> execute(HttpServletRequest request, EffectivePerson effectivePerson, String flag,
 			String client, String token, JsonElement jsonElement) throws Exception {
 
@@ -85,11 +83,14 @@ class ActionExecuteToken extends BaseAction {
 		if (Math.abs((now.getTime() - date.getTime())) >= (60000 * 15)) {
 			throw new ExceptionTokenExpired();
 		}
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			String person = business.organization().person().get(credential);
-			if (StringUtils.isEmpty(person)) {
-				throw new ExceptionPersonNotExist(credential);
+		if ((!StringUtils.equals(EffectivePerson.CIPHER, credential))
+				&& (!Config.token().isInitialManager(credential))) {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				String person = business.organization().person().get(credential);
+				if (StringUtils.isEmpty(person)) {
+					throw new ExceptionPersonNotExist(credential);
+				}
 			}
 		}
 		return executeInvoke(request, effectivePerson, jsonElement, cacheCategory, invoke);

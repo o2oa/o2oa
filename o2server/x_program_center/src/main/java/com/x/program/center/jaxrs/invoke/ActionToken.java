@@ -4,6 +4,9 @@ import java.util.Date;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Token.Sso;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -16,10 +19,20 @@ class ActionToken extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
-		String value = wi.getPerson() + "#" + wi.getDate().getTime();
-		wo.setValue(Crypto.encrypt(value, wi.getKey()));
+		if (effectivePerson.isAnonymous()) {
+			throw new ExceptionAccessDenied(effectivePerson);
+		}
+
+		Sso sso = Config.token().findSso(wi.getClient());
+		if (null == sso) {
+			throw new ExceptionClientNotExist(wi.getClient());
+		}
+
+		wo.setValue(
+				Crypto.encrypt(effectivePerson.getDistinguishedName() + SPLIT + (new Date().getTime()), sso.getKey()));
 		result.setData(wo);
 		return result;
+
 	}
 
 	public static class Wi extends GsonPropertyObject {
@@ -27,36 +40,14 @@ class ActionToken extends BaseAction {
 		private static final long serialVersionUID = -251331390296713913L;
 
 		@FieldDescribe("用户标识")
-		private String person;
+		private String client;
 
-		@FieldDescribe("时间,如果为空那么采用当前时间.")
-		private Date date;
-
-		public Date getDate() {
-			return (this.date == null) ? new Date() : this.date;
+		protected String getClient() {
+			return client;
 		}
 
-		@FieldDescribe("密钥")
-		private String key;
-
-		public String getPerson() {
-			return person;
-		}
-
-		public void setPerson(String person) {
-			this.person = person;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public void setKey(String key) {
-			this.key = key;
-		}
-
-		public void setDate(Date date) {
-			this.date = date;
+		protected void setClient(String client) {
+			this.client = client;
 		}
 
 	}
