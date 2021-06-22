@@ -551,7 +551,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
     validationConfigItem: function (routeName, data) {
         var flag = (data.status == "all") ? true : (routeName == "publish");
         if (flag) {
-            var n = this.getData();
+            var n = this.getData() || [];
             var v = (data.valueType == "value") ? n : n.length;
             switch (data.operateor) {
                 case "isnull":
