@@ -34,7 +34,8 @@ public class Cleanup extends BaseAction {
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
 			if (pirmaryCenter()) {
-				send();
+				ThisApplication.logQueue.send(new NameValuePair(list.get(tag).getName(), null));
+				updateTag();
 			}
 		} catch (Exception e) {
 			logger.error(e);
@@ -42,8 +43,7 @@ public class Cleanup extends BaseAction {
 		}
 	}
 
-	private static void send() throws Exception {
-		ThisApplication.logQueue.send(new NameValuePair(list.get(tag).getName(), null));
+	private static void updateTag() {
 		tag = (tag + 1) % list.size();
 	}
 }
