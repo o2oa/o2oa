@@ -5,80 +5,53 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
+import java.util.Calendar;
+import java.util.Date;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.openjpa.jdbc.identifier.DBIdentifier;
 import org.apache.openjpa.jdbc.identifier.DBIdentifier.DBIdentifierType;
-import org.apache.openjpa.jdbc.kernel.exps.FilterValue;
 import org.apache.openjpa.jdbc.schema.Column;
 import org.apache.openjpa.jdbc.schema.ForeignKey;
 import org.apache.openjpa.jdbc.schema.Index;
 import org.apache.openjpa.jdbc.schema.PrimaryKey;
 import org.apache.openjpa.jdbc.schema.Table;
 import org.apache.openjpa.jdbc.sql.DBDictionary;
-import org.apache.openjpa.jdbc.sql.InformixDictionary;
-import org.apache.openjpa.jdbc.sql.SQLBuffer;
 import org.apache.openjpa.jdbc.sql.Select;
-import org.apache.openjpa.lib.util.Localizer;
-import org.apache.openjpa.util.StoreException;
-import org.apache.openjpa.util.UnsupportedException;
 
 public class GBaseDictionary extends DBDictionary {
 	public static final String VENDOR_OTHER = "gbase";
 
-	/**
-	 * If true, then we will issue a "SET LOCK MODE TO WAIT N" statement whenever we
-	 * create a {@link Connection}, in order allow waiting on locks.
-	 */
-	public boolean lockModeEnabled = false;
-
-	/**
-	 * If {@link #lockModeEnabled} is <code>true</code>, then this parameter
-	 * specifies the number of seconds we will wait to obtain a lock for inserts and
-	 * pessimistic locking.
-	 */
-	public int lockWaitSeconds = 30;
-
-	/**
-	 * Informix JDBC metadata for all known drivers returns with the table catalog
-	 * and the table schema name swapped. A <code>true</code> value for this
-	 * property indicates that they should be reversed.
-	 */
 	public boolean swapSchemaAndCatalog = true;
 
-	protected boolean useJCC = false;
-
-	public boolean disableRetainUpdateLocksSQL = false;
-
-	private static final Localizer _loc = Localizer.forPackage(InformixDictionary.class);
-
 	public GBaseDictionary() {
-		platform = "gbase";
+		platform = VENDOR_OTHER;
 		validationSQL = "SELECT 1 FROM DUAL";
 		supportsDeferredConstraints = false;
 		constraintNameMode = CONS_NAME_AFTER;
 
 		useGetStringForClobs = true;
-		longVarcharTypeName = "TEXT";
-		clobTypeName = "TEXT";
-		smallintTypeName = "INT8";
-		tinyintTypeName = "INT8";
+		longVarcharTypeName = "CLOB";
+		clobTypeName = "CLOB";
+		smallintTypeName = "INTEGER";
+		tinyintTypeName = "INTEGER";
 		floatTypeName = "FLOAT";
 		bitTypeName = "BOOLEAN";
 		blobTypeName = "BYTE";
 		doubleTypeName = "NUMERIC(32,20)";
 		dateTypeName = "DATE";
 		timeTypeName = "DATETIME HOUR TO SECOND";
-		timestampTypeName = "DATETIME YEAR TO FRACTION(3)";
+		timestampTypeName = "DATETIME YEAR TO FRACTION(5)";
 		doubleTypeName = "NUMERIC(32,20)";
-		floatTypeName = "REAL";
 		bigintTypeName = "NUMERIC(32,0)";
 		doubleTypeName = "DOUBLE PRECISION";
-		fixedSizeTypeNameSet.addAll(
-				Arrays.asList(new String[] { "BYTE", "DOUBLE PRECISION", "INTERVAL", "SMALLFLOAT", "TEXT", "INT8", }));
+		booleanTypeName = "BOOLEAN";
+		fixedSizeTypeNameSet.addAll(Arrays.asList(new String[] { "BIT", "DISTINCT", "JAVA_OBJECT", "NULL", "OTHER",
+				"REAL", "REF", "SMALLINT", "STRUCT", "TINYINT", }));
 
 		// OpenJPA-2045: NAME has been removed from common reserved words to
 		// only specific dictionaries
@@ -111,6 +84,70 @@ public class GBaseDictionary extends DBDictionary {
 		supportsDefaultDeleteAction = false;
 
 		trimSchemaName = true;
+	}
+
+	@Override
+	public void setDate(PreparedStatement stmnt, int idx, Date val, Column col) throws SQLException {
+		if (col != null && col.getType() == Types.DATE) {
+			if (null != val) {
+				val = DateUtils.setMilliseconds(val, 0);
+				val = DateUtils.setSeconds(val, 0);
+				val = DateUtils.setMinutes(val, 0);
+				val = DateUtils.setHours(val, 0);
+			}
+			setDate(stmnt, idx, new java.sql.Date(val.getTime()), null, col);
+		} else if (col != null && col.getType() == Types.TIME) {
+			if (null != val) {
+				val = DateUtils.setYears(val, 1970);
+				val = DateUtils.setMonths(val, 0);
+				val = DateUtils.setDays(val, 1);
+			}
+			setTime(stmnt, idx, new Time(val.getTime()), null, col);
+		} else if (val instanceof Timestamp) {
+			setTimestamp(stmnt, idx, (Timestamp) val, null, col);
+		} else {
+			setTimestamp(stmnt, idx, new Timestamp(val.getTime()), null, col);
+		}
+	}
+
+	@Override
+	public Date getDate(ResultSet rs, int column) throws SQLException {
+		Timestamp tstamp = getTimestamp(rs, column, null);
+		if (tstamp == null) {
+			return null;
+		}
+		long millis = (tstamp.getTime() / 1000L) * 1000L;
+		return new Date(millis);
+	}
+
+	@Override
+	public Time getTime(ResultSet rs, int column, Calendar cal) throws SQLException {
+		Time time = null;
+		if (cal == null) {
+			time = rs.getTime(column);
+		} else {
+			time = rs.getTime(column, cal);
+		}
+		if (null != time) {
+			Calendar calendar = DateUtils.toCalendar(time);
+			calendar.set(Calendar.YEAR, 1970);
+			calendar.set(Calendar.MONTH, 0);
+			calendar.set(Calendar.DATE, 1);
+			time = new Time(calendar.getTime().getTime());
+		}
+		return time;
+	}
+
+	/**
+	 * Convert the specified column of the SQL ResultSet to the proper java type.
+	 */
+	@Override
+	public Timestamp getTimestamp(ResultSet rs, int column, Calendar cal) throws SQLException {
+		if (cal == null) {
+			return rs.getTimestamp(column);
+		} else {
+			return rs.getTimestamp(column, cal);
+		}
 	}
 
 	@Override
@@ -157,13 +194,6 @@ public class GBaseDictionary extends DBDictionary {
 	}
 
 	@Override
-	public void setBoolean(PreparedStatement stmnt, int idx, boolean val, Column col) throws SQLException {
-		// informix actually requires that a boolean be set: it cannot
-		// handle a numeric argument
-		stmnt.setString(idx, val ? "t" : "f");
-	}
-
-	@Override
 	public String[] getCreateTableSQL(Table table) {
 		String[] create = super.getCreateTableSQL(table);
 		create[0] = create[0] + " LOCK MODE ROW";
@@ -192,48 +222,6 @@ public class GBaseDictionary extends DBDictionary {
 	}
 
 	@Override
-	public Connection decorate(Connection conn) throws SQLException {
-		conn = super.decorate(conn);
-		if (isJDBC3 && conn.getHoldability() != ResultSet.HOLD_CURSORS_OVER_COMMIT) {
-			conn.setHoldability(ResultSet.HOLD_CURSORS_OVER_COMMIT);
-			if (log.isTraceEnabled()) {
-				log.trace(_loc.get("connection-defaults",
-						new Object[] { conn.getAutoCommit(), conn.getHoldability(), conn.getTransactionIsolation() }));
-			}
-		}
-
-//		// if we haven't already done so, initialize the lock mode of the
-//		// connection
-//		if (_seenConnections.add(conn)) {
-//			if (lockModeEnabled) {
-//				String sql = "SET LOCK MODE TO WAIT";
-//				if (lockWaitSeconds > 0)
-//					sql = sql + " " + lockWaitSeconds;
-//				execute(sql, conn, true);
-//			}
-//
-//			if (!disableRetainUpdateLocksSQL) {
-//				String sql = "SET ENVIRONMENT RETAINUPDATELOCKS 'ALL'";
-//				execute(sql, conn, false);
-//			}
-//		}
-
-		// the datadirect driver requires that we issue a rollback before using
-		// each connection
-		if (VENDOR_DATADIRECT.equalsIgnoreCase(driverVendor))
-			try {
-				conn.rollback();
-			} catch (SQLException se) {
-			}
-		return conn;
-	}
-
-	@Override
-	public void indexOf(SQLBuffer buf, FilterValue str, FilterValue find, FilterValue start) {
-		throw new UnsupportedException(_loc.get("function-not-supported", getClass(), "LOCATE"));
-	}
-
-	@Override
 	public boolean needsToCreateIndex(Index idx, Table table) {
 		// Informix will automatically create a unique index for the
 		// primary key, so don't create another index again
@@ -243,70 +231,4 @@ public class GBaseDictionary extends DBDictionary {
 		return true;
 	}
 
-	public boolean useJCC() {
-		return useJCC;
-	}
-
-	/**
-	 * Return DB specific schemaCase
-	 */
-	@Override
-	public String getSchemaCase() {
-		return schemaCase;
-	}
-
-	/**
-	 * Specialized matchErrorState method for Informix. Informix exceptions are
-	 * typically nested multiple levels deep. Correct determination of the exception
-	 * type requires inspection of nested exceptions to determine the root cause. A
-	 * list of Informix (IDS v10) error codes can be found here:
-	 *
-	 * http://publib.boulder.ibm.com/infocenter/idshelp/v10/index.jsp?topic=/com.ibm.em.doc/errors_ids100.html
-	 *
-	 * @param errorStates classification of SQL error states by their specific
-	 *                    nature. The keys of the map represent one of the constants
-	 *                    defined in {@link StoreException}. The value corresponding
-	 *                    to a key represent the set of SQL Error States
-	 *                    representing specific category of database error. This
-	 *                    supplied map is sourced from
-	 *                    <code>sql-error-state-codes.xml</xml> and filtered the
-	 *                    error states for the current database.
-	 *
-	 * @param ex          original SQL Exception as raised by the database driver.
-	 *
-	 * @return A constant indicating the category of error as defined in
-	 *         {@link StoreException}.
-	 */
-	@Override
-	protected int matchErrorState(Map<Integer, Set<String>> errorStates, SQLException ex) {
-		// Informix SQLState IX000 is a general SQLState that applies to many possible
-		// conditions
-		// If the underlying cause is also an IX000 with error code:
-		// -107 ISAM error: record is locked. || -154 ISAM error: Lock Timeout Expired.
-		// the exception type is LOCK.
-		if (checkNestedErrorCodes(ex, "IX000", -107, -154)) {
-			return StoreException.LOCK;
-		}
-		return super.matchErrorState(errorStates, ex);
-	}
-
-	private boolean checkNestedErrorCodes(SQLException ex, String sqlState, int... errorCodes) {
-		SQLException cause = ex;
-		int level = 0;
-		// Query at most 5 exceptions deep to prevent infinite iteration exception loops
-		// Typically, the root exception is at level 3.
-		while (cause != null && level < 5) {
-			String errorState = cause.getSQLState();
-			if (sqlState == null || sqlState.equals(errorState)) {
-				for (int ec : errorCodes) {
-					if (cause.getErrorCode() == ec) {
-						return true;
-					}
-				}
-			}
-			cause = cause.getNextException();
-			level++;
-		}
-		return false;
-	}
 }
