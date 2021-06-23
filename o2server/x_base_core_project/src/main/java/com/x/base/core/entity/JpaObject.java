@@ -13,6 +13,8 @@ import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -144,53 +146,53 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 		this.sequence = sequence;
 	}
 
-	/* 暂存String */
-	@Column(length = length_255B, name = ColumnNamePrefix + scratchString_FIELDNAME)
-	private String scratchString;
-
-	/* 暂存Boolean */
-	@Column(name = ColumnNamePrefix + scratchBoolean_FIELDNAME)
-	private Boolean scratchBoolean;
-
-	/* 暂存Date */
-	@Column(name = ColumnNamePrefix + scratchDate_FIELDNAME)
-	private Date scratchDate;
-
-	/* 暂存Integer */
-	@Column(name = ColumnNamePrefix + scratchInteger_FIELDNAME)
-	private Date scratchInteger;
-
-	public String getScratchString() {
-		return scratchString;
-	}
-
-	public void setScratchString(String scratchString) {
-		this.scratchString = scratchString;
-	}
-
-	public Boolean getScratchBoolean() {
-		return scratchBoolean;
-	}
-
-	public void setScratchBoolean(Boolean scratchBoolean) {
-		this.scratchBoolean = scratchBoolean;
-	}
-
-	public Date getScratchDate() {
-		return scratchDate;
-	}
-
-	public void setScratchDate(Date scratchDate) {
-		this.scratchDate = scratchDate;
-	}
-
-	public Date getScratchInteger() {
-		return scratchInteger;
-	}
-
-	public void setScratchInteger(Date scratchInteger) {
-		this.scratchInteger = scratchInteger;
-	}
+//	/* 暂存String */
+//	@Column(length = length_255B, name = ColumnNamePrefix + scratchString_FIELDNAME)
+//	private String scratchString;
+//
+//	/* 暂存Boolean */
+//	@Column(name = ColumnNamePrefix + scratchBoolean_FIELDNAME)
+//	private Boolean scratchBoolean;
+//
+//	/* 暂存Date */
+//	@Column(name = ColumnNamePrefix + scratchDate_FIELDNAME)
+//	private Date scratchDate;
+//
+//	/* 暂存Integer */
+//	@Column(name = ColumnNamePrefix + scratchInteger_FIELDNAME)
+//	private Date scratchInteger;
+//
+//	public String getScratchString() {
+//		return scratchString;
+//	}
+//
+//	public void setScratchString(String scratchString) {
+//		this.scratchString = scratchString;
+//	}
+//
+//	public Boolean getScratchBoolean() {
+//		return scratchBoolean;
+//	}
+//
+//	public void setScratchBoolean(Boolean scratchBoolean) {
+//		this.scratchBoolean = scratchBoolean;
+//	}
+//
+//	public Date getScratchDate() {
+//		return scratchDate;
+//	}
+//
+//	public void setScratchDate(Date scratchDate) {
+//		this.scratchDate = scratchDate;
+//	}
+//
+//	public Date getScratchInteger() {
+//		return scratchInteger;
+//	}
+//
+//	public void setScratchInteger(Date scratchInteger) {
+//		this.scratchInteger = scratchInteger;
+//	}
 
 	public static final int length_1B = 1;
 
