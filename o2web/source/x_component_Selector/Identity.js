@@ -177,6 +177,7 @@ MWF.xApplication.Selector.Identity = new Class({
                     json.data.each( function(data){
                         var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode );
                         this.subCategorys.push(category);
+                        this.subCategoryMap[data.name] = category;
                     }.bind(this));
                 }
                 loadUnitSuccess();
@@ -247,6 +248,7 @@ MWF.xApplication.Selector.Identity = new Class({
                     if( !this.isExcluded( data ) ){
                         var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode);
                         this.subCategorys.push( category );
+                        this.subCategoryMap[data.name] = category;
                     }
                 }.bind(this));
 
@@ -1053,6 +1055,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                             if( !this.selector.isExcluded( subData ) ) {
                                 var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
                                 this.subCategorys.push( category );
+                                this.subCategoryMap[subData.name] = category;
                             }
                         }.bind(this));
                         this.loaded = true;
@@ -1142,6 +1145,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                         if( !this.selector.isExcluded( subData ) ) {
                             var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
                             this.subCategorys.push( category );
+                            this.subCategoryMap[subData.name] = category;
                         }
                     }.bind(this));
                     this.categoryLoaded = true;
@@ -1761,9 +1765,11 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                         container || this.includeAreaNode, level, parentCategory);
                 }
                 if( parentCategory && parentCategory.subCategorys ){
-                    parentCategory.subCategorys.push( category )
+                    parentCategory.subCategorys.push( category );
+                    if(parentCategory.subCategoryMap)parentCategory.subCategoryMap[data.name] = category;
                 }else if(this.selector.subCategorys){
-                    this.selector.subCategorys.push( category )
+                    this.selector.subCategorys.push( category );
+                    this.selector.subCategoryMap[data.name] = category;
                 }
             }
         }.bind(this));
@@ -1784,9 +1790,11 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                     category = this.selector._newItemCategory("ItemGroupCategory", data, this.selector, container || this.includeAreaNode, level, parentCategory)
                 }
                 if( parentCategory && parentCategory.subCategorys ){
-                    parentCategory.subCategorys.push( category )
+                    parentCategory.subCategorys.push( category );
+                    if(parentCategory.subCategoryMap)parentCategory.subCategoryMap[data.name] = category;
                 }else if(this.selector.subCategorys){
-                    this.selector.subCategorys.push( category )
+                    this.selector.subCategorys.push( category );
+                    this.selector.subCategoryMap[data.name] = category;
                 }
             }
         }.bind(this));
