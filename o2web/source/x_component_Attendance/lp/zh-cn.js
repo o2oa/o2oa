@@ -56,6 +56,7 @@ MWF.xApplication.Attendance.LP = {
 	"abNormalDutyCount" : "异常打卡人次",
 	"resultNormal" : "正常打卡次数",
 	"seriousLateTimes": "严重迟到次数",
+	"outsideDutyTimes": "外出签到次数",
 	"absenteeismTimes": "矿工次数",
 	"notSignedCount": "未打卡次数",
 
@@ -226,8 +227,10 @@ MWF.xApplication.Attendance.LP = {
 	"noDepartment": "未找到您所在的部门，请联系管理员！",
 	"signinType": "打卡类型",
 	"signinTypeSelectText": ["", "上班打卡", "下班打卡"],
+	"signinQywxTypeSelectText": ["", "上班打卡", "下班打卡", "外出打卡"],
 	"signinResult": "打卡结果",
 	"signinResultSelectText": ["", "正常", "早退", "迟到", "严重迟到", "旷工迟到", "未打卡"],
+	"signinQywxResultSelectText": ["", "正常", "时间异常", "地点异常", "未打卡", "wifi异常", "非常用设备"],
 
 	"systemSetting" : "系统设置",
 	"reportTo": "汇报对象",
@@ -401,8 +404,11 @@ MWF.xApplication.Attendance.LP = {
 		"unitDetail": "部门考勤统计",
 		"topUnitDetail": "公司考勤统计",
 		"unitDingdingIndex": "钉钉部门考勤月报",
+		"unitQywxIndex": "企业微信部门考勤月报",
 		"dingdingPeopleDetail": "钉钉个人考勤统计",
 		"dingdingUnitDetail": "钉钉部门考勤统计",
+		"qywxPeopleDetail": "企业微信个人考勤统计",
+		"qywxUnitDetail": "企业微信部门考勤统计",
 
 		"maintain": "维护",
 		"importing": "数据导入",
