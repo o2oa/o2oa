@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.surface.jaxrs.readlog;
+package com.x.processplatform.assemble.surface.jaxrs.readrecord;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -51,13 +51,13 @@ class ActionListWithJob extends BaseAction {
 				for (ReadCompleted readCompleted : readCompletedList) {
 					Wo wo = new Wo();
 					readCompleted.copyTo(wo, true, "type");
-					wo.setType(ReadLog.TYPE_READ_COMPLETED);
+					wo.setType(ReadRecord.TYPE_READ_COMPLETED);
 					wos.add(wo);
 				}
 				for (Read read : readList) {
 					Wo wo = new Wo();
 					read.copyTo(wo, true, "type");
-					wo.setType(ReadLog.TYPE_READ);
+					wo.setType(ReadRecord.TYPE_READ);
 					wos.add(wo);
 				}
 			} catch (Exception e) {
@@ -80,7 +80,7 @@ class ActionListWithJob extends BaseAction {
 		});
 	}
 
-	public static class Wo extends ReadLog {
+	public static class Wo extends ReadRecord {
 
 	}
 
