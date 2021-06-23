@@ -318,7 +318,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "office": "Office控件",
         "statementSelector": "选择查询视图",
         "statement": "嵌入查询视图",
-        "importer": "数据导入"
+        "importer": "数据导入",
+        "readLog": "阅读记录"
     },
     "propertyTemplate": {
         "base": "基本",
@@ -934,7 +935,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "useTextFieldNote": "注：建议使用文本组件",
         "useChecboxNote": "注：建议使用多选组件",
         "checkboxValueNote": "注：对应选中组件的可选值",
-        "checkboxValueAllNote": "注：对应全选组件的可选值"
+        "checkboxValueAllNote": "注：对应全选组件的可选值",
+
+        "notShow": "不显示"
     },
     "actionBar": {
         "close":"关闭",
