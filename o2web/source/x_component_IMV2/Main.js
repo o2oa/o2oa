@@ -156,7 +156,14 @@ MWF.xApplication.IMV2.Main = new Class({
 	//修改群名
 	tapUpdateConvTitle: function () {
 		this.chatTitleMoreMenuNode.setStyle("display", "none");
-		var form = new MWF.xApplication.IMV2.UpdateConvTitleForm(this, {}, {}, { app: this.app });
+		var title = "";
+		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+			var c = this.conversationNodeItemList[i];
+			if (this.conversationId == c.data.id) {
+				title = c.data.title;
+			}
+		}
+		var form = new MWF.xApplication.IMV2.UpdateConvTitleForm(this, {}, {"defaultValue": title}, { app: this.app });
 		form.create();
 	},
 	//修改群成员
@@ -276,15 +283,17 @@ MWF.xApplication.IMV2.Main = new Class({
 		o2.Actions.load("x_message_assemble_communicate").ImAction.update(conv, function (json) {
 			var newConv = json.data;
 			//点击会话 刷新聊天界面
-			_self.tapConv(newConv);
-			//刷新会话列表的title
-			for (var i = 0; i < this.conversationNodeItemList.length; i++) {
-				var cv = this.conversationNodeItemList[i];
-				if (cv.data.id == convId) {
-					//刷新
-					cv.refreshConvTitle(title);
-				}
-			}
+			// _self.tapConv(newConv);
+			// //刷新会话列表的title
+			// for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+			// 	var cv = this.conversationNodeItemList[i];
+			// 	if (cv.data.id == convId) {
+			// 		//刷新
+			// 		cv.refreshConvTitle(title);
+			// 	}
+			// }
+			// 列表上的数据也要刷新
+			_self.reciveNewMessage();
 
 		}.bind(this), function (error) {
 			console.log(error);
@@ -299,7 +308,9 @@ MWF.xApplication.IMV2.Main = new Class({
 		var _self = this;
 		o2.Actions.load("x_message_assemble_communicate").ImAction.update(conv, function (json) {
 			var newConv = json.data;
-			_self.tapConv(newConv);
+			//_self.tapConv(newConv);
+			// 列表上的数据也要刷新
+			_self.reciveNewMessage();
 		}.bind(this), function (error) {
 			console.log(error);
 		}.bind(this))
@@ -431,6 +442,10 @@ MWF.xApplication.IMV2.Main = new Class({
 							isNew = false;
 							//刷新
 							cv.refreshLastMsg(nCv.lastMessage);
+							cv.refreshData(nCv);
+							if (this.conversationId === nCv.id) {
+								this.tapConv(nCv);
+							}
 						}
 					}
 					//新会话 创建
@@ -893,8 +908,15 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 			this.messageTimeNode.set("text", time);
 		}
 	},
+	// 更新聊天窗口上的标题 修改标题的时候使用 @Disuse 使用refreshData
 	refreshConvTitle: function (title) {
 		this.titleNode.set("text", title);
+	},
+	// 更新会话数据
+	refreshData: function (data) {
+		this.data = data;
+		// 更新聊天窗口上的标题 修改标题的时候使用
+		this.titleNode.set("text", data.title);
 	},
 	addCheckClass: function () {
 		if (this.nodeBaseItem) {
@@ -1062,6 +1084,7 @@ MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
 		"hasTop": true,
 		"hasIcon": false,
 		"draggable": true,
+		"defaultValue": "", // 默认值
 		"title": MWF.xApplication.IMV2.LP.modifyGroupName
 	},
 	_createTableContent: function () {
@@ -1076,7 +1099,7 @@ MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
 			style: "minder",
 			hasColon: true,
 			itemTemplate: {
-				title: { text: MWF.xApplication.IMV2.LP.groupName, type: "text", notEmpty: true },
+				title: { text: MWF.xApplication.IMV2.LP.groupName, type: "text", notEmpty: true, value:  this.options["defaultValue"] },
 			}
 		}, this.app);
 		this.form.load();
