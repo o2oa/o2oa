@@ -128,6 +128,9 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
             this.data.data = JSON.parse(this.data.data);
         }
         this.json = this.data;
+        if (!this.json.data )this.json.data = {};
+        if (!this.json.data.calculateFieldList) this.json.data.calculateFieldList = [];
+        if (!this.json.data.columnList) this.json.data.columnList = [];
         if( !this.json.data.events ){
             var url = "../x_component_query_ImporterDesigner/$Importer/importer.json";
             MWF.getJSON(url, {
@@ -219,7 +222,6 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
             "id": id,
             "displayName": this.designer.lp.unnamed,
         };
-        if (!this.json.data.calculateFieldList) this.json.data.calculateFieldList = [];
 
         this.json.data.calculateFieldList.push(json);
         var field = new MWF.xApplication.query.ImporterDesigner.Importer.CalculateField(json, this, null);
@@ -238,7 +240,6 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
                 "id": id,
                 "displayName": this.designer.lp.unnamed,
             };
-            if (!this.json.data.columnList) this.json.data.columnList = [];
 
             var column;
             if( !addToLeft || this.json.data.columnList.length === 0 ){
