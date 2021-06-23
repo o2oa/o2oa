@@ -1,0 +1,368 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle" colspan="2"><div style="text-align:center; color: red;">{{$.lp.ieOnly}}</div></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.readonly}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.delayedLoading}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isNotLoadNow" value="true" text{($.isNotLoadNow)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isNotLoadNow" value="false" text{(!$.isNotLoadNow)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.keepHistory}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isHistory" value="true" text{($.isHistory)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isHistory" value="false" text{(!$.isHistory)?'checked':''}/>{{$.lp.yes}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.openAttachment}}:</td>
+				<td class="editTableValue">
+					<input onclick="if (this.checked){ $('text{$.pid}attachmentConfigArea').setStyle('display', 'block')}" type="radio" name="isOpenAttachment" value="true" text{($.isOpenAttachment)?'checked':''}/>{{$.lp.yes}}
+					<input onclick="if (this.checked){ $('text{$.pid}attachmentConfigArea').setStyle('display', 'none')}" type="radio" name="isOpenAttachment" value="false" text{(!$.isOpenAttachment)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+
+		<div id="text{$.pid}attachmentConfigArea" style="display: text{($.isOpenAttachment)?'block':'none'};">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.attachmentId}}</td>
+					<td class="editTableValue">
+						<input type="text" name="attachmentIds" value="text{$.attachmentIds}" class="editTableInput"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.attachmentReadonly}}:</td>
+					<td class="editTableValue">
+						<input type="radio" name="isAttReadonly" value="true" text{($.isAttReadonly)?'checked':''}/>{{$.lp.yes}}
+						<input type="radio" name="isAttReadonly" value="false" text{(!$.isAttReadonly)?'checked':''}/>{{$.lp.no}}
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.autoSave}}:</td>
+				<td class="editTableValue">
+					<input onclick="if (this.checked){ $('text{$.pid}fileAutoSaveArea').setStyle('display', 'block')}" type="radio" name="isAutoSave" value="true" text{($.isAutoSave)?'checked':''}/>{{$.lp.yes}}
+					<input onclick="if (this.checked){ $('text{$.pid}fileAutoSaveArea').setStyle('display', 'none')}" type="radio" name="isAutoSave" value="false" text{(!$.isAutoSave)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+		<div id="text{$.pid}fileAutoSaveArea" style="display: text{($.isAutoSave)?'block':'none'};">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableValue"  colspan="2"><b>{{$.lp.historyCount}}: &nbsp;&nbsp;</b>
+						<select name="autoSaveNumber">
+							<option value="1" text{($.autoSaveNumber=='1')?'selected':''}>1</option>
+							<option value="2" text{($.autoSaveNumber=='2')?'selected':''}>2</option>
+							<option value="3" text{(!$.autoSaveNumber || $.autoSaveNumber=='3')?'selected':''}>3</option>
+							<option value="4" text{($.autoSaveNumber=='4')?'selected':''}>4</option>
+							<option value="5" text{($.autoSaveNumber=='5')?'selected':''}>5</option>
+							<option value="6" text{($.autoSaveNumber=='6')?'selected':''}>6</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.timeInterval}}:</td>
+					<td class="editTableValue">
+						<input type="number" name="autoSaveTime" value="text{$.autoSaveTime || 5}" class="editTableInput"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableValue" colspan="2">
+					<b>{{$.lp.showSummary}}:</b>
+					<input type="radio" name="isShowSummary" value="true" text{($.isShowSummary!==false)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isShowSummary" value="false" text{($.isShowSummary===false)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.type}}:</td>
+		    <td class="editTableValue">
+		    	<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='word')?'checked':''} type="radio" value="word"/>Word<br/>
+		    	<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='excel')?'checked':''} type="radio" value="excel"/>Excel<br/>
+		    	<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='ppt')?'checked':''} type="radio" value="ppt"/>PowerPoint<br/>
+		    	<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'block'); " name="officeType" text{($.officeType=='other')?'checked':''} type="radio" value="other"/>{{$.lp.byTemplate}}
+		    </td>
+		  </tr>
+		</table>
+		<div id="officeTemplateArea" title="src" style="display: text{($.officeType=='other')?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			  <tr>
+			    <td class="editTableTitle">{{$.lp.templatePath}}:</td>
+			    <td class="editTableValue">
+			    	<input type="text" name="template" value="text{$.template}" class="editTableInput"/>
+			    </td>
+			  </tr>
+			</table>
+		</div>
+        <div class="MWFScriptArea" name="readScript" title="{{$.lp.readonlyCondition}} (S)"></div>
+		<div class="MWFFormulaArea" name="fileSite" title="{{$.lp.officeFileSite}} (S)"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.userTitle}}:</td>
+				<td class="editTableValue"><input type="text" name="productCaption" value="text{$.productCaption}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.userId}}:</td>
+				<td class="editTableValue"><input type="text" name="productKey" value="text{$.productKey}" class="editTableInput"/></td>
+			</tr>
+			<!--<tr>-->
+				<!--<td class="editTableTitle">授权标题:</td>-->
+				<!--<td class="editTableValue"><input type="text" name="makerCaption" value="text{$.makerCaption}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableTitle">授权标识:</td>-->
+				<!--<td class="editTableValue"><input type="text" name="makerKey" value="text{$.makerKey}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableTitle">控件版本:</td>-->
+				<!--<td class="editTableValue"><input type="text" name="version" value="text{$.version}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableTitle">classid:</td>-->
+				<!--<td class="editTableValue"><input type="text" name="clsid" value="text{$.clsid}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableTitle">控件路径:</td>-->
+				<!--<td class="editTableValue"><input type="text" name="codeBase" value="text{$.codeBase}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableTitle">classid64位:</td>-->
+				<!--<td class="editTableValue"><input type="text" name="clsid64" value="text{$.clsid64}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableTitle">控件路径64位:</td>-->
+				<!--<td class="editTableValue"><input type="text" name="codeBase64" value="text{$.codeBase64}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+		</table>
+
+
+	</div>
+	<div title="{{$.lp.edit}}"  class="MWFTab">
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.toolbar}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.tools}}</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('new')!=-1)?'checked':''} type="checkbox" value="new"/>{{$.lp.newDoc}}
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('open')!=-1)?'checked':''} type="checkbox" value="open"/>{{$.lp.openLocal}}
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('save')!=-1)?'checked':''} type="checkbox" value="save"/>{{$.lp.saveLocal}}
+					<br/>
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('revisions')!=-1)?'checked':''} type="checkbox" value="revisions"/>{{$.lp.traceSwitch}}
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('fullscreen')!=-1)?'checked':''} type="checkbox" value="fullscreen"/>{{$.lp.fullscreenMode}}
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('toolbar')!=-1)?'checked':''} type="checkbox" value="toolbar"/>{{$.lp.toolbarSwitch}}
+					<br/><input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('preview')!=-1)?'checked':''} type="checkbox" value="preview"/>{{$.lp.printPreview}}
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('redfile')!=-1)?'checked':''} type="checkbox" value="redfile"/>{{$.lp.redFileButton}}
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('seal')!=-1)?'checked':''} type="checkbox" value="seal"/>{{$.lp.stampButton}}
+					<br/><input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('showHistory')!=-1)?'checked':''} type="checkbox" value="showHistory"/>{{$.lp.showHistory}}
+				</td>
+			</tr>
+		</table>
+		<!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+                    <!--<b>痕迹切换:</b>-->
+					<!--<input class="editTableRadio" name="menu_revisions" text{($.menu_revisions!='0')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_revisions" text{($.menu_revisions=='0')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+                    <!--<b>全屏模式:</b>-->
+					<!--<input class="editTableRadio" name="menu_fullscreen" text{($.menu_fullscreen!='0')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_fullscreen" text{($.menu_fullscreen=='0')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+                    <!--<b>工具栏切换:</b>-->
+					<!--<input class="editTableRadio" name="menu_toolbar" text{($.menu_toolbar=='1')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_toolbar" text{($.menu_toolbar!='1')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+                    <!--<b>打印预览:</b>-->
+					<!--<input class="editTableRadio" name="menu_preview" text{($.menu_preview!='0')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_preview" text{($.menu_preview=='0')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+					<!--<b>套红按钮:</b>-->
+					<!--<input class="editTableRadio" name="menu_redfile" text{($.menu_redfile=='1')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_redfile" text{($.menu_redfile!='1')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+					<!--<b>盖章按钮:</b>-->
+					<!--<input class="editTableRadio" name="menu_seal" text{($.menu_seal=='1')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_seal" text{($.menu_seal!='1')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+		<!--</table>-->
+
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.attribute}}:</div>
+
+		<!--<div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center;">界面相关</div>-->
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.showTitleBar}}:</b>
+				<input class="editTableRadio" name="ntkoEditProperties.TitleBar" text{($.ntkoEditProperties.TitleBar=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="ntkoEditProperties.TitleBar" text{($.ntkoEditProperties.TitleBar!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.showMenuBar}}:</b>
+				<input class="editTableRadio" name="ntkoEditProperties.Menubar" text{($.ntkoEditProperties.Menubar=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="ntkoEditProperties.Menubar" text{($.ntkoEditProperties.Menubar!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.showToolBar}}:</b>
+				<input class="editTableRadio" name="ntkoEditProperties.ToolBars" text{($.ntkoEditProperties.ToolBars!='0')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="ntkoEditProperties.ToolBars" text{($.ntkoEditProperties.ToolBars=='0')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.showStatusBar}}:</b>
+				<input class="editTableRadio" name="ntkoEditProperties.Statusbar" text{($.ntkoEditProperties.Statusbar=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="ntkoEditProperties.Statusbar" text{($.ntkoEditProperties.Statusbar!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.showZoom}}:</td>
+				<td class="editTableValue"><input type="number" name="editScale" value="text{$.editScale}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.title}}:</td>
+				<td class="editTableValue"><input type="text" name="ntkoEditProperties.Caption" value="text{$.ntkoEditProperties.Caption}" class="editTableInput"/></td>
+			</tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.borderStyle}}:</b>
+				<input class="editTableRadio" name="ntkoEditProperties.BorderStyle" text{($.ntkoEditProperties.BorderStyle=='0')?'checked':''} type="radio" value="0"/>{{$.lp.none}}
+				<input class="editTableRadio" name="ntkoEditProperties.BorderStyle" text{($.ntkoEditProperties.BorderStyle!='0' && $.ntkoEditProperties.BorderStyle!='2')?'checked':''} type="radio" value="1"/>{{$.lp.flat}}
+				<input class="editTableRadio" name="ntkoEditProperties.BorderStyle" text{($.ntkoEditProperties.BorderStyle=='2')?'checked':''} type="radio" value="2"/>3D
+			</td></tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.borderColor}}:</td>
+				<td class="editTableValue"><input type="color" name="ntkoEditProperties.BorderColor" value="text{$.ntkoEditProperties.BorderColor}" class="editTableInput"/></td>
+			</tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>{{$.lp.noCopy}}:</b>
+                <input class="editTableRadio" name="ntkoEditProperties.IsNoCopy" text{($.ntkoEditProperties.IsNoCopy=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+                <input class="editTableRadio" name="ntkoEditProperties.IsNoCopy" text{($.ntkoEditProperties.IsNoCopy!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+            </td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.keepTraces}}:</b>
+				<input class="editTableRadio" name="trackRevisions" text{($.trackRevisions=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="trackRevisions" text{($.trackRevisions!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+		</table>
+		<div class="MWFMaplist" name="editProperties" title="{{$.lp.otherAttr}}"></div>
+	</div>
+    <div title="{{$.lp.read}}"  class="MWFTab">
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.toolbar}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.toolbar}}</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="menuReadButtons" text{(($.menuReadButtons) && $.menuReadButtons.indexOf('revisions')!=-1)?'checked':''} type="checkbox" value="revisions"/>{{$.lp.traceSwitch}}
+					<input class="editTableRadio" name="menuReadButtons" text{(($.menuReadButtons) && $.menuReadButtons.indexOf('fullscreen')!=-1)?'checked':''} type="checkbox" value="fullscreen"/>{{$.lp.fullscreenMode}}
+					<input class="editTableRadio" name="menuReadButtons" text{(($.menuReadButtons) && $.menuReadButtons.indexOf('toolbar')!=-1)?'checked':''} type="checkbox" value="toolbar"/>{{$.lp.toolbarSwitch}}
+					<br/><input class="editTableRadio" name="menuReadButtons" text{(($.menuReadButtons) && $.menuReadButtons.indexOf('preview')!=-1)?'checked':''} type="checkbox" value="preview"/>{{$.lp.printPreview}}
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('showHistory')!=-1)?'checked':''} type="checkbox" value="showHistory"/>{{$.lp.showHistory}}
+					<!--<input class="editTableRadio" name="menuReadButtons" text{(($.menu_buttons) && $.menu_buttons.indexOf('redfile')!=-1)?'checked':''} type="checkbox" value="redfile"/>套红按钮-->
+					<!--<input class="editTableRadio" name="menuReadButtons" text{(($.menu_buttons) && $.menu_buttons.indexOf('seal')!=-1)?'checked':''} type="checkbox" value="seal"/>盖章按钮-->
+				</td>
+			</tr>
+		</table>
+        <!--<div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center;">界面相关</div>-->
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr><td class="editTableValue"  colspan="2">
+                <b>{{$.lp.showTitleBar}}:</b>
+                <input class="editTableRadio" name="ntkoReadProperties.TitleBar" text{($.ntkoReadProperties.TitleBar=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+                <input class="editTableRadio" name="ntkoReadProperties.TitleBar" text{($.ntkoReadProperties.TitleBar!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+            </td></tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>{{$.lp.showMenuBar}}:</b>
+                <input class="editTableRadio" name="ntkoReadProperties.Menubar" text{($.ntkoReadProperties.Menubar=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+                <input class="editTableRadio" name="ntkoReadProperties.Menubar" text{($.ntkoReadProperties.Menubar!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+            </td></tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>{{$.lp.showToolBar}}:</b>
+                <input class="editTableRadio" name="ntkoReadProperties.ToolBars" text{($.ntkoReadProperties.ToolBars!='0')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+                <input class="editTableRadio" name="ntkoReadProperties.ToolBars" text{($.ntkoReadProperties.ToolBars=='0')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+            </td></tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>{{$.lp.showStatusBar}}:</b>
+                <input class="editTableRadio" name="ntkoReadProperties.Statusbar" text{($.ntkoReadProperties.Statusbar=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+                <input class="editTableRadio" name="ntkoReadProperties.Statusbar" text{($.ntkoReadProperties.Statusbar!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+            </td></tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.showZoom}}:</td>
+				<td class="editTableValue"><input type="number" name="readScale" value="text{$.readScale}" class="editTableInput"/></td>
+			</tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.title}}:</td>
+                <td class="editTableValue"><input type="text" name="ntkoReadProperties.Caption" value="text{$.ntkoReadProperties.Caption}" class="editTableInput"/></td>
+            </tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>{{$.lp.borderStyle}}:</b>
+                <input class="editTableRadio" name="ntkoReadProperties.BorderStyle" text{($.ntkoReadProperties.BorderStyle=='0')?'checked':''} type="radio" value="0"/>{{$.lp.none}}
+                <input class="editTableRadio" name="ntkoReadProperties.BorderStyle" text{($.ntkoReadProperties.BorderStyle!='0' && $.ntkoReadProperties.BorderStyle!='2')?'checked':''} type="radio" value="1"/>{{$.lp.flat}}
+                <input class="editTableRadio" name="ntkoReadProperties.BorderStyle" text{($.ntkoReadProperties.BorderStyle=='2')?'checked':''} type="radio" value="2"/>3D
+            </td></tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.borderColor}}:</td>
+                <td class="editTableValue"><input type="color" name="ntkoReadProperties.BorderColor" value="text{$.ntkoReadProperties.BorderColor}" class="editTableInput"/></td>
+            </tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>{{$.lp.noCopy}}:</b>
+                <input class="editTableRadio" name="ntkoReadProperties.IsNoCopy" text{($.ntkoReadProperties.IsNoCopy=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+                <input class="editTableRadio" name="ntkoReadProperties.IsNoCopy" text{($.ntkoReadProperties.IsNoCopy!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+            </td></tr>
+        </table>
+        <div class="MWFMaplist" name="readProperties" title="{{$.lp.otherAttr}}"></div>
+    </div>
+
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>
