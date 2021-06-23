@@ -13,7 +13,6 @@ MWF.xApplication.Selector.Person = new Class({
         "roles": [],
         "values": [],
         "exclude" : [],
-        "exclude" : [],
         "zIndex": 1000,
         "expand": true,
         "embedded" : false, //是否嵌入在其他容器中
@@ -1372,6 +1371,22 @@ MWF.xApplication.Selector.Person = new Class({
             }.bind(this), null, role);
         }.bind(this));
     },
+    isInValues: function(d){
+        if( this.options.values.length === 0 )return false;
+        if( !this.valueFlagMap ){
+            this.valueFlagMap = {};
+            this.options.values.each( function( e ){
+                if( !e )return;
+                this.valueFlagMap[ typeOf( e ) === "string" ? e : ( e.distinguishedName || e.id || e.unique || e.employee || e.levelName) ] = true;
+            }.bind(this));
+        }
+        var map = this.valueFlagMap;
+        return ( d.distinguishedName && map[ d.distinguishedName ] ) ||
+            ( d.id && map[ d.id ] ) ||
+            ( d.unique && map[ d.unique ] ) ||
+            ( d.employee && map[ d.employee ] ) ||
+            ( d.levelName && map[ d.levelName ] );
+    },
     isExcluded : function( d ){
         if( this.options.exclude.length === 0 )return false;
         if( !this.excludeFlagMap ){
@@ -2142,15 +2157,16 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if (this.selectedItem){
             this.selector.selectedItems.erase(this.selectedItem);
 
-            this.selectedItem.items.each(function(item){
-                if( item.isSelected || ( item === this && isSelected ) ){
-                    var flag = this.selector.options.selectAllRange === "all" ||
-                        ( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ));
-                    if( flag ){
+            var opt = this.selector.options;
+            if( opt.selectAllRange === "all" || ( this.selector.selectType === "identity" && ( opt.showSelectedCount || opt.isCheckStatus ))){
+                this.selectedItem.items.each(function(item){
+                    if( item.isSelected || ( item === this && isSelected ) ){
                         if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( -1, true );
                     }
-                }
+                }.bind(this));
+            }
 
+            this.selectedItem.items.each(function(item){
                 if (item != this){
                     item.isSelected = false;
                     item.node.setStyles(this.selector.css.selectorItem);

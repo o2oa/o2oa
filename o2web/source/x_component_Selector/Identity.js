@@ -30,7 +30,12 @@ MWF.xApplication.Selector.Identity = new Class({
             this.afterLoadSelectItem();
             return;
         }
+
+        this._loadSelectItems();
+
         if( this.className === "Identity" && (this.options.isCheckStatus || this.options.showSelectedCount )) {
+
+            this.loadingCount = "wait";
 
             var unitList = [];
             var groupList = [];
@@ -62,7 +67,12 @@ MWF.xApplication.Selector.Identity = new Class({
                     if (unitLoaded && groupLoaded && selectedIdentityLoaded && excludeIdentityLoaded) {
                         this.caculateNestedSubCount(unitTree, groupTree, function () {
                             debugger;
-                            this._loadSelectItems()
+
+                            this.loadingCount = "ready";
+
+                            this.checkCountAndStatus();
+
+                            this.loadingCount = "done";
                         }.bind(this))
 
                     }
@@ -123,8 +133,6 @@ MWF.xApplication.Selector.Identity = new Class({
                     load();
                 }.bind(this))
             }
-        }else{
-            this._loadSelectItems()
         }
     },
     _loadSelectItems: function(addToNext){
@@ -268,6 +276,14 @@ MWF.xApplication.Selector.Identity = new Class({
             });
         }
         this.includeObject.load();
+    },
+
+    checkCountAndStatus: function(){
+        if( this.subCategorys && this.subCategorys.length ){
+            this.subCategorys.each(function (category) {
+                if(category.checkCountAndStatus)category.checkCountAndStatus();
+            })
+        }
     },
 
     checkLoadSelectItems: function(){
@@ -428,7 +444,7 @@ MWF.xApplication.Selector.Identity = new Class({
                         var identityCount = group["identityList"].length;
                         if(identityCount)result.groupMap[key] = identityCount;
                     }
-                   if( callback )callback( result );
+                    if( callback )callback( result );
                 }.bind(this));
             }else{
                 if( callback )callback( result );
@@ -708,7 +724,10 @@ MWF.xApplication.Selector.Identity.Item = new Class({
             var flag = this.selector.options.selectAllRange === "all" ||
                 ( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ));
             if( flag ){
-                if(this.category && this.category._addSelectedCount )this.category._addSelectedCount( 1, true );
+                debugger;
+                if( !this.selector.isInValues(this.data) ){
+                    if(this.category && this.category._addSelectedCount )this.category._addSelectedCount( 1, true );
+                }
             }
         }
     }
@@ -804,6 +823,7 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                     var flag = this.selector.options.selectAllRange === "all" ||
                         ( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ) );
                     if( flag ){
+                        debugger;
                         if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( 1, true );
                     }
                 }.bind(this));
@@ -821,17 +841,36 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
             "title" : this._getTtiteText()
         }).inject(this.container);
     },
-    _addSelectedCount : function( count, nested ){
-        var c = ( this._getSelectedCount() || 0 ) + count;
-        this.selectedCount = c;
-        this.checkCountAndStatus( c );
+    checkCountAndStatus: function( nestedSub ){
+        var count = this._getSelectedCount();
+        this._checkCountAndStatus(count);
+        if( nestedSub && this.subCategorys && this.subCategorys.length){
+            this.subCategorys.each(function(category){
+                if( category.checkCountAndStatus )category.checkCountAndStatus(nestedSub);
+            }.bind(this))
+        }
+    },
+    _addSelectedCount : function( count, nested ){ //增加数字并向上回溯
+        if( this.selector.loadingCount === "done" ){
+            var c = ( this._getSelectedCount() || 0 ) + count;
+            this.selectedCount = c;
+            this._checkCountAndStatus( c );
+        }else{
+            this.selectedCount_wait = (this.selectedCount_wait || 0) + count;
+        }
         if( nested && this.category && this.category._addSelectedCount ){
             this.category._addSelectedCount(count, nested);
         }
     },
-    checkCountAndStatus: function( count ){
-        if( this.selector.options.showSelectedCount ){
+    _checkCountAndStatus: function( count ){
+        if( this.selector.options.showSelectedCount && this.selector.options.showAllCount ){
+            var totalCount = this._getTotalCount();
+            if(count || totalCount)this.selectedCountNode.set("text", (count||0)+"/"+ (totalCount||0));
+        }else if(this.selector.options.showSelectedCount){
             this.selectedCountNode.set("text", count ? "(" + count + ")" : "" );
+        }else if(this.selector.options.showAllCount){
+            var totalCount = this._getTotalCount();
+            this.selectedCountNode.set("text", totalCount ? "(" + totalCount + ")" : "" );
         }
         if( this.selector.options.isCheckStatus && this.selectAllNode ){
             var total = this._getTotalCount();
@@ -882,7 +921,8 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         if( !this.selector.allUnitObject )return 0;
         var unit =  this.selector.allUnitObject[this.data.levelName];
         var count = unit ? unit.selectedNestedIdentityCount : 0;
-        this.selectedCount = count;
+        this.selectedCount = count + (this.selectedCount_wait || 0);
+        this.selectedCount_wait = 0;
         return count;
     },
     _setIcon: function(){
@@ -1003,38 +1043,38 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
             //     }
             // }else{
 
-                var loadSubUnit = function () {
-                    if( this.selector.options.expandSubEnable && !this.categoryLoaded ){
-                        this.selector.orgAction.listSubUnitDirect(function(json){
-                            json.data.each(function(subData){
-                                if( !this.selector.isExcluded( subData ) ) {
-                                    var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
-                                    this.subCategorys.push( category );
-                                }
-                            }.bind(this));
-                            this.loaded = true;
-                            if (callback) callback( true );
-                        }.bind(this), null, this.data.distinguishedName);
-                    }else{
-                        this.loaded = true;
-                        if (callback) callback( true );
-                    }
-                }.bind(this);
-
-                if( !this.itemLoaded ){
-                    this.selector.orgAction.listIdentityWithUnit(function(idJson){
-                        idJson.data.each(function(idSubData){
-                            if( !this.selector.isExcluded( idSubData ) ) {
-                                var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
-                                this.selector.items.push(item);
-                                if(this.subItems)this.subItems.push( item );
+            var loadSubUnit = function () {
+                if( this.selector.options.expandSubEnable && !this.categoryLoaded ){
+                    this.selector.orgAction.listSubUnitDirect(function(json){
+                        json.data.each(function(subData){
+                            if( !this.selector.isExcluded( subData ) ) {
+                                var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
+                                this.subCategorys.push( category );
                             }
                         }.bind(this));
-                        loadSubUnit();
+                        this.loaded = true;
+                        if (callback) callback( true );
                     }.bind(this), null, this.data.distinguishedName);
                 }else{
-                    loadSubUnit();
+                    this.loaded = true;
+                    if (callback) callback( true );
                 }
+            }.bind(this);
+
+            if( !this.itemLoaded ){
+                this.selector.orgAction.listIdentityWithUnit(function(idJson){
+                    idJson.data.each(function(idSubData){
+                        if( !this.selector.isExcluded( idSubData ) ) {
+                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+                            this.selector.items.push(item);
+                            if(this.subItems)this.subItems.push( item );
+                        }
+                    }.bind(this));
+                    loadSubUnit();
+                }.bind(this), null, this.data.distinguishedName);
+            }else{
+                loadSubUnit();
+            }
 
             // }
         }else{
@@ -1054,9 +1094,10 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
     },
     afterLoad: function(){
         if (this.level===1) this.clickItem();
-        if( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ){
-            var count = this._getSelectedCount();
-            this.checkCountAndStatus( count );
+        if( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ) {
+            if (this.selector.loadingCount === "done"){
+                this.checkCountAndStatus();
+            }
         }
     },
 
@@ -1134,17 +1175,17 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
             //     }.bind(this));
             //     if (callback) callback();
             // }else{
-                this.selector.orgAction.listIdentityWithUnit(function(idJson){
-                    idJson.data.each(function(idSubData){
-                        if( !this.selector.isExcluded( idSubData ) ) {
-                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
-                            this.selector.items.push(item);
-                            if(this.subItems)this.subItems.push( item );
-                        }
-                        this.itemLoaded = true;
-                    }.bind(this));
-                    if (callback) callback();
-                }.bind(this), null, this.data.distinguishedName);
+            this.selector.orgAction.listIdentityWithUnit(function(idJson){
+                idJson.data.each(function(idSubData){
+                    if( !this.selector.isExcluded( idSubData ) ) {
+                        var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+                        this.selector.items.push(item);
+                        if(this.subItems)this.subItems.push( item );
+                    }
+                    this.itemLoaded = true;
+                }.bind(this));
+                if (callback) callback();
+            }.bind(this), null, this.data.distinguishedName);
             // }
         }else{
             if (callback) callback( );
