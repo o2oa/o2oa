@@ -4,6 +4,7 @@ import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.message.MessageConnector;
 import com.x.organization.assemble.authentication.jaxrs.authentication.QueueLoginRecord;
 import com.x.organization.assemble.authentication.schedule.CleanupBind;
 import com.x.organization.assemble.authentication.schedule.CleanupOauthCode;
@@ -29,6 +30,7 @@ public class ThisApplication {
 			context.startQueue(queueLoginRecord);
 			context.schedule(CleanupBind.class, "0 */15 * * * ?");
 			context.schedule(CleanupOauthCode.class, "0 */15 * * * ?");
+			MessageConnector.start(context());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -37,6 +39,7 @@ public class ThisApplication {
 	public static void destroy() {
 		try {
 			CacheManager.shutdown();
+			MessageConnector.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

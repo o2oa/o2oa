@@ -1,5 +1,6 @@
 package com.x.base.core.project.message;
 
+import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.google.gson.Gson;
@@ -118,6 +119,9 @@ public class MessageConnector {
 
 	public static final String TYPE_MIND_FILESHARE = "mind_fileShare";
 
+	//审计日志通知
+	public static final String TYPE_AUDIT_LOG = "audit_log";
+
 	//IM 聊天消息发送
 	public static final String TYPE_IM_CREATE = "im_create";
 
@@ -143,7 +147,7 @@ public class MessageConnector {
 
 	private static Context context;
 
-	private static LinkedBlockingQueue<Wrap> connectQueue = new LinkedBlockingQueue<>();
+	private static LinkedBlockingQueue<Wrap> connectQueue = new LinkedBlockingQueue<>(10000);
 
 	public static void start(Context context) {
 		MessageConnector.context = context;
