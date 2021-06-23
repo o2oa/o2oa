@@ -412,6 +412,18 @@
         "position": "absolute",
         "z-index": "200"
     },
+    "worksAreaNodeMobile": {
+        "width": "98%",
+        "min-height": "200px",
+        "max-height": "600px",
+        "border": "2px solid #999999",
+        "border-radius": "5px",
+        "box-shadow": "0px 0px 5px #ffffff",
+        "background-color": "#ffffff",
+        "overflow": "auto",
+        "position": "absolute",
+        "z-index": "200"
+    },
     "worksAreaTitleNode": {
         "height": "20px",
     },
