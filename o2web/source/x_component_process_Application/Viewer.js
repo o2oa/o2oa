@@ -747,7 +747,12 @@ MWF.xApplication.process.Application.Viewer.Item = new Class({
         new Element("div", {"styles": this.css.workAreaContentTextNode, "text": this.view.lp.processCompleted}).inject(contentNode);
     },
     createWorksArea: function(){
-        var worksAreaNode = new Element("div", {"styles": this.css.worksAreaNode});
+        var cssWorksArea = this.css.worksAreaNode
+        if (layout.mobile) {
+            cssWorksArea = this.css.worksAreaNodeMobile;
+        }
+        var worksAreaNode = new Element("div", {"styles": cssWorksArea});
+        // var worksAreaNode = new Element("div", {"styles": this.css.worksAreaNode});
         var worksAreaTitleNode = new Element("div", {"styles": this.css.worksAreaTitleNode}).inject(worksAreaNode);
         var worksAreaTitleCloseNode = new Element("div", {"styles": this.css.worksAreaTitleCloseNode}).inject(worksAreaTitleNode);
         worksAreaTitleCloseNode.addEvent("click", function(e){
