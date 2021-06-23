@@ -1,0 +1,67 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr title="{{$.lp.delayedTabInfo}}">
+				<td class="editTableTitle">{{$.lp.delayedLoading}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isDelay" value="true" text{($.isDelay)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isDelay" value="false" text{(!$.isDelay)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.style}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="if (this.checked){
+		    		$('text{$.pid}displayScriptArea').setStyle('display', 'none');
+		    		$('text{$.pid}textStyleArea').setStyle('display', 'block');
+		    	}" name="mode" text{($.mode=='default')?'checked':''} type="radio" value="default"/>{{$.lp.default}}
+					<input class="editTableRadio" onclick="if (this.checked){
+		    	 	$('text{$.pid}displayScriptArea').setStyle('display', 'block');
+		    	 	$('text{$.pid}textStyleArea').setStyle('display', 'none');
+		    	 }"  name="mode" text{($.mode=='text')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
+					<input class="editTableRadio" onclick="if (this.checked){
+                 	$('text{$.pid}displayScriptArea').setStyle('display', 'none');
+                 	$('text{$.pid}textStyleArea').setStyle('display', 'none');
+                 }"  name="mode" text{($.mode=='table')?'checked':''} type="radio" value="notShow"/>{{$.lp.notShow}}<br>
+
+				</td>
+			</tr>
+		</table>
+
+		<div style="display: text{($.mode=='script') ?'block':'none'}" id="text{$.pid}displayScriptArea" class="MWFScriptArea" name="displayScript" title="{{$.lp.logFormatScript}} (S)"></div>
+
+		<div style="display: text{($.mode=='default') ?'block':'none'}" id="text{$.pid}textStyleArea">
+			<textarea name="textStyle" class="editTableTextarea">text{$.textStyle}</textarea>
+		</div>
+
+
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
+	</div>
+
+
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

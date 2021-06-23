@@ -61,7 +61,7 @@ class ActionManageGetAssignment extends BaseAction {
 		final String job = work.getJob();
 		CompletableFuture<Void> future_task = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				emc.listEqual(Task.class, Task.job_FIELDNAME, job).stream().sorted(
+				emc.listEqual(Task.class, Task.work_FIELDNAME, id).stream().sorted(
 						Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
 						.forEach(o -> {
 							try {
@@ -77,7 +77,7 @@ class ActionManageGetAssignment extends BaseAction {
 		});
 		CompletableFuture<Void> future_taskCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, job).stream().sorted(
+				emc.listEqual(TaskCompleted.class, TaskCompleted.work_FIELDNAME, id).stream().sorted(
 						Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
 						.forEach(o -> {
 							try {
@@ -93,7 +93,7 @@ class ActionManageGetAssignment extends BaseAction {
 		});
 		CompletableFuture<Void> future_read = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				emc.listEqual(Read.class, Read.job_FIELDNAME, job).stream()
+				emc.listEqual(Read.class, Read.work_FIELDNAME, id).stream()
 						.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
 						.forEach(o -> {
 							try {
@@ -109,7 +109,7 @@ class ActionManageGetAssignment extends BaseAction {
 		});
 		CompletableFuture<Void> future_readCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, job).stream().sorted(
+				emc.listEqual(ReadCompleted.class, ReadCompleted.work_FIELDNAME, id).stream().sorted(
 						Comparator.comparing(ReadCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
 						.forEach(o -> {
 							try {
