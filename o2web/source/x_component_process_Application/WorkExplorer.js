@@ -723,7 +723,7 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
         //}
         //这是一段测试----------------------
 
-        if (!this.data.control.allowVisit){
+         if (!this.data.control.allowVisit){
             this.node.setStyles(this.css.workItemNode_noread);
             this.checkAreaNode.setStyles(this.css.actionStopWorkNode);
             this.actionAreaNode.setStyles(this.css.actionStopWorkActionNode);
@@ -1348,20 +1348,20 @@ MWF.xApplication.process.Application.WorkExplorer.Task = new Class({
     },
     setActions: function () {
         //if (this.explorer.app.options.application.allowControl || this.explorer.app.desktop.session.user.name == this.data.person) {
-        if (this.data.control.allowReset){
+        if ((this.data.control || this.work.data.control).allowReset){
             this.resetNode = new Element("div", {
                 "styles": this.css.taskActionResetNode,
                 "title": this.explorer.app.lp.reset
             }).inject(this.actionAreaNode);
         }
         //if (this.explorer.app.options.application.allowControl) {
-        if (this.data.control.allowProcessing) {
+        if ((this.data.control || this.work.data.control).allowProcessing) {
             this.flowNode = new Element("div", {
                 "styles": this.css.taskActionFlowNode,
                 "title": this.explorer.app.lp.flow
             }).inject(this.actionAreaNode);
         }
-        if (this.data.control.allowDelete){
+        if ((this.data.control || this.work.data.control).allowDelete){
             this.deleteNode = new Element("div", {
                 "styles": this.css.taskActionDeleteNode,
                 "title": this.explorer.app.lp.delete
@@ -1578,7 +1578,7 @@ MWF.xApplication.process.Application.WorkExplorer.Done = new Class({
     Extends: MWF.xApplication.process.Application.WorkExplorer.Task,
     setActions: function(){
         //if (this.explorer.app.options.application.allowControl){
-        if (this.data.control.allowDelete){
+        if ((this.data.control || this.work.data.control).allowDelete){
             this.deleteNode = new Element("div", {"styles": this.css.taskActionDeleteNode, "title": this.explorer.app.lp.delete}).inject(this.actionAreaNode);
         }
     },
@@ -1615,14 +1615,14 @@ MWF.xApplication.process.Application.WorkExplorer.Read = new Class({
     Extends: MWF.xApplication.process.Application.WorkExplorer.Task,
     setActions: function(){
         //if (this.explorer.app.options.application.allowControl || this.explorer.app.desktop.session.user.name==this.data.person){
-        if (this.data.control.allowReadReset){
+        if ((this.data.control || this.work.data.control).allowReadReset){
             this.resetNode = new Element("div", {"styles": this.css.taskActionResetNode, "title": this.explorer.app.lp.reset}).inject(this.actionAreaNode);
         }
-        if (this.data.control.allowRead){
+        if ((this.data.control || this.work.data.control).allowRead){
             this.flagNode = new Element("div", {"styles": this.css.readActionFlagNode, "title": this.explorer.app.lp.flag}).inject(this.actionAreaNode);
         }
         //if (this.explorer.app.options.application.allowControl){
-        if (this.data.control.allowDelete){
+        if ( (this.data.control || this.work.data.control).allowDelete){
             this.deleteNode = new Element("div", {"styles": this.css.taskActionDeleteNode, "title": this.explorer.app.lp.delete}).inject(this.actionAreaNode);
         }
     },
