@@ -68,6 +68,13 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
 						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_WELINK,MessageConnector.CONSUME_MQ));
+
+		/* 待办转已办通知 */
+		o.put(MessageConnector.TYPE_TASK_TO_TASKCOMPLETED,
+				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
+						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_WELINK,MessageConnector.CONSUME_MQ));
+
 		/* 待办提醒通知 */
 		o.put(MessageConnector.TYPE_TASK_PRESS,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
@@ -83,6 +90,12 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 
 		/* 待阅已阅通知 */
 		o.put(MessageConnector.TYPE_READ_CREATE,
+				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
+						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_WELINK,MessageConnector.CONSUME_MQ));
+
+		/* 待阅转已阅通知 */
+		o.put(MessageConnector.TYPE_READ_TO_READCOMPLETED,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
 						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_WELINK,MessageConnector.CONSUME_MQ));
