@@ -125,4 +125,24 @@ public class SectionInfoAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "从应用市场同步所有的应用名称，存入论坛板块应用市场字段subjectTypeList.", action = ActionSynApplicationsFromMarket.class)
+	@GET
+	@Path("syn")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void syn(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionSynApplicationsFromMarket.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+			try {
+				result = new ActionSynApplicationsFromMarket().execute(request, effectivePerson);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionRoleInfoProcess(e, "根据版块名称获取版块信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
