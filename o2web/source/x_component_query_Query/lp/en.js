@@ -235,8 +235,8 @@ MWF.xApplication.query.Query.LP = {
     "reExecuteImport": "Re-execute import",
     "importPerson": "Import Person",
 
-    "showFiveColumn": "(Show the first 5 columns)",
-    "showAll": "(show all)",
+    "showFiveColumn": "(Click to show the first 5 columns)",
+    "showAll": "(Click to show all)",
 
     "deleteDocument": "It cannot be restored after deletion. Are you sure you want to delete the import record?",
     "deleteDocumentTitle": "Delete Import Record Confirmation",
