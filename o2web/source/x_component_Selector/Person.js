@@ -1776,6 +1776,9 @@ MWF.xApplication.Selector.Person = new Class({
         }
 
         return subCategoryListNode;
+    },
+    checkCountAndStatusByUnselectItem: function( itemData ){
+
     }
     //checkClickFlatCategoryItem : function(categoryItemNode, itemNodeContainer){
     //    if( !this.flatCategorySeqObj_current ){
@@ -2154,6 +2157,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             }.bind(this))
         }
 
+        debugger;
         if (this.selectedItem){
             this.selector.selectedItems.erase(this.selectedItem);
 
@@ -2246,6 +2250,12 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         }else{
             //this.item.selectedItem = null;
             //this.item.isSelected = false;
+
+            var opt = this.selector.options;
+            if( opt.selectAllRange === "all" || ( this.selector.selectType === "identity" && ( opt.showSelectedCount || opt.isCheckStatus ))){
+                this.selector.checkCountAndStatusByUnselectItem( this.data );
+            }
+
             this.destroy();
             this.selector.selectedItems.erase(this);
             if( checkValid )this.selector.fireEvent("valid", [this.selector, this])

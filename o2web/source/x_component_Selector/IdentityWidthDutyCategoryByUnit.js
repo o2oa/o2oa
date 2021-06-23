@@ -573,6 +573,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     },
     _newItemSearch: function (data, selector, container, level) {
         return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.SearchItem(data, selector, container, level);
+    },
+    checkCountAndStatusByUnselectItem: function( itemData ){
+
     }
     //_listItemNext: function(last, count, callback){
     //    this.action.listRoleNext(last, count, function(json){
