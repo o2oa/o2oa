@@ -18,6 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.PersistentMap;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
@@ -26,8 +27,8 @@ import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 import org.apache.openjpa.persistence.jdbc.KeyColumn;
 import org.apache.openjpa.persistence.jdbc.KeyIndex;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -69,12 +70,19 @@ public class Meta extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
-	/* 以上为 JpaObject 默认字段 */
-
 	public void onPersist() throws Exception {
 	}
 
-	/* 更新运行方法 */
+	public MetaProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new MetaProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(MetaProperties properties) {
+		this.properties = properties;
+	}
 
 	public static final String stringValue_FIELDNAME = "stringValue";
 	@FieldDescribe("文本字段.")
@@ -135,6 +143,13 @@ public class Meta extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + longValue_FIELDNAME)
 	private Long longValue;
 
+	public static final String floatValue_FIELDNAME = "floatValue";
+	@FieldDescribe("浮点数.")
+	@CheckPersist(allowEmpty = true)
+	@Index(name = TABLE + IndexNameMiddle + floatValue_FIELDNAME)
+	@Column(name = ColumnNamePrefix + floatValue_FIELDNAME)
+	private Double floatValue;
+
 	public static final String doubleValue_FIELDNAME = "doubleValue";
 	@FieldDescribe("双精度浮点数.")
 	@CheckPersist(allowEmpty = true)
@@ -165,12 +180,28 @@ public class Meta extends SliceJpaObject {
 	@KeyIndex(name = TABLE + IndexNameMiddle + mapValueMap_FIELDNAME + KeyIndexNameSuffix)
 	private LinkedHashMap<String, String> mapValueMap;
 
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private MetaProperties properties;
+
 	public String getStringValue() {
 		return stringValue;
 	}
 
 	public void setStringValue(String stringValue) {
 		this.stringValue = stringValue;
+	}
+
+	public String getStringLobValue() {
+		return stringLobValue;
+	}
+
+	public void setStringLobValue(String stringLobValue) {
+		this.stringLobValue = stringLobValue;
 	}
 
 	public Boolean getBooleanValue() {
@@ -221,6 +252,14 @@ public class Meta extends SliceJpaObject {
 		this.longValue = longValue;
 	}
 
+	public Double getFloatValue() {
+		return floatValue;
+	}
+
+	public void setFloatValue(Double floatValue) {
+		this.floatValue = floatValue;
+	}
+
 	public List<String> getListValueList() {
 		return listValueList;
 	}
@@ -239,14 +278,6 @@ public class Meta extends SliceJpaObject {
 
 	public void setDoubleValue(Double doubleValue) {
 		this.doubleValue = doubleValue;
-	}
-
-	public String getStringLobValue() {
-		return stringLobValue;
-	}
-
-	public void setStringLobValue(String stringLobValue) {
-		this.stringLobValue = stringLobValue;
 	}
 
 	public LinkedHashMap<String, String> getMapValueMap() {
