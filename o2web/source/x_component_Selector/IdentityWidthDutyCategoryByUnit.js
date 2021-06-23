@@ -579,6 +579,10 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     checkCountAndStatusByUnselectItem: function( itemData ){
         var levelName = itemData.matchUnitLevelName || itemData.unitLevelName;
         if(!levelName)return;
+        var map = this.subCategoryMap;
+        levelName.split("/").each(function (name) {
+
+        }.bind(this))
     }
     //_listItemNext: function(last, count, callback){
     //    this.action.listRoleNext(last, count, function(json){
