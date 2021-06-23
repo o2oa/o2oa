@@ -633,6 +633,9 @@ MWF.xApplication.Selector.Identity = new Class({
                 this.caculateUnitNestedCount( unit, groupLevelName )
             }.bind(this))
         }
+    },
+    checkCountAndStatusByUnselectItem: function( itemData ){
+
     }
 
 });
