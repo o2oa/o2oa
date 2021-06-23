@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.surface.jaxrs.readlog;
+package com.x.processplatform.assemble.surface.jaxrs.readrecord;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -12,7 +12,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	public static abstract class FilterWi extends GsonPropertyObject {
 	}
 
-	public static class ReadLog extends GsonPropertyObject {
+	public static class ReadRecord extends GsonPropertyObject {
 		private static final long serialVersionUID = -7967027122452291358L;
 
 		public static final String TYPE_READ = "read";
