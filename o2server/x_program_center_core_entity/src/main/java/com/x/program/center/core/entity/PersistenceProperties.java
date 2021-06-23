@@ -76,13 +76,13 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "CTE_INSTALL_LOG";
 	}
 
-	public static class Validation {
-		public static class Meta {
-			public static final String table = "VAL_META";
-		}
-	}
-
 	public static class MPWeixinMenu {
 		public static final String table = "CTE_MP_WEIXIN_MENU";
+	}
+
+	public static class Validation {
+		public static class Meta {
+			public static final String table = "CTE_VAL_META";
+		}
 	}
 }
