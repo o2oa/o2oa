@@ -9,14 +9,12 @@ import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.DingdingMessage;
-import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.message.core.entity.Message;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DingdingConsumeQueue extends AbstractQueue<Message> {
 
@@ -33,7 +31,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 
 				if (needTransferLink(message.getType())) {
 					String workUrl = getDingdingOpenWorkUrl(message.getBody());
-					if (workUrl != null && !"".equals(workUrl)) {
+					if (StringUtils.isNotEmpty(workUrl)) {
 						m.getMsg().setMsgtype("markdown");
 						m.getMsg().getMarkdown().setTitle(message.getTitle());
 						m.getMsg().getMarkdown().setText("["+message.getTitle()+"]("+workUrl+")");
@@ -75,10 +73,9 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 		try {
 			String work = getWorkIdFromBody(messageBody);
 			String o2oaUrl = Config.dingding().getWorkUrl();
-			if (work == null || "".equals(work) || o2oaUrl == null || "".equals(o2oaUrl)) {
+			if (StringUtils.isEmpty(work) || StringUtils.isEmpty(o2oaUrl)) {
 				return null;
 			}
-
 			String workUrl = "workmobilewithaction.html?workid=" + work;
 			String messageRedirectPortal = Config.dingding().getMessageRedirectPortal();
 			if (messageRedirectPortal != null && !"".equals(messageRedirectPortal)) {
@@ -100,22 +97,27 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 			logger.error(e);
 		}
 
-		return "";
+		return null;
 	}
 
 	/**
-	 * 获取workid
+	 * 获取workid or workCompleted
 	 * @param messageBody
 	 * @return
 	 */
 	private String getWorkIdFromBody(String messageBody) {
 		try {
 			JsonObject object =new JsonParser().parse(messageBody).getAsJsonObject();
-			return object.get("work").getAsString();
+			if (object.get("work") != null) {
+				return object.get("work").getAsString();
+			}
+			if (object.get("workCompleted") != null) {
+				return object.get("workCompleted").getAsString();
+			}
 		} catch (Exception e) {
 			logger.error(e);
 		}
-		return "";
+		return null;
 	}
 
 	/**
@@ -127,7 +129,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 	private boolean needTransferLink(String messageType) {
 		try {
 			String workUrl = Config.dingding().getWorkUrl();
-			if (workUrl != null && !"".equals(workUrl) && workMessageTypeList().contains(messageType)) {
+			if (StringUtils.isNotEmpty(workUrl)) {
 				return true;
 			}
 		} catch (Exception e) {
@@ -136,31 +138,31 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 		return false;
 	}
 
-	private List<String> workMessageTypeList() {
-		List<String> list = new ArrayList<>();
-		list.add(MessageConnector.TYPE_WORK_TO_WORKCOMPLETED);
-		list.add(MessageConnector.TYPE_WORK_CREATE);
-		list.add(MessageConnector.TYPE_WORK_DELETE);
-		list.add(MessageConnector.TYPE_WORKCOMPLETED_CREATE);
-		list.add(MessageConnector.TYPE_WORKCOMPLETED_DELETE);
-		list.add(MessageConnector.TYPE_TASK_TO_TASKCOMPLETED);
-		list.add(MessageConnector.TYPE_TASK_CREATE);
-		list.add(MessageConnector.TYPE_TASK_DELETE);
-		list.add(MessageConnector.TYPE_TASK_URGE);
-		list.add(MessageConnector.TYPE_TASK_EXPIRE);
-		list.add(MessageConnector.TYPE_TASK_PRESS);
-		list.add(MessageConnector.TYPE_TASKCOMPLETED_CREATE);
-		list.add(MessageConnector.TYPE_TASKCOMPLETED_DELETE);
-		list.add(MessageConnector.TYPE_READ_TO_READCOMPLETED);
-		list.add(MessageConnector.TYPE_READ_CREATE);
-		list.add(MessageConnector.TYPE_READ_DELETE);
-		list.add(MessageConnector.TYPE_READCOMPLETED_CREATE);
-		list.add(MessageConnector.TYPE_READCOMPLETED_DELETE);
-		list.add(MessageConnector.TYPE_REVIEW_CREATE);
-		list.add(MessageConnector.TYPE_REVIEW_DELETE);
-
-		return list;
-	}
+//	private List<String> workMessageTypeList() {
+//		List<String> list = new ArrayList<>();
+//		list.add(MessageConnector.TYPE_WORK_TO_WORKCOMPLETED);
+//		list.add(MessageConnector.TYPE_WORK_CREATE);
+//		list.add(MessageConnector.TYPE_WORK_DELETE);
+//		list.add(MessageConnector.TYPE_WORKCOMPLETED_CREATE);
+//		list.add(MessageConnector.TYPE_WORKCOMPLETED_DELETE);
+//		list.add(MessageConnector.TYPE_TASK_TO_TASKCOMPLETED);
+//		list.add(MessageConnector.TYPE_TASK_CREATE);
+//		list.add(MessageConnector.TYPE_TASK_DELETE);
+//		list.add(MessageConnector.TYPE_TASK_URGE);
+//		list.add(MessageConnector.TYPE_TASK_EXPIRE);
+//		list.add(MessageConnector.TYPE_TASK_PRESS);
+//		list.add(MessageConnector.TYPE_TASKCOMPLETED_CREATE);
+//		list.add(MessageConnector.TYPE_TASKCOMPLETED_DELETE);
+//		list.add(MessageConnector.TYPE_READ_TO_READCOMPLETED);
+//		list.add(MessageConnector.TYPE_READ_CREATE);
+//		list.add(MessageConnector.TYPE_READ_DELETE);
+//		list.add(MessageConnector.TYPE_READCOMPLETED_CREATE);
+//		list.add(MessageConnector.TYPE_READCOMPLETED_DELETE);
+//		list.add(MessageConnector.TYPE_REVIEW_CREATE);
+//		list.add(MessageConnector.TYPE_REVIEW_DELETE);
+//
+//		return list;
+//	}
 
 	public static class DingdingMessageResp {
 
