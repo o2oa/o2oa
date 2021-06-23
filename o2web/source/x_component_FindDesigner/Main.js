@@ -2151,7 +2151,8 @@ debugger;
 				actions:actions,
 				filterOption: this.filterOption,
 				debug: (window.layout && layout["debugger"]),
-				token: (window.layout && layout.session && layout.session.user) ? layout.session.user.token : ""
+				token: (window.layout && layout.session && layout.session.user) ? layout.session.user.token : "",
+				tokenName: o2.tokenName
 			};
 			this.findWorker.postMessage(workerMessage);
 		}.bind(this));
