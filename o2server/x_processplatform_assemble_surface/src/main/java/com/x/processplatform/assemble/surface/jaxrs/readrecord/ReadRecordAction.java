@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.surface.jaxrs.readlog;
+package com.x.processplatform.assemble.surface.jaxrs.readrecord;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -19,11 +19,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("readlog")
+@Path("readrecord")
 @JaxrsDescribe("待阅已阅记录")
-public class ReadLogAction extends StandardJaxrsAction {
+public class ReadRecordAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ReadLogAction.class);
+	private static Logger logger = LoggerFactory.getLogger(ReadRecordAction.class);
 
 	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取记录.", action = ActionListWithWorkOrWorkCompleted.class)
 	@GET
