@@ -15,7 +15,7 @@ var _action = {
             if (this.readyState === XMLHttpRequest.DONE) {
                 if (this.status === 200) {
                     var json = JSON.parse(this.responseText);
-                    var xToken = this.getResponseHeader(o2.tokenName);
+                    var xToken = this.getResponseHeader(_worker.findData.tokenName);
                     if (xToken){
                         json.xToken = xToken;
                     }
@@ -48,7 +48,7 @@ var _action = {
             request.setRequestHeader("Accept", "text/html,application/json,*/*");
             if (debug) request.setRequestHeader("x-debugger", "true");
             if (token){
-                request.setRequestHeader(o2.tokenName, token);
+                request.setRequestHeader(_worker.findData.tokenName, token);
                 request.setRequestHeader("authorization", token);
             }
 
@@ -58,7 +58,7 @@ var _action = {
 
     _doneRequest: function(s){
         var json = JSON.parse(this.request.responseText);
-        var xToken = this.request.getResponseHeader(o2.tokenName);
+        var xToken = this.request.getResponseHeader(_worker.findData.tokenName);
         if (xToken){
             json.xToken = xToken;
         }
