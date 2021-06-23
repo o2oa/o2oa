@@ -930,7 +930,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "useTextFieldNote": "Note: It is recommended to use text components",
         "useChecboxNote": "Note: It is recommended to use multiple selection components",
         "checkboxValueNote": "Note: the optional value corresponding to the selected component",
-        "checkboxValueAllNote": "Note: Corresponding to the optional value of select all components"
+        "checkboxValueAllNote": "Note: Corresponding to the optional value of select all components",
+
+        "notShow": "Not Show"
     },
     "actionBar": {
         "close":"Close",

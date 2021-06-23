@@ -1813,9 +1813,11 @@ debugger;
             if (!this.data[name]) this.data[name] = {"code": "", "html": ""};
             var scriptContent = this.data[name];
 
+            var mode = node.dataset["mode"];
             MWF.require("MWF.widget.ScriptArea", function(){
                 var scriptArea = new MWF.widget.ScriptArea(node, {
                     "title": title,
+                    "mode": mode || "javascript",
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
