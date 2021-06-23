@@ -4,7 +4,7 @@ import com.x.base.core.project.jaxrs.CipherManagerUserJaxrsFilter;
 
 import javax.servlet.annotation.WebFilter;
 
-@WebFilter(urlPatterns = "/jaxrs/readlog/*", asyncSupported = true)
-public class ReadLogJaxrsFilter extends CipherManagerUserJaxrsFilter {
+@WebFilter(urlPatterns = "/jaxrs/readrecord/*", asyncSupported = true)
+public class ReadRecordJaxrsFilter extends CipherManagerUserJaxrsFilter {
 
 }
