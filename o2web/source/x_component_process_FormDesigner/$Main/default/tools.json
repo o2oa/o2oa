@@ -177,6 +177,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.log,
     "className": "Log"
   },
+  "readLog": {
+    "icon": "log.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.readLog,
+    "className": "ReadLog"
+  },
   "monitor": {
     "icon": "monitor.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.monitor,
