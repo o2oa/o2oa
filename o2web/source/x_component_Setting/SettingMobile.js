@@ -103,6 +103,319 @@ MWF.xApplication.Setting.MobileModuleDocument = new Class({
     }
 });
 
+// app在线打包功能
+MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
+    Extends: MWF.xApplication.Setting.Document,
+    load: function () {
+        var cssurl = "../x_component_Setting/$Main/default/apppack/index.css";
+        var htmlurl = "../x_component_Setting/$Main/default/apppack/index.html";
+        this.contentAreaNode.loadAll({ "css": [cssurl], "html": [htmlurl] }, { "bind": { "lp": this.lp, "data": {} }, "module": this }, function () {
+            this.node = this.apppackBoxNode;
+            this.checkConnectAppPackServer();
+        }.bind(this));
+    },
+    // 检查app打包服务器连接情况，包括是否已经登录O2云
+    checkConnectAppPackServer: function () {
+        o2.Actions.load("x_program_center").AppPackAction.connect(function(json){
+            if (json && json.data) {
+                var data = json.data
+                if (data.status === 1001) { // 成功 获取token
+                    this.token = data.token;
+                    this.packServerUrl = data.packServerUrl;
+                    this.apppackErrorMsgNode.setStyles({
+                        "display": "none"
+                    });
+                    this.loadAppPackInfo();
+                } else if (data.status === 1) { // o2云未连接 o2云未启用
+                    this.showErrorMsg(this.lp.mobile_apppack_message_o2cloud_not_enable);
+                    // this.app.notice(this.lp.mobile_apppack_message_o2cloud_not_enable, "error", this.contentAreaNode);
+                } else if (data.status === 2) { // o2云未登录
+                    // this.app.notice(this.lp.mobile_apppack_message_o2cloud_not_login, "error", this.contentAreaNode);
+                    this.showErrorMsg(this.lp.mobile_apppack_message_o2cloud_not_login);
+                } else if (data.status === 3) { // 打包服务器未认证通过
+                    // this.app.notice(this.lp.mobile_apppack_message_apppack_server_login_fail, "error", this.contentAreaNode);
+                    this.showErrorMsg(this.lp.mobile_apppack_message_apppack_server_login_fail);
+                }
+            } else {
+                // this.app.notice(this.lp.mobile_apppack_message_check_connect_fail, "error", this.contentAreaNode);
+                this.showErrorMsg(this.lp.mobile_apppack_message_check_connect_fail);
+            }
+        }.bind(this));
+    },
+    // 加载最近一次打包信息 
+    loadAppPackInfo: function () {
+        this.showLoading();
+        o2.Actions.load("x_program_center").AppPackAction.packInfo(this.token, function(json){
+            this.hiddenLoading();
+            if (json && json.type === "success") {
+                this.packInfo = json.data;
+                this.showPackInfoDetail();
+            } else {
+                console.log("查询打包信息失败。。。")
+                this.loadConfigProxy();
+            }
+        }.bind(this), function(err){
+            console.log("错误拉，没有找到打包信息！");
+            console.log(err);
+            this.hiddenLoading();
+            this.loadConfigProxy();
+        }.bind(this));
+    },
+    showLoading: function() {
+        if (this.packLoadingNode) {
+            this.hiddenLoading();
+        }
+        this.packLoadingNode = new Element("div", { "class": "pack-loading" }).inject(this.apppackBoxNode);
+        new Element("div", {"text": "Loading......"}).inject(this.packLoadingNode);
+    },
+    hiddenLoading: function() {
+        if (this.packLoadingNode) {
+            this.packLoadingNode.destroy();
+            this.packLoadingNode = null;
+        }
+    },
+    // 显示错误信息
+    showErrorMsg: function(msg) {
+        this.apppackErrorMsgNode.set("text", msg);
+        this.apppackErrorMsgNode.setStyles({
+            "display": ""
+        });
+    },
+    // 显示提交表单
+    showForm: function() {
+        this.apppackShowBodyNode.setStyles({
+            "display": "none"
+        });
+        this.apppackFormBodyNode.setStyles({
+            "display": ""
+        });
+        this.apppackBtnNode.addEvents({
+            "click": function(e) {
+                this.submitPack();
+            }.bind(this)
+        })
+    },
+    // 显示打包详情
+    showPackInfoDetail: function () {
+        if (this.packInfo) {
+            this.apppackAppNameShowNode.set("text", this.packInfo.appName);
+            this.apppackProtocolShowNode.set("text", this.packInfo.o2ServerProtocol);
+            this.apppackHostShowNode.set("text", this.packInfo.o2ServerHost);
+            this.apppackPortShowNode.set("text", this.packInfo.o2ServerPort);
+            this.apppackContextShowNode.set("text", this.packInfo.o2ServerContext);
+            this.apppackLogoShowImgNode.set("src", this.packServerUrl + this.packInfo.appLogoPath + "?token=" + this.token);
+            var status = ""
+            if (this.packInfo.packStatus === "0") {
+                status = this.lp.mobile_apppack_status_order_inline
+                this.apppackStatusRefreshNode.setStyles({
+                    "display": ""
+                });
+                this.apppackStatusRefreshNode.addEvents({
+                    "click": function(e) {
+                        this.loadAppPackInfo();
+                    }.bind(this)
+                })
+                this.apppackReInputBtnNode.setStyles({
+                    "display": "none"
+                });
+                this.apppackRePackBtnNode.setStyles({"display": "none"})
+            } else if (this.packInfo.packStatus === "1") {
+                status =  this.lp.mobile_apppack_status_packing
+                this.apppackStatusRefreshNode.setStyles({
+                    "display": ""
+                });
+                this.apppackStatusRefreshNode.addEvents({
+                    "click": function(e) {
+                        this.loadAppPackInfo();
+                    }.bind(this)
+                })
+                this.apppackReInputBtnNode.setStyles({
+                    "display": "none"
+                });
+                this.apppackRePackBtnNode.setStyles({"display": "none"})
+            } else if (this.packInfo.packStatus === "2") {
+                status = this.lp.mobile_apppack_status_pack_end
+                this.apppackStatusRefreshNode.setStyles({
+                    "display": "none"
+                });
+                this.apppackReInputBtnNode.setStyles({
+                    "display": ""
+                });
+                this.apppackReInputBtnNode.addEvents({
+                    "click": function(e) {
+                        this.reInput();
+                    }.bind(this)
+                })
+                this.apppackRePackBtnNode.setStyles({"display": ""})
+                this.apppackRePackBtnNode.addEvents({
+                    "click": function(e) {
+                        this.reSubmitPack();
+                    }.bind(this)
+                })
+            }
+            this.apppackStatusShowNode.set("text", status);
+            
+            if (this.packInfo.apkPath) {
+                this.apppackDownloadLinkNode.set("href", this.packServerUrl + this.packInfo.apkPath + "?token=" + this.token);
+                this.apppackDownloadShowNode.setStyles({
+                    "display": ""
+                });
+            } else {
+                this.apppackDownloadShowNode.setStyles({
+                    "display": "none"
+                });
+            }
+            this.apppackShowBodyNode.setStyles({
+                "display": ""
+            });
+            this.apppackFormBodyNode.setStyles({
+                "display": "none"
+            });
+            
+        }
+    },
+    // 重新输入 提交表单
+    reInput: function () {
+        // 填充内容
+        if (this.packInfo) {
+            this.apppackProtocolInputNode.set("value", this.packInfo.o2ServerProtocol);
+            this.apppackHostInputNode.set("value", this.packInfo.o2ServerHost);
+            this.apppackPortInputNode.set("value", this.packInfo.o2ServerPort);
+            this.apppackContextInputNode.set("value", this.packInfo.o2ServerContext);
+            this.apppackAppNameInputNode.set("value", this.packInfo.appName);
+        }
+        this.showForm();
+    },
+    // 获取本地配置的proxy地址
+    loadConfigProxy: function () {
+        o2.Actions.load("x_program_center").ConfigAction.getProxy(function(json){
+            this.hiddenLoading();
+            // 填充
+            if (json && json.data) {
+                var data = json.data
+                if (data.httpProtocol) {
+                    this.apppackProtocolInputNode.set("value", data.httpProtocol);
+                } else {
+                    this.apppackProtocolInputNode.set("value", "http");
+                }
+                if (data.center) {
+                    if (data.center.proxyHost) {
+                        this.apppackHostInputNode.set("value", data.center.proxyHost);
+                    }
+                    if (data.center.proxyPort) {
+                        this.apppackPortInputNode.set("value", data.center.proxyPort);
+                    } else {
+                        this.apppackPortInputNode.set("value", "20030");
+                    }
+                } else {
+                    this.apppackPortInputNode.set("value", "20030");
+                }
+            }
+            this.apppackContextInputNode.set("value", "/x_program_center");
+            this.showForm();
+        }.bind(this))
+    },
+    // 直接用原有资料重新打包
+    reSubmitPack: function() {
+        this.showLoading();
+        o2.Actions.load("x_program_center").AppPackAction.androidPackReStart(this.token, function (json) {
+            console.log(json)
+            this.hiddenLoading();
+            if (json.data && json.data.value) {
+                // 提交成功 获取最新打包对象信息
+                this.loadAppPackInfo();
+            } else {
+                this.app.notice(json.message, "error", this.contentAreaNode);
+            }
+        }.bind(this), function (error) {
+            this.hiddenLoading();
+            console.log(error);
+            this.app.notice(error, "error", this.contentAreaNode);
+        }.bind(this));
+    },
+    // 提交打包
+    submitPack: function () {
+        var appName = this.apppackAppNameInputNode.get("value");
+        console.log(appName);
+        if (!appName || appName === "") {
+            this.app.notice(this.lp.mobile_apppack_message_appname_not_empty, "error", this.contentAreaNode);
+            return;
+        }
+        if (appName.length > 6) {
+            this.app.notice(this.lp.mobile_apppack_message_appname_len_max_6, "error", this.contentAreaNode);
+            return;
+        }
+        var files = this.apppackLogoInputNode.files;
+        if (files.length) {
+            var file = files.item(0);
+            console.log(file.name);
+            var fileExt = file.name.substring(file.name.lastIndexOf("."));
+            if (fileExt.toLowerCase() !== ".png") {
+                this.app.notice(this.lp.mobile_apppack_message_app_logo_need_png, "error", this.contentAreaNode);
+                return;
+            }
+        } else {
+            this.app.notice(this.lp.mobile_apppack_message_app_logo_not_empty, "error", this.contentAreaNode);
+            return;
+        }
+        var protocol = this.apppackProtocolInputNode.get("value");
+        console.log(protocol);
+        if (!protocol || protocol === "") {
+            this.app.notice(this.lp.mobile_apppack_message_portocol_not_empty, "error", this.contentAreaNode);
+            return;
+        }
+        if (protocol !== "http" && protocol !== "https") {
+            this.app.notice(this.lp.mobile_apppack_message_portocol_http_https, "error", this.contentAreaNode);
+            return;
+        }
+        var host = this.apppackHostInputNode.get("value");
+        console.log(host);
+        if (!host || host === "") {
+            this.app.notice(this.lp.mobile_apppack_message_host_not_empty, "error", this.contentAreaNode);
+            return;
+        }
+        var port = this.apppackPortInputNode.get("value");
+        console.log(port);
+        if (!port || port === "") {
+            this.app.notice(this.lp.mobile_apppack_message_port_not_empty, "error", this.contentAreaNode);
+            return;
+        }
+        var context = this.apppackContextInputNode.get("value");
+        console.log(context);
+        if (!context || context === "") {
+            this.app.notice(this.lp.mobile_apppack_message_context_not_empty, "error", this.contentAreaNode);
+            return;
+        }
+        this.showLoading();
+        var formData = new FormData();
+        formData.append('file', file);
+        formData.append('fileName', file.name);
+        formData.append('appName', appName);
+        formData.append('o2ServerProtocol', protocol);
+        formData.append('o2ServerHost', host);
+        formData.append('o2ServerPort', port);
+        formData.append('o2ServerContext', context);
+        formData.append('token', this.token);
+        
+        o2.Actions.load("x_program_center").AppPackAction.androidPackStart(formData, "{}",function (json) {
+            console.log(json)
+            this.hiddenLoading();
+            if (json.data && json.data.value) {
+                // 提交成功 获取最新打包对象信息
+                this.loadAppPackInfo();
+            } else {
+                this.app.notice(json.message, "error", this.contentAreaNode);
+            }
+        }.bind(this), function (error) {
+            this.hiddenLoading();
+            console.log(error);
+            this.app.notice(error, "error", this.contentAreaNode);
+        }.bind(this));
+
+    }
+});
+
+
 // 微信菜单
 MWF.xApplication.Setting.MPWeixinMenuSettingDocument = new Class({
     Extends: MWF.xApplication.Setting.Document,
