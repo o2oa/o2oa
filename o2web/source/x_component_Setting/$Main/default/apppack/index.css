@@ -1,0 +1,64 @@
+.pack-box {
+  overflow: hidden;padding-bottom: 80px;padding-top: 20px;padding-left: 20px;
+}
+.pack-error-msg {
+  color: #fb4747; font-size:16px;
+}
+.pack-form-group {
+  margin-top: 30px;
+}
+.pack-form-label {
+  width: 5em;float: left;margin-top: .3em;margin-right: 1em;font-size: 14px;
+}
+.pack-form-controls {
+  display: table-cell;vertical-align: top;float: none;width: auto;
+}
+.pack-form-box {
+  display: inline-block;position: relative;height: 30px;line-height: 30px;vertical-align: middle;width: 278px;font-size: 14px;padding: 0 10px;border: 1px solid #e7e7eb;
+}
+.pack-info-status-box {
+  min-height: 30px;
+  line-height: 30px;
+  display: table-cell;
+  vertical-align: top;
+  float: none;
+  width: auto;
+}
+.pack-info-status-refresh {
+  padding-left: 20px;
+  min-height: 30px;
+  line-height: 30px;
+  display: table-cell;
+  vertical-align: top;
+  float: none;
+  width: auto;
+  color: blue;
+  cursor: pointer;
+}
+.pack-form-input {
+  width: 100%;background-color: transparent;border: 0;outline: 0;
+}
+.pack-form-tips {
+  color: #9a9a9a;padding-top:4px;
+}
+.pack-form-sb-btn {
+  margin-top:30px;display: inline-block;overflow: visible;margin-left: .5em;margin-right: .5em;min-width: 80px !important;padding: 0;height: 30px;line-height: 30px;vertical-align: middle;text-align: center;text-decoration: none;border-radius: 3px;font-size: 14px;border-width: 1px;border-style: solid;cursor: pointer;background-color: #07c160;background-image: linear-gradient(to bottom,#07c160 0,#07c160 100%);border-color: #07c160;color: #fff;
+}
+.pack-form-sb-btn button {
+  color: #fff; display: block;background-color: transparent;outline: 0;overflow: visible;cursor: pointer;border: 0;height: 100%;
+}
+
+.pack-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000000bf;
+  color: #ffffff;
+  display: flex;
+  font-size: 18px;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
