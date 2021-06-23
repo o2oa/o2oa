@@ -54,16 +54,34 @@
     "action": "openUnitDingdingIndex"
   },
   {
+    "access": "qywx",
+    "title":  MWF.xApplication.Attendance.LP.navi.unitQywxIndex,
+    "id": "152",
+    "action": "openUnitQywxIndex"
+  },
+  {
     "access": "dingding",
     "title": MWF.xApplication.Attendance.LP.navi.dingdingPeopleDetail,
     "id": "161",
     "action": "openDingdingPeopleDetail"
   },
   {
+    "access": "qywx",
+    "title": MWF.xApplication.Attendance.LP.navi.qywxPeopleDetail,
+    "id": "162",
+    "action": "openQywxPeopleDetail"
+  },
+  {
     "access": "dingding",
     "title": MWF.xApplication.Attendance.LP.navi.dingdingUnitDetail,
     "id": "171",
     "action": "openDingdingUnitDetail"
+  },
+  {
+    "access": "qywx",
+    "title": MWF.xApplication.Attendance.LP.navi.qywxUnitDetail,
+    "id": "172",
+    "action": "openQywxUnitDetail"
   },
   {
     "access": "admin",

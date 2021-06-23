@@ -168,6 +168,16 @@ MWF.xApplication.Attendance.Main = new Class({
 			this.explorer.load();
 		}.bind(this));
 	},
+	openUnitQywxIndex: function () {
+		MWF.xDesktop.requireApp("Attendance", "UnitQywxIndex", function () {
+			this.clearContent();
+			this.explorerContent = new Element("div", {
+				"styles": this.css.rightContentNode
+			}).inject(this.node);
+			this.explorer = new MWF.xApplication.Attendance.UnitQywxIndex(this.explorerContent, this, this.restActions, { "isAdmin": this.isAdmin() });
+			this.explorer.load();
+		}.bind(this));
+	},
 	openUnitDetail: function () {
 		MWF.xDesktop.requireApp("Attendance", "UnitDetail", function () {
 			this.clearContent();
@@ -178,6 +188,7 @@ MWF.xApplication.Attendance.Main = new Class({
 			this.explorer.load();
 		}.bind(this));
 	},
+	
 	openDingdingUnitDetail: function () {
 		MWF.xDesktop.requireApp("Attendance", "UnitDingdingDetail", function () {
 			this.clearContent();
@@ -185,6 +196,16 @@ MWF.xApplication.Attendance.Main = new Class({
 				"styles": this.css.rightContentNode
 			}).inject(this.node);
 			this.explorer = new MWF.xApplication.Attendance.UnitDingdingDetail(this.explorerContent, this, this.restActions, { "isAdmin": this.isAdmin() });
+			this.explorer.load();
+		}.bind(this));
+	},
+	openQywxUnitDetail: function () {
+		MWF.xDesktop.requireApp("Attendance", "UnitQywxDetail", function () {
+			this.clearContent();
+			this.explorerContent = new Element("div", {
+				"styles": this.css.rightContentNode
+			}).inject(this.node);
+			this.explorer = new MWF.xApplication.Attendance.UnitQywxDetail(this.explorerContent, this, this.restActions, { "isAdmin": this.isAdmin() });
 			this.explorer.load();
 		}.bind(this));
 	},
@@ -205,6 +226,16 @@ MWF.xApplication.Attendance.Main = new Class({
 				"styles": this.css.rightContentNode
 			}).inject(this.node);
 			this.explorer = new MWF.xApplication.Attendance.PeopleDingdingDetail(this.explorerContent, this, this.restActions, { "isAdmin": this.isAdmin() });
+			this.explorer.load();
+		}.bind(this));
+	},
+	openQywxPeopleDetail: function () {
+		MWF.xDesktop.requireApp("Attendance", "PeopleQywxDetail", function () {
+			this.clearContent();
+			this.explorerContent = new Element("div", {
+				"styles": this.css.rightContentNode
+			}).inject(this.node);
+			this.explorer = new MWF.xApplication.Attendance.PeopleQywxDetail(this.explorerContent, this, this.restActions, { "isAdmin": this.isAdmin() });
 			this.explorer.load();
 		}.bind(this));
 	},
@@ -390,6 +421,9 @@ MWF.xApplication.Attendance.Navi = new Class({
 				} else if (navi.access && navi.access == "dingding") { //启用钉钉考勤同步后
 					debugger;
 					if ((this.app.isUnitManager() || this.app.isAdmin()) && (this.app.enableType == "dingding")) this.createNaviNode(navi);
+				} else if (navi.access && navi.access == "qywx") { // 启用企业微信考勤同步后
+					debugger;
+					if ((this.app.isUnitManager() || this.app.isAdmin()) && (this.app.enableType == "qywx")) this.createNaviNode(navi);
 				} else {
 					this.createNaviNode(navi);
 				}
