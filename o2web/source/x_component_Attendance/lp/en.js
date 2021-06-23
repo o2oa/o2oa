@@ -56,6 +56,7 @@ MWF.xApplication.Attendance.LP = {
 	"abNormalDutyCount": "Abnormal check-in times",
 	"resultNormal": "Number of normal punches",
 	"seriousLateTimes": "Seriously Late Times",
+	"outsideDutyTimes": "Outside Checkin Times",
 	"absenteeismTimes": "Number of Absenteeism",
 	"notSignedCount": "Not Signed Count",
 
@@ -218,8 +219,10 @@ MWF.xApplication.Attendance.LP = {
 	"noDepartment": "Your department was not found, please contact the administrator!",
 	"signinType": "Signin Type",
 	"signinTypeSelectText": ["", "Check in at work", "Check in after get off work"],
+	"signinQywxTypeSelectText": ["", "上班打卡", "下班打卡", "外出打卡"],
 	"signinResult": "signin result",
-	"signinResultSelectText": ["", "normal", "leave early", "late", "severely late", "absentee late", "not clocked in"],
+	"signinResultSelectText": ["", "normal", "leave early", "late", "severely late", "absentee late", "not clocked in", "Outside checkin"],
+	"signinQywxResultSelectText": ["", "正常", "时间异常", "地点异常", "未打卡", "wifi异常", "非常用设备"],
 
 	"systemSetting": "System Settings",
 	"reportTo": "Report object",
@@ -392,8 +395,11 @@ MWF.xApplication.Attendance.LP = {
 		"unitDetail": "Department Statistics",
 		"topUnitDetail": "Company Statistics",
 		"unitDingdingIndex": "Dingding Department Report",
+		"unitQywxIndex": "Qywx Department Report",
 		"dingdingPeopleDetail": "Dingding Personal Statistics",
 		"dingdingUnitDetail": "Dingding Unit Statistics",
+		"qywxPeopleDetail": "Qywx Personal Statistics",
+		"qywxUnitDetail": "Qywx Unit Statistics",
 
 		"maintain": "Maintenance",
 		"importing": "Data Import",

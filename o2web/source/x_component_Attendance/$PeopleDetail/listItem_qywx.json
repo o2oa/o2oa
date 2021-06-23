@@ -1,0 +1,42 @@
+[
+  {
+    "title": MWF.xApplication.Attendance.LP.name,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( d ){ return d.o2User.split('@')[0] }",
+    "name": "o2User",
+    "width": "20%"
+  },
+  {
+    "title": MWF.xApplication.Attendance.LP.date,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function(d){ var date = new Date(d.userCheckTime);     return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();}",
+    "name": "userCheckTime",
+    "width": "20%"
+  },
+  {
+    "title": MWF.xApplication.Attendance.LP.signinType,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( data ){ return data.checkType;  }",
+    "name": "checkType",
+    "width": "20%"
+  },
+  {
+    "title": MWF.xApplication.Attendance.LP.signinResult,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( data ){ return data.exceptionType;  }",
+    "name": "exceptionType",
+    "width": "20%"
+  },
+  {
+    "title": MWF.xApplication.Attendance.LP.signTime,
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function(d){ var date = new Date(d.userCheckTime);     return date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();}",
+    "name": "userCheckTime",
+    "width": "20%"
+  }
+]
