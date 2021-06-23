@@ -155,9 +155,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     },
     doImportData: function(){
         //创建数据
-        this.rowList.each( function( row, i ){
-            row.createData();
-        }.bind(this));
+        // this.rowList.each( function( row, i ){
+        //     row.createData();
+        // }.bind(this));
 
         //再次校验数据（计算的内容）
         var flag = true;
@@ -275,20 +275,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
     checkNecessaryImportedData: function(){
         var flag = true;
 
-
-        if( this.json.type === "cms" ){
-
-            this.rowList.each( function(row, index){
-                if( !row.checkCMS() )flag = false;
-            }.bind(this));
-
-        }else if( this.json.type === "process" ){
-
-            this.rowList.each( function(row, index){
-                if( !row.checkProcess() )flag = false;
-            }.bind(this));
-
-        }
+        this.rowList.each( function(row, index){
+            if( !row.checkNecessary() )flag = false;
+        }.bind(this));
 
         var arg = {
             validted : flag,
@@ -529,11 +518,6 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         }else{
             exportTo();
         }
-    },
-
-    openRecord: function( recordId ){
-        var record = new MWF.xApplication.query.Query.Importer.Record( this, recordId );
-        record.load();
     },
 
     downloadTemplate: function(fileName, callback){
@@ -792,6 +776,74 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         return true;
     },
+    checkNecessary: function(){
+
+        var lp = this.lp;
+
+        var columnText =  lp.importValidationColumnText;
+        var columnTextExcel = lp.importValidationColumnTextExcel;
+
+        var errorTextList = [];
+        var errorTextListExcel = [];
+
+
+        this.importer.json.data.columnList.each( function (columnJson, i) {
+
+            var colInfor = columnText.replace( "{n}", i+1 );
+            var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
+
+            var value = this.importedData[i] || "";
+
+            var dataType = this.importer.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+
+            if( columnJson.validFieldType !== false && value ){
+
+                switch ( dataType ) {
+                    case "json":
+                    case "stringMap":
+                        value = value.replace(/&#10;/g,"");
+                        try{
+                            var d = JSON.parse(value);
+                        }catch (e) {
+                            errorTextList.push(colInfor + value + lp.notValidJson + lp.fullstop );
+                            errorTextListExcel.push( colInforExcel + value + lp.notValidJson + lp.fullstop );
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }.bind(this));
+
+        this.errorTextList = this.errorTextList.concat( errorTextList );
+        this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
+
+        if(this.errorTextList.length>0){
+            return false;
+        }
+
+        this.createData();
+
+        if( this.importer.json.type === "cms" ){
+            this.checkCMS();
+        }else if( this.importer.json.type === "process" ){
+            this.checkProcess();
+        }
+
+        if(this.errorTextList.length>0){
+            return false;
+        }
+
+        return true;
+
+        // var flag = true;
+        // if( this.importer.json.type === "cms" ){
+        //     if( !this.checkCMS() )flag = false;
+        // }else if( this.importer.json.type === "process" ){
+        //     if( !this.checkProcess() )flag = false;
+        // }
+        // return flag;
+    },
     getCol: function(key, isExcel){
         var lp = this.lp;
         if( this.pathIndexMap && typeOf(this.pathIndexMap[key]) === "number"){
@@ -807,6 +859,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         return ""
     },
     checkCMS : function( notCheckName ){
+
         var lp = this.lp;
 
         var errorTextList = [];
@@ -856,6 +909,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         return true;
     },
     checkProcess : function( notCheckName ){
+
         var lp = this.lp;
         var json = this.importer.json;
 
