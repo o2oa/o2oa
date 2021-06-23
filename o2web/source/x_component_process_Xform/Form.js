@@ -4314,53 +4314,143 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
      * }
      */
     readedWork: function (e) {
-        if( !e )e = new Event(event);
-        this.fireEvent("beforeReaded");
-        var _self = this;
-        var title = this.businessData.work.title;
-        if (title.length > 75) {
-            title = title.substr(0, 74) + "..."
+        if (!this.businessData.control["allowReadProcessing"]) {
+            MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
+            return false;
         }
-        //"您确定要将“" + title + "”标记为已阅吗？";
-        var text = MWF.xApplication.process.Xform.LP.setReadedConfirmContent.replace("{title}",title);
+        MWF.require("MWF.xDesktop.Dialog", function () {
+            var width = 680;
+            var height = 300;
+            var p = MWF.getCenterPosition(this.app.content, width, height);
 
-        this.app.confirm("infor", e,  MWF.xApplication.process.Xform.LP.setReadedConfirmTitle, text, 300, 120, function () {
-            var confirmDlg = this;
-            var read = null;
-            for (var i = 0; i < _self.businessData.readList.length; i++) {
-                if (_self.businessData.readList[i].person === layout.session.user.distinguishedName) {
-                    read = _self.businessData.readList[i];
-                    break;
-                }
+            var _self = this;
+debugger;
+            //"您确定要将“" + title + "”标记为已阅吗？";
+            var title = this.businessData.work.title;
+            var text = MWF.xApplication.process.Xform.LP.setReadedConfirmContent.replace("{title}",title);
+            MWF.xApplication.process.Xform.LP.form.setReadedConfirmInfo = text;
+
+            var dlg = new MWF.xDesktop.Dialog({
+                "title": MWF.xApplication.process.Xform.LP.setReadedConfirmTitle,
+                "style": this.json.dialogStyle || "user", //|| "work",
+                "top": p.y - 100,
+                "left": p.x,
+                "fromTop": p.y - 100,
+                "fromLeft": p.x,
+                "width": width,
+                "height": height,
+                "url": this.app.path + "readed.html",
+                "lp": MWF.xApplication.process.Xform.LP.form,
+                "container": this.app.content,
+                "isClose": true,
+                "buttonList": [
+                    {
+                        "type": "ok",
+                        "text": MWF.LP.process.button.ok,
+                        "action": function (d, e) {
+                            this.doReadedWork(dlg);
+                        }.bind(this)
+                    },
+                    {
+                        "type": "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () { dlg.close(); }
+                    }
+                ]
+            });
+            dlg.show();
+        }.bind(this));
+
+        // if( !e )e = new Event(event);
+        // this.fireEvent("beforeReaded");
+        // var _self = this;
+        // var title = this.businessData.work.title;
+        // if (title.length > 75) {
+        //     title = title.substr(0, 74) + "..."
+        // }
+        // //"您确定要将“" + title + "”标记为已阅吗？";
+        // var text = MWF.xApplication.process.Xform.LP.setReadedConfirmContent.replace("{title}",title);
+        //
+        // this.app.confirm("infor", e,  MWF.xApplication.process.Xform.LP.setReadedConfirmTitle, text, 300, 120, function () {
+        //     var confirmDlg = this;
+        //     var read = null;
+        //     for (var i = 0; i < _self.businessData.readList.length; i++) {
+        //         if (_self.businessData.readList[i].person === layout.session.user.distinguishedName) {
+        //             read = _self.businessData.readList[i];
+        //             break;
+        //         }
+        //     }
+        //
+        //     if (read) {
+        //         _self.app.action.setReaded(function () {
+        //             _self.fireEvent("afterReaded");
+        //             _self.app.reload();
+        //             if (layout.mobile) {
+        //
+        //                 //移动端页面关闭
+        //                 _self.finishOnMobile()
+        //             } else {
+        //                 confirmDlg.close();
+        //             }
+        //         }, null, read.id, read);
+        //     } else {
+        //         _self.app.reload();
+        //         if (layout.mobile) {
+        //
+        //             //移动端页面关闭
+        //             _self.finishOnMobile()
+        //         } else {
+        //             confirmDlg.close();
+        //         }
+        //     }
+        //
+        // }, function () {
+        //     this.close();
+        // }, null, this.app.content, this.json.confirmStyle);
+    },
+    doReadedWork: function(dlg){
+        var opinion = dlg.content.getElement(".readedWork_opinion").get("value");
+
+        var read = null;
+        for (var i = 0; i < this.businessData.readList.length; i++) {
+            if (this.businessData.readList[i].person === layout.session.user.distinguishedName) {
+                read = this.businessData.readList[i];
+                break;
             }
+        }
 
-            if (read) {
-                _self.app.action.setReaded(function () {
+        var _self = this;
+        if (read) {
+            MWF.require("MWF.widget.Mask", function () {
+                this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                this.mask.loadNode(this.app.content);
+
+                read.opinion = opinion;
+                this.app.action.setReaded(function () {
+                    if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+
                     _self.fireEvent("afterReaded");
                     _self.app.reload();
-                    if (layout.mobile) {
 
-                        //移动端页面关闭
+                    if (layout.mobile) {
                         _self.finishOnMobile()
                     } else {
-                        confirmDlg.close();
+                        dlg.close();
                     }
                 }, null, read.id, read);
+            }.bind(this));
+        } else {
+
+
+            _self.app.reload();
+            if (layout.mobile) {
+                _self.finishOnMobile()
             } else {
-                _self.app.reload();
-                if (layout.mobile) {
-
-                    //移动端页面关闭
-                    _self.finishOnMobile()
-                } else {
-                    confirmDlg.close();
-                }
+                dlg.close();
             }
-
-        }, function () {
-            this.close();
-        }, null, this.app.content, this.json.confirmStyle);
+        }
     },
+
     openWindow: function (form, app) {
         //var application = app || (this.businessData.work) ? this.businessData.work.application : this.businessData.workCompleted.application;
         var form = form;
