@@ -483,6 +483,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
                         starblacknode = starblacknode.previousElementSibling;
                     }
                 }
+				_self.selectstar = this.data.grade;
             }else{
                 starnode.addEvents({
                     "click": function(e){
@@ -552,7 +553,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		debugger;
 		if( this.advanceId )data.id = this.advanceId;
 		data.attachmentList = this.attachment.getAttachmentIds();
-		if(this.sectionData.sectionGrade && this.selectstar==0){
+		if(this.sectionData.sectionGrade && this.selectstar==0 && this.advanceId){
 			MWF.xDesktop.notice("error", {x: "right", y:"top"}, this.lp.gradeNotice);
 		}else{
 			data.grade = this.selectstar;
