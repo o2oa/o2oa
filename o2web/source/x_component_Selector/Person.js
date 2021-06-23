@@ -92,6 +92,8 @@ MWF.xApplication.Selector.Person = new Class({
         this.subCategorys = []; //直接的分类
         this.subItems = []; //直接的选择项
 
+        this.subCategoryMap = {};
+
         if( !this.options.values ){
             this.options.values = [];
         }
@@ -1845,6 +1847,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.category = category;
         this.subItems = [];
         this.subCategorys = [];
+        this.subCategoryMap = {};
         if(!delay)this.load();
     },
     _getShowName: function(){
@@ -2346,6 +2349,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         this.category = parentCategory;
         this.subItems = [];
         this.subCategorys = [];
+        this.subCategoryMap = {};
         if(!delay)this.load();
     },
     load : function(){

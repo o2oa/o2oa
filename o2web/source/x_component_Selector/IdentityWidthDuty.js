@@ -68,6 +68,7 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                     var data = {"name": duty, "id":duty};
                     var category = this._newItemCategory("ItemCategory",data, this, this.itemAreaNode);
                     this.subCategorys.push(category);
+                    this.subCategoryMap[data.name] = category;
                     loadDutySuccess();
                 }.bind(this));
             }.bind(this);
@@ -462,6 +463,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemUnitCategory = new Class({
                             if( !this.selector.isExcluded( subData ) ) {
                                 var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
                                 this.subCategorys.push( category );
+                                this.subCategoryMap[subData.name] = category;
                             }
                         }.bind(this));
                         this.loaded = true;
