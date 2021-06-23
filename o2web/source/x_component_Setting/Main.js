@@ -342,6 +342,11 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
                 "text": this.app.lp.tab_mobile_mpweixin_menu,
                 "icon": "style",
                 "action": "loadMPWeixinMenuSetting"
+            },
+            {
+                "text": this.app.lp.tab_mobile_app_pack,
+                "icon": "service",
+                "action": "loadAppPackSetting"
             }
         ];
     },
@@ -412,6 +417,12 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
             item.store("content", this.mpweixinMenuSetting);
         }else{
             this.loadDataBack = function(){this.loadMPWeixinMenuSetting(item)}.bind(this);
+        }
+    },
+    loadAppPackSetting: function(item) {
+        if (MWF.AC.isAdministrator()) {
+            this.mobileAppPackOnline = new MWF.xApplication.Setting.AppPackOnlineDocument(this, this.contentAreaNode);
+            item.store("content", this.mobileAppPackOnline);
         }
     }
 });
