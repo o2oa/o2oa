@@ -156,6 +156,8 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         var unitTree = this.listNestedUnitByIdentity(identityList);
         this.dataTree = unitTree;
         this.uniqueIdentity(unitTree);
+        this.loadingCount = "done";
+        debugger;
         if (this.options.dutyUnitLevelBy === "duty") {
             this.level1Container = [];
             if (this.options.units && this.options.units.length) {
@@ -427,12 +429,19 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         if (this.options.isCheckStatus) {
             var names = (tree.matchLevelName || tree.levelName || "").split("/");
             var nameList = [];
+
+            var selectedCount = 0;
+            tree.identityList.each(function (id) {
+                if( this.isInValues(id) )selectedCount++;
+            }.bind(this));
+
             for (var i = 0; i < names.length; i++) {
                 nameList.push(names[i]);
                 var name = nameList.join("/");
                 var obj = this.allUnitObject[name];
                 if (obj) {
                     obj.subNestedIdentityCount = (obj.subNestedIdentityCount || 0) + identityList.length;
+                    obj.selectedNestedIdentityCount = (obj.selectedNestedIdentityCount || 0) + selectedCount;
                 }
             }
         }
@@ -589,9 +598,13 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     },
     _addSelectedCount: function (count, nested) {
         debugger;
-        var c = (this._getSelectedCount() || 0) + count;
-        this.selectedCount = c;
-        this.checkCountAndStatus(c);
+        if( this.selector.loadingCount === "done" ){
+            var c = (this._getSelectedCount() || 0) + count;
+            this.selectedCount = c;
+            this._checkCountAndStatus(c);
+        }else{
+            this.selectedCount_wait = (this.selectedCount_wait || 0) + count;
+        }
 
         if (nested && this.category && this.category._addSelectedCount) {
             this.category._addSelectedCount(count, nested);
@@ -604,13 +617,23 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     _getTotalCount: function () {
         return this.data.subNestedIdentityCount;
     },
-    _getSelectedCount: function () {
-        debugger;
-        if (typeOf(this.selectedCount) === "number") {
-            return this.selectedCount;
-        } else {
-            return 0;
-        }
+    // _getSelectedCount: function () {
+    //     debugger;
+    //     if (typeOf(this.selectedCount) === "number") {
+    //         return this.selectedCount;
+    //     } else {
+    //         return 0;
+    //     }
+    // },
+    _getSelectedCount : function(){
+        if( typeOf(this.selectedCount) === "number" )return this.selectedCount;
+        if( !this.selector.allUnitObject )return 0;
+        var levelName = this.data.matchLevelName || this.data.levelName;
+        var unit =  this.selector.allUnitObject[levelName];
+        var count = unit ? unit.selectedNestedIdentityCount : 0;
+        this.selectedCount = count + (this.selectedCount_wait || 0);
+        this.selectedCount_wait = 0;
+        return count;
     },
     _checkStatus: function () {
 
@@ -670,7 +693,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
                     });
                     return array.min();
                 }else{
-                   return getOrderNumber(d);
+                    return getOrderNumber(d);
                 }
             }.bind(this);
 
@@ -682,20 +705,25 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     loadSub: function (callback) {
         this._loadSub(function (firstLoad) {
             if (firstLoad && (this.selector.options.showSelectedCount || this.selector.options.isCheckStatus)) {
-                var count = 0;
-                this.subCategorys.each(function (category) {
-                    var l = category.subItems.filter(function (item) {
-                        return item.isSelected;
-                    });
-                    count = count + l.length;
-                });
+                // var count = 0;
+                // this.subCategorys.each(function (category) {
+                //     var l = category.subItems.filter(function (item) {
+                //         return item.isSelected;
+                //     });
+                //     count = count + l.length;
+                // });
+                //
+                // var list = this.subItems.filter(function (item) {
+                //     return item.isSelected;
+                // });
+                // this.selectedCount = count + list.length;
+                //
+                // this._checkCountAndStatus(this.selectedCount);
 
-                var list = this.subItems.filter(function (item) {
-                    return item.isSelected;
-                });
-                this.selectedCount = count + list.length;
+                if (this.selector.loadingCount === "done"){
+                    this.checkCountAndStatus();
+                }
 
-                this.checkCountAndStatus(this.selectedCount);
             }
             if (callback) callback();
         }.bind(this))
