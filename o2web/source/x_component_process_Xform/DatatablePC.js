@@ -648,6 +648,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		_delLine: function(line){
 			this.fireEvent("deleteLine", [line]);
 
+			debugger;
+
 			var saveFlag = line.deleteAttachment();
 			//使用数据驱动
 			var data = this.getData();
@@ -1339,8 +1341,10 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					// }else if(this.options.isEdited){
 					// 	this.data[templateJsonId] = module.getData();
 					// }
-					if(this.options.isEdited){
-						this.data[templateJsonId] = module.getData();
+					if(this.options.isEdited) {
+						if (json.type !== "Attachment" && json.type !== "AttachmentDg"){
+							this.data[templateJsonId] = module.getData();
+						}
 					}
 					this.allField[id] = module;
 					this.allField_templateId[templateJsonId] = module;
