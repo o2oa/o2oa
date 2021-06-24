@@ -2,152 +2,89 @@ package com.x.base.core.openjpa.jdbc.sql;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.Statement;
 import java.sql.Types;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Collection;
+import java.util.Collections;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.openjpa.jdbc.identifier.DBIdentifier;
-import org.apache.openjpa.jdbc.identifier.DBIdentifier.DBIdentifierType;
 import org.apache.openjpa.jdbc.schema.Column;
-import org.apache.openjpa.jdbc.schema.ForeignKey;
-import org.apache.openjpa.jdbc.schema.Index;
-import org.apache.openjpa.jdbc.schema.PrimaryKey;
-import org.apache.openjpa.jdbc.schema.Table;
+import org.apache.openjpa.jdbc.sql.BooleanRepresentationFactory;
 import org.apache.openjpa.jdbc.sql.DBDictionary;
-import org.apache.openjpa.jdbc.sql.Select;
+import org.apache.openjpa.jdbc.sql.InformixDictionary;
+import org.apache.openjpa.jdbc.sql.SQLExceptions;
+import org.apache.openjpa.lib.util.Localizer;
+//import org.apache.openjpa.jdbc.sql.InformixDictionary;
+import org.apache.openjpa.lib.util.ReferenceHashSet;
+import org.apache.openjpa.lib.util.collections.AbstractReferenceMap;
 
 public class GBaseDictionary extends DBDictionary {
 	public static final String VENDOR_OTHER = "gbase";
 
-	public boolean swapSchemaAndCatalog = true;
+	public final boolean swapSchemaAndCatalog = false;
+
+	private static final Localizer _loc = Localizer.forPackage(InformixDictionary.class);
+
+	/**
+	 * If true, then we will issue a "SET LOCK MODE TO WAIT N" statement whenever we
+	 * create a {@link Connection}, in order allow waiting on locks.
+	 */
+	public boolean lockModeEnabled = false;
+
+	/**
+	 * If {@link #lockModeEnabled} is <code>true</code>, then this parameter
+	 * specifies the number of seconds we will wait to obtain a lock for inserts and
+	 * pessimistic locking.
+	 */
+	public int lockWaitSeconds = 30;
+
+	// 由decorate方法调用
+	public boolean disableRetainUpdateLocksSQL = false;
+
+	// 由decorate方法调用
+	// weak set of connections we've already executed lock mode sql on
+	private final Collection _seenConnections = Collections
+			.synchronizedSet(new ReferenceHashSet(AbstractReferenceMap.ReferenceStrength.WEAK));
 
 	public GBaseDictionary() {
 		platform = VENDOR_OTHER;
-		validationSQL = "SELECT 1 FROM DUAL";
 		supportsDeferredConstraints = false;
 		constraintNameMode = CONS_NAME_AFTER;
-
 		useGetStringForClobs = true;
 		longVarcharTypeName = "CLOB";
 		clobTypeName = "CLOB";
+		booleanTypeName = "BOOLEAN";
 		smallintTypeName = "INTEGER";
 		tinyintTypeName = "INTEGER";
+		bigintTypeName = "NUMERIC(32,0)";
 		floatTypeName = "FLOAT";
+		doubleTypeName = "DOUBLE PRECISION";
 		bitTypeName = "BOOLEAN";
 		blobTypeName = "BYTE";
-		doubleTypeName = "NUMERIC(32,20)";
 		dateTypeName = "DATE";
 		timeTypeName = "DATETIME HOUR TO SECOND";
 		timestampTypeName = "DATETIME YEAR TO FRACTION(5)";
-		doubleTypeName = "NUMERIC(32,20)";
-		bigintTypeName = "NUMERIC(32,0)";
-		doubleTypeName = "DOUBLE PRECISION";
-		booleanTypeName = "BOOLEAN";
-		fixedSizeTypeNameSet.addAll(Arrays.asList(new String[] { "BIT", "DISTINCT", "JAVA_OBJECT", "NULL", "OTHER",
-				"REAL", "REF", "SMALLINT", "STRUCT", "TINYINT", }));
-
-		// OpenJPA-2045: NAME has been removed from common reserved words to
-		// only specific dictionaries
-		reservedWordSet.add("NAME");
-
+		// 避免字段名前后多一个"\"""
+		supportsDelimitedIdentifiers = false;
+		// 设置Boolean使用类型
+		booleanRepresentation = BooleanRepresentationFactory.BOOLEAN;
 		supportsLockingWithDistinctClause = false;
 		supportsLockingWithMultipleTables = false;
 		supportsLockingWithOrderClause = false;
 
-		// the informix JDBC drivers have problems with using the
-		// schema name in reflection on columns and tables
-		supportsSchemaForGetColumns = false;
-		supportsSchemaForGetTables = false;
-
-		// Informix doesn't support aliases in deletes if the table has an index
-		allowsAliasInBulkClause = false;
-
-		// Informix doesn't understand "X CROSS JOIN Y", but it does understand
-		// the equivalent "X JOIN Y ON 1 = 1"
 		crossJoinClause = "JOIN";
 		requiresConditionForCrossJoin = true;
 
 		concatenateFunction = "CONCAT({0},{1})";
 		nextSequenceQuery = "SELECT {0}.NEXTVAL FROM SYSTABLES WHERE TABID=1";
 		supportsCorrelatedSubselect = false;
-		swapSchemaAndCatalog = false;
-
 		// Informix does not support foreign key delete action NULL or DEFAULT
 		supportsNullDeleteAction = false;
 		supportsDefaultDeleteAction = false;
 
 		trimSchemaName = true;
-	}
-
-	@Override
-	public void setDate(PreparedStatement stmnt, int idx, Date val, Column col) throws SQLException {
-		if (col != null && col.getType() == Types.DATE) {
-			if (null != val) {
-				val = DateUtils.setMilliseconds(val, 0);
-				val = DateUtils.setSeconds(val, 0);
-				val = DateUtils.setMinutes(val, 0);
-				val = DateUtils.setHours(val, 0);
-			}
-			setDate(stmnt, idx, new java.sql.Date(val.getTime()), null, col);
-		} else if (col != null && col.getType() == Types.TIME) {
-			if (null != val) {
-				val = DateUtils.setYears(val, 1970);
-				val = DateUtils.setMonths(val, 0);
-				val = DateUtils.setDays(val, 1);
-			}
-			setTime(stmnt, idx, new Time(val.getTime()), null, col);
-		} else if (val instanceof Timestamp) {
-			setTimestamp(stmnt, idx, (Timestamp) val, null, col);
-		} else {
-			setTimestamp(stmnt, idx, new Timestamp(val.getTime()), null, col);
-		}
-	}
-
-	@Override
-	public Date getDate(ResultSet rs, int column) throws SQLException {
-		Timestamp tstamp = getTimestamp(rs, column, null);
-		if (tstamp == null) {
-			return null;
-		}
-		long millis = (tstamp.getTime() / 1000L) * 1000L;
-		return new Date(millis);
-	}
-
-	@Override
-	public Time getTime(ResultSet rs, int column, Calendar cal) throws SQLException {
-		Time time = null;
-		if (cal == null) {
-			time = rs.getTime(column);
-		} else {
-			time = rs.getTime(column, cal);
-		}
-		if (null != time) {
-			Calendar calendar = DateUtils.toCalendar(time);
-			calendar.set(Calendar.YEAR, 1970);
-			calendar.set(Calendar.MONTH, 0);
-			calendar.set(Calendar.DATE, 1);
-			time = new Time(calendar.getTime().getTime());
-		}
-		return time;
-	}
-
-	/**
-	 * Convert the specified column of the SQL ResultSet to the proper java type.
-	 */
-	@Override
-	public Timestamp getTimestamp(ResultSet rs, int column, Calendar cal) throws SQLException {
-		if (cal == null) {
-			return rs.getTimestamp(column);
-		} else {
-			return rs.getTimestamp(column, cal);
-		}
 	}
 
 	@Override
@@ -162,73 +99,78 @@ public class GBaseDictionary extends DBDictionary {
 			DBIdentifier tableName, DBIdentifier columnName, Connection conn) throws SQLException {
 		Column[] cols = super.getColumns(meta, catalog, schemaName, tableName, columnName, conn);
 
-		// treat logvarchar as clob
-		for (int i = 0; cols != null && i < cols.length; i++)
-			if (cols[i].getType() == Types.LONGVARCHAR)
+		for (int i = 0; cols != null && i < cols.length; i++) {
+			// treat logvarchar as clob
+			if (cols[i].getType() == Types.LONGVARCHAR) {
 				cols[i].setType(Types.CLOB);
+			}
+			// 不知道为什么类型16的boolean识别为bit,显示为unknown(16)强制转换过去
+			if (cols[i].getType() == Types.BOOLEAN) {
+				cols[i].setType(Types.BIT);
+			}
+		}
 		return cols;
 	}
 
+	// 必须重写这个方法,否则错误信息
+	// <openjpa-3.2.0-r6f721f6 fatal general error>
+	// org.apache.openjpa.persistence.PersistenceException: 尚未打开游标。
 	@Override
-	public Column newColumn(ResultSet colMeta) throws SQLException {
-		Column col = super.newColumn(colMeta);
-		if (swapSchemaAndCatalog)
-			col.setSchemaIdentifier(fromDBName(colMeta.getString("TABLE_CAT"), DBIdentifierType.CATALOG));
-		return col;
+	public Connection decorate(Connection conn) throws SQLException {
+		conn = super.decorate(conn);
+		if (isJDBC3 && conn.getHoldability() != ResultSet.HOLD_CURSORS_OVER_COMMIT) {
+			conn.setHoldability(ResultSet.HOLD_CURSORS_OVER_COMMIT);
+			if (log.isTraceEnabled()) {
+				log.trace(_loc.get("connection-defaults",
+						new Object[] { conn.getAutoCommit(), conn.getHoldability(), conn.getTransactionIsolation() }));
+			}
+		}
+
+		// if we haven't already done so, initialize the lock mode of the
+		// connection
+		if (_seenConnections.add(conn)) {
+			if (lockModeEnabled) {
+				String sql = "SET LOCK MODE TO WAIT";
+				if (lockWaitSeconds > 0)
+					sql = sql + " " + lockWaitSeconds;
+				execute(sql, conn, true);
+			}
+
+			if (!disableRetainUpdateLocksSQL) {
+				String sql = "SET ENVIRONMENT RETAINUPDATELOCKS 'ALL'";
+				execute(sql, conn, false);
+			}
+		}
+
+		// the datadirect driver requires that we issue a rollback before using
+		// each connection
+		if (VENDOR_DATADIRECT.equalsIgnoreCase(driverVendor))
+			try {
+				conn.rollback();
+			} catch (SQLException se) {
+			}
+		return conn;
 	}
 
-	@Override
-	public PrimaryKey newPrimaryKey(ResultSet pkMeta) throws SQLException {
-		PrimaryKey pk = super.newPrimaryKey(pkMeta);
-		if (swapSchemaAndCatalog)
-			pk.setSchemaIdentifier(fromDBName(pkMeta.getString("TABLE_CAT"), DBIdentifierType.CATALOG));
-		return pk;
+	// 由decorate方法调用
+	private void execute(String sql, Connection conn, boolean throwExc) {
+		Statement stmnt = null;
+		try {
+			stmnt = conn.createStatement();
+			stmnt.executeUpdate(sql);
+		} catch (SQLException se) {
+			if (throwExc)
+				throw SQLExceptions.getStore(se, this);
+			else {
+				if (log.isTraceEnabled())
+					log.trace(_loc.get("can-not-execute", sql));
+			}
+		} finally {
+			if (stmnt != null)
+				try {
+					stmnt.close();
+				} catch (SQLException se) {
+				}
+		}
 	}
-
-	@Override
-	public Index newIndex(ResultSet idxMeta) throws SQLException {
-		Index idx = super.newIndex(idxMeta);
-		if (swapSchemaAndCatalog)
-			idx.setSchemaIdentifier(fromDBName(idxMeta.getString("TABLE_CAT"), DBIdentifierType.CATALOG));
-		return idx;
-	}
-
-	@Override
-	public String[] getCreateTableSQL(Table table) {
-		String[] create = super.getCreateTableSQL(table);
-		create[0] = create[0] + " LOCK MODE ROW";
-		return create;
-	}
-
-	@Override
-	public String[] getAddPrimaryKeySQL(PrimaryKey pk) {
-		String pksql = getPrimaryKeyConstraintSQL(pk);
-		if (pksql == null)
-			return new String[0];
-		return new String[] { "ALTER TABLE " + getFullName(pk.getTable(), false) + " ADD CONSTRAINT " + pksql };
-	}
-
-	@Override
-	public String[] getAddForeignKeySQL(ForeignKey fk) {
-		String fksql = getForeignKeyConstraintSQL(fk);
-		if (fksql == null)
-			return new String[0];
-		return new String[] { "ALTER TABLE " + getFullName(fk.getTable(), false) + " ADD CONSTRAINT " + fksql };
-	}
-
-	@Override
-	public boolean supportsRandomAccessResultSet(Select sel, boolean forUpdate) {
-		return !forUpdate && !sel.isLob() && super.supportsRandomAccessResultSet(sel, forUpdate);
-	}
-
-	@Override
-	public boolean needsToCreateIndex(Index idx, Table table) {
-		// Informix will automatically create a unique index for the
-		// primary key, so don't create another index again
-		PrimaryKey pk = table.getPrimaryKey();
-		if (pk != null && idx.columnsMatch(pk.getColumns()))
-			return false;
-		return true;
-	}
-
 }
