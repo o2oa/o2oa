@@ -33,7 +33,7 @@ MWF.xApplication.Selector.Identity = new Class({
 
         this._loadSelectItems();
 
-        if( this.className === "Identity" && (this.options.isCheckStatus || this.options.showSelectedCount )) {
+        if( this.isCheckStatusOrCount() ) {
 
             this.loadingCount = "wait";
 
@@ -177,7 +177,7 @@ MWF.xApplication.Selector.Identity = new Class({
                     json.data.each( function(data){
                         var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode );
                         this.subCategorys.push(category);
-                        this.subCategoryMap[data.name] = category;
+                        this.subCategoryMap[data.levelName] = category;
                     }.bind(this));
                 }
                 loadUnitSuccess();
@@ -248,7 +248,7 @@ MWF.xApplication.Selector.Identity = new Class({
                     if( !this.isExcluded( data ) ){
                         var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode);
                         this.subCategorys.push( category );
-                        this.subCategoryMap[data.name] = category;
+                        this.subCategoryMap[data.levelName] = category;
                     }
                 }.bind(this));
 
@@ -435,7 +435,7 @@ MWF.xApplication.Selector.Identity = new Class({
         };
         this.listIndetityObject( identityList, function ( list, map ) {
             list.each( function (id) {
-                if(id.unitLevelName){
+                if(id && id.unitLevelName){
                     result.unitMap[ id.unitLevelName ] = ( result.unitMap[ id.unitLevelName ] || 0 )+1;
                 }
             }.bind(this));
@@ -726,14 +726,13 @@ MWF.xApplication.Selector.Identity.Item = new Class({
             this.selectedItem = selectedItem[0];
             this.setSelected();
 
-            var flag = this.selector.options.selectAllRange === "all" ||
-                ( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ));
-            if( flag ){
-                debugger;
-                if( !this.selector.isInValues(this.data) ){
-                    if(this.category && this.category._addSelectedCount )this.category._addSelectedCount( 1, true );
-                }
-            }
+            // if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount() ){
+            //     debugger;
+            //     if( !this.selector.isInValues(this.data) ){
+            //         this.selector.checkCountAndStatusBySelectItem(this.data);
+            //         // if(this.category && this.category._addSelectedCount )this.category._addSelectedCount( 1, true );
+            //     }
+            // }
         }
     }
 });
@@ -809,6 +808,10 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
     },
     check: function(){
+        if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount() ){
+            this.selector.checkCountAndStatusBySelectItem(this.data);
+        }
+
         if (this.selector.items.length){
             var isPerson = this.selector.options.resultType === "person";
             var items = this.selector.items.filter(function(item, index){
@@ -825,12 +828,9 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                 items.each(function(item){
                     item.selectedItem = this;
                     item.setSelected();
-                    var flag = this.selector.options.selectAllRange === "all" ||
-                        ( this.selector.selectType == "identity" && ( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ) );
-                    if( flag ){
-                        debugger;
-                        if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( 1, true );
-                    }
+                    // if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount() ){
+                    //     if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( 1, true );
+                    // }
                 }.bind(this));
             }
         }
@@ -1055,7 +1055,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                             if( !this.selector.isExcluded( subData ) ) {
                                 var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
                                 this.subCategorys.push( category );
-                                this.subCategoryMap[subData.name] = category;
+                                this.subCategoryMap[subData.levelName] = category;
                             }
                         }.bind(this));
                         this.loaded = true;
@@ -1100,7 +1100,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
     },
     afterLoad: function(){
         if (this.level===1) this.clickItem();
-        if( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ) {
+        if( this.selector.isCheckStatusOrCount() ) {
             if (this.selector.loadingCount === "done"){
                 this.checkCountAndStatus();
             }
@@ -1145,7 +1145,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                         if( !this.selector.isExcluded( subData ) ) {
                             var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
                             this.subCategorys.push( category );
-                            this.subCategoryMap[subData.name] = category;
+                            this.subCategoryMap[subData.levelName] = category;
                         }
                     }.bind(this));
                     this.categoryLoaded = true;
@@ -1766,10 +1766,10 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 }
                 if( parentCategory && parentCategory.subCategorys ){
                     parentCategory.subCategorys.push( category );
-                    if(parentCategory.subCategoryMap)parentCategory.subCategoryMap[data.name] = category;
+                    if(parentCategory.subCategoryMap)parentCategory.subCategoryMap[data.levelName] = category;
                 }else if(this.selector.subCategorys){
                     this.selector.subCategorys.push( category );
-                    this.selector.subCategoryMap[data.name] = category;
+                    this.selector.subCategoryMap[data.levelName] = category;
                 }
             }
         }.bind(this));
@@ -1791,10 +1791,10 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 }
                 if( parentCategory && parentCategory.subCategorys ){
                     parentCategory.subCategorys.push( category );
-                    if(parentCategory.subCategoryMap)parentCategory.subCategoryMap[data.name] = category;
+                    if(parentCategory.subCategoryMap)parentCategory.subCategoryMap[data.levelName] = category;
                 }else if(this.selector.subCategorys){
                     this.selector.subCategorys.push( category );
-                    this.selector.subCategoryMap[data.name] = category;
+                    this.selector.subCategoryMap[data.levelName] = category;
                 }
             }
         }.bind(this));
