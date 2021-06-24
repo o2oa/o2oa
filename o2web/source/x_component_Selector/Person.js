@@ -1779,6 +1779,16 @@ MWF.xApplication.Selector.Person = new Class({
 
         return subCategoryListNode;
     },
+    isCheckStatusOrCount: function(){
+        if( this.isCheckStatusFlag )return this.isCheckStatusFlag === "y";
+        if( this.selectType === "identity" && (this.options.count.toInt() !== 1) && ( this.options.showSelectedCount || this.options.isCheckStatus ) ){
+            this.isCheckStatusFlag = "y";
+            return true;
+        }else{
+            this.isCheckStatusFlag = "n";
+            return false;
+        }
+    },
     checkCountAndStatusByUnselectItem: function( itemData ){
 
     }
@@ -1996,7 +2006,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         //     this.selectedSingle( checkValid );
         // }else{
             if (this.isSelected){
-                this.unSelected( checkValid );
+                this.unSelected( checkValid);
             }else{
                 this.selected( checkValid );
             }
@@ -2160,12 +2170,20 @@ MWF.xApplication.Selector.Person.Item = new Class({
             }.bind(this))
         }
 
+
+        var isChecked = false;
+        if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
+            if( this.selector.isInValues( this.data ) ){
+                isChecked = true;
+                this.selector.checkCountAndStatusByUnselectItem( this.data );
+            }
+        }
+
         debugger;
         if (this.selectedItem){
             this.selector.selectedItems.erase(this.selectedItem);
 
-            var opt = this.selector.options;
-            if( opt.selectAllRange === "all" || ( this.selector.selectType === "identity" && ( opt.showSelectedCount || opt.isCheckStatus ))){
+            if( !isChecked && (this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount())){
                 this.selectedItem.items.each(function(item){
                     if( item.isSelected || ( item === this && isSelected ) ){
                         if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( -1, true );
@@ -2254,9 +2272,10 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
             //this.item.selectedItem = null;
             //this.item.isSelected = false;
 
-            var opt = this.selector.options;
-            if( opt.selectAllRange === "all" || ( this.selector.selectType === "identity" && ( opt.showSelectedCount || opt.isCheckStatus ))){
-                this.selector.checkCountAndStatusByUnselectItem( this.data );
+            if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
+                if( this.selector.isInValues( this.data ) ){
+                    this.selector.checkCountAndStatusByUnselectItem( this.data );
+                }
             }
 
             this.destroy();

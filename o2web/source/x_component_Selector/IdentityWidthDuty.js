@@ -61,7 +61,7 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
             }.bind(this));
 
             var loadDuty = function () {
-                if( this.options.showSelectedCount || this.options.isCheckStatus ){
+                if( this.isCheckStatusOrCount() ){
                     this.loadingCount = false;
                 }
                 this.options.dutys.each(function(duty){
@@ -285,7 +285,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
     loadSub : function(callback){
         this._loadSub( function( firstLoad ) {
             if(firstLoad){
-                if( this.selector.options.showSelectedCount || this.selector.options.isCheckStatus ){
+                if( this.selector.isCheckStatusOrCount() ){
                     // var count = this._getSelectedCount();
                     // this.checkCountAndStatus(count);
                     if( this.selector.loadingCount === "done" ){

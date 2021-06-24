@@ -145,6 +145,10 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 recursiveUnit : !!this.options.expandSubEnable
             }, function (json) {
                 this.allIdentityData = json.data;
+
+                this.setUnitLevelNameMap(); //如果需要检查状态，创建身份-所在组织层次名对应关系
+                this.setUnitLevelNameMapInValues(); //如果需要检查状态，创建已选值身份-所在组织层次名对应关系
+
                 this._loadSelectItems(json.data)
             }.bind(this))
         }else{
@@ -184,7 +188,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             // if( !this.isExcluded( unit ) ) {
             var category = this._newItemCategory("ItemCategory", unit, this, this.itemAreaNode);
             this.subCategorys.push(category);
-            this.subCategoryMap[unit.name] = category;
+
+            var key = this.options.dutyUnitLevelBy === "duty" ? "matchUnitLevelName" : "unitLevelName";
+            this.subCategoryMap[unit.matchLevelName || unit.levelName] = category;
             // }
         }
     },
@@ -229,7 +235,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 }
                 var category = this._newItemCategory("ItemCategory", unit, this, container);
                 this.subCategorys.push(category);
-                this.subCategoryMap[unit.name] = category;
+                this.subCategoryMap[unit.matchLevelName || unit.levelName] = category;
                 // }
             } else {
                 this._loadSelectItemsByDutyUnit(unit);
@@ -293,9 +299,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     //         if (callback) callback();
     //     }.bind(this), null, false)
     // },
-    getUnitOrderNumber: function (unit) {
-        return this.allIdentityInUnitObject[unit.levelName].orderNumber;
-    },
+    // getUnitOrderNumber: function (unit) {
+    //     return this.allIdentityInUnitObject[unit.levelName].orderNumber;
+    // },
     listAllUnitObject: function (identityList, callback) {
         var key = this.options.dutyUnitLevelBy === "duty" ? "matchUnitLevelName" : "unitLevelName";
         var unitArray = [];
@@ -428,7 +434,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         }
         tree.identityList = identityList;
 
-        if (this.options.isCheckStatus) {
+        if (this.isCheckStatusOrCount()) {
             var names = (tree.matchLevelName || tree.levelName || "").split("/");
             var nameList = [];
 
@@ -576,13 +582,110 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     _newItemSearch: function (data, selector, container, level) {
         return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.SearchItem(data, selector, container, level);
     },
-    checkCountAndStatusByUnselectItem: function( itemData ){
-        var levelName = itemData.matchUnitLevelName || itemData.unitLevelName;
-        if(!levelName)return;
-        var map = this.subCategoryMap;
-        levelName.split("/").each(function (name) {
+    setUnitLevelNameMap: function(){
+        var map = this.unitLevelNameMap = {};
+        if (this.isCheckStatusOrCount() && this.allIdentityData.length > 0) {
+            var key = this.options.dutyUnitLevelBy === "duty" ? "matchUnitLevelName" : "unitLevelName";
+            this.allIdentityData.each(function(id) {
+                if (!map[id.distinguishedName]) {
+                    map[id.distinguishedName] = [id[key]];
+                }else if( !map[id.distinguishedName].contains(id[key]) ){
+                    map[id.distinguishedName].push(id[key]);
+                }
+            })
+        }
+    },
+    getUnitLevelNameFormMap: function(id){
+        return (this.unitLevelNameMap && this.unitLevelNameMap[id.distinguishedName]) || [];
+    },
+    checkCountAndStatusBySelectItem: function( itemData ){
+        debugger;
+        var unitlevelNameList = this.getUnitLevelNameFormMap(itemData);
+        unitlevelNameList.each(function (levelName) {
+            var subCategoryMap = this.subCategoryMap;
+            var list = levelName.split("/");
+            var nameList = [];
+            for (var j = 0; j < list.length; j++) {
+                nameList.push(list[j]);
+                var name = nameList.join("/");
+                if ( subCategoryMap[name] ) {
+                    var category = subCategoryMap[name];
+                    category._addSelectedCount(1);
+                    subCategoryMap = category.subCategoryMap;
+                }
 
-        }.bind(this))
+                var obj = this.allUnitObject[name];
+                if (obj) {
+                    obj.selectedNestedIdentityCount = obj.selectedNestedIdentityCount + 1;
+                }
+            }
+        }.bind(this));
+    },
+
+
+    setUnitLevelNameMapInValues: function(){ //取消选择的时候用
+        var map = this.unitLevelNameMapInValues = {};
+        if (this.isCheckStatusOrCount() && this.options.values.length > 0) {
+            var vMap = {};
+            this.options.values.each( function( e ){
+                if( !e )return;
+                vMap[ typeOf( e ) === "string" ? e : ( e.distinguishedName || e.unique || e.levelName) ] = true;
+            }.bind(this));
+
+            var key = this.options.dutyUnitLevelBy === "duty" ? "matchUnitLevelName" : "unitLevelName";
+            this.allIdentityData.each(function(id) {
+                if (vMap[id.distinguishedName]) {
+                    if (!map[id.distinguishedName]) {
+                        map[id.distinguishedName] = [id[key]];
+                    }else if( !map[id.distinguishedName].contains(id[key]) ){
+                        map[id.distinguishedName].push(id[key]);
+                    }
+                }else if (vMap[id.unique]) {
+                    if (!map[id.unique]) {
+                        map[id.unique] = [id[key]];
+                    }else if( !map[id.unique].contains(id[key]) ){
+                        map[id.unique].push(id[key]);
+                    }
+                }else if (vMap[id.levelName]) {
+                    if (!map[id.levelName]) {
+                        map[id.levelName] = [id[key]];
+                    }else if( !map[id.levelName].contains(id[key]) ){
+                        map[id.levelName].push(id[key]);
+                    }
+                }
+            })
+        }
+    },
+    getUnitLevelNameFormValueMap: function(id){
+        var map = this.unitLevelNameMapInValues;
+        var list = [];
+        if( map[id.distinguishedName] )list = list.concat(map[id.distinguishedName]);
+        if( map[id.unique] )list = list.concat(map[id.unique]);
+        if( map[id.levelName] )list = list.concat(map[id.levelName]);
+        return list;
+    },
+    checkCountAndStatusByUnselectItem: function( itemData ){
+        debugger;
+        var unitlevelNameList = this.getUnitLevelNameFormValueMap(itemData);
+        unitlevelNameList.each(function (levelName) {
+            var subCategoryMap = this.subCategoryMap;
+            var list = levelName.split("/");
+            var nameList = [];
+            for (var j = 0; j < list.length; j++) {
+                nameList.push(list[j]);
+                var name = nameList.join("/");
+                if ( subCategoryMap[name] ) {
+                    var category = subCategoryMap[name];
+                    category._addSelectedCount(-1);
+                    subCategoryMap = category.subCategoryMap;
+                }
+
+                var obj = this.allUnitObject[name];
+                if (obj) {
+                    obj.selectedNestedIdentityCount = obj.selectedNestedIdentityCount - 1;
+                }
+            }
+        }.bind(this));
     }
     //_listItemNext: function(last, count, callback){
     //    this.action.listRoleNext(last, count, function(json){
@@ -644,9 +747,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
         this.selectedCount = count + (this.selectedCount_wait || 0);
         this.selectedCount_wait = 0;
         return count;
-    },
-    _checkStatus: function () {
-
     },
     isExisted: function (d) {
         if (!d) return true;
@@ -714,7 +814,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     },
     loadSub: function (callback) {
         this._loadSub(function (firstLoad) {
-            if (firstLoad && (this.selector.options.showSelectedCount || this.selector.options.isCheckStatus)) {
+            if (firstLoad && this.selector.isCheckStatusOrCount()) {
                 // var count = 0;
                 // this.subCategorys.each(function (category) {
                 //     var l = category.subItems.filter(function (item) {
@@ -769,7 +869,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
                         // if( !this.selector.isExcluded( subData ) ) {
                         var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level + 1, this);
                         this.subCategorys.push(category);
-                        this.subCategoryMap[subData.name] = category;
+                        this.subCategoryMap[subData.matchLevelName || subData.levelName] = category;
                         // category.loadSub()
                         // }
                     }.bind(this));
