@@ -62,7 +62,7 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
 
             var loadDuty = function () {
                 if( this.isCheckStatusOrCount() ){
-                    this.loadingCount = false;
+                    this.loadingCount = "done";
                 }
                 this.options.dutys.each(function(duty){
                     var data = {"name": duty, "id":duty};
@@ -213,7 +213,28 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
     },
     _newItemSearch: function(data, selector, container, level){
         return new MWF.xApplication.Selector.IdentityWidthDuty.SearchItem(data, selector, container, level);
-    }
+    },
+    uniqueIdentityList: function(list){
+        var items = [], map = {};
+        (list||[]).each(function(d) {
+            if (d.distinguishedName || d.unique) {
+                if ((!d.distinguishedName || !map[d.distinguishedName]) && (!d.unique || !map[d.unique])) {
+                    items.push(d);
+                    map[d.distinguishedName] = true;
+                    map[d.unique] = true;
+                }
+            } else {
+                items.push(d);
+            }
+        })
+        return items;
+    },
+    addSelectedCount: function( itemData, count, items ){
+        debugger;
+        items.each(function(item){
+            if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( count );
+        }.bind(this));
+    },
     //_listItemNext: function(last, count, callback){
     //    this.action.listRoleNext(last, count, function(json){
     //        if (callback) callback.apply(this, [json]);
@@ -308,7 +329,8 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                 };
 
                 MWF.Actions.get("x_organization_assemble_express").getDuty(data, function(json){
-                    json.data.each(function(idSubData){
+                    var list = this.selector.uniqueIdentityList(json.data);
+                    list.each(function(idSubData){
                         if( !this.selector.isExcluded( idSubData ) ) {
                             var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
                             this.selector.items.push(item);
@@ -400,7 +422,8 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
 
             }else{
                 this.selector.orgAction.listIdentityWithDuty(function(json){
-                    json.data.each(function(idSubData){
+                    var list = this.selector.uniqueIdentityList(json.data);
+                    list.each(function(idSubData){
                         if( !this.selector.isExcluded( idSubData ) ) {
                             var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
                             this.selector.items.push(item);
@@ -442,7 +465,8 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemUnitCategory = new Class({
         if (!this.loaded){
             this.selector.orgAction.listIdentityWithUnit(function(idJson){
                 if( !this.itemLoaded ){
-                    idJson.data.each(function(idSubData){
+                    var list = this.selector.uniqueIdentityList(idJson.data);
+                    list.each(function(idSubData){
                         if( !this.selector.isExcluded( idSubData ) ) {
                             var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
                             this.selector.items.push(item);
@@ -501,7 +525,8 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemUnitCategory = new Class({
     loadItemChildren: function(callback){
         if (!this.itemLoaded){
             this.selector.orgAction.listIdentityWithUnit(function(idJson){
-                idJson.data.each(function(idSubData){
+                var list = this.selector.uniqueIdentityList(idJson.data);
+                list.each(function(idSubData){
                     if( !this.selector.isExcluded( idSubData ) ) {
                         var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
                         this.selector.items.push(item);

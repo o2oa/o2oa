@@ -1789,7 +1789,7 @@ MWF.xApplication.Selector.Person = new Class({
             return false;
         }
     },
-    checkCountAndStatusByUnselectItem: function( itemData ){
+    addSelectedCount: function( itemData ){
 
     }
     //checkClickFlatCategoryItem : function(categoryItemNode, itemNodeContainer){
@@ -2171,22 +2171,25 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
 
 
-        var isChecked = false;
-        if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
-            if( this.selector.isInValues( this.data ) ){
-                isChecked = true;
-                this.selector.checkCountAndStatusByUnselectItem( this.data );
-            }
-        }
+        // var isChecked = false;
+        // if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
+        //     if( this.selector.isInValues( this.data ) ){
+        //         isChecked = true;
+        //         this.selector.checkCountAndStatusByUnselectItem( this.data );
+        //     }
+        // }
+
+
 
         debugger;
+        var countItems = [];
         if (this.selectedItem){
             this.selector.selectedItems.erase(this.selectedItem);
 
-            if( !isChecked && (this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount())){
+            if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
                 this.selectedItem.items.each(function(item){
                     if( item.isSelected || ( item === this && isSelected ) ){
-                        if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( -1, true );
+                        countItems.push(item);
                     }
                 }.bind(this));
             }
@@ -2209,6 +2212,11 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selectedItem.destroy();
             this.selectedItem = null;
         }
+
+        if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
+            this.selector.addSelectedCount( this.data, -1, countItems );
+        }
+
         this.selector.fireEvent("unselectItem",[this]);
         if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
         if(callback)callback();
@@ -2264,7 +2272,19 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
     },
     clickItem: function( callback, checkValid ){
         if (this.items.length){
+            var items = [], map = {};
             this.items.each(function(item){
+                if( item.data.distinguishedName || item.data.unique ){
+                    if( (!item.data.distinguishedName || !map[item.data.distinguishedName]) && ( !item.data.unique || !map[item.data.unique])){
+                        items.push(item);
+                        map[item.data.distinguishedName] = true;
+                        map[item.data.unique] = true;
+                    }
+                }else{
+                    items.push(item);
+                }
+            });
+            items.each(function(item){
                 item.unSelected( checkValid );
             });
             if( checkValid )this.selector.fireEvent("valid", [this.selector, this])
@@ -2273,9 +2293,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
             //this.item.isSelected = false;
 
             if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
-                if( this.selector.isInValues( this.data ) ){
-                    this.selector.checkCountAndStatusByUnselectItem( this.data );
-                }
+                this.selector.addSelectedCount( this.data, -1 );
             }
 
             this.destroy();

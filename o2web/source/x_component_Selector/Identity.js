@@ -636,7 +636,7 @@ MWF.xApplication.Selector.Identity = new Class({
             }.bind(this))
         }
     },
-    checkCountAndStatusByUnselectItem: function( itemData ){
+    addSelectedCount: function( itemData ){
 
     }
 
@@ -808,13 +808,10 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
     },
     check: function(){
-        if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount() ){
-            this.selector.checkCountAndStatusBySelectItem(this.data);
-        }
-
+        var items;
         if (this.selector.items.length){
             var isPerson = this.selector.options.resultType === "person";
-            var items = this.selector.items.filter(function(item, index){
+            items = this.selector.items.filter(function(item, index){
                 if( isPerson ){
                     return (item.data.person && item.data.person === this.data.id) ||
                         ( item.data.id && item.data.id === this.data.person) ||
@@ -834,6 +831,12 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                 }.bind(this));
             }
         }
+
+
+        if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount() ){
+            this.selector.addSelectedCount(this.data, 1, items||[]);
+        }
+
         if( this.afterCheck )this.afterCheck();
     }
 });
