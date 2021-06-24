@@ -225,7 +225,7 @@ MWF.xApplication.process.Xform.IWebOffice = MWF.APPIWebOffice =  new Class({
             this.officeNode.appendHTML(objectHtml);
             this.officeForm = this.officeNode.getFirst();
         }
-        setTimeout(function() {this.loadIwebOfficeEditor()}.bind(this), 5000);
+        setTimeout(function() {this.loadIwebOfficeEditor()}.bind(this), 3000);
     },
     loadIwebOfficeEditor : function (){
 
@@ -259,7 +259,7 @@ MWF.xApplication.process.Xform.IWebOffice = MWF.APPIWebOffice =  new Class({
         }
         this.officeOCX.ShowMenu = this.json.iWebOfficeEditProperties.Menubar;                         //控制整体菜单显示
         this.officeOCX.ShowToolBar = this.json.iWebOfficeEditProperties.ToolBars;                      //ShowToolBar:是否显示工具栏:1显示,0不显示
-        this.officeOCX.ShowWindow = true;                  //控制显示打开或保存文档的进度窗口，默认不显示
+        this.officeOCX.ShowWindow = false;                  //控制显示打开或保存文档的进度窗口，默认不显示
         this.officeOCX.MaxFileSize = 32 * 1024;               //最大的文档大小控制，默认是8M，现在设置成4M。
         this.officeOCX.Print="1";
         this.officeOCX.WebOpen();
