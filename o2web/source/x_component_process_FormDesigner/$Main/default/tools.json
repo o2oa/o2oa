@@ -203,7 +203,7 @@
     "className": "Office"
   },
   "iWebOffice": {
-    "icon": "office.png",
+    "icon": "iWebOffice.png",
     "text": "iWebOffice",
     "className": "IWebOffice"
   },
