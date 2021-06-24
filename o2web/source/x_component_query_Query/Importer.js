@@ -985,6 +985,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         this.importer.fireEvent("beforeCreateRowData", [this]);
 
         json.data.columnList.each( function (columnJson, i) {
+            if(!columnJson.path)return;
 
             var value = this.importedData[i] || "";
             if( !value )return;
@@ -1019,6 +1020,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 var data = this.importer.Macro.exec( fieldJson.valueScript, this );
 
                 if( o2.typeOf(data) === "null" )return;
+                if( !fieldJson.path )return;
 
                 if( json.type === "dynamicTable" ){
                     this.data[ fieldJson.path ] = data;
@@ -1187,6 +1189,8 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
     },
     setDataWithField: function(obj, fieldName, path, isName){
         if(!this.pathIndexMap)this.pathIndexMap = {};
+
+        if( !path )return;
 
         var json = this.importer.json;
         if( json.data[fieldName] ){
