@@ -244,6 +244,13 @@ o2.widget.O2Person = new Class({
             this.action.actions = {"getPerson": {"uri": "/jaxrs/person/{id}"}};
             this.action.invoke({"name": "getPerson", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
                 this.data = json.data;
+                var dutyList = [];
+                if( this.data.woIdentityList && this.data.woIdentityList.length ){
+                    this.data.woIdentityList.each(function (id) {
+                        if(id.woUnitDutyList && id.woUnitDutyList.length)dutyList = dutyList.concat(id.woUnitDutyList);
+                    })
+                }
+                this.data.dutys = dutyList;
             }.bind(this)});
         }
         return this.data;
