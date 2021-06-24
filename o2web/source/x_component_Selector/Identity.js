@@ -283,7 +283,7 @@ MWF.xApplication.Selector.Identity = new Class({
     checkCountAndStatus: function(){
         if( this.subCategorys && this.subCategorys.length ){
             this.subCategorys.each(function (category) {
-                if(category.checkCountAndStatus)category.checkCountAndStatus();
+                if(category.checkCountAndStatus)category.checkCountAndStatus(true);
             })
         }
     },
@@ -636,8 +636,33 @@ MWF.xApplication.Selector.Identity = new Class({
             }.bind(this))
         }
     },
-    addSelectedCount: function( itemData ){
+    addSelectedCount: function( itemData, count ){
+        debugger;
 
+        if(!itemData.unitLevelName)return;
+        var list = itemData.unitLevelName.split("/");
+        var nameList = [];
+        var subCategoryMapList = [this.subCategoryMap];
+        for (var j = 0; j < list.length; j++) {
+            nameList.push(list[j]);
+            var name = nameList.join("/");
+            var maplist = [];
+            subCategoryMapList.each(function(subCategoryMap){
+                if ( subCategoryMap[name] ) {
+                    var category = subCategoryMap[name];
+                    category._addSelectedCount(count);
+                    maplist.push( category.subCategoryMap ) ;
+                }
+            });
+            subCategoryMapList = subCategoryMapList.concat(maplist);
+
+            if( this.loadingCount === "done" ){
+                var obj = this.allUnitObject[name];
+                if (obj) {
+                    obj.selectedNestedIdentityCount = obj.selectedNestedIdentityCount + count;
+                }
+            }
+        }
     }
 
 });
