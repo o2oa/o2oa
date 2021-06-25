@@ -1,0 +1,197 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle" colspan="2"><div style="text-align:center; color: red;">{{$.lp.ieOnly}}</div></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.readonly}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.delayedLoading}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isNotLoadNow" value="true" text{($.isNotLoadNow)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isNotLoadNow" value="false" text{(!$.isNotLoadNow)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableValue" colspan="2">
+					<b>{{$.lp.showSummary}}:</b>
+					<input type="radio" name="isShowSummary" value="true" text{($.isShowSummary!==false)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isShowSummary" value="false" text{($.isShowSummary===false)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.type}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='word')?'checked':''} type="radio" value="word"/>Word<br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='excel')?'checked':''} type="radio" value="excel"/>Excel<br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='ppt')?'checked':''} type="radio" value="ppt"/>PowerPoint<br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'block'); " name="officeType" text{($.officeType=='other')?'checked':''} type="radio" value="other"/>{{$.lp.byTemplate}}
+				</td>
+			</tr>
+		</table>
+		<div id="officeTemplateArea" title="src" style="display: text{($.officeType=='other')?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.templatePath}}:</td>
+					<td class="editTableValue">
+						<input type="text" name="template" value="text{$.template}" class="editTableInput"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="MWFScriptArea" name="readScript" title="{{$.lp.readonlyCondition}} (S)"></div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<!--			<tr>-->
+			<!--				<td class="editTableTitle">{{$.lp.userTitle}}:</td>-->
+			<!--				<td class="editTableValue"><input type="text" name="productCaption" value="text{$.productCaption}" class="editTableInput"/></td>-->
+			<!--			</tr>-->
+			<!--			<tr>-->
+			<!--				<td class="editTableTitle">{{$.lp.userId}}:</td>-->
+			<!--				<td class="editTableValue"><input type="text" name="productKey" value="text{$.productKey}" class="editTableInput"/></td>-->
+			<!--			</tr>-->
+			<!--<tr>-->
+			<!--<td class="editTableTitle">授权标题:</td>-->
+			<!--<td class="editTableValue"><input type="text" name="makerCaption" value="text{$.makerCaption}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+			<!--<td class="editTableTitle">授权标识:</td>-->
+			<!--<td class="editTableValue"><input type="text" name="makerKey" value="text{$.makerKey}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+			<!--<td class="editTableTitle">控件版本:</td>-->
+			<!--<td class="editTableValue"><input type="text" name="version" value="text{$.version}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+			<!--<td class="editTableTitle">classid:</td>-->
+			<!--<td class="editTableValue"><input type="text" name="clsid" value="text{$.clsid}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+			<!--<td class="editTableTitle">控件路径:</td>-->
+			<!--<td class="editTableValue"><input type="text" name="codeBase" value="text{$.codeBase}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+			<!--<td class="editTableTitle">classid64位:</td>-->
+			<!--<td class="editTableValue"><input type="text" name="clsid64" value="text{$.clsid64}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+			<!--<td class="editTableTitle">控件路径64位:</td>-->
+			<!--<td class="editTableValue"><input type="text" name="codeBase64" value="text{$.codeBase64}" class="editTableInput"/></td>-->
+			<!--</tr>-->
+		</table>
+
+
+	</div>
+	<div title="{{$.lp.edit}}"  class="MWFTab">
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.toolbar}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.tools}}</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('new')!=-1)?'checked':''} type="checkbox" value="new"/>{{$.lp.newDoc}}
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('open')!=-1)?'checked':''} type="checkbox" value="open"/>{{$.lp.openLocal}}
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('save')!=-1)?'checked':''} type="checkbox" value="save"/>{{$.lp.saveLocal}}
+					<br/>
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('revisions')!=-1)?'checked':''} type="checkbox" value="revisions"/>{{$.lp.traceSwitch}}
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('toolbar')!=-1)?'checked':''} type="checkbox" value="toolbar"/>{{$.lp.toolbarSwitch}}
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('preview')!=-1)?'checked':''} type="checkbox" value="preview"/>{{$.lp.printPreview}}
+				</td>
+			</tr>
+		</table>
+
+
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.attribute}}:</div>
+
+		<!--<div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center;">界面相关</div>-->
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.showMenuBar}}:</b>
+				<input class="editTableRadio" name="iWebOfficeEditProperties.Menubar" text{($.iWebOfficeEditProperties.Menubar=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="iWebOfficeEditProperties.Menubar" text{($.iWebOfficeEditProperties.Menubar!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.showToolBar}}:</b>
+				<input class="editTableRadio" name="iWebOfficeEditProperties.ToolBars" text{($.iWebOfficeEditProperties.ToolBars!='0')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="iWebOfficeEditProperties.ToolBars" text{($.iWebOfficeEditProperties.ToolBars=='0')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.noCopy}}:</b>
+				<input class="editTableRadio" name="iWebOfficeEditProperties.IsNoCopy" text{($.iWebOfficeEditProperties.IsNoCopy=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="iWebOfficeEditProperties.IsNoCopy" text{($.iWebOfficeEditProperties.IsNoCopy!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.keepTraces}}:</b>
+				<input class="editTableRadio" name="trackRevisions" text{($.trackRevisions=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="trackRevisions" text{($.trackRevisions!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+		</table>
+		<div class="MWFMaplist" name="editProperties" title="{{$.lp.otherAttr}}"></div>
+	</div>
+	<div title="{{$.lp.read}}"  class="MWFTab">
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.toolbar}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.toolbar}}</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="menuReadButtons" text{(($.menuReadButtons) && $.menuReadButtons.indexOf('revisions')!=-1)?'checked':''} type="checkbox" value="revisions"/>{{$.lp.traceSwitch}}
+					<input class="editTableRadio" name="menuReadButtons" text{(($.menuReadButtons) && $.menuReadButtons.indexOf('toolbar')!=-1)?'checked':''} type="checkbox" value="toolbar"/>{{$.lp.toolbarSwitch}}
+					<input class="editTableRadio" name="menuReadButtons" text{(($.menuReadButtons) && $.menuReadButtons.indexOf('preview')!=-1)?'checked':''} type="checkbox" value="preview"/>{{$.lp.printPreview}}
+				</td>
+			</tr>
+		</table>
+		<!--<div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center;">界面相关</div>-->
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.showMenuBar}}:</b>
+				<input class="editTableRadio" name="iWebOfficeReadProperties.Menubar" text{($.iWebOfficeReadProperties.Menubar=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="iWebOfficeReadProperties.Menubar" text{($.iWebOfficeReadProperties.Menubar!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.showToolBar}}:</b>
+				<input class="editTableRadio" name="iWebOfficeReadProperties.ToolBars" text{($.iWebOfficeReadProperties.ToolBars!='0')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="iWebOfficeReadProperties.ToolBars" text{($.iWebOfficeReadProperties.ToolBars=='0')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>{{$.lp.noCopy}}:</b>
+				<input class="editTableRadio" name="iWebOfficeReadProperties.IsNoCopy" text{($.iWebOfficeReadProperties.IsNoCopy=='1')?'checked':''} type="radio" value="1"/>{{$.lp.yes}}
+				<input class="editTableRadio" name="iWebOfficeReadProperties.IsNoCopy" text{($.iWebOfficeReadProperties.IsNoCopy!='1')?'checked':''} type="radio" value="0"/>{{$.lp.no}}
+			</td></tr>
+		</table>
+		<div class="MWFMaplist" name="readProperties" title="{{$.lp.otherAttr}}"></div>
+	</div>
+
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>
