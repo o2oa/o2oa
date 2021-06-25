@@ -157,28 +157,29 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     },
     _loadSelectItems: function (identityList) {
         //this.listAllIdentityInUnitObject( identityList );
-        var unitTree = this.listNestedUnitByIdentity(identityList);
-        this.dataTree = unitTree;
-        this.uniqueIdentity(unitTree);
-        this.loadingCount = "done";
-        debugger;
-        if (this.options.dutyUnitLevelBy === "duty") {
-            this.level1Container = [];
-            if (this.options.units && this.options.units.length) {
-                this.options.units.each( function (unit ,i) {
-                    var div = new Element("div").inject(this.itemAreaNode);
-                    this.level1Container.push(div);
-                }.bind(this))
+        this.listNestedUnitByIdentity(identityList, function (unitTree) {
+            this.dataTree = unitTree;
+            this.uniqueIdentity(unitTree);
+            this.loadingCount = "done";
+            debugger;
+            if (this.options.dutyUnitLevelBy === "duty") {
+                this.level1Container = [];
+                if (this.options.units && this.options.units.length) {
+                    this.options.units.each( function (unit ,i) {
+                        var div = new Element("div").inject(this.itemAreaNode);
+                        this.level1Container.push(div);
+                    }.bind(this))
+                }
+                this._loadSelectItemsByDutyUnit(unitTree);
+            } else {
+                this._loadSelectItemsByIdentityUnit(unitTree);
             }
-            this._loadSelectItemsByDutyUnit(unitTree);
-        } else {
-            this._loadSelectItemsByIdentityUnit(unitTree);
-        }
 
-        this.dutyLoaded = true;
-        if (this.includeLoaded) {
-            this.afterLoadSelectItem();
-        }
+            this.dutyLoaded = true;
+            if (this.includeLoaded) {
+                this.afterLoadSelectItem();
+            }
+        }.bind(this));
     },
     _loadSelectItemsByIdentityUnit: function (unitTree) {
         if (!unitTree.unitList) return;
@@ -326,13 +327,14 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 this.allUnitObject[u.levelName] = u;
             }.bind(this));
             if (callback) callback();
-        }.bind(this), null, false)
+        }.bind(this))
     },
-    listNestedUnitByIdentity: function (identityList) {
-        this.listAllUnitObject(identityList);
-        return this._listNestedUnitByIdentity(identityList);
+    listNestedUnitByIdentity: function (identityList, callback) {
+        this.listAllUnitObject(identityList, function () {
+            this._listNestedUnitByIdentity(identityList, callback);
+        }.bind(this));
     },
-    _listNestedUnitByIdentity: function (identityList) {
+    _listNestedUnitByIdentity: function (identityList, callback) {
         debugger;
         //identityList = Array.unique(identityList);
         var key = this.options.dutyUnitLevelBy === "duty" ? "matchUnitLevelName" : "unitLevelName";
@@ -380,7 +382,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             }
             if (flag) tree.identityList.push(identityList[i]);
         }
-        return unitTree;
+        if(callback)callback(unitTree);
     },
     uniqueIdentity: function (tree) {
 

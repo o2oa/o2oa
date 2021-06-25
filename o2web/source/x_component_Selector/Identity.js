@@ -55,6 +55,7 @@ MWF.xApplication.Selector.Identity = new Class({
             }.bind(this);
 
             var load = function () {
+                this.hasGroupCategory = groupList && groupList.length > 0;
 
                 var unitLoaded, groupLoaded, selectedIdentityLoaded, excludeIdentityLoaded;
                 var unitTree, groupTree;
@@ -403,31 +404,32 @@ MWF.xApplication.Selector.Identity = new Class({
     //    }.bind(this));
     //}
 
-    getIdentityAllLevelName : function(identityList, byGroup, callback){
-        var result = {
-            unitMap : {},
-            groupMap : {}
-        };
-        this.listIndetityObject( identityList, function ( list, map ) {
-            list.each( function (id) {
-                if(id.unitLevelName){
-                    result.unitMap[ id.unitLevelName ] = ( result.unitMap[ id.unitLevelName ] || 0 )+1;
-                }
-            }.bind(this));
-            if( byGroup ) {
-                this.listLevelNameGroupMap(list, function ( levelNameGroupMap ) {
-                    for( var key in levelNameGroupMap ){
-                        var group = levelNameGroupMap[key]
-                        var identityCount = group["identityList"].length;
-                        if(identityCount)result.groupMap[key] = identityCount;
-                    }
-                    if( callback )callback( result );
-                }.bind(this));
-            }else{
-                if( callback )callback( result );
-            }
-        }.bind(this));
-    },
+    // getIdentityAllLevelName : function(identityList, byGroup, callback){
+    //     var result = {
+    //         unitMap : {},
+    //         groupMap : {}
+    //     };
+    //     this.listIndetityObject( identityList, function ( list, map ) {
+    //         list.each( function (id) {
+    //             if(id.unitLevelName){
+    //                 result.unitMap[ id.unitLevelName ] = ( result.unitMap[ id.unitLevelName ] || 0 )+1;
+    //             }
+    //         }.bind(this));
+    //         if( byGroup ) {
+    //             this.listLevelNameGroupMap(list, function ( levelNameGroupMap ) {
+    //                 for( var key in levelNameGroupMap ){
+    //                     var group = levelNameGroupMap[key]
+    //                     var identityCount = group["identityList"].length;
+    //                     if(identityCount)result.groupMap[key] = identityCount;
+    //                 }
+    //                 if( callback )callback( result );
+    //             }.bind(this));
+    //         }else{
+    //             if( callback )callback( result );
+    //         }
+    //     }.bind(this));
+    // },
+
     getIdentityCountMap : function( identityList, byGroup, callback ){
         var result = {
             unitMap : {},
@@ -515,6 +517,8 @@ MWF.xApplication.Selector.Identity = new Class({
         if( !this.allUnitObject )this.allUnitObject = {};
         if( !this.allGroupObject )this.allGroupObject = {};
         if( !this.allGroupObjectByDn )this.allGroupObjectByDn = {};
+        if( !this.allGrounUnitObject )this.allGrounUnitObject = {};
+        if( !this.groupLevelNameListMap )this.groupLevelNameListMap = {};
 
         if( groupTree && groupTree.length ){
             groupTree.each( function ( tree ) {
@@ -540,8 +544,15 @@ MWF.xApplication.Selector.Identity = new Class({
         if(callback)callback();
     },
     caculateGroupNestedCount : function( tree, parentLevelName ){
+        debugger;
         if( this.isExcluded( tree ) )return;
         var groupLevelName = parentLevelName ? ( parentLevelName + "/" + tree.distinguishedName.split("@")[0] ) : tree.distinguishedName.split("@")[0];
+
+        if(!this.allGrounUnitObject[groupLevelName]){
+            this.allGrounUnitObject[groupLevelName] = tree;
+            tree.groupUnitLevelName = groupLevelName;
+        }
+
         if(!this.allGroupObject[ groupLevelName ]){
             this.allGroupObject[ groupLevelName ] = tree;
         }else{
@@ -583,9 +594,16 @@ MWF.xApplication.Selector.Identity = new Class({
     },
 
     caculateUnitNestedCount : function ( tree, groupLevelName, flag ) {
+        debugger;
         if( this.isExcluded( tree ) )return;
         var count;
         var selectedCount;
+
+        if(!this.allGrounUnitObject[groupLevelName+"/"+tree.levelName]){
+            this.allGrounUnitObject[groupLevelName+"/"+tree.levelName] = tree;
+            tree.groupUnitLevelName = groupLevelName+"/"+tree.levelName;
+        }
+
         if(!this.allUnitObject[ tree.levelName ]){
             this.allUnitObject[ tree.levelName ] = tree;
             count = tree.subDirectIdentityCount;
@@ -636,33 +654,92 @@ MWF.xApplication.Selector.Identity = new Class({
             }.bind(this))
         }
     },
+
+    getIdentityParentLevelNameList: function(itemData, callback){
+        if( this.hasGroupCategory ){
+            if( !itemData.parentLevelNameList ){
+                itemData.parentLevelNameList = [itemData.unitLevelName];
+                o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : [itemData.distinguishedName], referenceFlag: true, recursiveFlag:true }, function (json) {
+                    json.data.each( function (d) {
+                        var list = [];
+                        d.woGroupList.each(function (group) {
+                            list = list.concat( this.caculateGroupLevelName(group)) ;
+                        }.bind(this));
+                        list.each(function(lName){
+                            if( this.allGrounUnitObject[ lName +"/"+ itemData.unitLevelName ] ){
+                                itemData.parentLevelNameList.push(lName +"/"+ itemData.unitLevelName);
+                            }else if( this.allGrounUnitObject[ lName ] ){
+                                itemData.parentLevelNameList.push(lName);
+                            }
+                        }.bind(this));
+                        if( callback )callback(itemData.parentLevelNameList);
+                    }.bind(this))
+                }.bind(this))
+            }else{
+                if( callback )callback(itemData.parentLevelNameList);
+            }
+        }else{
+            if( callback )callback([itemData.unitLevelName]);
+        }
+    },
+    //通过身份信息获取的group
+    caculateGroupLevelName: function(g){
+        if( this.groupLevelNameListMap[g.distinguishedName] ){
+            return this.groupLevelNameListMap[g.distinguishedName];
+        }
+        var levelNameList = [g.name];
+        var map = {};
+        map[g.id] = g;
+        g.woSupGroupList.each(function(group){ map[group.id] = group; });
+
+        var nest = function( supGroupName, groupList ){
+            groupList.each(function(subGroupId){
+                if( map[subGroupId] ){
+                    var groupLevelName = supGroupName+"/"+map[subGroupId].name;
+                    levelNameList.push( groupLevelName );
+                    nest(groupLevelName, map[subGroupId].groupList || []);
+                }
+            })
+        };
+
+        g.woSupGroupList.each(function(group){
+            nest( group.name, group.groupList )
+        });
+
+        this.groupLevelNameListMap[g.distinguishedName] = levelNameList;
+
+        return levelNameList;
+    },
     addSelectedCount: function( itemData, count ){
         debugger;
+        this.getIdentityParentLevelNameList(itemData, function (parentLevelNameList) {
+            parentLevelNameList.each(function(parentLevelName){
+                if(!parentLevelName)return;
+                var list = parentLevelName.split("/");
+                var nameList = [];
+                var subCategoryMapList = [this.subCategoryMap];
+                for (var j = 0; j < list.length; j++) {
+                    nameList.push(list[j]);
+                    var name = nameList.join("/");
+                    var maplist = [];
+                    subCategoryMapList.each(function(subCategoryMap){
+                        if ( subCategoryMap[name] ) {
+                            var category = subCategoryMap[name];
+                            category._addSelectedCount(count);
+                            maplist.push( category.subCategoryMap ) ;
+                        }
+                    });
+                    subCategoryMapList = subCategoryMapList.concat(maplist);
 
-        if(!itemData.unitLevelName)return;
-        var list = itemData.unitLevelName.split("/");
-        var nameList = [];
-        var subCategoryMapList = [this.subCategoryMap];
-        for (var j = 0; j < list.length; j++) {
-            nameList.push(list[j]);
-            var name = nameList.join("/");
-            var maplist = [];
-            subCategoryMapList.each(function(subCategoryMap){
-                if ( subCategoryMap[name] ) {
-                    var category = subCategoryMap[name];
-                    category._addSelectedCount(count);
-                    maplist.push( category.subCategoryMap ) ;
+                    if( this.loadingCount === "done" ){
+                        var obj = this.allUnitObject[name];
+                        if (obj) {
+                            obj.selectedNestedIdentityCount = obj.selectedNestedIdentityCount + count;
+                        }
+                    }
                 }
-            });
-            subCategoryMapList = subCategoryMapList.concat(maplist);
-
-            if( this.loadingCount === "done" ){
-                var obj = this.allUnitObject[name];
-                if (obj) {
-                    obj.selectedNestedIdentityCount = obj.selectedNestedIdentityCount + count;
-                }
-            }
-        }
+            }.bind(this));
+        }.bind(this))
     }
 
 });
@@ -1081,9 +1158,10 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                     this.selector.orgAction.listSubUnitDirect(function(json){
                         json.data.each(function(subData){
                             if( !this.selector.isExcluded( subData ) ) {
+                                if( subData && this.data.parentLevelName)subData.parentLevelName = this.data.parentLevelName +"/" + subData.name;
                                 var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
                                 this.subCategorys.push( category );
-                                this.subCategoryMap[subData.levelName] = category;
+                                this.subCategoryMap[subData.parentLevelName || subData.levelName] = category;
                             }
                         }.bind(this));
                         this.loaded = true;
@@ -1171,9 +1249,10 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                 this.selector.orgAction.listSubUnitDirect(function(json){
                     json.data.each(function(subData){
                         if( !this.selector.isExcluded( subData ) ) {
+                            if( subData && this.data.parentLevelName)subData.parentLevelName = this.data.parentLevelName +"/" + subData.name;
                             var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
                             this.subCategorys.push( category );
-                            this.subCategoryMap[subData.levelName] = category;
+                            this.subCategoryMap[subData.parentLevelName || subData.levelName] = category;
                         }
                     }.bind(this));
                     this.categoryLoaded = true;
@@ -1385,9 +1464,12 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
             //     }.bind(this))
             // }
 
+            debugger;
+
             if( this.selector.options.expandSubEnable ){
                 ( this.data.unitList || [] ).each( function(u){
                     this.selector.orgAction.getUnit(function (json) {
+                        if( json.data && this.data.parentLevelName)json.data.parentLevelName = this.data.parentLevelName +"/" + json.data.levelName;
                         this.selector.includeObject.loadUnitItem(json, unitContainer, this.level + 1, this);
                         checkCallback("unit");
                     }.bind(this), function(){ checkCallback("unit") }, u );
@@ -1395,6 +1477,7 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
 
                 ( this.data.groupList || [] ).each( function(g){
                     this.selector.orgAction.getGroup(function (json) {
+                        if( json.data && this.data.parentLevelName)json.data.parentLevelName = this.data.parentLevelName +"/" + json.data.name;
                         this.selector.includeObject.loadGroupItem(json, groupContainer, this.level + 1, this);
                         checkCallback("group");
                     }.bind(this), function(){ checkCallback("group") }, g );
@@ -1456,6 +1539,7 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
             if( this.selector.options.expandSubEnable ){
                 ( this.data.unitList || [] ).each( function(u){
                     this.selector.orgAction.getUnit(function (json) {
+                        if( json.data && this.data.parentLevelName)json.data.parentLevelName = this.data.parentLevelName +"/" + json.data.levelName;
                         this.selector.includeObject.loadUnitItem(json, unitContainer, this.level + 1, this);
                         checkCallback("unit");
                     }.bind(this), function(){ checkCallback("unit") }, u );
@@ -1463,6 +1547,7 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
 
                 ( this.data.groupList || [] ).each( function(g){
                     this.selector.orgAction.getGroup(function (json) {
+                        if( json.data && this.data.parentLevelName)json.data.parentLevelName = this.data.parentLevelName +"/" + json.data.name;
                         this.selector.includeObject.loadGroupItem(json, groupContainer, this.level + 1, this);
                         checkCallback("group");
                     }.bind(this), function(){ checkCallback("group") }, g );
@@ -1641,6 +1726,8 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 flatCategoryContainer = new Element("div").inject( this.flatCategoryAreaNode );
             }
 
+            debugger;
+
             if (typeOf(d)==="string"){
                 var arr = d.split("@");
                 var flag = arr[ arr.length - 1].toLowerCase();
@@ -1656,6 +1743,7 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                     }.bind(this), checkCallback, d);
                 }else if( flag === "g" ){
                     this.orgAction.listGroupByKey(function(json){
+                        json.data.each(function(d){ d.parentLevelName = d.name; });
                         this.loadGroupItem( json , container, null, null, flatCategoryContainer);
                         checkCallback();
                     }.bind(this), checkCallback, d);
@@ -1699,6 +1787,7 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                     }.bind(this), checkCallback, d.distinguishedName);
                 }else if( flag === "g" ){
                     this.orgAction.getGroup(function(json){
+                        json.data.each(function(d){ d.parentLevelName = d.name; });
                         this.loadGroupItem( json , container, null, null, flatCategoryContainer);
                         checkCallback();
                     }.bind(this), checkCallback, d.distinguishedName, null, null, true);
@@ -1794,16 +1883,19 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 }
                 if( parentCategory && parentCategory.subCategorys ){
                     parentCategory.subCategorys.push( category );
-                    if(parentCategory.subCategoryMap)parentCategory.subCategoryMap[data.levelName] = category;
+                    debugger;
+                    if(parentCategory.subCategoryMap)parentCategory.subCategoryMap[data.parentLevelName || data.levelName] = category;
                 }else if(this.selector.subCategorys){
                     this.selector.subCategorys.push( category );
-                    this.selector.subCategoryMap[data.levelName] = category;
+                    debugger;
+                    this.selector.subCategoryMap[data.parentLevelName || data.levelName] = category;
                 }
             }
         }.bind(this));
     },
     loadGroupItem : function( json, container, level, parentCategory, flatCategoryContainer ){
         if( !json.data )return;
+        debugger;
         var array = typeOf( json.data ) === "array" ? json.data : [json.data];
         array.each(function(data){
             if( !this.selector.isExcluded( data ) ) {
@@ -1819,10 +1911,12 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 }
                 if( parentCategory && parentCategory.subCategorys ){
                     parentCategory.subCategorys.push( category );
-                    if(parentCategory.subCategoryMap)parentCategory.subCategoryMap[data.levelName] = category;
+                    debugger;
+                    if(parentCategory.subCategoryMap)parentCategory.subCategoryMap[data.parentLevelName || data.name] = category;
                 }else if(this.selector.subCategorys){
                     this.selector.subCategorys.push( category );
-                    this.selector.subCategoryMap[data.levelName] = category;
+                    debugger;
+                    this.selector.subCategoryMap[data.parentLevelName || data.name] = category;
                 }
             }
         }.bind(this));
