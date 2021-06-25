@@ -1,0 +1,79 @@
+{
+	"moduleNodeMove": {
+		"border": "2px dashed #ffa200",
+		"height": "22px",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"display": "block",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "absolute",
+		"z-index": 10002,
+		"opacity": 0.7,
+		"width": "100px",
+		"cursor": "move",
+		"background-color": "#EEE"
+	},
+	"moduleNodeShow": {
+		"border": "1px dashed #333",
+		"height": "2px",
+		"cursor": "pointer",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"display": "block",
+		"top": "auto",
+		"left": "auto",
+		"width": "auto",
+		"opacity": 0.5,
+		"background": "#ffa200"
+	},
+	"moduleNode": {
+		"border": "1px dashed #333",
+		"min-height": "300px",
+		"cursor": "pointer",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"display": "block",
+		"top": "auto",
+		"left": "auto",
+		"width": "auto",
+		"opacity": 1,
+		"background-color": "#ffffff"
+	},
+	"iconNode": {
+		"width": "100px",
+		"height": "34px",
+		"color": "#999",
+		"font-size": "12px",
+		"margin": "auto",
+		"margin-top": "36px",
+	//	"background": "#FFF",
+		"position": "static",
+		"float": "none"
+	},
+	"iconNodeIcon":{
+		"width": "34px",
+		"height": "34px",
+		"background": "url("+"../x_component_process_FormDesigner/Module/Office/default/icon/office.png) 5px center no-repeat",
+		"float": "left"
+	},
+	"iconNodeText":{
+		"line-height": "34px",
+		"height": "34px",
+		"width": "66px",
+		"float": "right",
+		"font-family": "Gadugi",
+		"font-weight": "bold",
+		"font-size": "16px",
+		"color": "#f36523"
+	}
+}
