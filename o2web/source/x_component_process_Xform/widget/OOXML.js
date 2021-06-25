@@ -51,6 +51,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         this.setOptions(options);
         this.path = "../x_component_process_Xform/widget/$OOXML/WordprocessingML/";
         this.dpi = this.getDPI();
+        this.rid = 11;
     },
     getDPI: function(){
         debugger;
@@ -88,7 +89,21 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 oo_str = oo_str.replace(/<w:document.*\>/, this.options.w_document);
                 oo_str = this.options.xmlHead + oo_str;
             }
-            return this.zip.file("word/document.xml", oo_str).generateAsync({type:"blob"});
+            this.zip.file("word/document.xml", oo_str);
+
+            if (this.pics && this.pics.length){
+                return this.zip.file("word/_rels/document.xml.rels").async("text").then(function(oo_relString){
+                   return this.processWordRel(oo_relString);
+                }.bind(this)).then(function(oo_relStr){
+                    //return oo_relStrPromise.then(function(oo_relStr){
+                        if (oo_relStr.substring(0, 5)!=="<?xml"){
+                            oo_relStr = this.options.xmlHead + oo_relStr;
+                        }
+                        return this.zip.file("word/_rels/document.xml.rels", oo_relStr).generateAsync({type:"blob"});
+                    //}.bind(this));
+                }.bind(this));
+            }
+            return this.zip.generateAsync({type:"blob"});
             // this.zip.file("word/document.xml", oo_str).generateAsync({type:"blob"}).then(function(oo_content) {
             //     this.saveAs(oo_content, "example.docx");
             // }.bind(this));
@@ -109,6 +124,89 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }
         }
         return pageRule;
+    },
+    getPicExt: function(contentType){
+        switch (contentType.toLowerCase()){
+            case "image/tiff": return "tif";
+            case "image/gif": return "gif";
+            case "image/jpeg": return "jpg";
+            case "image/png": return "png";
+        }
+        return "";
+    },
+    processWordRel_createRel: function(name, idx, oo_doc, oo_relationships){
+        var oo_relationship = this.createEl(oo_doc, "Relationship", "rel");
+        this.setAttrs(oo_relationship, {"Target": "media/"+name, "Type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image", "Id": "rId"+idx}, false);
+        oo_relationships.appendChild(oo_relationship);
+    },
+    processWordRel_getPicByUrl: function(pic, idx, oo_doc, oo_relationships){
+        var name = "image"+idx;
+        var headers = {
+            "Authorization": layout.session.user.token
+        };
+        headers[o2.tokenName] = layout.session.user.token;
+
+        return fetch(pic,{
+            credentials: 'include', // include, same-origin, *omit
+            headers: headers,
+            mode: 'cors', // no-cors, cors, *same-origin
+        }).then(function(res){
+            var ext = this.getPicExt(res.headers.get("content-type"));
+            var fullName = name+"."+ext;
+            return res.blob().then(function(d){
+                this.zip.file("word/media/"+fullName, d);
+                this.processWordRel_createRel(fullName, idx, oo_doc, oo_relationships);
+            }.bind(this));
+        }.bind(this))
+    },
+    processWordRel_getPicByBase64: function(pic, idx, oo_doc, oo_relationships){
+        var name = "image"+idx;
+        var arr = pic.split(','), contentType = arr[0].match(/:(.*?);/)[1];
+        var data = arr[1];
+        var ext = this.getPicExt(contentType);
+        var fullName = name+"."+ext;
+        this.zip.file("word/media/"+fullName, data, {"base64": true});
+        this.processWordRel_createRel(fullName, idx, oo_doc, oo_relationships);
+        return Promise.resolve();
+    },
+    processWordRel: function(oo_string, data){
+        var domparser = new DOMParser();
+        var oo_doc = domparser.parseFromString(oo_string, "text/xml");
+        var oo_relationships = oo_doc.documentElement;
+        // var oo_relationshipList = oo_relationships.querySelectorAll("relationship");
+        // var idx = oo_relationshipList.length+1;
+
+        var promises = [];
+        var idx = 11;
+        this.pics.each(function(pic){
+            if (pic.substring(0, 4).toLowerCase()==="data"){
+                promises.push( this.processWordRel_getPicByBase64(pic, idx, oo_doc, oo_relationships));
+            }else{
+                promises.push( this.processWordRel_getPicByUrl(pic, idx, oo_doc, oo_relationships));
+            }
+            idx++;
+
+            // this.zip.file("word/media/"+pic.name, new Blob(pic.data.data));
+            //
+            // var oo_relationship = this.createEl(oo_doc, "Relationship", false);
+            // this.setAttrs(oo_relationship, {"Target": "media/"+pic.name, "Type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image", "Id": "rId"+idx}, false);
+            // oo_relationships.appendChild(oo_relationship);
+            //
+            // idx++;
+
+
+
+                // promises.push(
+                //     res.blob().then(function(d){
+                //
+                //     }.bind(this), function(){idx++;})
+                // );
+        }.bind(this));
+
+        return Promise.all(promises).then(function(){
+            var s = new XMLSerializer();
+            return s.serializeToString(oo_doc);
+        });
     },
     processWordDocument: function(oo_string, data){
         //wgxpath.install();
@@ -136,38 +234,52 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         //     dom_div = data;
         // }
 
-        var style= dom_div.getElement("style");
-        if (style){
-            var dom_pageRule = this.getPageRule(dom_div.getElement("style").sheet.cssRules);
-            if (dom_pageRule) this.processPageSection(dom_pageRule, oo_body);
-        }
-        var dom_wordSection = dom_div.getElement(".WordSection1");
-        if (dom_wordSection){
-            this.processPageSection(dom_wordSection, oo_body);
-            this.processDom(dom_wordSection, oo_body);
-        }
+        return new Promise(function(resolve){
+            var imgs = dom_div.getElements("img");
+            var promises = [];
+            imgs.each(function(img){
+                if (!img.complete){
+                    var p = new Promise(function(r){
+                        img.addEvent("load", function(){
+                            r();
+                        }.bind(this))
+                    });
+                    promises.push(p);
+                }
+            }.bind(this));
 
+            Promise.all(promises).then(function(){
+                var style= dom_div.getElement("style");
+                if (style){
+                    var dom_pageRule = this.getPageRule(dom_div.getElement("style").sheet.cssRules);
+                    if (dom_pageRule) this.processPageSection(dom_pageRule, oo_body);
+                }
+                var dom_wordSection = dom_div.getElement(".WordSection1");
+                if (dom_wordSection){
+                    this.processPageSection(dom_wordSection, oo_body);
+                    this.processDom(dom_wordSection, oo_body);
+                }
+                dom_div.destroy();
+                var s = new XMLSerializer();
+                resolve(s.serializeToString(oo_doc));
+            }.bind(this));
+        }.bind(this));
 
-        dom_div.destroy();
-
-
-        // var p = this.createParagraph(xmlDoc);
-        // var r = this.createRun(xmlDoc, {
-        //     "text": "份数文本",
-        //     "font": {
-        //         "hint": "eastAsia",
-        //         "eastAsia": "黑体",
-        //         "other": "Times New Roman"
-        //     },
-        //     "rPrs": {
-        //         "b": { val: "true" },
-        //         "color": { val: "FF0000" }
-        //     }
-        // });
-        // this.insertChildren(body, [p, r], "afterbegin");
+        // var style= dom_div.getElement("style");
+        // if (style){
+        //     var dom_pageRule = this.getPageRule(dom_div.getElement("style").sheet.cssRules);
+        //     if (dom_pageRule) this.processPageSection(dom_pageRule, oo_body);
+        // }
+        // var dom_wordSection = dom_div.getElement(".WordSection1");
+        // if (dom_wordSection){
+        //     this.processPageSection(dom_wordSection, oo_body);
+        //     this.processDom(dom_wordSection, oo_body);
+        // }
         //
-        var s = new XMLSerializer();
-        return s.serializeToString(oo_doc);
+        //
+        // dom_div.destroy();
+        // var s = new XMLSerializer();
+        // return s.serializeToString(oo_doc);
     },
     processDom: function(dom, oo_body, append, divAsP){
         dom = dom.getFirst();
@@ -202,6 +314,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     //     this.processRun(dom, oo_body, append);
                 }else if (dom.tagName.toLowerCase() === "hr") {
                     this.processHr(dom, oo_body, append);
+                }else if (dom.tagName.toLowerCase() === "img") {
+                    var oo_p = this.createParagraphFromDom(dom, oo_body, append);
+                    this.processPic(dom, oo_p, append);
                 }else if (dom.tagName.toLowerCase() === "table") {
                     this.processTable(dom, oo_body, append);
                 }else if (dom.tagName.toLowerCase() === "span") {
@@ -238,6 +353,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         while (node){
             if (node.tagName.toLowerCase() === "div" || node.tagName.toLowerCase() === "p") {
                 this.processParagraph(node, oo_body, append);
+            }else if (node.tagName.toLowerCase() === "img") {
+                var oo_p = this.createParagraphFromDom(node, oo_body, append);
+                this.processPic(node, oo_p, append);
             }else if (node.tagName.toLowerCase() === "table") {
                 this.processTable(node, oo_body, append);
             }
@@ -249,7 +367,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     // },
     isEmptyP: function(p){
         var oo_t = p.querySelector("t");
-        return !oo_t;
+        var oo_drawing = p.querySelector("drawing");
+        return !oo_t && !oo_drawing;
     },
     processParagraphRun: function(node, oo_p, p, oo_body, append, ilvl){
         node = node.firstChild;
@@ -272,6 +391,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.processNumbering(node, oo_p, p, oo_body, append, ilvl);
                 }else if (node.tagName.toLowerCase() === "table") {
                     this.processTable(node, oo_body);
+                    if (this.isEmptyP(oo_p)) oo_p.destroy();
+                    oo_p = this.createParagraphFromDom(p, oo_body, append);
+                }else if (node.tagName.toLowerCase() === "img") {
+                    this.processPic(node, oo_p, append);
                     if (this.isEmptyP(oo_p)) oo_p.destroy();
                     oo_p = this.createParagraphFromDom(p, oo_body, append);
                 }else{
@@ -571,6 +694,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.processRun(dom, oo_body, append, "", "br");
                 }else if (dom.tagName.toLowerCase() === "hr") {
                     this.processHr(dom, oo_body, append);
+                }else if (dom.tagName.toLowerCase() === "img") {
+                    if (!oo_body || oo_body.tagName.toString().toLowerCase()!=="w:p") var oo_body = this.createParagraphFromDom(dom, oo_body, dom.parentElement);
+                    this.processPic(dom, oo_body, append);
                 }else if (dom.tagName.toLowerCase() === "table") {
                     this.processTable(dom, oo_body, append);
                 }else if (dom.tagName.toLowerCase() === "span") {
@@ -1056,6 +1182,186 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             v = (px.toFloat()/this.dpi)*72;
         }
         return v;
+    },
+
+    setPics: function(img){
+        if (!this.pics || !this.pics.length) this.pics = [];
+        this.pics.push(img.src);
+    },
+
+    processPic: function(img, oo_p, append){
+        if (!img.src) return "";
+
+        this.setPics(img);
+
+        var idx = this.rid;
+        this.rid++;
+
+        var oo_doc = oo_p.ownerDocument;
+        //
+        // var oo_p = this.createParagraph(oo_doc, {});
+        // if (append){
+        //     oo_body.appendChild(oo_p);
+        // }else{
+        //     var oo_sectPr = this.getEl(oo_body, "sectPr");
+        //     if (oo_sectPr){
+        //         this.insertSiblings(oo_sectPr, [oo_p], "beforebegin");
+        //     }else{
+        //         this.insertChildren(oo_body, [oo_p]);
+        //     }
+        // }
+        var oo_run = this.createRun(oo_doc, {"rPrs": {"noProof":{}}});
+        var oo_drawing = this.createEl(oo_doc, "drawing");
+
+        var position = img.getStyle("position");
+        var p = (position==="absolute" || position==="fixed") ? "anchor" : "inline";
+
+        var oo_position;
+        if (p==="anchor"){
+            //var pos = img.getPosition(img.getParent(".WordSection1"));
+            var pos = img.getPosition();
+            positionH = (pos.x*9525).toInt();
+            positionV = (pos.y*9525).toInt();
+
+            var oo_anchor = this.createEl(oo_doc, "anchor", "wp");
+            this.setAttrs(oo_anchor, {
+                "distT": "0", "distB": "0", "distL": "0", "distR": "0", "simplePos": "false","behindDoc": "false","relativeHeight": "500", "locked": "false", "layoutInCell":"true", "allowOverlap": "false"
+            }, false);
+            oo_run.appendChild(oo_drawing);
+            oo_drawing.appendChild(oo_anchor);
+
+            var oo_simplePos = this.createEl(oo_doc, "simplePos", "wp");
+            this.setAttrs(oo_simplePos, {"x": "0", "y": "0"}, false);
+
+            var oo_positionH = this.createEl(oo_doc, "positionH", "wp");
+            this.setAttrs(oo_positionH, {"relativeFrom": "margin"}, false);
+            var oo_posOffset = this.createEl(oo_doc, "posOffset", "wp");
+            oo_posOffset.appendChild(oo_doc.createTextNode(positionH));
+            oo_positionH.appendChild(oo_posOffset);
+
+            var oo_positionV = this.createEl(oo_doc, "positionV", "wp");
+            this.setAttrs(oo_positionV, {"relativeFrom": "margin"}, false);
+            var oo_posOffset = this.createEl(oo_doc, "posOffset", "wp");
+            oo_posOffset.appendChild(oo_doc.createTextNode(positionV));  //此处需要根据行高来设置数值,暂时固定数值
+            oo_positionV.appendChild(oo_posOffset);
+            oo_position = oo_anchor;
+
+            this.insertSiblings(oo_position, [oo_simplePos, oo_positionH, oo_positionV], "beforeend");
+        }else{
+            var oo_inline = this.createEl(oo_doc, "inline", "wp");
+            this.setAttrs(oo_inline, {
+                "distT": "0", "distB": "0", "distL": "0", "distR": "0"
+            }, false);
+            oo_run.appendChild(oo_drawing);
+            oo_drawing.appendChild(oo_inline);
+            oo_position = oo_inline;
+        }
+
+        var oo_extent = this.createEl(oo_doc, "extent", "wp");
+        var cx = this.pxToPt(img.clientWidth)*12700;
+        var cy = this.pxToPt(img.clientHeight)*12700;
+        this.setAttrs(oo_extent, {"cx": cx, "cy": cy}, false);   //（pt*12700）
+
+        var oo_effectExtent = this.createEl(oo_doc, "effectExtent", "wp");
+        this.setAttrs(oo_effectExtent, {"l": "0", "t": "0", "r": "0", "b": "0"}, false);
+
+        var oo_wrapNone = this.createEl(oo_doc, "wrapNone", "wp");
+
+        var oo_docPr = this.createEl(oo_doc, "docPr", "wp");
+        id = (Math.random()*100).toInt();
+        this.setAttrs(oo_docPr, {"id": id, "name": "PIC"+id}, false);   //id设置随机整数
+
+        var oo_cNvGraphicFramePr = this.createEl(oo_doc, "cNvGraphicFramePr", "wp");
+        var oo_graphicFrameLocks = this.createEl(oo_doc, "graphicFrameLocks", "a");
+        this.setAttrs(oo_graphicFrameLocks, {"noChangeAspect": "1"}, false);
+        oo_cNvGraphicFramePr.appendChild(oo_graphicFrameLocks);
+
+
+        this.insertSiblings(oo_position, [oo_extent, oo_effectExtent, oo_wrapNone, oo_docPr, oo_cNvGraphicFramePr], "beforeend");
+
+        var oo_graphic = this.createEl(oo_doc, "graphic", "a");
+        var oo_graphicData = this.createEl(oo_doc, "graphicData", "a");
+        this.setAttrs(oo_graphicData, {"uri": "http://schemas.openxmlformats.org/drawingml/2006/picture"}, false);
+        var oo_pic = this.createEl(oo_doc, "pic", "pic");
+        this.insertChildren(oo_position, [oo_graphic, oo_graphicData, oo_pic], "beforeend");
+
+        var oo_nvPicPr = this.createEl(oo_doc, "nvPicPr", "pic");
+        var oo_cNvPr = this.createEl(oo_doc, "cNvPr", "pic");
+        this.setAttrs(oo_cNvPr, {"id": id, "name": "PIC"+id}, false);
+        var oo_cNvPicPr = this.createEl(oo_doc, "cNvPicPr", "pic");
+        oo_nvPicPr.appendChild(oo_cNvPr);
+        oo_nvPicPr.appendChild(oo_cNvPicPr);
+        oo_pic.appendChild(oo_nvPicPr);
+
+        var oo_blipFill = this.createEl(oo_doc, "blipFill", "pic");
+        var oo_blip = this.createEl(oo_doc, "blip", "a");
+        this.setAttrs(oo_blip, {"embed": "rId"+idx}, "r");
+        this.setAttrs(oo_blip, {"cstate": "print"}, false);
+
+        var oo_extLst = this.createEl(oo_doc, "extLst", "a");
+        var oo_ext = this.createEl(oo_doc, "ext", "a");
+        this.setAttrs(oo_ext, {"uri": "{28A0092B-C50C-407E-A947-70E740481C1C}"}, false);
+        var oo_useLocalDpi = this.createEl(oo_doc, "useLocalDpi", "a14");
+        this.setAttrs(oo_useLocalDpi, {"val": "0"}, false);
+
+        oo_ext.appendChild(oo_useLocalDpi);
+        oo_extLst.appendChild(oo_ext);
+        oo_blip.appendChild(oo_extLst);
+        oo_blipFill.appendChild(oo_blip);
+
+        var oo_stretch = this.createEl(oo_doc, "stretch", "a");
+        var oo_fillRect = this.createEl(oo_doc, "fillRect", "a");
+        oo_stretch.appendChild(oo_fillRect);
+        oo_blipFill.appendChild(oo_stretch);
+
+        oo_pic.appendChild(oo_blipFill);
+
+        var oo_spPr = this.createEl(oo_doc, "spPr", "pic");
+        var oo_xfrm = this.createEl(oo_doc, "xfrm", "a");
+        var oo_off = this.createEl(oo_doc, "off", "a");
+        this.setAttrs(oo_off, {"x": "0", "y": "0"}, false);
+        var oo_ext = this.createEl(oo_doc, "ext", "a");
+        this.setAttrs(oo_ext, {"cx": cx, "cy": cy}, false);
+        oo_xfrm.appendChild(oo_off);
+        oo_xfrm.appendChild(oo_ext);
+        oo_spPr.appendChild(oo_xfrm);
+
+
+        var oo_prstGeom = this.createEl(oo_doc, "prstGeom", "a");
+        this.setAttrs(oo_prstGeom, {"prst": "rect"}, false);
+        var oo_avLst = this.createEl(oo_doc, "avLst", "a");
+        oo_prstGeom.appendChild(oo_avLst);
+        oo_spPr.appendChild(oo_prstGeom);
+
+        oo_pic.appendChild(oo_spPr);
+
+
+        // "        <pic:blipFill>\n" +
+        // "            <a:blip r:embed=\"rId4\" cstate=\"print\">\n" +
+        // "                <a:extLst>\n" +
+        // "                    <a:ext uri=\"{28A0092B-C50C-407E-A947-70E740481C1C}\">\n" +
+        // "                        <a14:useLocalDpi xmlns:a14=\"http://schemas.microsoft.com/office/drawing/2010/main\" val=\"0\"/>\n" +
+        // "                    </a:ext>\n" +
+        // "                </a:extLst>\n" +
+        // "            </a:blip>\n" +
+        // "            <a:stretch>\n" +
+        // "                <a:fillRect/>\n" +
+        // "            </a:stretch>\n" +
+        // "        </pic:blipFill>\n" +
+        // "        <pic:spPr>\n" +
+        // "            <a:xfrm>\n" +
+        // "                <a:off x=\"0\" y=\"0\"/>\n" +
+        // "                <a:ext cx=\""+cx+"\" cy=\""+cy+"\"/>\n" +
+        // "            </a:xfrm>\n" +
+        // "            <a:prstGeom prst=\"rect\">\n" +
+        // "                <a:avLst/>\n" +
+        // "            </a:prstGeom>\n" +
+        // "        </pic:spPr>";
+        //
+        // //oo_pic.appendHTML(inner, "top");
+        // oo_pic.innerHTML = inner;
+
+        oo_p.appendChild(oo_run);
     },
     processHr: function(hr, oo_body, append){
         var oo_doc = oo_body.ownerDocument;
@@ -1554,11 +1860,15 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         return el.getElementsByTagNameNS(this.nsResolver(n), tag);
     },
     createEl: function(xmlDoc, tag, ns){
-        var n = ns || "w";
-        if (false && Browser.name==="ie"){
-            return xmlDoc.createElement(n+":"+tag);
+        if (ns===false){
+            return xmlDoc.createElement(tag);
+        }else{
+            var n = ns || "w";
+            if (false && Browser.name==="ie"){
+                return xmlDoc.createElement(n+":"+tag);
+            }
+            return xmlDoc.createElementNS(this.nsResolver(n), n+":"+tag);
         }
-        return xmlDoc.createElementNS(this.nsResolver(n), n+":"+tag);
     },
     setAttr: function(node, name, value, ns){
         if (ns===false){
@@ -1623,7 +1933,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             "wpi": "http://schemas.microsoft.com/office/word/2010/wordprocessingInk",
             "wne": "http://schemas.microsoft.com/office/word/2006/wordml",
             "wps": "http://schemas.microsoft.com/office/word/2010/wordprocessingShape",
-            "a": "http://schemas.openxmlformats.org/drawingml/2006/main"
+            "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
+            "pic": "http://schemas.openxmlformats.org/drawingml/2006/picture",
+            "a14": "http://schemas.microsoft.com/office/drawing/2010/main",
+            "rel": "http://schemas.openxmlformats.org/package/2006/relationships"
         };
         return ns[prefix] || null;
     },
