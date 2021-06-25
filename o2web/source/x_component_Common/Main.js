@@ -495,6 +495,11 @@ MWF.xApplication.Common.Main = new Class({
 			if (!target) target = this.window.content;
 			if (!type) type = "ok";
 			var noticeTarget = target || layout.layout.contentNode;
+			// 移动端如果向下滚动了就看不到了
+			if (layout.mobile) {
+				noticeTarget = $(document.body);
+			}
+			
 			var off = offset;
 			if (!off) {
 				off = {
