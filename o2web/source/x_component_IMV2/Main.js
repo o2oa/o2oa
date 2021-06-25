@@ -883,29 +883,31 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 	 * @param {*} lastMessage 
 	 */
 	refreshLastMsg: function (lastMessage) {
-		//目前是text 类型的消息
-		var jsonbody = lastMessage.body;
-		var body = JSON.parse(jsonbody);
+		if (lastMessage) {
+			//目前是text 类型的消息
+			var jsonbody = lastMessage.body;
+			var body = JSON.parse(jsonbody);
 
-		if (this.lastMessageNode) {
-			if (body.type == "emoji") { //表情 消息
-				var imgPath = "";
-				for (var i = 0; i < this.main.emojiList.length; i++) {
-					var emoji = this.main.emojiList[i];
-					if (emoji.key == body.body) {
-						imgPath = emoji.path;
+			if (this.lastMessageNode) {
+				if (body.type == "emoji") { //表情 消息
+					var imgPath = "";
+					for (var i = 0; i < this.main.emojiList.length; i++) {
+						var emoji = this.main.emojiList[i];
+						if (emoji.key == body.body) {
+							imgPath = emoji.path;
+						}
 					}
+					this.lastMessageNode.empty();
+					new Element("img", { "src": imgPath, "style": "width: 16px;height: 16px;" }).inject(this.lastMessageNode);
+				} else { //文本消息
+					this.lastMessageNode.empty();
+					this.lastMessageNode.set('text', body.body);
 				}
-				this.lastMessageNode.empty();
-				new Element("img", { "src": imgPath, "style": "width: 16px;height: 16px;" }).inject(this.lastMessageNode);
-			} else { //文本消息
-				this.lastMessageNode.empty();
-				this.lastMessageNode.set('text', body.body);
 			}
-		}
-		var time = this.main._friendlyTime(o2.common.toDate(lastMessage.createTime));
-		if (this.messageTimeNode) {
-			this.messageTimeNode.set("text", time);
+			var time = this.main._friendlyTime(o2.common.toDate(lastMessage.createTime));
+			if (this.messageTimeNode) {
+				this.messageTimeNode.set("text", time);
+			}
 		}
 	},
 	// 更新聊天窗口上的标题 修改标题的时候使用 @Disuse 使用refreshData
