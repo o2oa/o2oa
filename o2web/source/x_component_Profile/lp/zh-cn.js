@@ -91,6 +91,7 @@ MWF.xApplication.Profile.LP = {
         "type_process":"流程",
         "type_filter":"文件类型",
         "saveNotAll":"部分保存失败",
+        "startTimeEarlyCompleteTime": "开始时间不能晚于结束时间",
         "title":"标题",
         "activityName":"状态",
         "createTime":"委托时间",
