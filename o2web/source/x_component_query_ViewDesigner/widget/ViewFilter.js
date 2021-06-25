@@ -73,6 +73,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 "title": title,
                 "isload" : true,
                 "isbind" : false,
+                "forceType": "ace",
                 "maxObj": this.app.formContentNode || this.app.pageContentNode,
                 "onChange": function(){
                     this.customFilterValueScriptData = this.customFilterValueScriptArea.toJson();
