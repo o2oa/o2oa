@@ -83,9 +83,10 @@ public class ActionConversationCreate extends BaseAction {
                 }else {
                     for (int i = 0; i < conversation.getPersonList().size(); i++) {
                         String person = conversation.getPersonList().get(i);
-                        if (i > 3) {
+                        if (i == 3) {
                             title += person.substring(0, person.indexOf("@"));
                             title += "...";
+                            break;
                         }else {
                             title += person.substring(0, person.indexOf("@")) + "、";
                         }
