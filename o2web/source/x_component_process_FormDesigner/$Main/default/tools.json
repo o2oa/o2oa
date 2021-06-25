@@ -207,6 +207,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.office,
     "className": "Office"
   },
+  "iWebOffice": {
+    "icon": "office.png",
+    "text": "iWebOffice",
+    "className": "IWebOffice"
+  },
   "statementSelector": {
     "icon": "statementSelector.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.statementSelector,
