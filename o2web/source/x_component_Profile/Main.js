@@ -1297,6 +1297,7 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
         sdata.toPerson = data.toPerson.split("@")[0];
         sdata.startTime = data.startDateInput+" "+data.startTimeInput+":00";
         sdata.completedTime = data.endDateInput+" "+data.endTimeInput+":00";
+
         sdata.enable = true;
 
         if(data.type=="all"){
