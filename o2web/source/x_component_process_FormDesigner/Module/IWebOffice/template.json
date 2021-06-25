@@ -1,0 +1,48 @@
+{
+	"id": "",
+	"name": "",
+	"type": "IWebOffice",
+	"description": "",
+	"officeType": "word",
+	"template": "",
+	"isNotLoadNow": false,
+	"trackRevisions" : "0",
+	"script": {
+		"code": "",
+		"html": ""
+	},
+	"iWebOfficeEditProperties": {
+		"Menubar": "0",
+		"ToolBars": "1",
+		"IsNoCopy": "0"
+	},
+	"iWebOfficeReadProperties": {
+		"Menubar": "0",
+		"ToolBars": "0",
+		"IsNoCopy": "0"
+	},
+	"menuReadButtons": ["revisions","fullscreen","preview"],
+	"menuEditButtons": ["revisions","fullscreen","toolbar","preview"],
+	"events": {
+		"afterOpen": {
+			"code": "",
+			"html": ""
+		},
+		"afterCreate": {
+			"code": "",
+			"html": ""
+		},
+		"beforeSave": {
+			"code": "",
+			"html": ""
+		},
+		"afterSave": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}
