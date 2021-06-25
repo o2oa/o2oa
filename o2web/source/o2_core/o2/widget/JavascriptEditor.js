@@ -6,6 +6,7 @@ o2.widget.JavascriptEditor = new Class({
 	options: {
         //"type": "ace",
         "type": "monaco",
+        "forceType": null,
 		"title": "JavascriptEditor",
 		"style": "default",
 		"option": {
@@ -55,7 +56,7 @@ o2.widget.JavascriptEditor = new Class({
     },
     load: function(callback){
         this.getEditorTheme(function(json){
-            this.options.type = o2.editorData.javascriptEditor.editor || "monaco";
+            this.options.type = this.options.forceType || o2.editorData.javascriptEditor.editor || "monaco";
             if (this.options.type.toLowerCase()=="ace"){
                 this.loadAce(callback);
             }

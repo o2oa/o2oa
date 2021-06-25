@@ -90,6 +90,7 @@ MWF.xApplication.Profile.LP = {
         "type_process":"Process",
         "type_filter":"File type",
         "saveNotAll":"Partial save failed",
+        "startTimeEarlyCompleteTime": "The start time cannot be later than the end time",
         "title":"Title",
         "activityName":"Activity",
         "createTime":"Commission time",
