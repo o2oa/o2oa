@@ -1861,6 +1861,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.subItems = [];
         this.subCategorys = [];
         this.subCategoryMap = {};
+        this.subCategoryMapWithDuty = {};
         if(!delay)this.load();
     },
     _getShowName: function(){

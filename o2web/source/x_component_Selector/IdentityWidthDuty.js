@@ -27,6 +27,8 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
         this.className = "IdentityWidthDuty"
     },
     loadSelectItems: function(addToNext){
+        this.loadingCountDuty = "wait";
+        this.allUnitObjectWithDuty = {};
         var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
         if( this.options.disabled ){
             this.afterLoadSelectItem();
@@ -62,13 +64,14 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
 
             var loadDuty = function () {
                 if( this.isCheckStatusOrCount() ){
-                    this.loadingCount = "done";
+                    this.loadingCountDuty = "ready";
+                    this.checkLoadingCount();
                 }
                 this.options.dutys.each(function(duty){
                     var data = {"name": duty, "id":duty};
                     var category = this._newItemCategory("ItemCategory",data, this, this.itemAreaNode);
                     this.subCategorys.push(category);
-                    this.subCategoryMap[data.name] = category;
+                    this.allUnitObjectWithDuty[data.name] = category;
                     loadDutySuccess();
                 }.bind(this));
             }.bind(this);
@@ -139,6 +142,11 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                     }
                 }
             }
+        }
+
+        if( this.isCheckStatusOrCount() ) {
+            this.loadingCountInclude = "wait";
+            this.loadIncludeCount();
         }
     },
 
@@ -229,11 +237,57 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
         })
         return items;
     },
+    loadIncludeCount: function(){
+
+        var unitList = [];
+        var groupList = [];
+
+        if (this.options.include.length > 0) {
+            this.options.include.each(function (d) {
+                var dn = typeOf(d) === "string" ? d : d.distinguishedName;
+                var flag = dn.split("@").getLast().toLowerCase();
+                if (flag === "u") {
+                    unitList.push(dn);
+                } else if (flag === "g") {
+                    groupList.push(dn)
+                }
+            })
+        }
+
+        if(unitList.length || groupList.length){
+            this._loadUnitAndGroupCount(unitList, groupList, function () {
+                this.loadingCountInclude = "ready";
+                this.checkLoadingCount();
+            }.bind(this));
+        }else{
+            this.loadingCountInclude = "ignore";
+            this.checkLoadingCount();
+        }
+    },
+    checkLoadingCount: function(){
+        if(this.loadingCountDuty === "ready" && this.loadingCountInclude === "ready"){
+            this.checkCountAndStatus();
+            this.loadingCount = "done";
+        }else if(this.loadingCountDuty === "ready" && this.loadingCountInclude === "ignore"){
+            this.loadingCount = "done";
+        }
+    },
     addSelectedCount: function( itemOrItemSelected, count, items ){
+        if( this.loadingCountInclude === "ignore" ){
+            this._addSelectedCountWithDuty(itemOrItemSelected, count, items);
+        }else{
+            this._addSelectedCountWithDuty(itemOrItemSelected, count, items);
+            this._addSelectedCount(itemOrItemSelected, count);
+        }
+
+    },
+    _addSelectedCountWithDuty: function( itemOrItemSelected, count, items ){
         var itemData = itemOrItemSelected.data;
         debugger;
         items.each(function(item){
-            if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( count );
+            if(item.category && item.category._addSelectedCount && item.category.className === "ItemCategory"){
+                item.category._addSelectedCount( count );
+            }
         }.bind(this));
     },
     //_listItemNext: function(last, count, callback){
@@ -279,6 +333,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemSelected = new Class({
 MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Identity.ItemCategory,
     createNode: function(){
+        this.className = "ItemCategory";
         this.node = new Element("div", {
             "styles": this.selector.css.selectorItemCategory_department,
             "title" : this._getTtiteText()
@@ -486,9 +541,10 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemUnitCategory = new Class({
                     this.selector.orgAction.listSubUnitDirect(function(json){
                         json.data.each(function(subData){
                             if( !this.selector.isExcluded( subData ) ) {
+                                if( subData && this.data.parentLevelName)subData.parentLevelName = this.data.parentLevelName +"/" + subData.name;
                                 var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
                                 this.subCategorys.push( category );
-                                this.subCategoryMap[subData.name] = category;
+                                this.subCategoryMap[subData.parentLevelName || subData.levelName] = category;
                             }
                         }.bind(this));
                         this.loaded = true;
