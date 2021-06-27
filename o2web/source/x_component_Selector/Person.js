@@ -93,6 +93,7 @@ MWF.xApplication.Selector.Person = new Class({
         this.subItems = []; //直接的选择项
 
         this.subCategoryMap = {};
+        this.subCategoryMapWithDuty = {};
 
         if( !this.options.values ){
             this.options.values = [];
@@ -1791,7 +1792,7 @@ MWF.xApplication.Selector.Person = new Class({
             return false;
         }
     },
-    addSelectedCount: function( itemData ){
+    addSelectedCount: function( itemOrItemSelected, count ){
 
     }
     //checkClickFlatCategoryItem : function(categoryItemNode, itemNodeContainer){
@@ -2216,7 +2217,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
 
         if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
-            this.selector.addSelectedCount( this.data, -1, countItems );
+            this.selector.addSelectedCount( this, -1, countItems );
         }
 
         this.selector.fireEvent("unselectItem",[this]);
@@ -2297,7 +2298,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
             //this.item.isSelected = false;
 
             if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
-                this.selector.addSelectedCount( this.data, -1 );
+                this.selector.addSelectedCount( this, -1 );
             }
 
             this.destroy();
@@ -2391,6 +2392,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         this.subItems = [];
         this.subCategorys = [];
         this.subCategoryMap = {};
+        this.subCategoryMapWithDuty = {};
         if(!delay)this.load();
     },
     load : function(){

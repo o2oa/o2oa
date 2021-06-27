@@ -229,7 +229,8 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
         })
         return items;
     },
-    addSelectedCount: function( itemData, count, items ){
+    addSelectedCount: function( itemOrItemSelected, count, items ){
+        var itemData = itemOrItemSelected.data;
         debugger;
         items.each(function(item){
             if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( count );
