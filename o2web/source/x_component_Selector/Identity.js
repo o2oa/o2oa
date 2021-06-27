@@ -1436,6 +1436,7 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
         return count;
     },
     _getSelectedCount : function(){
+        debugger;
         if( typeOf(this.selectedCount) === "number" )return this.selectedCount;
         if( !this.selector.allGroupObjectByDn )return 0;
         var group = this.selector.allGroupObjectByDn[this.data.distinguishedName];

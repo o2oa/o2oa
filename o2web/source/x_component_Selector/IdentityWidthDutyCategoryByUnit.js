@@ -608,41 +608,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     getUnitLevelNameFormMap: function(id){
         return (this.unitLevelNameMap && this.unitLevelNameMap[id.distinguishedName]) || [];
     },
-    loadIncludeCount: function(){
-
-        var unitList = [];
-        var groupList = [];
-
-        if (this.options.include.length > 0) {
-            this.options.include.each(function (d) {
-                var dn = typeOf(d) === "string" ? d : d.distinguishedName;
-                var flag = dn.split("@").getLast().toLowerCase();
-                if (flag === "u") {
-                    unitList.push(dn);
-                } else if (flag === "g") {
-                    groupList.push(dn)
-                }
-            })
-        }
-
-        if(unitList.length || groupList.length){
-            this._loadUnitAndGroupCount(unitList, groupList, function () {
-                this.loadingCountInclude = "ready";
-                this.checkLoadingCount();
-            }.bind(this));
-        }else{
-            this.loadingCountInclude = "ignore";
-            this.checkLoadingCount();
-        }
-    },
-    checkLoadingCount: function(){
-        if(this.loadingCountDuty === "ready" && this.loadingCountInclude === "ready"){
-            this.checkCountAndStatus();
-            this.loadingCount = "done";
-        }else if(this.loadingCountDuty === "ready" && this.loadingCountInclude === "ignore"){
-            this.loadingCount = "done";
-        }
-    },
     addSelectedCount: function( itemOrItemSelected, count ){
         if( this.loadingCountInclude === "ignore" ){
             this._addSelectedCountWithDuty(itemOrItemSelected, count);
