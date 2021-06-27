@@ -139,6 +139,8 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             this.unitStringList = units;
             this.unitUniqueList = unitUniques;
 
+            this.loadingCountDuty = "wait";
+
             o2.Actions.load("x_organization_assemble_express").UnitDutyAction.listIdentityWithUnitWithNameObject({
                 nameList: this.options.dutys,
                 unitList: units,
@@ -154,13 +156,19 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         }else{
             this.afterLoadSelectItem();
         }
+
+        if( this.isCheckStatusOrCount() ) {
+            this.loadingCountInclude = "wait";
+            this.loadIncludeCount();
+        }
     },
     _loadSelectItems: function (identityList) {
         //this.listAllIdentityInUnitObject( identityList );
         this.listNestedUnitByIdentity(identityList, function (unitTree) {
             this.dataTree = unitTree;
             this.uniqueIdentity(unitTree);
-            this.loadingCount = "done";
+            this.loadingCountDuty = "ready";
+            this.checkLoadingCount();
             debugger;
             if (this.options.dutyUnitLevelBy === "duty") {
                 this.level1Container = [];
@@ -191,7 +199,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             this.subCategorys.push(category);
 
             var key = this.options.dutyUnitLevelBy === "duty" ? "matchUnitLevelName" : "unitLevelName";
-            this.subCategoryMap[unit.matchLevelName || unit.levelName] = category;
+            this.subCategoryMapWithDuty[unit.matchLevelName || unit.levelName] = category;
             // }
         }
     },
@@ -236,7 +244,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 }
                 var category = this._newItemCategory("ItemCategory", unit, this, container);
                 this.subCategorys.push(category);
-                this.subCategoryMap[unit.matchLevelName || unit.levelName] = category;
+                this.subCategoryMapWithDuty[unit.matchLevelName || unit.levelName] = category;
                 // }
             } else {
                 this._loadSelectItemsByDutyUnit(unit);
@@ -322,9 +330,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({
             unitList: unitArray
         }, function (json) {
-            this.allUnitObject = {};
+            this.allUnitObjectWithDuty = {};
             json.data.each(function (u) {
-                this.allUnitObject[u.levelName] = u;
+                this.allUnitObjectWithDuty[u.levelName] = u;
             }.bind(this));
             if (callback) callback();
         }.bind(this))
@@ -353,7 +361,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 nameList.push(unitLevelNameList[j]);
                 var name = nameList.join("/");
 
-                if (this.isExcluded(this.allUnitObject[name] || {})) {
+                if (this.isExcluded(this.allUnitObjectWithDuty[name] || {})) {
                     flag = false;
                     break;
                 }
@@ -369,13 +377,13 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 }
                 if (!found) {
                     // var obj = {};
-                    var obj = this.allUnitObject[name] || {};
+                    var obj = this.allUnitObjectWithDuty[name] || {};
                     obj.matchLevelName = name;
                     tree.unitList.push(obj);
                     tree = obj;
                 }
                 // if( !tree.distinguishedName ){
-                //     tree = Object.merge( tree, this.allUnitObject[name] );
+                //     tree = Object.merge( tree, this.allUnitObjectWithDuty[name] );
                 // }
                 if (!tree.identityList) tree.identityList = [];
 
@@ -448,7 +456,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             for (var i = 0; i < names.length; i++) {
                 nameList.push(names[i]);
                 var name = nameList.join("/");
-                var obj = this.allUnitObject[name];
+                var obj = this.allUnitObjectWithDuty[name];
                 if (obj) {
                     obj.subNestedIdentityCount = (obj.subNestedIdentityCount || 0) + identityList.length;
                     obj.selectedNestedIdentityCount = (obj.selectedNestedIdentityCount || 0) + selectedCount;
@@ -600,11 +608,56 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     getUnitLevelNameFormMap: function(id){
         return (this.unitLevelNameMap && this.unitLevelNameMap[id.distinguishedName]) || [];
     },
-    addSelectedCount: function( itemData, count ){
+    loadIncludeCount: function(){
+
+        var unitList = [];
+        var groupList = [];
+
+        if (this.options.include.length > 0) {
+            this.options.include.each(function (d) {
+                var dn = typeOf(d) === "string" ? d : d.distinguishedName;
+                var flag = dn.split("@").getLast().toLowerCase();
+                if (flag === "u") {
+                    unitList.push(dn);
+                } else if (flag === "g") {
+                    groupList.push(dn)
+                }
+            })
+        }
+
+        if(unitList.length || groupList.length){
+            this._loadUnitAndGroupCount(unitList, groupList, function () {
+                this.loadingCountInclude = "ready";
+                this.checkLoadingCount();
+            }.bind(this));
+        }else{
+            this.loadingCountInclude = "ignore";
+            this.checkLoadingCount();
+        }
+    },
+    checkLoadingCount: function(){
+        if(this.loadingCountDuty === "ready" && this.loadingCountInclude === "ready"){
+            this.checkCountAndStatus();
+            this.loadingCount = "done";
+        }else if(this.loadingCountDuty === "ready" && this.loadingCountInclude === "ignore"){
+            this.loadingCount = "done";
+        }
+    },
+    addSelectedCount: function( itemOrItemSelected, count ){
+        if( this.loadingCountInclude === "ignore" ){
+            this._addSelectedCountWithDuty(itemOrItemSelected, count);
+        }else{
+            this._addSelectedCountWithDuty(itemOrItemSelected, count);
+            this._addSelectedCount(itemOrItemSelected, count);
+        }
+
+    },
+    _addSelectedCountWithDuty: function( itemOrItemSelected, count ){
+        var itemData = itemOrItemSelected.data;
         debugger;
         var unitlevelNameList = this.getUnitLevelNameFormMap(itemData);
         unitlevelNameList.each(function (levelName) {
-            var subCategoryMap = this.subCategoryMap;
+            var subCategoryMap = this.subCategoryMapWithDuty;
             var list = levelName.split("/");
             var nameList = [];
             for (var j = 0; j < list.length; j++) {
@@ -613,10 +666,10 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 if ( subCategoryMap[name] ) {
                     var category = subCategoryMap[name];
                     category._addSelectedCount(count);
-                    subCategoryMap = category.subCategoryMap;
+                    subCategoryMap = category.subCategoryMapWithDuty;
                 }
 
-                var obj = this.allUnitObject[name];
+                var obj = this.allUnitObjectWithDuty[name];
                 if (obj) {
                     obj.selectedNestedIdentityCount = obj.selectedNestedIdentityCount + count;
                 }
@@ -682,7 +735,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     //                 subCategoryMap = category.subCategoryMap;
     //             }
     //
-    //             var obj = this.allUnitObject[name];
+    //             var obj = this.allUnitObjectWithDuty[name];
     //             if (obj) {
     //                 obj.selectedNestedIdentityCount = obj.selectedNestedIdentityCount - 1;
     //             }
@@ -742,9 +795,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     // },
     _getSelectedCount : function(){
         if( typeOf(this.selectedCount) === "number" )return this.selectedCount;
-        if( !this.selector.allUnitObject )return 0;
+        if( !this.selector.allUnitObjectWithDuty )return 0;
         var levelName = this.data.matchLevelName || this.data.levelName;
-        var unit =  this.selector.allUnitObject[levelName];
+        var unit =  this.selector.allUnitObjectWithDuty[levelName];
         var count = unit ? unit.selectedNestedIdentityCount : 0;
         this.selectedCount = count + (this.selectedCount_wait || 0);
         this.selectedCount_wait = 0;
@@ -871,7 +924,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
                         // if( !this.selector.isExcluded( subData ) ) {
                         var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level + 1, this);
                         this.subCategorys.push(category);
-                        this.subCategoryMap[subData.matchLevelName || subData.levelName] = category;
+                        this.subCategoryMapWithDuty[subData.matchLevelName || subData.levelName] = category;
                         // category.loadSub()
                         // }
                     }.bind(this));
