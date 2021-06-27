@@ -1105,10 +1105,12 @@ MWF.xApplication.Selector.Person = new Class({
         if (this.options.values.length){
             this.options.values.each(function(v, i){
                 if (typeOf(v)==="object"){
+                    v.isFromValues = true;
                     this.selectedItems.push(this._newItemSelected(v, this, null));
                 }else{
                     this._getItem(function(json){
                         this.options.values[i] = json.data;
+                        json.data.isFromValues = true;
                         this.selectedItems.push(this._newItemSelected(json.data, this, null));
                     }.bind(this), null, v, false);
                 }
@@ -2250,6 +2252,8 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
             "styles": this.selector.css.selectorItem
         }).inject(this.container);
         this.node.setStyle("display","none");
+
+        if(this.data.isFromValues)this.isFromValues = true;
 
         this.getData(function(){
             this.node.setStyle("display","");
