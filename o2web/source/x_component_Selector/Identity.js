@@ -170,112 +170,6 @@ MWF.xApplication.Selector.Identity = new Class({
             }
         }
     },
-    loadCount: function(){
-
-        var unitList = [];
-        var groupList = [];
-
-        var parseInclude = function () {
-            if (this.options.include.length > 0) {
-                this.options.include.each(function (d) {
-                    var dn = typeOf(d) === "string" ? d : d.distinguishedName;
-                    var flag = dn.split("@").getLast().toLowerCase();
-                    if (flag === "u") {
-                        unitList.push(dn);
-                    } else if (flag === "g") {
-                        groupList.push(dn)
-                    }
-                })
-            }
-        }.bind(this);
-
-        var check = function () {
-            this.loadingCount = "ready";
-            this.checkCountAndStatus();
-            this.loadingCount = "done";
-        }.bind(this)
-
-        if (this.options.noUnit) {
-            parseInclude();
-            this._loadUnitAndGroupCount(unitList, groupList, check);
-        } else if (this.options.units.length) {
-            parseInclude();
-            this.options.units.each(function (u) {
-                unitList.push(typeOf(u) === "string" ? u : (u.distinguishedName || u.id || u.unique || u.levelName))
-            }.bind(this));
-            this._loadUnitAndGroupCount(unitList, groupList, check);
-        } else {
-            this.orgAction.listTopUnit(function (json) {
-                this.topUnitObj = json.data;
-                this.topUnitObj.each(function (u) {
-                    unitList.push(u.distinguishedName)
-                }.bind(this));
-                this._loadUnitAndGroupCount(unitList, groupList, check);
-            }.bind(this))
-        }
-    },
-    _loadUnitAndGroupCount: function(unitList, groupList, callback){
-
-        if( !this.groupLevelNameListMap )this.groupLevelNameListMap = {};
-        if( !this.groupAllLevelNameListMap )this.groupAllLevelNameListMap = {};
-
-        this.hasGroupCategory = groupList && groupList.length > 0;
-
-        var unitLoaded, groupLoaded, selectedIdentityLoaded, excludeIdentityLoaded;
-        var unitTree, groupTree;
-        this.unitExcludedIdentityCount = {};
-        this.groupExcludedIdentityCount = {};
-        this.unitSelectedIdentityCount = {};
-        this.groupSelectedIdentityCount = {};
-
-        var caculate = function () {
-            if (unitLoaded && groupLoaded && selectedIdentityLoaded && excludeIdentityLoaded) {
-                this.caculateNestedSubCount(unitTree, groupTree, function () {
-
-                    if(callback)callback();
-
-                }.bind(this))
-
-            }
-        }.bind(this);
-
-        this.getIdentityCountMap(this.options.values, groupList && groupList.length > 0, function (result) {
-            this.unitSelectedIdentityCount = result.unitMap;
-            this.groupSelectedIdentityCount = result.groupMap;
-            selectedIdentityLoaded = true;
-            caculate();
-        }.bind(this));
-
-        this.getIdentityCountMap(this.options.exclude, groupList && groupList.length > 0, function (result) {
-            this.unitExcludedIdentityCount = result.unitMap;
-            this.groupExcludedIdentityCount = result.groupMap;
-            excludeIdentityLoaded = true;
-            caculate();
-        }.bind(this));
-
-        if (unitList && unitList.length > 0) {
-            o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitTree({"unitList": unitList}, function (json) {
-                unitTree = json.data;
-                unitLoaded = true;
-                caculate();
-            }.bind(this))
-        } else {
-            unitLoaded = true;
-            caculate();
-        }
-
-        if (groupList && groupList.length > 0) {
-            o2.Actions.load("x_organization_assemble_express").GroupAction.listWithGroupTree({"groupList": groupList}, function (json) {
-                groupTree = json.data;
-                groupLoaded = true;
-                caculate();
-            }.bind(this))
-        } else {
-            groupLoaded = true;
-            caculate();
-        }
-    },
-
     loadInclude: function(afterLoadFun) {
         if (!this.includeObject){
             this.includeObject = new MWF.xApplication.Selector.Identity.Include(this, this.itemAreaNode, {
@@ -436,7 +330,111 @@ MWF.xApplication.Selector.Identity = new Class({
     //         }
     //     }.bind(this));
     // },
+    loadCount: function(){
 
+        var unitList = [];
+        var groupList = [];
+
+        var parseInclude = function () {
+            if (this.options.include.length > 0) {
+                this.options.include.each(function (d) {
+                    var dn = typeOf(d) === "string" ? d : d.distinguishedName;
+                    var flag = dn.split("@").getLast().toLowerCase();
+                    if (flag === "u") {
+                        unitList.push(dn);
+                    } else if (flag === "g") {
+                        groupList.push(dn)
+                    }
+                })
+            }
+        }.bind(this);
+
+        var check = function () {
+            this.loadingCount = "ready";
+            this.checkCountAndStatus();
+            this.loadingCount = "done";
+        }.bind(this);
+
+        if (this.options.noUnit) {
+            parseInclude();
+            this._loadUnitAndGroupCount(unitList, groupList, check);
+        } else if (this.options.units.length) {
+            parseInclude();
+            this.options.units.each(function (u) {
+                unitList.push(typeOf(u) === "string" ? u : (u.distinguishedName || u.id || u.unique || u.levelName))
+            }.bind(this));
+            this._loadUnitAndGroupCount(unitList, groupList, check);
+        } else {
+            this.orgAction.listTopUnit(function (json) {
+                this.topUnitObj = json.data;
+                this.topUnitObj.each(function (u) {
+                    unitList.push(u.distinguishedName)
+                }.bind(this));
+                this._loadUnitAndGroupCount(unitList, groupList, check);
+            }.bind(this))
+        }
+    },
+    _loadUnitAndGroupCount: function(unitList, groupList, callback){
+
+        if( !this.groupLevelNameListMap )this.groupLevelNameListMap = {};
+        if( !this.groupAllLevelNameListMap )this.groupAllLevelNameListMap = {};
+
+        this.hasGroupCategory = groupList && groupList.length > 0;
+
+        var unitLoaded, groupLoaded, selectedIdentityLoaded, excludeIdentityLoaded;
+        var unitTree, groupTree;
+        this.unitExcludedIdentityCount = {};
+        this.groupExcludedIdentityCount = {};
+        this.unitSelectedIdentityCount = {};
+        this.groupSelectedIdentityCount = {};
+
+        var caculate = function () {
+            if (unitLoaded && groupLoaded && selectedIdentityLoaded && excludeIdentityLoaded) {
+                this.caculateNestedSubCount(unitTree, groupTree, function () {
+
+                    if(callback)callback();
+
+                }.bind(this))
+
+            }
+        }.bind(this);
+
+        this.getIdentityCountMap(this.options.values, groupList && groupList.length > 0, function (result) {
+            this.unitSelectedIdentityCount = result.unitMap;
+            this.groupSelectedIdentityCount = result.groupMap;
+            selectedIdentityLoaded = true;
+            caculate();
+        }.bind(this));
+
+        this.getIdentityCountMap(this.options.exclude, groupList && groupList.length > 0, function (result) {
+            this.unitExcludedIdentityCount = result.unitMap;
+            this.groupExcludedIdentityCount = result.groupMap;
+            excludeIdentityLoaded = true;
+            caculate();
+        }.bind(this));
+
+        if (unitList && unitList.length > 0) {
+            o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitTree({"unitList": unitList}, function (json) {
+                unitTree = json.data;
+                unitLoaded = true;
+                caculate();
+            }.bind(this))
+        } else {
+            unitLoaded = true;
+            caculate();
+        }
+
+        if (groupList && groupList.length > 0) {
+            o2.Actions.load("x_organization_assemble_express").GroupAction.listWithGroupTree({"groupList": groupList}, function (json) {
+                groupTree = json.data;
+                groupLoaded = true;
+                caculate();
+            }.bind(this))
+        } else {
+            groupLoaded = true;
+            caculate();
+        }
+    },
     getIdentityCountMap : function( identityList, byGroup, callback ){
         var result = {
             unitMap : {},
