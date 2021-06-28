@@ -215,6 +215,8 @@ MWF.xApplication.Setting.LP = {
     "mobile_mpweixin_menu_save_success": "保存数据成功！",
     "mobile_mpweixin_menu_delete_alert_msg": "确认要删除这条数据吗，会同时删除它的子菜单？",
     "mobile_mpweixin_menu_delete_success": "删除数据成功！",
+    
+    
     "save": "保存",
     "alert": "提示",
 
@@ -254,7 +256,8 @@ MWF.xApplication.Setting.LP = {
     "mobile_apppack_message_port_not_empty": "中心服务器端口号不能为空！",
     "mobile_apppack_message_context_not_empty": "中心服务器上下文不能为空！",
     "mobile_apppack_message_portocol_http_https": "HTTP协议只能是 http 或 https ！",
-
+    "mobile_apppack_refresh_status_btn": "刷新状态",
+    "mobile_apppack_message_alert_submit": "确定要提交吗，当前表单信息将被打包成移动端App ？",
     "imgSize": "图片尺寸：",
     "defaultImg": "默认图片",
 
