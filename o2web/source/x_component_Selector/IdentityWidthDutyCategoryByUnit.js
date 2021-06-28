@@ -169,7 +169,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             this.uniqueIdentity(unitTree);
             this.loadingCountDuty = "ready";
             this.checkLoadingCount();
-            debugger;
             if (this.options.dutyUnitLevelBy === "duty") {
                 this.level1Container = [];
                 if (this.options.units && this.options.units.length) {
@@ -426,7 +425,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 if (!isExist(tree.identityList[i], i)){
                     identityList.push(tree.identityList[i]);
                 }else if( this.options.identitySortBy !== "identityNumber" ){
-                    debugger;
                     var index = getIndex(tree.identityList[i]);
                     if( index > -1 ){
                         var identity = tree.identityList[index];
@@ -619,7 +617,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     },
     _addSelectedCountWithDuty: function( itemOrItemSelected, count ){
         var itemData = itemOrItemSelected.data;
-        debugger;
         var unitlevelNameList = this.getUnitLevelNameFormMap(itemData);
         unitlevelNameList.each(function (levelName) {
             var subCategoryMap = this.subCategoryMapWithDuty;
@@ -730,7 +727,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
         return this.data.name;
     },
     _addSelectedCount: function (count, nested) {
-        debugger;
         if( this.selector.loadingCount === "done" ){
             var c = (this._getSelectedCount() || 0) + count;
             this.selectedCount = c;
@@ -766,7 +762,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
         var count = unit ? unit.selectedNestedIdentityCount : 0;
         this.selectedCount = count + (this.selectedCount_wait || 0);
         this.selectedCount_wait = 0;
-        return count;
+        return this.selectedCount;
     },
     isExisted: function (d) {
         if (!d) return true;
@@ -800,7 +796,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
                 return (a.orderNumber || 9999999) - (b.orderNumber || 9999999);
             });
         }else{
-            debugger;
             var getOrderNumber = function (d) {
                 var orderNumber = "999";
                 if( d.matchUnitDutyName ){

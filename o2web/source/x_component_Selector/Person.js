@@ -1577,8 +1577,6 @@ MWF.xApplication.Selector.Person = new Class({
     },
     setSize : function(){
 
-        debugger;
-
         if( !this.options.width && !this.options.height )return;
 
         var getOffsetX = function(node){
@@ -1786,7 +1784,9 @@ MWF.xApplication.Selector.Person = new Class({
     },
     isCheckStatusOrCount: function(){
         if( this.isCheckStatusFlag )return this.isCheckStatusFlag === "y";
-        if( this.availableStatusTypes.contains(this.selectType) && (this.options.count.toInt() !== 1) && ( this.options.showSelectedCount || this.options.isCheckStatus ) ){
+        if( this.availableStatusTypes.contains(this.selectType) &&
+            ( this.options.count.toInt() !== 1)  && (this.options.resultType !== "person") &&
+            ( this.options.showSelectedCount || this.options.isCheckStatus ) ){
             this.isCheckStatusFlag = "y";
             return true;
         }else{
@@ -2193,8 +2193,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
         // }
 
 
-
-        debugger;
         var countItems = [];
         if (this.selectedItem){
             this.selector.selectedItems.erase(this.selectedItem);
