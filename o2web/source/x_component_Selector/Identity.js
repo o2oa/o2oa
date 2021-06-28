@@ -182,14 +182,6 @@ MWF.xApplication.Selector.Identity = new Class({
         this.includeObject.load();
     },
 
-    checkCountAndStatus: function(){
-        if( this.subCategorys && this.subCategorys.length ){
-            this.subCategorys.each(function (category) {
-                if(category.checkCountAndStatus)category.checkCountAndStatus(true);
-            })
-        }
-    },
-
     checkLoadSelectItems: function(){
         if (!this.options.units.length){
             this.loadSelectItems();
@@ -1058,15 +1050,6 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
             "title" : this._getTtiteText()
         }).inject(this.container);
     },
-    checkCountAndStatus: function( nestedSub ){
-        var count = this._getSelectedCount();
-        this._checkCountAndStatus(count);
-        if( nestedSub && this.subCategorys && this.subCategorys.length){
-            this.subCategorys.each(function(category){
-                if( category.checkCountAndStatus )category.checkCountAndStatus(nestedSub);
-            }.bind(this))
-        }
-    },
     _addSelectedCount : function( count, nested ){ //增加数字并向上回溯
         if( this.selector.loadingCount === "done" ){
             var c = ( this._getSelectedCount() || 0 ) + count;
@@ -1078,47 +1061,6 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         if( nested && this.category && this.category._addSelectedCount ){
             this.category._addSelectedCount(count, nested);
         }
-    },
-    _checkCountAndStatus: function( count ){
-        if( this.selector.options.showSelectedCount && this.selector.options.showAllCount ){
-            var totalCount = this._getTotalCount();
-            if(count || totalCount)this.selectedCountNode.set("text", (count||0)+"/"+ (totalCount||0));
-        }else if(this.selector.options.showSelectedCount){
-            this.selectedCountNode.set("text", count ? "(" + count + ")" : "" );
-        }else if(this.selector.options.showAllCount){
-            var totalCount = this._getTotalCount();
-            this.selectedCountNode.set("text", totalCount ? "(" + totalCount + ")" : "" );
-        }
-        if( this.selector.options.isCheckStatus && this.selectAllNode ){
-            var total = this._getTotalCount();
-            if( total ){
-                var styles;
-                if( count >= total ){
-                    styles = this.selector.css.selectorItemCategoryActionNode_selectAll_selected;
-                    this.isSelectedSome = false;
-                    this.isSelectedAll = true;
-                }else if( count > 0 ){
-                    styles = this.selector.css.selectorItemCategoryActionNode_selectsome_selected;
-                    this.isSelectedSome = true;
-                    this.isSelectedAll = false;
-                }else{
-                    styles = this.selector.css.selectorItemCategoryActionNode_selectAll;
-                    this.isSelectedSome = false;
-                    this.isSelectedAll = false;
-                }
-                this.selectAllNode.setStyles( styles );
-            }
-        }else if( count === 0 && this.selector.options.selectAllRange === "all" && this.selectAllNode ){
-            styles = this.selector.css.selectorItemCategoryActionNode_selectAll;
-            this.isSelectedSome = false;
-            this.isSelectedAll = false;
-            this.selectAllNode.setStyles( styles );
-        }
-
-        // if( !this.selectedCountNode1 ){
-        //     this.selectedCountNode1 = new Element("span").inject(this.textNode);
-        // }
-        // this.selectedCountNode1.set("text",count);
     },
     _getShowName: function(){
         // if( this._getTotalCount && this._getSelectedCount ){
