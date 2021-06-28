@@ -221,7 +221,7 @@ MWF.xApplication.Setting.LP = {
 
 
     "mobile_apppack_tips1": "⚠️ Currently, the online packaging function of mobile app only supports Android.",
-    "mobile_apppack_tips2": "⚠️ If you need to package online, you must register and log in to [云服务配置] .",
+    "mobile_apppack_tips2": "⚠️ If you need to package online, you must register and log in to [Cloud Setting] .",
     "mobile_apppack_tips3": "⚠️ After submitting the information, the current packing status will be displayed. The packing process takes a long time. You can leave the current page first, wait for the packing to complete, and then download the APK file from this page.",
     "mobile_apppack_status_label": "current state",
     "mobile_apppack_form_appName": "App Name",
@@ -255,6 +255,8 @@ MWF.xApplication.Setting.LP = {
     "mobile_apppack_message_port_not_empty": "Central server port number cannot be empty!",
     "mobile_apppack_message_context_not_empty": "Central server context cannot be empty!",
     "mobile_apppack_message_portocol_http_https": "HTTP protocol just support http or https !",
+    "mobile_apppack_refresh_status_btn": "Refresh Status",
+    "mobile_apppack_message_alert_submit": "Are you sure you want to submit，The current form information will be packaged as a mobile App ？",
 
     "imgSize": "size of the picture：",
     "defaultImg": "Default picture",
