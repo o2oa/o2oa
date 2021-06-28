@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.identity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -115,7 +116,7 @@ class ActionListObject extends BaseAction {
 		CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 		Root<UnitDuty> root = cq.from(UnitDuty.class);
 		Predicate p = cb.isMember(woIdentity.getId(), root.get(UnitDuty_.identityList));
-		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		List<WoUnitDuty> wos = WoUnitDuty.copier.copy(os);
 		wos = business.unitDuty().sort(wos);
 		for (WoUnitDuty woUnitDuty : wos) {
@@ -143,7 +144,7 @@ class ActionListObject extends BaseAction {
 		if(wo.getWoUnit()!=null){
 			p = cb.or(p, root.get(Group_.unitList).in(wo.getWoUnit().getUnitIdList()));
 		}
-		List<Group> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<Group> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		final List<WoGroup> wos = new ArrayList<>();
 		os.stream().forEach(o -> {
 			try {
