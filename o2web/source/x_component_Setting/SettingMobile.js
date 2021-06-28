@@ -317,26 +317,28 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
     },
     // 直接用原有资料重新打包
     reSubmitPack: function() {
-        this.showLoading();
-        o2.Actions.load("x_program_center").AppPackAction.androidPackReStart(this.token, function (json) {
-            console.log(json)
-            this.hiddenLoading();
-            if (json.data && json.data.value) {
-                // 提交成功 获取最新打包对象信息
-                this.loadAppPackInfo();
-            } else {
-                this.app.notice(json.message, "error", this.contentAreaNode);
-            }
-        }.bind(this), function (error) {
-            this.hiddenLoading();
-            console.log(error);
-            this.app.notice(error, "error", this.contentAreaNode);
+        this.confirm(this.lp.alert, this.lp.mobile_apppack_message_alert_submit, function() {
+            this.showLoading();
+            o2.Actions.load("x_program_center").AppPackAction.androidPackReStart(this.token, function (json) {
+                console.log(json)
+                this.hiddenLoading();
+                if (json.data && json.data.value) {
+                    // 提交成功 获取最新打包对象信息
+                    this.loadAppPackInfo();
+                } else {
+                    this.app.notice(json.message, "error", this.contentAreaNode);
+                }
+            }.bind(this), function (error) {
+                this.hiddenLoading();
+                console.log(error);
+                this.app.notice(error, "error", this.contentAreaNode);
+            }.bind(this));
         }.bind(this));
     },
     // 提交打包
     submitPack: function () {
+       
         var appName = this.apppackAppNameInputNode.get("value");
-        console.log(appName);
         if (!appName || appName === "") {
             this.app.notice(this.lp.mobile_apppack_message_appname_not_empty, "error", this.contentAreaNode);
             return;
@@ -348,7 +350,6 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
         var files = this.apppackLogoInputNode.files;
         if (files.length) {
             var file = files.item(0);
-            console.log(file.name);
             var fileExt = file.name.substring(file.name.lastIndexOf("."));
             if (fileExt.toLowerCase() !== ".png") {
                 this.app.notice(this.lp.mobile_apppack_message_app_logo_need_png, "error", this.contentAreaNode);
@@ -359,7 +360,6 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             return;
         }
         var protocol = this.apppackProtocolInputNode.get("value");
-        console.log(protocol);
         if (!protocol || protocol === "") {
             this.app.notice(this.lp.mobile_apppack_message_portocol_not_empty, "error", this.contentAreaNode);
             return;
@@ -369,49 +369,83 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             return;
         }
         var host = this.apppackHostInputNode.get("value");
-        console.log(host);
         if (!host || host === "") {
             this.app.notice(this.lp.mobile_apppack_message_host_not_empty, "error", this.contentAreaNode);
             return;
         }
         var port = this.apppackPortInputNode.get("value");
-        console.log(port);
         if (!port || port === "") {
             this.app.notice(this.lp.mobile_apppack_message_port_not_empty, "error", this.contentAreaNode);
             return;
         }
         var context = this.apppackContextInputNode.get("value");
-        console.log(context);
         if (!context || context === "") {
             this.app.notice(this.lp.mobile_apppack_message_context_not_empty, "error", this.contentAreaNode);
             return;
         }
-        this.showLoading();
-        var formData = new FormData();
-        formData.append('file', file);
-        formData.append('fileName', file.name);
-        formData.append('appName', appName);
-        formData.append('o2ServerProtocol', protocol);
-        formData.append('o2ServerHost', host);
-        formData.append('o2ServerPort', port);
-        formData.append('o2ServerContext', context);
-        formData.append('token', this.token);
-        
-        o2.Actions.load("x_program_center").AppPackAction.androidPackStart(formData, "{}",function (json) {
-            console.log(json)
-            this.hiddenLoading();
-            if (json.data && json.data.value) {
-                // 提交成功 获取最新打包对象信息
-                this.loadAppPackInfo();
-            } else {
-                this.app.notice(json.message, "error", this.contentAreaNode);
-            }
-        }.bind(this), function (error) {
-            this.hiddenLoading();
-            console.log(error);
-            this.app.notice(error, "error", this.contentAreaNode);
+        this.confirm(this.lp.alert, this.lp.mobile_apppack_message_alert_submit, function() {
+            this.showLoading();
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('fileName', file.name);
+            formData.append('appName', appName);
+            formData.append('o2ServerProtocol', protocol);
+            formData.append('o2ServerHost', host);
+            formData.append('o2ServerPort', port);
+            formData.append('o2ServerContext', context);
+            formData.append('token', this.token);
+            
+            o2.Actions.load("x_program_center").AppPackAction.androidPackStart(formData, "{}",function (json) {
+                console.log(json)
+                this.hiddenLoading();
+                if (json.data && json.data.value) {
+                    // 提交成功 获取最新打包对象信息
+                    this.loadAppPackInfo();
+                } else {
+                    this.app.notice(json.message, "error", this.contentAreaNode);
+                }
+            }.bind(this), function (error) {
+                this.hiddenLoading();
+                console.log(error);
+                this.app.notice(error, "error", this.contentAreaNode);
+            }.bind(this));
         }.bind(this));
-
+        
+    },
+    //确认
+    confirm: function (title, text, okCallback) {
+        var width = 600;
+        var height = 110;
+        var size = this.app.content.getSize();
+        var x = (size.x - width) / 2;
+        var y = (size.y - height) / 2;
+        MWF.require("MWF.xDesktop.Dialog", function () {
+            var dlg = new MWF.xDesktop.Dialog({
+                "title": title,
+                "style": "settingStyle",
+                "top": y,
+                "left": x,
+                "width": width,
+                "height": height,
+                "text": text,
+                "maskNode": this.app.content,
+                "container": this.app.content,
+                "buttonList": [
+                    {
+                        "text": this.lp.ok,
+                        "action": function () {
+                            if (okCallback) { okCallback(); }
+                            this.close();
+                        }
+                    },
+                    {
+                        "text": this.lp.cancel,
+                        "action": function () { this.close(); }
+                    }
+                ]
+            });
+            dlg.show();
+        }.bind(this));
     }
 });
 
