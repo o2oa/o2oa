@@ -99,6 +99,8 @@ MWF.xApplication.Selector.Person = new Class({
             this.options.values = [];
         }
 
+        this.availableStatusTypes = ["identity","custom"];
+
         this._init();
     },
     _init : function(){
@@ -1784,12 +1786,19 @@ MWF.xApplication.Selector.Person = new Class({
     },
     isCheckStatusOrCount: function(){
         if( this.isCheckStatusFlag )return this.isCheckStatusFlag === "y";
-        if( this.selectType === "identity" && (this.options.count.toInt() !== 1) && ( this.options.showSelectedCount || this.options.isCheckStatus ) ){
+        if( this.availableStatusTypes.contains(this.selectType) && (this.options.count.toInt() !== 1) && ( this.options.showSelectedCount || this.options.isCheckStatus ) ){
             this.isCheckStatusFlag = "y";
             return true;
         }else{
             this.isCheckStatusFlag = "n";
             return false;
+        }
+    },
+    checkCountAndStatus: function(){
+        if( this.subCategorys && this.subCategorys.length ){
+            this.subCategorys.each(function (category) {
+                if(category.checkCountAndStatus)category.checkCountAndStatus(true);
+            })
         }
     },
     addSelectedCount: function( itemOrItemSelected, count ){
@@ -2255,7 +2264,10 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         }).inject(this.container);
         this.node.setStyle("display","none");
 
-        if(this.data.isFromValues)this.isFromValues = true;
+        if(this.data.isFromValues){
+            this.isFromValues = true;
+            this.data.isFromValues = false;
+        }
 
         this.getData(function(){
             this.node.setStyle("display","");
@@ -2299,7 +2311,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
             //this.item.isSelected = false;
 
             if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
-                this.selector.addSelectedCount( this, -1 );
+                this.selector.addSelectedCount( this, -1, [] );
             }
 
             this.destroy();
@@ -2574,7 +2586,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         var m = this.textNode.getStyle("margin-left").toFloat()+indent;
         this.textNode.setStyle("margin-left", ""+m+"px");
 
-        if( this.selector.options.showSelectedCount && this.selector.selectType == "identity" ){
+        if( this.selector.options.showSelectedCount && this.selector.availableStatusTypes.contains(this.selector.selectType) ){
             this.selectedCountNode = new Element("span").inject(this.textNode);
         }
 
@@ -2724,7 +2736,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
 
                         var styles = this.selector.css.selectorItemCategoryActionNode_selectAll_selected;
 
-                        if( this.selector.options.isCheckStatus && this.selector.selectType === "identity" ){
+                        if( this.selector.options.isCheckStatus && this.selector.availableStatusTypes.contains(this.selector.selectType) ){
                             if( this._getSelectedCount() < this._getTotalCount() ){
                                 styles = this.selector.css.selectorItemCategoryActionNode_selectsome_selected;
                             }
@@ -2903,8 +2915,58 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }else{
             return this.data.name;
         }
+    },
+    checkCountAndStatus: function( nestedSub ){
+        var count = this._getSelectedCount();
+        this._checkCountAndStatus(count);
+        if( nestedSub && this.subCategorys && this.subCategorys.length){
+            this.subCategorys.each(function(category){
+                if( category.checkCountAndStatus )category.checkCountAndStatus(nestedSub);
+            }.bind(this))
+        }
+    },
+    _checkCountAndStatus: function( count ){
+        if( this.selector.options.showSelectedCount && this.selector.options.showAllCount ){
+            var totalCount = this._getTotalCount();
+            if(count || totalCount)this.selectedCountNode.set("text", (count||0)+"/"+ (totalCount||0));
+        }else if(this.selector.options.showSelectedCount){
+            this.selectedCountNode.set("text", count ? "(" + count + ")" : "" );
+        }else if(this.selector.options.showAllCount){
+            var totalCount = this._getTotalCount();
+            this.selectedCountNode.set("text", totalCount ? "(" + totalCount + ")" : "" );
+        }
+        if( this.selector.options.isCheckStatus && this.selectAllNode ){
+            var total = this._getTotalCount();
+            if( total ){
+                var styles;
+                if( count >= total ){
+                    styles = this.selector.css.selectorItemCategoryActionNode_selectAll_selected;
+                    this.isSelectedSome = false;
+                    this.isSelectedAll = true;
+                }else if( count > 0 ){
+                    styles = this.selector.css.selectorItemCategoryActionNode_selectsome_selected;
+                    this.isSelectedSome = true;
+                    this.isSelectedAll = false;
+                }else{
+                    styles = this.selector.css.selectorItemCategoryActionNode_selectAll;
+                    this.isSelectedSome = false;
+                    this.isSelectedAll = false;
+                }
+                this.selectAllNode.setStyles( styles );
+            }
+        }else if( count === 0 && this.selector.options.selectAllRange === "all" && this.selectAllNode ){
+            styles = this.selector.css.selectorItemCategoryActionNode_selectAll;
+            this.isSelectedSome = false;
+            this.isSelectedAll = false;
+            this.selectAllNode.setStyles( styles );
+        }
+
+        // if( !this.selectedCountNode1 ){
+        //     this.selectedCountNode1 = new Element("span").inject(this.textNode);
+        // }
+        // this.selectedCountNode1.set("text",count);
     }
-});
+})
 
 MWF.xApplication.Selector.Person.ItemGroupCategory = new Class({
     Extends: MWF.xApplication.Selector.Person.ItemCategory,
