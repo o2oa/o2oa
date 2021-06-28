@@ -86,6 +86,9 @@ public class QueueImportData extends AbstractQueue<String> {
 					emc.beginTransaction(ImportRecord.class);
 					record.setStatus(ImportRecord.STATUS_FAILED);
 					record.setDistribution(e.getMessage());
+					if(model.getType().equals(ImportModel.TYPE_DYNAMIC_TABLE)){
+						record.setFailCount(record.getCount());
+					}
 					emc.commit();
 				}
 				logger.warn("数据模板数据导入异常：{}", recordId);
