@@ -28,74 +28,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         this.selectType = "identity";
         this.className = "IdentityWidthDutyCategoryByUnit";
     },
-    // loadSelectItems: function (addToNext) {
-    //     //根据组织分类展现职务
-    //     if (this.options.resultType === "person") {
-    //         if (this.titleTextNode) {
-    //             this.titleTextNode.set("text", MWF.xApplication.Selector.LP.selectPerson);
-    //         } else {
-    //             this.options.title = MWF.xApplication.Selector.LP.selectPerson;
-    //         }
-    //     }
-    //     if (this.options.disabled) {
-    //         this.afterLoadSelectItem();
-    //         return;
-    //     }
-    //
-    //     if (this.options.dutys.length) {
-    //         this.loadInclude(function () {
-    //             this.includeLoaded = true;
-    //             if (this.dutyLoaded) {
-    //                 this.afterLoadSelectItem();
-    //             }
-    //         }.bind(this));
-    //         if (this.options.units.length) {
-    //
-    //             var units = [];
-    //             for (var i = 0; i < this.options.units.length; i++) {
-    //                 var unit = this.options.units[i];
-    //                 if (typeOf(unit) === "string") {
-    //                     units.push(unit)
-    //                 } else {
-    //                     units.push(unit.distinguishedName || unit.unique || unit.id || unit.levelName)
-    //                 }
-    //             }
-    //             this.unitStringList = units;
-    //
-    //             var getAllIdentity = function (unitList) {
-    //                 o2.Actions.load("x_organization_assemble_express").UnitDutyAction.listIdentityWithUnitWithNameObject({
-    //                     nameList: this.options.dutys,
-    //                     unitList: unitList
-    //                 }, function (json) {
-    //                     this._loadSelectItems(json.data)
-    //                 }.bind(this))
-    //             }.bind(this);
-    //
-    //             if (this.options.expandSubEnable) {
-    //                 o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitSubNested({
-    //                     unitList: units
-    //                 }, function (json) {
-    //                     getAllIdentity(units.combine(json.data ? json.data.unitList : []));
-    //                 }.bind(this))
-    //             } else {
-    //                 getAllIdentity(units);
-    //             }
-    //         } else {
-    //             var identityList = [];
-    //             var count = 0;
-    //             this.options.dutys.each(function (d) {
-    //                 this.orgAction.listIdentityWithDuty(function (json) {
-    //                     count++;
-    //                     identityList = identityList.combine(json.data);
-    //                     if (this.options.dutys.length === count) this._loadSelectItems(identityList);
-    //                 }.bind(this), function () {
-    //                     count++;
-    //                     if (this.options.dutys.length === count) this._loadSelectItems(identityList);
-    //                 }.bind(this), d);
-    //             }.bind(this));
-    //         }
-    //     }
-    // },
     getUnitUniqueFormDn : function(dn){
         if(!dn)return "";
         var arr = dn.split("@");
@@ -292,24 +224,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         }
         return flag;
     },
-    // listAllIdentityInUnitObject: function () {
-    //     var unitArray = [];
-    //     for (var i = 0; i < identityList.length; i++) {
-    //         unitArray.push(identityList[i].unit || identityList[i].unitLevelName);
-    //     }
-    //     o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({
-    //         unitList: unitArray
-    //     }, function (json) {
-    //         this.allIdentityInUnitObject = {};
-    //         json.data.each(function (u) {
-    //             this.allIdentityInUnitObject[u.levelName] = u;
-    //         }.bind(this));
-    //         if (callback) callback();
-    //     }.bind(this), null, false)
-    // },
-    // getUnitOrderNumber: function (unit) {
-    //     return this.allIdentityInUnitObject[unit.levelName].orderNumber;
-    // },
     listAllUnitObject: function (identityList, callback) {
         var key = this.options.dutyUnitLevelBy === "duty" ? "matchUnitLevelName" : "unitLevelName";
         var unitArray = [];
@@ -726,6 +640,26 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     _getShowName: function () {
         return this.data.name;
     },
+    _addSelectAllSelectedCount: function (count, nested) {
+        debugger;
+        var c = (this._getSelectAllSelectedCount() || 0) + count;
+        this.selectedCount = c;
+        this._checkCountAndStatus(c);
+
+        if (nested && this.category && this.category._addSelectAllSelectedCount) {
+            this.category._addSelectAllSelectedCount(count, nested);
+        }
+    },
+    _getSelectAllSelectedCount: function () {
+        debugger;
+        if (typeOf(this.selectedCount) === "number") {
+            return this.selectedCount;
+        } else {
+            return 0;
+        }
+    },
+
+
     _addSelectedCount: function (count, nested) {
         if( this.selector.loadingCount === "done" ){
             var c = (this._getSelectedCount() || 0) + count;
@@ -739,21 +673,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
             this.category._addSelectedCount(count, nested);
         }
     },
-    // _getSelectedCount : function(){
-    //     var list = this.subItems.filter( function (item) { return item.isSelected; });
-    //     return list.length;
-    // },
     _getTotalCount: function () {
         return this.data.subNestedIdentityCount;
     },
-    // _getSelectedCount: function () {
-    //     debugger;
-    //     if (typeOf(this.selectedCount) === "number") {
-    //         return this.selectedCount;
-    //     } else {
-    //         return 0;
-    //     }
-    // },
     _getSelectedCount : function(){
         if( typeOf(this.selectedCount) === "number" )return this.selectedCount;
         if( !this.selector.allUnitObjectWithDuty )return 0;
@@ -830,20 +752,6 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
     loadSub: function (callback) {
         this._loadSub(function (firstLoad) {
             if (firstLoad && this.selector.isCheckStatusOrCount()) {
-                // var count = 0;
-                // this.subCategorys.each(function (category) {
-                //     var l = category.subItems.filter(function (item) {
-                //         return item.isSelected;
-                //     });
-                //     count = count + l.length;
-                // });
-                //
-                // var list = this.subItems.filter(function (item) {
-                //     return item.isSelected;
-                // });
-                // this.selectedCount = count + list.length;
-                //
-                // this._checkCountAndStatus(this.selectedCount);
 
                 if (this.selector.loadingCount === "done"){
                     this.checkCountAndStatus();

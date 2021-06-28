@@ -346,6 +346,11 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
         var style = this.selector.options.style;
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/companyicon.png)");
     },
+    _addSelectAllSelectedCount: function(){
+        var count = this._getSelectedCount();
+        this._checkCountAndStatus(count);
+    },
+
     _addSelectedCount : function(){
         if( this.selector.loadingCount === "done" ){
             var count = this._getSelectedCount();

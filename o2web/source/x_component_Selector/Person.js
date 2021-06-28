@@ -2184,28 +2184,28 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
 
 
-        // var isChecked = false;
-        // if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
-        //     if( this.selector.isInValues( this.data ) ){
-        //         isChecked = true;
-        //         this.selector.checkCountAndStatusByUnselectItem( this.data );
-        //     }
-        // }
-
-
         var countItems = [];
         if (this.selectedItem){
             this.selector.selectedItems.erase(this.selectedItem);
 
-            if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
+            debugger;
+
+            if( this.selector.isCheckStatusOrCount()){
                 this.selectedItem.items.each(function(item){
                     if( item.isSelected || ( item === this && isSelected ) ){
                         countItems.push(item);
                     }
                 }.bind(this));
-            }
+            }else if( this.selector.options.selectAllRange === "all" ){
+                this.selectedItem.items.each(function(item) {
+                    if (item.isSelected || (item === this && isSelected)) {
+                        if (item.category && item.category._addSelectAllSelectedCount) item.category._addSelectAllSelectedCount(-1, true);
+                    }
+                }.bind(this))
+           }
 
             this.selectedItem.items.each(function(item){
+
                 if (item != this){
                     item.isSelected = false;
                     item.node.setStyles(this.selector.css.selectorItem);
@@ -2224,7 +2224,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selectedItem = null;
         }
 
-        if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
+        if( this.selector.isCheckStatusOrCount()){
             this.selector.addSelectedCount( this, -1, countItems );
         }
 
@@ -2308,7 +2308,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
             //this.item.selectedItem = null;
             //this.item.isSelected = false;
 
-            if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount()){
+            if( this.selector.isCheckStatusOrCount()){
                 this.selector.addSelectedCount( this, -1, [] );
             }
 
@@ -2924,33 +2924,37 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }
     },
     _checkCountAndStatus: function( count ){
-        if( this.selector.options.showSelectedCount && this.selector.options.showAllCount ){
-            var totalCount = this._getTotalCount();
-            if(count || totalCount)this.selectedCountNode.set("text", (count||0)+"/"+ (totalCount||0));
-        }else if(this.selector.options.showSelectedCount){
-            this.selectedCountNode.set("text", count ? "(" + count + ")" : "" );
-        }else if(this.selector.options.showAllCount){
-            var totalCount = this._getTotalCount();
-            this.selectedCountNode.set("text", totalCount ? "(" + totalCount + ")" : "" );
-        }
-        if( this.selector.options.isCheckStatus && this.selectAllNode ){
-            var total = this._getTotalCount();
-            if( total ){
-                var styles;
-                if( count >= total ){
-                    styles = this.selector.css.selectorItemCategoryActionNode_selectAll_selected;
-                    this.isSelectedSome = false;
-                    this.isSelectedAll = true;
-                }else if( count > 0 ){
-                    styles = this.selector.css.selectorItemCategoryActionNode_selectsome_selected;
-                    this.isSelectedSome = true;
-                    this.isSelectedAll = false;
-                }else{
-                    styles = this.selector.css.selectorItemCategoryActionNode_selectAll;
-                    this.isSelectedSome = false;
-                    this.isSelectedAll = false;
+        if( this.selector.isCheckStatusOrCount() ){
+            if(this.selectedCountNode){
+                if( this.selector.options.showSelectedCount && this.selector.options.showAllCount ){
+                    var totalCount = this._getTotalCount();
+                    if(count || totalCount)this.selectedCountNode.set("text", (count||0)+"/"+ (totalCount||0));
+                }else if(this.selector.options.showSelectedCount){
+                    this.selectedCountNode.set("text", count ? "(" + count + ")" : "" );
+                }else if(this.selector.options.showAllCount){
+                    var totalCount = this._getTotalCount();
+                    this.selectedCountNode.set("text", totalCount ? "(" + totalCount + ")" : "" );
                 }
-                this.selectAllNode.setStyles( styles );
+            }
+            if( this.selector.options.isCheckStatus && this.selectAllNode ){
+                var total = this._getTotalCount();
+                if( total ){
+                    var styles;
+                    if( count >= total ){
+                        styles = this.selector.css.selectorItemCategoryActionNode_selectAll_selected;
+                        this.isSelectedSome = false;
+                        this.isSelectedAll = true;
+                    }else if( count > 0 ){
+                        styles = this.selector.css.selectorItemCategoryActionNode_selectsome_selected;
+                        this.isSelectedSome = true;
+                        this.isSelectedAll = false;
+                    }else{
+                        styles = this.selector.css.selectorItemCategoryActionNode_selectAll;
+                        this.isSelectedSome = false;
+                        this.isSelectedAll = false;
+                    }
+                    this.selectAllNode.setStyles( styles );
+                }
             }
         }else if( count === 0 && this.selector.options.selectAllRange === "all" && this.selectAllNode ){
             styles = this.selector.css.selectorItemCategoryActionNode_selectAll;
