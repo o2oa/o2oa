@@ -385,7 +385,7 @@ MWF.xApplication.Template.Selector.Custom.ItemSelected = new Class({
         debugger;
 
         if( !this.isFromValues ){
-            if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount() ){
+            if( this.selector.isCheckStatusOrCount() ){
                 this.selector.addSelectedCount(this, 1, items||[]);
             }
         }

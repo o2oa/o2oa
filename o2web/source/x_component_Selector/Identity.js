@@ -86,65 +86,7 @@ MWF.xApplication.Selector.Identity = new Class({
                 loadUnitSuccess();
             }.bind(this), loadUnitFailure );
 
-            // var unitLoaded = 0;
-            //
-            // var loadUnitSuccess = function () {
-            //     unitLoaded++;
-            //     if( unitLoaded === this.options.units.length ){
-            //         this.unitLoaded = true;
-            //         if( this.includeLoaded ){
-            //             afterLoadSelectItemFun();
-            //         }
-            //     }
-            // }.bind(this);
-            // var loadUnitFailure = loadUnitSuccess;
-            //
-            // this.loadInclude( function () {
-            //     this.includeLoaded = true;
-            //     if( this.unitLoaded ){
-            //         afterLoadSelectItemFun();
-            //     }
-            // }.bind(this));
-            // this.options.units.each(function(unit){
-            //
-            //     var container = new Element("div").inject( this.itemAreaNode );
-            //
-            //     if (typeOf(unit)==="string"){
-            //         this.orgAction.getUnit(unit, function(json){
-            //             if (json.data){
-            //                 var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
-            //                 this.subCategorys.push( category );
-            //             }
-            //             loadUnitSuccess();
-            //         }.bind(this), function(){
-            //             this.orgAction.listUnitByKey(function(json){
-            //                 if (json.data.length){
-            //                     json.data.each(function(data){
-            //                         var category = this._newItemCategory("ItemUnitCategory", data, this, container);
-            //                         this.subCategorys.push( category );
-            //                     }.bind(this))
-            //                 }
-            //                 loadUnitSuccess();
-            //             }.bind(this), loadUnitFailure, unit);
-            //         }.bind(this));
-            //     }else{
-            //         this.orgAction.getUnit(function(json){
-            //             if (json.data){
-            //                 var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
-            //                 this.subCategorys.push( category );
-            //             }
-            //             loadUnitSuccess();
-            //         }.bind(this), loadUnitFailure, unit.distinguishedName);
-            //     }
-            //
-            // }.bind(this));
         }else{
-            // this.loadInclude( function () {
-            //     this.includeLoaded = true;
-            //     if( this.unitLoaded ){
-            //         afterLoadSelectItemFun();
-            //     }
-            // }.bind(this));
 
             var load = function ( topUnit ) {
                 topUnit.each(function(data){
@@ -291,37 +233,7 @@ MWF.xApplication.Selector.Identity = new Class({
 
         return units.length ? keyObj : key;
     },
-    //_listItemNext: function(last, count, callback){
-    //    this.action.listRoleNext(last, count, function(json){
-    //        if (callback) callback.apply(this, [json]);
-    //    }.bind(this));
-    //}
 
-    // getIdentityAllLevelName : function(identityList, byGroup, callback){
-    //     var result = {
-    //         unitMap : {},
-    //         groupMap : {}
-    //     };
-    //     this.listIndetityObject( identityList, function ( list, map ) {
-    //         list.each( function (id) {
-    //             if(id.unitLevelName){
-    //                 result.unitMap[ id.unitLevelName ] = ( result.unitMap[ id.unitLevelName ] || 0 )+1;
-    //             }
-    //         }.bind(this));
-    //         if( byGroup ) {
-    //             this.listLevelNameGroupMap(list, function ( levelNameGroupMap ) {
-    //                 for( var key in levelNameGroupMap ){
-    //                     var group = levelNameGroupMap[key]
-    //                     var identityCount = group["identityList"].length;
-    //                     if(identityCount)result.groupMap[key] = identityCount;
-    //                 }
-    //                 if( callback )callback( result );
-    //             }.bind(this));
-    //         }else{
-    //             if( callback )callback( result );
-    //         }
-    //     }.bind(this));
-    // },
     loadCount: function(){
 
         var unitList = [];
@@ -502,89 +414,6 @@ MWF.xApplication.Selector.Identity = new Class({
             if (callback) callback(json.data, groupLevelNameList);
         }.bind(this))
     },
-
-    // getIdentityCountMap : function( identityList, byGroup, callback ){
-    //     var result = {
-    //         unitMap : {},
-    //         groupMap : {}
-    //     };
-    //     this.listIndetityObject( identityList, function ( list, map ) {
-    //         list.each( function (id) {
-    //             if(id && id.unitLevelName){
-    //                 result.unitMap[ id.unitLevelName ] = ( result.unitMap[ id.unitLevelName ] || 0 )+1;
-    //             }
-    //         }.bind(this));
-    //         if( byGroup ) {
-    //             this.listLevelNameGroupMap(list, function ( levelNameGroupMap ) {
-    //                 for( var key in levelNameGroupMap ){
-    //                     var group = levelNameGroupMap[key]
-    //                     var identityCount = group["identityList"].length;
-    //                     if(identityCount)result.groupMap[key] = identityCount;
-    //                 }
-    //                 if( callback )callback( result );
-    //             }.bind(this));
-    //         }else{
-    //             if( callback )callback( result );
-    //         }
-    //     }.bind(this));
-    // },
-    // listIndetityObject : function( identityList, callback ){
-    //     var list = [];
-    //     identityList.each( function (d) {
-    //         if( typeOf( d ) === "object"){
-    //             if( !d.unitLevelName || !d.distinguishedName )list.push( d.distinguishedName || d.id || d.unique )
-    //         }else{
-    //             list.push( d )
-    //         }
-    //     });
-    //     if( list.length > 0 ){
-    //         o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : list }, function (json) {
-    //             var map = {};
-    //             json.data.each( function (d) { map[ d.matchKey ] =  d; });
-    //             var result = [];
-    //             identityList.each( function (d) {
-    //                 var key = typeOf( d ) === "object" ? ( d.distinguishedName || d.id || d.unique ) : d;
-    //                 result.push( map[key] ? map[key] : d );
-    //             });
-    //             if( callback )callback( result, map );
-    //         }.bind(this))
-    //     }else{
-    //         if( callback )callback( identityList, {} );
-    //     }
-    // },
-    // listLevelNameGroupMap : function(identityList, callback, referenceFlag, recursiveOrgFlag){
-    //     var list = identityList.map( function (d) { return d.distinguishedName; }).clean();
-    //     if( list.length > 0 ){
-    //         o2.Actions.load("x_organization_assemble_express").GroupAction.listWithIdentityObject( {
-    //             recursiveGroupFlag : true, identityList : list, referenceFlag : !!referenceFlag, recursiveOrgFlag : !!recursiveOrgFlag
-    //         }, function (json) {
-    //             var map = {};
-    //             var groupList = json.data;
-    //             groupList.each( function (d) { map[ d.distinguishedName ] = d; });
-    //             groupList.each( function (d) {
-    //                 d.identityList = d.identityList.filter( function (id) { return list.contains(id) });
-    //                 d.groupObjectList  = [];
-    //                 d.groupList.each( function (g) { if(map[g])d.groupObjectList.push( map[g] ) })
-    //             });
-    //
-    //             var groupIdentityMap = {};
-    //             var fun = function ( group, parentName ) {
-    //                 var levelName = parentName ? ( parentName + "/" + group.name ) : group.name;
-    //                 groupIdentityMap[ levelName ] = group;
-    //                 group.groupObjectList.each( function( g ){
-    //                     fun( g, levelName );
-    //                 })
-    //             };
-    //
-    //             groupList.each( function (d) { fun(d) });
-    //
-    //             if( callback )callback( groupIdentityMap );
-    //         }.bind(this))
-    //     }else{
-    //         if( callback )callback({});
-    //     }
-    // },
-
     caculateNestedSubCount: function(unitTree, groupTree, callback){
         if( !this.allUnitObject )this.allUnitObject = {};
         if( !this.allGroupObject )this.allGroupObject = {};
@@ -922,13 +751,9 @@ MWF.xApplication.Selector.Identity.Item = new Class({
             this.selectedItem = selectedItem[0];
             this.setSelected();
 
-            // if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount() ){
-            //     debugger;
-            //     if( !this.selector.isInValues(this.data) ){
-            //         this.selector.checkCountAndStatusBySelectItem(this.data);
-            //         // if(this.category && this.category._addSelectedCount )this.category._addSelectedCount( 1, true );
-            //     }
-            // }
+            if( this.selector.options.selectAllRange === "all" && !this.selector.isCheckStatusOrCount() ){
+                if(this.category && this.category._addSelectAllSelectedCount )this.category._addSelectAllSelectedCount( 1, true );
+            }
         }
     }
 });
@@ -1021,16 +846,17 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                 items.each(function(item){
                     item.selectedItem = this;
                     item.setSelected();
-                    // if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount() ){
-                    //     if(item.category && item.category._addSelectedCount )item.category._addSelectedCount( 1, true );
-                    // }
+
+                    if( this.selector.options.selectAllRange === "all" && !this.selector.isCheckStatusOrCount() ){
+                         if(item.category && item.category._addSelectAllSelectedCount )item.category._addSelectAllSelectedCount( 1, true );
+                    }
+
                 }.bind(this));
             }
         }
 
         if( !this.isFromValues ){
-            if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount() ){
-                debugger;
+            if( this.selector.isCheckStatusOrCount() ){
                 this.selector.addSelectedCount(this, 1, items||[]);
             }
         }
@@ -1047,6 +873,22 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
             "title" : this._getTtiteText()
         }).inject(this.container);
     },
+    _addSelectAllSelectedCount : function( count, nested ){
+        var c = ( this._getSelectAllSelectedCount() || 0 ) + count;
+        this.selectedCount = c;
+        this._checkCountAndStatus( c );
+        if( nested && this.category && this.category._addSelectAllSelectedCount ){
+            this.category._addSelectAllSelectedCount(count, nested);
+        }
+    },
+    _getSelectAllSelectedCount: function(){
+        if( typeOf(this.selectedCount) === "number" ){
+            return this.selectedCount;
+        }else{
+            return 0;
+        }
+    },
+
     _addSelectedCount : function( count, nested ){ //增加数字并向上回溯
         if( this.selector.loadingCount === "done" ){
             var c = ( this._getSelectedCount() || 0 ) + count;
