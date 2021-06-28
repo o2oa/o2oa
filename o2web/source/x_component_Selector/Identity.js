@@ -481,7 +481,6 @@ MWF.xApplication.Selector.Identity = new Class({
     },
 
     listIdentityObjectWithGroup: function(identityList, callback){
-        debugger;
         if( identityList.length === 0 ){
             if( callback )callback( [], [] );
             return;
@@ -492,7 +491,6 @@ MWF.xApplication.Selector.Identity = new Class({
         o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({
             identityList : list, referenceFlag: true, recursiveFlag: true
         }, function (json) {
-            debugger;
             var groupLevelNameList = [];
             json.data.each(function (d) {
                 d.woGroupList.each(function (group) {
@@ -637,7 +635,6 @@ MWF.xApplication.Selector.Identity = new Class({
             count = (count || 0) - this.groupExcludedIdentityCount[ groupLevelName ];
         }
 
-        debugger;
         var selectedCount = 0;
         if( this.groupSelectedIdentityCount && this.groupSelectedIdentityCount[ groupLevelName ] ){
             selectedCount = this.groupSelectedIdentityCount[ groupLevelName ];
@@ -809,7 +806,6 @@ MWF.xApplication.Selector.Identity = new Class({
     },
     _addSelectedCount: function( itemOrItemSelected, count ){
         var itemData = itemOrItemSelected.data;
-        debugger;
         this.getIdentityParentLevelNameList(itemData, function (parentLevelNameList) {
             parentLevelNameList.each(function(parentLevelName){
                 if(!parentLevelName)return;
@@ -1034,6 +1030,7 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
 
         if( !this.isFromValues ){
             if( this.selector.options.selectAllRange === "all" || this.selector.isCheckStatusOrCount() ){
+                debugger;
                 this.selector.addSelectedCount(this, 1, items||[]);
             }
         }
@@ -1082,7 +1079,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         var count = unit ? unit.selectedNestedIdentityCount : 0;
         this.selectedCount = count + (this.selectedCount_wait || 0);
         this.selectedCount_wait = 0;
-        return count;
+        return this.selectedCount;
     },
     _setIcon: function(){
         var style = this.selector.options.style;
@@ -1378,7 +1375,6 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
         return count;
     },
     _getSelectedCount : function(){
-        debugger;
         if( typeOf(this.selectedCount) === "number" )return this.selectedCount;
         if( !this.selector.allGroupObjectByDn )return 0;
         var group = this.selector.allGroupObjectByDn[this.data.distinguishedName];

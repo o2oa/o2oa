@@ -439,7 +439,7 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
         var count = d ? d.selectedNestedItemCount : 0;
         this.selectedCount = count + (this.selectedCount_wait || 0);
         this.selectedCount_wait = 0;
-        return count;
+        return this.selectedCount;
     },
     // _getSelectedCount : function(){
     //     var list = this.subItems.filter( function (item) { return item.isSelected; });
