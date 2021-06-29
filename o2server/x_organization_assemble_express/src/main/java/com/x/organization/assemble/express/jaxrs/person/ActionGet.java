@@ -24,6 +24,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 class ActionGet extends BaseAction {
 
@@ -94,7 +95,7 @@ class ActionGet extends BaseAction {
 		CriteriaQuery<Role> cq = cb.createQuery(Role.class);
 		Root<Role> root = cq.from(Role.class);
 		Predicate p = cb.isMember(wo.getId(), root.get(Role_.personList));
-		List<Role> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<Role> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		List<WoRole> wos = WoRole.copier.copy(os);
 		wos = business.role().sort(wos);
 		wo.setWoRoleList(wos);
@@ -110,7 +111,7 @@ class ActionGet extends BaseAction {
 			List<String> identities = ListTools.extractField(wo.getWoIdentityList(), JpaObject.id_FIELDNAME, String.class, true, true);
 			p = cb.or(p, root.get(Group_.identityList).in(identities));
 		}
-		List<Group> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<Group> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		ListOrderedSet<Group> set = new ListOrderedSet<>();
 		os.stream().forEach(o -> {
 			set.add(o);
@@ -142,7 +143,7 @@ class ActionGet extends BaseAction {
 		CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 		Root<UnitDuty> root = cq.from(UnitDuty.class);
 		Predicate p = cb.isMember(woIdentity.getId(), root.get(UnitDuty_.identityList));
-		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 		List<WoUnitDuty> wos = WoUnitDuty.copier.copy(os);
 		wos = business.unitDuty().sort(wos);
 		for (WoUnitDuty woUnitDuty : wos) {
