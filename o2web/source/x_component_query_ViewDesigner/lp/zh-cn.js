@@ -52,7 +52,11 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "noModifyName": "不能修改名称或者别名",
 
         "deleteEventTitle": "删除事件确认",
-        "deleteEvent": "是否确定删除当前事件吗？"
+        "deleteEvent": "是否确定删除当前事件吗？",
+
+        "selectProcess": "请选择应用或者流程",
+        "selectCMS": "请选择内容管理栏目或者分类",
+        "selectDateRange": "时段类型为范围，请选择开始日期和结束日期"
     },
     "actionbar": {
         "readhide": "设置阅读时是否显示",
