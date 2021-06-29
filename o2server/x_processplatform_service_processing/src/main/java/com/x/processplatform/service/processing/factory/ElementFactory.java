@@ -146,36 +146,36 @@ public class ElementFactory extends AbstractFactory {
 
 	public Activity get(String id, ActivityType activityType) throws Exception {
 		switch (activityType) {
-		case agent:
-			return this.get(id, Agent.class);
-		case begin:
-			return this.get(id, Begin.class);
-		case cancel:
-			return this.get(id, Cancel.class);
-		case choice:
-			return this.get(id, Choice.class);
-		case delay:
-			return this.get(id, Delay.class);
-		case embed:
-			return this.get(id, Embed.class);
-		case end:
-			return this.get(id, End.class);
-		case invoke:
-			return this.get(id, Invoke.class);
-		case manual:
-			return this.get(id, Manual.class);
-		case merge:
-			return this.get(id, Merge.class);
-		case message:
-			return this.get(id, Message.class);
-		case parallel:
-			return this.get(id, Parallel.class);
-		case service:
-			return this.get(id, Service.class);
-		case split:
-			return this.get(id, Split.class);
-		default:
-			return null;
+			case agent:
+				return this.get(id, Agent.class);
+			case begin:
+				return this.get(id, Begin.class);
+			case cancel:
+				return this.get(id, Cancel.class);
+			case choice:
+				return this.get(id, Choice.class);
+			case delay:
+				return this.get(id, Delay.class);
+			case embed:
+				return this.get(id, Embed.class);
+			case end:
+				return this.get(id, End.class);
+			case invoke:
+				return this.get(id, Invoke.class);
+			case manual:
+				return this.get(id, Manual.class);
+			case merge:
+				return this.get(id, Merge.class);
+			case message:
+				return this.get(id, Message.class);
+			case parallel:
+				return this.get(id, Parallel.class);
+			case service:
+				return this.get(id, Service.class);
+			case split:
+				return this.get(id, Split.class);
+			default:
+				return null;
 		}
 	}
 
@@ -312,66 +312,66 @@ public class ElementFactory extends AbstractFactory {
 	public List<Route> listRouteWithActvity(String id, ActivityType activityType) throws Exception {
 		List<Route> list = new ArrayList<>();
 		switch (activityType) {
-		case agent:
-			Agent agent = this.get(id, Agent.class);
-			list.add(this.get(agent.getRoute(), Route.class));
-			break;
-		case begin:
-			Begin begin = this.get(id, Begin.class);
-			list.add(this.get(begin.getRoute(), Route.class));
-			break;
-		case cancel:
-			break;
-		case choice:
-			Choice choice = this.get(id, Choice.class);
-			for (String str : choice.getRouteList()) {
-				list.add(this.get(str, Route.class));
-			}
-			break;
-		case delay:
-			Delay delay = this.get(id, Delay.class);
-			list.add(this.get(delay.getRoute(), Route.class));
-			break;
-		case embed:
-			Embed embed = this.get(id, Embed.class);
-			list.add(this.get(embed.getRoute(), Route.class));
-			break;
-		case end:
-			break;
-		case invoke:
-			Invoke invoke = this.get(id, Invoke.class);
-			list.add(this.get(invoke.getRoute(), Route.class));
-			break;
-		case manual:
-			Manual manual = this.get(id, Manual.class);
-			for (String str : manual.getRouteList()) {
-				list.add(this.get(str, Route.class));
-			}
-			break;
-		case merge:
-			Merge merge = this.get(id, Merge.class);
-			list.add(this.get(merge.getRoute(), Route.class));
-			break;
-		case message:
-			Message message = this.get(id, Message.class);
-			list.add(this.get(message.getRoute(), Route.class));
-			break;
-		case parallel:
-			Parallel parallel = this.get(id, Parallel.class);
-			for (String str : parallel.getRouteList()) {
-				list.add(this.get(str, Route.class));
-			}
-			break;
-		case service:
-			Service service = this.get(id, Service.class);
-			list.add(this.get(service.getRoute(), Route.class));
-			break;
-		case split:
-			Split split = this.get(id, Split.class);
-			list.add(this.get(split.getRoute(), Route.class));
-			break;
-		default:
-			break;
+			case agent:
+				Agent agent = this.get(id, Agent.class);
+				list.add(this.get(agent.getRoute(), Route.class));
+				break;
+			case begin:
+				Begin begin = this.get(id, Begin.class);
+				list.add(this.get(begin.getRoute(), Route.class));
+				break;
+			case cancel:
+				break;
+			case choice:
+				Choice choice = this.get(id, Choice.class);
+				for (String str : choice.getRouteList()) {
+					list.add(this.get(str, Route.class));
+				}
+				break;
+			case delay:
+				Delay delay = this.get(id, Delay.class);
+				list.add(this.get(delay.getRoute(), Route.class));
+				break;
+			case embed:
+				Embed embed = this.get(id, Embed.class);
+				list.add(this.get(embed.getRoute(), Route.class));
+				break;
+			case end:
+				break;
+			case invoke:
+				Invoke invoke = this.get(id, Invoke.class);
+				list.add(this.get(invoke.getRoute(), Route.class));
+				break;
+			case manual:
+				Manual manual = this.get(id, Manual.class);
+				for (String str : manual.getRouteList()) {
+					list.add(this.get(str, Route.class));
+				}
+				break;
+			case merge:
+				Merge merge = this.get(id, Merge.class);
+				list.add(this.get(merge.getRoute(), Route.class));
+				break;
+			case message:
+				Message message = this.get(id, Message.class);
+				list.add(this.get(message.getRoute(), Route.class));
+				break;
+			case parallel:
+				Parallel parallel = this.get(id, Parallel.class);
+				for (String str : parallel.getRouteList()) {
+					list.add(this.get(str, Route.class));
+				}
+				break;
+			case service:
+				Service service = this.get(id, Service.class);
+				list.add(this.get(service.getRoute(), Route.class));
+				break;
+			case split:
+				Split split = this.get(id, Split.class);
+				list.add(this.get(split.getRoute(), Route.class));
+				break;
+			default:
+				break;
 		}
 		return ListTools.trim(list, true, true);
 	}
@@ -453,7 +453,7 @@ public class ElementFactory extends AbstractFactory {
 	}
 
 	public CompiledScript getCompiledScript(String applicationId, Activity o, String event) throws Exception {
-		CacheCategory cacheCategory = new CacheCategory(o.getClass());
+		CacheCategory cacheCategory = new CacheCategory(o.getClass(), Script.class);
 		CacheKey cacheKey = new CacheKey("getCompiledScript", applicationId, o.getId(), event);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
@@ -463,117 +463,117 @@ public class ElementFactory extends AbstractFactory {
 			String scriptName = null;
 			String scriptText = null;
 			switch (event) {
-			case Business.EVENT_BEFOREARRIVE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeArriveScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeArriveScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_AFTERARRIVE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.afterArriveScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.afterArriveScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_BEFOREEXECUTE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeExecuteScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeExecuteScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_AFTEREXECUTE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.afterExecuteScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.afterExecuteScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_BEFOREINQUIRE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeInquireScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeInquireScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_AFTERINQUIRE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.afterInquireScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.afterInquireScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_MANUALTASKEXPIRE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.taskExpireScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.taskExpireScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_MANUALTASK:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.taskScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.taskScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_MANUALSTAY:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.manualStayScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.manualStayScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_MANUALBEFORETASK:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.manualBeforeTaskScript_FIELDNAME));
-				scriptText = Objects
-						.toString(PropertyUtils.getProperty(o, Manual.manualBeforeTaskScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_MANUALAFTERTASK:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.manualAfterTaskScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.manualAfterTaskScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_INVOKEJAXWSPARAMETER:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsParameterScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsParameterScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_INVOKEJAXRSPARAMETER:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsParameterScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsParameterScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_INVOKEJAXWSRESPONSE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsResponseScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsResponseScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_INVOKEJAXRSRESPONSE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsResponseScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsResponseScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_INVOKEJAXRSBODY:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsBodyScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsBodyScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_INVOKEJAXRSHEAD:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsHeadScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsHeadScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_READ:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.readScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.readScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_REVIEW:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.reviewScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.reviewScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_AGENT:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Agent.script_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Agent.scriptText_FIELDNAME));
-				break;
-			case Business.EVENT_SERVICE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Service.script_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Service.scriptText_FIELDNAME));
-				break;
-			case Business.EVENT_AGENTINTERRUPT:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Agent.agentInterruptScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Agent.agentInterruptScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_DELAY:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Delay.delayScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Delay.delayScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_EMBEDTARGETASSIGNDATA:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Embed.targetAssginDataScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Embed.targetAssginDataScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_EMBEDTARGETIDENTITY:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Embed.targetIdentityScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Embed.targetIdentityScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_EMBEDTARGETTITLE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Embed.targetTitleScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Embed.targetTitleScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_SPLIT:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Split.script_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Split.scriptText_FIELDNAME));
-				break;
-			default:
-				break;
+				case Business.EVENT_BEFOREARRIVE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeArriveScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeArriveScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_AFTERARRIVE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.afterArriveScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.afterArriveScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_BEFOREEXECUTE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeExecuteScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeExecuteScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_AFTEREXECUTE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.afterExecuteScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.afterExecuteScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_BEFOREINQUIRE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeInquireScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeInquireScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_AFTERINQUIRE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.afterInquireScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.afterInquireScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_MANUALTASKEXPIRE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.taskExpireScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.taskExpireScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_MANUALTASK:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.taskScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.taskScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_MANUALSTAY:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.manualStayScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.manualStayScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_MANUALBEFORETASK:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.manualBeforeTaskScript_FIELDNAME));
+					scriptText = Objects
+							.toString(PropertyUtils.getProperty(o, Manual.manualBeforeTaskScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_MANUALAFTERTASK:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.manualAfterTaskScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.manualAfterTaskScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_INVOKEJAXWSPARAMETER:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsParameterScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsParameterScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_INVOKEJAXRSPARAMETER:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsParameterScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsParameterScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_INVOKEJAXWSRESPONSE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsResponseScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsResponseScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_INVOKEJAXRSRESPONSE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsResponseScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsResponseScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_INVOKEJAXRSBODY:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsBodyScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsBodyScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_INVOKEJAXRSHEAD:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsHeadScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsHeadScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_READ:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.readScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.readScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_REVIEW:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.reviewScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.reviewScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_AGENT:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Agent.script_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Agent.scriptText_FIELDNAME));
+					break;
+				case Business.EVENT_SERVICE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Service.script_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Service.scriptText_FIELDNAME));
+					break;
+				case Business.EVENT_AGENTINTERRUPT:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Agent.agentInterruptScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Agent.agentInterruptScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_DELAY:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Delay.delayScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Delay.delayScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_EMBEDTARGETASSIGNDATA:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Embed.targetAssginDataScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Embed.targetAssginDataScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_EMBEDTARGETIDENTITY:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Embed.targetIdentityScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Embed.targetIdentityScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_EMBEDTARGETTITLE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Embed.targetTitleScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Embed.targetTitleScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_SPLIT:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Split.script_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Split.scriptText_FIELDNAME));
+					break;
+				default:
+					break;
 			}
 			StringBuilder sb = new StringBuilder();
 			try {
@@ -598,7 +598,7 @@ public class ElementFactory extends AbstractFactory {
 	}
 
 	public CompiledScript getCompiledScript(String applicationId, Route o, String event) throws Exception {
-		CacheCategory cacheCategory = new CacheCategory(Route.class);
+		CacheCategory cacheCategory = new CacheCategory(Route.class, Script.class);
 		CacheKey cacheKey = new CacheKey("getCompiledScript", applicationId, o.getId(), event);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
@@ -608,17 +608,17 @@ public class ElementFactory extends AbstractFactory {
 			String scriptName = null;
 			String scriptText = null;
 			switch (event) {
-			case Business.EVENT_ROUTEAPPENDTASKIDENTITY:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Route.appendTaskIdentityScript_FIELDNAME));
-				scriptText = Objects
-						.toString(PropertyUtils.getProperty(o, Route.appendTaskIdentityScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_ROUTE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Route.script_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Route.scriptText_FIELDNAME));
-				break;
-			default:
-				break;
+				case Business.EVENT_ROUTEAPPENDTASKIDENTITY:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Route.appendTaskIdentityScript_FIELDNAME));
+					scriptText = Objects
+							.toString(PropertyUtils.getProperty(o, Route.appendTaskIdentityScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_ROUTE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Route.script_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Route.scriptText_FIELDNAME));
+					break;
+				default:
+					break;
 			}
 			StringBuilder sb = new StringBuilder();
 			try {
@@ -643,7 +643,7 @@ public class ElementFactory extends AbstractFactory {
 	}
 
 	public CompiledScript getCompiledScript(String applicationId, Process o, String event) throws Exception {
-		CacheCategory cacheCategory = new CacheCategory(Process.class);
+		CacheCategory cacheCategory = new CacheCategory(Process.class, Script.class);
 		CacheKey cacheKey = new CacheKey("getCompiledScript", applicationId, o.getId(), event);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
@@ -653,44 +653,44 @@ public class ElementFactory extends AbstractFactory {
 			String scriptName = null;
 			String scriptText = null;
 			switch (event) {
-			case Business.EVENT_BEFOREARRIVE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.beforeArriveScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.beforeArriveScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_AFTERARRIVE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterArriveScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterArriveScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_BEFOREEXECUTE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.beforeExecuteScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.beforeExecuteScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_AFTEREXECUTE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterExecuteScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterExecuteScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_BEFOREINQUIRE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.beforeInquireScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.beforeInquireScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_AFTERINQUIRE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterInquireScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterInquireScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_PROCESSAFTERBEGIN:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterBeginScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterBeginScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_PROCESSAFTEREND:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScriptText_FIELDNAME));
-				break;
-			case Business.EVENT_PROCESSEXPIRE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.expireScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.expireScriptText_FIELDNAME));
-				break;
-			default:
-				break;
+				case Business.EVENT_BEFOREARRIVE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.beforeArriveScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.beforeArriveScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_AFTERARRIVE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterArriveScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterArriveScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_BEFOREEXECUTE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.beforeExecuteScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.beforeExecuteScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_AFTEREXECUTE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterExecuteScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterExecuteScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_BEFOREINQUIRE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.beforeInquireScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.beforeInquireScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_AFTERINQUIRE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterInquireScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterInquireScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_PROCESSAFTERBEGIN:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterBeginScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterBeginScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_PROCESSAFTEREND:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScriptText_FIELDNAME));
+					break;
+				case Business.EVENT_PROCESSEXPIRE:
+					scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.expireScript_FIELDNAME));
+					scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.expireScriptText_FIELDNAME));
+					break;
+				default:
+					break;
 			}
 			StringBuilder sb = new StringBuilder();
 			try {
@@ -715,7 +715,7 @@ public class ElementFactory extends AbstractFactory {
 	}
 
 	public CompiledScript getCompiledScript(Activity activity, String event, String name, String code) {
-		CacheCategory cacheCategory = new CacheCategory(activity.getClass());
+		CacheCategory cacheCategory = new CacheCategory(activity.getClass(), Script.class);
 		CacheKey cacheKey = new CacheKey("getCompiledScript", activity.getId(), event, name, code);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
