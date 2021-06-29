@@ -1999,7 +1999,8 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
             this.toolbarWidget.load();
             this._setEditStyle_custom("hideSystemTools");
         }else{
-            MWF.getJSON(this.path+"toolbars.json", function(json){
+            // MWF.getJSON(this.path+"toolbars.json", function(json){
+            MWF.getJSON(this.getJsonPath(), function(json){
                 this.json.multiTools = json.map( function (d) { d.system = true; return d; });
                 if (this.json.tools){
                     this.json.multiTools = this.json.multiTools.concat( this.json.tools )
