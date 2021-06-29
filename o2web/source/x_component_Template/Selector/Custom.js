@@ -581,6 +581,17 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
     _getTtiteText: function () {
         return this.data.name;
     },
+
+    _addSelectedCount : function( count, nested ){ //增加数字并向上回溯
+
+    },
+    _getTotalCount : function(){
+
+    },
+    _getSelectedCount : function(){
+
+    },
+
     destroy : function(){
         if( this.isSelected )this.unSelected();
         this.selector.items.erase( this );
@@ -719,6 +730,9 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
         this.checkSelected();
     },
     afterLoad : function () {
+
+    },
+    reloadCount: function () {
 
     }
 });
