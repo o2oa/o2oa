@@ -366,6 +366,10 @@
 			<groupId>com.github.whvcse</groupId>
 			<artifactId>easy-captcha</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-client</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -410,7 +414,7 @@
 						</compilerArgs>
 					</configuration>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -854,7 +858,7 @@
 				<artifactId>javapoet</artifactId>
 				<version>1.11.1</version>
 			</dependency>
-			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId>
+			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId> 
 				<version>20200316</version> </dependency -->
 			<dependency>
 				<groupId>com.github.neuroph</groupId>
@@ -886,7 +890,7 @@
 				<artifactId>slf4j-api</artifactId>
 				<version>1.7.25</version>
 			</dependency>
-			<!-- dependency> <groupId>cglib</groupId> <artifactId>cglib</artifactId>
+			<!-- dependency> <groupId>cglib</groupId> <artifactId>cglib</artifactId> 
 				<version>3.2.0</version> </dependency -->
 			<dependency>
 				<groupId>com.alibaba</groupId>
@@ -1092,6 +1096,11 @@
 				<groupId>com.github.whvcse</groupId>
 				<artifactId>easy-captcha</artifactId>
 				<version>1.6.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.hadoop</groupId>
+				<artifactId>hadoop-client</artifactId>
+				<version>3.3.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
