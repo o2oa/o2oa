@@ -290,7 +290,8 @@
     "styles": {},
     "tableStyles": {
       "border-top": "1px solid #666666",
-      "border-left": "1px solid #666666"
+      "border-left": "1px solid #666666",
+      "width": "calc(100% - 2px)"
     },
     "titleStyles": {
       "height": "28px",
