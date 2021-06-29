@@ -660,6 +660,39 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             return false;
         }
 
+        if( !this.data.data && !this.data.data.where ){
+            if( this.data.type === "cms" ){
+                this.designer.notice(this.designer.lp.notice.selectCMS, "error");
+                return false;
+            }else{
+                this.designer.notice(this.designer.lp.notice.selectProcess, "error");
+                return false;
+            }
+        }else{
+            var where = this.data.data.where;
+            if( this.data.type === "cms" ){
+                var appInfoList = where.appInfoList;
+                var categoryInfoList = where.categoryInfoList;
+                if( (!appInfoList || !appInfoList.length) && (!categoryInfoList || !categoryInfoList.length) ){
+                    this.designer.notice(this.designer.lp.notice.selectCMS, "error");
+                    return false;
+                }
+            }else{
+                var applicationList = where.applicationList;
+                var processList = where.processList;
+                if( (!applicationList || !applicationList.length) && (!processList || !processList.length) ){
+                    this.designer.notice(this.designer.lp.notice.selectProcess, "error");
+                    return false;
+                }
+            }
+            if( where.dateRange && where.dateRange.dateRangeType === "range" ){
+                if( !where.dateRange.start || !where.dateRange.completed ){
+                    this.designer.notice(this.designer.lp.notice.selectDateRange, "error");
+                    return false;
+                }
+            }
+        }
+
         // var list;
         // if( this.data.data && this.data.data.where ){
         //     if( this.data.data.where.creatorIdentityList ){
@@ -699,6 +732,39 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                 return false;
             }
         //}
+
+        if( !this.data.data && !this.data.data.where ){
+            if( this.data.type === "cms" ){
+                this.designer.notice(this.designer.lp.notice.selectCMS, "error");
+                return false;
+            }else{
+                this.designer.notice(this.designer.lp.notice.selectProcess, "error");
+                return false;
+            }
+        }else{
+            var where = this.data.data.where;
+            if( this.data.type === "cms" ){
+                var appInfoList = where.appInfoList;
+                var categoryInfoList = where.categoryInfoList;
+                if( (!appInfoList || !appInfoList.length) && (!categoryInfoList || !categoryInfoList.length) ){
+                    this.designer.notice(this.designer.lp.notice.selectCMS, "error");
+                    return false;
+                }
+            }else{
+                var applicationList = where.applicationList;
+                var processList = where.processList;
+                if( (!applicationList || !applicationList.length) && (!processList || !processList.length) ){
+                    this.designer.notice(this.designer.lp.notice.selectProcess, "error");
+                    return false;
+                }
+            }
+            if( where.dateRange && where.dateRange.dateRangeType === "range" ){
+                if( !where.dateRange.start || !where.dateRange.completed ){
+                    this.designer.notice(this.designer.lp.notice.selectDateRange, "error");
+                    return false;
+                }
+            }
+        }
 
         debugger;
             // var list;
