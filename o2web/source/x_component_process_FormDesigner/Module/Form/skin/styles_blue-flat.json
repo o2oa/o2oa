@@ -308,7 +308,8 @@
   "datatable": {
     "styles": {},
     "tableStyles": {
-      "border": "1px solid #DCDFE6"
+      "border": "1px solid #DCDFE6",
+      "width": "calc(100% - 2px)"
     },
     "titleStyles": {
       "height": "28px",
