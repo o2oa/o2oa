@@ -52,7 +52,11 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "noModifyName": "Cannot modify the name or alias",
 
         "deleteEventTitle": "Delete Event Confirmation",
-        "deleteEvent": "Are you sure you want to delete the current event?"
+        "deleteEvent": "Are you sure you want to delete the current event?",
+
+        "selectProcess": "Please select an application or process",
+        "selectCMS": "Please select content management column or category",
+        "selectDateRange": "The period type is a range, please select the start date and end date"
     },
     "actionbar": {
         "readhide": "Set whether to display when reading",
