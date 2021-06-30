@@ -257,6 +257,7 @@ MWF.xApplication.Org.LP = {
     "importPersonInfor": "You can import organizations in batches via Excel, <a target='_blank' href='{url}' > Click here </a>Get Unit import template",
     "importPersonAction": "Upload Excel file",
     "importPersonResult": "The Unit has been imported, <a target='_blank' href='{url}' > Click here </a> view import results",
+    "exportPersonText": "Export Organizations",
 
     "queryPrivateConfigTitle":"Personal address book permission configuration",
     "queryPrivateConfigExcludUnit":"Query not allowed",
