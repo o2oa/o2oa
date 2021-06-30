@@ -330,7 +330,7 @@
   "listRoute" : {"uri":"/jaxrs/route/list", "method":"PUT"},
   "getRoute" : {"uri":"/jaxrs/route/{id}"},
 
-  "getReadRecord" : {"uri":"/jaxrs/readlog/list/workorworkcompleted/{workOrWorkCompleted}"},
+  "getReadRecord" : {"uri":"/jaxrs/readrecord/list/workorworkcompleted/{workOrWorkCompleted}"},
 
 
 
