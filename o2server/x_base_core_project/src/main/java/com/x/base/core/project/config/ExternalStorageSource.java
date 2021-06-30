@@ -9,20 +9,22 @@ import com.x.base.core.project.tools.Crypto;
 
 public class ExternalStorageSource extends ConfigObject {
 
+	private static final long serialVersionUID = 5926439816241094368L;
+	
 	// 无需保存
 	private transient String _password;
 
 	public ExternalStorageSource() {
-		this.protocol = default_protocol;
-		this.username = default_username;
-		this.password = default_password;
-		this.host = default_host;
-		this.port = default_port;
-		this.prefix = default_prefix;
-		this.enable = default_enable;
-		this.weight = default_weight;
-		this.name = default_name;
-		this.deepPath = default_deepPath;
+		this.protocol = DEFAULT_PROTOCOL;
+		this.username = DEFAULT_USERNAME;
+		this.password = DEFAULT_PASSWORD;
+		this.host = DEFAULT_HOST;
+		this.port = DEFAULT_PORT;
+		this.prefix = DEFAULT_PREFIX;
+		this.enable = DEFAULT_ENABLE;
+		this.weight = DEFAULT_WEIGHT;
+		this.name = DEFAULT_NAME;
+		this.deepPath = DEFAULT_DEEPPATH;
 	}
 
 	public static ExternalStorageSource defaultInstance() {
@@ -30,18 +32,18 @@ public class ExternalStorageSource extends ConfigObject {
 
 	}
 
-	public static final StorageProtocol default_protocol = StorageProtocol.webdav;
-	public static final String default_username = "admin";
-	public static final String default_password = "admin";
-	public static final String default_host = "127.0.0.1";
-	public static final Integer default_port = 8080;
-	public static final String default_prefix = "";
-	public static final Integer default_weight = 100;
-	public static final Boolean default_enable = true;
-	public static final String default_name = "251";
-	public static final Boolean default_deepPath = false;
+	public static final StorageProtocol DEFAULT_PROTOCOL = StorageProtocol.webdav;
+	public static final String DEFAULT_USERNAME = "admin";
+	public static final String DEFAULT_PASSWORD = "admin";
+	public static final String DEFAULT_HOST = "127.0.0.1";
+	public static final Integer DEFAULT_PORT = 8080;
+	public static final String DEFAULT_PREFIX = "";
+	public static final Integer DEFAULT_WEIGHT = 100;
+	public static final Boolean DEFAULT_ENABLE = true;
+	public static final String DEFAULT_NAME = "251";
+	public static final Boolean DEFAULT_DEEPPATH = false;
 
-	@FieldDescribe("协议,可选值ftp,webdav")
+	@FieldDescribe("协议,可选值ftp,webdav...")
 	private StorageProtocol protocol;
 	@FieldDescribe("登录用户名.")
 	private String username;
