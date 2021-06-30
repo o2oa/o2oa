@@ -366,10 +366,6 @@
 			<groupId>com.github.whvcse</groupId>
 			<artifactId>easy-captcha</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-client</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -1096,11 +1092,6 @@
 				<groupId>com.github.whvcse</groupId>
 				<artifactId>easy-captcha</artifactId>
 				<version>1.6.2</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.hadoop</groupId>
-				<artifactId>hadoop-client</artifactId>
-				<version>3.3.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
