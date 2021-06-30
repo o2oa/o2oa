@@ -1785,10 +1785,21 @@ MWF.xApplication.Selector.Person = new Class({
     isCheckStatusOrCount: function(){
         if( this.isCheckStatusFlag )return this.isCheckStatusFlag === "y";
         if( this.availableStatusTypes.contains(this.selectType) &&
-            ( this.options.count.toInt() !== 1)  && (this.options.resultType !== "person") &&
-            ( this.options.showSelectedCount || this.options.isCheckStatus ) ){
-            this.isCheckStatusFlag = "y";
-            return true;
+                ( this.options.count.toInt() !== 1)  && (this.options.resultType !== "person") &&
+                ( this.options.showSelectedCount || this.options.isCheckStatus ) ){
+
+            if( this.selectType === "unit" ){
+                if( this.options.expandSubEnable ){
+                    this.isCheckStatusFlag = "y";
+                    return true;
+                }else{
+                    this.isCheckStatusFlag = "n";
+                    return false;
+                }
+            }else{
+                this.isCheckStatusFlag = "y";
+                return true;
+            }
         }else{
             this.isCheckStatusFlag = "n";
             return false;
