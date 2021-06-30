@@ -109,6 +109,8 @@ public class Main {
 		LogTools.setSlf4jSimple();
 		ResourceFactory.bind();
 		CommandFactory.printStartHelp();
+		// 初始化hadoop环境
+		Hadoop.init();
 	}
 
 	public static void main(String[] args) throws Exception {
