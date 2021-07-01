@@ -8,7 +8,7 @@
     "filterPerson": [],
     "filterRoute": [],
     "mode": "default", //default table or text
-    "textStyle": "<div><font style='color:#ff5400;'>{person}</font>（{unit}）: <font style='color:#00F'>{opinion}</font> （{data}）</div>",
+    "textStyle": "<div><font style='color:#ff5400;'>{person}</font>（{unit}）: <font style='color:#00F'>{opinion}</font> （{date}）</div>",
     "isTask": "true",
 	"showReadTitle": "待阅人",
 	"showReadCompletedTitle":"已阅人",
