@@ -9,7 +9,7 @@
     "width" : "42%"
   },
   {
-    "title" : MWF.xApplication.cms.Module.LP.creatorCompany,
+    "title" : MWF.xApplication.cms.Module.LP.creatorPerson,
     "headStyles" : "personAreaHeadNode",
     "contentStyles" : "personAreaContentNode",
     "item" : "creatorPersonShort",
