@@ -1570,14 +1570,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
             });
             Promise.all(p).then(function(){
-                this.workAction.saveData(callback || function () { }, failure, this.businessData.work.id, this.modifedData);
+                this.workAction.saveData(function () {
+                    this.businessData.originalData = null;
+                    this.businessData.originalData = Object.clone(data);
+                    if(callback)callback();
+                }.bind(this), failure, this.businessData.work.id, this.modifedData);
             }.bind(this));
         }else{
-            this.workAction.saveData(callback || function () { }, failure, this.businessData.work.id, this.modifedData);
+            this.workAction.saveData(function () {
+                this.businessData.originalData = null;
+                this.businessData.originalData = Object.clone(data);
+                if(callback)callback();
+            }.bind(this), failure, this.businessData.work.id, this.modifedData);
         }
-
-        this.businessData.originalData = null;
-        this.businessData.originalData = Object.clone(data);
     },
     saveFormDataDraft: function (callback, failure, history, data, issubmit, isstart) {
         if (this.officeList) {
@@ -1592,6 +1597,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "identity": this.businessData.work.creatorIdentityDn
         }
         this.workAction.saveDraft(draft, function (json) {
+
+            this.businessData.originalData = null;
+            this.businessData.originalData = Object.clone(data);
+
             this.workAction.getDraft(json.data.id, function (json) {
                 this.businessData.work = json.data.work;
                 this.app.options.draftId = json.data.work.id;
@@ -1618,8 +1627,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             }.bind(this));
         }.bind(this), failure);
-        this.businessData.originalData = null;
-        this.businessData.originalData = Object.clone(data);
     },
     setProcessorSectionOrgList: function (data) {
         if (!this.routeDataList) this.getRouteDataList();
