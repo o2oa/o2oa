@@ -983,13 +983,13 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
 
         var appName = "";
         if( typeOf( this.data.applicationName ) === "string" ){
-            appName = this.data.applicationName;
+            appName = this.data.applicationName || "";
         }else if( typeOf( this.data.applicationName ) === "object" && this.data.applicationName.name ){
-            appName = this.data.applicationName.name;
+            appName = this.data.applicationName.name || "";
         }
         this.textNode.set({
             "text": this.data.name+((this.data.applicationName) ? " -- ("+appName+")" : ""),
-            "title": this.data.name+"-"+this.data.description
+            "title": this.data.name+"-"+ (this.data.description || "")
         });
         //var _self = this;
 
