@@ -7,6 +7,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 public class WebServer extends ConfigObject {
 
+	private static final long serialVersionUID = 7240874589722986538L;
+
 	public static WebServer defaultInstance() {
 		return new WebServer();
 	}
@@ -23,6 +25,8 @@ public class WebServer extends ConfigObject {
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
 		this.cacheControlMaxAge = DEFAULT_CACHECONTROLMAXAGE;
 		this.persistentConnectionsEnable = DEFAULT_PERSISTENTCONNECTIONSENABLE;
+		this.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
+		this.requestLogFormat = DEFAULT_REQUESTLOGFORMAT;
 	}
 
 	private static final Integer DEFAULT_HTTP_PORT = 80;
@@ -35,6 +39,8 @@ public class WebServer extends ConfigObject {
 	private static final Boolean DEFAULT_PROXYCENTERENABLE = true;
 	private static final Boolean DEFAULT_PROXYAPPLICATIONENABLE = true;
 	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
+	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
+	private static final String DEFAULT_REQUESTLOGFORMAT = "";
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -65,6 +71,11 @@ public class WebServer extends ConfigObject {
 
 	@FieldDescribe("是否启用长连接,默认true.")
 	private Boolean persistentConnectionsEnable;
+
+	@FieldDescribe("启用访问日志功能.")
+	private Boolean requestLogEnable;
+	@FieldDescribe("访问日志记录格式.")
+	private String requestLogFormat;
 
 	public Boolean getPersistentConnectionsEnable() {
 		return persistentConnectionsEnable == null ? DEFAULT_PERSISTENTCONNECTIONSENABLE
@@ -113,7 +124,7 @@ public class WebServer extends ConfigObject {
 		if ((null != this.port) && (this.port > 0) && (this.port < 65535)) {
 			return this.port;
 		} else {
-			if (this.getSslEnable()) {
+			if (BooleanUtils.isTrue(this.getSslEnable())) {
 				return DEFAULT_HTTPS_PORT;
 			} else {
 				return DEFAULT_HTTP_PORT;
@@ -126,7 +137,7 @@ public class WebServer extends ConfigObject {
 		return BooleanUtils.isTrue(this.sslEnable);
 	}
 
-	public String getProxyHost() throws Exception {
+	public String getProxyHost() {
 		return StringUtils.isNotEmpty(this.proxyHost) ? this.proxyHost : "";
 	}
 
@@ -168,6 +179,14 @@ public class WebServer extends ConfigObject {
 
 	public void setProxyCenterEnable(Boolean proxyCenterEnable) {
 		this.proxyCenterEnable = proxyCenterEnable;
+	}
+
+	public Boolean getRequestLogEnable() {
+		return BooleanUtils.isTrue(this.requestLogEnable);
+	}
+
+	public String getRequestLogFormat() {
+		return StringUtils.isEmpty(this.requestLogFormat) ? "" : this.requestLogFormat;
 	}
 
 }

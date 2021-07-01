@@ -1,20 +1,22 @@
 package com.x.server.console.server.web;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import javax.servlet.DispatcherType;
 
-import com.x.base.core.project.config.WebServers;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.eclipse.jetty.server.AsyncRequestLogWriter;
+import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -28,20 +30,19 @@ import com.alibaba.druid.support.http.WebStatFilter;
 import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WebServer;
-import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.config.WebServers;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.server.console.server.JettySeverTools;
+import com.x.server.console.server.ServerRequestLog;
 
 public class WebServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(WebServerTools.class);
 
-	private static int WEBSERVER_THREAD_POOL_SIZE_MIN = 50;
-	private static int WEBSERVER_THREAD_POOL_SIZE_MAX = 500;
-
-	private static final String MAP_LOGINPAGE = "loginPage";
+	private static final int WEBSERVER_THREAD_POOL_SIZE_MIN = 50;
+	private static final int WEBSERVER_THREAD_POOL_SIZE_MAX = 500;
 
 	public static Server start(WebServer webServer) throws Exception {
 
@@ -60,7 +61,7 @@ public class WebServerTools extends JettySeverTools {
 		threadPool.setMinThreads(WEBSERVER_THREAD_POOL_SIZE_MIN);
 		threadPool.setMaxThreads(WEBSERVER_THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
-		if (webServer.getSslEnable()) {
+		if (BooleanUtils.isTrue(webServer.getSslEnable())) {
 			addHttpsConnector(server, webServer.getPort(), webServer.getPersistentConnectionsEnable());
 		} else {
 			addHttpConnector(server, webServer.getPort(), webServer.getPersistentConnectionsEnable());
@@ -109,14 +110,32 @@ public class WebServerTools extends JettySeverTools {
 		server.setDumpAfterStart(false);
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
-		server.start();
+
+		if (BooleanUtils.isTrue(webServer.getRequestLogEnable())) {
+			server.setRequestLog(requestLog(webServer));
+		}
 
 		context.setMimeTypes(Config.mimeTypes());
+
+		server.start();
+
 		System.out.println("****************************************");
 		System.out.println("* web server start completed.");
 		System.out.println("* port: " + webServer.getPort() + ".");
 		System.out.println("****************************************");
 		return server;
+	}
+
+	private static RequestLog requestLog(WebServer webServer) throws Exception {
+		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
+		asyncRequestLogWriter.setFilenameDateFormat("yyyy_MM_dd");
+		asyncRequestLogWriter.setAppend(true);
+		asyncRequestLogWriter.setFilename(
+				Config.dir_logs().toString() + File.separator + "yyyy_MM_dd." + Config.node() + ".web.request.log");
+		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
+				+ "}t \"%r\" %s %O %{ms}T";
+		return new ServerRequestLog(asyncRequestLogWriter,
+				StringUtils.isEmpty(webServer.getRequestLogFormat()) ? format : webServer.getRequestLogFormat());
 	}
 
 	private static void proxyCenter(WebAppContext context) throws Exception {
@@ -152,10 +171,10 @@ public class WebServerTools extends JettySeverTools {
 		}
 	}
 
-	private static void updateWeb() throws Exception {
-		Path path = Config.path_servers_webServer_x_desktop_res_config(true);
-		Files.write(path.resolve("web.json"), XGsonBuilder.toJson(Config.web()).getBytes(StandardCharsets.UTF_8));
-	}
+//	private static void updateWeb() throws Exception {
+//		Path path = Config.path_servers_webServer_x_desktop_res_config(true);
+//		Files.write(path.resolve("web.json"), XGsonBuilder.toJson(Config.web()).getBytes(StandardCharsets.UTF_8));
+//	}
 
 	private static void updateFavicon() throws Exception {
 
@@ -169,14 +188,14 @@ public class WebServerTools extends JettySeverTools {
 
 	private static void createIndexPage() throws Exception {
 		if (null != Config.nodes().webServers()) {
-			StringBuffer buffer = new StringBuffer();
-			buffer.append("<!DOCTYPE html>");
-			buffer.append("<html>");
-			buffer.append("<head>");
-			buffer.append("<meta charset=\"UTF-8\">");
-			buffer.append("<title>o2 index</title>");
-			buffer.append("	</head>");
-			buffer.append("<body>");
+			StringBuilder sb = new StringBuilder();
+			sb.append("<!DOCTYPE html>");
+			sb.append("<html>");
+			sb.append("<head>");
+			sb.append("<meta charset=\"UTF-8\">");
+			sb.append("<title>o2 index</title>");
+			sb.append("</head>");
+			sb.append("<body>");
 			for (Entry<String, WebServer> en : Config.nodes().webServers().entrySet()) {
 				WebServer o = en.getValue();
 				if (BooleanUtils.isTrue(o.getEnable())) {
@@ -191,14 +210,14 @@ public class WebServerTools extends JettySeverTools {
 							url += ":" + o.getPort();
 						}
 					}
-					buffer.append("<a href=\"" + url + "\">" + url + "</a><br/>");
+					sb.append("<a href=\"" + url + "\">" + url + "</a><br/>");
 				}
 
 			}
-			buffer.append("</body>");
-			buffer.append("</html>");
+			sb.append("</body>");
+			sb.append("</html>");
 			File file = new File(Config.base(), "index.html");
-			FileUtils.write(file, buffer.toString(), DefaultCharset.name);
+			FileUtils.write(file, sb.toString(), DefaultCharset.name);
 		}
 	}
 
