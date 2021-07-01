@@ -5,17 +5,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
 
-import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
+import org.eclipse.jetty.server.AsyncRequestLogWriter;
+import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
@@ -32,9 +35,11 @@ import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.FileTools;
 import com.x.base.core.project.tools.JarTools;
 import com.x.base.core.project.tools.PathTools;
 import com.x.server.console.server.JettySeverTools;
+import com.x.server.console.server.ServerRequestLog;
 
 public class CenterServerTools extends JettySeverTools {
 
@@ -103,13 +108,29 @@ public class CenterServerTools extends JettySeverTools {
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
 
+		if (BooleanUtils.isTrue(centerServer.getRequestLogEnable())) {
+			server.setRequestLog(requestLog(centerServer));
+		}
+
 		server.start();
-		Thread.sleep(1000);
+
 		System.out.println("****************************************");
 		System.out.println("* center server start completed.");
 		System.out.println("* port: " + centerServer.getPort() + ".");
 		System.out.println("****************************************");
 		return server;
+	}
+
+	private static RequestLog requestLog(CenterServer centerServer) throws Exception {
+		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
+		asyncRequestLogWriter.setFilenameDateFormat("yyyy_MM_dd");
+		asyncRequestLogWriter.setAppend(true);
+		asyncRequestLogWriter.setFilename(
+				Config.dir_logs().toString() + File.separator + "yyyy_MM_dd." + Config.node() + ".center.request.log");
+		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
+				+ "}t \"%r\" %s %O %{ms}T";
+		return new ServerRequestLog(asyncRequestLogWriter,
+				StringUtils.isEmpty(centerServer.getRequestLogFormat()) ? format : centerServer.getRequestLogFormat());
 	}
 
 	private static void cleanWorkDirectory() throws Exception {
@@ -138,12 +159,12 @@ public class CenterServerTools extends JettySeverTools {
 					DefaultCharset.charset_utf_8, false);
 		}
 		File commonLang = new File(Config.DIR_COMMONS_LANGUAGE);
-		if(commonLang.exists() && commonLang.isDirectory()){
+		if (commonLang.exists() && commonLang.isDirectory()) {
 			File languageDir = new File(dir.toString(), PathTools.WEB_INF_CLASSES_LANGUAGE);
 			FileTools.forceMkdir(languageDir);
 			File[] files = commonLang.listFiles();
-			for(File file : files){
-				if(!file.isDirectory()){
+			for (File file : files) {
+				if (!file.isDirectory()) {
 					File languageFile = new File(languageDir, file.getName());
 					FileUtils.copyFile(file, languageFile);
 				}
