@@ -395,7 +395,15 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
 
             var content = percomment.content;
             var percommentConent = content.replace("<p>","").replace("</p>","");
-            new Element("div",{"class":"o2_appmarket_application_comment_content_title","text":percomment.title}).inject(commentcontentright);
+            var subjectUrl = this.bbsUrlPath;
+            if(subjectUrl.indexOf(":",8)>0){
+                subjectUrl = subjectUrl.slice(0,subjectUrl.indexOf(":",8));
+            }
+            subjectUrl = subjectUrl+"/x_desktop/forum.html?app=ForumDocument&id="+percomment.id;
+            debugger
+            var subjectDiv= new Element("div",{"class":"o2_appmarket_application_comment_content_title"}).inject(commentcontentright);
+            var subjectA = new Element("a",{"class":"o2_appmarket_application_comment_content_title_a","text":percomment.title,"href":subjectUrl,"target":"_blank"}).inject(subjectDiv);
+            //subjectA.setStyle("text-decoration","none");
             var conentDiv = new Element("div",{"class":"o2_appmarket_application_comment_content_text"}).inject(commentcontentright);
 
             var conentHtml = percomment.content;
