@@ -41,7 +41,7 @@ public class WebServer extends ConfigObject {
 	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final String DEFAULT_REQUESTLOGFORMAT = "";
-	private static final Integer DEFAULT_PROXY_TIMEOUT = 180;
+	private static final Integer DEFAULT_PROXY_TIMEOUT = 300;
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -70,7 +70,7 @@ public class WebServer extends ConfigObject {
 	@FieldDescribe("是否启用application服务器代理")
 	private Boolean proxyApplicationEnable;
 
-	@FieldDescribe("代理连接超时时间，默认180(秒)")
+	@FieldDescribe("代理连接超时时间，默认300(秒)")
 	private Integer proxyTimeOut;
 
 	@FieldDescribe("是否启用长连接,默认true.")
