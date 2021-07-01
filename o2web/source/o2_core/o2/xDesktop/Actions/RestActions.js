@@ -167,7 +167,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
         xhr.open(method, uri, async!==false);
         xhr.withCredentials = true;
 
-        if (file) messageItem = this.addFormDataMessage(file, false, xhr, progress);
+        if (file && File.prototype.isPrototypeOf(file)) messageItem = this.addFormDataMessage(file, false, xhr, progress);
         xhr.send(data);
     },
     setMessageText: function(messageItem, text){
