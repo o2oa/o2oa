@@ -390,12 +390,14 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 						var d = data.data[i];
 						if(d[json.id]){
 							tmpV = tmpV.plus(d[json.id].toFloat() || 0);
-							if( d[json.id].indexOf(".") > -1 ){
-								pointLength = Math.max(pointLength, d[json.id].split(".")[1].length);
+							var v = d[json.id].toString();
+							if( v.indexOf(".") > -1 ){
+								pointLength = Math.max(pointLength, v.split(".")[1].length);
 							}
 						}
 					}
 				}
+
 				if( isNaN( tmpV ) ){
 					totalData[json.id] = "";
 					column.td.set("text", "" );
