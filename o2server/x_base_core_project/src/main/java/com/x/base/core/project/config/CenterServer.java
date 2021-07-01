@@ -23,6 +23,8 @@ public class CenterServer extends ConfigObject {
 	private static final Integer DEFAULT_MAXFORMCONTENT = 20;
 	private static final Boolean DEFAULT_EXPOSEJEST = true;
 	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
+	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
+	private static final String DEFAULT_REQUESTLOGFORMAT = "";
 
 	public static CenterServer defaultInstance() {
 		return new CenterServer();
@@ -44,6 +46,8 @@ public class CenterServer extends ConfigObject {
 		this.maxFormContent = DEFAULT_MAXFORMCONTENT;
 		this.exposeJest = DEFAULT_EXPOSEJEST;
 		this.persistentConnectionsEnable = DEFAULT_PERSISTENTCONNECTIONSENABLE;
+		this.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
+		this.requestLogFormat = DEFAULT_REQUESTLOGFORMAT;
 	}
 
 	@FieldDescribe("是否启用")
@@ -76,6 +80,10 @@ public class CenterServer extends ConfigObject {
 	private Integer maxFormContent;
 	@FieldDescribe("暴露jest接口.")
 	private Boolean exposeJest;
+	@FieldDescribe("启用访问日志功能.")
+	private Boolean requestLogEnable;
+	@FieldDescribe("访问日志记录格式.")
+	private String requestLogFormat;
 
 	@FieldDescribe("是否启用长连接,默认false.")
 	private Boolean persistentConnectionsEnable;
@@ -192,6 +200,14 @@ public class CenterServer extends ConfigObject {
 
 	public void setHttpProtocol(String httpProtocol) {
 		this.httpProtocol = httpProtocol;
+	}
+
+	public Boolean getRequestLogEnable() {
+		return BooleanUtils.isTrue(this.requestLogEnable);
+	}
+
+	public String getRequestLogFormat() {
+		return StringUtils.isEmpty(this.requestLogFormat) ? "" : this.requestLogFormat;
 	}
 
 }
