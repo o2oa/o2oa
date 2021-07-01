@@ -23,6 +23,8 @@ public class ApplicationServer extends ConfigObject {
 	private static final Boolean DEFAULT_EXPOSEJEST = true;
 	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
 	private static final Integer DEFAULT_MAXTHREAD = 500;
+	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
+	private static final String DEFAULT_REQUESTLOGFORMAT = "";
 
 	public ApplicationServer() {
 		this.enable = true;
@@ -42,6 +44,9 @@ public class ApplicationServer extends ConfigObject {
 		this.exposeJest = DEFAULT_EXPOSEJEST;
 		this.persistentConnectionsEnable = DEFAULT_PERSISTENTCONNECTIONSENABLE;
 		this.maxThread = DEFAULT_MAXTHREAD;
+		this.maxThread = DEFAULT_MAXTHREAD;
+		this.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
+		this.requestLogFormat = DEFAULT_REQUESTLOGFORMAT;
 	}
 
 	@FieldDescribe("是否启用")
@@ -76,6 +81,10 @@ public class ApplicationServer extends ConfigObject {
 	private Boolean exposeJest;
 	@FieldDescribe("最大http线程数.")
 	private Integer maxThread;
+	@FieldDescribe("启用访问日志功能.")
+	private Boolean requestLogEnable;
+	@FieldDescribe("访问日志记录格式.")
+	private String requestLogFormat;
 
 	@FieldDescribe("是否启用长连接,默认true.")
 	private Boolean persistentConnectionsEnable;
@@ -246,6 +255,14 @@ public class ApplicationServer extends ConfigObject {
 
 	public Integer getMaxThread() {
 		return (null == this.maxThread || this.maxThread < 1) ? DEFAULT_MAXTHREAD : this.maxThread;
+	}
+
+	public Boolean getRequestLogEnable() {
+		return BooleanUtils.isTrue(this.requestLogEnable);
+	}
+
+	public String getRequestLogFormat() {
+		return StringUtils.isEmpty(this.requestLogFormat) ? "" : this.requestLogFormat;
 	}
 
 }
