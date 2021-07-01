@@ -13,6 +13,8 @@ import com.x.base.core.project.tools.DefaultCharset;
 
 public class CenterServer extends ConfigObject {
 
+	private static final long serialVersionUID = 8147826320846595611L;
+
 	private static final Boolean DEFAULT_ENABLE = true;
 	private static final Integer DEFAULT_PORT = 20030;
 	private static final Integer DEFAULT_SCANINTERVAL = 0;
@@ -25,6 +27,7 @@ public class CenterServer extends ConfigObject {
 	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final String DEFAULT_REQUESTLOGFORMAT = "";
+	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 
 	public static CenterServer defaultInstance() {
 		return new CenterServer();
@@ -48,6 +51,7 @@ public class CenterServer extends ConfigObject {
 		this.persistentConnectionsEnable = DEFAULT_PERSISTENTCONNECTIONSENABLE;
 		this.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
 		this.requestLogFormat = DEFAULT_REQUESTLOGFORMAT;
+		this.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
 	}
 
 	@FieldDescribe("是否启用")
@@ -84,6 +88,8 @@ public class CenterServer extends ConfigObject {
 	private Boolean requestLogEnable;
 	@FieldDescribe("访问日志记录格式.")
 	private String requestLogFormat;
+	@FieldDescribe("访问日志记录天数,默认7天.")
+	private Integer requestLogRetainDays;
 
 	@FieldDescribe("是否启用长连接,默认false.")
 	private Boolean persistentConnectionsEnable;
@@ -208,6 +214,11 @@ public class CenterServer extends ConfigObject {
 
 	public String getRequestLogFormat() {
 		return StringUtils.isEmpty(this.requestLogFormat) ? "" : this.requestLogFormat;
+	}
+
+	public Integer getRequestLogRetainDays() {
+		return (null == this.requestLogRetainDays || this.requestLogRetainDays < 1) ? DEFAULT_REQUESTLOGRETAINDAYS
+				: this.requestLogRetainDays;
 	}
 
 }
