@@ -27,6 +27,7 @@ public class WebServer extends ConfigObject {
 		this.persistentConnectionsEnable = DEFAULT_PERSISTENTCONNECTIONSENABLE;
 		this.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
 		this.requestLogFormat = DEFAULT_REQUESTLOGFORMAT;
+		this.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
 	}
 
 	private static final Integer DEFAULT_HTTP_PORT = 80;
@@ -41,6 +42,7 @@ public class WebServer extends ConfigObject {
 	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final String DEFAULT_REQUESTLOGFORMAT = "";
+	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -76,6 +78,8 @@ public class WebServer extends ConfigObject {
 	private Boolean requestLogEnable;
 	@FieldDescribe("访问日志记录格式.")
 	private String requestLogFormat;
+	@FieldDescribe("访问日志记录天数,默认7天.")
+	private Integer requestLogRetainDays;
 
 	public Boolean getPersistentConnectionsEnable() {
 		return persistentConnectionsEnable == null ? DEFAULT_PERSISTENTCONNECTIONSENABLE
@@ -187,6 +191,11 @@ public class WebServer extends ConfigObject {
 
 	public String getRequestLogFormat() {
 		return StringUtils.isEmpty(this.requestLogFormat) ? "" : this.requestLogFormat;
+	}
+
+	public Integer getRequestLogRetainDays() {
+		return (null == this.requestLogRetainDays || this.requestLogRetainDays < 1) ? DEFAULT_REQUESTLOGRETAINDAYS
+				: this.requestLogRetainDays;
 	}
 
 }
