@@ -989,7 +989,7 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         }
         this.textNode.set({
             "text": this.data.name+((this.data.applicationName) ? " -- ("+appName+")" : ""),
-            "title": this.data.name+"-"+ (this.data.description || "")
+            "title": this.data.name+ (this.data.description ? ("-"+ this.data.description) : "")
         });
         //var _self = this;
 
