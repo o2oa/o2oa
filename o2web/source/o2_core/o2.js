@@ -1555,7 +1555,8 @@ if (window.Promise && !Promise.any){
                 address: o2.filterUrl(address),
                 body: data,
                 debug: (window.layout && layout["debugger"]),
-                token: (window.layout && layout.session && layout.session.user) ? layout.session.user.token : ""
+                token: (window.layout && layout.session && layout.session.user) ? layout.session.user.token : "",
+                tokenName: o2.tokenName
             }
             var actionWorker = new Worker("../o2_core/o2/actionWorker.js");
             var p = new Promise(function(s,f){
