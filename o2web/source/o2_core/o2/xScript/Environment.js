@@ -3145,6 +3145,11 @@ MWF.xScript.Environment = function(ev){
             });
         }
     };
+
+    Object.defineProperty(this.form, "readonly", {
+        get: function(){ return  _form.options.readonly; }
+    });
+
     /**
      * 在用户提交的时候，选择的路由。仅在表单的“校验意见”和“校验路由”脚本中可用。只读。<b>（仅流程表单中可用）</b>。
      * @member currentRouteName
