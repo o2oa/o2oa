@@ -42,6 +42,7 @@ public class WebServer extends ConfigObject {
 	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final String DEFAULT_REQUESTLOGFORMAT = "";
+	private static final Integer DEFAULT_PROXY_TIMEOUT = 300;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 
 	@FieldDescribe("是否启用")
@@ -70,6 +71,9 @@ public class WebServer extends ConfigObject {
 
 	@FieldDescribe("是否启用application服务器代理")
 	private Boolean proxyApplicationEnable;
+
+	@FieldDescribe("代理连接超时时间，默认300(秒)")
+	private Integer proxyTimeOut;
 
 	@FieldDescribe("是否启用长连接,默认true.")
 	private Boolean persistentConnectionsEnable;
@@ -193,9 +197,19 @@ public class WebServer extends ConfigObject {
 		return StringUtils.isEmpty(this.requestLogFormat) ? "" : this.requestLogFormat;
 	}
 
+
+	public Integer getProxyTimeOut() {
+		return proxyTimeOut == null ? DEFAULT_PROXY_TIMEOUT : this.proxyTimeOut;
+	}
+
+	public void setProxyTimeOut(Integer proxyTimeOut) {
+		this.proxyTimeOut = proxyTimeOut;
+	}
+
 	public Integer getRequestLogRetainDays() {
 		return (null == this.requestLogRetainDays || this.requestLogRetainDays < 1) ? DEFAULT_REQUESTLOGRETAINDAYS
 				: this.requestLogRetainDays;
 	}
+
 
 }
