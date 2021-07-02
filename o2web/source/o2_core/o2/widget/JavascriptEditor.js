@@ -21,6 +21,7 @@ o2.widget.JavascriptEditor = new Class({
 		this.unbindEvents = [];
 		this.node = $(node);
 		this.id = o2.uuid();
+		if (!o2.JSEditorCWE.isInit) o2.JSEditorCWE.init();
 	},
     getDefaultEditorData: function(){
 	    switch (this.options.type) {
@@ -850,6 +851,7 @@ o2.widget.JavascriptEditor.completionWorkerEnvironment = o2.JSEditorCWE = {
         this.scriptWorker.onmessage = function(e) {
             if (e.data && e.data.type=="ready") this.setOnMessage();
         }.bind(this);
+        this.isInit = true;
         return this;
     },
     setOnMessage: function(){
@@ -872,4 +874,4 @@ o2.widget.JavascriptEditor.completionWorkerEnvironment = o2.JSEditorCWE = {
             this.scriptWorker.postMessage(o);
         }
     }
-}.init();
+};
