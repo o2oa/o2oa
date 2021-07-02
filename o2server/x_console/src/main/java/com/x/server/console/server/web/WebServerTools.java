@@ -99,12 +99,12 @@ public class WebServerTools extends JettySeverTools {
 		server.setHandler(context);
 
 		if (BooleanUtils.isTrue(webServer.getProxyCenterEnable())) {
-			proxyCenter(context);
+			proxyCenter(context, webServer.getProxyTimeOut());
 		}
 
 		if (BooleanUtils.isTrue(webServer.getProxyApplicationEnable())) {
-			proxyApplication(context, Config.dir_store().toPath());
-			proxyApplication(context, Config.dir_custom().toPath());
+			proxyApplication(context, Config.dir_store().toPath(), webServer.getProxyTimeOut());
+			proxyApplication(context, Config.dir_custom().toPath(), webServer.getProxyTimeOut());
 		}
 
 		server.setDumpAfterStart(false);
@@ -139,15 +139,15 @@ public class WebServerTools extends JettySeverTools {
 				StringUtils.isEmpty(webServer.getRequestLogFormat()) ? format : webServer.getRequestLogFormat());
 	}
 
-	private static void proxyCenter(WebAppContext context) throws Exception {
+	private static void proxyCenter(WebAppContext context, final Integer timeout) throws Exception {
 		ServletHolder proxyHolder = new ServletHolder(Proxy.class);
 		proxyHolder.setInitParameter("port", Config.currentNode().getCenter().getPort() + "");
 		proxyHolder.setInitParameter("idleTimeout", "60000");
-		proxyHolder.setInitParameter("timeout", "120000");
+		proxyHolder.setInitParameter("timeout", timeout + "000");
 		context.addServlet(proxyHolder, "/" + x_program_center.class.getSimpleName() + "/*");
 	}
 
-	private static void proxyApplication(WebAppContext context, Path path) throws Exception {
+	private static void proxyApplication(WebAppContext context, Path path, final Integer timeout) throws Exception {
 		try (Stream<Path> stream = Files.list(path)) {
 			stream.filter(o -> StringUtils.endsWithIgnoreCase(o.getFileName().toString(), ".war"))
 					.map(Path::getFileName).map(Path::toString).map(FilenameUtils::getBaseName)
@@ -156,7 +156,7 @@ public class WebServerTools extends JettySeverTools {
 							ServletHolder proxyHolder = new ServletHolder(Proxy.class);
 							proxyHolder.setInitParameter("port", Config.currentNode().getApplication().getPort() + "");
 							proxyHolder.setInitParameter("idleTimeout", "60000");
-							proxyHolder.setInitParameter("timeout", "120000");
+							proxyHolder.setInitParameter("timeout", timeout + "000");
 							context.addServlet(proxyHolder, "/" + o + "/*");
 						} catch (Exception e) {
 							logger.error(e);
