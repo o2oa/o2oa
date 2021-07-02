@@ -13,7 +13,6 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.file.assemble.control.jaxrs.attachment2.ActionUpdateContentCallback.Wo;
 import com.x.file.assemble.control.jaxrs.attachment2.ActionUploadCallback.WoObject;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
