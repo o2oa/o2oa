@@ -130,6 +130,7 @@ public class WebServerTools extends JettySeverTools {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setFilenameDateFormat("yyyy_MM_dd");
 		asyncRequestLogWriter.setAppend(true);
+		asyncRequestLogWriter.setRetainDays(webServer.getRequestLogRetainDays());
 		asyncRequestLogWriter.setFilename(
 				Config.dir_logs().toString() + File.separator + "yyyy_MM_dd." + Config.node() + ".web.request.log");
 		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
