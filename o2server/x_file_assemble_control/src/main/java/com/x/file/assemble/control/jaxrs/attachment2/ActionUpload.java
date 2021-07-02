@@ -73,7 +73,8 @@ class ActionUpload extends BaseAction {
 			/** 同一目录下文件名唯一 */
 
 			if (this.exist(business, fileName, folderId, effectivePerson.getDistinguishedName())) {
-				throw new ExceptionSameNameFileExist(fileName);
+				fileName = this.adjustFileName(business, folderId, fileName);
+				//throw new ExceptionSameNameFileExist(fileName);
 			}
 			if(StringUtils.isEmpty(fileMd5)){
 				if(bytes==null) {
