@@ -14,6 +14,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class Folder2Factory extends AbstractFactory {
@@ -120,5 +122,31 @@ public class Folder2Factory extends AbstractFactory {
 		cq.select(cb.count(root)).where(p);
 		long count = em.createQuery(cq).getSingleResult();
 		return count > 0;
+	}
+
+	public void listSuPNested(String id, List<Folder2> list) throws Exception {
+		if(!Business.TOP_FOLD.equals(id)) {
+			Folder2 folder = this.entityManagerContainer().find(id, Folder2.class);
+			if (folder != null) {
+				list.add(folder);
+				if (!Business.TOP_FOLD.equals(folder.getSuperior())) {
+					listSuPNested(folder.getSuperior(), list);
+				}
+			}
+		}
+	}
+
+	public String getSupPath(String id) throws Exception {
+		String path = "";
+		List<Folder2> list = new ArrayList<>();
+		listSuPNested(id, list);
+		Collections.reverse(list);
+		if(!list.isEmpty()) {
+			for (Folder2 folder : list){
+				path = path + "/" + folder.getName();
+			}
+		}else
+			path = "/";
+		return path;
 	}
 }
