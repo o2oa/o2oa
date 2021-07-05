@@ -44,7 +44,7 @@ class ActionEdit extends BaseAction {
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Unit unit = business.unit().pick(flag);
-			//Unit oldUnit = unit;
+			Unit oldUnit = unit;
 			boolean checkFlag = false;
 
 			if (null == unit) {
@@ -90,6 +90,7 @@ class ActionEdit extends BaseAction {
 			CacheManager.notify(Unit.class);
 
 			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织成员的身份（组织名称，组织级别名称） */
+			checkFlag = this.checkUnitTypeName(oldUnit, unit);
 			if (checkFlag) {
 				this.updateIdentityUnitNameAndUnitLevelName(effectivePerson, flag, jsonElement);
 			}
