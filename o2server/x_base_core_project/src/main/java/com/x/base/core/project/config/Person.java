@@ -17,7 +17,7 @@ import com.x.base.core.project.tools.StringTools;
 
 public class Person extends ConfigObject {
 
-	public static final Boolean DEFAULT_CAPTCHALOGIN = true;
+	public static final Boolean DEFAULT_CAPTCHALOGIN = false;
 	public static final Boolean DEFAULT_CODELOGIN = true;
 	public static final Boolean DEFAULT_BINDLOGIN = true;
 	public static final Boolean DEFAULT_FACELOGIN = true;
@@ -46,6 +46,8 @@ public class Person extends ConfigObject {
 	public static final String DEFAULT_PASSWORDREGEX = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$";
 	public static final String DEFAULT_PASSWORDREGEXHINT = "6位以上,包含数字和字母.";
 	public static final String DEFAULT_LANGUAGE = "zh-CN";
+	public static final String DEFAULT_CAPTCHAFONT = "";
+	public static final String DEFAULT_TOKENNAME = "x-token";
 
 	public Person() {
 		this.captchaLogin = DEFAULT_CAPTCHALOGIN;
@@ -61,6 +63,8 @@ public class Person extends ConfigObject {
 		this.personUnitOrderByAsc = DEFAULT_PERSONUNITORDERBYASC;
 		this.tokenCookieHttpOnly = DEFAULT_TOKENCOOKIEHTTPONLY;
 		this.language = DEFAULT_LANGUAGE;
+		this.captchaFont = DEFAULT_CAPTCHAFONT;
+		this.tokenName = DEFAULT_TOKENNAME;
 	}
 
 	public static Person defaultInstance() {
@@ -117,11 +121,17 @@ public class Person extends ConfigObject {
 	@FieldDescribe("保存token的cookie是否启用httpOnly")
 	private Boolean tokenCookieHttpOnly;
 
+	@FieldDescribe("使用识别用户的token名称,可自定义,默认为:" + DEFAULT_TOKENNAME + ".")
+	private String tokenName;
+
 	@FieldDescribe("人员组织排序是否为升序，true为升序(默认)，false为降序")
 	private Boolean personUnitOrderByAsc;
 
 	@FieldDescribe("平台语言：zh-CN(中文，默认)、en(英语)")
 	private String language;
+
+	@FieldDescribe("验证码字体,默认为空,代表使用系统自带字体.")
+	private String captchaFont;
 
 	public Boolean getTokenCookieHttpOnly() {
 		return BooleanUtils.isTrue(this.tokenCookieHttpOnly);
@@ -187,6 +197,10 @@ public class Person extends ConfigObject {
 
 	}
 
+	public String getTokenName() {
+		return StringUtils.isBlank(this.tokenName) ? DEFAULT_TOKENNAME : this.tokenName;
+	}
+
 	public Integer getFailureInterval() {
 		return (NumberTools.nullOrLessThan(this.failureInterval, 0) ? DEFAULT_FAILUREINTERVAL : this.failureInterval);
 	}
@@ -243,6 +257,10 @@ public class Person extends ConfigObject {
 
 	public String getMobileRegex() {
 		return StringUtils.isEmpty(this.mobileRegex) ? StringTools.MOBILE_REGEX.toString() : this.mobileRegex;
+	}
+
+	public String getCaptchaFont() {
+		return StringUtils.isBlank(this.captchaFont) ? DEFAULT_CAPTCHAFONT : this.captchaFont;
 	}
 
 	/*
@@ -332,4 +350,5 @@ public class Person extends ConfigObject {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
+
 }

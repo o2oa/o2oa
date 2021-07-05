@@ -6,6 +6,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.processplatform.core.entity.content.Task_;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -83,50 +84,50 @@ public class FilterEntry extends GsonPropertyObject {
 			return false;
 		}
 		switch (StringUtils.trimToEmpty(formatType)) {
-		case FORMAT_TEXTVALUE:
-			return true;
-		case FORMAT_BOOLEANVALUE:
-			if (null == BooleanUtils.toBooleanObject(value)) {
-				return false;
-			} else {
+			case FORMAT_TEXTVALUE:
 				return true;
-			}
-		case FORMAT_DATETIMEVALUE:
-			if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
-				return true;
-			} else {
-				return false;
-			}
-		case FORMAT_DATEVALUE:
-			if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
-				return true;
-			} else {
-				return false;
-			}
-		case FORMAT_TIMEVALUE:
-			if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
-					|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
-				return true;
-			} else {
-				return false;
-			}
-		case FORMAT_NUMBERVALUE:
-			if (NumberUtils.isCreatable(value)) {
-				return true;
-			} else {
-				return false;
-			}
+			case FORMAT_BOOLEANVALUE:
+				if (null == BooleanUtils.toBooleanObject(value)) {
+					return false;
+				} else {
+					return true;
+				}
+			case FORMAT_DATETIMEVALUE:
+				if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
+					return true;
+				} else {
+					return false;
+				}
+			case FORMAT_DATEVALUE:
+				if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
+					return true;
+				} else {
+					return false;
+				}
+			case FORMAT_TIMEVALUE:
+				if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
+						|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
+					return true;
+				} else {
+					return false;
+				}
+			case FORMAT_NUMBERVALUE:
+				if (NumberUtils.isCreatable(value)) {
+					return true;
+				} else {
+					return false;
+				}
 		}
 		return false;
 	}
@@ -531,6 +532,24 @@ public class FilterEntry extends GsonPropertyObject {
 						p = cb.and(p,  root.get(Item_.stringShortValue).in(Arrays.asList(compareValue.split(","))));
 					}else{
 						p = cb.and(p, cb.equal(root.get(Item_.stringShortValue), compareValue));
+					}
+				} else if (Comparison.isListLike(this.comparison)) {
+					if(compareValue.indexOf(",") > -1){
+						Predicate op = null;
+						for(String cv : compareValue.split(",")){
+							if(StringUtils.isNotBlank(cv)) {
+								if(op == null){
+									op = cb.like(root.get(Item_.stringShortValue), cv.trim());
+								}else {
+									op = cb.or(op, cb.like(root.get(Item_.stringShortValue), cv.trim()));
+								}
+							}
+						}
+						if(op!=null) {
+							p = cb.and(p, op);
+						}
+					}else{
+						p = cb.and(p, cb.like(root.get(Item_.stringShortValue), compareValue));
 					}
 				} else {
 					p = cb.and(p, cb.equal(root.get(Item_.stringShortValue), compareValue));

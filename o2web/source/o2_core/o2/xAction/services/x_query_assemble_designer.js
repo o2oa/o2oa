@@ -181,6 +181,43 @@ MWF.xAction.RestActions.Action["x_query_assemble_designer"] = new Class({
         }
     },
 
+    saveImportModel: function(data, success, failure){
+        if (!data.isNewImportModel){
+            this.updateImportModel(data, success, failure);
+        }else{
+            this.addImportModel(data, success, failure);
+        }
+    },
+    updateImportModel: function(importModelData, success, failure){
+        var data = Object.clone(importModelData);
+        data.data = JSON.encode(data.data);
+        data.query = importModelData.application;
+        data.queryName = importModelData.applicationName;
+        delete data.tableObj;
+        this.action.invoke({"name": "updateImportModel", "data": data, "parameter": {"flag": data.id},"success": success,"failure": failure});
+    },
+    addImportModel: function(importModelData, success, failure){
+        var data = Object.clone(importModelData);
+        data.data = JSON.encode(data.data);
+        data.query = importModelData.application;
+        data.queryName = importModelData.applicationName;
+        delete data.tableObj;
+        if (!data.id){
+            this.getUUID(function(id){
+                data.id = id;
+                this.action.invoke({"name": "createImportModel","data": data, "success": function(json){
+                        importModelData.isNewImportModel = false;
+                        if (success) success(json);
+                    },"failure": failure});
+            }.bind(this));
+        }else{
+            this.action.invoke({"name": "createImportModel","data": data, "success": function(json){
+                    importModelData.isNewImportModel = false;
+                    if (success) success(json);
+                },"failure": failure});
+        }
+    },
+
     saveRow: function(tableFlag, data, success, failure, async){
         if ( data.id ){
             this.action.invoke({"name": "updateRow", "async": async, "parameter": {"tableFlag": tableFlag, "id" : data.id  }, "data" : data, "success": success, "failure": failure});

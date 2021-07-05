@@ -12,6 +12,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -122,7 +123,7 @@ public class BeginProcessor extends AbstractBeginProcessor {
 
 	private void expireAppointWorkTime(AeiObjects aeiObjects) throws Exception {
 		Integer m = 0;
-		WorkTime wt = new WorkTime();
+		WorkTime wt = Config.workTime();
 		if (NumberTools.greaterThan(aeiObjects.getProcess().getExpireDay(), 0)) {
 			m += aeiObjects.getProcess().getExpireDay() * wt.minutesOfWorkDay();
 		}
@@ -164,8 +165,8 @@ public class BeginProcessor extends AbstractBeginProcessor {
 				Integer m = 0;
 				m += result.getWorkHour() * 60;
 				if (m > 0) {
-					WorkTime wt = new WorkTime();
-					aeiObjects.getWork().setExpireTime(wt.forwardMinutes(aeiObjects.getWork().getCreateTime(), m));
+					aeiObjects.getWork()
+							.setExpireTime(Config.workTime().forwardMinutes(aeiObjects.getWork().getCreateTime(), m));
 				} else {
 					aeiObjects.getWork().setExpireTime(null);
 				}

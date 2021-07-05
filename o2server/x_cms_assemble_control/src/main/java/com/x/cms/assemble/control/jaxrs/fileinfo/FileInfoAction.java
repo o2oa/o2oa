@@ -332,4 +332,44 @@ public class FileInfoAction extends StandardJaxrsAction{
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "设置文档附件排序号.", action = ActionChangeOrderNumber.class)
+	@GET
+	@Path("{id}/doc/{docId}/change/seqnumber/{seqNumber}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void changeSeqNumber(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								  @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+								  @JaxrsParameterDescribe("文档标识") @PathParam("docId") String docId,
+								  @JaxrsParameterDescribe("排序号") @PathParam("seqNumber") Integer seqNumber) {
+		ActionResult<ActionChangeOrderNumber.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionChangeOrderNumber().execute(effectivePerson, id, docId, seqNumber);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "pdf格式预览文件,支持doc、docx，需要连接O2云.", action = ActionPreviewPdf.class)
+	@GET
+	@Path("{id}/preview/pdf")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void previewPdf(@Suspended final AsyncResponse asyncResponse,
+						   @Context HttpServletRequest request,
+						   @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+						   @JaxrsParameterDescribe("下载pdf名称，可以为空") @QueryParam("fileName") String fileName) {
+		ActionResult<ActionPreviewPdf.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionPreviewPdf().execute(effectivePerson, id, fileName);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }

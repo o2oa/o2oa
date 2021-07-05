@@ -67,6 +67,23 @@
         "color": "#333333",
         "line-height": "40px"
     },
+
+    "naviImporterTitleNode": {
+        "height": "40px",
+        "line-height": "40px",
+        "padding-left": "65px",
+        "font-size": "16px",
+        "color": "#333333",
+        "background": "url('../x_component_query_Query/$Main/default/icon/importer.png') 38px center no-repeat"
+    },
+    "naviImporterContentNode": {
+        "min-height": "40px",
+        "overflow": "hidden",
+        "font-size": "14px",
+        "color": "#333333",
+        "line-height": "40px"
+    },
+
     "naviIconTitleNode": {
         "width": "82px",
         "height": "100px",

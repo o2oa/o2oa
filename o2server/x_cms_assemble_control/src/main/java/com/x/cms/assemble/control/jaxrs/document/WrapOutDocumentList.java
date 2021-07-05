@@ -80,7 +80,7 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	private Map<?, ?> data;
 	
 	@FieldDescribe( "是否置顶." )
-	private String isTop;
+	private Boolean isTop;
 	
 	/**
 	 * 只作显示用
@@ -300,11 +300,11 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 		this.sequence = sequence;
 	}
 
-	public String getIsTop() {
+	public Boolean getIsTop() {
 		return isTop;
 	}
 
-	public void setIsTop(String isTop) {
+	public void setIsTop(Boolean isTop) {
 		this.isTop = isTop;
 	}
 	

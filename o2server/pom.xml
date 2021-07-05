@@ -295,7 +295,7 @@
 			<groupId>com.squareup</groupId>
 			<artifactId>javapoet</artifactId>
 		</dependency>
-		<!-- dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId>
+		<!-- dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId> 
 			</dependency -->
 		<dependency>
 			<groupId>com.github.neuroph</groupId>
@@ -361,6 +361,14 @@
 			<groupId>com.microsoft.playwright</groupId>
 			<artifactId>playwright</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.github.whvcse</groupId>
+			<artifactId>easy-captcha</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-client</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -396,7 +404,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -508,7 +517,7 @@
 			<dependency>
 				<groupId>org.apache.openjpa</groupId>
 				<artifactId>openjpa</artifactId>
-				<version>3.1.0</version>
+				<version>3.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
@@ -829,7 +838,7 @@
 				<artifactId>javapoet</artifactId>
 				<version>1.11.1</version>
 			</dependency>
-			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId>
+			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId> 
 				<version>20200316</version> </dependency -->
 			<dependency>
 				<groupId>com.github.neuroph</groupId>
@@ -860,11 +869,6 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>1.7.25</version>
-			</dependency>
-			<dependency>
-				<groupId>nl.captcha</groupId>
-				<artifactId>simplecaptcha</artifactId>
-				<version>1.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>cglib</groupId>
@@ -1060,6 +1064,16 @@
 				<groupId>net.lingala.zip4j</groupId>
 				<artifactId>zip4j</artifactId>
 				<version>2.3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.whvcse</groupId>
+				<artifactId>easy-captcha</artifactId>
+				<version>1.6.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.hadoop</groupId>
+				<artifactId>hadoop-client</artifactId>
+				<version>3.3.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

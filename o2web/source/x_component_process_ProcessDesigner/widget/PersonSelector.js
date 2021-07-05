@@ -90,6 +90,8 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                             if (type==="queryview") this.identitys.push(new MWF.widget.O2QueryView(data, this.node));
                             if (type==="querystatement") this.identitys.push(new MWF.widget.O2QueryStatement(data, this.node));
                             if (type==="querystat") this.identitys.push(new MWF.widget.O2QueryStat(data, this.node));
+                            if (type==="querytable") this.identitys.push(new MWF.widget.O2QueryTable(data, this.node));
+                            if (type==="queryimportmodel") this.identitys.push(new MWF.widget.O2QueryImportModel(data, this.node));
                             if (type==="dutyname") this.identitys.push(new MWF.widget.O2Duty(data, this.node));
                             if (type==="cmsapplication") this.identitys.push(new MWF.widget.O2CMSApplication(data, this.node));
                             if (type==="cmscategory") this.identitys.push(new MWF.widget.O2CMSCategory(data, this.node));
@@ -162,6 +164,8 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                             if (type==="queryview") this.identitys.push(new MWF.widget.O2QueryView(item.data, this.node));
                             if (type==="querystatement") this.identitys.push(new MWF.widget.O2QueryStatement(item.data, this.node));
                             if (type==="querystat") this.identitys.push(new MWF.widget.O2QueryStat(item.data, this.node));
+                            if (type==="querytable") this.identitys.push(new MWF.widget.O2QueryTable(item.data, this.node));
+                            if (type==="queryimportmodel") this.identitys.push(new MWF.widget.O2QueryImportModel(item.data, this.node));
                             if (type==="dutyname") this.identitys.push(new MWF.widget.O2Duty(item.data, this.node));
                             if (type==="portalfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
                             if (type==="processfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));

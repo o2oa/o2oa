@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -64,6 +65,8 @@ public class NodeAgent extends Thread {
 
 	private static Logger logger = LoggerFactory.getLogger(NodeAgent.class);
 
+	private static ReentrantLock lock = new ReentrantLock();
+
 	public static final Pattern redeploy_pattern = Pattern.compile("^redeploy:(.+)$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern uninstall_pattern = Pattern.compile("^uninstall:(.+)$", Pattern.CASE_INSENSITIVE);
@@ -77,7 +80,7 @@ public class NodeAgent extends Thread {
 
 	public static final Pattern execute_command_pattern = Pattern.compile("^command:(.+)$", Pattern.CASE_INSENSITIVE);
 
-	public static final int LOG_MAX_READ_SIZE = 6 * 1024;
+	public static final int LOG_MAX_READ_SIZE = 4 * 1024;
 
 	private static final int BUFFER_SIZE = 1024 * 1024 * 1000;
 
@@ -225,7 +228,16 @@ public class NodeAgent extends Thread {
 						matcher = read_log_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
 							long lastTimeFileSize = dis.readLong();
-							readLog(lastTimeFileSize, dos);
+							if(lock.tryLock()) {
+								try {
+									readLog(lastTimeFileSize, dos);
+								} finally {
+									lock.unlock();
+								}
+							}else {
+								dos.writeUTF("failure");
+								dos.flush();
+							}
 							continue;
 						}
 

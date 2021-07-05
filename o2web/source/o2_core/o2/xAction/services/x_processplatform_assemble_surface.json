@@ -223,6 +223,8 @@
 
   "uploadAttachment": {"uri": "/jaxrs/attachment/upload/work/{id}", "method": "POST", "enctype": "formData"},
   "uploadAttachmentByWorkCompleted": {"uri": "/jaxrs/attachment/upload/workcompleted/{id}", "method": "POST", "enctype": "formData"},
+  "V2UploadWorkOrWorkCompleted": {"uri": "/jaxrs/attachment/v2/upload/workorworkcompleted/{workOrWorkCompleted}", "method": "POST", "enctype": "formData"},
+
 
   "replaceAttachment": {"uri": "/jaxrs/attachment/update/{id}/work/{workid}", "method": "POST", "enctype": "formData"},
 
@@ -294,6 +296,7 @@
 
   "loadWorkV2": {"uri": "/jaxrs/work/v2/workorworkcompleted/{workOrWorkCompleted}"},
   "lookupFormWithWork": {"uri": "/jaxrs/form/v2/lookup/workorworkcompleted/{workOrWorkCompleted}"},
+  "lookupFormWithWorkMobile": {"uri": "/jaxrs/form/v2/lookup/workorworkcompleted/{workOrWorkCompleted}/mobile"},
 
   "listTaskByJob": {"uri": "/jaxrs/task/list/job/{job}"},
   "listTaskCompletedByJob": {"uri": "/jaxrs/taskcompleted/list/job/{job}"},
@@ -326,6 +329,10 @@
   "getRouteSelectConfig" : {"uri":"/jaxrs/route/{id}/selectconfig"},
   "listRoute" : {"uri":"/jaxrs/route/list", "method":"PUT"},
   "getRoute" : {"uri":"/jaxrs/route/{id}"},
+
+  "getReadRecord" : {"uri":"/jaxrs/readrecord/list/workorworkcompleted/{workOrWorkCompleted}"},
+
+
 
   "clazz": "x_processplatform_assemble_surface"
 

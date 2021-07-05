@@ -16,6 +16,8 @@
   "loadView": {"uri": "/jaxrs/view/flag/{flag}/query/{queryFlag}/execute", "method": "PUT"},
   "bundleView": {"uri": "/jaxrs/view/{id}/bundle", "method": "PUT"},
 
+  "getTableById" : { "uri": "/jaxrs/table/{id}" },
+
   "exportViewWithQuery": {"uri": "/jaxrs/view/flag/{flag}/query/{queryFlag}/excel", "method": "PUT"},
   "exportView": {"uri": "/jaxrs/view/{id}/excel", "method": "PUT"},
   "getViewExcel": {"uri": "/jaxrs/view/excel/result/{flag}"},
@@ -37,6 +39,18 @@
   "deleteAllRow" : { "uri": "/jaxrs/table/{tableFlag}/row/delete/all", "method": "DELETE"}, //通过where 统计数量
 
   "calculateNeural": {"uri": "/jaxrs/neural/list/calculate/model/{modelFlag}/work/{workId}"},
+
+  "executImportModel": { "uri" : "/jaxrs/importmodel/{id}/execute", "method": "POST"},
+  "listImportModel": { "uri" : "/jaxrs/importmodel/list/query/{queryFlag}"},
+  "getImportModelById": { "uri" : "/jaxrs/importmodel/{id}"},
+  "getImportModel": { "uri" : "/jaxrs/importmodel/flag/{flag}/query/{queryFlag}"},
+
+  "getUUID": { "uri" : "/jaxrs/importmodel/uuid"},
+
+  "getImportModelRecord": { "uri" : "/jaxrs/importmodel/record/{recordId}"},
+  "getImportModelRecordStatus": { "uri" : "/jaxrs/importmodel/record/{recordId}/status"},
+  "listImportModelRecord": {"uri": "/jaxrs/importmodel/list/record/paging/{page}/size/{size}", "method": "POST"},
+  "listImportModelRecordItem": { "uri" : "/jaxrs/importmodel/list/record/item/paging/{page}/size/{size}", "method": "POST"},
 
   "clazz": "x_query_assemble_surface"
 }

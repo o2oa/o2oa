@@ -240,6 +240,75 @@
       "background-color": "#dedede"
     }
   },
+  "datatable": {
+    "styles": {},
+    "tableStyles": {
+      "border-top": "1px solid #666666",
+      "border-left": "1px solid #666666",
+      "width": "calc(100% - 2px)"
+    },
+    "titleStyles": {
+      "height": "28px",
+      "cursor": "pointer",
+      "line-height": "28px",
+      "overflow": "hidden",
+      "opacity": 1,
+      "border-bottom": "1px solid #666666",
+      "background-color": "#dedede",
+      "border-right": "1px solid #666666"
+    },
+    "contentStyles": {
+      "text-align": "center",
+      "height": "30px",
+      "line-height": "30px",
+      "color": "#666",
+      "border-right": "1px solid #666666",
+      "border-bottom": "1px solid #666666"
+    },
+    "actionStyles": {
+      "border-right": "1px solid #666666",
+      "borderbottom": "1px solid #666666"
+    },
+    "editStyles": {
+      "background-color": "#fff6f6",
+      "text-align": "center",
+      "height": "30px",
+      "line-height": "30px",
+      "border-right": "1px solid #666666",
+      "border-bottom": "1px solid #666666"
+    },
+    "amountStyles": {
+      "font-weight": "bold",
+      "height": "30px",
+      "line-height": "30px",
+      "text-align": "center",
+      "background-color": "#dedede",
+      "border-right": "1px solid #666666",
+      "border-bottom": "1px solid #666666"
+    },
+    "itemTitleStyles": {
+      "height": "40px",
+      "background-color": "#ffffff",
+      "line-height": "30px",
+      "padding": "0px 15px",
+      "color": "#fb4747",
+      "font-size": "18px",
+      "font-weight": "bold",
+      "border-bottom": "0px solid #cccccc"
+    },
+    "properties": {
+      "width": "100%",
+      "border": "0",
+      "cellpadding": "3",
+      "cellspacing": "0",
+      "align": "center"
+    }
+  },
+  "datatable$Title": {
+    "styles": {
+      "background-color": "#dedede"
+    }
+  },
   "address": {
     "styles": {
       "border": "1px solid #ccc",

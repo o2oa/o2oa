@@ -29,7 +29,7 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
         this.field = true;
     },
     _loadNode: function(){
-        if (this.readonly){
+        if (this.readonly || this.json.isReadonly){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -103,6 +103,18 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
     _searchOptions: function(value, callback){
         value = value.toLowerCase();
         var i = (this.combox.editItem) ? this.combox.editItem.getItemPosition() : this.combox.values.length;
+        debugger;
+        if(this.json.selectRange==="province"){
+            if( i > 0 ){
+                if (callback) callback([]);
+                return;
+            }
+        }else if(this.json.selectRange==="city"){
+            if( i > 1 ){
+                if (callback) callback([]);
+                return;
+            }
+        }
         switch (i) {
             case 0: //省
                 o2.Actions.get("x_general_assemble_control").listProvince(function(json){
@@ -117,7 +129,8 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
                             list.push({"text": k, "value": k});
                         }
                     }.bind(this));
-                    if (list.length) if (callback) callback(list);
+                    // if (list.length) if (callback) callback(list);
+                    if (callback) callback(list);
                 }.bind(this));
                 // MWF.UD.getPublicData("addr_province", function(json){
                 //     var list = [];
@@ -148,7 +161,8 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
                             list.push({"text": k, "value": k});
                         }
                     }.bind(this));
-                    if (list.length) if (callback) callback(list);
+                    // if (list.length) if (callback) callback(list);
+                    if (callback) callback(list);
                 }.bind(this));
 
 

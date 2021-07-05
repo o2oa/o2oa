@@ -1,0 +1,16 @@
+{
+  "path": "",
+  "dataType_CMSProcess": "string",
+  "dataType_Querytable" : "string",
+  "validFieldType" : true,
+  "events": {
+//    "beforeImport" : {
+//      "code": "",
+//      "html": ""
+//    },
+//    "afterImport" : {
+//      "code": "",
+//      "html": ""
+//    }
+  }
+}

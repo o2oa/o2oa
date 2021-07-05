@@ -2360,13 +2360,22 @@ MWF.xScript.ViewEnvironment = function (ev) {
             var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
             var data = {"attributeList":values,"name":attr,"person":personFlag};
 
+            var v = null;
             var cb = function(json){
-                if (success) return success(json);
-            }.ag().catch(function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            });
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.appendPersonAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
 
-            orgActions.appendPersonAttribute(data, cb, null, !!async);
+            // var cb = function(json){
+            //     if (success) return success(json);
+            // }.ag().catch(function(xhr, text, error){
+            //     if (failure) return failure(xhr, text, error);
+            // });
+            //
+            // orgActions.appendPersonAttribute(data, cb, null, !!async);
         },
         //设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
         /**
@@ -2395,13 +2404,22 @@ MWF.xScript.ViewEnvironment = function (ev) {
             var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
             var data = {"attributeList":values,"name":attr,"person":personFlag};
 
+            var v = null;
             var cb = function(json){
-                if (success) return success(json);
-            }.ag().catch(function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            });
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.setPersonAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
 
-            orgActions.setPersonAttribute(data, cb, null, !!async);
+            // var cb = function(json){
+            //     if (success) return success(json);
+            // }.ag().catch(function(xhr, text, error){
+            //     if (failure) return failure(xhr, text, error);
+            // });
+            //
+            // orgActions.setPersonAttribute(data, cb, null, !!async);
         },
         //获取人员属性值
         /**
@@ -2563,13 +2581,22 @@ MWF.xScript.ViewEnvironment = function (ev) {
             var unitFlag = (typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
             var data = {"attributeList":values,"name":attr,"unit":unitFlag};
 
+            var v = null;
             var cb = function(json){
-                if (success) return success(json);
-            }.ag().catch(function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            });
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.appendUnitAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
 
-            orgActions.appendPersonAttribute(data, cb, null, !!async);
+            // var cb = function(json){
+            //     if (success) return success(json);
+            // }.ag().catch(function(xhr, text, error){
+            //     if (failure) return failure(xhr, text, error);
+            // });
+            //
+            // orgActions.appendPersonAttribute(data, cb, null, !!async);
 
             // orgActions.appendUnitAttribute(data, function(json){
             //     if (json.data.value){
@@ -2608,12 +2635,21 @@ MWF.xScript.ViewEnvironment = function (ev) {
             var unitFlag = (typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
             var data = {"attributeList":values,"name":attr,"unit":unitFlag};
 
+            var v = null;
             var cb = function(json){
-                if (success) return success(json);
-            }.ag().catch(function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            });
-            orgActions.setUnitAttribute(data, cb, null, !!async);
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.setUnitAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+
+            // var cb = function(json){
+            //     if (success) return success(json);
+            // }.ag().catch(function(xhr, text, error){
+            //     if (failure) return failure(xhr, text, error);
+            // });
+            // orgActions.setUnitAttribute(data, cb, null, !!async);
 
             // orgActions.setUnitAttribute(data, function(json){
             //     if (json.data.value){
@@ -3301,6 +3337,86 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     }.bind(this));
                 }.bind(this));
             }
+        }
+    };
+
+    /**
+     * 您可以通过importer对象，执行导入模型的Excel导入数据功能。<br/>
+     * @module importer
+     * @o2ordernumber 93
+     * @o2syntax
+     * //您可以在流程表单、内容管理表单、门户页面或视图中，通过this来获取statement对象，如下：
+     * var importer = this.importer;
+     */
+    this.importer = {
+        /**
+         * 根据指定的导入模型进行上传。
+         * @method upload
+         * @static
+         * @param {Object} options - 要执行的导入模型的选项。数据格式如下：
+         * <pre><code class='language-js'>{
+         *  "name" : "testImporter", //（String）必选，导入模型的名称、别名或ID
+         *  "application" : "testQuery" //（String）必选，导入模型所在应用的名称、别名或ID
+         * }
+         * </code></pre>
+         * @param {Function} [callback] - 导入成功后的回调函数
+         * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
+         * @o2syntax
+         * this.importer.upload(options, callback, async);
+         * @example
+         * this.importer.upload({
+         *  "name": "testImporter",
+         *  "application" : "testQuery",
+         * }, function(json){
+         *
+         * });
+         */
+        "upload": function (options, callback, async) {
+            MWF.xDesktop.requireApp("query.Query", "Importer", function () {
+                var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                importer.load();
+            }.bind(this));
+
+            // MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+            //     statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
+            //     function (json) {
+            //         if (callback) callback(json);
+            //     }, null, async);
+        },
+        /**
+         * 根据指定的导入模型下载Excel模板。
+         * @method downloadTemplate
+         * @static
+         * @param {Object} options - 要执行的导入模型的选项。数据格式如下：
+         * <pre><code class='language-js'>{
+         *  "name" : "testImporter", //（String）必选，导入模型的名称、别名或ID
+         *  "application" : "testQuery" //（String）必选，导入模型所在应用的名称、别名或ID
+         * }
+         * </code></pre>
+         * @param {String} fileName - 导出的Excel名称
+         * @param {Function} callback - 整理好数据，在导出之前执行的方法，可接收参数如下:
+         * <pre><code class='language-js'>{
+         *  "data" : ["标题","拟稿人"], //导出的表头数组
+         *  "colWidthArray" : [200, 150] //列宽度
+         * }
+         * </code></pre>
+         * @o2syntax
+         * this.importer.downloadTemplate(object, fileName, callback);
+         * @example
+         * this.importer.downloadTemplate({
+         *  "name": "testImporter",
+         *  "application" : "testQuery",
+         * },"导入模板", function( object ){
+         *     //添加一项
+         *     object.data.push("备注");
+         *     object.colWidthArray.push(300)
+         * });
+         */
+        "downloadTemplate": function(options, fileName){
+            MWF.xDesktop.requireApp("query.Query", "Importer", function () {
+                var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                importer.downloadTemplate(fileName);
+            }.bind(this));
         }
     };
 

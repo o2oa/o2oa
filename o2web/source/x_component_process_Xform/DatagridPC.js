@@ -66,7 +66,7 @@
 	}
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class DatagridPC 数据网格组件（PC端）。
+/** @class DatagridPC 数据网格组件（PC端）。从v6.2开始建议用数据表格(Datatable)代替。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -2281,7 +2281,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 								}.bind(this));
 								break;
 							case "Number":
-								if (parseFloat(d).toString() === "NaN"){
+								if (isNaN(d)){
 									errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
 									errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
 								}

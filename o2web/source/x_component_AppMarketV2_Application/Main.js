@@ -83,6 +83,8 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 	loadIntroduce:function(callback){
 		this.initNodeSize();
 		if (this.options.appid){
+			debugger
+			this.loadBbsInfo(this);
 			this.actions.MarketAction.get(this.options.appid,function(json){
 				if (json.data && json.data.icon){					
 					this.appdata = json.data;
@@ -93,14 +95,37 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 						applicationicon.setStyle("width",this.applicationintroduceiconcontain.clientWidth);
 						applicationicon.setStyle("height",450*this.applicationintroduceiconcontain.clientWidth/300);
 					}
-					
+					this.loadCommentsGrade(this.appdata);
 					var price=this.appdata.price>0?this.appdata.price+"":"Free";
 					this.applicationintroducememofree.set("text",price);
 					this.applicationintroducememoname.set("text",this.appdata.name);
-					var grade = this.numberFix(this.appdata.grade,1);
-					this.applicationintroducememoremarkgrade.set("text",grade);
+					debugger;
+					var commentcount = 0;
+					var grade = 0;
+					var totalgrade = 0;
+					var commentratiolist = this.gradeData.data;
+					var gradeList = ["0","0","0","0","0"];
+					commentratiolist.each(function(pergrade){
+						gradeList[parseInt(pergrade.grade)-1]=pergrade.count;
+						commentcount +=parseInt(pergrade.count)
+					}.bind(this));
+
+					gradeList.each(function(pergrade,index){
+						totalgrade += parseInt(pergrade)*(index+1)
+					})
+					if (commentcount>0){
+						grade = this.numberFix(totalgrade/commentcount,1)
+					}
+					this.applicationintroducememoremarkgrade.set("text",grade+"");
 					var intgrade = parseInt(grade);
 					var dotgrade = grade - intgrade;
+					/*var grade = this.numberFix(this.appdata.grade,1);
+					this.applicationintroducememoremarkgrade.set("text",grade);
+					var intgrade = parseInt(grade);
+					var dotgrade = grade - intgrade;*/
+debugger;
+
+
 					for (var tmpnum=0;tmpnum<intgrade;tmpnum++){
 						new Element("img",{"src":this.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular)
 					}
@@ -112,7 +137,7 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 						new Element("img",{"src":this.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular);
 					}
 					if (!this.appdata.commentCount) this.appdata.commentCount=0;					
-					this.applicationintroducememoremarkcommentcount.set("text",this.lp.commentCountText.replace("{n}", this.appdata.commentCount))
+					this.applicationintroducememoremarkcommentcount.set("text",this.lp.commentCountText.replace("{n}", commentcount))
 					//this.applicationintroducememodownload.set("text",this.appdata.downloadCount);
 					this.applicationintroducememocategory.set("text", this.lp.category+":"+this.appdata.category);
 					this.applicationintroducememocontent.set("text",this.appdata.describe);
@@ -159,6 +184,56 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 		
 		if (callback) callback();
 	},
+	loadBbsInfo: function(content){
+		var json = null;
+		debugger;
+		var commenturl = content.collectUrl +'/o2_collect_assemble/jaxrs/collect/config/key/(0)?time='+(new Date()).getMilliseconds();
+		debugger;
+		var res = new Request.JSON({
+			url: commenturl,
+			headers : {'x-debugger' : true,'Authorization':content.collectToken,'c-token':content.collectToken},
+			secure: false,
+			method: "get",
+			async: false,
+			withCredentials: true,
+			contentType : 'application/json',
+			crossDomain : true,
+			onSuccess: function(responseJSON, responseText){
+				json = responseJSON;
+				debugger;
+				this.bbsUrlPath = json.data.bbsUrlPath;
+				this.bbsUrl = json.data.bbsUrl;
+			}.bind(this),
+			onFailure: function(xhr){
+				o2.runCallback(callback, "requestFailure", [xhr]);
+			}.bind(this),
+			onError: function(text, error){
+				o2.runCallback(callback, "error", [text, error]);
+			}.bind(this)
+		});
+		res.send();
+	},
+	loadCommentsGrade: function(appdata){
+    	debugger;
+		var json = null;
+		var commenturl =  this.bbsUrlPath +'/x_bbs_assemble_control/jaxrs/subject/statgrade/sectionName/'+encodeURI(this.lp.title)+'/subjectType/'+encodeURI(appdata.name)+'?time='+(new Date()).getMilliseconds();
+		var res = new Request.JSON({
+			url: commenturl,
+			headers : {'x-debugger' : true,'Authorization':this.collectToken,'c-token':this.collectToken},
+			secure: false,
+			method: "get",
+			async: false,
+			withCredentials: true,
+			contentType : 'application/json',
+			crossDomain : true,
+			onSuccess: function(responseJSON, responseText){
+				debugger;
+				this.gradeData = responseJSON;
+			}.bind(this)
+		});
+		res.send();
+	},
+
     tabover: function(e){
         e.currentTarget.addClass("o2_appmarket_appcategory_tab_over");
     },
@@ -259,7 +334,7 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 	},
 	recordStatus: function(){
 	    debugger;
-        return {"appid": this.options.appid,"appname":this.options.appname};x
+        return {"appid": this.options.appid,"appname":this.options.appname};
     },
     numberFix:function(data,n){
         var numbers = '';

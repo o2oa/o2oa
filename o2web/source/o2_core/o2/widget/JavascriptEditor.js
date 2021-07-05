@@ -6,6 +6,7 @@ o2.widget.JavascriptEditor = new Class({
 	options: {
         //"type": "ace",
         "type": "monaco",
+        "forceType": null,
 		"title": "JavascriptEditor",
 		"style": "default",
 		"option": {
@@ -20,6 +21,7 @@ o2.widget.JavascriptEditor = new Class({
 		this.unbindEvents = [];
 		this.node = $(node);
 		this.id = o2.uuid();
+		if (!o2.JSEditorCWE.isInit) o2.JSEditorCWE.init();
 	},
     getDefaultEditorData: function(){
 	    switch (this.options.type) {
@@ -55,7 +57,7 @@ o2.widget.JavascriptEditor = new Class({
     },
     load: function(callback){
         this.getEditorTheme(function(json){
-            this.options.type = o2.editorData.javascriptEditor.editor || "monaco";
+            this.options.type = this.options.forceType || o2.editorData.javascriptEditor.editor || "monaco";
             if (this.options.type.toLowerCase()=="ace"){
                 this.loadAce(callback);
             }
@@ -849,6 +851,7 @@ o2.widget.JavascriptEditor.completionWorkerEnvironment = o2.JSEditorCWE = {
         this.scriptWorker.onmessage = function(e) {
             if (e.data && e.data.type=="ready") this.setOnMessage();
         }.bind(this);
+        this.isInit = true;
         return this;
     },
     setOnMessage: function(){
@@ -871,4 +874,4 @@ o2.widget.JavascriptEditor.completionWorkerEnvironment = o2.JSEditorCWE = {
             this.scriptWorker.postMessage(o);
         }
     }
-}.init();
+};

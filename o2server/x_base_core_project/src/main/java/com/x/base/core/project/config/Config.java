@@ -6,7 +6,11 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,7 +24,6 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.poi.hslf.util.SystemTimeUtils;
 import org.eclipse.jetty.http.MimeTypes;
 
 import com.google.gson.JsonElement;
@@ -102,6 +105,15 @@ public class Config {
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
 	public static final String DIR_COMMONS_EXT = "commons/ext";
 	public static final String DIR_COMMONS_LANGUAGE = "commons/language";
+	public static final String DIR_COMMONS_FONTS = "commons/fonts";
+	public static final String DIR_COMMONS_HADOOP = DIR_COMMONS + "/hadoop";
+	public static final String DIR_COMMONS_HADOOP_WINDOWS = DIR_COMMONS_HADOOP + "/" + OS_WINDOWS;
+	public static final String DIR_COMMONS_HADOOP_AIX = DIR_COMMONS + "/ " + OS_AIX;
+	public static final String DIR_COMMONS_HADOOP_LINUX = DIR_COMMONS + "/" + OS_LINUX;
+	public static final String DIR_COMMONS_HADOOP_MACOS = DIR_COMMONS + "/" + OS_MACOS;
+	public static final String DIR_COMMONS_HADOOP_RASPI = DIR_COMMONS + "/" + OS_RASPI;
+	public static final String DIR_COMMONS_HADOOP_ARM = DIR_COMMONS + "/" + OS_ARM;
+	public static final String DIR_COMMONS_HADOOP_MIPS = DIR_COMMONS + "/" + OS_MIPS;
 	public static final String DIR_CONFIG = "config";
 	public static final String DIR_CONFIG_COVERTOWEBSERVER = "config/coverToWebServer";
 	public static final String DIR_CONFIGSAMPLE = "configSample";
@@ -110,11 +122,11 @@ public class Config {
 	public static final String DIR_DYNAMIC = "dynamic";
 	public static final String DIR_DYNAMIC_JARS = "dynamic/jars";
 	public static final String DIR_JVM = "jvm";
-	public static final String DIR_JVM_AIX = "jvm/aix";
-	public static final String DIR_JVM_LINUX = "jvm/linux";
-	public static final String DIR_JVM_MACOS = "jvm/macos";
-	public static final String DIR_JVM_WINDOWS = "jvm/windows";
-	public static final String DIR_JVM_NEOKYLIN_LOONGSON = "jvm/neokylin_loongson";
+//	public static final String DIR_JVM_AIX = "jvm/aix";
+//	public static final String DIR_JVM_LINUX = "jvm/linux";
+//	public static final String DIR_JVM_MACOS = "jvm/macos";
+//	public static final String DIR_JVM_WINDOWS = "jvm/windows";
+//	public static final String DIR_JVM_NEOKYLIN_LOONGSON = "jvm/neokylin_loongson";
 	public static final String DIR_LOCAL = "local";
 	public static final String DIR_LOCAL_BACKUP = "local/backup";
 	public static final String DIR_LOCAL_UPDATE = "local/update";
@@ -214,6 +226,10 @@ public class Config {
 
 	public static File dir_commons_tess4j_tessdata() throws Exception {
 		return new File(base(), DIR_COMMONS_TESS4J_TESSDATA);
+	}
+
+	public static Path dir_commons_fonts() throws Exception {
+		return Paths.get(base()).resolve(DIR_COMMONS_FONTS);
 	}
 
 //	public static File dir_commons_ext() throws Exception {
@@ -1329,6 +1345,118 @@ public class Config {
 	public static synchronized void resource_node_processPlatformExecutors(ExecutorService[] executorServices)
 			throws Exception {
 		initialContext().rebind(RESOURCE_NODE_PROCESSPLATFORMEXECUTORS, executorServices);
+	}
+
+	public static boolean isWindowsJava8() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_WINDOWS));
+	}
+
+	public static boolean isLinuxJava8() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_LINUX));
+	}
+
+	public static boolean isRaspiJava8() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_RASPI));
+	}
+
+	public static boolean isArmJava8() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_ARM));
+	}
+
+	public static boolean isMipsJava8() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_MIPS));
+	}
+
+	public static boolean isAixJava8() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_AIX));
+	}
+
+	public static boolean isMacosJava8() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_MACOS));
+	}
+
+	public static boolean isWindowsJava11() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_WINDOWS + "_" + JAVAVERSION_JAVA11));
+	}
+
+	public static boolean isLinuxJava11() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_LINUX + "_" + JAVAVERSION_JAVA11));
+	}
+
+	public static boolean isRaspiJava11() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_RASPI + "_" + JAVAVERSION_JAVA11));
+	}
+
+	public static boolean isArmJava11() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_ARM + "_" + JAVAVERSION_JAVA11));
+	}
+
+	public static boolean isMipsJava11() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_MIPS + "_" + JAVAVERSION_JAVA11));
+	}
+
+	public static boolean isAixJava11() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_AIX + "_" + JAVAVERSION_JAVA11));
+	}
+
+	public static boolean isMacosJava11() throws Exception {
+		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_MACOS + "_" + JAVAVERSION_JAVA11));
+	}
+
+	public static Path path_commons_hadoop_windows(boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_WINDOWS);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_commons_hadoop_linux(boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_LINUX);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_commons_hadoop_aix(boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_AIX);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_commons_hadoop_macos(boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_MACOS);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_commons_hadoop_raspi(boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_RASPI);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_commons_hadoop_arm(boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_ARM);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_commons_hadoop_mips(boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_MIPS);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
 	}
 
 }

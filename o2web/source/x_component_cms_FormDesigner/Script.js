@@ -70,6 +70,14 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
                 this.loadDatagrid$DataScript(v); break;
             case "Datagrid$Title":
                 this.loadDatagrid$TitleScript(v); break;
+            case "Datatable":
+                this.loadDatatableScript(v); break;
+            case "Datatable$Data":
+                this.loadDatatable$DataScript(v); break;
+            case "Datatable$Title":
+                this.loadDatatable$TitleScript(v); break;
+            case "Datatemplate":
+                this.loadDatatemplateScript(v); break;
             case "Htmleditor":
                 this.loadHtmleditorScript(v); break;
             case "ImageClipper":
@@ -106,6 +114,8 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
                 this.loadStatementScript(v); break;
             case "StatementSelector":
                 this.loadStatementSelectorScript(v); break;
+            case "Importer":
+                this.loadImporterScript(v); break;
         }
         this.bindDataId(v);
     },

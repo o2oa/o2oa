@@ -244,6 +244,13 @@ o2.widget.O2Person = new Class({
             this.action.actions = {"getPerson": {"uri": "/jaxrs/person/{id}"}};
             this.action.invoke({"name": "getPerson", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
                 this.data = json.data;
+                var dutyList = [];
+                if( this.data.woIdentityList && this.data.woIdentityList.length ){
+                    this.data.woIdentityList.each(function (id) {
+                        if(id.woUnitDutyList && id.woUnitDutyList.length)dutyList = dutyList.concat(id.woUnitDutyList);
+                    })
+                }
+                this.data.dutys = dutyList;
             }.bind(this)});
         }
         return this.data;
@@ -384,6 +391,21 @@ o2.widget.O2Process = new Class({
             attach: this.node,
             transition: 'flyin'
         });
+    },
+    open : function (e) {
+        debugger;
+        if( this.data.id && this.data.application ){
+            var appId = "process.ProcessManager" + this.data.application;
+            if (layout.desktop.apps[appId]){
+                layout.desktop.apps[appId].setCurrent();
+            }else {
+                var options = { "application": {
+                    "id": this.data.application,
+                     "name": this.data.applicationName || ""
+                }};
+                layout.desktop.openApplication(e, "process.ProcessManager", options);
+            }
+        }
     }
 });
 o2.widget.O2CMSCategory = new Class({
@@ -409,6 +431,25 @@ o2.widget.O2CMSCategory = new Class({
             attach: this.node,
             transition: 'flyin'
         });
+    },
+    open : function (e) {
+        debugger;
+        if( this.data.id && this.data.appId ){
+            // var appId = "cms.ColumnManager" + this.data.id;
+            // if (layout.desktop.apps[appId]){
+            //     layout.desktop.apps[appId].setCurrent();
+            // }else {
+                var options = {
+                    "navi":"categoryConfig",
+                    "column":{
+                        "id" : this.data.appId,
+                        "appName": this.data.appName || ""
+                    },
+                    "currentCategoryId":this.data.id
+                };
+                layout.desktop.openApplication(e, "cms.ColumnManager", options);
+            // }
+        }
     }
 });
 
@@ -416,7 +457,7 @@ o2.widget.O2CMSCategory = new Class({
 o2.widget.O2View = new Class({
     Extends: o2.widget.O2Group,
     getPersonData: function(){
-        if (!this.data.query){
+        if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.get("x_query_assemble_surface").getStatById(this.data.id, function(json){
                 data = json.data
@@ -449,7 +490,7 @@ o2.widget.O2CMSView = new Class({
 o2.widget.O2QueryView = new Class({
     Extends: o2.widget.O2View,
     getPersonData: function(){
-        if (!this.data.query){
+        if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.get("x_query_assemble_surface").getViewById(this.data.id, function(json){
                 data = json.data
@@ -476,7 +517,7 @@ o2.widget.O2QueryView = new Class({
 o2.widget.O2QueryStatement = new Class({
     Extends: o2.widget.O2View,
     getPersonData: function(){
-        if (!this.data.query){
+        if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.load("x_query_assemble_designer").StatementAction.get(this.data.id, function(json){
                 data = json.data
@@ -503,7 +544,7 @@ o2.widget.O2QueryStatement = new Class({
 o2.widget.O2QueryStat = new Class({
     Extends: o2.widget.O2View,
     getPersonData: function(){
-        if (!this.data.query){
+        if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.get("x_query_assemble_surface").getStatById(this.data.id, function(json){
                 data = json.data
@@ -526,10 +567,11 @@ o2.widget.O2QueryStat = new Class({
         }
     }
 });
+
 o2.widget.O2QueryTable = new Class({
     Extends: o2.widget.O2View,
     getPersonData: function(){
-        if (!this.data.query){
+        if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.get("x_query_assemble_surface").getTableById(this.data.id, function(json){
                 data = json.data
@@ -552,6 +594,34 @@ o2.widget.O2QueryTable = new Class({
         }
     }
 });
+
+o2.widget.O2QueryImportModel = new Class({
+    Extends: o2.widget.O2View,
+    getPersonData: function(){
+        if (!this.data.query && this.data.id){
+            var data = null;
+            o2.Actions.get("x_query_assemble_surface").getImportModelById(this.data.id, function(json){
+                data = json.data
+            }, null, false);
+            this.data = data;
+            return data;
+        }else{
+            return this.data;
+        }
+    },
+    open : function (e) {
+        if( this.data.id && this.data.query){
+            var appId = "query.ImporterDesigner" + this.data.id;
+            if (layout.desktop.apps[appId]){
+                layout.desktop.apps[appId].setCurrent();
+            }else {
+                var options = {"id": this.data.id,"application": this.data.query, "appId": appId};
+                layout.desktop.openApplication(e, "query.ImporterDesigner", options);
+            }
+        }
+    }
+});
+
 o2.widget.O2FormField = new Class({
     Extends: o2.widget.O2Group,
     getPersonData: function(){

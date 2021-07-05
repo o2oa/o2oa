@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -35,9 +39,6 @@ import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
 abstract class BaseAction extends StandardJaxrsAction {
 
 	@ActionLogger
@@ -56,13 +57,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 	// 将data中的Title 和 serial 字段同步到work中
 	void updateTitleSerial(Business business, Work work, JsonElement jsonElement) throws Exception {
 		String title = XGsonBuilder.extractString(jsonElement, Work.title_FIELDNAME);
-		if (null == title) {
+		if (StringUtils.isBlank(title)) {
 			title = XGsonBuilder.extractString(jsonElement, Work.TITLEALIAS_SUBJECT);
 		}
 		String serial = XGsonBuilder.extractString(jsonElement, Work.serial_FIELDNAME);
 		// 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中
-		if (((null != title) && (!Objects.equals(title, work.getTitle())))
-				|| ((null != serial) && (!Objects.equals(serial, work.getSerial())))) {
+		if ((StringUtils.isNotBlank(title) && (!Objects.equals(title, work.getTitle())))
+				|| (StringUtils.isNotBlank(serial) && (!Objects.equals(serial, work.getSerial())))) {
 			business.entityManagerContainer().beginTransaction(Work.class);
 			business.entityManagerContainer().beginTransaction(Task.class);
 			business.entityManagerContainer().beginTransaction(TaskCompleted.class);
@@ -96,8 +97,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		String title = XGsonBuilder.extractString(jsonElement, WorkCompleted.title_FIELDNAME);
 		String serial = XGsonBuilder.extractString(jsonElement, WorkCompleted.serial_FIELDNAME);
 		// 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中
-		if (((null != title) && (!Objects.equals(title, workCompleted.getTitle())))
-				|| ((null != serial) && (!Objects.equals(serial, workCompleted.getSerial())))) {
+		if ((StringUtils.isNotBlank(title) && (!Objects.equals(title, workCompleted.getTitle())))
+				|| (StringUtils.isNotBlank(serial) && (!Objects.equals(serial, workCompleted.getSerial())))) {
 			business.entityManagerContainer().beginTransaction(WorkCompleted.class);
 			business.entityManagerContainer().beginTransaction(Task.class);
 			business.entityManagerContainer().beginTransaction(TaskCompleted.class);
@@ -128,7 +129,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private void updateTitle(String title, Work work, List<Task> tasks, List<TaskCompleted> taskCompleteds,
 			List<Read> reads, List<ReadCompleted> readCompleteds, List<Review> reviews) {
-		if ((null != title) && (!Objects.equals(title, work.getTitle()))) {
+		if (StringUtils.isNotBlank(title) && (!Objects.equals(title, work.getTitle()))) {
 			work.setTitle(title);
 			for (Task o : tasks) {
 				o.setTitle(title);
@@ -152,7 +153,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private void updateTitle(String title, WorkCompleted workCompleted, List<Task> tasks,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
 			List<Review> reviews) {
-		if ((null != title) && (!Objects.equals(title, workCompleted.getTitle()))) {
+		if (StringUtils.isNotBlank(title) && (!Objects.equals(title, workCompleted.getTitle()))) {
 			workCompleted.setTitle(title);
 			for (Task o : tasks) {
 				o.setTitle(title);
@@ -175,7 +176,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private void updateSerial(String serial, Work work, List<Task> tasks, List<TaskCompleted> taskCompleteds,
 			List<Read> reads, List<ReadCompleted> readCompleteds, List<Review> reviews) {
-		if ((null != serial) && (!Objects.equals(serial, work.getSerial()))) {
+		if (StringUtils.isNotBlank(serial) && (!Objects.equals(serial, work.getSerial()))) {
 			work.setSerial(serial);
 			for (Task o : tasks) {
 				o.setSerial(serial);
@@ -194,10 +195,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 		}
 	}
-	
-	private void updateSerial(String serial, WorkCompleted workCompleted, List<Task> tasks, List<TaskCompleted> taskCompleteds,
-			List<Read> reads, List<ReadCompleted> readCompleteds, List<Review> reviews) {
-		if ((null != serial) && (!Objects.equals(serial, workCompleted.getSerial()))) {
+
+	private void updateSerial(String serial, WorkCompleted workCompleted, List<Task> tasks,
+			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
+			List<Review> reviews) {
+		if (StringUtils.isNotBlank(serial) && (!Objects.equals(serial, workCompleted.getSerial()))) {
 			workCompleted.setSerial(serial);
 			for (Task o : tasks) {
 				o.setSerial(serial);

@@ -1,5 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class DatagridMobile 数据网格组件（移动端）。
+/** @class DatagridMobile 数据网格组件（移动端）。从v6.2开始建议用数据表格(Datatable)代替。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -8,6 +8,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * var datagrid = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
  * @o2category FormComponents
+ * @deprecated
  * @o2range {Process|CMS}
  * @hideconstructor
  */

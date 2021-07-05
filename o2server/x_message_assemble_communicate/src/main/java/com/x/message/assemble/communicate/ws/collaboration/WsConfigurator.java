@@ -27,7 +27,7 @@ public class WsConfigurator extends ServerEndpointConfig.Configurator {
 
 	private EffectivePerson getEffectivePerson(HandshakeRequest request) {
 		try {
-			List<String> list = request.getParameterMap().get(HttpToken.X_Token);
+			List<String> list = request.getParameterMap().get(Config.person().getTokenName());
 			String token = null;
 			if (ListTools.isNotEmpty(list)) {
 				token = list.get(0);

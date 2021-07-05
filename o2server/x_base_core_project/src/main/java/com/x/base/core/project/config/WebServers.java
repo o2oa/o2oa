@@ -117,6 +117,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		/** 写入systemName */
 		map.put("footer", Config.collect().getFooter());
 		map.put("title", Config.collect().getTitle());
+		map.put("version", Config.version());
 		map.put("appUrl", Config.collect().getAppUrl());
 		/***/
 		if (centerServerConfig.getSslEnable()) {
@@ -144,7 +145,8 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
 		/* 平台语言 */
 		map.put("language", Config.person().getLanguage());
-
+		/* 平台TokenName */
+		map.put("tokenName", Config.person().getTokenName());
 		/* RSA */
 		File publicKeyFile = new File(Config.base(), "config/public.key");
 		if (publicKeyFile.exists() && publicKeyFile.isFile()) {

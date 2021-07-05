@@ -1,0 +1,77 @@
+{
+	"eventsContainer":{
+		
+	},
+	"itemContainer": {
+	
+	},
+	"itemTitleContainer": {
+		"background-color": "#F3F3F3",
+		"height": "20px",
+		"border-bottom": "1px solid #999",
+		"cursor": "pointer"
+	},
+
+	"actionNode": {
+		"width": "45px",
+		"height": "20px",
+		"float": "right",
+		"opacity": 0
+	},
+	"textNode": {
+		"height": "20px",
+		"line-height": "20px",
+		"font-family": "Verdana, Geneva, sans-serif",
+		"font-size": "12px",
+		"margin-left": "22px",
+		"margin-right": "49px"
+	},
+	"addAction": {
+		"width": "20px",
+		"height": "20px",
+		"cursor": "pointer",
+		"float": "right"
+	},
+	"delectAction": {
+		"width": "20px",
+		"height": "20px",
+		"cursor": "pointer",
+		"float": "right"
+	},
+	"upAction": {
+		"width": "20px",
+		"height": "20px",
+		"cursor": "pointer",
+		"float": "right"
+	},
+//	"actionNodeDelete": {
+//		"width": "20px",
+//		"height": "20px",
+//		"background": "url(../x_component_process_FormDesigner/widget/$FiledConfigurator/default/icon/delete.png) center center no-repeat",
+//		"float": "right"
+//	},
+//	"actionNodeAdd": {
+//		"width": "20px",
+//		"height": "20px",
+//		"background": "url(../x_component_process_FormDesigner/widget/$FiledConfigurator/default/icon/add.png) center center no-repeat",
+//		"float": "right"
+//	},
+	"sequenceNode": {
+		"text-align": "center"
+	},
+	"inputNode": {
+		"height": "12px",
+		"width": "95%",
+		"font-size": "12px",
+		"border": "1px solid #CCC"
+	},
+	"addNewItemAction": {
+	    "width": "80%",
+	    "height": "18px",
+	    "line-height": "18px",
+	    "background-color":"#eeeeee",
+	    "margin": "5px auto",
+	    "cursor": "pointer",
+	    "text-align": "center"
+	}
+}

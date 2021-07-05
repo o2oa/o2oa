@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
+import com.x.query.assemble.designer.jaxrs.importmodel.ImportModelAction;
 import com.x.query.assemble.designer.jaxrs.designer.DesignerAction;
 import com.x.query.assemble.designer.jaxrs.id.IdAction;
 import com.x.query.assemble.designer.jaxrs.input.InputAction;
@@ -32,6 +33,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(TableAction.class);
 		classes.add(StatementAction.class);
 		classes.add(DesignerAction.class);
+		classes.add(ImportModelAction.class);
 		return classes;
 	}
 

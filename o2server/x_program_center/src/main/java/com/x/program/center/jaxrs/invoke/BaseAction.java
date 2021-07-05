@@ -34,6 +34,8 @@ import com.x.program.center.core.entity.Invoke;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
+	protected static final String SPLIT = "#";
+
 	protected ActionResult<Object> executeInvoke(HttpServletRequest request, EffectivePerson effectivePerson,
 			JsonElement jsonElement, CacheCategory cacheCategory, Invoke invoke)
 			throws Exception, ExceptionExecuteError {

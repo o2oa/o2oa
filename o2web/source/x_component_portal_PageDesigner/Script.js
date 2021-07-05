@@ -136,6 +136,14 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadDatagrid$DataScript(v); break;
             case "Datagrid$Title":
                 this.loadDatagrid$TitleScript(v); break;
+            case "Datatable":
+                this.loadDatatableScript(v); break;
+            case "Datatable$Data":
+                this.loadDatatable$DataScript(v); break;
+            case "Datatable$Title":
+                this.loadDatatable$TitleScript(v); break;
+            case "Datatemplate":
+                this.loadDatatemplateScript(v); break;
             case "Htmleditor":
                 this.loadHtmleditorScript(v); break;
             case "ImageClipper":
@@ -162,6 +170,8 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadStatementScript(v); break;
             case "StatementSelector":
                 this.loadStatementSelectorScript(v); break;
+            case "Importer":
+                this.loadImporterScript(v); break;
         }
         this.bindDataId(v);
     },
@@ -318,6 +328,10 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
     loadViewScript: function(data){
         this.loadEventsScript(data);
     },
+    loadImporterScript: function(data){
+        this.addScriptItem(data.excelName, "code", data, "excelName");
+        this.loadEventsScript(data);
+    },
 
     loadActionbarScript: function(data){
         if (data.tools){
@@ -368,10 +382,33 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.addScriptItem(data.editableScript, "code", data, "editableScript");
         this.addScriptItem(data.validation, "code", data, "validation");
         this.addScriptItem(data.sectionByScript, "code", data, "sectionByScript");
+        this.addScriptItem(data.excelName, "code", data, "excelName");
         this.loadEventsScript(data);
     },
     loadDatagrid$DataScript: function(data){  this.loadEventsScript(data); },
     loadDatagrid$TitleScript: function(data){  this.loadEventsScript(data); },
+
+    loadDatatableScript: function(data){
+        this.addScriptItem(data.defaultData, "code", data, "defaultData");
+        this.addScriptItem(data.editableScript, "code", data, "editableScript");
+        this.addScriptItem(data.validation, "code", data, "validation");
+        this.addScriptItem(data.sectionByScript, "code", data, "sectionByScript");
+        this.addScriptItem(data.excelName, "code", data, "excelName");
+        this.loadEventsScript(data);
+    },
+    loadDatatable$DataScript: function(data){  this.loadEventsScript(data); },
+    loadDatatable$TitleScript: function(data){  this.loadEventsScript(data); },
+
+    loadDatatemplateScript: function(data){
+        this.addScriptItem(data.defaultData, "code", data, "defaultData");
+        this.addScriptItem(data.editableScript, "code", data, "editableScript");
+        this.addScriptItem(data.validation, "code", data, "validation");
+        this.addScriptItem(data.sectionByScript, "code", data, "sectionByScript");
+        this.addScriptItem(data.excelName, "code", data, "excelName");
+        this.loadEventsScript(data);
+    },
+
+
 
     loadHtmleditorScript: function(data){
         this.addScriptItem(data.config, "code", data, "config");
