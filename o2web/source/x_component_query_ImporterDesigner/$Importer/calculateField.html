@@ -1,0 +1,74 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.fieldTitle}}:</td>
+                <td class="editTableValue"><input type="text" name="displayName" value="text{$.displayName}" class="editTableInput"/></td>
+            </tr>
+        </table>
+
+        <div style="border-top: 1px solid #999; margin-top:10px">
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.data}}</div>
+            <div class="MWFDataData" id="text{$.pid}dataDataEditor">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.fieldPath}}:</td>
+                        <td class="editTableValue"><input id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div style="margin-top:10px">
+            <div class="MWFFormulaArea" name="valueScript" title="{{$.lp.valueScript}}"></div>
+            <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}cmsFieldProperty" class="text{$.vid}cmsFieldProperty">
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.cmsProperty}}</div>
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.isAuthor}}:</td>
+                        <td class="editTableValue">
+                            <input name="isAuthor" type="radio" value="true" text{($.isAuthor)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isAuthor" type="radio" value="false" text{($.isAuthor)!==true?'checked':''}/>{{$.lp.no}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.isReader}}:</td>
+                        <td class="editTableValue">
+                            <input name="isReader" type="radio" value="true" text{($.isReader)==true?'checked':''}/>{{$.lp.yes}}
+                            <input name="isReader" type="radio" value="false" text{($.isReader)!==true?'checked':''}/>{{$.lp.no}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+<!--            <div style="display:text{($.vtype=='process')?'block':'none'}" id="text{$.pid}processFieldProperty" class="text{$.vid}processFieldProperty">-->
+<!--                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.workProperty}}</div>-->
+<!--                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--                    <tr>-->
+<!--                        <td class="editTableTitleNoWidth" style="width: 120px;">{{$.lp.isTitle}}:</td>-->
+<!--                        <td class="editTableValue">-->
+<!--                            <input name="isProcessTitle" type="radio" value="true" text{($.isProcessTitle)==true?'checked':''}/>{{$.lp.yes}}-->
+<!--                            <input name="isProcessTitle" type="radio" value="false" text{($.isProcessTitle)!==true?'checked':''}/>{{$.lp.no}}-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr style="display:text{(($.vProcessDrafter)==='importer')?'none':''}" class="text{$.vid}isProcessDrafterArea">-->
+<!--                        <td class="editTableTitle">{{$.lp.isProcessDrafter}}:</td>-->
+<!--                        <td class="editTableValue">-->
+<!--                            <input name="isProcessDrafter" type="radio" value="true" text{($.isProcessDrafter)==true?'checked':''}/>{{$.lp.yes}}-->
+<!--                            <input name="isProcessDrafter" type="radio" value="false" text{($.isProcessDrafter)!==true?'checked':''}/>{{$.lp.no}}-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </div>-->
+
+
+        </div>
+	</div>
+
+<!--    <div title="事件"  class="MWFTab">-->
+<!--        <div class="MWFEventsArea" name="events"></div>-->
+<!--    </div>-->
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

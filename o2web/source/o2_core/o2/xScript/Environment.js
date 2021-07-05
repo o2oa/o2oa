@@ -1021,13 +1021,15 @@ MWF.xScript.Environment = function(ev){
             var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
             var data = {"attributeList":values,"name":attr,"person":personFlag};
 
+            var v = null;
             var cb = function(json){
-                if (success) return success(json);
-            }.ag().catch(function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            });
-
-            orgActions.appendPersonAttribute(data, cb, null, !!async);
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.appendPersonAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+            //orgActions.appendPersonAttribute(data, cb, null, !!async);
         },
         //设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
         setPersonAttribute: function(person, attr, values, success, failure, async){
@@ -1035,13 +1037,22 @@ MWF.xScript.Environment = function(ev){
             var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
             var data = {"attributeList":values,"name":attr,"person":personFlag};
 
+            var v = null;
             var cb = function(json){
-                if (success) return success(json);
-            }.ag().catch(function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            });
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.setPersonAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
 
-            orgActions.setPersonAttribute(data, cb, null, !!async);
+            // var cb = function(json){
+            //     if (success) return success(json);
+            // }.ag().catch(function(xhr, text, error){
+            //     if (failure) return failure(xhr, text, error);
+            // });
+            //
+            // orgActions.setPersonAttribute(data, cb, null, !!async);
         },
         //获取人员属性值
         getPersonAttribute: function(person, attr, async){
@@ -1439,13 +1450,22 @@ MWF.xScript.Environment = function(ev){
             var unitFlag = (typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
             var data = {"attributeList":values,"name":attr,"unit":unitFlag};
 
+            var v = null;
             var cb = function(json){
-                if (success) return success(json);
-            }.ag().catch(function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            });
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.appendUnitAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
 
-            orgActions.appendPersonAttribute(data, cb, null, !!async);
+            // var cb = function(json){
+            //     if (success) return success(json);
+            // }.ag().catch(function(xhr, text, error){
+            //     if (failure) return failure(xhr, text, error);
+            // });
+            //
+            // orgActions.appendPersonAttribute(data, cb, null, !!async);
 
             // orgActions.appendUnitAttribute(data, function(json){
             //     if (json.data.value){
@@ -1463,12 +1483,21 @@ MWF.xScript.Environment = function(ev){
             var unitFlag = (typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
             var data = {"attributeList":values,"name":attr,"unit":unitFlag};
 
+            var v = null;
             var cb = function(json){
-                if (success) return success(json);
-            }.ag().catch(function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            });
-            orgActions.setUnitAttribute(data, cb, null, !!async);
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.setUnitAttribute(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+
+            // var cb = function(json){
+            //     if (success) return success(json);
+            // }.ag().catch(function(xhr, text, error){
+            //     if (failure) return failure(xhr, text, error);
+            // });
+            // orgActions.setUnitAttribute(data, cb, null, !!async);
 
             // orgActions.setUnitAttribute(data, function(json){
             //     if (json.data.value){
@@ -1816,6 +1845,21 @@ MWF.xScript.Environment = function(ev){
                     }.bind(this));
                 }.bind(this));
             }
+        }
+    };
+
+    this.importer = {
+        "upload": function (options, callback, async) {
+            MWF.xDesktop.requireApp("query.Query", "Importer", function () {
+                var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                importer.load();
+            }.bind(this));
+        },
+        "downloadTemplate": function(options, fileName){
+            MWF.xDesktop.requireApp("query.Query", "Importer", function () {
+                var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                importer.downloadTemplate(fileName);
+            }.bind(this));
         }
     };
 
@@ -3101,6 +3145,11 @@ MWF.xScript.Environment = function(ev){
             });
         }
     };
+
+    Object.defineProperty(this.form, "readonly", {
+        get: function(){ return  _form.options.readonly; }
+    });
+
     /**
      * 在用户提交的时候，选择的路由。仅在表单的“校验意见”和“校验路由”脚本中可用。只读。<b>（仅流程表单中可用）</b>。
      * @member currentRouteName

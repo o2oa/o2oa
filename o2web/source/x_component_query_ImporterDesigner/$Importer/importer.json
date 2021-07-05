@@ -1,0 +1,43 @@
+{
+  "name": "",
+  "id": "",
+  "query": "",
+  "alias": "",
+  "description": "",
+  "type": "Importer",
+  "enableValid" : true,
+  "data": {
+    "events": {
+      "queryLoad" : {
+        "code": "",
+        "html": ""
+      },
+      "postLoad": {
+        "code": "",
+        "html": ""
+      },
+      "beforeImport" : {
+        "code": "",
+        "html": ""
+      },
+      "afterImport" : {
+        "code": "",
+        "html": ""
+      },
+      "beforeCreateRowData": {
+        "code": "",
+        "html": ""
+      },
+      "afterCreateRowData": {
+        "code": "",
+        "html": ""
+      }
+//      "saveRow": {
+//        "code": "",
+//        "html": ""
+//      }
+    }
+  },
+  "availableIdentityList": [],
+  "availableUnitList": []
+}

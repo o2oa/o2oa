@@ -126,6 +126,19 @@ MWF.xApplication.query.QueryManager.LP = {
         "setAppUsableIdentity" : "设置应用可用身份",
         "setAppUsableUnit" : "设置应用可用组织"
     },
+    "importer": {
+        "create": "新建导入模型",
+        "search": "搜索导入模型",
+        "searchText": "请输入关键字",
+
+        "noSelectNoticeText": "此数据应用现在还没有导入模型，您可以点击此处创建一个导入模型",
+        "loaded": "导入模型加载完毕",
+
+        "deleteProcessTitle": "删除导入模型确认",
+        "deleteProcess": "是否确定要删除当前导入模型？",
+        "deletePageTemplateTitle": "删除导入模型模板确认",
+        "deletePageTemplate": "是否确定要删除当前导入模型模板吗？"
+    },
     "createSelectTemplate": "新建：选择模板",
     "templateCategory": "模板分类：",
     "all": "全部",
@@ -138,6 +151,7 @@ MWF.xApplication.query.QueryManager.LP = {
         "statConfig":"统计配置",
         "tableConfig":"数据表",
         "statementConfig":"查询配置",
+        "importerConfig": "导入模型",
         "queryProperty":"数据应用属性"
     }
 };

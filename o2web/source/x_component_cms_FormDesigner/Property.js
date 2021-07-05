@@ -1,5 +1,8 @@
 MWF.xDesktop.requireApp("process.FormDesigner", "Property", null, false);
 MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
+    options: {
+        "appType" : "cms"
+    },
     Extends: MWF.FCProperty,
 
     loadScriptEditor: function(scriptAreas, style){

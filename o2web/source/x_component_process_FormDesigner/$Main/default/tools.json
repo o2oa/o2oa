@@ -122,6 +122,16 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.datagrid,
     "className": "Datagrid"
   },
+  "datatable": {
+    "icon": "datagrid.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.datatable,
+    "className": "Datatable"
+  },
+  "datatemplate": {
+    "icon": "datatemplate.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.datatemplate,
+    "className": "Datatemplate"
+  },
   "subform": {
     "icon": "subform.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.subform,
@@ -167,6 +177,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.log,
     "className": "Log"
   },
+  "readLog": {
+    "icon": "log.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.readLog,
+    "className": "ReadLog"
+  },
   "monitor": {
     "icon": "monitor.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.monitor,
@@ -192,6 +207,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.office,
     "className": "Office"
   },
+  "iWebOffice": {
+    "icon": "office.png",
+    "text": "iWebOffice",
+    "className": "IWebOffice"
+  },
   "statementSelector": {
     "icon": "statementSelector.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.statementSelector,
@@ -201,5 +221,10 @@
     "icon": "statement.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.statement,
     "className": "Statement"
+  },
+  "importer": {
+    "icon": "importer.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.importer,
+    "className": "Importer"
   }
 }

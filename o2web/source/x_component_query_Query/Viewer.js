@@ -3,7 +3,7 @@ MWF.xApplication.query.Query = MWF.xApplication.query.Query || {};
 MWF.require("MWF.widget.Common", null, false);
 MWF.require("o2.widget.Paging", null, false);
 MWF.require("MWF.xScript.Macro", null, false);
-MWF.xDesktop.requireApp("query.Query", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("query.Query", "lp."+o2.language, null, false);
 MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
@@ -217,6 +217,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         var data = {"filterList": filterData};
         if( bundleList )data.bundleList = bundleList;
         if( excelName )data.excelName = excelName;
+        data.key = this.bundleKey;
         action.exportViewWithQuery(this.json.viewName, this.json.application, data, function(json){
             var uri = action.action.actions.getViewExcel.uri;
             uri = uri.replace("{flag}", json.data.id);
@@ -518,6 +519,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 d.count = this.json.count;
                 this.lookupAction.bundleView(this.json.id, d, function(json){
                     this.bundleItems = json.data.valueList;
+                    this.bundleKey = json.data.key;
 
                     this._initPage();
                     if (this.bundleItems.length){
@@ -564,6 +566,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         var d = {};
         var valueList = this.bundleItems.slice((p-1)*this.json.pageSize,this.json.pageSize*p);
         d.bundleList = valueList;
+        d.key = this.bundleKey;
+
 
         while (this.viewTable.rows.length>1){
             this.viewTable.deleteRow(-1);
@@ -1905,7 +1909,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         new Element("div", {"styles": this.css.workAreaContentTextNode, "text": this.view.lp.processCompleted}).inject(contentNode);
     },
     createWorksArea: function(){
-        var worksAreaNode = new Element("div", {"styles": this.css.worksAreaNode});
+        var cssWorksArea = this.css.worksAreaNode
+        if (layout.mobile) {
+            cssWorksArea = this.css.worksAreaNodeMobile;
+        }
+        var worksAreaNode = new Element("div", {"styles": cssWorksArea});
         var worksAreaTitleNode = new Element("div", {"styles": this.css.worksAreaTitleNode}).inject(worksAreaNode);
         var worksAreaTitleCloseNode = new Element("div", {"styles": this.css.worksAreaTitleCloseNode}).inject(worksAreaTitleNode);
         worksAreaTitleCloseNode.addEvent("click", function(e){

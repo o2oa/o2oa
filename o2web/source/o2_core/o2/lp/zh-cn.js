@@ -30,6 +30,7 @@ o2.LP.process = {
     "repetitionsValue": "重复的内容项",
     "repetitionsEvent": "重复的事件名称",
     "repetitionsId": "重复的元素标识符",
+    "repetitionsOrUnvalid": "重复或者无效的属性名称",
     "notNullId": "元素标识符不能为空",
     "editCategory": "编辑分类",
     "createProcess": "新建流程",

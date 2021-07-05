@@ -1,0 +1,116 @@
+{
+    "tableStyles": {
+        "border-top": "1px solid #cfd9df",
+        "border-left": "0px",
+        "border-right" : "0px",
+        "border-bottom" : "0px"
+    },
+    "titleStyles": {
+        "background-color": "#ffffff",
+        "color": "#333",
+        "border-top": "0px",
+        "border-left": "0px",
+        "border-right" : "0px",
+        "border-bottom" : "1px solid #cfd9df",
+        "height": "23px",
+        "font-size": "16px",
+        "width": "65px",
+        "font-weight": "bold",
+        "line-height": "23px",
+        "text-align": "left"
+    },
+    "contentStyles": {
+        "background-color": "#FFFFFF",
+        "color": "#000",
+        "font-size": "14px",
+        "border-top": "0px",
+        "border-left": "0px",
+        "border-right" : "0px",
+        "border-bottom" : "1px solid #cfd9df",
+        "text-align": "right"
+    },
+    "properties": {
+        "width": "100%",
+        "border": "0",
+        "cellpadding": "8",
+        "cellspacing": "0",
+        "align": "center"
+    },
+    "maskNode": {
+        "width": "100%",
+        "height": "100%",
+        "opacity": 0.6,
+        "position": "absolute",
+        "background-color": "#eee",
+        "top": "0px",
+        "left": "0px"
+    },
+    "progressBarNode": {
+        "font-size" : "12px",
+        "position" : "absolute",
+        "width" : "500px",
+        // "z-index" : "11",
+        "background-color" : "#fff",
+        "padding" : "10px",
+        "border-radius" : "8px",
+        "box-shadow": "0 0 18px 0 #999999",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text"
+    },
+    "progressTopNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "overflow": "hidden"
+    },
+    "progressTopCloseAction": {
+        "float": "right",
+        "width": "30px",
+        "height": "20px",
+        "line-height": "20px",
+        "text-align": "center",
+        "cursor": "pointer"
+    },
+    "progressSubjectNode": {
+        "float": "left",
+        "height": "30px",
+        "line-height": "30px",
+        "font-size": "16px",
+        "color": "#4387cd"
+    },
+    "processContentNode": {
+        "margin-top": "10px",
+        "font-size": "14px",
+        "padding": "10px"
+    },
+    "progressInforNode": {
+        "height": "30px",
+        "line-height": "30px"
+    },
+    "progressNode": {
+        "height": "3px",
+        "border":"1px solid #999",
+        "margin": "3px 0px"
+    },
+    "progressPercentNode": {
+        "height":"3px",
+        "background-color": "#acdab9",
+        "width": "0px"
+    },
+
+    "progressBottomNode": {
+        "margin-top": "10px",
+        "height": "32px",
+        "overflow": "hidden"
+    },
+    "progressCloseAction":{
+        "width": "200px",
+        "margin": "6px auto 0px auto",
+        "text-align": "center",
+        "border": "1px solid #ccc",
+        "height" : "22px",
+        "line-height": "22px",
+        "border-radius": "4px",
+        "font-size": "14px",
+        "cursor": "pointer"
+    }
+}

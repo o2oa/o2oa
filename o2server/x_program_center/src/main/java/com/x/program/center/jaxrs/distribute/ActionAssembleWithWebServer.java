@@ -4,7 +4,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.gson.JsonObject;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 
@@ -15,6 +17,8 @@ class ActionAssembleWithWebServer extends BaseAction {
 		Wo wo = new Wo();
 		wo.setWebServer(this.getRandomWebServer(request, source));
 		wo.setAssembles(this.getRandomAssembles(request, source));
+		wo.setTokenName(Config.person().getTokenName());
+		wo.setMockConfig(Config.mock());
 		result.setData(wo);
 		return result;
 	}
@@ -26,6 +30,12 @@ class ActionAssembleWithWebServer extends BaseAction {
 
 		@FieldDescribe("assembles")
 		public Map<String, WoAssemble> assembles;
+
+		@FieldDescribe("tokenName")
+		private String tokenName;
+
+		@FieldDescribe("mockConfig")
+		private JsonObject mockConfig;
 
 		public WoWebServer getWebServer() {
 			return webServer;
@@ -41,6 +51,22 @@ class ActionAssembleWithWebServer extends BaseAction {
 
 		public void setAssembles(Map<String, WoAssemble> assembles) {
 			this.assembles = assembles;
+		}
+
+		public String getTokenName() {
+			return tokenName;
+		}
+
+		public void setTokenName(String tokenName) {
+			this.tokenName = tokenName;
+		}
+
+		public JsonObject getMockConfig() {
+			return mockConfig;
+		}
+
+		public void setMockConfig(JsonObject mockConfig) {
+			this.mockConfig = mockConfig;
 		}
 	}
 

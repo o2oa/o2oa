@@ -1,0 +1,269 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="{{$.lp.base}}" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.alias}}:</td>
+                <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+        </table>
+
+        <div title="{{$.lp.target}}">
+            <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.importTarget}}</div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableValue" colspan="2" align="center">
+                        <input class="editTableRadio" onclick="
+                    if (this.checked){
+                        $('text{$.id}dateRangeType_cms').setStyle('display', 'block');
+                        $('text{$.id}dateRangeType_table').setStyle('display', 'none');
+                        $('text{$.id}dateRangeType_process').setStyle('display', 'none');
+                        $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', '');
+                        $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
+                        $$('.text{$.id}cmsFieldProperty').setStyle('display', '');
+                        $$('.text{$.id}processFieldProperty').setStyle('display', 'none');
+                     }" name="text{$.id}*type" text{($.type!='dynamicTable' && $.type!='process')?'checked':''} type="radio" value="cms"/>{{$.lp.cmsData}}
+                        <input class="editTableRadio" onclick="
+                    if (this.checked){
+                        $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
+                        $('text{$.id}dateRangeType_table').setStyle('display', 'block');
+                        $('text{$.id}dateRangeType_process').setStyle('display', 'none');
+                        $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', 'none');
+                        $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', '');
+                        $$('.text{$.id}cmsFieldProperty').setStyle('display', 'none');
+                        $$('.text{$.id}processFieldProperty').setStyle('display', 'none');
+                     }" name="text{$.id}*type" text{($.type=='dynamicTable')?'checked':''} type="radio" value="dynamicTable"/>{{$.lp.tableData}}
+                        <input class="editTableRadio" onclick="
+                    if (this.checked){
+                        $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
+                        $('text{$.id}dateRangeType_table').setStyle('display', 'none');
+                        $('text{$.id}dateRangeType_process').setStyle('display', 'block');
+                        $$('.text{$.id}dataTypeSelectedCMSProcessArea').setStyle('display', '');
+                        $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
+                        $$('.text{$.id}cmsFieldProperty').setStyle('display', 'none');
+                        $$('.text{$.id}processFieldProperty').setStyle('display', '');
+                    }" name="text{$.id}*type" text{($.type=='process')?'checked':''} type="radio" value="process"/>{{$.lp.processPlatformData}}
+                    </td>
+                </tr>
+            </table>
+
+
+            <div id="text{$.id}dateRangeType_cms" style="display: text{($.type!='dynamicTable' && $.type!='process')?'block':'none'}">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle" width="100px;">{{$.lp.selectCategory}}:</td>
+                        <td class="editTableValue">
+                            <div class="MWFSelecCMStCategory" count=1 name="data.category"></div>
+                        </td>
+                    </tr>
+                </table>
+
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.cmsProperty}}</div>
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.documentType}}:</td>
+                        <td class="editTableValue">
+                            <input name="data.documentType" type="radio" value="信息" text{($.data.documentType)!=='数据'?'checked':''}/>{{$.lp.information}}
+                            <input name="data.documentType" type="radio" value="数据" text{($.data.documentType)==='数据'?'checked':''}/>{{$.lp.data1}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">* {{$.lp.publisher}}:</td>
+                        <td class="editTableValue">
+                            <input name="data.documentPublisher" type="radio" value="importer" text{($.data.documentPublisher)=='importer'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}documentPublisherFieldArea').setStyle('display', 'none');
+                                   }" />{{$.lp.importerAsDrafter}}<br/>
+                            <input name="data.documentPublisher" type="radio" value="field" text{($.data.documentPublisher)!=='importer'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}documentPublisherFieldArea').setStyle('display', '');
+                                   }" />{{$.lp.selectField}}
+                            <div id="text{$.id}documentPublisherFieldArea" style="display:text{(($.data.documentPublisher)!=='importer')?'':'none'}" >
+                                {{$.lp.note}}{{$.lp.selectOrg}}<br>
+                                <div class="MWFSelectField" name="data.documentPublisherField"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">* {{$.lp.publishTime}}:</td>
+                        <td class="editTableValue">
+                            <input name="data.documentPublishTime" type="radio" value="importer" text{($.data.documentPublishTime)=='importer'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}documentPublisherTimeFieldArea').setStyle('display', 'none');
+                                   }" />{{$.lp.importeTimeAsPublishTime}}<br/>
+                            <input name="data.documentPublishTime" type="radio" value="field" text{($.data.documentPublishTime)!=='importer'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}documentPublisherTimeFieldArea').setStyle('display', '');
+                                   }" />{{$.lp.selectField}}
+                            <div id="text{$.id}documentPublisherTimeFieldArea" style="display:text{(($.data.documentPublishTime)!=='importer')?'':'none'}">
+                                {{$.lp.note}}{{$.lp.selectDate}}<br>
+                                <div class="MWFSelectField" name="data.documentPublisherTimeField"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.titleField}}:</td>
+                        <td class="editTableValue">
+                            {{$.lp.note}}{{$.lp.selectText}}<br>
+                            <div class="MWFSelectField" name="data.documentTitleField"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.summaryField}}:</td>
+                        <td class="editTableValue">
+                            {{$.lp.note}}{{$.lp.selectText}}<br>
+                            <div class="MWFSelectField" name="data.documentSummaryField"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="text{$.id}dateRangeType_table" style="display: text{($.type=='dynamicTable')?'block':'none'}">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.selectTable}}:</td>
+                        <td class="editTableValue">
+                            <div class="MWFSelecQueryTable" count=1 name="data.dynamicTable"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="text{$.id}dateRangeType_process" style="display: text{($.type=='process')?'block':'none'}">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.selectProcess}}:</td>
+                        <td class="editTableValue">
+                            <div class="MWFSelectProcess" count=1  name="data.process"></div>
+                        </td>
+                    </tr>
+                </table>
+
+                <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.workProperty}}</div>
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.processStatus}}:</td>
+                        <td class="editTableValue">
+                            <input name="data.processStatus" type="radio" value="draft" text{($.data.processStatus)!=='completed'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}workCompleteArea').setStyle('display', 'none');
+                                   }"
+                            />{{$.lp.draftActivity}}<br/>
+                            <input name="data.processStatus" type="radio" value="completed" text{($.data.processStatus)==='completed'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}workCompleteArea').setStyle('display', '');
+                                   }"
+                            />{{$.lp.endActivity}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">* {{$.lp.processDrafter}}:</td>
+                        <td class="editTableValue">
+                            <input name="data.processDrafter" type="radio" value="importer" text{($.data.processDrafter)=='importer'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}processPublisherFieldArea').setStyle('display', 'none');
+                                   }" />{{$.lp.importerAsDrafter}}<br/>
+                            <input name="data.processDrafter" type="radio" value="field" text{($.data.processDrafter)!=='importer'?'checked':''}
+                                   onclick="if (this.checked){
+                                       $('text{$.id}processPublisherFieldArea').setStyle('display', '');
+                                   }" />{{$.lp.selectField}}
+                            <div id="text{$.id}processPublisherFieldArea" style="display:text{(($.data.processDrafter)!=='importer')?'':'none'}" >
+                                {{$.lp.note}}{{$.lp.selectOrg}}<br>
+                                <div class="MWFSelectField" name="data.processDrafterField"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.titleField}}:</td>
+                        <td class="editTableValue">
+                            {{$.lp.note}}{{$.lp.selectText}}<br>
+                            <div class="MWFSelectField" name="data.processTitleField"></div>
+                        </td>
+                    </tr>
+                </table>
+                <div id="text{$.id}workCompleteArea" style="display:text{(($.data.processStatus)==='completed')?'':'none'}" >
+                    <table>
+                        <tr>
+                            <td class="editTableTitle">* {{$.lp.selectForm}}:</td>
+                            <td class="editTableValue">
+                                <div class="MWFFormSelect" name="data.processForm"></div></td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="editTableTitle">{{$.lp.serialField}}:</td>
+                            <td class="editTableValue">
+                                {{$.lp.note}}{{$.lp.selectText}}<br>
+                                <div class="MWFSelectField" name="data.processSerialField"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="editTableTitle">* {{$.lp.startTimeField}}:</td>
+                            <td class="editTableValue">
+                                {{$.lp.note}}{{$.lp.selectDate}}<br>
+                                <div class="MWFSelectField" name="data.processStartTimeField"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="editTableTitle">* {{$.lp.completeTimeField}}:</td>
+                            <td class="editTableValue">
+                                {{$.lp.note}}{{$.lp.selectDate}}<br>
+                                <div class="MWFSelectField" name="data.processCompleteTimeField"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.validation}}</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.enableValidation}}:</td>
+                <td class="editTableValue">
+                    <input name="enableValid" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>{{$.lp.yes}}
+                    <input name="enableValid" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+        </table>
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.ececuter}}</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
+            <tr>
+                <td class="editTableTitle">{{$.lp.ececutablePerson}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="availableIdentityList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.ececutableUnit}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonUnit" name="availableUnitList"></div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+
+
+
+    <div title="{{$.lp.event}}"  class="MWFTab">
+        <div class="MWFEventsArea" name="data.events"></div>
+    </div>
+
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

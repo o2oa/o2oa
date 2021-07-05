@@ -1,0 +1,10 @@
+{
+  "copyright": "金格科技iWebOffice2015智能文档中间件[演示版];V5.0S0xGAAEAAAAAAAAAEAAAAJ0BAACgAQAALAAAAFgHOIQT3Ejo2JZMmSVxBkTixI2YkNh+cy/HGFlQ3HNIRG8j2V9vAnBWM8B384zkV79hltghTpDkba9QJTjGCDkylzhl3rian7v/AFF5DXQ7HdoXpN2imHbGHf8ieQNf672v38ODXJum7VaWv4P3DXzlzdnmzoaTTukFl+3ntFH29dQSjC94c4v0npn9rnXK5OsjJGR5mVGJJd6GWjE9rP3fo+kWCBYzb+bhn2sL+SKoyFjUuSptNHsOn3nRKrXyqkRd+QaHR/MDuKd1kEbUpRqCz9CjgfZFX00Zaz2l6ChA6LmdMMjjECalHZQA9WuxAc7cynGbvNfEgi277ahRpSZHmjKY5s18dJM/t9gdatg5b/dCqnUEn0+HS511XaM3xvy4DCVnD1n8xC9I5w+16NGrtTMiMSZFpc3QJphdShC0j+1l/ZyVj33YM31JmuxkI5SDL2CAfMUNsioseUfpOKvpxdcA7nmwlKrpxNetm9Bq0kwJn/jUU2bQa2c+bPRX82JcmFUwAz0ctOQ+Tyi+MoRpATEYW35KZtWepeDTGHJRfaJR81x8dVU0Lp1TuxtQiw==",
+  "version": "12,7,0,828",
+  "clsid": "D89F482C-5045-4DB5-8C53-D2C9EE71D025",
+  "codeBase": "../o2_lib/iWebOffice/iWebOffice2015.cab",
+
+  "version64" : "12,5,0,652",
+  "clsid64" : "D89F482C-5045-4DB5-8C53-D2C9EE71D024",
+  "codeBase64": "../o2_lib/iWebOffice/iWebOffice2015.cab"
+}

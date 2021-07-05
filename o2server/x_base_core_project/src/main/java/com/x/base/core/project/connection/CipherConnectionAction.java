@@ -159,7 +159,8 @@ public class CipherConnectionAction {
 
 	public static List<NameValuePair> cipher() throws Exception {
 		EffectivePerson effectivePerson = EffectivePerson.cipher(Config.token().getCipher());
-		return ListTools.toList(new NameValuePair(HttpToken.X_Token, effectivePerson.getToken()));
+//		return ListTools.toList(new NameValuePair(HttpToken.X_Token, effectivePerson.getToken()));
+		return ListTools.toList(new NameValuePair(Config.person().getTokenName(), effectivePerson.getToken()));
 	}
 
 	public static String trim(String uri) {

@@ -3,7 +3,7 @@ MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp."+MWF.language, null, false);
 MWF.xApplication.cms = MWF.xApplication.cms || {};
 MWF.xApplication.cms.Xform = MWF.xApplication.cms.Xform || {};
-MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP, {
+MWF.xApplication.cms.Xform.LP = Object.merge({},  MWF.xApplication.process.Xform.LP, {
     "dataSaved": "Data saved successfully",
     "documentPublished": "Published successfully",
 

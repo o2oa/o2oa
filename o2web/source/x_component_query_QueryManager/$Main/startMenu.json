@@ -48,6 +48,14 @@
     "expand": false,
     "sub": []
   },
+  {
+    "title": MWF.xApplication.query.QueryManager.LP.navi.importerConfig,
+    "id": "1.1",
+    "action": "importerConfig",
+    "icon": "query_importer.png",
+    "expand": false,
+    "sub": []
+  },
 //  {
 //    "title": "展示配置",
 //    "id": "1.1",

@@ -11,6 +11,8 @@ MWF.xApplication.process.Xform.LP = {
     "datagridImport" : "导入Excel",
     "datagridExport" : "导出Excel",
     "exportDefaultName" : "数据网格",
+    "datatemplateExportDefaultName": "数据模板",
+    "datatableExportDefaultName": "数据表格",
     "importSuccess" : "导入成功！",
     "validationInfor" : "校验信息",
     "importFail" : "导入失败",
@@ -285,6 +287,16 @@ MWF.xApplication.process.Xform.LP = {
     "attachmentArea": "附件区域",
     "intelligentCorrection" : "智能纠错",
 
+    "maxItemCountNotice": "最多允许添加{n}项",
+    "selectItemNotice": "请先选择条目",
+    "minItemNotice": "最少需要保留{n}项，删除后的条目小于需保留的条目，请检查",
+    "deleteSelectedItemNotice": "确定要删除选中的条目",
+    "minItemCountNotice": "请最少保留{n}项",
+    "systemField": "系统字段",
+    "systemFieldEmptyNotice": "系统字段不能为空",
+    "importTooManyNotice": "本次导入了{n1}条数据，最多允许导入{n2}条数据",
+    "importTooFewNotice": "本次导入了{n1}条数据，最少需要保留{n2}条数据",
+
     "form": {
         "close":"关闭",
         "closeTitle": "关闭文档",
@@ -323,6 +335,8 @@ MWF.xApplication.process.Xform.LP = {
         "resetPerson": "重置给：",
         "resetOpinion": "重置意见：",
         "keepTask": "保留我的待办",
+
+        "readedOpinion": "阅读意见",
 
         "rollbackInfo": "请选择文件要回溯到的位置",
         "addSplitInfo": "根据您的业务设置拆分数据，此处设置的数据应与流程中设置的拆分依据匹配。<br/>多个值请用半角逗号(,)分隔",

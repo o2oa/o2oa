@@ -362,7 +362,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     load: function (callback) {
         this.loadMacro(function () {
-            debugger;
             this.loadLanguage(function(flag){
                 if (flag && this.formDataText){
                     var data = o2.bindJson(this.formDataText,  {"lp": MWF.xApplication.process.Xform.LP.form});
@@ -425,7 +424,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
     },
     loadLanguage: function(callback){
-        debugger;
         //formDataText
         if (this.json.languageType!=="script" && this.json.languageType!=="default"){
             if (callback) callback();
@@ -713,12 +711,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var tools = [];
         this._loadMobileDefaultTools(function () {
             if (this.json.defaultTools) {
+                var jsonStr = JSON.stringify(this.json.defaultTools);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
+                this.json.defaultTools = JSON.parse(jsonStr);
                 this.json.defaultTools.each(function (tool) {
                     var flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
                     if (flag) tools.push(tool);
                 }.bind(this));
             }
             if (this.json.tools) {
+                var jsonStr = JSON.stringify(this.json.tools);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
+                this.json.tools = JSON.parse(jsonStr);
                 this.json.tools.each(function (tool) {
                     var flag = this._checkCustomMobileActionItem(tool, this.options.readonly);
                     if (flag) tools.push(tool);
@@ -865,6 +869,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.css.html5ActionButton.width = "100%";
             if (count == 2) this.css.html5ActionButton.width = "49%";
             tools.each(function (tool) {
+
                 var action = new Element("div", { "styles": this.css.html5ActionButton, "text": tool.text }).inject(node);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
@@ -1163,22 +1168,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
         }
     },
-    _getModuleNodes: function (dom) {
+    _getModuleNodes: function (dom, dollarFlag ) {
         var moduleNodes = [];
         var subDom = dom.getFirst();
         while (subDom) {
             var mwftype = subDom.get("MWFtype") || subDom.get("mwftype");
             if (mwftype) {
                 var type = mwftype;
-                if (type.indexOf("$") === -1) {
+                if (type.indexOf("$") === -1 || dollarFlag===true) {
                     moduleNodes.push(subDom);
                 }
                 // && mwftype !== "tab$Content"
-                if (mwftype !== "datagrid" && mwftype !== "subSource" && mwftype !== "tab$Content") {
-                    moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom));
+                if (mwftype !== "datagrid" && mwftype !== "datatable" && mwftype !== "subSource" && mwftype !== "tab$Content" && mwftype !== "datatemplate") {
+                    moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom, dollarFlag));
                 }
             } else {
-                moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom));
+                moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom, dollarFlag));
             }
             subDom = subDom.getNext();
         }
@@ -1269,6 +1274,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //var data = Object.clone(this.businessData.data);
         var data = this.businessData.data;
         Object.each(this.forms, function (module, id) {
+
+            //对id类似于 xx..0..xx 的字段 不处理
+            if( id.indexOf("..") > 0 )return;
+
             if (module.json.type === "Opinion") {
 
                 if (issubmit) {
@@ -1291,9 +1300,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if (module.json.section === "yes") {
                     //     var d = this.loadPathData(id);
                     //     if (d) data[id] = d;
-                    data[id] = this.getSectionData(module, data[id]);
+                    var v = this.getSectionData(module, data[id]);
+                    //if (o2.typeOf(v)==="string") v = o2.txt(v);
+                    data[id] = v
                 } else {
-                    data[id] = module.getData();
+                    var v = module.getData();
+                    //if (o2.typeOf(v)==="string") v = o2.txt(v);
+                    data[id] = v;
                 }
             }
         }.bind(this));
@@ -1551,10 +1564,25 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.modifedData = {};
         this.setModifedData(data);
 
-        this.workAction.saveData(callback || function () { }, failure, this.businessData.work.id, this.modifedData);
-
-        this.businessData.originalData = null;
-        this.businessData.originalData = Object.clone(data);
+        if (this.toWordSaveList && this.toWordSaveList.length){
+            var p = [];
+            this.toWordSaveList.each(function(editor){
+                if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
+            });
+            Promise.all(p).then(function(){
+                this.workAction.saveData(function () {
+                    this.businessData.originalData = null;
+                    this.businessData.originalData = Object.clone(data);
+                    if(callback)callback();
+                }.bind(this), failure, this.businessData.work.id, this.modifedData);
+            }.bind(this));
+        }else{
+            this.workAction.saveData(function () {
+                this.businessData.originalData = null;
+                this.businessData.originalData = Object.clone(data);
+                if(callback)callback();
+            }.bind(this), failure, this.businessData.work.id, this.modifedData);
+        }
     },
     saveFormDataDraft: function (callback, failure, history, data, issubmit, isstart) {
         if (this.officeList) {
@@ -1569,6 +1597,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "identity": this.businessData.work.creatorIdentityDn
         }
         this.workAction.saveDraft(draft, function (json) {
+
+            this.businessData.originalData = null;
+            this.businessData.originalData = Object.clone(data);
+
             this.workAction.getDraft(json.data.id, function (json) {
                 this.businessData.work = json.data.work;
                 this.app.options.draftId = json.data.work.id;
@@ -1595,8 +1627,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             }.bind(this));
         }.bind(this), failure);
-        this.businessData.originalData = null;
-        this.businessData.originalData = Object.clone(data);
     },
     setProcessorSectionOrgList: function (data) {
         if (!this.routeDataList) this.getRouteDataList();
@@ -2502,12 +2532,28 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         medias = medias.concat(mds)
                     }
 
-                    _self.submitWork(routeName, opinion, medias, function () {
-                        this.destroy();
-                        processNode.destroy();
-                        if (_self.processDlg) _self.processDlg.close();
-                        delete this;
-                    }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                    var promise;
+                    if (this.toWordSubmitList && this.toWordSubmitList.length){
+                        var p = [];
+                        this.toWordSubmitList.each(function(editor){
+                            if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
+                        });
+                        Promise.all(p).then(function(){
+                            _self.submitWork(routeName, opinion, medias, function () {
+                                this.destroy();
+                                processNode.destroy();
+                                if (_self.processDlg) _self.processDlg.close();
+                                delete this;
+                            }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                        }.bind(this));
+                    }else{
+                        _self.submitWork(routeName, opinion, medias, function () {
+                            this.destroy();
+                            processNode.destroy();
+                            if (_self.processDlg) _self.processDlg.close();
+                            delete this;
+                        }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                    }
                 }
             }, this);
         }.bind(this));
@@ -3678,10 +3724,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         //_self.addRetractMessage(json.data);
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workRetract, "success");
                         _self.app.content.unmask();
+                        if (_self.mask) { _self.mask.hide(); _self.mask = null; }
                         _self.app.reload();
                         //}, null, _self.businessData.work.id);
                         this.close();
-                        if (_self.mask) { _self.mask.hide(); _self.mask = null; }
                     }.bind(this), function (xhr, text, error) {
                         _self.app.content.unmask();
                         var errorText = error + ":" + text;
@@ -3892,7 +3938,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }.bind(this));
                 }
             });
-            debugger;
             dlg.show();
         }.bind(this));
     },
@@ -4276,53 +4321,143 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
      * }
      */
     readedWork: function (e) {
-        if( !e )e = new Event(event);
-        this.fireEvent("beforeReaded");
-        var _self = this;
-        var title = this.businessData.work.title;
-        if (title.length > 75) {
-            title = title.substr(0, 74) + "..."
+        if (!this.businessData.control["allowReadProcessing"]) {
+            MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
+            return false;
         }
-        //"您确定要将“" + title + "”标记为已阅吗？";
-        var text = MWF.xApplication.process.Xform.LP.setReadedConfirmContent.replace("{title}",title);
+        MWF.require("MWF.xDesktop.Dialog", function () {
+            var width = 680;
+            var height = 300;
+            var p = MWF.getCenterPosition(this.app.content, width, height);
 
-        this.app.confirm("infor", e,  MWF.xApplication.process.Xform.LP.setReadedConfirmTitle, text, 300, 120, function () {
-            var confirmDlg = this;
-            var read = null;
-            for (var i = 0; i < _self.businessData.readList.length; i++) {
-                if (_self.businessData.readList[i].person === layout.session.user.distinguishedName) {
-                    read = _self.businessData.readList[i];
-                    break;
-                }
+            var _self = this;
+debugger;
+            //"您确定要将“" + title + "”标记为已阅吗？";
+            var title = this.businessData.work.title;
+            var text = MWF.xApplication.process.Xform.LP.setReadedConfirmContent.replace("{title}",title);
+            MWF.xApplication.process.Xform.LP.form.setReadedConfirmInfo = text;
+
+            var dlg = new MWF.xDesktop.Dialog({
+                "title": MWF.xApplication.process.Xform.LP.setReadedConfirmTitle,
+                "style": this.json.dialogStyle || "user", //|| "work",
+                "top": p.y - 100,
+                "left": p.x,
+                "fromTop": p.y - 100,
+                "fromLeft": p.x,
+                "width": width,
+                "height": height,
+                "url": this.app.path + "readed.html",
+                "lp": MWF.xApplication.process.Xform.LP.form,
+                "container": this.app.content,
+                "isClose": true,
+                "buttonList": [
+                    {
+                        "type": "ok",
+                        "text": MWF.LP.process.button.ok,
+                        "action": function (d, e) {
+                            this.doReadedWork(dlg);
+                        }.bind(this)
+                    },
+                    {
+                        "type": "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () { dlg.close(); }
+                    }
+                ]
+            });
+            dlg.show();
+        }.bind(this));
+
+        // if( !e )e = new Event(event);
+        // this.fireEvent("beforeReaded");
+        // var _self = this;
+        // var title = this.businessData.work.title;
+        // if (title.length > 75) {
+        //     title = title.substr(0, 74) + "..."
+        // }
+        // //"您确定要将“" + title + "”标记为已阅吗？";
+        // var text = MWF.xApplication.process.Xform.LP.setReadedConfirmContent.replace("{title}",title);
+        //
+        // this.app.confirm("infor", e,  MWF.xApplication.process.Xform.LP.setReadedConfirmTitle, text, 300, 120, function () {
+        //     var confirmDlg = this;
+        //     var read = null;
+        //     for (var i = 0; i < _self.businessData.readList.length; i++) {
+        //         if (_self.businessData.readList[i].person === layout.session.user.distinguishedName) {
+        //             read = _self.businessData.readList[i];
+        //             break;
+        //         }
+        //     }
+        //
+        //     if (read) {
+        //         _self.app.action.setReaded(function () {
+        //             _self.fireEvent("afterReaded");
+        //             _self.app.reload();
+        //             if (layout.mobile) {
+        //
+        //                 //移动端页面关闭
+        //                 _self.finishOnMobile()
+        //             } else {
+        //                 confirmDlg.close();
+        //             }
+        //         }, null, read.id, read);
+        //     } else {
+        //         _self.app.reload();
+        //         if (layout.mobile) {
+        //
+        //             //移动端页面关闭
+        //             _self.finishOnMobile()
+        //         } else {
+        //             confirmDlg.close();
+        //         }
+        //     }
+        //
+        // }, function () {
+        //     this.close();
+        // }, null, this.app.content, this.json.confirmStyle);
+    },
+    doReadedWork: function(dlg){
+        var opinion = dlg.content.getElement(".readedWork_opinion").get("value");
+
+        var read = null;
+        for (var i = 0; i < this.businessData.readList.length; i++) {
+            if (this.businessData.readList[i].person === layout.session.user.distinguishedName) {
+                read = this.businessData.readList[i];
+                break;
             }
+        }
 
-            if (read) {
-                _self.app.action.setReaded(function () {
+        var _self = this;
+        if (read) {
+            MWF.require("MWF.widget.Mask", function () {
+                this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                this.mask.loadNode(this.app.content);
+
+                read.opinion = opinion;
+                this.app.action.setReaded(function () {
+                    if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+
                     _self.fireEvent("afterReaded");
                     _self.app.reload();
-                    if (layout.mobile) {
 
-                        //移动端页面关闭
+                    if (layout.mobile) {
                         _self.finishOnMobile()
                     } else {
-                        confirmDlg.close();
+                        dlg.close();
                     }
                 }, null, read.id, read);
+            }.bind(this));
+        } else {
+
+
+            _self.app.reload();
+            if (layout.mobile) {
+                _self.finishOnMobile()
             } else {
-                _self.app.reload();
-                if (layout.mobile) {
-
-                    //移动端页面关闭
-                    _self.finishOnMobile()
-                } else {
-                    confirmDlg.close();
-                }
+                dlg.close();
             }
-
-        }, function () {
-            this.close();
-        }, null, this.app.content, this.json.confirmStyle);
+        }
     },
+
     openWindow: function (form, app) {
         //var application = app || (this.businessData.work) ? this.businessData.work.application : this.businessData.workCompleted.application;
         var form = form;
@@ -4404,8 +4539,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             window.webkit.messageHandlers.closeWork.postMessage("");
         } else if (window.wx && window.__wxjs_environment === 'miniprogram') { //微信小程序 关闭页面
             wx.miniProgram.navigateBack({ delta: 1 });
-        } else if (window.uni && uni.navigateBack) { // uniapp 关闭页面
-            uni.navigateBack();
+        } else if (window.uni && window.uni.navigateBack) { // uniapp 关闭页面
+            window.uni.navigateBack();
         } else if (this.json.afterProcessAction === "redirect" && this.json.afterProcessRedirectScript && this.json.afterProcessRedirectScript.code) {
             var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
             (new URI(url)).go();
@@ -4425,6 +4560,32 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter").toURI().go();
                 }
             }
+        }
+    },
+    /**
+     * @summary 获取组件的类型(小写).
+     * @param {Object|String} module - 组件或组件Id
+     * @return {String} 组件类型（小写）
+     * @example
+     * //假设有一个文本输入组件id为subject
+     * var module = this.form.get("subject");
+     * //moduleType 为 textfield;
+     * var moduleType = this.form.getApp().appForm.getModuleType();
+     * @example
+     * //假设有一个附件组件id为att,
+     * var moduleType = this.form.getApp().appForm.getModuleType("att");
+     * //moduleType 为 attachment;
+     */
+    getModuleType : function (module) {
+        if( typeOf(module) === "string" )module = this.all[module];
+        if( module ){
+            var moduleType = module.json.moduleName || "";
+            if( !moduleType ){
+                moduleType = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
+            }
+            return moduleType.toLowerCase();
+        }else{
+            return "";
         }
     }
 

@@ -1,0 +1,146 @@
+<div class="pack-box" data-o2-element="apppackBoxNode">
+
+  <p>{{$.lp.mobile_apppack_tips1}}</p>
+  <p>{{$.lp.mobile_apppack_tips2}}</p>
+  <p>{{$.lp.mobile_apppack_tips3}}</p>
+  
+  <p data-o2-element="apppackErrorMsgNode" class="pack-error-msg" style="display: none;"></p>
+
+  <!-- 输入表单 -->
+  <div class="form" data-o2-element="apppackFormBodyNode" style="display: none;">
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_appName}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text" data-o2-element="apppackAppNameInputNode" />
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_appName_tip}}</p>
+        </div>
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_logo}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="file" data-o2-element="apppackLogoInputNode" />
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_logo_tip}}</p>
+        </div>
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_protocol}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text"  data-o2-element="apppackProtocolInputNode" />
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_protocol_tip}}</p>
+        </div>
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_host}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text"  data-o2-element="apppackHostInputNode" />
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_host_tip}}</p>
+        </div>
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_port}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text"  data-o2-element="apppackPortInputNode" />
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_port_tip}}</p>
+        </div>
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_context}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text" data-o2-element="apppackContextInputNode"/>
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_context_tip}}</p>
+        </div>
+      </div>
+
+
+      <span class="pack-form-sb-btn"  data-o2-element="apppackBtnNode"><button >{{$.lp.mobile_apppack_form_button}}</button></span>
+
+  </div>
+
+  <!-- 显示表单 -->
+  <div class="form" data-o2-element="apppackShowBodyNode" style="display: none;">
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_status_label}}</label>
+        <div class="pack-info-status-box" data-o2-element="apppackStatusShowNode" style="color: #fb4747;">
+           
+        </div>
+        <div class="pack-info-status-refresh" data-o2-element="apppackStatusRefreshNode" style="display: none;">{{$.lp.mobile_apppack_refresh_status_btn}}</div>
+      </div>
+
+      
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_appName}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackAppNameShowNode">
+          </span>
+        </div>
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_logo}}</label>
+        <img data-o2-element="apppackLogoShowImgNode" src="" width="64" height="64" />
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_protocol}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackProtocolShowNode">
+          </span>
+        </div>
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_host}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackHostShowNode">
+          </span>
+        </div>
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_port}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackPortShowNode">
+          </span>
+        </div>
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_context}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackContextShowNode">
+          </span>
+        </div>
+      </div>
+
+      <div class="pack-form-group" style="display:none;" data-o2-element="apppackDownloadShowNode">
+        <div class="pack-info-status-box" >
+           <a href="" target="_blank" data-o2-element="apppackDownloadLinkNode">下载APK文件</a>
+        </div>
+      </div>
+
+
+      <span class="pack-form-sb-btn"  data-o2-element="apppackRePackBtnNode" style="display: none;"><button >{{$.lp.mobile_apppack_form_re_pack_button}}</button></span>
+      <span class="pack-form-sb-btn"  data-o2-element="apppackReInputBtnNode" style="display: none;"><button >{{$.lp.mobile_apppack_form_reinput_button}}</button></span>
+
+  </div>
+
+</div>

@@ -38,6 +38,12 @@ class ActionListFileTypePaging extends BaseAction {
 			Integer adjustPageSize = this.adjustSize(size);
 			List<Attachment2> os = this.list(effectivePerson, business, adjustPage, adjustPageSize, wi);
 			List<Wo> wos = Wo.copier.copy(os);
+			wos.stream().forEach(wo -> {
+				try {
+					wo.setPath(business.folder2().getSupPath(wo.getFolder()));
+				} catch (Exception e) {
+				}
+			});
 			result.setData(wos);
 			result.setCount(this.count(effectivePerson, business, wi));
 			return result;
@@ -95,6 +101,16 @@ class ActionListFileTypePaging extends BaseAction {
 		static WrapCopier<Attachment2, Wo> copier = WrapCopierFactory.wo(Attachment2.class, Wo.class,
 				JpaObject.singularAttributeField(Attachment2.class, true, true), null);
 
+		@FieldDescribe("文件路径")
+		private String path;
+
+		public String getPath() {
+			return path;
+		}
+
+		public void setPath(String path) {
+			this.path = path;
+		}
 	}
 
 }

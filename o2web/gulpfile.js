@@ -159,6 +159,8 @@ function createXFormConcatTask(path, isMin, thisOptions) {
             'source/' + path + '/Combox.js',
             'source/' + path + '/DatagridMobile.js',
             'source/' + path + '/DatagridPC.js',
+            'source/' + path + '/DatatablePC.js',
+            'source/' + path + '/DatatableMobile.js',
             'source/' + path + '/Textfield.js',
             'source/' + path + '/Personfield.js',
             'source/' + path + '/Button.js',
@@ -255,6 +257,7 @@ function createCMSXFormConcatTask(path, isMin, thisOptions) {
             'source/' + processPath + '/Tab.js',
             'source/' + processPath + '/Table.js',
             'source/' + processPath + '/Textarea.js',
+            'source/' + processPath + '/Documenteditor.js',
             //'source/' + processPath + '/Tree.js',
             //'source/' + processPath + '/View.js',
             // 'source/x_component_process_Work/Processor.js',
@@ -340,6 +343,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
     gulp.task(path+" : concat", function(){
         var option = thisOptions || options;
         var src = [
+            'source/' + path + '/polyfill.js',
             'source/o2_lib/mootools/mootools-1.6.0_all.js',
             'source/o2_lib/mootools/plugin/mBox.js',
             'source/' + path + '/o2.js'
@@ -450,6 +454,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
     gulp.task(path+" : bundle", function(){
         var option = thisOptions || options;
         var src = [
+            'source/' + path + '/polyfill.js',
             'source/o2_lib/mootools/mootools-1.6.0_all.js',
             'source/o2_lib/mootools/plugin/mBox.js',
             'source/' + path + '/o2.js',

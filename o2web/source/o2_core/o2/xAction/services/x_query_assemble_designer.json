@@ -72,6 +72,12 @@
   "deleteStatement" : { "uri": "/jaxrs/statement/{flag}", "method": "DELETE" },
   "executeStatement" : { "uri": "/jaxrs/statement/{flag}/execute/page/{page}/size/{size}", "method": "POST" },
 
+  "listImportModel" : {"uri": "/jaxrs/importmodel/list/query/{flag}"},
+  "getImportModel" : { "uri": "/jaxrs/importmodel/{flag}" },
+  "updateImportModel":{ "uri": "/jaxrs/importmodel/{flag}", "method": "PUT" },
+  "createImportModel":{ "uri": "/jaxrs/importmodel", "method": "POST" },
+  "deleteImportModel" : { "uri": "/jaxrs/importmodel/{flag}", "method": "DELETE" },
+
   "buildAllTable" : { "uri" : "/jaxrs/table/build/all" }, //编译表对象生成实体类进行数据库建表,执行后需要重新启动.
   "listTableNext" : {"uri": "/jaxrs/table/list/{id}/next/{count}"},
   "listTable" : {"uri": "/jaxrs/table/list/query/{id}"},

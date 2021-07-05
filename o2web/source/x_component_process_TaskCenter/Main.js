@@ -29,6 +29,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
             "creatorDepartmentList": "creatorDepartmentList",
             "activityNameList": "activityNameList",
             "completedTimeMonthList": "completedTimeMonthList",
+            "startTimeMonthList": "startTimeMonthList",
             "key": "key"
         }
     },
@@ -251,14 +252,14 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         this.getAction(function () {
             this.action.getCount(function (json) {
                 this.counts = json.data;
-                this["taskCountNode"].set("text", "( " + ((this.counts.task > 100) ? "99" : this.counts.task) + " )");
-                this["taskCompletedCountNode"].set("text", "( " + ((this.counts.taskCompleted > 100) ? "99" : this.counts.taskCompleted) + " )");
-                this["readCountNode"].set("text", "( " + ((this.counts.read > 100) ? "99" : this.counts.read) + " )");
-                this["readCompletedCountNode"].set("text", "( " + ((this.counts.readCompleted > 100) ? "99" : this.counts.readCompleted) + " )");
+                this["taskCountNode"].set("text", "( " + ((this.counts.task > 100) ? "99+" : this.counts.task) + " )");
+                this["taskCompletedCountNode"].set("text", "( " + ((this.counts.taskCompleted > 100) ? "99+" : this.counts.taskCompleted) + " )");
+                this["readCountNode"].set("text", "( " + ((this.counts.read > 100) ? "99+" : this.counts.read) + " )");
+                this["readCompletedCountNode"].set("text", "( " + ((this.counts.readCompleted > 100) ? "99+" : this.counts.readCompleted) + " )");
                 //this["reviewCountNode"].set("text", "[ "+((this.counts.review>100) ? "99" : this.counts.review)+" ]");
             }.bind(this), null, this.desktop.session.user.distinguishedName);
             this.action.listDraftNext("(0)", 1, function (json) {
-                this["draftCountNode"].set("text", "( " + ((json.count > 100) ? "99" : json.count) + " )");
+                this["draftCountNode"].set("text", "( " + ((json.count > 100) ? "99+" : json.count) + " )");
             }.bind(this));
         }.bind(this));
     },
@@ -632,6 +633,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         //if (this.readList) if (this.currentTab == "read") this.readList.refresh();
         //if (this.readedList) if (this.currentTab == "readed") this.readedList.refresh();
         //if (this.reviewList) if (this.currentTab == "review") this.reviewList.refresh();
+        if (this.draftList) if (this.currentTab === "draft") this.draftList.refresh();
     },
 
     createTaskCompletedList: function (filterData) {
@@ -981,13 +983,13 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
 
         var appName = "";
         if( typeOf( this.data.applicationName ) === "string" ){
-            appName = this.data.applicationName;
+            appName = this.data.applicationName || "";
         }else if( typeOf( this.data.applicationName ) === "object" && this.data.applicationName.name ){
-            appName = this.data.applicationName.name;
+            appName = this.data.applicationName.name || "";
         }
         this.textNode.set({
             "text": this.data.name+((this.data.applicationName) ? " -- ("+appName+")" : ""),
-            "title": this.data.name+"-"+this.data.description
+            "title": this.data.name+ (this.data.description ? ("-"+ this.data.description) : "")
         });
         //var _self = this;
 

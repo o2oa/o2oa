@@ -15,7 +15,7 @@ var _action = {
             if (this.readyState === XMLHttpRequest.DONE) {
                 if (this.status === 200) {
                     var json = JSON.parse(this.responseText);
-                    var xToken = this.getResponseHeader("x-token");
+                    var xToken = this.getResponseHeader(_worker.findData.tokenName);
                     if (xToken){
                         json.xToken = xToken;
                     }
@@ -48,7 +48,7 @@ var _action = {
             request.setRequestHeader("Accept", "text/html,application/json,*/*");
             if (debug) request.setRequestHeader("x-debugger", "true");
             if (token){
-                request.setRequestHeader("x-token", token);
+                request.setRequestHeader(_worker.findData.tokenName, token);
                 request.setRequestHeader("authorization", token);
             }
 
@@ -58,7 +58,7 @@ var _action = {
 
     _doneRequest: function(s){
         var json = JSON.parse(this.request.responseText);
-        var xToken = this.request.getResponseHeader("x-token");
+        var xToken = this.request.getResponseHeader(_worker.findData.tokenName);
         if (xToken){
             json.xToken = xToken;
         }
@@ -442,30 +442,32 @@ _worker.findInDesigner_events = function(formData, key, module, designer, proper
     var eventObj = formData[key];
     Object.keys(eventObj).forEach(function(evkey){
         var code = eventObj[evkey].code;
-        this.keywordRegexp.lastIndex = 0;
-        var len = code.length;
+        if (code){
+            this.keywordRegexp.lastIndex = 0;
+            var len = code.length;
 
-        var preLine = 0;
-        var preIndex = 0;
-        var result;
-        while ((result = this.keywordRegexp.exec(code)) !== null){
-            var obj = _worker.findScriptLineValue(result, code, preLine, preIndex, len);
-            preLine = obj.preLine;
-            preIndex = obj.preIndex;
+            var preLine = 0;
+            var preIndex = 0;
+            var result;
+            while ((result = this.keywordRegexp.exec(code)) !== null){
+                var obj = _worker.findScriptLineValue(result, code, preLine, preIndex, len);
+                preLine = obj.preLine;
+                preIndex = obj.preIndex;
 
-            _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
-                "type": formData.type,
-                "propertyType": propertyDefinition.type || "text",
-                "propertyName": propertyDefinition.name,
-                "name": formData.name || formData.id,
-                "id": formData.id,
-                "key": key,
-                "evkey": evkey,
-                "value": obj.value,
-                "line": preLine+1,
-                "mode": mode,
-                "path": (path) ? path.concat([evkey, "code"]) : ""
-            }), option);
+                _worker._findMessageReply(_worker._createFindMessageReplyData(module, designer, "", {
+                    "type": formData.type,
+                    "propertyType": propertyDefinition.type || "text",
+                    "propertyName": propertyDefinition.name,
+                    "name": formData.name || formData.id,
+                    "id": formData.id,
+                    "key": key,
+                    "evkey": evkey,
+                    "value": obj.value,
+                    "line": preLine+1,
+                    "mode": mode,
+                    "path": (path) ? path.concat([evkey, "code"]) : ""
+                }), option);
+            }
         }
     });
 };

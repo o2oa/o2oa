@@ -114,6 +114,16 @@
     "text": MWF.APPPD.LP.modules.checkbox,
     "className": "Checkbox"
   },
+  "address": {
+    "icon": "address.png",
+    "text": MWF.APPPD.LP.modules.address,
+    "className": "Address"
+  },
+  "combox": {
+    "icon": "combox.png",
+    "text": MWF.APPPD.LP.modules.combox,
+    "className": "Combox"
+  },
   "widget": {
     "icon": "subpage.png",
     "text": MWF.APPPD.LP.modules.widget,
@@ -133,5 +143,20 @@
     "icon": "datagrid.png",
     "text": MWF.APPPD.LP.modules.datagrid,
     "className": "Datagrid"
+  },
+  "datatable": {
+    "icon": "datagrid.png",
+    "text": MWF.APPPD.LP.modules.datatable,
+    "className": "Datatable"
+  },
+  "datatemplate": {
+    "icon": "datatemplate.png",
+    "text": MWF.APPPD.LP.modules.datatemplate,
+    "className": "Datatemplate"
+  },
+  "importer": {
+    "icon": "importer.png",
+    "text": MWF.APPPD.LP.modules.importer,
+    "className": "Importer"
   }
 }

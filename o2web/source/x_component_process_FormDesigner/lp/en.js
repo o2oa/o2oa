@@ -301,7 +301,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "attachment": "Attachment",
         "div": "Div",
         "table": "Table",
-        "datagrid": "Datagrid",
+        "datagrid": "Datagrid(Deprecated)",
+        "datatable": "Datatable",
+        "datatemplate": "Datatemplate",
         "subform": "Subform",
         "ViewSelector": "ViewSelector",
         "view": "View",
@@ -317,7 +319,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "htmledit": "Htmleditor",
         "office": "Office",
         "statementSelector": "StatementSelector",
-        "statement": "Statement"
+        "statement": "Statement",
+        "importer": "DataImporter"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -548,6 +551,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowUpload": "Allow Upload",
         "allowPreview": "Allow Preview",
         "allowDownload": "Allow Download",
+        "allowEdit": "Allow Edit",
         "allowDelete": "Allow Delete",
         "allowDelMyAtt": "Only allow delete files uploaded by yourself",
         "allowDelCurActivityAtt": "Only allow delete files uploaded on current activity",
@@ -559,7 +563,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideLayoutButton": "Hide Layout Buttons",
         "hideSettingButton": "Hide Setting Buttons",
         "hideModeButton": "Hide Mode Button",
-        "showInDatagrid": "Show In Datagrid",
+        "showInDatagrid": "Show In Datagrid Or Datatable",
 
         "tableSize": "Table Size",
         "row": "Row",
@@ -587,6 +591,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "layoutCell": "Layout Cell",
         "other": "Other",
 
+        "permission": "Permission",
+
+        "containerStyles": "Container Styles",
+        "tableAttribute": "Table Attribute",
         "border": "Border",
         "backgroundColor": "Background Color",
         "alternateRow": "Alternate Row",
@@ -764,6 +772,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "fullScreen": "Full Screen",
         "fullScreenInfo": "Whether to allow full screen display",
         "wordConversion": "Convert to word",
+        "wordConversionType": "Convert Type",
+        "wordConversionWithService": "By Service",
         "fileName": "Filename",
         "fileSite": "Attachment site",
         "addPageNumber": "Page Number",
@@ -805,6 +815,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "meetingSit": "Meeting Sit",
         "meetingRecord": "Meeting Record",
         "customElement": "Custom element configuration",
+        "subjectEditBindFormData": "Bind Data",
 
         "autoCorrect": "Auto Correct",
         "ckeditorInfo": "For more attribute help, please see ",
@@ -871,8 +882,57 @@ MWF.xApplication.process.FormDesigner.LP = {
         "parameterScript": "Parameter Script (Return JSON Object)",
         "insertWidget": "Tnsert Widget",
         "selectWidget": "Select Widget",
-        "inDiv": "Wrapped in a div"
+        "inDiv": "Wrapped in a div",
 
+        "outerSideModuleId": "external related component ID",
+        "addButtonId": "Add button ID",
+        "deleteSelectedButtonId": "Delete selected item button ID",
+        "selectAllModuleId": "Select All component ID",
+        "selectedValue": "Selected Value",
+        "innerSideModuleId": "Internal related component ID",
+        "deleteButtonId": "Delete Button ID",
+        "sequenctModuleId": "Sequence number component ID",
+        "selectModuleId": "Select component ID",
+        "defaultShow": "Default Show",
+        "item": "Item",
+        "maxItemCount": "Maximum Add",
+        "minItemCount": "Minimum Keep",
+        "dtImportInfor": "Note: Pictures, attachments, datagrids, and sub datatemplates cannot be imported or exported.",
+        "importButtonId": "Import Button Id",
+        "exportButtonId": "Export Button Id",
+        "importExporConfig": "Import and export field configuration",
+        "validationPopFormConfig": "PopForm Config",
+        "validationPopFormHeight": "PopForm Height",
+        "validationPopFormWidth": "PopForm Width",
+        "validationTableStyle": "Validation Table Style",
+        "validationTitleTdStyle": "Validation Title Cell Style",
+        "validationContentTdStyle": "Validation Content Td Style",
+        "validationTableAttribute": "Validation Table Attribute",
+        "count": "Count",
+        "import" : "Import",
+        "datatableEditMode": "Edit Mode",
+        "datatableEditModeValue": ["single row","multiple rows"],
+        "onlyPc": "Available on PC only",
+        "datatemplateOuterNote": "Note: The data template can have multiple layers, and the external component identifier must be filled in with the following rules:<br/>" +
+            "1. Single layer or the outermost data template, fill in \"fieldId\" to indicate the direct component on the form.<br/>" +
+            "2. If there are multiple data templates, \"./fieldId\" means components at the same level as the current data template, \"../fieldId\" means components at the same level as the previous data template, and so on .<br/>" +
+            "3. If there is a multi-layer data template, you can also use \"datatemplateId.*.datatemplateId2.*.fieldId\" to indicate the full-level path. datatemplateId indicates the id of the first-level data template, and datatemplateId2 indicates the id of the second-level. ",
+        "datatemplateInnerNote": "Note: Regardless of single-layer or multi-layer data template, directly fill in the component ID.",
+        "importModel": "Import Model",
+        "enable": "enable",
+        "disable": "disable",
+        "downloadTempalte": "Download Template",
+        "downloadTempalteId": "Download template component ID",
+        "downloadTempalteIdNote": "You can create a component on the form and fill in the component ID here. The system will bind the click event of the download template to the node of the component.",
+        "province": "Province",
+        "city": "City",
+        "county": "County",
+        "useTextFieldNote": "Note: It is recommended to use text components",
+        "useChecboxNote": "Note: It is recommended to use multiple selection components",
+        "checkboxValueNote": "Note: the optional value corresponding to the selected component",
+        "checkboxValueAllNote": "Note: Corresponding to the optional value of select all components",
+
+        "notShow": "Not Show"
     },
     "actionBar": {
         "close":"Close",
@@ -902,7 +962,18 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resume": "Resume",
         "resumeTitle": "Resume the task from pending",
         "downloadAll": "Download",
-        "downloadAllTitle": "Download the form and all attachments"
+        "downloadAllTitle": "Download the form and all attachments",
+        "setReaded": "Mark as read",
+        "readed": "Readed"
+    },
+    "filedConfigurator": {
+        "sequence": "Sequence",
+        "fieldTitle": "Field Title",
+        "fieldId": "Field ID",
+        "action": "Action",
+        "moveup": "Move to the previous line",
+        "deleteRow": "Delete Row",
+        "insertRow": "Insert Row"
     }
 
 };

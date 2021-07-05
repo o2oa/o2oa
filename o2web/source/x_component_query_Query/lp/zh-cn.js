@@ -11,6 +11,7 @@ MWF.xApplication.query.Query.LP = {
     "view": "视图",
     "stat": "统计",
     "statement" : "查询",
+    "importer": "导入",
     "customSearch": "高级搜索",
     "searchKeywork": "输入关键字搜索视图",
     "yes": "是",
@@ -48,6 +49,7 @@ MWF.xApplication.query.Query.LP = {
     "filterErrorTitle": "请选择搜索字段",
     "filterErrorComparison": "请选择比较符",
     "filterErrorValue": "请输入比较值",
+
 
     "workTitle": "标题",
     "activity": "活动",
@@ -145,9 +147,8 @@ MWF.xApplication.query.Query.LP = {
 
     "firstPage": "第一页",
     "lastPage": "最后一页",
-
     "viewExport" : {
-	    "exportRange" : "导出范围",
+        "exportRange" : "导出范围",
         "to" : "到",
         "item" : "条",
         "description" : "注：一次最多允许导出2000条。有{count}条符合条件的数据。",
@@ -157,5 +158,92 @@ MWF.xApplication.query.Query.LP = {
 
     "deleteConfirmContent" : "删除后不能恢复，你确定要删除该文档？",
     "deleteConfirmTitle" : "删除确认",
-    "deleteSuccessNotice" : "删除成功"
+    "deleteSuccessNotice" : "删除成功",
+
+    "importSuccess" : "导入成功！",
+    "validationInfor" : "校验信息",
+    "importFail" : "导入失败",
+    "importValidationColumnText" : "第{n}列：",
+    "importValidationColumnTextExcel" : "列{n}：",
+    "notValidNumber" : "不是数字",
+    "notValidDate" : "不是日期格式",
+    "notValidBoolean": "不是布尔值",
+    "notValidJson": "不是正确的JSON格式",
+    "fullstop" : "。",
+    "notExistInSystem" : "在系统中不存在",
+    "uploadedFilesCannotHaveSpaces" : "上传的文件不能带空格",
+    "canNotBeEmpty": "不能为空",
+    "cmsTitleLengthInfor": "标题长度不能超过70个字",
+    "cmsSummaryLengthInfor": "摘要长度不能超过70个字",
+    "caculateFieldValidationText": "计算字段错误:",
+
+    "noDrafter": "未设置拟稿人身份或者拟稿人在系统中不存在",
+    "drafterIsNotIdentity": "拟稿人不是身份",
+    "noPublishTime": "未设置发布时间",
+    "publishTimeFormatError": "发布时间格式不正确",
+    "noStartTime": "未设置开始时间",
+    "startTimeFormatError": "开始时间格式不正确",
+    "noEndTime": "未设置结束时间",
+    "endTimeFormatError": "结束时间格式不正确",
+    "noForm": "未设置表单",
+
+
+    "importDataResult":"考勤数据导入结果",
+    "importDataResultSuccess": "数据已经成功导入。下面显示其中的{count}条：",
+    "importDataResultFail": "数据未通过校验，有{errorCount}条错误数据。请修改后重新导入。下面显示其中的{count}条：",
+    // "importDataResultThList" : [
+    //     "行号", "员工号", "员工名字", "日期","上午上班打卡时间","上午下班打卡时间","下午上班打卡时间","下午下班打卡时间","检查结果","描述"
+    // ],
+    "true": "正确",
+    "false": "错误",
+    "checkDataTitle": "数据导入",
+	"checkDataContent": "正在检查数据...",
+    "importDataTitle": "正在导入数据",
+    "importDataContent": "开始导入数据，共{count}条",
+    "readyToImportData": "正在准备导入数据",
+	"readyToImportData1": "正在准备导入数据...",
+    "importSpeed": "条/秒",
+    "importingDataContent": "正导入数据: {speed}条/秒,共{total}条,剩余{remaining}条",
+    "importingDataErrorContent": ",出错{errorCount}条",
+    "hour":"小时",
+    "mintue": "分",
+    "second": "秒",
+    "importSuccessTitle": "导入成功",
+    "importSuccessContent": "导入成功: 共导入数据{total}条  速度: {speed}条/秒  耗时: {timeStr}",
+
+    "importPartSuccessTitle": "部分导入成功",
+    "importPartSuccessContent": "部分导入成功: 共导入数据{total}条 出错: {errorCount}条 速度: {speed}条/秒  耗时: {timeStr}",
+
+    "importWaitingTitle": "待导入",
+    "importWaitingContent": "有其他人正在导入或上次导入还未完成，请耐心等候...",
+
+    "importFailTitle": "导入失败",
+    "importFailContent": "导入失败: {errorInfo} 共有数据{total}条，但未执行导入 耗时: {timeStr} 请修改后重新导入",
+
+    "importerName": "导入模型名称",
+    "importTime": "导入时间",
+    "updateTime": "更新时间",
+    "importCount": "总条数",
+
+    "close": "关闭",
+    "failCount": "出错条数",
+    "importRecord": "导入记录",
+    "sequence": "序号",
+    "importData": "导入数据",
+    "importRecordDetail": "导入详情",
+    "downloadTemplate": "下载模板",
+    "exportErrorDataToExcel": "导出错误数据",
+    "openImportRecordDetail": "查看导入详情",
+    "importStatusList": ["全部","导入成功","导入失败"],
+    "errorInfor": "错误信息",
+    "reExecuteImport": "重新执行导入",
+    "importPerson": "导入人",
+
+    "showFiveColumn": "(点击显示前5列)",
+    "showAll": "(点击显示全部)",
+
+    "deleteDocument": "删除后无法恢复，确定要删除该导入记录？",
+    "deleteDocumentTitle": "删除导入记录确认",
+    "deleteDocumentOK": "成功删除导入记录"
+
 };

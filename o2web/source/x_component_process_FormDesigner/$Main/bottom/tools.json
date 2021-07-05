@@ -122,6 +122,16 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.datagrid,
     "className": "Datagrid"
   },
+  "datatable": {
+    "icon": "datagrid.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.datatable,
+    "className": "Datatable"
+  },
+  "datatemplate": {
+    "icon": "datatemplate.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.datatemplate,
+    "className": "Datatemplate"
+  },
   "subform": {
     "icon": "subform.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.subform,
@@ -201,5 +211,10 @@
     "icon": "statement.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.statement,
     "className": "Statement"
+  },
+  "importer": {
+    "icon": "importer.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.importer,
+    "className": "Importer"
   }
 }

@@ -413,6 +413,7 @@ exports.build_web_move = build_web_move;
 
 function build_concat_o2(){
     var src = [
+        'o2web/source/o2_core/polyfill.js',
         'o2web/source/o2_lib/mootools/mootools-1.6.0_all.js',
         'o2web/source/o2_lib/mootools/plugin/mBox.js',
         'o2web/source/o2_core/o2.js'
@@ -436,7 +437,7 @@ function build_concat_base(){
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
     return gulp.src(src, {sourcemaps: true})
         //.pipe(sourceMap.init())
-        //.pipe(concat('o2.js'))
+        .pipe(concat('base.js'))
         .pipe(gulp.dest(dest))
         .pipe(concat('base.min.js'))
         .pipe(uglify())
@@ -606,6 +607,7 @@ function build_concat_cms_xform(){
 function build_bundle(){
     let path = "o2_core";
     var src = [
+        'o2web/source/o2_core/polyfill.js',
         'o2web/source/o2_lib/mootools/mootools-1.6.0_all.js',
         'o2web/source/o2_lib/mootools/plugin/mBox.js',
         'o2web/source/o2_core/o2.js',

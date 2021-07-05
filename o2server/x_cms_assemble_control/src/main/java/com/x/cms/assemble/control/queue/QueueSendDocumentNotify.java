@@ -90,6 +90,10 @@ public class QueueSendDocumentNotify extends AbstractQueue<String> {
 			}
 			logger.debug(documentId +" cms send total count:" + persons.size()  );
 		}
+		if(StringUtils.isNotBlank(document.getCreatorPerson())){
+			MessageWo wo = MessageWo.copier.copy(document);
+			MessageFactory.cms_publish_creator(wo);
+		}
 		logger.debug(documentId + " QueueSendDocumentNotify cms send publish notify for new document completed! " );
 	}
 

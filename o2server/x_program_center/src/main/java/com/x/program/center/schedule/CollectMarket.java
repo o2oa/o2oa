@@ -44,63 +44,67 @@ public class CollectMarket extends BaseAction {
 					Business business = new Business(emc);
 					String token = business.loginCollect();
 					if (StringUtils.isNotEmpty(token)) {
-						logger.info("start sync market data=====");
+						logger.debug("start sync market data=====");
 						List<Wi> wiList = null;
 						try {
-							ActionResponse response = ConnectionAction
-									.get(Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_LIST),
-											ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
+							ActionResponse response = ConnectionAction.get(
+									Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_LIST),
+									ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
 							wiList = response.getDataAsList(Wi.class);
 						} catch (Exception e) {
 							logger.warn("connect o2cloud error:{}." + e.getMessage());
 						}
-						if(wiList!=null && !wiList.isEmpty()){
-							logger.info("wait sync market app size：{}",wiList.size());
+						if (wiList != null && !wiList.isEmpty()) {
+							logger.info("wait sync market app size：{}", wiList.size());
 							emc.beginTransaction(Application.class);
 							emc.beginTransaction(Attachment.class);
 							List<Application> appList = emc.listAll(Application.class);
 							Map<String, Application> appMap = new HashMap<>();
-							List<String> appIds = ListTools.extractField(wiList, JpaObject.id_FIELDNAME, String.class, true, true);
-							for (Application app : appList){
-								if(appIds.contains(app.getId())){
+							List<String> appIds = ListTools.extractField(wiList, JpaObject.id_FIELDNAME, String.class,
+									true, true);
+							for (Application app : appList) {
+								if (appIds.contains(app.getId())) {
 									appMap.put(app.getId(), app);
-								}else{
-									List<Attachment> attachments = emc.listEqual(Attachment.class, Attachment.application_FIELDNAME, app.getId());
-									for(Attachment att : attachments){
+								} else {
+									List<Attachment> attachments = emc.listEqual(Attachment.class,
+											Attachment.application_FIELDNAME, app.getId());
+									for (Attachment att : attachments) {
 										emc.remove(att);
 									}
 									emc.remove(app);
 								}
 							}
-							for(Wi wi : wiList){
+							for (Wi wi : wiList) {
 								Application app = appMap.get(wi.getId());
-								if(app != null){
-									if(wi.getLastUpdateTime().compareTo(app.getLastUpdateTime()) == 1){
+								if (app != null) {
+									if (wi.getLastUpdateTime().compareTo(app.getLastUpdateTime()) == 1) {
 										Wi.copier.copy(wi, app);
 										emc.persist(app, CheckPersistType.all);
-										List<Attachment> attachments = emc.listEqual(Attachment.class, Attachment.application_FIELDNAME, app.getId());
-										List<String> attIds = ListTools.extractField(wi.getAttList(), JpaObject.id_FIELDNAME, String.class, true, true);
+										List<Attachment> attachments = emc.listEqual(Attachment.class,
+												Attachment.application_FIELDNAME, app.getId());
+										List<String> attIds = ListTools.extractField(wi.getAttList(),
+												JpaObject.id_FIELDNAME, String.class, true, true);
 										List<String> attIds2 = new ArrayList<>();
-										for(Attachment att : attachments){
-											if(attIds.contains(att.getId())){
+										for (Attachment att : attachments) {
+											if (attIds.contains(att.getId())) {
 												attIds2.add(att.getId());
-											}else{
+											} else {
 												emc.remove(att);
 											}
 										}
-										if(wi.getAttList() != null){
-											for (Attachment att : wi.getAttList()){
-												if(!attIds2.contains(att.getId())){
+										if (wi.getAttList() != null) {
+											for (Attachment att : wi.getAttList()) {
+												if (!attIds2.contains(att.getId())) {
 													emc.persist(att, CheckPersistType.all);
 												}
 											}
 										}
 									}
-								}else{
+								} else {
 									app = Wi.copier.copy(wi);
 									emc.persist(app, CheckPersistType.all);
-									if(wi.attList!=null){
-										for(Attachment att: wi.attList){
+									if (wi.attList != null) {
+										for (Attachment att : wi.attList) {
 											emc.persist(att, CheckPersistType.all);
 										}
 									}
@@ -108,7 +112,7 @@ public class CollectMarket extends BaseAction {
 							}
 							emc.commit();
 						}
-						logger.info("end sync market data=====");
+						logger.debug("end sync market data=====");
 					}
 				}
 			}
@@ -122,7 +126,8 @@ public class CollectMarket extends BaseAction {
 
 	public static class Wi extends Application {
 
-		static WrapCopier<Wi, Application> copier = WrapCopierFactory.wo(Wi.class, Application.class, null, ListTools.toList("attList"));
+		static WrapCopier<Wi, Application> copier = WrapCopierFactory.wo(Wi.class, Application.class, null,
+				ListTools.toList("attList"));
 
 		private List<Attachment> attList = new ArrayList<>();
 
@@ -134,6 +139,5 @@ public class CollectMarket extends BaseAction {
 			this.attList = attList;
 		}
 	}
-
 
 }

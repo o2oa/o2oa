@@ -1,0 +1,256 @@
+{
+  "node" : {
+    "width": "100%", "height": "100%", "overflow": "hidden",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text"
+  },
+  "contentContainerNode_inContainer" : {
+    "overflow-x" : "hidden",
+    //"margin-right": "10px"
+    "overflow-y" : "hidden"
+  },
+  "contentContainerNode" : {
+    "overflow-x" : "hidden",
+    //"margin-right": "10px"
+    "overflow-y" : "scroll"
+  },
+  "contentDiv":{
+    "min-width":"1000px",
+    "background-color" : "#fff"
+  },
+  "toolbar" : {
+    "padding-top" : "10px",
+    "padding-bottom" : "10px",
+    "height" : "36px",
+    "overflow" : "hidden"
+  },
+  "toolbarTextNode" : {
+    "margin" : "6px 40px 6px 20px",
+    "color" : "#999",
+    "font-size" : "18px",
+    "font-weight" : "bold",
+    "float" : "left",
+    "text-align" : "center"
+  },
+  "toolbarActionNode" : {
+    "float" : "left",
+    "height" : "34px",
+    "line-height" : "34px",
+    "cursor" : "pointer",
+    "color" : "#fff",
+    "margin-left" : "16px",
+    "padding-left" : "32px",
+    "padding-right" : "20px",
+    "font-size" : "14px",
+    "background-image" : "url( ../x_component_ForumDocument/$Main/default/icon/action_new.png )",
+    "background-position-x" : "8px",
+    "background-position-y" : "center",
+    "background-repeat" : "no-repeat",
+    "background-color" : "#3C76B7",
+    "margin-right" : "10px",
+    "border" : "1px solid #3C76B7"
+  },
+  "toolbarActionNode_over" : {
+    "background-color" : "#43aafa",
+    "border" : "1px solid #43aafa"
+  },
+  "pagingBar" : {
+    "float": "left",
+    "margin-left": "10px",
+    "margin-top": "18px",
+    "height": "24px",
+    "color": "#777777"
+  },
+  "viewContainer" : {
+    "overflow" : "hidden"
+  },
+  "viewContainerTop" : {
+    //"padding-bottom" : "10px",
+    "overflow" : "hidden"
+  },
+  "viewHeadNode": {
+    "width":"100%",
+    "height": "30px",
+    "background-color": "#fff",
+    "color": "#666666",
+    "line-height": "30px",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px"
+  },
+  "tabNode": {
+     "overflow":"hidden"
+  },
+  "tabItemNode": {
+    "width": "100px",
+    "margin-left": "20px,",
+    "height":"38px",
+    "line-height": "38px",
+    "text-align": "center",
+    "float": "left",
+    "color": "rgb(102, 102, 102)",
+    "font-size": "16px",
+    "font-weight": "500",
+    "cursor": "pointer",
+    "border-bottom": "2px solid rgb(248, 248, 248)"
+  },
+  "currentTabItemNode": {
+    "color": "rgb(59, 116, 180)",
+    "border-bottom": "2px solid rgb(59, 116, 180)"
+  },
+  "normalThNode" : {
+    "color" : "#333",
+    "background-color" : "#f0f0f0",
+    "text-align":"center",
+    "font-weight" : "bold"
+  },
+
+  "documentNode_empty" : {
+    "background-color" : "#f3f3f3"
+  },
+  "documentNode":{
+    "min-height": "30px",
+    "overflow": "hidden",
+    "color": "#666666",
+    //"line-height": "39px",
+    "cursor": "pointer",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px",
+    "background-color": "#fff"
+  },
+  "documentNode_noread": {
+    "background-color": "#fcfcfc"
+  },
+  "documentNode_over": {
+    "background-color": "#f5f6f7"
+  },
+  "documentNode_down": {
+    "background-color": "#f5f6f7"
+  },
+  "documentNode_remove": {
+    "background-color": "#ffcccc"
+  },
+  "normalTdNode" : {
+    "height": "30px",
+    "line-height": "30px",
+    "font-size" : "14px",
+    "border-bottom" : "1px solid #d6d6d6"
+  },
+  "normalTdCenterNode" : {
+    "height": "30px",
+    "line-height": "30px",
+    "border-bottom" : "1px solid #d6d6d6",
+    "text-align" : "center"
+  },
+  "normalTdBottom" : {
+    "color" : "#999"
+  },
+  "tdInline" : {
+    "float" : "left"
+  },
+  "tdTitle" : {
+    "color" : "#333",
+    "font-size" : "14px",
+    //"float" : "left",
+    "margin-left" : "10px"
+  },
+  "documentActionNode": {
+    "font-size" : "12px",
+    "height": "20px",
+    "line-height": "20px",
+    "color": "#0066cc",
+    "cursor": "pointer",
+    "margin-right": "5px"
+  },
+  "documentActionNode_over":{
+    "color": "#003399"
+  },
+  "documentActionNode_down":{
+    "color": "#000"
+  },
+
+  "actionDeleteNode": {
+    "height": "20px",
+    "width": "20px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    "color": "#888",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background": "url(../x_component_cms_Module/$ViewExplorer/default/icon/delete.png) no-repeat center center"
+  },
+  "actionDeleteNode_over":{
+    "background": "url(../x_component_cms_Module/$ViewExplorer/default/icon/delete_over.png) no-repeat center center"
+  },
+  "actionDeleteNode_down":{
+    "background": "url(../x_component_cms_Module/$ViewExplorer/default/icon/delete_over.png) no-repeat center center"
+  },
+
+  "actionEditNode": {
+    "height": "20px",
+    "width": "20px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    "color": "#888",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background": "url(../x_component_cms_Module/$ViewExplorer/default/icon/editing.png) no-repeat center center"
+  },
+  "actionEditNode_over":{
+    "background": "url(../x_component_cms_Module/$ViewExplorer/default/icon/editing_over.png) no-repeat center center"
+  },
+  "actionEditNode_down":{
+    "background": "url(../x_component_cms_Module/$ViewExplorer/default/icon/editing_over.png) no-repeat center center"
+  },
+
+  "actionNode": {
+    "color": "rgb(60, 118, 183)",
+    "font-size": "14px"
+  },
+  "actionNode_showAll": {
+    "color": "rgb(60, 118, 183)",
+    "font-size": "14px",
+    "cursor": "pointer",
+    "margin-left": "10px",
+    "display": "inline-block"
+  },
+
+  "tableStyles": {
+    "border-top": "1px solid #cfd9df",
+    "border-left": "0px",
+    "border-right" : "0px",
+    "border-bottom" : "0px"
+  },
+  "titleStyles": {
+    "background-color": "#ffffff",
+    "color": "#333",
+    "border-top": "0px",
+    "border-left": "0px",
+    "border-right" : "0px",
+    "border-bottom" : "1px solid #cfd9df",
+    "height": "23px",
+    "font-size": "14px",
+    "width": "65px",
+    "font-weight": "bold",
+    "line-height": "23px",
+    "text-align": "left"
+  },
+  "contentStyles": {
+    "background-color": "#FFFFFF",
+    "color": "#000",
+    "font-size": "14px",
+    "border-top": "0px",
+    "border-left": "0px",
+    "border-right" : "0px",
+    "border-bottom" : "1px solid #cfd9df",
+    "text-align": "right"
+  },
+  "properties": {
+    "width": "100%",
+    "border": "0",
+    "cellpadding": "8",
+    "cellspacing": "0",
+    "align": "center"
+  }
+}

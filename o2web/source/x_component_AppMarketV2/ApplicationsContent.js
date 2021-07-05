@@ -95,6 +95,8 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         this.app = this.content.app;
         this.actions = this.app.actions;
         this.container = this.content.container;
+        this.collectToken = "";
+        this.collectUrl = "";
         this.page = 1;
         this.pageSize = 100;
         this.load();
@@ -111,9 +113,22 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
             }
             this.fireEvent("load");
         }.bind(this));
+
     },
     loadApplications: function(){
         this.emptyLoadContent();
+        if (this.collectToken=="" || this.collectUrl==""){
+            //先登录collcect
+            this.actions.CollectAction.login(//平台封装好的方法
+                function( json ){ //服务调用成功的回调函数, json为服务传回的数据
+                    if (json.type && json.type=="success"){
+                        data = json.data; //为变量data赋值
+                        this.collectUrl = data.collectUrl;
+                        this.collectToken = data.collectToken;
+                    }
+                }.bind(this),null,false //同步执行
+            );
+        }
         this.actions.MarketAction.listPaging(this.page, this.pageSize, this.content.querydata,function(json){
             if (json.data && json.data.length){
                 this.content.currentcategory["name"] = this.content.querydata.category==""||!(this.content.querydata.category)? this.app.lp.all :this.content.querydata.category;
@@ -122,6 +137,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
             }
             this.fireEvent("load");
         }.bind(this));
+        this.loadBbsInfo(this);
     },
     reload: function(){
         if (!this.content.isLoading) {
@@ -147,9 +163,58 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         }.bind(this))
 
     },
+    loadBbsInfo: function(content){
+        var json = null;
+        debugger;
+        var commenturl = content.collectUrl +'/o2_collect_assemble/jaxrs/collect/config/key/(0)?time='+(new Date()).getMilliseconds();
+        debugger;
+        var res = new Request.JSON({
+            url: commenturl,
+            headers : {'x-debugger' : true,'Authorization':content.collectToken,'c-token':content.collectToken},
+            secure: false,
+            method: "get",
+            async: false,
+            withCredentials: true,
+            contentType : 'application/json',
+            crossDomain : true,
+            onSuccess: function(responseJSON, responseText){
+                json = responseJSON;
+                debugger;
+                this.bbsUrlPath = json.data.bbsUrlPath;
+                this.bbsUrl = json.data.bbsUrl;
+            }.bind(this),
+            onFailure: function(xhr){
+                o2.runCallback(callback, "requestFailure", [xhr]);
+            }.bind(this),
+            onError: function(text, error){
+                o2.runCallback(callback, "error", [text, error]);
+            }.bind(this)
+        });
+        res.send();
+    },
+    loadCommentsGrade: function(appdata){
+        debugger;
+        var json = null;
+        var commenturl =  this.bbsUrlPath +'/x_bbs_assemble_control/jaxrs/subject/statgrade/sectionName/'+encodeURI(this.app.lp.title)+'/subjectType/'+encodeURI(appdata.name)+'?time='+(new Date()).getMilliseconds();
+        var res = new Request.JSON({
+            url: commenturl,
+            headers : {'x-debugger' : true,'Authorization':this.collectToken,'c-token':this.collectToken},
+            secure: false,
+            method: "get",
+            async: false,
+            withCredentials: true,
+            contentType : 'application/json',
+            crossDomain : true,
+            onSuccess: function(responseJSON, responseText){
+                debugger;
+                json =  responseJSON;
+            }.bind(this)
+        });
+        res.send();
+        return json;
+    },
     loadCertainCategory:function(categorysdiv,d){
         var _self = this;
-        
         var categorydiv = new Element("span",{"text":d,"class":"o2_appmarket_appcategory"}).inject(categorysdiv);
         categorydiv.store("data",d);
         if (_self.content.querydata["category"]){
@@ -203,23 +268,44 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
     },
     loadCertainApplication: function(appsdiv, d, i,rowappnum,rowappmargin){
         //app 排列 begin
+        debugger;
+        var gradeData = this.loadCommentsGrade(d);
+        debugger;
        var applicationdiv = new Element("div",{"class":"o2_appmarket_application"}).inject(appsdiv);
  
        if ((i+1)%rowappnum!=0){
             applicationdiv.setStyle("margin-right",rowappmargin+"px");
        }else{
-            applicationdiv.setStyle("margin-right","30px");
+            applicationdiv.setStyle("margin-right","0px");
        }
        var applicationicon = new Element("div",{"class":"o2_appmarket_application_icon"}).inject(applicationdiv);
        applicationicon.setStyle("background-image", "url(data:image/png;base64,"+d.icon+")");
        var applicationinfo = new Element("div",{"class":"o2_appmarket_application_info"}).inject(applicationdiv);
-       var applicationinfo_name = new Element("div",{"text":d.name,"class":"o2_appmarket_application_info_name"}).inject(applicationinfo);
+       var applicationinfo_name = new Element("div",{"text":d.name,"class":"o2_appmarket_application_info_name","title":d.name}).inject(applicationinfo);
        //var applicationinfo_recommend = new Element("div",{"text":d.recommend,"class":"o2_appmarket_application_info_recommend"}).inject(applicationinfo);
        //推荐指数改为显示评星
        var applicationinfo_star = new Element("div",{"class":"o2_appmarket_application_info_recommend"}).inject(applicationinfo);
-       var grade = d.grade;
+        var commentcount = 0;
+        var grade = 0;
+        var totalgrade = 0;
+        var commentratiolist = gradeData.data;
+        var gradeList = ["0","0","0","0","0"];
+        commentratiolist.each(function(pergrade){
+            gradeList[parseInt(pergrade.grade)-1]=pergrade.count;
+            commentcount +=parseInt(pergrade.count)
+        }.bind(this));
+        gradeList.each(function(pergrade,index){
+            totalgrade += parseInt(pergrade)*(index+1)
+        })
+        if (commentcount>0){
+            grade = this.numberFix(totalgrade/commentcount,1)
+        }
+        var intgrade = parseInt(grade);
+        var dotgrade = grade - intgrade;
+
+       /*var grade = d.grade;
 	   var intgrade = parseInt(grade);
-	   var dotgrade = grade - intgrade;
+	   var dotgrade = grade - intgrade;*/
 	   for (var tmpnum=0;tmpnum<intgrade;tmpnum++){
 			new Element("img",{"src":this.app.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_info_starpic"}).inject(applicationinfo_star)
 	   }
@@ -316,6 +402,31 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
             
 		});
         //if (mask) this.mask.loadNode(node);
+    },
+    numberFix:function(data,n){
+        var numbers = '';
+        // 保留几位小数后面添加几个0
+        for (var i = 0; i < n; i++) {
+            numbers += '0';
+        }
+        var s = 1 + numbers;
+        // 如果是整数需要添加后面的0
+        var spot = "." + numbers;
+        // Math.round四舍五入
+        //  parseFloat() 函数可解析一个字符串，并返回一个浮点数。
+        var value = Math.round(parseFloat(data) * s) / s;
+        // 从小数点后面进行分割
+        var d = value.toString().split(".");
+        if (d.length == 1) {
+            value = value.toString();
+            return value;
+        }
+        if (d.length > 1) {
+            if (d[1].length < n) {
+                value = value.toString() + "0";
+            }
+            return value;
+        }
     },
     clearLoading: function(){
         /*

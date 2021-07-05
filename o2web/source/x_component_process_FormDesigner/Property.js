@@ -45,7 +45,14 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         if (!this.propertyContent){
             this.getHtmlString(function(){
                 if (this.htmlString){
-                    this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate});
+                    var lp;
+                    if( this.options.appType === "cms" ){
+                        lp = MWF.xApplication.cms.FormDesigner.LP.propertyTemplate;
+                    }else{
+                        lp = MWF.xApplication.process.FormDesigner.LP.propertyTemplate;
+                    }
+                    this.htmlString = o2.bindJson(this.htmlString, {"lp": lp});
+                    // this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate});
                     this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
                     this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.propertyNode);
                     // var htmlStr = this.JsonTemplate.load();
@@ -89,6 +96,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadViewFilter();
                     this.loadStatementFilter();
                     this.loadDocumentTempleteSelect();
+                    this.loadFieldConfig();
+                    this.loadHelp();
                     // this.loadScriptIncluder();
                     // this.loadDictionaryIncluder();
                     //this.testRestful();
@@ -103,6 +112,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         (new Fx.Scroll(layout.desktop.node)).toTop();
 
 	},
+
 	hide: function(){
 		//this.JsonTemplate = null;
 		//this.propertyNode.set("html", "");
@@ -183,18 +193,21 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                             o2.load("JSBeautifier_html", function(){
                                 htmlNode.set("text", html_beautify(copy.outerHTML, {"indent_size":1}));
-                            }.bind(this));
 
-                            o2.require("o2.widget.ace", function(){
-                                MWF.widget.ace.load(function(){
-                                    COMMON.AjaxModule.loadDom("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
-                                        var highlight = ace.require("ace/ext/static_highlight");
-                                        highlight(htmlNode, {mode: "ace/mode/html", theme: "ace/theme/eclipse", "fontSize": 16});
+                                o2.require("o2.widget.ace", function(){
+                                    MWF.widget.ace.load(function(){
+                                        o2.load("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
+                                            var highlight = ace.require("ace/ext/static_highlight");
+                                            highlight(htmlNode, {mode: "ace/mode/html", theme: "ace/theme/eclipse", "fontSize": 16});
+                                        }.bind(this));
                                     }.bind(this));
                                 }.bind(this));
+
+                                copy.destroy();
+
                             }.bind(this));
 
-							copy.destroy();
+
 						}.bind(this)
 					});
 				}
@@ -622,6 +635,31 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 }.bind(this));
 
                 //new MWF.xApplication.process.FormDesigner.widget.ValidationEditor(node, this.designer);
+            }.bind(this));
+        }
+    },
+
+    loadFieldConfig: function(){
+        var nodes = this.propertyContent.getElements(".MWFFieldConfigArea");
+        if (nodes.length){
+            nodes.each(function(node){
+                debugger;
+                var name = node.get("name");
+                var data;
+               if( this.data[name] ){
+                   data = this.data[name];
+               }else{
+                   data = this.data[name] = [];
+               }
+                MWF.xDesktop.requireApp("process.FormDesigner", "widget.FiledConfigurator", function(){
+                    var filedConfigurator = new MWF.xApplication.process.FormDesigner.widget.FiledConfigurator(node, this.designer, {
+                        "onChange": function(){
+                            debugger;
+                            this.data[name] = filedConfigurator.getData();
+                        }.bind(this)
+                    }, data);
+                    filedConfigurator.load()
+                }.bind(this));
             }.bind(this));
         }
     },
@@ -1271,6 +1309,7 @@ debugger;
         var scriptNodes = this.propertyContent.getElements(".MWFScriptSelect");
         var formStyleNodes = this.propertyContent.getElements(".MWFFormStyleSelect");
         var dictionaryNodes = this.propertyContent.getElements(".MWFDictionarySelect");
+        var queryImportModelNodes = this.propertyContent.getElements(".MWFQueryImportModelSelect");
 
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
@@ -1344,6 +1383,15 @@ debugger;
             querystatNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "QueryStat",
+                    "count": 1,
+                    "names": [this.data[node.get("name")]],
+                    "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+
+            queryImportModelNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "QueryImportModel",
                     "count": 1,
                     "names": [this.data[node.get("name")]],
                     "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
@@ -1768,9 +1816,11 @@ debugger;
             if (!this.data[name]) this.data[name] = {"code": "", "html": ""};
             var scriptContent = this.data[name];
 
+            var mode = node.dataset["mode"];
             MWF.require("MWF.widget.ScriptArea", function(){
                 var scriptArea = new MWF.widget.ScriptArea(node, {
                     "title": title,
+                    "mode": mode || "javascript",
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
@@ -1955,6 +2005,7 @@ debugger;
 		maplists.each(function(node){
 			var title = node.get("title");
 			var name = node.get("name");
+			var lName = name.toLowerCase();
 			var collapse = node.get("collapse");
 			var mapObj = this.data[name];
 			if (!mapObj) mapObj = {};
@@ -1975,7 +2026,8 @@ debugger;
 					    debugger;
 
                         this.module.deletePropertiesOrStyles(name, key);
-                    }.bind(this)
+                    }.bind(this),
+                    "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
 				});
 				maplist.load(mapObj);
                 this.maplists[name] = maplist;
@@ -2365,7 +2417,30 @@ debugger;
 				if (data) script.setScriptItem(data);
 			}
 		}.bind(this));
-	}
+	},
+    loadHelp: function () {
+        var nodes = this.propertyContent.getElements(".MWFHelp");
+        if (nodes.length){
+            nodes.each(function(node){
+                var html = node.get("text");
+                node.empty();
+
+                MWF.xDesktop.requireApp("Template", "MTooltips", function() {
+                    new MTooltips(this.designer.node, node, this.designer, {}, {
+                        "nodeStyles":{
+                            "max-width": "370px",
+                            "width": "370px",
+                            "line-height": "24px",
+                            "font-size": "14px"
+                        },
+                        "onCustomContent": function (content, node) {
+                            content.set("html", html);
+                        }
+                    });
+                }.bind(this))
+            }.bind(this));
+        }
+    }
 });
 MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
     Extends: MWF.xApplication.process.FormDesigner.Property,

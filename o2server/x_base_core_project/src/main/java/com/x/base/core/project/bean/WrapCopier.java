@@ -1,9 +1,9 @@
 package com.x.base.core.project.bean;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang3.StringUtils;
@@ -44,31 +44,43 @@ public class WrapCopier<T, W> {
 		this.ignoreNull = ignoreNull;
 	}
 
-	public W copy(T orig, W dest) throws Exception {
+	public W copy(T orig, W dest) {
 		if (null == orig) {
 			return null;
 		}
+		copyFields(orig, dest);
+		eraseFields(dest);
+		return dest;
+	}
+
+	private void copyFields(T orig, W dest) {
 		copyFields.stream().forEach(f -> {
 			try {
-				//openjpa在访问主键(getId()会执行pcGetId())会发起一个锁定所以在这里对id(xid column)进行单独的处理
+				// openjpa在访问主键(getId()会执行pcGetId())会发起一个锁定所以在这里对id(xid column)进行单独的处理
 				if (StringUtils.equals(f, JpaObject.id_FIELDNAME)) {
 					Field field = FieldUtils.getField(orig.getClass(), f, true);
 					if (null != field) {
 						Object o = FieldUtils.readField(field, orig, true);
-						if (null != o || (!ignoreNull)) {
-							propertyUtilsBean.setProperty(dest, f, o);
-						}
+						setDestProperty(dest, f, o);
 					}
 				} else {
 					Object o = propertyUtilsBean.getProperty(orig, f);
-					if (null != o || (!ignoreNull)) {
-						propertyUtilsBean.setProperty(dest, f, o);
-					}
+					setDestProperty(dest, f, o);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
+	}
+
+	private void setDestProperty(W dest, String fieldName, Object o)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		if (null != o || (!ignoreNull)) {
+			propertyUtilsBean.setProperty(dest, fieldName, o);
+		}
+	}
+
+	private void eraseFields(W dest) {
 		eraseFields.stream().forEach(f -> {
 			try {
 				propertyUtilsBean.setProperty(dest, f, null);
@@ -76,18 +88,18 @@ public class WrapCopier<T, W> {
 				e.printStackTrace();
 			}
 		});
-		return dest;
 	}
 
-	public W copy(T orig) throws Exception {
+	public W copy(T orig) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException {
 		if (null == orig) {
 			return null;
 		}
-		W w = this.destClass.newInstance();
+		W w = this.destClass.getConstructor().newInstance();
 		return copy(orig, w);
 	}
 
-	public List<W> copy(List<T> origs, List<W> dests) throws Exception {
+	public List<W> copy(List<T> origs, List<W> dests) {
 		if (null != origs) {
 			origs.stream().forEach(t -> {
 				try {
@@ -100,8 +112,8 @@ public class WrapCopier<T, W> {
 		return dests;
 	}
 
-	public List<W> copy(List<T> origs) throws Exception {
-		List<W> dests = new ArrayList<W>();
+	public List<W> copy(List<T> origs) {
+		List<W> dests = new ArrayList<>();
 		if (null != origs) {
 			origs.stream().forEach(t -> {
 				try {

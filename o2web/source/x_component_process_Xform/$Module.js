@@ -189,15 +189,19 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
     _getBusinessData: function(){
+        var v;
         if (this.json.section=="yes"){
-            return this._getBusinessSectionData();
+            v = this._getBusinessSectionData();
         }else {
             if (this.json.type==="Opinion"){
-                return this._getBusinessSectionDataByPerson();
+                v = this._getBusinessSectionDataByPerson();
             }else{
-                return this.form.businessData.data[this.json.id] || "";
+                // return this.form.businessData.data[this.json.id] || "";
+                return this.getBusinessDataById() || "";
             }
         }
+        //if (o2.typeOf(v)==="string") v = o2.dtxt(v);
+        return v;
     },
     _getBusinessSectionData: function(){
         switch (this.json.sectionBy){
@@ -212,17 +216,20 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             case "script":
                 return this._getBusinessSectionDataByScript(((this.json.sectionByScript) ? this.json.sectionByScript.code : ""));
             default:
-                return this.form.businessData.data[this.json.id] || "";
+                // return this.form.businessData.data[this.json.id] || "";
+                return this.getBusinessDataById() || "";
         }
     },
     _getBusinessSectionDataByPerson: function(){
         this.form.sectionListObj[this.json.id] = layout.desktop.session.user.id;
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         return (dataObj) ? (dataObj[layout.desktop.session.user.id] || "") : "";
     },
     _getBusinessSectionDataByUnit: function(){
         this.form.sectionListObj[this.json.id] = "";
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         if (!dataObj) return "";
         var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
         if (key) this.form.sectionListObj[this.json.id] = key;
@@ -230,7 +237,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     _getBusinessSectionDataByActivity: function(){
         this.form.sectionListObj[this.json.id] = "";
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         if (!dataObj) return "";
         var key = (this.form.businessData.work) ? this.form.businessData.work.activity : "";
         if (key) this.form.sectionListObj[this.json.id] = key;
@@ -238,7 +246,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     _getBusinessSectionDataBySplitValue: function(){
         this.form.sectionListObj[this.json.id] = "";
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         if (!dataObj) return "";
         var key = (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
         if (key) this.form.sectionListObj[this.json.id] = key;
@@ -246,7 +255,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     _getBusinessSectionDataByScript: function(code){
         this.form.sectionListObj[this.json.id] = "";
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         if (!dataObj) return "";
         var key = this.form.Macro.exec(code, this);
         if (key) this.form.sectionListObj[this.json.id] = key;
@@ -254,6 +264,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
 
     _setBusinessData: function(v){
+        //if (o2.typeOf(v)==="string") v = o2.txt(v);
         if (this.json.section=="yes"){
             this._setBusinessSectionData(v);
         }else {
@@ -261,9 +272,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 this._setBusinessSectionDataByPerson(v);
             }else{
                 if (this.form.businessData.data[this.json.id]){
-                    this.form.businessData.data[this.json.id] = v;
+                    // this.form.businessData.data[this.json.id] = v;
+                    this.setBusinessDataById(v);
                 }else{
-                    this.form.businessData.data[this.json.id] = v;
+                    // this.form.businessData.data[this.json.id] = v;
+                    this.setBusinessDataById(v);
                     this.form.Macro.environment.setData(this.form.businessData.data);
                 }
                 if (this.json.isTitle) this.form.businessData.work.title = v;
@@ -289,9 +302,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 break;
             default:
                 if (this.form.businessData.data[this.json.id]){
-                    this.form.businessData.data[this.json.id] = v;
+                    // this.form.businessData.data[this.json.id] = v;
+                    this.setBusinessDataById(v)
                 }else{
-                    this.form.businessData.data[this.json.id] = v;
+                    // this.form.businessData.data[this.json.id] = v;
+                    this.setBusinessDataById(v);
                     this.form.Macro.environment.setData(this.form.businessData.data);
                 }
         }
@@ -300,10 +315,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var resetData = false;
         var key = layout.desktop.session.user.id;
 
-        var dataObj = this.form.businessData.data[this.json.id];
+        // var dataObj = this.form.businessData.data[this.json.id];
+        var dataObj = this.getBusinessDataById();
         if (!dataObj){
             dataObj = {};
-            this.form.businessData.data[this.json.id] = dataObj;
+            // this.form.businessData.data[this.json.id] = dataObj;
+            this.setBusinessDataById(dataObj);
             resetData = true;
         }
         if (!dataObj[key]) resetData = true;
@@ -316,10 +333,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
 
         if (key){
-            var dataObj = this.form.businessData.data[this.json.id];
+            // var dataObj = this.form.businessData.data[this.json.id];
+            var dataObj = this.getBusinessDataById();
             if (!dataObj){
                 dataObj = {};
-                this.form.businessData.data[this.json.id] = dataObj;
+                // this.form.businessData.data[this.json.id] = dataObj;
+                this.setBusinessDataById(dataObj);
                 resetData = true;
             }
             if (!dataObj[key]) resetData = true;
@@ -333,10 +352,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var key = (this.form.businessData.work) ? this.form.businessData.work.activity : "";
 
         if (key){
-            var dataObj = this.form.businessData.data[this.json.id];
+            // var dataObj = this.form.businessData.data[this.json.id];
+            var dataObj = this.getBusinessDataById();
             if (!dataObj){
                 dataObj = {};
-                this.form.businessData.data[this.json.id] = dataObj;
+                // this.form.businessData.data[this.json.id] = dataObj;
+                this.setBusinessDataById(dataObj);
                 resetData = true;
             }
             if (!dataObj[key]) resetData = true;
@@ -350,10 +371,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var key = (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
 
         if (key){
-            var dataObj = this.form.businessData.data[this.json.id];
+            // var dataObj = this.form.businessData.data[this.json.id];
+            var dataObj = this.getBusinessDataById();
             if (!dataObj){
                 dataObj = {};
-                this.form.businessData.data[this.json.id] = dataObj;
+                // this.form.businessData.data[this.json.id] = dataObj;
+                this.setBusinessDataById(dataObj);
                 resetData = true;
             }
             if (!dataObj[key]) resetData = true;
@@ -368,10 +391,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var key = this.form.Macro.exec(code, this);
 
         if (key){
-            var dataObj = this.form.businessData.data[this.json.id];
+            // var dataObj = this.form.businessData.data[this.json.id];
+            var dataObj = this.getBusinessDataById();
             if (!dataObj){
                 dataObj = {};
-                this.form.businessData.data[this.json.id] = dataObj;
+                // this.form.businessData.data[this.json.id] = dataObj;
+                this.setBusinessDataById(dataObj);
                 resetData = true;
             }
             if (!dataObj[key]) resetData = true;
@@ -379,6 +404,64 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
 
         if (resetData) this.form.Macro.environment.setData(this.form.businessData.data);
+    },
+    getBusinessDataById: function(){
+        //对id类似于 xx..0..xx 的字段进行拆分
+        if(this.json.id.indexOf("..") < 1){
+            return this.form.businessData.data[this.json.id];
+        }else{
+            var idList = this.json.id.split("..");
+            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
+
+            var data = this.form.businessData.data;
+            var lastIndex = idList.length - 1;
+
+            for(var i=0; i<=lastIndex; i++){
+                var id = idList[i];
+                if( !id && id !== 0 )return null;
+                if( ["object","array"].contains(o2.typeOf(data)) ){
+                    if( i === lastIndex ){
+                        return data[id];
+                    }else{
+                        data = data[id];
+                    }
+                }else{
+                    return null;
+                }
+            }
+        }
+    },
+    setBusinessDataById: function(v){
+        //对id类似于 xx..0..xx 的字段进行拆分
+        if(this.json.id.indexOf("..") < 1){
+            this.form.businessData.data[this.json.id] = v;
+        }else{
+            var idList = this.json.id.split("..");
+            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
+
+            var data = this.form.businessData.data;
+            var lastIndex = idList.length - 1;
+
+            for(var i=0; i<=lastIndex; i++){
+                var id = idList[i];
+                if( !id && id !== 0 )return;
+
+                if( i === lastIndex ){
+                    data[id] = v;
+                }else{
+                    var nexId = idList[i+1];
+                    if(o2.typeOf(nexId) === "number"){ //下一个ID是数字
+                        if( !data[id] && o2.typeOf(data[id]) !== "array" )data[id] = [];
+                        if( nexId > data[id].length ){ //超过了最大下标，丢弃
+                            return;
+                        }
+                    }else{ //下一个ID是字符串
+                        if( !data[id] || o2.typeOf(data[id]) !== "object")data[id] = {};
+                    }
+                    data = data[id];
+                }
+            }
+        }
     },
 
     _queryLoaded: function(){},
@@ -388,6 +471,46 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     focus: function(){
         this.node.focus();
+    },
+
+    _getModuleByPath: function( path ){
+        /*
+        注: 系统的数据中允许多层路径，id上通过..来区分层次：
+        1、单层或者是最外层，填"fieldId"，表示表单上的直接组件。
+        2、如果有多层数据模板，"./fieldId"表示和当前组件id同层次的组件，"../fieldId"表示和上一层组件同层次的组件，以此类推。
+        3、如果有多层数据模板，也可通过"datatemplateId.*.datatemplateId2.*.fieldId"来表示全层次路径。datatemplateId表示第一层数据模板的id，datatemplateId2表示第二层的id。
+         */
+        if(!path)return;
+        var idList = this.json.id.split("..");
+        if( path.contains("*") ){ //允许path中包含*，替代当前path的层次
+            var paths = path.split(".");
+            for( var i=0; i<paths.length; i++ ){
+                if( paths[i].contains("*") && idList[i] ){
+                    var key = paths[i].replace("*", idList[i]);
+                    key = this.form.Macro.exec("return "+key, this);
+                    paths[i] = (key||"").toString();
+                }
+            }
+            path = paths.join("..");
+        }else if( path.contains("./") ){
+
+            var lastName = path.substring(path.indexOf("./")+2, path.length);
+            var level = (path.substring(0, path.indexOf("./"))+".").split(".").length-1; // /前面有几个.
+
+            var idList_copy = Array.clone(idList);
+            if( idList_copy.length > level*2 ){
+                for( var i=0; i<level; i++ ){
+                    idList_copy.pop();
+                    if( i > 0)idList_copy.pop();
+                }
+                path = idList_copy.join("..")+".."+lastName;
+            }else{
+                idList_copy[idList_copy.length-1] = lastName;
+                path = idList_copy.join("..")
+            }
+        }
+
+        return this.form.all[path];
     }
 
 });
