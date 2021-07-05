@@ -71,7 +71,7 @@ class ActionListWithPersonWithApplicationFilter extends BaseAction {
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = cb.conjunction();
 		if (effectivePerson.isNotManager()
-				&& (BooleanUtils.isTrue(business.organization().person().hasRole(effectivePerson,
+				&& (!BooleanUtils.isTrue(business.organization().person().hasRole(effectivePerson,
 						OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager)))) {
 			p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
 					cb.isEmpty(root.get(Process_.startableUnitList)));
