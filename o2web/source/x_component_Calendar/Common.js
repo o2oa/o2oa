@@ -716,7 +716,7 @@ MWFCalendar.EventForm = new Class({
         var html = "<div style='width:724px;margin:0px auto;'><table width='724' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
             "<tr><td styles='formTableValue' width='80'></td>" +
             "    <td styles='formTableValue' style='padding-top: 15px;'>"+
-            "       <div item='saveAction' style='float:left;display:"+ (( editable && (this.isEdited || this.isNew)) ? "" : "none") +";'></div>"+
+            "       <div item='saveAction' style='float:left;display:"+ (( (editable && this.isEdited) || this.isNew) ? "" : "none") +";'></div>"+
             "       <div item='editAction' style='float:left;display:"+ ((!editable || (this.isEdited || this.isNew))  ? "none" : "") +";'></div>"+
             "       <div item='removeAction' style='float:left;display:"+ ( ( editable && this.isEdited ) ? "" : "none") +";'></div>"+
             "       <div item='cancelAction' style='"+( (editable && (this.isEdited || this.isNew )) ? "float:left;" : "float:left;wdith:100px;")+"'></div>"+
