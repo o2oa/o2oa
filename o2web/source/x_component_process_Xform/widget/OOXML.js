@@ -475,6 +475,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 }
             }
         }
+        var pageBreak = dom.getStyle("page-break-after");
+        if (pageBreak && pageBreak.toString().toLowerCase()=="avoid"){
+            pPrs.keepNext = {};
+        }
         return pPrs;
     },
     setParagraphAttrFromDom: function(dom, oo_p){
