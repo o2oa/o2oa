@@ -130,7 +130,20 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 			}.bind(this));
 		}.bind(this), false);
 	},
-
+	_getDroppableNodes: function(){
+		var nodes = [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
+		this.form.moduleList.each( function(module){
+			//数据网格不能往数据模板里拖
+			if( module.moduleName === "datatemplate" ){
+				var subDoms = this.form.getModuleNodes(module.node);
+				nodes.erase( module.node );
+				subDoms.each(function (dom) {
+					nodes.erase( dom );
+				})
+			}
+		}.bind(this));
+		return nodes;
+	},
 	_createNode: function(callback){
 		var module = this;
 		var url = this.path+"datagridCreate.html";

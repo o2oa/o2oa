@@ -1,9 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +35,7 @@ public class ActionListByDocId extends BaseAction {
 		List<Wo> wos = null;
 		Boolean check = true;
 
-		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), docId);
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), docId, effectivePerson.getDistinguishedName());
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
 		if (optional.isPresent()) {
@@ -59,15 +56,22 @@ public class ActionListByDocId extends BaseAction {
 					if( ListTools.isNotEmpty( fileInfoList )) {
 						for ( FileInfo fileInfo : fileInfoList ) {
 							wo =  Wo.copier.copy(fileInfo);
-							if (this.read(wo, effectivePerson, identities, units )) {
+							boolean canControl = this.control(wo, effectivePerson, identities, units, business);
+							boolean canEdit = this.edit(wo, effectivePerson, identities, units, business);
+							boolean canRead = this.read(wo, effectivePerson, identities, units, business);
+							if (canRead) {
 								wo.getControl().setAllowRead(true);
-								wo.getControl().setAllowEdit(this.edit(wo, effectivePerson, identities, units));
-								wo.getControl().setAllowControl(this.control(wo, effectivePerson, identities, units));
+								wo.getControl().setAllowEdit(canEdit);
+								wo.getControl().setAllowControl(canControl);
 								wos.add(wo);
 							}
 						}
 					}
-					wos = wos.stream().sorted(Comparator.comparing(Wo::getCreateTime)).collect(Collectors.toList());
+					wos = wos.stream()
+							.sorted(Comparator.comparing(Wo::getSeqNumber, Comparator.nullsLast(Integer::compareTo))
+									.thenComparing(
+											Comparator.comparing(Wo::getCreateTime, Comparator.nullsLast(Date::compareTo))))
+							.collect(Collectors.toList());
 					CacheManager.put(cacheCategory, cacheKey, wos );
 					result.setData(wos);
 				} catch (Throwable th) {
@@ -130,43 +134,40 @@ public class ActionListByDocId extends BaseAction {
 		}
 	}
 
-	private boolean read(Wo woFileInfo, EffectivePerson effectivePerson, List<String> identities, List<String> units) throws Exception {
+	private boolean read(Wo woFileInfo, EffectivePerson effectivePerson, List<String> identities, List<String> units, Business business) throws Exception {
 		boolean value = false;
 		if (effectivePerson.isPerson(woFileInfo.getCreatorUid())) {
 			value = true;
 		} else if (ListTools.isEmpty(woFileInfo.getReadIdentityList()) && ListTools.isEmpty(woFileInfo.getReadUnitList())) {
 			value = true;
 		} else if (ListTools.containsAny(identities, woFileInfo.getReadIdentityList()) || ListTools.containsAny(units, woFileInfo.getReadUnitList())) {
-
-			value = true;
-		} else if (ListTools.containsAny(identities, woFileInfo.getEditIdentityList()) || ListTools.containsAny(units, woFileInfo.getEditUnitList())) {
 			value = true;
 		} else {
-			if (ListTools.containsAny(identities, woFileInfo.getControllerIdentityList()) || ListTools.containsAny(units, woFileInfo.getControllerUnitList())) {
-				value = true;
-			}
+			value = this.edit(woFileInfo, effectivePerson, identities, units, business);
 		}
 		return value;
 	}
 
-	private boolean edit(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units) throws Exception {
+	private boolean edit(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units, Business business) throws Exception {
 		boolean value = false;
 		if (effectivePerson.isPerson(wo.getCreatorUid())) {
 			value = true;
 		} else if (ListTools.isEmpty(wo.getEditIdentityList()) && ListTools.isEmpty(wo.getEditUnitList())) {
 			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getEditIdentityList()) || ListTools.containsAny(units, wo.getEditUnitList())) {
+		} else if (ListTools.containsAny(identities, wo.getEditIdentityList()) || ListTools.containsAny(units, wo.getEditUnitList())) {
 				value = true;
-			}
+		} else {
+			value = this.control(wo, effectivePerson, identities, units, business);
 		}
 		return value;
 	}
 
-	private boolean control(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
+	private boolean control(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units, Business business)
 			throws Exception {
 		boolean value = false;
-		if (effectivePerson.isPerson(wo.getCreatorUid())) {
+		if (business.isManager(effectivePerson)) {
+			value = true;
+		} else if (effectivePerson.isPerson(wo.getCreatorUid())) {
 			value = true;
 		} else if (ListTools.isEmpty(wo.getControllerUnitList()) && ListTools.isEmpty(wo.getControllerIdentityList())) {
 			value = true;

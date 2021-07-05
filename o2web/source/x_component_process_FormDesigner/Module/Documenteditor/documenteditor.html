@@ -164,6 +164,13 @@
 		<div id="text{$.pid}toWordArea" style="display: text{($.toWord=='y')?'block':'none'}">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
+					<td class="editTableTitle">{{$.lp.wordConversionType}}:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" name="wordConversionType" text{($.wordConversionType!='service')?'checked':''} type="radio" value="ooxml"/>OOXML
+						<input class="editTableRadio" name="wordConversionType" text{($.wordConversionType=='service')?'checked':''} type="radio" value="service"/>Service
+					</td>
+				</tr>
+				<tr>
 					<td class="editTableTitle">{{$.lp.fileName}}:</td>
 					<td class="editTableValue"><input type="text" name="toWordFilename" value="text{$.toWordFilename}" class="editTableInput"/></td>
 				</tr>
@@ -580,15 +587,21 @@
 				<tr>
 					<td class="editTableTitle">{{$.lp.allowEdit}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'none')}" name="subjectEdit" text{($.subjectEdit=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'none')}" name="subjectEdit" text{($.subjectEdit!='y' && $.subjectEdit!='s')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'block')}" name="subjectEdit" text{($.subjectEdit=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'none'); $('text{$.pid}subjectEditBindFormDataArea').setStyle('display', 'block');}" name="subjectEdit" text{($.subjectEdit=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'none'); $('text{$.pid}subjectEditBindFormDataArea').setStyle('display', 'none');}" name="subjectEdit" text{($.subjectEdit!='y' && $.subjectEdit!='s')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'block'); $('text{$.pid}subjectEditBindFormDataArea').setStyle('display', 'block');}" name="subjectEdit" text{($.subjectEdit=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
 						<br>
 						{{$.lp.editSubjectInfo}}
+						<div id="text{$.pid}subjectEditBindFormDataArea" style="display: text{($.subjectEditBindFormData=='y'||$.subjectEditBindFormData=='s')?'block':'none'}">
+							<b>{{$.lp.subjectEditBindFormData}}:</b>
+							<input type="text" name="subjectEditBindFormData" value="text{$.subjectEditBindFormData}" class="editTableInput"/>
+						</div>
+
 					</td>
 				</tr>
 			</table>
 			<div id="text{$.pid}subjectEditScriptArea" style="display: text{($.subjectEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="subjectEditScript" title="{{$.lp.editScript}} (S)"></div>
+
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>

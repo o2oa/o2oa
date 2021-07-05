@@ -34,6 +34,7 @@ function V(httpRequest) {
             var body = data.body;
             var debug = data.debug;
             var token = data.token;
+            var tokenName = data.tokenName;
 
             if (noCache) url = url+(((url.indexOf("?")!==-1) ? "&" : "?")+(new Date()).getTime());
 
@@ -44,8 +45,8 @@ function V(httpRequest) {
             this.request.setRequestHeader("Accept", "text/html,application/json,*/*");
             if (debug) this.request.setRequestHeader("x-debugger", "true");
             if (token){
-                this.request.setRequestHeader("x-token", token);
-                this.request.setRequestHeader("authorization", token);
+                this.request.setRequestHeader(tokenName, token);
+                this.request.setRequestHeader("Authorization", token);
             }
 
             this.request.send(body);
@@ -53,7 +54,7 @@ function V(httpRequest) {
 
         _doneRequest: function(){
             var json = JSON.parse(this.request.responseText);
-            var xToken = this.request.getResponseHeader("x-token");
+            var xToken = this.request.getResponseHeader(o2.tokenName);
             if (xToken){
                 json.xToken = xToken;
             }

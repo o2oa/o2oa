@@ -130,6 +130,16 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.datagrid,
     "className": "Datagrid"
   },
+  "datatable": {
+    "icon": "datagrid.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.datatable,
+    "className": "Datatable"
+  },
+  "datatemplate": {
+    "icon": "datatemplate.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.datatemplate,
+    "className": "Datatemplate"
+  },
   "subform": {
     "icon": "subform.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.subform,
@@ -185,6 +195,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.log,
     "className": "Log"
   },
+  "documenteditor": {
+    "icon": "documenteditor.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.documenteditor,
+    "className": "Documenteditor"
+  },
   "office": {
     "icon": "office.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.office,
@@ -204,5 +219,10 @@
     "icon": "statement.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.statement,
     "className": "Statement"
+  },
+  "importer": {
+    "icon": "importer.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.importer,
+    "className": "Importer"
   }
 }

@@ -65,6 +65,7 @@ var apps = [
     { "folder": "x_component_process_Work", "tasks": ["move", "min"] },
     { "folder": "x_component_process_Xform", "tasks": ["move", "min"] },
     { "folder": "x_component_Profile", "tasks": ["move", "min"] },
+    { "folder": "x_component_query_ImporterDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_query_Query", "tasks": ["move", "min"] },
     { "folder": "x_component_query_QueryExplorer", "tasks": ["move", "min"] },
     { "folder": "x_component_query_QueryManager", "tasks": ["move", "min"] },

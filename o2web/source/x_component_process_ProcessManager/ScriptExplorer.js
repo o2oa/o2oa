@@ -168,7 +168,9 @@ MWF.xApplication.process.ProcessManager.ScriptExplorer = new Class({
     _loadItemDataList: function(callback){
         var id = "";
         if (this.app.application) id = this.app.application.id;
-        if (this.app.options.application) id = this.app.options.application.id;
+        if (this.app.options.application){
+            id = typeOf(this.app.options.application)==="object" ? this.app.options.application.id : this.app.options.application;
+        }
         this.actions.listScript(id,callback);
     },
     _getItemObject: function(item){

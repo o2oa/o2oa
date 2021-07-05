@@ -145,6 +145,9 @@
     float:left; 
     color: rgb(51, 51, 51); 
     overflow:hidden;
+    max-width: 170px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .o2_im_chat_list .item .body_up .body_time {
     float: right; 

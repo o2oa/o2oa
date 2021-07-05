@@ -278,7 +278,9 @@ MWF.APPPD.LP = {
         "attachment": "Attachment",
         "div": "Div",
         "table": "Table",
-        "datagrid": "Datagrid",
+        "datagrid": "Datagrid(Deprecated)",
+        "datatable": "Datatable",
+        "datatemplate": "Datatemplate",
         "subform": "Subform",
         "ViewSelector": "ViewSelector",
         "view": "View",
@@ -299,6 +301,17 @@ MWF.APPPD.LP = {
         "subSource": "SubSource",
         "sourceText": "SourceText",
         "widget": "Widget",
-        "widgetmodules": "WidgetEl"
+        "widgetmodules": "WidgetEl",
+        "address": "Address",
+        "importer": "DataImport"
+    },
+    "filedConfigurator": {
+        "sequence": "Sequence",
+        "fieldTitle": "Field Title",
+        "fieldId": "Field ID",
+        "action": "Action",
+        "moveup": "Move to the previous line",
+        "deleteRow": "Delete Row",
+        "insertRow": "Insert Row"
     }
 };

@@ -660,6 +660,39 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             return false;
         }
 
+        if( !this.data.data && !this.data.data.where ){
+            if( this.data.type === "cms" ){
+                this.designer.notice(this.designer.lp.notice.selectCMS, "error");
+                return false;
+            }else{
+                this.designer.notice(this.designer.lp.notice.selectProcess, "error");
+                return false;
+            }
+        }else{
+            var where = this.data.data.where;
+            if( this.data.type === "cms" ){
+                var appInfoList = where.appInfoList;
+                var categoryInfoList = where.categoryInfoList;
+                if( (!appInfoList || !appInfoList.length) && (!categoryInfoList || !categoryInfoList.length) ){
+                    this.designer.notice(this.designer.lp.notice.selectCMS, "error");
+                    return false;
+                }
+            }else{
+                var applicationList = where.applicationList;
+                var processList = where.processList;
+                if( (!applicationList || !applicationList.length) && (!processList || !processList.length) ){
+                    this.designer.notice(this.designer.lp.notice.selectProcess, "error");
+                    return false;
+                }
+            }
+            if( where.dateRange && where.dateRange.dateRangeType === "range" ){
+                if( !where.dateRange.start || !where.dateRange.completed ){
+                    this.designer.notice(this.designer.lp.notice.selectDateRange, "error");
+                    return false;
+                }
+            }
+        }
+
         // var list;
         // if( this.data.data && this.data.data.where ){
         //     if( this.data.data.where.creatorIdentityList ){
@@ -699,6 +732,39 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                 return false;
             }
         //}
+
+        if( !this.data.data && !this.data.data.where ){
+            if( this.data.type === "cms" ){
+                this.designer.notice(this.designer.lp.notice.selectCMS, "error");
+                return false;
+            }else{
+                this.designer.notice(this.designer.lp.notice.selectProcess, "error");
+                return false;
+            }
+        }else{
+            var where = this.data.data.where;
+            if( this.data.type === "cms" ){
+                var appInfoList = where.appInfoList;
+                var categoryInfoList = where.categoryInfoList;
+                if( (!appInfoList || !appInfoList.length) && (!categoryInfoList || !categoryInfoList.length) ){
+                    this.designer.notice(this.designer.lp.notice.selectCMS, "error");
+                    return false;
+                }
+            }else{
+                var applicationList = where.applicationList;
+                var processList = where.processList;
+                if( (!applicationList || !applicationList.length) && (!processList || !processList.length) ){
+                    this.designer.notice(this.designer.lp.notice.selectProcess, "error");
+                    return false;
+                }
+            }
+            if( where.dateRange && where.dateRange.dateRangeType === "range" ){
+                if( !where.dateRange.start || !where.dateRange.completed ){
+                    this.designer.notice(this.designer.lp.notice.selectDateRange, "error");
+                    return false;
+                }
+            }
+        }
 
         debugger;
             // var list;
@@ -1704,10 +1770,12 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
                     this.areaNode.inject(inObj, "before");
                     var column = inObj.retrieve("column");
                     this.listNode.inject(column.listNode, "before");
-                    var idx = this.view.json.data.selectList.indexOf(column.json);
+                    // var idx = this.view.json.data.selectList.indexOf(column.json);
 
                     this.view.json.data.selectList.erase(this.json);
                     this.view.items.erase(this);
+
+                    var idx = this.view.json.data.selectList.indexOf(column.json);
 
                     this.view.json.data.selectList.splice(idx, 0, this.json);
                     this.view.items.splice(idx, 0, this);
@@ -1997,7 +2065,8 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
             this.toolbarWidget.load();
             this._setEditStyle_custom("hideSystemTools");
         }else{
-            MWF.getJSON(this.path+"toolbars.json", function(json){
+            // MWF.getJSON(this.path+"toolbars.json", function(json){
+            MWF.getJSON(this.getJsonPath(), function(json){
                 this.json.multiTools = json.map( function (d) { d.system = true; return d; });
                 if (this.json.tools){
                     this.json.multiTools = this.json.multiTools.concat( this.json.tools )

@@ -11,6 +11,8 @@ MWF.xApplication.process.Xform.LP = {
     "datagridImport": "Import Excel",
     "datagridExport": "Export Excel",
     "exportDefaultName": "DataGrid",
+    "datatemplateExportDefaultName": "DataTemplate",
+    "datatableExportDefaultName": "DataTable",
     "importSuccess": "Import successful!",
     "validationInfor": "Verification Information",
     "importFail": "Import failed",
@@ -286,6 +288,16 @@ MWF.xApplication.process.Xform.LP = {
     "attachmentArea": "Attachments",
     "intelligentCorrection": "Intelligent Error Correction",
 
+    "maxItemCountNotice": "A maximum of {n} items allowed to be added",
+    "selectItemNotice": "Please select item",
+    "minItemNotice": "At least {n} items need to be kept. The deleted item is less than the item to be kept, please check",
+    "deleteSelectedItemNotice": "Are you sure you want to delete the selected item",
+    "minItemCountNotice": "Please keep at least {n} items",
+    "systemField": "System Field",
+    "systemFieldEmptyNotice": "System Field cannot be empty",
+    "importTooManyNotice ":" you import {n1} data, allowed to import {n2} data maximum ",
+    "importTooFewNotice ": "you import {n1} data, need to keep at least {n2} data ",
+
     "form": {
         "close":"Close",
         "closeTitle": "Close Document",
@@ -324,6 +336,8 @@ MWF.xApplication.process.Xform.LP = {
         "resetPerson": "Person: ",
         "resetOpinion": "Opinion: ",
         "keepTask": "Keep my task",
+
+        "readedOpinion": "Opinion: ",
 
         "rollbackInfo": "Select the location of the file to be rollback to",
         "addSplitInfo": "Split data according to your business settings. The data should match the split setting in the process. multiple values with a comma (,)",

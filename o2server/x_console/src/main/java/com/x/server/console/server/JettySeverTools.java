@@ -115,6 +115,7 @@ public abstract class JettySeverTools {
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("ehcache-*.jar"));
 		/* 如果不单独导入会导致java.lang.NoClassDefFoundError: org/eclipse/jetty/http/MimeTypes */
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
+		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-proxy-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("quartz-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));

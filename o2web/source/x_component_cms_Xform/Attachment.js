@@ -68,6 +68,31 @@ MWF.xApplication.cms.Xform.AttachmentController = new Class({
                 o2.Actions.get("x_cms_assemble_control").configAttachment(att.data.id, this.module.form.businessData.document.id, att.data);
             }.bind(this));
         }
+    },
+    sortByNumber: function( attachments ){
+        return attachments.sort(function (a1, a2) {
+            if (!a2.data.seqNumber) return 1;
+            if (!a1.data.seqNumber) return -1;
+            return a1.data.seqNumber - a2.data.seqNumber;
+        }.bind(this));
+    },
+    sortAttachment: function (node) {
+        var nodes = node.getChildren();
+        nodes.each(function (item, idx) {
+            var att = item.retrieve("att", null);
+            if (att) {
+                att.data.seqNumber = idx;
+                o2.Actions.load("x_cms_assemble_control").FileInfoAction.changeSeqNumber(att.data.id, this.module.form.businessData.document.id, idx);
+            }
+        }.bind(this));
+        this.attachments = this.attachments.sort(function (a1, a2) {
+            if (!a2.data.seqNumber) return 1;
+            if (!a1.data.seqNumber) return -1;
+            return a1.data.seqNumber - a2.data.seqNumber;
+        }.bind(this));
+
+        this.reloadAttachments();
+        this.fireEvent("order");
     }
 });
 MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
@@ -94,7 +119,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
             "isPreviewAtt": (this.json.isPreviewAtt === "y" || this.json.isPreviewAtt === "true"),
             "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
-            "readonly": (this.json.readonly === "y" || this.json.readonly === "true"),
+            "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
@@ -105,6 +130,9 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             //"downloadEvent" : this.json.downloadEvent
         };
         if (this.readonly) options.readonly = true;
+        if (this.form.json && this.form.json.attachmentStyle) {
+            options = Object.merge(options, this.form.json.attachmentStyle);
+        }
 
         this.fireEvent("queryLoadController", [options]);
 
@@ -227,7 +255,9 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     }
                     this.attachmentController.checkActions();
 
+                    this.setAttachmentBusinessData();
                     this.fireEvent("upload", [json.data]);
+                    this.fireEvent("change");
                 }.bind(this))
             }
             this.attachmentController.checkActions();
@@ -309,10 +339,19 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
     },
     deleteAttachment: function (attachment) {
         this.fireEvent("delete", [attachment.data]);
+        var id = attachment.data.id;
         this.form.documentAction.deleteAttachment(attachment.data.id, function (json) {
             this.attachmentController.removeAttachment(attachment);
             //this.form.businessData.attachmentList.erase( attachment.data )
             this.attachmentController.checkActions();
+
+            for( var i=0; i<this.form.businessData.attachmentList.length; i++ ){
+                var attData = this.form.businessData.attachmentList[i];
+                if( attData.id === id ){
+                    this.form.businessData.attachmentList.erase(attData);
+                    break;
+                }
+            }
 
             if (this.form.officeList) {
                 this.form.officeList.each(function (office) {
@@ -323,8 +362,9 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     }
                 }.bind(this));
             }
-
+            this.setAttachmentBusinessData();
             this.fireEvent("afterDelete", [attachment.data]);
+            this.fireEvent("change");
         }.bind(this));
     },
 
@@ -372,9 +412,10 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         }
         var size = 0;
         if (this.json.attachmentSize) size = this.json.attachmentSize.toFloat();
-        this.attachmentController.doUploadAttachment({ "site": this.json.id }, this.form.documentAction.action, "replaceAttachment",
+        this.attachmentController.doUploadAttachment({ "site": (this.json.site || this.json.id) }, this.form.documentAction.action, "replaceAttachment",
             { "id": attachment.data.id, "documentid": this.form.businessData.document.id }, null, function (o) {
                 this.form.documentAction.getAttachment(attachment.data.id, this.form.businessData.document.id, function (json) {
+                    if (!json.data.control) json.data.control = {};
                     attachment.data = json.data;
                     attachment.reload();
 
@@ -444,13 +485,14 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     if (layout.mobile) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.form.documentAction.getAttachmentUrl(att.data.id, this.form.businessData.document.id, function (url) {
-                            var xtoken = Cookie.read("x-token");
-                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
+                            var xtoken = Cookie.read(o2.tokenName);
+                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
                         this.form.documentAction.getAttachmentStream(att.data.id, this.form.businessData.document.id);
                     }
                 }
+                this.fireEvent("download",[att])
             }.bind(this));
         }
     },
@@ -469,14 +511,15 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     if (layout.mobile) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.form.documentAction.getAttachmentUrl(att.data.id, this.form.businessData.document.id, function (url) {
-                            var xtoken = Cookie.read("x-token");
-                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
+                            var xtoken = Cookie.read(o2.tokenName);
+                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
                         this.form.documentAction.getAttachmentData(att.data.id, this.form.businessData.document.id);
                     }
 
                 }
+                this.fireEvent("open",[att])
             }.bind(this));
         }
         //this.downloadAttachment(e, node, attachment);
@@ -486,10 +529,29 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             this.form.documentAction.getAttachmentUrl(attachment.data.id, this.form.businessData.document.id, callback);
         }
     },
+    getTextData: function(){
+        var data = [];
+        this.attachmentController.attachments.each(function(att){
+            var o = {
+                "id": att.data.id,
+                "person": att.data.person,
+                "creatorUid": att.data.creatorUid,
+                "name": att.data.name,
+                "seqNumber": att.data.seqNumber,
+                "length": att.data.length,
+                "extension": att.data.extension,
+                "lastUpdateTime": att.data.lastUpdateTime,
+                "activityName": att.data.activityName,
+                "control" : att.data.control
+            }
+            data.push(o);
+        });
+        return data;
+    },
     validationConfigItem: function (routeName, data) {
         var flag = (data.status == "all") ? true : (routeName == "publish");
         if (flag) {
-            var n = this.getData();
+            var n = this.getData() || [];
             var v = (data.valueType == "value") ? n : n.length;
             switch (data.operateor) {
                 case "isnull":
@@ -544,4 +606,87 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         }
         return true;
     }
-}); 
+});
+MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
+    Extends: MWF.CMSAttachment,
+    loadAttachmentController: function () {
+        //MWF.require("MWF.widget.AttachmentController", function() {
+        var options = {
+            "style": this.json.style || "default",
+            "title": MWF.xApplication.process.Xform.LP.attachmentArea,
+            "listStyle": this.json.listStyle || "icon",
+            "size": this.json.size || "max",
+            "resize": (this.json.resize === "y" || this.json.resize === "true"),
+            "attachmentCount": this.json.attachmentCount || 0,
+            "isUpload": (this.json.isUpload === "y" || this.json.isUpload === "true"),
+            "isDelete": (this.json.isDelete === "y" || this.json.isDelete === "true"),
+            "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
+            "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
+            "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
+            "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly),
+            "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
+            "isDeleteOption": this.json.isDelete,
+            "isReplaceOption": this.json.isReplace,
+            "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "ignoreSite": this.json.ignoreSite,
+            "onOrder": function () {
+                this.fireEvent("change");
+            }.bind(this)
+        };
+        if (this.readonly) options.readonly = true;
+        if (this.form.json.attachmentStyle) {
+            options = Object.merge(options, this.form.json.attachmentStyle);
+        }
+
+        this.fireEvent("queryLoadController", [options]);
+
+        this.attachmentController = new MWF.xApplication.process.Xform.AttachmentController(this.node, this, options);
+
+        this.fireEvent("loadController");
+
+        this.attachmentController.load();
+
+        this.fireEvent("postLoadController");
+
+        // var d = this._getBusinessData();
+        // if (d) d.each(function (att) {
+        //     this.attachmentController.addAttachment(att);
+        // }.bind(this));
+        if(this.json.ignoreSite) {
+            ( this._getBusinessData() || [] ).each(function (att) {
+                var flag = this.form.businessData.attachmentList.some(function (attData) {
+                    return att.id === attData.id;
+                }.bind(this));
+                if(flag)this.attachmentController.addAttachment(att);
+            }.bind(this));
+        }else{
+            this.form.businessData.attachmentList.each(function (att) {
+                if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
+            }.bind(this));
+        }
+        this.setAttachmentBusinessData();
+    },
+    setAttachmentBusinessData: function(){
+        if (this.attachmentController) {
+            if (this.attachmentController.attachments.length) {
+                var values = this.attachmentController.attachments.map(function (d) {
+                    return {
+                        "control": d.data.control,
+                        "name": d.data.name,
+                        "id": d.data.id,
+                        "person": d.data.person,
+                        "creatorUid": d.data.creatorUid,
+                        "seqNumber": d.data.seqNumber,
+                        "length": d.data.length,
+                        "extension": d.data.extension,
+                        "lastUpdateTime": d.data.lastUpdateTime,
+                        "activityName": d.data.activityName
+                    };
+                });
+                this._setBusinessData(values);
+            } else {
+                this._setBusinessData([]);
+            }
+        }
+    }
+});

@@ -78,28 +78,30 @@ MWFCalendar.EventForm = new Class({
     loadEventContent : function(){
         var path = "../o2_lib/rrule/";
         COMMON.AjaxModule.load(path+"rrule.js", function () {
-            this.app.actions.listMyCalendar( function( json ){
-                this.calendarIds = [];
-                this.calendarNames = [];
-                this.calendarList = [];
-                (json.data.myCalendars || []).each( function(c){
-                    if(c.publishable || c.manageable )this.calendarList.push(c)
-                }.bind(this));
-                ( json.data.unitCalendars || [] ).each( function(c){
-                    if(c.publishable || c.manageable )this.calendarList.push(c)
-                }.bind(this));
-                this.calendarList.each( function( d ){
-                    this.calendarIds.push(d.id);
-                    this.calendarNames.push(d.name);
-                }.bind(this));
+            if( this.isEdited || this.isNew ) {
+                this.app.actions.listMyCalendar(function (json) {
+                    this.calendarIds = [];
+                    this.calendarNames = [];
+                    this.calendarList = [];
+                    (json.data.myCalendars || []).each(function (c) {
+                        if (c.publishable || c.manageable) this.calendarList.push(c)
+                    }.bind(this));
+                    (json.data.unitCalendars || []).each(function (c) {
+                        if (c.publishable || c.manageable) this.calendarList.push(c)
+                    }.bind(this));
+                    this.calendarList.each(function (d) {
+                        this.calendarIds.push(d.id);
+                        this.calendarNames.push(d.name);
+                    }.bind(this));
 
-
-                if( this.isEdited || this.isNew ){
                     this._createTableContent_Edit();
-                }else{
+                }.bind(this))
+            }else{
+                this.app.actions.getCalendar( this.data.calendarId, function (json) {
+                    this.calendarName = json.data.name;
                     this._createTableContent_Read();
-                }
-            }.bind(this))
+                }.bind(this))
+            }
         }.bind(this));
     },
     _createTableContent_Read : function(){
@@ -167,7 +169,8 @@ MWFCalendar.EventForm = new Class({
             }
         }
 
-        var calendarName =  this.calendarNames[ this.calendarIds.indexOf( data.calendarId ) ];
+        debugger;
+        var calendarName =  this.calendarName; //this.calendarNames[ this.calendarIds.indexOf( data.calendarId ) ];
 
         var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='table-layout:fixed;'>" +
             //"<tr><td colspan='2' styles='formTableHead'>申诉处理单</td></tr>" +
@@ -189,17 +192,32 @@ MWFCalendar.EventForm = new Class({
             html += "<tr><td styles='formTableTitle'>"+this.lp.remind+"：</td>" +
                 "    <td styles='formTableValue'>"+remind+"</td>" +
                 "</tr>";
-        }
-        if( repeat && repeat!==this.lp.no && repeat !== this.lp.notRepeat ){
-            "<tr><td styles='formTableTitle'>"+this.lp.repeat+"：</td>" +
-            "    <td styles='formTableValue'>"+ repeat +"</td>" +
-            "</tr>";
-        }
-        if( data.comment ){
-            html += "<tr><td styles='formTableTitle'>"+ this.lp.content +"：</td>" +
-                "    <td styles='formTableValue'>"+data.comment+"</td>" +
+        }else{
+            html += "<tr><td styles='formTableTitle'>"+this.lp.remind+"：</td>" +
+                "    <td styles='formTableValue'>"+ this.lp.remindIntervalArr[0] +"</td>" +
                 "</tr>";
         }
+
+        if( repeat && repeat!==this.lp.no && repeat !== this.lp.notRepeat ){
+            html += "<tr><td styles='formTableTitle'>"+this.lp.repeat+"：</td>" +
+            "    <td styles='formTableValue'>"+ repeat +"</td>" +
+            "</tr>";
+        }else{
+            html += "<tr><td styles='formTableTitle'>"+this.lp.repeat+"：</td>" +
+                "    <td styles='formTableValue'>"+ this.lp.notRepeat +"</td>" +
+                "</tr>";
+        }
+
+        if( data.comment ){
+            html += "<tr><td styles='formTableTitle' valign='top'><div style='padding-top: 15px;'>"+ this.lp.content +"：</div></td>" +
+                "    <td styles='formTableValue'>"+data.comment+"</td>" +
+                "</tr>";
+        }else{
+            html += "<tr><td styles='formTableTitle' valign='top'>"+ this.lp.content +"：</td>" +
+                "    <td styles='formTableValue'>"+this.lp.none+"</td>" +
+                "</tr>";
+        }
+
         this.formTableArea.set("html", html );
         this.formTableArea.getElements("[styles='formTableTitle']").setStyles({
             "color" : "#333",
@@ -687,14 +705,21 @@ MWFCalendar.EventForm = new Class({
         });
         return weekDay;
     },
+    isEditable: function(){
+        if( MWF.AC.isAdministrator() )return true;
+        if( (this.data.manageablePersonList || []).contains( layout.desktop.session.user.distinguishedName ) )return true;
+        if( this.data.createPerson === layout.desktop.session.user.distinguishedName )return true;
+        return false;
+    },
     _createBottomContent : function(){
+        var editable = this.isEditable( this.data );
         var html = "<div style='width:724px;margin:0px auto;'><table width='724' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
             "<tr><td styles='formTableValue' width='80'></td>" +
             "    <td styles='formTableValue' style='padding-top: 15px;'>"+
-            "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
-            "       <div item='editAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "none" : "") +";'></div>"+
-            "       <div item='removeAction' style='float:left;display:"+ ( this.isEdited ? "" : "none") +";'></div>"+
-            "       <div item='cancelAction' style='"+( (this.isEdited || this.isNew ) ? "float:left;" : "float:left")+"'></div>"+
+            "       <div item='saveAction' style='float:left;display:"+ (( (editable && this.isEdited) || this.isNew) ? "" : "none") +";'></div>"+
+            "       <div item='editAction' style='float:left;display:"+ ((!editable || (this.isEdited || this.isNew))  ? "none" : "") +";'></div>"+
+            "       <div item='removeAction' style='float:left;display:"+ ( ( editable && this.isEdited ) ? "" : "none") +";'></div>"+
+            "       <div item='cancelAction' style='"+( (editable && (this.isEdited || this.isNew )) ? "float:left;" : "float:left;wdith:100px;")+"'></div>"+
             "       <div item='moreInfor' style='float: right;margin-top:5px;'></div>"+
             "   </td></tr>" +
             "</table></div>";
@@ -1478,6 +1503,12 @@ MWFCalendar.EventTooltip = new Class({
             this.node = null;
         }
     },
+    isEditable: function(){
+        if( MWF.AC.isAdministrator() )return true;
+        if( (this.data.manageablePersonList || []).contains( layout.desktop.session.user.distinguishedName ) )return true;
+        if( this.data.createPerson === layout.desktop.session.user.distinguishedName )return true;
+        return false;
+    },
     loadButton : function(){
         var area = this.node.getElement("[item='seeMore']");
         new Element("div",{
@@ -1498,7 +1529,7 @@ MWFCalendar.EventTooltip = new Class({
                     isFull : true
                 }, {app:this.app});
                 form.view = this.view;
-                form.edit();
+                this.isEditable() ? form.edit() : form.open();
                 this.hide();
             }.bind(this)},
             text : this.lp.seeMore

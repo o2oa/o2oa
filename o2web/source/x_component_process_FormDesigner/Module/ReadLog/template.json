@@ -1,0 +1,93 @@
+{
+	"id": "",
+	"name": "",
+	"type": "ReadLog",
+	"description": "",
+    "filterActivity": [],
+	"filterActivityAlias":[],
+    "filterPerson": [],
+    "filterRoute": [],
+    "mode": "default", //default table or text
+    "textStyle": "<div><font style='color:#ff5400;'>{person}</font>（{unit}）: <font style='color:#00F'>{opinion}</font> （{date}）</div>",
+    "isTask": "true",
+	"showReadTitle": "待阅人",
+	"showReadCompletedTitle":"已阅人",
+	"filterScript": {
+		"code": "",
+		"html": ""
+	},
+	"events": {
+	  	"queryLoad" : {
+		  "code": "",
+		  "html": ""
+		},
+		"postLoad" : {
+		  "code": "",
+		  "html": ""
+		},
+		"postLoadData" : {
+		  "code": "",
+		  "html": ""
+		},
+		"postLoadLine" : {
+			"code": "",
+			"html": ""
+		},
+		"load" : {
+		  "code": "",
+		  "html": ""
+		},
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

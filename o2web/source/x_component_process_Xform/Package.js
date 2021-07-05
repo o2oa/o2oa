@@ -23,11 +23,14 @@ MWF.xApplication.process.Xform.require = function(callback){
         ["process.Xform", "Address"],
         ["process.Xform", "Table"],
         ["process.Xform", "Datagrid"],
+        ["process.Xform", "Datatable"],
+        ["process.Xform", "Datatemplate"],
         ["process.Xform", "Tab"],
         ["process.Xform", "Tree"],
         ["process.Xform", "Iframe"],
         ["process.Xform", "Htmleditor"],
         ["process.Xform", "Office"],
+        ["process.Xform", "IWebOffice"],
         ["process.Xform", "Attachment"],
         ["process.Xform", "Actionbar"],
         ["process.Xform", "Sidebar"],
@@ -48,6 +51,8 @@ MWF.xApplication.process.Xform.require = function(callback){
         ["process.Xform", "Html"],
         ["process.Xform", "Statement"],
         ["process.Xform", "StatementSelector"],
+        ["process.Xform", "Importer"],
+        ["process.Xform", "ReadLog"]
     ];
     MWF.xDesktop.requireApp(modules, null, function(){
         if (callback) callback();

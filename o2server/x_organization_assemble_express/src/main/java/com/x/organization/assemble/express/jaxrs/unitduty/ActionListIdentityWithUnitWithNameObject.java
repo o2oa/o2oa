@@ -1,8 +1,17 @@
 package com.x.organization.assemble.express.jaxrs.unitduty;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import com.x.organization.core.entity.*;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,12 +26,11 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import com.x.organization.core.entity.Identity;
+import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.Unit;
+import com.x.organization.core.entity.UnitDuty;
+import com.x.organization.core.entity.UnitDuty_;
 
 class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 
@@ -196,27 +204,28 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 		}
 	}
 
-	private List<Wo> list(Business business, List<String> names, List<String> units, Boolean recursiveUnit) throws Exception {
+	private List<Wo> list(Business business, List<String> names, List<String> units, Boolean recursiveUnit)
+			throws Exception {
 		List<Wo> wos = new ArrayList<>();
 		List<UnitDuty> os = new ArrayList<>();
 		Map<String, Unit> unitMap = new HashMap<>();
-		if(units.isEmpty()){
+		if (units.isEmpty()) {
 			EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 			Root<UnitDuty> root = cq.from(UnitDuty.class);
 			Predicate p = root.get(UnitDuty_.name).in(names);
 			os = em.createQuery(cq.select(root).where(p)).getResultList();
-		}else{
+		} else {
 			List<Unit> unitList = business.unit().pick(units);
-			if(!unitList.isEmpty()){
+			if (!unitList.isEmpty()) {
 				units.clear();
-				for(Unit unit : unitList){
+				for (Unit unit : unitList) {
 					units.add(unit.getId());
 					unitMap.put(unit.getId(), unit);
-					if(BooleanUtils.isTrue(recursiveUnit)){
+					if (BooleanUtils.isTrue(recursiveUnit)) {
 						List<Unit> subUnitList = business.unit().listSubNestedObject(unit);
-						for (Unit subunit:subUnitList) {
+						for (Unit subunit : subUnitList) {
 							unitMap.put(subunit.getId(), subunit);
 							units.add(subunit.getId());
 						}
@@ -237,12 +246,12 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 			int i = 0;
 			for (Identity identity : business.identity().pick(o.getIdentityList())) {
 				Unit matchUnit = unitMap.get(o.getUnit());
-				if(matchUnit == null){
+				if (matchUnit == null) {
 					matchUnit = business.unit().pick(o.getUnit());
 					unitMap.put(matchUnit.getId(), matchUnit);
 				}
 				Unit unit = unitMap.get(identity.getUnit());
-				if(unit == null){
+				if (unit == null) {
 					unit = business.unit().pick(identity.getUnit());
 					unitMap.put(unit.getId(), unit);
 				}
@@ -269,12 +278,12 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 		if (null != unit) {
 			wo.setUnit(unit.getDistinguishedName());
 			wo.setUnitOrder(unit.getOrderNumber());
-		}else{
+		} else {
 			wo.setUnit(identity.getUnit());
 		}
 		if (null != person) {
 			wo.setPerson(person.getDistinguishedName());
-		}else{
+		} else {
 			wo.setPerson(identity.getPerson());
 		}
 		if (null != identity) {

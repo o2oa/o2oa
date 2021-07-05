@@ -1,31 +1,23 @@
 package com.x.base.core.project.config;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import com.x.base.core.project.connection.ActionResponse;
-import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.tools.BaseTools;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.exception.ExceptionCollectConnectError;
 import com.x.base.core.project.exception.ExceptionCollectDisable;
-import com.x.base.core.project.exception.ExceptionCollectValidateFailure;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Collect extends ConfigObject {
 
@@ -34,7 +26,9 @@ public class Collect extends ConfigObject {
 	private static String Default_name = "www.o2oa.net";
 	private static String Default_appUrl = "https://app.o2oa.net/download/download.html";
 	private static String Default_server = "collect.o2oa.net";
+	private static String Default_appPackServerHost = "apppack.o2oa.net";
 	private static Integer Default_port = 20080;
+	private static Integer Default_appPackServerPort = 30088;
 	public static String ADDRESS_COLLECT_LOGIN = "/o2_collect_assemble/jaxrs/authentication/captcha/key/o2/answer/o2";
 	public static String ADDRESS_COLLECT_ECHO = "/o2_collect_assemble/jaxrs/echo";
 	public static String ADDRESS_COLLECT_VALIDATE = "/o2_collect_assemble/jaxrs/unit/validate";
@@ -42,6 +36,11 @@ public class Collect extends ConfigObject {
 	public static String ADDRESS_COLLECT_APPLICATION_LIST = "/o2_collect_assemble/jaxrs/application/list";
 	public static String ADDRESS_COLLECT_APPLICATION_DOWN = "/o2_collect_assemble/jaxrs/application/download";
 	public static String COLLECT_TOKEN = "c-token";
+	public static String ADDRESS_APPPACK_AUTH = "/auth/collect";
+	public static String ADDRESS_APPPACK_SAVE = "/pack/info/save";
+	public static String ADDRESS_APPPACK_INFO = "/pack/info/collect/%s";
+	public static String ADDRESS_APPPACK_INFO_RESTART = "/pack/info/restart/collect/%s";
+	public static String ADDRESS_APPPACK_DOWNLOAD_APK = "/pack/download/apk/%s";
 
 	public static Collect defaultInstance() {
 		return new Collect();
@@ -57,6 +56,8 @@ public class Collect extends ConfigObject {
 		this.server = "";
 		this.port = Default_port;
 		this.sslEnable = false;
+		this.appPackServerHost = Default_appPackServerHost;
+		this.appPackServerPort = Default_appPackServerPort;
 	}
 
 	@FieldDescribe("是否启用连接到云平台")
@@ -81,6 +82,27 @@ public class Collect extends ConfigObject {
 	private String secret;
 	@FieldDescribe("推送消息key")
 	private String key;
+	@FieldDescribe("app打包服务器域名")
+	private String appPackServerHost;
+	@FieldDescribe(("app打包服务器端口"))
+	private Integer appPackServerPort;
+
+
+	public String getAppPackServerHost() {
+		return StringUtils.isEmpty(appPackServerHost) ? Default_appPackServerHost : appPackServerHost;
+	}
+
+	public void setAppPackServerHost(String appPackServerHost) {
+		this.appPackServerHost = appPackServerHost;
+	}
+
+	public Integer getAppPackServerPort() {
+		return Objects.isNull(this.appPackServerPort) ? Default_appPackServerPort : this.appPackServerPort;
+	}
+
+	public void setAppPackServerPort(Integer appPackServerPort) {
+		this.appPackServerPort = appPackServerPort;
+	}
 
 	public String getSecret() {
 		return secret;
@@ -217,6 +239,33 @@ public class Collect extends ConfigObject {
 			}
 		}
 		return this.url();
+	}
+
+	/**
+	 * 获取app 打包服务器url地址
+	 * @return
+	 */
+	public String appPackServerUrl() {
+		String url = "http://";
+		url += this.getAppPackServerHost();
+		url += ":" + this.getAppPackServerPort();
+		return url;
+	}
+
+	/**
+	 * app 打包服务的 api 地址拼接
+	 * @param path
+	 * @return
+	 */
+	public String appPackServerApi(String path) {
+		if (StringUtils.isNotBlank(path)) {
+			if (StringUtils.startsWith(path, "/")) {
+				return this.appPackServerUrl() + path;
+			} else {
+				return this.appPackServerUrl() + "/" + path;
+			}
+		}
+		return this.appPackServerUrl();
 	}
 
 	public void save() throws Exception {

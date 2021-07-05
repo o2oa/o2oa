@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 import java.util.Arrays;
 import java.util.List;
 
+import com.x.base.core.entity.annotation.CheckPersistType;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
@@ -60,20 +61,16 @@ class ActionEdit extends BaseAction {
 			if(!canControl){
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
+
+			emc.beginTransaction(Attachment.class);
+			Wi.copier.copy(wi, attachment);
+			emc.check(attachment, CheckPersistType.all);
+			emc.commit();
+			Wo wo = new Wo();
+			wo.setId(attachment.getId());
+			result.setData(wo);
 		}
-//			emc.beginTransaction(Attachment.class);
-//			Wi.copier.copy(wi, attachment);
-//			emc.check(attachment, CheckPersistType.all);
-//			emc.commit();
-//			Wo wo = new Wo();
-//			wo.setId(attachment.getId());
-//			result.setData(wo);
-//			return result;
-		Wo wo = ThisApplication.context().applications()
-				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-						Applications.joinQueryUri("attachment", attachment.getId()), wi, attachment.getJob())
-				.getData(Wo.class);
-		result.setData(wo);
+
 		return result;
 	}
 
@@ -85,7 +82,8 @@ class ActionEdit extends BaseAction {
 				Arrays.asList(Attachment.readIdentityList_FIELDNAME, Attachment.readUnitList_FIELDNAME,
 						Attachment.editIdentityList_FIELDNAME, Attachment.editUnitList_FIELDNAME,
 						Attachment.controllerIdentityList_FIELDNAME, Attachment.controllerUnitList_FIELDNAME,
-						Attachment.divisionList_FIELDNAME),
+						Attachment.divisionList_FIELDNAME, Attachment.stringValue01_FIELDNAME,
+						Attachment.stringValue02_FIELDNAME, Attachment.stringValue03_FIELDNAME),
 				null);
 
 	}

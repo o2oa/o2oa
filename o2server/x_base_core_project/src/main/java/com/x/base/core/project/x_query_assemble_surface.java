@@ -13,6 +13,8 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.query.core.entity.neural.OutText", "com.x.query.core.entity.neural.InValue",
 		"com.x.query.core.entity.neural.OutValue", "com.x.query.core.entity.neural.Model",
 		"com.x.query.core.entity.schema.Table", "com.x.query.core.entity.schema.Statement",
+		"com.x.query.core.entity.ImportModel","com.x.query.core.entity.ImportRecord",
+		"com.x.query.core.entity.ImportRecordItem",
 		"com.x.processplatform.core.entity.content.Task", "com.x.processplatform.core.entity.content.TaskCompleted",
 		"com.x.processplatform.core.entity.content.Read", "com.x.processplatform.core.entity.content.ReadCompleted",
 		"com.x.processplatform.core.entity.content.Review", "com.x.processplatform.core.entity.content.Work",

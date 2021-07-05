@@ -1,0 +1,187 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="{{$.lp.base}}" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitleWithoutWith" width="80px">{{$.lp.id}}:</td>
+                <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.description}}:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+        </table>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;position: relative;">
+            {{$.lp.outerSideModuleId}}
+            <div class="MWFHelp" style="position: absolute;height: 16px;width: 16px;top:4px;right:4px;background: url('../x_component_process_FormDesigner/$Main/default/formtoolbar/question.png')">
+                {{$.lp.datatemplateOuterNote}}
+            </div>
+        </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitleWithoutWith" width="80px">{{$.lp.addButtonId}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="outerAddActionId" value="text{$.outerAddActionId}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.deleteSelectedButtonId}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="outerDeleteActionId" value="text{$.outerDeleteActionId}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.selectAllModuleId}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="outerSelectAllId" value="text{$.outerSelectAllId}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.selectedValue}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="outerSelectAllSelectedValue" value="text{$.outerSelectAllSelectedValue}" class="editTableInput"/>
+                </td>
+            </tr>
+        </table>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;position: relative;">
+            {{$.lp.innerSideModuleId}}
+            <div class="MWFHelp" style="position: absolute;height: 16px;width: 16px;top:4px;right:4px;background: url('../x_component_process_FormDesigner/$Main/default/formtoolbar/question.png')">
+                {{$.lp.datatemplateInnerNote}}
+            </div>
+        </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitleWithoutWith" width="80px">{{$.lp.addButtonId}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="addActionId" value="text{$.addActionId}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.deleteButtonId}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="deleteActionId" value="text{$.deleteActionId}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.sequenctModuleId}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="sequenceId" value="text{$.sequenceId}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.selectModuleId}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="selectorId" value="text{$.selectorId}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.selectedValue}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="selectorSelectedValue" value="text{$.selectorSelectedValue}" class="editTableInput"/>
+                </td>
+            </tr>
+        </table>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.count}}</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitleWithoutWith" width="80px">{{$.lp.defaultShow}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="defaultCount" value="text{$.defaultCount}" class="editTableInputNoWidth" style="width: 100px;"/>{{$.lp.item}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.maxItemCount}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="maxCount" value="text{$.maxCount}" class="editTableInputNoWidth" style="width: 100px;"/>{{$.lp.item}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.minItemCount}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="minCount" value="text{$.minCount}" class="editTableInputNoWidth" style="width: 100px;"/>{{$.lp.item}}
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptArea" name="editableScript" title="{{$.lp.canEdit}}(S)"></div>
+        <div class="MWFMaplist" name="styles" collapse="true" title="{{$.lp.style}}"></div>
+        <div class="MWFMaplist" name="properties" collapse="true" title="{{$.lp.attribute}}"></div>
+        <div class="MWFScriptArea" name="defaultData" title="{{$.lp.defaultData}}(S)"></div>
+
+        <div class="MWFValidation" name="validationConfig"></div>
+        <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
+    </div>
+    <div title="{{$.lp.import}}" class="MWFTab">
+<!--        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">导出导入</div>-->
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.enabled}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="impexpType" value="none" text{(!$.impexpType || $.impexpType==='none')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'none')}" />{{$.lp.disabled}}
+                    <input type="radio" name="impexpType" value="impexp" text{($.impexpType==='impexp')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'block')}" />{{$.lp.exportImport}}
+                    <input type="radio" name="impexpType" value="exp" text{($.impexpType==='exp')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'block')}" />{{$.lp.onlyExport}}
+                    <input type="radio" name="impexpType" value="imp" text{($.impexpType==='imp')?'checked':''}
+                           onclick="if (this.checked){ $('text{$.pid}impexpArea').setStyle('display', 'block')}" />{{$.lp.onlyImport}}
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}impexpArea" style="display: text{($.impexpType && $.impexpType!=='none')?'block':'none'};">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitleWithoutWith" width="80px"></td>
+                    <td class="editTableValue">
+                        {{$.lp.dtImportInfor}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.importButtonId}}:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="importActionId" value="text{$.importActionId}" class="editTableInput"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.exportButtonId}}:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="exportActionId" value="text{$.exportActionId}" class="editTableInput"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFFormulaArea" name="excelName" title="{{$.lp.exportFileName}}"></div>
+            <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.importExporConfig}}</div>
+            <div class="MWFFieldConfigArea" name="excelFieldConfig"></div>
+            <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.validationPopFormConfig}}</div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitleWithoutWith" width="80px">{{$.lp.validationPopFormWidth}}:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="impExpDlgWidth" value="text{$.impExpDlgWidth}" class="editTableInputNoWidth" style="width: 100px;"/>px
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.validationPopFormHeight}}:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="impExpDlgHeight" value="text{$.impExpDlgHeight}" class="editTableInputNoWidth" style="width: 100px;"/>px
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFMaplist" name="impExpTableStyles" collapse="true" title="{{$.lp.validationTableStyle}}"></div>
+            <div class="MWFMaplist" name="impExpTableTitleStyles" collapse="true" title="{{$.lp.validationTitleTdStyle}}"></div>
+            <div class="MWFMaplist" name="impExpTableContentStyles" collapse="true" title="{{$.lp.validationContentTdStyle}}"></div>
+            <div class="MWFMaplist" name="impExpTableProperties" collapse="true" title="{{$.lp.validationTableAttribute}}"></div>
+        </div>
+    </div>
+    <div title="{{$.lp.event}}"  class="MWFTab">
+        <div class="MWFEventsArea" name="events"></div>
+    </div>
+    <div title="HTML"  class="MWFTab">
+        <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

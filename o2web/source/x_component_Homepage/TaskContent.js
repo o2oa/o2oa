@@ -291,7 +291,7 @@ MWF.xApplication.Homepage.TaskContent.Task = new Class({
         var numberNode = new Element("div.o2_homepage_task_item_number", {"text": idxShow, "title":idx}).inject(cell);
 
         //var subject = "<span>["+d.processName+"]</span> "+(d.title || this.app.lp.noSubject);
-        var subject = "["+d.processName+"] "+(d.title || this.app.lp.noSubject);
+        var subject = "["+d.processName+"] "+o2.txt(d.title || this.app.lp.noSubject);
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_subject");
         new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":subject}).inject(cell);
 
@@ -534,7 +534,7 @@ MWF.xApplication.Homepage.TaskContent.TaskCompleted = new Class({
         var numberNode = new Element("div.o2_homepage_task_item_number", {"text": idxShow, "title":idx}).inject(cell);
 
         //var subject = "<span>["+d.processName+"]</span> "+(d.title || this.app.lp.noSubject);
-        var subject = "["+d.processName+"] "+(d.title || this.app.lp.noSubject);
+        var subject = "["+d.processName+"] "+o2.txt(d.title || this.app.lp.noSubject);
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_subject");
         new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":subject}).inject(cell);
 
@@ -615,7 +615,7 @@ MWF.xApplication.Homepage.TaskContent.Read = new Class({
         var numberNode = new Element("div.o2_homepage_task_item_number", {"text": idxShow, "title":idx}).inject(cell);
 
         //var subject = "<span>["+d.processName+"]</span> "+(d.title || this.app.lp.noSubject);
-        var subject = "["+d.processName+"] "+(d.title || this.app.lp.noSubject);
+        var subject = "["+d.processName+"] "+o2.txt(d.title || this.app.lp.noSubject);
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_subject");
         new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":subject}).inject(cell);
 
@@ -697,7 +697,7 @@ MWF.xApplication.Homepage.TaskContent.ReadCompleted = new Class({
         var numberNode = new Element("div.o2_homepage_task_item_number", {"text": idxShow, "title":idx}).inject(cell);
 
         //var subject = "<span>["+d.processName+"]</span> "+(d.title || this.app.lp.noSubject);
-        var subject = "["+d.processName+"] "+(d.title || this.app.lp.noSubject);
+        var subject = "["+d.processName+"] "+o2.txt(d.title || this.app.lp.noSubject);
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_subject");
         new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":subject}).inject(cell);
 
@@ -780,7 +780,7 @@ MWF.xApplication.Homepage.TaskContent.Draft = new Class({
         var numberNode = new Element("div.o2_homepage_task_item_number", {"text": idxShow, "title":idx}).inject(cell);
 
         //var subject = "<span>["+d.processName+"]</span> "+(d.title || this.app.lp.noSubject);
-        var subject = "["+d.processName+"] "+(d.title || this.app.lp.noSubject);
+        var subject = "["+d.processName+"] "+o2.txt(d.title || this.app.lp.noSubject);
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_subject");
         new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":subject}).inject(cell);
 
@@ -869,7 +869,7 @@ MWF.xApplication.Homepage.TaskContent.ProcessDraft = new Class({
         var numberNode = new Element("div.o2_homepage_task_item_number", {"text": idxShow, "title":idx}).inject(cell);
 
         //var subject = "<span>["+d.processName+"]</span> "+(d.title || this.app.lp.noSubject);
-        var subject = "["+d.processName+"] "+(d.title || this.app.lp.noSubject);
+        var subject = "["+d.processName+"] "+o2.txt(d.title || this.app.lp.noSubject);
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_subject");
         new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":subject}).inject(cell);
 

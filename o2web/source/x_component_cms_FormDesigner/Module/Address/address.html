@@ -13,6 +13,21 @@
                 <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.readonly}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.selectRange}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="selectRange" value="province" text{($.selectRange==='province')?'checked':''}/>{{$.lp.province}}
+                    <input type="radio" name="selectRange" value="city" text{($.selectRange==='city')?'checked':''}/>{{$.lp.city}}
+                    <input type="radio" name="selectRange" value="county" text{($.selectRange==='county' || !$.selectRange)?'checked':''}/>{{$.lp.county}}
+                </td>
+            </tr>
         </table>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>

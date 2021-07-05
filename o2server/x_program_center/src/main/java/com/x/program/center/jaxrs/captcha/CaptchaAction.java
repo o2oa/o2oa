@@ -46,17 +46,17 @@ public class CaptchaAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "创建一个Captcha.", action = ActionCreate.class)
+	@JaxrsMethodDescribe(value = "创建一个CaptchaV2.", action = V2Create.class)
 	@GET
-	@Path("create/width/{width}/height/{height}")
+	@Path("v2/create/width/{width}/height/{height}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void create(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void V2Create(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@PathParam("width") Integer width, @PathParam("height") Integer height) {
-		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
+		ActionResult<V2Create.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreate().execute(width, height);
+			result = new V2Create().execute(width, height);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

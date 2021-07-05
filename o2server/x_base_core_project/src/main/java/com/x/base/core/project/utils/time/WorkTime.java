@@ -18,7 +18,7 @@ public class WorkTime extends BaseWorkTime {
 
 	public static volatile int[] WEEKENDS = new int[] { 1, 7 };
 
-	public WorkTime() {
+	private WorkTime() {
 		super(AM_START, AM_END, PM_START, PM_END, HOLIDAYS, WORKDAYS, WEEKENDS);
 	}
 

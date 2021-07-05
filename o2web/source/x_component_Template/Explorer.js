@@ -53,6 +53,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
             currentPage : 1,
             currentItem : null,
             hasPagingBar : true,
+            pagingBarUseWidget: false,
             hasTruningBar : true,
             hasNextPage : true,
             hasPrevPage : false,
@@ -109,6 +110,10 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
             "styles": this.css.viewContentListNode
         }).inject(this.container);
 
+        if( this.options.wrapView ){
+            this.viewWrapNode = new Element("div").inject(this.node);
+        }
+
         if( this.options.scrollEnable ){
             this.setScroll();
         }
@@ -121,13 +126,20 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         this.fireEvent("postLoad");
     },
     reload: function () {
+        debugger;
         this.clear();
         this.node = new Element("div", {
             "styles": this.css.viewContentListNode
         }).inject(this.container);
+
+        if( this.options.wrapView ){
+            this.viewWrapNode = new Element("div").inject(this.node);
+        }
+
         this.createViewNode();
         this.createViewHead();
         this.createViewBody();
+        this.fireEvent("postReloadLoad");
     },
     initSortData: function () {
         this.sortField = null;
@@ -144,9 +156,14 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
             this.destroyScroll()
         }
 
+        this.clear();
+        //delete this;
+    },
+    clear: function () {
         if(this.pagingContainerTop ){
             if( this.pagingContainerTopCreated ){
                 this.pagingContainerTop.destroy();
+                this.pagingContainerTop = null;
             }else{
                 this.pagingContainerTop.empty();
             }
@@ -155,17 +172,15 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         if( this.pagingContainerBottom ){
             if( this.pagingContainerBottomCreated ){
                 this.pagingContainerBottom.destroy();
+                this.pagingContainerBottom = null;
             }else{
                 this.pagingContainerBottom.empty();
             }
         }
 
         if( this.paging )this.paging.destroy();
+        this.paging = null;
 
-        this.clear();
-        //delete this;
-    },
-    clear: function () {
         if( this.documentDragSort ){
             this.documentDragSort.removeLists( this.viewBodyNode || this.viewNode );
             this.documentDragSort.detach();
@@ -175,6 +190,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         MWF.release(this.items);
         this.items = [];
         this.documents = {};
+        this.viewWrapNode = null;
         this.node.destroy();
         this.container.empty();
         this.isItemsLoaded = false;
@@ -298,7 +314,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
     createViewNode: function () {
         this.fireEvent("queryCreateViewNode");
         this._queryCreateViewNode( );
-        this.viewNode = this.formatElement(this.node, this.template.viewSetting);
+        this.viewNode = this.formatElement(this.viewWrapNode || this.node, this.template.viewSetting);
         this._postCreateViewNode( this.viewNode );
         this.fireEvent("postCreateViewNode");
         if (!this.viewNode)return;
@@ -441,7 +457,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         if (downStyles && ( overStyles || styles)) {
             node.addEvent("mousedown", function (ev) {
                 if( !_self.lockNodeStyle )this.node.setStyles(this.styles);
-                if( _self.mousedownNode && this.holdMouseDownStyles ){
+                if( _self.mousedownNode && this.holdMouseDownStyles && _self.mousedownNode != this.node ){
                     _self.mousedownNode.setStyles( this.normalStyle )
                 }
                 if( this.holdMouseDownStyles ){
@@ -583,26 +599,67 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         if( this.options.pagingPar.position.indexOf("top") > -1 ){
             if( !this.pagingContainerTop ){
                 this.pagingContainerTopCreated = true;
-                this.pagingContainerTop = new Element("div", {"styles":this.css.pagingContainer}).inject( this.viewNode, "before" );
+                this.pagingContainerTop = new Element("div", {"styles":this.css.pagingContainer}).inject( this.viewWrapNode || this.viewNode, "before" );
             }
         }
         if( this.options.pagingPar.position.indexOf("bottom") > -1 ){
             if( !this.pagingContainerBottom ){
                 this.pagingContainerBottomCreated = true;
-                this.pagingContainerBottom = new Element("div", {"styles":this.css.pagingContainer}).inject( this.viewNode, "after" );
+                this.pagingContainerBottom = new Element("div", {"styles":this.css.pagingContainer}).inject( this.viewWrapNode || this.viewNode, "after" );
             }
         }
         var par = Object.merge( this.options.pagingPar, {
             itemSize : itemSize,
-            onJumpingPage : function( par ){
-                this.loadPagingElementList( this.options.pagingPar.countPerPage, par.pageNum, par.itemNum );
+            onJumpingPage : function( arg1, arg2 ){
+                if( o2.typeOf(arg1) === "object" ){
+                    this.loadPagingElementList( this.options.pagingPar.countPerPage, arg1.pageNum, arg1.itemNum );
+                }else{
+                    this.loadPagingElementList( this.options.pagingPar.countPerPage, arg1, arg2 );
+                }
             }.bind(this)
         });
         if( pageNum )par.currentPage = pageNum;
         if( this.options.pagingPar.hasPagingBar ){
-            this.paging = new MWF.xApplication.Template.Explorer.Paging(this.pagingContainerTop, this.pagingContainerBottom, par, this.css);
-            this.paging.load();
+            if( this.options.pagingPar.pagingBarUseWidget ){
+                if(this.pagingContainerTop){
+                    this.loadWidgetPaging(this.pagingContainerTop, itemSize, par)
+                }
+                if(this.pagingContainerBottom){
+                    this.loadWidgetPaging(this.pagingContainerBottom, itemSize, par)
+                }
+            }else{
+                this.paging = new MWF.xApplication.Template.Explorer.Paging(
+                    this.pagingContainerTop, this.pagingContainerBottom, par, this.css);
+                this.paging.load();
+            }
         }
+    },
+    loadWidgetPaging: function(node, itemSize, par){
+        if(!o2.widget.Paging)MWF.require("o2.widget.Paging", null, false);
+        var pageSize = Math.ceil(itemSize/this.options.pagingPar.countPerPage);
+        this.paging = new o2.widget.Paging(node, Object.merge({
+            countPerPage: 20,
+            visiblePages: 9,
+            currentPage: 1,
+            itemSize: 0,
+            pageSize: pageSize,
+            hasNextPage: true,
+            hasPrevPage: true,
+            hasTruningBar: true,
+            hasBatchTuring: true,
+            hasFirstPage: true,
+            hasLastPage: true,
+            hasJumper: true,
+            hiddenWithDisable: false,
+            hiddenWithNoItem: true,
+            text: {
+                prePage: "",
+                nextPage: "",
+                firstPage: "",
+                lastPage: ""
+            }
+        }, par), this.options.pagingPar.pagingStyles || {});
+        this.paging.load();
     },
     _getCurrentPageData: function (callback, count, page) {
         if( this.options.pagingEnable ){
@@ -988,7 +1045,7 @@ MWF.xApplication.Template.Explorer.ComplexDocument = new Class({
         this.view._openDocument(this.data);
     },
     remove: function (e) {
-        var lp = this.app.lp;
+        var lp = this.lp || this.view.lp || this.app.lp;
         var text = lp.deleteDocument.replace(/{title}/g, this.data.title);
         var _self = this;
         this.node.setStyles(this.css.documentNode_remove);
@@ -1211,7 +1268,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
         if( this.options.currentPage != pageSize && pageSize != 1 && pageSize != 0 ){
             this.nextPageNode = new Element("div.nextPageNode", {
                 "styles" : this.css.nextPageNode,
-                "text" : MWF.xApplication.Template.LP.explorer.prePage
+                "text" : MWF.xApplication.Template.LP.explorer.nextPage
             }).inject(container);
             this.nextPageNode.addEvents( {
                 "mouseover" : function( ev ){ ev.target.setStyles( this.css.nextPageNode_over ) }.bind(this),
@@ -1229,7 +1286,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
         if( this.options.currentPage != 1 && pageSize != 1 && pageSize != 0 ){
             this.prevPageNode = new Element("div.prevPageNode", {
                 "styles" : this.css.prevPageNode,
-                "text" : MWF.xApplication.Template.LP.explorer.nextPage
+                "text" : MWF.xApplication.Template.LP.explorer.prePage
             }).inject(container);
             this.prevPageNode.addEvents( {
                 "mouseover" : function( ev ){ ev.target.setStyles( this.css.prevPageNode_over ) }.bind(this),
@@ -1239,6 +1296,7 @@ MWF.xApplication.Template.Explorer.Paging = new Class({
         }
     },
     gotoPage : function( num ){
+        if(o2.typeOf(num) === "string")num = num.toInt();
         if( num < 1 || num > this.options.pageSize )return;
         this.fireEvent( "jumpingPage", { pageNum : num }  );
         this.options.currentPage = num;

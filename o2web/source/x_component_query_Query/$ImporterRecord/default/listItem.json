@@ -1,0 +1,131 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable' style='table-layout:fixed;'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+//    "mouseoverStyles": "documentNode_over",
+    "mousedownStyles": "documentNode_down",
+    "holdMouseDownStyles" : true,
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "name",
+      "head": {
+        "html": "<th styles='normalThNode' lable='importerName'></th>",
+        "width": "38%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='30%' name='title'><div item='name'></div></td>",
+        "items": {
+          "name" : {}
+        }
+      }
+    },
+    {
+      "name": "status",
+      "head": {
+        "html": "<th styles='normalThNode' lable='status'></th>",
+        "width": "14%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='14%'><div item='status'></div></td>",
+        "items": {
+          "status" : {}
+        }
+      }
+    },
+    {
+      "name": "count",
+      "head": {
+        "html": "<th styles='normalThNode' lable='importCount'></th>",
+        "width": "9%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='9%'><div item='count'></div></td>",
+        "items": {
+          "count" : {}
+        }
+      }
+    },
+    {
+      "name": "failCount",
+      "head": {
+        "html": "<th styles='normalThNode' lable='failCount'></th>",
+        "width": "9%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='9%'><div item='failCount'></div></td>",
+        "items": {
+          "failCount" : {}
+        }
+      }
+    },
+    {
+      "name": "creatorPerson",
+      "head": {
+        "html": "<th styles='normalThNode' lable='importPerson'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='9%'><div item='creatorPerson'></div></td>",
+        "items": {
+          "creatorPerson" : {
+            "value": "function(d){ return (d.creatorPerson||'').split('@')[0] }"
+          }
+        }
+      }
+    },
+    {
+      "name": "createTime",
+      "head": {
+        "html": "<th styles='normalThNode' lable='importTime'></th>",
+        "width": "14%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='9%'><div item='createTime'></div></td>",
+        "items": {
+          "createTime" : {}
+        }
+      }
+    },
+    {
+      "name": "updateTime",
+      "head": {
+        "html": "<th styles='normalThNode' lable='updateTime'></th>",
+        "width": "14%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='9%'><div item='updateTime'></div></td>",
+        "items": {
+          "updateTime" : {}
+        }
+      }
+    },
+    {
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "5%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='10%'>" +
+        " <span styles='documentActionNode' item='remove'></span>" +
+        "</td>",
+        "items": {
+          "remove": {
+            "title": "remove",
+            "action": "remove",
+            "condition": "function( d ){ return this.explorer.isManager || (d.creatorPerson === layout.desktop.session.user.distinguishedName) }",
+            "styles": "actionDeleteNode",
+            "mouseoverStyles": "actionDeleteNode_over",
+            "mousedownStyles": "actionDeleteNode_down"
+          }
+        }
+      }
+    }
+  ]
+}

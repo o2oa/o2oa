@@ -48,10 +48,6 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_organization_core_express</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>nl.captcha</groupId>
-			<artifactId>simplecaptcha</artifactId>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
