@@ -3,6 +3,7 @@ package com.x.file.assemble.control.jaxrs.attachment2;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -21,6 +22,12 @@ class ActionListWithFilter extends BaseAction {
 			Business business = new Business(emc);
 			List<String> ids = business.attachment2().listWithName(effectivePerson.getDistinguishedName(),name);
 			List<Wo> wos = Wo.copier.copy(emc.list(Attachment2.class, ids));
+			wos.stream().forEach(wo -> {
+				try {
+					wo.setPath(business.folder2().getSupPath(wo.getFolder()));
+				} catch (Exception e) {
+				}
+			});
 			SortTools.desc(wos, false, "createTime");
 			result.setData(wos);
 			return result;
@@ -33,6 +40,17 @@ class ActionListWithFilter extends BaseAction {
 
 		static WrapCopier<Attachment2, Wo> copier = WrapCopierFactory.wo(Attachment2.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
+
+		@FieldDescribe("文件路径")
+		private String path;
+
+		public String getPath() {
+			return path;
+		}
+
+		public void setPath(String path) {
+			this.path = path;
+		}
 
 	}
 }
