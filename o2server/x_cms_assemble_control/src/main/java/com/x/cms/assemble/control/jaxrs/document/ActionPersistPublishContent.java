@@ -623,6 +623,15 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		private List<String> pictureList;
 
+		@FieldDescribe("业务数据String值01.")
+		private String stringValue01;
+
+		@FieldDescribe("业务数据String值02.")
+		private String stringValue02;
+
+		@FieldDescribe("业务数据String值03.")
+		private String stringValue03;
+
 		public String getId() {
 			return id;
 		}
@@ -1077,6 +1086,30 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		public void setNotice(Boolean notice) {
 			isNotice = notice;
+		}
+
+		public String getStringValue01() {
+			return stringValue01;
+		}
+
+		public void setStringValue01(String stringValue01) {
+			this.stringValue01 = stringValue01;
+		}
+
+		public String getStringValue02() {
+			return stringValue02;
+		}
+
+		public void setStringValue02(String stringValue02) {
+			this.stringValue02 = stringValue02;
+		}
+
+		public String getStringValue03() {
+			return stringValue03;
+		}
+
+		public void setStringValue03(String stringValue03) {
+			this.stringValue03 = stringValue03;
 		}
 	}
 
