@@ -7,6 +7,6 @@ class ExceptionDutyCodeColumnEmpty extends PromptException {
 	private static final long serialVersionUID = -2139584911736169462L;
 
 	ExceptionDutyCodeColumnEmpty() {
-		super("职务编号列不能为空.");
+		super("职务所在组织唯一编码列不能为空.");
 	}
 }

@@ -1,10 +1,8 @@
 package com.x.organization.assemble.control.jaxrs.export;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,18 +11,13 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_organization_assemble_control;
 import com.x.organization.assemble.control.Business;
-import com.x.organization.core.entity.Group;
-import com.x.organization.core.entity.Identity;
-import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.PersonAttribute;
-import com.x.organization.core.entity.PersonAttribute_;
-import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.UnitDuty;
-import com.x.organization.core.entity.UnitDuty_;
-import com.x.organization.core.entity.Unit_;
+import com.x.organization.assemble.control.ThisApplication;
+import com.x.organization.core.entity.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -47,7 +40,9 @@ public class ActionExportAll extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger(ActionExportAll.class);
 	List<Unit> allUnitList = new ArrayList<>();
+	List<String> allUnitAttributeList = new ArrayList<>();
 	List<Person> allPersonList = new ArrayList<>();
+	List<String> allPersonAttributeList = new ArrayList<>();
 	List<Identity> allIdentityList = new ArrayList<>();
 	List<UnitDuty> allDutyList = new ArrayList<>();
 	List<Group> allGroupList = new ArrayList<>();
@@ -79,31 +74,21 @@ public class ActionExportAll extends BaseAction {
 		//创建说明sheet
 		this.createNoticeSheet();
 		
-		// 将组织信息结果组织成EXCEL		
-		if( ListTools.isNotEmpty(allUnitList) ) {
-			this.composeUnit( business, "组织信息", allUnitList );
-		}
-		
-		// 将人员基础信息结果组织成EXCEL		
-		if( ListTools.isNotEmpty(allPersonList) ) {
-			this.composePerson( business, "人员基本信息", allPersonList );
-		}
+		// 将组织信息结果组织成EXCEL
+		this.composeUnit( business, "组织信息", allUnitList );
 
-		// 将人员身份信息结果组织成EXCEL		
-		if( ListTools.isNotEmpty(allPersonList) ) {
-			this.composeIdentity( business, "人员身份信息", allIdentityList );
-		}
+		// 将人员基础信息结果组织成EXCEL
+		this.composePerson( business, "人员基本信息", allPersonList );
+
+		// 将人员身份信息结果组织成EXCEL
+		this.composeIdentity( business, "人员身份信息", allIdentityList );
 		
-		// 将职务信息结果组织成EXCEL		
-		if( ListTools.isNotEmpty(allDutyList) ) {
-			this.composeDuty( business, "职务信息", allDutyList );
-		}
-		
-		// 将群组信息结果组织成EXCEL		
-		if( ListTools.isNotEmpty(allGroupList) ) {
-			this.composeGroup( business, "群组信息", allGroupList );
-		}
-		
+		// 将职务信息结果组织成EXCEL
+		this.composeDuty( business, "职务信息", allDutyList );
+
+		// 将群组信息结果组织成EXCEL
+		this.composeGroup( business, "群组信息", allGroupList );
+
 		if( wb != null ) {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			try {
@@ -134,6 +119,17 @@ public class ActionExportAll extends BaseAction {
 		
 		if(ListTools.isNotEmpty(allUnitList)){
 			allUnitList = business.unit().sort(allUnitList);
+			for(Unit unit:allUnitList){
+				List<UnitAttribute> us = this.ListUnitAttributes("unitattribute/list/unit/",unit.getId());
+				if(ListTools.isNotEmpty(us)){
+					for(UnitAttribute u : us){
+						String uName = u.getName();
+						if(StringUtils.isNotEmpty(uName) &&  !allUnitAttributeList.contains(uName)){
+							allUnitAttributeList.add(uName);
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -143,6 +139,17 @@ public class ActionExportAll extends BaseAction {
 		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 		Root<Person> root = cq.from(Person.class);
 		allPersonList = em.createQuery(cq.select(root)).getResultList();
+		if(ListTools.isNotEmpty(allPersonList)){
+			for(Person person:allPersonList){
+				List<PersonAttribute> ps = this.listAttributeWithPerson(business,person.getId());
+				for(PersonAttribute o:ps){
+					String pName = o.getName();
+					if(StringUtils.isNotEmpty(pName) &&  !allPersonAttributeList.contains(pName)){
+						allPersonAttributeList.add(pName);
+					}
+				}
+			}
+		}
 	}
 	
 	private void listIdentity(Business business) throws Exception {
@@ -228,6 +235,11 @@ public class ActionExportAll extends BaseAction {
 			row.createCell(3).setCellValue("上级组织编号");
 			row.createCell(4).setCellValue("描述");
 			row.createCell(5).setCellValue("排序号");
+			if(ListTools.isNotEmpty(allUnitAttributeList)){
+				for(int n = 0; n < allUnitAttributeList.size(); n++){
+					row.createCell(5+n+1).setCellValue("("+allUnitAttributeList.get(n)+")");
+				}
+			}
 
 			for (int i = 0; i < unitList.size(); i++) {
 				unit = unitList.get(i);
@@ -255,7 +267,20 @@ public class ActionExportAll extends BaseAction {
 				}
 				row.createCell(4).setCellValue(unit.getDescription());
 				row.createCell(5).setCellValue(unit.getOrderNumber()+"");
-				
+				List<UnitAttribute> os= this.ListUnitAttributes("unitattribute/list/unit/",unit.getId());
+				if(ListTools.isNotEmpty(allUnitAttributeList) && ListTools.isNotEmpty(os)){
+					for(int m = 0; m < allUnitAttributeList.size(); m++){
+						String uName = allUnitAttributeList.get(m);
+						String uValue = "";
+						for(UnitAttribute o : os){
+							if(uName.equals(o.getName())){
+								//uValue = o.getAttributeList().toString();
+								uValue = String.join(",", o.getAttributeList().stream().map(String::valueOf).collect(Collectors.toList()));
+							}
+						}
+						row.createCell(5+m+1).setCellValue(uValue);
+					}
+				}
 			}
 		}
 	}
@@ -277,6 +302,11 @@ public class ActionExportAll extends BaseAction {
 			row.createCell(4).setCellValue("办公电话");
 			row.createCell(5).setCellValue("性别");
 			row.createCell(6).setCellValue("邮件");
+			if(ListTools.isNotEmpty(allPersonAttributeList)){
+				for(int n = 0; n < allPersonAttributeList.size(); n++){
+					row.createCell(6+n+1).setCellValue("("+allPersonAttributeList.get(n)+")");
+				}
+			}
 
 			for (int i = 0; i < personList.size(); i++) {
 				person = personList.get(i);
@@ -288,6 +318,20 @@ public class ActionExportAll extends BaseAction {
 				row.createCell(4).setCellValue(person.getOfficePhone());
 				row.createCell(5).setCellValue(Objects.toString(person.getGenderType(),""));
 				row.createCell(6).setCellValue(person.getMail());
+				List<PersonAttribute> os= this.listAttributeWithPerson(business,person.getId());
+				if(ListTools.isNotEmpty(allPersonAttributeList) && ListTools.isNotEmpty(os)){
+					for(int m = 0; m < allPersonAttributeList.size(); m++){
+						String pName = allPersonAttributeList.get(m);
+						String pValue = "";
+						for(PersonAttribute o : os){
+							if(pName.equals(o.getName())){
+								//pValue = o.getAttributeList().toString();
+								pValue = String.join(",", o.getAttributeList().stream().map(String::valueOf).collect(Collectors.toList()));
+							}
+						}
+						row.createCell(6+m+1).setCellValue(pValue);
+					}
+				}
 			}
 		}
 	}
@@ -304,8 +348,7 @@ public class ActionExportAll extends BaseAction {
 			row = sheet.createRow(0);
 			row.createCell(0).setCellValue("人员唯一编码 *");
 			row.createCell(1).setCellValue("组织唯一编码 *");
-			row.createCell(2).setCellValue("职务编号");
-			row.createCell(3).setCellValue("主兼职");
+			row.createCell(2).setCellValue("主兼职");
 
 			for (int i = 0; i < identityList.size(); i++) {
 				identity = identityList.get(i);
@@ -315,22 +358,21 @@ public class ActionExportAll extends BaseAction {
 				if(person != null){
 					row.createCell(0).setCellValue(person.getUnique());
 					if(unit != null){
-						String iduty = "";
+						List<String> idutyList = new ArrayList<>();
 						String unitId = "";
 						unitId = unit.getId();
 						row.createCell(1).setCellValue(unit.getUnique());
-						List<UnitDuty> unitDutyList =  this.listDutyWithIdentity(business,identity.getId());
+						/*List<UnitDuty> unitDutyList =  this.listDutyWithIdentity(business,identity.getId());
 						
 						if(ListTools.isNotEmpty(unitDutyList)){
 							for(UnitDuty duty :unitDutyList){
-								if(unitId.equals(duty.getUnit())){
-									iduty = duty.getUnique();
-								}
+								//if(unitId.equals(duty.getUnit())){
+								idutyList.add(duty.getUnique());
+								//}
 							}
-							
 						}
-						row.createCell(2).setCellValue(iduty);
-						row.createCell(3).setCellValue(String.valueOf(identity.getMajor()));
+						row.createCell(2).setCellValue(StringUtils.join(idutyList.toArray(), "#"));*/
+						row.createCell(2).setCellValue(String.valueOf(identity.getMajor()));
 					}
 				}	
 				
@@ -340,24 +382,64 @@ public class ActionExportAll extends BaseAction {
 	
 	private void composeDuty(Business business, String sheetName, List<UnitDuty> dutyList) throws Exception {
 		UnitDuty duty = null;
-		
+		EntityManagerContainer emc = business.entityManagerContainer();
 		Row row = null;
 		if (ListTools.isNotEmpty(dutyList) ) {
 			// 创建新的表格
 			Sheet sheet = wb.createSheet(sheetName);
-			
 			// 先创建表头
 			row = sheet.createRow(0);
-			row.createCell(0).setCellValue("职务编号 *");
-			row.createCell(1).setCellValue("职务名称 *");
+			row.createCell(0).setCellValue("职务名称 *");
+			row.createCell(1).setCellValue("职务所在组织唯一编码 *");
 			row.createCell(2).setCellValue("职务描述");
-
+			row.createCell(3).setCellValue("职务所含人员唯一编码");
+			row.createCell(4).setCellValue("职务所含人员所在组织唯一编码");
+			int currentRow = 0;
 			for (int i = 0; i < dutyList.size(); i++) {
 				duty = dutyList.get(i);
-				row = sheet.createRow(i + 1);
-				row.createCell(0).setCellValue(duty.getUnique());
-				row.createCell(1).setCellValue(duty.getName());
-				row.createCell(2).setCellValue(duty.getDescription());
+				Unit unit = emc.flag(duty.getUnit(), Unit.class);
+				List<String> identityList = duty.getIdentityList();
+				if (ListTools.isNotEmpty(identityList)) {
+					for (int j = 0; j < identityList.size(); j++) {
+						String identityId = identityList.get(j);
+						Identity identity = emc.flag(identityId, Identity.class);
+						if (identity != null) {
+							currentRow = currentRow+1;
+							row = sheet.createRow(currentRow);
+							row.createCell(0).setCellValue(duty.getName());
+							if (unit != null) {
+								row.createCell(1).setCellValue(unit.getUnique());
+							} else {
+								row.createCell(1).setCellValue("");
+							}
+							row.createCell(2).setCellValue(duty.getDescription());
+							Person iperson = emc.flag(identity.getPerson(), Person.class);
+							Unit iunit = emc.flag(identity.getUnit(), Unit.class);
+							if (iperson != null) {
+								row.createCell(3).setCellValue(iperson.getUnique());
+							} else {
+								row.createCell(3).setCellValue("");
+							}
+							if (iunit != null) {
+								row.createCell(4).setCellValue(iunit.getUnique());
+							} else {
+								row.createCell(4).setCellValue("");
+							}
+						}
+					}
+				} else {
+					currentRow = currentRow+1;
+					row = sheet.createRow(currentRow);
+					row.createCell(0).setCellValue(duty.getName());
+					if (unit != null) {
+						row.createCell(1).setCellValue(unit.getUnique());
+					} else {
+						row.createCell(1).setCellValue("");
+					}
+					row.createCell(2).setCellValue(duty.getDescription());
+					row.createCell(3).setCellValue("");
+					row.createCell(4).setCellValue("");
+				}
 			}
 		}
 	}
@@ -388,10 +470,6 @@ public class ActionExportAll extends BaseAction {
 				List<String> groupsList = group.getGroupList();
 				List<String> identityList = group.getIdentityList();
 
-				System.out.println("personList="+personList.size());
-				System.out.println("unitList="+unitList.size());
-				System.out.println("groupsList="+groupsList.size());
-				System.out.println("identityList="+identityList.size());
 				if(ListTools.isEmpty(personList) && ListTools.isEmpty(unitList) && ListTools.isEmpty(groupsList)){
 					forNumber = forNumber+1;
 					row = sheet.createRow(forNumber);
@@ -490,6 +568,11 @@ public class ActionExportAll extends BaseAction {
 		Predicate p = cb.isMember(identityId, root.get(UnitDuty_.identityList));
 		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		return os;
+	}
+	private List<UnitAttribute> ListUnitAttributes(String path , String unitId) throws Exception{
+		ActionResponse resp =  ThisApplication.context().applications()
+				.getQuery(x_organization_assemble_control.class, path+unitId);
+		return resp.getDataAsList(UnitAttribute.class);
 	}
 
 	public static class Wo extends WoFile {
