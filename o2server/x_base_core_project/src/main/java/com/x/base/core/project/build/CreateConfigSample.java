@@ -55,8 +55,9 @@ public class CreateConfigSample {
 		classes.add(WeLink.class);
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
+		classes.add(Organization.class);
 		classes.add(Cache.class);
-		//classes.add(Web.class);
+		// classes.add(Web.class);
 
 		Collections.sort(classes, new Comparator<Class<?>>() {
 			public int compare(Class<?> c1, Class<?> c2) {
