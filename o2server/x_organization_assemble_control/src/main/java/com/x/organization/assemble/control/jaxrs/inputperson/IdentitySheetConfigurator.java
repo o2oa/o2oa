@@ -27,7 +27,6 @@ public class IdentitySheetConfigurator extends GsonPropertyObject {
 
 	private Integer uniqueColumn;
 	private Integer unitCodeColumn;
-	private Integer dutyCodeColumn;
 	private Integer majorColumn;
 
 	private Map<String, Integer> attributes = new HashMap<>();
@@ -42,15 +41,12 @@ public class IdentitySheetConfigurator extends GsonPropertyObject {
 			Cell cell = row.getCell(i);
 			if (null != cell) {
 				String str = this.getCellStringValue(cell);
-				System.out.println("identityStr = "+str);
 				if (StringUtils.isNotEmpty(str)) {
 					if (uniqueItems.contains(str)) {
 						this.uniqueColumn = i;
 					} else if (unitCodeItems.contains(str)) {
 						this.unitCodeColumn = i;
-					} else if (dutyCodeItems.contains(str)) {
-						this.dutyCodeColumn = i;
-					} else if (majorItems.contains(str)) {
+					}  else if (majorItems.contains(str)) {
 						this.majorColumn = i;
 					} else {
 						Matcher matcher = attributePattern.matcher(str);
@@ -66,7 +62,6 @@ public class IdentitySheetConfigurator extends GsonPropertyObject {
 
 	private static List<String> uniqueItems = Arrays.asList(new String[] { "人员唯一编码 *", "员工账号 *", "unique" });
 	private static List<String> unitCodeItems = Arrays.asList(new String[] { "组织编号 *", "组织唯一编码 *", "unitCode" });
-	private static List<String> dutyCodeItems = Arrays.asList(new String[] { "职务编号", "dutyCode"});
 	private static List<String> majorItems = Arrays.asList(new String[] { "主兼职","major" });
 
 	public String getCellStringValue(Cell cell) {
@@ -107,10 +102,6 @@ public class IdentitySheetConfigurator extends GsonPropertyObject {
 		return unitCodeColumn;
 	}
 
-	public Integer getDutyCodeColumn() {
-		return dutyCodeColumn;
-	}
-	
 	public Integer getMajorColumn() {
 		return majorColumn;
 	}
