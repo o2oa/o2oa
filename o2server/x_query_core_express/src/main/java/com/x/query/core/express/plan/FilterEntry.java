@@ -630,7 +630,7 @@ public class FilterEntry extends GsonPropertyObject {
 
 	public Predicate toCmsDocumentPredicate(CriteriaBuilder cb, Root<Document> root, Runtime runtime, String paramName)
 			throws Exception {
-		Predicate p = cb.disjunction();
+		Predicate p = cb.conjunction();
 		String compareValue = this.compareValue(runtime);
 		String compareOtherValue = this.compareOtherValue(runtime);
 		if (StringUtils.equals(this.formatType, FORMAT_BOOLEANVALUE)) {
