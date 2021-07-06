@@ -45,7 +45,6 @@ public class PersonSheetConfigurator extends GsonPropertyObject {
 			Cell cell = row.getCell(i);
 			if (null != cell) {
 				String str = this.getCellStringValue(cell);
-				System.out.println("personStr = "+str);
 				if (StringUtils.isNotEmpty(str)) {
 					if (nameItems.contains(str)) {
 						this.nameColumn = i;

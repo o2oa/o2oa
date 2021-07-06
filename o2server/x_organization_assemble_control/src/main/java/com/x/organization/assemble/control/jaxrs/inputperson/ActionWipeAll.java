@@ -15,16 +15,7 @@ import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.ThisApplication;
-import com.x.organization.core.entity.Group;
-import com.x.organization.core.entity.Group_;
-import com.x.organization.core.entity.Identity;
-import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.PersonAttribute;
-import com.x.organization.core.entity.PersonAttribute_;
-import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.UnitDuty;
-import com.x.organization.core.entity.UnitDuty_;
-import com.x.organization.core.entity.Unit_;
+import com.x.organization.core.entity.*;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
@@ -44,7 +35,9 @@ public class ActionWipeAll extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger(ActionWipeAll.class);
 	List<Unit> allUnitList = new ArrayList<>();
+	List<UnitAttribute> allUnitAttributeList = new ArrayList<>();
 	List<Person> allPersonList = new ArrayList<>();
+	List<PersonAttribute> allPersonAttributeList = new ArrayList<>();
 	List<Identity> allIdentityList = new ArrayList<>();
 	List<UnitDuty> allDutyList = new ArrayList<>();
 	List<Group> allGroupList = new ArrayList<>();
@@ -56,10 +49,12 @@ public class ActionWipeAll extends BaseAction {
 		
 		// 先获取需要删除的数据
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			System.out.println("开始删除人员组织所有数据--------start");
+			logger.info("开始删除人员组织所有数据--------start");
 			 business = new Business(emc);
 			this.listUnit(business);
 			this.listPerson(business);
+			this.listUnitAttribute(business);
+			this.listPersonAttribute(business);
 			this.listIdentity(business);
 			this.listDuty(business);
 			this.listGroup(business);
@@ -69,26 +64,34 @@ public class ActionWipeAll extends BaseAction {
 			emc.beginTransaction( Identity.class );
 			emc.beginTransaction( Person.class );
 			//emc.beginTransaction( Unit.class );
-			System.out.println("开始删除职务--------");
+			logger.info("开始删除职务--------");
 			this.deleteDutys(emc,business);
-			System.out.println("开始删除群组--------");
+			logger.info("开始删除群组--------");
 			this.deleteGroups(emc,business);
-			System.out.println("开始删除身份--------");
+			logger.info("开始删除身份--------");
 			this.deleteIdentitys(emc,business);
-			System.out.println("开始删除人员--------");
+
+			logger.info("开始删除人员属性--------");
+			this.deletePersonAttributes(emc,business);
+			logger.info("开始删除组织属性--------");
+			this.deleteUnitAttributes(emc,business);
+
+			logger.info("开始删除人员--------");
 			this.deletePersons(emc,business);
-			System.out.println("开始删除组织--------");
+			logger.info("开始删除组织--------");
 			this.deleteUnits(emc,business);
 			emc.commit();
 
 			CacheManager.notify(UnitDuty.class);
 			CacheManager.notify(Group.class);
 			CacheManager.notify(Identity.class);
+			CacheManager.notify(PersonAttribute.class);
+			CacheManager.notify(UnitAttribute.class);
 			CacheManager.notify(Person.class);
 			CacheManager.notify(Unit.class);
 			
 			wo.setFlag("清空人员数据成功");
-			System.out.println("开始删除人员组织所有数据--------end");
+			logger.info("开始删除人员组织所有数据--------end");
 		} catch (Exception e) {
 			logger.info("系统在查询所有组织人员信息时发生异常。" );
 			wo.setFlag("清空人员数据失败");
@@ -118,6 +121,13 @@ public class ActionWipeAll extends BaseAction {
 			allUnitList = allUnitList.stream().sorted(Comparator.comparing(Unit::getLevel).reversed()).collect(Collectors.toList());
 		}
 	}
+	private void listUnitAttribute(Business business) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(UnitAttribute.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<UnitAttribute> cq = cb.createQuery(UnitAttribute.class);
+		Root<UnitAttribute> root = cq.from(UnitAttribute.class);
+		allUnitAttributeList = em.createQuery(cq.select(root)).getResultList();
+	}
 	
 	private void listPerson(Business business) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Person.class);
@@ -125,6 +135,13 @@ public class ActionWipeAll extends BaseAction {
 		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 		Root<Person> root = cq.from(Person.class);
 		allPersonList = em.createQuery(cq.select(root)).getResultList();
+	}
+	private void listPersonAttribute(Business business) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(PersonAttribute.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<PersonAttribute> cq = cb.createQuery(PersonAttribute.class);
+		Root<PersonAttribute> root = cq.from(PersonAttribute.class);
+		allPersonAttributeList = em.createQuery(cq.select(root)).getResultList();
 	}
 	
 	private void listIdentity(Business business) throws Exception {
@@ -164,6 +181,26 @@ public class ActionWipeAll extends BaseAction {
 	private List<Unit> listSubNested(Business business,Unit unit) throws Exception {
 		List<Unit> os = business.unit().listSubNestedObject(unit);
 		return os;
+	}
+	private void deletePersonAttributes(EntityManagerContainer emc,Business business) throws Exception{
+		if(ListTools.isNotEmpty(allPersonAttributeList)){
+			for(PersonAttribute pa : allPersonAttributeList){
+				business.entityManagerContainer().beginTransaction(PersonAttribute.class);
+				business.entityManagerContainer().remove(pa, CheckRemoveType.all);
+			}
+			business.entityManagerContainer().commit();
+		}
+
+	}
+	private void deleteUnitAttributes(EntityManagerContainer emc,Business business) throws Exception{
+		if(ListTools.isNotEmpty(allUnitAttributeList)){
+			for(UnitAttribute ua : allUnitAttributeList){
+				business.entityManagerContainer().beginTransaction(UnitAttribute.class);
+				business.entityManagerContainer().remove(ua, CheckRemoveType.all);
+			}
+			business.entityManagerContainer().commit();
+		}
+
 	}
 	
 	private void deleteUnits(EntityManagerContainer emc,Business business) throws Exception{
