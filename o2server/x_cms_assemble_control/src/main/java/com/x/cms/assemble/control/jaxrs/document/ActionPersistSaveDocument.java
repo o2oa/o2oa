@@ -426,6 +426,15 @@ public class ActionPersistSaveDocument extends BaseAction {
 		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置），非必填" )
 		private Boolean skipPermission  = false;
 
+		@FieldDescribe("业务数据String值01.")
+		private String stringValue01;
+
+		@FieldDescribe("业务数据String值02.")
+		private String stringValue02;
+
+		@FieldDescribe("业务数据String值03.")
+		private String stringValue03;
+
 		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodifyExcludeId);
 
 		public String getId() {
@@ -565,6 +574,30 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		public void setPublishTime(Date publishTime) {
 			this.publishTime = publishTime;
+		}
+
+		public String getStringValue01() {
+			return stringValue01;
+		}
+
+		public void setStringValue01(String stringValue01) {
+			this.stringValue01 = stringValue01;
+		}
+
+		public String getStringValue02() {
+			return stringValue02;
+		}
+
+		public void setStringValue02(String stringValue02) {
+			this.stringValue02 = stringValue02;
+		}
+
+		public String getStringValue03() {
+			return stringValue03;
+		}
+
+		public void setStringValue03(String stringValue03) {
+			this.stringValue03 = stringValue03;
 		}
 	}
 
