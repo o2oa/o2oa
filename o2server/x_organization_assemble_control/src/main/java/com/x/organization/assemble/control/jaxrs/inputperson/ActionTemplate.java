@@ -122,8 +122,6 @@ public class ActionTemplate extends BaseAction {
 		cell = row.createCell(1);
 		cell.setCellValue("组织唯一编码 *");
 		cell = row.createCell(2);
-		cell.setCellValue("职务编号");
-		cell = row.createCell(3);
 		cell.setCellValue("主兼职");
 		CellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setWrapText(true);
@@ -136,11 +134,15 @@ public class ActionTemplate extends BaseAction {
 		XSSFSheet sheet = workbook.createSheet("职务信息");
 		Row row = sheet.createRow(0);
 		Cell cell = row.createCell(0);
-		cell.setCellValue("职务编号 *");
-		cell = row.createCell(1);
 		cell.setCellValue("职务名称 *");
+		cell = row.createCell(1);
+		cell.setCellValue("职务所在组织唯一编码 *");
 		cell = row.createCell(2);
 		cell.setCellValue("职务描述");
+		cell = row.createCell(3);
+		cell.setCellValue("职务所含人员唯一编码");
+		cell = row.createCell(4);
+		cell.setCellValue("职务所含人员所在组织唯一编码");
 		CellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setWrapText(true);
 		IntStream.rangeClosed(0, 6).forEach(i -> {

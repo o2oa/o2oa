@@ -13,7 +13,6 @@ public class IdentityItem extends GsonPropertyObject {
 	
 	private String personCode;
 	private String unitCode;
-	private String dutyCode;
 	private Boolean major;
 	
 
@@ -81,14 +80,6 @@ public class IdentityItem extends GsonPropertyObject {
 
 	public void setUnitCode(String unitCode) {
 		this.unitCode = unitCode;
-	}
-	
-	public String getDutyCode() {
-		return dutyCode;
-	}
-
-	public void setDutyCode(String dutyCode) {
-		this.dutyCode = dutyCode;
 	}
 
 	public Boolean getMajor() {
