@@ -1,5 +1,6 @@
 package com.x.query.core.express.plan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -267,11 +268,11 @@ public class CmsPlan extends Plan {
 		private Predicate documentPredicate(CriteriaBuilder cb, Root<Document> root, Runtime runtime,
 				List<FilterEntry> filterList) throws Exception {
 			List<Predicate> ps = new TreeList<>();
-			ps.add(this.documentPredicate_creator(cb, root));
+			//ps.add(this.documentPredicate_creator(cb, root));
 			ps.add(this.documentPredicate_appInfo(cb, root));
-			ps.add(this.documentPredicate_date(cb, root));
+			//ps.add(this.documentPredicate_date(cb, root));
 			ps.add(this.documentPredicate_Filter(cb, root, runtime, filterList));
-			ps.add(this.documentPredicate_draft(cb, root));
+			//ps.add(this.documentPredicate_draft(cb, root));
 
 			Predicate predicate = this.documentPredicate_typeScope(cb, root);
 			if (predicate != null) {
@@ -386,12 +387,21 @@ public class CmsPlan extends Plan {
 		private Predicate documentPredicate_Filter(CriteriaBuilder cb, Root<Document> root, Runtime runtime,
 				List<FilterEntry> filterList) throws Exception {
 			boolean flag = true;
+			boolean orFlag = false;
+			boolean andFlag = false;
+			Predicate rp = cb.conjunction();
 			Predicate p = cb.disjunction();
-			for (FilterEntry filterEntry : filterList) {
+			List<FilterEntry> list = new ArrayList<>();
+			list.addAll(filterList);
+			if(runtime.filterList!=null){
+				list.addAll(runtime.filterList);
+			}
+			for (FilterEntry filterEntry : list) {
 				if (filterEntry.path.indexOf("(") > -1 && filterEntry.path.indexOf(")") > -1) {
 					flag = false;
 					String path = StringUtils.substringBetween(filterEntry.path, "(", ")").trim();
 					if ("readPersonList".equals(path)) {
+						orFlag = true;
 						p = cb.or(p, cb.isMember("所有人", root.get(Document_.readPersonList)));
 						p = cb.or(p, cb.isMember(runtime.person, root.get(Document_.readPersonList)));
 						if (runtime.person.indexOf("@") > -1) {
@@ -399,18 +409,22 @@ public class CmsPlan extends Plan {
 									root.get(Document_.readPersonList)));
 						}
 					} else if ("readUnitList".equals(path)) {
+						orFlag = true;
 						if (ListTools.isNotEmpty(runtime.unitAllList)) {
 							p = cb.or(p, root.get(Document_.readUnitList).in(runtime.unitAllList));
 						}
 					} else if ("readGroupList".equals(path)) {
+						orFlag = true;
 						if (ListTools.isNotEmpty(runtime.groupList)) {
 							p = cb.or(p, root.get(Document_.readGroupList).in(runtime.groupList));
 						}
 					} else {
 						Predicate fp = filterEntry.toCmsDocumentPredicate(cb, root, runtime, path);
-						if (StringUtils.equals("and", filterEntry.logic)) {
-							p = cb.and(p, fp);
+						if (Comparison.isEquals(filterEntry.logic)) {
+							andFlag = true;
+							rp = cb.and(rp, fp);
 						} else {
+							orFlag = true;
 							p = cb.or(p, fp);
 						}
 					}
@@ -419,8 +433,14 @@ public class CmsPlan extends Plan {
 			if (flag) {
 				return null;
 			}
-			return p;
-
+			if(andFlag){
+				if(orFlag){
+					rp = cb.and(rp, p);
+				}
+			}else{
+				rp = p;
+			}
+			return rp;
 		}
 	}
 }
