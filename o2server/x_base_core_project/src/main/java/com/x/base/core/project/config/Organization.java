@@ -3,6 +3,7 @@ package com.x.base.core.project.config;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -14,7 +15,8 @@ public class Organization extends ConfigObject {
 
 	private static final long serialVersionUID = -2193428649985413384L;
 
-	public final static Integer DEFAULT_UNITLEVELORDERNUMBERDIGITS = 10;
+	public static final Integer DEFAULT_UNITLEVELORDERNUMBERDIGITS = 10;
+	public static final Boolean DEFAULT_PICKPERSONWITHNAME = false;
 
 	public static Organization defaultInstance() {
 		return new Organization();
@@ -23,9 +25,16 @@ public class Organization extends ConfigObject {
 	@FieldDescribe("unit中unitLevelOrderNumber扩充位数,<=0不扩充.")
 	private Integer unitLevelOrderNumberDigits = DEFAULT_UNITLEVELORDERNUMBERDIGITS;
 
+	@FieldDescribe("人员识别过程中过程为先查找 distinguishedName 再查找中间的 unique 如果还是没有查找到是否要通过那么进行查找.")
+	private Boolean pickPersonWithName = DEFAULT_PICKPERSONWITHNAME;
+
 	public Integer getUnitLevelOrderNumberDigits() {
 		return NumberTools.nullOrLessThan(this.unitLevelOrderNumberDigits, 1) ? DEFAULT_UNITLEVELORDERNUMBERDIGITS
 				: this.unitLevelOrderNumberDigits;
+	}
+
+	public Boolean getPickPersonWithName() {
+		return BooleanUtils.isTrue(this.pickPersonWithName);
 	}
 
 	public void save() throws Exception {
