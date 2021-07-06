@@ -1,0 +1,8 @@
+{
+  "unitLevelOrderNumberDigits": 10.0,
+  "pickPersonWithName": false,
+  "pickIdentityWithName": false,
+  "###unitLevelOrderNumberDigits": "unit中unitLevelOrderNumber扩充位数,\u003c\u003d0不扩充.###",
+  "###pickPersonWithName": "人员识别过程中过程为先查找 distinguishedName 再查找中间的 unique 如果还是没有查找到是否要通过那么进行查找.###",
+  "###pickIdentityWithName": "身份识别过程中过程为先查找 distinguishedName 再查找中间的 unique 如果还是没有查找到是否要通过那么进行查找.###"
+}
