@@ -37,6 +37,7 @@ import com.x.organization.core.entity.*;
 
 class ActionDelete extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
@@ -90,12 +91,19 @@ class ActionDelete extends BaseAction {
 				emc.remove(person, CheckRemoveType.all);
 				emc.commit();
 				CacheManager.notify(Person.class);
+				CacheManager.notify(Identity.class);
+				CacheManager.notify(Unit.class);
+				CacheManager.notify(UnitDuty.class);
+				CacheManager.notify(PersonAttribute.class);
+				CacheManager.notify(Custom.class);
+				CacheManager.notify(Group.class);
+				CacheManager.notify(Role.class);
 				/** 通知x_collect_service_transmit同步数据到collect */
 				business.instrument().collect().person();
 
-				/**创建 组织变更org消息通信 */
-				//createMessageCommunicate(person,  effectivePerson);
-				OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
+				/** 创建 组织变更org消息通信 */
+				// createMessageCommunicate(person, effectivePerson);
+				OrgMessageFactory orgMessageFactory = new OrgMessageFactory();
 				orgMessageFactory.createMessageCommunicate("delete", "person", person, effectivePerson);
 
 				Wo wo = new Wo();
@@ -127,7 +135,8 @@ class ActionDelete extends BaseAction {
 		CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 		Root<UnitDuty> root = cq.from(UnitDuty.class);
 		Predicate p = root.get(UnitDuty_.identityList).in(ids);
-		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
+		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
 		for (UnitDuty o : os) {
 			o.getIdentityList().removeAll(ids);
 		}
@@ -139,11 +148,13 @@ class ActionDelete extends BaseAction {
 		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 		Root<Unit> root = cq.from(Unit.class);
 		Predicate p = cb.isMember(person.getId(), root.get(Unit_.controllerList));
-		//p = cb.or(cb.isMember(person.getId(), root.get(Unit_.inheritedControllerList)));
-		List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
+		// p = cb.or(cb.isMember(person.getId(),
+		// root.get(Unit_.inheritedControllerList)));
+		List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
 		for (Unit o : os) {
 			o.getControllerList().remove(person.getId());
-			//o.getInheritedControllerList().remove(person.getId());
+			// o.getInheritedControllerList().remove(person.getId());
 		}
 	}
 
@@ -153,7 +164,8 @@ class ActionDelete extends BaseAction {
 		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.isMember(person.getId(), root.get(Person_.controllerList));
-		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
+		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
 		for (Person o : os) {
 			o.getControllerList().remove(person.getId());
 		}
@@ -220,9 +232,9 @@ class ActionDelete extends BaseAction {
 		}
 	}
 
-	/**创建 组织变更org消息通信 */
+	/** 创建 组织变更org消息通信 */
 	private boolean createMessageCommunicate(Person person, EffectivePerson effectivePerson) {
-		try{
+		try {
 			Gson gson = new Gson();
 			String strPerson = gson.toJson(person);
 			OrgMessage orgMessage = new OrgMessage();
@@ -237,23 +249,24 @@ class ActionDelete extends BaseAction {
 
 			OrgBodyMessage orgBodyMessage = new OrgBodyMessage();
 			orgBodyMessage.setOriginalData(strPerson);
-			orgMessage.setBody( gson.toJson(orgBodyMessage));
+			orgMessage.setBody(gson.toJson(orgBodyMessage));
 
 			Applications applications = new Applications();
-			String path ="org/create";
-		     //String address = "http://127.0.0.1:20020/x_message_assemble_communicate/jaxrs/org/create";
-		     //ActionResponse resp = CipherConnectionAction.post(false, address, body);
+			String path = "org/create";
+			// String address =
+			// "http://127.0.0.1:20020/x_message_assemble_communicate/jaxrs/org/create";
+			// ActionResponse resp = CipherConnectionAction.post(false, address, body);
 
-			ActionResponse resp =  ThisApplication.context().applications()
-						.postQuery(x_message_assemble_communicate.class, path, orgMessage);
+			ActionResponse resp = ThisApplication.context().applications()
+					.postQuery(x_message_assemble_communicate.class, path, orgMessage);
 
 			String mess = resp.getMessage();
 			String data = resp.getData().toString();
 			return true;
-			}catch(Exception e) {
-				logger.print(e.toString());
-				return false;
-			}
+		} catch (Exception e) {
+			logger.print(e.toString());
+			return false;
+		}
 	}
 
 }
