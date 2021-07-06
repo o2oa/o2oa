@@ -70,7 +70,7 @@ public class IdentityFactory extends AbstractFactory {
 					this.entityManagerContainer().get(Identity.class).detach(o);
 				}
 			}
-			if (null == o) {
+			if ((null == o) && BooleanUtils.isTrue(Config.organization().getPickIdentityWithName())) {
 				EntityManager em = this.entityManagerContainer().get(Identity.class);
 				CriteriaBuilder cb = em.getCriteriaBuilder();
 				CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
