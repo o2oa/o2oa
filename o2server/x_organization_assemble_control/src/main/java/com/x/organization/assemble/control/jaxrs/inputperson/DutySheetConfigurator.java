@@ -26,8 +26,10 @@ public class DutySheetConfigurator extends GsonPropertyObject {
 	private Integer lastRow;
 
 	private Integer nameColumn;
-	private Integer uniqueColumn;
+	private Integer iunitColumn;
 	private Integer descriptionColumn;
+	private Integer unitColumn;
+	private Integer ipersonColumn;
 
 	private Map<String, Integer> attributes = new HashMap<>();
 
@@ -43,13 +45,17 @@ public class DutySheetConfigurator extends GsonPropertyObject {
 				String str = this.getCellStringValue(cell);
 				//System.out.println("str="+str+"----i="+i);
 				if (StringUtils.isNotEmpty(str)) {
-					if (uniqueItems.contains(str)) {
-						this.uniqueColumn = i;
+					if (iunitItems.contains(str)) {
+						this.iunitColumn = i;
 					} else if (nameItems.contains(str)) {
 						this.nameColumn = i;
 					}else if (descriptionItems.contains(str)) {
 						this.descriptionColumn = i;
-					} else {
+					}else if(unitItems.contains(str)){
+						this.unitColumn = i;
+					}else if(ipersonItems.contains(str)){
+						this.ipersonColumn = i;
+					}else {
 						Matcher matcher = attributePattern.matcher(str);
 						if (matcher.matches()) {
 							String attribute = matcher.group(1);
@@ -61,9 +67,11 @@ public class DutySheetConfigurator extends GsonPropertyObject {
 		}
 	}
 
-	private static List<String> uniqueItems = Arrays.asList(new String[] { "职务编号 *",  "unique" });
 	private static List<String> nameItems = Arrays.asList(new String[] { "职务名称 *", "name" });
+	private static List<String> unitItems = Arrays.asList(new String[] { "职务所在组织唯一编码 *", "unit" });
 	private static List<String> descriptionItems = Arrays.asList(new String[] { "描述","职务描述", "description" });
+	private static List<String> ipersonItems = Arrays.asList(new String[] { "职务所含人员唯一编码", "iperson" });
+	private static List<String> iunitItems = Arrays.asList(new String[] { "职务所含人员所在组织唯一编码",  "iunit" });
 
 	public String getCellStringValue(Cell cell) {
 		if (null != cell) {
@@ -95,12 +103,20 @@ public class DutySheetConfigurator extends GsonPropertyObject {
 		return memoColumn;
 	}
 
-	public Integer getUniqueColumn() {
-		return uniqueColumn;
+	public Integer getIunitColumn() {
+		return iunitColumn;
 	}
 
 	public Integer getNameColumn() {
 		return nameColumn;
+	}
+
+	public Integer getUnitColumn() {
+		return unitColumn;
+	}
+
+	public Integer getIpersonColumn() {
+		return ipersonColumn;
 	}
 
 	public Map<String, Integer> getAttributes() {
