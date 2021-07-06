@@ -13,12 +13,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.AbstractFactory;
 import com.x.organization.assemble.express.Business;
@@ -69,7 +71,7 @@ public class PersonFactory extends AbstractFactory {
 					this.entityManagerContainer().get(Person.class).detach(o);
 				}
 			}
-			if (null == o) {
+			if ((null == o) && BooleanUtils.isTrue(Config.organization().getPickPersonWithName())) {
 				EntityManager em = this.entityManagerContainer().get(Person.class);
 				CriteriaBuilder cb = em.getCriteriaBuilder();
 				CriteriaQuery<Person> cq = cb.createQuery(Person.class);
@@ -169,8 +171,8 @@ public class PersonFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.equal(root.get(Person_.superior), person.getId());
-		list = em.createQuery(cq.select(root.get(Person_.id)).where(p))
-				.getResultList().stream().distinct().collect(Collectors.toList());
+		list = em.createQuery(cq.select(root.get(Person_.id)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
 		return list;
 	}
 
