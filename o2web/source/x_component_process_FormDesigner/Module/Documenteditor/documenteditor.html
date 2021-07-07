@@ -178,12 +178,19 @@
 					<td class="editTableTitle">{{$.lp.fileSite}}:</td>
 					<td class="editTableValue"><input type="text" name="toWordSite" value="text{$.toWordSite || '$doc'}" class="editTableInput"/></td>
 				</tr>
+<!--				<tr>-->
+<!--					<td class="editTableTitle">{{$.lp.addPageNumber}}:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" name="toWordPageNumber" text{($.toWordPageNumber=='y')?'checked':''} type="radio" value="y"/>{{$.lp.yes}}-->
+<!--						<input class="editTableRadio" name="toWordPageNumber" text{($.toWordPageNumber!='y')?'checked':''} type="radio" value="n"/>{{$.lp.no}}-->
+<!--						<div>{{$.lp.addPageNumberInfo}}</div>-->
+<!--					</td>-->
+<!--				</tr>-->
 				<tr>
-					<td class="editTableTitle">{{$.lp.addPageNumber}}:</td>
+					<td class="editTableTitle">{{$.lp.isConversionSeal}}:</td>
 					<td class="editTableValue">
-						<input class="editTableRadio" name="toWordPageNumber" text{($.toWordPageNumber=='y')?'checked':''} type="radio" value="y"/>{{$.lp.yes}}
-						<input class="editTableRadio" name="toWordPageNumber" text{($.toWordPageNumber!='y')?'checked':''} type="radio" value="n"/>{{$.lp.no}}
-						<div>{{$.lp.addPageNumberInfo}}</div>
+						<input class="editTableRadio" name="toWordSeal" text{($.toWordSeal!='n')?'checked':''} type="radio" value="y"/>{{$.lp.yes}}
+						<input class="editTableRadio" name="toWordSeal" text{($.toWordSeal=='n')?'checked':''} type="radio" value="n"/>{{$.lp.no}}
 					</td>
 				</tr>
 				<tr>
