@@ -778,6 +778,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "fullScreenInfo": "是否允许全屏显示",
         "wordConversion": "WORD转换",
         "wordConversionType": "转换方式",
+        "isConversionSeal": "转换印章",
         "wordConversionWithService": "使用服务",
         "fileName": "文件名",
         "fileSite": "附件site",
