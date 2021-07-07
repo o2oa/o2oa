@@ -15,6 +15,7 @@ import com.x.cms.core.entity.Review_;
 import com.x.cms.core.express.tools.CriteriaBuilderTools;
 import com.x.cms.core.express.tools.filter.QueryFilter;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -431,7 +432,7 @@ public class DocumentFactory extends AbstractFactory {
 	 * @throws NoSuchFieldException
 	 */
 	public List<Document> listPagingWithCondition( String personName, String orderField, String orderType, QueryFilter queryFilter, Integer adjustPage,
-												   Integer adjustPageSize ) throws Exception {
+												   Integer adjustPageSize, Boolean isAuthor) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		EntityManager em1 = this.entityManagerContainer().get( Review.class );
@@ -442,16 +443,50 @@ public class DocumentFactory extends AbstractFactory {
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
 
 		if(StringUtils.isNotBlank(personName)){
-			Subquery<Review> subquery = cq.subquery(Review.class);
-			Root<Review> root2 = subquery.from(em1.getMetamodel().entity(Review.class));
-			subquery.select(root2);
-			Predicate p_permission = cb1.conjunction();
-			p_permission = cb1.and(p_permission,
-					cb1.or(cb1.equal( root2.get( Review_.permissionObj), "*"),
-							cb1.equal( root2.get( Review_.permissionObj ), personName )));
-			p_permission = cb1.and(p_permission, cb1.equal(root.get(Document_.id), root2.get(Review_.docId)));
-			subquery.where(p_permission);
-			p = cb.and(p, cb.exists(subquery));
+			if(!BooleanUtils.isTrue(isAuthor)) {
+				Subquery<Review> subquery = cq.subquery(Review.class);
+				Root<Review> root2 = subquery.from(em1.getMetamodel().entity(Review.class));
+				subquery.select(root2);
+				Predicate p_permission = cb1.conjunction();
+				p_permission = cb1.and(p_permission,
+						cb1.or(cb1.equal(root2.get(Review_.permissionObj), "*"),
+								cb1.equal(root2.get(Review_.permissionObj), personName)));
+				p_permission = cb1.and(p_permission, cb1.equal(root.get(Document_.id), root2.get(Review_.docId)));
+				subquery.where(p_permission);
+				p = cb.and(p, cb.exists(subquery));
+			}else {
+				List<String> list = new ArrayList<>();
+				List<String> unitAllList = this.business().organization().unit().listWithPersonSupNested(personName);
+				if(unitAllList!=null) {
+					for (String item : unitAllList) {
+						if (item.indexOf("@") > -1) {
+							list.add(StringUtils.substringAfter(item, "@"));
+						}
+					}
+					unitAllList.addAll(list);
+					list.clear();
+				}
+				List<String> groupList = this.business().organization().group().listWithPersonReference(
+						ListTools.toList(personName), true, true, true);
+				if(groupList!=null) {
+					for (String item : groupList) {
+						if (item.indexOf("@") > -1) {
+							list.add(StringUtils.substringAfter(item, "@"));
+						}
+					}
+					groupList.addAll(list);
+					list.clear();
+				}
+				Predicate ep = cb.disjunction();
+				ep = cb.or(ep, cb.isMember(personName, root.get(Document_.authorPersonList)));
+				if(ListTools.isNotEmpty(unitAllList)){
+					ep = cb.or(ep, root.get(Document_.authorUnitList).in(unitAllList));
+				}
+				if(ListTools.isNotEmpty(groupList)){
+					ep = cb.or(ep, root.get(Document_.authorGroupList).in(groupList));
+				}
+				p = cb.and(p, ep);
+			}
 		}
 		List<String> fields = DocumentWo.copier.getCopyFields();
 		List<Selection<?>> selections = new ArrayList<>();
@@ -505,7 +540,7 @@ public class DocumentFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public Long countWithCondition( String personName, QueryFilter queryFilter) throws Exception {
+	public Long countWithCondition( String personName, QueryFilter queryFilter, Boolean isAuthor) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		EntityManager em1 = this.entityManagerContainer().get( Review.class );
@@ -515,16 +550,50 @@ public class DocumentFactory extends AbstractFactory {
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
 
 		if(StringUtils.isNotBlank(personName)){
-			Subquery<Review> subquery = cq.subquery(Review.class);
-			Root<Review> root2 = subquery.from(em1.getMetamodel().entity(Review.class));
-			subquery.select(root2);
-			Predicate p_permission = cb1.conjunction();
-			p_permission = cb1.and(p_permission,
-					cb1.or(cb1.equal( root2.get( Review_.permissionObj), "*"),
-							cb1.equal( root2.get( Review_.permissionObj ), personName )));
-			p_permission = cb1.and(p_permission, cb1.equal(root.get(Document_.id), root2.get(Review_.docId)));
-			subquery.where(p_permission);
-			p = cb.and(p, cb.exists(subquery));
+			if(!BooleanUtils.isTrue(isAuthor)) {
+				Subquery<Review> subquery = cq.subquery(Review.class);
+				Root<Review> root2 = subquery.from(em1.getMetamodel().entity(Review.class));
+				subquery.select(root2);
+				Predicate p_permission = cb1.conjunction();
+				p_permission = cb1.and(p_permission,
+						cb1.or(cb1.equal(root2.get(Review_.permissionObj), "*"),
+								cb1.equal(root2.get(Review_.permissionObj), personName)));
+				p_permission = cb1.and(p_permission, cb1.equal(root.get(Document_.id), root2.get(Review_.docId)));
+				subquery.where(p_permission);
+				p = cb.and(p, cb.exists(subquery));
+			}else {
+				List<String> list = new ArrayList<>();
+				List<String> unitAllList = this.business().organization().unit().listWithPersonSupNested(personName);
+				if(unitAllList!=null) {
+					for (String item : unitAllList) {
+						if (item.indexOf("@") > -1) {
+							list.add(StringUtils.substringAfter(item, "@"));
+						}
+					}
+					unitAllList.addAll(list);
+					list.clear();
+				}
+				List<String> groupList = this.business().organization().group().listWithPersonReference(
+						ListTools.toList(personName), true, true, true);
+				if(groupList!=null) {
+					for (String item : groupList) {
+						if (item.indexOf("@") > -1) {
+							list.add(StringUtils.substringAfter(item, "@"));
+						}
+					}
+					groupList.addAll(list);
+					list.clear();
+				}
+				Predicate ep = cb.disjunction();
+				ep = cb.or(ep, cb.isMember(personName, root.get(Document_.authorPersonList)));
+				if(ListTools.isNotEmpty(unitAllList)){
+					ep = cb.or(ep, root.get(Document_.authorUnitList).in(unitAllList));
+				}
+				if(ListTools.isNotEmpty(groupList)){
+					ep = cb.or(ep, root.get(Document_.authorGroupList).in(groupList));
+				}
+				p = cb.and(p, ep);
+			}
 		}
 
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
