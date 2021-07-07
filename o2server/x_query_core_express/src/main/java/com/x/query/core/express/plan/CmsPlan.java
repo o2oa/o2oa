@@ -268,11 +268,12 @@ public class CmsPlan extends Plan {
 		private Predicate documentPredicate(CriteriaBuilder cb, Root<Document> root, Runtime runtime,
 				List<FilterEntry> filterList) throws Exception {
 			List<Predicate> ps = new TreeList<>();
-			//ps.add(this.documentPredicate_creator(cb, root));
+			ps.add(this.documentPredicate_creator(cb, root));
 			ps.add(this.documentPredicate_appInfo(cb, root));
-			//ps.add(this.documentPredicate_date(cb, root));
-			ps.add(this.documentPredicate_Filter(cb, root, runtime, filterList));
-			//ps.add(this.documentPredicate_draft(cb, root));
+			ps.add(this.documentPredicate_date(cb, root));
+			ps.add(this.documentPredicate_Filter_or(cb, root, runtime, filterList));
+			ps.add(this.documentPredicate_Filter_and(cb, root, runtime, filterList));
+			ps.add(this.documentPredicate_draft(cb, root));
 
 			Predicate predicate = this.documentPredicate_typeScope(cb, root);
 			if (predicate != null) {
@@ -384,12 +385,9 @@ public class CmsPlan extends Plan {
 			return null;
 		}
 
-		private Predicate documentPredicate_Filter(CriteriaBuilder cb, Root<Document> root, Runtime runtime,
+		private Predicate documentPredicate_Filter_or(CriteriaBuilder cb, Root<Document> root, Runtime runtime,
 				List<FilterEntry> filterList) throws Exception {
 			boolean flag = true;
-			boolean orFlag = false;
-			boolean andFlag = false;
-			Predicate rp = cb.conjunction();
 			Predicate p = cb.disjunction();
 			List<FilterEntry> list = new ArrayList<>();
 			list.addAll(filterList);
@@ -398,10 +396,9 @@ public class CmsPlan extends Plan {
 			}
 			for (FilterEntry filterEntry : list) {
 				if (filterEntry.path.indexOf("(") > -1 && filterEntry.path.indexOf(")") > -1) {
-					flag = false;
 					String path = StringUtils.substringBetween(filterEntry.path, "(", ")").trim();
 					if ("readPersonList".equals(path)) {
-						orFlag = true;
+						flag = false;
 						p = cb.or(p, cb.isMember("所有人", root.get(Document_.readPersonList)));
 						p = cb.or(p, cb.isMember(runtime.person, root.get(Document_.readPersonList)));
 						if (runtime.person.indexOf("@") > -1) {
@@ -409,22 +406,19 @@ public class CmsPlan extends Plan {
 									root.get(Document_.readPersonList)));
 						}
 					} else if ("readUnitList".equals(path)) {
-						orFlag = true;
+						flag = false;
 						if (ListTools.isNotEmpty(runtime.unitAllList)) {
 							p = cb.or(p, root.get(Document_.readUnitList).in(runtime.unitAllList));
 						}
 					} else if ("readGroupList".equals(path)) {
-						orFlag = true;
+						flag = false;
 						if (ListTools.isNotEmpty(runtime.groupList)) {
 							p = cb.or(p, root.get(Document_.readGroupList).in(runtime.groupList));
 						}
 					} else {
-						Predicate fp = filterEntry.toCmsDocumentPredicate(cb, root, runtime, path);
-						if (Comparison.isEquals(filterEntry.logic)) {
-							andFlag = true;
-							rp = cb.and(rp, fp);
-						} else {
-							orFlag = true;
+						if (!StringUtils.equals("and", filterEntry.logic)) {
+							Predicate fp = filterEntry.toCmsDocumentPredicate(cb, root, runtime, path);
+							flag = false;
 							p = cb.or(p, fp);
 						}
 					}
@@ -433,14 +427,34 @@ public class CmsPlan extends Plan {
 			if (flag) {
 				return null;
 			}
-			if(andFlag){
-				if(orFlag){
-					rp = cb.and(rp, p);
-				}
-			}else{
-				rp = p;
+			return p;
+		}
+
+		private Predicate documentPredicate_Filter_and(CriteriaBuilder cb, Root<Document> root, Runtime runtime,
+													  List<FilterEntry> filterList) throws Exception {
+			boolean flag = true;
+			Predicate p = cb.conjunction();
+			List<FilterEntry> list = new ArrayList<>();
+			list.addAll(filterList);
+			if(runtime.filterList!=null){
+				list.addAll(runtime.filterList);
 			}
-			return rp;
+			for (FilterEntry filterEntry : list) {
+				if (filterEntry.path.indexOf("(") > -1 && filterEntry.path.indexOf(")") > -1) {
+					String path = StringUtils.substringBetween(filterEntry.path, "(", ")").trim();
+					if (!"readPersonList".equals(path) && !"readUnitList".equals(path) && !"readGroupList".equals(path)) {
+						if (StringUtils.equals("and", filterEntry.logic)) {
+							Predicate fp = filterEntry.toCmsDocumentPredicate(cb, root, runtime, path);
+							flag = false;
+							p = cb.and(p, fp);
+						}
+					}
+				}
+			}
+			if (flag) {
+				return null;
+			}
+			return p;
 		}
 	}
 }
