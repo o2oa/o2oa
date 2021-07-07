@@ -1498,43 +1498,19 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         this.insertSiblings(oo_wsp, [oo_cNvCnPr, oo_spPr, oo_style, oo_bodyPr], "beforeend");
 
 
-        // <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
-        //     <a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
-        //         <wps:wsp>
-        //             <wps:cNvCnPr/>
-        //             <wps:spPr>
-        //                 <a:xfrm>
-        //                     <a:off x="0" y="0"/>
-        //                     <a:ext cx="5631180" cy="0"/>
-        //                 </a:xfrm>
-        //                 <a:prstGeom prst="line">
-        //                     <a:avLst/>
-        //                 </a:prstGeom>
-        //                 <a:ln w="19050">
-        //                     <a:solidFill>
-        //                         <a:srgbClr val="FF0000"/>
-        //                     </a:solidFill>
-        //                 </a:ln>
-        //             </wps:spPr>
-        //             <wps:style>
-        //                 <a:lnRef idx="1">
-        //                     <a:schemeClr val="accent1"/>
-        //                 </a:lnRef>
-        //                 <a:fillRef idx="0">
-        //                     <a:schemeClr val="accent1"/>
-        //                 </a:fillRef>
-        //                 <a:effectRef idx="0">
-        //                     <a:schemeClr val="accent1"/>
-        //                 </a:effectRef>
-        //                 <a:fontRef idx="minor">
-        //                     <a:schemeClr val="tx1"/>
-        //                 </a:fontRef>
-        //             </wps:style>
-        //             <wps:bodyPr/>
-        //         </wps:wsp>
-        //     </a:graphicData>
-        // </a:graphic>
-
+        var w = hr.style.width;
+        if (w && o2.typeOf(w)==="string"){
+            var u = w.substring(w.length-1, w.length);
+            if (u==="%"){
+                w = w.toFloat()*1000;
+                var oo_sizeRelH = this.createEl(oo_doc, "sizeRelH", "wp14");
+                this.setAttrs(oo_sizeRelH, {"relativeFrom": "margin"}, false);
+                var oo_pctWidth = this.createEl(oo_doc, "pctWidth", "wp14");
+                oo_pctWidth.appendChild(oo_doc.createTextNode(w));
+                oo_sizeRelH.appendChild(oo_pctWidth);
+                oo_anchor.appendChild(oo_sizeRelH);
+            }
+        }
         oo_p.appendChild(oo_run);
     },
 
