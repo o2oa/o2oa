@@ -664,8 +664,8 @@ Describe.createSampleCommon= function(m,className) {
 	 strSample += "      }.bind(this),\n";
 	 strSample +=  "     function( json ){ //服务调用失败的回调函数, json为服务传回的数据\n";
 	 strSample +=  "        data = json.data; //为变量data赋值\n";
-	 strSample +=  "     }.bind(this),\n";
-	 strSample += "      false //同步执行 \n";
+	 strSample +=  "     }.bind(this)\n";
+	 //strSample += "      false //同步执行 \n";
 	 strSample += "    );\n";
 				
 	}else{
@@ -698,8 +698,8 @@ Describe.createSampleCommon= function(m,className) {
 		 strSample +=  "}.bind(this),\n";
 		 strSample +=  "function( json ){ //服务调用失败的回调函数, json为服务传回的数据\n";
 		 strSample +=  "      data = json.data; //为变量data赋值\n";
-		 strSample +=  "}.bind(this),\n";
-		 strSample +=  "false //同步执行 \n";
+		 strSample +=  "}.bind(this)\n";
+		 //strSample +=  "false //同步执行 \n";
 		 strSample += ");\n"
 		} 
    return  strSample ;		
