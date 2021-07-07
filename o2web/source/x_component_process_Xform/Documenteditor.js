@@ -372,12 +372,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.layout_copiesSecretPriority = this.contentNode.getElement(".doc_layout_copiesSecretPriority");
         if (this.layout_copiesSecretPriority) this.layout_copiesSecretPriority.setStyles(this.css.doc_layout_copiesSecretPriority);
 
+        /**
+         * @summary 份数的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_copies = this.contentNode.getElement(".doc_layout_copies");
         if (this.layout_copies) this.layout_copies.setStyles(this.css.doc_layout_copies);
 
+        /**
+         * @summary 密级的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_secret = this.contentNode.getElement(".doc_layout_secret");
         if (this.layout_secret) this.layout_secret.setStyles(this.css.doc_layout_secret);
 
+        /**
+         * @summary 紧急度的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_priority = this.contentNode.getElement(".doc_layout_priority");
         if (this.layout_priority) this.layout_priority.setStyles(this.css.doc_layout_priority);
 
@@ -387,6 +399,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     //红头
     _loadRedHeader: function(){
+        /**
+         * @summary 红头的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_redHeader = this.contentNode.getElement(".doc_layout_redHeader");
         if (this.layout_redHeader) this.layout_redHeader.setStyles(this.css.doc_layout_redHeader);
     },
@@ -399,6 +415,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         var td = this.contentNode.getElement(".doc_layout_filenoup_fileno_td");
         if (td) td.setStyles(this.css.doc_layout_filenoup_fileno_td);
 
+        /**
+         * @summary 文号的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_fileno = this.contentNode.getElement(".doc_layout_filenoup_fileno");
         if (this.layout_fileno) this.layout_fileno.setStyles(this.css.doc_layout_filenoup_fileno);
 
@@ -414,6 +434,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         node = this.contentNode.getElement(".doc_layout_filenoup_signerContent_td");
         if (node) node.setStyles(this.css.doc_layout_filenoup_signerContent_td);
 
+        /**
+         * @summary 签发人的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_signer = this.contentNode.getElement(".doc_layout_filenoup_signerContent");
         if (this.layout_signer) this.layout_signer.setStyles(this.css.doc_layout_filenoup_signerContent);
 
@@ -468,12 +492,20 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     //标题
     _loadSubject:function(){
+        /**
+         * @summary 标题的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_subject = this.contentNode.getElement(".doc_layout_subject");
         if (this.layout_subject) this.layout_subject.setStyles(this.css.doc_layout_subject);
     },
 
     //主送
     _loadMainSend: function(){
+        /**
+         * @summary 主送的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_mainSend = this.contentNode.getElement(".doc_layout_mainSend");
         if (this.layout_mainSend) this.layout_mainSend.setStyles(this.css.doc_layout_mainSend);
     },
@@ -501,6 +533,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     //     return filetextNode;
     // },
     _loadFiletext: function(){
+        /**
+         * @summary 正文区域的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_filetext = this.contentNode.getElement(".doc_layout_filetext");
         this.layout_filetext.addClass("css"+this.form.json.id+this.json.id);
         this.layout_filetext.setStyles(this.css.doc_layout_filetext);
@@ -527,6 +563,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         node = this.contentNode.getElement(".doc_layout_attachment_content_td");
         if (node) node.setStyles(this.css.doc_layout_attachment_content_td);
 
+        /**
+         * @summary 附件区域的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_attachment = this.contentNode.getElement(".doc_layout_attachment_content");
         if (this.layout_attachment) this.layout_attachment.setStyles(this.css.doc_layout_attachment_content);
     },
@@ -534,7 +574,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     //发布单位
     _loadIssuance: function(){
         this.layout_issuanceTable = this.contentNode.getElement(".doc_layout_issuance");
+        /**
+         * @summary 发文单位的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_issuanceUnit = this.contentNode.getElement(".doc_layout_issuanceUnit");
+        /**
+         * @summary 发文时间的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_issuanceDate = this.contentNode.getElement(".doc_layout_issuanceDate");
 
         if (this.layout_issuanceTable) this.layout_issuanceTable.setStyles(this.css.doc_layout_issuance);
@@ -544,6 +592,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     //附注
     _loadAnnotation: function(){
+        /**
+         * @summary 附注的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_annotation = this.contentNode.getElement(".doc_layout_annotation");
         if (this.layout_annotation) this.layout_annotation.setStyles(this.css.doc_layout_annotation);
     },
@@ -566,6 +618,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this.layout_copytoTitle = this.contentNode.getElement(".doc_layout_edition_copyto_title");
         if (this.layout_copytoTitle) this.layout_copytoTitle.setStyles(this.css.doc_layout_edition_copyto_title);
+
+        /**
+         * @summary 抄送的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_copytoContent = this.contentNode.getElement(".doc_layout_edition_copyto_content");
         if (this.layout_copytoContent) this.layout_copytoContent.setStyles(this.css.doc_layout_edition_copyto_content);
 
@@ -578,12 +635,59 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (issuance) issuance.setStyles(this.css.doc_layout_edition_issuance);
         var issuance_table = this.contentNode.getElement(".doc_layout_edition_issuance_table");
         if (issuance_table) issuance_table.setStyles(this.css.doc_layout_edition_issuance_table);
+        /**
+         * @summary 印发单位的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_edition_issuance_unit = this.contentNode.getElement(".doc_layout_edition_issuance_unit");
         if (this.layout_edition_issuance_unit) this.layout_edition_issuance_unit.setStyles(this.css.doc_layout_edition_issuance_unit);
+        /**
+         * @summary 印发时间的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
         this.layout_edition_issuance_date = this.contentNode.getElement(".doc_layout_edition_issuance_date");
         if (this.layout_edition_issuance_date) this.layout_edition_issuance_date.setStyles(this.css.doc_layout_edition_issuance_date);
     },
+    loadSeal: function(){
+        /**
+         * @summary 模拟盖章的dom对象.
+         * @member {MWF.xApplication.process.Xform.Documenteditor}
+         */
+        this.layout_seals = this.contentNode.getElements(".doc_layout_seal");
+        this.layout_seals.each(function(node){
+            // if (!node.get("src")){
+                node.hide();
+            // }else{
+            //     node.show();
+            //     node.setStyles({
+            //         "border": "0",
+            //         "border-radius": "0"
+            //     });
+            // }
+        });
+    },
 
+    /**对正文进行模拟盖章（模板中必须有class为“doc_layout_seal”的img对象）
+     * @summary 对正文进行模拟盖章，此方法只是进行模拟盖章，通过图片显示，并非专业盖章，不具备法律效应。
+     * * @param src{String} 盖章图片的url.
+     * @param position{integer} 要盖章的位置, 默认为0.
+     * @example
+     *  this.form.get("documenteditor").seal(0, "../custom/img/seal.png"); //在第一个盖章位置进行模拟盖章
+     */
+    seal: function(src, position){
+        var p = position || 0;
+        if (this.layout_seals && this.layout_seals.length){
+            if (this.layout_seals[p]){
+                this.layout_seals[p].src = src;
+                this.layout_seals[p].show();
+                this.layout_seals[p].setStyles({
+                    "border": "0",
+                    "border-radius": "0"
+                });
+            }
+            this.getSealData();
+        }
+    },
     _loadMeeting: function(){
         this.layout_meetingAttendArea = this.contentNode.getElement(".doc_layout_meeting_attend");
         this.layout_meetingAttendTitle = this.contentNode.getElement(".doc_layout_meeting_attend_title");
@@ -637,6 +741,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this._loadAnnotation();
 
         this._loadEdition();
+
+        this.loadSeal();
 
         //会议纪要
         this._loadMeeting();
@@ -2874,6 +2980,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_meetingSitContent) this.data.meetingSit = this.layout_meetingSitContent.get("html");
         if (this.layout_meetingRecordContent) this.data.meetingRecord = this.layout_meetingRecordContent.get("html");
 
+        this.getSealData();
+
         if (this.customLayouts){
             this.customLayouts.each(function(l){
                 this.data[l.name] = l.node.get("html");
@@ -2882,6 +2990,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         //}
         return this.data;
+    },
+    getSealData: function(){
+        if (this.layout_seals && this.layout_seals.length) {
+            this.data.seals = [];
+            this.layout_seals.each(function(seal){
+                this.data.seals.push(seal.get("src"));
+            }.bind(this));
+        }
     },
     setAttachmentData: function(){
         if (!this.attachmentTemplete){
@@ -2988,6 +3104,21 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.layout_meetingSitContent) this.layout_meetingSitContent.set("html", data.meetingSit || " ");
             if (this.layout_meetingRecordContent) this.layout_meetingRecordContent.set("html", data.meetingRecord || " ");
 
+            if (this.layout_seals){
+                if (data.seals && data.seals.length){
+                    data.seals.each(function(src, i){
+                        if (this.layout_seals[i] && src){
+                            this.layout_seals[i].src = src;
+                            this.layout_seals[i].show();
+                            this.layout_seals[i].setStyles({
+                                "border": "0",
+                                "border-radius": "0"
+                            });
+                        }
+                    }.bind(this));
+                }
+            }
+
             if (this.customLayouts){
                 this.customLayouts.each(function(l){
                     l.node.set("html", this.data[l.name] || "　");
@@ -3002,12 +3133,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     var unitWidth = o2.getTextSize(this.layout_issuanceUnit.get("text"), {
                         "font-size":"16pt",
                         "font-family":"'Times New Roman',仿宋",
-                        "letter-spacing": "-0.4pt"
+                        "letter-spacing": "-0.2pt"
                     }).x;
                     var dateWidth = o2.getTextSize(this.layout_issuanceDate.get("text"), {
                         "font-size":"16pt",
                         "font-family":"'Times New Roman',仿宋",
-                        "letter-spacing": "-0.4pt"
+                        "letter-spacing": "-0.2pt"
                     }).x;
 
                     // var unitWidth = this.layout_issuanceUnit.getSize().x;
@@ -3082,8 +3213,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             var l = 14*text.length;
                             var wl = 19*text.length;
                             cell.setStyles({
-                                "max-width": ""+l+"pt !important",
-                                "min-width": ""+l+"pt !important",
+                                "max-width": ""+l+"pt",
+                                "min-width": ""+l+"pt",
                                 "width": ""+wl+"pt"
                             });
                         }
@@ -3251,7 +3382,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     removeDisplayNone: function(node){
         var n = node.getFirst();
         while (n){
-            if (n.getStyle("display")=="none"){
+            if (n.getStyle("display")=="none" || (this.json.toWordSeal=="n" && n.hasClass("doc_layout_seal"))){
                 var tmp = n.getNext();
                 n.destroy();
                 n = tmp;

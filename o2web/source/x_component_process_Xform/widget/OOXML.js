@@ -682,6 +682,14 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 return false;
             });
         }
+        var d = dom.dataset;
+        if (d){
+            Object.keys(d).forEach(function(k){
+                if (k.substr(0,3).toLowerCase()==="mso"){
+                    o[k.hyphenate()] = d[k];
+                }
+            });
+        }
         return o;
     },
     processTableDom: function(dom, oo_body, append, divAsP, oo_tc){
@@ -1174,6 +1182,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     },
 
     pxToPt: function(px){
+        if (!px) return 0;
         var v = px;
         if (px && o2.typeOf(px)==="string"){
             u = px.substring(px.length-2, px.length);
@@ -1217,15 +1226,24 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_run = this.createRun(oo_doc, {"rPrs": {"noProof":{}}});
         var oo_drawing = this.createEl(oo_doc, "drawing");
 
+        var msoStyle = this.getMsoStyle(img);
+
         var position = img.getStyle("position");
-        var p = (position==="absolute" || position==="fixed") ? "anchor" : "inline";
+        var p = (position==="absolute" || msoStyle["mso-position-vertical"]==="absolute") ? "anchor" : "inline";
 
         var oo_position;
         if (p==="anchor"){
             //var pos = img.getPosition(img.getParent(".WordSection1"));
-            var pos = img.getPosition();
-            positionH = (pos.x*9525).toInt();
-            positionV = (pos.y*9525).toInt();
+            //var pos = img.getPosition();
+            var positionV = this.pxToPt(msoStyle["mso-top"]);
+            var positionH = this.pxToPt(msoStyle["mso-left"]);
+            if (!positionV || !positionH){
+                var pos = img.getPosition(img.getOffsetParent());
+                if (!positionH) positionH = this.pxToPt(pos.x);
+                if (!positionV) positionV = this.pxToPt(pos.y);
+            }
+            positionH = (positionH*12700).toInt();
+            positionV = (positionV*12700).toInt();
 
             var oo_anchor = this.createEl(oo_doc, "anchor", "wp");
             this.setAttrs(oo_anchor, {
@@ -1237,14 +1255,16 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             var oo_simplePos = this.createEl(oo_doc, "simplePos", "wp");
             this.setAttrs(oo_simplePos, {"x": "0", "y": "0"}, false);
 
+            var relativeFrom = msoStyle["mso-position-horizontal-relative"] || "margin";
             var oo_positionH = this.createEl(oo_doc, "positionH", "wp");
-            this.setAttrs(oo_positionH, {"relativeFrom": "margin"}, false);
+            this.setAttrs(oo_positionH, {"relativeFrom": relativeFrom}, false);
             var oo_posOffset = this.createEl(oo_doc, "posOffset", "wp");
             oo_posOffset.appendChild(oo_doc.createTextNode(positionH));
             oo_positionH.appendChild(oo_posOffset);
 
+            relativeFrom = msoStyle["mso-position-vertical-relative"] || "margin";
             var oo_positionV = this.createEl(oo_doc, "positionV", "wp");
-            this.setAttrs(oo_positionV, {"relativeFrom": "margin"}, false);
+            this.setAttrs(oo_positionV, {"relativeFrom": relativeFrom}, false);
             var oo_posOffset = this.createEl(oo_doc, "posOffset", "wp");
             oo_posOffset.appendChild(oo_doc.createTextNode(positionV));  //此处需要根据行高来设置数值,暂时固定数值
             oo_positionV.appendChild(oo_posOffset);
