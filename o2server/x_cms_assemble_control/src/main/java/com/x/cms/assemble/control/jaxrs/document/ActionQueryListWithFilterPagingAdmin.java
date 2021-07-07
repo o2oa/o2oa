@@ -36,7 +36,6 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, Integer page, Integer size, JsonElement jsonElement, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		Long total = 0L;
 		List<Wo> wos = new ArrayList<>();
 		Business business = new Business(null);
 		if(!business.isManager(effectivePerson)){
@@ -66,27 +65,19 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 		}
 
 		QueryFilter queryFilter = wi.getQueryFilter();
-
-		List<DocumentWo> docWos = new ArrayList<>();
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			EntityManager em = emc.get(Document.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Document> cq = cb.createQuery(Document.class);
-			Root<Document> root = cq.from(Document.class);
-			Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter(Document_.class, cb, null, root, queryFilter);
-
-			if("asc".equalsIgnoreCase(wi.getOrderType())){
-				docWos = emc.fetchAscPaging(Document.class, DocumentWo.copier, p, page, size, wi.getOrderField());
-			}else {
-				docWos = emc.fetchDescPaging(Document.class, DocumentWo.copier, p, page, size, wi.getOrderField());
+		String personName = wi.getPerson();
+		if(StringUtils.isNotBlank(wi.getPerson())) {
+			personName = business.organization().person().get(wi.getPerson());
+			if(StringUtils.isBlank(personName)){
+				personName = wi.getPerson();
 			}
-			total = emc.count(Document.class, p);
 		}
-
+		Long total = documentQueryService.countWithCondition( personName, queryFilter, wi.getAuthor());
+		List<Document> searchResultList = documentQueryService.listPagingWithCondition( personName, wi.getOrderField(), wi.getOrderType(), queryFilter, page, size, wi.getAuthor());
 		Wo wo = null;
-		for( DocumentWo documentWo : docWos ) {
+		for( Document document : searchResultList ) {
 			try {
-				wo = Wo.copier.copy( documentWo );
+				wo = Wo.copier.copy( document );
 				if( wo.getCreatorPerson() != null && !wo.getCreatorPerson().isEmpty() ) {
 					wo.setCreatorPersonShort( wo.getCreatorPerson().split( "@" )[0]);
 				}
@@ -98,7 +89,7 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 				}
 				if( wi.getNeedData() ) {
 					//需要组装数据
-					wo.setData( documentQueryService.getDocumentData( documentWo ) );
+					wo.setData( documentQueryService.getDocumentData( document ) );
 				}
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
@@ -111,35 +102,29 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 		return result;
 	}
 
-	public class DocumentCacheForFilter {
-
-		private Long total = 0L;
-		private List<Wo> documentList = null;
-
-		public Long getTotal() {
-			return total;
-		}
-
-		public void setTotal(Long total) {
-			this.total = total;
-		}
-
-		public List<Wo> getDocumentList() {
-			return documentList;
-		}
-
-		public void setDocumentList(List<Wo> documentList) {
-			this.documentList = documentList;
-		}
-	}
-
 	public static class Wi extends WrapInDocumentFilter{
 
-	}
+		@FieldDescribe( "查询指定用户可阅读的文档" )
+		private String person;
 
-	public static class DocumentWo extends Document{
-		static WrapCopier<Document, DocumentWo> copier = WrapCopierFactory.wo(Document.class, DocumentWo.class,
-				JpaObject.singularAttributeField(Document.class, true, true), null);
+		@FieldDescribe( "是否查询指定用户可编辑的文档，如果为true则person字段必填，默认为否" )
+		private Boolean isAuthor;
+
+		public String getPerson() {
+			return person;
+		}
+
+		public void setPerson(String person) {
+			this.person = person;
+		}
+
+		public Boolean getAuthor() {
+			return isAuthor;
+		}
+
+		public void setAuthor(Boolean author) {
+			isAuthor = author;
+		}
 	}
 
 	public static class Wo extends WrapOutDocumentList {
