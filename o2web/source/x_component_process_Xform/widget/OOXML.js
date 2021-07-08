@@ -67,7 +67,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     },
     load: function(data){
         return new Promise(function(resolve){
-            o2.load(["/o2_lib/jszip/jszip.min.js", "/o2_lib/jszip/FileSaver.js"], function(){
+            o2.load(["../o2_lib/jszip/jszip.min.js", "../o2_lib/jszip/FileSaver.js"], function(){
                 //this.getZipTemplate();
                 this.getZipTemplate().then(function(zip){
                     //console.log(zip.files);
