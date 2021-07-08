@@ -19,6 +19,7 @@ import com.x.cms.core.entity.Review;
 import com.x.cms.core.entity.Review_;
 import com.x.cms.core.express.tools.CriteriaBuilderTools;
 import com.x.cms.core.express.tools.filter.QueryFilter;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -38,41 +39,44 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		Business business = new Business(null);
-		if(!business.isManager(effectivePerson)){
+		if (!business.isManager(effectivePerson)) {
 			result.setCount(0L);
 			result.setData(wos);
 			return result;
 		}
 
-		Wi wi = this.convertToWrapIn( jsonElement, Wi.class );
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-		if( StringUtils.isEmpty( wi.getDocumentType() )) {
-			wi.setDocumentType( "信息" );
+		if (StringUtils.isEmpty(wi.getDocumentType())) {
+			wi.setDocumentType("信息");
 		}
 
-		if( StringUtils.isEmpty( wi.getOrderField() )) {
-			wi.setOrderField( "createTime" );
+		if (StringUtils.isEmpty(wi.getOrderField())) {
+			wi.setOrderField("publishTime");
 		}
 
-		if( StringUtils.isEmpty( wi.getOrderType() )) {
-			wi.setOrderType( "DESC" );
+		if (StringUtils.isEmpty(wi.getOrderType())) {
+			wi.setOrderType("DESC");
 		}
 
-		if( ListTools.isEmpty( wi.getStatusList() )) {
+		if (ListTools.isEmpty(wi.getStatusList())) {
 			List<String> status = new ArrayList<>();
-			status.add( "published" );
-			wi.setStatusList( status );
+			status.add("published");
+			wi.setStatusList(status);
 		}
 
 		QueryFilter queryFilter = wi.getQueryFilter();
 		String personName = wi.getPerson();
-		if(StringUtils.isNotBlank(wi.getPerson())) {
+		if (StringUtils.isNotBlank(wi.getPerson())) {
 			personName = business.organization().person().get(wi.getPerson());
-			if(StringUtils.isBlank(personName)){
+			if (StringUtils.isBlank(personName)) {
 				personName = wi.getPerson();
 			}
 		}
-		Long total = documentQueryService.countWithCondition( personName, queryFilter, wi.getAuthor());
+		Long total = 0L;
+		if (!BooleanUtils.isTrue(wi.getJustData())){
+			total = documentQueryService.countWithCondition(personName, queryFilter, wi.getAuthor());
+		}
 		List<Document> searchResultList = documentQueryService.listPagingWithCondition( personName, wi.getOrderField(), wi.getOrderType(), queryFilter, page, size, wi.getAuthor());
 		Wo wo = null;
 		for( Document document : searchResultList ) {
@@ -110,6 +114,9 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 		@FieldDescribe( "是否查询指定用户可编辑的文档，如果为true则person字段必填，默认为否" )
 		private Boolean isAuthor;
 
+		@FieldDescribe( "仅返回数据不查询总数，默认false" )
+		private Boolean justData;
+
 		public String getPerson() {
 			return person;
 		}
@@ -124,6 +131,14 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 
 		public void setAuthor(Boolean author) {
 			isAuthor = author;
+		}
+
+		public Boolean getJustData() {
+			return justData;
+		}
+
+		public void setJustData(Boolean justData) {
+			this.justData = justData;
 		}
 	}
 
