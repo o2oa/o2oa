@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.document;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -11,6 +12,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.express.tools.filter.QueryFilter;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +49,7 @@ public class ActionQueryListWithFilterPaging extends BaseAction {
 		}
 
 		if( StringUtils.isEmpty( wi.getOrderField() )) {
-			wi.setOrderField( "createTime" );
+			wi.setOrderField( "publishTime" );
 		}
 
 		if( StringUtils.isEmpty( wi.getOrderType() )) {
@@ -84,7 +86,7 @@ public class ActionQueryListWithFilterPaging extends BaseAction {
 			}
 		}
 
-		if (check) {
+		if (check && !BooleanUtils.isTrue(wi.getJustData())) {
 			// 从Review表中查询符合条件的对象总数
 			try {
 				if( isManager ) {
@@ -172,7 +174,16 @@ public class ActionQueryListWithFilterPaging extends BaseAction {
 	}
 
 	public static class Wi extends WrapInDocumentFilter{
+		@FieldDescribe( "仅返回数据不查询总数，默认false" )
+		private Boolean justData;
 
+		public Boolean getJustData() {
+			return justData;
+		}
+
+		public void setJustData(Boolean justData) {
+			this.justData = justData;
+		}
 	}
 
 	public static class Wo extends WrapOutDocumentList {
