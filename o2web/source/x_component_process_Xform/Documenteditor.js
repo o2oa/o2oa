@@ -672,7 +672,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * * @param src{String} 盖章图片的url.
      * @param position{integer} 要盖章的位置, 默认为0.
      * @example
-     *  this.form.get("documenteditor").seal(0, "../custom/img/seal.png"); //在第一个盖章位置进行模拟盖章
+     *  this.form.get("documenteditor").seal("../custom/img/seal.png", 0); //在第一个盖章位置进行模拟盖章
      */
     seal: function(src, position){
         var p = position || 0;
