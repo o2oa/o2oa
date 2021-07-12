@@ -1740,7 +1740,7 @@ MWF.xScript.CMSEnvironment = function(ev){
             var op = options || {};
             op.documentId = id;
             op.docTitle = title;
-            layout.desktop.openApplication(this.event, "cms.Document", op);
+            return layout.desktop.openApplication(this.event, "cms.Document", op);
         },
         "openPortal": function (name, page, par) {
             var action = MWF.Actions.get("x_portal_assemble_surface");
@@ -1790,7 +1790,7 @@ MWF.xScript.CMSEnvironment = function(ev){
             });
         },
         "openApplication":function(name, options){
-            layout.desktop.openApplication(null, name, options);
+            return layout.desktop.openApplication(null, name, options);
         },
         "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle) {
             var column = columnOrOptions;
