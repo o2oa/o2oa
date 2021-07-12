@@ -239,8 +239,11 @@ o2.widget.O2Identity = new Class({
 
 o2.widget.O2Person = new Class({
     Extends: o2.widget.O2Identity,
+    options: {
+        "lazy": true
+    },
     getPersonData: function(){
-        if (!this.data.distinguishedName){
+        if (!this.data.distinguishedName || !this.data.dutys ){
             this.action.actions = {"getPerson": {"uri": "/jaxrs/person/{id}"}};
             this.action.invoke({"name": "getPerson", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
                 this.data = json.data;

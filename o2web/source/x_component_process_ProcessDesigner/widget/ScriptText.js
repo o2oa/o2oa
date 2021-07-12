@@ -111,6 +111,9 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         this.scriptReferenceMenu.menu.showIm(e);
     },
     maxSize: function() {
+        var areaSize = this.areaNode.getSize();
+        this.originAreaWidth = areaSize.x;
+        this.originAreaHeight = areaSize.y;
         if (!this.options.maxObj){
             this.areaNode.setStyles({
                 "width": "100%",
@@ -155,7 +158,13 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
     returnSize: function(){
         this.areaNode.setStyles(this.css.areaNode);
         this.areaNode.inject(this.node);
-        if (this.options.height) this.areaNode.setStyle("height", ""+this.options.height+"px");
+
+        this.areaNode.setStyle("width", ""+this.originAreaWidth+"px");
+        if (this.options.height) {
+            this.areaNode.setStyle("height", ""+this.options.height+"px");
+        }else{
+            this.areaNode.setStyle("height", ""+this.originAreaHeight+"px");
+        }
 
         this.resizeEditor();
 
