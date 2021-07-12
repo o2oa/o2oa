@@ -29,6 +29,9 @@ MWF.xApplication.Selector.UnitWithType = new Class({
             return;
         }
 
+        this._loadSelectItems();
+    },
+    _loadSelectItems: function(){
         var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
 
         var data = {};
@@ -41,6 +44,11 @@ MWF.xApplication.Selector.UnitWithType = new Class({
                 data.unitList.push(unit.distinguishedName);
             }
         }.bind(this));
+
+        if( this.isCheckStatusOrCount() ) {
+            this.loadingCount = "wait";
+            this.loadCount( data.unitList );
+        }
 
         //data.unitList = this.options.units;
         this.orgAction.listUnitByType(function(json){
@@ -55,6 +63,7 @@ MWF.xApplication.Selector.UnitWithType = new Class({
                             if (data.woSubDirectUnitList.length){
                                 var category = this._newItemCategory("ItemCategory", data, this, this.itemAreaNode);
                                 this.subCategorys.push(category);
+                                this.subCategoryMap[data.levelName] = category;
                             }
                         }
                     }
@@ -225,6 +234,7 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                         if (subData.woSubDirectUnitList.length){ // ? 原来是data.woSubDirectUnitList.length 2020-3-1
                             var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1, this);
                             this.subCategorys.push( category );
+                            this.subCategoryMap[subData.levelName] = category;
                         }
                     }
                 }
@@ -249,6 +259,7 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                         if (subData.woSubDirectUnitList.length){
                             var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1, this);
                             this.subCategorys.push( category );
+                            this.subCategoryMap[subData.levelName] = category;
                         }
                     }
                 }
@@ -334,6 +345,7 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
                         if (subData.woSubDirectUnitList.length){
                             var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1, this);
                             this.subCategorys.push(category);
+                            this.subCategoryMap[subData.levelName] = category;
                         }
                     }
                 }
@@ -390,6 +402,7 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
                         if (subData.woSubDirectUnitList.length){
                             var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1, this);
                             this.subCategorys.push(category);
+                            this.subCategoryMap[subData.levelName] = category;
                         }
                     }
                 }
