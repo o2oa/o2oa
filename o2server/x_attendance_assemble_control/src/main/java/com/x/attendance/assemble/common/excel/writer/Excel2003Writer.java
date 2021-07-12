@@ -18,7 +18,7 @@ public class Excel2003Writer {
 		try{	
 			writeExcel("tes2003.xls");
 		} catch (IOException e) {
-		
+		e.printStackTrace();
 		}
 	}
 	

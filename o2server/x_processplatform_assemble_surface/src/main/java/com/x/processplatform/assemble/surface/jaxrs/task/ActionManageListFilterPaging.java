@@ -1,5 +1,17 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -10,24 +22,18 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Task_;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
 
 class ActionManageListFilterPaging extends BaseAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionManageListFilterPaging.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement)
 			throws Exception {
@@ -48,7 +54,7 @@ class ActionManageListFilterPaging extends BaseAction {
 		}
 	}
 
-	private Predicate toFilterPredicate(EffectivePerson effectivePerson, Business business,  Wi wi) throws Exception {
+	private Predicate toFilterPredicate(EffectivePerson effectivePerson, Business business, Wi wi) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Task.class);
 		List<String> person_ids = business.organization().person().list(wi.getCredentialList());
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -128,6 +134,7 @@ class ActionManageListFilterPaging extends BaseAction {
 			try {
 				expireTime = Integer.parseInt(wi.getExpireTime());
 			} catch (NumberFormatException e) {
+				logger.error(e);
 			}
 			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.expireTime),
 					DateTools.getAdjustTimeDay(null, 0, -expireTime, 0, 0)));
@@ -137,13 +144,13 @@ class ActionManageListFilterPaging extends BaseAction {
 			try {
 				urgeTime = Integer.parseInt(wi.getUrgeTime());
 			} catch (NumberFormatException e) {
+				logger.error(e);
 			}
 			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime),
 					DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));
 		}
-		if(BooleanUtils.isTrue(wi.getExcludeDraft())){
-			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)),
-					cb.isNull(root.get(Task_.first)),
+		if (BooleanUtils.isTrue(wi.getExcludeDraft())) {
+			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)), cb.isNull(root.get(Task_.first)),
 					cb.equal(root.get(Task_.workCreateType), Business.WORK_CREATE_TYPE_ASSIGN)));
 		}
 		if (StringUtils.isNoneBlank(wi.getKey())) {

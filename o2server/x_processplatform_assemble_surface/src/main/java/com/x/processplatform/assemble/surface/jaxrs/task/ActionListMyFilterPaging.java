@@ -21,6 +21,8 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
@@ -28,6 +30,8 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Task_;
 
 class ActionListMyFilterPaging extends BaseAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionListMyFilterPaging.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement)
 			throws Exception {
@@ -59,16 +63,16 @@ class ActionListMyFilterPaging extends BaseAction {
 			p = cb.and(p, root.get(Task_.application).in(wi.getApplicationList()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
 				p = cb.and(p, root.get(Task_.process).in(wi.getProcessList()));
-			}else{
+			} else {
 				p = cb.and(p, root.get(Task_.process).in(business.process().listEditionProcess(wi.getProcessList())));
 			}
 		}
-		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
+		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
 			p = cb.and(p, cb.greaterThan(root.get(Task_.startTime), DateTools.parse(wi.getStartTime())));
 		}
-		if(DateTools.isDateTimeOrDate(wi.getEndTime())){
+		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
 			p = cb.and(p, cb.lessThan(root.get(Task_.startTime), DateTools.parse(wi.getEndTime())));
 		}
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
@@ -80,25 +84,27 @@ class ActionListMyFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Task_.activityName).in(wi.getActivityNameList()));
 		}
-		if(StringUtils.isNotBlank(wi.getExpireTime())){
+		if (StringUtils.isNotBlank(wi.getExpireTime())) {
 			int expireTime = 0;
 			try {
 				expireTime = Integer.parseInt(wi.getExpireTime());
 			} catch (NumberFormatException e) {
+				logger.error(e);
 			}
-			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.expireTime), DateTools.getAdjustTimeDay(null, 0, -expireTime, 0, 0)));
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.expireTime),
+					DateTools.getAdjustTimeDay(null, 0, -expireTime, 0, 0)));
 		}
-		if(StringUtils.isNotBlank(wi.getUrgeTime())){
+		if (StringUtils.isNotBlank(wi.getUrgeTime())) {
 			int urgeTime = 0;
 			try {
 				urgeTime = Integer.parseInt(wi.getUrgeTime());
 			} catch (NumberFormatException e) {
 			}
-			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime), DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime),
+					DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));
 		}
-		if(BooleanUtils.isTrue(wi.getExcludeDraft())){
-			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)),
-					cb.isNull(root.get(Task_.first)),
+		if (BooleanUtils.isTrue(wi.getExcludeDraft())) {
+			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)), cb.isNull(root.get(Task_.first)),
 					cb.equal(root.get(Task_.workCreateType), Business.WORK_CREATE_TYPE_ASSIGN)));
 		}
 		if (StringUtils.isNotEmpty(wi.getKey())) {
@@ -128,16 +134,16 @@ class ActionListMyFilterPaging extends BaseAction {
 			p = cb.and(p, root.get(Task_.application).in(wi.getApplicationList()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
 				p = cb.and(p, root.get(Task_.process).in(wi.getProcessList()));
-			}else{
+			} else {
 				p = cb.and(p, root.get(Task_.process).in(business.process().listEditionProcess(wi.getProcessList())));
 			}
 		}
-		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
+		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
 			p = cb.and(p, cb.greaterThan(root.get(Task_.startTime), DateTools.parse(wi.getStartTime())));
 		}
-		if(DateTools.isDateTimeOrDate(wi.getEndTime())){
+		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
 			p = cb.and(p, cb.lessThan(root.get(Task_.startTime), DateTools.parse(wi.getEndTime())));
 		}
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
@@ -149,25 +155,27 @@ class ActionListMyFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Task_.activityName).in(wi.getActivityNameList()));
 		}
-		if(StringUtils.isNotBlank(wi.getExpireTime())){
+		if (StringUtils.isNotBlank(wi.getExpireTime())) {
 			int expireTime = 0;
 			try {
 				expireTime = Integer.parseInt(wi.getExpireTime());
 			} catch (NumberFormatException e) {
+				logger.error(e);
 			}
-			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.expireTime), DateTools.getAdjustTimeDay(null, 0, -expireTime, 0, 0)));
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.expireTime),
+					DateTools.getAdjustTimeDay(null, 0, -expireTime, 0, 0)));
 		}
-		if(StringUtils.isNotBlank(wi.getUrgeTime())){
+		if (StringUtils.isNotBlank(wi.getUrgeTime())) {
 			int urgeTime = 0;
 			try {
 				urgeTime = Integer.parseInt(wi.getUrgeTime());
 			} catch (NumberFormatException e) {
 			}
-			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime), DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime),
+					DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));
 		}
-		if(BooleanUtils.isTrue(wi.getExcludeDraft())){
-			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)),
-					cb.isNull(root.get(Task_.first)),
+		if (BooleanUtils.isTrue(wi.getExcludeDraft())) {
+			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)), cb.isNull(root.get(Task_.first)),
 					cb.equal(root.get(Task_.workCreateType), Business.WORK_CREATE_TYPE_ASSIGN)));
 		}
 		if (StringUtils.isNotEmpty(wi.getKey())) {

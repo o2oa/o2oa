@@ -91,6 +91,7 @@ public class FileUtil {
                 try {
                     is.close();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -119,6 +120,7 @@ public class FileUtil {
                 try {
                     is.close();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }

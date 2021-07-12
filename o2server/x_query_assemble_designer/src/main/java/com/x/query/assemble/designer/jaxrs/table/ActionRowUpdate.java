@@ -6,7 +6,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dynamic.DynamicEntity;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
