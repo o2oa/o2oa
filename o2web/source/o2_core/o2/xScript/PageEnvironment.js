@@ -1769,7 +1769,7 @@ MWF.xScript.PageEnvironment = function (ev) {
             var op = options || {};
             op.documentId = id;
             op.docTitle = title || "";
-            layout.desktop.openApplication(this.event, "cms.Document", op);
+            return layout.desktop.openApplication(this.event, "cms.Document", op);
         },
         /**打开一个门户页面
          * @method openPortal
@@ -1839,7 +1839,7 @@ MWF.xScript.PageEnvironment = function (ev) {
          * @see module:form.openApplication
          */
         "openApplication": function (name, options) {
-            layout.desktop.openApplication(null, name, options);
+            return layout.desktop.openApplication(null, name, options);
         },
         /**创建一个内容管理文档
          * @method createDocument
@@ -1881,8 +1881,8 @@ MWF.xScript.PageEnvironment = function (ev) {
 
                     "categoryFlag": category, //category id or name
                     "columnFlag": column, //column id or name,
-                    "onStarted": function (documentId, data) {
-                        if (callback) callback();
+                    "onStarted": function (documentId, data, windowHandle) {
+                        if (callback) callback(documentId, data, windowHandle);
                     },
                     "onPostPublish": function () {
                         if(onPostPublish)onPostPublish();
