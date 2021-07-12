@@ -12,6 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.x.query.core.entity.Item;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -27,13 +28,17 @@ import com.x.base.core.project.annotation.FieldDescribe;
 @Table(name = PersistenceProperties.Review.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Review.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
+						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) },
+		indexes = {
+				@javax.persistence.Index(name = Review.TABLE + Review.IndexNameMiddle + Review.docId_FIELDNAME,
+						columnList = Review.ColumnNamePrefix + Review.docId_FIELDNAME+","+
+								Review.ColumnNamePrefix + Review.permissionObj_FIELDNAME)})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Review extends SliceJpaObject {
 
 	private static final long serialVersionUID = -570048661936488247L;
 
-	private static final String TABLE = PersistenceProperties.Review.table;
+	public static final String TABLE = PersistenceProperties.Review.table;
 
 	public String getId() {
 		return id;
@@ -108,7 +113,6 @@ public class Review extends SliceJpaObject {
 	public static final String docId_FIELDNAME = "docId";
 	@FieldDescribe("文档ID.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + docId_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + docId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String docId;
 
@@ -185,14 +189,12 @@ public class Review extends SliceJpaObject {
 	public static final String isTop_FIELDNAME = "isTop";
 	@FieldDescribe("是否置顶")
 	@Column(name = ColumnNamePrefix + isTop_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + isTop_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean isTop = false;
 
 	public static final String hasIndexPic_FIELDNAME = "hasIndexPic";
 	@FieldDescribe("是否含有首页图片")
 	@Column(name = ColumnNamePrefix + hasIndexPic_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + hasIndexPic_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean hasIndexPic = false;
 
