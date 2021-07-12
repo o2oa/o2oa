@@ -143,7 +143,7 @@ public class SyncOrganization {
 			unit = this.createUnit(business, result, sup, org);
 		} else {
 			if (!StringUtils.equals(unit.getQiyeweixinHash(), DigestUtils.sha256Hex(XGsonBuilder.toJson(org)))) {
-				logger.print("组织【{}】的hash值变化，更新组织====",org.getName());
+				logger.print("组织【{}】的hash值变化，更新组织====", org.getName());
 				unit = this.updateUnit(business, result, unit, org);
 			}
 		}
@@ -203,17 +203,17 @@ public class SyncOrganization {
 
 		logger.print("正在检查下级组织{}，如果存在下级组织，则先删除下级组织.", unit.getDistinguishedName());
 		List<Unit> subUnits = business.unit().listSubNestedObject(unit);
-		if( ListTools.isNotEmpty( subUnits )){
-			for( Unit subUnit : subUnits ){
-				removeSingleUnit( business, result, subUnit );
+		if (ListTools.isNotEmpty(subUnits)) {
+			for (Unit subUnit : subUnits) {
+				removeSingleUnit(business, result, subUnit);
 			}
 		}
 
 		logger.print("正在尝试删除单个组织{}.", unit.getDistinguishedName());
 		EntityManagerContainer emc = business.entityManagerContainer();
-		//检查一下，该组织是否已经被删除过了
-		unit = emc.find( unit.getId(), Unit.class );
-		if( unit != null ){
+		// 检查一下，该组织是否已经被删除过了
+		unit = emc.find(unit.getId(), Unit.class);
+		if (unit != null) {
 			emc.beginTransaction(UnitAttribute.class);
 			emc.beginTransaction(UnitDuty.class);
 			emc.beginTransaction(Identity.class);
@@ -246,11 +246,11 @@ public class SyncOrganization {
 				person = this.createOrLinkPerson(business, result, user);
 			}
 		} else {
-            if ((StringUtils.isNotEmpty(user.getMobile())) && StringUtils.isNotEmpty(user.getName())) {
-                if (!StringUtils.equals(DigestUtils.sha256Hex(XGsonBuilder.toJson(user)), person.getQiyeweixinHash())) {
-                    person = this.updatePerson(business, result, person, user);
-                }
-            }
+			if ((StringUtils.isNotEmpty(user.getMobile())) && StringUtils.isNotEmpty(user.getName())) {
+				if (!StringUtils.equals(DigestUtils.sha256Hex(XGsonBuilder.toJson(user)), person.getQiyeweixinHash())) {
+					person = this.updatePerson(business, result, person, user);
+				}
+			}
 		}
 		return person;
 	}
@@ -289,19 +289,6 @@ public class SyncOrganization {
 		emc.commit();
 		return person;
 	}
-
-//	private String getPassword(ScriptEngine engine, Pattern pattern, Person person) throws Exception {
-//		String str = Config.person().getPassword();
-//		Matcher matcher = pattern.matcher(str);
-//		if (matcher.matches()) {
-//			String eval = matcher.group(1);
-//			engine.put("person", person);
-//			String pass = engine.eval(eval).toString();
-//			return pass;
-//		} else {
-//			return str;
-//		}
-//	}
 
 	private String initPassword(Business business, Person person) throws Exception {
 		String str = Config.person().getPassword();
@@ -521,7 +508,7 @@ public class SyncOrganization {
 		List<Person> allPeople = this.listPerson(business);
 		/* 删除个人 */
 		for (Person person : ListUtils.subtract(allPeople, people)) {
-			logger.print("删除用户：{}",person.getDistinguishedName());
+			logger.print("删除用户：{}", person.getDistinguishedName());
 			this.removePerson(business, result, person);
 		}
 	}
