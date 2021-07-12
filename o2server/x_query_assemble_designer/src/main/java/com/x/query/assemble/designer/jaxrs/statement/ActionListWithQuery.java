@@ -14,7 +14,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Statement;
-import com.x.query.core.entity.schema.Table;
 
 class ActionListWithQuery extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String flag) throws Exception {

@@ -2,6 +2,8 @@ package com.x.cms.assemble.control.queue;
 
 import com.x.base.core.project.x_hotpic_assemble_control;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
@@ -11,23 +13,24 @@ import com.x.cms.core.entity.Document;
  *
  */
 public class QueueDocumentUpdate extends AbstractQueue<Document> {
-	
-	public void execute( Document document ) throws Exception {
+
+	private static Logger logger = LoggerFactory.getLogger(QueueDocumentUpdate.class);
+
+	public void execute(Document document) throws Exception {
 		WrapInHotPictureInfo hotPictureInfo = new WrapInHotPictureInfo();
-		hotPictureInfo.setApplication( "CMS" );
-		hotPictureInfo.setTitle( document.getTitle() );
-		hotPictureInfo.setInfoId( document.getId() );
+		hotPictureInfo.setApplication("CMS");
+		hotPictureInfo.setTitle(document.getTitle());
+		hotPictureInfo.setInfoId(document.getId());
 		try {
-			ThisApplication.context().applications().postQuery(
-					x_hotpic_assemble_control.class, "changeTitle", hotPictureInfo
-			);
-		}catch( Exception e ) {
+			ThisApplication.context().applications().postQuery(x_hotpic_assemble_control.class, "changeTitle",
+					hotPictureInfo);
+		} catch (Exception e) {
+			logger.error(e);
 		}
 	}
-	
-	
-	public static class WrapInHotPictureInfo{
-		
+
+	public static class WrapInHotPictureInfo {
+
 		@FieldDescribe("应用名称")
 		private String application = "";
 

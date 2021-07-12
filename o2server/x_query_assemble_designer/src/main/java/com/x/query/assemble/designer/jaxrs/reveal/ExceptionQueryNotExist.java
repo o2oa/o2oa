@@ -1,7 +1,6 @@
 package com.x.query.assemble.designer.jaxrs.reveal;
 
 import com.x.base.core.project.exception.LanguagePromptException;
-import com.x.base.core.project.exception.PromptException;
 
 class ExceptionQueryNotExist extends LanguagePromptException {
 

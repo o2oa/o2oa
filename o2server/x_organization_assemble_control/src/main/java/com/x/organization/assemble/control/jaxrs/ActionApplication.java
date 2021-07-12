@@ -6,7 +6,6 @@ import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
 import com.x.organization.assemble.control.jaxrs.export.ExportAction;
-import com.x.organization.assemble.control.jaxrs.function.FunctionAction;
 import com.x.organization.assemble.control.jaxrs.group.GroupAction;
 import com.x.organization.assemble.control.jaxrs.identity.IdentityAction;
 import com.x.organization.assemble.control.jaxrs.inputperson.InputPersonAction;
@@ -29,7 +28,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(IdentityAction.class);
 		classes.add(GroupAction.class);
 		classes.add(RoleAction.class);
-		classes.add(FunctionAction.class);
+		// classes.add(FunctionAction.class);
 		classes.add(LoginRecordAction.class);
 		classes.add(InputPersonAction.class);
 		classes.add(UnitAction.class);
