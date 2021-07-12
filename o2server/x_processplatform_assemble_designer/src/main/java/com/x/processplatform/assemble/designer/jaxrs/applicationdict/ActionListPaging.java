@@ -28,21 +28,23 @@ class ActionListPaging extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
 			if (!business.editable(effectivePerson, null)) {
-				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
-						"all", "all");
+				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(), "all", "all");
 			}
 			EntityManager em = emc.get(ApplicationDict.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
-			Predicate p = cb.conjunction();;
-			List<Wo> wos = emc.fetchDescPaging(ApplicationDict.class, Wo.copier, p, page, size, ApplicationDict.sequence_FIELDNAME);
+			Predicate p = cb.conjunction();
+			;
+			List<Wo> wos = emc.fetchDescPaging(ApplicationDict.class, Wo.copier, p, page, size,
+					ApplicationDict.sequence_FIELDNAME);
 			wos.stream().forEach(wo -> {
 				try {
 					Application app = emc.find(wo.getApplication(), Application.class);
-					if(app != null){
+					if (app != null) {
 						wo.setApplicationName(app.getName());
 						wo.setApplicationAlias(app.getAlias());
 					}
 				} catch (Exception e) {
+					logger.error(e);
 				}
 			});
 			result.setData(wos);

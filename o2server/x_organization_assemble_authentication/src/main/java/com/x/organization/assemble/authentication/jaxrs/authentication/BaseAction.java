@@ -1,12 +1,18 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -29,9 +35,6 @@ import com.x.organization.assemble.authentication.Business;
 import com.x.organization.assemble.authentication.wrapout.WrapOutAuthentication;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -71,7 +74,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = new EffectivePerson(person.getDistinguishedName(), tokenType,
 				Config.token().getCipher());
 		if ((null != request) && (null != response)) {
-			if(!isMoaTerminal(request)) {
+			if (!isMoaTerminal(request)) {
 				String clientIp = HttpToken.remoteAddress(request);
 				logger.debug("{} client ip is : {}", person.getDistinguishedName(), clientIp);
 				if (!this.checkIp(clientIp, person.getIpAddress())) {
@@ -164,13 +167,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	// private List<String> listRole(Business business, String personId) throws Exception {
-	// 	List<String> roles = new ArrayList<>();
-	// 	for (Role o : business.entityManagerContainer().fetch(business.role().listWithPerson(personId), Role.class,
-	// 			ListTools.toList(Role.DISTINGUISHEDNAME))) {
-	// 		roles.add(o.getDistinguishedName());
-	// 	}
-	// 	return roles;
+	// private List<String> listRole(Business business, String personId) throws
+	// Exception {
+	// List<String> roles = new ArrayList<>();
+	// for (Role o :
+	// business.entityManagerContainer().fetch(business.role().listWithPerson(personId),
+	// Role.class,
+	// ListTools.toList(Role.DISTINGUISHEDNAME))) {
+	// roles.add(o.getDistinguishedName());
+	// }
+	// return roles;
 	// }
 
 	private List<WoIdentity> listIdentity(Business business, String personId) throws Exception {
@@ -207,13 +213,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 		String parameter = fillTokenParameter(oauthClient.getTokenParameter(), oauthClient, redirectUri, code);
 		logger.debug("token post address:{}.", address);
 		logger.debug("token post parameter:{}.", parameter);
-		
+
 		List<NameValuePair> heads = null;
-		//if (StringUtils.equalsIgnoreCase(oauthClient.getTokenType(), "form")) {
-			heads = new ArrayList<>();
-			heads.add(new NameValuePair("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8"));
-	    //}
-		
+		// if (StringUtils.equalsIgnoreCase(oauthClient.getTokenType(), "form")) {
+		heads = new ArrayList<>();
+		heads.add(new NameValuePair("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8"));
+		// }
+
 		String str = HttpConnection.postAsString(address, heads, parameter);
 		return str;
 	}
@@ -289,57 +295,59 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected boolean checkIp(String clientIp, String ipAddress){
+	protected boolean checkIp(String clientIp, String ipAddress) {
 		boolean returnValue = true;
-		if(StringUtils.isNotEmpty(clientIp) && StringUtils.isNotEmpty(ipAddress)){
+		if (StringUtils.isNotEmpty(clientIp) && StringUtils.isNotEmpty(ipAddress)) {
 			try {
 				String[] ipAddressArr = StringUtils.split(ipAddress, ",");
 				for (String regIp : ipAddressArr) {
-					if(StringUtils.isNotEmpty(regIp)) {
+					if (StringUtils.isNotEmpty(regIp)) {
 						Pattern pattern = Pattern.compile(regIp.trim());
 						Matcher matcher = pattern.matcher(clientIp);
 						returnValue = matcher.find();
-						if(returnValue){
+						if (returnValue) {
 							break;
 						}
 					}
 				}
 			} catch (Exception e) {
+				logger.error(e);
 			}
 		}
 		return returnValue;
 	}
 
-	protected boolean isMoaTerminal(HttpServletRequest request){
+	protected boolean isMoaTerminal(HttpServletRequest request) {
 		String xClient = request.getHeader("x-client");
-		if(StringUtils.isNotBlank(xClient)){
+		if (StringUtils.isNotBlank(xClient)) {
 			xClient = xClient.toLowerCase();
 			if (xClient.indexOf("android") != -1) {
-				//安卓
+				// 安卓
 				return true;
 			}
 			if (xClient.indexOf("ios") != -1) {
-				//安卓
+				// 安卓
 				return true;
 			}
 		}
 		String userAgent = request.getHeader("User-Agent");
-		if(StringUtils.isNotBlank(userAgent)) {
+		if (StringUtils.isNotBlank(userAgent)) {
 			userAgent = userAgent.toLowerCase();
 			if (userAgent.indexOf("micromessenger") != -1) {
-				//微信
+				// 微信
 				return true;
 			}
 			if (userAgent.indexOf("dingtalk") != -1) {
-				//钉钉
+				// 钉钉
 				return true;
 			}
 			if (userAgent.indexOf("android") != -1) {
-				//安卓
+				// 安卓
 				return true;
 			}
-			if (userAgent.indexOf("iphone") != -1 || userAgent.indexOf("ipad") != -1 || userAgent.indexOf("ipod") != -1) {
-				//苹果
+			if (userAgent.indexOf("iphone") != -1 || userAgent.indexOf("ipad") != -1
+					|| userAgent.indexOf("ipod") != -1) {
+				// 苹果
 				return true;
 			}
 		}

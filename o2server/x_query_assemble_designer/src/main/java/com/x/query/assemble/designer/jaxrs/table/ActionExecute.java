@@ -3,13 +3,13 @@ package com.x.query.assemble.designer.jaxrs.table;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.x.base.core.entity.dynamic.DynamicBaseEntity;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.dynamic.DynamicBaseEntity;
 import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;

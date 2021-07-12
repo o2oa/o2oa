@@ -1,7 +1,6 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
 import com.x.base.core.project.exception.LanguagePromptException;
-import com.x.base.core.project.exception.PromptException;
 
 public class ExceptionCompileError extends LanguagePromptException {
 

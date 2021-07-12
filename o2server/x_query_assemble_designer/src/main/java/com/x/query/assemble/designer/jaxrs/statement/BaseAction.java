@@ -1,7 +1,6 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 

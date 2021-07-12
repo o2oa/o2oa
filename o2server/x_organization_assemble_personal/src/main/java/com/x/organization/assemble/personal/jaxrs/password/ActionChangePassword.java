@@ -65,9 +65,6 @@ class ActionChangePassword extends ActionBase {
 					throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
 				}
 
-//				if (PasswordTools.checkPasswordStrength(wi.getNewPassword()) < 4) {
-//					throw new ExceptionInvalidPassword();
-//				}
 			}
 			emc.beginTransaction(Person.class);
 			business.person().setPassword(person, wi.getNewPassword());
