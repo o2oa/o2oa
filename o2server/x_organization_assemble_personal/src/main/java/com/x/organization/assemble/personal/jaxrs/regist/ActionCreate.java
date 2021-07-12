@@ -30,7 +30,7 @@ class ActionCreate extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
 			String name = wi.getName();
-			String password = wi.getPassword();
+			String passwd = wi.getPassword();
 			String mobile = wi.getMobile();
 			GenderType genderType = wi.getGenderType();
 			String codeAnswer = wi.getCodeAnswer();
@@ -61,12 +61,9 @@ class ActionCreate extends BaseAction {
 					throw new ExceptionMailExist(mail);
 				}
 			}
-			if (!password.matches(Config.person().getPasswordRegex())) {
+			if (!passwd.matches(Config.person().getPasswordRegex())) {
 				throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
 			}
-//			if (PasswordTools.checkPasswordStrength(password) < 4) {
-//				throw new ExceptionInvalidPassword();
-//			}
 			if (null == genderType) {
 				throw new ExceptionInvalidGenderType();
 			}
@@ -82,7 +79,7 @@ class ActionCreate extends BaseAction {
 					throw new ExceptionInvalidCaptcha();
 				}
 			}
-			this.register(business, name, password, genderType, mobile, mail);
+			this.register(business, name, passwd, genderType, mobile, mail);
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);

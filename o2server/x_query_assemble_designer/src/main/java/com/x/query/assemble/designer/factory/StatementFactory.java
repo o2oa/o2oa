@@ -4,17 +4,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.x.base.core.project.tools.StringTools;
-import com.x.query.assemble.designer.AbstractFactory;
-import com.x.query.assemble.designer.Business;
-import com.x.query.core.entity.schema.Statement;
-import com.x.query.core.entity.schema.Statement_;
-
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import com.x.base.core.project.tools.StringTools;
+import com.x.query.assemble.designer.AbstractFactory;
+import com.x.query.assemble.designer.Business;
+import com.x.query.core.entity.schema.Statement;
+import com.x.query.core.entity.schema.Statement_;
 
 public class StatementFactory extends AbstractFactory {
 
