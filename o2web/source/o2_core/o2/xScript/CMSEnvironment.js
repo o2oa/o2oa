@@ -1827,8 +1827,8 @@ MWF.xScript.CMSEnvironment = function(ev){
 
                     "categoryFlag": category, //category id or name
                     "columnFlag": column, //column id or name,
-                    "onStarted": function (documentId, data) {
-                        if (callback) callback();
+                    "onStarted": function (documentId, data, windowHandle) {
+                        if (callback) callback(documentId, data, windowHandle);
                     },
                     "onPostPublish": function () {
                         if(onPostPublish)onPostPublish();
