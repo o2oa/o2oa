@@ -109,20 +109,16 @@ public class ActionCommand extends BaseAction {
 	private boolean executeSyncFile(String syncFilePath, String nodeName, int nodePort) {
 		boolean syncFileFlag = false;
 		File syncFile;
-		InputStream fileInputStream = null;
 
 		try (Socket socket = new Socket(nodeName, nodePort)) {
 
 			syncFile = new File(Config.base(), syncFilePath);
-			fileInputStream = new FileInputStream(syncFile);
 
 			socket.setKeepAlive(true);
 			socket.setSoTimeout(5000);
-			DataOutputStream dos = null;
-			DataInputStream dis = null;
-			try {
-				dos = new DataOutputStream(socket.getOutputStream());
-				dis = new DataInputStream(socket.getInputStream());
+			try (InputStream fileInputStream = new FileInputStream(syncFile);
+					DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+					DataInputStream dis = new DataInputStream(socket.getInputStream());) {
 
 				Map<String, Object> commandObject = new HashMap<>();
 				commandObject.put("command", "syncFile:" + syncFilePath);
@@ -142,11 +138,6 @@ public class ActionCommand extends BaseAction {
 				}
 				logger.info("同步文件end.......");
 
-			} finally {
-				dos.close();
-				dis.close();
-				socket.close();
-				fileInputStream.close();
 			}
 
 			syncFileFlag = true;
