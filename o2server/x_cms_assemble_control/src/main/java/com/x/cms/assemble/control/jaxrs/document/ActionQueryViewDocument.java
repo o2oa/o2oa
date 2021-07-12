@@ -80,7 +80,7 @@ public class ActionQueryViewDocument extends BaseAction {
 
 		if (check ) {
 			//只要不是管理员访问，则记录该文档的访问记录
-			if ( !"xadmin".equalsIgnoreCase( personName) ) {
+			if ( !"xadmin".equalsIgnoreCase( personName) && !"cipher".equalsIgnoreCase(personName)) {
 				try {
 					viewCount = documentViewRecordServiceAdv.addViewRecord( id, personName );
 					result.getData().document.setViewCount( viewCount );
