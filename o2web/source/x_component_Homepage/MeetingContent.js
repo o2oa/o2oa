@@ -135,7 +135,7 @@ MWF.xApplication.Homepage.MeetingContent.MeetingInvited = new Class({
         var start = (new Date()).parse(d.startTime);
         var completed = (new Date()).parse(d.completedTime);
         var startStr = start.format("%Y-%m-%d %H:%M");
-        var completedStr = start.format("%H:%M");
+        var completedStr = completed.format("%H:%M");
         timeNode.set("html", this.app.lp.meetingTime+": <span style='color: #999999'>"+startStr+" - "+completedStr+"<span>");
 
         var locationNode = new Element("div.o2_homepage_meeting_item_location").inject(inforArea);
@@ -248,7 +248,7 @@ MWF.xApplication.Homepage.MeetingContent.Meeting = new Class({
         var start = (new Date()).parse(d.startTime);
         var completed = (new Date()).parse(d.completedTime);
         var startStr = start.format("%Y-%m-%d %H:%M");
-        var completedStr = start.format("%H:%M");
+        var completedStr = completed.format("%H:%M");
         timeNode.set("html", this.app.lp.meetingTime+": <span style='color: #999999'>"+startStr+" - "+completedStr+"<span>");
 
         var locationNode = new Element("div.o2_homepage_meeting_item_location").inject(inforArea);
