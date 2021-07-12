@@ -72,8 +72,17 @@ MWF.xApplication.Template.Selector.Custom = new Class({
 
         this.subCategorys = []; //直接的分类
         this.subItems = []; //直接的选择项
+
+        this.availableStatusTypes = ["identity","custom"];
+
+        this._init();
+    },
+    _init : function(){
+        this.selectType = "custom";
+        this.className = "Custom"
     },
     loadSelectItems: function (addToNext) {
+        this.loadingCount = "done";
         if (!this.options.category) {
             this.options.selectableItems.each(function (it) {
                 var name = typeOf(it) === "string" ? it : it.name;
@@ -83,6 +92,9 @@ MWF.xApplication.Template.Selector.Custom = new Class({
                 this.subItems.push( item );
             }.bind(this))
         } else {
+            if( this.isCheckStatusOrCount() ){
+                this.loadCount();
+            }
             this.options.selectableItems.each(function (item, index) {
                 if (item.isItem) {
                     var item = this._newItem(item, this, this.itemAreaNode);
@@ -199,6 +211,80 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         } else {
             if (callback) callback();
         }
+    },
+
+    loadCount: function(){
+        this.allCategoryDataObject = {};
+        this.getValueString(this.options.values);
+        this.calculateCount();
+    },
+    reloadCount: function(){
+        var map = this.allCategoryDataObject;
+        for(var key in map){
+            map[key].subNestedItemCount = 0;
+            map[key].selectedNestedItemCount = 0;
+        }
+        var values = this.selectedItems.map(function (item) { return item.data; }.bind(this));
+        this.getValueString(values);
+        this.calculateCount();
+    },
+    getValueString: function(values){
+        this.valueStringList = values.map(function (item) {
+            switch (o2.typeOf(item)) {
+                case "string":
+                    return item;
+                case "object":
+                    return this.options.uniqueFlag ? item[this.options.uniqueFlag] : (item.id || item.name);
+                default:
+                    return "";
+            }
+        }.bind(this));
+    },
+    calculateCount: function( data, parentLevelName ){
+        var map = this.allCategoryDataObject;
+        if( data ){
+            var levelName = parentLevelName ? (parentLevelName+"/"+data.name) : data.name;
+            if( !map[levelName] )map[levelName] = data;
+
+            if( data.subItemList && data.subItemList.length ){
+
+                var selectedItems = data.subItemList.filter(function(item){
+                    var string = this.options.uniqueFlag ? item[this.options.uniqueFlag] : (item.id || item.name);
+                    return this.valueStringList.contains(string);
+                }.bind(this));
+
+                var nameList = [];
+                levelName.split("/").each(function(name){
+                    nameList.push(name);
+                    var lName = nameList.join("/");
+                    var d = map[lName];
+                    if( d ){
+                        d.subNestedItemCount = (d.subNestedItemCount || 0) + data.subItemList.length;
+                        d.selectedNestedItemCount = (d.selectedNestedItemCount || 0) + selectedItems.length;
+                    }
+                });
+            }
+
+            if( data.subCategoryList && data.subCategoryList.length ){
+                data.subCategoryList.each(function (category) {
+                    this.calculateCount( category, levelName );
+                }.bind(this))
+            }
+
+        }else{
+            this.options.selectableItems.each(function (item, i) {
+                if( !item.isItem )this.calculateCount( item, "" );
+            }.bind(this))
+        }
+    },
+    addSelectedCount: function( itemOrItemSelected, count, items ){
+        var itemData = itemOrItemSelected.data;
+        debugger;
+        items.each(function(item){
+            if(item.category && item.category._addSelectedCount){
+                item.category._addSelectedCount( count, true );
+            }
+        }.bind(this));
     }
 });
 MWF.xApplication.Template.Selector.Custom.Item = new Class({
@@ -295,6 +381,15 @@ MWF.xApplication.Template.Selector.Custom.ItemSelected = new Class({
                 }.bind(this));
             }
         }
+
+        debugger;
+
+        if( !this.isFromValues ){
+            if( this.selector.isCheckStatusOrCount() ){
+                this.selector.addSelectedCount(this, 1, items||[]);
+            }
+        }
+
         if( this.afterCheck )this.afterCheck();
     }
 });
@@ -305,6 +400,9 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
         return this.data.name;
     },
     createNode: function () {
+        if( !this.levelName ){
+            this.levelName  = this.category ? (this.category.levelName + "/" + this.data.name) : this.data.name;
+        }
         this.node = new Element("div", {
             "styles": this.selector.css.selectorItemCategory_department
         }).inject(this.container);
@@ -316,6 +414,37 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
     _getTtiteText: function () {
         return this.data.name;
     },
+    _addSelectedCount : function( count, nested ){ //增加数字并向上回溯
+        if( this.selector.loadingCount === "done" ){
+            var c = ( this._getSelectedCount() || 0 ) + count;
+            this.selectedCount = c;
+            this._checkCountAndStatus( c );
+        }else{
+            this.selectedCount_wait = (this.selectedCount_wait || 0) + count;
+        }
+        if( nested && this.category && this.category._addSelectedCount ){
+            this.category._addSelectedCount(count, nested);
+        }
+    },
+    _getTotalCount : function(){
+        // return this.subItems.length;
+        if( !this.selector.allCategoryDataObject )return 0;
+        var d =  this.selector.allCategoryDataObject[this.levelName];
+        return d ? d.subNestedItemCount : 0;
+    },
+    _getSelectedCount : function(){
+        if( typeOf(this.selectedCount) === "number" )return this.selectedCount;
+        if( !this.selector.allCategoryDataObject )return 0;
+        var d =  this.selector.allCategoryDataObject[this.levelName];
+        var count = d ? d.selectedNestedItemCount : 0;
+        this.selectedCount = count + (this.selectedCount_wait || 0);
+        this.selectedCount_wait = 0;
+        return this.selectedCount;
+    },
+    // _getSelectedCount : function(){
+    //     var list = this.subItems.filter( function (item) { return item.isSelected; });
+    //     return list.length;
+    // },
     clickItem: function (callback) {
         if (this._hasChild() || this.selector.options.expandEmptyCategory ) {
             var firstLoaded = !this.loaded;
@@ -389,6 +518,7 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
                     this.subCategorys.push( category );
                 }.bind(this));
             }
+
             this.loaded = true;
             if (callback) callback();
         } else {
@@ -414,6 +544,22 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
             this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
             this.isExpand = false;
         }
+
+        debugger;
+
+        if( this.selector.isCheckStatusOrCount() ){
+            if( this.selector.loadingCount === "done" ){
+                this.checkCountAndStatus();
+            }
+        }
+    },
+    reloadCount: function () {
+        if( this.selector.isCheckStatusOrCount() ){
+            this.selector.reloadCount();
+            if( this.selector.loadingCount === "done" ){
+                this.checkCountAndStatus();
+            }
+        }
     }
 });
 
@@ -435,6 +581,17 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
     _getTtiteText: function () {
         return this.data.name;
     },
+
+    _addSelectedCount : function( count, nested ){ //增加数字并向上回溯
+
+    },
+    _getTotalCount : function(){
+
+    },
+    _getSelectedCount : function(){
+
+    },
+
     destroy : function(){
         if( this.isSelected )this.unSelected();
         this.selector.items.erase( this );
@@ -573,6 +730,9 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
         this.checkSelected();
     },
     afterLoad : function () {
+
+    },
+    reloadCount: function () {
 
     }
 });
