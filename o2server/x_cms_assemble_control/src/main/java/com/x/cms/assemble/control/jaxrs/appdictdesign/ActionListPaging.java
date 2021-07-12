@@ -27,16 +27,18 @@ class ActionListPaging extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			EntityManager em = emc.get(AppDict.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
-			Predicate p = cb.conjunction();;
+			Predicate p = cb.conjunction();
+			;
 			List<Wo> wos = emc.fetchDescPaging(AppDict.class, Wo.copier, p, page, size, AppDict.sequence_FIELDNAME);
 			wos.stream().forEach(wo -> {
 				try {
-					AppInfo appInfo = emc.find( wo.getAppId(), AppInfo.class );
-					if(appInfo != null){
+					AppInfo appInfo = emc.find(wo.getAppId(), AppInfo.class);
+					if (appInfo != null) {
 						wo.setAppName(appInfo.getAppName());
 						wo.setAppAlias(appInfo.getAppAlias());
 					}
 				} catch (Exception e) {
+					logger.error(e);
 				}
 			});
 			result.setData(wos);

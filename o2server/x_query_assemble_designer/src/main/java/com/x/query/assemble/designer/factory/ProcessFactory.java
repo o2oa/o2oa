@@ -1,14 +1,19 @@
 package com.x.query.assemble.designer.factory;
 
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
 import com.x.query.assemble.designer.AbstractFactory;
 import com.x.query.assemble.designer.Business;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
-import java.util.List;
 
 public class ProcessFactory extends AbstractFactory {
 

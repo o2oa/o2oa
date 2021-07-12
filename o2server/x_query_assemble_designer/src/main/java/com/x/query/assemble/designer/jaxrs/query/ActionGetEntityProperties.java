@@ -1,5 +1,17 @@
 package com.x.query.assemble.designer.jaxrs.query;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Lob;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.openjpa.persistence.jdbc.Strategy;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -13,16 +25,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.openjpa.persistence.jdbc.Strategy;
-
-import javax.persistence.Column;
-import javax.persistence.Lob;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 
 class ActionGetEntityProperties extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String entity, String entityCategory) throws Exception {

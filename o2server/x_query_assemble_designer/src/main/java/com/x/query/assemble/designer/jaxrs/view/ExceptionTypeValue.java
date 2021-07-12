@@ -1,7 +1,6 @@
 package com.x.query.assemble.designer.jaxrs.view;
 
 import com.x.base.core.project.exception.LanguagePromptException;
-import com.x.base.core.project.exception.PromptException;
 import com.x.query.core.entity.View;
 
 class ExceptionTypeValue extends LanguagePromptException {
