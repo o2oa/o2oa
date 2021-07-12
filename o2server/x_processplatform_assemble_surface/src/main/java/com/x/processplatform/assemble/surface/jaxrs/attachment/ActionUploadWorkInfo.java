@@ -67,7 +67,7 @@ class ActionUploadWorkInfo extends BaseAction {
 				title = work.getTitle();
 			}
 			String workHtml = wi.getWorkHtml();
-			if(StringUtils.isNotBlank(workHtml)){
+			if (StringUtils.isNotBlank(workHtml)) {
 				try {
 					workHtml = URLDecoder.decode(workHtml, StandardCharsets.UTF_8.name());
 				} catch (Exception e) {
@@ -88,12 +88,12 @@ class ActionUploadWorkInfo extends BaseAction {
 	public static class Wo extends WoId {
 	}
 
-	private String saveHtml(String workId, String flag, String workHtml, String person, String title,
-							Float pageWidth, Business business) {
+	private String saveHtml(String workId, String flag, String workHtml, String person, String title, Float pageWidth,
+			Business business) {
 		try {
 			String name = "";
 			byte[] bytes;
-			if(title.length()>60){
+			if (title.length() > 60) {
 				title = title.substring(0, 60);
 			}
 			if ("word".equals(flag)) {
@@ -168,23 +168,4 @@ class ActionUploadWorkInfo extends BaseAction {
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
-		System.out.println(11);
-		String fileName = "测试公司函下载哦哦哦哦哦哦哦-表单信息.html";
-		File file = new File("/Users/chengjian/Downloads/", fileName);
-		File outfile = new File(file.getAbsolutePath() + "3.pdf");
-		FileInputStream in = new FileInputStream(file);
-		FileOutputStream out = new FileOutputStream(outfile);
-		PdfWriter writer = new PdfWriter(out);
-		PdfDocument pdf = new PdfDocument(writer);
-		pdf.setDefaultPageSize(new PageSize(1000, PageSize.A4.getHeight()));
-		ConverterProperties props = new ConverterProperties();
-		DefaultFontProvider dfp = new DefaultFontProvider(false, false, false);
-		dfp.addFont("/Users/chengjian/dev/O2/o2oa/o2server/commons/fonts/NotoSansCJKsc-Regular.otf");
-		props.setFontProvider(dfp);
-		HtmlConverter.convertToPdf(in, pdf, props);
-		in.close();
-		out.close();
-		System.out.println(22);
-	}
 }

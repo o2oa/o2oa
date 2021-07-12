@@ -1,7 +1,6 @@
 package com.x.calendar.assemble.control.service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Duration;
@@ -9,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.x.base.core.project.tools.StringTools;
-import com.x.calendar.core.entity.Calendar_EventComment;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -23,12 +20,12 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.assemble.control.Business;
 import com.x.calendar.common.date.DateOperation;
 import com.x.calendar.core.entity.Calendar_Event;
+import com.x.calendar.core.entity.Calendar_EventComment;
 import com.x.calendar.core.entity.Calendar_EventRepeatMaster;
 
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
@@ -828,12 +825,12 @@ public class Calendar_EventServiceAdv {
 	 * @throws ValidationException
 	 * @throws IOException
 	 */
-	public void writeiCal(Calendar_Event o2_calendar_event, String path) throws ValidationException, IOException {
-		Calendar calendar = parseToiCal(o2_calendar_event);
-		FileOutputStream fout = new FileOutputStream("D://2.ics");
-		CalendarOutputter outputter = new CalendarOutputter();
-		outputter.output(calendar, fout);
-	}
+//	public void writeiCal(Calendar_Event o2_calendar_event, String path) throws ValidationException, IOException {
+//		Calendar calendar = parseToiCal(o2_calendar_event);
+//		FileOutputStream fout = new FileOutputStream("D://2.ics");
+//		CalendarOutputter outputter = new CalendarOutputter();
+//		outputter.output(calendar, fout);
+//	}
 
 	/**
 	 * 将一个日程事件写为一个ical文件
@@ -859,9 +856,10 @@ public class Calendar_EventServiceAdv {
 	public String getiCalContent(Calendar_Event o2_calendar_event) throws ValidationException, IOException {
 		Calendar calendar = parseToiCal(o2_calendar_event);
 		CalendarOutputter calendarOutputter = new CalendarOutputter(false);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		calendarOutputter.output(calendar, baos);
-		return new String(baos.toByteArray(), "utf-8");
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			calendarOutputter.output(calendar, baos);
+			return new String(baos.toByteArray(), "utf-8");
+		}
 	}
 
 	/**
@@ -877,8 +875,6 @@ public class Calendar_EventServiceAdv {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return calendar_EventService.listNeedAlarmEventIds(emc, date);
-		} catch (Exception e) {
-			throw e;
 		}
 	}
 
@@ -957,9 +953,7 @@ public class Calendar_EventServiceAdv {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return calendar_EventService.destoryWithBundle(emc, bundle);
-		} catch (Exception e) {
-			throw e;
-		}
+		}  
 	}
 
 	/**
@@ -975,8 +969,6 @@ public class Calendar_EventServiceAdv {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return emc.find(commentId, Calendar_EventComment.class);
-		} catch (Exception e) {
-			throw e;
 		}
 	}
 }
