@@ -2036,7 +2036,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             this.showCustomSubmitedDialog(json.data);
                         } else if (layout.mobile) {
                             //移动端页面关闭
-                            _self.finishOnMobile()
+                            _self.finishOnMobile();
                         } else {
                             if (this.app.inBrowser) {
                                 if (this.mask) this.mask.hide();
@@ -3675,7 +3675,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         _self.app.content.unmask();
                         if (_self.mask) { _self.mask.hide(); _self.mask = null; }
 
-                        _self.finishOnMobile()
+                        _self.finishOnMobile();
                     }.bind(this), function (xhr, text, error) {
                         _self.app.content.unmask();
                         var errorText = error + ":" + text;
@@ -4326,9 +4326,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             return false;
         }
         MWF.require("MWF.xDesktop.Dialog", function () {
+            // 判断是否在移动端
+            var content = layout.mobile ? $(document.body) : this.app.content || $(document.body);
+			var size = content.getSize();
+
             var width = 680;
             var height = 300;
-            var p = MWF.getCenterPosition(this.app.content, width, height);
+            if (layout.mobile) {
+                width = size.x - 40;
+            }
+
+            var p = MWF.getCenterPosition(content, width, height);
 
             var _self = this;
 debugger;
@@ -4340,15 +4348,15 @@ debugger;
             var dlg = new MWF.xDesktop.Dialog({
                 "title": MWF.xApplication.process.Xform.LP.setReadedConfirmTitle,
                 "style": this.json.dialogStyle || "user", //|| "work",
-                "top": p.y - 100,
+                "top": layout.mobile ? p.y : p.y - 100,
                 "left": p.x,
-                "fromTop": p.y - 100,
+                "fromTop": layout.mobile ? p.y : p.y - 100,
                 "fromLeft": p.x,
                 "width": width,
                 "height": height,
                 "url": this.app.path + "readed.html",
                 "lp": MWF.xApplication.process.Xform.LP.form,
-                "container": this.app.content,
+                "container": layout.mobile ? content : this.app.content,
                 "isClose": true,
                 "buttonList": [
                     {
@@ -4437,22 +4445,20 @@ debugger;
                     if (_self.mask) { _self.mask.hide(); _self.mask = null; }
 
                     _self.fireEvent("afterReaded");
-                    _self.app.reload();
-
+                    
                     if (layout.mobile) {
-                        _self.finishOnMobile()
+                        _self.finishOnMobile();
                     } else {
+                        _self.app.reload();
                         dlg.close();
                     }
                 }, null, read.id, read);
             }.bind(this));
         } else {
-
-
-            _self.app.reload();
             if (layout.mobile) {
-                _self.finishOnMobile()
+                _self.finishOnMobile();
             } else {
+                _self.app.reload();
                 dlg.close();
             }
         }
