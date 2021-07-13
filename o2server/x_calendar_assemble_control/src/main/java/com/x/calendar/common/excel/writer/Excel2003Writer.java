@@ -20,7 +20,7 @@ public class Excel2003Writer {
 			writeExcel( "tes2003.xls" );
 			//System.out.println( "写完xcel2003" );
 		} catch (IOException e) {
-		
+			e.printStackTrace();
 		}
 	}
 	

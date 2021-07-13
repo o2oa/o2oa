@@ -1,11 +1,31 @@
 package com.x.program.center.jaxrs.market;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileFilter;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.enums.CommonStatus;
-import com.x.base.core.project.*;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_cms_assemble_control;
+import com.x.base.core.project.x_portal_assemble_designer;
+import com.x.base.core.project.x_processplatform_assemble_designer;
+import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.Collect;
@@ -23,7 +43,11 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.*;
+import com.x.base.core.project.tools.Crypto;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.FileTools;
+import com.x.base.core.project.tools.JarTools;
+import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.element.wrap.WrapCms;
 import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -36,16 +60,6 @@ import com.x.program.center.core.entity.wrap.WrapAgent;
 import com.x.program.center.core.entity.wrap.WrapInvoke;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import com.x.query.core.entity.wrap.WrapQuery;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.net.Socket;
-import java.util.*;
 
 class ActionInstallOrUpdate extends BaseAction {
 
@@ -59,20 +73,21 @@ class ActionInstallOrUpdate extends BaseAction {
 			if (null == app) {
 				throw new ExceptionEntityNotExist(id, Application.class);
 			}
-			if(!hasAuth(effectivePerson, null)){
+			if (!hasAuth(effectivePerson, null)) {
 				throw new ExceptionAccessDenied(effectivePerson, app);
 			}
 			logger.print("{}发起安装或更新应用：{}", effectivePerson.getDistinguishedName(), app.getName());
 			Wo wo = new Wo();
 			wo.setValue(false);
-			if(BooleanUtils.isTrue(Config.collect().getEnable())) {
+			if (BooleanUtils.isTrue(Config.collect().getEnable())) {
 				String token = business.loginCollect();
-				if(StringUtils.isNotEmpty(token)){
-					byte[] bytes = ConnectionAction.getFile(Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_DOWN + "/" + id),
+				if (StringUtils.isNotEmpty(token)) {
+					byte[] bytes = ConnectionAction.getFile(
+							Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_DOWN + "/" + id),
 							ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
-					if(bytes!=null){
+					if (bytes != null) {
 						InstallData installData = this.install(id, bytes);
-						if(installData!=null) {
+						if (installData != null) {
 							wo.setValue(true);
 							emc.beginTransaction(InstallLog.class);
 							InstallLog installLog = emc.find(id, InstallLog.class);
@@ -91,7 +106,7 @@ class ActionInstallOrUpdate extends BaseAction {
 							installLog.setInstallTime(new Date());
 							installLog.setUnInstallPerson(null);
 							installLog.setUnInstallTime(null);
-							if(!exist){
+							if (!exist) {
 								emc.persist(installLog);
 							}
 							emc.commit();
@@ -105,39 +120,43 @@ class ActionInstallOrUpdate extends BaseAction {
 		}
 	}
 
-	private InstallData install(String id, byte[] bytes) throws Exception{
+	private InstallData install(String id, byte[] bytes) throws Exception {
 		InstallData installData = new InstallData();
 		File tempFile = new File(Config.base(), "local/temp/install");
 		FileTools.forceMkdir(tempFile);
 		FileUtils.cleanDirectory(tempFile);
-		File zipFile = new File(tempFile.getAbsolutePath(), id+".zip");
+		File zipFile = new File(tempFile.getAbsolutePath(), id + ".zip");
 		FileUtils.writeByteArrayToFile(zipFile, bytes);
 		File dist = new File(tempFile.getAbsolutePath(), "data");
 		FileTools.forceMkdir(dist);
 		JarTools.unjar(zipFile, new ArrayList<>(), dist, true);
-
-		File[] files = dist.listFiles();
-		for(File file : files){
-			if(!file.isDirectory()){
-				if(file.getName().toLowerCase().endsWith(".xapp")){
+		//过滤必要的文件
+		File[] files = dist.listFiles(new FileFilter() {
+			public boolean accept(File pathname) {
+				return true;
+			}
+		});
+		for (File file : files) {
+			if (!file.isDirectory()) {
+				if (file.getName().toLowerCase().endsWith(".xapp")) {
 					String json = FileUtils.readFileToString(file, DefaultCharset.charset);
 					Gson gson = new Gson();
 					JsonElement jsonElement = gson.fromJson(json, JsonElement.class);
 					WrapModule module = this.convertToWrapIn(jsonElement, WrapModule.class);
 					this.installModule(module);
 					installData.setWrapModule(module);
-				}else if(file.getName().toLowerCase().endsWith(".app.zip")){
+				} else if (file.getName().toLowerCase().endsWith(".app.zip")) {
 					logger.print("开始安装自定义应用：{}", file.getName());
 					this.installCustomApp(file.getName(), FileUtils.readFileToByteArray(file));
 					installData.setCustomApp(file.getName());
 					logger.print("完成自定义应用安装：{}", file.getName());
-				}else if(file.getName().toLowerCase().endsWith(".zip")){
+				} else if (file.getName().toLowerCase().endsWith(".zip")) {
 					logger.print("开始安装静态资源");
 					try {
 						Business.dispatch(false, file.getName(), "", FileUtils.readFileToByteArray(file));
 						installData.setStaticResource(file.getName());
 					} catch (Exception e) {
-						logger.print("模块安装成功但静态资源安装失败:{}",e.getMessage());
+						logger.print("模块安装成功但静态资源安装失败:{}", e.getMessage());
 					}
 				}
 			}
@@ -146,16 +165,14 @@ class ActionInstallOrUpdate extends BaseAction {
 		return installData;
 	}
 
-	private InstallWo installModule(WrapModule module) throws Exception{
+	private InstallWo installModule(WrapModule module) throws Exception {
 		InstallWo wo = new InstallWo();
 		logger.print("开始安装应用");
-		if(module.getProcessPlatformList()!=null) {
+		if (module.getProcessPlatformList() != null) {
 			for (WrapProcessPlatform obj : module.getProcessPlatformList()) {
-				wo.getProcessPlatformList()
-						.add(ThisApplication.context().applications()
-								.putQuery(x_processplatform_assemble_designer.class,
-										Applications.joinQueryUri("input", "cover"), obj)
-								.getData(WoId.class).getId());
+				wo.getProcessPlatformList().add(
+						ThisApplication.context().applications().putQuery(x_processplatform_assemble_designer.class,
+								Applications.joinQueryUri("input", "cover"), obj).getData(WoId.class).getId());
 				obj.setIcon(null);
 				obj.setApplicationDictList(null);
 				obj.setFileList(null);
@@ -164,13 +181,11 @@ class ActionInstallOrUpdate extends BaseAction {
 				obj.setScriptList(null);
 			}
 		}
-		if(module.getCmsList()!=null) {
+		if (module.getCmsList() != null) {
 			for (WrapCms obj : module.getCmsList()) {
-				wo.getCmsList()
-						.add(ThisApplication.context().applications()
-								.putQuery(x_cms_assemble_control.class,
-										Applications.joinQueryUri("input", "cover"), obj)
-								.getData(WoId.class).getId());
+				wo.getCmsList().add(ThisApplication.context().applications()
+						.putQuery(x_cms_assemble_control.class, Applications.joinQueryUri("input", "cover"), obj)
+						.getData(WoId.class).getId());
 				obj.setAppIcon(null);
 				obj.setAppDictList(null);
 				obj.setCategoryInfoList(null);
@@ -179,13 +194,11 @@ class ActionInstallOrUpdate extends BaseAction {
 				obj.setScriptList(null);
 			}
 		}
-		if(module.getPortalList()!=null) {
+		if (module.getPortalList() != null) {
 			for (WrapPortal obj : module.getPortalList()) {
-				wo.getPortalList()
-						.add(ThisApplication.context().applications()
-								.putQuery(x_portal_assemble_designer.class,
-										Applications.joinQueryUri("input", "cover"), obj)
-								.getData(WoId.class).getId());
+				wo.getPortalList().add(ThisApplication.context().applications()
+						.putQuery(x_portal_assemble_designer.class, Applications.joinQueryUri("input", "cover"), obj)
+						.getData(WoId.class).getId());
 				obj.setIcon(null);
 				obj.setFileList(null);
 				obj.setPageList(null);
@@ -193,13 +206,11 @@ class ActionInstallOrUpdate extends BaseAction {
 				obj.setWidgetList(null);
 			}
 		}
-		if(module.getQueryList()!=null){
+		if (module.getQueryList() != null) {
 			for (WrapQuery obj : module.getQueryList()) {
-				wo.getQueryList()
-						.add(ThisApplication.context().applications()
-								.putQuery(x_query_assemble_designer.class,
-										Applications.joinQueryUri("input", "cover"), obj)
-								.getData(WoId.class).getId());
+				wo.getQueryList().add(ThisApplication.context().applications()
+						.putQuery(x_query_assemble_designer.class, Applications.joinQueryUri("input", "cover"), obj)
+						.getData(WoId.class).getId());
 				obj.setIcon(null);
 				obj.setRevealList(null);
 				obj.setViewList(null);
@@ -209,11 +220,10 @@ class ActionInstallOrUpdate extends BaseAction {
 			}
 		}
 
-		if(module.getServiceModuleList()!=null) {
+		if (module.getServiceModuleList() != null) {
 			for (WrapServiceModule obj : module.getServiceModuleList()) {
 				wo.getServiceModuleList()
-						.add(CipherConnectionAction.put(false,
-								Config.url_x_program_center_jaxrs("input", "cover"), obj)
+						.add(CipherConnectionAction.put(false, Config.url_x_program_center_jaxrs("input", "cover"), obj)
 								.getData(WoId.class).getId());
 				if (obj.getAgentList() != null) {
 					for (WrapAgent agent : obj.getAgentList()) {
@@ -221,7 +231,7 @@ class ActionInstallOrUpdate extends BaseAction {
 					}
 				}
 				if (obj.getInvokeList() != null) {
-					for(WrapInvoke invoke : obj.getInvokeList()){
+					for (WrapInvoke invoke : obj.getInvokeList()) {
 						invoke.setText(null);
 					}
 				}
@@ -231,16 +241,16 @@ class ActionInstallOrUpdate extends BaseAction {
 		return wo;
 	}
 
-	private void installCustomApp(String fileName, byte[] bytes) throws Exception{
+	private void installCustomApp(String fileName, byte[] bytes) throws Exception {
 		Nodes nodes = Config.nodes();
-		for (String node : nodes.keySet()){
-			if(nodes.get(node).getApplication().getEnable()) {
-				logger.print("socket deploy custom app{} to {}:{}",fileName, node, nodes.get(node).nodeAgentPort());
+		for (String node : nodes.keySet()) {
+			if (nodes.get(node).getApplication().getEnable()) {
+				logger.print("socket deploy custom app{} to {}:{}", fileName, node, nodes.get(node).nodeAgentPort());
 				try (Socket socket = new Socket(node, nodes.get(node).nodeAgentPort())) {
 					socket.setKeepAlive(true);
 					socket.setSoTimeout(10000);
 					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
+							DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 						Map<String, Object> commandObject = new HashMap<>();
 						commandObject.put("command", "redeploy:customZip");
 						commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
