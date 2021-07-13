@@ -53,22 +53,14 @@ class ActionSetPassword extends BaseAction {
 				if (StringUtils.isEmpty(wi.getConfirmPassword())) {
 					throw new ExceptionConfirmPasswordEmpty();
 				}
-				/*
-				if (!StringUtils.equals(wi.getNewPassword(), wi.getConfirmPassword())) {
-					throw new ExceptionTwicePasswordNotMatch();
-				}
-				if (StringUtils.equals(wi.getNewPassword(), wi.getOldPassword())) {
-					throw new ExceptionNewPasswordSameAsOldPassword();
-				}*/
 
 				String oldPassword = wi.getOldPassword();
 				String newPassword = wi.getNewPassword();
 				String confirmPassword = wi.getConfirmPassword();
 				String isEncrypted = wi.getIsEncrypted();
 
-				//RSA解秘
 				if (!StringUtils.isEmpty(isEncrypted)) {
-					if(isEncrypted.trim().equalsIgnoreCase("y")) {
+					if (isEncrypted.trim().equalsIgnoreCase("y")) {
 						oldPassword = this.decryptRSA(oldPassword);
 						newPassword = this.decryptRSA(newPassword);
 						confirmPassword = this.decryptRSA(confirmPassword);
@@ -81,7 +73,6 @@ class ActionSetPassword extends BaseAction {
 				if (StringUtils.equals(newPassword, oldPassword)) {
 					throw new ExceptionNewPasswordSameAsOldPassword();
 				}
-
 
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
 						&& StringUtils.equals(Config.token().getPassword(), oldPassword)) {
@@ -96,7 +87,6 @@ class ActionSetPassword extends BaseAction {
 					}
 				}
 
-
 				emc.beginTransaction(Person.class);
 				business.person().setPassword(person, newPassword);
 				emc.commit();
@@ -110,32 +100,33 @@ class ActionSetPassword extends BaseAction {
 		}
 	}
 
-
-		public  String decryptRSA(String strDecrypt) {
-			String privateKey;
-			String decrypt = null;
-			try {
-				privateKey = getPrivateKey();
-			    decrypt = Crypto.rsaDecrypt(strDecrypt, privateKey);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return decrypt;
+	public String decryptRSA(String strDecrypt) {
+		String privateKey;
+		String decrypt = null;
+		try {
+			privateKey = getPrivateKey();
+			decrypt = Crypto.rsaDecrypt(strDecrypt, privateKey);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return decrypt;
+	}
 
-		public  String  getPrivateKey() {
-			 String privateKey = "";
-			 try {
-				 privateKey = Config.privateKey();
-				 byte[] privateKeyB = Base64.decodeBase64(privateKey);
-				 privateKey = new String(Base64.encodeBase64(privateKeyB));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return privateKey;
+	public String getPrivateKey() {
+		String privateKey = "";
+		try {
+			privateKey = Config.privateKey();
+			byte[] privateKeyB = Base64.decodeBase64(privateKey);
+			privateKey = new String(Base64.encodeBase64(privateKeyB));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return privateKey;
+	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 1L;
 
 		@FieldDescribe("原密码")
 		private String oldPassword;

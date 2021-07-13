@@ -1,5 +1,17 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
+import java.util.List;
+import java.util.Objects;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
+import javax.persistence.Query;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,16 +34,6 @@ import com.x.query.assemble.designer.ThisApplication;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.express.statement.Runtime;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Parameter;
-import javax.persistence.Query;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
-import java.util.List;
-import java.util.Objects;
 
 class ActionExecuteV2 extends BaseAction {
 

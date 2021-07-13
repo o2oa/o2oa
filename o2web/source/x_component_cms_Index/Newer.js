@@ -131,7 +131,10 @@ MWF.xApplication.cms.Index.Newer = new Class({
             debugger
             this.documentAction.listDraftNext("(0)", 1, fielter, function(json){
                 if( json.data.length > 0 ){
-                    this._openDocument(json.data[0].id);
+                    var handle = this._openDocument(json.data[0].id);
+
+                    this.fireEvent("started", [json.data[0].id, json.data[0], handle]);
+
                     this.fireEvent( "postLoad" );
                 }else{
                     this._load();
@@ -475,11 +478,15 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 if( this.mask )this.mask.hide();
 
                 //this.markNode.destroy();
+
+                debugger;
+
+                var handle = this._openDocument( json.data.id );
+
+                this.fireEvent("started", [json.data.id, data, handle]);
+
                 this.close();
 
-                this.fireEvent("started", [json.data.id, data]);
-
-                this._openDocument( json.data.id );
                 //this.fireEvent("started", [json.data, title, this.categoryData.name]);
 
                 //this.app.refreshAll();
@@ -532,9 +539,9 @@ MWF.xApplication.cms.Index.Newer = new Class({
                         }
                     }.bind(this)
                 }
-                this.app.desktop.openApplication(el, "cms.Document", options);
+                return this.app.desktop.openApplication(el, "cms.Document", options);
             }else{
-                this.app.desktop.openApplication(el, "cms.Document", options);
+                return this.app.desktop.openApplication(el, "cms.Document", options);
             }
         }
     },
@@ -616,14 +623,15 @@ MWF.xApplication.cms.Index.Newer = new Class({
 
         MWF.Actions.get("x_processplatform_assemble_surface").saveData(function(){
 
-            this.fireEvent("started", [workId, workData]);
+
 
             if (currentTask.length==1){
                 var options = {"workId": workId};
-                this.app.desktop.openApplication(null, "process.Work", options);
-
+                var handle = this.app.desktop.openApplication(null, "process.Work", options);
+                this.fireEvent("started", [workId, workData, handle]);
                 this.createStartWorkResault(workInfors, title, processName, false);
             }else{
+                this.fireEvent("started", [workId, workData]);
                 this.createStartWorkResault(workInfors, title, processName, true);
             }
 
