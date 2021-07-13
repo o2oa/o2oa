@@ -8,6 +8,8 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.SortTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Attachment2;
@@ -16,16 +18,19 @@ import java.util.List;
 
 class ActionListWithFilter extends BaseAction {
 
+	private static Logger logger = LoggerFactory.getLogger(ActionListWithFilter.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String name) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			List<String> ids = business.attachment2().listWithName(effectivePerson.getDistinguishedName(),name);
+			List<String> ids = business.attachment2().listWithName(effectivePerson.getDistinguishedName(), name);
 			List<Wo> wos = Wo.copier.copy(emc.list(Attachment2.class, ids));
 			wos.stream().forEach(wo -> {
 				try {
 					wo.setPath(business.folder2().getSupPath(wo.getFolder()));
 				} catch (Exception e) {
+					logger.error(e);
 				}
 			});
 			SortTools.desc(wos, false, "createTime");
