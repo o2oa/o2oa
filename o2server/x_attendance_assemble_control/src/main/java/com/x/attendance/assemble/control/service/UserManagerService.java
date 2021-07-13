@@ -1,8 +1,11 @@
 package com.x.attendance.assemble.control.service;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.attendanceworkdayconfig.AttendanceWorkDayConfigAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Identity;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
@@ -18,6 +21,8 @@ import java.util.List;
  *
  */
 public class UserManagerService {
+
+	private static Logger logger = LoggerFactory.getLogger(UserManagerService.class);
 
 	public List<String> listIdentitiesWithPerson(String personName) throws Exception {
 		Business business = null;
@@ -243,6 +248,7 @@ public class UserManagerService {
 							return parentUnit.getDistinguishedName();
 						}
 					} catch (NullPointerException e) {
+						logger.error(e);
 					}
 				}
 			}
@@ -298,6 +304,7 @@ public class UserManagerService {
 					try {
 						parentUnit = business.organization().unit().getObject(parentUnitName);
 					} catch (NullPointerException e) {
+						logger.error(e);
 					}
 				}
 				if (parentUnit == null) {
