@@ -121,7 +121,8 @@ var MDomItem = new Class({
         RTFConfig : null, //CKEditor 的设置项
         mSelectorOptions : null, //自定义下拉组件设置项
         calendarOptions : null, //日期选择器的设置项
-        orgWidgetOptions : null //org组件的选项
+        orgWidgetOptions : null, //org组件的选项
+        orgOptions: null
     },
     initialize: function (container, options , parent, app, css ) {
         this.form = parent;
@@ -655,6 +656,9 @@ MDomItem.Util = {
                 if( callback )callback( array );
             }.bind(this)
         };
+        if( options.orgOptions ){
+            opt = Object.merge(opt, options.orgOptions);
+        }
         if( opt.types.length === 0 )opt.types = null;
         var selector = new MWF.O2Selector(container, opt );
     },
@@ -2875,6 +2879,9 @@ MDomItem.Org = new Class({
                 exclude : options.exclude,
                 expandSubEnable : options.expandSubEnable
             };
+            if( this.options.orgOptions ){
+                opt.orgOptions = this.options.orgOptions;
+            }
             MDomItem.Util.selectPerson( this.app.content, opt, function( array ){
                 item.empty();
                 this.orgData = this.module.orgData = [];
