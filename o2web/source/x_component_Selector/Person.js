@@ -2869,7 +2869,6 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }
     },
     overItem: function(){
-        debugger;
         //if (!this.isSelected){
         //    this.node.setStyles(this.selector.css.selectorItem_over);
         //    this.actionNode.setStyles(this.selector.css.selectorItemActionNode_over);
