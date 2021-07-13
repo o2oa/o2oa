@@ -41,24 +41,22 @@ public abstract class AbstractExcel2007Writer {
 		String sheetRef = sheet.getPackagePart().getPartName().getName();
 
 		// 保存模板
-		FileOutputStream os = new FileOutputStream("template.xlsx");
-		wb.write(os);
-		os.close();
+		try (FileOutputStream os = new FileOutputStream("template.xlsx")) {
+			wb.write(os);
+		}
 
 		// 生成xml文件
 		File tmp = File.createTempFile("sheet", ".xml");
-		Writer fw = new FileWriter(tmp);
-		sw = new SpreadsheetWriter(fw);
-		generate();
-		fw.close();
+		try (Writer fw = new FileWriter(tmp)) {
+			sw = new SpreadsheetWriter(fw);
+			generate();
+		}
 
 		// 使用产生的数据替换模板
 		File templateFile = new File("template.xlsx");
-		FileOutputStream out = new FileOutputStream(fileName);
-		substitute(templateFile, tmp, sheetRef.substring(1), out);
-		out.close();
-		// 删除文件之前调用一下垃圾回收器，否则无法删除模板文件
-		System.gc();
+		try (FileOutputStream out = new FileOutputStream(fileName)) {
+			substitute(templateFile, tmp, sheetRef.substring(1), out);
+		}
 		// 删除临时模板文件
 		if (templateFile.isFile() && templateFile.exists()) {
 			templateFile.delete();
