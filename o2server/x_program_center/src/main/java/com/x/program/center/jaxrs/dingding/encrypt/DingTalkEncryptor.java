@@ -192,7 +192,7 @@ public class DingTalkEncryptor {
 		try {
 			clazz = Class.forName(className);
 		} catch (Exception var3) {
-			var3.printStackTrace(System.out);
+			var3.printStackTrace();
 		}
 
 		return clazz;
@@ -219,7 +219,7 @@ public class DingTalkEncryptor {
 			Security.setProperty("crypto.policy", "limited");
 			RemoveCryptographyRestrictions();
 		} catch (Exception var1) {
-			var1.printStackTrace(System.out);
+			var1.printStackTrace();
 		}
 
 	}

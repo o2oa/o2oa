@@ -71,6 +71,7 @@ class ActionUploadWorkInfo extends BaseAction {
 				try {
 					workHtml = URLDecoder.decode(workHtml, StandardCharsets.UTF_8.name());
 				} catch (Exception e) {
+					logger.error(e);
 				}
 				if (workHtml.toLowerCase().indexOf("<html") == -1) {
 					workHtml = "<html><head></head><body>" + workHtml + "</body></html>";

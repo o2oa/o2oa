@@ -99,6 +99,7 @@ class ActionListMyFilterPaging extends BaseAction {
 			try {
 				urgeTime = Integer.parseInt(wi.getUrgeTime());
 			} catch (NumberFormatException e) {
+				logger.error(e);
 			}
 			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime),
 					DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));
@@ -170,6 +171,7 @@ class ActionListMyFilterPaging extends BaseAction {
 			try {
 				urgeTime = Integer.parseInt(wi.getUrgeTime());
 			} catch (NumberFormatException e) {
+				logger.error(e);
 			}
 			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime),
 					DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));

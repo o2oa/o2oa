@@ -1,5 +1,6 @@
 package com.x.query.assemble.surface.jaxrs.table;
 
+import com.x.attendance.assemble.control.service.UserManagerService;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -9,6 +10,8 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -20,6 +23,9 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Table;
 
 class ActionListPaging extends BaseAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionListPaging.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -34,11 +40,12 @@ class ActionListPaging extends BaseAction {
 			wos.stream().forEach(wo -> {
 				try {
 					Query query = emc.find(wo.getQuery(), Query.class);
-					if(query != null){
+					if (query != null) {
 						wo.setQueryName(query.getName());
 						wo.setQueryAlias(query.getAlias());
 					}
 				} catch (Exception e) {
+					logger.error(e);
 				}
 			});
 			result.setData(wos);
