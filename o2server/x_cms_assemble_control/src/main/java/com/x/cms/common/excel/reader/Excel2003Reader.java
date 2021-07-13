@@ -84,7 +84,7 @@ public class Excel2003Reader implements HSSFListener {
 	 */
 	public void process(String fileName) throws IOException {
 
-		try (POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(fileName))) {
+		try (FileInputStream fis = new FileInputStream(fileName); POIFSFileSystem fs = new POIFSFileSystem(fis)) {
 			MissingRecordAwareHSSFListener listener = new MissingRecordAwareHSSFListener(this);
 			formatListener = new FormatTrackingHSSFListener(listener);
 			HSSFEventFactory factory = new HSSFEventFactory();
