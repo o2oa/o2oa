@@ -160,7 +160,7 @@ public class ActiveMQ implements MQInterface {
 			java.security.UnrecoverableKeyException {
 		KeyStore ks = KeyStore.getInstance("JKS");
 		try (FileInputStream fis = new FileInputStream(keyStore)) {
-			ks.load(new FileInputStream(keyStore), keyStorePassword.toCharArray());
+			ks.load(fis, keyStorePassword.toCharArray());
 		}
 		KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 		kmf.init(ks, keyStorePassword.toCharArray());
