@@ -27,17 +27,16 @@ class ActionSearch extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionSearch.class);
 	private static ReentrantLock lock = new ReentrantLock();
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
-			throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if(StringUtils.isBlank(wi.getKeyword())){
+		if (StringUtils.isBlank(wi.getKeyword())) {
 			throw new ExceptionFieldEmpty("keyword");
 		}
 		logger.debug("{}搜索设计：{}的关键字：{}", effectivePerson.getDistinguishedName(), wi.getModuleList(), wi.getKeyword());
 		if (ListTools.isNotEmpty(wi.getModuleList())) {
 			result.setData(search(wi, effectivePerson));
-		}else{
+		} else {
 			lock.lock();
 			try {
 				result.setData(search(wi, effectivePerson));
@@ -48,52 +47,53 @@ class ActionSearch extends BaseAction {
 		return result;
 	}
 
-	private Wo search(final Wi wi, EffectivePerson effectivePerson) throws Exception{
+	private Wo search(final Wi wi, EffectivePerson effectivePerson) throws Exception {
 		Business business = new Business();
 		final Map<String, List<WiDesigner.ModuleApp>> moduleMap = new HashMap<>();
-		if(!ListTools.isEmpty(wi.getModuleList())){
-			for (Module module: wi.getModuleList()){
-				if(module.getModuleType().equalsIgnoreCase(ModuleType.cms.toString())
-						&& business.isCmsManager(effectivePerson)){
+		if (!ListTools.isEmpty(wi.getModuleList())) {
+			for (Module module : wi.getModuleList()) {
+				if (module.getModuleType().equalsIgnoreCase(ModuleType.cms.toString())
+						&& business.isCmsManager(effectivePerson)) {
 					moduleMap.put(ModuleType.cms.toString(), module.getModuleAppList());
 				}
-				if(module.getModuleType().equalsIgnoreCase(ModuleType.portal.toString())
-						&& business.isPortalManager(effectivePerson)){
+				if (module.getModuleType().equalsIgnoreCase(ModuleType.portal.toString())
+						&& business.isPortalManager(effectivePerson)) {
 					moduleMap.put(ModuleType.portal.toString(), module.getModuleAppList());
 				}
-				if(module.getModuleType().equalsIgnoreCase(ModuleType.processPlatform.toString())
-						&& business.isProcessManager(effectivePerson)){
+				if (module.getModuleType().equalsIgnoreCase(ModuleType.processPlatform.toString())
+						&& business.isProcessManager(effectivePerson)) {
 					moduleMap.put(ModuleType.processPlatform.toString(), module.getModuleAppList());
 				}
-				if(module.getModuleType().equalsIgnoreCase(ModuleType.query.toString())
-						&& business.isManager(effectivePerson)){
+				if (module.getModuleType().equalsIgnoreCase(ModuleType.query.toString())
+						&& business.isManager(effectivePerson)) {
 					moduleMap.put(ModuleType.query.toString(), module.getModuleAppList());
 				}
-				if(module.getModuleType().equalsIgnoreCase(ModuleType.service.toString())
-						&& business.isServiceManager(effectivePerson)){
+				if (module.getModuleType().equalsIgnoreCase(ModuleType.service.toString())
+						&& business.isServiceManager(effectivePerson)) {
 					moduleMap.put(ModuleType.service.toString(), module.getModuleAppList());
 				}
 			}
-		}else{
+		} else {
 			List<WiDesigner.ModuleApp> list = new ArrayList<>();
-			if(business.isCmsManager(effectivePerson)) {
+			if (business.isCmsManager(effectivePerson)) {
 				moduleMap.put(ModuleType.cms.toString(), list);
 			}
-			if(business.isPortalManager(effectivePerson)) {
+			if (business.isPortalManager(effectivePerson)) {
 				moduleMap.put(ModuleType.portal.toString(), list);
 			}
-			if(business.isProcessManager(effectivePerson)) {
+			if (business.isProcessManager(effectivePerson)) {
 				moduleMap.put(ModuleType.processPlatform.toString(), list);
 			}
-			if(business.isManager(effectivePerson)) {
+			if (business.isManager(effectivePerson)) {
 				moduleMap.put(ModuleType.query.toString(), list);
 			}
-			if(business.isServiceManager(effectivePerson)) {
+			if (business.isServiceManager(effectivePerson)) {
 				moduleMap.put(ModuleType.service.toString(), list);
 			}
 		}
 		Wo wo = new Wo();
-		wo.setProcessPlatformList(searchApp(wi, moduleMap, ModuleType.processPlatform.toString(), x_processplatform_assemble_designer.class));
+		wo.setProcessPlatformList(searchApp(wi, moduleMap, ModuleType.processPlatform.toString(),
+				x_processplatform_assemble_designer.class));
 		wo.setPortalList(searchApp(wi, moduleMap, ModuleType.portal.toString(), x_portal_assemble_designer.class));
 		wo.setCmsList(searchApp(wi, moduleMap, ModuleType.cms.toString(), x_cms_assemble_control.class));
 		wo.setQueryList(searchApp(wi, moduleMap, ModuleType.query.toString(), x_query_assemble_designer.class));
@@ -101,38 +101,43 @@ class ActionSearch extends BaseAction {
 		return wo;
 	}
 
-	private List<WrapDesigner> searchApp(final Wi wi, final Map<String, List<WiDesigner.ModuleApp>> moduleMap, final String moduleType, final Class<?> applicationClass){
+	private List<WrapDesigner> searchApp(final Wi wi, final Map<String, List<WiDesigner.ModuleApp>> moduleMap,
+			final String moduleType, final Class<?> applicationClass) {
 		List<WrapDesigner> swList = null;
-		if(moduleMap.containsKey(moduleType)) {
+		if (moduleMap.containsKey(moduleType)) {
 			try {
 				WiDesigner wiDesigner = new WiDesigner();
 				BeanUtils.copyProperties(wiDesigner, wi);
 				wiDesigner.setModuleAppList(moduleMap.get(moduleType));
-				List<WrapDesigner> designerList = ThisApplication.context().applications().postQuery(applicationClass,
-						Applications.joinQueryUri("designer", "search"), wiDesigner).getDataAsList(WrapDesigner.class);
+				List<WrapDesigner> designerList = ThisApplication.context().applications()
+						.postQuery(applicationClass, Applications.joinQueryUri("designer", "search"), wiDesigner)
+						.getDataAsList(WrapDesigner.class);
 				logger.debug("设计搜索关联{}的匹配设计个数：{}", moduleType, designerList.size());
 				getSearchRes(wi, designerList);
 				swList = designerList;
 			} catch (Exception e) {
 				logger.error(e);
 			}
-			if (swList!=null && swList.size() > 2) {
+			if (swList != null && swList.size() > 2) {
 				try {
-					SortTools.desc(swList, "designerType","appId");
+					SortTools.desc(swList, "designerType", "appId");
 				} catch (Exception e) {
+					logger.error(e);
 				}
 			}
 		}
 		return swList;
 	}
 
-	private void getSearchRes(final Wi wi, List<WrapDesigner> designerList){
-		if (!ListTools.isEmpty(designerList)){
+	private void getSearchRes(final Wi wi, List<WrapDesigner> designerList) {
+		if (!ListTools.isEmpty(designerList)) {
 			for (WrapDesigner designer : designerList) {
 				WrapDesigner.DesignerPattern pattern = designer.getScriptDesigner();
-				if(pattern!=null) {
-					Map<Integer, String> lines = patternLines(designer.getDesignerId() + "-" + designer.getUpdateTime().getTime(),
-							wi.getKeyword(), pattern.getPropertyValue(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
+				if (pattern != null) {
+					Map<Integer, String> lines = patternLines(
+							designer.getDesignerId() + "-" + designer.getUpdateTime().getTime(), wi.getKeyword(),
+							pattern.getPropertyValue(), wi.getCaseSensitive(), wi.getMatchWholeWord(),
+							wi.getMatchRegExp());
 					pattern.setLines(lines);
 					pattern.setPropertyValue(null);
 				}

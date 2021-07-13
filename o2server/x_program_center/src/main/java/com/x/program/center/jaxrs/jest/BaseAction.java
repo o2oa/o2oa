@@ -37,11 +37,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private static CopyOnWriteArrayList<Class<?>> assembles;
 
-	private static String HOST_LOCALHOST = "localhost";
+	private static final String HOST_LOCALHOST = "localhost";
 
 	protected String getHost(HttpServletRequest request) throws Exception {
-		URL url = new URL(request.getRequestURL().toString());
-		return url.getHost();
+		return new URL(request.getRequestURL().toString()).getHost();
 	}
 
 	protected boolean isUndefindHost(String host) {

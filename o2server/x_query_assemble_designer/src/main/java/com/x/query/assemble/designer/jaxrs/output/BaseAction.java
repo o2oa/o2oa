@@ -1,9 +1,9 @@
 package com.x.query.assemble.designer.jaxrs.output;
 
+import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.query.core.entity.wrap.WrapQuery;
-import com.x.base.core.project.cache.Cache.CacheCategory;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
