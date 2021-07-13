@@ -362,6 +362,8 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
         }
     },
     afterLoad: function(){
+        if( this.actionNode )this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
+        if( this.children )this.children.setStyle("display", "none");
         if (this.level===1) this.clickItem();
         var flag = false;
         this.data.woSubDirectUnitList.each(function(subData) {
