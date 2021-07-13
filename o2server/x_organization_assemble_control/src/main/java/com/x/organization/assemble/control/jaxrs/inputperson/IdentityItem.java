@@ -14,6 +14,7 @@ public class IdentityItem extends GsonPropertyObject {
 	private String personCode;
 	private String unitCode;
 	private Boolean major;
+	private String unique;
 	
 
 	private Integer row;
@@ -89,6 +90,10 @@ public class IdentityItem extends GsonPropertyObject {
 	public void setMajor(Boolean major) {
 		this.major = major;
 	}
+
+	public String getUnique() { return unique; }
+
+	public void setUnique(String unique) { this.unique = unique; }
 
 	public Integer getRow() {
 		return row;
