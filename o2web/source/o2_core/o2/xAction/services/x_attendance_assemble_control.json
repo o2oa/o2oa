@@ -40,7 +40,7 @@
   "uploadAttachment": {"uri": "/jaxrs/file/upload", "method": "POST", "enctype": "formData"},
   //"replaceAttachment": {"uri": "/servlet/update/{id}/document/{documentid}", "method": "POST", "enctype": "formData"},
   //"getAttachmentData": {"uri": "/servlet/download/{id}/document/{documentid}", "method": "GET"},
-  "getAttachmentStream": {"uri": "/jaxrs/file/download/{id}/stream", "method": "GET"},
+  "getAttachmentStream": {"uri": "/jaxrs/file/download/{id}/stream/true", "method": "GET"},
   "listAttachmentInfo" : {"uri" : "/jaxrs/attendanceimportfileinfo/list/all"},
   "deleteAttachment" : {"uri":"/jaxrs/attendanceimportfileinfo/{id}","method": "DELETE"},
   "getAttachmentInfo" : {"uri":"/jaxrs/attendanceimportfileinfo/{id}"},
