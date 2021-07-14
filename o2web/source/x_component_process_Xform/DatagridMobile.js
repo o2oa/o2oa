@@ -53,6 +53,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         this.json = json;
         this.form = form;
         this.field = true;
+        this.fieldModuleLoaded = false;
     },
 
     _loadUserInterface: function(){
@@ -88,12 +89,14 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
             // this.fireEvent("postLoad");
             // this.fireEvent("load");
             this._loadEditDatagrid(function(){
+                this.fieldModuleLoaded = true;
                 this.fireEvent("postLoad");
                 this.fireEvent("load");
             }.bind(this));
         }else{
             this._loadDatagridDataModules();
             this._loadReadDatagrid(function(){
+                this.fieldModuleLoaded = true;
                 this.fireEvent("postLoad");
                 this.fireEvent("load");
             }.bind(this));
@@ -150,7 +153,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         value = this._getBusinessData();
         if (!value){
             if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
-            if (!value.isAG) if (o2.typeOf(value)=="array") value = {"data": value || []};
+            if (!value.then) if (o2.typeOf(value)=="array") value = {"data": value || []};
         }
         return value || [];
     },
