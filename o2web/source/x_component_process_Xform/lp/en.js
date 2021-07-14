@@ -339,6 +339,9 @@ MWF.xApplication.process.Xform.LP = {
 
         "readedOpinion": "Opinion: ",
 
+        "setReaded": "Mark as read",
+        "readed": "Readed",
+
         "rollbackInfo": "Select the location of the file to be rollback to",
         "addSplitInfo": "Split data according to your business settings. The data should match the split setting in the process. multiple values with a comma (,)",
         "selectUnit": "Select Unit",
