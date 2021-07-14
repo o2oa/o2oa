@@ -59,6 +59,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
                 var text = value.replace(reg2,"&lt").replace(reg3,"&gt").replace(reg,"<br/>");
                 this.node.set("html", text);
             }
+            this.fieldModuleLoaded = true;
             //this.__setValue(v);
         }.bind(this), function(){});
         this.moduleValueAG = p;

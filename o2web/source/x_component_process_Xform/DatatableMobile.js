@@ -28,6 +28,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			this.fireEvent("load");
 			this._loadDatatable(function(){
 				this._loadImportExportAction();
+				this.fieldModuleLoaded = true;
 				this.fireEvent("postLoad");
 			}.bind(this));
 		},

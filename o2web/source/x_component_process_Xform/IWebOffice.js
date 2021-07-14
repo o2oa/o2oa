@@ -23,6 +23,7 @@ MWF.xApplication.process.Xform.IWebOffice = MWF.APPIWebOffice =  new Class({
         this.form = form;
         this.field = true;
         this.openedAttachment = null;
+        this.fieldModuleLoaded = false;
     },
     _loadUserInterface: function(){
         this.node.empty();
@@ -62,6 +63,7 @@ MWF.xApplication.process.Xform.IWebOffice = MWF.APPIWebOffice =  new Class({
             if (!this.json.isNotLoadNow){
                 this.loadOffice();
             }
+            this.fieldModuleLoaded = true;
         }else {
             //console.log(JSON.stringify(this.json))
             this.node.set("html","<h3><font color=red>只支持ie浏览器!</font></h3>");

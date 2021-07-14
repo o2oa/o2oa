@@ -37,6 +37,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         this.json = json;
         this.form = form;
         this.field = true;
+        this.fieldModuleLoaded = false;
     },
     _loadNode: function(){
         if (this.readonly || this.json.isReadonly){
@@ -212,6 +213,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
                 },"text": text}).inject( contentNode ); //.inject(this.node.getFirst() || this.node);
             }.bind(this));
 		}
+        this.fieldModuleLoaded = true;
     },
     /**
      * @summary 重新计算下拉选项，该功能通常用在下拉选项为动态计算的情况.
