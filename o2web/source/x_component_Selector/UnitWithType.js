@@ -307,7 +307,8 @@ MWF.xApplication.Selector.UnitWithType.SearchItem = new Class({
         this.loadForNormal(true);
     },
     _getShowName: function(){
-        return this.data.levelName || this.data.name;
+        // return this.data.levelName || this.data.name;
+        return this.data.name+((this.data.levelName) ? "("+this.data.levelName+")" : "");
     },
     loadSubItems: function( callback ){
     }
