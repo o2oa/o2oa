@@ -335,6 +335,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
     },
 
     __setValue: function(value){
+        this.moduleValueAG = null;
         this._setBusinessData(value);
 		var radios = this.node.getElements("input");
 		for (var i=0; i<radios.length; i++){
@@ -344,6 +345,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
 				break;
 			}
 		}
+        this.fieldModuleLoaded = true;
 	},
     /**
      * @summary 获取选中项的value和text。
@@ -432,6 +434,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
     },
 
     __setData: function(data){
+        this.moduleValueAG = null;
         this._setBusinessData(data);
 		var inputs = this.node.getElements("input");
 		
@@ -445,6 +448,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
 			}
             this.validationMode();
 		}
+        this.fieldModuleLoaded = true;
         this.fireEvent("setData");
 	},
 

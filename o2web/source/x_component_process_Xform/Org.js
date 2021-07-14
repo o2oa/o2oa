@@ -1178,47 +1178,65 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         if (typeOf(value)!=="array") value = (!!value) ? [value] : [];
         //value = (value.flat) ? value.flat() : value.flatten();
 
-        var p = o2.promiseAll(value).then(function(d){
-            if (typeOf(d)!=="array") d = (!!d) ? [d] : [];
-            d.each(function(da){
-                if (typeOf(da)!=="array") da = (!!da) ? [da] : [];
-                da.each(function(dd){
-                    if (dd){
-                        if (typeOf(dd)==="string"){
-                            var pp = this.getOrgAction()[this.getValueMethod(dd)](function(json){
-                                return MWF.org.parseOrgData(json.data, true, simple);
-                            }.bind(this), null, dd, true).catch(function(e){
-                                console.log("error:" + e);
-                                console.log(e);
-                            });
-                            ags.push(pp);
-                        }else{
-                            values.push(dd);
+        if (value.some(function(e){ return (e && o2.typeOf(e.then)=="function") }) || this.json.asyncMode==="yes"){
+            var p = Promise.all(value).then(function(d){
+                if (typeOf(d)!=="array") d = (!!d) ? [d] : [];
+                d.each(function(da){
+                    if (typeOf(da)!=="array") da = (!!da) ? [da] : [];
+                    da.each(function(dd){
+                        if (dd){
+                            if (typeOf(dd)==="string"){
+                                var pp = this.getOrgAction()[this.getValueMethod(dd)](function(json){
+                                    return MWF.org.parseOrgData(json.data, true, simple);
+                                }.bind(this), null, dd, true).catch(function(e){
+                                    console.log("error:" + e);
+                                    console.log(e);
+                                });
+                                ags.push(pp);
+                            }else{
+                                values.push(dd);
+                            }
                         }
-                    }
+                    }.bind(this));
                 }.bind(this));
-            }.bind(this));
-            if (ags.length){
-                return o2.promiseAll(ags).then(function(data){
-                    values = values.concat(data);
+                if (ags.length){
+                    return Promise.all(ags).then(function(data){
+                        values = values.concat(data);
+                        flag = true;
+                        this.__setValue(values);
+                        return values;
+                    }.bind(this), function(){});
+                }else{
                     flag = true;
                     this.__setValue(values);
-                    return values;
-                }.bind(this), function(){});
-            }else{
-                flag = true;
-                this.__setValue(values);
-                return values
-            }
-        }.bind(this), function(){});
+                    return values
+                }
+            }.bind(this), function(){});
 
-        this.moduleValueAG = p;
-        if (p && p.then) p.then(function(){
-            this.moduleValueAG = null;
-        }.bind(this), function(){
-            this.moduleValueAG = null;
-        }.bind(this));
-        return p;
+            this.moduleValueAG = p;
+            if (p && p.then) p.then(function(){
+                this.moduleValueAG = null;
+            }.bind(this), function(){
+                this.moduleValueAG = null;
+            }.bind(this));
+            return p;
+        }else{
+            value.each(function(dd){
+                if (dd){
+                    if (typeOf(dd)==="string"){
+                        this.getOrgAction()[this.getValueMethod(dd)](function(json){
+                            values.push(MWF.org.parseOrgData(json.data, true, simple));
+                        }.bind(this), null, dd, false);
+                    }else{
+                        values.push(dd);
+                    }
+                }
+            }.bind(this));
+            this.__setValue(values);
+            return values
+        }
+
+
 
         // var ag = o2.AG.all(value).then(function(d) {
         //     if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];

@@ -27,6 +27,7 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
         this.json = json;
         this.form = form;
         this.field = true;
+        this.fieldModuleLoaded = false;
     },
     _loadNode: function(){
         if (this.readonly || this.json.isReadonly){

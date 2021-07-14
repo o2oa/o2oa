@@ -112,6 +112,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
         if (this.readonly || this.json.isReadonly) this.node.set("text", v);
         this.moduleValueAG = null;
+        this.fieldModuleLoaded = true;
         return value;
     },
 
