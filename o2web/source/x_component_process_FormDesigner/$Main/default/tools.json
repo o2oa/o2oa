@@ -213,7 +213,7 @@
     "className": "IWebOffice"
   },
   "yozoOffice": {
-    "icon": "yozo.png",
+    "icon": "yozoOffice.png",
     "text": "yozoOffice",
     "className": "YozoOffice"
   },
