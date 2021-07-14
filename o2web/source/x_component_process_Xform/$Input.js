@@ -17,6 +17,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         this.json = json;
         this.form = form;
         this.field = true;
+        this.fieldModuleLoaded = false;
     },
 	
 	_loadUserInterface: function(){
@@ -219,7 +220,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         //     }.bind(this));
         // }else {
         if (!!value && o2.typeOf(value.then)=="function"){
-            var p = o2.promiseAll(value).then(function(v){
+            var p = Promise.resolve(value).then(function(v){
                 this.__setValue(v);
             }.bind(this), function(){});
             this.moduleValueAG = p;
@@ -238,6 +239,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
         if (this.readonly || this.json.isReadonly) this.node.set("text", value);
         this.moduleValueAG = null;
+        this.fieldModuleLoaded = true;
         return value;
     },
 

@@ -1304,9 +1304,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     //if (o2.typeOf(v)==="string") v = o2.txt(v);
                     data[id] = v
                 } else {
-                    var v = module.getData();
-                    //if (o2.typeOf(v)==="string") v = o2.txt(v);
-                    data[id] = v;
+                    if (module.fieldModuleLoaded!==false && module.readonly!==true){
+                        var v = module.getData();
+                        //if (o2.typeOf(v)==="string") v = o2.txt(v);
+                        data[id] = v;
+                    }
                 }
             }
         }.bind(this));

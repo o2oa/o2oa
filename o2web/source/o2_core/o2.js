@@ -1969,14 +1969,29 @@ if (window.Promise && !Promise.any){
             if (p.some(function(e){ return (e && o2.typeOf(e.then)=="function") })){
                 return Promise.all(p);
             }else{
-                return { "then": function(s){ if (s) s(p); return this;} };
-                //return new Promise(function(s){s(p); return this;});
+                return {
+                    "then": function(s){
+                        if (s){
+                            var r = s(p);
+                            return r || this;
+                        }
+                        return this;
+                    }
+                };
             }
         }else{
             if (p && o2.typeOf(p.then)=="function"){
                 return Promise.resolve(p);
             }else{
-                return { "then": function(s){ if (s) s(p); return this;} };
+                return {
+                    "then": function(s){
+                        if (s){
+                            var r = s(p);
+                            return r || this;
+                        }
+                        return this;
+                    }
+                };
                 //return new Promise(function(s){s(p); return this;});
             }
         }

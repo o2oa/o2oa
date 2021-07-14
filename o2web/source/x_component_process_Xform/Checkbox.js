@@ -262,12 +262,14 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
     },
 
     __setValue: function(value){
+        this.moduleValueAG = null;
         this._setBusinessData(value);
         var radios = this.node.getElements("input");
         for (var i=0; i<radios.length; i++){
             var radio = radios[i];
             radio.checked = value.indexOf(radio.value) != -1;
         }
+        this.fieldModuleLoaded = true;
     },
     /**
      * @summary 获取选中的值和文本.
@@ -358,6 +360,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
     },
 
     __setData: function(data){
+        this.moduleValueAG = null;
         this._setBusinessData(data);
 
 		var inputs = this.node.getElements("input");
@@ -379,6 +382,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
 			});
             this.validationMode();
 		}
+        this.fieldModuleLoaded = true;
         this.fireEvent("setData");
 	},
 

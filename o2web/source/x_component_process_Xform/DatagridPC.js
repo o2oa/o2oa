@@ -164,6 +164,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			this.json = json;
 			this.form = form;
 			this.field = true;
+			this.fieldModuleLoaded = false;
 		},
 
 		_loadUserInterface: function(){
@@ -198,6 +199,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 				this._loadEditDatagrid(function(){
 					this._loadImportExportAction();
+					this.fieldModuleLoaded = true;
 					this.fireEvent("postLoad");
 					this.fireEvent("load");
 				}.bind(this));
@@ -208,6 +210,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 				this._loadReadDatagrid(function(){
 					if(this.editorTr)this.editorTr.setStyle("display", "none");
 					this._loadImportExportAction();
+					this.fieldModuleLoaded = true;
 					this.fireEvent("postLoad");
 					this.fireEvent("load");
 				}.bind(this));

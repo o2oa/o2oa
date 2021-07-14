@@ -159,6 +159,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.json = json;
 			this.form = form;
 			this.field = true;
+			this.fieldModuleLoaded = false;
 		},
 
 		_loadUserInterface: function(){
@@ -216,6 +217,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.fireEvent("load");
 			this._loadDatatable(function(){
 				this._loadImportExportAction();
+				this.fieldModuleLoaded = true;
 				this.fireEvent("postLoad");
 			}.bind(this));
 		},
