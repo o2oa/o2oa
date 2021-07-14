@@ -305,6 +305,7 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
     },
     initData: function(){
         this.items=[];
+        this.currentPage = 1;
         this.documents = {};
         this.isItemsLoaded = false;
         this.isItemLoadding = false;
@@ -329,6 +330,7 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
         this.documents = null;
         MWF.release(this.items);
         this.items=[];
+        this.currentPage = 1;
         this.documents = {};
         this.container.empty();
         this.isItemsLoaded = false;
@@ -503,7 +505,9 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
     },
     _getCurrentPageData: function(callback, count){
         if(!count)count=20;
-        var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
+        // var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
+        var page = this.currentPage || 1;
+        this.currentPage = page + 1;
         var data = {
             "categoryIdList": [this.explorer.categoryData.id ],
             "statusList": [this.explorer.options.status],
@@ -518,13 +522,21 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
             for(var f in filterResult ){
                 data[f] = filterResult[f];
             }
-            this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
                 if (callback) callback(json);
             });
+
+            // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            //     if (callback) callback(json);
+            // });
         }else{
-            this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
                 if (callback) callback(json);
             });
+            // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            //     if (callback) callback(json);
+            // });
         }
     },
 
@@ -600,7 +612,9 @@ MWF.xApplication.cms.Module.ListExplorer.ListForALL = new Class({
     },
     _getCurrentPageData: function(callback, count){
         if(!count)count=20;
-        var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
+        // var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
+        var page = this.currentPage || 1;
+        this.currentPage = page + 1;
         var data = {
             "appIdList": [ this.explorer.columnData.id ],
             "statusList": [ this.explorer.options.status ],
@@ -615,13 +629,19 @@ MWF.xApplication.cms.Module.ListExplorer.ListForALL = new Class({
             for(var f in filterResult ){
                 data[f] = filterResult[f];
             }
-            this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
                 if (callback) callback(json);
             });
+            // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            //     if (callback) callback(json);
+            // });
         }else{
-            this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
                 if (callback) callback(json);
             });
+            // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            //     if (callback) callback(json);
+            // });
         }
     }
 
@@ -680,7 +700,9 @@ MWF.xApplication.cms.Module.ListExplorer.ListForDraft = new Class({
     },
     _getCurrentPageData: function(callback, count){
         if(!count)count=20;
-        var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
+        // var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
+        var page = this.currentPage || 1;
+        this.currentPage = page + 1;
         var data = {
             "appIdList": [ this.explorer.columnData.id ],
             "statusList": [ "draft" ],
@@ -695,13 +717,19 @@ MWF.xApplication.cms.Module.ListExplorer.ListForDraft = new Class({
             for(var f in filterResult ){
                 data[f] = filterResult[f];
             }
-            this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
                 if (callback) callback(json);
             });
+            // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            //     if (callback) callback(json);
+            // });
         }else{
-            this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
                 if (callback) callback(json);
             });
+            // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            //     if (callback) callback(json);
+            // });
         }
     }
 
