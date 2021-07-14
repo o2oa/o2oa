@@ -53,6 +53,7 @@ MWF.xApplication.cms.Column.LP = {
 		"create" : "新建分类",
 		"nameLabel" : "分类名称",
 		"aliasLabel" : "分类别名",
+		"sendNotify" : "发布时是否发送消息",
 		"descriptionLabel" : "分类描述",
 		"sortLabel" : "分类排序",
 		"columnLabel" : "所属栏目",
