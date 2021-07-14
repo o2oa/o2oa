@@ -304,7 +304,7 @@ MWF.xApplication.Selector.UnitWithType.SearchItem = new Class({
     //Extends: MWF.xApplication.Selector.Unit.Item,
     Extends: MWF.xApplication.Selector.UnitWithType.Item,
     load : function(){
-        this.loadForNormal();
+        this.loadForNormal(true);
     },
     _getShowName: function(){
         return this.data.levelName || this.data.name;

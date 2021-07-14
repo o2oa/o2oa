@@ -852,7 +852,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
 MWF.xApplication.Selector.Unit.SearchItem = new Class({
     Extends: MWF.xApplication.Selector.Unit.Item,
     load : function(){
-        this.loadForNormal();
+        this.loadForNormal(true);
     },
     _getShowName: function(){
         return this.data.levelName || this.data.name;
