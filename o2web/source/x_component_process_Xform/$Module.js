@@ -102,6 +102,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             this._afterLoaded();
             this.fireEvent("postLoad");
             this.fireEvent("load");
+
+            this.moduleLoaded = true;
         }
     },
     _loadUserInterface: function(){

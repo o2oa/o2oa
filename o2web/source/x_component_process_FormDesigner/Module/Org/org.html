@@ -49,6 +49,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.asyncMode}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="asyncMode" value="yes" text{($.asyncMode=='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="asyncMode" value="no" text{($.asyncMode!=='yes')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.separator}}:</td>
                 <td class="editTableValue">
                     <input type="text" name="splitShow" value="text{$.splitShow}" class="editTableInput"/>
