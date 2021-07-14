@@ -775,6 +775,13 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
             this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setDocumentTypeSuccess );
         }.bind(this))
     },
+    setSendNotify: function( isSend ){
+        var d = this.data;
+        d.sendNotify = isSend;
+        this.app.restActions.saveCategory(  d, function( json ){
+            this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setSendNotifySuccess );
+        }.bind(this))
+    },
     setEditForm : function( formId, formName ){
         var d = this.data;
         d.formId = formId;
@@ -2647,6 +2654,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         html += "<tr><td class='formTitle'>"+this.app.lp.category.documentType +"</td><td id='formCategoryType' class='formValue'>"+"</td></tr>"; //(this.category.data.documentType || "" )+
         //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.category.excelImportView +"</td><td class='formValue'><div id='formImportViewId' style='cursor:pointer;width:90%;min-height:22px;overflow:hidden;border:1px solid #ccc;border-radius: 3px;'></div></td></td></tr>"; //(this.category.data.documentType || "" )+
+        html += "<tr><td class='formTitle'>"+this.app.lp.category.sendNotify +"</td><td id='formCategorySendNotify' class='formValue'></td></tr>"; //"+this.category.data.categoryAlias+"
         html += "</table>";
         this.propertyContentNode.set("html", html);
         this.propertyContentNode.getElements("td.formTitle").setStyles(this.app.css.propertyBaseContentTdTitle);
@@ -2672,6 +2680,20 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
             }
         });
         this.typeSelect.load();
+
+        var sendNotifyValue = o2.typeOf(this.category.data.sendNotify) === "boolean" ? this.category.data.sendNotify : true;
+        this.sendNotify = new MDomItem( this.propertyContentNode.getElement("#formCategorySendNotify"), {
+            type : "select",
+            value : sendNotifyValue.toString(),
+            selectValue : lp.sendNotifySelectValue,
+            selectText: lp.sendNotifySelectText,
+            event : {
+                change : function( item ){
+                    this.category.setSendNotify( item.getValue() !== "false" );
+                }.bind(this)
+            }
+        });
+        this.sendNotify.load();
 
         var value = this.category.data.importViewId ? [{
             id : this.category.data.importViewId,
