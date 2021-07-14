@@ -53,6 +53,7 @@ MWF.xApplication.cms.Column.LP = {
         "create": "Create a new category",
         "nameLabel": "Category Name",
         "aliasLabel": "Category Alias",
+        "sendNotify": "Send Message",
         "descriptionLabel": "Category description",
         "sortLabel": "Queue number",
         "columnLabel": "AppInfo",
