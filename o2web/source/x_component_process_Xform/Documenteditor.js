@@ -32,6 +32,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.json = json;
         this.form = form;
         this.field = true;
+        this.fieldModuleLoaded = false;
     },
     _loadCss: function(reload){
         var key = encodeURIComponent(this.cssPath);
@@ -75,6 +76,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             this._queryLoaded();
             this._loadUserInterface(function(){
+
+                this.fieldModuleLoaded = true;
+
                 this.fireEvent("postLoad");
                 this.fireEvent("afterLoad");
                 this.fireEvent("load");
