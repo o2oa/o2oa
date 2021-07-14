@@ -212,6 +212,11 @@
     "text": "iWebOffice",
     "className": "IWebOffice"
   },
+  "yozoOffice": {
+    "icon": "yozoOffice.png",
+    "text": "yozoOffice",
+    "className": "YozoOffice"
+  },
   "statementSelector": {
     "icon": "statementSelector.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.statementSelector,
