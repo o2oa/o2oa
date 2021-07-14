@@ -24,6 +24,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
         this.json = json;
         this.form = form;
         this.field = true;
+        this.fieldModuleLoaded = false;
     },
     load: function(){
 
@@ -57,6 +58,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                     });
                 }.bind(this))
             }
+            this.fieldModuleLoaded = true;
         }else{
             var config = Object.clone(this.json.editorProperties);
             if (this.json.config){
@@ -145,6 +147,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                 // }.bind(this));
             }
 
+            this.fieldModuleLoaded = true;
 
             //    this._loadEvents();
         }.bind(this));
@@ -438,7 +441,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
      */
     getData: function(){
         this.clearEcnetNodes();
-        return this.editor ? this.editor.getData() : "";
+        return this.editor ? this.editor.getData() : this._getBusinessData();
     },
     /**
      * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。

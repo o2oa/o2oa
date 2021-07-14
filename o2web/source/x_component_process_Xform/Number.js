@@ -263,6 +263,7 @@ debugger;
         if (this.node.getFirst()) this.node.getFirst().set("value", value || "0");
         if (this.readonly || this.json.isReadonly) this.node.set("text", value);
         this.moduleValueAG = null;
+        this.fieldModuleLoaded = true;
         return value;
     }
 });
