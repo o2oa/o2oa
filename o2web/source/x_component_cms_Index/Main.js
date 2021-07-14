@@ -721,17 +721,32 @@ MWF.xApplication.cms.Index.Column = new Class({
 	},
 	getDocumentData: function(callback, count, filter){
 		if(!count)count=6;
-		var id = "(0)";
+		var page = 1;
 		if(!filter){
 			filter = {
 				"appIdList": [this.data.id],
-				"statusList": ["published"]
+				"statusList": ["published"],
+				"documentType": "全部",
+				"justData": true
 			}
 		}
-		this.app.restActions.listDocumentFilterNext(id, count, filter, function(json){
+		o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count, filter, function(json){
 			if (callback) callback(json);
 		});
 	},
+	// getDocumentData: function(callback, count, filter){
+	// 	if(!count)count=6;
+	// 	var id = "(0)";
+	// 	if(!filter){
+	// 		filter = {
+	// 			"appIdList": [this.data.id],
+	// 			"statusList": ["published"]
+	// 		}
+	// 	}
+	// 	this.app.restActions.listDocumentFilterNext(id, count, filter, function(json){
+	// 		if (callback) callback(json);
+	// 	});
+	// },
 	loadMoreItem: function(total, size){
 		var _self = this;
 		this.moreArea = new Element("div",{
