@@ -245,7 +245,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         }, function (json) {
             this.allUnitObjectWithDuty = {};
             json.data.each(function (u) {
-                this.allUnitObjectWithDuty[u.levelName] = u;
+                if(u && u.levelName)this.allUnitObjectWithDuty[u.levelName] = u;
             }.bind(this));
             if (callback) callback();
         }.bind(this))
