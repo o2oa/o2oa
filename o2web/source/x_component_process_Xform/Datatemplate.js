@@ -153,6 +153,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.json = json;
 			this.form = form;
 			this.field = true;
+			this.fieldModuleLoaded = false;
 		},
 
 		_loadUserInterface: function(){
@@ -206,6 +207,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.fireEvent("load");
 			this._loadDataTemplate(function(){
 				// this._loadImportExportAction();
+				this.fieldModuleLoaded = true;
 				this.fireEvent("postLoad");
 			}.bind(this));
 		},
