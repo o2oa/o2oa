@@ -108,6 +108,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         this.form = form;
         this.field = true;
         this.openedAttachment = null;
+        this.fieldModuleLoaded = false;
     },
 	_loadUserInterface: function(){
 		this.node.empty();
@@ -144,6 +145,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         }else{
             if (this.officeOCX) this.officeOCX.BeginOpenFromURL(file, true, this.readonly);
         }
+        this.fieldModuleLoaded = true;
     },
     getProgID: function(){
         switch (this.json.officeType){

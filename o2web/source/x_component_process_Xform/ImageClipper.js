@@ -22,6 +22,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
         this.json = json;
         this.form = form;
         this.field = true;
+        this.fieldModuleLoaded = false;
     },
     _loadUserInterface: function(){
 	    debugger;
@@ -96,6 +97,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
                 }.bind(this));
             }
         }.bind(this));
+        this.fieldModuleLoaded = true;
 	},
     getTextData : function(){
         var value = this._getBusinessData() || "";

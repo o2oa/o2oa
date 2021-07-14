@@ -36,6 +36,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
         this.json = json;
         this.form = form;
         this.field = true;
+		this.fieldModuleLoaded = false;
     },
     _loadNode: function(){
         if (this.readonly|| this.json.isReadonly){
@@ -345,6 +346,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 				}
 			}
 		}
+		this.fieldModuleLoaded = true;
 		this.moduleValueAG = null;
 	},
 
@@ -473,6 +475,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 			});
 			this.validationMode();
 		}
+		this.fieldModuleLoaded = true;
 		this.fireEvent("setData", [data]);
 	}
 	

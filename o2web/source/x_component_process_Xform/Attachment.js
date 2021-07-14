@@ -1155,6 +1155,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         this.json = json;
         this.form = form;
         this.field = true;
+        this.fieldModuleLoaded = false;
     },
 
     _loadUserInterface: function () {
@@ -1164,6 +1165,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             this.loadAttachmentController();
             this.fireEvent("load");
         }
+        this.fieldModuleLoaded = true;
     },
     reload: function(){
         this.node.empty();
