@@ -1456,7 +1456,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     //     }
     //     return this.fullWidthFlagNode;
     // },
-    _printDoc: function(){
+    _printDoc: function(e,el){
+        e.disable();
         var scale = this.scale;
         this.toWord(function(data, filename){
             if (filename){
@@ -1469,6 +1470,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
             }
             this.scaleTo(scale);
+            e.enable();
         }.bind(this), "", null, true);
     },
     _historyDoc: function(){
