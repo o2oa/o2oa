@@ -84,7 +84,7 @@ MWF.xApplication.Org.LP = {
     "unitDescription": "组织描述",
     "editUnit": "编辑组织信息",
     "saveUnit": "保存组织信息",
-    "inputUnitInfor": "请输入组织名称",
+    "inputUnitInfor": "请输入组织名称和唯一编码",
     "orderNumber": "排序值",
 
 
@@ -226,7 +226,7 @@ MWF.xApplication.Org.LP = {
     "attributeValue": "值",
 
     //"inputPersonInfor": "请输入完整人员信息（人员名称、人员工号、手机号码、性别必填）",
-    "inputPersonInfor": "请输入完整人员信息（人员名称、手机号码、性别必填）",
+    "inputPersonInfor": "请输入完整人员信息（人员名称、唯一编码、手机号码、性别必填）",
     "personAttributeText": "个人属性",
     "personIdentityText": "个人身份",
     "controllerListText": "管理者",
