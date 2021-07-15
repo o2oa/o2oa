@@ -1275,7 +1275,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
 
     save: function(){
         var tdContents = this.editContentNode.getElements("td.inforContent");
-        if (!this.nameInputNode.get("value")){
+        if (!this.nameInputNode.get("value") || !this.uniqueInputNode.get("value")){
             this.explorer.app.notice(this.explorer.app.lp.inputUnitInfor, "error", this.explorer.propertyContentNode);
             return false;
         }

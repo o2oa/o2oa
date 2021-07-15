@@ -891,7 +891,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             }
         }
         //if (!this.nameInputNode.get("value") || !this.employeeInputNode.get("value") || !this.mobileInputNode.get("value") || !gender){
-        if (!this.nameInputNode.get("value") || !this.mobileInputNode.get("value") || !gender){
+        if (!this.nameInputNode.get("value") || !this.mobileInputNode.get("value") || !this.uniqueInputNode.get("value") || !gender){
             this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor, "error", this.explorer.propertyContentNode);
             return false;
         }
