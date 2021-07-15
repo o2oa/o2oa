@@ -364,12 +364,18 @@ class ActionInputAll extends BaseAction {
 				if(majorStr.equals("true")){
 					major = BooleanUtils.toBooleanObject(majorStr);
 				}
+
 				//if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(mobile)) {
 					IdentityItem identityItem = new IdentityItem();
 					identityItem.setRow(i);
 					identityItem.setPersonCode(unique);
 					identityItem.setUnitCode(unitCode);
 					identityItem.setMajor(major);
+					if (null != configurator.getIdentityUniqueColumnColumn()) {
+						String identityUnique = configurator.getCellStringValue(row.getCell(configurator.getIdentityUniqueColumnColumn()));
+						identityUnique = StringUtils.trimToEmpty(identityUnique);
+						identityItem.setUnique(identityUnique);
+					}
 					
 					EntityManagerContainer emc = business.entityManagerContainer();
 					Person personobj = null;
@@ -486,8 +492,14 @@ class ActionInputAll extends BaseAction {
 				DutyItem dutyItem = new DutyItem();
 				dutyItem.setRow(i);
 				dutyItem.setName(dutyNmae);
-				dutyItem.setUnique(UUID.randomUUID().toString()+unitCode);
+				//dutyItem.setUnique(UUID.randomUUID().toString()+unitCode);
 				dutyItem.setDescription(description);
+
+				if (null != configurator.getDutyUniqueColumn()) {
+					String dutyUnique = configurator.getCellStringValue(row.getCell(configurator.getDutyUniqueColumn()));
+					dutyUnique = StringUtils.trimToEmpty(dutyUnique);
+					dutyItem.setUnique(dutyUnique);
+				}
 
 				if(StringUtils.isNotEmpty(unitCode)){
 					Unit iUnit = emc.flag(unitCode, Unit.class);
