@@ -76,6 +76,7 @@ class ActionTypeSnap extends BaseAction {
 				Snap snap = new Snap(work);
 				snap.setProperties(snap(business, work.getJob(), items, works, tasks, taskCompleteds, reads,
 						readCompleteds, reviews, workLogs, records, attachments, documentVersions));
+				
 				snap.setType(Snap.TYPE_SNAP);
 				emc.beginTransaction(Snap.class);
 				emc.persist(snap, CheckPersistType.all);
