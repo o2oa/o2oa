@@ -1027,7 +1027,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         if (value.length==1 && !(value[0])) value=[];
 
         var promise = this._setValue(value);
-        promise.then(function(values){
+        Promise.resolve(promise).then(function(values){
             o2.promiseAll(values).then(function(v){
                 this.checkChange(oldValues, v)
             }.bind(this), function(){});
