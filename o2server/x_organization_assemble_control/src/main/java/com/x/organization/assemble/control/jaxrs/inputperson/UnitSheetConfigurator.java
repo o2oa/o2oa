@@ -56,7 +56,7 @@ public class UnitSheetConfigurator extends GsonPropertyObject {
 					} else if (orderNumberItems.contains(str)) {
 						this.orderNumberColumn = i;
 					} else if (descriptionItems.contains(str)) {
-							this.descriptionColumn = i;
+						this.descriptionColumn = i;
 					}else {
 						Matcher matcher = attributePattern.matcher(str);
 						if (matcher.matches()) {
@@ -145,5 +145,4 @@ public class UnitSheetConfigurator extends GsonPropertyObject {
 	public Integer getSheetIndex() {
 		return sheetIndex;
 	}
-
 }

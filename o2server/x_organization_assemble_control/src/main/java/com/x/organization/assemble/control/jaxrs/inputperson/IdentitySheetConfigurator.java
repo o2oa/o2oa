@@ -28,6 +28,7 @@ public class IdentitySheetConfigurator extends GsonPropertyObject {
 	private Integer uniqueColumn;
 	private Integer unitCodeColumn;
 	private Integer majorColumn;
+	private Integer identityUniqueColumn;
 
 	private Map<String, Integer> attributes = new HashMap<>();
 
@@ -48,6 +49,8 @@ public class IdentitySheetConfigurator extends GsonPropertyObject {
 						this.unitCodeColumn = i;
 					}  else if (majorItems.contains(str)) {
 						this.majorColumn = i;
+					}else if (identityUniqueItems.contains(str)) {
+						this.identityUniqueColumn = i;
 					} else {
 						Matcher matcher = attributePattern.matcher(str);
 						if (matcher.matches()) {
@@ -63,6 +66,7 @@ public class IdentitySheetConfigurator extends GsonPropertyObject {
 	private static List<String> uniqueItems = Arrays.asList(new String[] { "人员唯一编码 *", "员工账号 *", "unique" });
 	private static List<String> unitCodeItems = Arrays.asList(new String[] { "组织编号 *", "组织唯一编码 *", "unitCode" });
 	private static List<String> majorItems = Arrays.asList(new String[] { "主兼职","major" });
+	private static List<String> identityUniqueItems = Arrays.asList(new String[] { "身份编码",  "identityUnique"});
 
 	public String getCellStringValue(Cell cell) {
 		if (null != cell) {
@@ -108,6 +112,10 @@ public class IdentitySheetConfigurator extends GsonPropertyObject {
 
 	public Map<String, Integer> getAttributes() {
 		return attributes;
+	}
+
+	public Integer getIdentityUniqueColumnColumn() {
+		return identityUniqueColumn;
 	}
 
 	public Integer getFirstRow() {
