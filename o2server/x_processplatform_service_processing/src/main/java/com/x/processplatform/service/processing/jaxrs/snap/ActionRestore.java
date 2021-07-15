@@ -1,12 +1,13 @@
 package com.x.processplatform.service.processing.jaxrs.snap;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -104,30 +105,6 @@ class ActionRestore extends BaseAction {
 			}
 		}
 
-		private void attachment(Business business, Snap snap) throws Exception {
-			EntityManagerContainer emc = business.entityManagerContainer();
-			List<Attachment> attachments = emc.listEqual(Attachment.class, Attachment.job_FIELDNAME, snap.getJob());
-			attachments.stream().filter(o -> !snap.getProperties().getAttachmentList().contains(o)).forEach(o -> {
-				try {
-					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-							o.getStorage());
-					if (null != mapping) {
-						o.deleteContent(mapping);
-					}
-					emc.remove(o, CheckRemoveType.all);
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			attachments.stream().filter(o -> snap.getProperties().getAttachmentList().contains(o)).forEach(o -> {
-				try {
-					emc.remove(o, CheckRemoveType.all);
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-		}
-
 		private void restore(Business business, Snap snap) throws Exception {
 			EntityManagerContainer emc = business.entityManagerContainer();
 			emc.beginTransaction(Work.class);
@@ -141,38 +118,15 @@ class ActionRestore extends BaseAction {
 			emc.beginTransaction(DocumentVersion.class);
 			emc.beginTransaction(Item.class);
 			emc.beginTransaction(Attachment.class);
-			for (Task o : snap.getProperties().getTaskList()) {
-				emc.persist(o, CheckPersistType.all);
-				MessageFactory.task_create(o);
-			}
-			for (TaskCompleted o : snap.getProperties().getTaskCompletedList()) {
-				emc.persist(o, CheckPersistType.all);
-				MessageFactory.taskCompleted_create(o);
-			}
-			for (Read o : snap.getProperties().getReadList()) {
-				emc.persist(o, CheckPersistType.all);
-				MessageFactory.read_create(o);
-			}
-			for (ReadCompleted o : snap.getProperties().getReadCompletedList()) {
-				emc.persist(o, CheckPersistType.all);
-				MessageFactory.readCompleted_create(o);
-			}
-			for (Review o : snap.getProperties().getReviewList()) {
-				emc.persist(o, CheckPersistType.all);
-				MessageFactory.review_create(o);
-			}
-			for (WorkLog o : snap.getProperties().getWorkLogList()) {
-				emc.persist(o, CheckPersistType.all);
-			}
-			for (Record o : snap.getProperties().getRecordList()) {
-				emc.persist(o, CheckPersistType.all);
-			}
-			for (DocumentVersion o : snap.getProperties().getDocumentVersionList()) {
-				emc.persist(o, CheckPersistType.all);
-			}
-			for (Attachment o : snap.getProperties().getAttachmentList()) {
-				emc.persist(o, CheckPersistType.all);
-			}
+			restoreTask(emc, snap);
+			restoreTaskCompleted(emc, snap);
+			restoreRead(emc, snap);
+			restoreReadCompleted(emc, snap);
+			restoreReview(emc, snap);
+			restoreWorkLog(emc, snap);
+			restoreRecord(emc, snap);
+			restoreDocumentVersion(emc, snap);
+			restoreAttachment(emc, snap);
 			if (ListTools.isNotEmpty(snap.getProperties().getWorkList())) {
 				WorkDataHelper workDataHelper = new WorkDataHelper(emc, snap.getProperties().getWorkList().get(0));
 				for (Work o : snap.getProperties().getWorkList()) {
@@ -180,7 +134,6 @@ class ActionRestore extends BaseAction {
 				}
 				workDataHelper.update(snap.getProperties().getData());
 			}
-			attachment(business, snap);
 			emc.commit();
 		}
 
@@ -195,37 +148,90 @@ class ActionRestore extends BaseAction {
 			emc.beginTransaction(Record.class);
 			emc.beginTransaction(Item.class);
 			emc.beginTransaction(Attachment.class);
-			for (TaskCompleted o : snap.getProperties().getTaskCompletedList()) {
-				emc.persist(o, CheckPersistType.all);
-				MessageFactory.taskCompleted_create(o);
-			}
-			for (Read o : snap.getProperties().getReadList()) {
-				emc.persist(o, CheckPersistType.all);
-				MessageFactory.read_create(o);
-			}
-			for (ReadCompleted o : snap.getProperties().getReadCompletedList()) {
-				emc.persist(o, CheckPersistType.all);
-				MessageFactory.readCompleted_create(o);
-			}
-			for (Review o : snap.getProperties().getReviewList()) {
-				emc.persist(o, CheckPersistType.all);
-				MessageFactory.review_create(o);
-			}
-			for (WorkLog o : snap.getProperties().getWorkLogList()) {
-				emc.persist(o, CheckPersistType.all);
-			}
-			for (Record o : snap.getProperties().getRecordList()) {
-				emc.persist(o, CheckPersistType.all);
-			}
-			for (Attachment o : snap.getProperties().getAttachmentList()) {
-				emc.persist(o, CheckPersistType.all);
-			}
+			restoreTaskCompleted(emc, snap);
+			restoreRead(emc, snap);
+			restoreReadCompleted(emc, snap);
+			restoreReview(emc, snap);
+			restoreWorkLog(emc, snap);
+			restoreRecord(emc, snap);
+			restoreAttachment(emc, snap);
 			emc.persist(snap.getProperties().getWorkCompleted(), CheckPersistType.all);
 			if (BooleanUtils.isNotTrue(snap.getProperties().getWorkCompleted().getMerged())) {
 				WorkDataHelper workDataHelper = new WorkDataHelper(emc, snap.getProperties().getWorkCompleted());
 				workDataHelper.update(snap.getProperties().getData());
 			}
 			emc.commit();
+		}
+
+		private void restoreRead(EntityManagerContainer emc, Snap snap) throws Exception {
+			for (Read o : snap.getProperties().getReadList()) {
+				emc.persist(o, CheckPersistType.all);
+				MessageFactory.read_create(o);
+			}
+		}
+
+		private void restoreAttachment(EntityManagerContainer emc, Snap snap) throws Exception {
+			for (Attachment o : snap.getProperties().getAttachmentList()) {
+				String content = snap.getProperties().getAttachmentContentMap().get(o.getId());
+				if (StringUtils.isNotEmpty(content)) {
+					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+							o.getStorage());
+					if (null == mapping) {
+						mapping = ThisApplication.context().storageMappings().random(Attachment.class);
+					}
+					if (null != mapping) {
+						byte[] bytes = Base64.decodeBase64(content);
+						o.updateContent(mapping, bytes);
+					}
+					emc.persist(o, CheckPersistType.all);
+				}
+			}
+		}
+
+		private void restoreDocumentVersion(EntityManagerContainer emc, Snap snap) throws Exception {
+			for (DocumentVersion o : snap.getProperties().getDocumentVersionList()) {
+				emc.persist(o, CheckPersistType.all);
+			}
+		}
+
+		private void restoreRecord(EntityManagerContainer emc, Snap snap) throws Exception {
+			for (Record o : snap.getProperties().getRecordList()) {
+				emc.persist(o, CheckPersistType.all);
+			}
+		}
+
+		private void restoreWorkLog(EntityManagerContainer emc, Snap snap) throws Exception {
+			for (WorkLog o : snap.getProperties().getWorkLogList()) {
+				emc.persist(o, CheckPersistType.all);
+			}
+		}
+
+		private void restoreReview(EntityManagerContainer emc, Snap snap) throws Exception {
+			for (Review o : snap.getProperties().getReviewList()) {
+				emc.persist(o, CheckPersistType.all);
+				MessageFactory.review_create(o);
+			}
+		}
+
+		private void restoreTask(EntityManagerContainer emc, Snap snap) throws Exception {
+			for (Task o : snap.getProperties().getTaskList()) {
+				emc.persist(o, CheckPersistType.all);
+				MessageFactory.task_create(o);
+			}
+		}
+
+		private void restoreTaskCompleted(EntityManagerContainer emc, Snap snap) throws Exception {
+			for (TaskCompleted o : snap.getProperties().getTaskCompletedList()) {
+				emc.persist(o, CheckPersistType.all);
+				MessageFactory.taskCompleted_create(o);
+			}
+		}
+
+		private void restoreReadCompleted(EntityManagerContainer emc, Snap snap) throws Exception {
+			for (ReadCompleted o : snap.getProperties().getReadCompletedList()) {
+				emc.persist(o, CheckPersistType.all);
+				MessageFactory.readCompleted_create(o);
+			}
 		}
 	}
 
