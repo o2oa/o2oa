@@ -1,7 +1,9 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -51,6 +53,8 @@ public class SnapProperties extends JsonProperties {
 
 	@FieldDescribe("版式文件版本")
 	private List<DocumentVersion> documentVersionList = new ArrayList<DocumentVersion>();
+
+	private Map<String, String> attachmentContentMap = new HashMap<>();
 
 	public Data getData() {
 		return data;
@@ -192,6 +196,14 @@ public class SnapProperties extends JsonProperties {
 
 	public void setWorkCompleted(WorkCompleted workCompleted) {
 		this.workCompleted = workCompleted;
+	}
+
+	public Map<String, String> getAttachmentContentMap() {
+		return attachmentContentMap;
+	}
+
+	public void setAttachmentContentMap(Map<String, String> attachmentContentMap) {
+		this.attachmentContentMap = attachmentContentMap;
 	}
 
 }

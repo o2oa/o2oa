@@ -8,12 +8,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -33,6 +35,7 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
+import com.x.processplatform.service.processing.ThisApplication;
 import com.x.query.core.entity.Item;
 
 abstract class BaseAction extends StandardJaxrsAction {
@@ -261,6 +264,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 						.collect(Collectors.toList());
 				snapProperties.setAttachmentList(os);
 				attachments.addAll(os);
+				for (Attachment attachment : os) {
+					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+							attachment.getStorage());
+					if (null != mapping) {
+						byte[] bytes = attachment.readContent(mapping);
+						snapProperties.getAttachmentContentMap().put(attachment.getId(),
+								Base64.encodeBase64URLSafeString(bytes));
+					}
+				}
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -423,6 +435,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 			try {
 				business.entityManagerContainer().beginTransaction(Attachment.class);
 				for (Attachment o : attachments) {
+					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+							o.getStorage());
+					if (null != mapping) {
+						o.deleteContent(mapping);
+					}
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
@@ -591,6 +608,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(Attachment.class);
 				for (Attachment o : business.entityManagerContainer().listEqual(Attachment.class,
 						Attachment.job_FIELDNAME, job)) {
+					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+							o.getStorage());
+					if (null != mapping) {
+						o.deleteContent(mapping);
+					}
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
