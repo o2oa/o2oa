@@ -852,10 +852,11 @@ MWF.xApplication.Selector.Unit.Item = new Class({
 MWF.xApplication.Selector.Unit.SearchItem = new Class({
     Extends: MWF.xApplication.Selector.Unit.Item,
     load : function(){
-        this.loadForNormal();
+        this.loadForNormal(true);
     },
     _getShowName: function(){
-        return this.data.levelName || this.data.name;
+        // return this.data.levelName || this.data.name;
+        return this.data.name+((this.data.levelName) ? "("+this.data.levelName+")" : "");
     },
     loadSubItems: function( callback ){
         //只是为了在isFlatCategory模式下，加载全称用的，否则用继承的就可以
