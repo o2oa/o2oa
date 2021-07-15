@@ -1973,7 +1973,7 @@ if (window.Promise && !Promise.any){
                     "then": function(s){
                         if (s){
                             var r = s(p);
-                            return r || this;
+                            return (r.then && o2.typeOf(r.then)=="function") ?  r : this;
                         }
                         return this;
                     }
@@ -1987,7 +1987,7 @@ if (window.Promise && !Promise.any){
                     "then": function(s){
                         if (s){
                             var r = s(p);
-                            return r || this;
+                            return (r.then && o2.typeOf(r.then)=="function") ?  r : this;
                         }
                         return this;
                     }
