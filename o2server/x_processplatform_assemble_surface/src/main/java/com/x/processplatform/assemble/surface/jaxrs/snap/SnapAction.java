@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -14,6 +15,9 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -327,6 +331,43 @@ public class SnapAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListPrevWithProcess().execute(effectivePerson, id, count, processFlag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "导出快照.", action = ActionDownload.class)
+	@GET
+	@Path("{id}/download")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void download(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<ActionDownload.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDownload().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "导入快照.", action = ActionUpload.class)
+	@POST
+	@Path("upload")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public void upload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@FormDataParam(FILE_FIELD) byte[] bytes,
+			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+		ActionResult<ActionUpload.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpload().execute(effectivePerson, bytes);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
