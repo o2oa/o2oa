@@ -358,6 +358,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"taskPerson": "Task",
 		"identity": "Identity",
 		"group": "Group",
+		"readGroup": "Group",
+		"reviewGroup": "Group",
 		"specifyTimeoutTime": "Set the specified timeout period",
 		"setTimeoutAfterHours": "Set timeout after a few hours",
 		"setTimeoutAfterWorkHours": "Set timeout after a few work hours",

@@ -357,6 +357,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"taskPerson": "处理人",
 		"identity": "用户标识",
 		"group": "处理群组",
+		"readGroup": "待阅群组",
+		"reviewGroup": "阅读群组",
 		"specifyTimeoutTime": "设置指定的超时时间",
 		"setTimeoutAfterHours": "设置几小时后超时",
 		"setTimeoutAfterWorkHours": "设置几个工作小时后超时",
