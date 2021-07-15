@@ -64,6 +64,9 @@ class ActionCreate extends BaseAction {
 				}
 				Identity identity = new Identity();
 				Wi.copier.copy(wi, identity);
+				if(StringUtils.isBlank(wi.getUnique())){
+					identity.setUnique(unit.getUnique()+"_"+person.getUnique());
+				}
 				/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
 				if (this.uniqueDuplicateWhenNotEmpty(business, identity)) {
 					throw new ExceptionDuplicateUnique(identity.getName(), identity.getUnique());
