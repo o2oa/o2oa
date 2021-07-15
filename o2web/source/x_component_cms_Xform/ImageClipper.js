@@ -9,8 +9,8 @@ MWF.xApplication.cms.Xform.ImageClipper = MWF.CMSImageClipper =  new Class({
         if( clipperType == "unrestricted" ){
             ratio = 0;
         }else if( clipperType == "size" ){
-            var width = this.json.imageWidth.toInt();
-            var height = this.json.imageHeight.toInt();
+            var width = ( this.json.imageWidth ) ? this.json.imageWidth.toInt() : 600;
+            var height = ( this.json.imageHeight ) ? this.json.imageHeight.toInt() : 500;
             ratio = width / height;
             //maxSize = Math.max( width, height );
             if( !isNaN( width ) && !isNaN( height )  ){
