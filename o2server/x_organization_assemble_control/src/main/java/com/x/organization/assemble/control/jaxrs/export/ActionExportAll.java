@@ -251,7 +251,6 @@ public class ActionExportAll extends BaseAction {
 				}else{
 					row.createCell(2).setCellValue("");
 				}
-				
 				String superior = unit.getSuperior();
 				if(StringUtils.isEmpty(superior)){
 					row.createCell(3).setCellValue("");
@@ -348,7 +347,8 @@ public class ActionExportAll extends BaseAction {
 			row = sheet.createRow(0);
 			row.createCell(0).setCellValue("人员唯一编码 *");
 			row.createCell(1).setCellValue("组织唯一编码 *");
-			row.createCell(2).setCellValue("主兼职");
+			row.createCell(2).setCellValue("身份编码");
+			row.createCell(3).setCellValue("主兼职");
 
 			for (int i = 0; i < identityList.size(); i++) {
 				identity = identityList.get(i);
@@ -362,17 +362,8 @@ public class ActionExportAll extends BaseAction {
 						String unitId = "";
 						unitId = unit.getId();
 						row.createCell(1).setCellValue(unit.getUnique());
-						/*List<UnitDuty> unitDutyList =  this.listDutyWithIdentity(business,identity.getId());
-						
-						if(ListTools.isNotEmpty(unitDutyList)){
-							for(UnitDuty duty :unitDutyList){
-								//if(unitId.equals(duty.getUnit())){
-								idutyList.add(duty.getUnique());
-								//}
-							}
-						}
-						row.createCell(2).setCellValue(StringUtils.join(idutyList.toArray(), "#"));*/
-						row.createCell(2).setCellValue(String.valueOf(identity.getMajor()));
+						row.createCell(2).setCellValue(identity.getUnique());
+						row.createCell(3).setCellValue(String.valueOf(identity.getMajor()));
 					}
 				}	
 				
@@ -391,9 +382,10 @@ public class ActionExportAll extends BaseAction {
 			row = sheet.createRow(0);
 			row.createCell(0).setCellValue("职务名称 *");
 			row.createCell(1).setCellValue("职务所在组织唯一编码 *");
-			row.createCell(2).setCellValue("职务描述");
-			row.createCell(3).setCellValue("职务所含人员唯一编码");
-			row.createCell(4).setCellValue("职务所含人员所在组织唯一编码");
+			row.createCell(2).setCellValue("职务编码");
+			row.createCell(3).setCellValue("职务描述");
+			row.createCell(4).setCellValue("职务所含人员唯一编码");
+			row.createCell(5).setCellValue("职务所含人员所在组织唯一编码");
 			int currentRow = 0;
 			for (int i = 0; i < dutyList.size(); i++) {
 				duty = dutyList.get(i);
@@ -412,18 +404,19 @@ public class ActionExportAll extends BaseAction {
 							} else {
 								row.createCell(1).setCellValue("");
 							}
-							row.createCell(2).setCellValue(duty.getDescription());
+							row.createCell(2).setCellValue(duty.getUnique());
+							row.createCell(3).setCellValue(duty.getDescription());
 							Person iperson = emc.flag(identity.getPerson(), Person.class);
 							Unit iunit = emc.flag(identity.getUnit(), Unit.class);
 							if (iperson != null) {
-								row.createCell(3).setCellValue(iperson.getUnique());
-							} else {
-								row.createCell(3).setCellValue("");
-							}
-							if (iunit != null) {
-								row.createCell(4).setCellValue(iunit.getUnique());
+								row.createCell(4).setCellValue(iperson.getUnique());
 							} else {
 								row.createCell(4).setCellValue("");
+							}
+							if (iunit != null) {
+								row.createCell(5).setCellValue(iunit.getUnique());
+							} else {
+								row.createCell(5).setCellValue("");
 							}
 						}
 					}
@@ -436,9 +429,10 @@ public class ActionExportAll extends BaseAction {
 					} else {
 						row.createCell(1).setCellValue("");
 					}
-					row.createCell(2).setCellValue(duty.getDescription());
-					row.createCell(3).setCellValue("");
+					row.createCell(2).setCellValue(duty.getUnique());
+					row.createCell(3).setCellValue(duty.getDescription());
 					row.createCell(4).setCellValue("");
+					row.createCell(5).setCellValue("");
 				}
 			}
 		}
@@ -456,10 +450,10 @@ public class ActionExportAll extends BaseAction {
 			// 先创建表头
 			row = sheet.createRow(0);
 			row.createCell(0).setCellValue("群组名称 *");
-			row.createCell(1).setCellValue("群组编号 *");
+			row.createCell(1).setCellValue("群组编码 *");
 			row.createCell(2).setCellValue("人员唯一编码");
 			row.createCell(3).setCellValue("组织唯一编码");
-			row.createCell(4).setCellValue("子群组编号");
+			row.createCell(4).setCellValue("子群组编码");
 			row.createCell(5).setCellValue("描述");
 
 			for (int i = 0; i < groupList.size(); i++) {
