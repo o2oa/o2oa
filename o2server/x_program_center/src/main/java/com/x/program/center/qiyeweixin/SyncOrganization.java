@@ -410,6 +410,7 @@ public class SyncOrganization {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		emc.beginTransaction(Identity.class);
 		Identity identity = new Identity();
+		identity.setUnique(unit.getUnique()+"_"+person.getUnique());
 		identity.setName(person.getName());
 		identity.setPerson(person.getId());
 		identity.setUnit(unit.getId());
