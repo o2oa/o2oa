@@ -24,6 +24,14 @@ public class CmsBatchOperationService {
 		Business business = new Business( emc );
 		return business.cmsBatchOperationFactory().list(maxCount);
 	}
+
+	public List<CmsBatchOperation> list( EntityManagerContainer emc, Integer maxCount, Integer minutesAgo) throws Exception {
+		if( maxCount == null ){
+			maxCount = 10;
+		}
+		Business business = new Business( emc );
+		return business.cmsBatchOperationFactory().list(maxCount, minutesAgo);
+	}
 	
 	public List<CmsBatchOperation> listNotRun( EntityManagerContainer emc, Integer maxCount ) throws Exception {
 		if( maxCount == null ){
