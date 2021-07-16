@@ -319,6 +319,11 @@ public class DocumentInfoService {
 		return business.getDocumentFactory().listUnReviewIds( maxCount);
 	}
 
+	public List<String> listUnReviewIds(EntityManagerContainer emc, Integer maxCount, Integer minutesAgo) throws Exception {
+		Business business = new Business(emc);
+		return business.getDocumentFactory().listUnReviewIds( maxCount, minutesAgo);
+	}
+
 	/**
 	 * 删除指定ID的文档
 	 * @param emc
