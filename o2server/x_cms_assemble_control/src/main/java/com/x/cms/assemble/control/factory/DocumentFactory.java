@@ -4,14 +4,12 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.jaxrs.document.ActionQueryListWithFilterPagingAdmin;
-import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.Document_;
-import com.x.cms.core.entity.Review;
-import com.x.cms.core.entity.Review_;
+import com.x.cms.core.entity.*;
 import com.x.cms.core.express.tools.CriteriaBuilderTools;
 import com.x.cms.core.express.tools.filter.QueryFilter;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -22,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 /**
  * 文档信息基础功能服务类
@@ -394,8 +393,6 @@ public class DocumentFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).setMaxResults(maxCount).getResultList();
 	}
 
-
-
 	public List<String> listUnReviewIds(Integer maxCount) throws Exception {
 		if( maxCount == null ){
 			maxCount = 500;
@@ -408,6 +405,22 @@ public class DocumentFactory extends AbstractFactory {
 		p = cb.or(p,  cb.isNull(root.get(Document_.reviewed )));
 		cq.select(root.get( Document_.id));
 		return em.createQuery(cq.where(p)).setMaxResults(maxCount).getResultList();
+	}
+
+	public List<String> listUnReviewIds(Integer maxCount, Integer minutesAgo) throws Exception {
+		if( maxCount == null ){
+			maxCount = 500;
+		}
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<Document> root = cq.from( Document.class );
+		Predicate p = cb.lessThan(root.get(Document_.createTime),
+				DateTools.getAdjustTimeDay(new Date(), 0, 0, -minutesAgo, 0));
+		p = cb.and(p, cb.or(cb.isFalse( root.get(Document_.reviewed )), cb.isNull(root.get(Document_.reviewed ))));
+		cq.select(root.get( Document_.id));
+		cq.where(p).orderBy( cb.asc( root.get( CmsBatchOperation_.createTime ) ) );
+		return em.createQuery(cq).setMaxResults(maxCount).getResultList();
 	}
 
 	public Long countWithConditionOutofPermission(QueryFilter queryFilter) throws Exception {
