@@ -67,8 +67,8 @@ public class ThisApplication {
 
 		// 每天凌晨2点，计算所有的文档的权限信息
 		context.schedule(Timertask_RefreshAllDocumentReviews.class, "0 0 2 * * ?");
-
-		context.scheduleLocal(Timertask_CheckDocumentReviewStatus.class, 1200);
+		//集群下多台会一起运行，Timertask_BatchOperationTask运行即可
+		//context.scheduleLocal(Timertask_CheckDocumentReviewStatus.class, 1200);
 		context.scheduleLocal(Timertask_InitOperationRunning.class, 150);
 	}
 

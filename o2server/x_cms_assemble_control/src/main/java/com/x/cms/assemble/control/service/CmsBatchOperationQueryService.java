@@ -29,6 +29,14 @@ public class CmsBatchOperationQueryService {
 			throw e;
 		}
 	}
+
+	public List<CmsBatchOperation> list( Integer maxCount, Integer minutesAgo) throws Exception {
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return cmsBatchOperationService.list( emc, maxCount, minutesAgo);
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
 	
 	public List<CmsBatchOperation> listNotRun( Integer maxCount ) throws Exception {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
