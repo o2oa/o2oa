@@ -91,6 +91,27 @@
             </table>
         </div>
         <div class="MWFFormulaArea" name="code" title="{{$.lp.showScript}}(S)"></div>
+
+        <div style="border-top: 1px solid #999; margin-top:10px">
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.export}}</div>
+            <div class="MWFDataData" id="text{$.pid}dataExportEditor">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="table-layout: fixed;">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.exportWidth}}:</td>
+                        <td class="editTableValue">
+                            <input type="text" name="exportWidth" value="text{$.exportWidth || 200}" class="editTableInputNoWidth"/>px
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.isTime}}:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="isTime" type="radio" value="true" text{($.isTime)===true?'checked':''}/>{{$.lp.yes}}
+                            <input class="MWFWorkDataCheck" name="isTime" type="radio" value="false" text{($.isTime)!==true?'checked':''}/>{{$.lp.no}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 	</div>
     <div title="{{$.lp.id}}" class="MWFTab">
         <div class="MWFMaplist" name="titleStyles" title="{{$.lp.titleStyles}}"></div>
