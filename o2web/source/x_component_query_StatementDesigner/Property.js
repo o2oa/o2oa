@@ -93,7 +93,7 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "systemToolsAddress": "../x_component_query_StatementDesigner/$Statement/toolbars.json",
-                    "isSystemTool" : false,
+                    "isSystemTool" : true,
                     "noEditShow": true,
                     "noReadShow": true,
                     "onChange": function(){

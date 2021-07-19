@@ -3,7 +3,10 @@ MWF.xApplication.query.Query = MWF.xApplication.query.Query || {};
 MWF.xDesktop.requireApp("query.Query", "Viewer", null, false);
 MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     Extends: MWF.QViewer,
-    options: {},
+    options: {
+        "moduleEvents": ["queryLoad", "postLoad", "postLoadPageData", "postLoadPage", "selectRow", "unselectRow",
+            "queryLoadItemRow", "postLoadItemRow", "queryLoadCategoryRow", "postLoadCategoryRow", "export", "exportRow"]
+    },
     initialize: function (container, json, options, app, parentMacro) {
         //本类有三种事件，
         //一种是通过 options 传进来的事件，包括 loadView、openDocument、select
@@ -508,6 +511,146 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         if (this.viewAreaNode) {
             this.createViewNode({"filterList": this.json.filter.clone()}, callback);
         }
+    },
+
+
+    // getExportTotalCount: function(){
+    //     return this.count || 0;
+    // },
+    // getExportMaxCount: function(){
+    //     return 2000;
+    // },
+    exportView: function(){
+
+        // var excelName = this.statementJson.name + "(" + start + "-" + end + ").xlsx";
+
+        var excelName = this.statementJson.name + ".xlsx";
+
+        var p = this.currentPage;
+        var d = {
+            "filterList": this.filterList,
+            "parameter": this.parameter
+        };
+
+        this.createLoadding();
+
+        debugger;
+
+        var exportArray = [];
+
+        var titleArray = [];
+        var colWidthArr = [];
+        var dateIndexArray = [];
+        var idx = 0;
+        Object.each(this.entries, function (c, k) {
+            if (this.hideColumns.indexOf(k) === -1) {
+                titleArray.push(c.displayName);
+
+                colWidthArr.push(c.exportWidth || 200);
+                if( c.isTime )dateIndexArray.push(idx);
+                idx++;
+            }
+        }.bind(this));
+        exportArray.push(titleArray);
+
+        o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+            this.options.statementId || this.options.statementName || this.json.statementId || this.json.statementName,
+            "data", 1, 100000, d, function (json) {
+
+                json.data.each(function (d, i) {
+                    var dataArray = [];
+                    Object.each(this.entries, function (c, k) {
+                        if (this.hideColumns.indexOf(k) === -1) {
+                            var text = this.getExportText(c, k, d);
+                            dataArray.push( text );
+                        }
+                    }.bind(this));
+                    //exportRow事件
+                    var argu = {"index":i, "source": d, "data":dataArray};
+                    this.fireEvent("exportRow", [argu]);
+                    exportArray.push( argu.data || dataArray );
+                }.bind(this));
+
+                //export事件
+                var arg = {
+                    data : exportArray,
+                    colWidthArray : colWidthArr,
+                    title : excelName
+                };
+                this.fireEvent("export", [arg]);
+
+                if (this.loadingAreaNode) {
+                    this.loadingAreaNode.destroy();
+                    this.loadingAreaNode = null;
+                }
+
+                new MWF.xApplication.query.Query.Statement.ExcelUtils().exportToExcel(
+                    arg.data || exportArray,
+                    arg.title || excelName,
+                    arg.colWidthArray || colWidthArr,
+                    dateIndexArray  //日期格式列下标
+                );
+
+            }.bind(this));
+    },
+    getDataByPath: function (obj, path) {
+        var pathList = path.split(".");
+        for (var i = 0; i < pathList.length; i++) {
+            var p = pathList[i];
+            if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
+            if (obj[p]) {
+                obj = obj[p];
+            } else {
+                obj = "";
+                break;
+            }
+        }
+        return obj
+    },
+    getExportText: function (c, k, data) {
+        var path = c.path, code = c.code, obj = data;
+        if (!path) {
+            return ""
+        } else if (path === "$all") {
+        } else {
+            obj = this.getDataByPath(obj, path);
+        }
+
+        try{
+            if (code && code.trim()) obj = this.view.Macro.exec(code, {
+                "value": obj,
+                "data": data,
+                "entry": c,
+                "json": c
+            });
+        }catch (e) {}
+
+        var toName = function (value) {
+            if (typeOf(value) === "array") {
+                Array.each(value, function (v, idx) {
+                    value[idx] = toName(v)
+                })
+            } else if (typeOf(value) === "object") {
+                Object.each(value, function (v, key) {
+                    value[key] = toName(v);
+                })
+            } else if (typeOf(value) === "string") {
+                value = o2.name.cn(value)
+            }
+            return value;
+        };
+
+        var d;
+        if (obj != undefined && obj != null) {
+            if (typeOf(obj) === "array") {
+                d = c.isName ? JSON.stringify(toName(Array.clone(obj))) : JSON.stringify(obj);
+            } else if (typeOf(obj) === "object") {
+                d = c.isName ? JSON.stringify(toName(Object.clone(obj))) : JSON.stringify(obj);
+            } else {
+                d = c.isName ? o2.name.cn(obj.toString()) : obj;
+            }
+        }
+        return d;
     }
 });
 
@@ -832,4 +975,253 @@ MWF.xApplication.query.Query.Statement.Actionbar = new Class({
 
 MWF.xApplication.query.Query.Statement.Paging = new Class({
     Extends: MWF.xApplication.query.Query.Viewer.Paging
+});
+
+
+MWF.xApplication.query.Query.Statement.ExcelUtils = new Class({
+    initialize: function(){
+        // this.datatemplate = datatemplate;
+        // this.form = datatemplate.form;
+        if (!FileReader.prototype.readAsBinaryString) {
+            FileReader.prototype.readAsBinaryString = function (fileData) {
+                var binary = "";
+                var pt = this;
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var bytes = new Uint8Array(reader.result);
+                    var length = bytes.byteLength;
+                    for (var i = 0; i < length; i++) {
+                        binary += String.fromCharCode(bytes[i]);
+                    }
+                    //pt.result  - readonly so assign binary
+                    pt.content = binary;
+                    pt.onload();
+                };
+                reader.readAsArrayBuffer(fileData);
+            }
+        }
+    },
+    _loadResource : function( callback ){
+        if( !window.XLSX || !window.xlsxUtils ){
+            var uri = "../x_component_Template/framework/xlsx/xlsx.full.js";
+            var uri2 = "../x_component_Template/framework/xlsx/xlsxUtils.js";
+            COMMON.AjaxModule.load(uri, function(){
+                COMMON.AjaxModule.load(uri2, function(){
+                    callback();
+                }.bind(this))
+            }.bind(this))
+        }else{
+            callback();
+        }
+    },
+    _openDownloadDialog: function(url, saveName){
+        /**
+         * 通用的打开下载对话框方法，没有测试过具体兼容性
+         * @param url 下载地址，也可以是一个blob对象，必选
+         * @param saveName 保存文件名，可选
+         */
+        if( Browser.name !== 'ie' ){
+            if(typeof url == 'object' && url instanceof Blob){
+                url = URL.createObjectURL(url); // 创建blob地址
+            }
+            var aLink = document.createElement('a');
+            aLink.href = url;
+            aLink.download = saveName || ''; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+            var event;
+            if(window.MouseEvent && typeOf( window.MouseEvent ) == "function" ) event = new MouseEvent('click');
+            else
+            {
+                event = document.createEvent('MouseEvents');
+                event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            }
+            aLink.dispatchEvent(event);
+        }else{
+            window.navigator.msSaveBlob( url, saveName);
+        }
+    },
+
+    index2ColName : function( index ){
+        if (index < 0) {
+            return null;
+        }
+        var num = 65;// A的Unicode码
+        var colName = "";
+        do {
+            if (colName.length > 0)index--;
+            var remainder = index % 26;
+            colName =  String.fromCharCode(remainder + num) + colName;
+            index = (index - remainder) / 26;
+        } while (index > 0);
+        return colName;
+    },
+
+    upload : function ( dateColIndexArray, callback ) {
+        var dateColArray = [];
+        dateColIndexArray.each( function (idx) {
+            dateColArray.push( this.index2ColName( idx ));
+        }.bind(this))
+
+
+        var uploadFileAreaNode = new Element("div");
+        var html = "<input name=\"file\" type=\"file\" accept=\"csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel\" />";
+        uploadFileAreaNode.set("html", html);
+
+        var fileUploadNode = uploadFileAreaNode.getFirst();
+        fileUploadNode.addEvent("change", function () {
+            var files = fileNode.files;
+            if (files.length) {
+                var file = files.item(0);
+                // if( file.name.indexOf(" ") > -1 ){
+                // 	this.form.notice( MWF.xApplication.process.Xform.LP.uploadedFilesCannotHaveSpaces, "error");
+                // 	return false;
+                // }
+
+                //第三个参数是日期的列
+                this.importFromExcel( file, function(json){
+                    //json为导入的结果
+                    if(callback)callback(json);
+                    uploadFileAreaNode.destroy();
+                }.bind(this), dateColArray ); //["E","F"]
+
+            }
+        }.bind(this));
+        var fileNode = uploadFileAreaNode.getFirst();
+        fileNode.click();
+    },
+    exportToExcel : function(array, fileName, colWidthArr, dateIndexArray){
+        // var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
+        // array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
+        // array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
+        // this.exportToExcel(array, "导出数据"+(new Date).format("db"));
+        this._loadResource( function(){
+            var data = window.xlsxUtils.format2Sheet(array, 0, 0, null);//偏移3行按keyMap顺序转换
+            var wb = window.xlsxUtils.format2WB(data, "sheet1", undefined);
+            var wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+            var dataInfo = wb.Sheets[wb.SheetNames[0]];
+
+            var widthArray = [];
+            array[0].each( function( v, i ){ //设置标题行样式
+
+                if( !colWidthArr )widthArray.push( {wpx: 100} );
+
+                var at = String.fromCharCode(97 + i).toUpperCase();
+                var di = dataInfo[at+"1"];
+                // di.v = v;
+                // di.t = "s";
+                di.s = {  //设置副标题样式
+                    font: {
+                        //name: '宋体',
+                        sz: 12,
+                        color: {rgb: "#FFFF0000"},
+                        bold: true,
+                        italic: false,
+                        underline: false
+                    },
+                    alignment: {
+                        horizontal: "center" ,
+                        vertical: "center"
+                    }
+                };
+            }.bind(this));
+
+            if( dateIndexArray && dateIndexArray.length ){
+                dateIndexArray.each( function( value, index ){
+                    dateIndexArray[ index ] = this.index2ColName(value);
+                }.bind(this))
+            }
+
+            for( var key in dataInfo ){
+                //设置所有样式，wrapText=true 后 /n会被换行
+                if( key.substr(0, 1) !== "!" ){
+                    var di = dataInfo[key];
+                    if( !di.s )di.s = {};
+                    if( !di.s.alignment )di.s.alignment = {};
+                    di.s.alignment.wrapText = true;
+
+                    if( dateIndexArray && dateIndexArray.length ){
+                        var colName = key.replace(/\d+/g,''); //清除数字
+                        var rowNum = key.replace( colName, '');
+                        if( rowNum > 1 && dateIndexArray.contains( colName ) ){
+                            //di.s.numFmt = "yyyy-mm-dd HH:MM:SS"; //日期列 两种方式都可以
+                            di.z = 'yyyy-mm-dd HH:MM:SS'; //日期列
+                        }
+                    }
+                }
+
+            }
+
+            if( colWidthArr ){
+                colWidthArr.each( function (w) {
+                    widthArray.push( {wpx: w} );
+                })
+            }
+            dataInfo['!cols'] = widthArray; //列宽度
+
+            this._openDownloadDialog(window.xlsxUtils.format2Blob(wb), fileName +".xlsx");
+        }.bind(this))
+    },
+    importFromExcel : function( file, callback, dateColArray ){
+        this._loadResource( function(){
+            var reader = new FileReader();
+            var workbook, data;
+            reader.onload = function (e) {
+                //var data = data.content;
+                if (!e) {
+                    data = reader.content;
+                }else {
+                    data = e.target.result;
+                }
+                workbook = window.XLSX.read(data, { type: 'binary' });
+                //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
+                //wb.Sheets[Sheet名]获取第一个Sheet的数据
+                var sheet = workbook.SheetNames[0];
+                if (workbook.Sheets.hasOwnProperty(sheet)) {
+                    // fromTo = workbook.Sheets[sheet]['!ref'];
+                    // console.log(fromTo);
+                    var worksheet = workbook.Sheets[sheet];
+
+                    if( dateColArray && typeOf(dateColArray) == "array" && dateColArray.length ){
+                        var rowCount;
+                        if( worksheet['!range'] ){
+                            rowCount = worksheet['!range'].e.r;
+                        }else{
+                            var ref = worksheet['!ref'];
+                            var arr = ref.split(":");
+                            if(arr.length === 2){
+                                rowCount = parseInt( arr[1].replace(/[^0-9]/ig,"") );
+                            }
+                        }
+                        if( rowCount ){
+                            for( var i=0; i<dateColArray.length; i++ ){
+                                for( var j=1; j<=rowCount; j++ ){
+                                    var cell = worksheet[ dateColArray[i]+j ];
+                                    if( cell ){
+                                        delete cell.w; // remove old formatted text
+                                        cell.z = 'yyyy-mm-dd'; // set cell format
+                                        window.XLSX.utils.format_cell(cell); // this refreshes the formatted text.
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    var json = window.XLSX.utils.sheet_to_json( worksheet );
+                    //var data = window.XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet], {dateNF:'YYYY-MM-DD'});
+                    if(callback)callback(json);
+                    // console.log(JSON.stringify(json));
+                    // break; // 如果只取第一张表，就取消注释这行
+                }
+                // for (var sheet in workbook.Sheets) {
+                //     if (workbook.Sheets.hasOwnProperty(sheet)) {
+                //         fromTo = workbook.Sheets[sheet]['!ref'];
+                //         console.log(fromTo);
+                //         var json = window.XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+                //         console.log(JSON.stringify(json));
+                //         // break; // 如果只取第一张表，就取消注释这行
+                //     }
+                // }
+            };
+            reader.readAsBinaryString(file);
+        })
+    }
 });

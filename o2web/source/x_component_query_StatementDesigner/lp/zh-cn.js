@@ -87,7 +87,11 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "parameter":"参数",
         "parameterNote":"注：参数对应查询语句和总数语句中形如\":field\"的where条件，填写\"field\"。",
         "pathNote":"注：路径的写法是\"表别名.字段名\"，如：o.title",
-        "userInput":"用户输入"
+        "userInput":"用户输入",
+
+        "export": "导出",
+        "exportWidth": "宽度",
+        "isTime": "时间类型"
 
     }
 });
