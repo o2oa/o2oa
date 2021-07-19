@@ -2439,7 +2439,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
                     var tableList = tmp.getElements("table");
                     if (tableList && tableList.length){
-                        var w = this.layout_filetext.offsetWidth.toFloat();
+                        var w = this.layout_filetext.offsetWidth.toFloat()-2;
                         tableList.each(function(table){
                             var twstyle = table.getStyle("width");
                             var tws = (twstyle) ? (twstyle.toFloat() || 0) : 0;
