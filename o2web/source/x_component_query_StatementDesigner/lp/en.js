@@ -72,7 +72,11 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "parameter":"Parameter",
         "parameterNote":"Note: The parameter corresponds to the where condition in the query statement and the total number statement like \":field\", fill in \"field\".",
         "pathNote":"Note: The path is written as \"table alias. field name\", such as: o.title",
-        "userInput":"User Input"
+        "userInput":"User Input",
+
+        "export": "Export",
+        "exportWidth": "Width",
+        "isTime": "Time Type"
 
     }
 });
