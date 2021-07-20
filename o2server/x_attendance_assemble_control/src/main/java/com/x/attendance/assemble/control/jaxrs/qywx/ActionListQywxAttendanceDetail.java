@@ -12,6 +12,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.BetweenTerms;
 import com.x.base.core.project.jaxrs.EqualsTerms;
 import com.x.base.core.project.jaxrs.InTerms;
@@ -29,79 +30,83 @@ public class ActionListQywxAttendanceDetail extends BaseAction {
 
     private static final Logger logger = LoggerFactory.getLogger(ActionListQywxAttendanceDetail.class);
 
-    public ActionResult<List<Wo>> execute(String flag, Integer count, JsonElement jsonElement) throws Exception {
+    public ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String flag, Integer count, JsonElement jsonElement) throws Exception {
         ActionResult<List<Wo>> result = new ActionResult<>();
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
-            Wi wi = this.convertToWrapIn(jsonElement , Wi.class);
-            if (StringUtils.isEmpty(wi.getYear())) {
-                throw new ExceptionTimeEmpty();
-            }
-            if (StringUtils.isEmpty(wi.getPerson()) && StringUtils.isEmpty(wi.getUnit()) && StringUtils.isEmpty(wi.getTopUnit())) {
-                throw new ExceptionSearchArgEmpty();
-            }
-            Date startDay  ;
-            Date endDay;
-            if (StringUtils.isEmpty(wi.getMonth())) {
-                startDay = getDay(wi.getYear(), "1", "1");
-                endDay = getDay(wi.getYear(), "12", "31");
-            }else {
-                if (StringUtils.isEmpty(wi.getDay())) {
-                    startDay = getDay(wi.getYear(), wi.getMonth(), "1");
-                    endDay = getMonthLastDay(wi.getYear(), wi.getMonth());
-                }else {
-                    startDay = getDay(wi.getYear(), wi.getMonth(), wi.getDay());
-                    endDay = getEndDay(wi.getYear(), wi.getMonth(), wi.getDay());
+            if (business.isManager(effectivePerson)) {
+                Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+                if (StringUtils.isEmpty(wi.getYear())) {
+                    throw new ExceptionTimeEmpty();
                 }
-            }
-            BetweenTerms betweenTerms = new BetweenTerms();
-            betweenTerms.put("checkin_time_date", ListTools.toList(startDay, endDay));
-            String id = EMPTY_SYMBOL;
-            /** 如果不是空位标志位 */
-            if (!StringUtils.equals(EMPTY_SYMBOL, flag)) {
-                id = flag;
-            }
-            if (StringUtils.isNotEmpty(wi.getPerson())) {
-                EqualsTerms equals = new EqualsTerms();
-                equals.put("o2User", wi.getPerson());
-                if (isCheckTypeEnable(wi.getCheckType())){
-                    equals.put("checkin_type", wi.getCheckType());
+                if (StringUtils.isEmpty(wi.getPerson()) && StringUtils.isEmpty(wi.getUnit()) && StringUtils.isEmpty(wi.getTopUnit())) {
+                    throw new ExceptionSearchArgEmpty();
                 }
-                if (isExceptionTypeEnable(wi.getExceptionType())) {
-                    equals.put("exception_type", wi.getExceptionType());
+                Date startDay;
+                Date endDay;
+                if (StringUtils.isEmpty(wi.getMonth())) {
+                    startDay = getDay(wi.getYear(), "1", "1");
+                    endDay = getDay(wi.getYear(), "12", "31");
+                } else {
+                    if (StringUtils.isEmpty(wi.getDay())) {
+                        startDay = getDay(wi.getYear(), wi.getMonth(), "1");
+                        endDay = getMonthLastDay(wi.getYear(), wi.getMonth());
+                    } else {
+                        startDay = getDay(wi.getYear(), wi.getMonth(), wi.getDay());
+                        endDay = getEndDay(wi.getYear(), wi.getMonth(), wi.getDay());
+                    }
                 }
-                result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
-                        null, null, null, null, null, betweenTerms, true, DESC);
-            }
-            if (StringUtils.isNotEmpty(wi.getUnit())) {
-                EqualsTerms equals = new EqualsTerms();
-                equals.put("o2Unit", wi.getUnit());
-                if (isCheckTypeEnable(wi.getCheckType())){
-                    equals.put("checkin_type", wi.getCheckType());
+                BetweenTerms betweenTerms = new BetweenTerms();
+                betweenTerms.put("checkin_time_date", ListTools.toList(startDay, endDay));
+                String id = EMPTY_SYMBOL;
+                /** 如果不是空位标志位 */
+                if (!StringUtils.equals(EMPTY_SYMBOL, flag)) {
+                    id = flag;
                 }
-                if (isExceptionTypeEnable(wi.getExceptionType())) {
-                    equals.put("exception_type", wi.getExceptionType());
+                if (StringUtils.isNotEmpty(wi.getPerson())) {
+                    EqualsTerms equals = new EqualsTerms();
+                    equals.put("o2User", wi.getPerson());
+                    if (isCheckTypeEnable(wi.getCheckType())) {
+                        equals.put("checkin_type", wi.getCheckType());
+                    }
+                    if (isExceptionTypeEnable(wi.getExceptionType())) {
+                        equals.put("exception_type", wi.getExceptionType());
+                    }
+                    result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
+                            null, null, null, null, null, betweenTerms, true, DESC);
                 }
-                result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
-                        null, null, null, null, null, betweenTerms, true, DESC);
-            }
-            if (StringUtils.isNotEmpty(wi.getTopUnit())) {
-                EqualsTerms equals = new EqualsTerms();
-                if (isCheckTypeEnable(wi.getCheckType())){
-                    equals.put("checkin_type", wi.getCheckType());
+                if (StringUtils.isNotEmpty(wi.getUnit())) {
+                    EqualsTerms equals = new EqualsTerms();
+                    equals.put("o2Unit", wi.getUnit());
+                    if (isCheckTypeEnable(wi.getCheckType())) {
+                        equals.put("checkin_type", wi.getCheckType());
+                    }
+                    if (isExceptionTypeEnable(wi.getExceptionType())) {
+                        equals.put("exception_type", wi.getExceptionType());
+                    }
+                    result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
+                            null, null, null, null, null, betweenTerms, true, DESC);
                 }
-                if (isExceptionTypeEnable(wi.getExceptionType())) {
-                    equals.put("exception_type", wi.getExceptionType());
+                if (StringUtils.isNotEmpty(wi.getTopUnit())) {
+                    EqualsTerms equals = new EqualsTerms();
+                    if (isCheckTypeEnable(wi.getCheckType())) {
+                        equals.put("checkin_type", wi.getCheckType());
+                    }
+                    if (isExceptionTypeEnable(wi.getExceptionType())) {
+                        equals.put("exception_type", wi.getExceptionType());
+                    }
+                    InTerms ins = new InTerms();
+                    List<String> subUnits = business.organization().unit().listWithUnitSubNested(wi.getTopUnit());
+                    if (subUnits == null || subUnits.isEmpty()) {
+                        subUnits = new ArrayList<>();
+                    }
+                    subUnits.add(wi.getTopUnit());
+                    ins.put("o2Unit", subUnits);
+                    result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
+                            null, ins, null, null, null, betweenTerms, true, DESC);
                 }
-                InTerms ins = new InTerms();
-                List<String> subUnits = business.organization().unit().listWithUnitSubNested( wi.getTopUnit() );
-                if (subUnits == null || subUnits.isEmpty()) {
-                    subUnits = new ArrayList<>();
-                }
-                subUnits.add(wi.getTopUnit());
-                ins.put("o2Unit", subUnits);
-                result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
-                        null, ins, null, null, null, betweenTerms, true, DESC);
+            } else {
+                throw new ExceptionNotManager();
             }
 
         }

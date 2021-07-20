@@ -11,32 +11,32 @@
     "title": MWF.xApplication.Attendance.LP.date,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function(d){ var date = new Date(d.userCheckTime);     return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();}",
-    "name": "userCheckTime",
+    "item": "function(d){ var date = new Date(d.checkin_time * 1000);     return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();}",
+    "name": "checkin_time",
     "width": "20%"
   },
   {
     "title": MWF.xApplication.Attendance.LP.signinType,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function( data ){ return data.checkType;  }",
-    "name": "checkType",
+    "item": "function( data ){ return data.checkin_type;  }",
+    "name": "checkin_type",
     "width": "20%"
   },
   {
     "title": MWF.xApplication.Attendance.LP.signinResult,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function( data ){ return data.exceptionType;  }",
-    "name": "exceptionType",
+    "item": "function( data ){ return data.exception_type;  }",
+    "name": "exception_type",
     "width": "20%"
   },
   {
     "title": MWF.xApplication.Attendance.LP.signTime,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function(d){ var date = new Date(d.userCheckTime);     return date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();}",
-    "name": "userCheckTime",
+    "item": "function(d){ var date = new Date(d.checkin_time * 1000);     return date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();}",
+    "name": "checkin_time",
     "width": "20%"
   }
 ]

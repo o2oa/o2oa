@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.jaxrs.qywx;
 
 
 
+import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceQywxDetail;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,17 +23,23 @@ public class ActionDeleteAllQywxAttendanceData extends BaseAction {
         ActionResult<WrapBoolean> result = new ActionResult<>();
 
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            List<AttendanceQywxDetail> details  = emc.listAll(AttendanceQywxDetail.class);
-            if ( null != details && !details.isEmpty() ) {
-                //进行数据库持久化操作
-                emc.beginTransaction( AttendanceQywxDetail.class );
-                for (AttendanceQywxDetail d : details) {
-                    emc.remove(d);
+            Business business = new Business(emc);
+            if (business.isManager(effectivePerson)) {
+                List<AttendanceQywxDetail> details  = emc.listAll(AttendanceQywxDetail.class);
+                if ( null != details && !details.isEmpty() ) {
+                    //进行数据库持久化操作
+                    emc.beginTransaction( AttendanceQywxDetail.class );
+                    for (AttendanceQywxDetail d : details) {
+                        emc.remove(d);
+                    }
+                    emc.commit();
+                    logger.info( "成功删除所有的企业微信打卡数据信息"  );
                 }
-                emc.commit();
-                logger.info( "成功删除所有的企业微信打卡数据信息"  );
+                result.setData(new WrapBoolean(true));
+            } else {
+                throw new ExceptionNotManager();
             }
-            result.setData(new WrapBoolean(true));
+
         } catch ( Exception e ) {
             result.error(e);
             logger.error(e);
