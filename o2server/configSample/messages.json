@@ -1,0 +1,222 @@
+{
+  "##sample##": {
+    "consumers": [],
+    "consumersV2": {
+      "qiyeweixin": "excute",
+      "describe": "excute表示脚本messageSendRule.js中的方法名称，该js文件需放在与messages.json同目录下，更改脚本需重启服务"
+    }
+  },
+  "attachment_editor": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "attachment_editorCancel": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "attachment_editorModify": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "attachment_share": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "attachment_shareCancel": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "bbs_replyCreate": {
+    "consumers": [],
+    "consumersV2": {
+      "pms": "",
+      "ws": ""
+    }
+  },
+  "bbs_subjectCreate": {
+    "consumers": [],
+    "consumersV2": {
+      "pms": "",
+      "ws": ""
+    }
+  },
+  "calendar_alarm": {
+    "consumers": [],
+    "consumersV2": {
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "im_create": {
+    "consumers": [],
+    "consumersV2": {
+      "ws": ""
+    }
+  },
+  "meeting_delete": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "meeting_invite": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "mind_fileSend": {
+    "consumers": [],
+    "consumersV2": {
+      "pms": "",
+      "ws": ""
+    }
+  },
+  "mind_fileShare": {
+    "consumers": [],
+    "consumersV2": {
+      "pms": "",
+      "ws": ""
+    }
+  },
+  "readCompleted_create": {
+    "consumers": [],
+    "consumersV2": {}
+  },
+  "readCompleted_delete": {
+    "consumers": [],
+    "consumersV2": {}
+  },
+  "read_create": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "read_delete": {
+    "consumers": [],
+    "consumersV2": {}
+  },
+  "read_to_readCompleted": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "taskCompleted_create": {
+    "consumers": [],
+    "consumersV2": {}
+  },
+  "taskCompleted_delete": {
+    "consumers": [],
+    "consumersV2": {}
+  },
+  "task_create": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "task_delete": {
+    "consumers": [],
+    "consumersV2": {}
+  },
+  "task_press": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  },
+  "task_to_taskCompleted": {
+    "consumers": [],
+    "consumersV2": {
+      "mq": "",
+      "pms": "",
+      "zhengwuDingding": "",
+      "qiyeweixin": "",
+      "welink": "",
+      "ws": "",
+      "dingding": ""
+    }
+  }
+}

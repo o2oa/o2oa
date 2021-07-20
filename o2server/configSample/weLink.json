@@ -1,0 +1,20 @@
+{
+  "enable": false,
+  "clientId": "",
+  "clientSecret": "",
+  "syncCron": "10 0/10 * * * ?",
+  "forceSyncCron": "10 45 8,12 * * ?",
+  "oapiAddress": "https://open.welink.huaweicloud.com/api",
+  "messageEnable": false,
+  "workUrl": "",
+  "messageRedirectPortal": "",
+  "###enable": "是否启用###",
+  "###clientId": "WeLink应用的client_id###",
+  "###clientSecret": "WeLink应用的client_secret###",
+  "###syncCron": "回调信号触发同步检查,默认每10分钟运行一次,如果期间内有WeLink回调信号接收到,那么触发同步任务进行人员同步.###",
+  "###forceSyncCron": "强制拉入同步cron,默认在每天的8点和12点强制进行同步.###",
+  "###oapiAddress": "WeLink api服务器地址###",
+  "###messageEnable": "是否启用消息推送###",
+  "###workUrl": "WeLink消息打开工作的url地址，如：http://dev.o2oa.net/x_desktop/###",
+  "###messageRedirectPortal": "WeLink消息处理完成后跳转到特定的门户页面的Id###"
+}

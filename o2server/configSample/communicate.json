@@ -1,0 +1,24 @@
+{
+  "wsEnable": true,
+  "pmsEnable": true,
+  "calendarEnable": true,
+  "###wsEnable": "是否启用ws消息.###",
+  "###pmsEnable": "是否启用pms消息.###",
+  "###calendarEnable": "是否启用calendar消息.###",
+  "###cronMq": "定时触发发送到消息队列MQ.###",
+  "cronMq": {
+    "enable": false,
+    "cron": "0 0 * * * ? *",
+    "###enable": "是否启用###",
+    "###cron": "定时cron表达式###"
+  },
+  "###clean": "清理设置.###",
+  "clean": {
+    "enable": true,
+    "cron": "30 30 6 * * ?",
+    "keep": 7.0,
+    "###enable": "是否启用###",
+    "###cron": "定时cron表达式###",
+    "###keep": "消息保留天数###"
+  }
+}
