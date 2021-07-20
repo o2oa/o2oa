@@ -1,5 +1,7 @@
 package com.x.processplatform.core.entity.content;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -108,6 +110,7 @@ public class Snap extends SliceJpaObject {
 		this.setActivityName(work.getActivityName());
 		this.setActivityToken(work.getActivityToken());
 		this.setActivityType(work.getActivityType());
+		this.setStartTime(work.getStartTime());
 	}
 
 	public Snap(WorkCompleted workCompleted) {
@@ -122,6 +125,7 @@ public class Snap extends SliceJpaObject {
 		this.setCreatorIdentity(workCompleted.getCreatorIdentity());
 		this.setCreatorPerson(workCompleted.getCreatorPerson());
 		this.setCreatorUnit(workCompleted.getCreatorUnit());
+		this.setStartTime(workCompleted.getStartTime());
 	}
 
 	public SnapProperties getProperties() {
@@ -267,8 +271,13 @@ public class Snap extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String activityToken;
 
-	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("流程启动时间.")
+	public static final String startTime_FIELDNAME = "startTime";
+	@Column(name = ColumnNamePrefix + startTime_FIELDNAME)
+	private Date startTime;
+
 	@FieldDescribe("属性对象存储字段.")
+	public static final String properties_FIELDNAME = "properties";
 	@Persistent
 	@Strategy(JsonPropertiesValueHandler)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
@@ -417,6 +426,14 @@ public class Snap extends SliceJpaObject {
 
 	public void setActivityToken(String activityToken) {
 		this.activityToken = activityToken;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
 	}
 
 }
