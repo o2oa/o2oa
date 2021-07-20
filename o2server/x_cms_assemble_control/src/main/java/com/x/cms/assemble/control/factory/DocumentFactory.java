@@ -445,7 +445,7 @@ public class DocumentFactory extends AbstractFactory {
 	 * @throws NoSuchFieldException
 	 */
 	public List<Document> listPagingWithCondition( String personName, String orderField, String orderType, QueryFilter queryFilter, Integer adjustPage,
-												   Integer adjustPageSize, Boolean isAuthor) throws Exception {
+												   Integer adjustPageSize, Boolean isAuthor, Boolean excludeAllRead) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		EntityManager em1 = this.entityManagerContainer().get( Review.class );
@@ -463,8 +463,12 @@ public class DocumentFactory extends AbstractFactory {
 				Predicate p_permission = cb1.equal(root2.get(Review_.permissionObj), personName);
 				p_permission = cb1.and(p_permission, cb1.equal(root2.get(Review_.docId), root.get(Document_.id)));
 				subquery.where(p_permission);
-				Predicate orP = cb.or(cb.isTrue(root.get(Document_.isAllRead)), cb.exists(subquery));
-				p = cb.and(p, orP);
+				if(BooleanUtils.isTrue(excludeAllRead)){
+					p = cb.and(p, cb.exists(subquery));
+				}else {
+					Predicate orP = cb.or(cb.isTrue(root.get(Document_.isAllRead)), cb.exists(subquery));
+					p = cb.and(p, orP);
+				}
 			}else {
 				List<String> list = new ArrayList<>();
 				List<String> unitAllList = this.business().organization().unit().listWithPersonSupNested(personName);
@@ -551,7 +555,7 @@ public class DocumentFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public Long countWithCondition( String personName, QueryFilter queryFilter, Boolean isAuthor) throws Exception {
+	public Long countWithCondition( String personName, QueryFilter queryFilter, Boolean isAuthor, Boolean excludeAllRead) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		EntityManager em1 = this.entityManagerContainer().get( Review.class );
@@ -568,8 +572,12 @@ public class DocumentFactory extends AbstractFactory {
 				Predicate p_permission = cb1.equal(root2.get(Review_.permissionObj), personName);
 				p_permission = cb1.and(p_permission, cb1.equal(root2.get(Review_.docId), root.get(Document_.id)));
 				subquery.where(p_permission);
-				Predicate orP = cb.or(cb.isTrue(root.get(Document_.isAllRead)), cb.exists(subquery));
-				p = cb.and(p, orP);
+				if(BooleanUtils.isTrue(excludeAllRead)){
+					p = cb.and(p, cb.exists(subquery));
+				}else {
+					Predicate orP = cb.or(cb.isTrue(root.get(Document_.isAllRead)), cb.exists(subquery));
+					p = cb.and(p, orP);
+				}
 			}else {
 				List<String> list = new ArrayList<>();
 				List<String> unitAllList = this.business().organization().unit().listWithPersonSupNested(personName);
