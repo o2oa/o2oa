@@ -471,7 +471,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
     },
 
     validationMode: function(routeName, opinion){
-        if (!this.validationConfig(routeName, opinion))  return false;
+        // if (!this.validationConfig(routeName, opinion))  return false;
 
         if (this.isNotValidationMode){
             this.isNotValidationMode = false;
