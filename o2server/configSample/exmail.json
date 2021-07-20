@@ -1,0 +1,20 @@
+{
+  "enable": false,
+  "corpId": "",
+  "corpAccessTokenAddress": "https://api.exmail.qq.com/cgi-bin/gettoken",
+  "newCountAddress": "https://api.exmail.qq.com/cgi-bin/mail/newcount",
+  "ssoAddress": "https://api.exmail.qq.com/cgi-bin/service/get_login_url",
+  "personAttributeNewCountName": "exmailNewCount",
+  "personAttributeTitleName": "exmailTitle",
+  "###enable": "是否启用.###",
+  "###corpId": "腾讯企业邮corpId###",
+  "###newRemindSecret": "新邮件提醒secret###",
+  "###ssoSecret": "单点登录secret###",
+  "###corpAccessTokenAddress": "corpAccessToken获取地址###",
+  "###newCountAddress": "新邮件数量获取地址###",
+  "###ssoAddress": "单点登录获取地址###",
+  "###token": "回调token###",
+  "###encodingAesKey": "回调encodingAesKey###",
+  "###personAttributeNewCountName": "存储邮件数量个人属性值.###",
+  "###personAttributeTitleName": "存储邮件标题个人属性值.###"
+}
