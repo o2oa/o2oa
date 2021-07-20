@@ -241,21 +241,18 @@ public class Document extends SliceJpaObject {
 	public static final String isTop_FIELDNAME = "isTop";
 	@FieldDescribe("是否置顶")
 	@Column(name = ColumnNamePrefix + isTop_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + isTop_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean isTop = false;
 
 	public static final String isAllRead_FIELDNAME = "isAllRead";
 	@FieldDescribe("是否全员可读")
 	@Column(name = ColumnNamePrefix + isAllRead_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + isAllRead_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean isAllRead = false;
 
 	public static final String hasIndexPic_FIELDNAME = "hasIndexPic";
 	@FieldDescribe("是否含有首页图片")
 	@Column(name = ColumnNamePrefix + hasIndexPic_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + hasIndexPic_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean hasIndexPic = false;
 
@@ -263,7 +260,6 @@ public class Document extends SliceJpaObject {
 	@FieldDescribe("是否已经更新review信息.")
 	@Column(name = ColumnNamePrefix + reviewed_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + reviewed_FIELDNAME)
 	private Boolean reviewed = false;
 
 	public static final String sequenceTitle_FIELDNAME = "sequenceTitle";
@@ -814,12 +810,12 @@ public class Document extends SliceJpaObject {
 		}
 	}
 
-	public Boolean getAllRead() {
+	public Boolean getIsAllRead() {
 		return isAllRead;
 	}
 
-	public void setAllRead(Boolean allRead) {
-		isAllRead = allRead;
+	public void setIsAllRead(Boolean isAllRead) {
+		this.isAllRead = isAllRead;
 	}
 
 	public Boolean getIsTop() {
