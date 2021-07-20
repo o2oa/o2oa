@@ -148,6 +148,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.allowPreview}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isPreviewAtt" text{($.isPreviewAtt=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isPreviewAtt" text{($.isPreviewAtt=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}<br/>
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.allowDownload}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="isDownload" text{($.isDownload!=='n')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
@@ -178,6 +185,58 @@
                     <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('list')!=-1)?'checked':''} type="checkbox" value="list"/>{{$.lp.hideLayoutButton}}<br/>
                     <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('config')!=-1)?'checked':''} type="checkbox" value="config"/>{{$.lp.hideSettingButton}}<br/>
                     <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('view')!=-1)?'checked':''} type="checkbox" value="view"/>{{$.lp.hideModeButton}}<br/>
+                </td>
+            </tr>
+        </table>
+               <div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.showInDatagrid}}</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.showType}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="dg_size" text{($.dg_size=='max')?'checked':''} type="radio" value="max"/>{{$.lp.complete}}
+                    <input class="editTableRadio" name="dg_size" text{($.dg_size!=='max')?'checked':''} type="radio" value="min"/>{{$.lp.simple}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.switchStyle}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="dg_isSizeChange" text{($.dg_isSizeChange=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="dg_isSizeChange" text{($.dg_isSizeChange!=='y')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.changeSize}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="dg_resize" text{($.resize=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="dg_resize" text{($.resize!=='y')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.useAttachmentStyle}}:</td>
+                <td class="editTableValue">
+                    <input type="checkbox" name="dg_availableListStyles" text{(!$.dg_availableListStyles || $.dg_availableListStyles.indexOf('list')!=-1)?'checked':''} value="list">{{$.lp.list}}
+                    <input type="checkbox" name="dg_availableListStyles" text{(!$.dg_availableListStyles || $.dg_availableListStyles.indexOf('seq')!=-1)?'checked':''} value="seq">{{$.lp.sequence}}
+                    <input type="checkbox" name="dg_availableListStyles" text{(!$.dg_availableListStyles || $.dg_availableListStyles.indexOf('icon')!=-1)?'checked':''} value="icon">{{$.lp.icon}}
+                    <input type="checkbox" name="dg_availableListStyles" text{(!$.dg_availableListStyles || $.dg_availableListStyles.indexOf('preview')!=-1)?'checked':''} value="preview">{{$.lp.preview}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.attDefaultStyle}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="dg_listStyle" text{($.dg_listStyle=='list')?'checked':''} type="radio" value="list"/>{{$.lp.list}} </br>
+                    <input class="editTableRadio" name="dg_listStyle" text{($.dg_listStyle=='icon')?'checked':''} type="radio" value="icon"/>{{$.lp.icon}} </br>
+                    <input class="editTableRadio" name="dg_listStyle" text{($.dg_listStyle=='preview')?'checked':''} type="radio" value="preview"/>{{$.lp.preview}}</br>
+                    <input class="editTableRadio" name="dg_listStyle" text{($.dg_listStyle!=='list' && $.dg_listStyle!=='icon' && $.dg_listStyle!=='preview')?'checked':''} type="radio" value="sequence"/>{{$.lp.sequence}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.actionBar}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="dg_toolbarGroupHidden" text{(($.dg_toolbarGroupHidden || []).indexOf('edit')!=-1)?'checked':''} type="checkbox" value="edit"/>{{$.lp.hideEditButton}}<br/>
+                    <input class="editTableRadio" name="dg_toolbarGroupHidden" text{(($.dg_toolbarGroupHidden || []).indexOf('read')!=-1)?'checked':''} type="checkbox" value="read"/>{{$.lp.hideReadButton}}<br/>
+                    <input class="editTableRadio" name="dg_toolbarGroupHidden" text{(($.dg_toolbarGroupHidden || []).indexOf('list')!=-1)?'checked':''} type="checkbox" value="list"/>{{$.lp.hideLayoutButton}}<br/>
+                    <input class="editTableRadio" name="dg_toolbarGroupHidden" text{(($.dg_toolbarGroupHidden || []).indexOf('config')!=-1)?'checked':''} type="checkbox" value="config"/>{{$.lp.hideSettingButton}}<br/>
+                    <input class="editTableRadio" name="dg_toolbarGroupHidden" text{(($.dg_toolbarGroupHidden || []).indexOf('view')!=-1)?'checked':''} type="checkbox" value="view"/>{{$.lp.hideModeButton}}<br/>
                 </td>
             </tr>
         </table>
