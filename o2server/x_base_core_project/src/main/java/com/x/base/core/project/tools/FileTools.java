@@ -25,11 +25,12 @@ public class FileTools {
 
 	/**
 	 * 创建目录-递归父级
+	 * 
 	 * @param dist
 	 * @throws Exception
 	 */
 	public static void forceMkdir(File dist) throws Exception {
-		if(!dist.exists()){
+		if (!dist.exists()) {
 			File parent = dist.getParentFile();
 			forceMkdir(parent);
 			FileUtils.forceMkdir(dist);
@@ -38,8 +39,9 @@ public class FileTools {
 
 	/**
 	 * 获取文件夹下所有的文件 + 模糊查询（当不需要模糊查询时，queryStr传空或null即可）
+	 * 
 	 * @param folderPath 路径
-	 * @param queryStr 模糊查询字符串
+	 * @param queryStr   模糊查询字符串
 	 * @return
 	 */
 	public static Map<String, List<FileInfo>> getFiles(String folderPath, String queryStr, String splitPath) {
@@ -48,23 +50,23 @@ public class FileTools {
 		List<FileInfo> folders = new ArrayList<>();
 		File f = new File(folderPath);
 		if (f.exists()) {
-			if(!f.isDirectory()){ //路径为文件
-				String path = f.getAbsolutePath().replaceAll("\\\\","/");
-				if(StringUtils.isNotEmpty(splitPath) && f.getAbsolutePath().indexOf(splitPath) > -1){
+			if (!f.isDirectory()) { // 路径为文件
+				String path = f.getAbsolutePath().replaceAll("\\\\", "/");
+				if (StringUtils.isNotEmpty(splitPath) && f.getAbsolutePath().indexOf(splitPath) > -1) {
 					path = StringUtils.substringAfter(path, splitPath);
 				}
-				if(StringUtils.isEmpty(queryStr) || f.getName().indexOf(queryStr)!=-1) {
+				if (StringUtils.isEmpty(queryStr) || f.getName().indexOf(queryStr) != -1) {
 					files.add(new FileInfo(path, f.getName(), "file", f.lastModified()));
 				}
-			}else{ //路径为文件夹
+			} else { // 路径为文件夹
 				File fa[] = f.listFiles();
 				for (int i = 0; i < fa.length; i++) {
 					File fs = fa[i];
-					String path = fs.getAbsolutePath().replaceAll("\\\\","/");
-					if(StringUtils.isNotEmpty(splitPath) && path.indexOf(splitPath) > -1){
+					String path = fs.getAbsolutePath().replaceAll("\\\\", "/");
+					if (StringUtils.isNotEmpty(splitPath) && path.indexOf(splitPath) > -1) {
 						path = StringUtils.substringAfter(path, splitPath);
 					}
-					if(StringUtils.isEmpty(queryStr) || fs.getName().indexOf(queryStr)!=-1){
+					if (StringUtils.isEmpty(queryStr) || fs.getName().indexOf(queryStr) != -1) {
 						if (fs.isDirectory()) {
 							folders.add(new FileInfo(path, fs.getName(), "folder", f.lastModified()));
 						} else {
@@ -93,9 +95,10 @@ public class FileTools {
 
 		private Date lastModifyTime;
 
-		public FileInfo(){}
+		public FileInfo() {
+		}
 
-		public FileInfo(String filePath, String fileName, String fileType, long time){
+		public FileInfo(String filePath, String fileName, String fileType, long time) {
 			this.filePath = filePath;
 			this.fileName = fileName;
 			this.fileType = fileType;
@@ -133,6 +136,16 @@ public class FileTools {
 		public void setLastModifyTime(Date lastModifyTime) {
 			this.lastModifyTime = lastModifyTime;
 		}
+	}
+
+	public static String toFileName(String name) {
+		/*
+		 * windows下文件名中不能含有：\ / : * ? " < > | 英文的这些字符 ，这里使用"."、"'"进行替换。 \/:?| 用.替换 "<>
+		 * 用'替换
+		 */
+		name = name.replaceAll("[/\\\\:*?|]", "_");
+		name = name.replaceAll("[\"<>]", "'");
+		return name;
 	}
 
 }
