@@ -150,8 +150,8 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.allowPreview}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="isPreviewAtt" text{($.isReplace=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
-                    <input class="editTableRadio" name="isPreviewAtt" text{($.isReplace=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}<br/>
+                    <input class="editTableRadio" name="isPreviewAtt" text{($.isPreviewAtt=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isPreviewAtt" text{($.isPreviewAtt=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}<br/>
                 </td>
             </tr>
             <tr>
