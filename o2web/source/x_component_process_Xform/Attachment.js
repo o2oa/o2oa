@@ -1132,7 +1132,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
-         * 附件有变化的时候会被触发，包括上传、删除、排序
+         * 附件有变化的时候会被触发，包括上传、替换、删除、排序
          * @event MWF.xApplication.process.Xform.Attachment#change
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
@@ -1552,6 +1552,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 this.form.workAction.getAttachment(attachment.data.id, this.form.businessData.work.id, function (json) {
                     attachment.data = json.data;
                     attachment.reload();
+
+                    this.fireEvent("change");
 
                     if (o.messageId && this.attachmentController.messageItemList) {
                         var message = this.attachmentController.messageItemList[o.messageId];
