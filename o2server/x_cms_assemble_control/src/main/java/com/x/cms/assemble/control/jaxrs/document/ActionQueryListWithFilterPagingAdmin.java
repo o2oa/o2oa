@@ -75,9 +75,9 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 		}
 		Long total = 0L;
 		if (!BooleanUtils.isTrue(wi.getJustData())){
-			total = documentQueryService.countWithCondition(personName, queryFilter, wi.getAuthor());
+			total = documentQueryService.countWithCondition(personName, queryFilter, wi.getAuthor(), wi.getExcludeAllRead());
 		}
-		List<Document> searchResultList = documentQueryService.listPagingWithCondition( personName, wi.getOrderField(), wi.getOrderType(), queryFilter, page, size, wi.getAuthor());
+		List<Document> searchResultList = documentQueryService.listPagingWithCondition( personName, wi.getOrderField(), wi.getOrderType(), queryFilter, page, size, wi.getAuthor(), wi.getExcludeAllRead());
 		Wo wo = null;
 		for( Document document : searchResultList ) {
 			try {
@@ -117,6 +117,9 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 		@FieldDescribe( "仅返回数据不查询总数，默认false" )
 		private Boolean justData;
 
+		@FieldDescribe( "是否排除全员可读文档，默认false" )
+		private Boolean excludeAllRead;
+
 		public String getPerson() {
 			return person;
 		}
@@ -139,6 +142,14 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 
 		public void setJustData(Boolean justData) {
 			this.justData = justData;
+		}
+
+		public Boolean getExcludeAllRead() {
+			return excludeAllRead;
+		}
+
+		public void setExcludeAllRead(Boolean excludeAllRead) {
+			this.excludeAllRead = excludeAllRead;
 		}
 	}
 

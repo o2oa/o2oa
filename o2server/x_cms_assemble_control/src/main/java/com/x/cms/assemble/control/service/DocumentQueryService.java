@@ -458,12 +458,12 @@ public class DocumentQueryService {
 	 * @throws Exception
 	 */
 	public List<Document> listPagingWithCondition( String personName, String orderField, String orderType, QueryFilter queryFilter, Integer adjustPage,
-																  Integer pageSize, Boolean isAuthor) throws Exception {
+																  Integer pageSize, Boolean isAuthor, Boolean excludeAllRead) throws Exception {
 		if( pageSize == 0 ) { pageSize = 20; }
 		//按正常逻辑根据序列进行分页查询
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			Business business = new Business(emc);
-			return business.getDocumentFactory().listPagingWithCondition(personName, orderField, orderType, queryFilter, adjustPage, pageSize, isAuthor);
+			return business.getDocumentFactory().listPagingWithCondition(personName, orderField, orderType, queryFilter, adjustPage, pageSize, isAuthor, excludeAllRead);
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -476,11 +476,11 @@ public class DocumentQueryService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Long countWithCondition( String personName, QueryFilter queryFilter, Boolean isAuthor) throws Exception {
+	public Long countWithCondition( String personName, QueryFilter queryFilter, Boolean isAuthor, Boolean excludeAllRead) throws Exception {
 		//按正常逻辑根据序列进行分页查询
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			Business business = new Business(emc);
-			return business.getDocumentFactory().countWithCondition(personName, queryFilter, isAuthor);
+			return business.getDocumentFactory().countWithCondition(personName, queryFilter, isAuthor, excludeAllRead);
 		} catch ( Exception e ) {
 			throw e;
 		}

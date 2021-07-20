@@ -230,17 +230,13 @@ public class CmsBatchOperationProcessService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			cmsBatchOperation = emc.find( id, CmsBatchOperation.class );
 
-			reviewService.refreshDocumentReview( emc, docId );
+			boolean fullRead = reviewService.refreshDocumentReview( emc, docId );
 
 			Document document = emc.find( docId, Document.class );
 			if( document != null ) {
 				emc.beginTransaction( Document.class );
 				document.setReviewed( true );
-				if("数据".equals(document.getDocumentType()) || document.getReadPersonList().contains("所有人")){
-					document.setAllRead(true);
-				}else{
-					document.setAllRead(false);
-				}
+				document.setIsAllRead(fullRead);
 
 				if(StringUtils.isEmpty( document.getAppAlias())) {
 					document.setAppAlias( document.getAppName() );
@@ -290,17 +286,13 @@ public class CmsBatchOperationProcessService {
 	public void refreshDocumentReview(String docId ) throws Exception {
 		logger.debug( "refreshDocumentReview {}", docId);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			reviewService.refreshDocumentReview( emc, docId );
+			boolean fullRead = reviewService.refreshDocumentReview( emc, docId );
 
 			Document document = emc.find( docId, Document.class );
 			if( document != null ) {
 				emc.beginTransaction( Document.class );
 				document.setReviewed( true );
-				if("数据".equals(document.getDocumentType()) || document.getReadPersonList().contains("所有人")){
-					document.setAllRead(true);
-				}else{
-					document.setAllRead(false);
-				}
+				document.setIsAllRead(fullRead);
 				if( StringUtils.isEmpty( document.getAppAlias()  )) {
 					document.setAppAlias( document.getAppName() );
 				}
