@@ -460,13 +460,11 @@ public class DocumentFactory extends AbstractFactory {
 				Subquery<Review> subquery = cq.subquery(Review.class);
 				Root<Review> root2 = subquery.from(em1.getMetamodel().entity(Review.class));
 				subquery.select(root2);
-				Predicate p_permission = cb1.conjunction();
-				p_permission = cb1.and(p_permission,
-						cb1.or(cb1.equal(root2.get(Review_.permissionObj), "*"),
-								cb1.equal(root2.get(Review_.permissionObj), personName)));
-				p_permission = cb1.and(p_permission, cb1.equal(root.get(Document_.id), root2.get(Review_.docId)));
+				Predicate p_permission = cb1.equal(root2.get(Review_.permissionObj), personName);
+				p_permission = cb1.and(p_permission, cb1.equal(root2.get(Review_.docId), root.get(Document_.id)));
 				subquery.where(p_permission);
-				p = cb.and(p, cb.exists(subquery));
+				Predicate orP = cb.or(cb.isTrue(root.get(Document_.isAllRead)), cb.exists(subquery));
+				p = cb.and(p, orP);
 			}else {
 				List<String> list = new ArrayList<>();
 				List<String> unitAllList = this.business().organization().unit().listWithPersonSupNested(personName);
@@ -567,13 +565,11 @@ public class DocumentFactory extends AbstractFactory {
 				Subquery<Review> subquery = cq.subquery(Review.class);
 				Root<Review> root2 = subquery.from(em1.getMetamodel().entity(Review.class));
 				subquery.select(root2);
-				Predicate p_permission = cb1.conjunction();
-				p_permission = cb1.and(p_permission,
-						cb1.or(cb1.equal(root2.get(Review_.permissionObj), "*"),
-								cb1.equal(root2.get(Review_.permissionObj), personName)));
-				p_permission = cb1.and(p_permission, cb1.equal(root.get(Document_.id), root2.get(Review_.docId)));
+				Predicate p_permission = cb1.equal(root2.get(Review_.permissionObj), personName);
+				p_permission = cb1.and(p_permission, cb1.equal(root2.get(Review_.docId), root.get(Document_.id)));
 				subquery.where(p_permission);
-				p = cb.and(p, cb.exists(subquery));
+				Predicate orP = cb.or(cb.isTrue(root.get(Document_.isAllRead)), cb.exists(subquery));
+				p = cb.and(p, orP);
 			}else {
 				List<String> list = new ArrayList<>();
 				List<String> unitAllList = this.business().organization().unit().listWithPersonSupNested(personName);

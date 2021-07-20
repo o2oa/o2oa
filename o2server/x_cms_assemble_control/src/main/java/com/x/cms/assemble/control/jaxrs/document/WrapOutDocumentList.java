@@ -81,6 +81,9 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	
 	@FieldDescribe( "是否置顶." )
 	private Boolean isTop;
+
+	@FieldDescribe( "是否全员可读." )
+	private Boolean isAllRead;
 	
 	/**
 	 * 只作显示用
@@ -307,5 +310,12 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	public void setIsTop(Boolean isTop) {
 		this.isTop = isTop;
 	}
-	
+
+	public Boolean getAllRead() {
+		return isAllRead;
+	}
+
+	public void setAllRead(Boolean allRead) {
+		isAllRead = allRead;
+	}
 }
