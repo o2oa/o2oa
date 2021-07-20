@@ -60,14 +60,12 @@ public class Review extends SliceJpaObject {
 	public static final String documentType_FIELDNAME = "documentType";
 	@FieldDescribe("文档类型：信息|数据.")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + documentType_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + documentType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String documentType;
 
 	public static final String appId_FIELDNAME = "appId";
 	@FieldDescribe("栏目ID.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + appId_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + appId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String appId;
 
@@ -75,7 +73,6 @@ public class Review extends SliceJpaObject {
 	@FieldDescribe("栏目名称.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
 			+ appName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + appName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String appName;
 
@@ -83,14 +80,12 @@ public class Review extends SliceJpaObject {
 	@FieldDescribe("栏目别名.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
 			+ appAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + appAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String appAlias;
 
 	public static final String categoryId_FIELDNAME = "categoryId";
 	@FieldDescribe("分类ID.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + categoryId_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + categoryId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String categoryId;
 
@@ -98,7 +93,6 @@ public class Review extends SliceJpaObject {
 	@FieldDescribe("分类名称.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
 			+ categoryName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + categoryName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String categoryName;
 
@@ -106,7 +100,6 @@ public class Review extends SliceJpaObject {
 	@FieldDescribe("分类别名.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
 			+ categoryAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + categoryAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String categoryAlias;
 
@@ -119,21 +112,18 @@ public class Review extends SliceJpaObject {
 	public static final String docSequence_FIELDNAME = "docSequence";
 	@FieldDescribe("文档Sequence.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + docSequence_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + docSequence_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String docSequence;
 
 	public static final String docStatus_FIELDNAME = "docStatus";
 	@FieldDescribe("文档状态.")
 	@Column(length = length_32B, name = ColumnNamePrefix + docStatus_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + docStatus_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String docStatus;
 
 	public static final String title_FIELDNAME = "title";
 	@FieldDescribe("文档标题.")
 	@Column(length = length_255B, name = ColumnNamePrefix + title_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String title;
 
@@ -141,7 +131,6 @@ public class Review extends SliceJpaObject {
 	@FieldDescribe("拟稿人")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
 			+ creatorPerson_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + creatorPerson_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String creatorPerson;
 
@@ -149,7 +138,6 @@ public class Review extends SliceJpaObject {
 	@FieldDescribe("创建人Identity")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
 			+ creatorIdentity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + creatorIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorIdentity;
 
@@ -157,7 +145,6 @@ public class Review extends SliceJpaObject {
 	@FieldDescribe("创建人组织")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
 			+ creatorUnitName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + creatorUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorUnitName;
 
@@ -173,7 +160,6 @@ public class Review extends SliceJpaObject {
 	@Temporal(TemporalType.TIMESTAMP)
 	/* 结束时间不能为空,如果为空排序可能出错 */
 	@Column(name = ColumnNamePrefix + docCreateTime_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + docCreateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date docCreateTime;
 
@@ -182,7 +168,6 @@ public class Review extends SliceJpaObject {
 	@Temporal(TemporalType.TIMESTAMP)
 	/* 结束时间不能为空,如果为空排序可能出错 */
 	@Column(name = ColumnNamePrefix + publishTime_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + publishTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date publishTime;
 
@@ -215,7 +200,6 @@ public class Review extends SliceJpaObject {
 	public static final String importBatchName_FIELDNAME = "importBatchName";
 	@FieldDescribe("文件导入的批次号：一般是分类ID+时间缀")
 	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + importBatchName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + importBatchName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String importBatchName;
 
@@ -241,42 +225,36 @@ public class Review extends SliceJpaObject {
 	@FieldDescribe("文档修改时间")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + modifyTime_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + modifyTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date modifyTime;
 
 	public static final String sequenceTitle_FIELDNAME = "sequenceTitle";
 	@FieldDescribe("用于标题排序的sequence")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceTitle_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + sequenceTitle_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String sequenceTitle = "";
 
 	public static final String sequenceAppAlias_FIELDNAME = "sequenceAppAlias";
 	@FieldDescribe("用于栏目别名排序的sequence")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceAppAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + sequenceAppAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String sequenceAppAlias = "";
 
 	public static final String sequenceCategoryAlias_FIELDNAME = "sequenceCategoryAlias";
 	@FieldDescribe("用于分类别名排序的sequence")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceCategoryAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + sequenceCategoryAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String sequenceCategoryAlias = "";
 
 	public static final String sequenceCreatorPerson_FIELDNAME = "sequenceCreatorPerson";
 	@FieldDescribe("用于创建者排序的sequence")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceCreatorPerson_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + sequenceCreatorPerson_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String sequenceCreatorPerson = "";
 
 	public static final String sequenceCreatorUnitName_FIELDNAME = "sequenceCreatorUnitName";
 	@FieldDescribe("用于创建者组织排序的sequence")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceCreatorUnitName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + sequenceCreatorUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String sequenceCreatorUnitName = "";
 
