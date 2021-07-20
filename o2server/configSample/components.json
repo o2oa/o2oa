@@ -1,0 +1,255 @@
+{
+  "systems": [
+    {
+      "name": "Setting",
+      "path": "Setting",
+      "title": "系统设置",
+      "iconPath": "appicon.png",
+      "orderNumber": 1.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "Org",
+      "path": "Org",
+      "title": "组织管理",
+      "iconPath": "appicon.png",
+      "orderNumber": 2.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "cmsManager",
+      "path": "cms.Column",
+      "title": "内容管理平台",
+      "iconPath": "appicon.png",
+      "orderNumber": 3.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "cms",
+      "path": "cms.Index",
+      "title": "信息平台",
+      "iconPath": "appicon.png",
+      "orderNumber": 12.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "ApplicationExplorer",
+      "path": "process.ApplicationExplorer",
+      "title": "流程管理平台",
+      "iconPath": "appicon.png",
+      "orderNumber": 4.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "PortalExplorer",
+      "path": "portal.PortalExplorer",
+      "title": "门户管理平台",
+      "iconPath": "appicon.png",
+      "orderNumber": 5.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "DataExplorer",
+      "path": "query.QueryExplorer",
+      "title": "数据中心平台",
+      "iconPath": "appicon.png",
+      "orderNumber": 6.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "service.ServiceManager",
+      "path": "service.ServiceManager",
+      "title": "服务管理平台",
+      "iconPath": "appicon.png",
+      "orderNumber": 7.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "AppMarketV2",
+      "path": "AppMarketV2",
+      "title": "应用市场",
+      "iconPath": "appicon.png",
+      "orderNumber": 8.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "AppCenter",
+      "path": "AppCenter",
+      "title": "应用管理",
+      "iconPath": "appicon.png",
+      "orderNumber": 9.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "LogViewer",
+      "path": "LogViewer",
+      "title": "日志",
+      "iconPath": "appicon.png",
+      "orderNumber": 10.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "Profile",
+      "path": "Profile",
+      "title": "个人设置",
+      "iconPath": "appicon.png",
+      "orderNumber": 11.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "BAM",
+      "path": "BAM",
+      "title": "流程监控",
+      "iconPath": "appicon.png",
+      "orderNumber": 12.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "TaskCenter",
+      "path": "process.TaskCenter",
+      "title": "办公中心",
+      "iconPath": "appicon.png",
+      "orderNumber": 13.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "Homepage",
+      "path": "Homepage",
+      "title": "首页",
+      "iconPath": "appicon.png",
+      "orderNumber": 14.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "HotArticle",
+      "path": "HotArticle",
+      "title": "热点",
+      "iconPath": "appicon.png",
+      "orderNumber": 15.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "Note",
+      "path": "Note",
+      "title": "便签",
+      "iconPath": "appicon.png",
+      "orderNumber": 17.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "Meeting",
+      "path": "Meeting",
+      "title": "会议管理",
+      "iconPath": "appicon.png",
+      "orderNumber": 18.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "Attendance",
+      "path": "Attendance",
+      "title": "考勤管理",
+      "iconPath": "appicon.png",
+      "orderNumber": 20.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "Forum",
+      "path": "Forum",
+      "title": "论坛",
+      "iconPath": "appicon.png",
+      "orderNumber": 21.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "Minder",
+      "path": "Minder",
+      "title": "脑图编辑器",
+      "iconPath": "appicon.png",
+      "orderNumber": 22.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "Calendar",
+      "path": "Calendar",
+      "title": "日程安排",
+      "iconPath": "appicon.png",
+      "orderNumber": 23.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "ANN",
+      "path": "ANN",
+      "title": "神经网络",
+      "iconPath": "appicon.png",
+      "orderNumber": 24.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "Search",
+      "path": "Search",
+      "title": "搜索",
+      "iconPath": "appicon.png",
+      "orderNumber": 25.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    },
+    {
+      "name": "IMV2",
+      "path": "IMV2",
+      "title": "聊天",
+      "iconPath": "appicon.png",
+      "orderNumber": 26.0,
+      "type": "system",
+      "allowList": [],
+      "dentyList": []
+    }
+  ],
+  "###systems": "默认模块###"
+}
