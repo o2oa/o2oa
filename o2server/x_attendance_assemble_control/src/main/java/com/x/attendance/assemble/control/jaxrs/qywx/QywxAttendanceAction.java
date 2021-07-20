@@ -76,7 +76,7 @@ public class QywxAttendanceAction  extends StandardJaxrsAction {
         ActionResult<List<ActionListQywxSyncRecord.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionListQywxSyncRecord().execute();
+            result = new ActionListQywxSyncRecord().execute(effectivePerson);
         }catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
@@ -96,7 +96,7 @@ public class QywxAttendanceAction  extends StandardJaxrsAction {
         ActionResult<List<ActionListQywxAttendanceDetail.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionListQywxAttendanceDetail().execute(id, count, jsonElement);
+            result = new ActionListQywxAttendanceDetail().execute(effectivePerson, id, count, jsonElement);
         }catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
