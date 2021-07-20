@@ -311,11 +311,11 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 		this.isTop = isTop;
 	}
 
-	public Boolean getAllRead() {
+	public Boolean getIsAllRead() {
 		return isAllRead;
 	}
 
-	public void setAllRead(Boolean allRead) {
-		isAllRead = allRead;
+	public void setIsAllRead(Boolean isAllRead) {
+		this.isAllRead = isAllRead;
 	}
 }

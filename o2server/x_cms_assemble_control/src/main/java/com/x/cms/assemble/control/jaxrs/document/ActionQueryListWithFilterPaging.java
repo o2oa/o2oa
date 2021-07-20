@@ -92,7 +92,7 @@ public class ActionQueryListWithFilterPaging extends BaseAction {
 				if( isManager ) {
 					personName = null;
 				}
-				total = documentQueryService.countWithCondition( personName, queryFilter, false);
+				total = documentQueryService.countWithCondition( personName, queryFilter, false, false);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在获取用户可查询到的文档数据条目数量时发生异常。");
@@ -108,7 +108,7 @@ public class ActionQueryListWithFilterPaging extends BaseAction {
 				if( isManager ) {
 					personName = null;
 				}
-				searchResultList = documentQueryService.listPagingWithCondition( personName, wi.getOrderField(), wi.getOrderType(), queryFilter, page, size, false);
+				searchResultList = documentQueryService.listPagingWithCondition( personName, wi.getOrderField(), wi.getOrderType(), queryFilter, page, size, false, false);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在根据用户可访问的文档ID列表对文档进行分页查询时发生异常。");

@@ -73,7 +73,11 @@ public class ActionRefreshDocumentPermission extends BaseAction {
 				if ( ListTools.isEmpty(wi.getPermissionList())) {
 					ReviewService reviewService = new ReviewService();
 					try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-						reviewService.refreshDocumentReview(emc, wi.getDocId());
+						boolean fullRead = reviewService.refreshDocumentReview(emc, wi.getDocId());
+						Document doc = emc.find( wi.getDocId(), Document.class );
+						emc.beginTransaction( Document.class );
+						doc.setIsAllRead(fullRead);
+						emc.commit();
 					}
 				} else {
 					documentPersistService.refreshDocumentPermission(document.getId(), wi.getPermissionList());
