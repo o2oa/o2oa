@@ -236,8 +236,13 @@ public class CmsBatchOperationProcessService {
 			if( document != null ) {
 				emc.beginTransaction( Document.class );
 				document.setReviewed( true );
+				if("数据".equals(document.getDocumentType()) || document.getReadPersonList().contains("所有人")){
+					document.setAllRead(true);
+				}else{
+					document.setAllRead(false);
+				}
 
-				if( StringUtils.isEmpty( document.getAppAlias()  )) {
+				if(StringUtils.isEmpty( document.getAppAlias())) {
 					document.setAppAlias( document.getAppName() );
 				}
 
@@ -291,7 +296,11 @@ public class CmsBatchOperationProcessService {
 			if( document != null ) {
 				emc.beginTransaction( Document.class );
 				document.setReviewed( true );
-
+				if("数据".equals(document.getDocumentType()) || document.getReadPersonList().contains("所有人")){
+					document.setAllRead(true);
+				}else{
+					document.setAllRead(false);
+				}
 				if( StringUtils.isEmpty( document.getAppAlias()  )) {
 					document.setAppAlias( document.getAppName() );
 				}

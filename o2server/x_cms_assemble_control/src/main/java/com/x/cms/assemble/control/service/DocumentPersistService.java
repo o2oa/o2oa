@@ -332,18 +332,25 @@ public class DocumentPersistService {
     	//根据栏目一个一个来查询
 		AppInfoServiceAdv appInfoService = new AppInfoServiceAdv();
 		DocumentQueryService documentQueryService = new DocumentQueryService();
-		DocumentPersistService documentPersistService = new DocumentPersistService();
 		List<String> appIds = appInfoService.listAllIds("信息");
 		List<String> documentIds = null;
 		ReviewService reviewService = new ReviewService();
 		if( ListTools.isNotEmpty( appIds )){
 			for( String appId : appIds ){
 				//查询指定App中所有的文档Id
-				documentIds = documentQueryService.listIdsByAppId( appId, "信息", 20000 );
+				documentIds = documentQueryService.listIdsByAppId( appId, "信息", 50000 );
 				if( ListTools.isNotEmpty( documentIds )){
 					for( String documentId : documentIds ){
 						try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 							reviewService.refreshDocumentReview(emc, documentId);
+							Document document = emc.find( documentId, Document.class );
+							emc.beginTransaction( Document.class );
+							if(document.getReadPersonList().contains("所有人")){
+								document.setAllRead(true);
+							}else{
+								document.setAllRead(false);
+							}
+							emc.commit();
 						} catch ( Exception e ) {
 							throw e;
 						}
