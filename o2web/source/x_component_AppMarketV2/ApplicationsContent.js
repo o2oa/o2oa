@@ -119,6 +119,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         this.emptyLoadContent();
         if (this.collectToken=="" || this.collectUrl==""){
             //先登录collcect
+            debugger
             this.actions.CollectAction.login(//平台封装好的方法
                 function( json ){ //服务调用成功的回调函数, json为服务传回的数据
                     if (json.type && json.type=="success"){
@@ -168,7 +169,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         debugger;
         var commenturl = content.collectUrl +'/o2_collect_assemble/jaxrs/collect/config/key/(0)?time='+(new Date()).getMilliseconds();
         debugger;
-        var res = new Request.JSON({
+        /*var res = new Request.JSON({
             url: commenturl,
             headers : {'x-debugger' : true,'Authorization':content.collectToken,'c-token':content.collectToken},
             secure: false,
@@ -190,7 +191,16 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
                 o2.runCallback(callback, "error", [text, error]);
             }.bind(this)
         });
-        res.send();
+        res.send();*/
+        this.actions.CollectAction.bbs(//平台封装好的方法
+            function( json ){ //服务调用成功的回调函数, json为服务传回的数据
+                if (json.type && json.type=="success"){debugger;
+                    data = json.data; //为变量data赋值
+                    this.bbsUrlPath = data.bbsUrlPath;
+                    this.bbsUrl = data.bbsUrl;
+                }
+            }.bind(this),null,false //同步执行
+        );
     },
     loadCommentsGrade: function(appdata){
         debugger;
