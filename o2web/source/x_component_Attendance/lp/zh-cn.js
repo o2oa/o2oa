@@ -57,7 +57,7 @@ MWF.xApplication.Attendance.LP = {
 	"resultNormal" : "正常打卡次数",
 	"seriousLateTimes": "严重迟到次数",
 	"outsideDutyTimes": "外出签到次数",
-	"absenteeismTimes": "矿工次数",
+	"absenteeismTimes": "旷工次数",
 	"notSignedCount": "未打卡次数",
 
 	"topUnitAttendanceDetail" : "公司出勤明细",
