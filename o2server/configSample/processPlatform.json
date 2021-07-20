@@ -1,0 +1,113 @@
+{
+  "maintenanceIdentity": "",
+  "formVersionCount": 30.0,
+  "processVersionCount": 30.0,
+  "scriptVersionCount": 30.0,
+  "docToWordType": "local",
+  "docToWordDefaultFileName": "正文.docx",
+  "docToWordDefaultSite": "$doc",
+  "executorCount": 32.0,
+  "executorQueueBusyThreshold": 5.0,
+  "updateDataProjectionEnable": false,
+  "urge": {
+    "enable": false,
+    "cron": "30 0/10 8-18 * * ?",
+    "###enable": "是否启用###",
+    "###cron": "定时cron表达式.###"
+  },
+  "expire": {
+    "enable": true,
+    "cron": "45 0/15 8-18 * * ?",
+    "###enable": "是否启用###",
+    "###cron": "定时cron表达式###"
+  },
+  "touchDelay": {
+    "enable": true,
+    "cron": "5 0/5 * * * ?",
+    "###enable": "是否启用###",
+    "###cron": "定时cron表达式###"
+  },
+  "merge": {
+    "enable": false,
+    "cron": "30 30 6 * * ?",
+    "thresholdDays": 730.0,
+    "batchSize": 100.0,
+    "###enable": "是否启用###",
+    "###cron": "定时cron表达式###",
+    "###thresholdDays": "期限,已完成工作结束间隔指定时间进行merge,默认两年后进行merge###",
+    "###batchSize": "批量大小.###"
+  },
+  "deleteDraft": {
+    "enable": false,
+    "cron": "0 0 20 * * ?",
+    "thresholdMinutes": 14400.0,
+    "###enable": "是否启用###",
+    "###cron": "定时cron表达式###",
+    "###thresholdMinutes": "设定阈值,如果超过这个时间认为是可以删除的草稿,默认为10天.###"
+  },
+  "passExpired": {
+    "enable": true,
+    "cron": "5 5 8-18 * * ?",
+    "###enable": "是否启用###",
+    "###cron": "定时cron表达式###"
+  },
+  "touchDetained": {
+    "enable": true,
+    "cron": "30 30 12 * * ?",
+    "thresholdMinutes": 1440.0,
+    "###enable": "是否启用###",
+    "###cron": "定时cron表达式###",
+    "###thresholdMinutes": "当工作滞留设定时间后,将尝试触发工作流转,可以自动处理由于人员变动的引起的工作滞留,默认24*60分钟.###"
+  },
+  "processingSignalPersistEnable": false,
+  "attachmentConfig": {
+    "fileSize": 0.0,
+    "fileTypeIncludes": [],
+    "fileTypeExcludes": [],
+    "###fileSize": "附件大小限制（单位M，默认不限制）.###",
+    "###fileTypeIncludes": "只允许上传的文件后缀###",
+    "###fileTypeExcludes": "不允许上传的文件后缀###"
+  },
+  "asynchronousTimeout": 60.0,
+  "###maintenanceIdentity": "维护身份,当工作发生意外错误,无法找到对应的处理人情况下,先尝试将工作分配给创建身份,如果创建身份也不可获取,那么分配给指定人员,默认情况下这个值为空.###",
+  "###formVersionCount": "表单历史版本保留数量,0为不保留.###",
+  "###processVersionCount": "流程历史版本保留数量,0为不保留.###",
+  "###scriptVersionCount": "脚本历史版本保留数量,0为不保留.###",
+  "###docToWordType": "HTML版式公文转换成Word文件方式,local,cloud.###",
+  "###docToWordDefaultFileName": "HTML版式公文转换成Word文件缺省文件名.###",
+  "###docToWordDefaultSite": "HTML版式公文转换成Word文件缺省site.###",
+  "###executorCount": "执行器数量###",
+  "###executorQueueBusyThreshold": "执行器队列繁忙阈值###",
+  "###updateDataProjectionEnable": "更新data数据是否执行映射.###",
+  "###urge": "催办任务设置,发现即将过期时发送提醒消息.###",
+  "###expire": "将已经过了截至时间的待办标记过期.###",
+  "###touchDelay": "延时任务设置,定时触发延时任务,当超过延时时间后继续流转.###",
+  "###merge": "合并任务设置,定时触发合并任务,将已完成工作的Data从Item表中提取合并到WorkCompleted的Data字段中,默认工作完成后2年开始进行合并.###",
+  "###deleteDraft": "清除草稿状态的工作.###",
+  "###passExpired": "超时工作路由设置.###",
+  "###touchDetained": "触发长时间未处理的工作.###",
+  "###logLongDetained": "记录长期滞留工作,待办,待阅设置.###",
+  "logLongDetained": {
+    "enable": true,
+    "cron": "0 0 4 * * ?",
+    "taskThresholdMinutes": 14400.0,
+    "readThresholdMinutes": 14400.0,
+    "workThresholdMinutes": 14400.0,
+    "###enable": "是否启用###",
+    "###cron": "定时cron表达式###",
+    "###taskThresholdMinutes": "设定待办滞留阈值,.###",
+    "###readThresholdMinutes": "设定待阅滞留阈值,.###",
+    "###workThresholdMinutes": "设定工作滞留阈值,.###"
+  },
+  "###press": "提醒设置,设置提醒间隔.###",
+  "press": {
+    "intervalMinutes": 10.0,
+    "count": 3.0,
+    "###intervalMinutes": "提醒间隔(分钟)###",
+    "###count": "提醒数量限制.###"
+  },
+  "###extensionEvents": "事件扩充.###",
+  "###processingSignalPersistEnable": "是否保存工作处理信号内容,默认false.###",
+  "###attachmentConfig": "流程附件上传限制大小或者类型.###",
+  "###asynchronousTimeout": "异步超时.###"
+}
