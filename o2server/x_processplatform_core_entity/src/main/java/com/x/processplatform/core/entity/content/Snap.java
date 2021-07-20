@@ -271,13 +271,13 @@ public class Snap extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String activityToken;
 
-	@FieldDescribe("流程启动时间.")
 	public static final String startTime_FIELDNAME = "startTime";
+	@FieldDescribe("流程启动时间.")
 	@Column(name = ColumnNamePrefix + startTime_FIELDNAME)
 	private Date startTime;
 
-	@FieldDescribe("属性对象存储字段.")
 	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
 	@Persistent
 	@Strategy(JsonPropertiesValueHandler)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
