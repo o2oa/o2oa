@@ -104,11 +104,11 @@ public class ReviewService {
 	 * @param docId
 	 * @throws Exception
 	 */
-	public void refreshDocumentReview( EntityManagerContainer emc, String docId ) throws Exception {
+	public boolean refreshDocumentReview( EntityManagerContainer emc, String docId ) throws Exception {
+		boolean fullRead = false;
 		Document document = emc.find( docId, Document.class );
 		
 		if( document != null ) {
-
 			AppInfo appInfo = emc.find( document.getAppId(), AppInfo.class );
 			CategoryInfo categoryInfo = emc.find( document.getCategoryId(), CategoryInfo.class );		
 			
@@ -122,6 +122,9 @@ public class ReviewService {
 			}else if( "published".equalsIgnoreCase( document.getDocStatus() ) ) {
 				logger.debug( "refreshDocumentReview -> refresh review for published document: " + document.getTitle() );
 				List<String> persons = listPermissionPersons( appInfo, categoryInfo, document );
+				if(persons.contains("*")){
+					fullRead = true;
+				}
 				//将文档新的权限与数据库中的权限进行比对，新建或者更新
 				logger.debug( "refreshDocumentReview -> there are "+ persons.size() +" permission in this document: " + document.getTitle() );
 				refreshDocumentReview( emc, appInfo, categoryInfo, document, persons );
@@ -135,12 +138,13 @@ public class ReviewService {
 		}else {
 			logger.debug( "refreshDocumentReview -> document not exists: " + docId );
 		}
+		return fullRead;
 	}
 
 	private List<String> listPublishAndManagePersons(AppInfo appInfo, CategoryInfo categoryInfo, Document document) throws Exception {
 		List<String> persons = new ArrayList<>();
 		persons.add( document.getCreatorPerson() ); //创建者
-		persons = addListToList( persons, categoryInfo.getPublishablePersonList() );			
+		persons = addListToList( persons, categoryInfo.getPublishablePersonList() );
 		persons = addPermissionObj( persons, categoryInfo.getPublishableUnitList() );
 		persons = addPermissionObj( persons, categoryInfo.getPublishableGroupList() );
 		persons = addListToList( persons, categoryInfo.getManageablePersonList() );			
@@ -251,6 +255,8 @@ public class ReviewService {
 		if( ListTools.isNotEmpty( document.getReadPersonList() ) ) {
 			if( !document.getReadPersonList().contains( "所有人" )) {
 				return true;
+			}else{
+				return false;
 			}
 		}
 		if( ListTools.isNotEmpty( document.getReadUnitList() ) ) {

@@ -342,14 +342,10 @@ public class DocumentPersistService {
 				if( ListTools.isNotEmpty( documentIds )){
 					for( String documentId : documentIds ){
 						try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-							reviewService.refreshDocumentReview(emc, documentId);
+							boolean fullRead = reviewService.refreshDocumentReview(emc, documentId);
 							Document document = emc.find( documentId, Document.class );
 							emc.beginTransaction( Document.class );
-							if(document.getReadPersonList().contains("所有人")){
-								document.setAllRead(true);
-							}else{
-								document.setAllRead(false);
-							}
+							document.setIsAllRead(fullRead);
 							emc.commit();
 						} catch ( Exception e ) {
 							throw e;
