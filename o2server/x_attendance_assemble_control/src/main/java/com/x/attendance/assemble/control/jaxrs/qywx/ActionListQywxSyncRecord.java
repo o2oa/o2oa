@@ -10,6 +10,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
@@ -21,23 +22,27 @@ public class ActionListQywxSyncRecord extends BaseAction {
 
     private static final Logger logger = LoggerFactory.getLogger(ActionListQywxSyncRecord.class);
 
-    public ActionResult<List<Wo>> execute() throws Exception {
+    public ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
         ActionResult<List<Wo>> result = new ActionResult<>();
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
-            List<DingdingQywxSyncRecord> list = business.dingdingAttendanceFactory().findAllSyncRecordWithType(DingdingQywxSyncRecord.syncType_qywx);
-            if (list != null && !list.isEmpty()) {
-                List<Wo> wos = list.stream().map(record -> {
-                    Wo wo = new Wo();
-                    try {
-                        wo = Wo.copier.copy(record, wo);
-                        wo.formatDate();
-                    }catch (Exception e) {
-                        logger.error(e);
-                    }
-                    return wo;
-                }).collect(Collectors.toList());
-                result.setData(wos);
+            if (business.isManager(effectivePerson)) {
+                List<DingdingQywxSyncRecord> list = business.dingdingAttendanceFactory().findAllSyncRecordWithType(DingdingQywxSyncRecord.syncType_qywx);
+                if (list != null && !list.isEmpty()) {
+                    List<Wo> wos = list.stream().map(record -> {
+                        Wo wo = new Wo();
+                        try {
+                            wo = Wo.copier.copy(record, wo);
+                            wo.formatDate();
+                        } catch (Exception e) {
+                            logger.error(e);
+                        }
+                        return wo;
+                    }).collect(Collectors.toList());
+                    result.setData(wos);
+                }
+            } else {
+                throw new ExceptionNotManager();
             }
         }
         return result;
