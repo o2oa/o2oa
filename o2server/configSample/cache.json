@@ -1,0 +1,28 @@
+{
+  "type": "ehcache",
+  "redis": {
+    "host": "127.0.0.1",
+    "port": 6379.0,
+    "user": "",
+    "password": "",
+    "connectionTimeout": 3000.0,
+    "socketTimeout": 3000.0,
+    "sslEnable": false,
+    "index": 0.0,
+    "###host": "redis服务器地址###",
+    "###port": "redis服务器端口###",
+    "###user": "认证用户###",
+    "###password": "认证口令###",
+    "###connectionTimeout": "连接等待时间###",
+    "###socketTimeout": "response返回等待时间###",
+    "###sslEnable": "是否启用ssl###",
+    "###index": "数据库编号###"
+  },
+  "ehcache": {
+    "jmxEnable": false,
+    "###jmxEnable": "是否启用jmx###"
+  },
+  "###type": "缓存类型:ehcache,type###",
+  "###redis": "redis配置###",
+  "###ehcache": "ehcache配置###"
+}
