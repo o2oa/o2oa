@@ -1,0 +1,17 @@
+{
+  "enable": false,
+  "oauth2Id": "5",
+  "port": 5080.0,
+  "host": "127.0.0.1",
+  "user": "xadmin",
+  "pass": "",
+  "anonymousAccessAttachment": false,
+  "###enable": "是否启用###",
+  "###oauth2Id": "openMeeting单点序号###",
+  "###port": "openMeeting端口###",
+  "###host": "openMeeting服务器###",
+  "###user": "openMeeting管理员账户###",
+  "###pass": "openMeeting管理员密码###",
+  "###httpProtocol": "openMeeting协议###",
+  "###anonymousAccessAttachment": "匿名用户是否可以访问附件###"
+}

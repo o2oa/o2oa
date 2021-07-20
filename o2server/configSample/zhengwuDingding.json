@@ -1,0 +1,33 @@
+{
+  "enable": false,
+  "appSecret": "",
+  "agentId": "",
+  "syncCron": "10 0/10 * * * ?",
+  "forceSyncCron": "10 45 8,12 * * ?",
+  "oapiAddress": "https://oapi.dingtalk.com",
+  "corpId": "",
+  "corpSecret": "",
+  "titleSplit": [
+    ",",
+    "、",
+    "，",
+    " ",
+    "　"
+  ],
+  "personAttributeTitleName": "职务",
+  "nonce": "o2oa",
+  "messageEnable": true,
+  "###enable": "是否启用.###",
+  "###appId": "政务钉钉appId###",
+  "###appSecret": "政务钉钉appSecret###",
+  "###agentId": "政务钉钉agentId###",
+  "###syncCron": "回调信号触发同步检查,默认每10分钟运行一次,如果期间内有政务钉钉回调信号接收到,那么触发同步任务进行人员同步.###",
+  "###forceSyncCron": "强制拉入同步cron,默认在每天的8点和12点强制进行同步.###",
+  "###oapiAddress": "oapi服务器地址###",
+  "###corpId": "政务钉钉corpId###",
+  "###corpSecret": "政务钉钉corpSecret###",
+  "###titleSplit": "title分隔符###",
+  "###personAttributeTitleName": "title对应个人属性名称###",
+  "###nonce": "政务钉钉nonce###",
+  "###messageEnable": "推送消息到政务钉钉消息###"
+}
