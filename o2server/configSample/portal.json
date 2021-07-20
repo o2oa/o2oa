@@ -1,0 +1,21 @@
+{
+  "indexPage": {
+    "enable": false,
+    "portal": "",
+    "page": "",
+    "###enable": "是否启用定制的首页面.###",
+    "###portal": "指定首页面所属的portal,可以用id,name,alias.###",
+    "###page": "指定的首页面,可以使用name,alias,id###"
+  },
+  "loginPage": {
+    "enable": false,
+    "portal": "",
+    "page": "",
+    "###enable": "是否启用定制登录页面.###",
+    "###portal": "指定登录页面所属的portal,可以用id,name,alias.###",
+    "###page": "指定的登录页面,可以使用name,alias,id###"
+  },
+  "###urlMapping": "url转换配置.###",
+  "###indexPage": "定制首页面设置.###",
+  "###loginPage": "定制登录页面设置.###"
+}
