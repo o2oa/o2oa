@@ -245,6 +245,13 @@ public class Document extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Boolean isTop = false;
 
+	public static final String isAllRead_FIELDNAME = "isAllRead";
+	@FieldDescribe("是否全员可读")
+	@Column(name = ColumnNamePrefix + isAllRead_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + isAllRead_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean isAllRead = false;
+
 	public static final String hasIndexPic_FIELDNAME = "hasIndexPic";
 	@FieldDescribe("是否含有首页图片")
 	@Column(name = ColumnNamePrefix + hasIndexPic_FIELDNAME)
@@ -805,6 +812,14 @@ public class Document extends SliceJpaObject {
 		if (this.commendCount < 0) {
 			this.commendCount = 0L;
 		}
+	}
+
+	public Boolean getAllRead() {
+		return isAllRead;
+	}
+
+	public void setAllRead(Boolean allRead) {
+		isAllRead = allRead;
 	}
 
 	public Boolean getIsTop() {
