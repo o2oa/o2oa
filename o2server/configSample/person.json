@@ -1,6 +1,6 @@
 {
   "MAX_PASSWORDPERIOD": 3650.0,
-  "captchaLogin": false,
+  "captchaLogin": true,
   "codeLogin": true,
   "bindLogin": true,
   "faceLogin": true,
