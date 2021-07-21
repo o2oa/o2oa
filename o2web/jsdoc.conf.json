@@ -42,8 +42,8 @@
         }
     },
     "metadata": {
-        "title": "O2OA前台API", //最终生成的文档中标题
-        "title_prefix" : "O2OA WebAPI", //html title标题前缀
+        "title": "O2OA API", //最终生成的文档中标题
+        "title_prefix" : "O2OA API", //html title标题前缀
         "title_suffix" : " | O2OA开发平台" //标题后缀
     },
     "o2" : {

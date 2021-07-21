@@ -1,4 +1,4 @@
-# O2OA前台API {@o2version}
+# O2OA API {@o2version}
 
 ## 简介
 
@@ -6,7 +6,7 @@
 
 * O2OA 前端脚本基于您使用的浏览器的Javascript引擎，使用Javascript语法。
 
-* 本API是O2OA前台脚本的编写说明，您可以通过脚本访问和操作平台内的各种对象。
+* 本API是O2OA脚本的编写说明，您可以通过脚本访问和操作平台内的各种对象。
 
 ## API总览
 
@@ -49,7 +49,7 @@
 
 ### FormComponent
 
-* FormComponent为表单组件，可以通过`this.form.get("fieldId")`获取。
+* FormComponent为前台表单组件，可以通过`this.form.get("fieldId")`获取。
 
 #### Process 流程表单组件
 <table>
