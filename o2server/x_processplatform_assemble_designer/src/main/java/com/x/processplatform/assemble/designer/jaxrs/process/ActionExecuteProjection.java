@@ -1,10 +1,9 @@
 package com.x.processplatform.assemble.designer.jaxrs.process;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -52,9 +51,24 @@ class ActionExecuteProjection extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 8751222971648353980L;
+
+		@FieldDescribe("无效字段")
+		private String dummy;
+
+		public String getDummy() {
+			return dummy;
+		}
+
+		public void setDummy(String dummy) {
+			this.dummy = dummy;
+		}
+
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 5417378686087580564L;
 
 	}
 
