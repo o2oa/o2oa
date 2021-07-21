@@ -194,7 +194,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 						Business.EVENT_INVOKEJAXRSRESPONSE);
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
 						jaxrsResponse);
-				passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext));
+				passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext), true);
 			} else {
 				passThrough = true;
 			}
@@ -321,7 +321,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 						Business.EVENT_INVOKEJAXRSRESPONSE);
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
 						jaxrsResponse);
-				passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext));
+				passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext), true);
 			} else {
 				passThrough = true;
 			}
