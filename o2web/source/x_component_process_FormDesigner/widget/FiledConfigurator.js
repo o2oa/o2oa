@@ -2,7 +2,9 @@ MWF.xApplication.process.FormDesigner.widget.FiledConfigurator = new Class({
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
     options: {
-        "style": "default"
+        "style": "default",
+        "title": "",
+        "hasRefresh": false
     },
     initialize: function(node, designer, options, data){
 
@@ -17,24 +19,34 @@ MWF.xApplication.process.FormDesigner.widget.FiledConfigurator = new Class({
         this._loadCss();
     },
     load: function(){
+        this.loadTitle();
+        this.loadContent();
+        this.loadAddAction();
+    },
+    loadTitle: function(){
+        this.titleNode = new Element("div",{
+            "styles": this.css.titleNode,
+            "text": this.options.title,
+        }).inject(this.node);
+        this.refreshNode = new Element("div",{
+            "styles": this.css.refreshNode,
+            "title": this.app.lp.filedConfigurator.importFromForm
+        }).inject(this.titleNode);
+        this.refreshNode.addEvent("click", function () {
+            this.fireEvent("refresh")
+        }.bind(this))
+    },
+    loadContent: function(){
+        if(!this.contentNode)this.contentNode = new Element("div").inject(this.node);
         this.items = [];
 
-        this.table = new Element("table").inject(this.node);
+        this.table = new Element("table").inject(this.contentNode);
 
         var tr = new Element("tr").inject(this.table);
         new Element("th", {"text": this.app.lp.filedConfigurator.sequence, "width":"10%"}).inject(tr);
         new Element("th", {"text": this.app.lp.filedConfigurator.fieldTitle, "width":"35%"}).inject(tr);
         new Element("th", {"text": this.app.lp.filedConfigurator.fieldId, "width":"35%"}).inject(tr);
         var td = new Element("th", {"text": this.app.lp.filedConfigurator.action, "width":"20%"}).inject(tr);
-
-        this.addNewItemAction = new Element("div", {"styles": this.css.addNewItemAction, "text": "+"}).inject(this.node);
-        this.addNewItemAction.addEvent("click", function(){
-            this.addItem();
-            this.addNewItemAction.hide();
-        }.bind(this));
-
-        if(this.data.length > 0)this.addNewItemAction.hide();
-
 
         // if( this.data.length === 0 ){
         //     this.addItem()
@@ -46,6 +58,24 @@ MWF.xApplication.process.FormDesigner.widget.FiledConfigurator = new Class({
             }.bind(this));
         // }
 
+    },
+    loadAddAction: function(){
+        this.addNewItemAction = new Element("div", {"styles": this.css.addNewItemAction, "text": "+"}).inject(this.node);
+        this.addNewItemAction.addEvent("click", function(){
+            this.addItem();
+            this.addNewItemAction.hide();
+        }.bind(this));
+
+        if(this.data.length > 0)this.addNewItemAction.hide();
+    },
+    reloadContent: function(){
+        this.contentNode.empty();
+        this.loadContent();
+        if(this.data.length > 0){
+            this.addNewItemAction.hide();
+        }else{
+            this.addNewItemAction.show();
+        }
     },
     getData: function(){
         return this.data;
@@ -61,8 +91,7 @@ MWF.xApplication.process.FormDesigner.widget.FiledConfigurator = new Class({
         var index = beforeItem.index+1;
         this.data.splice(index, 0, {"field": "", "title":""});
 
-        this.node.empty();
-        this.load();
+        this.reloadContent();
         this.fireEvent("change");
 
         // var item = new MWF.xApplication.process.FormDesigner.widget.FiledConfigurator.Item(this);
@@ -92,8 +121,7 @@ MWF.xApplication.process.FormDesigner.widget.FiledConfigurator = new Class({
         this.data[item.index-1] = this.data[item.index];
         this.data[item.index] = beforeData;
 
-        this.node.empty();
-        this.load();
+        this.reloadContent();
         this.fireEvent("change");
     },
     setItemsSequence: function () {
