@@ -79,37 +79,15 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         }
     },
     loadBbsInfo: function(content){
-        var json = null;
-        var commenturl = content.app.collectUrl +'/o2_collect_assemble/jaxrs/collect/config/key/(0)?time='+(new Date()).getMilliseconds();
-        debugger;
-        var res = new Request.JSON({
-            url: commenturl,
-            headers : {'x-debugger' : true,'Authorization':content.app.collectToken,'c-token':content.app.collectToken},
-            secure: false,
-            method: "get",
-            async: false,
-            withCredentials: true,
-            contentType : 'application/json',
-            crossDomain : true,
-            onSuccess: function(responseJSON, responseText){
-                json = responseJSON;
-                debugger;
-                this.bbsUrlPath = json.data.bbsUrlPath;
-                this.bbsUrl = json.data.bbsUrl;
-                /*if (typeOf(callback).toLowerCase() == 'function'){
-                    callback(responseJSON);
-                }else{
-                    o2.runCallback(callback, "success", [responseJSON, responseText]);
-                }*/
-            }.bind(this),
-            onFailure: function(xhr){
-                o2.runCallback(callback, "requestFailure", [xhr]);
-            }.bind(this),
-            onError: function(text, error){
-                o2.runCallback(callback, "error", [text, error]);
-            }.bind(this)
-        });
-        res.send();
+        this.actions.CollectAction.bbs(//平台封装好的方法
+            function( json ){ //服务调用成功的回调函数, json为服务传回的数据
+                if (json.type && json.type=="success"){debugger;
+                    data = json.data; //为变量data赋值
+                    this.bbsUrlPath = data.bbsUrlPath;
+                    this.bbsUrl = data.bbsUrl;
+                }
+            }.bind(this),null,false //同步执行
+        );
     },
     loadCommentsGrade: function(content,callback){
         this.loadBbsInfo(content);
