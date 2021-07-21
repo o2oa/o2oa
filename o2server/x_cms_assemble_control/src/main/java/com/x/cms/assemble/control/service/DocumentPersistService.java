@@ -8,6 +8,7 @@ import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.DocumentDataHelper;
 import com.x.cms.assemble.control.jaxrs.document.ActionPersistBatchModifyData.WiDataChange;
@@ -20,12 +21,14 @@ import com.x.cms.core.entity.content.Data;
 import com.x.query.core.entity.Item;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -341,7 +344,7 @@ public class DocumentPersistService {
 	/**
 	 * 重新计算所有的文档的权限和review信息
 	 */
-    public void refreshAllDocumentPermission() throws Exception {
+    public void refreshAllDocumentPermission(boolean flag) throws Exception {
 		try {
 			if(lock.tryLock()) {
 				AppInfoServiceAdv appInfoService = new AppInfoServiceAdv();
@@ -354,8 +357,8 @@ public class DocumentPersistService {
 						logger.info("刷新应用{}的数据共{}条",appId,documentIds.size());
 						if (ListTools.isNotEmpty(documentIds)) {
 							int count = 0;
-							for (List<String> partDocIds : ListTools.batch(documentIds, 10)){
-								count = count + 10;
+							for (List<String> partDocIds : ListTools.batch(documentIds, 4)){
+								count = count + 4;
 								List<CompletableFuture<Void>> futures = new TreeList<>();
 								for (String documentId : partDocIds) {
 									CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
@@ -372,6 +375,13 @@ public class DocumentPersistService {
 									});
 									futures.add(future);
 								}
+								if(!flag){
+									Calendar cal = DateUtils.toCalendar(new Date());
+									if(cal.get(Calendar.HOUR_OF_DAY)>6){
+										lock.unlock();
+										return;
+									}
+								}
 								for (CompletableFuture<Void> future : futures) {
 									try {
 										future.get(200, TimeUnit.SECONDS);
@@ -380,7 +390,7 @@ public class DocumentPersistService {
 									}
 								}
 								futures.clear();
-								if(count > 99 && count % 100 == 0){
+								if(flag && count > 199 && count % 200 == 0){
 									logger.info("应用文档权限已刷新{}个",count);
 								}
 							}

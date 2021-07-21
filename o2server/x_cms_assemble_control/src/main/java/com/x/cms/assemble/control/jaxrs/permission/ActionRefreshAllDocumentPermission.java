@@ -28,7 +28,7 @@ public class ActionRefreshAllDocumentPermission extends BaseAction {
 			try {
 				if(lock.tryLock()) {
 					logger.info("开始更新所有文档权限........");
-					documentPersistService.refreshAllDocumentPermission();
+					documentPersistService.refreshAllDocumentPermission(true);
 					logger.info("完成更新所有文档权限........");
 					wo.setValue("权限处理完成！");
 					lock.unlock();
