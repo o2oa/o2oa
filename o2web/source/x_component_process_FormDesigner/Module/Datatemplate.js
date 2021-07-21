@@ -176,6 +176,35 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 			this.form.json.moduleList[newElementJson.id] = newElementJson;
 			th.set("id", newElementJson.id);
 		}.bind(this));
+	},
+	_getDirectSubModuleJson: function(node, moduleJsons){
+		var subNode = node.getFirst();
+		while (subNode){
+			var module = subNode.retrieve("module");
+			var flag = module && !["datatable","datagrid","datatemplate"].contains(module.moduleName);
+			if (flag) {
+				moduleJsons[module.json.id] = Object.clone(module.json);
+			}
+			if( !module || flag){
+				this._getDirectSubModuleJson(subNode, moduleJsons);
+			}
+			subNode = subNode.getNext();
+		}
+	},
+	getExpImpFieldJson: function () {
+		var o = {};
+		var list = [];
+		this._getDirectSubModuleJson(this.node, o);
+		for( var key in o ){
+			var json = o[key];
+			if(this.form.options.fields.contains(json.type) && !["Office"].contains(json.type)){
+				list.push({
+					"field": json.id,
+					"title": json.name || ""
+				});
+			}
+		}
+		return list;
 	}
 
 });

@@ -20,6 +20,15 @@
         </div>
 
         <div style="margin-top:10px">
+            <div style="padding: 5px;">
+                {{$.lp.valueScriptNote}}
+                <br/>{ <br/>
+                &nbsp;&nbsp;"importedData" : {}, //{{$.lp.valueScriptImportedDataNote}}<br/>
+                &nbsp;&nbsp;"data" : {}, //{{$.lp.valueScriptDataNote}} <br/>
+                &nbsp;&nbsp;"document" : {}, //{{$.lp.valueScriptDocumentNote}}<br/>
+                &nbsp;&nbsp;"work" : {}, //{{$.lp.valueScriptWorkNote}}<br/>
+                };
+            </div>
             <div class="MWFFormulaArea" name="valueScript" title="{{$.lp.valueScript}}"></div>
             <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}cmsFieldProperty" class="text{$.vid}cmsFieldProperty">
                 <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.cmsProperty}}</div>

@@ -7,8 +7,8 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		"style": "default",
 		"propertyPath": "../x_component_cms_FormDesigner/Module/Form/form.html",
 		"mode": "PC",
-		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Datatable", "Datatable$Title", "Datatable$Data", "Datatemplate", "Htmleditor", "Number", "Office",
-			"Orgfield", "Personfield", "Readerfield", "Authorfield", "Org", "Reader", "Author", "Radio", "Select", "Textarea", "Textfield"],
+		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Datatable", "Datatable$Title", "Datatable$Data",
+			"Datatemplate", "Htmleditor", "Number", "Office", "Orgfield", "Personfield", "Readerfield", "Authorfield", "Org", "Reader", "Author", "Radio", "Select", "Textarea", "Textfield", "Address","Combox"],
 		"injectActions" : [
 			{
 				"name" : "top",
