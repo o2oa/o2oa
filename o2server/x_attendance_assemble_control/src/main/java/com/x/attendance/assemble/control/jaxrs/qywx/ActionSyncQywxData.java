@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.qywx;
 
+import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.dingding.MoreThanSevenDayException;
 import com.x.attendance.entity.DingdingQywxSyncRecord;
@@ -22,31 +23,36 @@ public class ActionSyncQywxData extends BaseAction {
     public ActionResult<WrapBoolean> execute(EffectivePerson effectivePerson, String dateFrom, String dateTo) throws Exception {
         ActionResult<WrapBoolean> result = new ActionResult<>();
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            if (null == dateFrom || null == dateTo) {
-                throw new SyncDateException();
+            Business business = new Business(emc);
+            if (business.isManager(effectivePerson)) {
+                if (null == dateFrom || null == dateTo) {
+                    throw new SyncDateException();
+                }
+                Date from = DateTools.parse(dateFrom);
+                Date to = DateTools.parse(dateTo);
+                long gap = to.getTime() - from.getTime();
+                if (gap < 0) {
+                    throw new SyncDateException();
+                }
+                if ((gap / (1000 * 60 * 60 * 24)) > 6) {
+                    throw new MoreThanSevenDayException();
+                }
+                Date wxTo = DateTools.parse(dateTo + " 23:59:59");//企业微信和钉钉查询时间不一样
+                DingdingQywxSyncRecord record = new DingdingQywxSyncRecord();
+                record.setDateFrom(from.getTime());
+                record.setDateTo(wxTo.getTime());
+                record.setStartTime(new Date());
+                record.setType(DingdingQywxSyncRecord.syncType_qywx);
+                record.setStatus(DingdingQywxSyncRecord.status_loading);
+                emc.beginTransaction(DingdingQywxSyncRecord.class);
+                emc.persist(record);
+                emc.commit();
+                //企业微信的处理队列
+                ThisApplication.qywxQueue.send(record);
+                result.setData(new WrapBoolean(true));
+            } else {
+                throw new ExceptionNotManager();
             }
-            Date from = DateTools.parse(dateFrom);
-            Date to = DateTools.parse(dateTo);
-            long gap = to.getTime() - from.getTime();
-            if (gap < 0) {
-                throw new SyncDateException();
-            }
-            if ((gap / (1000 * 60 * 60 * 24)) > 6 ) {
-                throw new MoreThanSevenDayException();
-            }
-            Date wxTo = DateTools.parse(dateTo+" 23:59:59");//企业微信和钉钉查询时间不一样
-            DingdingQywxSyncRecord record = new DingdingQywxSyncRecord();
-            record.setDateFrom(from.getTime());
-            record.setDateTo(wxTo.getTime());
-            record.setStartTime(new Date());
-            record.setType(DingdingQywxSyncRecord.syncType_qywx);
-            record.setStatus(DingdingQywxSyncRecord.status_loading);
-            emc.beginTransaction(DingdingQywxSyncRecord.class);
-            emc.persist(record);
-            emc.commit();
-            //企业微信的处理队列
-            ThisApplication.qywxQueue.send(record);
-            result.setData(new WrapBoolean(true));
         }
         return result;
     }
