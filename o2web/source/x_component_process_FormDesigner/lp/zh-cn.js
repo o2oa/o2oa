@@ -980,6 +980,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "action": "操作",
         "moveup": "移动到上一行",
         "deleteRow": "删除行",
-        "insertRow": "插入行"
+        "insertRow": "插入行",
+        "importFromForm": "从界面上中导入字段配置"
     }
 };
