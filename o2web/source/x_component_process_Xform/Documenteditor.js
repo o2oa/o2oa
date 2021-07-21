@@ -2673,23 +2673,23 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this._computeItemFieldData(name, dataItem);
                 //if (this.data[name]){
                 if (this[dom]){
-                    if (dom=="layout_redHeader" ||dom=="layout_issuanceUnit" || dom=="layout_meetingAttendContent" || dom=="layout_meetingLeaveContent" || dom=="layout_meetingSitContent" || dom=="layout_meetingRecordContent") {
-                        this[dom].set("html", this.data[name] || "");
-                    }else if (dom=="layout_subject"){
-                        this[dom].set("html", (this.data[name] || ""));
-                    }else if (dom=="layout_attachment"){
-                        this.setAttachmentData();
-                    }else if (dom=="layout_annotation"){
-                        var annotation = this.data[name];
-                        if (annotation){
-                            if (annotation.substring(0, 1)!=="（") annotation = "（"+annotation;
-                            if (annotation.substring(annotation.length-1, annotation.length)!=="）") annotation = annotation+"）";
-                            this[dom].set("text", annotation);
-                        }else{
-                            this[dom].set("text", " ");
-                        }
-                    }else{
-                        this[dom].set("text", this.data[name]|| "");
+                            if (dom=="layout_redHeader" ||dom=="layout_issuanceUnit" || dom=="layout_meetingAttendContent" || dom=="layout_meetingLeaveContent" || dom=="layout_meetingSitContent" || dom=="layout_meetingRecordContent" || dom=="layout_signer") {
+                                this[dom].set("html", this.data[name] || "");
+                            }else if (dom=="layout_subject"){
+                                this[dom].set("html", (this.data[name] || ""));
+                            }else if (dom=="layout_attachment"){
+                                this.setAttachmentData();
+                            }else if (dom=="layout_annotation"){
+                                var annotation = this.data[name];
+                                if (annotation){
+                                    if (annotation.substring(0, 1)!=="（") annotation = "（"+annotation;
+                                    if (annotation.substring(annotation.length-1, annotation.length)!=="）") annotation = annotation+"）";
+                                    this[dom].set("text", annotation);
+                                }else{
+                                    this[dom].set("text", " ");
+                                }
+                            }else{
+                                this[dom].set("text", this.data[name]|| "");
                     }
                 }
 
@@ -2737,10 +2737,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     break;
                 case "array":
                     var strs = [];
+                    var strLength = 0;
                     v.each(function(value){
                         if (o2.typeOf(value)=="object" && value.distinguishedName){
+                            if (value.name.length>strLength) strLength = value.name.length;
                             strs.push(value.name);
                         }else{
+                            if (value.length>strLength) strLength = value.length;
                             strs.push(value.toString());
                         }
                     });
@@ -2770,6 +2773,20 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                                 //return () ? d.format("%Y年%m月%d日") : n;
                             });
                             this.data[name] = tmpStrs.join("，");
+                            break;
+                        case "signer":
+                            var signers = "";
+                            strs.each(function(name, i){
+                                while (name.length<strLength){ name = name+"　";}
+                                //signers.push(name);
+                                if (i % 2==0){
+                                    signers = signers+name+"　";
+                                }else{
+                                    signers = signers+name+"<br>";
+                                }
+                            });
+
+                            this.data[name] = signers;
                             break;
                         case "mainSend":
                             this.data[name] = strs.join("，") + "：";
@@ -2951,7 +2968,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_redHeader) this.data.redHeader = this.layout_redHeader.get("html");
         if (this.layout_fileno) this.data.fileno = this.layout_fileno.get("text");
         if (this.layout_signerTitle) this.data.signerTitle = this.layout_signerTitle.get("text");
-        if (this.layout_signer) this.data.signer = this.layout_signer.get("text");
+        if (this.layout_signer) this.data.signer = this.layout_signer.get("html");
         if (this.layout_subject) this.data.subject = this.layout_subject.get("html");
         if (this.layout_mainSend) this.data.mainSend = this.layout_mainSend.get("text");
         if (this.editMode) if (this.layout_filetext){
@@ -2963,7 +2980,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.data.filetext = "";
             }
         }
-        if (this.layout_signer) this.data.signer = this.layout_signer.get("text");
+        if (this.layout_signer) this.data.signer = this.layout_signer.get("html");
         if (this.layout_attachmentTitle) this.data.attachmentTitle = this.layout_attachmentTitle.get("text");
         if (this.layout_attachment){
             this._computeItemData("attachment", "attachmentValueType", "attachmentValueData", "attachmentValueScript", false, "layout_attachment");
@@ -3078,7 +3095,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.layout_redHeader) this.layout_redHeader.set("html", data.redHeader || "");
             if (this.layout_fileno) this.layout_fileno.set("text", data.fileno || " ");
             if (this.layout_signerTitle) this.layout_signerTitle.set("text", data.signerTitle || " ");
-            if (this.layout_signer) this.layout_signer.set("text", data.signer || " ");
+            if (this.layout_signer) this.layout_signer.set("html", data.signer || " ");
             if (this.layout_subject) this.layout_subject.set("html", data.subject || " ");
             if (this.layout_mainSend) this.layout_mainSend.set("text", data.mainSend || " ");
             if (diffFiletext) {
@@ -3098,7 +3115,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     });
                 }
             }
-            if (this.layout_signer) this.layout_signer.set("text", data.signer || "");
+            if (this.layout_signer) this.layout_signer.set("html", data.signer || "");
             if (this.layout_attachmentTitle) this.layout_attachmentTitle.set("text", data.attachmentTitle || " ");
 
             if (this.layout_attachment){
