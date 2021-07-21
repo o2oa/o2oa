@@ -871,8 +871,18 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		cq.select(root.get(JpaObject.id_FIELDNAME));
 		List<String> os = em.createQuery(cq).getResultList();
-		List<String> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject> List<String> ids(Class<T> cls, Predicate predicate) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<T> root = cq.from(cls);
+		cq.select(root.get(JpaObject.id_FIELDNAME)).where(predicate);
+		List<String> os = em.createQuery(cq).getResultList();
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject> List<String> idsEqual(Class<T> cls, String attribute, Object value) throws Exception {
@@ -882,8 +892,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		cq.select(root.get(JpaObject.id_FIELDNAME)).where(cb.equal(root.get(attribute), value));
 		List<String> os = em.createQuery(cq).getResultList();
-		List<String> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject> List<String> idsEqualAndEqual(Class<T> cls, String attribute, Object value,
@@ -896,8 +905,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		p = cb.and(p, cb.equal(root.get(otherAttribute), otherValue));
 		cq.select(root.get(JpaObject.id_FIELDNAME)).where(p);
 		List<String> os = em.createQuery(cq).getResultList();
-		List<String> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject> List<String> idsEqualAndEqualAndEqual(Class<T> cls, String attribute, Object value,
@@ -928,8 +936,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		p = cb.and(p, cb.notEqual(root.get(fourthAttribute), fourthValue));
 		cq.select(root.get(JpaObject.id_FIELDNAME)).where(p);
 		List<String> os = em.createQuery(cq).getResultList();
-		List<String> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject> List<String> idsEqualAndNotEqual(Class<T> cls, String equalAttribute,
@@ -942,8 +949,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		p = cb.and(p, cb.notEqual(root.get(notEqualAttribute), notEqualValue));
 		cq.select(root.get(JpaObject.id_FIELDNAME)).where(p);
 		List<String> os = em.createQuery(cq).getResultList();
-		List<String> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject> List<String> idsNotEqual(Class<T> cls, String attribute, Object value)
@@ -954,8 +960,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		cq.select(root.get(JpaObject.id_FIELDNAME)).where(cb.notEqual(root.get(attribute), value));
 		List<String> os = em.createQuery(cq).getResultList();
-		List<String> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject, W extends Object> List<String> idsIn(Class<T> cls, String attribute,

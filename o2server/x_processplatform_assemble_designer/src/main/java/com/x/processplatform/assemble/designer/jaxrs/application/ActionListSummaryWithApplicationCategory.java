@@ -36,8 +36,8 @@ class ActionListSummaryWithApplicationCategory extends BaseAction {
 			List<Application> os = this.list(business, effectivePerson, applicationCategory);
 			for (Application o : os) {
 				Wo wo = Wo.copier.copy(o);
-				wo.setProcessList(business.process().sort(WoProcess.copier.copy(this.listProcess(business, o))));
-				wo.setFormList(business.form().sort(WoForm.copier.copy(this.listForm(business, o))));
+				wo.setProcessList(business.process().sort(this.listProcess(business, o)));
+				wo.setFormList(business.form().sort(this.listForm(business, o)));
 				wos.add(wo);
 			}
 			wos = business.application().sort(wos);
@@ -112,25 +112,25 @@ class ActionListSummaryWithApplicationCategory extends BaseAction {
 		return em.createQuery(cq).getResultList();
 	}
 
-	private List<Process> listProcess(Business business, Application application) throws Exception {
+	private List<WoProcess> listProcess(Business business, Application application) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Process.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Process> cq = cb.createQuery(Process.class);
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = cb.equal(root.get(Process_.application), application.getId());
-		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
-				cb.isNull(root.get(Process_.editionEnable))));
-		cq.select(root).where(p);
-		return em.createQuery(cq).getResultList();
+		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
+		return business.entityManagerContainer().fetch(Process.class, WoProcess.copier, p);
 	}
 
-	private List<Form> listForm(Business business, Application application) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Form.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Form> cq = cb.createQuery(Form.class);
-		Root<Form> root = cq.from(Form.class);
-		Predicate p = cb.equal(root.get(Form_.application), application.getId());
-		cq.select(root).where(p);
-		return em.createQuery(cq).getResultList();
+	private List<WoForm> listForm(Business business, Application application) throws Exception {
+//		EntityManager em = business.entityManagerContainer().get(Form.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Form> cq = cb.createQuery(Form.class);
+//		Root<Form> root = cq.from(Form.class);
+//		Predicate p = cb.equal(root.get(Form_.application), application.getId());
+//		cq.select(root).where(p);
+//		return em.createQuery(cq).getResultList();
+		return business.entityManagerContainer().fetchEqual(Form.class, WoForm.copier, Form.application_FIELDNAME,
+				application.getId());
 	}
 }
