@@ -184,6 +184,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     "clearNoDomModuleTitle" : "清除未在HTML树中的组件配置",
     "clearNoDomModuleContent" : "是否清除未在HTML树中的组件配置？清除后需要保存生效。",
 
+    "refreshDatatemplateImpExpTitle": "导入字段确认",
+    "refreshDatatemplateImpExpContent": "本操作从数据模板的内部组件获取字段。如果执行本操作，之前配置的字段会被替换，是否继续？",
+
     "filter": {
         "and": "并且",
         "or": "或者",

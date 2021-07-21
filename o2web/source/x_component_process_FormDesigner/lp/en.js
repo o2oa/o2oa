@@ -186,6 +186,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     "clearNoDomModuleTitle": "Clear the component configuration that is not in the HTML tree",
     "clearNoDomModuleContent": "Do you want to clear the component configuration that is not in the HTML tree? It needs to be saved after clearing to take effect.",
 
+    "refreshDatatemplateImpExpTitle": "Import field confirmation",
+    "refreshDatatemplateImpExpContent": "This operation gets the fields from the internal components of the data template. If you perform this operation, the previously configured fields will be replaced. Do you want to continue?",
+
     "filter": {
         "and": "and",
         "or": "Or",
