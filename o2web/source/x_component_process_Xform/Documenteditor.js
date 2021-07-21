@@ -2679,6 +2679,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         this[dom].set("html", (this.data[name] || ""));
                     }else if (dom=="layout_attachment"){
                         this.setAttachmentData();
+                    }else if (dom=="layout_annotation"){
+                        var annotation = this.data[name];
+                        if (annotation){
+                            if (annotation.substring(0, 1)!=="（") annotation = "（"+annotation;
+                            if (annotation.substring(annotation.length-1, annotation.length)!=="）") annotation = annotation+"）";
+                            this[dom].set("text", annotation);
+                        }else{
+                            this[dom].set("text", " ");
+                        }
                     }else{
                         this[dom].set("text", this.data[name]|| "");
                     }
@@ -2969,7 +2978,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         if (this.layout_issuanceUnit) this.data.issuanceUnit = this.layout_issuanceUnit.get("html");
         if (this.layout_issuanceDate) this.data.issuanceDate = this.layout_issuanceDate.get("text");
-        if (this.layout_annotation) this.data.annotation = this.layout_annotation.get("text");
+        if (this.layout_annotation){
+            var annotation = this.layout_annotation.get("text");
+            if (annotation.substring(0,1)=="（") annotation = annotation.substring(1, annotation.length);
+            if (annotation.substring(annotation.length-1, annotation.length)=="）") annotation = annotation.substring(0, annotation.length-1);
+            this.data.annotation = annotation;
+        }
         if (this.layout_copytoTitle) this.data.copytoTitle = this.layout_copytoTitle.get("text");
         if (this.layout_copytoContent) this.data.copyto = this.layout_copytoContent.get("text");
         if (this.layout_copyto2Title) this.data.copyto2Title = this.layout_copyto2Title.get("text");
@@ -3093,7 +3107,16 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             if (this.layout_issuanceUnit) this.layout_issuanceUnit.set("html", data.issuanceUnit || " ");
             if (this.layout_issuanceDate) this.layout_issuanceDate.set("text", data.issuanceDate || " ");
-            if (this.layout_annotation) this.layout_annotation.set("text", data.annotation || " ");
+            if (this.layout_annotation){
+                var annotation = data.annotation;
+                if (annotation){
+                    if (annotation.substring(0, 1)!=="（") annotation = "（"+annotation;
+                    if (annotation.substring(annotation.length-1, annotation.length)!=="）") annotation = annotation+"）";
+                    this.layout_annotation.set("text", annotation);
+                }else{
+                    this.layout_annotation.set("text", " ");
+                }
+            }
             if (this.layout_copytoTitle) this.layout_copytoTitle.set("text", data.copytoTitle || " ");
             if (this.layout_copytoContent) this.layout_copytoContent.set("text", data.copyto || " ");
             if (this.layout_copyto2Title) this.layout_copyto2Title.set("text", data.copyto2Title || " ");

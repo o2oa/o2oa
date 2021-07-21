@@ -897,54 +897,85 @@ bind.parameters = {
     }
 };
 //bind.parameters = this.parameters || null;
-bind.response = (function(){
-    var _self = this;
-    if (this.jaxrsResponse){
-        if (this.jaxrsResponse.get()){
-            var value = this.jaxrsResponse.get();
-            if (JSON.validate(value)){
-                return {
-                    "status": this.jaxrsResponse.status,
-                    "value": JSON.decode(value),
-                    "get": function(){ JSON.decode(value) }
-                };
-            }else{
-                return {
-                    "status": this.jaxrsResponse.status,
-                    "value": value,
-                    "get": function(){ return value; }
-                };
-            }
-        }else{
-            return {
-                "status": this.jaxrsResponse.status,
-                "value": this.jaxrsResponse.value,
-                "get": function(){ return _self.jaxrsResponse.value; }
-            };
-        }
-    }else{
-        return {
-            "get": function(){
-                return _self.jaxwsResponse || null;
-                // if (_self.jaxwsResponse && _self.jaxwsResponse.get()){
-                //     if (JSON.validate(_self.jaxwsResponse.get())){
-                //         return {
-                //             "status": _self.jaxwsResponse.status,
-                //             "value": JSON.decode(_self.jaxwsResponse.get())
-                //         };
-                //     }else{
-                //         return {
-                //             "status": _self.jaxwsResponse.status,
-                //             "value": _self.jaxwsResponse.value
-                //         };
-                //     }
-                // }else{
-                //     return {"status": _self.jaxwsResponse.status};
-                // }
-            }
+
+var response = {};
+Object.defineProperty(response, "status", {enumerable: true,configurable: true,
+    get: function(){ return _self.jaxrsResponse.status; }
+});
+Object.defineProperty(response, "value", {enumerable: true,configurable: true,
+    get: function(){
+        if (_self.jaxrsResponse){
+            return _self.jaxrsResponse.get();
+        }else if(_self.jaxwsResponse){
+            return _self.jaxwsResponse;
         }
     }
-}).apply(this);
+});
+Object.defineProperty(response, "get", {enumerable: true,configurable: true,
+    get: function(){
+        return function(){
+            if (_self.jaxrsResponse){
+                var value = _self.jaxrsResponse.get();
+                if (JSON.validate(value)){
+                    return JSON.decode(value);
+                }
+                return value;
+            }else if(_self.jaxwsResponse){
+                return _self.jaxwsResponse || null
+            }
+        };
+    }
+});
+bind.response = response;
+
+// bind.response = (function(){
+//     // var _self = this;
+//     // if (this.jaxrsResponse){
+//         if (this.jaxrsResponse.get()){
+//             var value = this.jaxrsResponse.get();
+//             if (JSON.validate(value)){
+//                 return {
+//                     "status": this.jaxrsResponse.status,
+//                     "value": JSON.decode(value),
+//                     "get": function(){ JSON.decode(value) }
+//                 };
+//             }else{
+//                 return {
+//                     "status": this.jaxrsResponse.status,
+//                     "value": value,
+//                     "get": function(){ return value; }
+//                 };
+//             }
+//         }else{
+//             return {
+//                 "status": this.jaxrsResponse.status,
+//                 "value": this.jaxrsResponse.value,
+//                 "get": function(){ return _self.jaxrsResponse.value; }
+//             };
+//         }
+//     }else{
+//         return {
+//             "get": function(){
+//                 return _self.jaxwsResponse || null;
+//                 // if (_self.jaxwsResponse && _self.jaxwsResponse.get()){
+//                 //     if (JSON.validate(_self.jaxwsResponse.get())){
+//                 //         return {
+//                 //             "status": _self.jaxwsResponse.status,
+//                 //             "value": JSON.decode(_self.jaxwsResponse.get())
+//                 //         };
+//                 //     }else{
+//                 //         return {
+//                 //             "status": _self.jaxwsResponse.status,
+//                 //             "value": _self.jaxwsResponse.value
+//                 //         };
+//                 //     }
+//                 // }else{
+//                 //     return {"status": _self.jaxwsResponse.status};
+//                 // }
+//             }
+//         }
+//     }
+// }).apply(this);
 
 bind.assginData = {
     "data": null,
