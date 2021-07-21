@@ -108,8 +108,8 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.routeNow}}:</td>
                 <td class="editTableValue" id="text{$.id}sole" >
-                    <input class="editTableRadio" name="soleDirect" text{($.soleDirect!==false)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
-                    <input class="editTableRadio" name="soleDirect" text{($.soleDirect===false)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                    <input class="editTableRadio" name="soleDirect" text{($.soleDirect===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="soleDirect" text{($.soleDirect!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
                     <br><div style="color: #999999">{{$.lp.routeNowInfo}}</div>
                 </td>
             </tr>
