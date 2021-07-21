@@ -312,6 +312,7 @@ MWF.APPPD.LP = {
         "action": "Action",
         "moveup": "Move to the previous line",
         "deleteRow": "Delete Row",
-        "insertRow": "Insert Row"
+        "insertRow": "Insert Row",
+        "importFromForm": "Import field configuration from the interface"
     }
 };

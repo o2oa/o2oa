@@ -393,7 +393,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             if( identityList.length ){
                 identityList = identityList.unique();
                 o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : identityList }, function (json) {
-                    json.data.each( function (d) { this.identityMapImported[ d.matchKey ] = d; }.bind(this));
+                    json.data.each( function (d) { if(d)this.identityMapImported[ d.matchKey ] = d; }.bind(this));
                     identityLoaded = true;
                     check();
                 }.bind(this))
@@ -406,7 +406,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             if( personList.length ){
                 personList = personList.unique();
                 o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList }, function (json) {
-                    json.data.each( function (d) { this.personMapImported[ d.matchKey ] = d; }.bind(this));
+                    json.data.each( function (d) { if(d)this.personMapImported[ d.matchKey ] = d; }.bind(this));
                     personLoaded = true;
                     check();
                 }.bind(this))
@@ -419,7 +419,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             if( unitList.length ){
                 unitList = unitList.unique();
                 o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList }, function (json) {
-                    json.data.each( function (d) { this.unitMapImported[ d.matchKey ] = d; }.bind(this));
+                    json.data.each( function (d) { if(d)this.unitMapImported[ d.matchKey ] = d; }.bind(this));
                     unitLoaded = true;
                     check();
                 }.bind(this))
@@ -432,7 +432,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
             if( groupList.length ){
                 groupList = groupList.unique();
                 o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({ groupList : groupList }, function (json) {
-                    json.data.each( function (d) { this.groupMapImported[ d.matchKey ] = d; }.bind(this));
+                    json.data.each( function (d) { if(d)this.groupMapImported[ d.matchKey ] = d; }.bind(this));
                     groupLoaded = true;
                     check();
                 }.bind(this))
