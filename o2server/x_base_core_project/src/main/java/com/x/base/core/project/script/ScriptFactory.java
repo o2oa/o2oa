@@ -122,6 +122,10 @@ public class ScriptFactory {
 		return BooleanUtils.toBooleanObject(Objects.toString(o, "false"));
 	}
 
+	public static Boolean asBoolean(Object o, boolean defaultValue) throws Exception {
+		return BooleanUtils.toBooleanObject(Objects.toString(o, defaultValue + ""));
+	}
+
 //	public static List<String> asDistinguishedName(Object o) throws Exception {
 //		List<String> list = new ArrayList<>();
 //		if (null != o) {
@@ -254,7 +258,7 @@ public class ScriptFactory {
 				} else {
 					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 				}
-			// ScriptObject or JO
+				// ScriptObject or JO
 			} else if (o instanceof ScriptObject) {
 				ScriptObject so = (ScriptObject) o;
 				if (so.isArray()) {
@@ -280,7 +284,7 @@ public class ScriptFactory {
 				} else {
 					list.add(PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME, String.class, ""));
 				}
-			// Map类型也属于Iterable 所以必须在Iterable之前进行判断
+				// Map类型也属于Iterable 所以必须在Iterable之前进行判断
 			} else if (o instanceof Map) {
 				Map map = (Map) o;
 				if (map.containsKey(JpaObject.DISTINGUISHEDNAME)) {
