@@ -21,7 +21,7 @@ MWF.xApplication.query.ImporterDesigner.LP = {
     "copy" : "副本",
     "ok" : "确定",
     "cancel" : "取消",
-    "columnField": "列字段",
+    "columnField": "Excel列对应字段",
     "calculateField": "计算字段",
 
     "action": {
@@ -138,6 +138,11 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "startTimeField": "开始日期",
         "completeTimeField": "结束日期",
         "selectProcess1": "请先选择流程",
-        "lineBreak": "换行符"
+        "lineBreak": "换行符",
+        "valueScriptNote": "在“值脚本”中需要通过return返回字段值。可以通过this.target;获取当前导入行的数据，如下：",
+        "valueScriptImportedDataNote": "导入的原始数据",
+        "valueScriptDataNote": "系统根据配置生成的业务数据",
+        "valueScriptDocumentNote": "如果导入CMS文档，系统生成的文档数据",
+        "valueScriptWorkNote": "如果导入流程work，系统生成的工作数据"
     }
 };

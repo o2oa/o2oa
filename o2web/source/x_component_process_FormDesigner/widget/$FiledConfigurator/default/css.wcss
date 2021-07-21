@@ -73,5 +73,21 @@
 	    "margin": "5px auto",
 	    "cursor": "pointer",
 	    "text-align": "center"
+	},
+	"titleNode": {
+		"height":"24px",
+		"text-align": "center",
+		"line-height": "24px",
+		"background-color": "#EEE",
+		"border-top": "1px solid #999",
+		"position": "relative"
+	},
+	"refreshNode": {
+		"position": "absolute",
+		"height": "16px",
+		"width": "16px",
+		"top":"4px",
+		"right":"4px",
+		"background": "url('../x_component_process_FormDesigner/widget/$FiledConfigurator/default/icon/refresh.png')"
 	}
 }
