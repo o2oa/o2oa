@@ -5,8 +5,10 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dataitem.ItemCategory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.DocumentDataHelper;
 import com.x.cms.assemble.control.jaxrs.document.ActionPersistBatchModifyData.WiDataChange;
@@ -14,17 +16,31 @@ import com.x.cms.assemble.control.jaxrs.document.ActionPersistBatchModifyData.Wo
 import com.x.cms.assemble.control.jaxrs.permission.element.PermissionInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.Document_;
 import com.x.cms.core.entity.content.Data;
 import com.x.query.core.entity.Item;
+import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 对文档信息进行持久化服务类
  */
 public class DocumentPersistService {
+	private static Logger logger = LoggerFactory.getLogger(DocumentPersistService.class);
+	private static ReentrantLock lock = new ReentrantLock();
 	private DocumentInfoService documentInfoService = new DocumentInfoService();
 	private PermissionOperateService permissionService = new PermissionOperateService();
 	
@@ -328,32 +344,128 @@ public class DocumentPersistService {
 	/**
 	 * 重新计算所有的文档的权限和review信息
 	 */
-    public void refreshAllDocumentPermission() throws Exception {
-    	//根据栏目一个一个来查询
-		AppInfoServiceAdv appInfoService = new AppInfoServiceAdv();
-		DocumentQueryService documentQueryService = new DocumentQueryService();
-		List<String> appIds = appInfoService.listAllIds("信息");
-		List<String> documentIds = null;
-		ReviewService reviewService = new ReviewService();
-		if( ListTools.isNotEmpty( appIds )){
-			for( String appId : appIds ){
-				//查询指定App中所有的文档Id
-				documentIds = documentQueryService.listIdsByAppId( appId, "信息", 50000 );
-				if( ListTools.isNotEmpty( documentIds )){
-					for( String documentId : documentIds ){
-						try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-							boolean fullRead = reviewService.refreshDocumentReview(emc, documentId);
-							Document document = emc.find( documentId, Document.class );
-							emc.beginTransaction( Document.class );
-							document.setIsAllRead(fullRead);
-							emc.commit();
-						} catch ( Exception e ) {
-							throw e;
+    public void refreshAllDocumentPermission(boolean flag) throws Exception {
+		try {
+			if(lock.tryLock()) {
+				AppInfoServiceAdv appInfoService = new AppInfoServiceAdv();
+				DocumentQueryService documentQueryService = new DocumentQueryService();
+				List<String> appIds = appInfoService.listAllIds("信息");
+				if (ListTools.isNotEmpty(appIds)) {
+					for (String appId : appIds) {
+						//查询指定App中所有的文档Id
+						List<String> documentIds = documentQueryService.listIdsByAppId(appId, "信息", 50000);
+						logger.info("刷新应用{}的数据共{}条",appId,documentIds.size());
+						if (ListTools.isNotEmpty(documentIds)) {
+							int count = 0;
+							for (List<String> partDocIds : ListTools.batch(documentIds, 4)){
+								count = count + 4;
+								List<CompletableFuture<Void>> futures = new TreeList<>();
+								for (String documentId : partDocIds) {
+									CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+										try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+											ReviewService reviewService = new ReviewService();
+											boolean fullRead = reviewService.refreshDocumentReview(emc, documentId);
+											Document document = emc.find(documentId, Document.class);
+											emc.beginTransaction(Document.class);
+											document.setIsAllRead(fullRead);
+											emc.commit();
+										} catch (Exception e) {
+											logger.warn("刷新文档权限异常1：{}", e.getMessage());
+										}
+									});
+									futures.add(future);
+								}
+								if(!flag){
+									Calendar cal = DateUtils.toCalendar(new Date());
+									if(cal.get(Calendar.HOUR_OF_DAY)>6){
+										lock.unlock();
+										return;
+									}
+								}
+								for (CompletableFuture<Void> future : futures) {
+									try {
+										future.get(200, TimeUnit.SECONDS);
+									} catch (Exception e) {
+										logger.warn("刷新文档权限异常2：{}",e.getMessage());
+									}
+								}
+								futures.clear();
+								if(flag && count > 199 && count % 200 == 0){
+									logger.info("应用文档权限已刷新{}个",count);
+								}
+							}
+						}
+					}
+					CacheManager.notify(Document.class);
+				}
+				lock.unlock();
+			}
+		} catch (Exception e) {
+			lock.unlock();
+			logger.error(e);
+		}
+	}
+
+	public boolean refreshDocumentPermissionByCategory(String categoryId) {
+    	boolean flag = false;
+		try {
+			if(lock.tryLock()) {
+				List<String> documentIds = null;
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					EntityManager em = emc.get( Document.class );
+					CriteriaBuilder cb = em.getCriteriaBuilder();
+					CriteriaQuery<String> cq = cb.createQuery( String.class );
+					Root<Document> root = cq.from( Document.class );
+					Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
+					p = cb.and( p, cb.equal( root.get( Document_.documentType), "信息"));
+					cq.select( root.get( Document_.id) ).where(p);
+					documentIds = em.createQuery( cq ).getResultList();
+				}
+				if (ListTools.isNotEmpty(documentIds)) {
+					logger.info("刷新分类{}的数据共{}条",categoryId,documentIds.size());
+					int count = 0;
+					for (List<String> partDocIds : ListTools.batch(documentIds, 10)){
+						count = count + 10;
+						List<CompletableFuture<Void>> futures = new TreeList<>();
+						for (String documentId : partDocIds) {
+							CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+								try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+									ReviewService reviewService = new ReviewService();
+									boolean fullRead = reviewService.refreshDocumentReview(emc, documentId);
+									Document document = emc.find(documentId, Document.class);
+									emc.beginTransaction(Document.class);
+									document.setIsAllRead(fullRead);
+									emc.commit();
+								} catch (Exception e) {
+									logger.warn("刷新文档权限异常1：{}", e.getMessage());
+								}
+							});
+							futures.add(future);
+						}
+						for (CompletableFuture<Void> future : futures) {
+							try {
+								future.get(200, TimeUnit.SECONDS);
+							} catch (Exception e) {
+								logger.warn("刷新文档权限异常2：{}",e.getMessage());
+							}
+						}
+						futures.clear();
+						if(count > 99 && count % 100 == 0){
+							logger.info("分类文档权限已刷新{}个",count);
 						}
 					}
 				}
+				CacheManager.notify(Document.class);
+				lock.unlock();
+				flag = true;
+				logger.info("完成分类{}的权限刷新", categoryId);
+			}else{
+				logger.info("有分类正在刷新权限中，请稍后....");
 			}
-			CacheManager.notify(Document.class);
+		} catch (Exception e) {
+			lock.unlock();
+			logger.error(e);
 		}
-    }
+		return flag;
+	}
 }
