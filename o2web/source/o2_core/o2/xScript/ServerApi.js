@@ -1365,3 +1365,114 @@
  *      }.bind(this)
  * );
  */
+
+/**
+ * this.include是一个方法，当您在流程、门户或者内容管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
+ * @module include()
+ * @o2category server
+ * @o2ordernumber 140
+ *
+ * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。<b>流程设计中的脚本只支持字符串。</b>
+ * <pre><code class='language-js'>
+ * //如果需要引用本应用的脚本配置，将options设置为String。
+ * this.include("initScript") //脚本配置的名称、别名或id
+ *
+ * //如果需要引用其他应用的脚本配置，将options设置为Object;
+ * this.include({
+ *       //type: 应用类型。可以为 portal  process  cms。
+ *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+ *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+ *       type : "portal",
+ *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用
+ *       name : "initScript" // 脚本配置的名称、别名或id
+ * })
+ * </code></pre>
+ * @param {Function} [callback] 加载后执行的回调方法。<b>流程设计中的脚本不支持该参数。</b>
+ *
+ * @o2syntax
+ * //您可以在表单、流程、视图和查询视图的各个嵌入脚本中，通过this.include()来引用本应用或其他应用的脚本配置，如下：
+ * this.include( optionsOrName, callback )
+ * @example
+ * <caption>
+ *    <b>样例一：</b>在通用脚本中定义一个通用的方法去获取公文管理所有的文种，在查询语句中根据该方法来拼接JPQL。<br/>
+ *     1、在内容管理应用中有一个fileRes的应用，在该应用中创建一个脚本，命名为FileSql，并定义方法。
+ *     <img src='img/module/include/server_define1.png' />
+ * </caption>
+ * //定义一个方法
+ * this.define("getFileSQL",function(){
+ *   var application = ["公司发文","部门发文","党委发文"];
+ *   var appSql = " ( ";
+ *   for(var i=0;i<application.length;i++){
+ *       if(i==application.length-1){
+ *           appSql = appSql + " o.applicationName = '"+application[i]+"' "
+ *       }else{
+ *           appSql = appSql + " o.applicationName = '"+application[i]+"' OR "
+ *       }
+ *   }
+ *   appSql = appSql + " ) ";
+ *   return appSql;
+ *}.bind(this));
+ * @example
+ * <caption>
+ *      2、在查询语句中使用该方法。
+ *     <img src='img/module/include/server_define2.png'/>
+ * </caption>
+ * this.include({
+ *   type : "cms",
+ *   application : "fileRes",
+ *   name : "FileSql"
+ * })
+ *
+ * var sql = this.getFileSQL();
+ *
+ * return "SELECT o FROM com.x.processplatform.core.entity.content.Task o WHERE "+sql
+ */
+
+
+/**
+ * this.define是一个方法，您在脚本中您可以通过this.define()来定义自己的方法。<br/>
+ * 通过这种方式定义方法，在不同的应用使用相同的方法名称也不会造成冲突。
+ * @module define()
+ * @o2category server
+ * @o2ordernumber 150
+ *
+ * @param {(String)} name 定义的方法名称。
+ * @param {Function} fun  定义的方法
+ * @param {Boolean} [overwrite] 定义的方法是否能被覆盖重写。默认值为true。
+ * @o2syntax
+ * this.define(name, fun, overwrite)
+ * @example
+ * <caption>
+ *    <b>样例一：</b>在通用脚本中定义一个通用的方法去获取公文管理所有的文种，在查询语句中根据该方法来拼接JPQL。<br/>
+ *     1、在内容管理应用中有一个fileRes的应用，在该应用中创建一个脚本，命名为FileSql，并定义方法。
+ *     <img src='img/module/include/server_define1.png' />
+ * </caption>
+ * //定义一个方法
+ * this.define("getFileSQL",function(){
+ *   var application = ["公司发文","部门发文","党委发文"];
+ *   var appSql = " ( ";
+ *   for(var i=0;i<application.length;i++){
+ *       if(i==application.length-1){
+ *           appSql = appSql + " o.applicationName = '"+application[i]+"' "
+ *       }else{
+ *           appSql = appSql + " o.applicationName = '"+application[i]+"' OR "
+ *       }
+ *   }
+ *   appSql = appSql + " ) ";
+ *   return appSql;
+ *}.bind(this));
+ * @example
+ * <caption>
+ *      2、在查询语句中使用该方法。
+ *     <img src='img/module/include/server_define2.png'/>
+ * </caption>
+ * this.include({
+ *   type : "cms",
+ *   application : "fileRes",
+ *   name : "FileSql"
+ * })
+ *
+ * var sql = this.getFileSQL();
+ *
+ * return "SELECT o FROM com.x.processplatform.core.entity.content.Task o WHERE "+sql
+ */
