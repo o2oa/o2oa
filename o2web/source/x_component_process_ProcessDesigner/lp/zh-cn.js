@@ -245,6 +245,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"power": "权 限",
 		"stratIdentity": "启动人",
 		"startUnit": "启动组织",
+		"starGroup": "启动群组",
 		"manager": "管理者",
 
 		"number": "编号",
