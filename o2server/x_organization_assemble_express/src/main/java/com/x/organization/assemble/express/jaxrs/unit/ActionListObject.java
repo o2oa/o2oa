@@ -143,7 +143,7 @@ class ActionListObject extends BaseAction {
 		for (CompletableFuture<Wo> future : futures) {
 			wos.add(future.get());
 		}
-		return wos;
+		return ListTools.trim(wos, true, false);
 	}
 
 	private CompletableFuture<Wo> future(String name) {

@@ -79,7 +79,7 @@ public class ProcessFactory extends ElementFactory {
 
 	/* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
 	public List<String> listStartableWithApplication(EffectivePerson effectivePerson, List<String> identities,
-			List<String> units, Application application) throws Exception {
+			List<String> units, List<String> groups, Application application) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Process.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -88,13 +88,17 @@ public class ProcessFactory extends ElementFactory {
 		if (effectivePerson.isNotManager() && (!this.business().organization().person().hasRole(effectivePerson,
 				OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager))) {
 			p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
-					cb.isEmpty(root.get(Process_.startableUnitList)));
+					cb.isEmpty(root.get(Process_.startableUnitList)),
+					cb.isEmpty(root.get(Process_.startableGroupList)));
 			p = cb.or(p, cb.equal(root.get(Process_.creatorPerson), effectivePerson.getDistinguishedName()));
 			if (ListTools.isNotEmpty(identities)) {
 				p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
 			}
 			if (ListTools.isNotEmpty(units)) {
 				p = cb.or(p, root.get(Process_.startableUnitList).in(units));
+			}
+			if (ListTools.isNotEmpty(groups)) {
+				p = cb.or(p, root.get(Process_.startableGroupList).in(groups));
 			}
 		}
 		p = cb.and(p, cb.equal(root.get(Process_.application), application.getId()));
@@ -105,14 +109,15 @@ public class ProcessFactory extends ElementFactory {
 
 	/* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
 	public boolean startable(EffectivePerson effectivePerson, List<String> identities, List<String> units,
-			Process process) throws Exception {
+							 List<String> groups, Process process) throws Exception {
 		if (effectivePerson.isManager()
 				|| (BooleanUtils.isTrue(this.business().organization().person().hasRole(effectivePerson,
 						OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager)))) {
 			return true;
 		}
 		if (ListTools.isEmpty(process.getStartableIdentityList())
-				&& ListTools.isEmpty(process.getStartableUnitList())) {
+				&& ListTools.isEmpty(process.getStartableUnitList())
+				&& ListTools.isEmpty(process.getStartableGroupList())) {
 			return true;
 		}
 		if (ListTools.isNotEmpty(process.getStartableIdentityList())
@@ -122,6 +127,11 @@ public class ProcessFactory extends ElementFactory {
 			if (ListTools.isNotEmpty(process.getStartableUnitList())
 					&& ListTools.containsAny(units, process.getStartableUnitList())) {
 				return true;
+			} else {
+				if (ListTools.isNotEmpty(process.getStartableGroupList())
+						&& ListTools.containsAny(groups, process.getStartableGroupList())) {
+					return true;
+				}
 			}
 		}
 		return false;

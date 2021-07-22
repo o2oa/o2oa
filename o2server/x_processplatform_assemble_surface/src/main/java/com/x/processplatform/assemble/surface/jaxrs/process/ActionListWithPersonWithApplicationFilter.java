@@ -52,8 +52,8 @@ class ActionListWithPersonWithApplicationFilter extends BaseAction {
 			if (!business.application().allowRead(effectivePerson, roles, identities, units, application)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-
-			List<String> ids = list(business, effectivePerson, identities, units, application, wi);
+			List<String> groups = business.organization().group().listWithIdentity(identities);
+			List<String> ids = list(business, effectivePerson, identities, units, groups, application, wi);
 			for (String id : ids) {
 				wos.add(Wo.copier.copy(business.process().pick(id)));
 			}
@@ -64,7 +64,7 @@ class ActionListWithPersonWithApplicationFilter extends BaseAction {
 	}
 
 	public List<String> list(Business business, EffectivePerson effectivePerson, List<String> identities,
-			List<String> units, Application application, Wi wi) throws Exception {
+			List<String> units, List<String> groups, Application application, Wi wi) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Process.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -74,13 +74,17 @@ class ActionListWithPersonWithApplicationFilter extends BaseAction {
 				&& (!BooleanUtils.isTrue(business.organization().person().hasRole(effectivePerson,
 						OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager)))) {
 			p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
-					cb.isEmpty(root.get(Process_.startableUnitList)));
+					cb.isEmpty(root.get(Process_.startableUnitList)),
+					cb.isEmpty(root.get(Process_.startableGroupList)));
 			p = cb.or(p, cb.equal(root.get(Process_.creatorPerson), effectivePerson.getDistinguishedName()));
 			if (ListTools.isNotEmpty(identities)) {
 				p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
 			}
 			if (ListTools.isNotEmpty(units)) {
 				p = cb.or(p, root.get(Process_.startableUnitList).in(units));
+			}
+			if (ListTools.isNotEmpty(groups)) {
+				p = cb.or(p, root.get(Process_.startableGroupList).in(groups));
 			}
 		}
 		p = cb.and(p, cb.equal(root.get(Process_.application), application.getId()));

@@ -30,7 +30,8 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> dns = new ArrayList<>();
 			if ((ListTools.isEmpty(process.getStartableIdentityList()))
-					&& (ListTools.isEmpty(process.getStartableUnitList()))) {
+					&& (ListTools.isEmpty(process.getStartableUnitList()))
+					&& (ListTools.isEmpty(process.getStartableGroupList()))) {
 				/** 没有设置可启动人员,所有人都可以启动 */
 				dns.addAll(identities);
 			} else {
@@ -39,12 +40,26 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 					dns.addAll(identities);
 				} else {
 					for (String str : identities) {
-						List<String> units = business.organization().unit().listWithIdentitySupNested(str);
-						if (ListTools.containsAny(units, process.getStartableUnitList())
-								|| process.getStartableIdentityList().contains(str)) {
+						if(ListTools.isNotEmpty(process.getStartableIdentityList()) && process.getStartableIdentityList().contains(str)){
 							dns.add(str);
+						}else {
+							if(ListTools.isNotEmpty(process.getStartableUnitList())) {
+								List<String> units = business.organization().unit().listWithIdentitySupNested(str);
+								if (ListTools.containsAny(units, process.getStartableUnitList())) {
+									dns.add(str);
+									continue;
+								}
+							}
+							if(ListTools.isNotEmpty(process.getStartableGroupList())) {
+								List<String> groups = business.organization().group().listWithIdentity(str);
+								if (ListTools.containsAny(groups, process.getStartableGroupList())) {
+									dns.add(str);
+									continue;
+								}
+							}
 						}
 					}
+
 				}
 			}
 			List<Identity> os = business.organization().identity().listObject(dns);
