@@ -1,7 +1,7 @@
 /**
  * data对象是流程平台中，流程实例的业务数据；以及内容管理平台中，文档实例的业务数据。<br/>
  * 这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本进行创建和增删改查操作。<br/>
- * data对象基本上是一个JSON对象，您可以用访问JSON对象的方法访问data对象的所有数据，但增加和删除数据时略有不同。
+ * data对象基本上是一个JSON对象，您可以用访问JSON对象的方法访问data对象的所有数据。
  * @module server.data
  * @o2category server
  * @o2ordernumber 10
@@ -13,7 +13,7 @@
 
 
 /**
- * 您可以通过workContext获取和流程相关的流程实例对象数据。
+ * 您可以在流程事件、流程路由事件、流程活动事件中通过workContext获取和流程相关的流程实例对象数据。
  * @module server.workContext
  * @o2category server
  * @o2range {Process}
@@ -39,21 +39,6 @@
  * @borrows module:workContext.getRouteList as getRouteList
  */
 
-/**
- * 您可以通过documentContext获取内容管理实例相关的对象数据。
- * @module server.documentContext
- * @o2category server
- * @o2range {CMS}
- * @o2ordernumber 30
- * @o2syntax
- * //您可以在内容管理表单中，通过this来获取当前实例的documentContext对象，如下：
- * var context = this.documentContext;
- * @borrows module:documentContext.getDocument as getDocument
- * @borrows module:documentContext.getControl as getControl
- * @borrows module:documentContext.getAttachmentList as getAttachmentList
- */
-
-
 
 /**
  * 您可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。
@@ -74,17 +59,11 @@
      * @methodOf module:server.org
      * @static
      * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {IdentityData|IdentityData[]} 返回身份，单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.IdentityAction.listObject|example=Identity|ignoreNoDescr=true|ignoreProps=[woUnitDutyList,woUnit,woGroupList]
      * @o2syntax
-     * //同步执行，返回身份，单个是对象，多个是数组。
+     * //返回身份，单个是对象，多个是数组。
      * var identityList = this.org.getIdentity( name );
-     *
-     * //异步执行，在回调方法中获取身份
-     * this.org.getIdentity( name, function(identityList){
-     *     //identityList 为返回的身份，单个是对象，多个是数组。
-     * })
      */
 
     //列出人员的身份
@@ -95,17 +74,11 @@
      * @methodOf module:server.org
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {IdentityData[]} 返回身份对象数组。
      * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithPersonObject|example=Identity
      * @o2syntax
-     * //同步执行，返回身份对象数组。
+     * //返回身份对象数组。
      * var identityList = this.org.listIdentityWithPerson( person );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listIdentityWithPerson( person, function(identityList){
-     *     //identityList 返回的身份对象数组。
-     * })
      */
 
     //查询组织成员身份--返回身份的对象数组
@@ -118,21 +91,15 @@
      * @static
      * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested] true嵌套的所有身份成员；false直接身份成员；默认false。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {IdentityData[]} 返回身份对象数组。
      * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithUnitSubNestedObject|example=Identity
      * @o2syntax
-     * //同步执行，返回直接组织身份对象数组。
+     * //返回直接组织身份对象数组。
      * var identityList = this.org.listIdentityWithUnit( unit );
      *
      *
-     * //同步执行，返回嵌套组织身份对象数组。
+     * //返回嵌套组织身份对象数组。
      * var identityList = this.org.listIdentityWithUnit( unit, true );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listIdentityWithUnit( unit, false, function(identityList){
-     *     //identityList 返回直接组织身份对象数组。
-     * })
      */
 
 
@@ -145,17 +112,11 @@
      * @methodOf module:server.org
      * @static
      * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {UnitData|UnitData[]} 单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listObject|example=Unit
      * @o2syntax
-     * //同步执行，返回组织，单个是对象，多个是数组。
+     * //返回组织，单个是对象，多个是数组。
      * var unitList = this.org.getUnit( name );
-     *
-     * //异步执行，在回调方法中获取组织
-     * this.org.getUnit( name, function(unitList){
-     *     //unitList 为返回的组织，单个是对象，多个是数组。
-     * })
      */
 
     //查询组织的下级--返回组织的对象数组
@@ -168,22 +129,15 @@
      * @static
      * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested]  true嵌套的所有下级组织；false直接下级组织；默认false。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {UnitData[]} 返回组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSubNestedObject|example=Unit
      * @o2syntax
-     * //同步执行，返回嵌套下级组织数组。
+     * //返回嵌套下级组织数组。
      * var unitList = this.org.listSubUnit( name, true );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listSubUnit( name, true, function(unitList){
-     *     //unitList 为返回嵌套下级组织数组。
-     * })
      */
 
     //查询组织的上级--返回组织的对象数组
     //nested  布尔  true嵌套上级；false直接上级；默认false；
-    //async 布尔 true异步请求
     /**
      根据组织标识批量获取上级组织的对象数组：unit对象数组。
      * @method listSupUnit
@@ -192,17 +146,11 @@
      * @static
      * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested]  true嵌套的所有上级组织；false直接上级组织；默认false。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {UnitData[]} 返回组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSupNestedObject|example=Unit
      * @o2syntax
-     * //同步执行，返回嵌套上级组织数组。
+     * //返回嵌套上级组织数组。
      * var unitList = this.org.listSupUnit( name, true );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listSupUnit( name, true, function(unitList){
-     *     //unitList 为返回嵌套上级组织数组。
-     * })
      */
 
     //根据个人身份获取组织
@@ -217,23 +165,17 @@
      * @static
      * @param {IdentityFlag} name - 身份的distinguishedName、name、id、unique属性值，身份对象。
      * @param {String|Number} [flag]  当值为数字的时候， 表示获取第几层的组织。<br/> 当值为字符串的时候，表示获取指定类型的组织。<br/> 当值为空的时候，表示获取直接所在组织。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {UnitData|UnitData[]} 返回对应组织，单个为对象，多个为数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.getWithIdentityWithLevelObject|example=Unit
      * @o2syntax
-     * //同步执行，返回直接所在组织，单个为对象，多个为数组。
+     * //返回直接所在组织，单个为对象，多个为数组。
      * var unitList = this.org.getUnitByIdentity( name );
      *
-     * //同步执行，返回第一层组织，单个为对象，多个为数组。
+     * //返回第一层组织，单个为对象，多个为数组。
      * var unitList = this.org.getUnitByIdentity( name, 1 );
      *
-     * * //同步执行，返回类型为company的组织，单个为对象，多个为数组。
+     * * //返回类型为company的组织，单个为对象，多个为数组。
      * var unitList = this.org.getUnitByIdentity( name, "company" );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.getUnitByIdentity( name, 1, function(unitList){
-     *     //unitList 返回第一层组织，单个为对象，多个为数组。
-     * })
      */
 
     //列出身份所在组织的所有上级组织
@@ -244,17 +186,11 @@
      * @methodOf module:server.org
      * @static
      * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {UnitData[]} 返回组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithIdentitySupNestedObject|example=Unit
      * @o2syntax
-     * //同步执行，返回组织数组。
+     * //返回组织数组。
      * var unitList = this.org.listAllSupUnitWithIdentity( name );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listAllSupUnitWithIdentity( name, function(unitList){
-     *     //unitList 返回组织数组。
-     * })
      */
 
     //获取人员所在的所有组织
@@ -265,17 +201,11 @@
      * @methodOf module:server.org
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {UnitData[]} 返回组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithPersonObject|example=Unit
      * @o2syntax
-     * //同步执行，返回组织数组。
+     * //返回组织数组。
      * var unitList = this.org.listUnitWithPerson( name );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listUnitWithPerson( name, function(unitList){
-     *     //unitList 返回组织数组。
-     * })
      */
 
     //列出人员所在组织的所有上级组织
@@ -286,17 +216,11 @@
      * @methodOf module:server.org
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {UnitData[]} 返回个人所在组织及所有上级组织。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithPersonSupNestedObject|example=Unit
      * @o2syntax
-     * //同步执行，返回组织数组。
+     * //返回组织数组。
      * var unitList = this.org.listAllSupUnitWithPerson( name );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listAllSupUnitWithPerson( name, function(unitList){
-     *     //unitList 返回组织数组。
-     * })
      */
 
     //根据组织属性，获取所有符合的组织
@@ -308,17 +232,11 @@
      * @static
      * @param {String} attributeName 组织属性名称。
      * @param {String} attributeValue 组织属性值。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {UnitData[]} 返回组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitAttributeObject|example=Unit
      * @o2syntax
-     * //同步执行，返回组织数组。
+     * //返回组织数组。
      * var unitList = this.org.listUnitWithAttribute( attributeName, attributeName );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listUnitWithAttribute( attributeName, attributeName, function(unitList){
-     *     //unitList 返回组织数组。
-     * })
      */
 
     //根据组织职务，获取所有符合的组织
@@ -330,17 +248,11 @@
      * @static
      * @param {String} dutyName 组织职务名称。
      * @param {IdentityFlag} identity 身份的distinguishedName、name、id、unique属性值，身份对象。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {UnitData[]} 返回组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitDutyObject|example=Unit
      * @o2syntax
-     * //同步执行，返回组织数组。
+     * //返回组织数组。
      * var unitList = this.org.listUnitWithDuty( dutyName, identity );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listUnitWithDuty( dutyName, identity, function(unitList){
-     *     //unitList 返回组织数组。
-     * })
      */
 
 
@@ -350,17 +262,11 @@
      * @o2membercategory unit
      * @methodOf module:server.org
      * @static
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {UnitData[]} 返回顶层组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listObject|example=Unit
      * @o2syntax
-     * //同步执行，返回顶层组织数组。
+     * //返回顶层组织数组。
      * var unitList = this.org.listTopUnit();
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listTopUnit(function(unitList){
-     *     //unitList 返回顶层组织数组。
-     * })
      */
 
 
@@ -373,17 +279,11 @@
      * @methodOf module:server.org
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {PersonData|PersonData[]} 返回人员，单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
      * @o2syntax
-     * //同步执行，返回人员，单个是对象，多个是数组。
+     * //返回人员，单个是对象，多个是数组。
      * var personList = this.org.getPerson( name );
-     *
-     * //异步执行，在回调方法中获取人员
-     * this.org.getPerson( name, function(personList){
-     *     //personList 为返回的人员，单个是对象，多个是数组。
-     * })
      */
 
     //查询下级人员--返回人员的对象数组
@@ -396,18 +296,11 @@
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested]  true嵌套的所有下级人员；false直接下级人员；默认false。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {PersonData[]} 返回人员数组。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonSubDirectObject|example=Person
      * @o2syntax
-     * //同步执行，返回嵌套下级人员数组。
+     * //返回嵌套下级人员数组。
      * var personList = this.org.listSubPerson( name, true );
-     *
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listSubPerson( name, true, function(personList){
-     *     //personList 为返回嵌套下级人员数组。
-     * })
      */
 
     //查询上级人员--返回人员的对象数组
@@ -420,17 +313,11 @@
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested]  true嵌套的所有上级人员；false直接上级人员；默认false。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {PersonData[]} 返回人员数组。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonSupDirectObject|example=Person
      * @o2syntax
-     * //同步执行，返回嵌套上级人员数组。
+     * //返回嵌套上级人员数组。
      * var personList = this.org.listSupPerson( name, true );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listSupPerson( name, true, function(personList){
-     *     //personList 为返回嵌套上级人员数组。
-     * })
      */
 
     //获取群组的所有人员--返回人员的对象数组
@@ -441,17 +328,11 @@
      * @methodOf module:server.org
      * @static
      * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {PersonData[]} 返回人员对象数组。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithGroupObject|example=Person
      * @o2syntax
-     * //同步执行，返回人员数组。
+     * //返回人员数组。
      * var personList = this.org.listPersonWithGroup( group );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listPersonWithGroup( group, function(personList){
-     *     //personList 为返回的人员数组。
-     * })
      */
 
     //获取角色的所有人员--返回人员的对象数组
@@ -462,17 +343,11 @@
      * @methodOf module:server.org
      * @static
      * @param {RoleFlag|RoleFlag[]} name - 角色的distinguishedName、name、id、unique属性值，角色对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {PersonData[]} 返回人员对象数组。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithRoleObject|example=Person
      * @o2syntax
-     * //同步执行，返回人员数组。
+     * //返回人员数组。
      * var personList = this.org.listPersonWithRole( role );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listPersonWithRole( role, function(personList){
-     *     //personList 为返回的人员数组。
-     * })
      */
 
     //获取身份的所有人员--返回人员的对象数组
@@ -483,17 +358,11 @@
      * @methodOf module:server.org
      * @static
      * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {PersonData[]} 返回人员对象数组。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithIdentityObject|example=Person
      * @o2syntax
-     * //同步执行，返回人员数组。
+     * //返回人员数组。
      * var personList = this.org.listPersonWithIdentity( identity );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listPersonWithIdentity( identity, function(personList){
-     *     //personList 为返回的人员数组。
-     * })
      */
 
     //获取身份的所有人员--返回人员的对象数组或人员对象
@@ -508,20 +377,14 @@
      * @static
      * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested] 是否嵌套获取组织以及下级组织的人员，true表示嵌套，flase表示获取直接组织。默认为false
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {PersonData[]} 返回人员对象数组。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithUnitSubDirectObject|example=Person
      * @o2syntax
-     * //同步执行，返回组织的直接人员数组。
+     * //返回组织的直接人员数组。
      * var personList = this.org.listPersonWithUnit( unit );
      *
-     * //同步执行，返回组织的以及嵌套下级组织所有的人员数组。
+     * //返回组织的以及嵌套下级组织所有的人员数组。
      * var personList = this.org.listPersonWithUnit( unit, true );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listPersonWithUnit( unit, false, function(personList){
-     *     //personList 为返回的群组的直接人员数组。
-     * })
      */
 
     //根据属性查询人员--返回人员的对象数组
@@ -535,17 +398,11 @@
      * @static
      * @param {String} name 人员属性名称。
      * @param {String} value 人员属性值。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {PersonData[]} 返回人员对象数组。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonAttributeObject|example=Person
      * @o2syntax
-     * //同步执行，返回拥有对应属性名和属性值人员数组。
+     * //返回拥有对应属性名和属性值人员数组。
      * var personList = this.org.listPersonWithAttribute( name, value );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listPersonWithAttribute( name, value, function(personList){
-     *     //personList 返回拥有对应属性名和属性值人员数组。
-     * })
      */
 
     //根据属性查询人员--返回人员的全称数组
@@ -563,17 +420,11 @@
      * @static
      * @param {String} dutyName 组织职务名称。
      * @param {UnitFlag} unit 组织的distinguishedName、name、id、unique属性值，组织对象。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {IdentityData[]} 返回身份数组。
      * @o2ActionOut x_organization_assemble_express.UnitDutyAction.getWithUnitWithName|example=Identity
      * @o2syntax
-     * //同步执行，返回身份数组。
+     * //返回身份数组。
      * var identityList = this.org.getDuty( dutyName, unit );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.getDuty( dutyName, unit, function(unitList){
-     *     //unitList 返回身份数组。
-     * })
      */
 
     //获取身份的所有职务名称
@@ -584,16 +435,10 @@
      * @methodOf module:server.org
      * @static
      * @param {IdentityFlag|IdentityFlag[]} identity - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {String[]} 返回职务名称数组。
      * @o2syntax
-     * //同步执行，返回职务名称数组。
+     * //返回职务名称数组。
      * var dutyNameList = this.org.listDutyNameWithIdentity( identity );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listDutyNameWithIdentity( identity, function(dutyNameList){
-     *     //dutyNameList 返回职务名称数组。
-     * })
      */
 
     //批量获取组织的所有职务名称
@@ -604,16 +449,10 @@
      * @methodOf module:server.org
      * @static
      * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {String[]} 返回职务名称数组。
      * @o2syntax
-     * //同步执行，返回职务名称数组。
+     * //返回职务名称数组。
      * var dutyNameList = this.org.listDutyNameWithUnit( unit );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listDutyNameWithUnit( unit, function(dutyNameList){
-     *     //dutyNameList 返回职务名称数组。
-     * })
      */
 
     //获取组织的所有职务
@@ -624,17 +463,11 @@
      * @methodOf module:server.org
      * @static
      * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {Object[]} 返回职务数组
      * @o2ActionOut x_organization_assemble_express.UnitDutyAction.listWithUnitObject|example=UnitDuty
      * @o2syntax
-     * //同步执行，返回职务数组。
+     * //返回职务数组。
      * var dutyList = this.org.listUnitAllDuty( unit );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listUnitAllDuty( unit, function(dutyList){
-     *     //dutyList 返回职务数组。
-     * })
      */
 
 
@@ -647,17 +480,11 @@
      * @methodOf module:server.org
      * @static
      * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {GroupData|GroupData[]} 返回群组，单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.GroupAction.listObject|example=Group
      * @o2syntax
-     * //同步执行，返回群组，单个是Object，多个是Array。
+     * //返回群组，单个是Object，多个是Array。
      * var groupList = this.org.getGroup( name );
-     *
-     * //异步执行，在回调方法中获取群组
-     * this.org.getGroup( name, function(groupList){
-     *     //groupList 为返回的群组，单个是Object，多个是Array。
-     * })
      */
 
     //查询下级群组--返回群组的对象数组
@@ -670,17 +497,11 @@
      * @static
      * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested]  true嵌套的所有下级群组；false直接下级群组；默认false。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {GroupData[]} 返回群组数组。
      * @o2ActionOut x_organization_assemble_express.GroupAction.listWithGroupSubDirectObject|example=Group
      * @o2syntax
-     * //同步执行，返回嵌套下级群组数组。
+     * //返回嵌套下级群组数组。
      * var groupList = this.org.listSubGroup( name, true );
-     *
-     * //异步执行，在回调方法中获取群组
-     * this.org.listSubGroup( name, true, function(groupList){
-     *     //groupList 为返回嵌套下级群组数组。
-     * })
      */
 
     //查询上级群组--返回群组的对象数组
@@ -693,17 +514,11 @@
      * @static
      * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested]  true嵌套的所有上级群组；false直接上级群组；默认false。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {GroupData[]} 返回群组数组。
      * @o2ActionOut x_organization_assemble_express.GroupAction.listWithGroupSupDirectObject|example=Group
      * @o2syntax
-     * //同步执行，返回嵌套上级群组数组。
+     * //返回嵌套上级群组数组。
      * var groupList = this.org.listSupGroup( name, true );
-     *
-     * //异步执行，在回调方法中获取群组
-     * this.org.listSupGroup( name, true, function(groupList){
-     *     //groupList 为返回嵌套上级群组数组。
-     * })
      */
 
     //人员所在群组（嵌套）--返回群组的对象数组
@@ -714,17 +529,11 @@
      * @methodOf module:server.org
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {GroupData[]} 返回群组对象数组。
      * @o2ActionOut x_organization_assemble_express.GroupAction.listWithPersonObject|example=Group
      * @o2syntax
-     * //同步执行，返回群组数组。
+     * //返回群组数组。
      * var groupList = this.org.listGroupWithPerson( name );
-     *
-     * //异步执行，在回调方法中获取群组
-     * this.org.listGroupWithPerson( name, function(groupList){
-     *     //groupList 为返回的群组数组。
-     * })
      */
 
 
@@ -737,17 +546,11 @@
      * @methodOf module:server.org
      * @static
      * @param {RoleFlag|RoleFlag[]} name - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {RoleData|RoleData[]} 返回角色，单个为Object，多个为Array。
      * @o2ActionOut x_organization_assemble_express.RoleAction.listObject|example=Role
      * @o2syntax
-     * //同步执行，返回角色，单个为对象，多个为数组。
+     * //返回角色，单个为对象，多个为数组。
      * var roleList = this.org.getRole( name );
-     *
-     * //异步执行，在回调方法中获取角色，单个为对象，多个为数组
-     * this.org.getRole( name, function(roleList){
-     *     //roleList 为返回判断结果。
-     * })
      */
 
     //人员所有角色（嵌套）--返回角色的对象数组
@@ -758,17 +561,11 @@
      * @methodOf module:server.org
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {RoleData[]} 返回角色对象数组。
      * @o2ActionOut x_organization_assemble_express.RoleAction.listWithPersonObject|example=Role
      * @o2syntax
-     * //同步执行，返回角色数组。
+     * //返回角色数组。
      * var roleList = this.org.listRoleWithPerson( name );
-     *
-     * //异步执行，在回调方法中获取角色
-     * this.org.listRoleWithPerson( name, function(roleList){
-     *     //roleList 为返回的角色数组。
-     * })
      */
 
 
@@ -782,16 +579,10 @@
      * @static
      * @param {PersonFlag} name - 人员的distinguishedName、name、id、unique属性值，人员对象。
      * @param {RoleFlag|RoleFlag[]} roleList - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {Boolean} 如果人员拥有角色返回true, 否则返回false。
      * @o2syntax
-     * //同步执行，返回判断结果。
+     * //返回判断结果。
      * var groupList = this.org.personHasRole( name, roleList );
-     *
-     * //异步执行，在回调方法中获取判断结果
-     * this.org.personHasRole( name, roleList, function(flag){
-     *     //flag 为返回判断结果。
-     * })
      */
 
     //群组是否拥有角色--返回true, false
@@ -803,16 +594,10 @@
      * @static
      * @param {GroupFlag} name - 群组的distinguishedName、name、id、unique属性值，群组对象。
      * @param {RoleFlag|RoleFlag[]} roleList - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {Boolean} 如果群组拥有角色返回true, 否则返回false。
      * @o2syntax
-     * //同步执行，返回判断结果。
+     * //返回判断结果。
      * var groupList = this.org.groupHasRole( name, roleList );
-     *
-     * //异步执行，在回调方法中获取判断结果
-     * this.org.groupHasRole( name, roleList, function(flag){
-     *     //flag 为返回判断结果。
-     * })
      */
 
 
@@ -829,15 +614,9 @@
      * @param {String[]} values 属性值，必须为数组。
      * @param {Function} [success] 执行成功的回调。
      * @param {Function} [failure] 执行失败的回调。
-     * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
      * @o2syntax
      * //同步执行
      * this.org.appendPersonAttribute( person, attribute, valueArray);
-     *
-     * //异步执行
-     * this.org.appendPersonAttribute( person, attribute, valueArray, function(){
-     *     //执行成功的回调
-     * }, null, true);
      */
 
     //设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
@@ -852,15 +631,9 @@
      * @param {String[]} values 属性值，必须为数组。
      * @param {Function} [success] 执行成功的回调。
      * @param {Function} [failure] 执行失败的回调。
-     * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
      * @o2syntax
      * //同步执行
      * this.org.setPersonAttribute( person, attribute, valueArray);
-     *
-     * //异步执行
-     * this.org.setPersonAttribute( person, attribute, valueArray, function(){
-     *     //执行成功的回调
-     * }, null, true);
      */
 
     //获取人员属性值
@@ -872,17 +645,11 @@
      * @static
      * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
      * @param {String} attr 属性名称。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {String[]} 返回属性值数组，
      * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
      * @o2syntax
-     * //同步执行，返回该人员的属性值数组。
+     * //返回该人员的属性值数组。
      * var attributeList = this.org.getPersonAttribute( person, attr );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.getPersonAttribute( person, attr, function(attributeList){
-     *     //attributeList 为返回该人员的属性值数组。
-     * })
      */
 
     //列出人员所有属性的名称
@@ -893,17 +660,11 @@
      * @methodOf module:server.org
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {String[]} 返回人员属性名称数组，
      * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
      * @o2syntax
-     * //同步执行，返回人员所有属性的名称数组。
+     * //返回人员所有属性的名称数组。
      * var attributeNameList = this.org.listPersonAttributeName( person );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listPersonAttributeName( person, function(attributeNameList){
-     *     //attributeNameList 为人员所有属性的名称数组。
-     * })
      */
 
     //列出人员的所有属性
@@ -914,7 +675,6 @@
      * @methodOf module:server.org
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {Object[]} 返回人员属性对象数组，如：
      * <pre><code class='language-js'>[{
      *    "name": "住址",
@@ -924,13 +684,8 @@
      *    ]
      * }]</code></pre>
      * @o2syntax
-     * //同步执行，返回人员所有属性的对象数组。
+     * //返回人员所有属性的对象数组。
      * var attributeObjectList = this.org.listPersonAllAttribute( person );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listPersonAllAttribute( person, function(attributeObjectList){
-     *     //attributeObjectList 为人员所有属性的对象数组。
-     * })
      */
 
 
@@ -947,15 +702,8 @@
      * @param {String[]} valueArray 属性值，必须为数组。
      * @param {Function} [success] 执行成功的回调。
      * @param {Function} [failure] 执行失败的回调。
-     * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
      * @o2syntax
-     * //同步执行
      * this.org.appendUnitAttribute( unit, attribute, valueArray);
-     *
-     * //异步执行
-     * this.org.appendUnitAttribute( unit, attribute, valueArray, function(){
-     *     //执行成功的回调
-     * }, null, true);
      */
 
     //设置组织属性值(将属性值修改为values，如果没有此属性，则创建一个)
@@ -970,15 +718,8 @@
      * @param {String[]} valueArray 属性值，必须为数组。
      * @param {Function} [success] 执行成功的回调。
      * @param {Function} [failure] 执行失败的回调。
-     * @param {(Boolean)} [async] 当参数为boolean，表示是否异步执行，默认为false。
      * @o2syntax
-     * //同步执行
      * this.org.setUnitAttribute( unit, attribute, valueArray);
-     *
-     * //异步执行
-     * this.org.setUnitAttribute( unit, attribute, valueArray, function(){
-     *     //执行成功的回调
-     * }, null, true);
      */
 
     //获取组织属性值
@@ -990,17 +731,11 @@
      * @static
      * @param {UnitFlag} unit - 组织的distinguishedName、name、id、unique属性值，组织对象。
      * @param {String} attr 属性名称。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {String[]} 返回属性值数组，
      * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
      * @o2syntax
-     * //同步执行，返回该组织的属性值数组。
+     * //返回该组织的属性值数组。
      * var attributeList = this.org.getUnitAttribute( unit, attr );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.getUnitAttribute( unit, attr, function(attributeList){
-     *     //attributeList 为返回该组织的属性值数组。
-     * })
      */
 
     //列出组织所有属性的名称
@@ -1011,17 +746,11 @@
      * @methodOf module:server.org
      * @static
      * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {String[]} 返回组织属性名称数组，
      * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
      * @o2syntax
-     * //同步执行，返回组织所有属性的名称数组。
+     * //返回组织所有属性的名称数组。
      * var attributeNameList = this.org.listUnitAttributeName( unit );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listUnitAttributeName( unit, function(attributeNameList){
-     *     //attributeNameList 为组织所有属性的名称数组。
-     * })
      */
 
     //列出组织的所有属性
@@ -1032,7 +761,6 @@
      * @methodOf module:server.org
      * @static
      * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
      * @return {Object[]} 返回组织属性对象数组，如：
      * <pre><code class='language-js'>[{
      *    "name": "部门类别",
@@ -1043,13 +771,8 @@
      *    ]
      * }]</code></pre>
      * @o2syntax
-     * //同步执行，返回组织所有属性的对象数组。
+     * //返回组织所有属性的对象数组。
      * var attributeObjectList = this.org.listUnitAllAttribute( unit );
-     *
-     * //异步执行，在回调方法中获取
-     * this.org.listUnitAllAttribute( unit, function(attributeObjectList){
-     *     //attributeObjectList 为组织所有属性的对象数组。
-     * })
      */
 
 
@@ -1076,11 +799,8 @@
  * </code></pre>
  * @return {Object} Dict对象
  * @o2syntax
- * //您可以在页面、表单、流程各个嵌入脚本中，通过this.Dict()对本应用或其他应用的数据字典中的数据进行增删改查，如下：
+ * //您可以通过this.Dict()对本应用或其他应用的数据字典中的数据进行增删改查，如下：
  * var dict = new this.Dict( options )
- * @borrows module:Dict#add as add
- * @borrows module:Dict#set as set
- * @borrows module:Dict#delete as delete
  */
 /**
  * 根据路径获取数据字典中的数据。
@@ -1088,30 +808,20 @@
  * @methodOf module:server.Dict
  * @static
  * @param {String} [path] 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。当值为空的时候，表示获取数据字典中的所有数据。
- * @param {Function} [success] 获取数据成功时的回调函数。
- * @param {Function} [failure] 获取数据失败时的回调。
- * @param {Boolean} [async] 是否异步执行，默认为false。
- * @param {Boolean} [refresh] 是否忽略本地缓存直接从服务器获取，默认为false。
+ * @param {Function} [success] 获取数据成功时的回调函数。<b>流程设计后台脚本中无此参数。</b>
+ * @param {Function} [failure] 获取数据失败时的回调。<b>流程设计后台脚本中无此参数。</b>
  * @return {(Object|Array|String|Number|Boolean)}
  * 返回数据字典的数据，类型和配置数据字典时候指定的一致。
  * @o2syntax
- * var data = dict.get( path, success, failure, async, refresh )
+ * var data = dict.get( path, success, failure )
  * @example
  * var dict = new this.Dict("bulletinDictionary");
  *
  * //没有参数的时候，表示同步获取获取所有数据
  *  var data = dict.get()
  *
- *  //同步执行，获取category下key为subCategory的数据
+ *  //获取category下key为subCategory的数据
  *  var data = dict.get("category.subCategory");
- *
- * //异步执行，使用回调处理数据，如果category为数组，获取第0项数据
- * dict.get("category.0", function(data){
- *      //data 是数据字典的数据
- *  }, function(xhr){
- *      //xhr 为 xmlHttpRequest
- *  }, true //异步执行
- * )
  * @example
  * <caption>
  *     已经配置好了如下图所示的数据字典
@@ -1174,6 +884,345 @@
  *
  * var enable = dict.get("category.0.eanble");
  * //enable 的值为 true
+ */
+/**
+ * 根据路径新增数据字典的数据。
+ * @method add
+ * @methodOf module:Dict
+ * @instance
+ * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果path在数据字典中已有数据，且原有数据是数组，则数组添加一项；如果原有数据不是数组，则报错。
+ * @param {(Object|Array|String|Number|Boolean)} data 需要新增的数据
+ * @param {Function} [success] 增加数据成功时的回调函数。<b>流程设计后台脚本中无此参数。</b>
+ * @param {Function} [failure] 增加数据错误时的回调函数。<b>流程设计后台脚本中无此参数。</b>
+ * @o2syntax
+ * dict.add( path, data, success, failure )
+ * @example
+ * var dict = new this.Dict("bulletinDictionary");
+ *
+ * dict.add( "category", { text : "系统公告", value : "system" }, function(data){
+ *    //data 形如
+ *    //{
+ *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
+ *    //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ * @example
+ * <caption>
+ *     对get方法样例的数据字典进行赋值，如下：
+ * </caption>
+ * var dict = new this.Dict("bulletinDictionary");
+ *
+ * dict.add( "category", { text : "系统公告", value : "system" }, function(data){
+ *    //data 形如
+ *    //{
+ *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
+ *    //}
+ * }, function(xhr, text, error){
+ *    //xhr 为 xmlHttpRequest, text 为错误文本， error为Error对象
+ * });
+ *     //数据字典的值变为
+ * {
+ *    "category": [
+ *        {
+ *            "enable": true,
+ *            "sequence": 1.0,
+ *            "text": "公司公告",
+ *            "value": "company"
+ *        },
+ *        {
+ *            "enable": "false",
+ *            "sequence": 2.0,
+ *            "text": "部门公告",
+ *            "value": "department"
+ *        },
+ *        {
+ *            "text": "系统公告",
+ *            "value": "system"
+ *        }
+ *    ]
+ * }
+ *
+ *  dict.add( "category.2.sequence", 3 );
+ *     //数据字典的值变为
+ * {
+ *    "category": [
+ *        {
+ *            "enable": true,
+ *            "sequence": 1.0,
+ *            "text": "公司公告",
+ *            "value": "company"
+ *        },
+ *        {
+ *            "enable": "false",
+ *            "sequence": 2.0,
+ *            "text": "部门公告",
+ *            "value": "department"
+ *        },
+ *        {
+ *            "sequence" : 3.0,
+ *            "text": "系统公告",
+ *            "value": "system"
+ *        }
+ *    ]
+ * }
+
+ * dict.add( "archiveOptions", {
+ *    "yes" : "是",
+ *    "no" : "否"
+ * });
+ *     //数据字典的值变为
+ * {
+ *    "category": [
+ *        {
+ *            "enable": true,
+ *            "sequence": 1.0,
+ *            "text": "公司公告",
+ *            "value": "company"
+ *        },
+ *        {
+ *            "enable": "false",
+ *            "sequence": 2.0,
+ *            "text": "部门公告",
+ *            "value": "department"
+ *        },
+ *        {
+ *            "sequence" : 3.0,
+ *            "text": "系统公告",
+ *            "value": "system"
+ *        }
+ *
+ *    ],
+ *    "archiveOptions" : {
+ *        "yes" : "是",
+ *        "no" : "否"
+ *    }
+ * }
+ * @example
+ * <caption>下面是错误的赋值，如下：</caption>
+ * dict.add( "category.3", { text : "系统公告", value : "system" }); //出错，因为不能对数组下标直接赋值
+ *
+ * dict.add( "category.1.value", { text : "系统公告" } ); //出错，因为不能对已经存在的非数组路径赋值
+ */
+
+/**
+ * 根据路径修改数据字典的数据。
+ * @method set
+ * @methodOf module:Dict
+ * @instance
+ * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果数据路径不存在，则报错。
+ * @param {(Object|Array|String|Number|Boolean)} data 修改后的数据
+ * @param {Function} [success] 设置数据成功时的回调函数。<b>流程设计后台脚本中无此参数。</b>
+ * @param {Function} [failure] 设置数据错误时的回调函数。<b>流程设计后台脚本中无此参数。</b>
+ * @o2syntax
+ * dict.set( path, data, success, failure )
+ * @example
+ * var dict = new this.Dict("bulletinDictionary");
+ *
+ * dict.set( "category", { text : "系统公告", value : "system" }, function(data){
+ *    //data 形如
+ *    //{
+ *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
+ *    //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ * @example
+ * <caption>
+ *     对Example add的数据字典进行赋值，如下：
+ * </caption>
+ * var dict = new this.Dict("bulletinDictionary");
+ *
+ * dict.set( "archiveOptions", [ { text : "是" }, { text : "否" } ]);
+ *      //数据字典的值变为
+ *  {
+ *     "category": [
+ *         {
+ *             "enable": true,
+ *             "sequence": 1.0,
+ *             "text": "公司公告",
+ *             "value": "company"
+ *         },
+ *         {
+ *             "enable": "false",
+ *             "sequence": 2.0,
+ *             "text": "部门公告",
+ *             "value": "department"
+ *         },
+ *         {
+ *             "sequence" : 3.0,
+ *             "text": "系统公告",
+ *             "value": "system"
+ *         }
+ *
+ *     ],
+ *     "archiveOptions" : [ { text : "是" }, { text : "否" } ]
+ * }
+ *
+ * dict.set( "category.2", { text : "县级公告", value : "county" }, function(data){
+ *     //data 形如
+ *     //{
+ *     //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
+ *     //}
+ *  }, function(xhr){
+ *     //xhr 为 xmlHttpRequest
+ *  });
+ *
+ *   /数据字典的值变为
+ *  {
+ *     "category": [
+ *         {
+ *             "enable": true,
+ *             "sequence": 1.0,
+ *             "text": "公司公告",
+ *             "value": "company"
+ *         },
+ *         {
+ *             "enable": "false",
+ *             "sequence": 2.0,
+ *             "text": "部门公告",
+ *             "value": "department"
+ *         },
+ *         {
+ *             "text": "县级公告",
+ *             "value": "county"
+ *         }
+ *     ],
+ *     "archiveOptions" : [ { text : "是" }, { text : "否" } ]
+ * }
+ *
+ * dict.set( "category.1.sequence", 3 );
+ * dict.set( "category.2.sequence", 2 );
+ *      //数据字典的值变为
+ *      {
+ *     "category": [
+ *         {
+ *             "enable": true,
+ *             "sequence": 1.0,
+ *             "text": "公司公告",
+ *             "value": "company"
+ *         },
+ *         {
+ *             "enable": "false",
+ *             "sequence": 3.0,
+ *             "text": "部门公告",
+ *             "value": "department"
+ *         },
+ *         {
+ *             "sequence": 2.0,
+ *             "text": "县级公告",
+ *             "value": "county"
+ *         }
+ *     ],
+ *     "archiveOptions" : [ { text : "是" }, { text : "否" } ]
+ * }
+ * @example
+ * <caption>
+ *     下面是错误的赋值：
+ * </caption>
+ * dict.set( "category_1", { text : "公司公告" } ); //出错，因为category_1在数据字典中不存在
+ */
+
+/**
+ * 根据路径删除数据字典的数据。<b>流程设计后台脚本中无此方法。</b>
+ * @method delete
+ * @methodOf module:Dict
+ * @instance
+ * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果数据路径不存在，则报错。
+ * @param {Function} [success] 删除数据成功时的回调函数。
+ * @param {Function} [failure] 删除数据错误时的回调函数。
+ * @o2syntax
+ * dict.delete( path, success, failure )
+ * @example
+ * var dict = new this.Dict("bulletinDictionary");
+ *
+ * dict.delete( "category", function(){
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ * @example
+ * <caption>
+ *     对Example set的数据字典进行赋值，如下：
+ * </caption>
+ * var dict = new this.Dict("bulletinDictionary");
+ *
+ * dict.delete( "archiveOptions");
+ * //数据字典的值变为
+ * {
+ *    "category": [
+ *        {
+ *            "enable": true,
+ *            "sequence": 1.0,
+ *            "text": "公司公告",
+ *     *            "value": "company"
+ *        },
+ *        {
+ *            "enable": "false",
+ *            "sequence": 3.0,
+ *            "text": "部门公告",
+ *            "value": "department"
+ *        },
+ *        {
+ *            "sequence": 2.0,
+ *            "text": "县级公告",
+ *            "value": "county"
+ *        }
+ *    ]
+ * }
+ *
+ * dict.delete( "category.2.sequence", function(data){
+ *    //data 形如
+ *    //{
+ *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
+ *    //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ * //数据字典的值变为
+ * {
+ *    "category": [
+ *        {
+ *            "enable": true,
+ *            "sequence": 1.0,
+ *            "text": "公司公告",
+ *            "value": "company"
+ *        },
+ *        {
+ *            "enable": "false",
+ *            "sequence": 3.0,
+ *            "text": "部门公告",
+ *            "value": "department"
+ *        },
+ *        {
+ *            "text": "县级公告",
+ *            "value": "county"
+ *        }
+ *    ]
+ * }
+ *
+ * dict.delete( "category.2");
+ * //数据字典的值变为
+ * {
+ *    "category": [
+ *        {
+ *            "enable": true,
+ *            "sequence": 1.0,
+ *            "text": "公司公告",
+ *            "value": "company"
+ *        },
+ *        {
+ *            "enable": "false",
+ *            "sequence": 3.0,
+ *            "text": "部门公告",
+ *            "value": "department"
+ *        }
+ *    ]
+ * }
+ * @example
+ * <caption>
+ *     下面是错误的删除：
+ * </caption>
+ * dict.delete( "category_1" ); //出错，因为category_1在数据字典中不存在
  */
 
 
@@ -1304,8 +1353,7 @@
  *      workid, //uri的参数
  *      function( json ){ //服务调用成功的回调函数, json为服务传回的数据
  *          data = json.data; //为变量data赋值
- *      }.bind(this),
- *      false //同步执行
+ *      }.bind(this)
  * )
  *
  * data.subject = "新标题"; //修改数据
@@ -1313,7 +1361,7 @@
  *      workid, //uri的参数
  *      data, //保存的数据
  *      function(){ //服务调用成功的回调函数
- *          o2.xDesktop.notice("success", {"y":"top", "x": "right"}, "保存成功");  //提示，{"y":"top", "x": "right"}指提示框在顶部右边
+ *
  *      }.bind(this)
  * );
  */
