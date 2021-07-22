@@ -16,25 +16,6 @@
 
 * 为脚本封装的对象、方法和类。
 
-#### server
- * 后台脚本（服务端）可以使用的对象、方法和类。
- <table>
-     <tr>
-         <td><a href="server.module_data.html">业务数据 - data</a></td>
-         <td><a href="server.module_workContext.html">流程实例 - workContext</a></td>
-         <td><a href="server.module_org.html">组织查询 - org</a></td>
-     </tr>
-     <tr>
-         <td><a href="server.module_Dict.html">数据字典 - Dict</a></td>
-         <td><a href="server.module_Actions.html">服务调用 - Actions</a></td>
-         <td><a href="module-include_.html">脚本引用 - include</a></td>
-     </tr>
-     <tr>
-         <td><a href="module-define_.html">方法定义 - define</a></td>
-         <td></td>
-         <td></td>
-     </tr>
- </table>
  
 #### web
   * 前台脚本（浏览器/移动端H5页面）可以使用的对象、方法和类。
@@ -79,6 +60,27 @@
           <td><a href="module-o2m.html">平台移动APP API - o2m</a></td>
       </tr>
   </table>
+  
+  
+#### server
+ * 后台脚本（服务端）可以使用的对象、方法和类。
+ <table>
+     <tr>
+         <td><a href="server.module_data.html">业务数据 - data</a></td>
+         <td><a href="server.module_workContext.html">流程实例 - workContext</a></td>
+         <td><a href="server.module_org.html">组织查询 - org</a></td>
+     </tr>
+     <tr>
+         <td><a href="server.module_Dict.html">数据字典 - Dict</a></td>
+         <td><a href="server.module_Actions.html">服务调用 - Actions</a></td>
+         <td><a href="module-include_.html">脚本引用 - include</a></td>
+     </tr>
+     <tr>
+         <td><a href="module-define_.html">方法定义 - define</a></td>
+         <td></td>
+         <td></td>
+     </tr>
+ </table>
 
 ### FormComponent
 
@@ -357,29 +359,6 @@
 ## 使用范围
 
 O2OA 可在多个位置嵌入脚本代码，用于扩展平台和实现自定义功能。嵌入脚本代码分为前端执行代码和服务端执行代码，两者语法一致。
- * 后端脚本使用范围：
-<table>
-     <tr>
-         <td>脚本库</td>
-         <td>流程平台、门户平台和内容管理平台中，都有脚本设计元素，可以在此创建脚本库。</td>
-     </tr>
-     <tr>
-          <td>服务管理</td>
-          <td>服务管理的接口和定时代理。</td>
-      </tr>
-     <tr>
-          <td>流程设计</td>
-          <td>流程属性的所有脚本（流程事件、时效脚本等等）；流程活动的所有脚本（处理人、待阅人、阅读人脚本，拆分依据、时效脚本，活动事件，参数脚本、响应脚本、执行脚本等等）；流程路由的条件脚本。</td>
-      </tr>
-     <tr>
-          <td>查询配置</td>
-          <td>查询配置的查询语句和总数语句。</td>
-      </tr>
-     <tr>
-          <td>视图列</td>
-          <td>视图列的显示脚本。</td>
-      </tr>
- </table>
  
  * 前端脚本使用范围：
  <table>
@@ -404,37 +383,31 @@ O2OA 可在多个位置嵌入脚本代码，用于扩展平台和实现自定义
            <td>流程设计主要是后台脚本，但也有除外，流程路由属性的扩展附签和选择附签下的脚本使用的是前台脚本。</td>
        </tr>
   </table>
- 
-### 后端脚本使用范围详情
-
-#### 脚本库
-流程平台、门户平台和内容管理平台中，都有脚本设计元素，可以在此创建脚本库。
-![脚本库](img/home/server_script.png)
-<br/><br/>
-
-#### 服务管理
-服务管理的接口和定时代理。
-![定时代理](img/home/server_agent.png)
-![接口](img/home/server_interface.png)
-<br/><br/>
-
-#### 流程设计
-流程属性的所有脚本（流程事件、时效脚本等等）。
-![流程属性](img/home/server_process.png)
-
-流程活动的所有脚本（处理人、待阅人、阅读人脚本，拆分依据、时效脚本，活动事件，参数脚本、响应脚本、执行脚本等等）
-![流程活动](img/home/server_process_activity.png)
-
-流程路由的条件脚本。
-![流程路由](img/home/server_process_route.png)
-
-#### 查询配置
-查询配置的查询语句和总数语句。
-![流程路由](img/home/server_statement.png)
-
-#### 视图列
-视图列的显示脚本，可以使用this.value获取本列的列值、this.entry.data获取本行的数据。
-![视图列显示脚本](img/home/server_view_column.png)
+  
+  * 后端脚本使用范围：
+  <table>
+       <tr>
+           <td>脚本库</td>
+           <td>流程平台、门户平台和内容管理平台中，都有脚本设计元素，可以在此创建脚本库。</td>
+       </tr>
+       <tr>
+            <td>服务管理</td>
+            <td>服务管理的接口和定时代理。</td>
+        </tr>
+       <tr>
+            <td>流程设计</td>
+            <td>流程属性的所有脚本（流程事件、时效脚本等等）；流程活动的所有脚本（处理人、待阅人、阅读人脚本，拆分依据、时效脚本，活动事件，参数脚本、响应脚本、执行脚本等等）；流程路由的条件脚本。</td>
+        </tr>
+       <tr>
+            <td>查询配置</td>
+            <td>查询配置的查询语句和总数语句。</td>
+        </tr>
+       <tr>
+            <td>视图列</td>
+            <td>视图列的显示脚本。</td>
+        </tr>
+   </table>
+   
 
 ### 前端脚本使用范围详情
 
@@ -475,6 +448,36 @@ O2OA 可在多个位置嵌入脚本代码，用于扩展平台和实现自定义
 <br/><br/>
 
 
+### 后端脚本使用范围详情
+
+#### 脚本库
+流程平台、门户平台和内容管理平台中，都有脚本设计元素，可以在此创建脚本库。
+![脚本库](img/home/server_script.png)
+<br/><br/>
+
+#### 服务管理
+服务管理的接口和定时代理。
+![定时代理](img/home/server_agent.png)
+![接口](img/home/server_interface.png)
+<br/><br/>
+
+#### 流程设计
+流程属性的所有脚本（流程事件、时效脚本等等）。
+![流程属性](img/home/server_process.png)
+
+流程活动的所有脚本（处理人、待阅人、阅读人脚本，拆分依据、时效脚本，活动事件，参数脚本、响应脚本、执行脚本等等）
+![流程活动](img/home/server_process_activity.png)
+
+流程路由的条件脚本。
+![流程路由](img/home/server_process_route.png)
+
+#### 查询配置
+查询配置的查询语句和总数语句。
+![流程路由](img/home/server_statement.png)
+
+#### 视图列
+视图列的显示脚本，可以使用this.value获取本列的列值、this.entry.data获取本行的数据。
+![视图列显示脚本](img/home/server_view_column.png)
 
 ## 样例
 * 这是一个简单的样例，用于展现脚本如何编写和运行。
