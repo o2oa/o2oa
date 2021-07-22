@@ -4,7 +4,7 @@
  * data对象基本上是一个JSON对象，您可以用访问JSON对象的方法访问data对象的所有数据。
  * @module server.data
  * @o2category server
- * @o2ordernumber 10
+ * @o2ordernumber 15
  * @example
  * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前实例的业务数据，如下：
  * var data = this.data;
