@@ -1,19 +1,44 @@
-# O2OA前台API {@o2version}
+# O2OA API {@o2version}
 
 ## 简介
 
 * O2OA 是一个高度可定制化的企业级办公平台，您可以通过脚本语言扩展平台功能。
 
-* O2OA 前端脚本基于您使用的浏览器的Javascript引擎，使用Javascript语法。
+* O2OA 前端脚本是运行在浏览器和移动端h5页面上的，基于您使用浏览器的Javascript引擎，使用Javascript语法。
 
-* 本API是O2OA前台脚本的编写说明，您可以通过脚本访问和操作平台内的各种对象。
+* O2OA 后端脚本运行在服务器上，基于JDK8标准的Nashorn，遵循ECMAScript 5.1规范。除本API的modules.server章节外，后端脚本还支持该文章的特性：[https://www.yuque.com/o2oa/course/vu3ll8](https://www.yuque.com/o2oa/course/vu3ll8)。
+
+* 本API是O2OA脚本的编写说明，您可以通过脚本访问和操作平台内的各种对象。
 
 ## API总览
 
 ### Modules
 
-* 为脚本封装的对象、方法和类
+* 为脚本封装的对象、方法和类。
 
+#### server
+ * 后台脚本（服务端）可以使用的对象、方法和类。
+ <table>
+     <tr>
+         <td><a href="server.module_data.html">业务数据 - data</a></td>
+         <td><a href="server.module_workContext.html">流程实例 - workContext</a></td>
+         <td><a href="server.module_org.html">组织查询 - org</a></td>
+     </tr>
+     <tr>
+         <td><a href="server.module_Dict.html">数据字典 - Dict</a></td>
+         <td><a href="server.module_Actions.html">服务调用 - Actions</a></td>
+         <td><a href="module-include_.html">脚本引用 - include</a></td>
+     </tr>
+     <tr>
+         <td><a href="module-define_.html">方法定义 - define</a></td>
+         <td></td>
+         <td></td>
+     </tr>
+ </table>
+ 
+#### web
+  * 前台脚本（浏览器/移动端H5页面）可以使用的对象、方法和类。
+ 
 <table>
     <tr>
         <td><a href="module-data.html">业务数据 - data</a></td>
@@ -41,15 +66,23 @@
         <td><a href="module-session.html">当前用户 - session</a></td>
     </tr>
     <tr>
-        <td><a href="module-o2m.html">平台移动APP API - o2m</a></td>
         <td><a href="module-wait.html">表单等待 - wait</a></td>
         <td><a href="module-importer.html">导入数据 - importer</a></td>
+        <td></td>
     </tr>
 </table>
 
+#### mobile
+   * 移动端H5页面除了可以使用Modules.web章节描述的API，还可以使用下列API：
+  <table>
+      <tr>
+          <td><a href="module-o2m.html">平台移动APP API - o2m</a></td>
+      </tr>
+  </table>
+
 ### FormComponent
 
-* FormComponent为表单组件，可以通过`this.form.get("fieldId")`获取。
+* FormComponent为表单页面组件，在前台脚本中可以使用。可以通过`this.form.get("fieldId")`获取。
 
 #### Process 流程表单组件
 <table>
@@ -323,41 +356,120 @@
 
 ## 使用范围
 
-O2OA 可在多个位置嵌入脚本代码，用于扩展平台和实现自定义功能。嵌入脚本代码分为前端执行代码和服务端执行代码，两者语法一致，本文档指前台脚本。
+O2OA 可在多个位置嵌入脚本代码，用于扩展平台和实现自定义功能。嵌入脚本代码分为前端执行代码和服务端执行代码，两者语法一致。
+ * 后端脚本使用范围：
+<table>
+     <tr>
+         <td>脚本库</td>
+         <td>流程平台、门户平台和内容管理平台中，都有脚本设计元素，可以在此创建脚本库。</td>
+     </tr>
+     <tr>
+          <td>服务管理</td>
+          <td>服务管理的接口和定时代理。</td>
+      </tr>
+     <tr>
+          <td>流程设计</td>
+          <td>流程属性的所有脚本（流程事件、时效脚本等等）；流程活动的所有脚本（处理人、待阅人、阅读人脚本，拆分依据、时效脚本，活动事件，参数脚本、响应脚本、执行脚本等等）；流程路由的条件脚本。</td>
+      </tr>
+     <tr>
+          <td>查询配置</td>
+          <td>查询配置的查询语句和总数语句。</td>
+      </tr>
+     <tr>
+          <td>视图列</td>
+          <td>视图列的显示脚本。</td>
+      </tr>
+ </table>
+ 
+ * 前端脚本使用范围：
+ <table>
+      <tr>
+          <td>脚本库</td>
+          <td>流程平台、门户平台和内容管理平台中，都有脚本设计元素，可以在此创建脚本库。</td>
+      </tr>
+      <tr>
+           <td>表单、页面、视图、查询视图、导入模型及其组件事件</td>
+           <td>流程平台和内容平台的表单、门户平台的页面、数据平台的视图和查询视图中，每个设计组件包含多种事件，包括DOM对象原生事件和O2平台扩展事件。</td>
+       </tr>
+      <tr>
+           <td>表单、页面可编辑组件默认值</td>
+           <td>流程平台和内容平台的表单和门户平台的页面中，可编辑组件或文本组件的默认值可以通过脚本指定。</td>
+       </tr>
+      <tr>
+           <td>表单及可编辑组件校验</td>
+           <td>流程平台和内容管理的表单中，可编辑的字段可以通过脚本进行有效性校验，校验通过返回true，不通过返回提示信息。</td>
+       </tr>
+      <tr>
+           <td>流程设计</td>
+           <td>流程设计主要是后台脚本，但也有除外，流程路由属性的扩展附签和选择附签下的脚本使用的是前台脚本。</td>
+       </tr>
+  </table>
+ 
+### 后端脚本使用范围详情
 
-
-### 脚本:
-
-流程平台、门户平台和内容管理平台中，都有脚本设计元素，可以在此创建自己的脚本库。如下图：
-![脚本](img/home/script.png)
+#### 脚本库
+流程平台、门户平台和内容管理平台中，都有脚本设计元素，可以在此创建脚本库。
+![脚本库](img/home/server_script.png)
 <br/><br/>
 
-### 表单、页面、视图、查询视图及其组件事件：
+#### 服务管理
+服务管理的接口和定时代理。
+![定时代理](img/home/server_agent.png)
+![接口](img/home/server_interface.png)
+<br/><br/>
+
+#### 流程设计
+流程属性的所有脚本（流程事件、时效脚本等等）。
+![流程属性](img/home/server_process.png)
+
+流程活动的所有脚本（处理人、待阅人、阅读人脚本，拆分依据、时效脚本，活动事件，参数脚本、响应脚本、执行脚本等等）
+![流程活动](img/home/server_process_activity.png)
+
+流程路由的条件脚本。
+![流程路由](img/home/server_process_route.png)
+
+#### 查询配置
+查询配置的查询语句和总数语句。
+![流程路由](img/home/server_statement.png)
+
+#### 视图列
+视图列的显示脚本，可以使用this.value获取本列的列值、this.entry.data获取本行的数据。
+![视图列显示脚本](img/home/server_view_column.png)
+
+### 前端脚本使用范围详情
+
+#### 脚本库
+
+流程平台、门户平台和内容管理平台中，都有脚本设计元素，可以在此创建自己的脚本库。如下图：
+![脚本库](img/home/script.png)
+<br/><br/>
+
+#### 表单、页面、视图、查询视图及其组件事件
 
 流程平台和内容平台的表单、门户平台的页面、数据平台的视图和查询视图中，每个设计组件包含多种事件，包括DOM对象原生事件和O2平台扩展事件。如下图：
 ![事件中的脚本](img/home/script_event.png)
 <br/><br/>
 
-### 表单、页面可编辑组件默认值：
+#### 表单、页面可编辑组件默认值
 
 流程平台和内容平台的表单和门户平台的页面中，可编辑组件或文本组件的默认值可以通过脚本指定。如下图：
 ![事件中的脚本](img/home/script_defaultvalue.png)
 <br/><br/>
 
-### 表单、页面、视图、查询视图的部分属性：
+#### 表单、页面、视图、查询视图的部分属性
 
 流程平台和内容平台的表单、门户平台的页面、数据平台的视图和查询视图中，有许多组件的相关属性可以通过脚本来定义。<br/>
 如：下拉框、单选多选按钮的可选值、人员字段的选择范围、区段依据等。如下图：<br/>
 ![属性中的脚本](img/home/script_attribute.png)
 <br/><br/>
 
-### 表单及可编辑组件校验：
+#### 表单及可编辑组件校验
 
 流程平台和内容管理的表单中，可编辑的字段可以通过脚本进行有效性校验，校验通过返回true，不通过返回提示信息。如下图：
 ![脚本](img/home/script_validation.png)
 <br/><br/>
 
-### 流程路由属性的扩展附签和选择附签下的脚本：
+#### 流程路由属性的扩展附签和选择附签下的脚本
 ![扩展附签脚本](img/home/script_route_extend.png)
 ![选择附签脚本](img/home/script_route_select.png)
 <br/><br/>

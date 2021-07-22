@@ -222,6 +222,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。
      * @module Dict
+     * @o2category web
      * @o2ordernumber 120
      * @param {(String|Object)} optionsOrName 数据字典标识字符串或者是对象。
      * <div>如果对本应用的数据字典操作，将optionsOrName设置为string。</div>
@@ -710,6 +711,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 您可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。
      * @module org
+     * @o2category web
      * @o2ordernumber 100
      * @o2syntax
      * //您可以在流程表单、内容管理表单、门户页面、视图和查询视图中，通过this来获取当前实例的org对象，如下：
@@ -2838,6 +2840,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 您可以通过view对象，获取视图数据或选择视图数据。<br/>
      * @module view
+     * @o2category web
      * @o2ordernumber 70
      * @o2syntax
      * //您可以在流程表单、内容管理表单或门户页面中，通过this来获取view对象，如下：
@@ -3080,6 +3083,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 您可以通过statement对象，获取执行查询语句或者对查询结果进行选择。<br/>
      * @module statement
+     * @o2category web
      * @o2ordernumber 90
      * @o2syntax
      * //您可以在流程表单、内容管理表单、门户页面或视图中，通过this来获取statement对象，如下：
@@ -3343,6 +3347,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 您可以通过importer对象，执行导入模型的Excel导入数据功能。<br/>
      * @module importer
+     * @o2category web
      * @o2ordernumber 93
      * @o2syntax
      * //您可以在流程表单、内容管理表单、门户页面或视图中，通过this来获取statement对象，如下：
@@ -3523,6 +3528,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 当查询设计中使用了select语句，并且配置了视图，可以在查询视图中使用本章API。<br/>
      * queryStatement对象在查询视图中可用。它的很多方法与queryView类似。<b>（仅前端脚本可用）</b><br/>
      * @module queryStatement
+     * @o2category web
      * @o2range {QueryStatement}
      * @o2ordernumber 80
      * @borrows module:queryView.confirm as confirm
@@ -3679,6 +3685,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * queryView对象可在视图中可用。它的很多方法与form类似。<b>（仅前端脚本可用）</b><br/>
      * @module queryView
+     * @o2category web
      * @o2range {QueryView}
      * @o2ordernumber 60
      * @o2syntax
@@ -4450,6 +4457,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 在前端脚本中，可以通过this.session.user来获取当前用户信息。<br/>
      * @module session
+     * @o2category web
      * @o2ordernumber 110
      * @o2syntax
      * var user = this.session.user;
@@ -4520,12 +4528,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 本文档说明如何在前台脚本中使用Actions调用平台的RESTful服务。<br/>
      * 通过访问以下地址来查询服务列表：http://server:20030/x_program_center/jest/list.html
      * @module Actions
+     * @o2category web
      * @o2ordernumber 130
      * @o2syntax
      * //获取Actions
      * this.Actions
-     * //或者
-     * o2.Actions
      */
 
     /**
@@ -4554,8 +4561,6 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * </code></pre>
      * @return {Object} 返回action对象，用于后续服务调用
      * @o2syntax
-     * var actions = o2.Actions.load( root );
-     * //或
      * var actions = this.Actions.load( root );
      * @o2syntax
      * //获取流程平台服务对象。
@@ -4696,7 +4701,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      */
 
     /**
-     * <b>已过时。</b>平台预置了Action的调用方法，您可以使用o2.Actions.get来获取这些方法。RESTful配置文件在{服务器目录}/webServer/o2_core/o2/xAction/services下。
+     * <b>已过时。</b>平台预置了Action的调用方法，您可以使用this.Actions.get来获取这些方法。RESTful配置文件在{服务器目录}/webServer/o2_core/o2/xAction/services下。
      * @method get
      * @deprecated
      * @methodOf module:Actions
@@ -4707,12 +4712,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * </code></pre>
      * @return {String} 对应服务根的host。如：http://127.0.0.1:20020
      * @o2syntax
-     * var actions = o2.Actions.get( root );
+     * var actions = this.Actions.get( root );
      * actions[ methodName ]( arguements );
      *
      * or
      *
-     * o2.Actions.get( root )[methodName]( arguements );
+     * this.Actions.get( root )[methodName]( arguements );
      * @o2syntax
      * methodName :（string）方法名称。
      * arguements : 见load方法的arguements说明
@@ -4721,7 +4726,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * //现已知获取数据的方法名称是 getWorkData  uri为： /jaxrs/data/work/{workid}
      * //已知更新数据的方法名称是 saveData  uri为： /jaxrs/data/work/{workid}
      * var workid = "cce8bc22-225a-4f85-8132-7374d546886e";
-     * var action = o2.Actions.get("x_processplatform_assemble_surface");
+     * var action = this.Actions.get("x_processplatform_assemble_surface");
      * var data;
      * action.getWorkData( //平台封装好的方法
      *      workid, //uri的参数
@@ -4745,7 +4750,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * var id = "(0)"; //如果是第一页id是(0)，否则传上一页最后一个流程实例的id
      * var count = 10;
      * var applicationId = "dde8bc22-225a-4f85-8132-7374d546886e";
-     * o2.Actions.get("x_processplatform_assemble_surface").listWorkNext(
+     * this.Actions.get("x_processplatform_assemble_surface").listWorkNext(
      *      id, //listWorkNext服务有3个uri参数，要按先后顺序列出
      *      count,
      *      applicationId,
