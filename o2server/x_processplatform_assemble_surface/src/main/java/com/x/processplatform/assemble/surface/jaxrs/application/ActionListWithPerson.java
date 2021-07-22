@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -15,6 +16,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
@@ -39,20 +42,27 @@ class ActionListWithPerson extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			List<Wo> wos = new ArrayList<>();
-			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-			/** 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用 */
-			List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
-			List<String> roles = business.organization().role().listWithPerson(effectivePerson);
-			List<String> ids = this.list(business, effectivePerson, roles, identities, units);
-			for (String id : ids) {
-				Application o = business.application().pick(id);
-				if (null != o) {
-					wos.add(Wo.copier.copy(o));
+			Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), effectivePerson.getDistinguishedName());
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				result.setData((List<Wo>) optional.get());
+			}else {
+				List<Wo> wos = new ArrayList<>();
+				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+				/** 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用 */
+				List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
+				List<String> roles = business.organization().role().listWithPerson(effectivePerson);
+				List<String> groups = business.organization().group().listWithIdentity(identities);
+				List<String> ids = this.list(business, effectivePerson, roles, identities, units, groups);
+				for (String id : ids) {
+					Application o = business.application().pick(id);
+					if (null != o) {
+						wos.add(Wo.copier.copy(o));
+					}
 				}
+				wos = business.application().sort(wos);
+				result.setData(wos);
 			}
-			wos = business.application().sort(wos);
-			result.setData(wos);
 			return result;
 		}
 	}
@@ -72,10 +82,10 @@ class ActionListWithPerson extends BaseAction {
 	 * 两份ids的交集,这样避免列示只有application没有可以启动process的应用
 	 */
 	private List<String> list(Business business, EffectivePerson effectivePerson, List<String> roles,
-			List<String> identities, List<String> units) throws Exception {
+			List<String> identities, List<String> units, List<String> groups) throws Exception {
 //		List<String> ids = this.listFromApplication(business, effectivePerson, roles, identities, units);
 //		return ids;
-		List<String> fromProcessIds = this.listFromProcess(business, effectivePerson, roles, identities, units);
+		List<String> fromProcessIds = this.listFromProcess(business, effectivePerson, roles, identities, units, groups);
 		return fromProcessIds;
 //		return ListUtils.intersection(ids, fromProcessIds);
 	}
@@ -110,7 +120,7 @@ class ActionListWithPerson extends BaseAction {
 	 * 从Process中获取可以启动的Process的application.
 	 */
 	private List<String> listFromProcess(Business business, EffectivePerson effectivePerson, List<String> roles,
-			List<String> identities, List<String> units) throws Exception {
+			List<String> identities, List<String> units, List<String> groups) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Process.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -119,7 +129,8 @@ class ActionListWithPerson extends BaseAction {
 		if (effectivePerson.isNotManager() && (!business.organization().person().hasRole(effectivePerson,
 				OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager))) {
 			p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
-					cb.isEmpty(root.get(Process_.startableUnitList)));
+					cb.isEmpty(root.get(Process_.startableUnitList)),
+					cb.isEmpty(root.get(Process_.startableGroupList)));
 			p = cb.or(p, cb.isMember(effectivePerson.getDistinguishedName(), root.get(Process_.controllerList)));
 			p = cb.or(p, cb.equal(root.get(Process_.creatorPerson), effectivePerson.getDistinguishedName()));
 			if (ListTools.isNotEmpty(identities)) {
@@ -127,6 +138,9 @@ class ActionListWithPerson extends BaseAction {
 			}
 			if (ListTools.isNotEmpty(units)) {
 				p = cb.or(p, root.get(Process_.startableUnitList).in(units));
+			}
+			if (ListTools.isNotEmpty(groups)) {
+				p = cb.or(p, root.get(Process_.startableGroupList).in(groups));
 			}
 		}
 		cq.select(root.get(Process_.application)).where(p);
