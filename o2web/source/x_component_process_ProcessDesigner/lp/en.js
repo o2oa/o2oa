@@ -246,6 +246,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"power": "Power",
 		"stratIdentity": "Strat Person",
 		"startUnit": "Start Unit",
+		"starGroup": "Start Group",
 		"manager": "Manager",
 
 		"number": "Number",
