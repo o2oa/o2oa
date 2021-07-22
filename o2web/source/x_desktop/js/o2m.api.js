@@ -32,6 +32,7 @@
  * <br/>
  * <b>o2m</b> 只有在O2OA移动端APP中才能提供能力
  * @module o2m
+ * @o2category mobile
  * @o2ordernumber 160
  * @o2range {流程表单|门户}
  * @o2syntax
