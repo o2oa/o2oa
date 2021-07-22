@@ -1479,6 +1479,7 @@ MWF.xScript.PageEnvironment = function (ev) {
     /**
      * page对象可在门户页面中可用。它的很多方法与form类似。<b>（仅前端脚本可用）</b><br/>
      * @module page
+     * @o2category web
      * @o2range {Portal}
      * @o2ordernumber 50
      * @o2syntax
