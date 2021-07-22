@@ -17,7 +17,7 @@ public class Timertask_RefreshAllDocumentReviews extends AbstractJob {
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		DocumentPersistService documentPersistService = new DocumentPersistService();
-		documentPersistService.refreshAllDocumentPermission();
+		documentPersistService.refreshAllDocumentPermission(false);
 	}
 
 }

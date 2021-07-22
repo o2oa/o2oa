@@ -38,7 +38,8 @@ class ActionListWithPersonLike extends BaseAction {
 			/** 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用 */
 			List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
 			List<String> roles = business.organization().role().listWithPerson(effectivePerson);
-			List<String> ids = this.list(business, effectivePerson, roles, identities, units, key);
+			List<String> groups = business.organization().group().listWithIdentity(identities);
+			List<String> ids = this.list(business, effectivePerson, roles, identities, units, groups, key);
 			for (String id : ids) {
 				Application o = business.application().pick(id);
 				wos.add(Wo.copier.copy(o));
@@ -59,9 +60,9 @@ class ActionListWithPersonLike extends BaseAction {
 	}
 
 	private List<String> list(Business business, EffectivePerson effectivePerson, List<String> roles,
-			List<String> identities, List<String> units, String key) throws Exception {
+			List<String> identities, List<String> units, List<String> groups, String key) throws Exception {
 		List<String> ids = this.listFromApplication(business, effectivePerson, roles, identities, units);
-		List<String> fromProcessIds = this.listFromProcess(business, effectivePerson, roles, identities, units, key);
+		List<String> fromProcessIds = this.listFromProcess(business, effectivePerson, roles, identities, units, groups, key);
 		return ListUtils.intersection(ids, fromProcessIds);
 	}
 
@@ -94,7 +95,7 @@ class ActionListWithPersonLike extends BaseAction {
 	 * 从Process中获取可以启动的Process的application.
 	 */
 	private List<String> listFromProcess(Business business, EffectivePerson effectivePerson, List<String> roles,
-			List<String> identities, List<String> units, String key) throws Exception {
+			List<String> identities, List<String> units, List<String> groups, String key) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Process.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -106,7 +107,8 @@ class ActionListWithPersonLike extends BaseAction {
 		if (effectivePerson.isNotManager() && (!business.organization().person().hasRole(effectivePerson,
 				OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager))) {
 			p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
-					cb.isEmpty(root.get(Process_.startableUnitList)));
+					cb.isEmpty(root.get(Process_.startableUnitList)),
+					cb.isEmpty(root.get(Process_.startableGroupList)));
 			p = cb.or(p, cb.isMember(effectivePerson.getDistinguishedName(), root.get(Process_.controllerList)));
 			p = cb.or(p, cb.equal(root.get(Process_.creatorPerson), effectivePerson.getDistinguishedName()));
 			if (ListTools.isNotEmpty(identities)) {
@@ -114,6 +116,9 @@ class ActionListWithPersonLike extends BaseAction {
 			}
 			if (ListTools.isNotEmpty(units)) {
 				p = cb.or(p, root.get(Process_.startableUnitList).in(units));
+			}
+			if (ListTools.isNotEmpty(groups)) {
+				p = cb.or(p, root.get(Process_.startableGroupList).in(groups));
 			}
 		}
 		cq.select(root.get(Process_.application)).where(p);

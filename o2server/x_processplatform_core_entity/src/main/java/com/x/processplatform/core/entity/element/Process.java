@@ -295,6 +295,18 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> startableUnitList;
 
+	public static final String startableGroupList_FIELDNAME = "startableGroupList";
+	@FieldDescribe("在指定启动时候,允许新建Work的群组.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ startableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+			+ startableGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + startableGroupList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + startableGroupList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> startableGroupList;
+
 	public static final String serialTexture_FIELDNAME = "serialTexture";
 	@FieldDescribe("编号定义.")
 	@Lob
@@ -866,4 +878,11 @@ public class Process extends SliceJpaObject {
 		this.startableTerminal = startableTerminal;
 	}
 
+	public List<String> getStartableGroupList() {
+		return startableGroupList;
+	}
+
+	public void setStartableGroupList(List<String> startableGroupList) {
+		this.startableGroupList = startableGroupList;
+	}
 }
