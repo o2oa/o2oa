@@ -27,10 +27,10 @@
      <tr>
          <td><a href="server.module_Dict.html">数据字典 - Dict</a></td>
          <td><a href="server.module_Actions.html">服务调用 - Actions</a></td>
-         <td><a href="server.module_include.html">脚本引用 - include</a></td>
+         <td><a href="module-include_.html">脚本引用 - include</a></td>
      </tr>
      <tr>
-         <td><a href="server.module_define.html">方法定义 - define</a></td>
+         <td><a href="module-define_.html">方法定义 - define</a></td>
          <td></td>
          <td></td>
      </tr>
@@ -369,7 +369,7 @@ O2OA 可在多个位置嵌入脚本代码，用于扩展平台和实现自定义
       </tr>
      <tr>
           <td>流程设计</td>
-          <td>流程设计的所有脚本（流程事件、时效脚本等等）；流程活动的所有脚本（处理人、待阅人、阅读人脚本，拆分依据、时效脚本，活动事件，参数脚本、响应脚本、执行脚本等等）；流程路由的条件脚本。</td>
+          <td>流程属性的所有脚本（流程事件、时效脚本等等）；流程活动的所有脚本（处理人、待阅人、阅读人脚本，拆分依据、时效脚本，活动事件，参数脚本、响应脚本、执行脚本等等）；流程路由的条件脚本。</td>
       </tr>
      <tr>
           <td>查询配置</td>
@@ -407,13 +407,41 @@ O2OA 可在多个位置嵌入脚本代码，用于扩展平台和实现自定义
  
 ### 后端脚本使用范围详情
 
+#### 脚本库
+流程平台、门户平台和内容管理平台中，都有脚本设计元素，可以在此创建脚本库。
+![脚本库](img/home/server_script.png)
+<br/><br/>
+
+#### 服务管理
+服务管理的接口和定时代理。
+![定时代理](img/home/server_agent.png)
+![接口](img/home/server_interface.png)
+<br/><br/>
+
+#### 流程设计
+流程属性的所有脚本（流程事件、时效脚本等等）。
+![流程属性](img/home/server_process.png)
+
+流程活动的所有脚本（处理人、待阅人、阅读人脚本，拆分依据、时效脚本，活动事件，参数脚本、响应脚本、执行脚本等等）
+![流程活动](img/home/server_process_activity.png)
+
+流程路由的条件脚本。
+![流程路由](img/home/server_process_route.png)
+
+#### 查询配置
+查询配置的查询语句和总数语句。
+![流程路由](img/home/server_statement.png)
+
+#### 视图列
+视图列的显示脚本，可以使用this.value获取本列的列值、this.entry.data获取本行的数据。
+![视图列显示脚本](img/home/server_view_column.png)
 
 ### 前端脚本使用范围详情
 
 #### 脚本库
 
 流程平台、门户平台和内容管理平台中，都有脚本设计元素，可以在此创建自己的脚本库。如下图：
-![脚本](img/home/script.png)
+![脚本库](img/home/script.png)
 <br/><br/>
 
 #### 表单、页面、视图、查询视图及其组件事件
