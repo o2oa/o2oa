@@ -15,6 +15,8 @@ import com.x.cms.core.entity.Review;
 import com.x.cms.core.express.tools.filter.QueryFilter;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -567,20 +569,23 @@ public class ReviewService {
 	 */
 	private void refreshDocumentReview( EntityManagerContainer emc, AppInfo appInfo, CategoryInfo categoryInfo, Document document, List<String> permissionPersons) throws Exception {
 		Business business = new Business(emc);
-		Review review = null;
-		List<Review> reviews = null;
 		
 		//先检查该文档是否存在Review信息
 		List<String> oldReviewIds = business.reviewFactory().listByDocument( document.getId(), 9999 );
 		
 		//先删除原来所有的Review信息
 		if( ListTools.isNotEmpty( oldReviewIds )) {
-			Review oldReview = null;
 			emc.beginTransaction( Review.class );
+			int i = 0;
 			for( String reviewId : oldReviewIds ){
-				oldReview = emc.find( reviewId, Review.class );
+				Review oldReview = emc.find( reviewId, Review.class );
 				if( oldReview != null ){
 					emc.remove( oldReview, CheckRemoveType.all );
+					i++;
+					if(i>99 && i % 100 ==0){
+						emc.commit();
+						emc.beginTransaction( Review.class );
+					}
 				}
 			}
 			emc.commit();
@@ -592,6 +597,7 @@ public class ReviewService {
 			emc.beginTransaction( Review.class );
 			Person personObj = null;
 			String personName = null;
+			int i = 0;
 			for( String person : permissionPersons ) {
 				if( !person.equalsIgnoreCase( "*" )) {
 					//检查一下个人是否存在，防止姓名或者唯一标识变更过了导致文档权限不正确
@@ -604,11 +610,16 @@ public class ReviewService {
 				}
 				if( StringUtils.isNotEmpty( personName )) {
 					//查询一下，数据库里， 是否有相同的数据，如果有，就不再添加了
-					 oldReviewIds = business.reviewFactory().listByDocumentAndPerson( document.getId(), personName );
-					 if( ListTools.isEmpty( oldReviewIds )) {
-						 review = createReviewWithDocument( appInfo, categoryInfo, document, personName );
-						 emc.persist( review, CheckPersistType.all );
-					 }
+					oldReviewIds = business.reviewFactory().listByDocumentAndPerson( document.getId(), personName );
+					if( ListTools.isEmpty( oldReviewIds )) {
+						Review review = createReviewWithDocument( appInfo, categoryInfo, document, personName );
+						emc.persist( review, CheckPersistType.all );
+						i++;
+						if(i>99 && i % 100 ==0){
+							emc.commit();
+							emc.beginTransaction( Review.class );
+						}
+					}
 				}
 			}
 			emc.commit();

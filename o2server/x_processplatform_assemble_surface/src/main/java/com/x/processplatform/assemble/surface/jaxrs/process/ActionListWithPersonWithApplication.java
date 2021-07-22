@@ -34,8 +34,8 @@ class ActionListWithPersonWithApplication extends BaseAction {
 			if (!business.application().allowRead(effectivePerson, roles, identities, units, application)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-
-			List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units,
+			List<String> groups = business.organization().group().listWithIdentity(identities);
+			List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units, groups,
 					application);
 			for (String id : ids) {
 				wos.add(Wo.copier.copy(business.process().pick(id)));

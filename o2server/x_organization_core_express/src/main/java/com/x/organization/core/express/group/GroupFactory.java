@@ -138,4 +138,28 @@ public class GroupFactory {
 		return ActionListWithPerson.execute(context, values, recursiveGroupFlag, referenceFlag, recursiveOrgFlag);
 	}
 
+	/** 查询身份所在的群组 */
+	public List<String> listWithIdentity(Collection<String> values) throws Exception {
+		return listWithIdentityReference(values,true,true, true);
+	}
+
+	/** 查询身份所在的群组 */
+	public List<String> listWithIdentity(String... values) throws Exception {
+		return listWithIdentityReference(Arrays.asList(values),true,true, true);
+	}
+
+	/**
+	 * 查询身份及关联组织所在的群组
+	 * @param values 身份
+	 * @param recursiveGroupFlag 是否递归查询上级群组
+	 * @param referenceFlag 是否包含查找人员身份成员、人员归属组织成员的所属群组
+	 * @param recursiveOrgFlag 是否递归人员归属组织的上级组织所属群组，前提referenceFlag为true
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listWithIdentityReference(Collection<String> values,
+												boolean recursiveGroupFlag, boolean referenceFlag, boolean recursiveOrgFlag) throws Exception {
+		return ActionListWithIdentity.execute(context, values, recursiveGroupFlag, referenceFlag, recursiveOrgFlag);
+	}
+
 }
