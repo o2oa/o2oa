@@ -24,19 +24,91 @@
  * @borrows module:workContext.getWork as getWork
  * @borrows module:workContext.getActivity as getActivity
  * @borrows module:workContext.getTask as getTask
- * @borrows module:workContext.getTaskList as getTaskList
- * @borrows module:workContext.getTaskListByJob as getTaskListByJob
- * @borrows module:workContext.getTaskCompletedList as getTaskCompletedList
- * @borrows module:workContext.getTaskCompletedListByJob as getTaskCompletedListByJob
- * @borrows module:workContext.getReadList as getReadList
- * @borrows module:workContext.getReadListByJob as getReadListByJob
- * @borrows module:workContext.getReadCompletedList as getReadCompletedList
- * @borrows module:workContext.getReadCompletedListByJob as getReadCompletedListByJob
  * @borrows module:workContext.getControl as getControl
  * @borrows module:workContext.getWorkLogList as getWorkLogList
  * @borrows module:workContext.getRecordList as getRecordList
  * @borrows module:workContext.getAttachmentList as getAttachmentList
  * @borrows module:workContext.getRouteList as getRouteList
+ */
+/**
+ * 获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
+ * @method getTaskList
+ * @methodOf module:server.workContext
+ * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithWork|example=Task
+ * @static
+ * @return {(Task[])} 待办任务列表.
+ * @o2syntax
+ * var taskList = this.workContext.getTaskList();
+ */
+/**
+ * 根据当前工作的job获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
+ * @method getTaskListByJob
+ * @methodOf module:server.workContext
+ * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithJob|example=Task
+ * @static
+ * @return {(Task[])} 待办任务列表.
+ * @o2syntax
+ * var taskList = this.workContext.getTaskListByJob();
+ */
+/**
+ * 获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
+ * @method getTaskCompletedList
+ * @methodOf module:server.workContext
+ * @static
+ * @return {(TaskCompleted[])} 已办任务列表.
+ * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithWork|example=Task
+ * @o2syntax
+ * var taskCompletedList = this.workContext.getTaskCompletedList();
+ */
+/**
+ * 根据当前工作的job获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
+ * @method getTaskCompletedListByJob
+ * @methodOf module:server.workContext
+ * @static
+ * @return {(TaskCompleted[])} 已办任务列表.
+ * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithJob|example=Task
+ * @o2syntax
+ * var taskCompletedList = this.workContext.getTaskCompletedListByJob();
+ */
+/**
+ * @summary 获取当前流程实例的所有待阅对象数组。如果流程实例无待阅，则返回一个空数组。
+ * @method getReadList
+ * @methodOf module:server.workContext
+ * @static
+ * @return {(Read[])} 当前流程实例的所有待阅对象数组.
+ * @o2ActionOut x_processplatform_assemble_surface.ReadAction.get|example=Read
+ * @o2syntax
+ * var readList = this.workContext.getReadList();
+ */
+/**
+ * @summary 根据当前工作的job获取当前流程实例的所有待阅对象。如果流程实例无待阅，则返回一个空数组。
+ * @method getReadListByJob
+ * @methodOf module:server.workContext
+ * @static
+ * @return {(Read[])} 当前流程实例的所有待阅对象数组.
+ * @o2ActionOut x_processplatform_assemble_surface.ReadAction.listWithJob|example=Read
+ * @o2syntax
+ * var readList = this.workContext.getReadListByJob();
+ */
+/**
+ * @summary 获取当前流程实例的所有已阅对象。如果流程实例没有已阅，则返回一个空数组。
+ * @method getReadCompletedList
+ * @methodOf module:server.workContext
+ * @static
+ * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
+ * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithWork|example=Read
+ * @o2syntax
+ * var readCompletedList = this.workContext.getReadCompletedList();
+ */
+/**
+ * @summary 根据当前工作的job获取当前流程实例的所有已阅对象。如果流程实例没有已阅，则返回一个空数组。
+ * @method getReadCompletedListByJob
+ * @methodOf module:server.workContext
+ * @static
+ * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
+ * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithJob|example=Read
+ * @o2syntax
+ * var readCompletedList = this.workContext.getReadCompletedListByJob();
  */
 
 
