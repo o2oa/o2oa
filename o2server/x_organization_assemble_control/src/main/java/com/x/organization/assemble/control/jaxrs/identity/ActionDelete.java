@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,14 +46,11 @@ public class ActionDelete extends BaseAction {
 					throw new ExceptionAccessDenied(effectivePerson, unit);
 				}
 				/** 由于有关联所以要分段提交，提交UnitDuty的成员删除。 */
-				emc.beginTransaction(UnitDuty.class);
 				this.removeMemberOfUnitDuty(business, identity);
-				emc.commit();
 			}
 			/** group的身份成员删除。*/
-			emc.beginTransaction(Group.class);
 			this.removeMemberOfGroup(business, identity);
-			emc.commit();
+
 			/** 由于前面pick出来的需要重新取出 */
 			identity = emc.find(identity.getId(), Identity.class);
 			// /** 删除下属身份 */
@@ -100,15 +98,25 @@ public class ActionDelete extends BaseAction {
 		Root<UnitDuty> root = cq.from(UnitDuty.class);
 		Predicate p = cb.isMember(identity.getId(), root.get(UnitDuty_.identityList));
 		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
-		for (UnitDuty o : os) {
-			o.getIdentityList().remove(identity.getId());
+		if(ListTools.isNotEmpty(os)) {
+			business.entityManagerContainer().beginTransaction(UnitDuty.class);
+			for (UnitDuty o : os) {
+				o.getIdentityList().remove(identity.getId());
+			}
+			business.entityManagerContainer().commit();
+			CacheManager.notify(UnitDuty.class);
 		}
 	}
 
 	private void removeMemberOfGroup(Business business, Identity identity) throws Exception {
 		List<Group> groups = business.group().listSupDirectWithIdentityObject(identity.getId());
-		for(Group g : groups){
-			g.getIdentityList().remove(identity.getId());
+		if(ListTools.isNotEmpty(groups)) {
+			business.entityManagerContainer().beginTransaction(Group.class);
+			for (Group g : groups) {
+				g.getIdentityList().remove(identity.getId());
+			}
+			business.entityManagerContainer().commit();
+			CacheManager.notify(Group.class);
 		}
 	}
 }

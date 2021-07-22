@@ -48,7 +48,8 @@ class ActionSave extends BaseAction {
 			if (!business.application().allowRead(effectivePerson, roles, identities, units, application)) {
 				throw new ExceptionAccessDenied(effectivePerson, application);
 			}
-			if (!business.process().startable(effectivePerson, identities, units, process)) {
+			List<String> groups = business.organization().group().listWithIdentity(identities);
+			if (!business.process().startable(effectivePerson, identities, units, groups, process)) {
 				throw new ExceptionAccessDenied(effectivePerson, process);
 			}
 			emc.beginTransaction(Draft.class);

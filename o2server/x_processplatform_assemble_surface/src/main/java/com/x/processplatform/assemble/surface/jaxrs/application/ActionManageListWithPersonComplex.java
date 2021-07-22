@@ -39,12 +39,13 @@ class ActionManageListWithPersonComplex extends BaseAction {
 				/** 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用 */
 				List<String> units = business.organization().unit().listWithPersonSupNested(person);
 				List<String> roles = business.organization().role().listWithPerson(person);
-				List<String> ids = this.list(business, effectivePerson, roles, identities, units);
+				List<String> groups = business.organization().group().listWithIdentity(identities);
+				List<String> ids = this.list(business, effectivePerson, roles, identities, units, groups);
 				for (String id : ids) {
 					Application o = business.application().pick(id);
 					if (null != o) {
 						Wo wo = Wo.copier.copy(o);
-						wo.setProcessList(this.referenceProcess(business, effectivePerson, identities, units, o));
+						wo.setProcessList(this.referenceProcess(business, effectivePerson, identities, units, groups, o));
 						wos.add(wo);
 					}
 				}
@@ -103,9 +104,9 @@ class ActionManageListWithPersonComplex extends BaseAction {
 	 * 两份ids的交集,这样避免列示只有application没有可以启动process的应用
 	 */
 	private List<String> list(Business business, EffectivePerson effectivePerson, List<String> roles,
-			List<String> identities, List<String> units) throws Exception {
+			List<String> identities, List<String> units, List<String> groups) throws Exception {
 		List<String> ids = this.listFromApplication(business, effectivePerson, roles, identities, units);
-		List<String> fromProcessIds = this.listFromProcess(business, effectivePerson, roles, identities, units);
+		List<String> fromProcessIds = this.listFromProcess(business, effectivePerson, roles, identities, units, groups);
 		return ListUtils.intersection(ids, fromProcessIds);
 	}
 
@@ -138,7 +139,7 @@ class ActionManageListWithPersonComplex extends BaseAction {
 	 * 从Process中获取可以启动的Process的application.
 	 */
 	private List<String> listFromProcess(Business business, EffectivePerson effectivePerson, List<String> roles,
-			List<String> identities, List<String> units) throws Exception {
+			List<String> identities, List<String> units, List<String> groups) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Process.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -146,13 +147,17 @@ class ActionManageListWithPersonComplex extends BaseAction {
 		Predicate p = cb.conjunction();
 
 		p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
-				cb.isEmpty(root.get(Process_.startableUnitList)));
+				cb.isEmpty(root.get(Process_.startableUnitList)),
+				cb.isEmpty(root.get(Process_.startableGroupList)));
 
 		if (ListTools.isNotEmpty(identities)) {
 			p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
 		}
 		if (ListTools.isNotEmpty(units)) {
 			p = cb.or(p, root.get(Process_.startableUnitList).in(units));
+		}
+		if (ListTools.isNotEmpty(groups)) {
+			p = cb.or(p, root.get(Process_.startableGroupList).in(groups));
 		}
 
 		cq.select(root.get(Process_.application)).where(p);
@@ -160,8 +165,9 @@ class ActionManageListWithPersonComplex extends BaseAction {
 	}
 
 	private List<WoProcess> referenceProcess(Business business, EffectivePerson effectivePerson,
-			List<String> identities, List<String> units, Application application) throws Exception {
-		List<String> ids = this.listStartableWithApplication(business, effectivePerson, identities, units, application);
+			List<String> identities, List<String> units, List<String> groups, Application application) throws Exception {
+		List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units,
+				groups, application);
 		List<WoProcess> wos = new ArrayList<>();
 		for (String id : ids) {
 			WoProcess o = WoProcess.copier.copy(business.process().pick(id));
@@ -169,30 +175,5 @@ class ActionManageListWithPersonComplex extends BaseAction {
 		}
 		wos = business.process().sort(wos);
 		return wos;
-	}
-
-	/* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
-	private List<String> listStartableWithApplication(Business business, EffectivePerson effectivePerson,
-			List<String> identities, List<String> units, Application application) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Process.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Process> root = cq.from(Process.class);
-		Predicate p = cb.conjunction();
-
-		p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
-				cb.isEmpty(root.get(Process_.startableUnitList)));
-
-		if (ListTools.isNotEmpty(identities)) {
-			p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
-		}
-		if (ListTools.isNotEmpty(units)) {
-			p = cb.or(p, root.get(Process_.startableUnitList).in(units));
-		}
-
-		p = cb.and(p, cb.equal(root.get(Process_.application), application.getId()));
-		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
-		cq.select(root.get(Process_.id)).where(p);
-		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 }
