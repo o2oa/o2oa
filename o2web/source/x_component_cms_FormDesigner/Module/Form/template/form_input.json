@@ -30,6 +30,10 @@
           "code": "",
           "html": ""
         },
+        "postSave": {
+          "code": "",
+          "html": ""
+        },
         "afterSave": {
           "code": "",
           "html": ""
@@ -39,6 +43,10 @@
           "html": ""
         },
         "beforePublish": {
+          "code": "",
+          "html": ""
+        },
+        "postPublish": {
           "code": "",
           "html": ""
         },
@@ -2088,6 +2096,10 @@
           "code": "",
           "html": ""
         },
+        "postSave": {
+          "code": "",
+          "html": ""
+        },
         "afterSave": {
           "code": "",
           "html": ""
@@ -2097,6 +2109,10 @@
           "html": ""
         },
         "beforePublish": {
+          "code": "",
+          "html": ""
+        },
+        "postPublish": {
           "code": "",
           "html": ""
         },
