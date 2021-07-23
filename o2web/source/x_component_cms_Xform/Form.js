@@ -78,7 +78,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             "beforeSave",
             /**
              * 数据已经整理完成，但还未保存到后台时触发。this.event指向整理完成的数据
-             * @event CMSForm#afterSave
+             * @event CMSForm#postSave
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
             "postSave",
