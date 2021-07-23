@@ -524,22 +524,27 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         if( !this.excelUtils ){
             this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
         }
+        var doExport = function () {
+            var arg = {
+                data : [this.getTitleArray()],
+                colWidthArray : this.getColWidthArray(),
+                title : this.getFileName(fileName)
+            };
+            if(callback)callback(arg);
+
+            this.excelUtils.exportToExcel(
+                arg.data,
+                arg.title,
+                arg.colWidthArray,
+                this.getDateIndexArray()
+            )
+        }.bind(this)
         if( !this.importerJson ){
             this.getImporterJSON( function () {
-                var arg = {
-                    data : [this.getTitleArray()],
-                    colWidthArray : this.getColWidthArray(),
-                    title : this.getFileName(fileName)
-                };
-                if(callback)callback(arg);
-
-                this.excelUtils.exportToExcel(
-                    arg.data,
-                    arg.title,
-                    arg.colWidthArray,
-                    this.getDateIndexArray()
-                )
+                doExport()
             }.bind(this))
+        }else{
+            doExport();
         }
     },
     getFileName: function(fileName){
