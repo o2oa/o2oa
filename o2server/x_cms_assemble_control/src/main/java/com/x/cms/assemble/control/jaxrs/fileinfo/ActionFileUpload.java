@@ -185,8 +185,8 @@ public class ActionFileUpload extends BaseAction {
 		} else if("tif".equalsIgnoreCase( ext ) ){ type = "PICTURE";
 		} else if("bmp".equalsIgnoreCase( ext ) ){ type = "PICTURE";
 		} else if("gif".equalsIgnoreCase( ext ) ){ type = "PICTURE";
-		} else if("xls".equalsIgnoreCase( ext ) ){ type = "EXCLE";			
-		} else if("xlsx".equalsIgnoreCase( ext ) ){ type = "EXCLE";			
+		} else if("xls".equalsIgnoreCase( ext ) ){ type = "EXCEL";
+		} else if("xlsx".equalsIgnoreCase( ext ) ){ type = "EXCEL";
 		} else if("doc".equalsIgnoreCase( ext ) ){ type = "WORD";			
 		} else if("docx".equalsIgnoreCase( ext ) ){ type = "WORD";			
 		} else if("ppt".equalsIgnoreCase( ext ) ){ type = "PPT";			
