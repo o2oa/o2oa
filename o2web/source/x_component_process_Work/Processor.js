@@ -741,6 +741,7 @@ MWF.xApplication.process.Work.Processor = new Class({
                     "cancel"
                 ]
             }
+
             this.tablet = new MWF.widget.Tablet(this.handwritingAreaNode, handWritingOptions, null);
             this.tablet.load();
         }.bind(this));
