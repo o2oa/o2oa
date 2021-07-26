@@ -91,7 +91,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 	},
 	showCreateDialog: function(relativeNode, position){
 		var module = this;
-		var url = this.path+"createDialog.html";
+		var url ="../x_component_process_FormDesigner/Module/Datatemplate/createDialog.html";
 		MWF.require("MWF.widget.Dialog", function(){
 			var size = $(document.body).getSize();
 			var x = size.x/2-180;
@@ -150,12 +150,12 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 			dlg.show();
 		}.bind(this));
 	},
+	getModulesTemplateUrl: function(){
+		return "../x_component_process_FormDesigner/Module/Datatemplate/modulesTemplate.json";
+	},
 	appendModules: function( relativeNode, position, wrapDiv ){
-
 		debugger;
-
-		var templateUrl = this.path+"modulesTemplate.json";
-		MWF.getJSON(templateUrl, function(responseJSON, responseText){
+		MWF.getJSON(this.getModulesTemplateUrl(), function(responseJSON, responseText){
 
 			var parentModule = this.parentContainer || this.inContainer || this.onDragModule;
 			this.containerModule = this.form.createModuleImmediately(
@@ -210,17 +210,18 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 					"addActionId","deleteActionId","sequenceId","selectorId"].each(function(key){
 
 					var str = dataTemplateModuleJson[key];
-					if( str.indexOf("/") > -1 ){
-						var strArr = str.split("/");
-						if( strArr[1] && changedIdMap[strArr[1]] ){
-							dataTemplateModuleJson[key] = strArr[0] + "/" + changedIdMap[strArr[1]];
-						}
-					}else{
-						if( str && changedIdMap[str] ){
-							dataTemplateModuleJson[key] = changedIdMap[str];
+					if(str){
+						if( str.indexOf("/") > -1 ){
+							var strArr = str.split("/");
+							if( strArr[1] && changedIdMap[strArr[1]] ){
+								dataTemplateModuleJson[key] = strArr[0] + "/" + changedIdMap[strArr[1]];
+							}
+						}else{
+							if( str && changedIdMap[str] ){
+								dataTemplateModuleJson[key] = changedIdMap[str];
+							}
 						}
 					}
-
 
 				}.bind(this));
 			}
