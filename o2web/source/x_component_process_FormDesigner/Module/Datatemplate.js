@@ -29,7 +29,6 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 		this._dragMoveComplete( relativeNode, position, selectDisabled );
 	},
 	_dragComplete: function(relativeNode, position, selectDisabled){
-		debugger;
 		if (!this.node){
 			this.showCreateDialog(relativeNode, position, selectDisabled );
 		}else{
