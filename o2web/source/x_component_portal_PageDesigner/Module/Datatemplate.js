@@ -18,6 +18,9 @@ MWF.xApplication.portal.PageDesigner.Module.Datatemplate = MWF.PCDatatemplate = 
 		this.moduleName = "datatemplate";
 
 		this.form = form;
+	},
+	getModulesTemplateUrl: function(){
+		return "../x_component_portal_PageDesigner/Module/Datatemplate/modulesTemplate.json";
 	}
 
 });
