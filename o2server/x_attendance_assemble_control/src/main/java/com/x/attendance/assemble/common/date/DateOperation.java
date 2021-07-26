@@ -1,5 +1,8 @@
 package com.x.attendance.assemble.common.date;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,6 +11,9 @@ import java.util.Date;
 import java.util.List;
 
 public class DateOperation {
+
+	private static Logger logger = LoggerFactory.getLogger(DateOperation.class);
+
 	/**
 	 * 根据样式得到格式化对象SimpleDateFormat
 	 * 
@@ -81,63 +87,63 @@ public class DateOperation {
 			date = getDateFromString(dateString, "yyyy-MM-dd HH:mm:ss");
 			return date;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		try {
 			date = getDateFromString(dateString, "yyyy-MM-dd HH:mm");
 			return date;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		try {
 			date = getDateFromString(dateString, "yyyy/MM/dd HH:mm:ss");
 			return date;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		try {
 			date = getDateFromString(dateString, "yyyy-MM-dd");
 			return date;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		try {
 			date = getDateFromString(dateString, "yyyy/MM/dd");
 			return date;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		try {
 			date = getDateFromString(dateString, "yyyyMMdd");
 			return date;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		try {
 			date = getDateFromString(dateString, "yyyyMMddHHmmss");
 			return date;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		try {
 			date = getDateFromString(dateString, "HH:mm:ss");
 			return date;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		try {
 			date = getDateFromString(dateString, "HH:mm");
 			return date;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		return date;
@@ -688,12 +694,12 @@ public class DateOperation {
 		try {
 			year = Integer.parseInt(s_year);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 		try {
 			month = Integer.parseInt(_month);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 		cal.set(year, month - 1, 1);
 		days = cal.getActualMaximum(Calendar.DATE);
