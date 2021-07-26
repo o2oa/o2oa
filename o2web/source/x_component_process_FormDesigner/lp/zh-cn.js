@@ -942,7 +942,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "checkboxValueNote": "注：对应选中组件的可选值",
         "checkboxValueAllNote": "注：对应全选组件的可选值",
 
-        "notShow": "不显示"
+        "notShow": "不显示",
+
+        "insertDataTemplate": "插入数据模板",
+        "widthModules": "带相关组件插入"
     },
     "actionBar": {
         "close":"关闭",

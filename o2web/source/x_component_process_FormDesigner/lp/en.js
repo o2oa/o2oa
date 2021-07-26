@@ -937,7 +937,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "checkboxValueNote": "Note: the optional value corresponding to the selected component",
         "checkboxValueAllNote": "Note: Corresponding to the optional value of select all components",
 
-        "notShow": "Not Show"
+        "notShow": "Not Show",
+
+        "insertDataTemplate": "Insert Data Template",
+        "widthModules": "Insert related components"
     },
     "actionBar": {
         "close":"Close",

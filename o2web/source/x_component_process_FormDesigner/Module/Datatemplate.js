@@ -22,6 +22,244 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 
 		this.form = form;
 	},
+	createImmediately: function(data, relativeNode, position, selectDisabled){
+		this.json = data;
+		this.json.id = this._getNewId();
+		this._createMoveNode();
+		this._dragMoveComplete( relativeNode, position, selectDisabled );
+	},
+	_dragComplete: function(relativeNode, position, selectDisabled){
+		debugger;
+		if (!this.node){
+			this.showCreateDialog(relativeNode, position, selectDisabled );
+		}else{
+			this._dragMoveComplete(relativeNode, position, selectDisabled);
+		}
+	},
+	_dragMoveComplete: function( relativeNode, position, selectDisabled ){
+		this.setStyleTemplate();
+
+		if( this.injectNoticeNode )this.injectNoticeNode.destroy();
+		var overflow = this.moveNode.retrieve("overflow");
+		if( overflow ){
+			this.moveNode.setStyle("overflow",overflow);
+			this.moveNode.eliminate("overflow");
+		}
+
+		if (!this.node){
+			this._createNode();
+		}
+		this._resetTreeNode();
+
+		if( relativeNode && position ){
+			this.node.inject( relativeNode, position );
+		}else{
+			this.node.inject(this.copyNode, "before");
+		}
+
+		this._initModule();
+
+		var thisDisplay = this.node.retrieve("thisDisplay");
+		if (thisDisplay){
+			this.node.setStyle("display", thisDisplay);
+		}
+
+		if (this.copyNode) this.copyNode.destroy();
+		if (this.moveNode) this.moveNode.destroy();
+		this.moveNode = null;
+		this.copyNode = null;
+		this.nextModule = null;
+		this.form.moveModule = null;
+
+		this.form.json.moduleList[this.json.id] = this.json;
+		if (this.form.scriptDesigner) this.form.scriptDesigner.createModuleScript(this.json);
+
+		if( !selectDisabled )this.selected();
+	},
+	_clearDragComplete : function(){
+		if( this.dragTimeout ){
+			window.clearTimeout( this.dragTimeout );
+			this.dragTimeout = null;
+		}
+		if( this.injectNoticeNode )this.injectNoticeNode.destroy();
+		if (this.copyNode) this.copyNode.destroy();
+		if (this.moveNode) this.moveNode.destroy();
+		this.moveNode = null;
+		this.copyNode = null;
+		this.nextModule = null;
+		this.form.moveModule = null;
+		// delete this;
+	},
+	showCreateDialog: function(relativeNode, position){
+		var module = this;
+		var url = this.path+"createDialog.html";
+		MWF.require("MWF.widget.Dialog", function(){
+			var size = $(document.body).getSize();
+			var x = size.x/2-180;
+			var y = size.y/2-100;
+
+			var dlg = new MWF.DL({
+				"title": "Insert",
+				"style": "property",
+				"top": y,
+				"left": x-40,
+				"fromTop":size.y/2-65,
+				"fromLeft": size.x/2,
+				"width": 360,
+				"height": 200,
+				"url": url,
+				"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate,
+				"buttonList": [
+					{
+						"text": MWF.APPFD.LP.button.ok,
+						"action": function(){
+							var widthModules = "no";
+							dlg.node.getElements(".widthModules").each( function (el) {
+								if( el.get("checked") )widthModules = el.get("value");
+							});
+
+							if( widthModules === "yes" ){
+
+								var wrapDiv = "yes";
+								dlg.node.getElements(".wrapDiv").each( function (el) {
+									if( el.get("checked") )wrapDiv = el.get("value");
+								});
+
+								module.appendModules(relativeNode, position, wrapDiv);
+							}else{
+								module._dragMoveComplete( relativeNode, position );
+							}
+							this.close();
+						}
+					},
+					{
+						"text": MWF.APPFD.LP.button.cancel,
+						"action": function(){
+							module._clearDragComplete();
+							this.close();
+						}
+					}
+				],
+				"onPostShow": function(){
+					var tr = dlg.node.getElement(".wrapDivTr");
+					dlg.node.getElements(".widthModules").addEvent("change", function (el) {
+						tr.setStyle("display", el.target.get("value") === "yes" ? "" : "none")
+					})
+				}.bind(this)
+			});
+
+			dlg.show();
+		}.bind(this));
+	},
+	appendModules: function( relativeNode, position, wrapDiv ){
+
+		debugger;
+
+		var templateUrl = this.path+"modulesTemplate.json";
+		MWF.getJSON(templateUrl, function(responseJSON, responseText){
+
+			var parentModule = this.parentContainer || this.inContainer || this.onDragModule;
+			this.containerModule = this.form.createModuleImmediately(
+				"Div", parentModule, relativeNode || this.copyNode, position || "before", true, false);
+
+			containerNode = this.containerModule.node;
+
+			var dataStr = null;
+			if (this.form.options.mode !== "Mobile"){
+				dataStr = responseJSON.data;
+			}else{
+				dataStr = responseJSON.mobileData;
+			}
+			var data = null;
+			if (dataStr){
+				data = JSON.decode(MWF.decodeJsonString(dataStr));
+			}
+
+			var tmpNode = new Element("div").inject( this.form.container );
+			tmpNode.set("html", data.html);
+			var html = tmpNode.getFirst().get("html");
+			tmpNode.destroy();
+
+			containerNode.set("html", html );
+
+			//替换重复id
+			var changedIdMap = {};
+			var dataTemplateModuleJson;
+			Object.each(data.json.moduleList, function (moduleJson) {
+				if( !dataTemplateModuleJson && moduleJson.type === "Datatemplate" ){
+					dataTemplateModuleJson = moduleJson;
+				}
+				var oid = moduleJson.id;
+				var id = moduleJson.id;
+				var idx = 1;
+				while (this.form.json.moduleList[id]) {
+					id = oid + "_" + idx;
+					idx++;
+				}
+
+				if (oid !== id) {
+					changedIdMap[oid] = id;
+					moduleJson.id = id;
+					var moduleNode = containerNode.getElementById(oid);
+					if (moduleNode) moduleNode.set("id", id);
+				}
+				this.form.json.moduleList[moduleJson.id] = moduleJson;
+			}.bind(this));
+
+			if( Object.keys(changedIdMap).length > 0 ){
+				["outerAddActionId","outerDeleteActionId","outerSelectAllId",
+					"addActionId","deleteActionId","sequenceId","selectorId"].each(function(key){
+
+					var str = dataTemplateModuleJson[key];
+					if( str.indexOf("/") > -1 ){
+						var strArr = str.split("/");
+						if( strArr[1] && changedIdMap[strArr[1]] ){
+							dataTemplateModuleJson[key] = strArr[0] + "/" + changedIdMap[strArr[1]];
+						}
+					}else{
+						if( str && changedIdMap[str] ){
+							dataTemplateModuleJson[key] = changedIdMap[str];
+						}
+					}
+
+
+				}.bind(this));
+			}
+
+			if( wrapDiv !== "yes" ) {
+				var moduleNodeList = [];
+				containerNode.getChildren().each(function (el) {
+					if (el.get("MWFType") && el.get("id")) {
+						moduleNodeList.push(el);
+						var id = el.get("id");
+						el.inject(relativeNode || this.copyNode, position || "before");
+					}
+				}.bind(this));
+
+				this.containerModule.destroy();
+				this._clearDragComplete();
+
+				moduleNodeList.each(function (el) {
+					var json = this.form.getDomjson(el);
+					this.form.loadModule(json, el, parentModule);
+				}.bind(this));
+			}else{
+				this._clearDragComplete();
+				this.form.parseModules(this.containerModule, containerNode);
+			}
+
+			// this.form.parseModules( parentModule, parentModule.node);
+			//this.containerModule.delete();
+
+			if(dataTemplateModuleJson){
+				var node = parentModule.node.getElementById(dataTemplateModuleJson.id);
+				if(node && node.retrieve("module")){
+					node.retrieve("module").selected();
+				}
+			}
+
+		}.bind(this));
+	},
 	// _getDroppableNodes: function(){
 	// 	var nodes = [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
 		// this.form.moduleList.each( function(module){
