@@ -37,23 +37,11 @@ class ActionValidate extends BaseAction {
 
 	public static class Wo extends WrapBoolean {
 
+		private static final long serialVersionUID = -7607770513162254586L;
+
 	}
 
 	private Boolean check(String value, String answer) {
-		if (StringUtils.equalsIgnoreCase(value, answer)) {
-			return true;
-		}
-		if (StringUtils.length(value) == StringUtils.length(answer)) {
-			int match = 0;
-			for (int i = 0; i < value.length(); i++) {
-				if (value.charAt(i) == answer.charAt(i)) {
-					match++;
-				}
-			}
-			if (match >= (value.length() - 1)) {
-				return true;
-			}
-		}
-		return false;
+		return StringUtils.equalsIgnoreCase(value, answer);
 	}
 }
