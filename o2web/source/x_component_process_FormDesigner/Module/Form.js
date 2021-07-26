@@ -530,7 +530,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		var module;
 		this.getTemplateData(className, function(data){
 			var moduleData = Object.clone(data);
-			module = new MWF["PC"+className](this);
+			module = new MWF["FC"+className](this);
 			if( parentModule ){
 				module.onDragModule = parentModule;
 				if (!parentModule.Component) module.inContainer = parentModule;
@@ -1386,7 +1386,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
     	var fieldConflict = false;
         var elementConflict = false;
         //if (this.json.moduleList[id]){
-		if( this.isModuleExited(id) ){
+		if( this.isModuleExited(id) && this.json.moduleList[id]){
             elementConflict = true;
         	if (this.options.fields.indexOf(type)!=-1 || this.options.fields.indexOf(this.json.moduleList[id].type)!=-1){
                 fieldConflict = true;
