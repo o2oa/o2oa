@@ -230,7 +230,6 @@ o2.widget.Tree.Node = new Class({
 	},
 	
 	load: function(){
-		debugger;
 		this.tree.fireEvent("beforeLoadTreeNode", [this]);
 
 		this.nodeTable = new Element("table", {
