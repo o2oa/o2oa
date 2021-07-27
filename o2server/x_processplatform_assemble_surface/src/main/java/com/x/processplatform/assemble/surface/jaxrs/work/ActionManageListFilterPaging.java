@@ -5,6 +5,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -123,8 +124,14 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Work_.activityName).in(wi.getActivityNameList()));
 		}
-		if (ListTools.isNotEmpty(wi.getWorkStatusList())) {
-			p = cb.and(p, root.get(Work_.workStatus).in(wi.getWorkStatusList()));
+		if (StringUtils.isNotBlank(wi.getWorkStatus())) {
+			if(wi.getWorkStatus().equalsIgnoreCase(WorkStatus.start.name())){
+				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.start));
+			} else if(wi.getWorkStatus().equalsIgnoreCase(WorkStatus.processing.name())){
+				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.processing));
+			} else if(wi.getWorkStatus().equalsIgnoreCase(WorkStatus.hanging.name())){
+				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.hanging));
+			}
 		}
 		if (StringUtils.isNoneBlank(wi.getKey())) {
 			String key = StringTools.escapeSqlLikeKey(wi.getKey());
@@ -169,7 +176,7 @@ class ActionManageListFilterPaging extends BaseAction {
 		private List<String> jobList;
 
 		@FieldDescribe("工作状态：start|processing|hanging")
-		private List<String> workStatusList;
+		private String workStatus;
 
 		@FieldDescribe("关键字")
 		private String key;
@@ -267,12 +274,12 @@ class ActionManageListFilterPaging extends BaseAction {
 			this.activityNameList = activityNameList;
 		}
 
-		public List<String> getWorkStatusList() {
-			return workStatusList;
+		public String getWorkStatus() {
+			return workStatus;
 		}
 
-		public void setWorkStatusList(List<String> workStatusList) {
-			this.workStatusList = workStatusList;
+		public void setWorkStatus(String workStatus) {
+			this.workStatus = workStatus;
 		}
 
 		public String getKey() {
