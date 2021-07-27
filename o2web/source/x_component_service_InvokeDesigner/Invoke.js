@@ -64,6 +64,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         this.page = this.tab.addTab(this.areaNode, this.data.name || this.designer.lp.newInvoke, (!this.data.isNewInvoke && this.data.id!=this.designer.options.id));
         this.page.invoke = this;
         this.page.addEvent("show", function(){
+            this.designer.currentPage = this.page;
             this.designer.invokeListAreaNode.getChildren().each(function(node){
                 var scrtip = node.retrieve("invoke");
                 if (scrtip.id==this.data.id){
@@ -230,6 +231,18 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
 
         this.setInvokeUrlText();
         this.designer.propertyEnableTokenNode.addEvent("change", this.setInvokeUrlText.bind(this));
+
+        if(this.page){
+            this.designer.propertyRequireBodyNode.set("value", this.page.requireBody || "");
+            this.designer.propertyRunResultNode.set("html", this.page.executeResult || "");
+        }
+
+        this.setButton()
+    },
+    setButton : function(){
+        this.designer.propertyExecuteButton.store("id", this.data.id);
+        this.designer.propertyExecuteButton.store("alias", this.data.alias);
+        this.designer.propertyExecuteButton.store("name", this.data.name);
     },
     setInvokeUrlText: function(){
         debugger
@@ -265,7 +278,6 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
     addInclude: function(){
 
     },
-
     saveInvoke: function (data, success, failure) {
         if (data.isNewInvoke) {
             this.designer.actions.createInvoke(data, success, failure);
@@ -327,7 +339,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 this.isSave = false;
                 if( this.data.isNewInvoke ){
                     this.data.isNewInvoke = false;
-                    //this.setButton();
+                    this.setButton();
                 }
                 this.isChanged = false;
                 this.page.textNode.set("text", this.data.name);
@@ -405,7 +417,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 this.isSave = false;
                 if( this.data.isNewInvoke ){
                     this.data.isNewInvoke = false;
-                    //this.setButton();
+                    this.setButton();
                 }
                 this.data.isNewInvoke = false;
                 this.isChanged = false;

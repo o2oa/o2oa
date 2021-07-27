@@ -22,6 +22,11 @@ MWF.xApplication.service.AgentDesigner.LP = {
     "enable" : "Click to enable",
     "disable" : "Click to disable",
 
+    "openLogViewer": "Open LogViewer",
+    "debugger": "Debug",
+    "run": "Simulation Run",
+    "runSuccess": "Run successfully",
+
     "notice": {
         "save_success": "Agent saved successfully!",
 

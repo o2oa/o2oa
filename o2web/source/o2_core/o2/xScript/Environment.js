@@ -148,7 +148,8 @@ MWF.xScript.Environment = function(ev){
          * orders.add(0, {name: "mobile", count: 10}, true);
          */
 
-        /**保存data对象。不触发事件
+        /**保存data对象。不触发事件。
+         * 不建议在queryLoad、beforeSave和afterSave中使用本方法。
          * @method save
          * @static
          * @memberOf module:data
@@ -2339,7 +2340,7 @@ MWF.xScript.Environment = function(ev){
         "getData": function(){return new MWF.xScript.JSONData(_form.getData());},
 
         /**保存当前表单所绑定的业务数据。<br/>
-         * this.form.save()会触发 beforeSave和afterSave事件，因此在beforeSave和afterSave中不允许使用本方法。
+         * this.form.save()会触发 beforeSave和afterSave事件，因此在beforeSave和afterSave中不允许使用本方法。同时不建议在queryLoad里使用本方法。
          * @method save
          * @static
          * @param {Function} [callback] - 保存后的回调

@@ -602,6 +602,26 @@ MWF.xApplication.service.AgentDesigner.Main = new Class({
                 this.refresh();
             }.bind(this));
         }.bind(this));
+
+        node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.debugger+":"}).inject(this.propertyContentArea);
+        var div = new Element("div", {"styles": this.css.propertyTextNode, "text": ""}).inject(this.propertyContentArea);
+
+        this.propertyExecuteButton = new Element("input", { type : "button", styles : this.css.propertyButton, "value": this.lp.run }).inject(div);
+        this.propertyExecuteButton.addEvent("click", function(){
+            var id = this.propertyExecuteButton.retrieve("id");
+            if( id )o2.Actions.load("x_program_center").AgentAction.execute(id, function () {
+                this.notice( this.lp.runSuccess, "success");
+            }.bind(this), function () {
+                this.notice("request processToolbars error: "+xhr.responseText, "error");
+            }.bind(this));
+        }.bind(this));
+        this.propertyExecuteButton.setStyle("margin","0px");
+
+        this.propertyOpenLogViewer = new Element("input", { type : "button", styles : this.css.propertyButton, "value": this.lp.openLogViewer }).inject(div);
+        this.propertyOpenLogViewer.addEvent("click", function(){
+            layout.openApplication(null, "LogViewer");
+        }.bind(this));
+
     },
     loadCronTooltip : function(){
         MWF.xDesktop.requireApp("Template", "widget.CronPicker", null, false);
