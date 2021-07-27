@@ -1571,17 +1571,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.toWordSaveList.each(function(editor){
                 if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
             });
+            var copyData = Object.clone(data);
             Promise.all(p).then(function(){
                 this.workAction.saveData(function () {
                     this.businessData.originalData = null;
-                    this.businessData.originalData = Object.clone(data);
+                    this.businessData.originalData = copyData;
                     if(callback)callback();
                 }.bind(this), failure, this.businessData.work.id, this.modifedData);
             }.bind(this));
         }else{
+            var copyData = Object.clone(data);
             this.workAction.saveData(function () {
                 this.businessData.originalData = null;
-                this.businessData.originalData = Object.clone(data);
+                this.businessData.originalData = copyData;
                 if(callback)callback();
             }.bind(this), failure, this.businessData.work.id, this.modifedData);
         }
@@ -1598,10 +1600,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "work": this.businessData.work,
             "identity": this.businessData.work.creatorIdentityDn
         }
+        var copyData = Object.clone(data);
         this.workAction.saveDraft(draft, function (json) {
 
             this.businessData.originalData = null;
-            this.businessData.originalData = Object.clone(data);
+            this.businessData.originalData = copyData;
 
             this.workAction.getDraft(json.data.id, function (json) {
                 this.businessData.work = json.data.work;
