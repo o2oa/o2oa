@@ -1,29 +1,29 @@
 MWF.xDesktop.Actions = MWF.xDesktop.Actions || {};
 MWF.xDesktop.Actions.RestActions = new Class({
     Implements: [Events],
-	initialize: function(actionPath, serviceName, root){
-		this.actionPath = actionPath;
-		this.serviceName = serviceName;
+    initialize: function(actionPath, serviceName, root){
+        this.actionPath = actionPath;
+        this.serviceName = serviceName;
         this.root = root;
-	},
-	
-	listApplicationAddress: function(success, failure){
-		var url = this.actions.listAddress;
-		url = this.actions.slotHost+url;
-		var callback = new MWF.xApplication.Common.Actions.RestActions.Callback(success, failure);
-		MWF.getJSON(url, callback);
-	},
-	getAddress: function(success, failure){
+    },
+
+    listApplicationAddress: function(success, failure){
+        var url = this.actions.listAddress;
+        url = this.actions.slotHost+url;
+        var callback = new MWF.xApplication.Common.Actions.RestActions.Callback(success, failure);
+        MWF.getJSON(url, callback);
+    },
+    getAddress: function(success, failure){
 //		var name = "x_processplatform_core_designer";
 //		var url = this.actions.getAddress.replace(/{id}/g, name);
 //		url = this.actions.slotHost+url;
 //		var callback = new MWF.process.RestActions.Callback(success, failure, function(data){
 //			this.designAddress = data.data.url;
 //		}.bind(this));
-		
+
 //		MWF.getJSON(url, callback);
-		
-		//this.address = "http://xa02.zoneland.net:8080/"+this.serviceName;
+
+        //this.address = "http://xa02.zoneland.net:8080/"+this.serviceName;
 
         var addressObj = layout.serviceAddressList[this.serviceName];
         if (addressObj){
@@ -38,11 +38,11 @@ MWF.xDesktop.Actions.RestActions = new Class({
         }
 
         //this.address = "http://hbxa01.bf.ctc.com/"+this.serviceName;
-		//this.designAddress = "http://localhost:9080/x_processplatform_front_designer";
-		if (success) success.apply();
+        //this.designAddress = "http://localhost:9080/x_processplatform_front_designer";
+        if (success) success.apply();
         return this.address;
-	},
-	getActions: function(callback){
+    },
+    getActions: function(callback){
 
         if (!this.actions){
             var url = (this.root) ? "/"+this.root+this.actionPath : MWF.defaultPath+this.actionPath;
@@ -68,7 +68,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
         }
         MWF.restful(method, uri, data, callback, async, credentials);
     },
-	invoke: function(option){
+    invoke: function(option){
         if (window.importScripts && window.isCompletionEnvironment) return null;
         if (!this.address) this.getAddress();
         var res = null;
@@ -142,10 +142,10 @@ MWF.xDesktop.Actions.RestActions = new Class({
             }
         }.bind(this));
         return res;
-	},
-	formDataUpdateProgress: function(){
-		
-	},
+    },
+    formDataUpdateProgress: function(){
+
+    },
 
     invokeFormDataWithProgress: function(xhr, method, uri, data, file, callback, async, progress){
         var messageItem = null;
@@ -445,13 +445,13 @@ MWF.xDesktop.Actions.RestActions = new Class({
         var submitNode = new Element("input", {
             "type": "submit"
         }).inject(formNode);
-     //   formNode.submit();
+        //   formNode.submit();
     },
 
-	invokeFormData: function(method, uri, data, file, callback, async, progress){
+    invokeFormData: function(method, uri, data, file, callback, async, progress){
         uri = o2.filterUrl(uri);
-		var xhr = new COMMON.Browser.Request();
-		if(file){
+        var xhr = new COMMON.Browser.Request();
+        if(file){
             data.append('fileName', file.name);
         }
 
@@ -465,8 +465,8 @@ MWF.xDesktop.Actions.RestActions = new Class({
             }
         }
         return xhr;
-	},
-	addFormDataMessage: function(file, noProgress, xhr, showMsg){
+    },
+    addFormDataMessage: function(file, noProgress, xhr, showMsg){
 
         if (layout.desktop.message){
             var contentHTML = "";
@@ -541,94 +541,98 @@ MWF.xDesktop.Actions.RestActions = new Class({
         //};
         //var tooltipItem = layout.desktop.message.addTooltip(msg);
         return messageItem;
-	},
-	getAuthentication: function(success, failure){
-		this.invoke({
-			"name": "authentication",
-			"async": true,
-			"success": function(json, responseText){
-				if (json.data.tokenType!="anonymous"){
-					if (success) success(json);
-				}else{
-					if (failure) failure(null, responseText, json.message);
-				}
-			},
-			"failure": failure
-		});
-	},
-	login: function(data, success, failure){
-        var name = "login";
-    //    if (data.credential.toLowerCase()=="xadmin") name = "loginAdmin";
-		this.invoke({
-			"name": name,
-			"async": true,
-			"data": data,
-			"success": function(json, responseText){
-				//if (json.data.authentication){
+    },
+    getAuthentication: function(success, failure){
+        this.invoke({
+            "name": "authentication",
+            "async": true,
+            "success": function(json, responseText){
                 if (json.data.tokenType!="anonymous"){
-					if (success) success(json);
-				}else{
-					if (failure) failure(null, responseText, json.message);
-				}
-			},
-			"failure": failure
-		});
-	},
-	logout: function(success, failure){
-		this.invoke({
-			"name": "logout",
-			"async": false,
-			"success": success,
-			"failure": failure
-		});
-	}
-	
+                    if (success) success(json);
+                }else{
+                    if (failure) failure(null, responseText, json.message);
+                }
+            },
+            "failure": failure
+        });
+    },
+    login: function(data, success, failure){
+        var name = "login";
+        //    if (data.credential.toLowerCase()=="xadmin") name = "loginAdmin";
+        this.invoke({
+            "name": name,
+            "async": true,
+            "data": data,
+            "success": function(json, responseText){
+                //if (json.data.authentication){
+                if (json.data.tokenType!="anonymous"){
+                    if (success) success(json);
+                }else{
+                    if (failure) failure(null, responseText, json.message);
+                }
+            },
+            "failure": failure
+        });
+    },
+    logout: function(success, failure){
+        this.invoke({
+            "name": "logout",
+            "async": false,
+            "success": success,
+            "failure": failure
+        });
+    }
+
 });
 
 MWF.xDesktop.Actions.RestActions.Callback = new Class({
-	initialize: function(success, failure, appendSuccess, appendFailure){
-		this.success = success;
-		this.failure = failure;
-		this.appendSuccess = appendSuccess;
-		this.appendFailure = appendFailure;
-	},
-	
-	onSuccess: function(responseJSON, responseText){
-		if (responseJSON){
-			switch(responseJSON.type) {
-			   case "success":
-				   if (this.appendSuccess) this.appendSuccess(responseJSON);
-				   if (this.success) return this.success(responseJSON, responseText);
-				   return responseJSON;
-			       break;
-			   case "warn":
-				   MWF.xDesktop.notice("info", {x: "right", y:"top"}, responseJSON.errorMessage.join("\n"));
-				   
-				   if (this.appendSuccess) this.appendSuccess(responseJSON);
-				   if (this.success) return this.success(responseJSON);
-                   return responseJSON;
-				   break;
-			   case "error":
-				   return this.doError(null, responseText, responseJSON.message);
-                   return responseJSON;
-				   break;
-			}
-		}else{
+    initialize: function(success, failure, appendSuccess, appendFailure){
+        this.success = success;
+        this.failure = failure;
+        this.appendSuccess = appendSuccess;
+        this.appendFailure = appendFailure;
+    },
+
+    onSuccess: function(responseJSON, responseText){
+        if (responseJSON){
+            switch(responseJSON.type) {
+                // case "success":
+                //    if (this.appendSuccess) this.appendSuccess(responseJSON);
+                //    if (this.success) return this.success(responseJSON, responseText);
+                //    return responseJSON;
+                //     break;
+                case "warn":
+                    MWF.xDesktop.notice("info", {x: "right", y:"top"}, responseJSON.errorMessage.join("\n"));
+                    if (this.appendSuccess) this.appendSuccess(responseJSON);
+                    if (this.success) return this.success(responseJSON);
+                    return responseJSON;
+                    break;
+                case "error":
+                    return this.doError(null, responseText, responseJSON.message);
+                    return responseJSON;
+                    break;
+                default:
+                    if (this.appendSuccess) this.appendSuccess(responseJSON);
+                    if (this.success) return this.success(responseJSON, responseText);
+                    return responseJSON;
+                    break;
+            }
+        }else{
             return this.doError(null, responseText, "");
-		}
-	},
-	onRequestFailure: function(xhr){
-		return this.doError(xhr, "", "");
-	},
-	onFailure: function(xhr, text, error){
+        }
+    },
+    onRequestFailure: function(xhr){
+        return this.doError(xhr, "", "");
+    },
+    onFailure: function(xhr, text, error){
         return this.doError(xhr, text, error);
-	},
-	onError: function(text, error){
+    },
+    onError: function(text, error){
         return this.doError(null, text, error);
-	},
-	doError: function(xhr, text, error){
-		if (this.appendFailure) this.appendFailure(xhr, text, error);
-		if (this.failure && this.failure.owner){
+    },
+    doError: function(xhr, text, error){
+        if (this.appendFailure) this.appendFailure(xhr, text, error);
+        if (this.failure && this.failure.owner){
             if (this.failure.reject || (this.failure.rejectList && this.failure.rejectList.length)){
                 return this.failure(xhr, text, error);
             }
@@ -636,7 +640,7 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
         }else{
             if (this.failure) return this.failure(xhr, text, error);
         }
-		if (!this.failure && !this.appendFailure){
+        if (!this.failure && !this.appendFailure){
             if (xhr.status!=0){
                 var errorText = error;
                 if (xhr){
@@ -651,8 +655,8 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
                 errorText = errorText.replace(/\</g, "&gt;");
                 if (layout.session && layout.session.user) MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
             }
-		//	throw "request error: "+errorText;
-		}
-		return Promise.reject(xhr);
-	}
+            //	throw "request error: "+errorText;
+        }
+        return Promise.reject(xhr);
+    }
 });

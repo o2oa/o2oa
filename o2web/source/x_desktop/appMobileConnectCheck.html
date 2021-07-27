@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" type="text/css" href="../x_desktop/css/style.css" charset="UTF-8" />
+    <link rel="stylesheet" href="../x_desktop/css/mBoxNotice.css" charset="UTF-8" />
+    <link rel="stylesheet" href="../x_desktop/css/mBoxTooltip.css" charset="UTF-8" />
+
+    <script src="../o2_core/o2.min.js"></script>
+    <script src="js/base_simple_anonymous.js"></script>
+    <title>移动App访问检查</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+</head>
+<body style="height: 100%;overflow: auto; margin:0px;display: block;">
+    <div id="contentArea" style="margin: 30px 20px; word-break: break-all;">
+    </div>
+
+    <script>
+        
+        layout.addReady(function(){
+          
+            (function(layout){
+                var uri = new URI(window.location.href);
+                var host = window.location.host;
+                console.log(host)
+                var _showJson = function(json) {
+                    if (json) {
+                        var jsonstr=JSON.stringify(json);
+                        new Element("div", {
+                            styles:{
+                                "margin": "10px",
+                                "color": "#666666"
+                            },
+                            html: "返回数据："+jsonstr
+                        }).inject( $("contentArea") );
+                    }
+                };
+
+                var _showError = function(error, json) {
+                    var errorNode = new Element("div", {
+                        styles:{
+                            "margin": "10px",
+                            "color": "#ff0000"
+                        }
+                    }).inject( $("contentArea") );
+                    new Element("p", {"html": "错误，"+error}).inject(errorNode);
+                    _showJson(json);
+                };
+
+                var _showSuccess = function(info,json) {
+                    new Element("div", {
+                        styles:{
+                            "margin": "10px",
+                            "color": "#5fbf78"
+                        },
+                        text: info
+                    }).inject( $("contentArea") );
+                    _showJson(json);
+                };
+
+                var _loadCenter = function() {
+                    o2.Actions.load("x_program_center").DistributeAction.assembleWithWebServer(host, function(json){
+                        // 中心服务器连接成功
+                        _showSuccess("中心服务器连接成功");
+
+                        if (json && json.type === "success") {
+                            if (json.data && json.data.assembles) {
+                                _showSuccess("应用服务器连接成功", json.data);
+                            } else {
+                                // 应用服务器获取不到
+                                _showError("获取应用服务器失败！", json);
+                            }
+                        } else {
+                            // 获取地址信息失败
+                            _showError("获取中心服务器地址信息失败！", json);
+                        }
+                    }.bind(this));
+                };
+
+                _loadCenter();
+
+            })(layout);
+        });
+    </script>
+</body>
+</html>

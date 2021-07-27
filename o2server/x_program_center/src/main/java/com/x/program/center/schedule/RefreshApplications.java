@@ -15,10 +15,8 @@ public class RefreshApplications extends BaseAction {
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
-			if (pirmaryCenter()) {
-				CenterQueueRefreshBody body = new CenterQueueRefreshBody();
-				ThisApplication.centerQueue.send(body);
-			}
+			CenterQueueRefreshBody body = new CenterQueueRefreshBody();
+			ThisApplication.centerQueue.send(body);
 		} catch (Exception e) {
 			logger.error(e);
 			throw new JobExecutionException(e);
