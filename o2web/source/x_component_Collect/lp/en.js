@@ -40,6 +40,7 @@ MWF.xApplication.Collect.LP = {
     "key": "Push message key",
 
     "back": "Back",
+    "backUp": "Back Up Level",
     "errorUsername": "Enter the account name",
 
     "errorKey": "Enter the push message key",

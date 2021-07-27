@@ -1,7 +1,10 @@
+
+
 MWF.xDesktop.requireApp("Setting", "Document", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingBase", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingMobile", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingCloud", null, false);
+MWF.xDesktop.requireApp("Setting", "SettingEmpty", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingLoginUI", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingIndexUI", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingModuleUI", null, false);
@@ -64,7 +67,7 @@ MWF.xApplication.Setting.Main = new Class({
             }.bind(this));
 
             this.cloudPage.addEvent("postShow", function(){
-                if (!this.cloudExplorer) this.cloudExplorer = new MWF.xApplication.Setting.CloudExplorer(this, this.cloudAreaNode);
+                if (!this.emptyExplorer) this.emptyExplorer = new MWF.xApplication.Setting.EmptyExplorer(this, this.cloudAreaNode);
             }.bind(this));
 
 
@@ -329,6 +332,11 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
     getNaviJson: function(){
         return [
             {
+                "text": this.app.lp.tab_cloud_connect,
+                "icon": "connect",
+                "action": "loadCloudConnectSetting"
+            },
+            {
                 "text": this.app.lp.tab_mobile_module,
                 "icon": "module",
                 "action": "loadMobileModuleSetting"
@@ -385,6 +393,15 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
 
     },
 
+    loadCloudConnectSetting: function(item){
+        if (MWF.AC.isAdministrator()) if (this.proxyData && this.nativeData && this.imagesData){
+            this.mobileConnectSetting = new MWF.xApplication.Setting.CloudConnectDocument(this, this.contentAreaNode);
+            item.store("content", this.mobileConnectSetting);
+        }else{
+            this.loadDataBack = function(){this.loadCloudConnectSetting(item)}.bind(this);
+        }
+    },
+
     // loadMobileConnectSetting: function(item){
     //     if (MWF.AC.isAdministrator()) if (this.proxyData && this.nativeData && this.imagesData){
     //         this.mobileConnectSetting = new MWF.xApplication.Setting.MobileConnectDocument(this, this.contentAreaNode);
@@ -426,7 +443,71 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
         }
     }
 });
-MWF.xApplication.Setting.CloudExplorer = new Class({
+
+// 废弃
+// MWF.xApplication.Setting.CloudExplorer = new Class({
+//     Extends: MWF.xApplication.Setting.BaseExplorer,
+//     initialize: function(app, content){
+//         this.app = app;
+//         this.lp = this.app.lp;
+//         this.container = content;
+//         this.actions = this.app.actions;
+//         this.css = this.app.css;
+//         this.naviItems = [];
+//         this.collectData = null;
+//         this.personData = null;
+//         this.tokenData = null;
+//         this.loadDataBack = null;
+//         this.load();
+//     },
+
+//     getNaviJson: function(){
+//         return [
+//             {
+//                 "text": this.app.lp.tab_cloud_connect,
+//                 "icon": "connect",
+//                 "action": "loadCloudConnectSetting"
+//             }
+//         ];
+//     },
+//     getData: function(){
+//         var checkData = function(){
+//             if (this.proxyData && this.nativeData && this.imagesData){
+//                 if (this.loadDataBack){
+//                     var fun = this.loadDataBack;
+//                     this.loadDataBack = null;
+//                     fun();
+//                 }
+//             }
+//         }.bind(this);
+//         this.actions.getProxy(function(json){
+//             this.proxyData = json.data;
+//             checkData();
+//         }.bind(this));
+//         this.actions.mobile_currentStyle(function(json){
+//             this.nativeData = {"indexType": json.data.indexType, "indexPortal": json.data.indexPortal, "nativeAppList": Array.clone(json.data.nativeAppList)};
+//             this.imagesData = {"images": Array.clone(json.data.images)};
+//             //this.indexData = {"indexType": json.data.indexType, "indexId": json.data.indexId};
+//             this.portalData = {"portalList": Array.clone(json.data.portalList)};
+
+//             delete json.data;
+//             json = null;
+//             checkData();
+//         }.bind(this));
+
+//     },
+//     loadCloudConnectSetting: function(item){
+//         if (MWF.AC.isAdministrator()) if (this.proxyData && this.nativeData && this.imagesData){
+//             this.mobileConnectSetting = new MWF.xApplication.Setting.CloudConnectDocument(this, this.contentAreaNode);
+//             item.store("content", this.mobileConnectSetting);
+//         }else{
+//             this.loadDataBack = function(){this.loadCloudConnectSetting(item)}.bind(this);
+//         }
+//     },
+
+// });
+// O2云 账号登录相关
+MWF.xApplication.Setting.EmptyExplorer = new Class({
     Extends: MWF.xApplication.Setting.BaseExplorer,
     initialize: function(app, content){
         this.app = app;
@@ -452,41 +533,17 @@ MWF.xApplication.Setting.CloudExplorer = new Class({
         ];
     },
     getData: function(){
-        var checkData = function(){
-            if (this.proxyData && this.nativeData && this.imagesData){
-                if (this.loadDataBack){
-                    var fun = this.loadDataBack;
-                    this.loadDataBack = null;
-                    fun();
-                }
-            }
-        }.bind(this);
-        this.actions.getProxy(function(json){
-            this.proxyData = json.data;
-            checkData();
-        }.bind(this));
-        this.actions.mobile_currentStyle(function(json){
-            this.nativeData = {"indexType": json.data.indexType, "indexPortal": json.data.indexPortal, "nativeAppList": Array.clone(json.data.nativeAppList)};
-            this.imagesData = {"images": Array.clone(json.data.images)};
-            //this.indexData = {"indexType": json.data.indexType, "indexId": json.data.indexId};
-            this.portalData = {"portalList": Array.clone(json.data.portalList)};
-
-            delete json.data;
-            json = null;
-            checkData();
-        }.bind(this));
-
     },
     loadCloudConnectSetting: function(item){
-        if (MWF.AC.isAdministrator()) if (this.proxyData && this.nativeData && this.imagesData){
-            this.mobileConnectSetting = new MWF.xApplication.Setting.CloudConnectDocument(this, this.contentAreaNode);
+        if (MWF.AC.isAdministrator()) {
+            this.mobileConnectSetting = new MWF.xApplication.Setting.EmptyDocument(this, this.contentAreaNode);
             item.store("content", this.mobileConnectSetting);
-        }else{
-            this.loadDataBack = function(){this.loadCloudConnectSetting(item)}.bind(this);
         }
     },
 
 });
+
+
 MWF.xApplication.Setting.UIExplorer = new Class({
     Extends: MWF.xApplication.Setting.BaseExplorer,
     initialize: function(app, content){

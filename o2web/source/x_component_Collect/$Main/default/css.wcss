@@ -1,28 +1,37 @@
 {
+    "outBox": {
+        "overflow": "hidden",
+        "background-color": "#ffffff",
+        "height": "100%"
+    },
     "node": {
-        "position": "absolute",
-        "border-radius": "8px",
-        "background-color": "#f1f1f1",
-        "box-shadow": "0px 0px 10px #cccccc",
-        "width": "800px",
+        "width": "1090px",
         "height": "520px",
         "-webkit-user-select": "none",
-        "-moz-user-select": "none"
+        "-moz-user-select": "none",
+        "margin": "10px auto"
     },
     "titleAreaNode": {
-        "background-color": "#3c75b7",
         "height": "60px",
         "line-height": "60px",
-        "border-top-left-radius": "8px",
-        "border-top-right-radius": "8px"
     },
     "backNode": {
         "height": "60px",
-        "width": "80px",
-        "display": "none",
-        "background": "url("+"../x_component_Collect/$Main/default/icon/back.png) center center no-repeat",
+        "width": "120px",
         "cursor": "pointer",
-        "float": "left"
+        "float": "left",
+        "display": "none",
+        "flex-direction": "row",
+        "justify-content": "center",
+        "align-items": "center"
+    },
+    "backNodeImg":{
+        "height": "16px",
+        "width": "16px",
+    },
+    "backNodeText":{
+        "font-size": "16px",
+        "color": "#666666",
     },
     "closeNode": {
         "height": "60px",
@@ -32,13 +41,12 @@
         "float": "right"
     },
     "titleNode": {
-        "background-color": "#3c75b7",
         "height": "60px",
         "line-height": "60px",
-        "color": "#ffffff",
+        "color": "#333333",
         "font-size": "24px",
         "text-align": "center",
-        "margin": "0px 80px"
+        "margin": "0px 120px"
     },
     "contentNode": {
         "height": "440px",
@@ -54,19 +62,38 @@
         "padding": "0px 20px",
         "margin": "10px auto 0px auto",
         "width": "660px",
-        "overflow": "hidden"
+        "overflow": "hidden",
+        "background": "#F7F7F7",
+        "border-radius": "20px"
     },
     "statusLoginNode": {
         "height": "80px",
         "padding": "0px 20px",
         "margin": "10px auto 0px auto",
         "width": "660px",
-        "overflow": "hidden"
+        "overflow": "hidden",
+         "background": "#F7F7F7",
+        "border-radius": "20px"
     },
-    "statusConnectIconsNode": {
+    "statusConnectIconsConnectedNode": {
         "width": "228px",
         "height": "80px",
-        "float": "left"
+        "float": "left",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/pic_connected.png)",
+        "background-repeat": "no-repeat",
+        "background-position-x": "center",
+        "background-position-y": "center",
+        "background-size": "contain",
+    },
+    "statusConnectIconsDisconnectNode": {
+        "width": "228px",
+        "height": "80px",
+        "float": "left",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/pic_disconnect.png)",
+        "background-repeat": "no-repeat",
+        "background-position-x": "center",
+        "background-position-y": "center",
+        "background-size": "contain",
     },
     "statusConnectIconCenterNode": {
         "width": "64px",
@@ -112,6 +139,26 @@
         "height": "80px",
         "float": "left"
     },
+    "statusLoginIconsConnectedNode": {
+        "width": "228px",
+        "height": "80px",
+        "float": "left",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/pic_connected.png)",
+        "background-repeat": "no-repeat",
+        "background-position-x": "center",
+        "background-position-y": "center",
+        "background-size": "contain",
+    },
+    "statusLoginIconsDisconnectNode": {
+        "width": "228px",
+        "height": "80px",
+        "float": "left",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/pic_disconnect.png)",
+        "background-repeat": "no-repeat",
+        "background-position-x": "center",
+        "background-position-y": "center",
+        "background-size": "contain",
+    },
     "statusLoginIconCenterNode": {
         "width": "64px",
         "height": "80px",
@@ -155,22 +202,30 @@
         "float": "right",
         "margin-top": "20px",
         "margin-right": "10px",
-        "height": "40px",
-        "width": "100px",
-        "border-radius": "5px",
-        "background-color": "#3498db",
-        "line-height": "40px",
+        "height": "30px",
+        "width": "120px",
+        "border-radius": "20px",
+        "background-color": "#4A90E2",
+        "line-height": "30px",
         "text-align": "center",
         "cursor": "pointer",
-        "color": "#FFF"
+        "color": "#FFF",
+        "font-size": "14px"
     },
 
     "actionsNode": {
-        "margin": "10px 40px",
+        "margin": "10px auto",
         "padding": "20px",
-        "overflow": "hidden"
+        "overflow": "hidden",
+        "width": "720px",
     },
 
+     "loginInforTextNode": {
+        "line-height": "50px",
+        "color": "#666666",
+        "font-size": "20px",
+        "text-align": "center"
+    },
     "loginInfor": {
         "line-height": "50px",
         "color": "#666666",
@@ -181,14 +236,27 @@
         "float": "left",
         "margin-left": "10px",
         "margin-top": "7px",
-        "height": "34px",
+        "height": "30px",
         "width": "120px",
-        "border-radius": "5px",
-        "background-color": "#3498db",
-        "line-height": "34px",
+        "border-radius": "20px",
+        "background-color": "#4A90E2",
+        "line-height": "30px",
         "text-align": "center",
         "cursor": "pointer",
-        "color": "#FFF"
+        "color": "#FFF",
+        "font-size": "14px"
+    },
+    "notLoginInforTextNode": {
+        "line-height": "50px",
+        "color": "#666666",
+        "font-size": "20px",
+        "text-align": "center",
+        "width": "660px",
+        "display": "flex",
+        "margin": "10px auto",
+        "background": "#F7F7F7",
+        "border-radius": "20px",
+        "padding": "10px 20px"
     },
     "notLoginInfor": {
         "line-height": "50px",
@@ -237,8 +305,8 @@
     "loginActionNode": {
         "height": "40px",
         "width": "400px",
-        "border-radius": "5px",
-        "background-color": "#3498db",
+        "border-radius": "20px",
+        "background-color": "#4A90E2",
         "line-height": "40px",
         "text-align": "center",
         "cursor": "pointer",
@@ -400,8 +468,8 @@
     "registerActionNode": {
         "height": "40px",
         "width": "440px",
-        "border-radius": "5px",
-        "background-color": "#3498db",
+        "border-radius": "20px",
+        "background-color": "#4A90E2",
         "line-height": "40px",
         "text-align": "center",
         "cursor": "pointer",
@@ -418,8 +486,8 @@
     "registerGetCodeAtionNode": {
         "height": "40px",
         "width": "140px",
-        "border-radius": "5px",
-        "background-color": "#3498db",
+        "border-radius": "20px",
+        "background-color": "#4A90E2",
         "line-height": "40px",
         "text-align": "center",
         "cursor": "pointer",
