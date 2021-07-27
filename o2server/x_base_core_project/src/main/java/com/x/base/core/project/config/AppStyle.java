@@ -25,6 +25,7 @@ public class AppStyle extends ConfigObject {
 		this.indexType = INDEXTYPE_DEFAULT;
 		this.indexPortal = "";
 		this.simpleMode = false;
+		this.contactPermissionView = "addressPowerView"; // 默认视图名 addressPowerView 可到应用市场下载通讯录应用查看
 
 	}
 
@@ -116,6 +117,9 @@ public class AppStyle extends ConfigObject {
 	@FieldDescribe("移动端简易模式")
 	private Boolean simpleMode;
 
+	@FieldDescribe("移动App通讯录权限视图")
+	private String contactPermissionView;
+
 	@FieldDescribe("导航设置")
 	private TreeSet<NativeApp> nativeAppList = new TreeSet<>();
 
@@ -137,6 +141,15 @@ public class AppStyle extends ConfigObject {
 
 	public void setSimpleMode(Boolean simpleMode) {
 		this.simpleMode = simpleMode;
+	}
+
+
+	public String getContactPermissionView() {
+		return contactPermissionView;
+	}
+
+	public void setContactPermissionView(String contactPermissionView) {
+		this.contactPermissionView = contactPermissionView;
 	}
 
 	public static class Image extends GsonPropertyObject implements Comparable<Image> {

@@ -72,6 +72,11 @@
         "line-height": "40px",
         "padding-top": "20px"
     },
+    "explorerContentTitleSubNode": {
+        "padding": "5px 30px",
+        "font-size": "14px",
+        "color": "#666666",
+    },
     "explorerContentItemTitleNode": {
         "height": "30px",
         "line-height": "30px",
@@ -89,6 +94,22 @@
         "padding-top": "20px",
         "font-size": "18px",
         "color": "#0000FF"
+    },
+    "explorerContentItemQrcodeNode": {
+        "padding": "5px 30px",
+    },
+    "explorerContentItemButton": {
+        "margin-left": "10px",
+        "margin-top": "7px",
+        "height": "30px",
+        "width": "120px",
+        "border-radius": "20px",
+        "background-color": "#4A90E2",
+        "line-height": "30px",
+        "text-align": "center",
+        "cursor": "pointer",
+        "color": "#FFF",
+        "font-size": "14px"
     },
 
     "explorerContentInputInforNode": {
