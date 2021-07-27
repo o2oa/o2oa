@@ -1600,10 +1600,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "work": this.businessData.work,
             "identity": this.businessData.work.creatorIdentityDn
         }
+        var copyData = Object.clone(data);
         this.workAction.saveDraft(draft, function (json) {
 
             this.businessData.originalData = null;
-            this.businessData.originalData = Object.clone(data);
+            this.businessData.originalData = copyData;
 
             this.workAction.getDraft(json.data.id, function (json) {
                 this.businessData.work = json.data.work;
