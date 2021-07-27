@@ -124,6 +124,13 @@ MWF.xApplication.Setting.LP = {
 
     "mobile_connectSetting": "移动办公连接配置",
     "cloud_connectSetting": "云服务连接配置",
+    "mobile_connect_first_cloud_check": "1. 云服务连接检查",
+    "mobile_connect_first_cloud_check_connected": "<span style='color: #5fbf78'> [已连接登录] </span>云服务",
+    "mobile_connect_first_cloud_check_disconnected": "<span style='color: #ff0000'> [未连接登录] </span>云服务，请到 云服务配置 页面进行注册登录！",
+    "mobile_connect_connectSetting": "2. 外网连接配置",
+    "mobile_connect_third_mobile_connect_check": "3. 手机连接测试",
+    "mobile_connect_third_mobile_connect_check_info": "使用手机扫描二维码，查看外网是否可以连接服务器！",
+    "mobile_connect_third_mobile_connect_check_generate_button": "生成二维码",
 
     "mobile_connectO2Cloud": "连接到O2云",
     "mobile_connectO2Cloud_infor": "使用移动办公请先连接到O2云，这有助于APP定位到您的企业服务器，可以使用短信服务等",
@@ -156,6 +163,10 @@ MWF.xApplication.Setting.LP = {
 
     "mobile_module_simple_mode": "移动端简易模式",
     "mobile_module_simple_mode_infor": "移动端开启简易模式后只显示首页和设置页面",
+
+    "mobile_module_contact_permission_view": "移动App通讯录权限视图",
+    "mobile_module_contact_permission_view_infor": "需要安装应用市场【通讯录】应用，应用内包含通讯录的权限配置视图",
+    "mobile_module_contact_permission_view_action": "修改视图名称",
 
     "mobile_styleSetting": "移动端图标样式配置",
     "mobile_style": "{name}图片 ",

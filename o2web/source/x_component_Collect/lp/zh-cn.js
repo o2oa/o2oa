@@ -40,6 +40,7 @@ MWF.xApplication.Collect.LP = {
     "key": "推送消息key",
 
     "back": "返回",
+    "backUp": "返回上一层",
     "errorUsername": "请输入账户名称",
 
     "errorKey": "请输入推送消息key",

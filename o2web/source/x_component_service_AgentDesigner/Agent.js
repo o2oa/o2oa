@@ -228,6 +228,7 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
     setButton : function(){
         this.designer.propertyEnableButton.store("id", this.data.id);
         this.designer.propertyDisableButton.store("id", this.data.id);
+        this.designer.propertyExecuteButton.store("id", this.data.id);
         if( this.data.enable ){
             this.designer.propertyEnableButton.setStyle("display","none");
             this.designer.propertyDisableButton.setStyle("display", this.data.isNewAgent ? "none" : "" );
