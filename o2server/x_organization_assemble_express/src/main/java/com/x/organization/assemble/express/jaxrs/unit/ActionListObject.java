@@ -112,49 +112,15 @@ class ActionListObject extends BaseAction {
 
 	}
 
-//	private List<Wo> list(Business business, Wi wi) throws Exception {
-//	List<Wo> wos = new ArrayList<>();
-//	for (String str : wi.getUnitList()) {
-//		Unit o = business.unit().pick(str);
-//		if (o != null) {
-//			Wo wo = Wo.copier.copy(o);
-//			wo.setMatchKey(str);
-//			if (StringUtils.isNotEmpty(wo.getSuperior())) {
-//				Unit superior = business.unit().pick(wo.getSuperior());
-//				if (null != superior) {
-//					wo.setSuperior(superior.getDistinguishedName());
-//				}
-//			}
-//			wo.setSubDirectIdentityCount(this.countSubDirectIdentity(business, wo));
-//			wo.setSubDirectUnitCount(this.countSubDirectUnit(business, wo));
-//			wos.add(wo);
-//		}
-//	}
-//	return wos;
-//}
-
-	private List<Wo> list(Wi wi) throws InterruptedException, ExecutionException {
+	private List<Wo> list(Wi wi) throws Exception {
 		List<Wo> wos = new ArrayList<>();
-
-		List<CompletableFuture<Wo>> futures = new ArrayList<>();
-		for (String str : wi.getUnitList()) {
-			futures.add(future(str));
-		}
-		for (CompletableFuture<Wo> future : futures) {
-			wos.add(future.get());
-		}
-		return ListTools.trim(wos, true, false);
-	}
-
-	private CompletableFuture<Wo> future(String name) {
-		return CompletableFuture.supplyAsync(() -> {
-			Wo wo = null;
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				Unit o = business.unit().pick(name);
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			for (String str : wi.getUnitList()) {
+				Unit o = business.unit().pick(str);
 				if (o != null) {
-					wo = Wo.copier.copy(o);
-					wo.setMatchKey(name);
+					Wo wo = Wo.copier.copy(o);
+					wo.setMatchKey(str);
 					if (StringUtils.isNotEmpty(wo.getSuperior())) {
 						Unit superior = business.unit().pick(wo.getSuperior());
 						if (null != superior) {
@@ -163,14 +129,51 @@ class ActionListObject extends BaseAction {
 					}
 					wo.setSubDirectIdentityCount(this.countSubDirectIdentity(business, wo));
 					wo.setSubDirectUnitCount(this.countSubDirectUnit(business, wo));
+					wos.add(wo);
 				}
-			} catch (Exception e) {
-				logger.error(e);
 			}
-			return wo;
-		});
+			return wos;
+		}
 	}
 
+//	private List<Wo> list(Wi wi) throws InterruptedException, ExecutionException {
+//		List<Wo> wos = new ArrayList<>();
+//
+//		List<CompletableFuture<Wo>> futures = new ArrayList<>();
+//		for (String str : wi.getUnitList()) {
+//			futures.add(future(str));
+//		}
+//		for (CompletableFuture<Wo> future : futures) {
+//			wos.add(future.get());
+//		}
+//		return ListTools.trim(wos, true, false);
+//	}
+//
+//	private CompletableFuture<Wo> future(String name) {
+//		return CompletableFuture.supplyAsync(() -> {
+//			Wo wo = null;
+//			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+//				Business business = new Business(emc);
+//				Unit o = business.unit().pick(name);
+//				if (o != null) {
+//					wo = Wo.copier.copy(o);
+//					wo.setMatchKey(name);
+//					if (StringUtils.isNotEmpty(wo.getSuperior())) {
+//						Unit superior = business.unit().pick(wo.getSuperior());
+//						if (null != superior) {
+//							wo.setSuperior(superior.getDistinguishedName());
+//						}
+//					}
+//					wo.setSubDirectIdentityCount(this.countSubDirectIdentity(business, wo));
+//					wo.setSubDirectUnitCount(this.countSubDirectUnit(business, wo));
+//				}
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//			return wo;
+//		});
+//	}
+//
 	private Long countSubDirectUnit(Business business, Wo wo) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Unit.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
