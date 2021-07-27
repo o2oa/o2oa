@@ -20,23 +20,23 @@ MWF.xDesktop.Authentication = new Class({
         this.node = node;
         this.path = MWF.defaultPath + "/xDesktop/$Authentication/";
 
-        var css = null;
-        MWF.UD.getPublicData("loginStyleList", function (json) {
-            if (json && json.enabledId) {
-                MWF.UD.getPublicData(json.enabledId, function (json) {
-                    if (json && json.data) {
-                        css = json.data;
-                    }
-                }.bind(this), false);
-            }
-        }.bind(this), false);
+        // var css = null;
+        // MWF.UD.getPublicData("loginStyleList", function (json) {
+        //     if (json && json.enabledId) {
+        //         MWF.UD.getPublicData(json.enabledId, function (json) {
+        //             if (json && json.data) {
+        //                 css = json.data;
+        //             }
+        //         }.bind(this), false);
+        //     }
+        // }.bind(this), false);
 
-        if (!css) {
+        // if (!css) {
             this.cssPath = MWF.defaultPath + "/xDesktop/$Authentication/" + this.options.style + "/css.wcss";
             this._loadCss();
-        } else {
-            this.css = css;
-        }
+        // } else {
+        //     this.css = css;
+        // }
 
         this.lp = MWF.LP.authentication;
         this.app = app || {};
