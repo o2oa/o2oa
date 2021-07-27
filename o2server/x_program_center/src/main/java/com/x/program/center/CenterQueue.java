@@ -20,7 +20,8 @@ public class CenterQueue extends AbstractQueue<CenterQueueBody> {
 
 	private static Logger logger = LoggerFactory.getLogger(CenterQueue.class);
 
-	public static final int REFRESHAPPLICATIONSINTERVAL = 45;
+	//public static final int REFRESHAPPLICATIONSINTERVAL = 45;
+	public static final int REFRESHAPPLICATIONSINTERVAL = 30;
 
 	protected void execute(CenterQueueBody body) throws Exception {
 
