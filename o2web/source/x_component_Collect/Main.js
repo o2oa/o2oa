@@ -42,14 +42,13 @@ MWF.xApplication.Collect.Main = new Class({
     },
 
     loadApplication: function(callback){
+        debugger;
         if (!MWF.AC.isAdministrator()){
             try{
                 this.close();
             }catch(e){};
         }else{
-            this.node = new Element("div", {"styles": this.css.node}).inject(this.content);
-            this.setNodeResize();
-            this.node.addEvent("selectstart", function(e){e.target.setStyle("-webkit-user-select", "none")}.bind(this));
+            this.outBox = new Element("div", {"styles": this.css.outBox}).inject(this.content);
             this.loadContent();
             this.addEvent("queryclose", function(){
                 if (this.registerForm){
@@ -61,12 +60,21 @@ MWF.xApplication.Collect.Main = new Class({
         }
     },
     loadContent: function(){
-        this.titleAreaNode = new Element("div", {"styles": this.css.titleAreaNode}).inject(this.node);
+        this.titleAreaNode = new Element("div", {"styles": this.css.titleAreaNode}).inject(this.outBox);
+        // 返回按钮
         this.backNode = new Element("div", {"styles": this.css.backNode}).inject(this.titleAreaNode);
-        this.closeNode = new Element("div", {"styles": this.css.closeNode}).inject(this.titleAreaNode);
-        this.closeNode.addEvent("click", function(){this.close();}.bind(this));
+        new Element("img", {"styles": this.css.backNodeImg, "src": "../x_component_Collect/$Main/default/icon/icon_back.png"}).inject(this.backNode);
+        new Element("div", {"styles": this.css.backNodeText, "text": this.lp.backUp}).inject(this.backNode);
+        
+        // this.closeNode = new Element("div", {"styles": this.css.closeNode}).inject(this.titleAreaNode);
+        // this.closeNode.addEvent("click", function(){this.close();}.bind(this));
 
-        this.titleNode = new Element("div", {"styles": this.css.titleNode, "text": this.lp.title}).inject(this.titleAreaNode);
+        this.titleNode = new Element("div", {"styles": this.css.titleNode, "text": this.lp.title}).inject(this.outBox);
+        // 内容
+        this.node = new Element("div", {"styles": this.css.node}).inject(this.outBox);
+            // this.setNodeResize();
+        this.node.addEvent("selectstart", function(e){e.target.setStyle("-webkit-user-select", "none")}.bind(this));
+
         this.checkContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
         this.loginContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
         this.modifyContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
@@ -138,7 +146,7 @@ MWF.xApplication.Collect.Check = new Class({
         }
     },
     setLoginInfor: function(){
-        new Element("div", {"styles": this.css.loginInfor, "html": this.lp.connectedAndLogin}).inject(this.actionsNode);
+        new Element("div", {"styles": this.css.loginInforTextNode, "html": this.lp.connectedAndLogin}).inject(this.actionsNode);
         new Element("div", {"styles": this.css.loginInfor, "html": this.lp.modifyAccount}).inject(this.actionsNode);
         this.modifyAccountAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.modifyAccountAction}).inject(this.actionsNode);
 
@@ -158,13 +166,15 @@ MWF.xApplication.Collect.Check = new Class({
 
     },
     setNotLoginInfor: function(){
-        new Element("div", {"styles": this.css.notLoginInfor, "html": this.lp.notLogin}).inject(this.actionsNode);
+        new Element("div", {"styles": this.css.notLoginInforTextNode, "html": this.lp.notLogin}).inject(this.actionsNode);
 
-        new Element("div", {"styles": this.css.notLoginInfor, "html": this.lp.notLoginInfoLogin}).inject(this.actionsNode);
-        this.loginAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.login}).inject(this.actionsNode);
+        this.loginLine1 = new Element("div", {"styles": this.css.notLoginInforTextNode}).inject(this.actionsNode);
+        new Element("div", {"styles": this.css.notLoginInfor, "html": this.lp.notLoginInfoLogin}).inject(this.loginLine1);
+        this.loginAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.login}).inject(this.loginLine1);
 
-        new Element("div", {"styles": this.css.notLoginInfor, "html": this.lp.notLoginInfoRegister}).inject(this.actionsNode);
-        this.registerAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.register}).inject(this.actionsNode);
+        this.loginLine2 = new Element("div", {"styles": this.css.notLoginInforTextNode}).inject(this.actionsNode);
+        new Element("div", {"styles": this.css.notLoginInfor, "html": this.lp.notLoginInfoRegister}).inject(this.loginLine2);
+        this.registerAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.register}).inject(this.loginLine2);
 
         this.loginAction.addEvent("click", this.showLoginForm.bind(this));
         this.registerAction.addEvent("click", this.showRegisterForm.bind(this));
@@ -196,19 +206,22 @@ MWF.xApplication.Collect.Check = new Class({
     },
     setStatusConnectNodeContent: function(){
         this.statusConnectNode.empty();
-        this.statusConnectIconsNode = new Element("div", {"styles": this.css.statusConnectIconsNode}).inject(this.statusConnectNode);
-        this.statusConnectIconCenterNode = new Element("div", {"styles": this.css.statusConnectIconCenterNode}).inject(this.statusConnectIconsNode);
-        this.statusConnectIconConnectNode = new Element("div", {"styles": this.css.statusConnectIconConnectNode}).inject(this.statusConnectIconsNode);
-        this.statusConnectIconCollectNode = new Element("div", {"styles": this.css.statusConnectIconCollectNode}).inject(this.statusConnectIconsNode);
+        this.statusConnectIconsNode = new Element("div", {"styles": this.css.statusConnectIconsConnectedNode}).inject(this.statusConnectNode);
+        //
+        // this.statusConnectIconCenterNode = new Element("div", {"styles": this.css.statusConnectIconCenterNode}).inject(this.statusConnectIconsNode);
+        // this.statusConnectIconConnectNode = new Element("div", {"styles": this.css.statusConnectIconConnectNode}).inject(this.statusConnectIconsNode);
+        // this.statusConnectIconCollectNode = new Element("div", {"styles": this.css.statusConnectIconCollectNode}).inject(this.statusConnectIconsNode);
 
         this.statusConnectTextNode = new Element("div", {"styles": this.css.statusConnectTextNode, "text": this.lp.checking}).inject(this.statusConnectNode);
     },
     setStatusConnectSuccess: function(){
-        this.statusConnectIconConnectNode.setStyles(this.css.statusConnectIconConnectedNode);
+        // this.statusConnectIconConnectNode.setStyles(this.css.statusConnectIconConnectedNode);
+        this.statusConnectIconsNode.setStyles(this.css.statusConnectIconsConnectedNode);
         this.statusConnectTextNode.set("text", this.lp.collectConnected);
     },
     setStatusConnectFailure: function(){
-        this.statusConnectIconConnectNode.setStyles(this.css.statusConnectIconDisconnectNode);
+        // this.statusConnectIconConnectNode.setStyles(this.css.statusConnectIconDisconnectNode);
+        this.statusConnectIconsNode.setStyles(this.css.statusConnectIconsConnectedNode);
         this.statusConnectTextNode.set("text", this.lp.collectDisconnect);
     },
     setStatusLoginNode: function(){
@@ -237,19 +250,21 @@ MWF.xApplication.Collect.Check = new Class({
         }.bind(this));
     },
     setStatusLoginNodeContent: function(){
-        this.statusLoginIconsNode = new Element("div", {"styles": this.css.statusLoginIconsNode}).inject(this.statusLoginNode);
-        this.statusLoginIconCenterNode = new Element("div", {"styles": this.css.statusLoginIconCenterNode}).inject(this.statusLoginIconsNode);
-        this.statusLoginIconConnectNode = new Element("div", {"styles": this.css.statusLoginIconConnectNode}).inject(this.statusLoginIconsNode);
-        this.statusLoginIconCollectNode = new Element("div", {"styles": this.css.statusLoginIconCollectNode}).inject(this.statusLoginIconsNode);
+        this.statusLoginIconsNode = new Element("div", {"styles": this.css.statusLoginIconsConnectedNode}).inject(this.statusLoginNode);
+        // this.statusLoginIconCenterNode = new Element("div", {"styles": this.css.statusLoginIconCenterNode}).inject(this.statusLoginIconsNode);
+        // this.statusLoginIconConnectNode = new Element("div", {"styles": this.css.statusLoginIconConnectNode}).inject(this.statusLoginIconsNode);
+        // this.statusLoginIconCollectNode = new Element("div", {"styles": this.css.statusLoginIconCollectNode}).inject(this.statusLoginIconsNode);
 
         this.statusLoginTextNode = new Element("div", {"styles": this.css.statusLoginTextNode, "text": this.lp.checking}).inject(this.statusLoginNode);
     },
     setStatusLoginSuccess: function(){
-        this.statusLoginIconConnectNode.setStyles(this.css.statusLoginIconConnectedNode);
+        // this.statusLoginIconConnectNode.setStyles(this.css.statusLoginIconConnectedNode);
+        this.statusLoginIconsNode.setStyles(this.css.statusLoginIconsConnectedNode);
         this.statusLoginTextNode.set("text", this.lp.collectLogin);
     },
     setStatusLoginFailure: function(){
-        this.statusLoginIconConnectNode.setStyles(this.css.statusLoginIconDisconnectNode);
+        // this.statusLoginIconConnectNode.setStyles(this.css.statusLoginIconDisconnectNode);
+        this.statusLoginIconsNode.setStyles(this.css.statusLoginIconsDisconnectNode);
         this.statusLoginTextNode.set("text", this.lp.collectNotLogin);
     },
     disconnect : function(){
@@ -370,6 +385,8 @@ MWF.xApplication.Collect.LoginForm = new Class({
                     }
                     this.loginCanceled();
                 }.bind(this));
+            } else {
+                this.loginCanceled();
             }
         }
     },
@@ -397,7 +414,7 @@ MWF.xApplication.Collect.LoginForm = new Class({
     },
     show: function(){
         this.collect.showContent("loginContentNode");
-        this.collect.backNode.setStyle("display", "block");
+        this.collect.backNode.setStyle("display", "flex");
         this.collect.backNode.removeEvents("click");
         this.collect.backNode.addEvent("click", function(){
             this.collect.showContent("checkContentNode");
@@ -626,7 +643,7 @@ MWF.xApplication.Collect.RegisterForm = new Class({
 
     show: function(){
         this.collect.showContent("registerContentNode");
-        this.collect.backNode.setStyle("display", "block");
+        this.collect.backNode.setStyle("display", "flex");
         this.collect.backNode.removeEvents("click");
         this.collect.backNode.addEvent("click", function(){
             this.collect.showContent("checkContentNode");
@@ -984,7 +1001,7 @@ MWF.xApplication.Collect.ModifyForm = new Class({
     },
     show: function(){
         this.collect.showContent("modifyContentNode");
-        this.collect.backNode.setStyle("display", "block");
+        this.collect.backNode.setStyle("display", "flex");
         this.collect.backNode.removeEvents("click");
         this.collect.backNode.addEvent("click", function(){
             this.firstStep();
@@ -1157,7 +1174,7 @@ MWF.xApplication.Collect.ModifyPwdForm = new Class({
     },
     show: function(){
         this.collect.showContent("modifyPwdContentNode");
-        this.collect.backNode.setStyle("display", "block");
+        this.collect.backNode.setStyle("display", "flex");
         this.collect.backNode.removeEvents("click");
         this.collect.backNode.addEvent("click", function(){
             this.firstStep();
@@ -1253,7 +1270,7 @@ MWF.xApplication.Collect.DeleteForm = new Class({
     },
     show: function(){
         this.collect.showContent("deleteContentNode");
-        this.collect.backNode.setStyle("display", "block");
+        this.collect.backNode.setStyle("display", "flex");
         this.collect.backNode.removeEvents("click");
         this.collect.backNode.addEvent("click", function(){
             this.firstStep();
