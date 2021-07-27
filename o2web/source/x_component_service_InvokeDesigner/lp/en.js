@@ -28,6 +28,12 @@ MWF.xApplication.service.InvokeDesigner.LP = {
 
     "enableTokenInfo": "After enabling authentication, you must use the authentication client name and encrypted token to call the service",
 
+    "openLogViewer": "Open LogViewer",
+    "debugger": "Debug",
+    "run": "Simulation Run",
+    "runSuccess": "Run successfully",
+    "invokeHead": "head",
+
     "notice": {
         "save_success": "The interface was saved successfully!",
 

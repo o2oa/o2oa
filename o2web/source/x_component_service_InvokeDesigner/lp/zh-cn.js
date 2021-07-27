@@ -22,6 +22,14 @@ MWF.xApplication.service.InvokeDesigner.LP = {
     "invokeMethod" : "调用方法",
     "enableToken": "启用鉴权",
     "enableTokenInfo": "启用鉴权后，您必须使用鉴权客户端名称和加密后的token来调用服务",
+    "invokeHead": "head",
+
+    "openLogViewer": "打开日志查看器",
+    "debugger": "调试",
+    "run": "模拟运行",
+    "runSuccess": "运行成功",
+    "requireArguments": "请求参数",
+    "runResult": "执行结果",
 
     "notice": {
         "save_success": "接口保存成功！",

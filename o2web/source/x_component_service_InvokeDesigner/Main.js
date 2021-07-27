@@ -611,7 +611,95 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.invokeHead+":"}).inject(this.propertyContentArea);
         this.propertyInvokeHeadTextNode = new Element("div", {"styles": this.css.propertyTextNode, "text": "Content-Type:application/json; charset=utf-8"}).inject(this.propertyContentArea);
+        this.propertyInvokeHeadTextNode.setStyles({
+            "height": "auto"
+        })
 
+        node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.debugger+":"}).inject(this.propertyContentArea);
+
+        new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.requireArguments}).setStyles({
+            "word-break":"break-all",
+            "height" : "auto",
+            "line-height": "18px",
+            "margin-top": "10px",
+            "color": "#999999"
+        }).inject(this.propertyContentArea);
+        this.propertyRequireBodyNode = new Element("textarea", {
+            "styles": this.css.propertyInputAreaNode,
+            "value": "",
+            "events": {
+                change : function () {
+                    debugger;
+                    if(this.currentPage){
+                        this.currentPage.requireBody = this.propertyRequireBodyNode.get("value");
+                    }
+                }.bind(this)
+            }
+        }).inject(this.propertyContentArea);
+
+        new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.runResult}).setStyles({
+            "word-break":"break-all",
+            "height" : "auto",
+            "line-height": "18px",
+            "margin-top": "10px",
+            "color": "#999999"
+        }).inject(this.propertyContentArea);
+        this.propertyRunResultNode = new Element("div", {"styles": this.css.propertyTextNode}).inject(this.propertyContentArea);
+        this.propertyRunResultNode.set("style", "white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word; height: auto; overflow:auto; margin-left:10px;");
+
+        var div = new Element("div", {"styles": this.css.propertyTextNode, "text": ""}).setStyles({
+            "margin-top": "10px"
+        }).inject(this.propertyContentArea);
+
+        this.propertyExecuteButton = new Element("input", { type : "button", styles : this.css.propertyButton, "value": this.lp.run }).inject(div);
+        this.propertyExecuteButton.addEvent("click", function(){
+
+            debugger;
+            var alias = this.propertyExecuteButton.retrieve("alias");
+            var name = this.propertyExecuteButton.retrieve("name");
+            var id = this.propertyExecuteButton.retrieve("id");
+
+            var body = this.propertyRequireBodyNode.get("value");
+            var bodyJson;
+            try{
+                bodyJson = JSON.parse(body);
+            }catch(e) {
+            }
+
+            if( id )o2.Actions.load("x_program_center").InvokeAction.execute( alias || name || id, bodyJson || body, function (json) {
+                var result;
+                try{
+                    result = JSON.stringify(json, null, 4);
+                }catch (e) {
+                    result = json;
+                }
+                if(this.currentPage){
+                    this.currentPage.executeResult = result;
+                }
+                this.propertyRunResultNode.set("html",result);
+
+                this.notice( this.lp.runSuccess, "success");
+            }.bind(this), function (xhr) {
+                var result;
+                try{
+                    result = JSON.stringify(xhr.responseText, null, 4);
+                }catch (e) {
+                    result = xhr.responseText;
+                }
+                if(this.currentPage){
+                    this.currentPage.executeResult = result;
+                }
+                this.propertyRunResultNode.set("html",result);
+
+                // this.notice("request processToolbars error: "+xhr.responseText, "error");
+            }.bind(this));
+        }.bind(this));
+        this.propertyExecuteButton.setStyle("margin","0px");
+
+        this.propertyOpenLogViewer = new Element("input", { type : "button", styles : this.css.propertyButton, "value": this.lp.openLogViewer }).inject(div);
+        this.propertyOpenLogViewer.addEvent("click", function(){
+            layout.openApplication(null, "LogViewer");
+        }.bind(this));
     },
 	loadPropertyResize: function(){
 //		var size = this.propertyNode.getSize();
