@@ -125,6 +125,13 @@ MWF.xApplication.Setting.LP = {
 
     "mobile_connectSetting": "Mobile Connection Setting",
     "cloud_connectSetting": "Cloud Connection Setting",
+    "mobile_connect_first_cloud_check": "1. Cloud service connection check",
+    "mobile_connect_first_cloud_check_connected": "<span style='color: #5fbf78'> [Connected login] </span> Cloud services",
+    "mobile_connect_first_cloud_check_disconnected": "<span style='color: #ff0000'> [Login not connected] </span> Cloud services，Please go to the Cloud Connection Setting page to register and log in!",
+    "mobile_connect_connectSetting": "2. App Connection Setting",
+    "mobile_connect_third_mobile_connect_check": "3. Mobile phone connection test",
+    "mobile_connect_third_mobile_connect_check_info": "Use your mobile phone to scan the QR code and check whether the external network can connect to the server!",
+    "mobile_connect_third_mobile_connect_check_generate_button": "Generate QR code",
 
     "mobile_connectO2Cloud": "Connect to O2 Cloud",
     "mobile_connectO2Cloud_infor": "To use mobile office, please connect to the O2 cloud first, which will help the APP locate your corporate server, and you can use SMS services, etc.",
@@ -157,6 +164,10 @@ MWF.xApplication.Setting.LP = {
 
     "mobile_module_simple_mode": "Simple mode on mobile",
     "mobile_module_simple_mode_infor": "Only the homepage and settings page will be displayed after the simple mode is enabled",
+
+    "mobile_module_contact_permission_view": "Mobile app address book permission view",
+    "mobile_module_contact_permission_view_infor": "You need to install the application market [address book] application, which contains the permission configuration view of the address book",
+    "mobile_module_contact_permission_view_action": "Modify view name",
 
     "mobile_styleSetting": "Mobile icon style configuration surface",
     "mobile_style": "{name} picture ",

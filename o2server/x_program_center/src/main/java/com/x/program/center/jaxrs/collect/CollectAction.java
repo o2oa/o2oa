@@ -128,6 +128,23 @@ public class CollectAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@GET
+	@Path("mobile/check/connect")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@JaxrsMethodDescribe(value = "生成二维码，移动端测试连接情况.", action = ActionCheckQrCode.class)
+	public void mobileCheckConnect(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionCheckQrCode.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCheckQrCode().execute();
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@PUT
 	@Path("validate/direct")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

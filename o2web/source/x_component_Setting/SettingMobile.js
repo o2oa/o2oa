@@ -91,6 +91,15 @@ MWF.xApplication.Setting.MobileModuleDocument = new Class({
             "value": this.explorer.nativeData.simpleMode
         });
 
+        // app通讯录权限视图
+        var contactPermissionViewTitle = this.lp.mobile_module_contact_permission_view;
+        var contactPermissionViewInfor = this.lp.mobile_module_contact_permission_view_infor;
+        new MWF.xApplication.Setting.Document.Input(this.explorer, this.node, {
+            "lp": { "title": contactPermissionViewTitle, "infor": contactPermissionViewInfor, "action": this.lp.mobile_module_contact_permission_view_action},
+            "data": { "key": "nativeData", "valueKey": "contactPermissionView", "notEmpty": false },
+            "value": this.explorer.nativeData.contactPermissionView || "addressPowerView" // 默认视图名 addressPowerView
+        });
+
         this.explorer.nativeData.nativeAppList.each(function (app, i) {
             var title = this.lp.mobile_module.replace("{name}", app.name);
             var infor = this.lp.mobile_module_infor.replace("{name}", app.name);
