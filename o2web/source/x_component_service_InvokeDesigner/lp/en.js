@@ -25,8 +25,15 @@ MWF.xApplication.service.InvokeDesigner.LP = {
     "invokeUri": "Invoke address",
     "invokeMethod": "Invoke Method",
     "enableToken": "Enable authentication",
-
     "enableTokenInfo": "After enabling authentication, you must use the authentication client name and encrypted token to call the service",
+    "invokeHead": "head",
+
+    "openLogViewer": "Open LogViewer",
+    "debugger": "Debug",
+    "run": "Simulation Run",
+    "runSuccess": "Run successfully",
+    "requireArguments": "Request Arguments",
+    "runResult": "Execution Result",
 
     "notice": {
         "save_success": "The interface was saved successfully!",

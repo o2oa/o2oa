@@ -16,6 +16,11 @@ MWF.xApplication.service.AgentDesigner.LP = {
     "lastEndTime" : "最近结束时间",
     "appointmentTime" : "预计下次执行时间",
 
+    "openLogViewer": "打开日志查看器",
+    "debugger": "调试",
+    "run": "模拟运行",
+    "runSuccess": "运行成功",
+
     "true" : "是",
     "false" : "否",
     "enable" : "点击启用",
