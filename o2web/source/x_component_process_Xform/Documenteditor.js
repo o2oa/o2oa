@@ -2856,6 +2856,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 //if (this.data[name]){
                 if (this[dom]){
 
+                    var value = this.data[name] || "";
+                    var reg = new RegExp("\n","g");
+                    var text = value.replace(reg,"<br/>");
+
                     if (dom=="layout_redHeader" || dom=="layout_issuanceUnit") {
                         this[dom].set("html", this.data[name] || "");
                     }else if (dom=="layout_subject"){
@@ -2863,7 +2867,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     }else if (dom=="layout_attachment"){
                         this.setAttachmentData();
                     }else{
-                        this[dom].set("text", this.data[name]|| "");
+                        this[dom].set("html", text|| "");
                     }
                 }
 
@@ -3167,7 +3171,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             if (this.customLayouts){
                 this.customLayouts.each(function(l){
-                    l.node.set("html", this.data[l.name] || "　");
+                    var value = this.data[l.name] || "";
+                    var reg = new RegExp("\n","g");
+                    var text = value.replace(reg,"<br/>");
+
+                    l.node.set("html",text || "　");
                 }.bind(this))
             }
 

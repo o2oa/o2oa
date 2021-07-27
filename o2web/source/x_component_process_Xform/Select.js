@@ -446,6 +446,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	},
 
 	__setData: function(data){
+		var old = this.getInputData();
         this._setBusinessData(data);
 		if (this.readonly|| this.json.isReadonly){
 			var d = typeOf(data) === "array" ? data : [data];
@@ -477,6 +478,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		}
 		this.fieldModuleLoaded = true;
 		this.fireEvent("setData", [data]);
+		if (old!==data) this.fireEvent("change");
 	}
 	
 }); 
