@@ -361,6 +361,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
 
     __setData: function(data){
         this.moduleValueAG = null;
+        var old = this.getInputData();
         this._setBusinessData(data);
 
 		var inputs = this.node.getElements("input");
@@ -384,6 +385,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
 		}
         this.fieldModuleLoaded = true;
         this.fireEvent("setData");
+        if (old!==data) this.fireEvent("change");
 	},
 
     notValidationMode: function(text){
