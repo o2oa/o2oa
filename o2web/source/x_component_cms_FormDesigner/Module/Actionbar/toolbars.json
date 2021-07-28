@@ -92,5 +92,29 @@
     "id": "action_print",
     "read": true,
     "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "top.png",
+    "img_over": "top_over.png",
+    "title": "{{$.lp.setTopTitle}}",
+    "action": "setTop",
+    "text": "{{$.lp.setTop}}",
+    "id": "action_setTop",
+    "read": true,
+    "edit" : true,
+    "control": "allowSetTop"
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "topcancel.png",
+    "img_over": "topcancel_over.png",
+    "title": "{{$.lp.cancelTopTitle}}",
+    "action": "cancelTop",
+    "text": "{{$.lp.cancelTop}}",
+    "id": "action_cancelTop",
+    "read": true,
+    "edit" : true,
+    "control": "allowCancelTop"
   }
 ]

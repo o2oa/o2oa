@@ -452,7 +452,7 @@ public class Main {
 			}
 			if (file.exists()) {
 				System.out.println("server will start in new process!");
-				Process ps = Runtime.getRuntime().exec(file.getAbsolutePath());
+				Runtime.getRuntime().exec(file.getAbsolutePath());
 				Thread.sleep(2000);
 				if (!Config.currentNode().autoStart()) {
 					for (int i = 0; i < 5; i++) {
