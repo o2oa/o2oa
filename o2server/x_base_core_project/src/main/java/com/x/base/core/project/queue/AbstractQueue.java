@@ -2,8 +2,6 @@ package com.x.base.core.project.queue;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.google.gson.Gson;
@@ -20,8 +18,6 @@ public abstract class AbstractQueue<T> {
 	private LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<>();
 
 	private volatile boolean turn = false;
-
-	private Integer fixedSize = 1;
 
 	private String className = this.getClass().getName();
 
@@ -49,25 +45,11 @@ public abstract class AbstractQueue<T> {
 	 * 标识自己，将会传入到执行线程中使用
 	 */
 	private AbstractQueue<T> abstractQueue = this;
+
 	/**
 	 * 将创建一个定长线程池，可控制线程最大并发数，超出的线程会在队列中等待
 	 */
-	private ExecutorService executorService = null;
-
-	/**
-	 * 初始化一个定长线程池
-	 * 
-	 * @param count
-	 * @throws Exception
-	 */
-	public void initFixedThreadPool(Integer count) throws Exception {
-		if (count == null || count < 1) {
-			fixedSize = 1;
-		} else {
-			fixedSize = count;
-		}
-		logger.info(className + " new fixed thread pool with max thread count : " + count);
-	}
+	// private ExecutorService executorService = null;
 
 	public void send(T t) throws Exception {
 		queue.put(t);
@@ -78,7 +60,6 @@ public abstract class AbstractQueue<T> {
 			return;
 		}
 		turn = true;
-		executorService = Executors.newFixedThreadPool(fixedSize);
 		new Thread() {
 			public void run() {
 				Object o = null;
@@ -91,13 +72,7 @@ public abstract class AbstractQueue<T> {
 								turn = false;
 								break;
 							}
-							logger.debug("queue class: {} execute on message: {}.", className, gson.toJson(o));
-							// 从线程池中获取空闲线程执行QueueProcessThread操作
-							if (fixedSize <= 1) {
-								execute((T) o);
-							} else {
-								executorService.execute(new QueueProcessThread(abstractQueue, o));
-							}
+							execute((T) o);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -126,10 +101,6 @@ public abstract class AbstractQueue<T> {
 			logger.info("queue class: {} stop.", className);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			if (executorService != null) {
-				executorService.shutdown();
-			}
 		}
 	}
 
