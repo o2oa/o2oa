@@ -57,7 +57,6 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 			this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
 		}else{
 			this.toolbarNode = new Element("div").inject(this.node);
-			debugger;
 			this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {"style": this.json.style}, this);
 
 			o2.xhr_get(this.path+"toolbars.json", function(xhr){
@@ -140,7 +139,6 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
         }else{
             this.toolbarNode = this.node.getFirst("div");
             this.toolbarNode.empty();
-            debugger;
 			this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {"style": this.json.style}, this);
             // this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
             if (!this.json.actionStyles){
@@ -228,7 +226,6 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
         }
     },
 	setMultiToolbars: function(tools, node){
-		debugger;
 		tools.each(function(tool){
 			if( tool.system ){
 				this.setToolbars( [tool], node );
