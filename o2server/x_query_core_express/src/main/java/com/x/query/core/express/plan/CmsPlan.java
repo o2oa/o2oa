@@ -380,7 +380,8 @@ public class CmsPlan extends Plan {
 
 		private Predicate documentPredicate_draft(CriteriaBuilder cb, Root<Document> root) {
 			if (BooleanUtils.isFalse(this.draft)) {
-				return cb.isNotNull(root.get(Document_.publishTime));
+				return cb.equal(root.get(Document_.docStatus), "published");
+				//return cb.isNotNull(root.get(Document_.publishTime));
 			}
 			return null;
 		}
