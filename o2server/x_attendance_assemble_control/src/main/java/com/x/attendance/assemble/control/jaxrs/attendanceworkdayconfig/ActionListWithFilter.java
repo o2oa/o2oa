@@ -15,6 +15,7 @@ import com.x.attendance.entity.AttendanceWorkDayConfig;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -91,10 +92,13 @@ public class ActionListWithFilter extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("名称")
 		private String q_Name = null;
 
+		@FieldDescribe("年")
 		private String q_Year = null;
 
+		@FieldDescribe("月")
 		private String q_Month = null;
 
 		public String getQ_Name() {
