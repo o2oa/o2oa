@@ -115,6 +115,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             MWF.release(this.appForm);
             this.appForm = null;
             this.form = null;
+            this.$events = {};
         }
         // this.parseDocumentV2(data);
         // this.openDocument();
@@ -391,7 +392,9 @@ MWF.xApplication.cms.Document.Main = new Class({
             "allowSave": isControl && this.document.docStatus == "published",
             "allowPopularDocument": MWF.AC.isHotPictureManager() && this.document.docStatus == "published",
             "allowEditDocument":  isControl && !this.document.wf_workId,
-            "allowDeleteDocument":  isControl && !this.document.wf_workId
+            "allowDeleteDocument":  isControl && !this.document.wf_workId,
+            "allowSetTop": this.isAdmin && this.document.docStatus == "published" && !this.document.isTop,
+            "allowCancelTop": this.isAdmin && this.document.docStatus == "published" && this.document.isTop,
         };
     },
     errorLoadingV2 : function( error, type ){
