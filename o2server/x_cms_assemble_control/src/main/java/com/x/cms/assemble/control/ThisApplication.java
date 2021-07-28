@@ -58,7 +58,7 @@ public class ThisApplication {
 		context().startQueue(queueDataRowImport);
 		context().startQueue(queueDocumentUpdate);
 		context().startQueue(queueDocumentViewCountUpdate);
-		queueSendDocumentNotify.initFixedThreadPool(3);
+		//queueSendDocumentNotify.initFixedThreadPool(3);
 		context().startQueue(queueSendDocumentNotify);
 
 		// 每天凌晨2点执行一次
