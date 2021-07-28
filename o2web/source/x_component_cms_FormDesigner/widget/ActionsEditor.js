@@ -250,7 +250,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
             }, icon);
             item.iconName = i+".png";
         }
-        for (var i=1; i<=134; i++){
+        for (var i=1; i<=136; i++){
             //var icon = this.editor.path+this.editor.options.style+"/tools/"+i+".png";
             var icon = "../x_component_cms_FormDesigner/Module/Actionbar/"+this.editor.options.style+"/custom/"+i+".png";
             var item = this.iconMenu.addMenuItem("", "click", function(ev){

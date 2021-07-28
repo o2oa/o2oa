@@ -57,6 +57,13 @@ MWF.xApplication.cms.Xform.LP = Object.merge({}, MWF.xApplication.process.Xform.
     "updateSuccess" : "更新成功",
     "save" : "保存",
 
+    "setTopTitle": "置顶确认",
+    "setTopText": "确定将当前文档置顶？",
+    "setTopSuccess": "置顶成功",
+    "cancelTopTitle": "取消置顶确认",
+    "cancelTopText": "确定将当前文档取消置顶？",
+    "cancelTopSuccess": "取消置顶成功",
+
     "attachmentArea" : "附件区域",
     "selectAttachment" : "选择附件",
 
@@ -83,7 +90,11 @@ MWF.xApplication.cms.Xform.LP = Object.merge({}, MWF.xApplication.process.Xform.
         "delete": "删除",
         "deleteTitle": "删除文档",
         "print": "打印",
-        "printTitle": "打印文档"
+        "printTitle": "打印文档",
+        "setTop": "置顶",
+        "setTopTitle": "对文档置顶",
+        "cancelTop": "取消置顶",
+        "cancelTopTitle": "取消对文档的置顶"
     }
 
     //"at" : "阅于",
