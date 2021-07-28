@@ -64,6 +64,10 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "delete": "Delete",
         "deleteTitle": "Delete Document",
         "print": "Print",
-        "printTitle": "Print Document"
+        "printTitle": "Print Document",
+        "setTop": "Top",
+        "setTopTitle": "Set the document to the top",
+        "cancelTop": "Cancel Top",
+        "cancelTopTitle": "Cancel the top of the document"
     }
 });

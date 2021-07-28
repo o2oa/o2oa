@@ -57,6 +57,13 @@ MWF.xApplication.cms.Xform.LP = Object.merge({},  MWF.xApplication.process.Xform
     "updateSuccess": "Update successful",
     "save": "Save",
 
+    "setTopTitle": "Put Top Confirmation",
+    "setTopText": "Are you sure to put the current document on top?",
+    "setTopSuccess": "Put Top Success",
+    "cancelTopTitle": "Cancel Top Title Confirmation",
+    "cancelTopText": "Are you sure you want to cancel the current document on top?",
+    "cancelTopSuccess": "Cancel Top Success",
+
     "attachmentArea": "Attachment Area",
     "selectAttachment": "Select Attachment",
 
@@ -83,7 +90,11 @@ MWF.xApplication.cms.Xform.LP = Object.merge({},  MWF.xApplication.process.Xform
         "delete": "Delete",
         "deleteTitle": "Delete Document",
         "print": "Print",
-        "printTitle": "Print Document"
+        "printTitle": "Print Document",
+        "setTop": "Top",
+        "setTopTitle": "Set the document to the top",
+        "cancelTop": "Cancel Top",
+        "cancelTopTitle": "Cancel the top of the document"
     }
 });
 MWF.xApplication.cms.Xform["lp."+o2.language] = MWF.xApplication.cms.Xform.LP;
