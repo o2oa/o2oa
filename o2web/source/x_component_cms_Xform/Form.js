@@ -934,7 +934,71 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 attachmentController.checkActions();
             }
         }.bind(this))
-    }
+    },
+
+    /**
+     * @summary 弹出文档置顶对话框，操作后使当前文档在列式服务中排在前面.
+     * @method setTop
+     * @memberof CMSForm
+     * @example
+     * this.form.getApp().appForm.setTop();
+     */
+    setTop: function () {
+        var _self = this;
+        var p = MWF.getCenterPosition(this.app.content, 380, 150);
+        var event = {
+            "event": {
+                "x": p.x,
+                "y": p.y - 200,
+                "clientX": p.x,
+                "clientY": p.y - 200
+            }
+        };
+        this.app.confirm("infor", event, MWF.xApplication.cms.Xform.LP.setTopTitle, MWF.xApplication.cms.Xform.LP.setTopText, 380, 120, function () {
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.persist_top(_self.businessData.document.id, function () {
+                _self.app.notice(MWF.xApplication.cms.Xform.LP.setTopSuccess, "success");
+                _self.app.reload();
+                this.close();
+            }.bind(this))
+
+            //this.close();
+        }, function () {
+            this.close();
+        });
+    },
+
+
+    /**
+     * @summary 弹出文档取消置顶对话框.
+     * @method cancelTop
+     * @memberof CMSForm
+     * @example
+     * this.form.getApp().appForm.cancelTop();
+     */
+    cancelTop: function () {
+        var _self = this;
+        var p = MWF.getCenterPosition(this.app.content, 380, 150);
+        var event = {
+            "event": {
+                "x": p.x,
+                "y": p.y - 200,
+                "clientX": p.x,
+                "clientY": p.y - 200
+            }
+        };
+        this.app.confirm("infor", event, MWF.xApplication.cms.Xform.LP.cancelTopTitle, MWF.xApplication.cms.Xform.LP.cancelTopText, 380, 120, function () {
+
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.persist_unTop(_self.businessData.document.id, function () {
+                _self.app.notice(MWF.xApplication.cms.Xform.LP.cancelTopSuccess, "success");
+                _self.app.reload();
+                this.close();
+            }.bind(this))
+
+            //this.close();
+        }, function () {
+            this.close();
+        });
+    },
 
 
 

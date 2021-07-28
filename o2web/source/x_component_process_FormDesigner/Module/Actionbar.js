@@ -198,7 +198,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             if (MWF.xApplication.process.FormDesigner.LP.actionBar){
                 var jsonStr = JSON.stringify(this.json.multiTools);
                 jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.FormDesigner.LP.actionBar});
-                this.multiToolsJson = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
+                this.multiToolsJson = JSON.parse(jsonStr); //.map( function (d) { d.system = true; return d; });
             }else{
                 this.multiToolsJson = this.json.multiTools;
             }

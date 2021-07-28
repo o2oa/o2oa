@@ -208,5 +208,11 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
     },
     printDocument: function(){
         this.form.printDocument();
+    },
+    setTop: function(){
+        this.form.setTop();
+    },
+    cancelTop: function(){
+        this.form.cancelTop();
     }
 }); 
