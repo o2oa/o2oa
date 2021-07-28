@@ -24,7 +24,6 @@ public class ThisApplication {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
 			LoggerFactory.setLevel(Config.logLevel().x_query_assemble_surface());
-			queueImportData.initFixedThreadPool(2);
 			context().startQueue(queueImportData);
 		} catch (Exception e) {
 			e.printStackTrace();
