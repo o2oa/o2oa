@@ -24,42 +24,12 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_general_core_entity</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.google.zxing</groupId>
-			<artifactId>core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.zxing</groupId>
-			<artifactId>core</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>com.google.zxing</groupId>
-		    <artifactId>javase</artifactId>
-		    <version>3.3.0</version>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>o2oa</groupId>
-						<artifactId>x_base_core_project</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-api</artifactId>
-						<version>1.7.25</version>
-					</dependency>
-					<dependency>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-simple</artifactId>
-						<version>1.7.25</version>
-					</dependency>
-				</dependencies>
 				<executions>
 					<execution>
 						<id>describeBuilder</id>
