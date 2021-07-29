@@ -1267,16 +1267,16 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultDocument = new Class({
             "mouseover": function(){
                 if (!this.readyRemove) {
                     this.node.setStyles(this.css.documentItemDocumentNode_over);
-                    var topNode = this.node.getElement(".topNode");
-                    if(topNode)topNode.setStyles(this.css.titleAreaContentTopNode_over); //.addClass("mainColor_bg")
                 }
+                var topNode = this.node.getElement(".topNode");
+                if(topNode)topNode.setStyles(this.css.titleAreaContentTopNode_over); //.addClass("mainColor_bg")
             }.bind(this),
             "mouseout": function(){
                 if (!this.readyRemove) {
                     this.node.setStyles(this.css.documentItemDocumentNode);
-                    var topNode = this.node.getElement(".topNode");
-                    if(topNode)topNode.setStyles(this.css.titleAreaContentTopNode); //.removeClass("mainColor_bg")
                 }
+                var topNode = this.node.getElement(".topNode");
+                if(topNode)topNode.setStyles(this.css.titleAreaContentTopNode); //.removeClass("mainColor_bg")
             }.bind(this),
             "click": function(e){
                 this.openDocument(e);

@@ -332,14 +332,16 @@
     "padding-left":"5px",
     "float" : "left",
     "position" : "static",
-    "border":"0"
+    "border":"0",
+    "z-index": 0
   },
   "categoryList_all" : {
     "width": "305px",
     "position" : "absolute",
     "border" : "1px solid #ccc",
     "background-color" : "#fff",
-    "padding-bottom" : "10px"
+    "padding-bottom" : "10px",
+    "z-index": 1
   },
   "categoryItem" : {
     "float" : "left",
