@@ -940,7 +940,18 @@ MWF.xApplication.process.FormDesigner.LP = {
         "notShow": "Not Show",
 
         "insertDataTemplate": "Insert Data Template",
-        "widthModules": "Insert related components"
+        "widthModules": "Insert related components",
+
+        "ckeditConfig": "Ckeditor Options",
+
+        "ckeditConfigInfor": "Return Json Object",
+        "ckeditConfigInfor1": "The editor toolbar function can be configured through the following link：",
+        "ckeditConfigInfor2": "../o2_lib/htmleditor/ckeditor4161/samples/toolbarconfigurator/index.html",
+        "ckeditConfigInfor3": "click here",
+
+        "ckeditConfigInfor4": "For more configuration, please check the official website of Ckeditor",
+        "ckeditConfigInfor5": "https://ckeditor.com/ckeditor-4/",
+        "ckeditConfigInfor6": "Note: After the editor properties are customized, the text format may no longer meet the national party and government agency official document format standards"
     },
     "actionBar": {
         "close":"Close",
