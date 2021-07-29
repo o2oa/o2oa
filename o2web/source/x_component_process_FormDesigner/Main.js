@@ -231,26 +231,20 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		this.loadToolbar();
 		this.loadFormNode();
 		this.loadProperty();
-		this.loadTools();
-		this.resizeNode();
-		this.addEvent("resize", this.resizeNode.bind(this));
+
+		this.loadTools(function(){
+            this.resizeNode();
+            this.addEvent("resize", this.resizeNode.bind(this));
+        }.bind(this));
+
 		this.loadForm();
-		
-		if (this.toolbarContentNode){
-                this.setScrollBar(this.toolbarContentNode, null, {
-                    "V": {"x": 0, "y": 0},
-                    "H": {"x": 0, "y": 0}
-                });
-                //this.setScrollBar(this.propertyDomScrollArea, "form_property", {
-                //	"V": {"x": 0, "y": 0},
-                //	"H": {"x": 0, "y": 0}
-                //});
-                MWF.require("MWF.widget.ScrollBar", function(){
-                    new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
-                        "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
-                    });
-                }.bind(this));
-		}
+
+        MWF.require("MWF.widget.ScrollBar", function(){
+            new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
+                "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
+            });
+        }.bind(this));
+
 		this.checkSidebars();
 	},
     checkSidebars: function(){
@@ -276,6 +270,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		this.toolsData = null;
 		this.toolbarMode = "all";
 		this.tools = [];
+        this.toolGroups = [];
 		this.toolbarDecrease = 0;
 		
 		this.designNode = null;
@@ -311,16 +306,35 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 				}.bind(this)
 			}
 		}).inject(this.toolbarNode);
-		
-		this.toolbarContentNode = new Element("div", {
-			"styles": this.css.toolbarContentNode,
-			"events": {
-				"selectstart": function(e){
-                    e.preventDefault();
-                    e.stopPropagation();
-				}
-			}
-		}).inject(this.toolbarNode);
+
+        this.toolbarGroupContentNode = new Element("div", {"styles": this.css.toolbarGroupContentNode}).inject(this.toolbarNode);
+        this.toolbarGroupContentNode.addEvent("selectstart", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+		// this.toolbarContentNode = new Element("div", {
+		// 	"styles": this.css.toolbarContentNode,
+		// 	"events": {
+		// 		"selectstart": function(e){
+        //             e.preventDefault();
+        //             e.stopPropagation();
+		// 		}
+		// 	}
+		// }).inject(this.toolbarNode);
+        //
+        // if (this.toolbarContentNode){
+        //     this.setScrollBar(this.toolbarContentNode, null, {
+        //         "V": {"x": 0, "y": 0},
+        //         "H": {"x": 0, "y": 0}
+        //     });
+        //     MWF.require("MWF.widget.ScrollBar", function(){
+        //         new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
+        //             "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
+        //         });
+        //     }.bind(this));
+        // }
+
 	},
 	switchToolbarMode: function(){
 		if (this.toolbarMode=="all"){
@@ -981,89 +995,134 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 	},
 	
 	//loadTools------------------------------
-	loadTools: function(){
-		var designer = this;
-		this.getTools(function(){
-			Object.each(this.toolsData, function(value, key){
-				var toolNode = new Element("div", {
-					"styles": this.css.toolbarToolNode,
-					"title": value.text,
-					"events": {
-						"mouseover": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNodeOver);
-							}catch(e){
-								this.setStyles(designer.css.toolbarToolNodeOverCSS2);
-							};
-						},
-						"mouseout": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNode);
-							}catch(e){};
-						},
-						"mousedown": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNodeDown);
-							}catch(e){
-								this.setStyles(designer.css.toolbarToolNodeDownCSS2);
-							};
-						},
-						"mouseup": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNodeUp);
-							}catch(e){
-								this.setStyles(designer.css.toolbarToolNodeUpCSS2);
-							};
-						}
-					}
-				}).inject(this.toolbarContentNode);
-				toolNode.store("toolClass", value.className);
-				
-				var iconNode = new Element("div", {
-					"styles": this.css.toolbarToolIconNode
-				}).inject(toolNode);
-				iconNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/"+value.icon+")");
-				
-				var textNode = new Element("div", {
-					"styles": this.css.toolbarToolTextNode,
-					"text": value.text
-				});
-				textNode.inject(toolNode);
-				
-//				var designer = this;
-				toolNode.addEvent("mousedown", function(e){
+    loadTools: function(callback){
+        o2.loadCss("../o2_lib/vue/element/index.css");
+	    this.getGroups(function(){
+            this.toolsGroupData.forEach(function(o){
+                //var o = this.toolsGroupData[key];
+                this.toolGroups.push(new MWF.xApplication.process.FormDesigner.ToolsGroup(o, this));
+            }, this);
 
-					var className = this.retrieve("toolClass");
-					designer.form.createModule(className, e);
-				});
-				
-				this.tools.push(toolNode);
-			}.bind(this));
-		}.bind(this));
-	},
-	getTools: function(callback){
+	        if (callback) callback();
+        }.bind(this));
+    },
+    getGroups: function(callback){
+        if (this.toolsGroupData){
+            if (callback) callback();
+        }else{
+            var toolsGroupDataUrl = this.path+this.options.style+"/toolsGroup.json";
+            o2.JSON.get(toolsGroupDataUrl, function(responseJSON){
+                this.toolsGroupData = responseJSON;
+                if (callback) callback();
+            }.bind(this));
+        }
+    },
 
-		if (this.toolsData){
-			if (callback) callback();
-		}else{
-			var toolsDataUrl = this.path+this.options.style+"/tools.json";
-			var r = new Request.JSON({
-				url: toolsDataUrl,
-				secure: false,
-				async: false,
-				method: "get",
-				noCache: true,
-				onSuccess: function(responseJSON, responseText){
-					this.toolsData = responseJSON;
-					if (callback) callback();
-				}.bind(this),
-				onError: function(text, error){
-					this.notice("request tools data error: "+error, "error");
-				}.bind(this)
-			});
-			r.send();
-		}
-	},
+	// loadTools1: function(){
+	// 	var designer = this;
+    //
+    //     this.toolbarContentNode = new Element("div", {
+    //         "styles": this.css.toolbarContentNode,
+    //     }).inject(this.toolbarGroupContentNode);
+    //
+    //
+    //
+    //
+    //     if (this.toolbarContentNode){
+    //         this.setScrollBar(this.toolbarContentNode, null, {
+    //             "V": {"x": 0, "y": 0},
+    //             "H": {"x": 0, "y": 0}
+    //         });
+    //         MWF.require("MWF.widget.ScrollBar", function(){
+    //             new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
+    //                 "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
+    //             });
+    //         }.bind(this));
+    //     }
+    //
+    //
+
+// 		this.getTools(function(){
+// 			Object.each(this.toolsData, function(value, key){
+// 				var toolNode = new Element("div", {
+// 					"styles": this.css.toolbarToolNode,
+// 					"title": value.text,
+// 					"events": {
+// 						"mouseover": function(e){
+// 							try {
+// 								this.setStyles(designer.css.toolbarToolNodeOver);
+// 							}catch(e){
+// 								this.setStyles(designer.css.toolbarToolNodeOverCSS2);
+// 							};
+// 						},
+// 						"mouseout": function(e){
+// 							try {
+// 								this.setStyles(designer.css.toolbarToolNode);
+// 							}catch(e){};
+// 						},
+// 						"mousedown": function(e){
+// 							try {
+// 								this.setStyles(designer.css.toolbarToolNodeDown);
+// 							}catch(e){
+// 								this.setStyles(designer.css.toolbarToolNodeDownCSS2);
+// 							};
+// 						},
+// 						"mouseup": function(e){
+// 							try {
+// 								this.setStyles(designer.css.toolbarToolNodeUp);
+// 							}catch(e){
+// 								this.setStyles(designer.css.toolbarToolNodeUpCSS2);
+// 							};
+// 						}
+// 					}
+// 				}).inject(this.toolbarContentNode);
+// 				toolNode.store("toolClass", value.className);
+//
+// 				var iconNode = new Element("div", {
+// 					"styles": this.css.toolbarToolIconNode
+// 				}).inject(toolNode);
+// 				iconNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/"+value.icon+")");
+//
+// 				var textNode = new Element("div", {
+// 					"styles": this.css.toolbarToolTextNode,
+// 					"text": value.text
+// 				});
+// 				textNode.inject(toolNode);
+//
+// //				var designer = this;
+// 				toolNode.addEvent("mousedown", function(e){
+//
+// 					var className = this.retrieve("toolClass");
+// 					designer.form.createModule(className, e);
+// 				});
+//
+// 				this.tools.push(toolNode);
+// 			}.bind(this));
+// 		}.bind(this));
+// 	},
+// 	getTools: function(callback){
+//
+// 		if (this.toolsData){
+// 			if (callback) callback();
+// 		}else{
+// 			var toolsDataUrl = this.path+this.options.style+"/tools.json";
+// 			var r = new Request.JSON({
+// 				url: toolsDataUrl,
+// 				secure: false,
+// 				async: false,
+// 				method: "get",
+// 				noCache: true,
+// 				onSuccess: function(responseJSON, responseText){
+// 					this.toolsData = responseJSON;
+// 					if (callback) callback();
+// 				}.bind(this),
+// 				onError: function(text, error){
+// 					this.notice("request tools data error: "+error, "error");
+// 				}.bind(this)
+// 			});
+// 			r.send();
+// 		}
+// 	},
 	
 	//resizeNode------------------------------------------------
     resizeNodeLeftRight: function(){
@@ -1101,7 +1160,17 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
         y = titleSize.y+titleMarginTop+titleMarginBottom+titlePaddingTop+titlePaddingBottom;
         y = nodeSize.y-y;
-        this.toolbarContentNode.setStyle("height", ""+y+"px");
+        this.toolbarGroupContentNode.setStyle("height", ""+y+"px");
+        var groupHeight = 0;
+        this.toolGroups.each(function(g){
+            groupHeight += g.toolbarGroupTitleNode.getSize().y;
+        });
+        var contentHeight = y-groupHeight-5;
+        this.toolGroups.each(function(g){
+            g.setContentHeight(contentHeight);
+            //g.toolbarContentNode.setStyle("height", ""+contentHeight+"px");
+        });
+
 
 
         titleSize = this.propertyTitleNode.getSize();
@@ -1153,7 +1222,15 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
         y = titleSize.y+titleMarginTop+titleMarginBottom+titlePaddingTop+titlePaddingBottom;
         y = nodeSize.y-y;
-        this.toolbarContentNode.setStyle("height", ""+y+"px");
+        this.toolbarGroupContentNode.setStyle("height", ""+y+"px");
+        var groupHeight = 0;
+        this.toolGroups.each(function(g){
+            groupHeight += g.toolbarGroupTitleNode.getSize().y;
+        });
+        var contentHeight = y-groupHeight-5;
+        this.toolGroups.each(function(g){
+            g.setContentHeight(contentHeight);
+        });
 
 
 
@@ -1833,4 +1910,174 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             });
         }
     }
+});
+MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
+    Implements: [Events],
+
+    initialize: function(data, app){
+        this.data = data;
+        this.app = app;
+        this.css = this.app.css;
+        this.tools = [];
+        this.load();
+    },
+    load: function(){
+        this.toolbarGroupNode = new Element("div", {
+            "styles": this.css.toolbarGroupNode,
+        }).inject(this.app.toolbarGroupContentNode);
+
+        this.toolbarGroupTitleNode = new Element("div", {
+            "class": "mainColor_bg",
+            "styles": this.css.toolbarGroupTitleNode,
+            "text": this.data.text,
+            "events": {
+                "click": this.show.bind(this)
+            }
+        }).inject(this.toolbarGroupNode);
+
+        this.toolbarContentNode = new Element("div", {
+            "styles": this.css.toolbarContentNode,
+        }).inject(this.toolbarGroupNode);
+
+        this.loadTools();
+
+        if (this.toolbarContentNode){
+            this.app.setScrollBar(this.toolbarContentNode, null, {
+                "V": {"x": 0, "y": 0},
+                "H": {"x": 0, "y": 0}
+            }, function(scrollBar){
+                this.scrollBar = scrollBar;
+            }.bind(this));
+        }
+
+        this.toolbarContentNode.setStyle("height", "0px");
+        this.toolbarContentNode.hide();
+    },
+    setContentHeight: function(height){
+        debugger;
+        this.height = height;
+        if (this.isShow){
+            this.toolbarContentNode.setStyle("height", ""+this.height+"px");
+        }
+    },
+    show: function(){
+        if (this.app.currentToolGroup != this){
+            if (this.app.currentToolGroup) this.app.currentToolGroup.hide();
+            if (!this.morph){
+                this.morph = new Fx.Morph(this.toolbarContentNode, {
+                    "duration": "100",
+                    transition: Fx.Transitions.Sine.easeOut
+                });
+            }
+            this.toolbarContentNode.show();
+            this.morph.start({"height": [0, this.height]}).chain(function(){
+                if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.show();
+                this.app.currentToolGroup = this;
+                this.isShow = true;
+            }.bind(this));
+        }
+    },
+    hide: function(){
+        if (this.app.currentToolGroup==this) this.app.currentToolGroup = null;
+        if (!this.morph){
+            this.morph = new Fx.Morph(this.toolbarContentNode, {
+                "duration": "100",
+                transition: Fx.Transitions.Sine.easeOut
+            });
+        }
+        this.isShow = false;
+        if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.hide();
+        this.morph.start({
+            "height": [this.height, 0]
+        }).chain(function(){
+            this.toolbarContentNode.hide();
+        }.bind(this));
+    },
+
+    loadTools: function(){
+        var designer = this.app;
+        var group = this;
+        this.getTools(function(){
+            Object.each(this.toolsData, function(value, key){
+                var toolNode = new Element("div", {
+                    "styles": this.css.toolbarToolNode,
+                    "title": value.text,
+                    "events": {
+                        "mouseover": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeOver);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeOverCSS2);
+                            };
+                        },
+                        "mouseout": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNode);
+                            }catch(e){};
+                        },
+                        "mousedown": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeDown);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeDownCSS2);
+                            };
+                        },
+                        "mouseup": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeUp);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeUpCSS2);
+                            };
+                        }
+                    }
+                }).inject(this.toolbarContentNode);
+                toolNode.store("toolClass", value.className);
+
+                var iconNode = new Element("div", {
+                    "styles": this.css.toolbarToolIconNode
+                }).inject(toolNode);
+                if (value.icon) iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+value.icon+")");
+                if (value.fontIcon){
+                    iconNode.addClass("mainColor_color");
+                    iconNode.set("html", "<i class=\""+value.fontIcon+"\"></i>");
+                }
+
+                var textNode = new Element("div", {
+                    "styles": this.css.toolbarToolTextNode,
+                    "text": value.text
+                });
+                textNode.inject(toolNode);
+
+//				var designer = this;
+                toolNode.addEvent("mousedown", function(e){
+
+                    var className = this.retrieve("toolClass");
+                    designer.form.createModule(className, e, group.data.name);
+                });
+
+                this.tools.push(toolNode);
+            }.bind(this));
+
+            if (this.data.name==="default") this.show();
+        }.bind(this));
+    },
+
+    getTools: function(callback){
+        if (this.toolsData){
+            if (callback) callback();
+        }else{
+            var toolsDataUrl = this.app.path+this.app.options.style+"/"+this.data.json;
+            o2.JSON.get(toolsDataUrl, function(responseJSON){
+                this.toolsData = responseJSON;
+
+                if (!this.app.toolsData){
+                    this.app.toolsData = this.toolsData;
+                }else{
+                    this.app.toolsData = Object.merge(this.app.toolsData, this.toolsData)
+                }
+
+                if (callback) callback();
+            }.bind(this));
+        }
+    },
 });

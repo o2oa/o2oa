@@ -494,7 +494,9 @@ if (window.Promise && !Promise.any){
         "JSBeautifier_html": ["../o2_lib/JSBeautifier/beautify-html.js"],
         "JSONTemplate": ["../o2_lib/mootools/plugin/Template.js"],
         "kity": ["../o2_lib/kityminder/kity/kity.js"],
-        "kityminder": ["../o2_lib/kityminder/core/dist/kityminder.core.js"]
+        "kityminder": ["../o2_lib/kityminder/core/dist/kityminder.core.js"],
+        "vue": ["../o2_lib/vue/vue.js"],
+        "elementui": ["../o2_lib/vue/element/index.js"]
     };
     var _loaded = {};
     var _loadedCss = {};

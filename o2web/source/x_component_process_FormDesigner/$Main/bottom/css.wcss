@@ -127,7 +127,10 @@
 		"height": "42px",
 		"background-position": "center center",
 		"background-repeat": "no-repeat",
-		"float": "left"
+		"float": "left",
+		"font-size": "24px",
+		"line-height": "40px",
+		"text-align": "center"
 	},
 	"toolbarToolTextNode": {
 		"margin-left": "46px",
