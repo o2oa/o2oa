@@ -2339,6 +2339,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         // editorConfig.extraPlugins = ['ecnet','mathjax'];
         // editorConfig.removePlugins = ['magicline'];
         // editorConfig.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML';
+
+        if (this.json.ckeditConfigOptions && this.json.ckeditConfigOptions.code){
+            var o = this.form.Macro.exec(this.json.ckeditConfigOptions.code, this);
+            if (o) editorConfig = Object.merge(editorConfig, o);
+        }
+
         return editorConfig;
     },
 
@@ -2482,7 +2488,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     loadCkeditorFiletext: function(callback, inline){
         if (this.layout_filetext){
-            o2.load("../o2_lib/htmleditor/ckeditor4130/ckeditor.js", function(){
+            o2.load("../o2_lib/htmleditor/ckeditor4161/ckeditor.js", function(){
                 CKEDITOR.disableAutoInline = true;
                 this.layout_filetext.setAttribute('contenteditable', true);
 
