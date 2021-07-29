@@ -55,11 +55,11 @@ o2.widget.Common = new Class({
 			};
 		};
 		o2.require("o2.widget.ScrollBar", function(){
-			new o2.widget.ScrollBar(node, {
+			var scrollBar = new o2.widget.ScrollBar(node, {
 				"style": style,
 				"offset": offset
 			});
-			if (callback) callback();
+			if (callback) callback(scrollBar);
 		});
 		return false;
 	}
