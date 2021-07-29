@@ -956,7 +956,9 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         "ckeditConfigInfor4": "更多配置请查看Ckeditor官方网站",
         "ckeditConfigInfor5": "https://ckeditor.com/ckeditor-4/",
-        "ckeditConfigInfor6": "注意：自定义了编辑器属性后，正文格式有可能不再符合国家党政机关公文格式标准"
+        "ckeditConfigInfor6": "注意：自定义了编辑器属性后，正文格式有可能不再符合国家党政机关公文格式标准",
+
+        "showRead": "显示待阅"
     },
     "actionBar": {
         "close":"关闭",

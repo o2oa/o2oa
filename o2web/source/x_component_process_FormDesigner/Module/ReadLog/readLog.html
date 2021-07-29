@@ -13,11 +13,18 @@
 				<td class="editTableTitle">{{$.lp.description}}:</td>
 				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 			</tr>
-			<tr title="{{$.lp.delayedTabInfo}}">
+			<tr>
 				<td class="editTableTitle">{{$.lp.delayedLoading}}:</td>
 				<td class="editTableValue">
 					<input type="radio" name="isDelay" value="true" text{($.isDelay)?'checked':''}/>{{$.lp.yes}}
 					<input type="radio" name="isDelay" value="false" text{(!$.isDelay)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.showRead}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isShowRead" value="true" text{($.isShowRead)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isShowRead" value="false" text{(!$.isShowRead)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>

@@ -107,6 +107,7 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
         },
         loadReadLogDefault: function(){
             var text = this.json.textStyle;
+            var readPersons = [];
             this.readLog.each(function(log){
                 if (log.type == "readCompleted"){
                     var html = text.replace(/{person}/g, o2.name.cn(log.person))
@@ -122,7 +123,12 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
                         .replace(/{opinion}/g, log.opinion);
                     this.node.appendHTML(html);
                 }
+                if (!!this.json.isShowRead && log.type == "read"){
+                    readPersons.push(o2.name.cn(log.person)+"("+o2.name.cn(log.unit)+")");
+                }
             }.bind(this));
+            if (readPersons.length){
+                this.node.appendHTML("<div><font style='font-weight: bold'>"+MWF.xApplication.process.Xform.LP.showReadTitle+": </font><font style='color: #00F'>"+readPersons.join(", ")+"</font></div>");
+            }
         }
-
     });
