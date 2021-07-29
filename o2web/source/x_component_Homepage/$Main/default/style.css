@@ -178,6 +178,23 @@
     margin-right: 10px;
 }
 
+.o2_homepage_task_item_cell_top{
+    width: 18px;
+}
+.o2_homepage_task_item_top {
+    height: 18px;
+    width: 18px;
+    border-radius: 5px;
+    background-color: #ccc;
+    background-size: 12px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-image: url(../x_component_Homepage/$Main/default/icon/top.png);
+}
+.o2_homepage_task_item_top_over{
+    background-color: #4A90E2;
+}
+
 .o2_homepage_task_item_cell_activity {
     color: #666666;
     font-size: 12px;

@@ -325,6 +325,32 @@ MWF.xApplication.Homepage.InforContent.AllInfor = new Class({
         }.bind(this));
         this.endItemLoadContent();
     },
+    loadItem: function(table, d, i){
+        var row = this.loadItemRow(table, d, i);
+
+        var _self = this;
+        row.store("data", d);
+        row.addEvents({
+            "mouseover": function(){
+                this.addClass("mainColor_color").addClass("o2_homepage_task_item_row_over");
+                this.getElement("div").addClass("mainColor_bg").addClass("o2_homepage_task_item_number_over");
+                var topNode = this.getElement(".o2_homepage_task_item_top");
+                if(topNode)topNode.addClass("mainColor_bg").addClass("o2_homepage_task_item_top_over");
+            },
+            "mouseout": function(){
+                this.removeClass("mainColor_color").removeClass("o2_homepage_task_item_row_over");
+                this.getElement("div").removeClass("mainColor_bg").removeClass("o2_homepage_task_item_number_over");
+                var topNode = this.getElement(".o2_homepage_task_item_top");
+                if(topNode)topNode.removeClass("mainColor_bg").removeClass("o2_homepage_task_item_top_over");
+            },
+            "click": function(e){
+                var d = this.retrieve("data");
+                if (d) {
+                    _self.open(e, d);
+                }
+            }
+        })
+    },
     loadItemRow: function(table, d, i){
         var row = table.insertRow(-1).addClass("o2_homepage_task_item_row");
         var idx = (this.page-1)*this.pageSize+i+1;
@@ -336,6 +362,11 @@ MWF.xApplication.Homepage.InforContent.AllInfor = new Class({
         var subject = o2.txt(d.title || this.app.lp.noSubject);
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_subject");
         new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":subject}).inject(cell);
+
+        cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_top");
+        if( d.isTop ){
+            new Element("div.o2_homepage_task_item_top").inject(cell); //.addClass("mainColor_bg");
+        }
 
         var time = (d.publishTime || d.createTime).substr(0,10);
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_time");
@@ -574,6 +605,32 @@ MWF.xApplication.Homepage.InforContent.Infor  = new Class({
 
         this.content.isLoading = false;
     },
+    loadItem: function(table, d, i){
+        var row = this.loadItemRow(table, d, i);
+
+        var _self = this;
+        row.store("data", d);
+        row.addEvents({
+            "mouseover": function(){
+                this.addClass("mainColor_color").addClass("o2_homepage_task_item_row_over");
+                this.getElement("div").addClass("mainColor_bg").addClass("o2_homepage_task_item_number_over");
+                var topNode = this.getElement(".o2_homepage_task_item_top");
+                if(topNode)topNode.addClass("mainColor_bg").addClass("o2_homepage_task_item_top_over");
+            },
+            "mouseout": function(){
+                this.removeClass("mainColor_color").removeClass("o2_homepage_task_item_row_over");
+                this.getElement("div").removeClass("mainColor_bg").removeClass("o2_homepage_task_item_number_over");
+                var topNode = this.getElement(".o2_homepage_task_item_top");
+                if(topNode)topNode.removeClass("mainColor_bg").removeClass("o2_homepage_task_item_top_over");
+            },
+            "click": function(e){
+                var d = this.retrieve("data");
+                if (d) {
+                    _self.open(e, d);
+                }
+            }
+        })
+    },
 
     loadItemRow: function(table, d, i){
         var row = table.insertRow(-1).addClass("o2_homepage_task_item_row");
@@ -587,6 +644,11 @@ MWF.xApplication.Homepage.InforContent.Infor  = new Class({
         var subject = o2.txt(d.title || this.app.lp.noSubject);
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_subject");
         new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":subject}).inject(cell);
+
+        cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_top");
+        if( d.isTop ){
+            new Element("div.o2_homepage_task_item_top").setStyles({"margin-right":"10px"}).inject(cell); //.addClass("mainColor_bg");
+        }
 
         var creatorPerson = o2.name.cn(d.creatorPerson)
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_creator");

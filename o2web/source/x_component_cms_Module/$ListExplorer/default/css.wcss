@@ -567,6 +567,26 @@
     "border-top": "1px solid #FFF",
     "border-bottom": "1px solid #CCC"
   },
+  "titleAreaContentNode_top": {
+    "position": "relative",
+    "padding-right": "24px"
+  },
+  "titleAreaContentTopNode": {
+    "position": "absolute",
+    "top": "11px",
+    "right": "0px",
+    "height": "18px",
+    "width": "18px",
+    "border-radius": "5px",
+    "background-color": "#ccc",
+    "background-size":"12px",
+    "background-position":"center center",
+    "background-repeat": "no-repeat",
+    "background-image": "url(../x_component_Homepage/$Main/default/icon/top.png)"
+  },
+  "titleAreaContentTopNode_over": {
+    "background-color": "#4A90E2"
+  },
   "titleAreaContentTextNode": {
     "padding": "5px 5px",
     "height": "30px",
