@@ -1,0 +1,21 @@
+.o2_ecnet_item {
+    color: red;
+}
+.o2_ecnet_ecnetNode {
+    border: 1px solid #999999;
+    box-shadow: 0px 0px 5px #999999;
+    background-color: #ffffff;
+    position: fixed;
+    display: none;
+}
+.o2_ecnet_correctNode {
+    padding: 3px 10px;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+}
+.o2_ecnet_ignoreNode {
+    padding: 3px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
