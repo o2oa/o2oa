@@ -59,6 +59,8 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
 			var copyNode = module._getCopyNode(this);
 			copyNode.show();
 			copyNode.inject(this.node);
+			//copyNode.setStyle("position", "static");
+			//this._positionCopyNode(copyNode, "in");
 		}
 		//this._showInjectAction( module );
 
@@ -105,7 +107,11 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
 		//this.parentContainer.node.setStyles({"border": "1px solid #ffa200"});
 		var copyNode = module._getCopyNode();
 		copyNode.inject(this.node, "before");
+		this._positionCopyNode(copyNode);
 	},
+
+
+
 	_getSubModule: function(){
 		var modules = [];
 		var subNode = this.node.getFirst();
@@ -122,7 +128,6 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
 		return modules;
 	},
     load : function(json, node, parent){
-
         this.json = json;
         this.node= node;
         this.node.store("module", this);
@@ -133,6 +138,14 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
 
         this._initModule();
         this._loadTreeNode(parent);
+
+		if (!this.json.id){
+			var id = this._getNewId(((parent) ? parent.json.id : null));
+			this.json.id = id;
+		}
+		if (!this.form.json.moduleList[this.json.id]){
+			this.form.json.moduleList[this.json.id] = this.json;
+		}
 
         this.parseModules();
 
