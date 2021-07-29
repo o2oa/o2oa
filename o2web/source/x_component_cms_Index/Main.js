@@ -687,15 +687,27 @@ MWF.xApplication.cms.Index.Column = new Class({
 			"title" : data.title,
 			"styles" : this.app.css.documentItem
 		}).inject(this.documentList);
+
+		var topNode;
+		if( data.isTop ){
+			documentItem.setStyles( this.app.css.documentItem_top );
+			new Element("div.topNode", {
+				styles : this.app.css.documentTopNode
+			}).inject(documentItem)
+		}
 		documentItem.store("documentId",data.id);
 		documentItem.addEvents({
 			"mouseover" : function(){
 				this.setStyles(_self.app.css.documentItem_over);
 				this.addClass("mainColor_color");
+				var topNode = this.getElement(".topNode");
+				if(topNode)topNode.addClass("mainColor_bg").setStyles(_self.app.css.documentTopNode_over);
 			},
 			"mouseout" : function(){
 				this.setStyles(_self.app.css.documentItem);
 				this.removeClass("mainColor_color");
+				var topNode = this.getElement(".topNode");
+				if(topNode)topNode.removeClass("mainColor_bg").setStyles(_self.app.css.documentTopNode);
 			},
 			"click" : function(){
 				var documentId = this.retrieve("documentId");
