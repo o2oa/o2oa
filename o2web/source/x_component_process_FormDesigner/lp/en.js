@@ -951,7 +951,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         "ckeditConfigInfor4": "For more configuration, please check the official website of Ckeditor",
         "ckeditConfigInfor5": "https://ckeditor.com/ckeditor-4/",
-        "ckeditConfigInfor6": "Note: After the editor properties are customized, the text format may no longer meet the national party and government agency official document format standards"
+        "ckeditConfigInfor6": "Note: After the editor properties are customized, the text format may no longer meet the national party and government agency official document format standards",
+        "showRead": "Show Read"
     },
     "actionBar": {
         "close":"Close",
