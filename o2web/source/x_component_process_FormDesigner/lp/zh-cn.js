@@ -945,7 +945,18 @@ MWF.xApplication.process.FormDesigner.LP = {
         "notShow": "不显示",
 
         "insertDataTemplate": "插入数据模板",
-        "widthModules": "带相关组件插入"
+        "widthModules": "带相关组件插入",
+
+        "ckeditConfig": "编辑器配置",
+
+        "ckeditConfigInfor": "返回编辑器配置的json对象",
+        "ckeditConfigInfor1": "可以通过以下链接配置编辑器工具栏功能：",
+        "ckeditConfigInfor2": "../o2_lib/htmleditor/ckeditor4161/samples/toolbarconfigurator/index.html",
+        "ckeditConfigInfor3": "点击此处",
+
+        "ckeditConfigInfor4": "更多配置请查看Ckeditor官方网站",
+        "ckeditConfigInfor5": "https://ckeditor.com/ckeditor-4/",
+        "ckeditConfigInfor6": "注意：自定义了编辑器属性后，正文格式有可能不再符合国家党政机关公文格式标准"
     },
     "actionBar": {
         "close":"关闭",
