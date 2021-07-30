@@ -409,7 +409,7 @@ MWF.xApplication.Attendance.Navi = new Class({
 		this.scrollNode = new Element("div.naviScrollNode", { "styles": this.css.naviScrollNode }).inject(this.node);
 		this.areaNode = new Element("div.naviAreaNode", { "styles": this.css.naviAreaNode }).inject(this.scrollNode);
 
-		this.setNodeScroll();
+		// this.setNodeScroll();
 
 		var naviUrl = this.app.path + "navi.json";
 		MWF.getJSON(naviUrl, function (json) {
@@ -428,21 +428,22 @@ MWF.xApplication.Attendance.Navi = new Class({
 					this.createNaviNode(navi);
 				}
 			}.bind(this));
-			if (this.options.id == "") this.elements[0].click();
+
+			if (this.options.id == "") this.elements[1].click();
 
 			this.setContentSize();
 
 			this.app.addEvent("resize", this.setContentSize.bind(this));
 		}.bind(this));
 	},
-	setNodeScroll: function () {
-		MWF.require("MWF.widget.DragScroll", function () {
-			new MWF.widget.DragScroll(this.scrollNode);
-		}.bind(this));
-		MWF.require("MWF.widget.ScrollBar", function () {
-			new MWF.widget.ScrollBar(this.scrollNode, { "indent": false });
-		}.bind(this));
-	},
+	// setNodeScroll: function () {
+	// 	MWF.require("MWF.widget.DragScroll", function () {
+	// 		new MWF.widget.DragScroll(this.scrollNode);
+	// 	}.bind(this));
+	// 	MWF.require("MWF.widget.ScrollBar", function () {
+	// 		new MWF.widget.ScrollBar(this.scrollNode, { "indent": false });
+	// 	}.bind(this));
+	// },
 	createNaviNode: function (data) {
 		if (data.type == "sep") {
 			var flag = true;
@@ -487,9 +488,9 @@ MWF.xApplication.Attendance.Navi = new Class({
 
 		menuNode.addEvents({
 			"mouseover": function () { if (_self.currentMenu != this) this.setStyles(_self.app.css.naviMenuNode_over); },
-			"mouseout": function () { if (_self.currentMenu != this) this.setStyles(_self.app.css.naviMenuNode); },
-			"mousedown": function () { if (_self.currentMenu != this) this.setStyles(_self.app.css.naviMenuNode_down); },
-			"mouseup": function () { if (_self.currentMenu != this) this.setStyles(_self.app.css.naviMenuNode_over); },
+			"mouseout": function () { if (_self.currentMenu != this) this.setStyles(_self.app.css.naviMenuNode_normal); },
+			// "mousedown": function () { if (_self.currentMenu != this) this.setStyles(_self.app.css.naviMenuNode_down); },
+			// "mouseup": function () { if (_self.currentMenu != this) this.setStyles(_self.app.css.naviMenuNode_over); },
 			"click": function () {
 				//if (_self.currentNavi!=this) _self.doAction.apply(_self, [this]);
 				_self.clickMenu.apply(_self, [this]);
@@ -504,30 +505,34 @@ MWF.xApplication.Attendance.Navi = new Class({
 		var navi = naviNode.retrieve("data");
 		var action = navi.action;
 
-		this.closeCurrentMenu();
+		var collapse = naviNode.retrieve("collapse");
+
+		// this.closeCurrentMenu();
 		if (this.menus[navi.id].itemNodes) {
 			this.menus[navi.id].itemNodes.each(function (itemNode) {
-				itemNode.setStyle("display", "block");
+				itemNode.setStyle("display", collapse ? "block" : "none");
 			})
 		}
 
-		var type = naviNode.retrieve("type");
+		// var type = naviNode.retrieve("type");
 		if (!navi.target || navi.target != "_blank") {
-			naviNode.setStyles(this.css.naviMenuNode_current);
-			this.currentMenu = naviNode;
+			naviNode.setStyles(collapse ? this.css.naviMenuNode : this.css.naviMenuNode_collapse );
+			// this.currentMenu = naviNode;
 		}
+
+		naviNode.store("collapse", !collapse);
 	},
-	closeCurrentMenu: function () {
-		if (this.currentMenu) {
-			var data = this.currentMenu.retrieve("data");
-			if (this.menus[data.id].itemNodes) {
-				this.menus[data.id].itemNodes.each(function (itemNode) {
-					itemNode.setStyle("display", "none");
-				})
-			}
-			this.currentMenu.setStyles(this.css.naviMenuNode);
-		}
-	},
+	// closeCurrentMenu: function () {
+	// 	if (this.currentMenu) {
+	// 		var data = this.currentMenu.retrieve("data");
+	// 		if (this.menus[data.id].itemNodes) {
+	// 			this.menus[data.id].itemNodes.each(function (itemNode) {
+	// 				itemNode.setStyle("display", "none");
+	// 			})
+	// 		}
+	// 		this.currentMenu.setStyles(this.css.naviMenuNode);
+	// 	}
+	// },
 	createNaviItemNode: function (data, menuId) {
 
 		if (data.access == "admin") {

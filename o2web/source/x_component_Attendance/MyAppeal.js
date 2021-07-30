@@ -37,7 +37,7 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
     loadFilter: function(){
         var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
-            "styles" : this.css.fileterNode
+            "styles" : this.app.css.fileterNode
         }).inject(this.node);
 
         var html = "<table bordr='0' cellpadding='5' cellspacing='0' style='font-size: 14px;color:#666'>"+
@@ -57,6 +57,7 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
 
         MWF.xDesktop.requireApp("Template", "MForm", function(){
             this.form = new MForm( this.fileterNode, {}, {
+                style: "attendance",
                 isEdited : true,
                 itemTemplate : {
                     yearString : {
@@ -112,7 +113,7 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
                             }.bind(this)
                         }}
                 }
-            }, this.app, this.css);
+            }, this.app, this.app.css);
             this.form.load();
         }.bind(this), true);
     },

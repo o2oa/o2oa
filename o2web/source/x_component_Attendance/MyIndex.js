@@ -3,6 +3,7 @@ MWF.xApplication.Attendance = MWF.xApplication.Attendance || {};
 MWF.require("MWF.xAction.org.express.RestActions", null,false);
 MWF.xDesktop.requireApp("Attendance", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("Attendance", "Common", null, false);
+MWF.xDesktop.requireApp("Attendance", "widget.Calendar", null, false);
 
 MWF.xApplication.Attendance.MyIndex = new Class({
     Extends: MWF.widget.Common,
@@ -252,7 +253,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
                     document.body.addEvent("mousedown", function(){ this.scheduleNode.setStyle("display","none")}.bind(this));
                     var d = data[0];
                     var table = new Element("table", {
-                        "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.filterTable, "class" : "filterTable"
+                        "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "class" : "filterTable"
                     }).inject( this.scheduleNode );
                     var tr = new Element("tr").inject(table);
                     new Element("td",{ "text" : this.lp.scheduleTable , "styles" : this.css.scheduleTdHead, "colspan" : "2"  }).inject(tr);

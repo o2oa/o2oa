@@ -86,53 +86,63 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             }.bind(this));
     },
     loadFilter : function(){
-        this.fileterNode = new Element("div.fileterNode", {
-            "styles" : this.css.fileterNode
-        }).inject(this.node);
 
-        var table = new Element("table", {
-            "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.filterTable, "class" : "filterTable"
-        }).inject( this.fileterNode );
-        var tr = new Element("tr").inject(table);
+        this.loadFilterStyle(function( css ) {
+            this.filterFormCss = css;
 
-        //var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.preMonthDate.format(this.app.lp.dateFormatMonth)  }).inject(tr);
+            this.fileterNode = new Element("div.fileterNode", {
+                "styles": this.app.css.fileterNode
+            }).inject(this.node);
 
-        this.createYearSelectTd( tr );
-        this.createMonthSelectTd( tr );
-        this.createStatusSelectTd(tr);
-        this.createAppealReasonTd(tr);
-        this.createUnitTd(tr);
-        this.createPersonTd( tr );
-        this.createActionTd( tr );
+            var table = new Element("table", {
+                "border": "0",
+                "cellpadding": "5",
+                "cellspacing": "0",
+                "styles": this.app.css.filterTable,
+                "class": "filterTable",
+            }).inject(this.fileterNode);
+            var tr = new Element("tr").inject(table);
+
+            //var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.preMonthDate.format(this.app.lp.dateFormatMonth)  }).inject(tr);
+
+            this.createYearSelectTd(tr);
+            this.createMonthSelectTd(tr);
+            this.createStatusSelectTd(tr);
+            this.createAppealReasonTd(tr);
+            this.createUnitTd(tr);
+            this.createPersonTd(tr);
+            this.createActionTd(tr);
+
+        }.bind(this))
     },
     createStatusSelectTd : function( tr ){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.auditStatus  }).inject(tr);
-        var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableTitle, "text" : this.app.lp.auditStatus  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableValue }).inject(tr);
         this.status = new MDomItem( td, {
             "name" : "status",
             "type" : "select",
             "value" : "0",
             "selectText" : this.app.lp.auditStatusSelectText,
             "selectValue" :["999","0","1","-1"]
-        }, true, this.app );
+        }, true, this.app, this.filterFormCss );
         this.status.load();
     },
     createAppealReasonTd : function( tr ){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.appealReason  }).inject(tr);
-        var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableTitle, "text" : this.app.lp.appealReason  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableValue }).inject(tr);
         this.appealReason = new MDomItem( td, {
             "name" : "appealReason",
             "type" : "select",
             "selectText" : this.app.lp.appealReasonSelectText
-        }, true, this.app );
+        }, true, this.app, this.filterFormCss );
         this.appealReason.load();
     },
     createUnitTd : function(tr){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.department  }).inject(tr);
-        var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableTitle, "text" : this.app.lp.department  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableValue }).inject(tr);
         this.unitName = new MDomItem( td, {
             "name" : "unitName",
             "style" : {"width":"60px"},
@@ -140,26 +150,26 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             "event" : {
                 "click" : function(mdi){ _self.selecePerson( mdi, "unit" ); }
             }
-        }, true, this.app );
+        }, true, this.app, this.filterFormCss );
         this.unitName.load();
     },
     createPersonTd : function(tr){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.person }).inject(tr);
-        var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableTitle, "text" : this.app.lp.person }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableValue }).inject(tr);
         this.empName = new MDomItem( td, {
             "name" : "empName",
             "style" : {"width":"60px"},
             "event" : {
                 "click" : function(mdi){ _self.selecePerson( mdi, "person" ); }
             }
-        }, true, this.app );
+        }, true, this.app, this.filterFormCss );
         this.empName.load();
     },
     createYearSelectTd : function( tr ){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.annuaal  }).inject(tr);
-        var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableTitle, "text" : this.app.lp.annuaal  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableValue }).inject(tr);
         this.yearString = new MDomItem( td, {
             "name" : "yearString",
             "type" : "select",
@@ -171,25 +181,25 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
                 }
                 return years;
             }
-        }, true, this.app );
+        }, true, this.app, this.filterFormCss );
         this.yearString.load();
     },
     createMonthSelectTd : function( tr ){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : this.app.lp.months  }).inject(tr);
-        var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableTitle, "text" : this.app.lp.months  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableValue }).inject(tr);
         this.monthString = new MDomItem( td, {
             "name" : "monthString",
             "type" : "select",
             "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"]
-        }, true, this.app );
+        }, true, this.app , this.filterFormCss);
         this.monthString.load();
     },
     createActionTd : function( tr ){
-        var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableValue }).inject(tr);
         var input = new Element("button",{
             "text" : this.app.lp.search,
-            "styles" : this.css.filterButton
+            "styles" : this.app.css.filterButton
         }).inject(td);
         input.addEvent("click", function(){
             /*var year = this.preMonthDate.getFullYear().toString();

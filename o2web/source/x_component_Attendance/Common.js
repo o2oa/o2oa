@@ -92,6 +92,7 @@ MWF.xApplication.Attendance.Calendar = new Class({
     }
 });
 
+
 MWF.xApplication.Attendance.Echarts = new Class({
     Implements: [Options, Events],
     options :{

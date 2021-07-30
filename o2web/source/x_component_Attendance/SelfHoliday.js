@@ -29,7 +29,7 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
     },
     loadFilter : function(){
         this.fileterNode = new Element("div.fileterNode", {
-            "styles" : this.css.fileterNode
+            "styles" : this.app.css.fileterNode
         }).inject(this.node);
 
         this._loadFilterContent();
@@ -60,7 +60,7 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
 
         MWF.xDesktop.requireApp("Template", "MForm", function(){
             this.filter = new MForm( this.fileterNode,  {}, {
-                style : "filter",
+                style: "attendance",
                 isEdited : true,
                 itemTemplate : {
                     q_topUnitName : { "text" : lp.selectCompany, "type" : "org", "orgType" : "unit", style : {"min-width" : "200px"} , event: {
@@ -82,7 +82,7 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
                         }.bind(this)}
                     }
                 }
-            }, this.app, this.css);
+            }, this.app, this.app.css);
             this.filter.load();
         }.bind(this), true);
     },
