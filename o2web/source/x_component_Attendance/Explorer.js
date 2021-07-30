@@ -46,7 +46,7 @@ MWF.xApplication.Attendance.Explorer = new Class({
         delete  this;
     },
     loadToolbar: function(){
-        this.toolbarNode = new Element("div", {"styles": this.css.toolbarNode});
+        this.toolbarNode = new Element("div", {"styles": this.css.toolbarNode || this.app.css.toolbarNode});
         this.toolbarNode.inject(this.node);
 
         var toolbarUrl = this.path+"toolbar.json";
@@ -68,14 +68,14 @@ MWF.xApplication.Attendance.Explorer = new Class({
 
         if( tool.icon ){
             var iconNode =  new Element("div", {
-                "styles": this.css.toolbarItemIconNode
+                "styles": this.css.toolbarItemIconNode || this.app.css.toolbarItemIconNode
             }).inject(toolItemNode);
             iconNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/"+tool.icon+")");
         }
 
         if( tool.title ){
             var textNode =  new Element("div", {
-                "styles": this.css.toolbarItemTextNode,
+                "styles": this.css.toolbarItemTextNode || this.app.css.toolbarItemTextNode,
                 "text": tool.title
             });
             if( tool.text )textNode.set("title", tool.text);
@@ -100,7 +100,7 @@ MWF.xApplication.Attendance.Explorer = new Class({
     },
     loadContentNode: function(){
         this.elementContentNode = new Element("div.elementContentNode", {
-            "styles": this.css.elementContentNode
+            "styles": this.css.elementContentNode || this.app.css.elementContentNode
         }).inject(this.node);
         this.app.addEvent("resize", function(){this.setContentSize();}.bind(this));
 
@@ -133,32 +133,72 @@ MWF.xApplication.Attendance.Explorer = new Class({
     _setContentSize: function(){
 
     },
-    setNodeScroll: function(){
-        var _self = this;
-        MWF.require("MWF.widget.ScrollBar", function(){
-            new MWF.widget.ScrollBar(this.elementContentNode, {
-                "indent": false,"style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
-                "onScroll": function(y){
-                    var scrollSize = _self.elementContentNode.getScrollSize();
-                    var clientSize = _self.elementContentNode.getSize();
-                    var scrollHeight = scrollSize.y-clientSize.y;
-                    if (y+200>scrollHeight) {
-                        if (!_self.view.isItemsLoaded) _self.view.loadElementList();
-                    }
+    loadFilterStyle: function(callback){
+        var path = "../x_component_Template/$MForm/attendance/css.wcss";
+        var key = encodeURIComponent(path);
+        var css;
+        if (o2.widget.css[key]){
+            css = o2.widget.css[key];
+            if(callback)callback(css);
+        }else{
+            path = (this.cssPath.indexOf("?")!=-1) ? path+"&v="+o2.version.v : path+"?v="+o2.version.v;
+            var r = new Request.JSON({
+                url: o2.filterUrl(path),
+                secure: false,
+                async: true,
+                method: "get",
+                noCache: false,
+                onSuccess: function(responseJSON, responseText){
+                    css = responseJSON;
+                    o2.widget.css[key] = responseJSON;
+                    if(callback)callback(css);
+                }.bind(this),
+                onError: function(text, error){
+                    alert(error + text);
                 }
             });
-        }.bind(this));
+            r.send();
+        }
+    },
+    setNodeScroll: function(){
+        var _self = this;
+        var container = this.elementContentNode;
+        container.setStyle("overflow","auto");
+        this.scrollContainerFun = function(){
+            var scrollSize = container.getScrollSize();
+            var clientSize = container.getSize();
+            var scrollHeight = scrollSize.y - clientSize.y;
+            if (container.scrollTop + 150 > scrollHeight ) {
+                if (!this.view.isItemsLoaded) this.view.loadElementList();
+            }
+        }.bind(this);
+        container.addEvent("scroll", this.scrollContainerFun )
+
+        // var _self = this;
+        // MWF.require("MWF.widget.ScrollBar", function(){
+        //     new MWF.widget.ScrollBar(this.elementContentNode, {
+        //         "indent": false,"style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
+        //         "onScroll": function(y){
+        //             var scrollSize = _self.elementContentNode.getScrollSize();
+        //             var clientSize = _self.elementContentNode.getSize();
+        //             var scrollHeight = scrollSize.y-clientSize.y;
+        //             if (y+200>scrollHeight) {
+        //                 if (!_self.view.isItemsLoaded) _self.view.loadElementList();
+        //             }
+        //         }
+        //     });
+        // }.bind(this));
     }
 });
 
 
 MWF.xApplication.Attendance.Explorer.View = new Class({
 
-    initialize: function( container, app,explorer, searchKey ){
+    initialize: function( container, app, explorer, searchKey, css ){
         this.container = container;
         this.app = app;
         this.explorer = explorer;
-        this.css = explorer.css;
+        this.css = this.explorer.css;
         this.actions = explorer.actions;
         this.searchKey = searchKey;
 
@@ -177,7 +217,7 @@ MWF.xApplication.Attendance.Explorer.View = new Class({
         this.initData();
 
         this.node = new Element("div", {
-            "styles": this.css.elementContentListNode
+            "styles": this.css.elementContentListNode || this.app.css.elementContentListNode
         }).inject(this.container);
 
         this.table = new Element("table",{ "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "class" : "editTable"}).inject(this.node);
@@ -205,7 +245,7 @@ MWF.xApplication.Attendance.Explorer.View = new Class({
     reload: function(){
         this.clear();
         this.node = new Element("div", {
-            "styles": this.css.elementContentListNode
+            "styles": this.css.elementContentListNode || this.app.css.elementContentListNode
         }).inject(this.container);
         this.table = new Element("table",{ "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "class" : "editTable"}).inject(this.node);
         this.createListHead();
@@ -227,7 +267,7 @@ MWF.xApplication.Attendance.Explorer.View = new Class({
     },
     createListHead : function(){
         var _self = this;
-        var headNode = new Element("tr", {"styles": this.css.listHeadNode}).inject(this.table);
+        var headNode = new Element("tr", {"styles": this.css.listHeadNode || this.app.css.listHeadNode}).inject(this.table);
         MWF.getJSON( this.listItemUrl, function(json){
             this.listItemTemplate = json;
             json.each(function(cell){
@@ -239,7 +279,7 @@ MWF.xApplication.Attendance.Explorer.View = new Class({
                 }
                 if(isShow) {
                     var th = new Element("th", {
-                        "styles": this.css[cell.headStyles],
+                        "styles": this.css[cell.headStyles] || this.app.css[cell.headStyles],
                         "text": cell.title,
                         "width": cell.width
                     }).inject(headNode);
@@ -260,11 +300,11 @@ MWF.xApplication.Attendance.Explorer.View = new Class({
                         if( this.sortField  == cell.name && this.sortType!="" ){
                             th.store("sortType",this.sortType);
                             this.sortIconNode = new Element("div",{
-                                "styles": this.sortType == "asc" ? this.css.sortIconNode_asc : this.css.sortIconNode_desc
+                                "styles": this.sortType == "asc" ?  (this.css.sortIconNode_asc || this.app.css.sortIconNode_asc) : (this.css.sortIconNode_desc || this.app.css.sortIconNode_desc)
                             }).inject( th, "top" );
                         }else{
                             th.store("sortType","");
-                            this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "top" );
+                            this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode || this.app.css.sortIconNode}).inject( th, "top" );
                         }
                         th.setStyle("cursor","pointer");
                         th.addEvent("click",function(){
@@ -391,7 +431,7 @@ MWF.xApplication.Attendance.Explorer.Document = new Class({
     },
 
     load: function(){
-        this.node = new Element("tr", {"styles": this.css.documentItemNode});
+        this.node = new Element("tr", {"styles": this.css.documentItemNode || this.app.css.documentItemNode});
 
         this.node.inject(this.container);
 
@@ -415,7 +455,7 @@ MWF.xApplication.Attendance.Explorer.Document = new Class({
                     value = this.data[cell.item] ? this.data[cell.item] : "";
                 }
                 var td = this[cell.name] = new Element("td",{
-                    "styles":this.css[cell.contentStyles],
+                    "styles":this.css[cell.contentStyles] || this.app.css[cell.contentStyles],
                     "text" : value
                 }).inject(this.node);
                 if( cell.name == "actions" && typeOf( cell.sub )=="array"){
@@ -444,36 +484,17 @@ MWF.xApplication.Attendance.Explorer.Document = new Class({
         }.bind(this));
 
         this.node.addEvents({
-            "mouseover": function(){if (!this.readyRemove) this.node.setStyles(this.css.documentItemDocumentNode_over);}.bind(this),
-            "mouseout": function(){if (!this.readyRemove) this.node.setStyles(this.css.documentItemDocumentNode);}.bind(this),
+            "mouseover": function(){if (!this.readyRemove) {
+                this.node.setStyles(this.css.documentItemDocumentNode_over || this.app.css.documentItemDocumentNode_over);
+            }}.bind(this),
+            "mouseout": function(){if (!this.readyRemove){
+                this.node.setStyles(this.css.documentItemDocumentNode || this.app.css.documentItemDocumentNode);
+            }}.bind(this),
             "click": function(e){
                 this.openDocument(e);
             }.bind(this)
         });
     },
-    //setEvents: function(){
-    //
-    //    this.node.addEvents({
-    //        "mouseover": function(){if (!this.readyRemove) this.node.setStyles(this.css.documentItemDocumentNode_over);}.bind(this),
-    //        "mouseout": function(){if (!this.readyRemove) this.node.setStyles(this.css.documentItemDocumentNode);}.bind(this),
-    //        "click": function(e){
-    //            this.openDocument(e);
-    //        }.bind(this)
-    //    });
-    //
-    //    if (this.deleteNode){
-    //        this.deleteNode.addEvents({
-    //            "mouseover": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
-    //            "mouseout": function(){this.deleteNode.setStyles(this.css.actionDeleteNode);}.bind(this),
-    //            "mousedown": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_down);}.bind(this),
-    //            "mouseup": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
-    //            "click": function(e){
-    //                this.remove(e);
-    //                e.stopPropagation();
-    //            }.bind(this)
-    //        });
-    //    }
-    //},
     setActions: function( actionsNode, data ){
         var _self = this;
         data.each(function( d ){
@@ -490,13 +511,13 @@ MWF.xApplication.Attendance.Explorer.Document = new Class({
 
             var node = this[d.action+"Node"] = new Element("div", {"title": d.title}).inject(actionsNode);
             var styles, overStyles, downStyles;
-            if( typeOf( d.styles) == "string" ) styles = this.css[d.styles];
+            if( typeOf( d.styles) == "string" ) styles = this.css[d.styles] || this.app.css[d.styles];
             if( typeOf(d.styles) == "object" ) styles = d.styles;
 
-            if( typeOf( d.overStyles) == "string" ) overStyles = this.css[d.overStyles];
+            if( typeOf( d.overStyles) == "string" ) overStyles = this.css[d.overStyles] || this.app.css[d.overStyles];
             if( typeOf(d.overStyles) == "object" ) overStyles = d.overStyles;
 
-            if( typeOf( d.downStyles) == "string" ) downStyles = this.css[d.downStyles];
+            if( typeOf( d.downStyles) == "string" ) downStyles = this.css[d.downStyles] || this.app.css[d.downStyles];
             if( typeOf(d.downStyles) == "object" ) downStyles = d.downStyles;
 
             if( styles  )node.setStyles( styles );
@@ -532,7 +553,7 @@ MWF.xApplication.Attendance.Explorer.Document = new Class({
         var lp = this.app.lp;
         var text = lp.deleteDocument.replace(/{title}/g, this.data.title);
         var _self = this;
-        this.node.setStyles(this.css.documentItemDocumentNode_remove);
+        this.node.setStyles(this.css.documentItemDocumentNode_remove || this.app.css.documentItemDocumentNode_remove);
         this.readyRemove = true;
         this.explorer.app.confirm("warn", e, lp.deleteDocumentTitle, text, 350, 120, function(){
 
@@ -555,7 +576,7 @@ MWF.xApplication.Attendance.Explorer.Document = new Class({
             //    this.content.getElement("#deleteDocument_checkInfor").set("text", lp.deleteAllDocumentCheck).setStyle("color", "red");
             //}
         }, function(){
-            _self.node.setStyles(_self.css.documentItemDocumentNode);
+            _self.node.setStyles(_self.css.documentItemDocumentNode || _self.app.css.documentItemDocumentNode);
             _self.readyRemove = false;
             this.close();
         });
@@ -601,7 +622,7 @@ MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
     },
     _open : function(){
         this.formMaskNode = new Element("div", {
-            "styles": this.css.formMaskNode,
+            "styles": this.css.formMaskNode || this.app.css.formMaskNode,
             "events": {
                 "mouseover": function(e){e.stopPropagation();},
                 "mouseout": function(e){e.stopPropagation();}
@@ -609,7 +630,7 @@ MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
         }).inject(this.app.content, "after");
 
         this.formAreaNode = new Element("div", {
-            "styles": this.css.formAreaNode
+            "styles": this.css.formAreaNode || this.app.css.formAreaNode
         });
 
         this.createFormNode();
@@ -625,24 +646,24 @@ MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
         var _self = this;
 
         this.formNode = new Element("div", {
-            "styles": this.css.formNode
+            "styles": this.css.formNode || this.app.css.formNode
         }).inject(this.formAreaNode);
 
         this.formIconNode = new Element("div", {
-            "styles": this.isNew ? this.css.formNewNode : this.css.formIconNode
+            "styles": this.isNew ? ( this.css.formNewNode || this.app.css.formNewNode) : ( this.css.formIconNode || this.app.css.formIconNode )
         }).inject(this.formNode);
 
 
         this.formFormNode = new Element("div", {
-            "styles": this.css.formFormNode
+            "styles": this.css.formFormNode || this.app.css.formFormNode
         }).inject(this.formNode);
 
         this.formTableContainer = new Element("div", {
-            "styles": this.css.formTableContainer
+            "styles": this.css.formTableContainer || this.app.css.formTableContainer
         }).inject(this.formFormNode);
 
         this.formTableArea = new Element("div", {
-            "styles": this.css.formTableArea
+            "styles": this.css.formTableArea || this.app.css.formTableArea
         }).inject(this.formTableContainer);
 
 
@@ -759,7 +780,7 @@ MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
     //},
     _createAction : function(){
         this.cancelActionNode = new Element("div", {
-            "styles": this.css.formCancelActionNode,
+            "styles": this.css.formCancelActionNode || this.app.css.formCancelActionNode,
             "text": this.app.lp.cancel
         }).inject(this.formFormNode);
 
@@ -770,7 +791,7 @@ MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
         if( this.isNew || this.isEdited){
 
             this.okActionNode = new Element("div", {
-                "styles": this.css.formOkActionNode,
+                "styles": this.css.formOkActionNode || this.app.css.formOkActionNode,
                 "text": this.app.lp.ok
             }).inject(this.formFormNode);
 

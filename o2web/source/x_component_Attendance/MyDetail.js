@@ -149,10 +149,10 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
     loadFilter: function(){
         var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
-            "styles" : this.css.fileterNode
+            "styles" : this.app.css.fileterNode
         }).inject(this.node);
 
-        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='filterTable'>"+
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='filterTable' style='width: 900px;'>"+
             "<tr>" +
             "    <td styles='filterTableTitle' lable='cycleYear'></td>"+
             "    <td styles='filterTableValue' item='cycleYear'></td>" +
@@ -173,6 +173,7 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
 
         MWF.xDesktop.requireApp("Template", "MForm", function(){
             this.form = new MForm( this.fileterNode, {}, {
+                style: "attendance",
                 isEdited : true,
                 itemTemplate : {
                     cycleYear : {
@@ -247,7 +248,7 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
                             }.bind(this)
                         }}
                 }
-            }, this.app, this.css);
+            }, this.app, this.app.css);
             this.form.load();
         }.bind(this), true);
     },
@@ -506,25 +507,31 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
         this.loadView( filterData );
     },
     loadFilter : function(){
-        this.fileterNode = new Element("div.fileterNode", {
-            "styles" : this.css.fileterNode
-        }).inject(this.node);
+        this.loadFilterStyle(function( css ){
+            this.filterFormCss = css;
 
-        var table = new Element("table", {
-            "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.filterTable, "class" : "filterTable"
-        }).inject( this.fileterNode );
-        table.setStyle("width","360px");
-        var tr = new Element("tr").inject(table);
+            this.fileterNode = new Element("div.fileterNode", {
+                "styles" : this.app.css.fileterNode
+            }).inject(this.node);
 
-        this.createYearSelectTd( tr );
-        this.createMonthSelectTd( tr );
-        //this.createDateSelectTd( tr )
-        this.createActionTd( tr )
+            var table = new Element("table", {
+                "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.app.css.filterTable, "class" : "filterTable"
+            }).inject( this.fileterNode );
+            table.setStyle("width","360px");
+            var tr = new Element("tr").inject(table);
+
+            this.createYearSelectTd( tr );
+            this.createMonthSelectTd( tr );
+            //this.createDateSelectTd( tr )
+            this.createActionTd( tr )
+
+        }.bind(this))
+
     },
     createMonthSelectTd : function( tr ){
         var _self = this;
-        var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : MWF.xApplication.Attendance.LP.months  }).inject(tr);
-        var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableTitle, "text" : MWF.xApplication.Attendance.LP.months  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableValue }).inject(tr);
         this.cycleMonth = new MDomItem( td, {
             "name" : "cycleMonth",
             "type" : "select",
@@ -532,14 +539,14 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
             "event" : {
                 "change" : function(){ if(_self.dateSelecterTd)_self.createDateSelectTd() }
             }
-        }, true, this.app );
+        }, true, this.app, this.filterFormCss );
         this.cycleMonth.load();
     },
     createActionTd : function( tr ){
-        var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableValue }).inject(tr);
         var input = new Element("button",{
             "text" : MWF.xApplication.Attendance.LP.query,
-            "styles" : this.css.filterButton
+            "styles" : this.app.css.filterButton
         }).inject(td);
         input.addEvent("click", function(){
             //var filterData = {
