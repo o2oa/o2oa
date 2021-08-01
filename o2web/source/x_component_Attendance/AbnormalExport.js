@@ -18,7 +18,7 @@ MWF.xApplication.Attendance.AbnormalExport = new Class({
         if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
     },
     load: function(){
-        this.loadToolbar();
+        // this.loadToolbar();
         this.loadFilter();
         this.loadContentNode();
 
@@ -27,12 +27,12 @@ MWF.xApplication.Attendance.AbnormalExport = new Class({
 
     },
     loadFilter : function(){
+        this.fileterNode = new Element("div.fileterNode", {
+            "styles": this.app.css.fileterNode
+        }).inject(this.node);
+
         this.loadFilterStyle( function( css ) {
             this.filterFormCss = css;
-
-            this.fileterNode = new Element("div.fileterNode", {
-                "styles": this.app.css.fileterNode
-            }).inject(this.node);
 
             var table = new Element("table", {
                 "width": "100%",

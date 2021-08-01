@@ -122,7 +122,7 @@ MWF.xApplication.Attendance.TopUnitDetail.Explorer = new Class({
                 style: "attendance",
                 isEdited : true,
                 itemTemplate : {
-                    q_topUnitName : { text : lp.topUnit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "200px" } },
+                    q_topUnitName : { text : lp.topUnit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "100px" } },
                     cycleYear : {
                         text : lp.annuaal,
                         "type" : "select",
@@ -497,7 +497,7 @@ MWF.xApplication.Attendance.TopUnitDetail.DetailStaticExplorer = new Class({
                 style: "attendance",
                 isEdited : true,
                 itemTemplate : {
-                    q_topUnitName : { text : lp.topUnit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "200px" } },
+                    q_topUnitName : { text : lp.topUnit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "100px" } },
                     cycleYear : {
                         text : lp.annuaal,
                         "type" : "select",

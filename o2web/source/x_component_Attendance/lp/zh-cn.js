@@ -218,6 +218,8 @@ MWF.xApplication.Attendance.LP = {
 	"close": "关闭",
 	"disagree": "不同意",
 	"agree": "同意",
+	"batchDisagree": "批量不同意",
+	"batchAgree": "批量同意",
 	"temporaryLeave": "临时请假",
 	"out": "出差",
 	"businessTrip": "因公外出",
@@ -384,7 +386,8 @@ MWF.xApplication.Attendance.LP = {
 	"statData": "统计考勤数据",
 	"analyzeData": "分析考勤数据",
 	"viewDescription": "查看说明",
-	"myAppealTitleText": "请在“我的考勤统计 -> 我的出勤明细”提出申述",
+	//"myAppealTitleText": "请在“我的考勤统计 -> 我的出勤明细”提出申述",
+	"myAppealTitleText": "请在“我的考勤统计”提出申述",
 
 	"createManager": "新建管理员配置",
 	"createPersonConfig": "新增考勤人员配置",

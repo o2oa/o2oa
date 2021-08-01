@@ -67,6 +67,7 @@ MWF.xApplication.Attendance.AddressExplorer = new Class({
         }.bind(this))
     },
     createList: function( data ){
+        var _self = this;
         this.wdList = new Element("div", {
             styles : this.css.wdList
         }).inject( this.wpContent );
@@ -74,13 +75,21 @@ MWF.xApplication.Attendance.AddressExplorer = new Class({
 
         data.each( function( d ){
             var placeItem = new Element( "div", {
-                styles : this.css.toolbarContentItem,
+                styles : this.app.css.toolbarContentItem,
                 text : d.placeName
             }).inject( this.wdList );
-            placeItem.addEvent( "click" , function(e){
-                this.obj.baiduMap.gotoMarker( this.data );
-                e.stopPropagation();
-            }.bind({ obj : this, data : d }) )
+            placeItem.addEvents( {
+                "mouseover": function () {
+                    this.setStyles( _self.app.css.toolbarItemNode_over );
+                },
+                "mouseout": function () {
+                    this.setStyles( _self.app.css.toolbarItemNode_normal );
+                },
+                "click": function(e){
+                    this.obj.baiduMap.gotoMarker( this.data );
+                    e.stopPropagation();
+                }.bind({ obj : this, data : d })
+            })
         }.bind(this) );
 
         this.arrow = "up";
@@ -422,7 +431,7 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
         };
         if(id)data.id = id;
         this.actions.saveWorkplace( data, function( json ){
-            data.id = json.data.message;
+            data.id = json.data.id;
             mkr.closeInfoWindow();
             mkr.remove();
             this.addMarker( data );

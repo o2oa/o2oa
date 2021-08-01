@@ -19,6 +19,9 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
         if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
     },
     load: function(){
+        this.topNode = new Element("div", {
+            "styles" : this.css.topNode
+        }).inject(this.node);
         this.loadToolbar();
         this.loadFilter();
         this.loadContentNode();
@@ -34,11 +37,23 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
         this.setNodeScroll();
 
     },
+    loadToolbar: function(){
+        this.toolbarNode = new Element("div", {"styles": this.css.toolbarNode || this.app.css.toolbarNode});
+        this.toolbarNode.inject(this.topNode);
+
+        var toolbarUrl = this.path+"toolbar.json";
+        MWF.getJSON(toolbarUrl, function(json){
+            json.each(function(tool){
+                this.createToolbarItemNode(tool);
+            }.bind(this));
+        }.bind(this));
+        //this.createSearchElementNode();
+    },
     loadFilter: function(){
         var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
-            "styles" : this.app.css.fileterNode
-        }).inject(this.node);
+            "styles" : this.css.fileterNode
+        }).inject(this.topNode);
 
         var html = "<table bordr='0' cellpadding='5' cellspacing='0' style='font-size: 14px;color:#666'>"+
             "<tr>" +

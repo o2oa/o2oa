@@ -507,12 +507,13 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
         this.loadView( filterData );
     },
     loadFilter : function(){
+
+        this.fileterNode = new Element("div.fileterNode", {
+            "styles" : this.app.css.fileterNode
+        }).inject(this.node);
+
         this.loadFilterStyle(function( css ){
             this.filterFormCss = css;
-
-            this.fileterNode = new Element("div.fileterNode", {
-                "styles" : this.app.css.fileterNode
-            }).inject(this.node);
 
             var table = new Element("table", {
                 "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.app.css.filterTable, "class" : "filterTable"
