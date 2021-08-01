@@ -58,9 +58,18 @@ MWF.xApplication.Attendance.Explorer = new Class({
         //this.createSearchElementNode();
     },
     createToolbarItemNode : function( tool ){
+        var toolItemStyle;
+        if(tool.styles && (this.css[tool.styles] || this.app.css[tool.styles])){
+            toolItemStyle = tool.styles && (this.css[tool.styles] || this.app.css[tool.styles]);
+        }else{
+            toolItemStyle = this.css.toolbarItemNode || this.app.css.toolbarItemNode;
+        }
         var toolItemNode = new Element("div", {
-            "styles": (tool.styles && this.css[tool.styles]) ? this.css[tool.styles] : this.css.toolbarItemNode
+            "styles": toolItemStyle
         });
+        // var toolItemNode = new Element("div", {
+        //     "styles": (tool.styles && this.css[tool.styles]) ? this.css[tool.styles] : this.css.toolbarItemNode
+        // });
         if( tool.id ){
             toolItemNode.set( 'name' , tool.id );
         }
@@ -86,18 +95,40 @@ MWF.xApplication.Attendance.Explorer = new Class({
 
         this.toolItemNodes.push(toolItemNode);
 
-        this.setToolbarItemEvent(toolItemNode);
+        // this.setToolbarItemEvent(toolItemNode);
+
+        var _self = this;
+        if( tool.action ){
+            toolItemNode.addEvents({
+                "mouseover": function () {
+                    toolItemNode.setStyles( _self.app.css.toolbarItemNode_over );
+                    if( tool.icon && iconNode ){
+                        iconNode.setStyle("background-image", "url("+_self.path+_self.options.style+"/icon/"+tool.icon.split(".")[0]+"_over.png)");
+                    }
+                },
+                "mouseout": function () {
+                    toolItemNode.setStyles( _self.app.css.toolbarItemNode_normal );
+                    if( tool.icon && iconNode ){
+                        iconNode.setStyle("background-image", "url("+_self.path+_self.options.style+"/icon/"+tool.icon+")");
+                    }
+                },
+                "click": function () {
+                    var data = this.retrieve("toolData");
+                    if( _self[data.action] )_self[data.action].apply(_self,[this]);
+                }
+            })
+        }
 
     },
-    setToolbarItemEvent:function(toolItemNode){
-        var _self = this;
-        toolItemNode.addEvents({
-            "click": function () {
-                var data = this.retrieve("toolData");
-                if( _self[data.action] )_self[data.action].apply(_self,[this]);
-            }
-        })
-    },
+    // setToolbarItemEvent:function(toolItemNode){
+    //     var _self = this;
+    //     toolItemNode.addEvents({
+    //         "click": function () {
+    //             var data = this.retrieve("toolData");
+    //             if( _self[data.action] )_self[data.action].apply(_self,[this]);
+    //         }
+    //     })
+    // },
     loadContentNode: function(){
         this.elementContentNode = new Element("div.elementContentNode", {
             "styles": this.css.elementContentNode || this.app.css.elementContentNode
@@ -141,7 +172,7 @@ MWF.xApplication.Attendance.Explorer = new Class({
             css = o2.widget.css[key];
             if(callback)callback(css);
         }else{
-            path = (this.cssPath.indexOf("?")!=-1) ? path+"&v="+o2.version.v : path+"?v="+o2.version.v;
+            path = path+"?v="+o2.version.v;
             var r = new Request.JSON({
                 url: o2.filterUrl(path),
                 secure: false,

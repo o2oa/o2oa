@@ -210,6 +210,8 @@ MWF.xApplication.Attendance.LP = {
 	"close": "Close",
 	"disagree": "Disagree",
 	"agree": "Agree",
+	"batchDisagree": "Batch Disagree",
+	"batchAgree": "Batch Agree",
 	"temporaryLeave": "Temporary Leave",
 	"out": "Business trip",
 	"businessTrip": "Going out on business",
@@ -375,7 +377,8 @@ MWF.xApplication.Attendance.LP = {
 	"statData": "Statistical data",
 	"analyzeData": "Analyze data",
 	"viewDescription": "View Description",
-	"myAppealTitleText": "Please file an appeal in 'My Statistics -> My Attendance Details'",
+	// "myAppealTitleText": "Please file an appeal in 'My Statistics -> My Attendance Details'",
+	"myAppealTitleText": "Please appeal in 'My Statistics'",
 
 	"createManager": "New Administrator Configuration",
 	"createPersonConfig": "Add attendance staff configuration",

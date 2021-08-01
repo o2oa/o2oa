@@ -117,7 +117,7 @@ MWF.xApplication.Attendance.UnitDingdingDetail.Explorer = new Class({
                 style: "attendance",
                 isEdited: true,
                 itemTemplate: {
-                    unit: { text: lp.unit, type: "org", orgType: "unit", notEmpty: true, style: { "min-width": "200px" } },
+                    unit: { text: lp.unit, type: "org", orgType: "unit", notEmpty: true, style: { "min-width": "100px" } },
                     year: {
                         text: lp.annuaal,
                         "type": "select",
@@ -255,7 +255,7 @@ MWF.xApplication.Attendance.UnitDingdingDetail.DetailStaticExplorer = new Class(
                 style: "attendance",
                 isEdited: true,
                 itemTemplate: {
-                    q_unitName: { text: lp.unit, type: "org", orgType: "unit", notEmpty: true, style: { "min-width": "200px" } },
+                    q_unitName: { text: lp.unit, type: "org", orgType: "unit", notEmpty: true, style: { "min-width": "100px" } },
                     cycleYear: {
                         text: lp.annuaal,
                         "type": "select",

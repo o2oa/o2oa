@@ -23,6 +23,9 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
     },
     load: function(){
         this.loadConfig();
+        this.topNode = new Element("div", {
+            "styles" : this.css.topNode
+        }).inject(this.node);
         this.loadToolbar();
         this.loadFilter();
         this.loadContentNode();
@@ -71,8 +74,8 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
         }
     },
     loadToolbar: function(){
-        this.toolbarNode = new Element("div", {"styles": this.css.toolbarNode});
-        this.toolbarNode.inject(this.node);
+        this.toolbarNode = new Element("div", {"styles": this.css.toolbarNode || this.app.css.toolbarNode});
+        this.toolbarNode.inject(this.topNode);
 
             var toolbarUrl = this.path + "toolbar.json";
             MWF.getJSON(toolbarUrl, function (json) {
@@ -87,12 +90,12 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
     },
     loadFilter : function(){
 
+        this.fileterNode = new Element("div.fileterNode", {
+            "styles": this.css.fileterNode
+        }).inject(this.topNode);
+
         this.loadFilterStyle(function( css ) {
             this.filterFormCss = css;
-
-            this.fileterNode = new Element("div.fileterNode", {
-                "styles": this.app.css.fileterNode
-            }).inject(this.node);
 
             var table = new Element("table", {
                 "border": "0",

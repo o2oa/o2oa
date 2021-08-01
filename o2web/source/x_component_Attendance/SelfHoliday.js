@@ -19,7 +19,7 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
         if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
     },
     load: function(){
-        this.loadToolbar();
+        // this.loadToolbar();
         this.loadFilter();
         this.loadContentNode();
 
@@ -43,17 +43,17 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
         var _self = this;
         var html = "<table bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
             "<tr>" +
-            "    <td styles='formTableTitle' lable='q_topUnitName'></td>"+
-            "    <td styles='formTableValue' item='q_topUnitName'></td>"+
-            "    <td styles='formTableTitle' lable='q_unitName'></td>"+
-            "    <td styles='formTableValue' item='q_unitName'></td>"+
-            "    <td styles='formTableTitle' lable='q_empName'></td>"+
-            "    <td styles='formTableValue' item='q_empName'></td>"+
-            "    <td styles='formTableTitle' lable='startdateString'></td>"+
-            "    <td styles='formTableValue' item='startdateString'></td>"+
-            "    <td styles='formTableTitle' lable='enddateString'></td>"+
+            "    <td styles='filterTableTitle' lable='q_topUnitName'></td>"+
+            "    <td styles='filterTableValue' item='q_topUnitName'></td>"+
+            "    <td styles='filterTableTitle' lable='q_unitName'></td>"+
+            "    <td styles='filterTableValue' item='q_unitName'></td>"+
+            "    <td styles='filterTableTitle' lable='q_empName'></td>"+
+            "    <td styles='filterTableValue' item='q_empName'></td>"+
+            "    <td styles='filterTableTitle' lable='startdateString'></td>"+
+            "    <td styles='filterTableValue' item='startdateString'></td>"+
+            "    <td styles='filterTableTitle' lable='enddateString'></td>"+
             "    <td styles='formTableValue' item='enddateString'></td>"+
-            "    <td styles='formTableValue' item='action'></td>"+
+            "    <td styles='filterTableValue' item='action'></td>"+
             "</tr>" +
             "</table>";
         this.fileterNode.set("html",html);
@@ -63,18 +63,19 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
                 style: "attendance",
                 isEdited : true,
                 itemTemplate : {
-                    q_topUnitName : { "text" : lp.selectCompany, "type" : "org", "orgType" : "unit", style : {"min-width" : "200px"} , event: {
+                    q_topUnitName : { "text" : lp.selectCompany, "type" : "org", "orgType" : "unit", style : {"min-width" : "100px"} , event: {
                             change : function (item, ev) {
                                 debugger;
                             }
                         }
                     },
-                    q_unitName : { "text" : lp.selectDepartment, "type" : "org", "orgType" : "unit", style : {"min-width" : "250px"} },
+                    q_unitName : { "text" : lp.selectDepartment, "type" : "org", "orgType" : "unit", style : {"min-width" : "100px"} },
                     q_empName : {  "text" : lp.selectPerson, "type" : "org", "orgType" : "person", style : {"min-width" : "100px"} },
-                    startdateString : {  "text" : lp.startTime, "tType" : "date",style : {"border" : "1px solid rgb(153, 153, 153)","background":'url("../x_component_Template/$MForm/default/icon/calendar.png") 98% center no-repeat',"border-radius":"3px","box-shadow":"rgb(204, 204, 204) 0px 0px 6px","height":"26px","width":"100px"} },
-                    enddateString : { "text" : lp.endTime, "tType" : "date" ,style : {"border" : "1px solid rgb(153, 153, 153)","background":'url("../x_component_Template/$MForm/default/icon/calendar.png") 98% center no-repeat',"border-radius":"3px","box-shadow":"rgb(204, 204, 204) 0px 0px 6px","height":"26px","width":"100px"}},
+                    startdateString : {  "text" : lp.startTime, "tType" : "date", style : {"width" : "100px"} },
+                    enddateString : { "text" : lp.endTime, "tType" : "date", style : {"width" : "100px"}},
                     action : {
                         "type" : "button",
+                        "className" : "filterButton",
                         "value" : lp.query,
                         "event" : { "click" : function(){
                             var filterData =  _self.filter.getResult( true,",",true,true,true);
