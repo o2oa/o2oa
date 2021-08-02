@@ -82,35 +82,33 @@ class ActionInstallOrUpdate extends BaseAction {
 			if (BooleanUtils.isTrue(Config.collect().getEnable())) {
 				String token = business.loginCollect();
 				if (StringUtils.isNotEmpty(token)) {
-					byte[] bytes = ConnectionAction.getFile(
+					byte[] bytes = ConnectionAction.getBinary(
 							Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_DOWN + "/" + id),
 							ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
-					if (bytes != null) {
+					if ((null != bytes) && (bytes.length > 0)) {
 						InstallData installData = this.install(id, bytes);
-						if (installData != null) {
-							wo.setValue(true);
-							emc.beginTransaction(InstallLog.class);
-							InstallLog installLog = emc.find(id, InstallLog.class);
-							boolean exist = true;
-							if (installLog == null) {
-								installLog = new InstallLog();
-								installLog.setId(app.getId());
-								exist = false;
-							}
-							installLog.setName(app.getName());
-							installLog.setVersion(app.getVersion());
-							installLog.setCategory(app.getCategory());
-							installLog.setStatus(CommonStatus.VALID.getValue());
-							installLog.setData(gson.toJson(installData));
-							installLog.setInstallPerson(effectivePerson.getDistinguishedName());
-							installLog.setInstallTime(new Date());
-							installLog.setUnInstallPerson(null);
-							installLog.setUnInstallTime(null);
-							if (!exist) {
-								emc.persist(installLog);
-							}
-							emc.commit();
+						wo.setValue(true);
+						emc.beginTransaction(InstallLog.class);
+						InstallLog installLog = emc.find(id, InstallLog.class);
+						boolean exist = true;
+						if (installLog == null) {
+							installLog = new InstallLog();
+							installLog.setId(app.getId());
+							exist = false;
 						}
+						installLog.setName(app.getName());
+						installLog.setVersion(app.getVersion());
+						installLog.setCategory(app.getCategory());
+						installLog.setStatus(CommonStatus.VALID.getValue());
+						installLog.setData(gson.toJson(installData));
+						installLog.setInstallPerson(effectivePerson.getDistinguishedName());
+						installLog.setInstallTime(new Date());
+						installLog.setUnInstallPerson(null);
+						installLog.setUnInstallTime(null);
+						if (!exist) {
+							emc.persist(installLog);
+						}
+						emc.commit();
 					}
 				}
 			}
@@ -130,7 +128,7 @@ class ActionInstallOrUpdate extends BaseAction {
 		File dist = new File(tempFile.getAbsolutePath(), "data");
 		FileTools.forceMkdir(dist);
 		JarTools.unjar(zipFile, new ArrayList<>(), dist, true);
-		//过滤必要的文件
+		// 过滤必要的文件
 		File[] files = dist.listFiles(new FileFilter() {
 			public boolean accept(File pathname) {
 				return true;

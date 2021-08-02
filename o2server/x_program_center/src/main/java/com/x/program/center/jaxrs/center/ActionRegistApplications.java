@@ -20,6 +20,8 @@ class ActionRegistApplications extends BaseAction {
 
 		CenterQueueRegistApplicationsBody body = gson.fromJson(wi.getValue(), CenterQueueRegistApplicationsBody.class);
 
+		body.setNode(wi.getNode());
+
 		ThisApplication.centerQueue.send(body);
 
 		Wo wo = new Wo();
@@ -33,6 +35,16 @@ class ActionRegistApplications extends BaseAction {
 	}
 
 	public static class Wi extends WrapString {
+
+		private String node;
+
+		public String getNode() {
+			return node;
+		}
+
+		public void setNode(String node) {
+			this.node = node;
+		}
 
 	}
 

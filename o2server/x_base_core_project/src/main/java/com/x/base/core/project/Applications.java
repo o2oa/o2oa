@@ -17,8 +17,9 @@ import java.util.zip.CRC32;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.Nodes;
+import com.x.base.core.project.config.Node;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.connection.FilePart;
@@ -38,7 +39,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	private volatile String token = UUID.randomUUID().toString();
 
-	private volatile Date updateTimestamp;
+	private Date updateTimestamp;
 
 	private static final Random random = new Random(System.currentTimeMillis());
 
@@ -63,14 +64,14 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		return null;
 	}
 
-	public List<Application> get(Class<?> clz) throws Exception {
+	public List<Application> get(Class<?> clz) {
 		return this.get(clz.getName());
 	}
 
-	public void add(String className, Application application) throws Exception {
+	public void add(String className, Application application) {
 		CopyOnWriteArrayList<Application> list = this.get(className);
 		if (null == list) {
-			list = new CopyOnWriteArrayList<Application>();
+			list = new CopyOnWriteArrayList<>();
 			this.put(className, list);
 		}
 		list.add(application);
@@ -113,23 +114,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throws Exception {
 		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
 				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
-			Nodes nodes = Config.nodes();
-			for (String node : nodes.keySet()) {
-				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
-					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuilder buffer = new StringBuilder();
-					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
-						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					} else {
-						buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					}
-					buffer.append("/x_program_center/jaxrs/");
-					return CipherConnectionAction.get(xdebugger, buffer.toString() + CipherConnectionAction.trim(uri));
-
-				}
-			}
+			return getQueryOfCenterServer(xdebugger, uri);
 		}
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
@@ -146,6 +131,15 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			application = this.randomWithSeed(name, seed);
 		}
 		return CipherConnectionAction.get(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
+	}
+
+	private ActionResponse getQueryOfCenterServer(Boolean xdebugger, String uri) throws Exception {
+		final Node node = Config.nodes().get(Config.resource_node_centersPirmaryNode());
+		if (null != node) {
+			String prefix = urlPrefixOfCenterServer(Config.resource_node_centersPirmaryNode(), node.getCenter());
+			return CipherConnectionAction.get(xdebugger, prefix + CipherConnectionAction.trim(uri));
+		}
+		throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
 	}
 
 	public byte[] getQueryBinary(Class<?> applicationClass, String uri) throws Exception {
@@ -186,25 +180,8 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		String name = this.findApplicationName(applicationName);
 		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
 				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
-			Nodes nodes = Config.nodes();
-			for (String node : nodes.keySet()) {
-				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
-					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuilder buffer = new StringBuilder();
-					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
-						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					} else {
-						buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					}
-					buffer.append("/x_program_center/jaxrs/");
-					return CipherConnectionAction.getBinary(xdebugger,
-							buffer.toString() + CipherConnectionAction.trim(uri));
-				}
-			}
+			return getQueryBinaryOfCenterServer(xdebugger, uri);
 		}
-
 		if (StringUtils.isEmpty(name)) {
 			throw new ExceptionFindApplicationName(applicationName);
 		}
@@ -220,6 +197,15 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}
 		return CipherConnectionAction.getBinary(xdebugger,
 				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
+	}
+
+	private byte[] getQueryBinaryOfCenterServer(Boolean xdebugger, String uri) throws Exception {
+		final Node node = Config.nodes().get(Config.resource_node_centersPirmaryNode());
+		if (null != node) {
+			String prefix = urlPrefixOfCenterServer(Config.resource_node_centersPirmaryNode(), node.getCenter());
+			return CipherConnectionAction.getBinary(xdebugger, prefix + CipherConnectionAction.trim(uri));
+		}
+		throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
 	}
 
 	public ActionResponse deleteQuery(Class<?> applicationClass, String uri) throws Exception {
@@ -260,24 +246,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throws Exception {
 		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
 				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
-			Nodes nodes = Config.nodes();
-			for (String node : nodes.keySet()) {
-				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
-					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuilder buffer = new StringBuilder();
-					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
-						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					} else {
-						buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					}
-					buffer.append("/x_program_center/jaxrs/");
-
-					return CipherConnectionAction.delete(xdebugger,
-							buffer.toString() + CipherConnectionAction.trim(uri));
-				}
-			}
+			return this.deleteQueryOfCenterServer(xdebugger, uri);
 		}
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
@@ -295,6 +264,15 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}
 		return CipherConnectionAction.delete(xdebugger,
 				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
+	}
+
+	private ActionResponse deleteQueryOfCenterServer(Boolean xdebugger, String uri) throws Exception {
+		final Node node = Config.nodes().get(Config.resource_node_centersPirmaryNode());
+		if (null != node) {
+			String prefix = urlPrefixOfCenterServer(Config.resource_node_centersPirmaryNode(), node.getCenter());
+			return CipherConnectionAction.delete(xdebugger, prefix + CipherConnectionAction.trim(uri));
+		}
+		throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
 	}
 
 	public byte[] deleteQueryBinary(Class<?> applicationClass, String uri) throws Exception {
@@ -335,24 +313,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throws Exception {
 		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
 				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
-			Nodes nodes = Config.nodes();
-			for (String node : nodes.keySet()) {
-				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
-					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuilder buffer = new StringBuilder();
-					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
-						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					} else {
-						buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					}
-					buffer.append("/x_program_center/jaxrs/");
-
-					return CipherConnectionAction.deleteBinary(xdebugger,
-							buffer.toString() + CipherConnectionAction.trim(uri));
-				}
-			}
+			return deleteQueryBinaryOfCenterServer(xdebugger, uri);
 		}
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
@@ -370,6 +331,15 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}
 		return CipherConnectionAction.deleteBinary(xdebugger,
 				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
+	}
+
+	private byte[] deleteQueryBinaryOfCenterServer(Boolean xdebugger, String uri) throws Exception {
+		final Node node = Config.nodes().get(Config.resource_node_centersPirmaryNode());
+		if (null != node) {
+			String prefix = urlPrefixOfCenterServer(Config.resource_node_centersPirmaryNode(), node.getCenter());
+			return CipherConnectionAction.deleteBinary(xdebugger, prefix + CipherConnectionAction.trim(uri));
+		}
+		throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
 	}
 
 	public ActionResponse postQuery(Class<?> applicationClass, String uri, Object body) throws Exception {
@@ -412,24 +382,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throws Exception {
 		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
 				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
-			Nodes nodes = Config.nodes();
-			for (String node : nodes.keySet()) {
-				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
-					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuilder buffer = new StringBuilder();
-					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
-						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					} else {
-						buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					}
-					buffer.append("/x_program_center/jaxrs/");
-
-					return CipherConnectionAction.post(xdebugger, buffer.toString() + CipherConnectionAction.trim(uri),
-							body);
-				}
-			}
+			return postQueryOfCenterServer(xdebugger, uri, body);
 		}
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
@@ -447,6 +400,15 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}
 		return CipherConnectionAction.post(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri),
 				body);
+	}
+
+	private ActionResponse postQueryOfCenterServer(Boolean xdebugger, String uri, Object body) throws Exception {
+		final Node node = Config.nodes().get(Config.resource_node_centersPirmaryNode());
+		if (null != node) {
+			String prefix = urlPrefixOfCenterServer(Config.resource_node_centersPirmaryNode(), node.getCenter());
+			return CipherConnectionAction.post(xdebugger, prefix + CipherConnectionAction.trim(uri), body);
+		}
+		throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
 	}
 
 	public byte[] postQueryBinary(Class<?> applicationClass, String uri, Object body) throws Exception {
@@ -489,26 +451,8 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throws Exception {
 		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
 				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
-			Nodes nodes = Config.nodes();
-			for (String node : nodes.keySet()) {
-				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
-					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuilder buffer = new StringBuilder();
-					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
-						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					} else {
-						buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					}
-					buffer.append("/x_program_center/jaxrs/");
-
-					return CipherConnectionAction.postBinary(xdebugger,
-							buffer.toString() + CipherConnectionAction.trim(uri), body);
-				}
-			}
+			return postQueryBinaryOfCenterServer(xdebugger, uri, body);
 		}
-
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
 			throw new ExceptionFindApplicationName(applicationName);
@@ -525,6 +469,15 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}
 		return CipherConnectionAction.postBinary(xdebugger,
 				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri), body);
+	}
+
+	private byte[] postQueryBinaryOfCenterServer(Boolean xdebugger, String uri, Object body) throws Exception {
+		final Node node = Config.nodes().get(Config.resource_node_centersPirmaryNode());
+		if (null != node) {
+			String prefix = urlPrefixOfCenterServer(Config.resource_node_centersPirmaryNode(), node.getCenter());
+			return CipherConnectionAction.postBinary(xdebugger, prefix + CipherConnectionAction.trim(uri), body);
+		}
+		throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
 	}
 
 	public byte[] postQueryMultiPartinary(Class<?> applicationClass, String uri, Collection<FormField> formFields,
@@ -572,26 +525,8 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			Collection<FormField> formFields, Collection<FilePart> fileParts, String seed) throws Exception {
 		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
 				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
-			Nodes nodes = Config.nodes();
-			for (String node : nodes.keySet()) {
-				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
-					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuilder buffer = new StringBuilder();
-					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
-						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					} else {
-						buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					}
-					buffer.append("/x_program_center/jaxrs/");
-
-					return CipherConnectionAction.postMultiPartBinary(xdebugger,
-							buffer.toString() + CipherConnectionAction.trim(uri), formFields, fileParts);
-				}
-			}
+			return postQueryMultiPartBinaryOfCenterServer(xdebugger, uri, formFields, fileParts);
 		}
-
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
 			throw new ExceptionFindApplicationName(applicationName);
@@ -608,6 +543,17 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}
 		return CipherConnectionAction.postMultiPartBinary(xdebugger,
 				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri), formFields, fileParts);
+	}
+
+	private byte[] postQueryMultiPartBinaryOfCenterServer(Boolean xdebugger, String uri,
+			Collection<FormField> formFields, Collection<FilePart> fileParts) throws Exception {
+		final Node node = Config.nodes().get(Config.resource_node_centersPirmaryNode());
+		if (null != node) {
+			String prefix = urlPrefixOfCenterServer(Config.resource_node_centersPirmaryNode(), node.getCenter());
+			return CipherConnectionAction.postMultiPartBinary(xdebugger, prefix + CipherConnectionAction.trim(uri),
+					formFields, fileParts);
+		}
+		throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
 	}
 
 	public ActionResponse putQuery(Class<?> applicationClass, String uri, Object body) throws Exception {
@@ -650,26 +596,8 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throws Exception {
 		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
 				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
-			Nodes nodes = Config.nodes();
-			for (String node : nodes.keySet()) {
-				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
-					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuilder buffer = new StringBuilder();
-					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
-						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					} else {
-						buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					}
-					buffer.append("/x_program_center/jaxrs/");
-
-					return CipherConnectionAction.put(xdebugger, buffer.toString() + CipherConnectionAction.trim(uri),
-							body);
-				}
-			}
+			return putQueryOfCenterServer(xdebugger, uri, body);
 		}
-
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
 			throw new ExceptionFindApplicationName(applicationName);
@@ -688,7 +616,16 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 				body);
 	}
 
-	public String findApplicationName(String name) throws Exception {
+	private ActionResponse putQueryOfCenterServer(Boolean xdebugger, String uri, Object body) throws Exception {
+		final Node node = Config.nodes().get(Config.resource_node_centersPirmaryNode());
+		if (null != node) {
+			String prefix = urlPrefixOfCenterServer(Config.resource_node_centersPirmaryNode(), node.getCenter());
+			return CipherConnectionAction.put(xdebugger, prefix + CipherConnectionAction.trim(uri), body);
+		}
+		throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
+	}
+
+	public String findApplicationName(String name) {
 		for (String str : this.keySet()) {
 			if (StringUtils.equalsIgnoreCase(str, name) || StringUtils.endsWithIgnoreCase(str, "." + name)) {
 				return str;
@@ -701,7 +638,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		return null;
 	}
 
-	public Application findApplicationWithNode(String className, String node) throws Exception {
+	public Application findApplicationWithNode(String className, String node) {
 		for (Application o : this.get(className)) {
 			if (o.getNode().equals(node)) {
 				return o;
@@ -724,8 +661,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 					tree.put(cursor, o);
 				}
 			}
-			Application application = tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
-			return application;
+			return tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
 		}
 		throw new IllegalStateException("randomWithWeight error: " + className + ".");
 	}
@@ -744,13 +680,12 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 					tree.put(cursor, o);
 				}
 			}
-			Application application = tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
-			return application;
+			return tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
 		}
 		throw new IllegalStateException("randomWithScheduleWeight error: " + className + ".");
 	}
 
-	public Application randomWithSeed(String className, String seed) throws Exception {
+	public Application randomWithSeed(String className, String seed) {
 		List<Application> list = this.get(className);
 		CRC32 crc32 = new CRC32();
 		crc32.update(seed.getBytes(DefaultCharset.charset));
@@ -777,31 +712,37 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		this.updateTimestamp = updateTimestamp;
 	}
 
+	private String urlPrefixOfCenterServer(String nodeName, CenterServer centerServer) {
+		Integer port = centerServer.getPort();
+		StringBuilder buffer = new StringBuilder();
+		if (BooleanUtils.isTrue(centerServer.getSslEnable())) {
+			buffer.append("https://").append(nodeName).append(":" + port);
+		} else {
+			buffer.append("http://").append(nodeName).append(":" + port);
+		}
+		return buffer.append("/x_program_center/jaxrs/").toString();
+	}
+
 	public String describeApi(String name) throws Exception {
 		String urlDescribeApiJson = "";
 		if (name.equalsIgnoreCase(x_program_center.class.getSimpleName())
 				|| name.equalsIgnoreCase(x_program_center.class.getName())) {
-			Nodes nodes = Config.nodes();
-			for (String node : nodes.keySet()) {
-				if (BooleanUtils.isTrue(nodes.get(node).getCenter().getEnable())) {
-					Integer port = nodes.get(node).getCenter().getPort();
-					StringBuilder buffer = new StringBuilder();
-					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
-						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					} else {
-						buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
-								.append(":" + port);
-					}
-					buffer.append("/x_program_center/describe/api.json");
-					urlDescribeApiJson = buffer.toString();
-					break;
+			final Node node = Config.nodes().get(Config.resource_node_centersPirmaryNode());
+			if (null != node) {
+				Integer port = node.getCenter().getPort();
+				StringBuilder buffer = new StringBuilder();
+				if (BooleanUtils.isTrue(node.getCenter().getSslEnable())) {
+					buffer.append("https://").append(Config.resource_node_centersPirmaryNode()).append(":" + port);
+				} else {
+					buffer.append("http://").append(Config.resource_node_centersPirmaryNode()).append(":" + port);
 				}
+				return buffer.append("/x_program_center/describe/api.json").toString();
 			}
+			throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
 		} else {
 			String applicationName = this.findApplicationName(name);
 			if (StringUtils.isEmpty(applicationName)) {
-				throw new Exception("getDescribe can not find application with name:" + name + ".");
+				throw new ExceptionFindApplicationName(name);
 			}
 			Application application = this.randomWithWeight(applicationName);
 			urlDescribeApiJson = application.getUrlDescribeApiJson();

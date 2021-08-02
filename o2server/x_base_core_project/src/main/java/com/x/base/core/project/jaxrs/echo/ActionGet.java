@@ -1,6 +1,8 @@
 package com.x.base.core.project.jaxrs.echo;
 
 import java.util.Date;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 
@@ -26,6 +28,8 @@ class ActionGet extends BaseAction {
 	}
 
 	public static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 3728516737526214370L;
 
 		@FieldDescribe("上下文根")
 		private String servletContextName;
