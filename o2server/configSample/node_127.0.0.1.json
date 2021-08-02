@@ -184,6 +184,7 @@
   "nodeAgentEncrypt": true,
   "quickStartWebApp": false,
   "autoStart": true,
+  "selfHealthCheckEnable": false,
   "###enable": "是否启用###",
   "###isPrimaryCenter": "是否是center节点,仅允许存在一个center节点###",
   "###center": "Center服务器配置###",
@@ -202,5 +203,6 @@
   "###quickStartWebApp": "是否使用快速应用部署###",
   "###banner": "服务器控制台启动标识###",
   "###autoStart": "是否自动启动###",
-  "###eraseContentEnable": "是否允许使用擦除数据功能###"
+  "###eraseContentEnable": "是否允许使用擦除数据功能###",
+  "###selfHealthCheckEnable": "是否启用节点上模块健康自检查,如果启用在提交到center之前将进行模块的健康检查.默认false###"
 }

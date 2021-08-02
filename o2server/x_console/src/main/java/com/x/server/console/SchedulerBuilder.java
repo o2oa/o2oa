@@ -2,10 +2,12 @@ package com.x.server.console;
 
 import java.util.Properties;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
@@ -21,42 +23,35 @@ public class SchedulerBuilder {
 		Scheduler scheduler = stdSchedulerFactory.getScheduler();
 		scheduler.start();
 
-		if (Config.currentNode().dumpData().enable() && Config.currentNode().dumpData().available()) {
-			JobDetail jobDetail = JobBuilder.newJob(DumpDataTask.class)
-					.withIdentity(DumpDataTask.class.getName(), scheduleGroup).withDescription(Config.node()).build();
-			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(DumpDataTask.class.getName(), scheduleGroup)
-					.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().dumpData().cron())).build();
-			scheduler.scheduleJob(jobDetail, trigger);
+		if (BooleanUtils.isTrue(Config.currentNode().dumpData().enable())
+				&& Config.currentNode().dumpData().available()) {
+			dumpDataTask(scheduleGroup, scheduler);
 		}
-//		if (Config.currentNode().dumpStorage().enable() && Config.currentNode().dumpStorage().available()) {
-//			JobDetail jobDetail = JobBuilder.newJob(DumpStorageTask.class)
-//					.withIdentity(DumpStorageTask.class.getName(), scheduleGroup).withDescription(Config.node())
-//					.build();
-//			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(DumpStorageTask.class.getName(), scheduleGroup)
-//					.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().dumpStorage().cron())).build();
-//			scheduler.scheduleJob(jobDetail, trigger);
-//		}
-		if (Config.currentNode().restoreData().enable() && Config.currentNode().restoreData().available()) {
-			JobDetail jobDetail = JobBuilder.newJob(RestoreDataTask.class)
-					.withIdentity(RestoreDataTask.class.getName(), scheduleGroup).withDescription(Config.node())
-					.build();
-			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(RestoreDataTask.class.getName(), scheduleGroup)
-					.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().restoreData().cron())).build();
-			scheduler.scheduleJob(jobDetail, trigger);
+
+		if (BooleanUtils.isTrue(Config.currentNode().restoreData().enable())
+				&& Config.currentNode().restoreData().available()) {
+			restoreDataTask(scheduleGroup, scheduler);
 		}
-//		if (Config.currentNode().restoreStorage().enable() && Config.currentNode().restoreStorage().available()) {
-//			JobDetail jobDetail = JobBuilder.newJob(RestoreStorageTask.class)
-//					.withIdentity(RestoreStorageTask.class.getName(), scheduleGroup).withDescription(Config.node())
-//					.build();
-//			Trigger trigger = TriggerBuilder.newTrigger()
-//					.withIdentity(RestoreStorageTask.class.getName(), scheduleGroup)
-//					.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().restoreStorage().cron()))
-//					.build();
-//			scheduler.scheduleJob(jobDetail, trigger);
-//		}
+
 		this.registApplicationsAndVoteCenterTask(scheduler, scheduleGroup);
 		return scheduler;
 
+	}
+
+	private void restoreDataTask(String scheduleGroup, Scheduler scheduler) throws Exception {
+		JobDetail jobDetail = JobBuilder.newJob(RestoreDataTask.class)
+				.withIdentity(RestoreDataTask.class.getName(), scheduleGroup).withDescription(Config.node()).build();
+		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(RestoreDataTask.class.getName(), scheduleGroup)
+				.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().restoreData().cron())).build();
+		scheduler.scheduleJob(jobDetail, trigger);
+	}
+
+	private void dumpDataTask(String scheduleGroup, Scheduler scheduler) throws Exception {
+		JobDetail jobDetail = JobBuilder.newJob(DumpDataTask.class)
+				.withIdentity(DumpDataTask.class.getName(), scheduleGroup).withDescription(Config.node()).build();
+		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(DumpDataTask.class.getName(), scheduleGroup)
+				.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().dumpData().cron())).build();
+		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
 	/* 更新node节点applications 和 选择center主节点 */
@@ -66,7 +61,7 @@ public class SchedulerBuilder {
 				.withDescription(Config.node()).build();
 		Trigger trigger = TriggerBuilder.newTrigger()
 				.withIdentity(RegistApplicationsAndVoteCenterTask.class.getName(), scheduleGroup)
-				.withSchedule(CronScheduleBuilder.cronSchedule("0/15 * * * * ?")).build();
+				.withSchedule(CronScheduleBuilder.cronSchedule("0/10 * * * * ?")).build();
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
@@ -77,8 +72,7 @@ public class SchedulerBuilder {
 		properties.setProperty("org.quartz.scheduler.rmi.proxy", "false");
 		properties.setProperty("org.quartz.scheduler.wrapJobExecutionInUserTransaction", "false");
 		properties.setProperty("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
-		// properties.setProperty("org.quartz.threadPool.threadCount", "5");
-		properties.setProperty("org.quartz.threadPool.threadCount", "50");
+		properties.setProperty("org.quartz.threadPool.threadCount", "10");
 		properties.setProperty("org.quartz.threadPool.threadPriority", "5");
 		properties.setProperty("org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread", "true");
 		properties.setProperty("org.quartz.jobStore.misfireThreshold", "60000");
