@@ -34,9 +34,10 @@
     "sub" : [{
       "title" : MWF.xApplication.Attendance.LP.delete,
       "action" : "remove",
-      "styles" : "actionDeleteNode",
-      "overStyles" : "actionDeleteNode_over",
-      "downStyles" : "actionDeleteNode_down"
+      "icon": "delete.png",
+      "styles" : "documentActionNode",
+      "overStyles" : "documentActionNode_over",
+      "downStyles" : "documentActionNode_down"
     }]
   }
 ]

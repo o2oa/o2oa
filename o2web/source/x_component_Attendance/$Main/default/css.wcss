@@ -336,5 +336,21 @@
     //"cursor": "pointer",
     "font-family": "Microsoft YaHei",
     "font-size": "14px"
+  },
+  "documentActionNode": {
+    "height": "20px",
+    "border-radius": "3px",
+    "width": "20px",
+    "line-height": "20px",
+    "color": "#888",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center"
+  },
+  "documentActionNode_over":{
+  },
+  "actionDenyNode_down":{
   }
 }

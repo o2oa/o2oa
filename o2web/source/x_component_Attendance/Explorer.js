@@ -79,7 +79,8 @@ MWF.xApplication.Attendance.Explorer = new Class({
             var iconNode =  new Element("div", {
                 "styles": this.css.toolbarItemIconNode || this.app.css.toolbarItemIconNode
             }).inject(toolItemNode);
-            iconNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/"+tool.icon+")");
+            // iconNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/"+tool.icon+")");
+            iconNode.setStyle("background-image", "url(../x_component_Attendance/$Main/"+this.app.options.style+"/icon/toolbar/"+tool.icon+")");
         }
 
         if( tool.title ){
@@ -103,13 +104,15 @@ MWF.xApplication.Attendance.Explorer = new Class({
                 "mouseover": function () {
                     toolItemNode.setStyles( _self.app.css.toolbarItemNode_over );
                     if( tool.icon && iconNode ){
-                        iconNode.setStyle("background-image", "url("+_self.path+_self.options.style+"/icon/"+tool.icon.split(".")[0]+"_over.png)");
+                        // iconNode.setStyle("background-image", "url("+_self.path+_self.options.style+"/icon/"+tool.icon.split(".")[0]+"_over.png)");
+                        iconNode.setStyle("background-image", "url(../x_component_Attendance/$Main/"+_self.app.options.style+"/icon/toolbar/"+tool.icon.split(".")[0]+"_over.png)");
                     }
                 },
                 "mouseout": function () {
                     toolItemNode.setStyles( _self.app.css.toolbarItemNode_normal );
                     if( tool.icon && iconNode ){
-                        iconNode.setStyle("background-image", "url("+_self.path+_self.options.style+"/icon/"+tool.icon+")");
+                        // iconNode.setStyle("background-image", "url("+_self.path+_self.options.style+"/icon/"+tool.icon+")");
+                        iconNode.setStyle("background-image", "url(../x_component_Attendance/$Main/"+_self.app.options.style+"/icon/toolbar/"+tool.icon+")");
                     }
                 },
                 "click": function () {
@@ -552,9 +555,25 @@ MWF.xApplication.Attendance.Explorer.Document = new Class({
             if( typeOf(d.downStyles) == "object" ) downStyles = d.downStyles;
 
             if( styles  )node.setStyles( styles );
+            if(d.icon){
+                // node.setStyle("background-image", "url("+_self.explorer.path+_self.explorer.options.style+"/icon/"+d.icon+")");
+                node.setStyle("background-image", "url(../x_component_Attendance/$Main/"+_self.app.options.style+"/icon/action/"+d.icon+")");
+            }
             if( overStyles && styles ){
-                node.addEvent( "mouseover", function(ev){ ev.target.setStyles( this.styles ); }.bind({"styles" : overStyles }) );
-                node.addEvent( "mouseout", function(ev){  ev.target.setStyles( this.styles ); }.bind({"styles" : styles}) );
+                node.addEvent( "mouseover", function(ev){
+                    ev.target.setStyles( this.styles );
+                    if(d.icon){
+                        // ev.target.setStyle("background-image", "url("+_self.explorer.path+_self.explorer.options.style+"/icon/"+d.icon.split(".")[0]+"_blue.png)");
+                        ev.target.setStyle("background-image", "url(../x_component_Attendance/$Main/"+_self.app.options.style+"/icon/action/"+d.icon.split(".")[0]+"_blue.png)");
+                    }
+                }.bind({"styles" : overStyles }) );
+                node.addEvent( "mouseout", function(ev){
+                    ev.target.setStyles( this.styles );
+                    if(d.icon){
+                        // ev.target.setStyle("background-image", "url("+_self.explorer.path+_self.explorer.options.style+"/icon/"+d.icon+")");
+                        ev.target.setStyle("background-image", "url(../x_component_Attendance/$Main/"+_self.app.options.style+"/icon/action/"+d.icon+")");
+                    }
+                }.bind({"styles" : styles}) );
             }
             if( downStyles && ( overStyles || styles)){
                 node.addEvent( "mousedown", function(ev){  ev.target.setStyles( this.styles ); }.bind({"styles" : downStyles }) );
@@ -618,246 +637,233 @@ MWF.xApplication.Attendance.Explorer.Document = new Class({
     }
 });
 
+MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
 MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
-    Extends: MWF.widget.Common,
-    Implements: [Options, Events],
+    Extends: MPopupForm,
     options: {
+        "style": "attendanceV2",
         "width": "500",
-        "height": "400"
-    },
-    initialize: function( explorer, data,options){
-        this.setOptions(options);
-        this.explorer = explorer;
-        this.app = explorer.app;
-        this.data = data || {};
-        this.css = this.explorer.css;
-
-        this.load();
-    },
-    load: function(){
-
-    },
-
-    open: function(e){
-        this.isNew = false;
-        this.isEdited = false;
-        this._open();
-    },
-    create: function(){
-        this.isNew = true;
-        this._open();
-    },
-    edit: function(){
-        this.isEdited = true;
-        this._open();
-    },
-    _open : function(){
-        this.formMaskNode = new Element("div", {
-            "styles": this.css.formMaskNode || this.app.css.formMaskNode,
-            "events": {
-                "mouseover": function(e){e.stopPropagation();},
-                "mouseout": function(e){e.stopPropagation();}
-            }
-        }).inject(this.app.content, "after");
-
-        this.formAreaNode = new Element("div", {
-            "styles": this.css.formAreaNode || this.app.css.formAreaNode
-        });
-
-        this.createFormNode();
-
-        this.formAreaNode.inject(this.formMaskNode, "after");
-        this.formAreaNode.fade("in");
-
-        this.setFormNodeSize();
-        this.setFormNodeSizeFun = this.setFormNodeSize.bind(this);
-        this.addEvent("resize", this.setFormNodeSizeFun);
-    },
-    createFormNode: function(){
-        var _self = this;
-
-        this.formNode = new Element("div", {
-            "styles": this.css.formNode || this.app.css.formNode
-        }).inject(this.formAreaNode);
-
-        this.formIconNode = new Element("div", {
-            "styles": this.isNew ? ( this.css.formNewNode || this.app.css.formNewNode) : ( this.css.formIconNode || this.app.css.formIconNode )
-        }).inject(this.formNode);
-
-
-        this.formFormNode = new Element("div", {
-            "styles": this.css.formFormNode || this.app.css.formFormNode
-        }).inject(this.formNode);
-
-        this.formTableContainer = new Element("div", {
-            "styles": this.css.formTableContainer || this.app.css.formTableContainer
-        }).inject(this.formFormNode);
-
-        this.formTableArea = new Element("div", {
-            "styles": this.css.formTableArea || this.app.css.formTableArea
-        }).inject(this.formTableContainer);
-
-
-        this._createTableContent();
-        //formFormNode.set("html", html);
-
-        //this.setScrollBar(this.formTableContainer)
-
-        this._createAction();
-    },
-    _createTableContent: function(){
-
-        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='2' styles='formTableHead'>申诉处理单</td></tr>" +
-            "<tr><td styles='formTabelTitle' lable='empName'></td>"+
-            "    <td styles='formTableValue' item='empName'></td></tr>" +
-            "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
-            "    <td styles='formTableValue' item='unitName'></td></tr>" +
-            "<tr><td styles='formTabelTitle' lable='recordDateString'></td>"+
-            "    <td styles='formTableValue' item='recordDateString'></td></tr>" +
-            "<tr><td styles='formTabelTitle' lable='status'></td>"+
-            "    <td styles='formTableValue' item='status'></td></tr>" +
-            "<tr><td styles='formTabelTitle' lable='appealReason'></td>"+
-            "    <td styles='formTableValue' item='appealReason'></td></tr>" +
-            "<tr><td styles='formTabelTitle' lable='appealDescription'></td>"+
-            "    <td styles='formTableValue' item='appealDescription'></td></tr>" +
-            "<tr><td styles='formTabelTitle' lable='opinion1'></td>"+
-            "    <td styles='formTableValue' item='opinion1'></td></tr>" +
-            "</table>";
-        this.formTableArea.set("html",html);
-
-        MWF.xDesktop.requireApp("Template", "MForm", function(){
-            this.form = new MForm( this.formTableArea, {empName:"xadmin"}, {
-                isEdited : this.isEdited || this.isNew,
-                itemTemplate : {
-                    empName : { text:"姓名", type : "innertext" },
-                    unitName : { text:"部门",  tType : "unit", notEmpty:true },
-                    recordDateString : { text:"日期",  tType : "date"},
-                    status : {  text:"状态", tType : "number" },
-                    appealReason : {
-                        text:"下拉框",
-                        type : "select",
-                        selectValue : ["测试1","测试2"]
-                    },
-                    appealDescription : {  text:"描述", type : "textarea" },
-                    opinion1 : {  text:"测试", type : "button", "value" : "测试" }
-                }
-            }, this.app);
-            this.form.load();
-        }.bind(this), true);
-    },
-    setFormNodeSize: function (width, height, top, left) {
-        if (!width)width = this.options && this.options.width ? this.options.width : "50%";
-        if (!height)height = this.options && this.options.height ? this.options.height : "50%";
-        if (!top) top = this.options && this.options.top ? this.options.top : 0;
-        if (!left) left = this.options && this.options.left ? this.options.left : 0;
-
-        var allSize = this.app.content.getSize();
-        var limitWidth = allSize.x; //window.screen.width
-        var limitHeight = allSize.y; //window.screen.height
-
-        "string" == typeof width && (1 < width.length && "%" == width.substr(width.length - 1, 1)) && (width = parseInt(limitWidth * parseInt(width, 10) / 100, 10));
-        "string" == typeof height && (1 < height.length && "%" == height.substr(height.length - 1, 1)) && (height = parseInt(limitHeight * parseInt(height, 10) / 100, 10));
-        300 > width && (width = 300);
-        220 > height && (height = 220);
-        top = top || parseInt((limitHeight - height) / 2, 10);
-        left = left || parseInt((limitWidth - width) / 2, 10);
-
-        this.formAreaNode.setStyles({
-            "width": "" + width + "px",
-            "height": "" + height + "px",
-            "top": "" + top + "px",
-            "left": "" + left + "px"
-        });
-
-        this.formNode.setStyles({
-            "width": "" + width + "px",
-            "height": "" + height + "px"
-        });
-
-        var iconSize = this.formIconNode ? this.formIconNode.getSize() : {x: 0, y: 0};
-        var topSize = this.formTopNode ? this.formTopNode.getSize() : {x: 0, y: 0};
-        var bottomSize = this.formBottomNode ? this.formBottomNode.getSize() : {x: 0, y: 0};
-
-        var contentHeight = height - iconSize.y - topSize.y - bottomSize.y;
-        //var formMargin = formHeight -iconSize.y;
-        this.formFormNode.setStyles({
-            "height": "" + contentHeight + "px"
-        });
-    },
-    //setFormNodeSize: function(){
-    //    var size = this.app.node.getSize();
-    //    var allSize = this.app.content.getSize();
-    //
-    //    this.formAreaNode.setStyles({
-    //        "width": ""+size.x+"px",
-    //        "height": ""+size.y+"px"
-    //    });
-    //    var hY = size.y*0.8;
-    //    var mY = size.y*0.2/2;
-    //    this.formNode.setStyles({
-    //        "height": ""+hY+"px",
-    //        "margin-top": ""+mY+"px"
-    //    });
-    //
-    //    var iconSize =  this.formIconNode ? this.formIconNode.getSize() : {x:0,y:30};
-    //    var formHeight = hY*0.8;
-    //    if (formHeight>250) formHeight = 250;
-    //    var formMargin = hY*0.3/2-iconSize.y;
-    //    this.formFormNode.setStyles({
-    //        "height": ""+formHeight+"px",
-    //        "margin-top": ""+formMargin+"px"
-    //    });
-    //},
-    _createAction : function(){
-        this.cancelActionNode = new Element("div", {
-            "styles": this.css.formCancelActionNode || this.app.css.formCancelActionNode,
-            "text": this.app.lp.cancel
-        }).inject(this.formFormNode);
-
-
-        this.cancelActionNode.addEvent("click", function(e){
-            this.cancel(e);
-        }.bind(this));
-        if( this.isNew || this.isEdited){
-
-            this.okActionNode = new Element("div", {
-                "styles": this.css.formOkActionNode || this.app.css.formOkActionNode,
-                "text": this.app.lp.ok
-            }).inject(this.formFormNode);
-
-            this.okActionNode.addEvent("click", function(e){
-                this.ok(e);
-            }.bind(this));
-        }
-    },
-    cancel: function(e){
-        this.close();
-    },
-    close: function(e){
-        this.formMaskNode.destroy();
-        this.formAreaNode.destroy();
-        delete this;
-    },
-    ok: function(e){
-        debugger
-        var data = this.form.getResult(false,",",true,false,true);
-        if( data ){
-            this._ok( data, function( json ){
-                if( json.type == "ERROR" ){
-                    this.app.notice( json.message  , "error");
-                }else{
-                    this.formMaskNode.destroy();
-                    this.formAreaNode.destroy();
-                    if(this.explorer.view)this.explorer.view.reload();
-                    this.app.notice( this.isNew ? this.app.lp.createSuccess : this.app.lp.updateSuccess , "success");
-                }
-            }.bind(this))
-        }
-    },
-    _ok: function( data, callback ){
-        //this.app.restActions.saveDocument( this.data.id, data, function(json){
-        //    if( callback )callback(json);
-        //}.bind(this));
+        "height": "400",
+        "buttonList": [{ "type":"ok", "text": "" }, { "type":"cancel", "text": "" }]
     }
 });
+
+// MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
+//     Extends: MWF.widget.Common,
+//     Implements: [Options, Events],
+//     options: {
+//         "width": "500",
+//         "height": "400"
+//     },
+//     initialize: function( explorer, data,options){
+//         this.setOptions(options);
+//         this.explorer = explorer;
+//         this.app = explorer.app;
+//         this.data = data || {};
+//         this.css = this.explorer.css;
+//
+//         this.load();
+//     },
+//     load: function(){
+//
+//     },
+//
+//     open: function(e){
+//         this.isNew = false;
+//         this.isEdited = false;
+//         this._open();
+//     },
+//     create: function(){
+//         this.isNew = true;
+//         this._open();
+//     },
+//     edit: function(){
+//         this.isEdited = true;
+//         this._open();
+//     },
+//     _open : function(){
+//         this.formMaskNode = new Element("div", {
+//             "styles": this.css.formMaskNode || this.app.css.formMaskNode,
+//             "events": {
+//                 "mouseover": function(e){e.stopPropagation();},
+//                 "mouseout": function(e){e.stopPropagation();}
+//             }
+//         }).inject(this.app.content, "after");
+//
+//         this.formAreaNode = new Element("div", {
+//             "styles": this.css.formAreaNode || this.app.css.formAreaNode
+//         });
+//
+//         this.createFormNode();
+//
+//         this.formAreaNode.inject(this.formMaskNode, "after");
+//         this.formAreaNode.fade("in");
+//
+//         this.setFormNodeSize();
+//         this.setFormNodeSizeFun = this.setFormNodeSize.bind(this);
+//         this.addEvent("resize", this.setFormNodeSizeFun);
+//     },
+//     createFormNode: function(){
+//         var _self = this;
+//
+//         this.formNode = new Element("div", {
+//             "styles": this.css.formNode || this.app.css.formNode
+//         }).inject(this.formAreaNode);
+//
+//         this.formIconNode = new Element("div", {
+//             "styles": this.isNew ? ( this.css.formNewNode || this.app.css.formNewNode) : ( this.css.formIconNode || this.app.css.formIconNode )
+//         }).inject(this.formNode);
+//
+//
+//         this.formFormNode = new Element("div", {
+//             "styles": this.css.formFormNode || this.app.css.formFormNode
+//         }).inject(this.formNode);
+//
+//         this.formTableContainer = new Element("div", {
+//             "styles": this.css.formTableContainer || this.app.css.formTableContainer
+//         }).inject(this.formFormNode);
+//
+//         this.formTableArea = new Element("div", {
+//             "styles": this.css.formTableArea || this.app.css.formTableArea
+//         }).inject(this.formTableContainer);
+//
+//
+//         this._createTableContent();
+//         //formFormNode.set("html", html);
+//
+//         //this.setScrollBar(this.formTableContainer)
+//
+//         this._createAction();
+//     },
+//     _createTableContent: function(){
+//
+//         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
+//             "<tr><td colspan='2' styles='formTableHead'>申诉处理单</td></tr>" +
+//             "<tr><td styles='formTabelTitle' lable='empName'></td>"+
+//             "    <td styles='formTableValue' item='empName'></td></tr>" +
+//             "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
+//             "    <td styles='formTableValue' item='unitName'></td></tr>" +
+//             "<tr><td styles='formTabelTitle' lable='recordDateString'></td>"+
+//             "    <td styles='formTableValue' item='recordDateString'></td></tr>" +
+//             "<tr><td styles='formTabelTitle' lable='status'></td>"+
+//             "    <td styles='formTableValue' item='status'></td></tr>" +
+//             "<tr><td styles='formTabelTitle' lable='appealReason'></td>"+
+//             "    <td styles='formTableValue' item='appealReason'></td></tr>" +
+//             "<tr><td styles='formTabelTitle' lable='appealDescription'></td>"+
+//             "    <td styles='formTableValue' item='appealDescription'></td></tr>" +
+//             "<tr><td styles='formTabelTitle' lable='opinion1'></td>"+
+//             "    <td styles='formTableValue' item='opinion1'></td></tr>" +
+//             "</table>";
+//         this.formTableArea.set("html",html);
+//
+//         MWF.xDesktop.requireApp("Template", "MForm", function(){
+//             this.form = new MForm( this.formTableArea, {empName:"xadmin"}, {
+//                 isEdited : this.isEdited || this.isNew,
+//                 itemTemplate : {
+//                     empName : { text:"姓名", type : "innertext" },
+//                     unitName : { text:"部门",  tType : "unit", notEmpty:true },
+//                     recordDateString : { text:"日期",  tType : "date"},
+//                     status : {  text:"状态", tType : "number" },
+//                     appealReason : {
+//                         text:"下拉框",
+//                         type : "select",
+//                         selectValue : ["测试1","测试2"]
+//                     },
+//                     appealDescription : {  text:"描述", type : "textarea" },
+//                     opinion1 : {  text:"测试", type : "button", "value" : "测试" }
+//                 }
+//             }, this.app);
+//             this.form.load();
+//         }.bind(this), true);
+//     },
+//     setFormNodeSize: function (width, height, top, left) {
+//         if (!width)width = this.options && this.options.width ? this.options.width : "50%";
+//         if (!height)height = this.options && this.options.height ? this.options.height : "50%";
+//         if (!top) top = this.options && this.options.top ? this.options.top : 0;
+//         if (!left) left = this.options && this.options.left ? this.options.left : 0;
+//
+//         var allSize = this.app.content.getSize();
+//         var limitWidth = allSize.x; //window.screen.width
+//         var limitHeight = allSize.y; //window.screen.height
+//
+//         "string" == typeof width && (1 < width.length && "%" == width.substr(width.length - 1, 1)) && (width = parseInt(limitWidth * parseInt(width, 10) / 100, 10));
+//         "string" == typeof height && (1 < height.length && "%" == height.substr(height.length - 1, 1)) && (height = parseInt(limitHeight * parseInt(height, 10) / 100, 10));
+//         300 > width && (width = 300);
+//         220 > height && (height = 220);
+//         top = top || parseInt((limitHeight - height) / 2, 10);
+//         left = left || parseInt((limitWidth - width) / 2, 10);
+//
+//         this.formAreaNode.setStyles({
+//             "width": "" + width + "px",
+//             "height": "" + height + "px",
+//             "top": "" + top + "px",
+//             "left": "" + left + "px"
+//         });
+//
+//         this.formNode.setStyles({
+//             "width": "" + width + "px",
+//             "height": "" + height + "px"
+//         });
+//
+//         var iconSize = this.formIconNode ? this.formIconNode.getSize() : {x: 0, y: 0};
+//         var topSize = this.formTopNode ? this.formTopNode.getSize() : {x: 0, y: 0};
+//         var bottomSize = this.formBottomNode ? this.formBottomNode.getSize() : {x: 0, y: 0};
+//
+//         var contentHeight = height - iconSize.y - topSize.y - bottomSize.y;
+//         //var formMargin = formHeight -iconSize.y;
+//         this.formFormNode.setStyles({
+//             "height": "" + contentHeight + "px"
+//         });
+//     },
+//     _createAction : function(){
+//         this.cancelActionNode = new Element("div", {
+//             "styles": this.css.formCancelActionNode || this.app.css.formCancelActionNode,
+//             "text": this.app.lp.cancel
+//         }).inject(this.formFormNode);
+//
+//
+//         this.cancelActionNode.addEvent("click", function(e){
+//             this.cancel(e);
+//         }.bind(this));
+//         if( this.isNew || this.isEdited){
+//
+//             this.okActionNode = new Element("div", {
+//                 "styles": this.css.formOkActionNode || this.app.css.formOkActionNode,
+//                 "text": this.app.lp.ok
+//             }).inject(this.formFormNode);
+//
+//             this.okActionNode.addEvent("click", function(e){
+//                 this.ok(e);
+//             }.bind(this));
+//         }
+//     },
+//     cancel: function(e){
+//         this.close();
+//     },
+//     close: function(e){
+//         this.formMaskNode.destroy();
+//         this.formAreaNode.destroy();
+//         delete this;
+//     },
+//     ok: function(e){
+//         debugger
+//         var data = this.form.getResult(false,",",true,false,true);
+//         if( data ){
+//             this._ok( data, function( json ){
+//                 if( json.type == "ERROR" ){
+//                     this.app.notice( json.message  , "error");
+//                 }else{
+//                     this.formMaskNode.destroy();
+//                     this.formAreaNode.destroy();
+//                     if(this.explorer.view)this.explorer.view.reload();
+//                     this.app.notice( this.isNew ? this.app.lp.createSuccess : this.app.lp.updateSuccess , "success");
+//                 }
+//             }.bind(this))
+//         }
+//     },
+//     _ok: function( data, callback ){
+//         //this.app.restActions.saveDocument( this.data.id, data, function(json){
+//         //    if( callback )callback(json);
+//         //}.bind(this));
+//     }
+// });
