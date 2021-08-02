@@ -1,7 +1,6 @@
 package com.x.base.core.project;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -139,25 +138,9 @@ public class Context extends AbstractContext {
 		return this.clearCacheRequestQueue;
 	}
 
-	private volatile Date applicationsTimestamp = null;
-
-	public Applications applications() throws Exception {
-		if (null != Config.resource_node_applicationsTimestamp()) {
-			if (null == this.applicationsTimestamp
-					|| (this.applicationsTimestamp.before(Config.resource_node_applicationsTimestamp()))) {
-				synchronized (this) {
-					this.applications = XGsonBuilder.instance().fromJson(Config.resource_node_applications(),
-							Applications.class);
-					this.applicationsTimestamp = Config.resource_node_applicationsTimestamp();
-				}
-			}
-		}
-		return this.applications;
-	}
-
-	public ThreadFactory threadFactory() {
-		return this.threadFactory;
-	}
+//	public ThreadFactory threadFactory() {
+//		return this.threadFactory;
+//	}
 
 	/* 队列 */
 	private List<AbstractQueue<?>> queues;
@@ -187,7 +170,7 @@ public class Context extends AbstractContext {
 		context.scheduleWeight = Config.currentNode().getApplication().scheduleWeight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
 		context.initDatas();
-		context.threadFactory = new ThreadFactory(context);
+		// context.threadFactory = new ThreadFactory(context);
 		servletContext.setAttribute(AbstractContext.class.getName(), context);
 		context.initialized = true;
 		return context;
@@ -208,6 +191,8 @@ public class Context extends AbstractContext {
 		application.setScheduleLocalRequestList(this.scheduleLocalRequestList);
 		application.setScheduleRequestList(this.scheduleRequestList);
 		JsonElement jsonElement = XGsonBuilder.instance().toJsonTree(application);
+		// 将当前的application写入到servletContext
+		servletContext.setAttribute(SERVLETCONTEXT_ATTRIBUTE_APPLICATION, jsonElement.toString());
 		JsonObject jsonObject = jsonElement.getAsJsonObject();
 		jsonObject.addProperty("type", "registApplication");
 		Config.resource_node_eventQueue().put(jsonObject);

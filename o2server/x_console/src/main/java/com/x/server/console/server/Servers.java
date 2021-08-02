@@ -24,6 +24,27 @@ public class Servers {
 	public static FtpServer storageServer;
 	public static DataTcpWebServer dataServer;
 
+	public static Boolean webServerIsStarted() {
+		if (null == webServer) {
+			return false;
+		}
+		return webServer.isStarted();
+	}
+
+	public static Boolean applicationServerIsStarted() {
+		if (null == applicationServer) {
+			return false;
+		}
+		return applicationServer.isStarted();
+	}
+
+	public static Boolean centerServerIsStarted() {
+		if (null == centerServer) {
+			return false;
+		}
+		return centerServer.isStarted();
+	}
+
 	public static Boolean webServerIsRunning() {
 		if (null == webServer) {
 			return false;
