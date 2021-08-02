@@ -287,7 +287,7 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             }.bind(this));
             if(_self.view)_self.view.reload();
             _self.batchAppeals = false;
-            _self.app.notice( this.app.lp.actionSuccess, "success");
+            _self.app.notice( _self.app.lp.actionSuccess, "success");
             this.close();
         }, function(){
             this.close();
@@ -310,7 +310,7 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             }.bind(this));
             if(_self.view)_self.view.reload();
             _self.batchAppeals = false;
-            _self.app.notice( this.app.lp.actionSuccess , "success");
+            _self.app.notice( _self.app.lp.actionSuccess , "success");
             this.close();
         }, function(){
             this.close();

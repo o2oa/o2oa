@@ -20,7 +20,6 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         "hasTopIcon" : false,
         "hasTopContent" : false,
         "hasIcon": true,
-        "hasBottom": true,
         "hasMask" : true,
         "closeByClickMask" : false,
         "hasScroll" : true,
@@ -34,7 +33,10 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
 
         "relativeToApp" : true,
         "sizeRelateTo" : "app", //desktop
-        "resultSeparator" : ","
+        "resultSeparator" : ",",
+
+        "hasBottom": true,
+        "buttonList" : [{ "type":"cancel", "text": "" },{ "type":"ok", "text": "" }]
     },
     initialize: function (explorer, data, options, para) {
         this.setOptions(options);
@@ -451,21 +453,37 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         this.fireEvent("postCreateBottom");
     },
     _createBottomContent: function () {
+
+        if( !this.options.buttonList ){
+            this._createCancelActionNode();
+            this._createOkActionNode();
+        }else{
+            debugger;
+            this.options.buttonList.each(function (button) {
+                if(button.type === "cancel"){
+                    this._createCancelActionNode( button.text || "" );
+                }else if( button.type === "ok" ){
+                    this._createOkActionNode( button.text || "" );
+                }else{
+
+                }
+            }.bind(this))
+        }
+    },
+    _createCancelActionNode: function(text){
         this.cancelActionNode = new Element("div.formCancelActionNode", {
             "styles": this.css.formCancelActionNode,
-            "text": this.lp.cancel
+            "text": text || this.lp.cancel
         }).inject(this.formBottomNode);
-
-
         this.cancelActionNode.addEvent("click", function (e) {
             this.cancel(e);
         }.bind(this));
-
+    },
+    _createOkActionNode: function(text){
         if (this.isNew || this.isEdited) {
-
             this.okActionNode = new Element("div.formOkActionNode", {
                 "styles": this.css.formOkActionNode,
-                "text": this.lp.ok
+                "text": text || this.lp.ok
             }).inject(this.formBottomNode);
 
             this.okActionNode.addEvent("click", function (e) {

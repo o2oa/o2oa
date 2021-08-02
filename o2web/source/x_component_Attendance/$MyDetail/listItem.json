@@ -99,17 +99,19 @@
     "sub" : [{
       "title" :  MWF.xApplication.Attendance.LP.createAppeal,
       "action" : "appeal",
+      "icon": "appeal.png",
       "condition" : "function( d ){ if(!d.APPEALABLE)return false; if( d.appealStatus || d.isGetSelfHolidays ){ return false }else if(  d.isAbsent || d.isLate || d.isLeaveEarlier || d.isAbnormalDuty || d.isLackOfTime ){ return true }else{ return false } }",
-      "styles" : "actionAppealNode",
-      "overStyles" : "actionAppealNode_over",
-      "downStyles" : "actionAppealNode_down"
+      "styles" : "documentActionNode",
+      "overStyles" : "documentActionNode_over",
+      "downStyles" : "documentActionNode_down"
     },{
       "title" : MWF.xApplication.Attendance.LP.viewAppealDetail,
       "action" : "seeAppeal",
+      "icon": "open.png",
       "condition" : "function( d ){ if( d.appealStatus ){ return true }else{ return false } }",
-      "styles" : "actionOpenNode",
-      "overStyles" : "actionOpenNode_over",
-      "downStyles" : "actionOpenNode_down"
+      "styles" : "documentActionNode",
+      "overStyles" : "documentActionNode_over",
+      "downStyles" : "documentActionNode_down"
     }]
   }
 ]
