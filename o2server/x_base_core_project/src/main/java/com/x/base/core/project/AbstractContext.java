@@ -1,8 +1,12 @@
 package com.x.base.core.project;
 
+import java.util.Date;
+
 import javax.servlet.ServletContext;
 
 import com.x.base.core.project.annotation.Module;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.schedule.AbstractJob;
@@ -15,11 +19,13 @@ public abstract class AbstractContext {
 
 	protected static final String INITPARAMETER_PORJECT = "project";
 
-	public abstract Applications applications() throws Exception;
+	public static final String SERVLETCONTEXT_ATTRIBUTE_APPLICATION = "application";
 
-	protected ThreadFactory threadFactory;
+	// public abstract Applications applications() throws Exception;
 
-	public abstract ThreadFactory threadFactory();
+//	protected ThreadFactory threadFactory;
+//
+//	public abstract ThreadFactory threadFactory();
 
 	// 应用类
 	protected Class<?> clazz;
@@ -48,4 +54,20 @@ public abstract class AbstractContext {
 	public abstract <T extends AbstractJob> void fireScheduleOnLocal(Class<T> cls, Integer delay) throws Exception;
 
 	public abstract AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue();
+
+	private volatile Date applicationsTimestamp = null;
+
+	public Applications applications() throws Exception {
+		if (null != Config.resource_node_applicationsTimestamp()) {
+			if (null == this.applicationsTimestamp
+					|| (this.applicationsTimestamp.before(Config.resource_node_applicationsTimestamp()))) {
+				synchronized (this) {
+					this.applications = XGsonBuilder.instance().fromJson(Config.resource_node_applications(),
+							Applications.class);
+					this.applicationsTimestamp = Config.resource_node_applicationsTimestamp();
+				}
+			}
+		}
+		return this.applications;
+	}
 }

@@ -92,8 +92,8 @@ public class ThisApplication {
 				context().scheduleLocal(WeLinkSyncOrganizationTrigger.class, Config.weLink().getForceSyncCron());
 			}
 
-			context().scheduleLocal(RefreshApplications.class, CenterQueue.REFRESHAPPLICATIONSINTERVAL,
-					CenterQueue.REFRESHAPPLICATIONSINTERVAL);
+//			context().scheduleLocal(RefreshApplications.class, CenterQueue.REFRESHAPPLICATIONSINTERVAL,
+//					CenterQueue.REFRESHAPPLICATIONSINTERVAL);
 			// 运行间隔由300秒缩减到120秒
 			context().scheduleLocal(FireSchedule.class, 180, 120);
 			context().scheduleLocal(CleanupCode.class, 10, 60 * 30);

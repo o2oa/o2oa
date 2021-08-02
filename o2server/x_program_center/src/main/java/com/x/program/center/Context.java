@@ -57,15 +57,15 @@ public class Context extends AbstractContext {
 
 	private static Logger logger = LoggerFactory.getLogger(Context.class);
 
-	@Override
-	public Applications applications() throws Exception {
-		return applications;
-	}
+//	@Override
+//	public Applications applications() throws Exception {
+//		return applications;
+//	}
 
-	@Override
-	public ThreadFactory threadFactory() {
-		return threadFactory;
-	}
+//	@Override
+//	public ThreadFactory threadFactory() {
+//		return threadFactory;
+//	}
 
 	/* 应用的磁盘路径 */
 	private volatile String path;
@@ -169,7 +169,7 @@ public class Context extends AbstractContext {
 		context.servletContextName = servletContext.getServletContextName();
 		context.clazz = Class.forName(servletContextEvent.getServletContext().getInitParameter(INITPARAMETER_PORJECT));
 		context.initDatas();
-		context.threadFactory = new ThreadFactory(context);
+	//	context.threadFactory = new ThreadFactory(context);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			context.checkDefaultRole(emc);
 		}
