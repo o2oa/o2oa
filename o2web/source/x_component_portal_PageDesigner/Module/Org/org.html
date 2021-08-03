@@ -44,8 +44,8 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.dataStructure}}:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="storeRange" value="full" text{($.section=='full')?'checked':''}/>{{$.lp.complete}}
-                    <input type="radio" name="storeRange" value="simple" text{($.section!=='full')?'checked':''}/>{{$.lp.simple}}
+                    <input type="radio" name="storeRange" value="full" text{($.storeRange=='full')?'checked':''}/>{{$.lp.complete}}
+                    <input type="radio" name="storeRange" value="simple" text{($.storeRange!=='full')?'checked':''}/>{{$.lp.simple}}
                 </td>
             </tr>
             <tr>
