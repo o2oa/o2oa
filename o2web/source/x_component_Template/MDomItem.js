@@ -2926,14 +2926,20 @@ MDomItem.Org = new Class({
             options = Object.merge( options, this.options.orgWidgetOptions );
         }
         value.each(function( v ){
+            var data;
             var distinguishedName;
             if( typeOf(v) === "string" ){
                 distinguishedName = v;
+                data = {
+                    "distinguishedName" : distinguishedName,
+                    "name": distinguishedName.split("@")[0]
+                }
             }else{
-                distinguishedName = v.distinguishedName || v.name || ""
+                distinguishedName = v.distinguishedName || v.name || "";
+                if( !v.name )v.name = distinguishedName.split("@")[0];
+                data = v;
             }
             var flag = distinguishedName.substr(distinguishedName.length-1, 1);
-            var data = { "name" : distinguishedName };
             switch (flag.toLowerCase()){
                 case "i":
                     var widget = new MWF.widget.O2Identity( data, node, options );

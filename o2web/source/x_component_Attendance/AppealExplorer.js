@@ -400,101 +400,35 @@ MWF.xApplication.Attendance.AppealExplorer.Document = new Class({
         }.bind(this), null, false );
     }
 
-})
+});
 
 
 MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
-    Extends: MWF.widget.Common,
-    initialize: function( explorer, data ){
-        this.explorer = explorer;
-        this.app = explorer.app;
-        this.data = data || {};
-        this.css = this.explorer.css;
-        //this.app.restActions.getAppeal(this.data.detailId, function(json){
-        //    this.data = json.data
-        //}.bind(this),null,false)
-        //alert(JSON.stringify(this.data))
-        this.load();
-    },
-    load: function(){
-        this.app.restActions.getDetail(this.data.detailId, function(json){
-            this.data.onDutyTime = json.data.onDutyTime;
-            this.data.offDutyTime = json.data.offDutyTime;
-        }.bind(this),null,false)
-    },
-
-    open: function(e){
-        this.isNew = false;
-        this.isEdited = false;
-        this._open();
-    },
-    create: function(){
-        this.isNew = true;
-        this._open();
+    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
+    options : {
+        "width": 700,
+        "height": 500,
+        "hasTop" : true,
+        "hasBottom" : true,
+        "title" : MWF.xApplication.Attendance.LP.apealForm,
+        "draggable" : true,
+        "closeAction" : true,
     },
     edit: function(){
+        this.fireEvent("queryEdit");
         if( this.explorer.config.APPEALABLE )this.isEdited = true;
         this._open();
+        this.fireEvent("postEdit");
     },
-    _open : function(){
-        this.createMarkNode = new Element("div", {
-            "styles": this.css.createMarkNode,
-            "events": {
-                "mouseover": function(e){e.stopPropagation();},
-                "mouseout": function(e){e.stopPropagation();}
-            }
-        }).inject(this.app.content, "after");
-
-        this.createAreaNode = new Element("div", {
-            "styles": this.css.createAreaNode
-        });
-
-        this.createNode();
-
-        this.createAreaNode.inject(this.createMarkNode, "after");
-        this.createAreaNode.fade("in");
-
-        this.setCreateNodeSize();
-        this.setCreateNodeSizeFun = this.setCreateNodeSize.bind(this);
-        this.addEvent("resize", this.setCreateNodeSizeFun);
-    },
-    createNode: function(){
+    _createTableContent: function(){
         var _self = this;
 
-        this.createNode = new Element("div", {
-            "styles": this.css.createNode
-        }).inject(this.createAreaNode);
-
-        //
-        //this.createIconNode = new Element("div", {
-        //    "styles": this.isNew ? this.css.createNewNode : this.css.createIconNode
-        //}).inject(this.createNode);
-
-        this.createContainerNode = new Element("div", {
-            "styles": this.css.createContainerNode
-        }).inject(this.createNode);
-
-
-        this.setScrollBar( this.createContainerNode );
-
-
-        this.createFormNode = new Element("div", {
-            "styles": this.css.createFormNode
-        }).inject(this.createContainerNode);
-
-        this.createTableContainer = new Element("div", {
-            "styles": this.css.createTableContainer
-        }).inject(this.createFormNode);
-
-        this.createTableArea = new Element("div", {
-            "styles": this.css.createTableArea
-        }).inject(this.createTableContainer);
-
-
-        var table = new Element("table", {
-            "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.editTable, "class" : "editTable"
-        }).inject( this.createTableArea );
-
+        if(this.data.detailId){
+            this.app.restActions.getDetail(this.data.detailId, function(json){
+                this.data.onDutyTime = json.data.onDutyTime;
+                this.data.offDutyTime = json.data.offDutyTime;
+            }.bind(this),null,false)
+        }
 
         var d = this.data;
 
@@ -509,11 +443,10 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
         this.data.appealStatusShow = appealStatus;
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='4' styles='formTableHead'>"+this.app.lp.apealForm+"</td></tr>" +
-            "<tr><td styles='formTableTitle' lable='empNameShow'></td>"+
-            "    <td styles='formTableValue' item='empNameShow'></td>" +
-            "    <td styles='formTableTitle' lable='recordDateString'></td>"+
-            "    <td styles='formTableValue' item='recordDateString'></td></tr>" +
+            "<tr><td style='width: 85px;' styles='formTableTitle' lable='empNameShow'></td>"+
+            "    <td style='width: 165px;' styles='formTableValue' item='empNameShow'></td>" +
+            "    <td style='width: 85px;'  styles='formTableTitle' lable='recordDateString'></td>"+
+            "    <td style='width: 165px;' styles='formTableValue' item='recordDateString'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='onDutyTime'></td>"+
             "    <td styles='formTableValue' item='onDutyTime'></td>" +
             "    <td styles='formTableTitle' lable='offDutyTime'></td>"+
@@ -535,11 +468,11 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
             /*"<tr contain='opinion1'><td styles='formTableTitle' lable='opinion1'></td>"+
             "    <td styles='formTableValue' item='opinion1' colspan='3'></td></tr>" +*/
             "</table>"
-        this.createTableArea.set("html",html);
+        this.formTableArea.set("html",html);
 
         var lp = this.app.lp;
-        this.document = new MForm( this.createTableArea, this.data, {
-            style : "popup",
+        this.document = new MForm( this.formTableArea, this.data, {
+            style : "attendance",
             isEdited : this.isEdited || this.isNew,
             itemTemplate : {
                 empNameShow : { text: lp.employeeName, type : "innertext", value : this.data.empName.split("@")[0] },
@@ -565,39 +498,33 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
         this.document.load();
         _self.switchFieldByAppealReason(this.data.appealReason);
 
+        // this.cancelActionNode = new Element("div", {
+        //     "styles": this.css.createCancelActionNode,
+        //     "text": lp.close
+        // }).inject(this.createFormNode);
+        //
+        //
+        // this.cancelActionNode.addEvent("click", function(e){
+        //     this.cancelCreate(e);
+        // }.bind(this));
 
-        //createFormNode.set("html", html);
-
-        //this.setScrollBar(this.createTableContainer)
-
-
-        this.cancelActionNode = new Element("div", {
-            "styles": this.css.createCancelActionNode,
-            "text": lp.close
-        }).inject(this.createFormNode);
-
-
-        this.cancelActionNode.addEvent("click", function(e){
-            this.cancelCreate(e);
-        }.bind(this));
-
-        if( this.isNew || this.isEdited ){
-            this.denyActionNode = new Element("div", {
-                "styles": this.css.createDenyActionNode,
-                "text": lp.disagree
-            }).inject(this.createFormNode);
-            this.createOkActionNode = new Element("div", {
-                "styles": this.css.createOkActionNode,
-                "text": lp.agree
-            }).inject(this.createFormNode);
-
-            this.denyActionNode.addEvent("click", function(e){
-                this.deny(e);
-            }.bind(this));
-            this.createOkActionNode.addEvent("click", function(e){
-                this.okCreate(e);
-            }.bind(this));
-        }
+        // if( this.isNew || this.isEdited ){
+        //     this.denyActionNode = new Element("div", {
+        //         "styles": this.css.createDenyActionNode,
+        //         "text": lp.disagree
+        //     }).inject(this.createFormNode);
+        //     this.createOkActionNode = new Element("div", {
+        //         "styles": this.css.createOkActionNode,
+        //         "text": lp.agree
+        //     }).inject(this.createFormNode);
+        //
+        //     this.denyActionNode.addEvent("click", function(e){
+        //         this.deny(e);
+        //     }.bind(this));
+        //     this.createOkActionNode.addEvent("click", function(e){
+        //         this.okCreate(e);
+        //     }.bind(this));
+        // }
 
     },
     switchFieldByAppealReason : function( ar ){
@@ -614,44 +541,9 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
             showField = ["appealDescription"];
         }
         tempField.each( function( f ){
-            this.createTableArea.getElement("[contain='"+f+"']").setStyle("display", showField.contains(f) ? "" : "none" );
+            this.formTableArea.getElement("[contain='"+f+"']").setStyle("display", showField.contains(f) ? "" : "none" );
             if( this.isNew || this.isEdited )this.document.items[f].options.notEmpty = (showField.contains(f) ? true : false )
         }.bind(this))
-    },
-    setCreateNodeSize: function(){
-        var size = this.app.node.getSize();
-        var allSize = this.app.content.getSize();
-
-        var height = "570";
-        var width = "800";
-
-        this.createAreaNode.setStyles({
-            "width": ""+size.x+"px",
-            "height": ""+size.y+"px"
-        });
-        var hY = height;
-        var mY = (size.y-height)/2;
-        this.createNode.setStyles({
-            "height": ""+hY+"px",
-            "margin-top": ""+mY+"px",
-            "width" : ""+width+"px"
-        });
-
-        this.createContainerNode.setStyles({
-            "height": ""+hY+"px"
-        });
-
-        var iconSize = this.createIconNode ? this.createIconNode.getSize() : {x:0,y:0};
-        var formMargin = hY-iconSize.y-60;
-        this.createFormNode.setStyles({
-            "height": ""+formMargin+"px",
-            "margin-top": ""+60+"px"
-        });
-    },
-    cancelCreate: function(e){
-        this.createMarkNode.destroy();
-        this.createAreaNode.destroy();
-        delete this;
     },
     deny : function(e){
         var data = { 'ids' : [this.data.id], 'status':'-1', 'opinion1': this.document.items.opinion1.getValue() };
@@ -670,9 +562,9 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
             if( json.type == "ERROR" ){
                 this.app.notice( json.message , "error");
             }else{
-                this.createMarkNode.destroy();
-                this.createAreaNode.destroy();
-                if(this.explorer.view)this.explorer.view.reload();
+                if( this.formMaskNode )this.formMaskNode.destroy();
+                if( this.formAreaNode )this.formAreaNode.destroy();
+                if (this.explorer && this.explorer.view)this.explorer.view.reload();
                 this.app.notice( this.app.lp.actionSuccess, "success");
             }
             //    this.app.processConfig();

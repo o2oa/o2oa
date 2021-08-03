@@ -252,6 +252,25 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
             this.form.load();
         }.bind(this), true);
     },
+    getDateSelectValue : function(){
+        if( this.form ){
+            var year = parseInt(this.form.getItem("cycleYear").getValue());
+            var month = parseInt(this.form.getItem("cycleMonth").getValue())-1;
+        }else{
+            var year =  (new Date()).getFullYear() ;
+            var month =  (new Date()).getMonth() ;
+        }
+        var date = new Date(year, month, 1);
+        var days = [];
+        days.push("");
+        while (date.getMonth() === month) {
+            var d = date.getDate().toString();
+            if( d.length == 1 )d = "0"+d;
+            days.push( d );
+            date.setDate(date.getDate() + 1);
+        }
+        return days;
+    },
     //loadFilter2 : function(){
     //    this.fileterNode = new Element("div.fileterNode", {
     //        "styles" : this.css.fileterNode
@@ -931,10 +950,10 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
         var identityList = this.getIdentity();
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td styles='formTableTitle'>"+appLp.employeeName+"</td>"+
-            "    <td styles='formTableValue'>"+this.data.empName.split("@")[0]+"</td>" +
-            "    <td styles='formTableTitle' lable='recordDateString'></td>"+
-            "    <td styles='formTableValue' item='recordDateString'></td></tr>"
+            "<tr><td style='width: 85px;' styles='formTableTitle'>"+appLp.employeeName+"</td>"+
+            "    <td style='width: 165px;' styles='formTableValue'>"+this.data.empName.split("@")[0]+"</td>" +
+            "    <td style='width: 85px;' styles='formTableTitle' lable='recordDateString'></td>"+
+            "    <td style='width: 165px;' styles='formTableValue' item='recordDateString'></td></tr>"
             +"<tr><td styles='formTableTitle' lable='onDutyTime'></td>"+
             "    <td styles='formTableValue' item='onDutyTime'></td>" +
             ((this.data.signProxy=="2"||this.data.signProxy=="3")?
@@ -945,10 +964,6 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
             ) +
             "    <td styles='formTableTitle' lable='offDutyTime'></td>"+
             "    <td styles='formTableValue' item='offDutyTime'></td></tr>" +
-            ( ( this.isNew && identityList.identities.length > 1 ) ?
-                    "<tr><td styles='formTableTitle' lable='identity'></td>"+
-                    "    <td styles='formTableValue' item='identity'  colspan='3'></td></tr>" : ""
-            ) +
             ( this.isNew ?
                     "<tr><td styles='formTableTitle' lable='statusShow'></td>"+
                     "    <td styles='formTableValue' item='statusShow'></td>" +
@@ -959,6 +974,10 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
                     "    <td styles='formTableValue' item='appealStatusShow'  colspan='3'></td></tr>"
             )
             +
+            ( ( this.isNew && identityList.identities.length > 1 ) ?
+                    "<tr><td styles='formTableTitle' lable='identity'></td>"+
+                    "    <td styles='formTableValue' item='identity'  colspan='3'></td></tr>" : ""
+            ) +
             "<tr><td styles='formTableTitle' lable='appealReason'></td>"+
             "    <td styles='formTableValue' item='appealReason' colspan='3'></td></tr>" +
             "<tr contain='selfHolidayType'><td styles='formTableTitle' lable='selfHolidayType'></td>"+
