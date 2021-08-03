@@ -1,15 +1,19 @@
 {
   "titleNode" : {
-    "background-color" : "#365775", //"#f1f3fc",
+    "background-color" : "#fff", //"#f1f3fc",
+    "color": "#333",
     "margin-left" : "2px",
-    "height": "60px",
+    "height": "50px",
     "overflow": "hidden"
+  },
+  "titleRightNode": {
+    "float": "right"
   },
   "titleInforNode" : {
     "float" : "right",
-    "height": "60px",
-    "line-height": "60px",
-    "color" : "#fff",
+    "height": "50px",
+    "line-height": "50px",
+    "color" : "#333",
     "font-size" : "16px",
     "margin-right" : "20px"
   },
@@ -42,10 +46,10 @@
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_down.png) no-repeat center center"
   },
   "titleTextNode": {
-    "line-height": "60px",
-    "color": "#eee",
+    "line-height": "50px",
+    "color": "#333",
     "margin": "0px 10px",
-    "font-size": "36px",
+    "font-size": "20px",
     "float": "left",
     "cursor": "pointer"
   },
@@ -56,18 +60,17 @@
     "color": "#fff"
   },
   "titleCycleTextNode": {
-    "line-height": "30px",
-    "color": "#eee",
-    "margin-top": "20px",
+    "line-height": "50px",
+    "color": "#333",
     "margin-left": "20px",
-    "font-size": "18px",
+    "font-size": "16px",
     "float": "left"
   },
   "titleScheduleIconNode" : {
     "float": "right",
-    "height": "60px",
+    "height": "50px",
     "width": "32px",
-    "line-height": "60px",
+    "line-height": "50px",
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/past.png) no-repeat center center",
     "margin": "0px 20px 14px 0px",
     "cursor" : "pointer"
@@ -79,29 +82,36 @@
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/past_down.png) no-repeat center center"
   },
   "scheduleNode": {
-    "width": "200px",
-    "height": "240px",
+    "width": "260px",
+    "height": "270px",
     "background-color": "#FFF",
     "position": "absolute",
     "text-align": "center",
-    "border": "2px solid #666",
+    "border-radius": "2px",
+    "box-shadow": "0px 0px 6px 0px rgba(0, 0, 0, 0.25)",
     "z-index" : "101",
     "font-size" : "14px",
-    "color" : "#666"
+    "color" : "#333"
   },
   "scheduleTdHead" : {
-    "padding-top" : "20px",
-    "padding-bottom" : "10px",
-    "font-size" : "16px",
-    "font-weight" :"bold"
+    "line-height" : "40px",
+    "height" : "40px",
+    "font-size" : "14px",
+    "padding-left": "20px",
+    "text-align": "left",
+    "border-bottom" :"1px solid #E6E6E6"
   },
   "scheduleTdTitle" : {
+    "color" : "#666",
+    "font-size": "13px",
     "text-align" : "left",
     "padding-right" : "5px",
     "padding-left" : "25px",
     "width" : "80px"
   },
   "scheduleTdValue" : {
+    "color" : "#666",
+    "font-size": "13px",
     "text-align" : "left",
     "width" : "40px"
   },
