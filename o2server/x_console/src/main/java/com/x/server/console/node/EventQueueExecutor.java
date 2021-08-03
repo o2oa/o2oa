@@ -16,6 +16,7 @@ public class EventQueueExecutor extends Thread {
 
 	public EventQueueExecutor(LinkedBlockingQueue<JsonElement> queue) {
 		this.queue = queue;
+		this.setName(EventQueueExecutor.class.getName());
 	}
 
 	@Override
