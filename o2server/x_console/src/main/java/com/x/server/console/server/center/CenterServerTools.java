@@ -45,7 +45,7 @@ public class CenterServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(CenterServerTools.class);
 
-	private static final int CENTERSERVER_THREAD_POOL_SIZE_MIN = 50;
+	private static final int CENTERSERVER_THREAD_POOL_SIZE_MIN = 20;
 	private static final int CENTERSERVER_THREAD_POOL_SIZE_MAX = 500;
 
 	public static Server start(CenterServer centerServer) throws Exception {
@@ -89,6 +89,7 @@ public class CenterServerTools extends JettySeverTools {
 		}
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
+		threadPool.setName("CenterServerQueuedThreadPool");
 		threadPool.setMinThreads(CENTERSERVER_THREAD_POOL_SIZE_MIN);
 		threadPool.setMaxThreads(CENTERSERVER_THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
