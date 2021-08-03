@@ -157,6 +157,11 @@ public class ApplicationCache extends AbstractApplicationCache {
 	}
 
 	public class NotifyThread extends Thread {
+
+		public NotifyThread() {
+			this.setName(ApplicationCache.class.getSimpleName() + "-" + "NotifyThread");
+		}
+
 		public void run() {
 			out: while (true) {
 				try {
@@ -176,6 +181,11 @@ public class ApplicationCache extends AbstractApplicationCache {
 	}
 
 	public class ReceiveThread extends Thread {
+
+		public ReceiveThread() {
+			this.setName(ApplicationCache.class.getSimpleName() + "-" + "ReceiveThread");
+		}
+
 		public void run() {
 			out: while (true) {
 				try {

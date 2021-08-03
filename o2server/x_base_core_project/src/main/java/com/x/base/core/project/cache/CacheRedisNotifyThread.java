@@ -13,6 +13,7 @@ import redis.clients.jedis.Jedis;
 public class CacheRedisNotifyThread extends Thread {
 
 	public CacheRedisNotifyThread(LinkedBlockingQueue<WrapClearCacheRequest> queue) {
+		this.setName("CacheManager-" + CacheRedisNotifyThread.class.getSimpleName());
 		this.queue = queue;
 	}
 
@@ -29,10 +30,10 @@ public class CacheRedisNotifyThread extends Thread {
 				String match = "*&*" + new CacheCategory(wi.getClassName()).toString() + "*&*"
 						+ new CacheKey(wi.getKeys()).toString() + "*";
 				Jedis jedis = RedisTools.getJedis();
-				if(jedis != null) {
+				if (jedis != null) {
 					Set<String> keys = jedis.keys(match);
 					if (!keys.isEmpty()) {
-						jedis.del(keys.toArray(new String[]{}));
+						jedis.del(keys.toArray(new String[] {}));
 						jedis.flushDB();
 					}
 					RedisTools.closeJedis(jedis);
