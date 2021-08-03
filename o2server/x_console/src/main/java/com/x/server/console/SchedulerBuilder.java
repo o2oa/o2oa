@@ -72,11 +72,14 @@ public class SchedulerBuilder {
 		properties.setProperty("org.quartz.scheduler.rmi.proxy", "false");
 		properties.setProperty("org.quartz.scheduler.wrapJobExecutionInUserTransaction", "false");
 		properties.setProperty("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
-		properties.setProperty("org.quartz.threadPool.threadCount", "10");
+		properties.setProperty("org.quartz.threadPool.threadCount", "2");
 		properties.setProperty("org.quartz.threadPool.threadPriority", "5");
 		properties.setProperty("org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread", "true");
 		properties.setProperty("org.quartz.jobStore.misfireThreshold", "60000");
 		properties.setProperty("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
+		properties.setProperty("org.quartz.scheduler.instanceName", "Main-QuartzScheduler-");
+		properties.setProperty("org.quartz.scheduler.makeSchedulerThreadDaemon", "true");
+
 		return properties;
 	}
 

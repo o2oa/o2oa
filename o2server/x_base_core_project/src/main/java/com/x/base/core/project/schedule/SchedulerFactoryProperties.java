@@ -22,6 +22,7 @@ public class SchedulerFactoryProperties extends Properties {
 		properties.setProperty("org.quartz.jobStore.misfireThreshold", "60000");
 		properties.setProperty("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
 		properties.setProperty("log4j.logger.org.quartz", "OFF");
+		properties.setProperty("org.quartz.scheduler.makeSchedulerThreadDaemon", "true");
 		return properties;
 	}
 

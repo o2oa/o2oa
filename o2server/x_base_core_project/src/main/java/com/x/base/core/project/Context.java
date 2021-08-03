@@ -39,7 +39,6 @@ import com.x.base.core.project.schedule.JobReportListener;
 import com.x.base.core.project.schedule.ScheduleLocalRequest;
 import com.x.base.core.project.schedule.ScheduleRequest;
 import com.x.base.core.project.schedule.SchedulerFactoryProperties;
-import com.x.base.core.project.thread.ThreadFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SslTools;
 
@@ -148,10 +147,10 @@ public class Context extends AbstractContext {
 	private Context() throws Exception {
 		this.token = UUID.randomUUID().toString();
 		this.applications = new Applications();
-		this.queues = new ArrayList<AbstractQueue<?>>();
-		this.scheduler = new StdSchedulerFactory(SchedulerFactoryProperties.concrete()).getScheduler();
-		this.scheduler.getListenerManager().addJobListener(new JobReportListener(), EverythingMatcher.allJobs());
-		this.scheduler.start();
+		this.queues = new ArrayList<>();
+//		this.scheduler = new StdSchedulerFactory(SchedulerFactoryProperties.concrete()).getScheduler();
+//		this.scheduler.getListenerManager().addJobListener(new JobReportListener(), EverythingMatcher.allJobs());
+//		this.scheduler.start();
 	}
 
 	public static Context concrete(ServletContextEvent servletContextEvent) throws Exception {
@@ -170,8 +169,13 @@ public class Context extends AbstractContext {
 		context.scheduleWeight = Config.currentNode().getApplication().scheduleWeight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
 		context.initDatas();
-		// context.threadFactory = new ThreadFactory(context);
 		servletContext.setAttribute(AbstractContext.class.getName(), context);
+		SchedulerFactoryProperties schedulerFactoryProperties = SchedulerFactoryProperties.concrete();
+		schedulerFactoryProperties.setProperty("org.quartz.scheduler.instanceName",
+				"ContextQuartzScheduler-" + context.clazz().getSimpleName());
+		context.scheduler = new StdSchedulerFactory(schedulerFactoryProperties).getScheduler();
+		context.scheduler.getListenerManager().addJobListener(new JobReportListener(), EverythingMatcher.allJobs());
+		context.scheduler.start();
 		context.initialized = true;
 		return context;
 	}

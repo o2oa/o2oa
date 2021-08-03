@@ -10,7 +10,6 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.schedule.AbstractJob;
-import com.x.base.core.project.thread.ThreadFactory;
 
 public abstract class AbstractContext {
 
@@ -20,12 +19,6 @@ public abstract class AbstractContext {
 	protected static final String INITPARAMETER_PORJECT = "project";
 
 	public static final String SERVLETCONTEXT_ATTRIBUTE_APPLICATION = "application";
-
-	// public abstract Applications applications() throws Exception;
-
-//	protected ThreadFactory threadFactory;
-//
-//	public abstract ThreadFactory threadFactory();
 
 	// 应用类
 	protected Class<?> clazz;

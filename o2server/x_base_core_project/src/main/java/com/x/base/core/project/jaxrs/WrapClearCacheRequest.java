@@ -8,6 +8,13 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public abstract class WrapClearCacheRequest extends GsonPropertyObject {
 
+	public static final String TYPE_NOTIFY = "notify";
+	public static final String TYPE_RECEIVE = "receive";
+
+	private static final long serialVersionUID = -4221561865395746387L;
+
+	private String type;
+
 	@FieldDescribe("节点名")
 	private String nodeName;
 
@@ -39,6 +46,14 @@ public abstract class WrapClearCacheRequest extends GsonPropertyObject {
 
 	public void setNodeName(String nodeName) {
 		this.nodeName = nodeName;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }
