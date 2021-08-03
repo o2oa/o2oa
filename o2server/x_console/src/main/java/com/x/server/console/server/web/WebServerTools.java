@@ -41,7 +41,7 @@ public class WebServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(WebServerTools.class);
 
-	private static final int WEBSERVER_THREAD_POOL_SIZE_MIN = 50;
+	private static final int WEBSERVER_THREAD_POOL_SIZE_MIN = 20;
 	private static final int WEBSERVER_THREAD_POOL_SIZE_MAX = 500;
 
 	public static Server start(WebServer webServer) throws Exception {
@@ -58,6 +58,7 @@ public class WebServerTools extends JettySeverTools {
 		coverToWebServer();
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
+		threadPool.setName("WebServerQueuedThreadPool");
 		threadPool.setMinThreads(WEBSERVER_THREAD_POOL_SIZE_MIN);
 		threadPool.setMaxThreads(WEBSERVER_THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);

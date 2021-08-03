@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,6 +13,7 @@ import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.exception.RunningException;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
@@ -21,14 +23,13 @@ public class VoteCenterEvent implements Event {
 
 	public final String type = Event.TYPE_VOTECENTER;
 
-	public void execute() throws Exception {
+	private AtomicInteger loop = new AtomicInteger(0);
 
-		List<Entry<String, CenterServer>> list = Config.nodes().centerServers().orderedEntry();
-
+	public void execute() {
+		List<Entry<String, CenterServer>> list = listCenterServer();
 		for (Entry<String, CenterServer> entry : list) {
 			try {
-
-				ActionResponse response = CipherConnectionAction.get(false,
+				ActionResponse response = CipherConnectionAction.get(false, 1000, 2000,
 						Config.url_x_program_center_jaxrs(entry, "echo"));
 				JsonElement jsonElement = response.getData(JsonElement.class);
 				if (null != jsonElement && (!jsonElement.isJsonNull())) {
@@ -44,12 +45,20 @@ public class VoteCenterEvent implements Event {
 					return;
 				}
 			} catch (Exception e) {
-				// logger.warn("failed to connect center: {}, port: {}, sslEnable: {}.",
-				// entry.getKey(),
-				// entry.getValue().getPort(), entry.getValue().getSslEnable());
+				if (loop.getAndUpdate(o -> ++o % 10) == 0) {
+					logger.warn("vote center error:{}, message:{}.", entry.getKey(), e.getMessage());
+				}
 			}
 		}
+	}
 
+	private List<Entry<String, CenterServer>> listCenterServer() {
+		try {
+			return Config.nodes().centerServers().orderedEntry();
+		} catch (Exception e) {
+			logger.error(new RunningException(e, "list center server:{}."));
+		}
+		return new ArrayList<>();
 	}
 
 	private String nodes(List<Entry<String, CenterServer>> list) {

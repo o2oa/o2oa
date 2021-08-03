@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.util.RolloverFileOutputStream;
 
@@ -209,7 +210,8 @@ public class ResourceFactory {
 	private static void processPlatformExecutors() throws Exception {
 		ExecutorService[] services = new ExecutorService[Config.processPlatform().getExecutorCount()];
 		for (int i = 0; i < Config.processPlatform().getExecutorCount(); i++) {
-			services[i] = Executors.newFixedThreadPool(1);
+			services[i] = Executors.newFixedThreadPool(1, new BasicThreadFactory.Builder()
+					.namingPattern("ProcessPlatformExecutor-" + i).daemon(true).build());
 		}
 
 		new Resource(Config.RESOURCE_NODE_PROCESSPLATFORMEXECUTORS, services);

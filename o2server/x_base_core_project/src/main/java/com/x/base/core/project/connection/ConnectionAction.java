@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
@@ -24,15 +27,10 @@ import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-
 public class ConnectionAction {
+
+	private static final int DEFAULT_CONNECTTIMEOUT = 2000;
+	private static final int DEFAULT_READTIMEOUT = 5 * 60 * 1000;
 
 	private ConnectionAction() {
 	}
@@ -57,7 +55,8 @@ public class ConnectionAction {
 
 	private static Gson gson = XGsonBuilder.instance();
 
-	private static ActionResponse getDelete(String address, String method, List<NameValuePair> heads) throws Exception {
+	private static ActionResponse getDelete(int connectTimeout, int readTimeout, String address, String method,
+			List<NameValuePair> heads) throws Exception {
 		ActionResponse response = new ActionResponse();
 		HttpURLConnection connection = null;
 		try {
@@ -74,6 +73,8 @@ public class ConnectionAction {
 		connection.setUseCaches(false);
 		connection.setDoOutput(false);
 		connection.setDoInput(true);
+		connection.setConnectTimeout(connectTimeout);
+		connection.setReadTimeout(readTimeout);
 		try {
 			connection.connect();
 		} catch (Exception e) {
@@ -85,15 +86,26 @@ public class ConnectionAction {
 		return read(response, connection);
 	}
 
+	public static ActionResponse get(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads)
+			throws Exception {
+		return getDelete(connectTimeout, readTimeout, address, METHOD_GET, heads);
+	}
+
 	public static ActionResponse get(String address, List<NameValuePair> heads) throws Exception {
-		return getDelete(address, METHOD_GET, heads);
+		return getDelete(DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT, address, METHOD_GET, heads);
+	}
+
+	public static ActionResponse delete(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads)
+			throws Exception {
+		return getDelete(connectTimeout, readTimeout, address, METHOD_DELETE, heads);
 	}
 
 	public static ActionResponse delete(String address, List<NameValuePair> heads) throws Exception {
-		return getDelete(address, METHOD_DELETE, heads);
+		return getDelete(DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT, address, METHOD_DELETE, heads);
 	}
 
-	private static byte[] getDeleteBinary(String address, String method, List<NameValuePair> heads) throws Exception {
+	private static byte[] getDeleteBinary(int connectTimeout, int readTimeout, String address, String method,
+			List<NameValuePair> heads) throws Exception {
 		HttpURLConnection connection = null;
 		try {
 			URL url = new URL(address);
@@ -106,6 +118,8 @@ public class ConnectionAction {
 		connection.setUseCaches(false);
 		connection.setDoOutput(false);
 		connection.setDoInput(true);
+		connection.setConnectTimeout(connectTimeout);
+		connection.setReadTimeout(readTimeout);
 		try {
 			connection.connect();
 		} catch (Exception e) {
@@ -114,16 +128,26 @@ public class ConnectionAction {
 		return readBinary(connection);
 	}
 
+	public static byte[] getBinary(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads)
+			throws Exception {
+		return getDeleteBinary(connectTimeout, readTimeout, address, METHOD_GET, heads);
+	}
+
 	public static byte[] getBinary(String address, List<NameValuePair> heads) throws Exception {
-		return getDeleteBinary(address, METHOD_GET, heads);
+		return getDeleteBinary(DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT, address, METHOD_GET, heads);
+	}
+
+	public static byte[] deleteBinary(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads)
+			throws Exception {
+		return getDeleteBinary(connectTimeout, readTimeout, address, METHOD_DELETE, heads);
 	}
 
 	public static byte[] deleteBinary(String address, List<NameValuePair> heads) throws Exception {
-		return getDeleteBinary(address, METHOD_DELETE, heads);
+		return getDeleteBinary(DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT, address, METHOD_DELETE, heads);
 	}
 
-	public static ActionResponse postPut(String address, String method, List<NameValuePair> heads, Object body)
-			throws Exception {
+	private static ActionResponse postPut(int connectTimeout, int readTimeout, String address, String method,
+			List<NameValuePair> heads, Object body) throws Exception {
 		ActionResponse response = new ActionResponse();
 		HttpURLConnection connection = null;
 		try {
@@ -140,6 +164,8 @@ public class ConnectionAction {
 		connection.setUseCaches(false);
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
+		connection.setConnectTimeout(connectTimeout);
+		connection.setReadTimeout(readTimeout);
 		try {
 			connection.connect();
 		} catch (Exception e) {
@@ -165,16 +191,26 @@ public class ConnectionAction {
 		return read(response, connection);
 	}
 
+	public static ActionResponse post(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads,
+			Object body) throws Exception {
+		return postPut(connectTimeout, readTimeout, address, METHOD_POST, heads, body);
+	}
+
 	public static ActionResponse post(String address, List<NameValuePair> heads, Object body) throws Exception {
-		return postPut(address, METHOD_POST, heads, body);
+		return postPut(DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT, address, METHOD_POST, heads, body);
+	}
+
+	public static ActionResponse put(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads,
+			Object body) throws Exception {
+		return postPut(connectTimeout, readTimeout, address, METHOD_PUT, heads, body);
 	}
 
 	public static ActionResponse put(String address, List<NameValuePair> heads, Object body) throws Exception {
-		return postPut(address, METHOD_PUT, heads, body);
+		return postPut(DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT, address, METHOD_PUT, heads, body);
 	}
 
-	private static byte[] postPutBinary(String address, String method, List<NameValuePair> heads, Object body)
-			throws Exception {
+	private static byte[] postPutBinary(int connectTimeout, int readTimeout, String address, String method,
+			List<NameValuePair> heads, Object body) throws Exception {
 		HttpURLConnection connection = null;
 		try {
 			URL url = new URL(address);
@@ -187,6 +223,8 @@ public class ConnectionAction {
 		connection.setUseCaches(false);
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
+		connection.setConnectTimeout(connectTimeout);
+		connection.setReadTimeout(readTimeout);
 		try {
 			connection.connect();
 		} catch (Exception e) {
@@ -206,16 +244,27 @@ public class ConnectionAction {
 		return readBinary(connection);
 	}
 
+	public static byte[] postBinary(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads,
+			Object body) throws Exception {
+		return postPutBinary(connectTimeout, readTimeout, address, METHOD_POST, heads, body);
+	}
+
 	public static byte[] postBinary(String address, List<NameValuePair> heads, Object body) throws Exception {
-		return postPutBinary(address, METHOD_POST, heads, body);
+		return postPutBinary(DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT, address, METHOD_POST, heads, body);
+	}
+
+	public static byte[] putBinary(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads,
+			Object body) throws Exception {
+		return postPutBinary(connectTimeout, readTimeout, address, METHOD_PUT, heads, body);
 	}
 
 	public static byte[] putBinary(String address, List<NameValuePair> heads, Object body) throws Exception {
-		return postPutBinary(address, METHOD_PUT, heads, body);
+		return postPutBinary(DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT, address, METHOD_PUT, heads, body);
 	}
 
-	private static byte[] postPutMultiPartBinary(String address, String method, List<NameValuePair> heads,
-			Collection<FormField> formFields, Collection<FilePart> fileParts) throws Exception {
+	private static byte[] postPutMultiPartBinary(int connectTimeout, int readTimeout, String address, String method,
+			List<NameValuePair> heads, Collection<FormField> formFields, Collection<FilePart> fileParts)
+			throws Exception {
 		HttpURLConnection connection = null;
 		String boundary = StringTools.TWO_HYPHENS + StringTools.TWO_HYPHENS + System.currentTimeMillis();
 		try {
@@ -248,6 +297,8 @@ public class ConnectionAction {
 		connection.setUseCaches(false);
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
+		connection.setConnectTimeout(connectTimeout);
+		connection.setReadTimeout(readTimeout);
 		try {
 			connection.connect();
 		} catch (Exception e) {
@@ -261,14 +312,28 @@ public class ConnectionAction {
 		return readBinary(connection);
 	}
 
+	public static byte[] postMultiPartBinary(int connectTimeout, int readTimeout, String address,
+			List<NameValuePair> heads, Collection<FormField> formFields, Collection<FilePart> fileParts)
+			throws Exception {
+		return postPutMultiPartBinary(connectTimeout, readTimeout, address, METHOD_POST, heads, formFields, fileParts);
+	}
+
 	public static byte[] postMultiPartBinary(String address, List<NameValuePair> heads,
 			Collection<FormField> formFields, Collection<FilePart> fileParts) throws Exception {
-		return postPutMultiPartBinary(address, METHOD_POST, heads, formFields, fileParts);
+		return postPutMultiPartBinary(DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT, address, METHOD_POST, heads,
+				formFields, fileParts);
+	}
+
+	public static byte[] putMultiPartBinary(int connectTimeout, int readTimeout, String address,
+			List<NameValuePair> heads, Collection<FormField> formFields, Collection<FilePart> fileParts)
+			throws Exception {
+		return postPutMultiPartBinary(connectTimeout, readTimeout, address, METHOD_PUT, heads, formFields, fileParts);
 	}
 
 	public static byte[] putMultiPartBinary(String address, List<NameValuePair> heads, Collection<FormField> formFields,
 			Collection<FilePart> fileParts) throws Exception {
-		return postPutMultiPartBinary(address, METHOD_PUT, heads, formFields, fileParts);
+		return postPutMultiPartBinary(DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT, address, METHOD_PUT, heads,
+				formFields, fileParts);
 	}
 
 	private static void writeFormField(OutputStream output, FormField formField, String boundary) throws IOException {
@@ -307,31 +372,31 @@ public class ConnectionAction {
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
 	}
 
-	public static byte[] getFile(String address, List<NameValuePair> heads) throws Exception {
-		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-			HttpGet httpget = new HttpGet(address);
-			if (ListTools.isNotEmpty(heads)) {
-				String name;
-				String value;
-				for (NameValuePair o : heads) {
-					name = Objects.toString(o.getName(), "");
-					value = Objects.toString(o.getValue(), "");
-					if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
-						httpget.addHeader(name, value);
-					}
-				}
-			}
-			HttpResponse response = httpclient.execute(httpget);
-			HttpEntity entity = response.getEntity();
-			if (entity != null) {
-				InputStream in = entity.getContent();
-				if (in != null) {
-					return IOUtils.toByteArray(in);
-				}
-			}
-		}
-		return null;
-	}
+//	public static byte[] getFile(String address, List<NameValuePair> heads) throws ClientProtocolException, IOException  {
+//		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+//			HttpGet httpget = new HttpGet(address);
+//			if (ListTools.isNotEmpty(heads)) {
+//				String name;
+//				String value;
+//				for (NameValuePair o : heads) {
+//					name = Objects.toString(o.getName(), "");
+//					value = Objects.toString(o.getValue(), "");
+//					if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+//						httpget.addHeader(name, value);
+//					}
+//				}
+//			}
+//			HttpResponse response = httpclient.execute(httpget);
+//			HttpEntity entity = response.getEntity();
+//			if (entity != null) {
+//				InputStream in = entity.getContent();
+//				if (in != null) {
+//					return IOUtils.toByteArray(in);
+//				}
+//			}
+//		}
+//		return null;
+//	}
 
 	private static String extractErrorMessageIfExist(String str) {
 		if (StringUtils.isBlank(str)) {
@@ -379,7 +444,7 @@ public class ConnectionAction {
 		return response;
 	}
 
-	private static byte[] readBinary(HttpURLConnection connection) throws Exception {
+	private static byte[] readBinary(HttpURLConnection connection) throws ExceptionReadBinary, IOException {
 		int code = connection.getResponseCode();
 		byte[] bytes = null;
 		if (code >= 500) {

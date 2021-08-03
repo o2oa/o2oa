@@ -16,17 +16,23 @@ public class EventQueueExecutor extends Thread {
 
 	public EventQueueExecutor(LinkedBlockingQueue<JsonElement> queue) {
 		this.queue = queue;
+		this.setName(EventQueueExecutor.class.getName());
 	}
 
+	@Override
 	public void run() {
 		while (true) {
+			Event event = null;
 			try {
 				JsonElement jsonElement = queue.take();
-				Event event = convert(jsonElement);
-				event.execute();
+				event = convert(jsonElement);
 			} catch (Exception e) {
 				logger.error(e);
 			}
+			if (null != event) {
+				event.execute();
+			}
+
 		}
 	}
 
@@ -36,8 +42,8 @@ public class EventQueueExecutor extends Thread {
 
 		switch (type) {
 
-		case Event.TYPE_REGISTAPPLICATION:
-			return XGsonBuilder.instance().fromJson(jsonElement, RegistApplicationEvent.class);
+		case Event.TYPE_REFRESHAPPLICATIONS:
+			return XGsonBuilder.instance().fromJson(jsonElement, RefreshApplicationsEvent.class);
 
 		case Event.TYPE_REGISTAPPLICATIONS:
 			return XGsonBuilder.instance().fromJson(jsonElement, RegistApplicationsEvent.class);

@@ -1,21 +1,28 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.ConcurrentSkipListMap;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.Host;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.ObjectUtils;
-
 import com.x.base.core.project.tools.ListTools;
-import org.apache.commons.lang3.StringUtils;
 
 public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 
@@ -82,37 +89,67 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 
 		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 		/** 覆盖掉配置的参数 */
-		com.x.base.core.project.config.CenterServer centerServerConfig = Config.nodes().centerServers().first()
-				.getValue();
-		map.putAll(centerServerConfig.getConfig());
+		// 先取本节点的center如果没有那么取第一个center
+		com.x.base.core.project.config.CenterServer centerServerConfig = Config.currentNode().getCenter();
 		List<Map<String, String>> centers = new ArrayList<>();
 		map.put("center", centers);
-		/** 写入center地址 */
-		Map<String, String> center = new HashMap<String, String>();
-		center = new HashMap<String, String>();
+		if ((null == centerServerConfig) || BooleanUtils.isNotTrue(centerServerConfig.getEnable())) {
+			Entry<String, CenterServer> entry = Config.nodes().centerServers().orderedEntry().get(0);
+			centerServerConfig = entry.getValue();
+			Map<String, String> center = new HashMap<>();
+			center.put("host", entry.getKey());
+			center.put("port", centerServerConfig.getPort().toString());
+			centers.add(center);
+			if (StringUtils.isNotEmpty(centerServerConfig.getProxyHost())) {
+				center = new HashMap<>();
+				center.put("host", centerServerConfig.getProxyHost());
+				center.put("port", centerServerConfig.getProxyPort().toString());
+				centers.add(center);
+			}
+			if (!Objects.equals(centerServerConfig.getProxyPort(), centerServerConfig.getPort())) {
+				center = new HashMap<>();
+				center.put("host", entry.getKey());
+				center.put("port", centerServerConfig.getProxyPort().toString());
+				centers.add(center);
+			}
+		}
+		Map<String, String> center = new HashMap<>();
 		center.put("host", "");
 		center.put("port", centerServerConfig.getPort().toString());
 		centers.add(center);
 		if (!Objects.equals(centerServerConfig.getProxyPort(), centerServerConfig.getPort())) {
-			center = new HashMap<String, String>();
+			center = new HashMap<>();
 			center.put("host", "");
 			center.put("port", centerServerConfig.getProxyPort().toString());
 			centers.add(center);
 		}
-		String host = Config.nodes().primaryCenterNode();
-		if (!Host.isRollback(host)) {
-			center = new HashMap<String, String>();
-			center.put("host", host);
-			center.put("port", centerServerConfig.getPort().toString());
-			centers.add(center);
-		}
-		/** 写入proxy地址 */
-		if (StringUtils.isNotEmpty(centerServerConfig.getProxyHost())) {
-			center = new HashMap<String, String>();
-			center.put("host", centerServerConfig.getProxyHost());
-			center.put("port", centerServerConfig.getProxyPort().toString());
-			centers.add(center);
-		}
+		map.putAll(centerServerConfig.getConfig());
+//		/** 写入center地址 */
+//		Map<String, String> center = new HashMap<String, String>();
+//		center.put("host", "");
+//		center.put("port", centerServerConfig.getPort().toString());
+//		centers.add(center);
+//		if (!Objects.equals(centerServerConfig.getProxyPort(), centerServerConfig.getPort())) {
+//			center = new HashMap<String, String>();
+//			center.put("host", "");
+//			center.put("port", centerServerConfig.getProxyPort().toString());
+//			centers.add(center);
+//		}
+//
+//		String host = Config.nodes().primaryCenterNode();
+//		if (!Host.isRollback(host)) {
+//			center = new HashMap<String, String>();
+//			center.put("host", host);
+//			center.put("port", centerServerConfig.getPort().toString());
+//			centers.add(center);
+//		}
+//		/** 写入proxy地址 */
+//		if (StringUtils.isNotEmpty(centerServerConfig.getProxyHost())) {
+//			center = new HashMap<String, String>();
+//			center.put("host", centerServerConfig.getProxyHost());
+//			center.put("port", centerServerConfig.getProxyPort().toString());
+//			centers.add(center);
+//		}
 
 		/** 写入systemName */
 		map.put("footer", Config.collect().getFooter());
@@ -120,7 +157,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		map.put("version", Config.version());
 		map.put("appUrl", Config.collect().getAppUrl());
 		/***/
-		if (centerServerConfig.getSslEnable()) {
+		if (BooleanUtils.isTrue(centerServerConfig.getSslEnable())) {
 			map.put("app_protocol", "https:");
 		} else {
 			map.put("app_protocol", "http:");

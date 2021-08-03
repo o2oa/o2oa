@@ -142,6 +142,7 @@ public class DocumentInfoService {
 			String creatorTopUnitName = null;
 			Date publishTime = null;
 			Long viewCount = wrapIn.getViewCount();
+
 			//先把原来的值 记录下来
 			if( wrapIn.getViewCount() == null ||  wrapIn.getViewCount() < document.getViewCount() ) {
 				viewCount = document.getViewCount();
@@ -165,7 +166,7 @@ public class DocumentInfoService {
 				publishTime = document.getPublishTime();	
 			}
 			
-			wrapIn.copyTo( document, JpaObject.FieldsUnmodify );
+			wrapIn.copyTo( document, ListTools.toList(JpaObject.FieldsUnmodify, Document.isTop_FIELDNAME, Document.isAllRead_FIELDNAME) );
 			document.setViewCount( viewCount );
 			if( createTime != null ){
 				document.setCreateTime(createTime);
