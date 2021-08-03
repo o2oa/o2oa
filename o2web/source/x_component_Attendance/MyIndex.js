@@ -12,14 +12,14 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         "style": "default"
     },
     statusColor : {
-        "normal" : "#9acd32", //绿色，正常
-        "levelAsked":"#4f94cd", //蓝色，请假
-        "late":"#fede03", //黄色，迟到
+        "normal" : "#2BC497", //绿色，正常
+        "levelAsked":"#4A90E2", //蓝色，请假
+        "late":"#F5A623", //黄色，迟到
         //"leaveEarly":"#fe8d03", //橙色，早退
-        "noSign":"#ee807f", //粉红色,未签到
-        "appealSuccess" : "#2ac497", //黄绿色，申诉通过
+        "noSign":"#FF8080", //粉红色,未签到
+        "appealSuccess" : "#4FB2E3", //黄绿色，申诉通过
         //"lackOfTime" : "#dec674",//工时不足人次
-        "abNormalDuty" : "#fedcbd"//异常打卡人次
+        "abNormalDuty" : "#8B572A"//异常打卡人次
     },
     initialize: function(node, app, actions, options){
         this.setOptions(options);
@@ -73,32 +73,36 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             "styles" : this.css.titleNode
         }).inject(this.node);
 
+        this.titleRightNode = new Element("div.titleRightNode",{
+            "styles" : this.css.titleRightNode
+        }).inject(this.titleNode);
+
         //this.titleLeftArrowNode = new Element("div",{
         //    "styles" : this.css.titleLeftArrowNode
-        //}).inject(this.titleNode);
+        //}).inject(this.titleRightNode);
         this.titleTextNode = new Element("div",{
             "styles" : this.css.titleTextNode,
             "text" : text
-        }).inject(this.titleNode);
+        }).inject(this.titleRightNode);
         this.titleTextNode.setStyles( {
             "margin-left": "30px",
             "cursor" : "default"
         } );
         //this.titleRightArrowNode = new Element("div",{
         //    "styles" : this.css.titleRightArrowNode
-        //}).inject(this.titleNode);
+        //}).inject(this.titleRightNode);
 
         var cycleText = this.app.lp.cyclText.replace("{start}",this.cycleStartDateString).replace("{end}",this.cycleEndDateString);
         this.titleCycleTextNode = new Element("div",{
             "styles" : this.css.titleCycleTextNode,
             "text" : cycleText
-        }).inject(this.titleNode);
+        }).inject(this.titleRightNode);
 
 
         this.titleScheduleIconNode = new Element("div",{
             "styles" : this.css.titleScheduleIconNode,
             "title" : this.lp.seeSchedule
-        }).inject(this.titleNode);
+        }).inject(this.titleRightNode);
 
         //this.titleLeftArrowNode.addEvents({
         //    "mouseover": function(){this.titleLeftArrowNode.setStyles(this.css.titleLeftArrowNode_over);}.bind(this),
@@ -397,7 +401,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
 
         this.canlendarToolbar = new Element("div.canlendarToolbar",{
             "styles" : this.css.canlendarToolbar
-        }).inject(this.calendarArea);
+        }).inject(this.titleNode);
 
         this.canlendarToolbarText = new Element("div",{
             "styles" : this.css.canlendarToolbarText,
