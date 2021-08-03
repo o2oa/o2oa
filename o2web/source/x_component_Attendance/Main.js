@@ -2,6 +2,7 @@ MWF.xApplication.Attendance = MWF.xApplication.Attendance || {};
 MWF.require("MWF.widget.O2Identity", null, false);
 //MWF.xDesktop.requireApp("Attendance", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("Attendance", "Common", null, false);
+MWF.xDesktop.requireApp("Attendance", "Explorer", null, false);
 MWF.xDesktop.requireApp("Template", "MDomItem", null, false);
 MWF.xApplication.Attendance.options = {
 	multitask: false,
@@ -351,13 +352,13 @@ MWF.xApplication.Attendance.Main = new Class({
 	},
 	openAppSetting: function () {
 		MWF.xDesktop.requireApp("Attendance", "AppSetting", function () {
-			var setting = new MWF.xApplication.Attendance.AppSetting(this, this.restActions);
+			var setting = new MWF.xApplication.Attendance.AppSetting({app: this});
 			setting.edit();
 		}.bind(this));
 	},
 	openWeekendSetting : function(){
 		MWF.xDesktop.requireApp("Attendance", "WeekendSetting", function(){
-			var setting = new MWF.xApplication.Attendance.WeekendSetting(this,this.restActions);
+			var setting = new MWF.xApplication.Attendance.WeekendSetting({app: this});
 			setting.edit();
 		}.bind(this));
 	},

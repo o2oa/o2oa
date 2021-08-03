@@ -642,6 +642,8 @@ MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
     Extends: MPopupForm,
     options: {
         "style": "attendanceV2",
+        "hideBottomWhenReading": true,
+        "closeByClickMaskWhenReading": true,
         "width": "500",
         "height": "400",
         "buttonList": [{ "type":"ok", "text": "" }, { "type":"cancel", "text": "" }]

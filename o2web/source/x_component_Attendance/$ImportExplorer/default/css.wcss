@@ -26,6 +26,25 @@
   "descriptionTdValue" : {
     "text-align" : "left",
     "width" : "40px"
-  }
+  },
 
+  "editTableHead" : {
+    "line-height": "50px",
+    "text-align": "center",
+    "min-width": "80px",
+    "font-size":"20px",
+    "font-weight": "bold"
+  },
+  "editTableTitle" : {
+    "font-size": "12px",
+    "font-weight": "bold",
+    "line-height": "30px",
+    "text-align": "left",
+    "border-top" : "1px solid #ddd"
+  },
+  "editTableValue" : {
+    "font-size": "14px",
+    "text-align": "left",
+    "border-top" : "1px solid #ddd"
+  }
 }

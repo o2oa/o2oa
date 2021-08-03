@@ -458,10 +458,14 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
 
 MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
     Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
+    options : {
+        "hasTop" : true,
+        "hasBottom" : true,
+        "title": MWF.xApplication.Attendance.LP.BaiduDeveloperCertification
+    },
     _createTableContent: function(){
         var lp = MWF.xApplication.Attendance.LP;
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='2' styles='formTableHead'>"+lp.BaiduDeveloperCertification+"</td></tr>" +
             "<tr>" +
             "    <td styles='formTableValue' colspan='2'>"+lp.registerBiaduNotice+"</td>"+
             "</tr>" +
@@ -480,6 +484,7 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
             debugger;
             MWF.xDesktop.requireApp("Template", "MForm", function(){
                 this.form = new MForm( this.formTableArea, {ak : json || "" }, {
+                    style: "attendance",
                     isEdited : true,
                     itemTemplate : {
                         ak : {  "text" : lp.secretKey }

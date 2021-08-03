@@ -182,9 +182,8 @@ MWF.xApplication.Attendance.ImportExplorer.Document = new Class({
 });
 
 MWF.xApplication.Attendance.ImportExplorer.YearMonthSelctor = new Class({
-    Extends: MPopupForm,
+    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
     options : {
-        "style" : "attendance",
         "width": 500,
         "height": 300,
         "hasTop" : true,
@@ -192,7 +191,6 @@ MWF.xApplication.Attendance.ImportExplorer.YearMonthSelctor = new Class({
         "title" : MWF.xApplication.Attendance.LP.selectCheckMonth,
         "draggable" : true,
         "closeAction" : true,
-        "false" : true
     },
     _createTableContent: function(){
         this.formTableContainer.setStyles({
@@ -209,6 +207,7 @@ MWF.xApplication.Attendance.ImportExplorer.YearMonthSelctor = new Class({
         this.formTableArea.set("html",html);
         MWF.xDesktop.requireApp("Template", "MForm", function(){
             this.form = new MForm( this.formTableArea, {}, {
+                style : "attendance",
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
                     cycleYear : {
@@ -243,9 +242,8 @@ MWF.xApplication.Attendance.ImportExplorer.YearMonthSelctor = new Class({
 });
 
 MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
-    Extends: MPopupForm,
+    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
     options : {
-        "style" : "attendance",
         "width": 800,
         "height": 600,
         "hasTop" : true,
@@ -253,8 +251,9 @@ MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
         "title" : MWF.xApplication.Attendance.LP.importDataResult,
         "draggable" : true,
         "closeAction" : true,
-        "hasScroll" : true,
         "closeByClickMask" : true,
+        "resizeable" : true,
+        "maxAction" : true,
         "id" : ""
     },
     _createTableContent: function(){
@@ -265,6 +264,8 @@ MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
         }.bind(this));
     },
     createImportContent : function(){
+        this.formTableContainer.setStyle("width","90%");
+
         var lp = MWF.xApplication.Attendance.LP;
         if( this.checkData.errorCount == 0 ){
             var text = lp.importDataResultSuccess.replace("{fileName}", this.data.fileName ).
@@ -281,38 +282,38 @@ MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
         }).inject(this.formTableArea);
 
         var table = new Element("table", {
-            "width" : "100%", "border" : "", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.editTable, "class" : "editTable"
+            "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.explorer.css.editTable, "class" : "editTable"
         }).inject( this.formTableArea );
 
         var tr = new Element("tr").inject(table);
         var td;
         Array.each( lp.importDataResultThList, function(text){
-            td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : text  }).inject(tr);
+            td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : text  }).inject(tr);
         }.bind(this));
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "行号"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "员工号"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "员工名字"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "日期"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "上午上班打卡时间"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "上午下班打卡时间"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "下午上班打卡时间"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "下午下班打卡时间"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "检查结果"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "描述"  }).inject(tr);
-        td.setStyle( "width" , "300px" );
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "行号"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "员工号"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "员工名字"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "日期"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "上午上班打卡时间"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "上午下班打卡时间"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "下午上班打卡时间"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "下午下班打卡时间"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "检查结果"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "描述"  }).inject(tr);
+        // td.setStyle( "width" , "300px" );
 
         this.checkData.detailList.each(function( d ){
             var tr = new Element("tr").inject(table);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.curRow }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.employeeNo }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.employeeName.split('@')[0] }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.recordDateString }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.onDutyTime }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.morningOffDutyTime }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.afternoonOnDutyTime }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.offDutyTime }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.checkStatus == "error" ? lp.false : lp.true }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.description }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.curRow }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.employeeNo }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.employeeName.split('@')[0] }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.recordDateString }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.onDutyTime }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.morningOffDutyTime }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.afternoonOnDutyTime }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.offDutyTime }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.checkStatus == "error" ? lp.false : lp.true }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.description }).inject(tr);
         }.bind(this))
     }
 });

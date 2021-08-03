@@ -98,79 +98,58 @@ MWF.xApplication.Attendance.HolidayExplorer.Document = new Class({
 
 
 MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
-    Extends: MWF.widget.Common,
-    options: {
-        "width": "500",
-        "height": "600"
+    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
+    options : {
+        "width": 500,
+        "height": 600,
+        "hasTop" : true,
+        "hasBottom" : true,
+        "title" : MWF.xApplication.Attendance.LP.holiday.setHoliday,
+        "draggable" : true,
+        "closeAction" : true,
     },
-    initialize: function( explorer, data ){
-        this.explorer = explorer;
-        this.app = explorer.app;
-        this.data = data || {};
-        this.css = this.explorer.css;
-
-        this.load();
+    _loadFormCss: function(cssPath){
+        var css;
+        var key = encodeURIComponent(cssPath);
+        if (o2.widget.css[key]){
+            css = o2.widget.css[key];
+        }else{
+            var r = new Request.JSON({
+                url: o2.filterUrl(cssPath),
+                secure: false,
+                async: false,
+                method: "get",
+                noCache: false,
+                onSuccess: function(responseJSON, responseText){
+                    css = responseJSON;
+                    o2.widget.css[key] = responseJSON;
+                }.bind(this),
+                onError: function(text, error){
+                    alert(error + text);
+                }
+            });
+            r.send();
+        }
+        return css;
     },
-    load : function(){
-
-    },
-    open: function(e){
-        this.isNew = false;
-        this.isEdited = false;
-        this._open();
-    },
-    create: function(){
-        this.isNew = true;
-        this._open();
-    },
-    edit: function(){
-        this.isEdited = true;
-        this._open();
-    },
-    _open : function(){
-        this.createMarkNode = new Element("div", {
-            "styles": this.css.createMarkNode,
-            "events": {
-                "mouseover": function(e){e.stopPropagation();},
-                "mouseout": function(e){e.stopPropagation();}
-            }
-        }).inject(this.app.content, "after");
-
-        this.createAreaNode = new Element("div", {
-            "styles": this.css.createAreaNode
-        });
-
-        this.createNode();
-
-        this.createAreaNode.inject(this.createMarkNode, "after");
-        this.createAreaNode.fade("in");
-
-        this.setCreateNodeSize();
-        this.setCreateNodeSizeFun = this.setCreateNodeSize.bind(this);
-        this.addEvent("resize", this.setCreateNodeSizeFun);
-    },
-    createNode: function(){
+    _createTableContent: function(){
         var _self = this;
-        this.createNode = new Element("div", {
-            "styles": this.css.createNode
-        }).inject(this.createAreaNode);
-        this.createNode.setStyle("overflow-y","auto");
-
-
-        this.createIconNode = new Element("div", {
-            "styles": this.isNew ? this.css.createNewNode : this.css.createIconNode
-        }).inject(this.createNode);
-
-
-        this.createFormNode = new Element("div", {
-            "styles": this.css.createFormNode
-        }).inject(this.createNode);
 
         var lp = this.app.lp.holiday;
 
-        var inputStyle = "width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC;height: 26px;";
-        var inputTimeStyle = "width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC;height: 26px;"+
-            "background : url(../x_component_Attendance/$HolidayExplorer/default/icon/calendar.png) 98% center no-repeat";
+        var css = this._loadFormCss("../x_component_Template/$MForm/attendance/css.wcss");
+
+        debugger;
+
+        var inputStyle = "";
+        for( var key in css.inputText ){
+            inputStyle += key+":"+ css.inputText[key] + ";"
+        }
+
+        var inputTimeStyle = "";
+        for( var key in css.inputTime ){
+            inputTimeStyle += key+":"+ css.inputTime[key] + ";"
+        }
 
         var makeupClassArea = "";
         if( this.data && this.data.makeUpClassDay ){
@@ -187,9 +166,6 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
         }
 
         var html = "<table width='100%' height='200' border='0' cellPadding='3' cellSpacing='0'>" +
-            "<tr>"+
-            "<td colspan='2' style='height: 50px; line-height: 50px; text-align: center; min-width: 80px; font-size:18px;font-weight: bold;'>" + lp.setHoliday + "</td>" +
-            "</tr>" +
             "<tr>"+
             "<td style='height: 30px; line-height: 30px; text-align: left; min-width: 80px; width:25%'>" + lp.year + ":</td>" +
             "<td style='; text-align: left;' id='yearArea'>"+
@@ -226,10 +202,10 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
             "</td>" +
             "</tr>" +
             "</table>";
-        this.createFormNode.set("html", html);
+        this.formTableArea.set("html", html);
 
-        //this.configYear = this.createFormNode.getElement("#configYear");
-        this.yearArea = this.createFormNode.getElement("#yearArea");
+        //this.configYear = this.formNode.getElement("#configYear");
+        this.yearArea = this.formNode.getElement("#yearArea");
         this.configYear = new MDomItem( this.yearArea, {
             "name" : "configYear",
             "type" : "select",
@@ -242,16 +218,16 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
                 }
                 return years;
             }
-        }, true, this.app );
+        }, true, this.app, css );
         this.configYear.load();
 
-        this.configName = this.createFormNode.getElement("#configName");
-        this.startDate = this.createFormNode.getElement("#startDate");
-        this.endDate = this.createFormNode.getElement("#endDate");
-        this.makeUpClassDay = this.createFormNode.getElements(".makeUpClassDay");
-        this.removeMakeUpClassDay = this.createFormNode.getElements(".removeMakeUpClassDay");
-        this.addMakeupClass = this.createFormNode.getElement("#addMakeupClass");
-        this.makeUpClassDayTd = this.createFormNode.getElement("#makeUpClassDayTd");
+        this.configName = this.formNode.getElement("#configName");
+        this.startDate = this.formNode.getElement("#startDate");
+        this.endDate = this.formNode.getElement("#endDate");
+        this.makeUpClassDay = this.formNode.getElements(".makeUpClassDay");
+        this.removeMakeUpClassDay = this.formNode.getElements(".removeMakeUpClassDay");
+        this.addMakeupClass = this.formNode.getElement("#addMakeupClass");
+        this.makeUpClassDayTd = this.formNode.getElement("#makeUpClassDayTd");
 
 
         this.startDate.addEvent("click",function(){
@@ -294,106 +270,23 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
             }).inject(this, "before")
         });
 
-        this.cancelActionNode = new Element("div", {
-            "styles": this.css.createCancelActionNode,
-            "text": this.app.lp.cancel
-        }).inject(this.createFormNode);
-        this.createOkActionNode = new Element("div", {
-            "styles": this.css.createOkActionNode,
-            "text": this.app.lp.ok
-        }).inject(this.createFormNode);
-
-        this.cancelActionNode.addEvent("click", function(e){
-            this.cancelCreate(e);
-        }.bind(this));
-        this.createOkActionNode.addEvent("click", function(e){
-            this.okCreate(e);
-        }.bind(this));
+        // this.cancelActionNode = new Element("div", {
+        //     "styles": this.css.createCancelActionNode,
+        //     "text": this.app.lp.cancel
+        // }).inject(this.formNode);
+        // this.createOkActionNode = new Element("div", {
+        //     "styles": this.css.createOkActionNode,
+        //     "text": this.app.lp.ok
+        // }).inject(this.formNode);
+        //
+        // this.cancelActionNode.addEvent("click", function(e){
+        //     this.cancelCreate(e);
+        // }.bind(this));
+        // this.createOkActionNode.addEvent("click", function(e){
+        //     this.okCreate(e);
+        // }.bind(this));
     },
-    setCreateNodeSize: function (width, height, top, left) {
-        if (!width)width = this.options && this.options.width ? this.options.width : "50%";
-        if (!height)height = this.options && this.options.height ? this.options.height : "50%";
-        if (!top) top = this.options && this.options.top ? this.options.top : 0;
-        if (!left) left = this.options && this.options.left ? this.options.left : 0;
-
-        var allSize = this.app.content.getSize();
-        var limitWidth = allSize.x; //window.screen.width
-        var limitHeight = allSize.y; //window.screen.height
-
-        "string" == typeof width && (1 < width.length && "%" == width.substr(width.length - 1, 1)) && (width = parseInt(limitWidth * parseInt(width, 10) / 100, 10));
-        "string" == typeof height && (1 < height.length && "%" == height.substr(height.length - 1, 1)) && (height = parseInt(limitHeight * parseInt(height, 10) / 100, 10));
-        300 > width && (width = 300);
-        220 > height && (height = 220);
-        top = top || parseInt((limitHeight - height) / 2, 10);
-        left = left || parseInt((limitWidth - width) / 2, 10);
-
-        this.createAreaNode.setStyles({
-            "width": "" + width + "px",
-            "height": "" + height + "px",
-            "top": "" + top + "px",
-            "left": "" + left + "px"
-        });
-
-        this.createNode.setStyles({
-            "width": "" + width + "px",
-            "height": "" + height + "px"
-        });
-
-        var iconSize = this.createIconNode ? this.createIconNode.getSize() : {x: 0, y: 0};
-        var topSize = this.formTopNode ? this.formTopNode.getSize() : {x: 0, y: 0};
-        var bottomSize = this.formBottomNode ? this.formBottomNode.getSize() : {x: 0, y: 0};
-
-        var contentHeight = height - iconSize.y - topSize.y - bottomSize.y;
-        //var formMargin = formHeight -iconSize.y;
-        this.createFormNode.setStyles({
-            "height": "" + contentHeight + "px"
-        });
-    },
-    //setCreateNodeSize: function(){
-    //    var size = this.app.node.getSize();
-    //    var allSize = this.app.content.getSize();
-    //
-    //    this.createAreaNode.setStyles({
-    //        "width": ""+size.x+"px",
-    //        "height": ""+size.y+"px"
-    //    });
-    //    var hY = size.y*0.8;
-    //    var mY = size.y*0.2/2;
-    //    this.createNode.setStyles({
-    //        "height": ""+hY+"px",
-    //        "margin-top": ""+mY+"px"
-    //    });
-    //
-    //    var iconSize = this.createIconNode.getSize();
-    //    var formHeight = hY*0.7;
-    //    if (formHeight>250) formHeight = 250;
-    //    var formMargin = hY*0.3/2-iconSize.y;
-    //    this.createFormNode.setStyles({
-    //        "height": ""+formHeight+"px",
-    //        "margin-top": ""+formMargin+"px"
-    //    });
-    //},
-    cancelCreate: function(e){
-        var _self = this;
-        if ( this.isNew &&  this.configName.get("value") ){
-            this.app.confirm("warn", e,
-                this.app.lp.create_cancel_title,
-                this.app.lp.create_cancel, "320px", "100px",
-                function(){
-                    _self.createMarkNode.destroy();
-                    _self.createAreaNode.destroy();
-                    this.close();
-                },function(){
-                    this.close();
-                }
-            );
-        }else{
-            this.createMarkNode.destroy();
-            this.createAreaNode.destroy();
-            delete _self;
-        }
-    },
-    okCreate: function(e){
+    ok: function(e){
 
         var data = {
             "id" : (this.data && this.data.id) ? this.data.id : this.app.restActions.getUUID(),
@@ -428,21 +321,7 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
                     }.bind(this),false);
                 }.bind(this));
 
-                // if(data.makeUpClassDay!=""){
-                //     data.makeUpClassDay.split(",").each(function( date ){
-                //         this.app.restActions.saveHoliday({
-                //             "configName" : data.configName,
-                //             "configYear" : data.configYear,
-                //             "configDate": this.dateFormat( new Date(date),"yyyy-MM-dd"),
-                //             "configType": "Workday"
-                //         }, function(json){
-                //             if( json.type == "ERROR" ){error=json.message}
-                //         },function(json){
-                //             flag = false;
-                //         }.bind(this),false);
-                //     }.bind(this))
-                // }
-                this.createFormNode.getElements(".makeUpClassDay").each( function(el){
+                this.formNode.getElements(".makeUpClassDay").each( function(el){
                     if(el.get("value")){
                         this.app.restActions.saveHoliday({
                             "configName" : data.configName,
@@ -458,9 +337,9 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
                 }.bind(this))
 
                 if(error==""){
-                    this.createMarkNode.destroy();
-                    this.createAreaNode.destroy();
-                    if(this.explorer.view)this.explorer.view.reload();
+                    if( this.formMaskNode )this.formMaskNode.destroy();
+                    if( this.formAreaNode )this.formAreaNode.destroy();
+                    if (this.explorer && this.explorer.view)this.explorer.view.reload();
                     this.app.notice( this.isNew ? this.app.lp.createSuccess : this.app.lp.updateSuccess  , "success");
                 }else{
                     this.app.notice( error  , "error");

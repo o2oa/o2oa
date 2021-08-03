@@ -132,6 +132,25 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
             this.form.load();
         }.bind(this), true);
     },
+    getDateSelectValue : function(){
+        if( this.form ){
+            var year = parseInt(this.form.getItem("yearString").getValue());
+            var month = parseInt(this.form.getItem("monthString").getValue())-1;
+        }else{
+            var year =  (new Date()).getFullYear() ;
+            var month =  (new Date()).getMonth() ;
+        }
+        var date = new Date(year, month, 1);
+        var days = [];
+        days.push("");
+        while (date.getMonth() === month) {
+            var d = date.getDate().toString();
+            if( d.length == 1 )d = "0"+d;
+            days.push( d );
+            date.setDate(date.getDate() + 1);
+        }
+        return days;
+    },
     //loadFilter : function(){
     //    this.fileterNode = new Element("div.fileterNode", {
     //        "styles" : this.css.fileterNode
@@ -398,10 +417,10 @@ MWF.xApplication.Attendance.MyAppeal.Appeal = new Class({
         this.data.appealStatusShow = appealStatus;
         debugger
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td styles='formTableTitle'>"+lp.employeeName+"</td>"+
-            "    <td styles='formTableValue'>"+this.data.empName.split("@")[0]+"</td>" +
-            "    <td styles='formTableTitle' lable='recordDateString'></td>"+
-            "    <td styles='formTableValue' item='recordDateString'></td></tr>" +
+            "<tr><td style='width: 85px;' styles='formTableTitle'>"+lp.employeeName+"</td>"+
+            "    <td style='width: 165px;' styles='formTableValue'>"+this.data.empName.split("@")[0]+"</td>" +
+            "    <td style='width: 85px;' styles='formTableTitle' lable='recordDateString'></td>"+
+            "    <td style='width: 165px;' styles='formTableValue' item='recordDateString'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='onDutyTime'></td>"+
             "    <td styles='formTableValue' item='onDutyTime'></td>" +
             "    <td styles='formTableTitle' lable='offDutyTime'></td>"+
@@ -462,38 +481,33 @@ MWF.xApplication.Attendance.MyAppeal.Appeal = new Class({
         _self.switchFieldByAppealReason(this.data.appealReason);
 
 
-        //createFormNode.set("html", html);
+        // this.cancelActionNode = new Element("div", {
+        //     "styles": this.css.createCancelActionNode,
+        //     "text": lp.close
+        // }).inject(this.formNode);
+        //
+        //
+        // this.cancelActionNode.addEvent("click", function(e){
+        //     this.cancelCreate(e);
+        // }.bind(this));
 
-        //this.setScrollBar(this.createTableContainer)
-
-
-        this.cancelActionNode = new Element("div", {
-            "styles": this.css.createCancelActionNode,
-            "text": lp.close
-        }).inject(this.formNode);
-
-
-        this.cancelActionNode.addEvent("click", function(e){
-            this.cancelCreate(e);
-        }.bind(this));
-
-        if( this.isNew || this.isEdited){
-            this.denyActionNode = new Element("div", {
-                "styles": this.css.createDenyActionNode,
-                "text": lp.disagree
-            }).inject(this.formNode);
-            this.createOkActionNode = new Element("div", {
-                "styles": this.css.createOkActionNode,
-                "text": lp.agree
-            }).inject(this.formNode);
-
-            this.denyActionNode.addEvent("click", function(e){
-                this.deny(e);
-            }.bind(this));
-            this.createOkActionNode.addEvent("click", function(e){
-                this.okCreate(e);
-            }.bind(this));
-        }
+        // if( this.isNew || this.isEdited){
+        //     this.denyActionNode = new Element("div", {
+        //         "styles": this.css.createDenyActionNode,
+        //         "text": lp.disagree
+        //     }).inject(this.formNode);
+        //     this.createOkActionNode = new Element("div", {
+        //         "styles": this.css.createOkActionNode,
+        //         "text": lp.agree
+        //     }).inject(this.formNode);
+        //
+        //     this.denyActionNode.addEvent("click", function(e){
+        //         this.deny(e);
+        //     }.bind(this));
+        //     this.createOkActionNode.addEvent("click", function(e){
+        //         this.okCreate(e);
+        //     }.bind(this));
+        // }
 
     },
     switchFieldByAppealReason : function( ar ){
@@ -536,9 +550,9 @@ MWF.xApplication.Attendance.MyAppeal.Appeal = new Class({
             if( json.type == "ERROR" ){
                 this.app.notice( json.message  , "error");
             }else{
-                this.createMarkNode.destroy();
-                this.createAreaNode.destroy();
-                if(this.explorer.view)this.explorer.view.reload();
+                if( this.formMaskNode )this.formMaskNode.destroy();
+                if( this.formAreaNode )this.formAreaNode.destroy();
+                if (this.explorer && this.explorer.view)this.explorer.view.reload();
                 this.app.notice( MWF.xApplication.Attendance.LP.processSuccess, "success");
             }
             //    this.app.processConfig();

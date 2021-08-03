@@ -1,40 +1,40 @@
 {
   "inputText": {
     "width": "99%",
-    "border":"1px solid #E6E6E6",
+    "border":"1px solid #DEDEDE",
     "background-color":"#FFF",
     "height": "26px",
     "font-size": "14px",
-    "border-radius" : "8px"
+    "border-radius" : "13px"
   },
   "inputTime" : {
     "width": "99%",
-    "border-radius" : "8px",
-    "border":"1px solid #E6E6E6",
+    "border-radius" : "13px",
+    "border":"1px solid #DEDEDE",
     "height": "26px",
     "font-size": "14px",
-    "background" : "#fff url(../x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
+    "background" : "#fff url(../x_component_Template/$MForm/attendance/icon/calendar.png) 98% center no-repeat"
   },
   "inputTimeUnformatWidth" : {
-    "border-radius" : "8px",
-    "border":"1px solid #E6E6E6",
+    "border-radius" : "13px",
+    "border":"1px solid #DEDEDE",
     "height": "26px",
     "font-size": "14px",
-    "background" : "#fff url(../x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
+    "background" : "#fff url(../x_component_Template/$MForm/attendance/icon/calendar.png) 98% center no-repeat"
   },
   "inputPerson" : {
     "width": "99%",
-    "border-radius" : "8px",
-    "border":"1px solid #E6E6E6",
+    "border-radius" : "13px",
+    "border":"1px solid #DEDEDE",
     "min-height": "26px",
     "overflow" : "hidden",
     "font-size": "14px",
-    "background" : "#fff url(../x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
+    "background" : "#fff url(../x_component_Template/$MForm/attendance/icon/selectperson.png) 98% center no-repeat"
   },
   "inputTextarea" : {
     "width": "99%",
-    "border-radius" : "8px",
-    "border":"1px solid #E6E6E6",
+    "border-radius" : "13px",
+    "border":"1px solid #DEDEDE",
     "background-color":"#FFF",
     "height": "80px"
   },
@@ -48,23 +48,23 @@
   },
   "inputSelect" : {
     "width": "99%",
-    "border-radius" : "8px",
-    "border":"1px solid #E6E6E6",
+    "border-radius" : "13px",
+    "border":"1px solid #DEDEDE",
     "background-color":"#FFF",
     "font-size": "14px",
     "height": "26px"
   },
   "inputSelectUnformatWidth" : {
     "margin-right":"5px",
-    "border-radius" : "8px",
-    "border":"1px solid #E6E6E6",
+    "border-radius" : "13px",
+    "border":"1px solid #DEDEDE",
     "background-color":"#FFF",
     "font-size": "14px",
     "height": "26px"
   },
   "inputButton" : {
     "background": "#3C76B7",
-    "border-radius": "8px",
+    "border-radius": "13px",
     "padding" : "0px 10px",
     "line-height" : "26px",
     "height" : "26px",
@@ -75,7 +75,7 @@
   },
   "inputAcceptButton" : {
     "background-color": "#3C76B7",
-    "border-radius": "8px",
+    "border-radius": "13px",
     "padding" : "0px 10px",
     "line-height" : "26px",
     "height" : "26px",
@@ -87,7 +87,7 @@
   },
   "inputDenyButton" : {
     "background-color": "#f0f0f0",
-    "border-radius": "8px",
+    "border-radius": "13px",
     "padding" : "0px 10px",
     "float" : "left",
     "line-height" : "26px",
@@ -99,7 +99,7 @@
   },
   "inputOkButton" : {
     "background": "#3C76B7",
-    "border-radius": "8px",
+    "border-radius": "13px",
     "width" : "230px",
     "height" : "40px",
     "border" : "0px",
@@ -109,7 +109,7 @@
   },
   "inputCancelButton" : {
     "background": "#f0f0f0",
-    "border-radius": "8px",
+    "border-radius": "13px",
     "width" : "110px",
     "height" : "40px",
     "color" : "#666",
@@ -159,10 +159,12 @@
     "text-align": "left"
   },
   "formTableValue" : {
+    "color" : "#666",
     "text-align": "left",
     "font-size" : "14px"
   },
   "formTableValueTop20" : {
+    "color" : "#666",
     "padding-top" : "20px",
     "text-align": "left"
   },
@@ -170,10 +172,12 @@
     "font-weight" : "bold"
   },
   "formTableValueDiv" : {
+    "color" : "#666",
     "min-height" : "40px",
     "line-height" : "22px"
   },
   "formTableInlineValueDiv" : {
+    "color" : "#666",
     "float" : "left",
     "margin-right" : "10px"
   },

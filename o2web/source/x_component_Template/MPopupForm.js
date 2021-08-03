@@ -36,6 +36,8 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         "resultSeparator" : ",",
 
         "hasBottom": true,
+        "hideBottomWhenReading": false,
+        "closeByClickMaskWhenReading" : false,
         "buttonList" : [{ "type":"cancel", "text": "" },{ "type":"ok", "text": "" }]
     },
     initialize: function (explorer, data, options, para) {
@@ -77,23 +79,28 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
     load: function () {
         this._loadCss();
     },
-    _loadCss: function(){
+    _loadCss: function(reload){
         var css = {};
-        var r = new Request.JSON({
-            url: o2.filterUrl(this.cssPath),
-            secure: false,
-            async: false,
-            method: "get",
-            noCache: false,
-            onSuccess: function(responseJSON, responseText){
-                css = responseJSON;
-                MWF.widget.css[key] = responseJSON;
-            }.bind(this),
-            onError: function(text, error){
-                alert(error + text);
-            }
-        });
-        r.send();
+        var key = encodeURIComponent(this.cssPath);
+        if (!reload && o2.widget.css[key]){
+            css = Object.clone(o2.widget.css[key]);
+        }else{
+            var r = new Request.JSON({
+                url: o2.filterUrl(this.cssPath),
+                secure: false,
+                async: false,
+                method: "get",
+                noCache: false,
+                onSuccess: function(responseJSON, responseText){
+                    o2.widget.css[key] = responseJSON;
+                    css = Object.clone(responseJSON);
+                }.bind(this),
+                onError: function(text, error){
+                    alert(error + text);
+                }
+            });
+            r.send();
+       }
 
         var isEmptyObject = true;
         for( var key in css ){
@@ -104,6 +111,8 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         }
         if( !isEmptyObject ){
             this.css = Object.merge(  css, this.css );
+        }else{
+            this.css = css;
         }
     },
     reload : function( keepData ){
@@ -215,7 +224,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
             });
         }
 
-        if( this.options.closeByClickMask && this.formMaskNode ){
+        if( ( this.options.closeByClickMask || (!this.isNew && !this.isEdited && this.options.closeByClickMaskWhenReading) ) && this.formMaskNode ){
             this.formMaskNode.addEvent("click", function(e){
                 this.close(e)
             }.bind(this));
@@ -267,7 +276,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         this.createContent();
         //formContentNode.set("html", html);
 
-        if (this.options.hasBottom) {
+        if (this.options.hasBottom && (this.isNew || this.isEdited || !this.options.hideBottomWhenReading) ) {
             this.createBottomNode();
         }
 
