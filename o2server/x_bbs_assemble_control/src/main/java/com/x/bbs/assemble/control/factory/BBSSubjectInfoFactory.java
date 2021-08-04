@@ -116,6 +116,73 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		}
 		return em.createQuery(cq.where(p)).getResultList();
 	}
+
+	//@MethodDescribe( "根据版块信息查询所有需要展现的所有置顶主题列表" )
+	public List<String> listTopSubjectByType( String forumId, String mainSectionId, String sectionId,String subjectType, String creatorName, Date startTime , Date endTime  ) throws Exception {
+		if( forumId == null || forumId.isEmpty() ){
+			throw new Exception( "forumId is null!" );
+		}
+		EntityManager em = this.entityManagerContainer().get( BBSSubjectInfo.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class);
+		Root<BBSSubjectInfo> root = cq.from( BBSSubjectInfo.class );
+		cq.select(root.get( BBSSubjectInfo_.id));
+
+		Predicate p = cb.isTrue( root.get( BBSSubjectInfo_.isTopSubject ) );
+
+		if( StringUtils.isNotEmpty( subjectType ) ){
+			p = cb.and( p,  cb.equal( root.get( BBSSubjectInfo_.type ), subjectType ) );
+		}
+
+		if( StringUtils.isNotEmpty( creatorName ) ){
+			p = cb.and( p,  cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
+		}
+
+		if(startTime!= null) {
+			p = cb.and(p, cb.greaterThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), startTime));
+		}
+
+		if(endTime!= null) {
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), endTime));
+		}
+
+		Predicate top_or = null;
+		Predicate top_toforum_or = null;
+		Predicate top_tomainsection_or = null;
+		Predicate top_tosection_or = null;
+		if( StringUtils.isNotEmpty( forumId ) ){
+			top_toforum_or = cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId );
+			top_toforum_or = cb.and( top_toforum_or, cb.isTrue( root.get( BBSSubjectInfo_.topToForum )) );
+			top_or = top_toforum_or;
+		}
+
+		if( StringUtils.isNotEmpty( mainSectionId ) ){//在指定的主版块中的所有置顶主题
+			top_tomainsection_or = cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId );
+			top_tomainsection_or = cb.and( top_tomainsection_or, cb.isTrue( root.get( BBSSubjectInfo_.topToMainSection )) );
+			if( top_or != null ){
+				top_or = cb.or( top_or, top_tomainsection_or );
+			}else{
+				top_or = top_tomainsection_or;
+			}
+		}
+
+		if( StringUtils.isNotEmpty( sectionId ) ){//在指定的版块中的所有置顶主题
+			top_tosection_or = cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId );
+			top_tosection_or = cb.and( top_tosection_or, cb.isTrue( root.get( BBSSubjectInfo_.topToSection )) );
+			if( top_or != null ){
+				top_or = cb.or( top_or, top_tosection_or );
+			}else{
+				top_or = top_tosection_or;
+			}
+		}
+
+
+
+		if( top_or != null ){
+			p = cb.and( p, top_or );
+		}
+		return em.createQuery(cq.where(p)).getResultList();
+	}
 	
 	//@MethodDescribe( "根据版块信息查询论坛内主题数量" )
 	public Long countByForumId( String forumId, Boolean withTopSubject ) throws Exception {
