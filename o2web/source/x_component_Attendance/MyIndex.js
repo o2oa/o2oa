@@ -92,7 +92,9 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         //    "styles" : this.css.titleRightArrowNode
         //}).inject(this.titleRightNode);
 
-        var cycleText = this.app.lp.cyclText.replace("{start}",this.cycleStartDateString).replace("{end}",this.cycleEndDateString);
+        var cycleText = this.app.lp.cyclText.
+            replace("{start}",this.cycleStartDate.format(this.app.lp.dateFormatMonthDayLocal)).
+            replace("{end}",this.cycleEndDate.format(this.app.lp.dateFormatMonthDayLocal));
         this.titleCycleTextNode = new Element("div",{
             "styles" : this.css.titleCycleTextNode,
             "text" : cycleText
@@ -168,10 +170,16 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             this.cycleStartDate = new Date( this.cycleStartDateString );
             this.cycleEndDate = new Date( this.cycleEndDateString );
 
-            //this.cycleStartDateString = "2016-02-25";
-            //this.cycleEndDateString = "2016-03-25";
-            //this.cycleStartDate = new Date( this.cycleStartDateString );
-            //this.cycleEndDate = new Date( this.cycleEndDateString );
+            this.cycleYearMonth = [];
+            var start = new Date(this.cycleStartDate.getFullYear(), this.cycleStartDate.getMonth(), 1);
+            while( start < this.cycleEndDate ){
+                var year = start.getFullYear().toString();
+                var month = start.getMonth()+1;
+                month = month.toString().length === 2 ? month : "0"+month;
+
+                start.increment("month", 1);
+                this.cycleYearMonth.push( { year: year, month: month} )
+            }
 
             this.isCrossMonth = (this.cycleStartDate.getMonth() != this.cycleEndDate.getMonth());
 
@@ -376,7 +384,8 @@ MWF.xApplication.Attendance.MyIndex = new Class({
 
     },
     loadData : function(){
-        this.listDetailFilterUser( function( data ){
+        // this.listDetailFilterUser( function( data ){
+        this.listCycleDetailFileterUser( function(data){
             this.detailData = data || {};
             this.anaylyseDetail();
             this.loadStatusColorNode();
@@ -548,17 +557,23 @@ MWF.xApplication.Attendance.MyIndex = new Class({
     },
     changeCalendarMonthPrev: function(){
         if( this.calendarLeftDisable )return ;
-        jQuery(this.calendarNode).fullCalendar( 'prev' );
+        // jQuery(this.calendarNode).fullCalendar( 'prev' );
         this.calendarDate.decrement("month", 1);
         this.calendarCurrentMonthNode.set("text",(this.calendarDate.getMonth()+1)+ this.app.lp.month );
         this.switchCalendarArrow( this.calendarDate );
+
+        this.calendar.date = this.calendarDate;
+        this.calendar.reLoadCalendar();
     },
     changeCalendarMonthNext: function(){
         if( this.calendarRightDisable )return ;
-        jQuery(this.calendarNode).fullCalendar( 'next' );
+        // jQuery(this.calendarNode).fullCalendar( 'next' );
         this.calendarDate.increment("month", 1);
         this.calendarCurrentMonthNode.set("text",(this.calendarDate.getMonth()+1)+this.app.lp.month);
         this.switchCalendarArrow( this.calendarDate );
+
+        this.calendar.date = this.calendarDate;
+        this.calendar.reLoadCalendar();
 
         //this.date.increment("month", 1);
         //this.setDate( this.date );
@@ -772,6 +787,33 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         });
         this.lineChart.load();
     },
+    listCycleDetailFileterUser: function(callback, name){
+        debugger;
+        var data = [];
+        var loadCount = 0;
+        var startTime = Date.parse( this.cycleStartDate.format("%Y-%m-%d") ).getTime();
+        var endTime = Date.parse( this.cycleEndDate.format("%Y-%m-%d") ).getTime();
+        this.cycleYearMonth.each(function(cycle){
+            var filter = {};
+            if( name )filter.q_empName = name;
+            filter.cycleYear = cycle.year;
+            filter.cycleMonth =  cycle.month;
+            this.actions.listDetailFilterUser( filter, function(json){
+                data = data.concat( json.data || [] );
+                loadCount++;
+                if( loadCount >= this.cycleYearMonth.length ){
+                    data = data.filter( function (d) {
+                        var time = Date.parse(d.recordDateString).getTime();
+                        return (time >= startTime) && (time <= endTime);
+                    }.bind(this));
+                    data.sort( function( a, b ){
+                        return parseInt( a.recordDateString.replace(/-/g,"") ) -  parseInt( b.recordDateString.replace(/-/g,"") );
+                    });
+                    if( callback )callback(data);
+                }
+            }.bind(this))
+        }.bind(this))
+    },
     listDetailFilterUser :function( callback, name, year, month ){
         //{'q_empName':'林玲','q_year':'2016','q_month':'03'}
         var filter = {};
@@ -796,7 +838,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         //var filterSize = this.filterNode.getSize();
         var filterConditionSize = this.filterConditionNode ? this.filterConditionNode.getSize() : {"x":0,"y":0};
 
-        var height = nodeSize.y-toolbarSize.y-pt-pb-filterConditionSize.y-titlebarSize.y;
+        var height = nodeSize.y-toolbarSize.y-pt-pb-filterConditionSize.y-titlebarSize.y-10;
         this.elementContentNode.setStyle("height", ""+height+"px");
 
     },
@@ -1280,6 +1322,10 @@ MWF.xApplication.Attendance.MyIndex.Calendar.Day = new Class({
             "styles" : this.css["calendarTableCell_"+this.type]
         }).inject( this.container );
 
+        if( this.type === "today" && (this.calendar.date.format("%Y-%m-%d") !== this.date.format("%Y-%m-%d")) ){
+            this.node.setStyle("opacity", "0.5");
+        }
+
         if( this.data.color ){
             this.node.setStyle("border-left", "6px solid "+ this.data.color);
         }
@@ -1298,6 +1344,47 @@ MWF.xApplication.Attendance.MyIndex.Calendar.Day = new Class({
         }
 
         // this.loadMeetings();
+
+        if( this.data.isHoliday ){
+            new Element("div", {
+                "styles": {
+                    "margin-top": "5px",
+                    "margin-left": "10px",
+                    "color": "#fff",
+                    "font-weight": "bold",
+                    "border-radius": "20px",
+                    "height": "20px",
+                    "width": "20px",
+                    // "background-color": "#F23030",
+                    "background-color": "#f49999",
+                    "float": "left",
+                    "line-height": "20px",
+                    "text-align": "center",
+                    "font-size" : "12px"
+                },
+                "text": this.app.lp.offDutyAbbrev,
+                "title": this.data.holidayName || ""
+            }).inject(this.titleNode)
+        }else if( this.data.isWorkday ){
+            new Element("div", {
+                "styles": {
+                    "margin-top": "5px",
+                    "margin-left": "10px",
+                    "color": "#fff",
+                    "font-weight": "bold",
+                    "border-radius": "20px",
+                    "height": "20px",
+                    "width": "20px",
+                    "background-color": "#ccc",
+                    "float": "left",
+                    "line-height": "20px",
+                    "text-align": "center",
+                    "font-size" : "12px"
+                },
+                "text": this.app.lp.onDutyAbbrev,
+                "title": this.data.holidayName || ""
+            }).inject(this.titleNode)
+        }
 
         if( this.data.text ){
             new Element("div", {
@@ -1339,10 +1426,10 @@ MWF.xApplication.Attendance.MyIndex.Calendar.Day = new Class({
     },
     destroy: function(){
 
-        this.titleNode.destroy();
+        this.node.destroy();
         this.titleNode = null;
         this.titleDayNode = null;
-        this.titleInforNode = null;
+        this.contentNode = null;
 
         delete this.calendar.days[this.key];
 
