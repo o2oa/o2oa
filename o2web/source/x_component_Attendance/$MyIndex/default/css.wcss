@@ -1,6 +1,7 @@
 {
   "titleNode": {
     "background-color": "#fff",
+    "border-bottom": "1px solid #ccc",
     //"#f1f3fc",
     "color": "#333",
     "margin-left": "2px",
@@ -73,7 +74,7 @@
     "width": "32px",
     "line-height": "50px",
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/past.png) no-repeat center center",
-    "margin": "0px 20px 14px 0px",
+    "margin": "0px 20px 0px 0px",
     "cursor": "pointer"
   },
   "titleScheduleIconNode_over": {
@@ -119,9 +120,9 @@
     "width": "40px"
   },
   "elementContentNode": {
-    "overflow": "hidden",
+    "overflow": "auto",
     "position": "static",
-    "margin-right": "10px",
+//    "margin-right": "10px",
     "margin-bottom": "20px"
   },
   "elementContentListNode": {
@@ -287,7 +288,7 @@
     "margin-left": "10px",
     "background": "#fff",
     "float": "left",
-    "width": "calc( 100% - 400px )"
+    "width": "calc( 100% - 390px )"
   },
   "middleRightTitleArea": {
     "overflow": "hidden",
@@ -410,7 +411,7 @@
   },
   "contentWarpNode": {
     "padding": "0px 15px",
-    "margin-right": "10px",
+//    "margin-right": "10px",
     "background-color": "#Fff",
     "overflow": "hidden"
   },
@@ -516,21 +517,21 @@
     "height": "90px"
   },
   "dayTitle_thisMonth": {
-    "padding": "8px 0px 5px 10px",
+    "padding": "8px 0px 5px 5px",
     "height": "30px",
     "cursor": "pointer",
     "line-height": "30px",
     "background-color": "#FFF"
   },
   "dayTitle_otherMonth": {
-    "padding": "8px 0px 5px 10px",
+    "padding": "8px 0px 5px 5px",
     "height": "30px",
     "cursor": "pointer",
     "line-height": "30px",
     "background-color": "#FFF"
   },
   "dayTitle_today": {
-    "padding": "8px 0px 5px 10px",
+    "padding": "8px 0px 5px 5px",
     "height": "30px",
     "cursor": "pointer",
     "line-height": "24px",
@@ -538,15 +539,14 @@
   },
   "dayTitleDay_thisMonth": {
     "font-size": "16px",
-    "margin-left": "10px",
+    "margin-left": "5px",
     "height": "30px",
     "float": "left",
     "color": "#333"
   },
   "dayTitleDay_otherMonth": {
-    "color": "#ccc",
     "font-size": "16px",
-    "margin-left": "10px",
+    "margin-left": "5px",
     "height": "30px",
     "float": "left",
     "color": "#ccc"
@@ -554,7 +554,7 @@
   "dayTitleDay_today": {
     "margin-top": "3px",
     "font-size": "14px",
-    "background": "#3C76B7",
+    "background": "#4A90E2",
     "border-radius": "100px",
     "text-align": "center",
     "width": "24px",
@@ -587,6 +587,7 @@
     "color": "#3C76B7"
   },
   "dayContentNode": {
+    "position": "relative",
     "overflow": "hidden",
     //"border-top": "1px solid #ccc",
     "margin": "0px 5px 0px 0px"
