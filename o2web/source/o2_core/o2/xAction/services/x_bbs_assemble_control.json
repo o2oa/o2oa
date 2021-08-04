@@ -90,6 +90,7 @@
   //"creatorName":""
   //}
   "listSubjectFilterPage": {"uri" : "/jaxrs/subject/filter/list/page/{page}/count/{count}", "method": "PUT"},
+  "listSubjectWithSubjectTypeForPage": {"uri" : "/jaxrs/subject/filter/listsubjectinfo/page/{page}/count/{count}", "method": "POST"},
   //根据版块ID查询所有的置顶贴：子版块，版块，论坛，全局置顶全部取到(可匿名访问)
   "listTopSubject" : {"uri":"/jaxrs/subject/top/{sectionId}"},
   "setCream" : {"uri":"/jaxrs/user/subject/setCream/{id}"},   //设置精华

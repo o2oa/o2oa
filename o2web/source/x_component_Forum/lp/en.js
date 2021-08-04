@@ -166,6 +166,7 @@ MWF.xApplication.Forum.LP = {
 	"recommanded": "Recommended",
 	"subject": "Subject",
 	"allSubject": "All Subjects",
+	"selectSubjectType" : "Select SubjectType",
 	"recommandedSubject": "Recommended Subject",
 	"primeSubject": "prime subject",
 	"type": "Type",

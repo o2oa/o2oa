@@ -171,6 +171,24 @@ public class BBSSubjectInfoServiceAdv {
 		}
 	}
 
+	/**
+	 * 根据版块信息和主题类别，查询所有需要展现的所有置顶主题列表
+	 * 包括：全局置顶贴, 当前论坛置顶贴, 当前版块置顶贴和主版块的置顶贴
+	 * @param sectionInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BBSSubjectInfo> listTopSubjectByType( BBSSectionInfo sectionInfo, String subjectType,String creatorName, List<String> viewSectionIds , Date startTime , Date endTime ) throws Exception {
+		if( sectionInfo == null ){
+			throw new Exception( "sectionInfo is null." );
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return subjectInfoService.listTopSubjectByType( emc, sectionInfo, subjectType,creatorName, viewSectionIds ,  startTime , endTime);
+		}catch( Exception e ){
+			throw e;
+		}
+	}
+
 	public BBSSubjectInfo acceptReply( String subjectId, String replyId, String name ) throws Exception {
 		if( subjectId == null ){
 			throw new Exception( "subjectId is null." );

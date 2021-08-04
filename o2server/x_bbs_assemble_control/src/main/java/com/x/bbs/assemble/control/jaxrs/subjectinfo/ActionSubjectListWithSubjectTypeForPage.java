@@ -142,7 +142,8 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 		//查询出所有的置顶贴
 		if ( check && wrapIn != null && wrapIn.getWithTopSubject() != null && wrapIn.getWithTopSubject() ) {
 			try {
-				subjectInfoList_top = subjectInfoServiceAdv.listAllTopSubject( sectionInfo, wrapIn.getCreatorName(), viewSectionIds ,wrapIn.getStartTime() ,  wrapIn.getEndTime());
+				//subjectInfoList_top = subjectInfoServiceAdv.listAllTopSubject( sectionInfo, wrapIn.getCreatorName(), viewSectionIds ,wrapIn.getStartTime() ,  wrapIn.getEndTime());
+				subjectInfoList_top = subjectInfoServiceAdv.listTopSubjectByType( sectionInfo,wrapIn.getSubjectType(), wrapIn.getCreatorName(), viewSectionIds ,wrapIn.getStartTime() ,  wrapIn.getEndTime());
 				if( subjectInfoList_top != null ){
 					topTotal = subjectInfoList_top.size();
 					try {
