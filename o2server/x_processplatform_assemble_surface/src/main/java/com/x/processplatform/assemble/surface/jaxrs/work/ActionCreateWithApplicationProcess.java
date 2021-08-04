@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -77,6 +78,10 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 			List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
 			if (!business.application().allowRead(effectivePerson, roles, identities, units, application)) {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(), application.getId());
+			}
+			List<String> groups = business.organization().group().listWithIdentity(identities);
+			if (!business.process().startable(effectivePerson, identities, units, groups, process)) {
+				throw new ExceptionAccessDenied(effectivePerson, process);
 			}
 			if (BooleanUtils.isTrue(wi.getLatest())) {
 				/* 判断是否是要直接打开之前创建的草稿,草稿的判断标准:有待办无任何已办 */
