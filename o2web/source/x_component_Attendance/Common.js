@@ -137,10 +137,10 @@ MWF.xApplication.Attendance.Echarts = new Class({
         this.chart = echarts.init(this.node, 'shine');
 
         this.chart.setOption({
-            title: {
-                text: this.lp.attendanceSummary
-                //subtext: '纯属虚构'
-            },
+            // title: {
+            //     text: this.lp.attendanceSummary
+            //     //subtext: '纯属虚构'
+            // },
             tooltip: {
                 trigger: 'item',
                 formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -185,9 +185,9 @@ MWF.xApplication.Attendance.Echarts = new Class({
         var x = this.getDateByMonth();
         var data = this.analyseLineData();
         var option = {
-            title: {
-                text: this.lp.attendanceTrendChart
-            },
+            // title: {
+            //     text: this.lp.attendanceTrendChart
+            // },
             grid : {
                 left : 50,
                 right : 40

@@ -39,6 +39,17 @@ MWF.xApplication.Attendance.LP = {
 	"am": "a.m.",
 	"pm": "p.m.",
 
+	"statusText": {
+		"normal" : "Attendance", //绿色，正常
+		"levelAsked":"Ask for leave", //蓝色，请假
+		"late":"Late", //橙色，迟到
+		"leaveEarly":"Leave early", //橙色，早退
+		"noSign":"Absence", //粉红色,未签到
+		"appealSuccess" : "Appeal",
+		"lackOfTime" : "LackOfTime",
+		"abNormalDuty" : "Abnormal",
+	},
+
 	"absent": "Absent",
 	"notAbsent": "Not Absent",
 	"absendSelectText": ["","yes","no"],
@@ -419,5 +430,17 @@ MWF.xApplication.Attendance.LP = {
 		"addressSetting": "Workplace Settings",
 		"appSetting": "Appeal Settings",
 		"weekendSetting": "Weekend Setting",
+	},
+
+	"week": "Week",
+	"weeks": {
+		"Sun": "Sun",
+		"Mon": "Mon",
+		"Tues": "Tues",
+		"Wed": "Wed",
+		"Thur": "Thur",
+		"Fri": "Fri",
+		"Sat": "Sat",
+		"arr": ["Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat"]
 	}
 };
