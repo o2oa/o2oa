@@ -319,7 +319,7 @@ MWF.xApplication.Attendance.LP = {
 	"myDetail": "我的出勤明细",
 	"myDetailStatic": "我的出勤率统计",
 
-	"cyclText" : "考勤周期：{start}至{end}",
+	"cyclText" : "考勤周期：{start}-{end}",
 
 	"personSetting": "考勤人员设置",
 	"configType": "配置类型",

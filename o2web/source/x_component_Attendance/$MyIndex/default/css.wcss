@@ -4,7 +4,7 @@
     "border-bottom": "1px solid #ccc",
     //"#f1f3fc",
     "color": "#333",
-    "margin-left": "2px",
+    "margin-left": "5px",
     "height": "50px",
     "overflow": "hidden"
   },
@@ -20,32 +20,32 @@
     "margin-right": "20px"
   },
   "titleLeftArrowNode": {
-    "background": "url('../x_component_Attendance/$MyIndex/default/icon/left.png') no-repeat center",
-    "margin": "15px 0px 15px 40px",
+    "background": "url('../x_component_Attendance/$MyIndex/default/icon/left.png') no-repeat center center",
     "width": "40px",
-    "height": "30px",
+    "height": "50px",
+    "line-height": "50px",
     "float": "left",
     "cursor": "pointer"
   },
   "titleLeftArrowNode_over": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_over.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left.png) no-repeat center center"
   },
   "titleLeftArrowNode_down": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left.png) no-repeat center center"
   },
   "titleRightArrowNode": {
-    "height": "30px",
+    "height": "50px",
+    "line-height": "50px",
     "width": "40px",
-    "margin": "15px 0px",
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center",
     "cursor": "pointer",
     "float": "left"
   },
   "titleRightArrowNode_over": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_over.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center"
   },
   "titleRightArrowNode_down": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center"
   },
   "titleTextNode": {
     "line-height": "50px",
@@ -126,6 +126,7 @@
     "margin-bottom": "20px"
   },
   "elementContentListNode": {
+    "min-width": "900px",
     //"overflow": "hidden"
   },
   "topContentArea": {
@@ -161,42 +162,43 @@
   "calendarCurrentMonthNode": {
     "font-size": "16px",
     "width": "40px",
-    "line-height": "30px",
-    "height": "30px",
+    "line-height": "50px",
+    "height": "50px",
     "float": "right",
+    "text-align": "center",
     "cursor": "default"
   },
   "calendarLeftArrowNode": {
     "background": "url('../x_component_Attendance/$MyIndex/default/icon/left.png') no-repeat center",
-    "width": "40px",
-    "line-height": "30px",
-    "height": "30px",
+    "width": "20px",
+    "line-height": "50px",
+    "height": "50px",
     "float": "right",
     "cursor": "pointer"
   },
   "calendarLeftArrowNode_over": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_over.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left.png) no-repeat center center"
   },
   "calendarLeftArrowNode_down": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left.png) no-repeat center center"
   },
   "calendarLeftArrowNode_disable": {
     "cursor": "default",
     "background": "none"
   },
   "calendarRightArrowNode": {
-    "height": "30px",
-    "line-height": "30px",
-    "width": "40px",
+    "height": "50px",
+    "line-height": "50px",
+    "width": "20px",
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center",
     "cursor": "pointer",
     "float": "right"
   },
   "calendarRightArrowNode_over": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_over.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center"
   },
   "calendarRightArrowNode_down": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center"
   },
   "calendarRightArrowNode_disable": {
     "cursor": "default",
@@ -506,7 +508,8 @@
     "background-color": "#fff",
     "border": "1px solid #CCC",
     "border-radius": "4px",
-    "height": "90px"
+    "height": "90px",
+    "opacity": "0.5"
   },
   "calendarTableCell_today": {
     "margin": "7px",
@@ -549,7 +552,8 @@
     "margin-left": "5px",
     "height": "30px",
     "float": "left",
-    "color": "#ccc"
+    "color": "#333"
+//    "color": "#ccc"
   },
   "dayTitleDay_today": {
     "margin-top": "3px",

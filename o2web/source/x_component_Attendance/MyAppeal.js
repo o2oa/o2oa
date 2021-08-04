@@ -88,8 +88,8 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
                         },
                         "event" : {
                             "change" : function( item, ev ){
-                                var values = this.getDateSelectValue();
-                                item.form.getItem( "date").resetItemOptions( values , values )
+                                // var values = this.getDateSelectValue();
+                                // item.form.getItem( "date").resetItemOptions( values , values )
                             }.bind(this)
                         }
                     },
@@ -102,10 +102,10 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
                         },
                         "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"],
                         "event" : {
-                            "change" : function( item, ev ){
-                                var values = this.getDateSelectValue();
-                                item.form.getItem( "date").resetItemOptions( values , values )
-                            }.bind(this)
+                            // "change" : function( item, ev ){
+                            //     var values = this.getDateSelectValue();
+                            //     item.form.getItem( "date").resetItemOptions( values , values )
+                            // }.bind(this)
                         }
                     },
                     status : {
