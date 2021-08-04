@@ -28,11 +28,11 @@
     {
       "name": "title",
       "head": {
-        "html": "<th styles='normalThNode'><div lable='allSubject' styles='thActionNodeCurrent'></div><div style='float:left'>|</div><div lable='prime' styles='thActionNode'></div><div style='float:left'>|</div><div lable='sType' styles='thActionNode'></div><div lable='select' styles='thActionNode'></div></th>",
+        "html": "<th styles='normalThNode'><div lable='allSubject' styles='thActionNode'></div><div style='float:left'>|</div><div lable='prime' styles='thActionNode'></div><div style='float:left'>|</div><div lable='sType' styles='thActionNodeCurrent'></div><div lable='select' styles='thActionNode'></div></th>",
         "width": "58%"
       },
       "content": {
-        "html": "<td styles='normalTdNode' width='58%' name='title'>"+
+        "html": "<td styles='normalTdNode' width='58%'>"+
         " <span item='icon' styles='tdIcon'></span>"+
         " <span styles='tdType'>[</span><span item='type' styles='tdType'></span><span styles='tdType'>]</span>"+
         " <span item='title' styles='tdTitle'></span>"+
@@ -42,7 +42,7 @@
           "type" : {},
           "icon" : {
             "type" : "html",
-            "value" : "function(d){ var path = '../x_component_ForumSection/$Main/default/icon/'; if(d.isTopSubject){  return '<img src='+path+'icon_zhiding.png title=置顶帖>'; }else if(d.isCreamSubject){ return '<img src='+path+'icon_jinghua.png title=精华帖>'; }else if(d.typeCategory == this.lp.vote ){ return '<img src='+path+'icon_vote.png title=投票帖>'; }else if(d.typeCategory == this.lp.question ){ return '<img src='+path+'icon_question.png title=提问帖>'; }else{ return '<img src='+path+'icon_normal.png>'} }"
+            "value" : "function(d){ if(d.isTopSubject){ return '<img src=../x_component_ForumSection/$Main/default/icon/icon_zhiding.png title=置顶帖>' }else{ return d.isCreamSubject ? '<img src=../x_component_ForumSection/$Main/default/icon/icon_jinghua.png title=精华帖>' :  '<img src=../x_component_ForumSection/$Main/default/icon/icon_normal.png>'} }"
           }
         }
       }
@@ -93,10 +93,10 @@
         "html": "<td styles='normalTdCenterNode' width='9%'><div item='latestReplyUser'></div><div item='latestReplyTime2' styles='normalTdBottom'></div></td>",
         "items": {
           "latestReplyUser" : {
-            "value" : "function(d){ return (d.latestReplyUser || '').split('@')[0] }",
+            "value" : "function(d){ return d.latestReplyUser ? d.latestReplyUser.split('@')[0] : '' }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
-            "event" : "click^^function(node){ this.app.openPerson( this.data.latestReplyUser || '') }"
+            "event" : "click^^function(node){ this.app.openPerson( this.data.latestReplyUser ) }"
           },
           "latestReplyTime2" : {
             "show": "function( d ){ return !d.latestReplyUser ? false : true }",
@@ -112,7 +112,7 @@
         "width": "10%"
       },
       "content": {
-        "html": "<td styles='normalTdCenterNode' width='10%'>" +
+        "html": "<td styles='normalTdCenterNode' width='10%'>"+
         " <span styles='documentActionNode' item='remove'></span>" +
         " <span styles='documentActionNode' item='edit'></span>" +
         " <span style='width: 20px; height: 20px; line-height: 20px; margin-top: 5px; margin-right: 5px; display: inline-block;' item='placeholder'></span>" +
