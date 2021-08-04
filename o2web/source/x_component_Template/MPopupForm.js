@@ -110,9 +110,9 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
             }
         }
         if( !isEmptyObject ){
-            this.css = Object.merge(  css, this.css );
-        }else{
-            this.css = css;
+            this.css = Object.merge(  css, this.css || {});
+        }else if( !this.css ){
+            this.css = {};
         }
     },
     reload : function( keepData ){
