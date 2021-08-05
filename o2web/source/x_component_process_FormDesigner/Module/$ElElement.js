@@ -127,7 +127,6 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		};
 	},
 	_afterMounted: function(el, callback){
-		debugger;
 		this.node = el;
 		this.node.store("module", this);
 		if (callback) callback();

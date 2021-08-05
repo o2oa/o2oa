@@ -14,7 +14,6 @@ MWF.xApplication.process.FormDesigner.Module.Elicon = MWF.FCElicon = new Class({
 		this.moduleName = "elicon";
 	},
 	_createElementHtml: function(){
-		debugger;
 		var html = "<i class='"+(this.json.icon || "el-icon-platform-eleme")+"'";
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){
@@ -22,10 +21,15 @@ MWF.xApplication.process.FormDesigner.Module.Elicon = MWF.FCElicon = new Class({
 			}, this);
 		}
 
-		if (this.json.elStyles){
+		var styles = {};
+		if (this.json.iconSize) styles["font-size"] = this.json.iconSize+"px";
+		if (this.json.iconColor) styles["color"] = this.json.iconColor;
+		styles = Object.merge(styles, this.json.elStyles);
+
+		if (styles){
 			var style = "";
-			Object.keys(this.json.elStyles).forEach(function(k){
-				if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+			Object.keys(styles).forEach(function(k){
+				if (styles[k]) style += k+":"+styles[k]+";";
 			}, this);
 			html += " style=\""+style+"\"";
 		}

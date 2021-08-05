@@ -826,7 +826,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "fileNo": "文号",
         "signer": "签发人",
         "subject": "文件标题",
-        "allowEdit": "允许编辑",
         "editSubjectInfo": "标题允许编辑时，请不要绑定数据",
         "mainSend": "主送",
         "attachment": "附件",
@@ -942,6 +941,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "onlyPc": "仅PC端可用",
 
         "size": "尺寸",
+        "color": "颜色",
         "el_bt_default": "默认按钮",
         "el_bt_primary": "主要按钮",
         "el_bt_success": "成功按钮",
@@ -953,7 +953,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_plain": "朴素按钮",
         "el_round": "圆角按钮",
         "el_circle": "圆型按钮",
-        "el_icon": "按钮图标",
+        "el_icon": "图标",
         "el_disabled": "是否禁用",
         "el_loading": "加载中",
         "el_autofocus": "默认焦点",
@@ -970,6 +970,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_radioColor": "字体颜色",
         "el_radioFillColor": "填充颜色",
         "el_buttonRadio": "按钮模式",
+
 
         "datatemplateOuterNote": "注: 位于当前数据模板外部的相关组件标识。数据模板可以有多层，外部组件标识填写有下列规则：<br/>" +
             "1、单层或者是最外层的数据模板，填\"fieldId\"，表示表单上的直接组件。<br/>" +
