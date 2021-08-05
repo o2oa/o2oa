@@ -106,6 +106,39 @@
 			});
 		}
 
+		function getCenterJson(){
+		   var centerJson = "";
+			$.ajax({
+				type : 'get',
+				dataType : 'json',
+				async:false,
+				contentType : 'application/json; charset=utf-8',
+				url : '../jaxrs/jest/center/list',
+				xhrFields : {
+					'withCredentials' : true
+				},
+				crossDomain : true,
+				error : function(e){
+					
+				}
+			}).done(function(json){
+				debugger;
+				centerJson += '<tr>';
+				centerJson += '<td>' + json.data.name + '</td>';
+				centerJson += '<td>' + json.data.className + '</td>';
+				centerJson += '<td>';
+				$.each(json.data.urlList, function(i, url) {
+					url = url.replace(/(127.0.0.1)/g, window.location.hostname);
+					centerJson += '<a href="'+url+'" target="_blank">' + url + '</a><br/>';
+				});
+				centerJson += '</td>';
+				centerJson += '</tr>';
+				
+			})
+			
+			return centerJson;
+		}
+		
 		$(function() {
 			$.ajax({
 				type : 'get',
@@ -138,7 +171,8 @@
 							str += '</tr>';
 						});
 
-						str += '<tr><td>中心服务</td><td>com.x.base.core.project.x_program_center</td><td><a href="http://'+window.location.hostname+':20030/x_program_center/jest/index.html" target="_blank">http://'+window.location.hostname+':20030/x_program_center/jest/index.html</a><br></td></tr>';
+						//str += '<tr><td>中心服务</td><td>com.x.base.core.project.x_program_center</td><td><a href="http://'+window.location.hostname+':20030/x_program_center/jest/index.html" target="_blank">http://'+window.location.hostname+':20030/x_program_center/jest/index.html</a><br></td></tr>';
+						str += getCenterJson();
 						str += '</table>';
 						$('#content').html(str);
 						tableStructure();
@@ -167,6 +201,9 @@
 				}
 			 }
 		);
+		
+		
+		
 		});
 	</script>
 
