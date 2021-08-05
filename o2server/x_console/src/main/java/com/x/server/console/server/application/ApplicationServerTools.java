@@ -83,6 +83,7 @@ import com.x.base.core.project.tools.PathTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
+import com.x.server.console.server.ServerRequestLogBody;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -168,9 +169,15 @@ public class ApplicationServerTools extends JettySeverTools {
 				+ ".application.request.log");
 		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
 				+ "}t \"%r\" %s %O %{ms}T";
-		return new ServerRequestLog(asyncRequestLogWriter,
-				StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
-						: applicationServer.getRequestLogFormat());
+		if (BooleanUtils.isTrue(applicationServer.getRequestLogBodyEnable())) {
+			return new ServerRequestLog(asyncRequestLogWriter,
+					StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
+							: applicationServer.getRequestLogFormat());
+		} else {
+			return new ServerRequestLogBody(asyncRequestLogWriter,
+					StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
+							: applicationServer.getRequestLogFormat());
+		}
 	}
 
 	private static void deployCustom(ApplicationServer applicationServer, HandlerList handlers,

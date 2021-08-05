@@ -3,7 +3,6 @@ package com.x.base.core.project.cache;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -24,16 +23,7 @@ public class CacheEhcacheImpl implements Cache {
 
 	private CacheManager cacheManager;
 
-//	private LinkedBlockingQueue<WrapClearCacheRequest> notifyQueue;
-//
-//	private LinkedBlockingQueue<WrapClearCacheRequest> receiveQueue;
-
-	private LinkedBlockingQueue<WrapClearCacheRequest> queue;
-
-//	private CacheEhcacheReceiveThread receiveThread;
-//
-//	private CacheEhcacheNotifyThread notifyThread;
-	private CacheEhcacheNotifyReceiveThread notifyReceiveThread;
+	private CacheEhcacheNotifyReceiveQueue notifyReceiveQueue;
 
 	public CacheEhcacheImpl(String application) throws Exception {
 		CacheConfiguration cacheConfiguration = new CacheConfiguration();
@@ -46,24 +36,11 @@ public class CacheEhcacheImpl implements Cache {
 		configuration.setDefaultCacheConfiguration(cacheConfiguration);
 		configuration.setName("CacheEhcacheManager-" + application);
 		this.cacheManager = new CacheManager(configuration);
+		this.notifyReceiveQueue = new CacheEhcacheNotifyReceiveQueue(this.cacheManager);
 		if (BooleanUtils.isTrue(Config.cache().getEhcache().getJmxEnable())) {
 			ManagementService.registerMBeans(cacheManager, ManagementFactory.getPlatformMBeanServer(), true, true, true,
 					true);
 		}
-//		this.receiveQueue = new LinkedBlockingQueue<>();
-//		this.receiveThread = new CacheEhcacheReceiveThread(cacheManager, queue);
-//		this.receiveThread.setName("Cache-ReceiveThread-" + application);
-//		this.receiveThread.start();
-//
-//		this.notifyQueue = new LinkedBlockingQueue<>();
-//		this.notifyThread = new CacheEhcacheNotifyThread(notifyQueue);
-//		this.notifyThread.setName("Cache-NotifyThread-" + application);
-//		this.notifyThread.start();
-
-		this.queue = new LinkedBlockingQueue<>();
-		this.notifyReceiveThread = new CacheEhcacheNotifyReceiveThread(cacheManager, queue);
-		this.notifyReceiveThread.setName(this.notifyReceiveThread.getClass().getSimpleName() + "-" + application);
-		this.notifyReceiveThread.start();
 	}
 
 	@Override
@@ -86,7 +63,7 @@ public class CacheEhcacheImpl implements Cache {
 	@Override
 	public void receive(WrapClearCacheRequest wi) throws Exception {
 		wi.setType(WrapClearCacheRequest.TYPE_RECEIVE);
-		queue.put(wi);
+		notifyReceiveQueue.send(wi);
 	}
 
 	@Override
@@ -95,14 +72,12 @@ public class CacheEhcacheImpl implements Cache {
 		req.setType(WrapClearCacheRequest.TYPE_NOTIFY);
 		req.setClassName(clz.getName());
 		req.setKeys(keys);
-		this.queue.put(req);
+		this.notifyReceiveQueue.send(req);
 	}
 
 	@Override
 	public void shutdown() {
-//		this.receiveThread.interrupt();
-//		this.notifyThread.interrupt();
-		this.notifyReceiveThread.interrupt();
+		this.notifyReceiveQueue.stop();
 		this.cacheManager.shutdown();
 	}
 

@@ -28,13 +28,12 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-
 @Path("permissionsetting")
 @JaxrsDescribe("通讯录权限设置")
 public class PermissionSettingAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(PermissionSettingAction.class);
-	
+
 	@JaxrsMethodDescribe(value = "获取通讯录配置.", action = ActionGet.class)
 	@GET
 	@Path("{flag}")
@@ -67,9 +66,9 @@ public class PermissionSettingAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "更新通讯录配置.", action = ActionUpdate.class)
 	@PUT
 	@Path("{flag}")
@@ -85,7 +84,7 @@ public class PermissionSettingAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result)); 
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "删除通讯录设置配置.", action = ActionDelete.class)
@@ -105,7 +104,7 @@ public class PermissionSettingAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "获取所有通讯录设置配置", action = ActionList.class)
 	@GET
 	@Path("list")
@@ -122,5 +121,5 @@ public class PermissionSettingAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 }

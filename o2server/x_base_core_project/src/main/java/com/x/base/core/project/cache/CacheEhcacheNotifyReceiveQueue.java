@@ -3,7 +3,6 @@ package com.x.base.core.project.cache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,37 +14,26 @@ import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.queue.AbstractQueue;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 
-public class CacheEhcacheNotifyReceiveThread extends Thread {
+public class CacheEhcacheNotifyReceiveQueue extends AbstractQueue<WrapClearCacheRequest> {
 
-	private static Logger logger = LoggerFactory.getLogger(CacheEhcacheNotifyReceiveThread.class);
+	private static Logger logger = LoggerFactory.getLogger(CacheEhcacheNotifyReceiveQueue.class);
+	private CacheManager cacheManager;
 
-	public CacheEhcacheNotifyReceiveThread(CacheManager cacheManager,
-			LinkedBlockingQueue<WrapClearCacheRequest> queue) {
+	public CacheEhcacheNotifyReceiveQueue(CacheManager cacheManager) {
 		this.cacheManager = cacheManager;
-		this.queue = queue;
-		this.setDaemon(true);
 	}
 
-	private CacheManager cacheManager;
-	private LinkedBlockingQueue<WrapClearCacheRequest> queue;
-
 	@Override
-	public void run() {
-		while (true) {
-			try {
-				WrapClearCacheRequest wi = queue.take();
-				if (!StringUtils.equals(wi.getType(), WrapClearCacheRequest.TYPE_RECEIVE)) {
-					notify(wi);
-				} else {
-					receive(wi);
-				}
-			} catch (Exception e) {
-				logger.error(e);
-			}
+	protected void execute(WrapClearCacheRequest t) throws Exception {
+		if (!StringUtils.equals(t.getType(), WrapClearCacheRequest.TYPE_RECEIVE)) {
+			notify(t);
+		} else {
+			receive(t);
 		}
 	}
 

@@ -1,7 +1,12 @@
 package com.x.base.core.project.jaxrs;
 
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
@@ -23,13 +28,18 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.CollectionTools;
 import com.x.base.core.project.tools.ListTools;
 
 public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(StandardJaxrsAction.class);
 
 	protected static Integer list_max = 200;
 	protected static Integer list_min = 1;

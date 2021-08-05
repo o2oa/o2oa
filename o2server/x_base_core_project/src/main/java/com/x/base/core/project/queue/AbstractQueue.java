@@ -15,23 +15,11 @@ public abstract class AbstractQueue<T> {
 
 	private String className = this.getClass().getName();
 
-	// private List<Object> executings = new CopyOnWriteArrayList<>();
-
-//	public boolean executing(T t) {
-//		if (null == t) {
-//			return false;
-//		} else {
-//			return executings.contains(t);
-//		}
-//	}
-
 	public boolean contains(T t) {
 		if (null == t) {
 			return false;
 		}
 		return this.queue.contains(t);
-		// return false;
-		// return this.executing(t);
 	}
 
 	public void send(T t) throws Exception {
@@ -41,10 +29,6 @@ public abstract class AbstractQueue<T> {
 	}
 
 	public void start() {
-//		if (turn) {
-//			return;
-//		}
-//		turn = true;
 		new Thread(className) {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -53,26 +37,14 @@ public abstract class AbstractQueue<T> {
 				while (turn) {
 					try {
 						o = queue.take();
-						// if (null != o) {
-						// executings.add(o);
 						if (o instanceof StopSignal) {
 							turn = false;
 							break;
 						}
 						execute((T) o);
-						// }
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-//						} finally {
-//						try {
-//							if (null != o) {
-//								executings.remove(o);
-//							}
-//						} catch (Exception e) {
-//							e.printStackTrace();
-//						}
-					// }
 				}
 			}
 		}.start();

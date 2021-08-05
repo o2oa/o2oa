@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
@@ -23,14 +24,15 @@ class ActionCodeLogin extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionCodeLogin.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
-			WrapInAuthentication wrapIn) throws Exception {
+			JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wo wo = new Wo();
-			String credential = wrapIn.getCredential();
-			String codeAnswer = wrapIn.getCodeAnswer();
+			String credential = wi.getCredential();
+			String codeAnswer = wi.getCodeAnswer();
 			if (StringUtils.isEmpty(credential)) {
 				throw new ExceptionCredentialEmpty();
 			}
@@ -58,7 +60,8 @@ class ActionCodeLogin extends BaseAction {
 					if (!Config.person().isMobile(o.getMobile())) {
 						throw new ExceptionInvalidMobile(o.getMobile());
 					}
-					if (!business.instrument().code().validateCascade(o.getMobile(), codeAnswer)) {
+					if (BooleanUtils
+							.isNotTrue(business.instrument().code().validateCascade(o.getMobile(), codeAnswer))) {
 						throw new ExceptionInvalidCode();
 					}
 				}
@@ -68,6 +71,11 @@ class ActionCodeLogin extends BaseAction {
 			result.setData(wo);
 			return result;
 		}
+	}
+
+	public static class Wi extends WrapInAuthentication {
+
+		private static final long serialVersionUID = -2301034615017126738L;
 	}
 
 	public static class Wo extends AbstractWoAuthentication {
