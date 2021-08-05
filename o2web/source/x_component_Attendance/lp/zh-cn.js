@@ -46,7 +46,7 @@ MWF.xApplication.Attendance.LP = {
 		"leaveEarly":"早退", //橙色，早退
 		"noSign":"缺勤", //粉红色,未签到
 		"appealSuccess" : "申诉",
-		"lackOfTime" : "工时不足",
+		"lackOfTime" : "不足",
 		"abNormalDuty" : "异常",
 	},
 
