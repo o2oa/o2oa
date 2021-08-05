@@ -1,5 +1,7 @@
 package com.x.server.console.server;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -244,10 +246,13 @@ public class ServerRequestLogBody extends ServerRequestLog {
 
 	@Override
 	public void customLog(Request request, StringBuilder sb) {
-		sb.append(" \"").append(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), "")).append("\"");
+		sb.append(" \"")
+				.append(URLEncoder.encode(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), ""),
+						StandardCharsets.UTF_8))
+				.append("\"");
 		Object body = request.getAttribute(HttpToken.X_REQUESTBODY);
 		if (null != body) {
-			sb.append(" ").append(body.toString());
+			sb.append(" ").append(URLEncoder.encode(body.toString(), StandardCharsets.UTF_8));
 		}
 	}
 
