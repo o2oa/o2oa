@@ -772,6 +772,12 @@ MDomItem.Text = new Class({
             "name" : options.name,
             "value" : value
         });
+
+        var tType = this.options.tType;
+        if (tType == "time" || tType == "date" || tType.toLowerCase() == "datetime") {
+            item.set("autocomplete", "off");
+        }
+
         item.set( options.attr || {} );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( options.style || {} );
