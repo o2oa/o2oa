@@ -40,6 +40,7 @@ import com.x.base.core.project.tools.JarTools;
 import com.x.base.core.project.tools.PathTools;
 import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
+import com.x.server.console.server.ServerRequestLogBody;
 
 public class CenterServerTools extends JettySeverTools {
 
@@ -131,8 +132,15 @@ public class CenterServerTools extends JettySeverTools {
 				Config.dir_logs().toString() + File.separator + "yyyy_MM_dd." + Config.node() + ".center.request.log");
 		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
 				+ "}t \"%r\" %s %O %{ms}T";
-		return new ServerRequestLog(asyncRequestLogWriter,
-				StringUtils.isEmpty(centerServer.getRequestLogFormat()) ? format : centerServer.getRequestLogFormat());
+		if (BooleanUtils.isTrue(centerServer.getRequestLogBodyEnable())) {
+			return new ServerRequestLog(asyncRequestLogWriter,
+					StringUtils.isEmpty(centerServer.getRequestLogFormat()) ? format
+							: centerServer.getRequestLogFormat());
+		} else {
+			return new ServerRequestLogBody(asyncRequestLogWriter,
+					StringUtils.isEmpty(centerServer.getRequestLogFormat()) ? format
+							: centerServer.getRequestLogFormat());
+		}
 	}
 
 	private static void cleanWorkDirectory() throws Exception {

@@ -9,14 +9,17 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
 
-import com.x.base.core.project.exception.LanguagePromptException;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.http.HttpHeader;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.x.base.core.project.exception.CallbackPromptException;
+import com.x.base.core.project.exception.LanguagePromptException;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.HttpMediaType;
+import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.tools.DefaultCharset;
 
 public class ResponseFactory {
@@ -29,6 +32,7 @@ public class ResponseFactory {
 	public static final String Content_Length = "Content-Length";
 	public static final String Accept_Language = "Accept-Language";
 
+	private static final Gson COMPACT_GSON = XGsonBuilder.compactInstance();
 
 	public static <T> Response getDefaultActionResultResponse(ActionResult<T> result) {
 		if (result.getType().equals(ActionResult.Type.error)) {
@@ -74,12 +78,18 @@ public class ResponseFactory {
 		}
 	}
 
+	public static <T> Response getEntityTagActionResultResponse(HttpServletRequest request, ActionResult<T> result,
+			JsonElement jsonElement) {
+		request.setAttribute(HttpToken.X_REQUESTBODY, COMPACT_GSON.toJson(jsonElement));
+		return getEntityTagActionResultResponse(request, result);
+	}
+
 	public static <T> Response getEntityTagActionResultResponse(HttpServletRequest request, ActionResult<T> result) {
 		if (result.getType().equals(ActionResult.Type.error)) {
 			if ((result.throwable instanceof LanguagePromptException)) {
-				LanguagePromptException e = (LanguagePromptException)result.throwable;
+				LanguagePromptException e = (LanguagePromptException) result.throwable;
 				String message = e.getFormatMessage(result.getPrompt(), request.getHeader(Accept_Language));
-				if(StringUtils.isNotBlank(message)) {
+				if (StringUtils.isNotBlank(message)) {
 					result.setMessage(message);
 				}
 			}

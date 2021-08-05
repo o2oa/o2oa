@@ -16,6 +16,7 @@
   "requestLogEnable": false,
   "requestLogFormat": "",
   "requestLogRetainDays": 7.0,
+  "requestLogBodyEnable": false,
   "persistentConnectionsEnable": true,
   "###enable": "是否启用###",
   "###order": "center节点顺序,顺序排列0,1,2...###",
@@ -35,5 +36,6 @@
   "###requestLogEnable": "启用访问日志功能.###",
   "###requestLogFormat": "访问日志记录格式.###",
   "###requestLogRetainDays": "访问日志记录天数,默认7天.###",
+  "###requestLogBodyEnable": "访问日志是否记录post或者put的body内容,只对content-type为application/json的请求有效.###",
   "###persistentConnectionsEnable": "是否启用长连接,默认false.###"
 }
