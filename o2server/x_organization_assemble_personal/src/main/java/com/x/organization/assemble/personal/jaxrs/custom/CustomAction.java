@@ -43,18 +43,19 @@ public class CustomAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
 	@JaxrsMethodDescribe(value = "获取指定用户的Custom。", action = ActionManagerGet.class)
 	@GET
 	@Path("manager/person/{person}/name/{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void managerGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					@JaxrsParameterDescribe("用户") @PathParam("person") String person,
-					@JaxrsParameterDescribe("名称") @PathParam("name") String name) {
+			@JaxrsParameterDescribe("用户") @PathParam("person") String person,
+			@JaxrsParameterDescribe("名称") @PathParam("name") String name) {
 		ActionResult<String> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionManagerGet().execute(effectivePerson,person, name);
+			result = new ActionManagerGet().execute(effectivePerson, person, name);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -86,7 +87,7 @@ public class CustomAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   @JaxrsParameterDescribe("名称") @PathParam("name") String name, String wi) {
+			@JaxrsParameterDescribe("名称") @PathParam("name") String name, String wi) {
 		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -104,8 +105,8 @@ public class CustomAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void managerUpdate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							  @JaxrsParameterDescribe("用户") @PathParam("person") String person,
-							  @JaxrsParameterDescribe("定义名称") @PathParam("name") String name, String wi) {
+			@JaxrsParameterDescribe("用户") @PathParam("person") String person,
+			@JaxrsParameterDescribe("定义名称") @PathParam("name") String name, String wi) {
 		ActionResult<ActionManagerEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -122,9 +123,9 @@ public class CustomAction extends StandardJaxrsAction {
 	@Path("manager/person/{person}/name/{name}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void managerUpdateMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							  @JaxrsParameterDescribe("用户") @PathParam("person") String person,
-							  @JaxrsParameterDescribe("定义名称") @PathParam("name") String name, String wi) {
+	public void managerUpdateMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("用户") @PathParam("person") String person,
+			@JaxrsParameterDescribe("定义名称") @PathParam("name") String name, String wi) {
 		ActionResult<ActionManagerEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -160,7 +161,7 @@ public class CustomAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   @JaxrsParameterDescribe("名称") @PathParam("name") String name) {
+			@JaxrsParameterDescribe("名称") @PathParam("name") String name) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
