@@ -1701,6 +1701,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     runPrs.br = "br";
                     var oo_run = this.createRun(oo_p.ownerDocument, runPrs);
                     oo_p.appendChild(oo_run);
+                    runPrs.br = "";
                 }else{
                     this.processRunTextDom(node, oo_p, runPrs);
                 }
