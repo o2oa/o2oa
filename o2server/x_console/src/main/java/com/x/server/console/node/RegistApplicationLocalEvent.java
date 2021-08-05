@@ -28,7 +28,7 @@ public class RegistApplicationLocalEvent extends Application implements Event {
 						Applications.class);
 				CopyOnWriteArrayList<Application> list = applications.get(this.getClassName());
 				if (null == list) {
-					list = new CopyOnWriteArrayList<Application>();
+					list = new CopyOnWriteArrayList<>();
 					applications.put(this.getClassName(), list);
 					this.update(applications, list);
 				} else if (list.stream().filter(o -> {
@@ -50,6 +50,7 @@ public class RegistApplicationLocalEvent extends Application implements Event {
 
 	private void update(Applications applications, CopyOnWriteArrayList<Application> list) throws Exception {
 		Application application = XGsonBuilder.convert(this, Application.class);
+		application.setReportDate(new Date());
 		list.add(application);
 		Config.resource_node_applications(XGsonBuilder.instance().toJsonTree(applications));
 		Config.resource_node_applicationsTimestamp(new Date());
