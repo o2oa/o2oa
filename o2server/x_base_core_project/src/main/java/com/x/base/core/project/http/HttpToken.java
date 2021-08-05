@@ -31,6 +31,7 @@ public class HttpToken {
 	public static final String X_Authorization = "authorization";
 	public static final String X_Person = "x-person";
 	public static final String X_DISTINGUISHEDNAME = "x-distinguishedName";
+	public static final String X_REQUESTBODY = "x-requestBody";
 	public static final String X_Client = "x-client";
 	public static final String X_Debugger = "x-debugger";
 	public static final String COOKIE_ANONYMOUS_VALUE = "anonymous";

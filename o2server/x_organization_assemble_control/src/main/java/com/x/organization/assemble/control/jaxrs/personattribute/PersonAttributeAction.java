@@ -66,7 +66,7 @@ public class PersonAttributeAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "更新个人属性.", action = ActionEdit.class)
@@ -84,7 +84,7 @@ public class PersonAttributeAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "删除个人属性.", action = ActionDelete.class)

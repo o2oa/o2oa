@@ -69,7 +69,7 @@ public class PersonAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "更新个人.", action = ActionEdit.class)
@@ -87,7 +87,7 @@ public class PersonAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "删除个人.", action = ActionDelete.class)
@@ -114,7 +114,7 @@ public class PersonAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteV2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   @JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
+			@JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
 		ActionResult<ActionDeleteV2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -235,7 +235,7 @@ public class PersonAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据名称进行模糊查询.", action = ActionListLike.class)
@@ -253,7 +253,7 @@ public class PersonAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据拼音或者首字母进行模糊查询.", action = ActionListLikePinyin.class)
@@ -271,7 +271,7 @@ public class PersonAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "更新指定个人的密码.", action = ActionSetPassword.class)
@@ -289,7 +289,7 @@ public class PersonAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "重置个人的密码.", action = ActionResetPassword.class)
@@ -370,7 +370,7 @@ public class PersonAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void unlockPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					@JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
+			@JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
 		ActionResult<ActionUnlock.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
