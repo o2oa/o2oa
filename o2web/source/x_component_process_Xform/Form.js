@@ -3406,12 +3406,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             dlg.show();
         }.bind(this));
     },
-    selectPeople: function (dlg) {
+    selectPeople: function(dlg){
+        o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(this.businessData.work.id, function(json){
+            var identityList = [];
+            json.data.each(function(task){
+                identityList.push(task.identity);
+            });
+            this._selectPeople(dlg, identityList);
+        }.bind(this))
+    },
+    _selectPeople: function (dlg, exclude) {
         var range = this.businessData.activity.resetRange || "department";
         var count = this.businessData.activity.resetCount || 0;
         switch (range) {
             case "unit":
-                this.selectPeopleUnit(dlg, this.businessData.task.unit, count);
+                this.selectPeopleUnit(dlg, this.businessData.task.unit, count, null,  exclude);
                 // this.personActions.getDepartmentByIdentity(function(json){
                 //     this.selectPeopleDepartment(dlg, json.data, count);
                 // }.bind(this), null, this.businessData.task.identity);
@@ -3422,7 +3431,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     var data = { "unitList": [this.businessData.task.unit] };
                     orgActions.listUnitSupNested(data, function (json) {
                         v = json.data[0];
-                        this.selectPeopleUnit(dlg, v, count);
+                        this.selectPeopleUnit(dlg, v, count, null, exclude);
                     }.bind(this));
                 }.bind(this));
                 // this.personActions.getCompanyByIdentity(function(json){
@@ -3434,14 +3443,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     var scriptText = activityJson.data.activity.resetRangeScriptText;
                     if (!scriptText) return;
                     var resetRange = this.Macro.exec(activityJson.data.activity.resetRangeScriptText, this);
-                    this.selectPeopleUnit(dlg, "", count, resetRange);
+                    this.selectPeopleUnit(dlg, "", count, resetRange, exclude);
                 }.bind(this))
                 break;
             default:
                 this.selectPeopleAll(dlg, count);
         }
     },
-    selectPeopleUnit: function (dlg, unit, count, include) {
+    selectPeopleUnit: function (dlg, unit, count, include, exclude) {
         var names = dlg.identityList || [];
         var areaNode = $("resetWork_selPeopleArea");
         var options = {
@@ -3463,6 +3472,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (include) {
             options.noUnit = true;
             options.include = typeOf(include) === "array" ? include : [include];
+        }
+        if( exclude ){
+            options.exclude = exclude;
         }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
