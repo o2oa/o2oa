@@ -386,10 +386,10 @@ MWF.xApplication.Attendance.Echarts = new Class({
         var data = this.getUnitPieData();
         this.chart = echarts.init(this.node, 'shine');
         this.chart.setOption({
-            title: {
-                text: this.lp.attendanceSummary
-                //subtext: '纯属虚构'
-            },
+            // title: {
+            //     text: this.lp.attendanceSummary
+            //     //subtext: '纯属虚构'
+            // },
             tooltip: {
                 trigger: 'item',
                 formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -463,10 +463,10 @@ MWF.xApplication.Attendance.Echarts = new Class({
 
         var data = this.getUnitBarData();
         var option = {
-            title: {
-                text: this.lp.attendanceTrend
-                //subtext: '纯属虚构'
-            },
+            // title: {
+            //     text: this.lp.attendanceTrend
+            //     //subtext: '纯属虚构'
+            // },
             tooltip : {
                 trigger: 'axis',
                 axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -600,19 +600,44 @@ MWF.xApplication.Attendance.MonthSelector = new Class({
             td.set("text", ""+m);
 
             td.setStyle("background-color", "#FFF");
+            td.setStyle("color", "#333");
+
             if ((this.year == thisY) && (idx == thisM)){
-                td.setStyle("background-color", "#EEE");
+                td.setStyle("background-color", "#F7F7F7");
+                td.setStyle("color", "#333");
+                td.store("current", true);
+                this.currentTd = td;
             }
             if ((this.year == todayY) && (idx == todayM)){
-                td.setStyle("background-color", "#CCC");
+                td.setStyle("color", "#4A90E2");
+                td.store("today", true);
             }
 
             td.addEvents({
-                "mouseover": function(){this.setStyles(_self.css.calendarMonthSelectTdNode_over);},
-                "mouseout": function(){this.setStyles(_self.css.calendarMonthSelectTdNode);},
-                "mousedown": function(){this.setStyles(_self.css.calendarMonthSelectTdNode_down);},
-                "mouseup": function(){this.setStyles(_self.css.calendarMonthSelectTdNode_over);},
+                "mouseover": function(){
+                    if( !this.retrieve("current") && !this.retrieve("today") ){
+                        this.setStyles(_self.css.calendarMonthSelectTdNode_over);
+                    }
+                },
+                "mouseout": function(){
+                    if( !this.retrieve("current") && !this.retrieve("today") ){
+                        this.setStyles(_self.css.calendarMonthSelectTdNode);
+                    }
+                 },
+                "mousedown": function(){
+                    if( !this.retrieve("current") && !this.retrieve("today") ){
+                        this.setStyles(_self.css.calendarMonthSelectTdNode_down);
+                    }
+                },
+                "mouseup": function(){
+                    if( !this.retrieve("current") && !this.retrieve("today") ){
+                        this.setStyles(_self.css.calendarMonthSelectTdNode_over);
+                    }
+                 },
                 "click": function(){
+                    if(_self.currentTd)_self.currentTd.eliminate("current");
+                    _self.currentTd = this;
+                    _self.currentTd.store("current", true);
                     _self.selectedMonth(this);
                 }
             });

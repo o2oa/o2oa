@@ -85,7 +85,6 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             "text" : text
         }).inject(this.titleRightNode);
         this.titleTextNode.setStyles( {
-            "margin-left": "30px",
             "cursor" : "default"
         } );
         //this.titleRightArrowNode = new Element("div",{
@@ -93,13 +92,12 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         //}).inject(this.titleRightNode);
 
         var cycleText = this.app.lp.cyclText.
-            replace("{start}",this.cycleStartDate.format(this.app.lp.dateFormatMonthDayLocal)).
-            replace("{end}",this.cycleEndDate.format(this.app.lp.dateFormatMonthDayLocal));
+        replace("{start}",this.cycleStartDate.format(this.app.lp.dateFormatMonthDayLocal)).
+        replace("{end}",this.cycleEndDate.format(this.app.lp.dateFormatMonthDayLocal));
         this.titleCycleTextNode = new Element("div",{
             "styles" : this.css.titleCycleTextNode,
             "text" : cycleText
         }).inject(this.titleRightNode);
-
 
         this.titleScheduleIconNode = new Element("div",{
             "styles" : this.css.titleScheduleIconNode,
@@ -451,14 +449,13 @@ MWF.xApplication.Attendance.MyIndex = new Class({
     },
     loadCalendarContent : function(){
 
-        //this.calendarTitle = new Element("div.calendarTitle",{
-        //    "styles" : this.css.calendarTitle,
-        //    "text" : this.lp.index.attendanceCalendar
-        //}).inject(this.calendarArea)
+        // this.calendarTitle = new Element("div.calendarTitle",{
+        //    "styles" : this.css.calendarTitle
+        // }).inject(this.calendarArea)
 
         this.canlendarToolbar = new Element("div.canlendarToolbar",{
             "styles" : this.css.canlendarToolbar
-        }).inject(this.titleNode);
+        }).inject(this.calendarArea);
 
         this.canlendarToolbarText = new Element("div",{
             "styles" : this.css.canlendarToolbarText,
@@ -468,18 +465,22 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         this.calendarDate = this.date.clone();
         if( this.isCrossMonth ){
 
+            this.calendarMonthNode = new Element("div",{
+                "styles" : this.css.calendarMonthNode
+            }).inject(this.canlendarToolbar);
+
             this.calendarRightArrowNode = new Element("div",{
                 "styles" : this.css.calendarRightArrowNode
-            }).inject(this.canlendarToolbar);
+            }).inject(this.calendarMonthNode);
 
             this.calendarCurrentMonthNode = new Element("div",{
                 "styles" : this.css.calendarCurrentMonthNode,
                 "text" : (this.calendarDate.getMonth()+1)+this.app.lp.month
-            }).inject(this.canlendarToolbar);
+            }).inject(this.calendarMonthNode);
 
             this.calendarLeftArrowNode = new Element("div",{
                 "styles" : this.css.calendarLeftArrowNode
-            }).inject(this.canlendarToolbar);
+            }).inject(this.calendarMonthNode);
 
             this.calendarLeftArrowNode.addEvents({
                 //"mouseover": function(){this.calendarLeftArrowNode.setStyles(this.css.calendarLeftArrowNode_over);}.bind(this),
@@ -688,7 +689,8 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         for(var status in this.statusColor){
 
             var tr = new Element("tr",{
-                "styles" : this.css.statusColorTr
+                "styles" : this.css.statusColorTr,
+                "title": this.lp[status]
             }).inject(this.statusColorTable);
 
             var td = new Element("td").inject(tr);
