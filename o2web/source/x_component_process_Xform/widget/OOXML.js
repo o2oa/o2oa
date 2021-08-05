@@ -1692,6 +1692,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     },
 
     processRunTextDom: function(span, oo_p, runPrs){
+        debugger;
         var node = span.firstChild;
         while (node){
             if (node.nodeType===Node.ELEMENT_NODE){

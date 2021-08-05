@@ -28,11 +28,14 @@ body {
 	-webkit-overflow-scrolling: touch;
 	/*background-color: #F1F1F1;*/
 }
-#appContent *{
+.appContent *{
 	box-sizing: content-box!important;
 }
-#layout_main *{
+.layout_main *{
 	box-sizing: content-box!important;
+}
+.o2_vue *{
+	box-sizing: border-box!important;
 }
 /*
 .table-tr-selected {

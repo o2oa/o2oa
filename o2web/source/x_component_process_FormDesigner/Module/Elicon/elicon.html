@@ -24,6 +24,34 @@
 			</tr>
 		</table>
 
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.size}}:</td>
+				<td class="editTableValue">
+					<select name="iconSize">
+						<option value="16" text{($.iconSize=='16') ? 'selected':''}>16</option>
+						<option value="24" text{($.iconSize=='24') ? 'selected':''}>24</option>
+						<option value="32" text{($.iconSize=='32') ? 'selected':''}>32</option>
+						<option value="40" text{($.iconSize=='40') ? 'selected':''}>40</option>
+						<option value="48" text{($.iconSize=='48') ? 'selected':''}>48</option>
+						<option value="56" text{($.iconSize=='56') ? 'selected':''}>56</option>
+						<option value="64" text{($.iconSize=='64') ? 'selected':''}>64</option>
+						<option value="72" text{($.iconSize=='72') ? 'selected':''}>72</option>
+						<option value="96" text{($.iconSize=='96') ? 'selected':''}>96</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.color}}:</td>
+				<td class="editTableValue">
+					<div class="o2_vue MWFElementColor" name="iconColor"><el-color-picker v-model="iconColor" @change="change" size="mini" style="box-sizing: border-box!important;"></el-color-picker></div>
+				</td>
+			</tr>
+
+
+
+		</table>
+
 		
 		<div class="MWFMaplist" name="elStyles" title="{{$.lp.style}}"></div>
 		<div class="MWFMaplist" name="elProperties" title="{{$.lp.attribute}}"></div>

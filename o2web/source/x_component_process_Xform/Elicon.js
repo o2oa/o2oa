@@ -93,10 +93,15 @@ MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
             }, this);
         }
 
-        if (this.json.elStyles){
+        var styles = {};
+        if (this.json.iconSize) styles["font-size"] = this.json.iconSize+"px";
+        if (this.json.iconColor) styles["color"] = this.json.iconColor;
+        styles = Object.merge(styles, this.json.elStyles);
+
+        if (styles){
             var style = "";
-            Object.keys(this.json.elStyles).forEach(function(k){
-                if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+            Object.keys(styles).forEach(function(k){
+                if (styles[k]) style += k+":"+styles[k]+";";
             }, this);
             html += " style=\""+style+"\"";
         }
