@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.apache.commons.vfs2.util.DelegatingFileSystemOptionsBuilder;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -41,7 +42,6 @@ public class RegistApplicationsEvent implements Event {
 	// private AtomicInteger loop = new AtomicInteger(0);
 
 	public void execute() {
-
 		try {
 			if (BooleanUtils.isTrue(Servers.applicationServerIsStarted())
 					&& (null != Config.resource_node_applications())) {
@@ -114,9 +114,15 @@ public class RegistApplicationsEvent implements Event {
 			if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
 				QuickStartWebApp app = (QuickStartWebApp) handler;
 				if (app.isStarted()) {
-					list.add(gson.fromJson(app.getServletContext()
-							.getAttribute(AbstractContext.SERVLETCONTEXT_ATTRIBUTE_APPLICATION).toString(),
-							Application.class));
+					try {
+						list.add(gson.fromJson(
+								app.getServletContext()
+										.getAttribute(AbstractContext.SERVLETCONTEXT_ATTRIBUTE_APPLICATION).toString(),
+								Application.class));
+					} catch (Exception e) {
+						logger.error(new RunningException("cannot read application attribute contextPath:{}.",
+								app.getContextPath()));
+					}
 				}
 			}
 		}

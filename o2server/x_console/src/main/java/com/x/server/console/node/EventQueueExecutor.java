@@ -42,6 +42,9 @@ public class EventQueueExecutor extends Thread {
 
 		switch (type) {
 
+		case Event.TYPE_REGISTAPPLICATIONLOCAL:
+			return XGsonBuilder.instance().fromJson(jsonElement, RegistApplicationLocalEvent.class);
+
 		case Event.TYPE_REFRESHAPPLICATIONS:
 			return XGsonBuilder.instance().fromJson(jsonElement, RefreshApplicationsEvent.class);
 

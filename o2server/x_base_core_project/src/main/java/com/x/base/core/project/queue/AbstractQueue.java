@@ -29,7 +29,7 @@ public abstract class AbstractQueue<T> {
 	}
 
 	public void start() {
-		new Thread(className) {
+		Thread thread = new Thread(className) {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void run() {
@@ -47,7 +47,9 @@ public abstract class AbstractQueue<T> {
 					}
 				}
 			}
-		}.start();
+		};
+		thread.setDaemon(true);
+		thread.start();
 		logger.info("queue class: {} start.", className);
 	}
 
