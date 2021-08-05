@@ -28,6 +28,8 @@ import java.io.File;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -358,7 +360,10 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 	}
 
 	public void customLog(Request request, StringBuilder sb) {
-		sb.append(" \"").append(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), "")).append("\"");
+		sb.append(" \"")
+				.append(URLEncoder.encode(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), ""),
+						StandardCharsets.UTF_8))
+				.append("\"");
 	}
 
 	/**
