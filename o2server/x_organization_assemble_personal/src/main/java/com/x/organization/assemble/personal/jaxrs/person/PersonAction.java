@@ -63,7 +63,7 @@ public class PersonAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "更新个人的信息,不更新superior和controllerList MockPutToPost", action = ActionEdit.class)
@@ -72,7 +72,7 @@ public class PersonAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void editMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					 JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -81,7 +81,7 @@ public class PersonAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "获取个人头像.", action = ActionGetIcon.class)
@@ -125,8 +125,8 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void setIconMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						@FormDataParam(FILE_FIELD) final byte[] bytes,
-						@JaxrsParameterDescribe("头像文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+			@FormDataParam(FILE_FIELD) final byte[] bytes,
+			@JaxrsParameterDescribe("头像文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionSetIcon.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -172,7 +172,7 @@ public class PersonAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "更新指定个人的密码 MockPutToPost.", action = ActionSetPassword.class)
@@ -180,8 +180,8 @@ public class PersonAction extends StandardJaxrsAction {
 	@Path("password/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void setPasswordMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							JsonElement jsonElement) {
+	public void setPasswordMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<ActionSetPassword.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -190,7 +190,7 @@ public class PersonAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 }

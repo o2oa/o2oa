@@ -87,7 +87,7 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "获取当前人员的被委托日志.", action = ActionListToCurrentPersonPaging.class)
@@ -106,7 +106,7 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "删除委托日志.", action = ActionDelete.class)
@@ -131,9 +131,9 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 	@Path("manager/list/paging/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void managerlistPaging(@Suspended final AsyncResponse asyncResponse,
-											@Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-											@JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+	public void managerlistPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
 		ActionResult<List<ActionManagerListPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -142,7 +142,7 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 }
