@@ -66,7 +66,7 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "更新群组.", action = ActionEdit.class)
@@ -84,7 +84,7 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "删除群组.", action = ActionDelete.class)
@@ -286,7 +286,7 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据名称进行模糊查询.", action = ActionListLike.class)
@@ -304,7 +304,7 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据拼音或者首字母进行模糊查询", action = ActionListLikePinyin.class)
@@ -322,7 +322,7 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "添加群组成员.", action = ActionAddMember.class)
@@ -340,7 +340,7 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "删除群组成员.", action = ActionDeleteMember.class)
@@ -358,7 +358,7 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 }

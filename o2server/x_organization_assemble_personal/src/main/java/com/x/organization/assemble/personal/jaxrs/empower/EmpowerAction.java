@@ -192,7 +192,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "管理员创建授权", action = ActionManagerCreate.class)
@@ -201,7 +201,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void managerCreate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<ActionManagerCreate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -210,7 +210,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "管理员更新授权", action = ActionManagerEdit.class)
@@ -228,7 +228,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "管理员更新授权 MockPutToPost", action = ActionManagerEdit.class)
@@ -236,8 +236,9 @@ public class EmpowerAction extends StandardJaxrsAction {
 	@Path("manager/{id}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void managerEditMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+	public void managerEditMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
 		ActionResult<ActionManagerEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -246,7 +247,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "更新授权", action = ActionEdit.class)
@@ -255,7 +256,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void edit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					 @JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -264,7 +265,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "更新授权 MockPutToPost", action = ActionEdit.class)
@@ -273,7 +274,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void editMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					 @JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -282,7 +283,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "删除授权", action = ActionDelete.class)
@@ -309,7 +310,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -327,7 +328,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void managerDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		ActionResult<ActionManagerDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -344,8 +345,8 @@ public class EmpowerAction extends StandardJaxrsAction {
 	@Path("/manager/{id}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void managerDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							  @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+	public void managerDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		ActionResult<ActionManagerDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -398,9 +399,9 @@ public class EmpowerAction extends StandardJaxrsAction {
 	@Path("manager/list/paging/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void managerlistPaging(@Suspended final AsyncResponse asyncResponse,
-								  @Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-								  @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+	public void managerlistPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
 		ActionResult<List<ActionManagerListPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -409,7 +410,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 }

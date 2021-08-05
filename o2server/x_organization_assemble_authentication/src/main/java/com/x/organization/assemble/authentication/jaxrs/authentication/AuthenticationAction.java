@@ -30,7 +30,6 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.organization.assemble.authentication.wrapin.WrapInAuthentication;
 
 @Path("authentication")
 @JaxrsDescribe("认证")
@@ -87,7 +86,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "用户注销.", action = ActionLogout.class)
@@ -113,7 +112,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void logoutMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   @Context HttpServletResponse response) {
+			@Context HttpServletResponse response) {
 		ActionResult<ActionLogout.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -156,7 +155,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "获取图片验证码.", action = ActionCaptcha.class)
@@ -177,7 +176,6 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-
 
 	@JaxrsMethodDescribe(value = "获取公钥publicKey", action = ActionCaptchaLoginRSAPublicKey.class)
 	@GET
@@ -203,16 +201,16 @@ public class AuthenticationAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void codeLogin(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@Context HttpServletResponse response, WrapInAuthentication wrapIn) {
+			@Context HttpServletResponse response, JsonElement jsonElement) {
 		ActionResult<ActionCodeLogin.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCodeLogin().execute(request, response, effectivePerson, wrapIn);
+			result = new ActionCodeLogin().execute(request, response, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "获取短信验证码.", action = ActionCode.class)
@@ -449,7 +447,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "切换当前用户,需要系统管理员权限 MockPutToPost.", action = ActionSwitchUser.class)
@@ -457,8 +455,8 @@ public class AuthenticationAction extends StandardJaxrsAction {
 	@Path("switchuser/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void switchUserMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						   @Context HttpServletResponse response, JsonElement jsonElement) {
+	public void switchUserMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @Context HttpServletResponse response, JsonElement jsonElement) {
 		ActionResult<ActionSwitchUser.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -467,7 +465,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 }

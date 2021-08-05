@@ -26,6 +26,7 @@ public class ApplicationServer extends ConfigObject {
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final String DEFAULT_REQUESTLOGFORMAT = "";
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
+	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
 
 	public ApplicationServer() {
 		this.enable = true;
@@ -48,6 +49,7 @@ public class ApplicationServer extends ConfigObject {
 		this.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
 		this.requestLogFormat = DEFAULT_REQUESTLOGFORMAT;
 		this.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
+		this.requestLogBodyEnable = DEFAULT_REQUESTLOGBODYENABLE;
 	}
 
 	@FieldDescribe("是否启用")
@@ -88,6 +90,12 @@ public class ApplicationServer extends ConfigObject {
 	private String requestLogFormat;
 	@FieldDescribe("访问日志记录天数,默认7天.")
 	private Integer requestLogRetainDays;
+	@FieldDescribe("访问日志是否记录post或者put的body内容,只对content-type为application/json的请求有效.")
+	private Boolean requestLogBodyEnable;
+
+	public Boolean getRequestLogBodyEnable() {
+		return BooleanUtils.isTrue(this.requestLogBodyEnable);
+	}
 
 	@FieldDescribe("是否启用长连接,默认true.")
 	private Boolean persistentConnectionsEnable;

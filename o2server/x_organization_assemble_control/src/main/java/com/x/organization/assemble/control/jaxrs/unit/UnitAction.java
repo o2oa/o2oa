@@ -65,7 +65,7 @@ public class UnitAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据身份获取递归上级组织中等级为指定登记的组织.", action = ActionGetWithIdentityWithLevel.class)
@@ -120,7 +120,7 @@ public class UnitAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "更新组织.", action = ActionEdit.class)
@@ -138,7 +138,7 @@ public class UnitAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "删除组织.", action = ActionDelete.class)
@@ -173,7 +173,7 @@ public class UnitAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "列示组织,下一页.", action = ActionListNext.class)
@@ -332,7 +332,7 @@ public class UnitAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据名称进行模糊查询.", action = ActionListLike.class)
@@ -350,7 +350,7 @@ public class UnitAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据拼音或者首字母进行模糊查询.", action = ActionListLikePinyin.class)
@@ -368,7 +368,7 @@ public class UnitAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "直接上级组织.", action = ActionGetSupDirect.class)
@@ -425,5 +425,4 @@ public class UnitAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-
 }
