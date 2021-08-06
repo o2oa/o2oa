@@ -227,7 +227,8 @@ public class MergeProcessor extends AbstractMergeProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Merge merge) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, Merge merge, List<Work> works) throws Exception {
+		// nothing
 	}
 
 	@Override
@@ -240,24 +241,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 	}
 
 	@Override
-	protected void arriveCommitted(AeiObjects aeiObjects) throws Exception {
-		Merge merge = (Merge) aeiObjects.getActivity();
-		this.arrivingCommitted(aeiObjects, merge);
-	}
-
-	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
-		Merge merge = (Merge) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, merge);
-	}
-
-	@Override
-	protected void inquireCommitted(AeiObjects aeiObjects) throws Exception {
-		Merge merge = (Merge) aeiObjects.getActivity();
-		this.inquiringCommitted(aeiObjects, merge);
-	}
-
-	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, Merge merge) throws Exception {
+		// nothing
 	}
 }

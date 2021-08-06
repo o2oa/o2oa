@@ -2,7 +2,6 @@ package com.x.processplatform.service.processing.processor.parallel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.script.ScriptContext;
 
@@ -105,7 +104,7 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Parallel parallel) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, Parallel parallel, List<Work> works) throws Exception {
 		// nothing
 	}
 
