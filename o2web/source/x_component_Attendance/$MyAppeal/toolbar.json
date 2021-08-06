@@ -2,7 +2,7 @@
   {
     "title": MWF.xApplication.Attendance.LP.myAppealTitleText,
     "id": "1.1",
-    "action": "createDocument",
+//    "action": "createDocument",
     "icon": "",
     "expand": false,
     "position" : "left",

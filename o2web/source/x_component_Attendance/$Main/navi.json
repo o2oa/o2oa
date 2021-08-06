@@ -1,87 +1,111 @@
 [
   {
-    "title": MWF.xApplication.Attendance.LP.navi.myIndex,
-    "id": "10",
-    "action": "openMyIndex"
-  },
-  {
-    "title": MWF.xApplication.Attendance.LP.navi.myDetail,
-    "id": "11",
-    "action": "openMyDetail"
-  },
-  {
-    "title": MWF.xApplication.Attendance.LP.navi.myAppealDeal,
-    "id": "12",
-    "action": "openMyAppealDeal"
-  },
-  {
-    "title": MWF.xApplication.Attendance.LP.navi.appealDeal,
-    "id": "13",
-    "action": "openAppealDeal"
-  },
-  {
-    "access": "admin_dept",
-    "type": "sep"
-  },
-  {
-    "access": "admin_dept",
-    "title": MWF.xApplication.Attendance.LP.navi.unitIndex,
-    "id": "15",
-    "action": "openUnitIndex"
+
+    "title": "我的考勤",
+    "id": "3",
+    "sub": [
+          {
+            "title": MWF.xApplication.Attendance.LP.navi.myIndex,
+            "id": "10",
+            "action": "openMyIndex"
+          },
+          {
+            "title": MWF.xApplication.Attendance.LP.navi.myDetail,
+            "id": "11",
+            "action": "openMyDetail"
+          },
+          {
+            "title": MWF.xApplication.Attendance.LP.navi.myAppealDeal,
+            "id": "12",
+            "action": "openMyAppealDeal"
+          },
+          {
+            "title": MWF.xApplication.Attendance.LP.navi.appealDeal,
+            "id": "13",
+            "action": "openAppealDeal"
+          }
+      ]
   },
   {
     "access": "admin_dept",
-    "title": MWF.xApplication.Attendance.LP.navi.peopleDetail,
-    "id": "16",
-    "action": "openPeopleDetail"
-  },
-  {
-    "access": "admin_dept",
-    "title": MWF.xApplication.Attendance.LP.navi.unitDetail,
-    "id": "17",
-    "action": "openUnitDetail"
-  },
-  {
-    "access": "admin",
-    "title": MWF.xApplication.Attendance.LP.navi.topUnitDetail,
-    "id": "18",
-    "action": "openTopUnitDetail"
+    "title": "考勤统计",
+    "id": "14",
+    "sub": [
+        {
+          "access": "admin_dept",
+          "title": MWF.xApplication.Attendance.LP.navi.unitIndex,
+          "id": "15",
+          "action": "openUnitIndex"
+        },
+        {
+          "access": "admin_dept",
+          "title": MWF.xApplication.Attendance.LP.navi.peopleDetail,
+          "id": "16",
+          "action": "openPeopleDetail"
+        },
+        {
+          "access": "admin_dept",
+          "title": MWF.xApplication.Attendance.LP.navi.unitDetail,
+          "id": "17",
+          "action": "openUnitDetail"
+        },
+        {
+          "access": "admin",
+          "title": MWF.xApplication.Attendance.LP.navi.topUnitDetail,
+          "id": "18",
+          "action": "openTopUnitDetail"
+        }
+    ]
   },
   {
     "access": "dingding",
-    "title":  MWF.xApplication.Attendance.LP.navi.unitDingdingIndex,
-    "id": "151",
-    "action": "openUnitDingdingIndex"
+    "title": "钉钉考勤统计",
+    "id": "14",
+    "sub": [
+      {
+        "access": "dingding",
+        "title":  MWF.xApplication.Attendance.LP.navi.unitDingdingIndex,
+        "id": "151",
+        "action": "openUnitDingdingIndex"
+      },
+      {
+        "access": "dingding",
+        "title": MWF.xApplication.Attendance.LP.navi.dingdingPeopleDetail,
+        "id": "161",
+        "action": "openDingdingPeopleDetail"
+      },
+      {
+        "access": "dingding",
+        "title": MWF.xApplication.Attendance.LP.navi.dingdingUnitDetail,
+        "id": "171",
+        "action": "openDingdingUnitDetail"
+      }
+    ]
   },
   {
     "access": "qywx",
-    "title":  MWF.xApplication.Attendance.LP.navi.unitQywxIndex,
-    "id": "152",
-    "action": "openUnitQywxIndex"
-  },
-  {
-    "access": "dingding",
-    "title": MWF.xApplication.Attendance.LP.navi.dingdingPeopleDetail,
-    "id": "161",
-    "action": "openDingdingPeopleDetail"
-  },
-  {
-    "access": "qywx",
-    "title": MWF.xApplication.Attendance.LP.navi.qywxPeopleDetail,
-    "id": "162",
-    "action": "openQywxPeopleDetail"
-  },
-  {
-    "access": "dingding",
-    "title": MWF.xApplication.Attendance.LP.navi.dingdingUnitDetail,
-    "id": "171",
-    "action": "openDingdingUnitDetail"
-  },
-  {
-    "access": "qywx",
-    "title": MWF.xApplication.Attendance.LP.navi.qywxUnitDetail,
-    "id": "172",
-    "action": "openQywxUnitDetail"
+    "title": "企业微信考勤统计",
+    "id": "14",
+    "sub": [
+      {
+        "access": "qywx",
+        "title":  MWF.xApplication.Attendance.LP.navi.unitQywxIndex,
+        "id": "152",
+        "action": "openUnitQywxIndex"
+      },
+      {
+        "access": "qywx",
+        "title": MWF.xApplication.Attendance.LP.navi.qywxPeopleDetail,
+        "id": "162",
+        "action": "openQywxPeopleDetail"
+      },
+      {
+        "access": "qywx",
+        "title": MWF.xApplication.Attendance.LP.navi.qywxUnitDetail,
+        "id": "172",
+        "action": "openQywxUnitDetail"
+      }
+    ]
   },
   {
     "access": "admin",

@@ -102,17 +102,19 @@
     "sub" : [{
       "title" : MWF.xApplication.Attendance.LP.agree,
       "action" : "agree",
+      "icon": "agree.png",
       "condition" : "function(d){ return d.APPEALABLE&&d.APPEAL_AUDIFLOWTYPE=='BUILTIN';  }",
-      "styles" : "actionAgreeNode",
-      "overStyles" : "actionAgreeNode_over",
-      "downStyles" : "actionAgreeNode_down"
+      "styles" : "documentActionNode",
+      "overStyles" : "documentActionNode_over",
+      "downStyles" : "documentActionNode_down"
     }, {
       "title" : MWF.xApplication.Attendance.LP.disagree,
       "action" : "deny",
+      "icon": "deny.png",
       "condition" : "function(d){ return d.APPEALABLE&&d.APPEAL_AUDIFLOWTYPE=='BUILTIN'; }",
-      "styles" : "actionDenyNode",
-      "overStyles" : "actionDenyNode_over",
-      "downStyles" : "actionDenyNode_down"
+      "styles" : "documentActionNode",
+      "overStyles" : "documentActionNode_over",
+      "downStyles" : "documentActionNode_down"
     }]
   }
 ]
