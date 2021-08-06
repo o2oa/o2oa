@@ -308,6 +308,21 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
                 }else if (dom.hasClass("doc_layout_filetext")){
                     this.processFiletext(dom, oo_body, append);
+                }else if (dom.hasClass("doc_layout_attachment_text")){
+                    this.processFiletext(dom, oo_body, append);
+                }else if (dom.hasClass("doc_layout_editionArea")){
+
+                    var h = dom.getSize().y;
+                    var top = dom.getPosition(dom.getParent(".WordSection1")).y;
+                    var pageH = this.pageHeight/20-this["page-margin-top"]/20-this["page-margin-bottom"]/20;
+                    var tmp = this.pxToPt(top+h)/pageH;
+                    var ps = tmp.toInt();
+                    if (tmp>ps) ps = ps+1;
+                    if ((ps % 2)!=0){
+                        var p = new Element("p", {"styles": {"page-break-after":"always"}}).inject(dom, "top");
+                    }
+                    this.processDom(dom, oo_body, append, divAsP);
+
                 }else if (dom.tagName.toLowerCase() === "p" || ((!!divAsP || !!this.options.divAsP) && dom.tagName.toLowerCase() === "div")){
                     this.processParagraph(dom, oo_body, append);
                     // }else if (dom.tagName.toLowerCase() === "span") {
@@ -368,22 +383,24 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     isEmptyP: function(p){
         var oo_t = p.querySelector("t");
         var oo_drawing = p.querySelector("drawing");
-        return !oo_t && !oo_drawing;
+        var oo_br = p.querySelector("br");
+        return !oo_t && !oo_drawing && !oo_br;
     },
     processParagraphRun: function(node, oo_p, p, oo_body, append, ilvl){
         node = node.firstChild;
         while (node){
             if (node.nodeType===Node.TEXT_NODE){
-                if (node.nodeValue.trim()) this.processRun(node.parentElement || node.parentNode, oo_p, p, node.nodeValue);
+                if (node.nodeValue) this.processRun(node.parentElement || node.parentNode, oo_p, p, node.nodeValue);
             }else if (node.nodeType===Node.ELEMENT_NODE){
                 if (node.tagName.toLowerCase() === "span") {
                     this.processRun(node, oo_p, p);
                 }else if (node.tagName.toLowerCase() === "br") {
-                    this.processRun(node, oo_p, p, "", "br");
+                    if (node.nextSibling) this.processRun(node, oo_p, p, "", "br");
                 }else if (node.tagName.toLowerCase() === "div" || node.tagName.toLowerCase() === "p") {
                     if (!this.isEmptyP(oo_p)){
                         oo_p = this.createParagraphFromDom(node, oo_body, append);
                     }else{
+
                         this.setParagraphAttrFromDom(node, oo_p);
                     }
                     this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
@@ -491,6 +508,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         if (pageBreak && pageBreak.toString().toLowerCase()=="avoid"){
             pPrs.keepNext = {};
         }
+        if (pageBreak && pageBreak.toString().toLowerCase()=="always"){
+            pPrs.pageBreak = {};
+        }
+
         return pPrs;
     },
     setParagraphAttrFromDom: function(dom, oo_p){
@@ -502,10 +523,18 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         }
 
         Object.keys(pPrs).each(function(k){
-            var node = oo_pPr.querySelector(k);
-            if (!node) node = this.createEl(oo_p.ownerDocument, k);
-            this.setAttrs(node, pPrs[k]);
-            oo_pPr.appendChild(node);
+            if (k=="pageBreak") {
+                var oo_r = this.createEl(oo_p.ownerDocument, "r");
+                var oo_br = this.createEl(oo_p.ownerDocument, "br");
+                this.setAttrs(oo_br, {"type": "page"});
+                oo_r.appendChild(oo_br);
+                oo_p.appendChild(oo_r);
+            }else{
+                var node = oo_pPr.querySelector(k);
+                if (!node) node = this.createEl(oo_p.ownerDocument, k);
+                this.setAttrs(node, pPrs[k]);
+                oo_pPr.appendChild(node);
+            }
         }.bind(this));
     },
     createParagraphFromDom: function(dom, oo_body, append){
@@ -1239,9 +1268,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_drawing = this.createEl(oo_doc, "drawing");
 
         var msoStyle = this.getMsoStyle(img);
-
+debugger;
         var position = img.getStyle("position");
-        var p = (position==="absolute" || msoStyle["mso-position-vertical"]==="absolute") ? "anchor" : "inline";
+        var p = (msoStyle["mso-position-vertical"]==="absolute") ? "anchor" : "inline";
 
         var oo_position;
         if (p==="anchor"){
@@ -1597,6 +1626,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var font = null;
         var styles = span.getStyles("font-size", "color", "letter-spacing", "font-weight", "font-family", "line-height");
         var keys = Object.keys(styles);
+        var msoStyle = this.getMsoStyle(span);
 
         for (var i = 0; i<keys.length; i++){
             switch (keys[i]){
@@ -1653,6 +1683,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 //nothing
             }
         }
+        if (msoStyle["mso-letter-spacing"]){
+            rPrs.spacing = {"val": (msoStyle["mso-letter-spacing"].toFloat()*20 || 0)};
+        }
         if (p) this.processRunFont(p, rPrs, font);
         this.processRunFont(span, rPrs, font);
 
@@ -1666,6 +1699,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             runPrs.br = br;
             var oo_run = this.createRun(oo_p.ownerDocument, runPrs);
             if (text){
+                text = text.replace(/[\u200B-\u200D\uFEFF]/g, '');
                 var oo_t = this.createEl(oo_run.ownerDocument,"t");
                 oo_t.appendChild(oo_run.ownerDocument.createTextNode(text));
                 oo_run.appendChild(oo_t);
@@ -1762,6 +1796,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                         var w = v[0].toFloat()*20, h=v[1].toFloat()*20;
                         var oo_pgSz = this.getOrCreateEl(oo_sectPr, "pgSz");
                         this.setAttrs(oo_pgSz, {"w": w, "h": h});
+                        this.pageHeight = h;
+                        this.pageWidth = w;
                         break;
                     case "margin-top":
                     case "margin-right":
@@ -1773,6 +1809,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                         var attrs = {};
                         attrs[p] = v
                         this.setAttrs(oo_pgMar, attrs);
+                        this["page-"+dom_pageRule.style[i]] = v;
                         break;
                     case "line-height":
                     case "letter-spacing":
@@ -1805,7 +1842,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     createParagraph: function(xmlDoc, options){
         var p = this.createEl(xmlDoc,"p");
         var pPr = this.createEl(xmlDoc,"pPr");
-
+        p.appendChild(pPr);
         /*
         * //如：对齐方式描述如下
         * {
@@ -1814,13 +1851,20 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         * */
         if (options && options.pPrs){
             Object.keys(options.pPrs).each(function(k){
-                var node = this.createEl(xmlDoc, k);
-                this.setAttrs(node, options.pPrs[k]);
-                pPr.appendChild(node);
+                if (k=="pageBreak"){
+                    var oo_r = this.createEl(xmlDoc, "r");
+                    var oo_br = this.createEl(xmlDoc, "br");
+                    this.setAttrs(oo_br, {"type": "page"});
+                    oo_r.appendChild(oo_br);
+                    p.appendChild(oo_r);
+                }else{
+                    var node = this.createEl(xmlDoc, k);
+                    this.setAttrs(node, options.pPrs[k]);
+                    pPr.appendChild(node);
+                }
+
             }.bind(this));
         }
-
-        p.appendChild(pPr);
         return p;
     },
     createRun: function(xmlDoc, options){
@@ -1830,6 +1874,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
         if (options && options.text){
             var t = this.createEl(xmlDoc,"t");
+            options.text = options.text.replace(/[\u200B-\u200D\uFEFF]/g, '');
             t.appendChild(xmlDoc.createTextNode(options.text));
             r.appendChild(t);
         }
