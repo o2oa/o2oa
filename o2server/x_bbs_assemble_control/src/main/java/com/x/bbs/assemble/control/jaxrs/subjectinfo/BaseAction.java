@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
@@ -20,18 +20,14 @@ import com.x.bbs.assemble.control.service.BBSSubjectInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSSubjectVoteService;
 import com.x.bbs.assemble.control.service.UserManagerService;
 import com.x.bbs.assemble.control.service.UserPermissionService;
-import com.x.bbs.entity.BBSPermissionInfo;
-import com.x.bbs.entity.BBSSectionInfo;
-import com.x.bbs.entity.BBSSubjectAttachment;
-import com.x.bbs.entity.BBSSubjectInfo;
+import com.x.bbs.entity.*;
 
 import net.sf.ehcache.Ehcache;
 
 public class BaseAction extends StandardJaxrsAction{
 
 	private static  Logger logger = LoggerFactory.getLogger(BaseAction.class);
-	
-	protected Ehcache cache = ApplicationCache.instance().getCache( BBSSubjectInfo.class);
+	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(BBSSubjectInfo.class);
 	
 	protected UserPermissionService UserPermissionService = new UserPermissionService();
 	protected BBSReplyInfoService replyInfoService = new BBSReplyInfoService();
@@ -66,7 +62,6 @@ public class BaseAction extends StandardJaxrsAction{
 	 * 获取用户可访问的所有版块ID列表
 	 * 
 	 * @param request
-	 * @param result
 	 * @param currentPerson
 	 * @return
 	 * @throws Exception 

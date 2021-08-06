@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -14,13 +16,12 @@ import com.x.bbs.assemble.control.jaxrs.configsetting.exception.ExceptionConfigS
 import com.x.bbs.assemble.control.jaxrs.configsetting.exception.ExceptionConfigSettingNotExists;
 import com.x.bbs.entity.BBSConfigSetting;
 
-import net.sf.ehcache.Element;
+import java.util.Optional;
 
 public class ActionGet extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger( ActionGet.class );
-	private String catchNamePrefix = this.getClass().getName();
-	
+
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = null;
@@ -30,18 +31,17 @@ public class ActionGet extends BaseAction {
 			Exception exception = new ExceptionConfigSettingIdEmpty();
 			result.error( exception );
 		}else{
-			String cacheKey = catchNamePrefix + "#id#" + id;
-			Element element = null;
-			element = cache.get( cacheKey );
-			if( element != null ){
-				wrap = (Wo) element.getObjectValue();
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id );
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+			if( optional.isPresent() ){
+				wrap = (Wo) optional.get();
 				result.setData( wrap );
 			}else{
 				try {
 					configSetting = configSettingService.get( id );
 					if( configSetting != null ){
 						wrap = Wo.copier.copy( configSetting );
-						cache.put( new Element( cacheKey, wrap ) );
+						CacheManager.put( cacheCategory, cacheKey, wrap );
 						result.setData(wrap);
 					}else{
 						Exception exception = new ExceptionConfigSettingNotExists( id );

@@ -1,6 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.output;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.cms.core.entity.Document;
