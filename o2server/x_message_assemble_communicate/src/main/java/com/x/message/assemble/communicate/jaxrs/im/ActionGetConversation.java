@@ -16,8 +16,6 @@ import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMConversationExt;
 import com.x.message.core.entity.IMMsg;
 
-import java.util.List;
-
 
 public class ActionGetConversation extends BaseAction {
 

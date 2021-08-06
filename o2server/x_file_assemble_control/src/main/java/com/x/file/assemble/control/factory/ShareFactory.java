@@ -1,17 +1,19 @@
 package com.x.file.assemble.control.factory;
 
-import com.x.file.assemble.control.AbstractFactory;
-import com.x.file.assemble.control.Business;
-import com.x.file.core.entity.personal.Share;
-import com.x.file.core.entity.personal.Share_;
-import org.apache.commons.lang3.StringUtils;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.x.file.assemble.control.AbstractFactory;
+import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.personal.Share;
+import com.x.file.core.entity.personal.Share_;
 
 public class ShareFactory extends AbstractFactory {
 

@@ -3,7 +3,6 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.x.base.core.project.tools.MD5Tool;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +19,7 @@ import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
+import com.x.base.core.project.tools.MD5Tool;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
 

@@ -1,5 +1,19 @@
 package com.x.file.assemble.control.jaxrs.attachment2;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -10,18 +24,6 @@ import com.x.file.core.entity.open.FileConfig;
 import com.x.file.core.entity.open.FileConfigProperties;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Attachment2_;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 abstract class BaseAction extends StandardJaxrsAction {
 

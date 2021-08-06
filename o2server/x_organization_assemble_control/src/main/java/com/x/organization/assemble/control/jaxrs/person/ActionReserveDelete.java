@@ -48,8 +48,8 @@ import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 import com.x.organization.core.entity.Unit_;
 
-class ActionDeleteV2 extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionDeleteV2.class);
+class ActionReserveDelete extends BaseAction {
+	private static Logger logger = LoggerFactory.getLogger(ActionReserveDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

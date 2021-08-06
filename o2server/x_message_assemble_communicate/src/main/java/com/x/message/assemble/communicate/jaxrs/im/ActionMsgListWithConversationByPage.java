@@ -1,5 +1,7 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import java.util.List;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -13,10 +15,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
-import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMMsg;
-
-import java.util.List;
 
 
 public class ActionMsgListWithConversationByPage extends BaseAction {
