@@ -1068,6 +1068,8 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					if (this.form.forms[id])this.form.forms[id] = null;
 
 					var module = this.form._loadModule(json, node, function () {});
+					module.parentLine = this;
+					module.parentDatatemplate = this.template;
 
 					if( json.type==="Attachment" || json.type==="AttachmentDg" ){
 						module.addEvent("change", function(){

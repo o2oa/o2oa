@@ -434,6 +434,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			return tr;
 		},
+		_checkAddAction: function(){
+		},
 		_loadStyles: function(){
 			if (this.json.border) {
 				this.table.setStyles({
@@ -492,6 +494,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.data = v;
 
 				this._loadLineList(function(){
+					this._checkAddAction();
 					this._loadTotal();
 					if(callback)callback();
 				}.bind(this));
@@ -1349,6 +1352,8 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				var hasData = this.data.hasOwnProperty(templateJsonId);
 
 				var module = this.form._loadModule(json, node, function () {});
+				module.parentLine = this;
+				module.parentDatatable = this.datatable;
 
 				if((json.type==="Attachment" || json.type==="AttachmentDg")){
 					module.addEvent("change", function(){
