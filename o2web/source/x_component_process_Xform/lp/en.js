@@ -246,7 +246,8 @@ MWF.xApplication.process.Xform.LP = {
         "copyto":"[抄送]",
         "editionUnit":"[印发机关]",
         "editionDate":"[印发日期]",
-        "historyList": "历史版本文档"
+        "historyList": "历史版本文档",
+        "attachmentInfor": "[Click here to edit the content of attachments]",
     },
     "documentHistory": {
         "diffContent": "<div>{time}</div>{name} modified content at \"{activity}\"",
