@@ -128,7 +128,7 @@ public class DelayProcessor extends AbstractDelayProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Delay delay) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, Delay delay, List<Work> works) throws Exception {
 		// nothing
 	}
 
