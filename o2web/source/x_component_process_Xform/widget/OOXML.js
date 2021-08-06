@@ -475,6 +475,18 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 }
             }
         }
+
+        var line = dom.getStyle("line-height");
+        if (line && line.toFloat()){
+            var line = this.pxToPt(line)*20;
+            if (line) {
+                pPrs.spacing = {
+                    lineRule: "exact",
+                    line: line
+                };
+            }
+        }
+
         var pageBreak = dom.getStyle("page-break-after");
         if (pageBreak && pageBreak.toString().toLowerCase()=="avoid"){
             pPrs.keepNext = {};
