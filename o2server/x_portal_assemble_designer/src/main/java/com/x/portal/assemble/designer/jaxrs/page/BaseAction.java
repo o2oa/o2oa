@@ -2,11 +2,11 @@ package com.x.portal.assemble.designer.jaxrs.page;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Page;
 import com.x.portal.core.entity.Portal;
-import com.x.base.core.project.cache.Cache.CacheCategory;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
