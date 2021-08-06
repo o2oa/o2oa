@@ -475,6 +475,18 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 }
             }
         }
+
+        var line = dom.getStyle("line-height");
+        if (line && line.toFloat()){
+            var line = this.pxToPt(line)*20;
+            if (line) {
+                pPrs.spacing = {
+                    lineRule: "exact",
+                    line: line
+                };
+            }
+        }
+
         var pageBreak = dom.getStyle("page-break-after");
         if (pageBreak && pageBreak.toString().toLowerCase()=="avoid"){
             pPrs.keepNext = {};
@@ -1583,7 +1595,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     processRun: function(span, oo_p, p, text, br){
         var rPrs = {"noProof": {}};
         var font = null;
-        var styles = span.getStyles("font-size", "color", "letter-spacing", "font-weight", "font-family")
+        var styles = span.getStyles("font-size", "color", "letter-spacing", "font-weight", "font-family", "line-height");
         var keys = Object.keys(styles);
 
         for (var i = 0; i<keys.length; i++){
@@ -1617,6 +1629,26 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     }
                     if (fonts.length>1) font.other = this.parseFont(fonts[0]);
                     break;
+                case "line-height":
+                    var h = this.pxToPt(styles["line-height"])*20;
+                    if (oo_p){
+                        var oo_pPrs = oo_p.getElementsByTagNameNS(this.nsResolver("w"), "pPr");
+                        var oo_pPr = (oo_pPrs.length) ? oo_pPrs.item(0) : null;
+                        if (!oo_pPr){
+                            oo_pPr = this.createEl(oo_p.ownerDocument,"pPr");
+                            oo_p.appendChild(oo_pPr);
+                        }
+                        var oo_spacings = oo_pPr.getElementsByTagNameNS(this.nsResolver("w"), "spacing");
+                        var oo_spacing = (oo_spacings.length) ? oo_spacings.item(0) : null;
+                        if (!oo_spacing){
+                            oo_spacing = this.createEl(oo_p.ownerDocument,"spacing");
+                            oo_pPr.appendChild(oo_spacing);
+                        }
+                        var line = oo_spacing.getAttributeNS(this.nsResolver("w"), "line");
+                        if (line<h){
+                            this.setAttrs(oo_spacing, {"lineRule": "exact", "line": h});
+                        }
+                    }
                 default:
                 //nothing
             }
