@@ -502,6 +502,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
          */
         this.layout_subject = this.contentNode.getElement(".doc_layout_subject");
         if (this.layout_subject) this.layout_subject.setStyles(this.css.doc_layout_subject);
+        if (this.json.subjectFontFamily){
+            if (this.layout_subject) this.layout_subject.setStyle("font-family", this.json.subjectFontFamily);
+        }
     },
 
     //主送
@@ -1424,6 +1427,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 // this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
             }
             this.editMode = false;
+            this.form.saveFormData();
         }else{
             this._editFiletext("inline");
             if (this.allowEdit){
