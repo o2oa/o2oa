@@ -11,13 +11,13 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
         "style": "default"
     },
     statusColor : {
-        "normal" : "#9acd32", //绿色，正常
-        "levelAsked":"#4f94cd", //蓝色，请假
-        "late":"#fede03", //黄色，迟到
+        "normal" : "#4A90E2", //绿色，正常
+        "levelAsked":"#2BC497", //蓝色，请假
+        "late":"#F5A623", //黄色，迟到
         //"leaveEarly":"#fe8d03", //橙色，早退
-        "noSign":"#ee807f", //粉红色,未签到
-        "lackOfTime" : "#dec674",//工时不足人次
-        "abNormalDuty" : "#fedcbd"//异常打卡人次
+        "noSign":"#FF8080", //粉红色,未签到
+        "lackOfTime" : "#AC71E3",//工时不足人次
+        "abNormalDuty" : "#8B572A"//异常打卡人次
     },
     initialize: function(node, app, actions, options){
         this.setOptions(options);
@@ -57,6 +57,7 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
         this.titleNode = new Element("div.titleNode",{
             "styles" : this.css.titleNode
         }).inject(this.node);
+
         this.titleLeftArrowNode = new Element("div",{
             "styles" : this.css.titleLeftArrowNode
         }).inject(this.titleNode);
@@ -89,6 +90,10 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
             "mouseup": function(){this.titleTextNode.setStyles(this.css.titleTextNode_over);}.bind(this),
             "click": function(){this.changeMonthSelect();}.bind(this)
         });
+
+        this.titleUnitArea = new Element("div.titleUnitArea",{
+            "style" : "float:left"
+        }).inject(this.titleNode);
 
         this.loadUnitNode();
     },
@@ -125,9 +130,10 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
         this.reloadContent();
     },
     loadUnitNode: function(){
-        this.listUnitWithPerson( function( unit ){
-            this.unit = unit;
-            this.units = [];
+        debugger;
+        this.listUnitWithPerson( function( unitList ){
+            this.unit = unitList[0] || "";
+            this.units = unitList;
             var flag = true;
             if( this.app.isTopUnitManager() ){
                 var data = {"unitList": this.app.getNameFlag( this.app.manageTopUnits )};
@@ -139,17 +145,18 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
             }else if( this.app.isUnitManager() ){
                 this.units = this.app.manageUnits;
             }
+            this.units = this.units.unique();
             this.unit = this.units[0] || this.unit;
             if( this.units.length > 1 ){ //(this.units.length==1 && this.units[0]!=this.unit )
                 this.titleUnitAreaNode = new Element("div.titleUnitAreaNode",{
                     "styles" : this.css.titleUnitAreaNode
-                }).inject(this.titleNode)
+                }).inject(this.titleUnitArea)
 
                 this.titleUnitActionNode = new Element("div",{
                     "styles" : this.css.titleUnitActionNode
                 }).inject(this.titleUnitAreaNode)
 
-                this.titleUnitActionTextNode = new Element("div",{
+                this.titleUnitActionTextNode = new Element("div.titleUnitActionTextNode",{
                     "styles" : this.css.titleUnitActionTextNode,
                     "text" : this.unit.split("@")[0]
                 }).inject(this.titleUnitActionNode);
@@ -176,18 +183,23 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
                 this.titleUnitNode = new Element("div",{
                     "styles" : this.css.titleUnitNode,
                     "text" : this.unit.split("@")[0]
-                }).inject(this.titleNode);
+                }).inject(this.titleUnitArea);
             }
         }.bind(this) )
     },
     listUnitWithPerson : function( callback ){
         var data = {"personList": this.app.getNameFlag(this.userName)};
         this.app.orgActions.listUnitWithPerson( function( json ){
-            if( json.data.length > 0 ){
-                if(callback)callback( json.data[0].distinguishedName );
-            }else{
-                if(callback)callback();
-            }
+            var unitList = [];
+            json.data.each(function(d){
+                unitList.push( d.distinguishedName );
+            });
+            if(callback)callback(unitList);
+            // if( json.data.length > 0 ){
+            //     if(callback)callback( json.data[0].distinguishedName );
+            // }else{
+            //     if(callback)callback([]);
+            // }
         }.bind(this), null, data , false )
     },
     switchUnit : function( el ){
@@ -239,7 +251,7 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
     reloadContent : function(){
         this.pieChartArea.empty();
         this.barChartArea.empty();
-        this.lineChartArea.empty();
+        // this.lineChartArea.empty();
         this.loadData(function(){
             this.loadStatusColorNode();
             this.loadPieChart();
@@ -255,13 +267,13 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
             this.loadBarChart();
         }.bind(this))
         this.loadDetail();
-        this.setNodeScroll();
+        // this.setNodeScroll();
         this.setContentSize();
     },
     reloadChart : function(){
         this.pieChartArea.empty();
         this.barChartArea.empty();
-        this.lineChartArea.empty();
+        // this.lineChartArea.empty();
         this.loadPieChart();
         this.loadBarChart();
     },
@@ -280,34 +292,59 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
 
         this.topContentArea = new Element("div.topContentArea",{
             "styles" : this.css.topContentArea
-        }).inject(this.elementContentListNode)
+        }).inject(this.elementContentListNode);
 
+        this.topLeftArea = new Element("div.topLeftArea",{
+            "styles" : this.css.topLeftArea
+        }).inject(this.topContentArea);
 
-        this.pieChartArea = new Element("div.pieChartArea",{
-            "styles" : this.css.pieChartArea
-        }).inject(this.topContentArea)
+        this.topLeftTitleNode = new Element("div.topLeftTitleNode",{
+            "styles" : this.css.topLeftTitleNode,
+            "text": this.lp.attendanceSummary
+        }).inject(this.topLeftArea);
+
+        this.topLeftContentNode = new Element("div.topLeftContentNode",{
+            "styles" : this.css.topLeftContentNode
+        }).inject(this.topLeftArea);
 
         this.statusColorArea = new Element("div.statusColorArea",{
             "styles" : this.css.statusColorArea
-        }).inject(this.topContentArea)
+        }).inject(this.topLeftContentNode)
+
+        this.pieChartArea = new Element("div.pieChartArea",{
+            "styles" : this.css.pieChartArea
+        }).inject(this.topLeftContentNode)
+
+        this.topRightArea = new Element("div.topRightArea",{
+            "styles" : this.css.topRightArea
+        }).inject(this.topContentArea);
+
+        this.topRightTitleNode = new Element("div.topRightTitleNode",{
+            "styles" : this.css.topRightTitleNode,
+            "text": this.lp.attendanceTrend
+        }).inject(this.topRightArea);
+
+        this.topRightContentNode = new Element("div.topRightContentNode",{
+            "styles" : this.css.topRightContentNode
+        }).inject(this.topRightArea);
 
         this.barChartArea = new Element("div.barChartArea",{
             "styles" : this.css.barChartArea
-        }).inject(this.topContentArea)
+        }).inject(this.topRightContentNode)
 
-        this.middleContentArea = new Element("div.middleContentArea",{
-            "styles" : this.css.middleContentArea
-        }).inject(this.elementContentListNode)
+        // this.middleContentArea = new Element("div.middleContentArea",{
+        //     "styles" : this.css.middleContentArea
+        // }).inject(this.elementContentListNode)
+        //
+        // this.lineChartArea = new Element("div.lineChartArea",{
+        //     "styles" : this.css.lineChartArea
+        // }).inject(this.middleContentArea)
 
-        this.lineChartArea = new Element("div.lineChartArea",{
-            "styles" : this.css.lineChartArea
-        }).inject(this.middleContentArea)
-
-        this.bottomContentArea = new Element("div.middleContentArea",{
+        this.bottomContentArea = new Element("div.bottomContentArea",{
             "styles" : this.css.bottomContentArea
         }).inject(this.elementContentListNode)
 
-        this.detailArea = new Element("div.lineChartArea",{
+        this.detailArea = new Element("div.detailArea",{
             "styles" : this.css.detailArea
         }).inject(this.bottomContentArea)
 
@@ -362,20 +399,50 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
         for(var status in this.statusColor){
 
             var tr = new Element("tr",{
-                "styles" : this.css.statusColorTr
+                "styles" : this.css.statusColorTr,
+                "title": this.lp[status]
             }).inject(this.statusColorTable)
-            var td = new Element("td",{
-                "styles" : this.css.statusColorTd
-            }).inject(tr)
-            td.setStyle("background-color",this.statusColor[status]);
 
-            var tr = new Element("tr",{
-                "styles" : this.css.statusTextTr
-            }).inject(this.statusColorTable)
-            var td = new Element("td",{
-                "styles" : this.css.statusTextTd,
-                "text" : this.lp[status] +":"+totalData[status]+ " " +this.lp.day +"("+rateData[status]+")"
-            }).inject(tr)
+            var td = new Element("td").inject(tr);
+            new Element("div",{
+                "styles" : {
+                    "margin-top": "8px",
+                    "width": "14px",
+                    "height": "14px",
+                    "border-radius": "14px",
+                    "background-color": this.statusColor[status]
+                }
+            }).inject(td);
+
+            var td = new Element("td").inject(tr);
+            new Element("div",{
+                "styles" : {
+                    "margin-top": "8px",
+                    "min-width": "30px",
+                    "padding-left": "4px",
+                    "font-size": "14px",
+                    "color": "#666"
+                },
+                "text": this.lp.statusText[status]
+            }).inject(td);
+
+            var td = new Element("td").inject(tr);
+            new Element("div",{
+                "styles" : {
+                    "margin-top": "8px",
+                    "min-width": "60px",
+                    "padding-left": "4px",
+                    "font-size": "12px",
+                    "color": "#999"
+                },
+                "text": "("+ totalData[status] + ""+ this.app.lp.day+")"
+            }).inject(td);
+
+
+            //var td = new Element("td",{
+            //    "styles" : this.css.statusTextTd,
+            //    "text" : this.lp[status] +":"+totalData[status]+ " " +this.lp.day +"("+rateData[status]+")"
+            //}).inject(tr)
         }
     },
     loadPieChart : function(){
@@ -506,14 +573,14 @@ MWF.xApplication.Attendance.UnitIndex = new Class({
         this.elementContentNode.setStyle("height", ""+height+"px");
 
     },
-    setNodeScroll: function(){
-        var _self = this;
-        MWF.require("MWF.widget.ScrollBar", function(){
-            new MWF.widget.ScrollBar(this.elementContentNode, {
-                "indent": false,"style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
-                "onScroll": function(y){
-                }
-            });
-        }.bind(this));
-    }
+    // setNodeScroll: function(){
+    //     var _self = this;
+    //     MWF.require("MWF.widget.ScrollBar", function(){
+    //         new MWF.widget.ScrollBar(this.elementContentNode, {
+    //             "indent": false,"style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
+    //             "onScroll": function(y){
+    //             }
+    //         });
+    //     }.bind(this));
+    // }
 });

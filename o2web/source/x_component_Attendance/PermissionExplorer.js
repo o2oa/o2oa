@@ -69,7 +69,7 @@ MWF.xApplication.Attendance.PermissionExplorer.Permission = new Class({
         "height": 400,
         "hasTop" : true,
         "hasBottom" : true,
-        "title" : "",
+        "title" : MWF.xApplication.Attendance.LP.permission.setAttendancer,
         "draggable" : true,
         "closeAction" : true
     },
@@ -77,7 +77,6 @@ MWF.xApplication.Attendance.PermissionExplorer.Permission = new Class({
         var lp = this.app.lp.permission;
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='2' styles='formTableHead'>"+lp.setAttendancer+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='adminLevel'></td>"+
             "    <td styles='formTableValue' item='adminLevel'></td></tr>" +
             "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
@@ -89,6 +88,7 @@ MWF.xApplication.Attendance.PermissionExplorer.Permission = new Class({
 
         MWF.xDesktop.requireApp("Template", "MForm", function(){
             this.form = new MForm( this.formTableArea, this.data, {
+                style: "attendance",
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
                     adminLevel : { text: lp.role,  type : "select",
