@@ -1,18 +1,20 @@
 package com.x.file.assemble.control.factory;
 
-import com.x.file.assemble.control.AbstractFactory;
-import com.x.file.assemble.control.Business;
-import com.x.file.core.entity.open.FileStatus;
-import com.x.file.core.entity.personal.Attachment2;
-import com.x.file.core.entity.personal.Attachment2_;
-import org.apache.commons.lang3.StringUtils;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.x.file.assemble.control.AbstractFactory;
+import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.open.FileStatus;
+import com.x.file.core.entity.personal.Attachment2;
+import com.x.file.core.entity.personal.Attachment2_;
 
 public class Attachment2Factory extends AbstractFactory {
 

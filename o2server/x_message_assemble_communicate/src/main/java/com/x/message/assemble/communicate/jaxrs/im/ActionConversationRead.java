@@ -1,5 +1,7 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import java.util.Date;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -10,8 +12,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversationExt;
-
-import java.util.Date;
 
 public class ActionConversationRead extends BaseAction  {
 

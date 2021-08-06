@@ -1,19 +1,14 @@
 package com.x.file.assemble.control.jaxrs.recycle;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.organization.Unit;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Share;
-import com.x.file.core.entity.personal.Share_;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.List;
 
 abstract class BaseAction extends StandardJaxrsAction {
 

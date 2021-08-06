@@ -1,5 +1,7 @@
 package com.x.message.assemble.communicate.jaxrs.message;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -17,8 +19,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.message.assemble.communicate.ThisApplication;
-
-import org.apache.commons.lang3.StringUtils;
 
 class ActionCustomCreate extends BaseAction {
 

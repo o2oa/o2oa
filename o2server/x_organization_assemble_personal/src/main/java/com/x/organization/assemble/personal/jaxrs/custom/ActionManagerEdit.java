@@ -1,5 +1,7 @@
 package com.x.organization.assemble.personal.jaxrs.custom;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -11,7 +13,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Custom;
 import com.x.organization.core.entity.Person;
-import org.apache.commons.lang3.StringUtils;
 
 class ActionManagerEdit extends BaseAction {
 

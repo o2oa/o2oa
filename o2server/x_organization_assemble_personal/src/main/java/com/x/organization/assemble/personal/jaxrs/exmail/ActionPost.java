@@ -1,14 +1,6 @@
 package com.x.organization.assemble.personal.jaxrs.exmail;
 
-import java.io.StringReader;
-import java.util.Objects;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.commons.lang3.BooleanUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;

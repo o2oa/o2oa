@@ -3,15 +3,12 @@ package com.x.program.center.jaxrs.config;
 import java.util.List;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.program.center.ThisApplication;
-
-import net.sf.ehcache.Ehcache;
 
 class BaseAction extends StandardJaxrsAction {
 	public static class AbstractWoProxy extends GsonPropertyObject {
@@ -157,8 +154,6 @@ class BaseAction extends StandardJaxrsAction {
 			});
 		});
 	}
-
-	public static Ehcache cacheLog = ApplicationCache.instance().getCache(CacheLogObject.class);
 
 	public static class CacheLogObject extends GsonPropertyObject {
 		private String userToken;

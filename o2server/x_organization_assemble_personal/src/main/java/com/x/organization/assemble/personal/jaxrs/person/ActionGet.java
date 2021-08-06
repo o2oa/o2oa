@@ -1,7 +1,7 @@
 package com.x.organization.assemble.personal.jaxrs.person;
 
-import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -9,10 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.exception.ExceptionPersonNotExist;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.LanguageTools;
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,9 +18,14 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Group;
@@ -39,9 +40,6 @@ import com.x.organization.core.entity.Role_;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
-import java.util.Optional;
 
 class ActionGet extends BaseAction {
 
