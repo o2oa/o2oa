@@ -1,7 +1,6 @@
 package com.x.cms.assemble.control;
 
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.cache.CacheManager;
 
 /**
