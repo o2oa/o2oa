@@ -1,5 +1,8 @@
 package com.x.file.assemble.control.jaxrs.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,9 +19,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.open.FileConfig;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActionSaveSystemConfig extends BaseAction {
 

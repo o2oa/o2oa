@@ -108,17 +108,18 @@ public class PersonAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "删除个人关联信息（身份、角色等），但保留人员（企业离退休人员需要能登录平台但不能做业务处理）.", action = ActionDeleteV2.class)
+	@JaxrsMethodDescribe(value = "删除个人关联信息（身份、角色等），但保留人员（企业离退休人员需要能登录平台但不能做业务处理）.", action = ActionReserveDelete.class)
 	@DELETE
-	@Path("{flag}/v2")
+	// @Path("flag}/v2")
+	@Path("flag}/reserve")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteV2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void ReserveDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
-		ActionResult<ActionDeleteV2.Wo> result = new ActionResult<>();
+		ActionResult<ActionReserveDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteV2().execute(effectivePerson, flag);
+			result = new ActionReserveDelete().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

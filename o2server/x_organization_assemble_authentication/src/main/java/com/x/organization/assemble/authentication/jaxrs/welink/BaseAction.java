@@ -1,14 +1,16 @@
 package com.x.organization.assemble.authentication.jaxrs.welink;
 
+import java.io.InputStream;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+
+import org.apache.commons.io.IOUtils;
+
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
-import org.apache.commons.io.IOUtils;
-
-import javax.net.ssl.HttpsURLConnection;
-import java.io.InputStream;
-import java.net.URL;
 
 abstract class BaseAction extends StandardJaxrsAction {
 

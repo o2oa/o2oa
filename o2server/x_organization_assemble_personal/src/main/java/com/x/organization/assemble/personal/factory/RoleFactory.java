@@ -3,6 +3,7 @@ package com.x.organization.assemble.personal.factory;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -14,14 +15,13 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.organization.assemble.personal.AbstractFactory;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Role_;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
-import java.util.Optional;
 
 
 public class RoleFactory extends AbstractFactory {

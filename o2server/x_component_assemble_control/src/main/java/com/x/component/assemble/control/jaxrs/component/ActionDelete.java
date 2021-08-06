@@ -1,9 +1,11 @@
 package com.x.component.assemble.control.jaxrs.component;
 
+import org.apache.commons.codec.binary.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -11,8 +13,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.component.assemble.control.Business;
 import com.x.component.core.entity.Component;
-
-import org.apache.commons.codec.binary.StringUtils;
 
 class ActionDelete extends ActionBase {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
@@ -36,7 +36,7 @@ class ActionDelete extends ActionBase {
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);
-			ApplicationCache.notify(Component.class);
+			CacheManager.notify(Component.class);
 			return result;
 		}
 	}
