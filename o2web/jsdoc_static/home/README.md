@@ -4,9 +4,9 @@
 
 * O2OA 是一个高度可定制化的企业级办公平台，您可以通过脚本语言扩展平台功能。
 
-* O2OA 前端脚本是运行在浏览器和移动端h5页面上的，基于您使用浏览器的Javascript引擎，使用Javascript语法。
+* O2OA 前端脚本运行在浏览器和移动端h5页面，基于您使用浏览器的Javascript引擎，使用Javascript语法。
 
-* O2OA 后端脚本运行在服务器上，基于JDK8标准的Nashorn，遵循ECMAScript 5.1规范。除本API的modules.server章节外，后端脚本还支持该文章的特性：[https://www.yuque.com/o2oa/course/vu3ll8](https://www.yuque.com/o2oa/course/vu3ll8)。
+* O2OA 后端脚本运行在服务器上，基于JDK8标准的Nashorn，遵循ECMAScript 5.1规范。除本API的modules.server章节外，后端脚本还支持该文章所描述的特性：[https://www.yuque.com/o2oa/course/vu3ll8](https://www.yuque.com/o2oa/course/vu3ll8)。
 
 * 本API是O2OA脚本的编写说明，您可以通过脚本访问和操作平台内的各种对象。
 
@@ -54,7 +54,7 @@
 </table>
 
 #### mobile
-   * 移动端H5页面除了可以使用Modules.web章节描述的API，还可以使用下列API：
+   * 移动端H5页面除了可以使用Modules.web章节以及Class章节描述的API，还可以使用下列API：
   <table>
       <tr>
           <td><a href="module-o2m.html">平台移动APP API - o2m</a></td>
@@ -358,7 +358,7 @@
 
 ## 使用范围
 
-O2OA 可在多个位置嵌入脚本代码，用于扩展平台和实现自定义功能。嵌入脚本代码分为前端执行代码和服务端执行代码，两者语法一致。
+O2OA 可在多个位置嵌入脚本代码，用于扩展平台和实现自定义功能。嵌入脚本代码分为前端执行代码和服务端执行代码。
  
  * 前端脚本使用范围：
  <table>
