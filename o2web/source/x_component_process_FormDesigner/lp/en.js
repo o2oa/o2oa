@@ -808,6 +808,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "editSubjectInfo": "When the title allows editing, please do not bind value",
         "mainSend": "Main Send",
         "attachment": "Attachment",
+        "attachmentText": "Attachment Text",
+        "attachmentInfor": "[Click here to edit the content of attachments]",
         "issuanceUnit": "Issuance Unit",
         "issuanceDate": "Issuance Date",
         "annotation": "Annotation",
