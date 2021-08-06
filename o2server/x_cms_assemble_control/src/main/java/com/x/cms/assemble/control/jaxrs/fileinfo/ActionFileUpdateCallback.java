@@ -12,7 +12,6 @@ import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import com.x.base.core.project.annotation.AuditLog;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;

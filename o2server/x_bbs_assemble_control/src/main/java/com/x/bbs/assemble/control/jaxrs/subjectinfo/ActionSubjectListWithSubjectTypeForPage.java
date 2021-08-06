@@ -5,6 +5,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -26,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 	
@@ -62,18 +65,16 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 		}
 		
 		if( check ) {
-			String cacheKey = wrapIn.getCacheKey( effectivePerson, isBBSManager );
-			cacheKey += "#" + page + "#" + count + "#ActionSubjectListWithSubjectTypeForPage";
-			Element element = cache.get( cacheKey );
-			
-			if ((null != element) && (null != element.getObjectValue())) {
-				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) element.getObjectValue();
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(),isBBSManager,page,count);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+			if( optional.isPresent() ){
+				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) optional.get();
 				result.setData( result_cache.getData() );
 				result.setCount( result_cache.getCount() );
 			} else {
 				//继续进行数据查询
 				result = getSubjectQueryResult(wrapIn, request, effectivePerson, page, count);
-				cache.put(new Element(cacheKey, result ));
+				CacheManager.put( cacheCategory, cacheKey, result );
 			}
 		}
 		return result;

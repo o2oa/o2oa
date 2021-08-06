@@ -85,7 +85,7 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 	
 	/**
 	 * 根据文档ID，计算该文档所有的访问次数
-	 * @param docId
+	 * @param id
 	 * @return
 	 */
 	public Long sumWithDocmentId(String id) throws Exception {

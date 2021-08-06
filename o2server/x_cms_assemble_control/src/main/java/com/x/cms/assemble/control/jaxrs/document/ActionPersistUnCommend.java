@@ -1,7 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
 import com.x.base.core.project.annotation.AuditLog;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
