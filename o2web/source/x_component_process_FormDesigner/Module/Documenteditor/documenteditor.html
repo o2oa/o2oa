@@ -629,6 +629,13 @@
 			</div>
 
 			<div id="text{$.pid}subjectValueScriptArea" style="display: text{($.subjectValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="subjectValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
+
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.fontFamily}}:</td>
+					<td class="editTableValue"><input type="text" name="subjectFontFamily" value="text{$.subjectFontFamily}" class="editTableInput"/></td>
+				</tr>
+			</table>
 		</div>
 <!-----------------------------------------------文件标题------------------------------------------------------------------->
 
@@ -731,6 +738,23 @@
 			<div id="text{$.pid}attachmentValueScriptArea" style="display: text{($.attachmentValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="attachmentValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
 		</div>
 <!-----------------------------------------------附件------------------------------------------------------------------->
+
+<!-----------------------------------------------附件内容------------------------------------------------------------------->
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.attachmentText}} (attachment)</div>
+		<div style="display: none">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.allowEdit}}:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" onclick="if (this.checked) $('text{$.pid}attachmentTextEditScriptArea').setStyle('display', 'none');" name="attachmentTextEdit" text{($.attachmentTextEdit=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+						<input class="editTableRadio" onclick="if (this.checked) $('text{$.pid}attachmentTextEditScriptArea').setStyle('display', 'none');" name="attachmentTextEdit" text{($.attachmentTextEdit!='y' && $.attachmentTextEdit!='s')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+						<input class="editTableRadio" onclick="if (this.checked) $('text{$.pid}attachmentTextEditScriptArea').setStyle('display', 'block');" name="attachmentTextEdit" text{($.attachmentTextEdit=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}
+					</td>
+				</tr>
+			</table>
+			<div id="text{$.pid}attachmentTextEditScriptArea" style="display: text{($.attachmentTextEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="attachmentTextEditScript" title="{{$.lp.editScript}} (S)"></div>
+		</div>
+		<!-----------------------------------------------附件内容------------------------------------------------------------------->
 
 <!-----------------------------------------------成文单位------------------------------------------------------------------->
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">{{$.lp.issuanceUnit}} (issuanceUnit)</div>
