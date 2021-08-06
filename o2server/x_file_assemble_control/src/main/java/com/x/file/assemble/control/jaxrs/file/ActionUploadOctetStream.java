@@ -5,12 +5,9 @@ import java.io.ByteArrayInputStream;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 import org.imgscalr.Scalr.Mode;
@@ -18,12 +15,11 @@ import org.imgscalr.Scalr.Mode;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.tools.DefaultCharset;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.File;
 import com.x.file.core.entity.open.ReferenceType;
@@ -65,7 +61,7 @@ class ActionUploadOctetStream extends BaseAction {
 			emc.beginTransaction(File.class);
 			emc.persist(file);
 			emc.commit();
-			ApplicationCache.notify(File.class);
+			CacheManager.notify(File.class);
 			Wo wo = new Wo();
 			wo.setId(file.getId());
 			result.setData(wo);

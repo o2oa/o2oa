@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.BooleanUtils;
 
-import com.x.base.core.project.cache.ApplicationCache.ClearCacheRequest;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 

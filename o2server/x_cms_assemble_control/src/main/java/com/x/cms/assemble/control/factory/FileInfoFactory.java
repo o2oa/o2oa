@@ -105,7 +105,7 @@ public class FileInfoFactory extends AbstractFactory {
 	
 	/**
 	 * 列示指定文档的所有附件信息ID列表
-	 * @param doucmentId 指定的文档ID
+	 * @param documentId 指定的文档ID
 	 * @return
 	 * @throws Exception 
 	 */
@@ -125,7 +125,7 @@ public class FileInfoFactory extends AbstractFactory {
 	}
 	/**
 	 * 列示指定文档的所有云文件图片信息ID列表
-	 * @param doucmentId 指定的文档ID
+	 * @param documentId 指定的文档ID
 	 * @return
 	 * @throws Exception 
 	 */

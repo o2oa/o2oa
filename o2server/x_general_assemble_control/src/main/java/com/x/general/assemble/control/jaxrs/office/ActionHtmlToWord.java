@@ -9,13 +9,13 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.StringTools;
-
-import net.sf.ehcache.Element;
 
 class ActionHtmlToWord extends BaseAction {
 
@@ -30,7 +30,8 @@ class ActionHtmlToWord extends BaseAction {
 		resultObject.setPerson(effectivePerson.getDistinguishedName());
 
 		String flag = StringTools.uniqueToken();
-		cache.put(new Element(flag, resultObject));
+		CacheKey cacheKey = new CacheKey(flag);
+		CacheManager.put(cacheCategory, cacheKey, resultObject);
 		Wo wo = new Wo();
 		wo.setId(flag);
 		result.setData(wo);

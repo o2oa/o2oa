@@ -70,7 +70,7 @@ public class CancelProcessor extends AbstractCancelProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Cancel cancel) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, Cancel cancel, List<Work> works) throws Exception {
 		// 删除后再次检查，如果存在多个副本，且都已经在End状态，那么试图推动一个
 		if (!aeiObjects.getWorks().isEmpty()) {
 			Predicate<Work> p = o -> Objects.equals(ActivityType.end, o.getActivityType());

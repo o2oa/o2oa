@@ -18,7 +18,7 @@ import org.imgscalr.Scalr.Mode;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -74,7 +74,7 @@ class ActionUploadCallback extends BaseAction {
 			emc.beginTransaction(File.class);
 			emc.persist(file);
 			emc.commit();
-			ApplicationCache.notify(File.class);
+			CacheManager.notify(File.class);
 			WoObject woObject = new WoObject();
 			woObject.setId(file.getId());
 			Wo<WoObject> wo = new Wo<>(callback, woObject);

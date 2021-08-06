@@ -2,7 +2,7 @@ package com.x.bbs.assemble.control.jaxrs.subjectinfo;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -53,8 +53,8 @@ public class ActionSubjectUnComplete extends BaseAction {
 				Wo wo = new Wo();
 				wo.setId( id );
 				result.setData( wo );
-				
-				ApplicationCache.notify( BBSSubjectInfo.class );
+
+				CacheManager.notify( BBSSubjectInfo.class );
 				
 			} catch (Exception e) {
 				check = false;

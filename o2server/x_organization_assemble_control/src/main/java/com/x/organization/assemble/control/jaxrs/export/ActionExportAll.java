@@ -223,24 +223,22 @@ public class ActionExportAll extends BaseAction {
 		EntityManagerContainer em = business.entityManagerContainer();
 		
 		Row row = null;
-		if (ListTools.isNotEmpty(unitList) ) {
-			// 创建新的表格
-			Sheet sheet = wb.createSheet(sheetName);
-			
-			// 先创建表头
-			row = sheet.createRow(0);
-			row.createCell(0).setCellValue("组织名称 *");
-			row.createCell(1).setCellValue("唯一编码 *");
-			row.createCell(2).setCellValue("组织级别名称 *");
-			row.createCell(3).setCellValue("上级组织编号");
-			row.createCell(4).setCellValue("描述");
-			row.createCell(5).setCellValue("排序号");
-			if(ListTools.isNotEmpty(allUnitAttributeList)){
-				for(int n = 0; n < allUnitAttributeList.size(); n++){
-					row.createCell(5+n+1).setCellValue("("+allUnitAttributeList.get(n)+")");
-				}
+		// 创建新的表格
+		Sheet sheet = wb.createSheet(sheetName);
+		// 先创建表头
+		row = sheet.createRow(0);
+		row.createCell(0).setCellValue("组织名称 *");
+		row.createCell(1).setCellValue("唯一编码 *");
+		row.createCell(2).setCellValue("组织级别名称 *");
+		row.createCell(3).setCellValue("上级组织编号");
+		row.createCell(4).setCellValue("描述");
+		row.createCell(5).setCellValue("排序号");
+		if(ListTools.isNotEmpty(allUnitAttributeList)){
+			for(int n = 0; n < allUnitAttributeList.size(); n++){
+				row.createCell(5+n+1).setCellValue("("+allUnitAttributeList.get(n)+")");
 			}
-
+		}
+		if (ListTools.isNotEmpty(unitList) ) {
 			for (int i = 0; i < unitList.size(); i++) {
 				unit = unitList.get(i);
 				row = sheet.createRow(i + 1);
@@ -288,25 +286,23 @@ public class ActionExportAll extends BaseAction {
 		Person person = null;
 		
 		Row row = null;
-		if (ListTools.isNotEmpty(personList) ) {
-			// 创建新的表格
-			Sheet sheet = wb.createSheet(sheetName);
-			
-			// 先创建表头
-			row = sheet.createRow(0);
-			row.createCell(0).setCellValue("人员姓名 *");
-			row.createCell(1).setCellValue("唯一编码 *");
-			row.createCell(2).setCellValue("手机号码 *");
-			row.createCell(3).setCellValue("人员编号");
-			row.createCell(4).setCellValue("办公电话");
-			row.createCell(5).setCellValue("性别");
-			row.createCell(6).setCellValue("邮件");
-			if(ListTools.isNotEmpty(allPersonAttributeList)){
-				for(int n = 0; n < allPersonAttributeList.size(); n++){
-					row.createCell(6+n+1).setCellValue("("+allPersonAttributeList.get(n)+")");
-				}
+		// 创建新的表格
+		Sheet sheet = wb.createSheet(sheetName);
+		// 先创建表头
+		row = sheet.createRow(0);
+		row.createCell(0).setCellValue("人员姓名 *");
+		row.createCell(1).setCellValue("唯一编码 *");
+		row.createCell(2).setCellValue("手机号码 *");
+		row.createCell(3).setCellValue("人员编号");
+		row.createCell(4).setCellValue("办公电话");
+		row.createCell(5).setCellValue("性别");
+		row.createCell(6).setCellValue("邮件");
+		if(ListTools.isNotEmpty(allPersonAttributeList)){
+			for(int n = 0; n < allPersonAttributeList.size(); n++){
+				row.createCell(6+n+1).setCellValue("("+allPersonAttributeList.get(n)+")");
 			}
-
+		}
+		if (ListTools.isNotEmpty(personList) ) {
 			for (int i = 0; i < personList.size(); i++) {
 				person = personList.get(i);
 				row = sheet.createRow(i + 1);
@@ -339,17 +335,15 @@ public class ActionExportAll extends BaseAction {
 		Identity identity = null;
 		EntityManagerContainer emc = business.entityManagerContainer();
 		Row row = null;
+		// 创建新的表格
+		Sheet sheet = wb.createSheet(sheetName);
+		// 先创建表头
+		row = sheet.createRow(0);
+		row.createCell(0).setCellValue("人员唯一编码 *");
+		row.createCell(1).setCellValue("组织唯一编码 *");
+		row.createCell(2).setCellValue("身份编码");
+		row.createCell(3).setCellValue("主兼职");
 		if (ListTools.isNotEmpty(identityList) ) {
-			// 创建新的表格
-			Sheet sheet = wb.createSheet(sheetName);
-			
-			// 先创建表头
-			row = sheet.createRow(0);
-			row.createCell(0).setCellValue("人员唯一编码 *");
-			row.createCell(1).setCellValue("组织唯一编码 *");
-			row.createCell(2).setCellValue("身份编码");
-			row.createCell(3).setCellValue("主兼职");
-
 			for (int i = 0; i < identityList.size(); i++) {
 				identity = identityList.get(i);
 				row = sheet.createRow(i + 1);
@@ -440,22 +434,21 @@ public class ActionExportAll extends BaseAction {
 	
 	private void composeGroup(Business business, String sheetName, List<Group> groupList) throws Exception {
 		Group group = null;
-		
-		Row row = null;
-		if (ListTools.isNotEmpty(groupList) ) {
-			EntityManagerContainer emc = business.entityManagerContainer();
-			// 创建新的表格
-			Sheet sheet = wb.createSheet(sheetName);
-			int forNumber = 0;
-			// 先创建表头
-			row = sheet.createRow(0);
-			row.createCell(0).setCellValue("群组名称 *");
-			row.createCell(1).setCellValue("群组编码 *");
-			row.createCell(2).setCellValue("人员唯一编码");
-			row.createCell(3).setCellValue("组织唯一编码");
-			row.createCell(4).setCellValue("子群组编码");
-			row.createCell(5).setCellValue("描述");
 
+		Row row = null;
+		EntityManagerContainer emc = business.entityManagerContainer();
+		// 创建新的表格
+		Sheet sheet = wb.createSheet(sheetName);
+		// 先创建表头
+		row = sheet.createRow(0);
+		row.createCell(0).setCellValue("群组名称 *");
+		row.createCell(1).setCellValue("群组编码 *");
+		row.createCell(2).setCellValue("人员唯一编码");
+		row.createCell(3).setCellValue("组织唯一编码");
+		row.createCell(4).setCellValue("子群组编码");
+		row.createCell(5).setCellValue("描述");
+		if (ListTools.isNotEmpty(groupList) ) {
+			int forNumber = 0;
 			for (int i = 0; i < groupList.size(); i++) {
 				group = groupList.get(i);
 				//forNumber = i;

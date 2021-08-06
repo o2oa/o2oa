@@ -1,7 +1,6 @@
 package com.x.processplatform.assemble.designer.jaxrs.form;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -24,7 +23,6 @@ import com.x.processplatform.assemble.designer.ThisApplication;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormField;
-import com.x.processplatform.core.entity.element.FormProperties;
 import com.x.processplatform.core.entity.element.FormVersion;
 
 class ActionEdit extends BaseAction {
@@ -75,7 +73,7 @@ class ActionEdit extends BaseAction {
 			form.getProperties().setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
 			emc.check(form, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(Form.class);
+			CacheManager.notify(Form.class);
 			/* 保存历史版本 */
 			ThisApplication.formVersionQueue.send(new FormVersion(form.getId(), jsonElement));
 			Wo wo = new Wo();

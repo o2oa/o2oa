@@ -75,9 +75,9 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Manual manual = (Manual) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, manual);
+		this.executingCommitted(aeiObjects, manual, works);
 	}
 
 	@Override
@@ -88,11 +88,11 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Manual manual) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Manual manual) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Manual manual, List<Work> works) throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Manual manual) throws Exception;
 
-	private boolean hasManualStayScript(Activity activity) throws Exception {
+	protected boolean hasManualStayScript(Activity activity) throws Exception {
 		return StringUtils.isNotEmpty(activity.get(Manual.manualStayScript_FIELDNAME, String.class))
 				|| StringUtils.isNotEmpty(activity.get(Manual.manualStayScriptText_FIELDNAME, String.class));
 	}

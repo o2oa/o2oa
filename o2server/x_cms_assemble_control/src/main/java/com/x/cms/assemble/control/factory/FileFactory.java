@@ -3,6 +3,7 @@ package com.x.cms.assemble.control.factory;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -11,9 +12,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.File_;
@@ -24,7 +26,7 @@ public class FileFactory extends ElementFactory {
 
 	public FileFactory(Business business) throws Exception {
 		super(business);
-		this.cache = ApplicationCache.instance().getCache(File.class);
+		this.cacheCategory = new Cache.CacheCategory(File.class);
 	}
 	
 	public List<String> listWithApplication(String applicationId) throws Exception {
@@ -50,14 +52,15 @@ public class FileFactory extends ElementFactory {
 	public List<File> pick(List<String> flags) throws Exception {
 		List<File> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = cache.get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((File) element.getObjectValue());
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), str );
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+			if (optional.isPresent()) {
+				if (null != optional.get()) {
+					list.add((File) optional.get());
 				}
 			} else {
 				File o = this.pickObject(str);
-				cache.put(new Element(str, o));
+				CacheManager.put(cacheCategory, cacheKey, o );
 				if (null != o) {
 					list.add(o);
 				}
@@ -71,14 +74,15 @@ public class FileFactory extends ElementFactory {
 			return null;
 		}
 		File o = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (File) element.getObjectValue();
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), flag );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+		if (optional.isPresent()) {
+			if (null != optional.get()) {
+				o = (File) optional.get();
 			}
 		} else {
 			o = this.pickObject(flag);
-			cache.put(new Element(flag, o));
+			CacheManager.put(cacheCategory, cacheKey, o );
 		}
 		return o;
 	}

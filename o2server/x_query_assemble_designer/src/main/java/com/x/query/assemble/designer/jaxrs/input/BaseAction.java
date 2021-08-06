@@ -13,19 +13,13 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.StringTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Query_;
 
-import net.sf.ehcache.Ehcache;
-
 abstract class BaseAction extends StandardJaxrsAction {
-
-	protected Ehcache inputCache = ApplicationCache.instance().getCache(BaseAction.class.getName(), 100,
-			ApplicationCache.MINUTES_20, ApplicationCache.MINUTES_20);
 
 	public enum Method {
 		cover, create, ignore;
@@ -34,13 +28,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected Query getQuery(Business business, String id, String name, String alias) throws Exception {
 		Query o = null;
 		if (StringUtils.isNotEmpty(id)) {
-			o = business.entityManagerContainer().flag(id, Query.class );
+			o = business.entityManagerContainer().flag(id, Query.class);
 		}
 		if (null == o && StringUtils.isNotEmpty(name)) {
-			o = business.entityManagerContainer().flag(name, Query.class );
+			o = business.entityManagerContainer().flag(name, Query.class);
 		}
 		if (null == o && StringUtils.isNotEmpty(alias)) {
-			o = business.entityManagerContainer().flag(alias, Query.class );
+			o = business.entityManagerContainer().flag(alias, Query.class);
 		}
 		return o;
 	}
@@ -95,8 +89,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return list.get(0);
 	}
 
-	protected <T extends JpaObject> String idleNameWithQuery(Business business, String queryId, String name, Class<T> cls,
-														   String excludeId) throws Exception {
+	protected <T extends JpaObject> String idleNameWithQuery(Business business, String queryId, String name,
+			Class<T> cls, String excludeId) throws Exception {
 		if (StringUtils.isEmpty(name)) {
 			return "";
 		}
@@ -124,7 +118,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected <T extends JpaObject> String idleAliasWithQuery(Business business, String queryId, String alias,
-															Class<T> cls, String excludeId) throws Exception {
+			Class<T> cls, String excludeId) throws Exception {
 		if (StringUtils.isEmpty(alias)) {
 			return "";
 		}

@@ -1,17 +1,18 @@
 package com.x.message.assemble.communicate.factory;
 
-import com.x.message.assemble.communicate.AbstractFactory;
-import com.x.message.assemble.communicate.Business;
-import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.Person_;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import com.x.message.assemble.communicate.AbstractFactory;
+import com.x.message.assemble.communicate.Business;
+import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.Person_;
 
 public class MessageFactory extends AbstractFactory {
 

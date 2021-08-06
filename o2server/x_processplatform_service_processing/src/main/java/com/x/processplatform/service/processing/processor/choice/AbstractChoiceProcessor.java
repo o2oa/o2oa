@@ -46,9 +46,9 @@ public abstract class AbstractChoiceProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Choice choice = (Choice) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, choice);
+		this.executingCommitted(aeiObjects, choice, works);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public abstract class AbstractChoiceProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Choice choice) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Choice choice) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Choice choice, List<Work> works) throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Choice choice) throws Exception;
 }

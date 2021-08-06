@@ -1,14 +1,12 @@
 package com.x.general.assemble.control.jaxrs.office;
 
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
-import net.sf.ehcache.Ehcache;
-
 abstract class BaseAction extends StandardJaxrsAction {
 
-	protected static Ehcache cache = ApplicationCache.instance().getCache(BaseAction.class);
+	protected CacheCategory cacheCategory = new CacheCategory(BaseAction.class);
 
 	public static class HtmlToWordResultObject extends GsonPropertyObject {
 

@@ -101,7 +101,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Embed embed) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, Embed embed, List<Work> works) throws Exception {
 	}
 
 	public static class WoWorkId extends WoId {

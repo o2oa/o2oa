@@ -46,9 +46,9 @@ public abstract class AbstractEmbedProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Embed embed = (Embed) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, embed);
+		this.executingCommitted(aeiObjects, embed, works);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public abstract class AbstractEmbedProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Embed embed) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Embed embed) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Embed embed, List<Work> works) throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Embed embed) throws Exception;
 }

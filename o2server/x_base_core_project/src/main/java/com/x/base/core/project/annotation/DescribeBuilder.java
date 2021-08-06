@@ -379,6 +379,9 @@ public class DescribeBuilder {
 							jaxrsField.setFieldTypeName(fieldTypeDescribe.fieldTypeName());
 						}
 						
+						if (Enum.class.isAssignableFrom(o.getType())) {
+							jaxrsField.setFieldType("enum");
+						}
 					}
 				}
 				list.add(jaxrsField);

@@ -1,8 +1,8 @@
 package com.x.organization.assemble.personal.jaxrs.regist;
 
-import com.x.base.core.project.exception.PromptException;
-
 import java.util.Objects;
+
+import com.x.base.core.project.exception.PromptException;
 
 class ExceptionInvalidMail extends PromptException {
 

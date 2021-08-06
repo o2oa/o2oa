@@ -1,5 +1,11 @@
 package com.x.file.assemble.control.jaxrs.share;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -11,10 +17,6 @@ import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Share;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import java.util.List;
 
 class ActionSaveToFolder extends BaseAction {
 

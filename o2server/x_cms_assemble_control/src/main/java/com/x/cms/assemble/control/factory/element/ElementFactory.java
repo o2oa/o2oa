@@ -1,12 +1,12 @@
 package com.x.cms.assemble.control.factory.element;
 
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
+import java.util.Optional;
 
 public abstract class ElementFactory extends AbstractFactory {
 
@@ -16,19 +16,20 @@ public abstract class ElementFactory extends AbstractFactory {
 
 	@SuppressWarnings("unchecked")
 	protected <T extends JpaObject> T pick(String flag, Class<T> clz) throws Exception {
-		Ehcache cache = ApplicationCache.instance().getCache(clz);
+		Cache.CacheCategory cacheCategory = new Cache.CacheCategory(clz);
 		T t = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				t = (T) element.getObjectValue();
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), flag );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+		if (optional.isPresent()) {
+			if (null != optional.get()) {
+				t = (T) optional.get();
 			}
 		} else {
 			t = this.entityManagerContainer().flag(flag, clz);
 			if (t != null) {
 				this.entityManagerContainer().get(clz).detach(t);
 			}
-			cache.put(new Element(flag, t));
+			CacheManager.put(cacheCategory, cacheKey, t );
 		}
 		return t;
 	}

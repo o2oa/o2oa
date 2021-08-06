@@ -2,9 +2,12 @@ package com.x.bbs.assemble.control.jaxrs.subjectinfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -48,16 +51,16 @@ public class ActionSubjectView extends BaseAction {
 		}
 		
 		if( check ){
-			String cacheKey = "subject#view#"+ id;
-			Element element = cache.get( cacheKey );
-			if ((null != element) && (null != element.getObjectValue())) {
-				ActionResult<Wo> result_cache = (ActionResult<Wo>) element.getObjectValue();
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+			if( optional.isPresent() ){
+				ActionResult<Wo> result_cache = (ActionResult<Wo>) optional.get();
 				result.setData( result_cache.getData() );
 				result.setCount( 1L);
 			} else {
 				//继续进行数据查询
-				result = getSubjectViewQueryResult( id, request, effectivePerson );				
-				cache.put(new Element(cacheKey, result ));
+				result = getSubjectViewQueryResult( id, request, effectivePerson );
+				CacheManager.put( cacheCategory, cacheKey, result );
 			}
 		}
 		

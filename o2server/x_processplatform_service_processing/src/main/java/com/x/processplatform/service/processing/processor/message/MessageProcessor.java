@@ -46,7 +46,7 @@ public class MessageProcessor extends AbstractMessageProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Message message) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, Message message, List<Work> works) throws Exception {
 		// nothing
 	}
 

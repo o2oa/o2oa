@@ -24,7 +24,6 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.organization.assemble.personal.jaxrs.reset.ActionSetPasswordAnonymous;
 
 @Path("reset")
 @JaxrsDescribe("重置操作")

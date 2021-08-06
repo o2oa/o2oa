@@ -1,6 +1,5 @@
 package com.x.organization.assemble.control.jaxrs.personcard;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -9,7 +8,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,7 +24,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.control.Business;
-import com.x.organization.assemble.control.jaxrs.personcard.ActionList.Wo;
 import com.x.organization.core.entity.PersonCard;
 import com.x.organization.core.entity.PersonCard_;
 

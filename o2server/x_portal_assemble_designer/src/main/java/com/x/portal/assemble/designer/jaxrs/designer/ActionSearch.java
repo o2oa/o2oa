@@ -1,5 +1,13 @@
 package com.x.portal.assemble.designer.jaxrs.designer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,13 +30,6 @@ import com.x.portal.core.entity.Page;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Script;
 import com.x.portal.core.entity.Widget;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 class ActionSearch extends BaseAction {
 

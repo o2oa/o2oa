@@ -47,9 +47,9 @@ public abstract class AbstractParallelProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Parallel parallel = (Parallel) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, parallel);
+		this.executingCommitted(aeiObjects, parallel, works);
 	}
 
 	@Override
@@ -60,7 +60,8 @@ public abstract class AbstractParallelProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Parallel parallel) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Parallel parallel) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Parallel parallel, List<Work> works)
+			throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Parallel parallel) throws Exception;
 }
