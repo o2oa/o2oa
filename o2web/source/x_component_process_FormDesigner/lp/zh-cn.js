@@ -826,6 +826,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "meetingRecord": "会议记录",
         "customElement": "自定义元素配置",
         "subjectEditBindFormData": "同步数据路径",
+        "fontFamily": "字体",
 
         "autoCorrect": "自动纠错",
         "ckeditorInfo": "更多属性帮助请查看",
