@@ -358,6 +358,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         control.subject = this._getEdit("subject", "subjectEdit", "subjectEditScript");
         control.mainSend = this._getEdit("mainSend", "mainSendEdit", "mainSendEditScript");
         control.attachment = this._getEdit("attachment", "attachmentEdit", "attachmentEditScript");
+        control.attachmentText = this._getEdit("attachmentText", "attachmentTextEdit", "attachmentTextEditScript");
         control.issuanceUnit = this._getEdit("issuanceUnit", "issuanceUnitEdit", "issuanceUnitEditScript");
         control.issuanceDate = this._getEdit("issuanceDate", "issuanceDateEdit", "issuanceDateEditScript");
         control.annotation = this._getEdit("annotation", "annotationEdit", "annotationEditScript");
@@ -607,6 +608,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_annotation) this.layout_annotation.setStyles(this.css.doc_layout_annotation);
     },
 
+    //附件文本
+    _loadAttachmentText: function(){
+        this.layout_attachmentText = this.contentNode.getElement(".doc_layout_attachment_text");
+    },
+
+
     //版记
     _loadEdition: function(){
         this.layout_editionArea = this.contentNode.getElement(".doc_layout_editionArea");
@@ -746,6 +753,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this._loadIssuance();
 
         this._loadAnnotation();
+
+        this._loadAttachmentText()
 
         this._loadEdition();
 
@@ -1086,6 +1095,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }.bind(this));
             }
         }
+        if (this.layout_filetext){
+            if (this.allowEdit) {
+                if (!this.loadFileTextEditFun) this.loadFileTextEditFun = this._switchReadOrEditInline.bind(this);
+                this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
+                this.layout_filetext.addEvent("click", this.loadFileTextEditFun);
+            }
+        }
+        if (this.layout_attachmentText){
+            debugger;
+            if (control.attachmentText) {
+                if (!this.loadAttachmentTextEditFun) this.loadAttachmentTextEditFun = this.loadAttachmentTextEdit.bind(this);
+                this.layout_attachmentText.removeEvent("click", this.loadAttachmentTextEditFun);
+                this.layout_attachmentText.addEvent("click", this.loadAttachmentTextEditFun);
+                if (!this.data.attachmentText){
+                    this.layout_attachmentText.set("text", MWF.xApplication.process.Xform.LP.documentEditor.attachmentInfor);
+                }
+            }
+        }
 
 
         // this.layout_subject.addEvent("keydown", function(e){
@@ -1100,6 +1127,22 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         //         }
         //     }
         // }.bind(this));
+    },
+    loadAttachmentTextEdit: function(){
+        this._createEditor("inline", this.layout_attachmentText, this.data.attachmentText, "attachmentTextEditor", function(){
+            this.layout_attachmentText.removeEvent("click", this.loadAttachmentTextEditFun);
+            var text = this.layout_attachmentText.get("text");
+            text = text.replace(/\u3000*/g, "");
+            if (!text || text==MWF.xApplication.process.Xform.LP.documentEditor.attachmentInfor){
+                this.layout_attachmentText.empty();
+                this["attachmentTextEditor"].insertHtml("<div aria-label=\"分页符\" class=\"cke_pagebreak\" contenteditable=\"false\" data-cke-display-name=\"pagebreak\" data-cke-pagebreak=\"1\" style=\"page-break-after: always\" title=\"分页符\"></div>" +
+                    "<div style=\"font-family:黑体;font-size:16pt;\">附件1</div>" +
+                    "<div><span>　</span></div>" +
+                    "<div style=\"font-family: 方正小标宋简体; font-size: 22pt; text-align: center;\">附件标题</div>" +
+                    "<div><span>　</span></div>" +
+                    "<div>　　附件内容</div>");
+            }
+        }.bind(this));
     },
 
     _loadUserInterface: function(callback){
@@ -1430,6 +1473,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.form.saveFormData();
         }else{
             this._editFiletext("inline");
+            if (this.loadFileTextEditFun) this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
             if (this.allowEdit){
                 if (!layout.mobile) {
                     var button = this.sideToolbar.childrenButton[0];
@@ -1554,11 +1598,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this._createEditor(inline);
         }.bind(this));
     },
-    _createEditor: function(inline){
+    _createEditor: function(inline, node, data, editorName, callback){
         if (this.allowEdit){
             this.loadCkeditorFiletext(function(e){
                 e.editor.focus();
-                var text = this.data.filetext.replace(/\u3000*/g, "");
+                var text = (data || this.data.filetext).replace(/\u3000*/g, "");
                 if (!text){
                     var range = e.editor.createRange();
                     range.moveToElementEditEnd(e.editor.editable());
@@ -1570,7 +1614,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
                 //e.editor.getSelection().scrollIntoView();
 
-                var text = this.data.filetext.replace(/\u3000*/g, "");
+                var text = (data || this.data.filetext).replace(/\u3000*/g, "");
                 if (!text){
                     var range = e.editor.createRange();
                     range.moveToElementEditEnd(e.editor.editable());
@@ -1585,44 +1629,51 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 //this.getFiletextToolber();
                 //this.filetextToolbarNode.inject(this.layout_filetext.getOffsetParent());
 
-                this.locationFiletextToolbar();
-            }.bind(this), inline);
+                this.locationFiletextToolbar(editorName);
+
+                if (callback) callback();
+            }.bind(this), inline, node, editorName);
         }
     },
-    getFiletextToolber: function(){
-        if (this.filetextEditor) {
-            if (!this.filetextToolbarNode) {
-                var className = "cke_editor_" + this.filetextEditor.name;
-                var filetextToolbarNode = $$("." + className)[0];
-                this.filetextToolbarNode = filetextToolbarNode;
+    getFiletextToolber: function(editorName){
+        if (editorName){
+            if (this[editorName]) {
+                if (!this[editorName+"ToolbarNode"]) {
+                    // var className = "cke_editor_" + this[editorName].name;
+                    // var toolbarNode = $$("." + className)[0];
 
-                //filetextToolbarNode.destroy();
+                    var className = "cke_" + this[editorName].name;
+                    var toolbarNode = $(className);
+
+                    this[editorName+"ToolbarNode"] = toolbarNode;
+                }
+            }
+        }else{
+            if (this.filetextEditor) {
+                if (!this.filetextToolbarNode) {
+                    // var className = "cke_editor_" + this.filetextEditor.name;
+                    // var filetextToolbarNode = $$("." + className)[0];
+
+                    var className = "cke_" + this.filetextEditor.name;
+                    var filetextToolbarNode = $(className);
+                    this.filetextToolbarNode = filetextToolbarNode;
+
+                    //filetextToolbarNode.destroy();
+                }
             }
         }
+
     },
-    reLocationFiletextToolbar: function(){
-        this.getFiletextToolber();
-        // if (this.filetextToolbarNode){
-        //     this.filetextToolbarNode.setStyle("display", "block");
-        //     var offsetNode = this.layout_filetext.getOffsetParent();
-        //
-        //     this.filetextToolbarNode.setStyle("left", 0);
-        //     var h = this.filetextToolbarNode.getSize().y;
-        //     var p = this.layout_filetext.getPosition(offsetNode).y-h;
-        //
-        //     var postion = this.layout_filetext.getPosition(this.form.app.content);
-        //     if (postion.y-h<0){
-        //         this.filetextToolbarNode.inject(this.form.app.content);
-        //         this.filetextToolbarNode.setStyle("top", 0);
-        //         this.filetextToolbarNode.setStyle("left", ""+postion.x+"px");
-        //     }else{
-        //         this.filetextToolbarNode.inject(offsetNode);
-        //         this.filetextToolbarNode.setStyle("top", "" + p + "px");
-        //         this.filetextToolbarNode.setStyle("left", 0);
-        //         this.filetextToolbarNode.setStyle("left", "auto");
-        //     }
-        // }
-        if (this.filetextToolbarNode){
+    reLocationFiletextToolbar: function(editorName){
+        debugger;
+        this.getFiletextToolber(editorName);
+        var toolbarNode = (editorName) ? this[editorName+"ToolbarNode"] : this.filetextToolbarNode;
+        var editor = (editorName) ? this[editorName] : this.filetextEditor;
+        var node = (editorName) ? this.layout_attachmentText : this.layout_filetext;
+
+        if (editorName)
+
+        if (toolbarNode){
             if (!this.filetextScrollNode){
                 var scrollNode = this.contentNode;
                 while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("4-y")!=="auto"))){
@@ -1630,57 +1681,55 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
                 this.filetextScrollNode = scrollNode;
             }
-            var h = this.filetextToolbarNode.getSize().y;
-            var position = this.layout_filetext.getPosition();
-            var size = this.layout_filetext.getSize();
+            var h = toolbarNode.getSize().y;
+            var position = node.getPosition();
+            var size = node.getSize();
             var contentSize = this.filetextScrollNode.getSize();
 
             if (layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1){
-                var x = this.filetextEditor.editable().$.getPosition().x;
-                this.filetextToolbarNode.setStyle("left", ""+x+"px");
+                var x = editor.editable().$.getPosition().x;
+                toolbarNode.setStyle("left", ""+x+"px");
             }
-            this.filetextToolbarNode.setStyle("min-width", "530px");
+            toolbarNode.setStyle("min-width", "530px");
 
 
             if (position.y<0 && size.y+position.y+h<contentSize.y){
-                // var top = size.y+position.y;
-                // this.filetextToolbarNode.setStyle("top", ""+top+"px");
-
                 var tp = this.toolbar.node.getPosition();
                 var tsy = this.toolbar.node.getSize().y;
                 var h = tp.y+tsy;
-                this.filetextToolbarNode.setStyle("top", ""+h+"px");
+                toolbarNode.setStyle("top", ""+h+"px");
             }else if (position.y-h<0){
                 var tp = this.toolbar.node.getPosition();
                 var tsy = this.toolbar.node.getSize().y;
                 var h = tp.y+tsy;
-                this.filetextToolbarNode.setStyle("top", ""+h+"px");
+                toolbarNode.setStyle("top", ""+h+"px");
             }else{
-                var p = this.layout_filetext.getPosition().y-h;
-                this.filetextToolbarNode.setStyle("top", "" + p + "px");
+                var p = node.getPosition().y-h;
+                toolbarNode.setStyle("top", "" + p + "px");
             }
-
-
         }
-
-        //
-        // this.filetextToolbarNode.inject(offsetNode);
-        //
-        //
-        // this.filetextToolbarNode.setStyle("top", ""+p+"px");
-
     },
-    locationFiletextToolbar: function(){
-        this.reLocationFiletextToolbar();
-        if (this.filetextToolbarNode) {
+    locationFiletextToolbar: function(editorName){
+        this.reLocationFiletextToolbar(editorName);
+
+        var toolbarNode = (editorName) ? this[editorName+"ToolbarNode"] : this.filetextToolbarNode;
+
+        if (toolbarNode) {
             var scrollNode = this.contentNode;
             while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("overflow-y")!=="auto"))){
                 scrollNode = scrollNode.getParent();
             }
             if (scrollNode){
-                this.filetextScrollNode = scrollNode;
-                this.reLocationFiletextToolbarFun = this.reLocationFiletextToolbar.bind(this);
-                this.filetextScrollNode.addEvent("scroll", this.reLocationFiletextToolbarFun);
+                this.filetextScrollNode = scrollNode
+                if (editorName){
+                    if (!this.reLocationAttachmentTextToolbarFun) this.reLocationAttachmentTextToolbarFun = function(){
+                        this.reLocationFiletextToolbar(editorName);
+                    }.bind(this);
+                    this.filetextScrollNode.addEvent("scroll", this.reLocationAttachmentTextToolbarFun);
+                }else{
+                    if (!this.reLocationFiletextToolbarFun) this.reLocationFiletextToolbarFun = this.reLocationFiletextToolbar.bind(this);
+                    this.filetextScrollNode.addEvent("scroll", this.reLocationFiletextToolbarFun);
+                }
             }
         }
     },
@@ -2198,7 +2247,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
 
-    _getEditorConfig: function(){
+    _getEditorConfig: function(editorName){
         // var mathElements = [
         //     'math',
         //     'maction',
@@ -2328,9 +2377,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         //editorConfig.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
         //editorConfig.removeButtons = 'NumberedList,Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,BulletedList,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
-        //editorConfig.removeButtons = 'Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
-        editorConfig.removeButtons = 'Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
-
+        editorConfig.removeButtons = 'ExportPdf,Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
+        //editorConfig.removeButtons = 'Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
         //editorConfig.extraAllowedContent = mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)';
 
         editorConfig.pasteFromWordRemoveFontStyles = false;
@@ -2347,6 +2395,34 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.json.ckeditConfigOptions && this.json.ckeditConfigOptions.code){
             var o = this.form.Macro.exec(this.json.ckeditConfigOptions.code, this);
             if (o) editorConfig = Object.merge(editorConfig, o);
+        }
+debugger;
+        if (editorName){
+            editorConfig.removeButtons = editorConfig.removeButtons.split(/,\s*/).erase("PageBreak").join(",");
+            var tags = editorConfig.format_tags.split(/;\s*/);
+            if (tags.indexOf("附件标题")==-1){
+                editorConfig.format_tags = "附件标题"+((editorConfig.format_tags) ? ";" : "")+editorConfig.format_tags;
+            }
+            if (tags.indexOf("附件序号")==-1){
+                editorConfig.format_tags = "附件序号"+((editorConfig.format_tags) ? ";" : "")+editorConfig.format_tags;
+            }
+            if (!editorConfig["format_附件序号"]) editorConfig["format_附件序号"] = {
+                name: '附件序号',
+                element: 'div',
+                styles: {
+                    'font-family': '黑体',
+                    'font-size': '16pt'
+                }
+            };
+            if (!editorConfig["format_附件标题"]) editorConfig["format_附件标题"] = {
+                name: '附件标题',
+                element: 'div',
+                styles: {
+                    'font-family': '方正小标宋简体',
+                    'font-size': '22pt',
+                    'text-align': 'center'
+                }
+            }
         }
 
         return editorConfig;
@@ -2490,39 +2566,52 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
 
-    loadCkeditorFiletext: function(callback, inline){
-        if (this.layout_filetext){
+    loadCkeditorFiletext: function(callback, inline, node, editorName){
+        if (node || this.layout_filetext){
             o2.load("../o2_lib/htmleditor/ckeditor4161/ckeditor.js", function(){
                 CKEDITOR.disableAutoInline = true;
-                this.layout_filetext.setAttribute('contenteditable', true);
+                (node || this.layout_filetext).setAttribute('contenteditable', true);
 
                 if (inline){
-                    this.filetextEditor = CKEDITOR.inline(this.layout_filetext, this._getEditorConfig());
+                    editor = CKEDITOR.inline(node || this.layout_filetext, this._getEditorConfig(editorName));
                 }else{
-                    this.filetextEditor = CKEDITOR.replace(this.layout_filetext, this._getEditorConfig());
+                    editor = CKEDITOR.replace(node || this.layout_filetext, this._getEditorConfig(editorName));
                 }
+                this[(editorName || "filetextEditor")] = editor;
 
-                this.filetextEditor.on("instanceReady", function(e){
+
+                editor.on("instanceReady", function(e){
                     if (callback) callback(e);
                 }.bind(this));
-                this.filetextEditor.on( 'focus', function( e ) {
-                    window.setTimeout(this.reLocationFiletextToolbar.bind(this), 10);
+                editor.on( 'focus', function( e ) {
+                    window.setTimeout(function(){
+                        this.reLocationFiletextToolbar(editorName);
+                    }.bind(this), 10);
                 }.bind(this) );
 
-                this.filetextEditor.on( 'loaded', function( e ) {
-                    this.filetextEditor.element.$.store("module", this);
-                    this.filetextEditor.element.$.store("scale", this.scale);
+                debugger;
+                if (!!editorName){
+                    debugger;
+                    editor.on( 'blur', function( e ) {
+                        debugger;
+                        this.getAttachmentTextData();
+                    }.bind(this) );
+                }
+
+                editor.on( 'loaded', function( e ) {
+                    editor.element.$.store("module", this);
+                    editor.element.$.store("scale", this.scale);
                 }.bind(this) );
 
-                this.filetextEditor.on( 'afterPaste', function( e ) {
+                editor.on( 'afterPaste', function( e ) {
                     debugger;
                 }.bind(this));
-                this.filetextEditor.on( 'afterPasteFromWord', function( e ) {
+                editor.on( 'afterPasteFromWord', function( e ) {
                     debugger;
                 }.bind(this));
 
 
-                this.filetextEditor.on( 'paste', function( e ) {
+                editor.on( 'paste', function( e ) {
                     debugger;
                     var html = e.data.dataValue;
                     //if (this.json.fullWidth=="y") html = html.replace(/\x20/g, "　");
@@ -2561,7 +2650,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
                     var tableList = tmp.getElements("table");
                     if (tableList && tableList.length){
-                        var w = this.layout_filetext.offsetWidth.toFloat()-2;
+                        var w = (node || this.layout_filetext).offsetWidth.toFloat()-2;
                         tableList.each(function(table){
                             var twstyle = table.getStyle("width");
                             var tws = (twstyle) ? (twstyle.toFloat() || 0) : 0;
@@ -2598,13 +2687,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     this.fireEvent("paste");
                 }.bind(this) );
 
-                this.filetextEditor.on( 'afterPaste', function( e ) {
+                editor.on( 'afterPaste', function( e ) {
                     this.resetNodeSize();
                     this.fireEvent("afterPaste");
                 }.bind(this) );
 
-                this.filetextEditor.on( 'change', function( e ) {
-                    this.filetextEditor.on( 'change', function( e ) {
+                editor.on( 'change', function( e ) {
+                    //editor.on( 'change', function( e ) {
                         var h = document.documentElement.scrollTop;
                         var scrollNode = this.contentNode;
                         while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("4-y")!=="auto"))){
@@ -2615,12 +2704,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             scrollNode.scrollTop = h+top;
                         }
                         document.documentElement.scrollTop = 0;
-                    }.bind(this) );
+
+                    if (!!editorName) this.getAttachmentTextData();
+                    //}.bind(this) );
                 }.bind(this) );
 
 
 
-                this.filetextEditor.on( 'insertElement', function( e ) {
+                editor.on( 'insertElement', function( e ) {
                     if (e.data.$.tagName.toString().toLowerCase()=="table"){
                         e.data.$.setStyles({
                             "margin-left": "",
@@ -2640,19 +2731,19 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }.bind(this) );
 
                 if (this.json.textIndent!=="n"){
-                    this.layout_filetext.addEvent("keyup", function(ev){
-                        if (ev.code==13) this.filetextEditor.insertText("　　");
+                    (node || this.layout_filetext).addEvent("keyup", function(ev){
+                        if (ev.code==13) editor.insertText("　　");
                     }.bind(this));
                 }
                 if (this.json.fullWidth!=="n"){
-                    this.filetextEditor.addCommand( 'insertHalfSpace', {
+                    editor.addCommand( 'insertHalfSpace', {
                         exec: function( editor ) {
                             editor.insertText(" ");
                         }
                     } );
-                    this.filetextEditor.setKeystroke( CKEDITOR.SHIFT + 32, 'insertHalfSpace' );
+                    editor.setKeystroke( CKEDITOR.SHIFT + 32, 'insertHalfSpace' );
 
-                    this.filetextEditor.on("key", function(e){
+                    editor.on("key", function(e){
                         if (this.json.fullWidth!=="n") if (e.data.keyCode==32){
                             e.editor.insertText("　");
                             e.cancel();
@@ -2985,15 +3076,19 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_signer) this.data.signer = this.layout_signer.get("html");
         if (this.layout_subject) this.data.subject = this.layout_subject.get("html");
         if (this.layout_mainSend) this.data.mainSend = this.layout_mainSend.get("text");
-        if (this.editMode) if (this.layout_filetext){
-            var text = this.layout_filetext.get("text");
-            text = text.replace(/\u3000*/g, "");
-            if (text && text !==this.json.defaultValue.filetext){
-                this.data.filetext = this.layout_filetext.get("html");
-            }else{
-                this.data.filetext = "";
+        if (this.editMode) {
+            if (this.layout_filetext){
+                var text = this.layout_filetext.get("text");
+                text = text.replace(/\u3000*/g, "");
+                if (text && text !==this.json.defaultValue.filetext){
+                    this.data.filetext = this.layout_filetext.get("html");
+                }else{
+                    this.data.filetext = "";
+                }
             }
         }
+        this.getAttachmentTextData();
+
         if (this.layout_signer) this.data.signer = this.layout_signer.get("html");
         if (this.layout_attachmentTitle) this.data.attachmentTitle = this.layout_attachmentTitle.get("text");
         if (this.layout_attachment){
@@ -3042,6 +3137,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         //}
         return this.data;
     },
+    getAttachmentTextData: function(){
+        if (this.layout_attachmentText && this.layout_attachmentText.get("contenteditable")=="true"){
+            var text = this.layout_attachmentText.get("text");
+            text = text.replace(/\u3000*/g, "");
+            if (text && text !==MWF.xApplication.process.Xform.LP.documentEditor.attachmentInfor){
+                this.data.attachmentText = this.layout_attachmentText.get("html");
+            }else{
+                this.data.attachmentText = "";
+            }
+        }
+    },
     getSealData: function(){
         if (this.layout_seals && this.layout_seals.length) {
             this.data.seals = [];
@@ -3055,6 +3161,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.attachmentTemplete = this.layout_attachment.get("html");
         }
         this.layout_attachment.empty();
+        if (this.data.attachment && !this.data.attachment.each){
+            this.data.attachment = this.data.attachment.split(/,\s*/g);
+        }
+
+
         if (this.data.attachment && this.data.attachment.length && this.data.attachment.each){
             //var tmpdiv = new Element("div", {"styles": {"display":"none"}}).inject(document.body);
             var tmpdiv = new Element("div");
@@ -3071,6 +3182,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             tmpdiv.destroy();
         }
     },
+    setAttachmentText: function(data){
+        this.layout_attachmentText.empty();
+        if (data.attachmentText){
+            this.layout_attachmentText.set("html", data.attachmentText);
+        }else{
+            if (this._getEdit("attachmentText", "attachmentTextEdit", "attachmentTextEditScript")){
+                this.layout_attachmentText.set("text", MWF.xApplication.process.Xform.LP.documentEditor.attachmentInfor);
+            }
+        }
+    },
+
     /**设置公文编辑器数据
      * @param {Object} data
      * @example
@@ -3134,6 +3256,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             if (this.layout_attachment){
                 this.setAttachmentData();
+            }
+            if (this.layout_attachmentText){
+                this.setAttachmentText(data);
             }
 
             if (this.layout_issuanceUnit) this.layout_issuanceUnit.set("html", data.issuanceUnit || " ");

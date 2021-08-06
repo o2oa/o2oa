@@ -813,6 +813,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "editSubjectInfo": "标题允许编辑时，请不要绑定数据",
         "mainSend": "主送",
         "attachment": "附件",
+        "attachmentText": "附件内容",
+        "attachmentInfor": "[点击此处编辑附件内容]",
         "issuanceUnit": "成文单位",
         "issuanceDate": "成文日期",
         "annotation": "附注",
