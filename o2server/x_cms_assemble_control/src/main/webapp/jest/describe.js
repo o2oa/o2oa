@@ -811,8 +811,6 @@ Describe.prototype = {
 									txt += '</fieldset>';
 								}
 								
-								
-								
 								if (m.useJsonElementParameter) {
 									txt += '<fieldset><legend>JsonElement</legend>';
 									txt += '<table><tr><td>';
@@ -870,10 +868,12 @@ Describe.prototype = {
 													switch (i.type) {
 													default:
 														if (i.isBaseType) {
-															if (i.isCollection) {
-																data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
-															} else {
-																data[i.name] = $('#' + i.name, '#ins').val();
+															if($('#' + i.name, '#ins').val() != ""){
+																if (i.isCollection) {
+																	data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+																} else {
+																	data[i.name] = $('#' + i.name, '#ins').val();
+																}
 															}
 														} else {
 															if($('#' + i.name, '#ins').val() == ""){
@@ -915,10 +915,12 @@ Describe.prototype = {
 													switch (i.type) {
 													default:
 														if (i.isBaseType) {
-															if (i.isCollection) {
-																data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
-															} else {
-																data[i.name] = $('#' + i.name, '#ins').val();
+															if($('#' + i.name, '#ins').val() != ""){
+																if (i.isCollection) {
+																	data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+																} else {
+																	data[i.name] = $('#' + i.name, '#ins').val();
+																}
 															}
 														} else {
 															if($('#' + i.name, '#ins').val() == ""){
@@ -1246,10 +1248,12 @@ Describe.prototype = {
 													switch (i.type) {
 													default:
 														if (i.isBaseType) {
+															if($('#' + i.name, '#ins').val() != ""){
 															if (i.isCollection) {
 																data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
 															} else {
 																data[i.name] = $('#' + i.name, '#ins').val();
+															}
 															}
 														} else {
 															if($('#' + i.name, '#ins').val() == ""){
@@ -1286,10 +1290,12 @@ Describe.prototype = {
 													switch (i.type) {
 													default:
 														if (i.isBaseType) {
+															if($('#' + i.name, '#ins').val() != ""){
 															if (i.isCollection) {
 																data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
 															} else {
 																data[i.name] = $('#' + i.name, '#ins').val();
+															}
 															}
 														} else {
 															if($('#' + i.name, '#ins').val() == ""){
