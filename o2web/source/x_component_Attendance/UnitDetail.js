@@ -90,10 +90,10 @@ MWF.xApplication.Attendance.UnitDetail.Explorer = new Class({
     loadFilter: function(){
         var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
-            "styles" : this.css.fileterNode
+            "styles" : this.app.css.fileterNode
         }).inject(this.node);
 
-        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='filterTable'>"+
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='filterTable' style='width: 1150px;'>"+
             "<tr>" +
             "    <td styles='filterTableValue' lable='q_unitName'></td>"+
             "    <td styles='filterTableTitle' item='q_unitName'></td>"+
@@ -117,9 +117,10 @@ MWF.xApplication.Attendance.UnitDetail.Explorer = new Class({
 
         MWF.xDesktop.requireApp("Template", "MForm", function(){
             this.form = new MForm( this.fileterNode, {}, {
+                style: "attendance",
                 isEdited : true,
                 itemTemplate : {
-                    q_unitName : { text : lp.unit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "200px" } },
+                    q_unitName : { text : lp.unit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "100px" } },
                     cycleYear : {
                         text : lp.annuaal,
                         "type" : "select",
@@ -194,7 +195,7 @@ MWF.xApplication.Attendance.UnitDetail.Explorer = new Class({
                             }.bind(this)
                         }}
                 }
-            }, this.app, this.css);
+            }, this.app, this.app.css);
             this.form.load();
         }.bind(this), true);
     },
@@ -473,10 +474,10 @@ MWF.xApplication.Attendance.UnitDetail.DetailStaticExplorer = new Class({
     loadFilter: function(){
         var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
-            "styles" : this.css.fileterNode
+            "styles" : this.app.css.fileterNode
         }).inject(this.node);
 
-        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' style='width: 660px;font-size: 14px;color:#666'>"+
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' style='width: 760px;font-size: 14px;color:#666'>"+
             "<tr>" +
             "    <td styles='filterTableValue' lable='q_unitName'></td>"+
             "    <td styles='filterTableTitle' item='q_unitName'></td>"+
@@ -492,9 +493,10 @@ MWF.xApplication.Attendance.UnitDetail.DetailStaticExplorer = new Class({
 
         MWF.xDesktop.requireApp("Template", "MForm", function(){
             this.form = new MForm( this.fileterNode, {}, {
+                style: "attendance",
                 isEdited : true,
                 itemTemplate : {
-                    q_unitName : { text : lp.unit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "200px" } },
+                    q_unitName : { text : lp.unit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "100px" } },
                     cycleYear : {
                         text : lp.annuaal,
                         "type" : "select",
@@ -531,7 +533,7 @@ MWF.xApplication.Attendance.UnitDetail.DetailStaticExplorer = new Class({
                             }.bind(this)
                         }}
                 }
-            }, this.app, this.css);
+            }, this.app, this.app.css);
             this.form.load();
         }.bind(this), true);
     },

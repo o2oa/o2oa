@@ -62,7 +62,21 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
                                         if (this.app.refreshAll) this.app.refreshAll();
                                         //this.app.notice(this.lp.processStarted, "success");
                                         //    this.app.processConfig();
-                                    }.bind(this), null, this.data.id, data);
+                                    }.bind(this), function(xhr, text, error){
+                                        if (xhr.status!=0){
+                                            var errorText = error;
+                                            if (xhr){
+                                                var json = JSON.decode(xhr.responseText);
+                                                if (json){
+                                                    errorText = json.message.trim() || "request json error";
+                                                }else{
+                                                    errorText = "request json error: "+xhr.responseText;
+                                                }
+                                            }
+                                            MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+                                        }
+                                        if(this.mask)this.mask.hide();
+                                    }.bind(this), this.data.id, data);
                                 }.bind(this));
 
                             }else{
@@ -258,7 +272,24 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
                     if (this.app && this.app.refreshAll) this.app.refreshAll();
                     //if (this.app && this.app.notice) this.app.notice(this.lp.processStarted, "success");
                     //    this.app.processConfig();
-                }.bind(this), null, this.data.id, data);
+                }.bind(this), function(xhr, text, error){
+                    if (xhr.status!=0){
+                        var errorText = error;
+                        if (xhr){
+                            var json = JSON.decode(xhr.responseText);
+                            if (json){
+                                errorText = json.message.trim() || "request json error";
+                            }else{
+                                errorText = "request json error: "+xhr.responseText;
+                            }
+                        }
+                        MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+                    }
+                    if(this.mask)this.mask.hide();
+
+                    // if(this.markNode)this.markNode.destroy();
+                    // if(this.areaNode)this.areaNode.destroy();
+                }.bind(this), this.data.id, data);
             }.bind(this));
         }
     },
