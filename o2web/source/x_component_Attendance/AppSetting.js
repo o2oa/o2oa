@@ -1,29 +1,12 @@
-
+MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
 MWF.xDesktop.requireApp("Template", "MForm", null, false);
 MWF.xApplication.Attendance.AppSetting = new Class({
-    Extends: MWF.widget.Common,
-    options:{
-        style : "default"
-    },
-    initialize: function(app, actions, options){
-        this.setOptions(options);
-        this.app = app;
-        this.path = "../x_component_Attendance/$AppSetting/";
-        this.cssPath = "../x_component_Attendance/$AppSetting/"+this.options.style+"/css.wcss";
-        this._loadCss();
-
-        this.actions = actions;
-        this.load();
-    },
-    load: function(){
-        this.app.restActions.listSetting(function(json){
-            if( json.data && json.data.length>0){
-                this.data = json.data;
-            }
-        }.bind(this),null,false);
-        if( !this.data ){
-            this.data = [];
-        }
+    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
+    options : {
+        "width": "520",
+        "hasTop" : true,
+        "hasBottom" : true,
+        "title": MWF.xApplication.Attendance.LP.systemSetting
     },
     decodeData : function( data ){
         //{
@@ -62,87 +45,24 @@ MWF.xApplication.Attendance.AppSetting = new Class({
                 }
             }
         };
-       // alert(JSON.stringify(arr))
         return arr;
     },
-    open: function(e){
-        this.isNew = false;
-        this.isEdited = false;
-        this._open();
-    },
-    create: function(){
-        this.isNew = true;
-        this._open();
-    },
-    edit: function(){
-        this.isEdited = true;
-        this._open();
-    },
-    _open : function(){
-        this.createMarkNode = new Element("div", {
-            "styles": this.css.createMarkNode,
-            "events": {
-                "mouseover": function(e){e.stopPropagation();},
-                "mouseout": function(e){e.stopPropagation();}
-            }
-        }).inject(this.app.content, "after");
-
-        this.createAreaNode = new Element("div", {
-            "styles": this.css.createAreaNode
-        });
-
-        this.createNode();
-
-        this.createAreaNode.inject(this.createMarkNode, "after");
-        this.createAreaNode.fade("in");
-
-        this.setCreateNodeSize();
-        this.setCreateNodeSizeFun = this.setCreateNodeSize.bind(this);
-        this.addEvent("resize", this.setCreateNodeSizeFun);
-    },
-    createNode: function(){
+    _createTableContent: function(){
         var _self = this;
 
-        this.createNode = new Element("div", {
-            "styles": this.css.createNode
-        }).inject(this.createAreaNode);
-
-        //
-        //this.createIconNode = new Element("div", {
-        //    "styles": this.isNew ? this.css.createNewNode : this.css.createIconNode
-        //}).inject(this.createNode);
-
-        this.createContainerNode = new Element("div", {
-            "styles": this.css.createContainerNode
-        }).inject(this.createNode);
-
-
-        this.setScrollBar( this.createContainerNode );
-
-
-        this.createFormNode = new Element("div", {
-            "styles": this.css.createFormNode
-        }).inject(this.createContainerNode);
-
-        this.createTableContainer = new Element("div", {
-            "styles": this.css.createTableContainer
-        }).inject(this.createFormNode);
-
-        this.createTableArea = new Element("div", {
-            "styles": this.css.createTableArea
-        }).inject(this.createTableContainer);
-
-
-        var table = new Element("table", {
-            "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.editTable, "class" : "editTable"
-        }).inject( this.createTableArea );
-
+        this.app.restActions.listSetting(function(json){
+            if( json.data && json.data.length>0){
+                this.data = json.data;
+            }
+        }.bind(this),null,false);
+        if( !this.data ){
+            this.data = [];
+        }
 
         var d = this.decodeData( this.data );
 
         var lp = this.app.lp;
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='4' styles='formTableHead'>"+lp.systemSetting+"</td></tr>" +
             "<tr><td styles='formTableTitle' lable='APPEALABLE'></td>"+
             "    <td styles='formTableValue' item='APPEALABLE'></td>"+
             "<tr><td styles='formTableTitle' lable='APPEAL_AUDIFLOWTYPE'></td>"+
@@ -158,7 +78,7 @@ MWF.xApplication.Attendance.AppSetting = new Class({
             //"<tr><td styles='formTableTitle' lable='APPEAL_CHECKER_VALUE'></td>"+
             //"    <td styles='formTableValue' item='APPEAL_CHECKER_VALUE'></td>"+
             "</table>";
-        this.createTableArea.set("html",html);
+        this.formTableArea.set("html",html);
 
 
         this.itemTemplate = {
@@ -175,9 +95,9 @@ MWF.xApplication.Attendance.AppSetting = new Class({
                 selectText : lp.appealAuditFlowTypeSelectText,
                 event : {
                     change : function( item, ev ){
-                        this.createTableArea.getElement("[item='AUDITOR_TYPE']").setStyle( "display" , (item.getValue() == "WORKFLOW") ? "none" : "" );
-                        this.createTableArea.getElement("[item='valueArea']").setStyle( "display" , (item.getValue() == "WORKFLOW") ? "none" : "" );
-                        this.createTableArea.getElement("[item='AUDIFLOW']").setStyle( "display" , (item.getValue() == "BUILTIN") ? "none" : "" );
+                        this.formTableArea.getElement("[item='AUDITOR_TYPE']").setStyle( "display" , (item.getValue() == "WORKFLOW") ? "none" : "" );
+                        this.formTableArea.getElement("[item='valueArea']").setStyle( "display" , (item.getValue() == "WORKFLOW") ? "none" : "" );
+                        this.formTableArea.getElement("[item='AUDIFLOW']").setStyle( "display" , (item.getValue() == "BUILTIN") ? "none" : "" );
                     }.bind(this)
                 }
             },
@@ -187,7 +107,7 @@ MWF.xApplication.Attendance.AppSetting = new Class({
                 selectValue : this.dataJson.APPEAL_AUDITOR_TYPE.selectContent.split("|"), //["人员属性","所属部门职位","指定人","汇报对象"],
                 event : {
                     change : function( item, ev ){
-                        this.createTableArea.getElement("[item='valueArea']").setStyle( "display" , (item.getValue() == "汇报对象" || item.getValue() == lp.reportTo) ? "none" : "" );
+                        this.formTableArea.getElement("[item='valueArea']").setStyle( "display" , (item.getValue() == "汇报对象" || item.getValue() == lp.reportTo) ? "none" : "" );
                     }.bind(this)
                 }
             },
@@ -224,71 +144,36 @@ MWF.xApplication.Attendance.AppSetting = new Class({
             //    value : d.APPEAL_CHECKER_VALUE
             //}
         };
-        this.document = new MForm( this.createTableArea, this.data, {
-            style : "popup",
+        this.document = new MForm( this.formTableArea, this.data, {
+            style : "attendance",
             isEdited : this.isEdited || this.isNew,
             itemTemplate : this.itemTemplate
         }, this.app,this.css);
         this.document.load();
 
-        this.cancelActionNode = new Element("div", {
-            "styles": this.css.createCancelActionNode,
-            "text": lp.cancel
-        }).inject(this.createFormNode);
+        // this.cancelActionNode = new Element("div", {
+        //     "styles": this.css.createCancelActionNode,
+        //     "text": lp.cancel
+        // }).inject(this.createFormNode);
+        //
+        //
+        // this.cancelActionNode.addEvent("click", function(e){
+        //     this.cancelCreate(e);
+        // }.bind(this));
 
-
-        this.cancelActionNode.addEvent("click", function(e){
-            this.cancelCreate(e);
-        }.bind(this));
-
-        if( this.isNew || this.isEdited ){
-            this.createOkActionNode = new Element("div", {
-                "styles": this.css.createOkActionNode,
-                "text": lp.ok
-            }).inject(this.createFormNode);
-
-            this.createOkActionNode.addEvent("click", function(e){
-                this.okCreate(e);
-            }.bind(this));
-        }
+        // if( this.isNew || this.isEdited ){
+        //     this.createOkActionNode = new Element("div", {
+        //         "styles": this.css.createOkActionNode,
+        //         "text": lp.ok
+        //     }).inject(this.createFormNode);
+        //
+        //     this.createOkActionNode.addEvent("click", function(e){
+        //         this.okCreate(e);
+        //     }.bind(this));
+        // }
 
     },
-    setCreateNodeSize: function(){
-        var size = this.app.node.getSize();
-        var allSize = this.app.content.getSize();
-
-        var height = "470";
-        var width = "600";
-
-        this.createAreaNode.setStyles({
-            "width": ""+size.x+"px",
-            "height": ""+size.y+"px"
-        });
-        var hY = height;
-        var mY = (size.y-height)/2;
-        this.createNode.setStyles({
-            "height": ""+hY+"px",
-            "margin-top": ""+mY+"px",
-            "width" : ""+width+"px"
-        });
-
-        this.createContainerNode.setStyles({
-            "height": ""+hY+"px"
-        });
-
-        var iconSize = this.createIconNode ? this.createIconNode.getSize() : {x:0,y:0};
-        var formMargin = hY-iconSize.y-60;
-        this.createFormNode.setStyles({
-            "height": ""+formMargin+"px",
-            "margin-top": ""+60+"px"
-        });
-    },
-    cancelCreate: function(e){
-        this.createMarkNode.destroy();
-        this.createAreaNode.destroy();
-        delete this;
-    },
-    okCreate: function(e){
+    ok: function(e){
         var data = this.document.getResult(true,",",true,false,false);
         if(data){
             var APPEAL_AUDIFLOW_ID = data.APPEAL_AUDIFLOW_ID;
@@ -310,8 +195,9 @@ MWF.xApplication.Attendance.AppSetting = new Class({
             }.bind(this), null, false);
         }.bind(this));
         if( flag ){
-            this.createMarkNode.destroy();
-            this.createAreaNode.destroy();
+            if( this.formMaskNode )this.formMaskNode.destroy();
+            if( this.formAreaNode )this.formAreaNode.destroy();
+            // if (this.explorer && this.explorer.view)this.explorer.view.reload();
             this.app.notice( this.app.lp.saveSuccess , "success");
         }
     }

@@ -69,7 +69,7 @@ MWF.xApplication.Attendance.StatisticsCycle.Form = new Class({
         "height": 600,
         "hasTop" : true,
         "hasBottom" : true,
-        "title" : "",
+        "title" : MWF.xApplication.Attendance.LP.statisticsPeriodSetting,
         "draggable" : true,
         "closeAction" : true
     },
@@ -77,7 +77,6 @@ MWF.xApplication.Attendance.StatisticsCycle.Form = new Class({
         var lp = MWF.xApplication.Attendance.LP;
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='2' styles='formTableHead'>"+lp.statisticsPeriodSetting+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='topUnitName'></td>"+
             "    <td styles='formTableValue'>" +
             "       <div item='topUnitName'></div>"+
@@ -103,6 +102,7 @@ MWF.xApplication.Attendance.StatisticsCycle.Form = new Class({
 
         MWF.xDesktop.requireApp("Template", "MForm", function(){
             this.form = new MForm( this.formTableArea, this.data, {
+                style: "attendance",
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
                     topUnitName : { text:lp.statisticsCompany, type : "org", orgType : "unit" },

@@ -42,23 +42,26 @@
     "sub" : [{
       "title" : MWF.xApplication.Attendance.LP.deleteFile,
       "action" : "remove",
-      "styles" : "actionDeleteNode",
-      "overStyles" : "actionDeleteNode_over",
-      "downStyles" : "actionDeleteNode_down"
+      "icon": "delete.png",
+      "styles" : "documentActionNode",
+      "overStyles" : "documentActionNode_over",
+      "downStyles" : "documentActionNode_down"
     },
       {
         "title": MWF.xApplication.Attendance.LP.download,
         "action": "openDocument",
-        "styles": "actionDownloadNode",
-        "overStyles": "actionDownloadNode_over",
-        "downStyles": "actionDownloadNode_down"
+        "icon": "download.png",
+        "styles": "documentActionNode",
+        "overStyles": "documentActionNode_over",
+        "downStyles": "documentActionNode_down"
       },
       {
         "title": MWF.xApplication.Attendance.LP.viewImportResult,
         "action": "openResult",
-        "styles": "actionOpenNode",
-        "overStyles": "actionOpenNode_over",
-        "downStyles": "actionOpenNode_down"
+        "icon": "open.png",
+        "styles": "documentActionNode",
+        "overStyles": "documentActionNode_over",
+        "downStyles": "documentActionNode_down"
       }
 //    },{
 //      "title" : "查看校验结果",
