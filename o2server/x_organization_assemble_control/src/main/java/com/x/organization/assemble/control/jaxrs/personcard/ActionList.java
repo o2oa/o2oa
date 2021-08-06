@@ -2,7 +2,6 @@ package com.x.organization.assemble.control.jaxrs.personcard;
 
 import java.util.List;
 
-import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;

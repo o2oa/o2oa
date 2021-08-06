@@ -1,15 +1,16 @@
 package com.x.message.assemble.communicate;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
+import com.x.base.core.project.x_jpush_assemble_control;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.message.PmsInnerMessage;
 import com.x.base.core.project.queue.AbstractQueue;
-import com.x.base.core.project.x_jpush_assemble_control;
 import com.x.message.core.entity.Message;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 public class PmsInnerConsumeQueue extends AbstractQueue<Message> {
 

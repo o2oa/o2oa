@@ -1,5 +1,11 @@
 package com.x.file.assemble.control.jaxrs.folder2;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -10,11 +16,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Folder2;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 class ActionListWithFolder extends BaseAction {
 

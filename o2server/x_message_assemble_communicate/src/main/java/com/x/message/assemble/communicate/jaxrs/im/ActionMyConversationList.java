@@ -1,5 +1,7 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -15,8 +17,6 @@ import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMConversationExt;
 import com.x.message.core.entity.IMMsg;
-
-import java.util.List;
 
 
 public class ActionMyConversationList extends BaseAction {

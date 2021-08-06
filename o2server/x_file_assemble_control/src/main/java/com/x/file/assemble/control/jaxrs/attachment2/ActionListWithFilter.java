@@ -1,5 +1,7 @@
 package com.x.file.assemble.control.jaxrs.attachment2;
 
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -13,8 +15,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.SortTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Attachment2;
-
-import java.util.List;
 
 class ActionListWithFilter extends BaseAction {
 
