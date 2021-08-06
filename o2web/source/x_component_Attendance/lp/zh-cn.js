@@ -48,6 +48,17 @@ MWF.xApplication.Attendance.LP = {
 		"appealSuccess" : "申诉",
 		"lackOfTime" : "不足",
 		"abNormalDuty" : "异常",
+
+
+		"lateTimes" : "迟到",
+		"leaveEarlyTimes" : "早退",
+		"lackOfTimeCount" : "不足",
+		"abNormalDutyCount" : "异常",
+		"resultNormal" : "正常",
+		"seriousLateTimes": "严迟",
+		"outsideDutyTimes": "外签",
+		"absenteeismTimes": "旷工",
+		"notSignedCount": "缺卡",
 	},
 
 	"absent" : "缺勤",
