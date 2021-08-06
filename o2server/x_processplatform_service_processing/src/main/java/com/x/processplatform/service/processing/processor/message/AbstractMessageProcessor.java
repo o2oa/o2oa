@@ -46,9 +46,9 @@ public abstract class AbstractMessageProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Message message = (Message) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, message);
+		this.executingCommitted(aeiObjects, message, works);
 	}
 
 	@Override
@@ -59,7 +59,8 @@ public abstract class AbstractMessageProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Message message) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Message message) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Message message, List<Work> works)
+			throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Message message) throws Exception;
 }
