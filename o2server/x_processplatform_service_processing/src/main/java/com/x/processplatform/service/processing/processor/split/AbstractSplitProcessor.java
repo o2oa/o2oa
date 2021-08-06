@@ -46,9 +46,9 @@ public abstract class AbstractSplitProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Split split = (Split) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, split);
+		this.executingCommitted(aeiObjects, split, works);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public abstract class AbstractSplitProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Split split) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Split split) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Split split, List<Work> works) throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Split split) throws Exception;
 }

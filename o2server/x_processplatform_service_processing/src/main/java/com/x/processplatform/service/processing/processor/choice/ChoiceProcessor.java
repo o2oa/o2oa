@@ -2,12 +2,10 @@ package com.x.processplatform.service.processing.processor.choice;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
@@ -51,7 +49,7 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Choice choice) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, Choice choice, List<Work> works) throws Exception {
 		// nothing
 	}
 

@@ -52,9 +52,9 @@ public abstract class AbstractEndProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		End end = (End) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, end);
+		this.executingCommitted(aeiObjects, end, works);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public abstract class AbstractEndProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, End end) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, End end) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, End end, List<Work> works) throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, End end) throws Exception;
 

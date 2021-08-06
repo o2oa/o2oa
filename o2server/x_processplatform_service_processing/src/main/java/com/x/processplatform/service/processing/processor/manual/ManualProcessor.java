@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.script.Bindings;
+import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
 import org.apache.commons.collections4.ListUtils;
@@ -320,8 +321,15 @@ public class ManualProcessor extends AbstractManualProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Manual manual) throws Exception {
-		// nothing
+	protected void executingCommitted(AeiObjects aeiObjects, Manual manual, List<Work> works) throws Exception {
+		// Manual Work 还没有处理完 发生了停留,出发了停留事件
+		if ((ListTools.isEmpty(works)) && this.hasManualStayScript(manual)) {
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			CompiledScript cs = null;
+			cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+					aeiObjects.getActivity(), Business.EVENT_MANUALSTAY);
+			cs.eval(scriptContext);
+		}
 	}
 
 	@Override
