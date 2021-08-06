@@ -1,5 +1,9 @@
 package com.x.file.assemble.control.jaxrs.share;
 
+import java.util.List;
+
+import org.apache.commons.collections4.ListUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -15,9 +19,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Share;
-import org.apache.commons.collections4.ListUtils;
-
-import java.util.List;
 
 class ActionListShareToMe extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionListShareToMe.class);

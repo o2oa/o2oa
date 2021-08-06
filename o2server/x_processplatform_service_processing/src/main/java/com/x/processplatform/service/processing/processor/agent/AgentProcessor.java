@@ -51,7 +51,7 @@ public class AgentProcessor extends AbstractAgentProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Agent agent) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, Agent agent, List<Work> works) throws Exception {
 
 	}
 

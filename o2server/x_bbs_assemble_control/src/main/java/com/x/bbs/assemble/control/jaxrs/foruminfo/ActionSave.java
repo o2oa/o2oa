@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -13,7 +14,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -175,10 +175,10 @@ public class ActionSave extends BaseAction {
 				}
 				forumInfo = forumInfoServiceAdv.save( forumInfo );
 				wo.setId(forumInfo.getId());
-				
-				ApplicationCache.notify( BBSForumInfo.class );
-				ApplicationCache.notify( BBSSectionInfo.class );
-				ApplicationCache.notify( BBSSubjectInfo.class );
+
+				CacheManager.notify( BBSForumInfo.class );
+				CacheManager.notify( BBSSectionInfo.class );
+				CacheManager.notify( BBSSubjectInfo.class );
 				
 			} catch (Exception e) {
 				check = false;

@@ -1,9 +1,12 @@
 package com.x.bbs.assemble.control.jaxrs.foruminfo;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -20,8 +23,6 @@ import com.x.bbs.assemble.control.jaxrs.foruminfo.exception.ExceptionForumInfoNo
 import com.x.bbs.assemble.control.jaxrs.foruminfo.exception.ExceptionForumInfoProcess;
 import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSSectionInfo;
-
-import net.sf.ehcache.Element;
 
 public class ActionGet extends BaseAction {
 	
@@ -41,16 +42,16 @@ public class ActionGet extends BaseAction {
 		}
 		
 		if( check ){
-			String cacheKey = "forum#" + id;
-			Element element = cache.get( cacheKey );
-			if ((null != element) && (null != element.getObjectValue())) {
-				ActionResult<Wo> result_cache = (ActionResult<Wo>) element.getObjectValue();
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+			if( optional.isPresent() ){
+				ActionResult<Wo> result_cache = (ActionResult<Wo>) optional.get();
 				result.setData( result_cache.getData() );
 				result.setCount( 1L);
 			} else {
 				//继续进行数据查询
 				result = getForumQueryResult( id, request, effectivePerson );
-				cache.put(new Element(cacheKey, result ));
+				CacheManager.put( cacheCategory, cacheKey, result );
 			}
 		}
 		return result;

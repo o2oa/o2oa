@@ -1,24 +1,19 @@
 package com.x.file.assemble.control.jaxrs.attachment2;
 
+import javax.persistence.EntityManager;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.tools.ListTools;
 import com.x.file.assemble.control.Business;
-import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.FileStatus;
-import com.x.file.core.entity.personal.Attachment;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Recycle;
 import com.x.file.core.entity.personal.Share;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
 
 class ActionDelete extends BaseAction {
 

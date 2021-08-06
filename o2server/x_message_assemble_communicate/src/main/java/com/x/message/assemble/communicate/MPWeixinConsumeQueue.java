@@ -1,5 +1,12 @@
 package com.x.message.assemble.communicate;
 
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.x.base.core.container.EntityManagerContainer;
@@ -15,12 +22,6 @@ import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.message.core.entity.Message;
 import com.x.organization.core.entity.Person;
-import org.apache.commons.lang3.StringUtils;
-
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 发送微信公众号模版消息

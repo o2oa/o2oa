@@ -2,9 +2,12 @@ package com.x.bbs.assemble.control.jaxrs.foruminfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -32,16 +35,16 @@ public class ActionGetAll extends BaseAction {
 		Boolean check = true;
 		
 		if( check ){
-			String cacheKey = "forum#all";
-			Element element = cache.get( cacheKey );
-			if ((null != element) && (null != element.getObjectValue())) {
-				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) element.getObjectValue();
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass());
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+			if( optional.isPresent() ){
+				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) optional.get();
 				result.setData( result_cache.getData() );
 				result.setCount( 1L);
 			} else {
 				//继续进行数据查询
 				result = getForumAllQueryResult( request, effectivePerson );
-				cache.put(new Element(cacheKey, result ));
+				CacheManager.put( cacheCategory, cacheKey, result );
 			}
 		}
 		return result;

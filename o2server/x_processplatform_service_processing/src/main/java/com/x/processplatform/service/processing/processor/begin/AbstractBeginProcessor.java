@@ -12,7 +12,7 @@ import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public abstract class AbstractBeginProcessor extends AbstractProcessor {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(AbstractBeginProcessor.class);
 
 	protected AbstractBeginProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
@@ -53,9 +53,9 @@ public abstract class AbstractBeginProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Begin begin = (Begin) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, begin);
+		this.executingCommitted(aeiObjects, begin, works);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public abstract class AbstractBeginProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Begin begin) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Begin begin) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Begin begin, List<Work> works) throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Begin begin) throws Exception;
 }

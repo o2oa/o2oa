@@ -1,5 +1,10 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.text.StringEscapeUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -18,14 +23,6 @@ import com.x.message.assemble.communicate.ws.collaboration.ActionCollaboration;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMMsg;
 import com.x.message.core.entity.Message;
-import org.apache.commons.text.StringEscapeUtils;
-
-import java.util.Date;
-import java.util.List;
-import java.util.function.Predicate;
-
-import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_GROUP;
-import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_SINGLE;
 
 
 public class ActionMsgCreate extends BaseAction {

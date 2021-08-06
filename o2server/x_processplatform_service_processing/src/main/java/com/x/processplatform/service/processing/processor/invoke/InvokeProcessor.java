@@ -460,7 +460,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, Invoke invoke, List<Work> works) throws Exception {
 		// nothing
 	}
 

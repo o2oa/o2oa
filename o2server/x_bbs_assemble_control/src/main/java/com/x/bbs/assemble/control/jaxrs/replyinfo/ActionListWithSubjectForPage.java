@@ -2,9 +2,12 @@ package com.x.bbs.assemble.control.jaxrs.replyinfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.tools.SortTools;
 import org.apache.commons.lang3.StringUtils;
 
@@ -53,16 +56,15 @@ public class ActionListWithSubjectForPage extends BaseAction {
 		}
 
 		if (check) {
-			String cacheKey = wrapIn.getSubjectId() + "#" + page + "#" + count + "#" + wrapIn.getShowSubReply();
-			Element element = cache.get(cacheKey);
-
-			if ((null != element) && (null != element.getObjectValue())) {
-				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) element.getObjectValue();
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), wrapIn.getSubjectId(), page, count, wrapIn.getShowSubReply());
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+			if( optional.isPresent() ){
+				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) optional.get();
 				result.setData(result_cache.getData());
 				result.setCount(result_cache.getCount());
 			} else {
 				result = getReplyQueryResult( wrapIn, request, effectivePerson, page, count );
-				cache.put(new Element(cacheKey, result));
+				CacheManager.put( cacheCategory, cacheKey, result );
 			}
 		}
 		return result;

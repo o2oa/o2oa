@@ -142,7 +142,7 @@ public class EndProcessor extends AbstractEndProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, End end) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, End end, List<Work> works) throws Exception {
 		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScript())
 				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScriptText())) {
 			aeiObjects.business().element()

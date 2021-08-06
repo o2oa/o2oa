@@ -1,14 +1,5 @@
 package com.x.file.assemble.control.service;
 
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.config.StorageMapping;
-import com.x.file.assemble.control.Business;
-import com.x.file.assemble.control.ThisApplication;
-import com.x.file.core.entity.open.FileStatus;
-import com.x.file.core.entity.open.OriginFile;
-import com.x.file.core.entity.personal.Attachment2;
-import com.x.file.core.entity.personal.Folder2;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStream;
@@ -18,6 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.file.assemble.control.Business;
+import com.x.file.assemble.control.ThisApplication;
+import com.x.file.core.entity.open.FileStatus;
+import com.x.file.core.entity.open.OriginFile;
+import com.x.file.core.entity.personal.Attachment2;
+import com.x.file.core.entity.personal.Folder2;
 
 public class FileCommonService {
 

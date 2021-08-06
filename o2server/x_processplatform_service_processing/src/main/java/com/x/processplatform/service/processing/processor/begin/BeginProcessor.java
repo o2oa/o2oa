@@ -67,7 +67,7 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Begin begin) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, Begin begin, List<Work> works) throws Exception {
 		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScript())
 				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScriptText())) {
 			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
