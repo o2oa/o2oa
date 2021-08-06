@@ -5,10 +5,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.binary.Base64;
 import org.imgscalr.Scalr;
 
@@ -61,11 +64,10 @@ public class ActionImageBase64 extends BaseAction {
 			}
 		}
 
-		String cacheKey = catchNamePrefix + "#url#" + wrapIn.getUrl() + "#size#" + wrapIn.getSize();
-		Element element = null;
-		element = cache.get(cacheKey);
-		if (element != null) {
-			wrap = (String) element.getObjectValue();
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), wrapIn.getUrl(), wrapIn.getSize());
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+		if( optional.isPresent() ){
+			wrap = (String) optional.get();
 			result.setData(wrap);
 		} else {
 			if (check) {
@@ -103,7 +105,7 @@ public class ActionImageBase64 extends BaseAction {
 				try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 					ImageIO.write(image, "png", baos);
 					wrap = Base64.encodeBase64String(baos.toByteArray());
-					cache.put(new Element(cacheKey, wrap));
+					CacheManager.put( cacheCategory, cacheKey, wrap );
 					result.setData(wrap);
 				} catch (Exception e) {
 					check = false;

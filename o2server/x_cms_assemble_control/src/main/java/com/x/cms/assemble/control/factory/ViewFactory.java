@@ -76,7 +76,7 @@ public class ViewFactory extends AbstractFactory {
 	
 	/**
 	 * 列示指定分类的所有视图配置信息ID列表
-	 * @param doucmentId 指定的文档ID
+	 * @param categoryId 指定的文档ID
 	 * @return
 	 * @throws Exception 
 	 */
@@ -96,7 +96,7 @@ public class ViewFactory extends AbstractFactory {
 	
 	/**
 	 * 列示指定应用ID的所有视图配置信息ID列表
-	 * @param doucmentId 指定的文档ID
+	 * @param id 指定的文档ID
 	 * @return
 	 * @throws Exception 
 	 */
@@ -116,7 +116,7 @@ public class ViewFactory extends AbstractFactory {
 	
 	/**
 	 * 列示指定表单ID的所有视图配置信息ID列表
-	 * @param doucmentId 指定的文档ID
+	 * @param id 指定的文档ID
 	 * @return
 	 * @throws Exception 
 	 */

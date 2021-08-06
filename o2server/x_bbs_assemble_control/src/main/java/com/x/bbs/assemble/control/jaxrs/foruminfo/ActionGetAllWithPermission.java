@@ -3,9 +3,12 @@ package com.x.bbs.assemble.control.jaxrs.foruminfo;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -23,7 +26,6 @@ import com.x.bbs.assemble.control.jaxrs.foruminfo.ActionGetAll.WoSectionInfo;
 import com.x.bbs.assemble.control.jaxrs.foruminfo.exception.ExceptionForumInfoProcess;
 import com.x.bbs.entity.BBSForumInfo;
 
-import net.sf.ehcache.Element;
 
 public class ActionGetAllWithPermission extends BaseAction {
 	
@@ -40,17 +42,16 @@ public class ActionGetAllWithPermission extends BaseAction {
 		}
 		
 		if( check ) {
-			String cacheKey = getCacheKey( effectivePerson, isBBSManager );
-			Element element = cache.get( cacheKey );
-			
-			if ((null != element) && (null != element.getObjectValue())) {
-				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) element.getObjectValue();
+			Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), effectivePerson.getDistinguishedName(), isBBSManager);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+			if( optional.isPresent() ){
+				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) optional.get();
 				result.setData( result_cache.getData() );
 				result.setCount( result_cache.getCount() );
 			} else {
 				//继续进行数据查询;
 				result = getForumWithPermissionQueryResult( request, effectivePerson, isBBSManager );
-				cache.put(new Element(cacheKey, result ));
+				CacheManager.put( cacheCategory, cacheKey, result );
 			}
 		}		
 		return result;

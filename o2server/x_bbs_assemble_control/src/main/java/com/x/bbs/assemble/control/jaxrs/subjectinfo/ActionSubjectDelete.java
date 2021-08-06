@@ -2,7 +2,7 @@ package com.x.bbs.assemble.control.jaxrs.subjectinfo;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -55,10 +55,10 @@ public class ActionSubjectDelete extends BaseAction {
 		try {
 			subjectInfoServiceAdv.delete(id);// 删除主题同时要将所有的回复内容全部删除			
 			wo.setId( id );
-			
-			ApplicationCache.notify( BBSSubjectInfo.class );
-			ApplicationCache.notify( BBSSectionInfo.class );
-			ApplicationCache.notify( BBSForumInfo.class );
+
+			CacheManager.notify( BBSSubjectInfo.class );
+			CacheManager.notify( BBSSectionInfo.class );
+			CacheManager.notify( BBSForumInfo.class );
 			
 			// 记录操作日志
 			operationRecordService.subjectOperation(effectivePerson.getDistinguishedName(), subjectInfo, "DELETE", hostIp, hostName);

@@ -4,6 +4,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -17,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @apiNote 根据回复内容ID 查询 针对该回帖的回复内容的列表
@@ -39,16 +42,15 @@ public class ActionListWithReply extends BaseAction {
 		Boolean check = true;
 
 		if (check) {
-			String cacheKey = replyId + "#replys#all" ;
-			Element element = cache.get(cacheKey);
-
-			if ((null != element) && (null != element.getObjectValue())) {
-				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) element.getObjectValue();
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), replyId);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+			if( optional.isPresent() ){
+				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) optional.get();
 				result.setData(result_cache.getData());
 				result.setCount(result_cache.getCount());
 			} else {
 				result = getReplyQueryResult( request, effectivePerson, replyId );
-				cache.put(new Element(cacheKey, result));
+				CacheManager.put( cacheCategory, cacheKey, result );
 			}
 		}
 		return result;
