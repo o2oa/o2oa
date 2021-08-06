@@ -40,14 +40,25 @@ MWF.xApplication.Attendance.LP = {
 	"pm": "p.m.",
 
 	"statusText": {
-		"normal" : "Attendance", //绿色，正常
-		"levelAsked":"Ask for leave", //蓝色，请假
-		"late":"Late", //橙色，迟到
-		"leaveEarly":"Leave early", //橙色，早退
-		"noSign":"Absence", //粉红色,未签到
-		"appealSuccess" : "Appeal",
-		"lackOfTime" : "LackOfTime",
-		"abNormalDuty" : "Abnormal",
+		"normal": "attendance", //green, normal
+		"levelAsked":"asked leave", //blue, ask for leave
+		"late":"late", //orange, late
+		"leaveEarly":"leave early", //orange, leave early
+		"noSign":"Absence", //Pink, not signed in
+		"appealSuccess": "Appeal",
+		"lackOfTime": "Lack of Time",
+		"abNormalDuty": "Exception",
+
+
+		"lateTimes": "Late",
+		"leaveEarlyTimes": "Leave Early",
+		"lackOfTimeCount": "Insufficient",
+		"abNormalDutyCount": "Exception",
+		"resultNormal": "Normal",
+		"seriousLateTimes": "Strictly Late",
+		"outsideDutyTimes": "Outside Sign",
+		"absenteeismTimes": "Absenteeism",
+		"notSignedCount": "Lack of Card",
 	},
 
 	"absent": "Absent",
