@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,7 +16,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -265,10 +265,10 @@ public class ActionSave extends BaseAction {
 				}
 				sectionInfo = sectionInfoServiceAdv.save( sectionInfo );				
 				wo.setId( sectionInfo.getId() );
-				
-				ApplicationCache.notify( BBSForumInfo.class );
-				ApplicationCache.notify( BBSSectionInfo.class );
-				ApplicationCache.notify( BBSSubjectInfo.class );
+
+				CacheManager.notify( BBSForumInfo.class );
+				CacheManager.notify( BBSSectionInfo.class );
+				CacheManager.notify( BBSSubjectInfo.class );
 				
 				if ( sectionInfo.getCreateTime().compareTo( sectionInfo.getUpdateTime() ) == 0 ) {
 					operationRecordService.sectionOperation(effectivePerson.getDistinguishedName(), sectionInfo, "CREATE", hostIp, hostName);

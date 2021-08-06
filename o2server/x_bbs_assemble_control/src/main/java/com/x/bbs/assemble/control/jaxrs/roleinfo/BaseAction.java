@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
@@ -24,7 +23,6 @@ import net.sf.ehcache.Ehcache;
 
 public class BaseAction extends StandardJaxrsAction {
 	private static  Logger logger = LoggerFactory.getLogger(BaseAction.class);
-	protected Ehcache cache = ApplicationCache.instance().getCache(BaseAction.class);
 	protected BBSRoleInfoService roleInfoService = new BBSRoleInfoService();
 	protected BBSPermissionInfoService permissionInfoService = new BBSPermissionInfoService();
 	protected BBSForumInfoServiceAdv forumInfoServiceAdv = new BBSForumInfoServiceAdv();

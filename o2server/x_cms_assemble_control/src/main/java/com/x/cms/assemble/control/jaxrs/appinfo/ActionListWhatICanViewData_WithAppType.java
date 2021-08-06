@@ -1,6 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;

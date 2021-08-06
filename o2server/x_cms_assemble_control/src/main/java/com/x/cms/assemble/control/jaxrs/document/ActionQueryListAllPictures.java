@@ -12,7 +12,6 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -79,11 +78,6 @@ public class ActionQueryListAllPictures extends BaseAction {
 			}	
 		}			
 		return result;
-	}
-	
-	private String getCacheKeyFormWrapInFilter( String flag, String id ) {
-		String cacheKey = ApplicationCache.concreteCacheKey( id, flag );	
-		return cacheKey;
 	}
 	
 	public static class Wo extends GsonPropertyObject {

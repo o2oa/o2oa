@@ -10,7 +10,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -79,7 +79,7 @@ public class ActionSubjectSubmitVoteResult extends BaseAction {
 			if ( "投票".equals(subjectInfo.getTypeCategory()) ) {
 				try {
 					subjectVoteService.submitVoteResult(effectivePerson, subjectInfo, wrapIn.getOptionGroups());
-					ApplicationCache.notify( BBSSubjectInfo.class );
+					CacheManager.notify( BBSSubjectInfo.class );
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionSubjectOperation(e, "系统在保存投票选项信息时发生异常!");
