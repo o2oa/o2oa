@@ -198,9 +198,9 @@ public class Context extends AbstractContext {
 		// 将当前的application写入到servletContext
 		servletContext.setAttribute(SERVLETCONTEXT_ATTRIBUTE_APPLICATION, jsonElement.toString());
 		// 发送注册到本地的信号
-		JsonObject registApplicationLocal = jsonElement.getAsJsonObject();
-		registApplicationLocal.addProperty("type", "registApplicationLocal");
-		Config.resource_node_eventQueue().put(registApplicationLocal);
+		// JsonObject registApplicationLocal = jsonElement.getAsJsonObject();
+		// registApplicationLocal.addProperty("type", "registApplicationLocal");
+		// Config.resource_node_eventQueue().put(registApplicationLocal);
 	}
 
 	public <T extends AbstractJob> void scheduleLocal(Class<T> cls, String cron) throws Exception {

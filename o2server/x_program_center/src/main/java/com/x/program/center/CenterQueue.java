@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.vfs2.util.DelegatingFileSystemOptionsBuilder;
 
 import com.x.base.core.project.Application;
 import com.x.base.core.project.Applications;
@@ -22,18 +23,6 @@ public class CenterQueue extends AbstractQueue<CenterQueueBody> {
 	private static Logger logger = LoggerFactory.getLogger(CenterQueue.class);
 
 	protected void execute(CenterQueueBody body) throws Exception {
-
-//		switch (body.type()) {
-//		case CenterQueueBody.TYPE_REGISTAPPLICATIONS:
-//			CenterQueueRegistApplicationsBody centerQueueRegistApplicationsBody = (CenterQueueRegistApplicationsBody) body;
-//			registApplications(centerQueueRegistApplicationsBody);
-//			break;
-////		case CenterQueueBody.TYPE_REFRESHAPPLICATION:
-////			this.refresh((CenterQueueRefreshBody) body);
-////			break;
-//		default:
-//			break;
-
 		if (StringUtils.equals(body.type(), CenterQueueBody.TYPE_REGISTAPPLICATIONS)) {
 			CenterQueueRegistApplicationsBody centerQueueRegistApplicationsBody = (CenterQueueRegistApplicationsBody) body;
 			registApplications(centerQueueRegistApplicationsBody);
