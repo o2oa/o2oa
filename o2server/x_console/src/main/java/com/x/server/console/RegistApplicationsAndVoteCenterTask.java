@@ -22,17 +22,17 @@ public class RegistApplicationsAndVoteCenterTask implements Job {
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
-			// 刷新本地application
-			Config.resource_node_eventQueue().put(XGsonBuilder.instance().toJsonTree(new RefreshApplicationsEvent()));
 			if (BooleanUtils.isTrue(Servers.applicationServerIsStarted())) {
-				// 先选举center
-				Config.resource_node_eventQueue().put(XGsonBuilder.instance().toJsonTree(new VoteCenterEvent()));
-				// 注册node上所有的appliction到各个center
+				// 注册node上所有的application到各个center
 				Config.resource_node_eventQueue()
 						.put(XGsonBuilder.instance().toJsonTree(new RegistApplicationsEvent()));
-				Config.resource_node_eventQueue()
-						.put(XGsonBuilder.instance().toJsonTree(new UpdateApplicationsEvent()));
+				// 先选举center
+				Config.resource_node_eventQueue().put(XGsonBuilder.instance().toJsonTree(new VoteCenterEvent()));
 			}
+			// 从主center更新本地数据
+			Config.resource_node_eventQueue().put(XGsonBuilder.instance().toJsonTree(new UpdateApplicationsEvent()));
+			// 刷新本地application
+			Config.resource_node_eventQueue().put(XGsonBuilder.instance().toJsonTree(new RefreshApplicationsEvent()));
 		} catch (Exception e) {
 			logger.error(e);
 			Thread.currentThread().interrupt();

@@ -56,16 +56,6 @@ public class Context extends AbstractContext {
 
 	private static Logger logger = LoggerFactory.getLogger(Context.class);
 
-//	@Override
-//	public Applications applications() throws Exception {
-//		return applications;
-//	}
-
-//	@Override
-//	public ThreadFactory threadFactory() {
-//		return threadFactory;
-//	}
-
 	/* 应用的磁盘路径 */
 	private volatile String path;
 
@@ -130,14 +120,6 @@ public class Context extends AbstractContext {
 
 	public Boolean sslEnable() {
 		return this.sslEnable;
-	}
-
-	/* 清除缓存指定队列 */
-	private AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue;
-
-	@Override
-	public AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue() {
-		return this.clearCacheRequestQueue;
 	}
 
 	/* quartz 调度器 */
