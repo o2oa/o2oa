@@ -153,7 +153,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         value = this._getBusinessData();
         if (!value){
             if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
-            if (!value.then) if (o2.typeOf(value)=="array") value = {"data": value || []};
+            if (value && !value.then) if (o2.typeOf(value)=="array") value = {"data": value || []};
         }
         return value || [];
     },
