@@ -122,14 +122,6 @@ public class Context extends AbstractContext {
 		return this.sslEnable;
 	}
 
-	/* 清除缓存指定队列 */
-	private AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue;
-
-	@Override
-	public AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue() {
-		return this.clearCacheRequestQueue;
-	}
-
 	/* quartz 调度器 */
 	private Scheduler scheduler;
 
