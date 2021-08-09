@@ -70,6 +70,8 @@ public class GBaseMySQL5Dictionary extends DBDictionary {
 		validationSQL = "SELECT NOW()";
 		distinctCountColumnSeparator = ",";
 
+		isJDBC3 = true;
+
 		supportsUniqueConstraints = true;
 		supportsDeferredConstraints = false;
 		constraintNameMode = CONS_NAME_MID;
