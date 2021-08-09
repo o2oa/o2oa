@@ -71,7 +71,7 @@ public class SerialNumber extends SliceJpaObject {
 	@FieldDescribe("编号名称.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
-	@CheckPersist(allowEmpty = false, citationNotExists =
+	@CheckPersist(allowEmpty = true, citationNotExists =
 	/* 同一个应用下不可重名 */
 	@CitationNotExist(fields = { "name",
 			"id" }, type = SerialNumber.class, equals = @Equal(property = "process", field = "process")))
