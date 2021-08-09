@@ -1,5 +1,6 @@
 package com.x.server.console.server;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -11,6 +12,8 @@ import org.eclipse.jetty.util.DateCache;
 import org.eclipse.jetty.util.annotation.ManagedObject;
 
 import com.x.base.core.project.http.HttpToken;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
 /**
  * A flexible RequestLog, which produces log strings in a customizable format.
@@ -240,19 +243,25 @@ import com.x.base.core.project.http.HttpToken;
 @ManagedObject("Custom format request log with body")
 public class ServerRequestLogBody extends ServerRequestLog {
 
+	private static Logger logger = LoggerFactory.getLogger(ServerRequestLogBody.class);
+
 	public ServerRequestLogBody(ServerRequestLog.Writer writer, String formatString) {
 		super(writer, formatString);
 	}
 
 	@Override
 	public void customLog(Request request, StringBuilder sb) {
-		sb.append(" \"")
-				.append(URLEncoder.encode(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), ""),
-						StandardCharsets.UTF_8))
-				.append("\"");
-		Object body = request.getAttribute(HttpToken.X_REQUESTBODY);
-		if (null != body) {
-			sb.append(" ").append(URLEncoder.encode(body.toString(), StandardCharsets.UTF_8));
+		try {
+			sb.append(" \"")
+					.append(URLEncoder.encode(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), ""),
+							StandardCharsets.UTF_8.toString()))
+					.append("\"");
+			Object body = request.getAttribute(HttpToken.X_REQUESTBODY);
+			if (null != body) {
+				sb.append(" ").append(URLEncoder.encode(body.toString(), StandardCharsets.UTF_8.toString()));
+			}
+		} catch (UnsupportedEncodingException e) {
+			logger.error(e);
 		}
 	}
 
