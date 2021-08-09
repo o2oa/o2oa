@@ -14,7 +14,6 @@ import org.eclipse.jetty.util.annotation.ManagedObject;
 import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.message.assemble.communicate.jaxrs.connector.ConnectorAction;
 
 /**
  * A flexible RequestLog, which produces log strings in a customizable format.
