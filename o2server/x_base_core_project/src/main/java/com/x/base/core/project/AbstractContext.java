@@ -8,14 +8,12 @@ import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
-import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.schedule.AbstractJob;
 
 public abstract class AbstractContext {
 
 	// Applications资源
-	protected volatile Applications applications = new Applications();
+	protected Applications applications = new Applications();
 
 	protected static final String INITPARAMETER_PORJECT = "project";
 
@@ -47,9 +45,7 @@ public abstract class AbstractContext {
 
 	public abstract <T extends AbstractJob> void fireScheduleOnLocal(Class<T> cls, Integer delay) throws Exception;
 
-	public abstract AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue();
-
-	private volatile Date applicationsTimestamp = null;
+	private Date applicationsTimestamp = null;
 
 	public Applications applications() throws Exception {
 		if ((null == this.applicationsTimestamp) || ((null != Config.resource_node_applicationsTimestamp())
