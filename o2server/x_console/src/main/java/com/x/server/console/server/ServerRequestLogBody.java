@@ -247,6 +247,7 @@ public class ServerRequestLogBody extends ServerRequestLog {
 
 	@Override
 	public void customLog(Request request, StringBuilder sb) throws UnsupportedEncodingException {
+		// java8不支持charset
 		sb.append(" \"")
 				.append(URLEncoder.encode(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), ""),
 						StandardCharsets.UTF_8.toString()))
