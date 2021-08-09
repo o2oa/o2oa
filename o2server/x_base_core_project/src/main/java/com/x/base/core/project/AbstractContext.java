@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.servlet.ServletContext;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -14,7 +15,7 @@ import com.x.base.core.project.schedule.AbstractJob;
 public abstract class AbstractContext {
 
 	// Applications资源
-	protected volatile Applications applications;
+	protected volatile Applications applications = new Applications();
 
 	protected static final String INITPARAMETER_PORJECT = "project";
 
@@ -51,12 +52,12 @@ public abstract class AbstractContext {
 	private volatile Date applicationsTimestamp = null;
 
 	public Applications applications() throws Exception {
-		if (null != Config.resource_node_applicationsTimestamp()) {
-			if (null == this.applicationsTimestamp
-					|| (this.applicationsTimestamp.before(Config.resource_node_applicationsTimestamp()))) {
+		if ((null == this.applicationsTimestamp) || ((null != Config.resource_node_applicationsTimestamp())
+				&& this.applicationsTimestamp.before(Config.resource_node_applicationsTimestamp()))) {
+			JsonElement jsonElement = Config.resource_node_applications();
+			if (null != jsonElement && (!jsonElement.isJsonNull())) {
 				synchronized (this) {
-					this.applications = XGsonBuilder.instance().fromJson(Config.resource_node_applications(),
-							Applications.class);
+					this.applications = XGsonBuilder.instance().fromJson(jsonElement, Applications.class);
 					this.applicationsTimestamp = Config.resource_node_applicationsTimestamp();
 				}
 			}
