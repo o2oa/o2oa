@@ -250,18 +250,15 @@ public class ServerRequestLogBody extends ServerRequestLog {
 	}
 
 	@Override
-	public void customLog(Request request, StringBuilder sb) {
-		try {
-			sb.append(" \"")
-					.append(URLEncoder.encode(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), ""),
-							StandardCharsets.UTF_8.toString()))
-					.append("\"");
-			Object body = request.getAttribute(HttpToken.X_REQUESTBODY);
-			if (null != body) {
-				sb.append(" ").append(URLEncoder.encode(body.toString(), StandardCharsets.UTF_8.toString()));
-			}
-		} catch (UnsupportedEncodingException e) {
-			logger.error(e);
+	public void customLog(Request request, StringBuilder sb) throws UnsupportedEncodingException {
+		// java8不支持charset
+		sb.append(" \"")
+				.append(URLEncoder.encode(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), ""),
+						StandardCharsets.UTF_8.toString()))
+				.append("\"");
+		Object body = request.getAttribute(HttpToken.X_REQUESTBODY);
+		if (null != body) {
+			sb.append(" ").append(URLEncoder.encode(body.toString(), StandardCharsets.UTF_8.toString()));
 		}
 	}
 
