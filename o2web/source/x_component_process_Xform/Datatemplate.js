@@ -314,7 +314,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var value = this._getBusinessData();
 			if (!value){
 				if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
-				if (!value.then) if (o2.typeOf(value)==="object") value = [value];
+				if (value && !value.then) if (o2.typeOf(value)==="object") value = [value];
 			}
 			if(!value){
 				value = [];
