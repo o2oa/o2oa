@@ -132,10 +132,10 @@ public class Context extends AbstractContext {
 
 	private AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue;
 
-	@Override
-	public AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue() {
-		return this.clearCacheRequestQueue;
-	}
+//	@Override
+//	public AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue() {
+//		return this.clearCacheRequestQueue;
+//	}
 
 //	public ThreadFactory threadFactory() {
 //		return this.threadFactory;
