@@ -1,6 +1,6 @@
 package com.x.server.console.node;
 
-import org.apache.commons.lang3.BooleanUtils;
+import org.eclipse.jetty.server.Server;
 
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.config.Config;
@@ -18,8 +18,12 @@ public class UpdateApplicationsEvent implements Event {
 	public final String type = Event.TYPE_UPDATEAPPLICATIONS;
 
 	public void execute() {
+		this.execute(Servers.applicationServer);
+	}
+
+	public void execute(Server applicationServer) {
 		try {
-			if (BooleanUtils.isTrue(Servers.applicationServerIsRunning())) {
+			if ((null != applicationServer) && applicationServer.isStarted()) {
 				ActionResponse respone = CipherConnectionAction.get(false, 1000, 2000,
 						Config.url_x_program_center_jaxrs("center", "applications"));
 				Applications applications = respone.getData(Applications.class);

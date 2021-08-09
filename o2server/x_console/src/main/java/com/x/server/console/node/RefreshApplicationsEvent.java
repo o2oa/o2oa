@@ -43,7 +43,6 @@ public class RefreshApplicationsEvent implements Event {
 	}
 
 	private boolean refresh(Applications applications, Date date) throws Exception {
-
 		List<String> removeEntries = new ArrayList<>();
 		boolean modify = false;
 		for (Entry<String, CopyOnWriteArrayList<Application>> en : applications.entrySet()) {

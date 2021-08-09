@@ -71,6 +71,7 @@ import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -81,6 +82,8 @@ import com.x.base.core.project.tools.JarTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PathTools;
 import com.x.base.core.project.tools.StringTools;
+import com.x.server.console.node.RegistApplicationsEvent;
+import com.x.server.console.node.UpdateApplicationsEvent;
 import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
 import com.x.server.console.server.ServerRequestLogBody;
@@ -152,6 +155,11 @@ public class ApplicationServerTools extends JettySeverTools {
 		}
 
 		server.start();
+		// 将应用首先注册到本地,开机可以直接运行
+		new RegistApplicationsLocal().execute(server);
+		// 注册本地应用并推送到服务器
+		new RegistApplicationsEvent().execute(server);
+		new UpdateApplicationsEvent().execute(server);
 
 		System.out.println("****************************************");
 		System.out.println("* application server start completed.");

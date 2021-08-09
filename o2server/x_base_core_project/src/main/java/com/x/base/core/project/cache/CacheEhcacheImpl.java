@@ -36,6 +36,7 @@ public class CacheEhcacheImpl implements Cache {
 		configuration.setName("CacheEhcacheManager-" + application);
 		this.cacheManager = new CacheManager(configuration);
 		this.notifyReceiveQueue = new CacheEhcacheNotifyReceiveQueue(this.cacheManager);
+		notifyReceiveQueue.start();
 		if (BooleanUtils.isTrue(Config.cache().getEhcache().getJmxEnable())) {
 			ManagementService.registerMBeans(cacheManager, ManagementFactory.getPlatformMBeanServer(), true, true, true,
 					true);
