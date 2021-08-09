@@ -81,6 +81,12 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
             this.elements.push(module);
             this.form.modules.push(module);
 
+            if( json.width && json.width.toInt()>60 ){
+                node.setStyle("width", json.width+"px");
+            }
+            if( json.description){
+                node.set("title", json.description);
+            }
             if (page.isShow){
                 this.showContentModule.call(page, this);
             }else{

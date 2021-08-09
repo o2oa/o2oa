@@ -103,6 +103,13 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
         this._setEditStyle_custom("id");
 
         this.json.moduleName = this.moduleName;
+
+		if (this.json.width){
+			if (this.json.width.toInt()>60) this.node.setStyle("width", ""+this.json.width+"px");
+		}
+		if( this.json.description ){
+			this.node.set("title", this.json.description);
+		}
 	},
 	//_dragIn: function(module){
 		//this.treeNode.parentNode.module._dragIn(module);
@@ -116,6 +123,9 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 		}
 		if (name=="name"){
 			this.page.textNode.set("text", this.json.name);
+		}
+		if( name=="description"){
+			this.node.set("title", this.json.description);
 		}
 	},
 	"addPage": function(){
