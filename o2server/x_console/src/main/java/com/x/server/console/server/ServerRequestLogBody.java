@@ -1,5 +1,6 @@
 package com.x.server.console.server;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -245,14 +246,14 @@ public class ServerRequestLogBody extends ServerRequestLog {
 	}
 
 	@Override
-	public void customLog(Request request, StringBuilder sb) {
+	public void customLog(Request request, StringBuilder sb) throws UnsupportedEncodingException {
 		sb.append(" \"")
 				.append(URLEncoder.encode(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), ""),
-						StandardCharsets.UTF_8))
+						StandardCharsets.UTF_8.toString()))
 				.append("\"");
 		Object body = request.getAttribute(HttpToken.X_REQUESTBODY);
 		if (null != body) {
-			sb.append(" ").append(URLEncoder.encode(body.toString(), StandardCharsets.UTF_8));
+			sb.append(" ").append(URLEncoder.encode(body.toString(), StandardCharsets.UTF_8.toString()));
 		}
 	}
 

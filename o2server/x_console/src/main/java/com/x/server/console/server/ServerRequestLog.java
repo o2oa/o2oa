@@ -5,6 +5,7 @@ import static java.lang.invoke.MethodHandles.foldArguments;
 import static java.lang.invoke.MethodType.methodType;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 //
 
@@ -359,10 +360,10 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		}
 	}
 
-	public void customLog(Request request, StringBuilder sb) {
+	public void customLog(Request request, StringBuilder sb) throws UnsupportedEncodingException {
 		sb.append(" \"")
 				.append(URLEncoder.encode(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), ""),
-						StandardCharsets.UTF_8))
+						StandardCharsets.UTF_8.toString()))
 				.append("\"");
 	}
 
