@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.commons.vfs2.util.DelegatingFileSystemOptionsBuilder;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 
@@ -39,20 +39,20 @@ public class RegistApplicationsEvent implements Event {
 
 	public final String type = Event.TYPE_REGISTAPPLICATIONS;
 
-	// private AtomicInteger loop = new AtomicInteger(0);
-
+	@Override
 	public void execute() {
+		this.execute(Servers.applicationServer);
+	}
+
+	public void execute(Server applicationServer) {
 		try {
 			if (BooleanUtils.isTrue(Servers.applicationServerIsStarted())
 					&& (null != Config.resource_node_applications())) {
-				List<Application> list = listApplication();
-				// list = removeNotRegisted(list);
+				List<Application> list = listApplication(applicationServer);
 				if (BooleanUtils.isTrue(Config.currentNode().getSelfHealthCheckEnable()) && (!this.healthCheck(list))) {
 					logger.warn("health check result is false.");
 					list.clear();
 				}
-
-				// if (list.isEmpty() || 0 == loop.getAndUpdate(o -> (++o % 2))) {
 
 				Req req = new Req();
 
@@ -65,50 +65,15 @@ public class RegistApplicationsEvent implements Event {
 							Config.url_x_program_center_jaxrs(entry, "center", "regist", "applications"), req);
 				}
 
-				// }
 			}
 		} catch (Exception e) {
 			logger.error(e);
 		}
 	}
 
-//	private List<Application> removeNotRegisted(List<Application> list) throws Exception {
-//		List<String> contextPaths = ListTools.extractProperty(list, "contextPath", String.class, true, true);
-//		List<String> removes = new ArrayList<>();
-//		GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
-//		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
-//		for (Handler handler : hanlderList.getHandlers()) {
-//			if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
-//				QuickStartWebApp app = (QuickStartWebApp) handler;
-//				if ((!contextPaths.contains(app.getContextPath())) || (!app.isStarted())) {
-//					removes.add(app.getContextPath());
-//				}
-//			}
-//		}
-//		if (!removes.isEmpty()) {
-//			list = list.stream().filter(o -> !removes.contains(o.getContextPath())).collect(Collectors.toList());
-//		}
-//		return list;
-//	}
-
-	// 保证从已经regist中取出,否则可能在启动阶段即被访问
-//	private List<Application> listRegistedApplication() throws Exception {
-//		Applications applications = gson.fromJson(Config.resource_node_applications(), Applications.class);
-//		List<Application> list = new ArrayList<>();
-//		final String node = Config.node();
-//		for (List<Application> o : applications.values()) {
-//			for (Application application : o) {
-//				if (StringUtils.equals(node, application.getNode())) {
-//					list.add(application);
-//				}
-//			}
-//		}
-//		return list;
-//	}
-
-	private List<Application> listApplication() throws Exception {
+	private List<Application> listApplication(Server applicationServer) throws Exception {
 		List<Application> list = new ArrayList<>();
-		GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
+		GzipHandler gzipHandler = (GzipHandler) applicationServer.getHandler();
 		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 		for (Handler handler : hanlderList.getHandlers()) {
 			if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {

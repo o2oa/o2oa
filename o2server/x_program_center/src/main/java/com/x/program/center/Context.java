@@ -56,16 +56,6 @@ public class Context extends AbstractContext {
 
 	private static Logger logger = LoggerFactory.getLogger(Context.class);
 
-//	@Override
-//	public Applications applications() throws Exception {
-//		return applications;
-//	}
-
-//	@Override
-//	public ThreadFactory threadFactory() {
-//		return threadFactory;
-//	}
-
 	/* 应用的磁盘路径 */
 	private volatile String path;
 
