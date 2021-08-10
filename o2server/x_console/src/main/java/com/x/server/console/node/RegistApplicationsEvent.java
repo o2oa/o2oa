@@ -56,6 +56,8 @@ public class RegistApplicationsEvent implements Event {
 
 				Req req = new Req();
 
+				req.setServerTime(new Date());
+
 				req.setNode(Config.node());
 
 				req.setValue(gson.toJson(list));
@@ -100,18 +102,16 @@ public class RegistApplicationsEvent implements Event {
 			for (Application o : list) {
 				futures.add(healthCheckTask(o));
 			}
-			long min = 0;
-			long max = 0;
+			long max = Long.MIN_VALUE;
 			for (CompletableFuture<Long> future : futures) {
 				long difference = future.get(3000, TimeUnit.MILLISECONDS);
-				min = Math.min(min, difference);
+				if (difference < 0) {
+					return false;
+				}
 				max = Math.max(max, difference);
 			}
-			if (max > 30 * 1000) {
-				logger.warn("server time difference is too large: {}ms.", max);
-			}
-			if (min < 0) {
-				return false;
+			if (max > 2 * 1000) {
+				logger.warn("response time is too long: {}ms.", max);
 			}
 		} catch (Exception e) {
 			logger.error(new RunningException(e, "health check error."));
@@ -171,7 +171,11 @@ public class RegistApplicationsEvent implements Event {
 
 		private static final long serialVersionUID = -2855209663719641934L;
 
+		@FieldDescribe("节点名")
 		private String node;
+
+		@FieldDescribe("服务器时间")
+		private Date serverTime;
 
 		public String getNode() {
 			return node;
@@ -179,6 +183,14 @@ public class RegistApplicationsEvent implements Event {
 
 		public void setNode(String node) {
 			this.node = node;
+		}
+
+		public Date getServerTime() {
+			return serverTime;
+		}
+
+		public void setServerTime(Date serverTime) {
+			this.serverTime = serverTime;
 		}
 
 	}
