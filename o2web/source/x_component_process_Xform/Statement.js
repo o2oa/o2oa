@@ -23,7 +23,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
-         * 异步加载查询视图后完成。
+         * 异步加载查询视图后执行。
          * @event MWF.xApplication.process.Xform.Statement#loadView
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */

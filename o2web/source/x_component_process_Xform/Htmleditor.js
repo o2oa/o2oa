@@ -16,7 +16,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
     {
 	Extends: MWF.APP$Module,
     options: {
-        "moduleEvents": ["load", "postLoad", "afterLoad"]
+        "moduleEvents": ["queryLoad", "load", "postLoad", "afterLoad"]
     },
     initialize: function(node, json, form, options){
         this.node = $(node);
@@ -27,7 +27,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
         this.fieldModuleLoaded = false;
     },
     load: function(){
-
+        this._loadModuleEvents();
         if (this.fireEvent("queryLoad")){
             this._queryLoaded();
             this._loadUserInterface();
@@ -41,22 +41,38 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
     },
 
 	_loadUserInterface: function(){
+	    debugger;
 		this.node.empty();
-        if (this.readonly){
+        if (this.readonly || this.json.isReadonly){
             this.node.set("html", this._getBusinessData());
             this.node.setStyles({
                 "-webkit-user-select": "text",
                 "-moz-user-select": "text"
             });
+            var images = this.node.getElements("img");
             //移动端设置图片宽度为100%
             if( layout.mobile ){
-                this.node.getElements("img").each( function( img ){
+                images.each( function( img ){
                     //if( img.height )img.erase("height");
                     img.setStyles({
                         "height": "auto",
                         "max-width" : "100%"
                     });
                 }.bind(this))
+            }else{ //PC端点击显示大图
+                if(this.json.enablePreview !== "n"){
+                    var previewImageList = images.filter(function (img) {
+                        var enablePreview = img.get("data-enablePreview");
+                        if( enablePreview !== "false" && enablePreview !== false ){
+                            img.setStyle("cursor", "pointer");
+                            return true;
+                        }
+                        return false;
+                    });
+                    if( previewImageList.length > 0 ){
+                        this.loadImageViewer();
+                    }
+                }
             }
             this.fieldModuleLoaded = true;
         }else{
@@ -97,6 +113,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
             }
 
             editorConfig.base64Encode = (this.json.base64Encode === "y");
+            editorConfig.enablePreview = (this.json.enablePreview !== "n");
             editorConfig.localImageMaxWidth = 800;
             editorConfig.reference = this.form.businessData.work.job;
             editorConfig.referenceType = "processPlatformJob";
@@ -386,6 +403,31 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                 nodes = null;
             }
         }.bind(this));
+    },
+    loadImageViewer: function(){
+	    this.loadViewerResource(function () {
+            new Viewer( this.node, {
+                url: function (image) {
+                    var id = image.get("data-originalid") || image.get("data-id");
+                    return id ? o2.xDesktop.getImageSrc(id) : image.get("src")
+                },
+                filter: function (image) {
+                    var enablePreview = image.get("data-enablePreview");
+                    return enablePreview !== "false" && enablePreview !== false;
+                }
+            });
+        }.bind(this))
+    },
+    loadViewerResource : function( callback ){
+        if( window.Viewer ){
+            if( callback )callback();
+            return;
+        }
+        COMMON.AjaxModule.loadCss("../o2_lib/viewer/viewer.css", function () {
+            o2.load( "../o2_lib/viewer/viewer.js", function () {
+                if(callback)callback();
+            }.bind(this))
+        }.bind(this))
     },
     _loadEvents: function(editorConfig){
         Object.each(this.json.events, function(e, key){
