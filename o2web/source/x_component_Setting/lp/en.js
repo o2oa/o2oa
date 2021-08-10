@@ -27,6 +27,7 @@ MWF.xApplication.Setting.LP = {
     "tab_ui_module": "Module",
     "tab_ui_resource": "Resource",
     "tab_ui_service": "Service",
+    "tab_ui_menu": "Menu",
 
     "base_nameSetting": "Configure your system name",
 
@@ -498,5 +499,27 @@ MWF.xApplication.Setting.LP = {
     "registerSuccessTitle": "Your company has been successfully registered in the O2 Center",
 
     "mobileServerSaveInfor": "Data has been submitted",
-    "mobileServerSaveErrorInfor": "Data has been submitted, once there is the following error: {error}"
+    "mobileServerSaveErrorInfor": "Data has been submitted, once there is the following error: {error}",
+
+
+    "saveDefaultMenuData": "Save as default menu settings",
+    "clearDefaultMenuData": "Clear the default menu settings",
+    "saveDefaultMenuDataInfor": "After saving the default menu settings, users who have not made personalized menu settings will display the menu according to this setting.",
+    "saveDefaultMenuDataSuccess": "The default menu settings were saved successfully",
+    "clearDefaultMenuDataSuccess": "The default menu settings have been cleared",
+    "clearDefaultMenuDataConfirm": "Are you sure to clear the default menu settings?",
+    "loadDefaultMenuData": "Load Default Configuration",
+
+    "saveForceMenuData": "Save as mandatory menu setting",
+    "clearForceMenuData": "Clear mandatory menu settings",
+    "saveForceMenuDataInfor": "After saving as a mandatory menu setting, all users will display the menu according to this setting, and the personalized setting will be invalid.",
+    "saveForceMenuDataSuccess": "The default menu settings were saved successfully",
+    "clearForceMenuDataSuccess": "Force menu settings have been cleared",
+    "clearForceMenuDataConfirm": "Are you sure to clear the mandatory menu settings?",
+    "loadForceMenuData": "Load Forced Configuration",
+
+    "clearCustomMenuData": "Clear user personalized menu settings",
+    "clearCustomMenuDataInfor": "The personalized menu settings of all users will be cleared and the menu will be displayed in the default way.",
+    "clearCustomMenuDataSuccess": "User personalized menu settings have been cleared",
+    "clearCustomMenuDataConfirm": "Are you sure you want to clear all users' personalized menu settings"
 };
