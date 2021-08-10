@@ -616,6 +616,11 @@ MWF.xApplication.Setting.DisposeExplorer = new Class({
                 "text": this.app.lp.tab_ui_service,
                 "icon": "service",
                 "action": "loadServiceModuleSetting"
+            },
+            {
+                "text": this.app.lp.tab_ui_menu,
+                "icon": "menu",
+                "action": "loadMenuSetting"
             }
         ];
     },
@@ -638,6 +643,17 @@ MWF.xApplication.Setting.DisposeExplorer = new Class({
         if (MWF.AC.isAdministrator()) {
             this.resourceModuleSetting = new MWF.xApplication.Setting.ResourceModuleDocument(this, this.contentAreaNode);
             item.store("content", this.resourceModuleSetting);
+        }
+    },
+    loadMenuSetting: function(item){
+        if (MWF.AC.isAdministrator()) {
+            o2.xDesktop.requireApp("Setting", "SettingModuleMenu", function(){
+                this.moduleMenuSetting = new MWF.xApplication.Setting.ModuleMenuDocument(this, this.contentAreaNode);
+                item.store("content", this.moduleMenuSetting);
+
+
+
+            }.bind(this));
         }
     }
 });

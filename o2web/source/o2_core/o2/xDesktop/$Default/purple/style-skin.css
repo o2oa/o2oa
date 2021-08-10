@@ -11,6 +11,7 @@
 
 .overColor_bg {
     background-color: #5C1446 !important;
+    color: #ffffff !important;
 }
 .overColor_color {
     color: #5C1446 !important;
@@ -21,6 +22,7 @@
 
 .deepColor_bg {
     background-color: #330524 !important;
+    color: #ffffff !important;
 }
 .deepColor_color {
     color: #330524 !important;
