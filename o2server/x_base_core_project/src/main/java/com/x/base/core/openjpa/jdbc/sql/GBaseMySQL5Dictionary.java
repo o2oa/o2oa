@@ -96,7 +96,8 @@ public class GBaseMySQL5Dictionary extends DBDictionary {
 		lastGeneratedKeyQuery = "SELECT LAST_INSERT_ID()";
 		autoAssignClause = "AUTO_INCREMENT";
 
-		clobTypeName = "TEXT";
+		clobTypeName = longTextTypeName;
+		blobTypeName = longBlobTypeName;
 		longVarcharTypeName = "TEXT";
 		longVarbinaryTypeName = "LONG VARBINARY";
 		timestampTypeName = "DATETIME";
