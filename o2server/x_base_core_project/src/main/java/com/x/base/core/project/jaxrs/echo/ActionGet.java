@@ -1,8 +1,6 @@
 package com.x.base.core.project.jaxrs.echo;
 
 import java.util.Date;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 
