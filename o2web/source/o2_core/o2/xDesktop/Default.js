@@ -372,10 +372,36 @@ o2.xDesktop.Default = new Class({
             }.bind(this));
         }
     },
-
+    loadMenuData: function(){
+        debugger;
+        this.menuData = this.status.menuData;
+        o2.UD.getPublicData("clearCustomMenuDataFlag", function(data){
+            if (data && !!data.id && data.id != this.status.clearCustomMenuDataFlag){
+                this.status.menuData = null;
+                this.menuData = null;
+                this.status.clearCustomMenuDataFlag = data.id;
+            }
+            o2.UD.getPublicData("forceMainMenuData", function(fData){
+                if (fData){
+                    this.status.menuData=fData;
+                    this.menuData = this.status.menuData;
+                }else{
+                    if (!this.status.menuData){
+                        o2.UD.getPublicData("defaultMainMenuData", function(dData){
+                            if (dData){
+                                this.status.menuData=dData;
+                                this.menuData = this.status.menuData;
+                            }
+                        }.bind(this));
+                    }
+                }
+            }.bind(this));
+        }.bind(this));
+    },
     loadStatus: function(){
         if (this.status){
-            this.menuData = this.status.menuData;
+            this.loadMenuData();
+            //this.menuData = this.status.menuData;
             var keys = Object.keys(this.status.apps);
             if (this.status.apps && keys.length){
 
@@ -629,7 +655,8 @@ o2.xDesktop.Default = new Class({
             "flatLnks": [],
             "widgets": {},
             "menuData": this.menuData,
-            "scale": layout.userLayout.scale || 1
+            "scale": layout.userLayout.scale || 1,
+            "clearCustomMenuDataFlag": this.status.clearCustomMenuDataFlag || ""
         };
         // this.appArr.each(function(app){
         //     if (app.options.appId!==this.options.index){
@@ -1815,10 +1842,13 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
             "left": ""+p.x+"px", "top": ""+p.y+"px"
         });
     },
+    getMoveDroppables: function(){
+        return [this.layout.lnkContentNode, this.menu.appContentNode];
+    },
     doDragMove: function(e){
         this.getDragNode();
 
-        var droppables = [this.layout.lnkContentNode, this.menu.appContentNode];
+        var droppables = this.getMoveDroppables();
         if (this.menu.appContentNode.hasClass("layout_start_groupItem_menu_content")){
             this.onGroup = true;
         }
@@ -1848,7 +1878,6 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.positionFlagNode = new Element("div", {"styles": {"display": "none"}}).inject(this.node, "after");
     },
     _drag_drag: function(dragging, e){
-        console.log(this.dragStatus);
         if (this.dragStatus == "order"){
             if (this.layout.lnks && this.layout.lnks.length){
                 var current = e.page.y;
