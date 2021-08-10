@@ -293,6 +293,7 @@ o2.addReady(function () {
                 o2.getJSON("../x_desktop/res/config/config.json", function (config) {
                     _loadProgressBar();
                     layout.config = config;
+                    o2.tokenName = config.tokenName || "x-token";
                     configLoaded = true
                     if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { layout.load(); });
                 });
