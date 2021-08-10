@@ -22,10 +22,17 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">图片Base64编码:</td>
+				<td class="editTableTitle">{{$.lp.base64Encode}}:</td>
 				<td class="editTableValue">
-					<input class="editTableRadio" name="base64Encode" text{($.ecnet=='y')?'checked':''} type="radio" value="y"/>启用
-					<input class="editTableRadio" name="base64Encode" text{($.ecnet!='y')?'checked':''} type="radio" value="n"/>禁用
+					<input class="editTableRadio" name="base64Encode" text{($.base64Encode=='y')?'checked':''} type="radio" value="y"/>{{$.lp.enabled}}
+					<input class="editTableRadio" name="base64Encode" text{($.base64Encode!='y')?'checked':''} type="radio" value="n"/>{{$.lp.disabled}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.imagePreview}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="enablePreview" text{($.enablePreview!='n')?'checked':''} type="radio" value="y"/>{{$.lp.enabled}}
+					<input class="editTableRadio" name="enablePreview" text{($.enablePreview=='n')?'checked':''} type="radio" value="n"/>{{$.lp.disabled}}
 				</td>
 			</tr>
 		</table>
