@@ -39,14 +39,14 @@ class ActionList extends BaseAction {
 				if (fromProxy) {
 					if (this.isUndefindHost(o.getProxyHost())) {
 						wo.getUrlList().add(httpProtocol + this.getHost(request) + ":" + o.getProxyPort()
-								+ o.getContextPath() +JEST_INDEX_HTML);
+								+ o.getContextPath() + JEST_INDEX_HTML);
 					} else {
 						wo.getUrlList().add(httpProtocol + o.getProxyHost() + ":" + o.getProxyPort()
 								+ o.getContextPath() + JEST_INDEX_HTML);
 					}
 				} else {
-					wo.getUrlList().add(
-							httpProtocol + o.getNode() + ":" + o.getPort() + o.getContextPath() + JEST_INDEX_HTML);
+					wo.getUrlList()
+							.add(httpProtocol + o.getNode() + ":" + o.getPort() + o.getContextPath() + JEST_INDEX_HTML);
 				}
 			}
 			wos.add(wo);
