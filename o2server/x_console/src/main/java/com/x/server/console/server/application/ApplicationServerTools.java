@@ -178,11 +178,11 @@ public class ApplicationServerTools extends JettySeverTools {
 		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
 				+ "}t \"%r\" %s %O %{ms}T";
 		if (BooleanUtils.isTrue(applicationServer.getRequestLogBodyEnable())) {
-			return new ServerRequestLog(asyncRequestLogWriter,
+			return new ServerRequestLogBody(asyncRequestLogWriter,
 					StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
 							: applicationServer.getRequestLogFormat());
 		} else {
-			return new ServerRequestLogBody(asyncRequestLogWriter,
+			return new ServerRequestLog(asyncRequestLogWriter,
 					StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
 							: applicationServer.getRequestLogFormat());
 		}
