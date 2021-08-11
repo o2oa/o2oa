@@ -51,7 +51,7 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取所有服务器信息", action = ActionGet.class)
