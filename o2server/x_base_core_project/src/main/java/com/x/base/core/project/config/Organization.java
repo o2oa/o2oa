@@ -16,8 +16,8 @@ public class Organization extends ConfigObject {
 	private static final long serialVersionUID = -2193428649985413384L;
 
 	public static final Integer DEFAULT_UNITLEVELORDERNUMBERDIGITS = 10;
-	public static final Boolean DEFAULT_PICKPERSONWITHNAME = false;
-	public static final Boolean DEFAULT_PICKIDENTITYWITHNAME = false;
+	public static final Boolean DEFAULT_PICKPERSONWITHNAME = true;
+	public static final Boolean DEFAULT_PICKIDENTITYWITHNAME = true;
 
 	public static Organization defaultInstance() {
 		return new Organization();

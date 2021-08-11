@@ -26,6 +26,7 @@ MWF.xApplication.Setting.LP = {
     "tab_ui_module": "模块部署",
     "tab_ui_resource": "资源部署",
     "tab_ui_service": "服务部署",
+    "tab_ui_menu": "菜单编辑",
 
     "base_nameSetting": "配置您的系统名称",
 
@@ -501,4 +502,24 @@ MWF.xApplication.Setting.LP = {
     "mobileServerSaveInfor": "数据已提交",
     "mobileServerSaveErrorInfor": "数据已提交, 旦有以下错误：{error}",
 
+    "saveDefaultMenuData": "保存为默认菜单设置",
+    "clearDefaultMenuData": "清除默认菜单设置",
+    "saveDefaultMenuDataInfor": "保存为默认菜单设置后，未进行个性化菜单设置的用户，会按此设置展现菜单。",
+    "saveDefaultMenuDataSuccess": "默认菜单设置保存成功",
+    "clearDefaultMenuDataSuccess": "默认菜单设置已清除",
+    "clearDefaultMenuDataConfirm": "您是否确认清除默认菜单设置？",
+    "loadDefaultMenuData": "载入默认配置",
+
+    "saveForceMenuData": "保存为强制菜单设置",
+    "clearForceMenuData": "清除强制菜单设置",
+    "saveForceMenuDataInfor": "保存为强制菜单设置后，所有的用户都会按此设置展现菜单，个性化设置将会失效。",
+    "saveForceMenuDataSuccess": "默认菜单设置保存成功",
+    "clearForceMenuDataSuccess": "强制菜单设置已清除",
+    "clearForceMenuDataConfirm": "您是否确认清除强制菜单设置？",
+    "loadForceMenuData": "载入强制配置",
+
+    "clearCustomMenuData": "清除用户个性化菜单设置",
+    "clearCustomMenuDataInfor": "所有用户的个性化菜单设置将被清除，以默认方式展现菜单。",
+    "clearCustomMenuDataSuccess": "用户个性化菜单设置已清除",
+    "clearCustomMenuDataConfirm": "您确定要清除所有用户的个性化菜单设置"
 };
