@@ -79,7 +79,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "设置图片:首页底部菜单中间主页的按钮(不选中),114x114", action = ActionImageMenuLogoBlur.class)
