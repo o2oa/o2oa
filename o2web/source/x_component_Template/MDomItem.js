@@ -2612,7 +2612,10 @@ MDomItem.Rtf = new Class({
                 //"width": "",
                 "readOnly": false,
                 "language": MWF.language || "zh-cn",
-                "extraAllowedContent " : "img[onerror,data-id]"
+                "enablePreview": true,
+                "removePlugins": ['image','easyimage'],
+                "extraPlugins": ['o2image']
+                // "extraAllowedContent " : "img[onerror,data-id]"
             };
             if( this.options.RTFConfig ){
                 editorConfig = Object.merge( editorConfig, this.options.RTFConfig )
@@ -2682,7 +2685,46 @@ MDomItem.Rtf = new Class({
         item.setStyles( styles );
 
         if(parent)item.inject(parent);
+
+        var images = item.getElements("img");
+        var previewImageList = images.filter(function (img) {
+            var enablePreview = img.get("data-enablePreview");
+            if( enablePreview !== "false" && enablePreview !== false ){
+                img.setStyle("cursor", "pointer");
+                return true;
+            }
+            return false;
+        });
+        if( previewImageList.length > 0 ){
+            this.loadImageViewer();
+        }
+
         this.items.push( item );
+    },
+    loadImageViewer: function(){
+        this.loadViewerResource(function () {
+            new Viewer( this.node, {
+                url: function (image) {
+                    var id = image.get("data-originalid") || image.get("data-id");
+                    return id ? o2.xDesktop.getImageSrc(id) : image.get("src")
+                },
+                filter: function (image) {
+                    var enablePreview = image.get("data-enablePreview");
+                    return enablePreview !== "false" && enablePreview !== false;
+                }
+            });
+        }.bind(this))
+    },
+    loadViewerResource : function( callback ){
+        if( window.Viewer ){
+            if( callback )callback();
+            return;
+        }
+        COMMON.AjaxModule.loadCss("../o2_lib/viewer/viewer.css", function () {
+            o2.load( "../o2_lib/viewer/viewer.js", function () {
+                if(callback)callback();
+            }.bind(this))
+        }.bind(this))
     },
     get : function( vort ){
         if( this.options.disable ){

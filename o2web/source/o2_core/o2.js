@@ -482,7 +482,7 @@ if (window.Promise && !Promise.any){
         "ie_adapter": ["../o2_core/o2/ie_adapter.js"],
         "jquery": ["../o2_lib/jquery/jquery.min.js"],
         "mootools": ["../o2_lib/mootools/mootools-1.6.0_all.js"],
-        "ckeditor": ["../o2_lib/htmleditor/ckeditor4114/ckeditor.js"],
+        "ckeditor": ["../o2_lib/htmleditor/ckeditor4161/ckeditor.js"],
         "ckeditor5": ["../o2_lib/htmleditor/ckeditor5-12-1-0/ckeditor.js"],
         "raphael": ["../o2_lib/raphael/raphael.js"],
         "d3": ["../o2_lib/d3/d3.min.js"],

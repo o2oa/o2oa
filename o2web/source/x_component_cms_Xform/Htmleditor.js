@@ -98,9 +98,28 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
 
             editorConfig.base64Encode = (this.json.base64Encode === "y");
             editorConfig.enablePreview = (this.json.enablePreview !== "n");
-            editorConfig.localImageMaxWidth = 800;
+            editorConfig.localImageMaxWidth = 10000;
             editorConfig.reference = this.form.businessData.document.id;
             editorConfig.referenceType = "cmsDocument";
+
+            if( editorConfig && editorConfig.extraPlugins ){
+                var extraPlugins = editorConfig.extraPlugins;
+                extraPlugins = typeOf( extraPlugins ) === "array" ? extraPlugins : extraPlugins.split(",");
+                extraPlugins.push( 'o2image' );
+                editorConfig.extraPlugins = extraPlugins;
+            }else{
+                editorConfig.extraPlugins = ['o2image'];
+            }
+
+            if( editorConfig && editorConfig.removePlugins ){
+                var removePlugins = editorConfig.removePlugins;
+                removePlugins = typeOf( removePlugins ) === "array" ? removePlugins : removePlugins.split(",");
+                removePlugins.push( 'image' );
+                removePlugins.push( 'easyimage');
+                editorConfig.removePlugins = removePlugins;
+            }else{
+                editorConfig.removePlugins = ['image','easyimage'];
+            }
 
             if(!editorConfig.language)editorConfig.language = MWF.language;
 
