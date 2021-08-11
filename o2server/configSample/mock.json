@@ -49,6 +49,16 @@
         "to": "get",
         "append": "mockdeletetoget"
       }
+    },
+    "x_organization_assemble_control": {
+      "put": {
+        "to": "post",
+        "append": "mockputtopost"
+      },
+      "delete": {
+        "to": "get",
+        "append": "mockdeletetoget"
+      }
     }
   }
 }

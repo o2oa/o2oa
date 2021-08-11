@@ -87,6 +87,24 @@ public class PermissionSettingAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "更新通讯录配置mockputtopost.", action = ActionUpdate.class)
+	@POST
+	@Path("{flag}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("名片标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdate().execute(effectivePerson, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@JaxrsMethodDescribe(value = "删除通讯录设置配置.", action = ActionDelete.class)
 	@DELETE
 	@Path("{flag}")
@@ -94,6 +112,24 @@ public class PermissionSettingAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("通讯录配置标识") @PathParam("flag") String flag) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDelete().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "删除通讯录设置配置mockdeletetoget.", action = ActionDelete.class)
+	@GET
+	@Path("{flag}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("通讯录配置标识") @PathParam("flag") String flag) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

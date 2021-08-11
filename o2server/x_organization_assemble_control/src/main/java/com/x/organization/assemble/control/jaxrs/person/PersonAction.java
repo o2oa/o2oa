@@ -90,6 +90,24 @@ public class PersonAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "更新个人mockputtopost.", action = ActionEdit.class)
+	@POST
+	@Path("{flag}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void editMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					 @JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEdit().execute(effectivePerson, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@JaxrsMethodDescribe(value = "删除个人.", action = ActionDelete.class)
 	@DELETE
 	@Path("{flag}")
@@ -108,14 +126,49 @@ public class PersonAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "删除个人关联信息（身份、角色等），但保留人员（企业离退休人员需要能登录平台但不能做业务处理）.", action = ActionReserveDelete.class)
-	@DELETE
-	// @Path("flag}/v2")
-	@Path("flag}/reserve")
+	@JaxrsMethodDescribe(value = "删除个人mockdeletetoget.", action = ActionDelete.class)
+	@GET
+	@Path("{flag}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void ReserveDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDelete().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "删除个人关联信息（身份、角色等），但保留人员（企业离退休人员需要能登录平台但不能做业务处理）.", action = ActionReserveDelete.class)
+	@DELETE
+	@Path("{flag}/reserve")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void reserveDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
+		ActionResult<ActionReserveDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionReserveDelete().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "删除个人关联信息（身份、角色等），但保留人员（企业离退休人员需要能登录平台但不能做业务处理）.", action = ActionReserveDelete.class)
+	@GET
+	@Path("{flag}/reserve/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void reserveDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
 		ActionResult<ActionReserveDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -239,6 +292,24 @@ public class PersonAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "获取拼音首字母开始的个人mockputtopost.", action = ActionListPinyinInitial.class)
+	@POST
+	@Path("list/pinyininitial/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listPinyinInitialMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								  JsonElement jsonElement) {
+		ActionResult<List<ActionListPinyinInitial.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListPinyinInitial().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@JaxrsMethodDescribe(value = "根据名称进行模糊查询.", action = ActionListLike.class)
 	@PUT
 	@Path("list/like")
@@ -246,6 +317,24 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listLike(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			JsonElement jsonElement) {
+		ActionResult<List<ActionListLike.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListLike().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "根据名称进行模糊查询mockputtopost.", action = ActionListLike.class)
+	@POST
+	@Path("list/like/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listLikeMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						 JsonElement jsonElement) {
 		ActionResult<List<ActionListLike.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -275,6 +364,24 @@ public class PersonAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "根据拼音或者首字母进行模糊查询mockputtopost.", action = ActionListLikePinyin.class)
+	@POST
+	@Path("list/like/pinyin/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listLikePinyinMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							   JsonElement jsonElement) {
+		ActionResult<List<ActionListLikePinyin.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListLikePinyin().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定个人的密码.", action = ActionSetPassword.class)
 	@PUT
 	@Path("{flag}/set/password")
@@ -282,6 +389,24 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void setPassword(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("个人标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<ActionSetPassword.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSetPassword().execute(effectivePerson, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "更新指定个人的密码mockputtopost.", action = ActionSetPassword.class)
+	@POST
+	@Path("{flag}/set/password/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void setPasswordMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							@JaxrsParameterDescribe("个人标识") @PathParam("flag") String flag, JsonElement jsonElement) {
 		ActionResult<ActionSetPassword.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -354,6 +479,26 @@ public class PersonAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("个人标识") @PathParam("flag") String flag,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@JaxrsParameterDescribe("头像文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+		ActionResult<ActionSetIcon.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSetIcon().execute(effectivePerson, flag, bytes, disposition);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "设置个人的头像mockputtopost.", action = ActionSetIcon.class)
+	@POST
+	@Path("{flag}/icon/mockputtopost")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void setIconMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						@JaxrsParameterDescribe("个人标识") @PathParam("flag") String flag,
+						@FormDataParam(FILE_FIELD) final byte[] bytes,
+						@JaxrsParameterDescribe("头像文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionSetIcon.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
