@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,14 +25,6 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Task_;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 
 abstract class V2Base extends StandardJaxrsAction {
 
@@ -94,6 +87,9 @@ abstract class V2Base extends StandardJaxrsAction {
 
 		@FieldDescribe("关键字")
 		private String key;
+
+		@FieldDescribe("标题")
+		private String title;
 
 		public List<String> getApplicationList() {
 			return applicationList;
@@ -173,6 +169,14 @@ abstract class V2Base extends StandardJaxrsAction {
 
 		public void setExcludeDraft(Boolean excludeDraft) {
 			isExcludeDraft = excludeDraft;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
 		}
 	}
 
@@ -419,6 +423,12 @@ abstract class V2Base extends StandardJaxrsAction {
 			key = "%" + key + "%";
 			p = cb.and(p, cb.or(cb.like(root.get(Task_.title), key), cb.like(root.get(Task_.serial), key),
 					cb.like(root.get(Task_.creatorPerson), key), cb.like(root.get(Task_.creatorUnit), key)));
+		}
+		if (StringUtils.isNotEmpty(wi.getTitle())) {
+			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
+			if (StringUtils.isNotEmpty(title)) {
+				p = cb.and(cb.like(root.get(Task_.title), "%" + title + "%"));
+			}
 		}
 		return p;
 	}
