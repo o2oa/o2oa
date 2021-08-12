@@ -111,6 +111,25 @@ public class HotPictureInfoFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).setMaxResults(selectTotal).getResultList();
 	}
 
+	public List<HotPictureInfo> listForPage( String application, String infoId, String title,Integer first, Integer selectTotal ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(HotPictureInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<HotPictureInfo> cq = cb.createQuery(HotPictureInfo.class);
+		Root<HotPictureInfo> root = cq.from(HotPictureInfo.class);
+		Predicate p = cb.isNotNull( root.get(HotPictureInfo_.id ) );
+		if( application != null && !application.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( HotPictureInfo_.application ), application));
+		}
+		if( infoId != null && !infoId.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( HotPictureInfo_.infoId ), infoId));
+		}
+		if( title != null && !title.isEmpty() ){
+			p = cb.and( p, cb.like( root.get( HotPictureInfo_.title ), "%" + title + "%" ));
+		}
+		cq.orderBy( cb.desc( root.get( HotPictureInfo_.sequence ) ) );
+		return em.createQuery(cq.where(p)).setFirstResult(first).setMaxResults(selectTotal).getResultList();
+	}
+	
 	public List<HotPictureInfo> listByApplicationInfoId( String application, String infoId ) throws Exception {
 		if( application == null || application.isEmpty() ){
 			throw new Exception("application can not be null!");

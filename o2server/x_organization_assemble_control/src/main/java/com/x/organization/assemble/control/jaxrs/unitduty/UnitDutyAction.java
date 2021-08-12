@@ -86,6 +86,24 @@ public class UnitDutyAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "更新组织职务mockputtopost.", action = ActionEdit.class)
+	@POST
+	@Path("{flag}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void editMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					 @JaxrsParameterDescribe("组织职务标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEdit().execute(effectivePerson, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@JaxrsMethodDescribe(value = "删除组织职务.", action = ActionDelete.class)
 	@DELETE
 	@Path("{flag}")
@@ -93,6 +111,24 @@ public class UnitDutyAction extends BaseAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("组织职务标识") @PathParam("flag") String flag) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDelete().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "删除组织职务mockdeletetoget.", action = ActionDelete.class)
+	@GET
+	@Path("{flag}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("组织职务标识") @PathParam("flag") String flag) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

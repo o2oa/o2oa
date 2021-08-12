@@ -105,6 +105,24 @@ public class PersonCardAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "删除个人名片mockdeletetoget.", action = ActionDelete.class)
+	@GET
+	@Path("{flag}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("名片标识") @PathParam("flag") String flag) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDelete().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取当前登录人的所有名片", action = ActionList.class)
 	@GET
 	@Path("mylist")
@@ -142,6 +160,26 @@ public class PersonCardAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "获取当前登录人的名片分页mockputtopost.", action = ActionListPaging.class)
+	@POST
+	@Path("listpaging/page/{page}/size/{size}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void ListPagingMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						   @JaxrsParameterDescribe("页码") @PathParam("page") Integer page,
+						   @JaxrsParameterDescribe("每页几条") @PathParam("size") Integer size,
+						   @JaxrsParameterDescribe("姓名，手机号，电话，姓名拼音，分组，状态") JsonElement jsonElement) {
+		ActionResult<List<ActionListPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListPaging().Execute_Paging_like(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@JaxrsMethodDescribe(value = "按分组查询当前登录人的名片.分页", action = ActionListPagingWithGroup.class)
 	@PUT
 	@Path("listpagingwithgroup/page/{page}/size/{size}")
@@ -151,6 +189,26 @@ public class PersonCardAction extends StandardJaxrsAction {
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("页码") @PathParam("page") Integer page,
 			@JaxrsParameterDescribe("每页几条") @PathParam("size") Integer size,
 			@JaxrsParameterDescribe("匹配关键字(分组)") JsonElement jsonElement) {
+		ActionResult<List<ActionListPagingWithGroup.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListPagingWithGroup().Execute_Paging_groupType(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "按分组查询当前登录人的名片分页mockputtopost.", action = ActionListPagingWithGroup.class)
+	@POST
+	@Path("listpagingwithgroup/page/{page}/size/{size}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void ListPagingWithGroupTypeMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+										@Context HttpServletRequest request, @JaxrsParameterDescribe("页码") @PathParam("page") Integer page,
+										@JaxrsParameterDescribe("每页几条") @PathParam("size") Integer size,
+										@JaxrsParameterDescribe("匹配关键字(分组)") JsonElement jsonElement) {
 		ActionResult<List<ActionListPagingWithGroup.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
