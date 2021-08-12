@@ -162,6 +162,14 @@ public class HotPictureInfoServiceAdv {
 		}
 	}
 
+	public List<HotPictureInfo> listForPage(String application, String infoId, String title, Integer first, Integer selectTotal) throws Exception {
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return hotPictureInfoService.listForPage( emc, application, infoId, title, first,selectTotal );
+		}catch( Exception e ){
+			throw e;
+		}
+	}
+	
 	public List<HotPictureInfo> listByApplicationInfoId(String application, String infoId) throws Exception {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return hotPictureInfoService.listByApplicationInfoId( emc, application, infoId );
