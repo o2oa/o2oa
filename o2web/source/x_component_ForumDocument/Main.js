@@ -1775,11 +1775,54 @@ debugger;
 			MWF.xDesktop.requireApp("ForumDocument", "Vote", function(){
 				this.vote = new MWF.xApplication.ForumDocument.Vote(voteArea, this.app, {
 					isNew : false,
-					isEdited : false
+					isEdited : false,
+					onPostLoad: function () {
+						this.loadImageViewer(itemNode)
+					}.bind(this)
 				}, this.data);
 				this.vote.load();
 			}.bind(this), true)
+		}else{
+			this.loadImageViewer(itemNode)
 		}
+	},
+	loadImageViewer: function(node){
+		var contentNote = node.getElement("[item='content']");
+		var voteNode = node.getElement("[item='vote']");
+		var images = contentNote.getElements("img").concat(voteNode.getElements("img"));
+		var previewImageList = images.filter(function (img) {
+			var enablePreview = img.get("data-enablePreview");
+			if( enablePreview !== "false" && enablePreview !== false ){
+				img.setStyle("cursor", "pointer");
+				img.set("preview", "true");
+				return true;
+			}
+			return false;
+		});
+		if( previewImageList.length > 0 ){
+			this.loadViewerResource(function () {
+				new Viewer( node, {
+					url: function (image) {
+						var id = image.get("data-originalid") || image.get("data-id");
+						return id ? o2.xDesktop.getImageSrc(id) : image.get("src")
+					},
+					filter: function (image) {
+						return image.get("preview") === "true";
+					}
+				});
+			}.bind(this))
+		}
+	},
+	loadViewerResource : function( callback ){
+		if( window.Viewer ){
+			if( callback )callback();
+			return;
+		}
+		COMMON.AjaxModule.loadCss("../o2_lib/viewer/viewer.css", function () {
+			o2.load( "../o2_lib/viewer/viewer.js", function () {
+				if(callback)callback();
+			}.bind(this))
+		}.bind(this))
 	},
 	sendMessage : function(itemNode, ev ){
 		var self = this;
@@ -2143,6 +2186,8 @@ MWF.xApplication.ForumDocument.ReplyDocument = new Class({
 			itemNode.getElements( "[item='todayReply']" )[0].set("text", d.replyCountToday);
 		}.bind(this));
 
+		this.loadImageViewer(itemNode.getElement( "[item='content']" ));
+
 		if( itemData.parentId && itemData.parentId != "" ){
 			var quoteContainer = itemNode.getElements( "[item='quoteContent']" )[0];
 			this.actions.getReply( itemData.parentId, function( json ){
@@ -2177,6 +2222,42 @@ MWF.xApplication.ForumDocument.ReplyDocument = new Class({
 			)
 		}
 
+	},
+	loadImageViewer: function(node){
+		var images = node.getElements("img");
+		var previewImageList = images.filter(function (img) {
+			var enablePreview = img.get("data-enablePreview");
+			if( enablePreview !== "false" && enablePreview !== false ){
+				img.setStyle("cursor", "pointer");
+				return true;
+			}
+			return false;
+		});
+		if( previewImageList.length > 0 ){
+			this.loadViewerResource(function () {
+				new Viewer( node, {
+					url: function (image) {
+						var id = image.get("data-originalid") || image.get("data-id");
+						return id ? o2.xDesktop.getImageSrc(id) : image.get("src")
+					},
+					filter: function (image) {
+						var enablePreview = image.get("data-enablePreview");
+						return enablePreview !== "false" && enablePreview !== false;
+					}
+				});
+			}.bind(this))
+		}
+	},
+	loadViewerResource : function( callback ){
+		if( window.Viewer ){
+			if( callback )callback();
+			return;
+		}
+		COMMON.AjaxModule.loadCss("../o2_lib/viewer/viewer.css", function () {
+			o2.load( "../o2_lib/viewer/viewer.js", function () {
+				if(callback)callback();
+			}.bind(this))
+		}.bind(this))
 	},
 	sendMessage : function(itemNode, ev ){
 		var self = this;
