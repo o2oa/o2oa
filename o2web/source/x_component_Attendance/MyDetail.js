@@ -785,6 +785,7 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
         }
     },
     createStartWorkResault: function(workInfors, title, processName, isopen){
+        if(!layout.desktop.message)return;
         var content = "";
         workInfors.each(function(infor){
             var users = [];
