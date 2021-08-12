@@ -65,7 +65,8 @@ class ActionUpload extends BaseAction {
 			emc.beginTransaction(File.class);
 			emc.persist(file);
 			emc.commit();
-			wo.setId(file.getId());
+			wo.setOrigId(file.getId());
+			
 		}
 		
          /*保存压缩图*/
@@ -92,12 +93,12 @@ class ActionUpload extends BaseAction {
 					emc.beginTransaction(File.class);
 					emc.persist(fileThumbnail);
 					emc.commit();
-					wo.setOrigId(fileThumbnail.getId());
+					wo.setId(fileThumbnail.getId());
 				}
 
 			} else {
 				//不进行压缩,保存原图id
-				wo.setOrigId(file.getId());
+				wo.setId(file.getId());
 			}
 		}
 
