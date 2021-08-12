@@ -71,6 +71,11 @@ public class HotPictureInfoService {
 		return business.hotPictureInfoFactory().listForPage( application, infoId, title, selectTotal );
 	}
 
+	public List<HotPictureInfo> listForPage(EntityManagerContainer emc, String application, String infoId, String title, Integer first, Integer selectTotal) throws Exception {
+		Business business = new Business( emc );
+		return business.hotPictureInfoFactory().listForPage( application, infoId, title,first, selectTotal );
+	}
+	
 	public List<HotPictureInfo> listByApplicationInfoId(EntityManagerContainer emc, String application, String infoId) throws Exception {
 		Business business = new Business( emc );
 		return business.hotPictureInfoFactory().listByApplicationInfoId( application, infoId );
