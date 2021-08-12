@@ -2,6 +2,7 @@ package com.x.hotpic.assemble.control.jaxrs.hotpic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -11,18 +12,17 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.Cache;
 
 public class ActionCipherList extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer count,
 			JsonElement jsonElement) throws Exception {
-		
+
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps_out = new ArrayList<Wo>();
-		//List<Wo> wraps = new ArrayList<Wo>();
 		List<HotPictureInfo> hotPictureInfoList = null;
 		Integer selectTotal = 0;
 		Long total = 0L;
@@ -39,7 +39,7 @@ public class ActionCipherList extends BaseAction {
 		if (page == null) {
 			page = 1;
 		}
-		
+
 		if (page <= 0) {
 			page = 1;
 		}
@@ -52,73 +52,62 @@ public class ActionCipherList extends BaseAction {
 			count = 20;
 		}
 
-		Ehcache cache = ApplicationCache.instance().getCache(HotPictureInfo.class);
+		Cache.CacheCategory cacheCategory = new Cache.CacheCategory(HotPictureInfo.class);
 
 		selectTotal = page * count;
-		
 		String cacheKey1 = "filter#" + page + "#" + count + "#" + wi.getApplication() + "#" + wi.getInfoId() + "#"
 				+ wi.getTitle();
-		Element element1 = cache.get(cacheKey1);
+		CacheKey cacheKeyObj1 = new Cache.CacheKey(cacheKey1);
+		Optional<?> element1 = CacheManager.get(cacheCategory, cacheKeyObj1);
 
 		String cacheKey2 = "total#" + page + "#" + count + "#" + wi.getApplication() + "#" + wi.getInfoId() + "#"
 				+ wi.getTitle();
-		
-		Element element2 = cache.get(cacheKey2);
+		CacheKey cacheKeyObj2 = new Cache.CacheKey(cacheKey2);
+		Optional<?> element2 = CacheManager.get(cacheCategory, cacheKeyObj2);
 
 		if (null != element1 && null != element2) {
-			wraps_out = (List<Wo>) element1.getObjectValue();
-			result.setCount(Long.parseLong(element2.getObjectValue().toString()));
-			result.setData(wraps_out);
-			
-		} else {
-
-			if (selectTotal > 0) {
-				try {
-					total = hotPictureInfoService.count(wi.getApplication(), wi.getInfoId(), wi.getTitle());
-					
-				} catch (Exception e) {
-					throw new InfoListByFilterException(e);
-				}
+			if (element1.isPresent()) {
+				wraps_out = (List<Wo>) element1.get();
+				result.setCount(Long.parseLong(element2.get().toString()));
+				result.setData(wraps_out);
 			}
-
-			if (selectTotal > 0 && total > 0) {
-				
-				int startIndex = (page - 1) * count;
-				int endIndex = count;
-				
-				try {
-					hotPictureInfoList = hotPictureInfoService.listForPage(wi.getApplication(), wi.getInfoId(),
-							wi.getTitle(), startIndex,endIndex);
-					if (hotPictureInfoList != null) {
-						try {
-							wraps_out = Wo.copier.copy(hotPictureInfoList);
-							//SortTools.desc(wraps_out, JpaObject.sequence_FIELDNAME);
-						} catch (Exception e) {
-							throw new InfoWrapOutException(e);
-						}
-					}
-				} catch (Exception e) {
-					throw new InfoListByFilterException(e);
-				}
-			}
-             
-			/*
-			int startIndex = (page - 1) * count;
-			int endIndex = page * count;
-			int i = 0;
-			for (i = 0; i < wraps_out.size(); i++) {
-				if (i >= startIndex && i < endIndex) {
-					wraps.add(wraps_out.get(i));
-				}
-			}*/
-			
-			cache.put(new Element(cacheKey1, wraps_out));
-			cache.put(new Element(cacheKey2, total.toString()));
-			
-			result.setData(wraps_out);
-			result.setCount(total);
 		}
-		
+
+		if (selectTotal > 0) {
+			try {
+				total = hotPictureInfoService.count(wi.getApplication(), wi.getInfoId(), wi.getTitle());
+
+			} catch (Exception e) {
+				throw new InfoListByFilterException(e);
+			}
+		}
+
+		if (selectTotal > 0 && total > 0) {
+
+			int startIndex = (page - 1) * count;
+			int endIndex = count;
+
+			try {
+				hotPictureInfoList = hotPictureInfoService.listForPage(wi.getApplication(), wi.getInfoId(),
+						wi.getTitle(), startIndex, endIndex);
+				if (hotPictureInfoList != null) {
+					try {
+						wraps_out = Wo.copier.copy(hotPictureInfoList);
+						// SortTools.desc(wraps_out, JpaObject.sequence_FIELDNAME);
+					} catch (Exception e) {
+						throw new InfoWrapOutException(e);
+					}
+				}
+			} catch (Exception e) {
+				throw new InfoListByFilterException(e);
+			}
+		}
+
+		CacheManager.put(cacheCategory, cacheKeyObj1, wraps_out);
+		CacheManager.put(cacheCategory, cacheKeyObj2, total.toString());
+
+		result.setData(wraps_out);
+		result.setCount(total);
 		return result;
 	}
 
@@ -133,7 +122,8 @@ public class ActionCipherList extends BaseAction {
 		@FieldDescribe("信息标题，模糊查询.")
 		private String title = null;
 
-		//public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
+		// public static List<String> Excludes = new
+		// ArrayList<String>(JpaObject.FieldsUnmodify);
 
 		public String getApplication() {
 			return application;
@@ -161,11 +151,11 @@ public class ActionCipherList extends BaseAction {
 	}
 
 	public static class Wo extends HotPictureInfo {
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
 		public static WrapCopier<HotPictureInfo, Wo> copier = WrapCopierFactory.wo(HotPictureInfo.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
-		
+
 	}
 
 }

@@ -7,41 +7,41 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 
-public class ActionCipherDeleteCMS extends BaseAction{
-	
-	ActionResult<Wo> execute(EffectivePerson effectivePerson,String id) throws Exception {		
+public class ActionCipherDeleteCMS extends BaseAction {
+
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		List<HotPictureInfo> hotPictureInfos = null;
-	    HotPictureInfoServiceAdv hotPictureInfoService = new HotPictureInfoServiceAdv();
+		HotPictureInfoServiceAdv hotPictureInfoService = new HotPictureInfoServiceAdv();
 
 		if (id == null || id.isEmpty() || "(0)".equals(id)) {
-		    throw new InfoIdEmptyException();
+			throw new InfoIdEmptyException();
 		}
 
 		try {
-				hotPictureInfos = hotPictureInfoService.listByApplicationInfoId(HotPictureInfo.APPLICATION_CMS, id );
-				if(ListTools.isNotEmpty( hotPictureInfos )){
-					for( HotPictureInfo hotPictureInfo : hotPictureInfos ){
-						hotPictureInfoService.delete( hotPictureInfo.getId() );
-					}
-					ApplicationCache.notify(HotPictureInfo.class);
+			hotPictureInfos = hotPictureInfoService.listByApplicationInfoId(HotPictureInfo.APPLICATION_CMS, id);
+			if (ListTools.isNotEmpty(hotPictureInfos)) {
+				for (HotPictureInfo hotPictureInfo : hotPictureInfos) {
+					hotPictureInfoService.delete(hotPictureInfo.getId());
 				}
-			} catch (Exception e) {
-				throw  new InfoQueryByIdException(e, id);
+				CacheManager.notify(HotPictureInfo.class);
 			}
-		
-		Wo wo =  new Wo();
-		wo.setValue( id );
-		result.setData( wo );
+		} catch (Exception e) {
+			throw new InfoQueryByIdException(e, id);
+		}
+
+		Wo wo = new Wo();
+		wo.setValue(id);
+		result.setData(wo);
 		return result;
 	}
-	
+
 	public static class Wi {
-		
+
 	}
-	
+
 	public static class Wo extends GsonPropertyObject {
 
 		private String value;
