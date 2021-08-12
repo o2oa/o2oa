@@ -5,7 +5,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.hotpic.assemble.control.Business;
 import com.x.hotpic.entity.HotPictureInfo;
-
 import java.util.List;
 
 public class HotPictureInfoService {

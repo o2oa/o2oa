@@ -11,7 +11,6 @@ import com.x.hotpic.assemble.control.Business;
 import com.x.hotpic.assemble.control.ThisApplication;
 import com.x.hotpic.assemble.control.queueTask.queue.DocumentCheckQueue;
 import com.x.hotpic.entity.HotPictureInfo;
-
 import java.util.List;
 
 public class HotPictureInfoServiceAdv {

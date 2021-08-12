@@ -13,7 +13,7 @@ import com.x.hotpic.entity.HotPictureInfo;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 
 public class ActionSave extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
@@ -37,7 +37,6 @@ public class ActionSave extends BaseAction {
 		}
 
 		try {
-			//hotPictureInfo = Wi.copier.copy(wi);
 			hotPictureInfo = new HotPictureInfo();
 			hotPictureInfo.setInfoId(wi.getInfoId());
 			hotPictureInfo.setApplication(wi.getApplication());
@@ -60,7 +59,7 @@ public class ActionSave extends BaseAction {
 		}
 
 		try {
-			ApplicationCache.notify(HotPictureInfo.class);
+			CacheManager.notify(HotPictureInfo.class);
 		} catch (Exception e) {
 			throw e;
 		}
