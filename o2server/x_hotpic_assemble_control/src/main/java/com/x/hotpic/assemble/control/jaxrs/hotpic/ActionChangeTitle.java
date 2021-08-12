@@ -11,20 +11,16 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
 import com.x.base.core.project.tools.ListTools;
-import com.x.hotpic.assemble.control.jaxrs.hotpic.ActionCipherList.Wo;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 
 public class ActionChangeTitle extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		HotPictureInfoServiceAdv hotPictureInfoService = new HotPictureInfoServiceAdv();
 		Wo wo = null;
@@ -67,7 +63,7 @@ public class ActionChangeTitle extends BaseAction {
 		}
 
 		try {
-			ApplicationCache.notify(HotPictureInfo.class);
+			CacheManager.notify(HotPictureInfo.class);
 		} catch (Exception e) {
 			throw e;
 		}

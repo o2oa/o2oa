@@ -2,60 +2,52 @@ package com.x.hotpic.assemble.control.jaxrs.hotpic;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
-
-import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
-import com.x.hotpic.assemble.control.jaxrs.hotpic.ActionCipherList.Wo;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 
 public class ActionDeleteById extends BaseAction {
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String  id) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		HotPictureInfoServiceAdv hotPictureInfoService = new HotPictureInfoServiceAdv();
 		Wo wo = null;
 		HotPictureInfo hotPictureInfo = null;
 
-			if (id == null || id.isEmpty() || "(0)".equals(id)) {
-			 throw new InfoIdEmptyException();
-			}
+		if (id == null || id.isEmpty() || "(0)".equals(id)) {
+			throw new InfoIdEmptyException();
+		}
 
-			try {
-				hotPictureInfo = hotPictureInfoService.get(id);
-			} catch (Exception e) {
-				throw new InfoQueryByIdException(e, id);
-			}
+		try {
+			hotPictureInfo = hotPictureInfoService.get(id);
+		} catch (Exception e) {
+			throw new InfoQueryByIdException(e, id);
+		}
 
-		
-		if ( hotPictureInfo != null) {
+		if (hotPictureInfo != null) {
 			try {
 				hotPictureInfoService.delete(id);
 				wo = new Wo(id);
 			} catch (Exception e) {
 				throw new InfoDeleteException(e, id);
-			
+
 			}
 			try {
-				ApplicationCache.notify(HotPictureInfo.class);
+				CacheManager.notify(HotPictureInfo.class);
 			} catch (Exception e) {
 				throw e;
 			}
 		}
-		
+
 		result.setData(wo);
-		
+
 		return result;
 	}
 

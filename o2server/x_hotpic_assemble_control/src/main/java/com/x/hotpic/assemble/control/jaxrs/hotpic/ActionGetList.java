@@ -2,16 +2,17 @@ package com.x.hotpic.assemble.control.jaxrs.hotpic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.Cache;
 
 public class ActionGetList extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String application, String infoId)
@@ -19,7 +20,8 @@ public class ActionGetList extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = null;
 		List<HotPictureInfo> hotPictureInfos = null;
-		Ehcache cache = ApplicationCache.instance().getCache(HotPictureInfo.class);
+		Cache.CacheCategory cacheCategory = new Cache.CacheCategory(HotPictureInfo.class);
+
 		HotPictureInfoServiceAdv hotPictureInfoService = new HotPictureInfoServiceAdv();
 
 		if (application == null || application.isEmpty() || "(0)".equals(application)) {
@@ -31,29 +33,31 @@ public class ActionGetList extends BaseAction {
 		}
 
 		String cacheKey = "list#" + application + "#" + infoId;
-		Element element = cache.get(cacheKey);
+		CacheKey cacheKeyObj = new Cache.CacheKey(cacheKey);
+		Optional<?> element = CacheManager.get(cacheCategory, cacheKeyObj);
 
 		if (null != element) {
-			wraps = (List<Wo>) element.getObjectValue();
-			result.setData(wraps);
-		} else {
+			if (element.isPresent()) {
+				wraps = (List<Wo>) element.get();
+				result.setData(wraps);
+				return result;
+			}
+		}
 
+		try {
+			hotPictureInfos = hotPictureInfoService.listByApplicationInfoId(application, infoId);
+		} catch (Exception e) {
+			throw new InfoListByApplicationException(e, application, infoId);
+		}
+
+		if (hotPictureInfos != null && !hotPictureInfos.isEmpty()) {
 			try {
-				hotPictureInfos = hotPictureInfoService.listByApplicationInfoId(application, infoId);
+				wraps = Wo.copier.copy(hotPictureInfos);
+				CacheManager.put(cacheCategory, cacheKeyObj, wraps);
+				result.setData(wraps);
 			} catch (Exception e) {
-				throw new InfoListByApplicationException(e, application, infoId);
+				throw new InfoWrapOutException(e);
 			}
-
-			if (hotPictureInfos != null && !hotPictureInfos.isEmpty()) {
-				try {
-					wraps = Wo.copier.copy(hotPictureInfos);
-					cache.put(new Element(cacheKey, wraps));
-					result.setData(wraps);
-				} catch (Exception e) {
-					throw new InfoWrapOutException(e);
-				}
-			}
-
 		}
 
 		return result;
