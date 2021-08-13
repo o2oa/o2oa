@@ -446,10 +446,16 @@
 							"data-id": MWF.xDesktop.uploadedImageId
 						});
 					}
+					if( MWF.xDesktop.uploadedImageOrgid ){
+						this.imageElement.setAttributes({
+							"data-orgid": MWF.xDesktop.uploadedImageOrgid
+						});
+					}
 					this.imageElement.setAttributes({
 						"onerror": "MWF.xDesktop.setImageSrc()"
 					});
 					MWF.xDesktop.uploadedImageId = "";
+					MWF.xDesktop.uploadedImageOrgid = "";
 
 					// Remove empty style attribute.
 					if ( !this.imageElement.getAttribute( 'style' ) )
@@ -657,14 +663,16 @@
 											var contentElement = dialogElement.getElement(".cke_dialog_body").getParent();
 											var upload = new MWF.widget.Upload(contentElement, {
 												"data": null,
-												"parameter": {"reference" : editor.config.reference, "referencetype": editor.config.referenceType, "scale" : editor.config.localImageMaxWidth || 800 },
+												"parameter": {"reference" : editor.config.reference, "referencetype": editor.config.referenceType, "scale" : editor.config.localImageMaxWidth || 10000 },
 												"action": action,
 												"method": "uploadImageByScale",
 												"accept": "image/*",
 												"onEvery": function(json){
 													var id = json.data ? json.data.id : json.id;
+													var orgid = json.data ? json.data.origId : json.origId;
 													var src = MWF.xDesktop.getImageSrc( id );
 													MWF.xDesktop.uploadedImageId = id;
+													MWF.xDesktop.uploadedImageOrgid = orgid;
 													var txtUrlElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtUrl");
 													txtUrlElement.setValue( src );
 												}.bind(this)
@@ -720,14 +728,14 @@
                             widths: !editor.config.enablePreview ? ["0%", "100%"] : ["27%", "73%"],
 							children: [{
                             hidden: !editor.config.enablePreview,
-                            id: "data-enablePreview",
+                            id: "data-prv",
                             type: "checkbox",
-                            label: editor.lang.o2image.allPreview,
+                            label: editor.lang.o2image.allowPreview,
                             "default": true,
                             setup: function (type, element) {
                                 if (IMAGE == type) {
                                     var v = true;
-                                    var c = element.getAttribute("data-enablePreview");
+                                    var c = element.getAttribute("data-prv");
                                     if (c === "false" || c === false) {
                                         v = false;
                                     }
@@ -737,11 +745,11 @@
                             commit: function (type, element) {
                                 debugger;
                                 if (IMAGE == type) {
-									element.setAttribute("data-enablePreview", this.getValue())
+									element.setAttribute("data-prv", this.getValue())
                                 } else if (PREVIEW == type) {
-									element.setAttribute("data-enablePreview", this.getValue())
+									element.setAttribute("data-prv", this.getValue())
                                 } else if (CLEANUP == type) {
-									element.removeAttribute("data-enablePreview")
+									element.removeAttribute("data-prv")
                                 }
                             }
                         },{
@@ -923,7 +931,7 @@
 										}
 									},
 									html: '<div>' +
-										'<a href="javascript:void(0)" tabindex="-1" title="' + editor.lang.o2image.lockRatio +
+										'<a  style="display: none;" href="javascript:void(0)" tabindex="-1" title="' + editor.lang.o2image.lockRatio +
 										'" class="cke_btn_locked" id="' + btnLockSizesId + '" role="checkbox"><span class="cke_icon"></span><span class="cke_label">' + editor.lang.o2image.lockRatio + '</span></a>' +
 										'<a href="javascript:void(0)" tabindex="-1" title="' + editor.lang.o2image.resetSize +
 										'" class="cke_btn_reset" id="' + btnResetSizeId + '" role="button"><span class="cke_label">' + editor.lang.o2image.resetSize + '</span></a>' +

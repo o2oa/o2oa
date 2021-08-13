@@ -2688,7 +2688,7 @@ MDomItem.Rtf = new Class({
 
         var images = item.getElements("img");
         var previewImageList = images.filter(function (img) {
-            var enablePreview = img.get("data-enablePreview");
+            var enablePreview = img.get("data-prv");
             if( enablePreview !== "false" && enablePreview !== false ){
                 img.setStyle("cursor", "pointer");
                 return true;
@@ -2705,11 +2705,11 @@ MDomItem.Rtf = new Class({
         this.loadViewerResource(function () {
             new Viewer( this.node, {
                 url: function (image) {
-                    var id = image.get("data-originalid") || image.get("data-id");
+                    var id = image.get("data-orgid") || image.get("data-id");
                     return id ? o2.xDesktop.getImageSrc(id) : image.get("src")
                 },
                 filter: function (image) {
-                    var enablePreview = image.get("data-enablePreview");
+                    var enablePreview = image.get("data-prv");
                     return enablePreview !== "false" && enablePreview !== false;
                 }
             });

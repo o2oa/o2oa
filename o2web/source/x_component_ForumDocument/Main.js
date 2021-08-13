@@ -1791,7 +1791,7 @@ debugger;
 		var voteNode = node.getElement("[item='vote']");
 		var images = contentNote.getElements("img").concat(voteNode.getElements("img"));
 		var previewImageList = images.filter(function (img) {
-			var enablePreview = img.get("data-enablePreview");
+			var enablePreview = img.get("data-prv");
 			if( enablePreview !== "false" && enablePreview !== false ){
 				img.setStyle("cursor", "pointer");
 				img.set("preview", "true");
@@ -1803,7 +1803,7 @@ debugger;
 			this.loadViewerResource(function () {
 				new Viewer( node, {
 					url: function (image) {
-						var id = image.get("data-originalid") || image.get("data-id");
+						var id = image.get("data-orgid") || image.get("data-id");
 						return id ? o2.xDesktop.getImageSrc(id) : image.get("src")
 					},
 					filter: function (image) {
@@ -2226,7 +2226,7 @@ MWF.xApplication.ForumDocument.ReplyDocument = new Class({
 	loadImageViewer: function(node){
 		var images = node.getElements("img");
 		var previewImageList = images.filter(function (img) {
-			var enablePreview = img.get("data-enablePreview");
+			var enablePreview = img.get("data-prv");
 			if( enablePreview !== "false" && enablePreview !== false ){
 				img.setStyle("cursor", "pointer");
 				return true;
@@ -2237,11 +2237,11 @@ MWF.xApplication.ForumDocument.ReplyDocument = new Class({
 			this.loadViewerResource(function () {
 				new Viewer( node, {
 					url: function (image) {
-						var id = image.get("data-originalid") || image.get("data-id");
+						var id = image.get("data-orgid") || image.get("data-id");
 						return id ? o2.xDesktop.getImageSrc(id) : image.get("src")
 					},
 					filter: function (image) {
-						var enablePreview = image.get("data-enablePreview");
+						var enablePreview = image.get("data-prv");
 						return enablePreview !== "false" && enablePreview !== false;
 					}
 				});

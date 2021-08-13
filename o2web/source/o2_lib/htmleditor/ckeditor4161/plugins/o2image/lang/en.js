@@ -27,6 +27,6 @@ CKEDITOR.plugins.setLang( 'o2image', 'en', {
 	selectLocalImageNote: "Please make sure the file is an image file",
 	selectCloudImage:'Select cloud file image',
 	selectCurDocImage:'Select this document picture',
-	allPreview:'Allow browsing large images',
+	allowPreview:'Allow browsing of original images',
 	saveAsBase64:'Save as Base64 encoding'
 } );
