@@ -370,14 +370,14 @@
                     widths: !d.config.enablePreview ? ["0%","100%"] : ["27%","73%"],
                     children: [{
                         hidden: !d.config.enablePreview,
-                        id: "data-enablePreview",
+                        id: "data-prv",
                         type: "checkbox",
                         label: "允许浏览大图",
                         "default": true,
                         setup: function(a, b){
                             if (1 == a) {
                                 var v = true;
-                                var c = b.getAttribute("data-enablePreview");
+                                var c = b.getAttribute("data-prv");
                                 if( c === "false" || c === false ){
                                     v = false;
                                 }
@@ -387,11 +387,11 @@
                         commit:  function (a, b) {
                             debugger;
                             if( 1 == a ){
-                                b.setAttribute("data-enablePreview", this.getValue())
+                                b.setAttribute("data-prv", this.getValue())
                             }else if( 4 == a ){
-                                b.setAttribute("data-enablePreview", this.getValue())
+                                b.setAttribute("data-prv", this.getValue())
                             }else if( 8 == a){
-                                b.removeAttribute("data-enablePreview")
+                                b.removeAttribute("data-prv")
                             }
                         }
                     },{

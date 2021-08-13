@@ -501,7 +501,7 @@ O2CMSComment.Document = new Class({
         var contentNode = itemNode.getElement( "[item='content']" );
         var images = contentNode.getElements("img");
         var previewImageList = images.filter(function (img) {
-            var enablePreview = img.get("data-enablePreview");
+            var enablePreview = img.get("data-prv");
             if( enablePreview !== "false" && enablePreview !== false ){
                 img.setStyle("cursor", "pointer");
                 return true;
@@ -512,11 +512,11 @@ O2CMSComment.Document = new Class({
             this.loadViewerResource(function () {
                 new Viewer( contentNode, {
                     url: function (image) {
-                        var id = image.get("data-originalid") || image.get("data-id");
+                        var id = image.get("data-orgid") || image.get("data-id");
                         return id ? o2.xDesktop.getImageSrc(id) : image.get("src")
                     },
                     filter: function (image) {
-                        var enablePreview = image.get("data-enablePreview");
+                        var enablePreview = image.get("data-prv");
                         return enablePreview !== "false" && enablePreview !== false;
                     }
                 });

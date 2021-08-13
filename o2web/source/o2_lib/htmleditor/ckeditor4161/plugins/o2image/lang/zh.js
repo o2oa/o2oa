@@ -27,6 +27,6 @@ CKEDITOR.plugins.setLang( 'o2image', 'zh', {
 	selectLocalImageNote: "請確保文件為圖像文件",
 	selectCloudImage: '選擇雲文件圖片',
 	selectCurDocImage: '選擇本文檔圖片',
-	allPreview: '允許瀏覽大圖',
+	allowPreview: '允許瀏覽原圖',
 	saveAsBase64: '存為Base64編碼'
 } );
