@@ -102,6 +102,20 @@ public class Business {
 		}
 	}
 
+	public String getUnitName() throws Exception {
+		String url = Config.collect().url(Collect.ADDRESS_COLLECT_LOGIN);
+		Map<String, String> map = new HashMap<>();
+		map.put("credential", Config.collect().getName());
+		map.put("password", Config.collect().getPassword());
+		ActionResponse resp = ConnectionAction.post(url, null, map);
+		LoginWo loginWo = resp.getData(LoginWo.class);
+		if(loginWo!=null) {
+			return loginWo.getName();
+		}else{
+			return null;
+		}
+	}
+
 	public static class ValidateReq extends GsonPropertyObject {
 
 		private String name;
