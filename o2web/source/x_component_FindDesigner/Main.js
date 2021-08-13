@@ -1594,14 +1594,17 @@ debugger;
 						case "processPlatform":
 							var action = MWF.Actions.get("x_processplatform_assemble_designer");
 							m = action.saveForm.bind(action);
+							if(data.data)data.data.isNewForm = false;
 							break;
 						case "cms":
 							var action = MWF.Actions.get("x_cms_assemble_control");
 							m = action.saveForm.bind(action);
+							if(data.data)data.data.isNewForm = false;
 							break;
 						case "portal":
 							var action = MWF.Actions.get("x_portal_assemble_designer");
 							m = (pattern.designerType=="page") ? action.savePage.bind(action) : action.saveWidget.bind(action);
+                            if(data.data)data.data.isNewPage = false;
 							break;
 					}
 					if (this.designerDataObject && this.designerDataObject[this.editor.pattern.designerId]){
