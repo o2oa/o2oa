@@ -159,6 +159,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		_loadUserInterface: function(){
 			this.fireEvent("queryLoad");
 
+			var iconNode = this.node.getElement("div[o2datatemplate='icon']");
+			if(iconNode)iconNode.destroy();
+
 			this.editModules = [];
 			this.node.setStyle("overflow-x", "auto");
 			this.node.setStyle("overflow-y", "hidden");
