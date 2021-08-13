@@ -56,7 +56,7 @@ MWF.xApplication.Attendance.ImportExplorer = new Class({
                         this.actions.uploadAttachment( function( json ){
                             var id = json.id;
                             this.actions.getAttachmentInfo( id, function( info ){
-                                var progress = new MWF.xApplication.Attendance.ImportExplorer.Progress(id, this.actions);
+                                var progress = new MWF.xApplication.Attendance.ImportExplorer.Progress(id, this.actions, this.app);
                                 progress.load( function(){
                                     var form = new MWF.xApplication.Attendance.ImportExplorer.Result(this, info.data, { id : id }, { app : this.app , actions : this.app.restActions, css : {} });
                                     form.open();
@@ -320,40 +320,70 @@ MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
 
 
 MWF.xApplication.Attendance.ImportExplorer.Progress = new Class({
-    initialize : function( id, actions ){
+    initialize : function( id, actions, app ){
         this.id = id;
         this.actions = actions;
+        this.app = app;
     },
     load : function( callback ){
         var lp = MWF.xApplication.Attendance.LP;
         this.currentDate = new Date();
-        this.addFormDataMessage();
+
+        if(layout.desktop.message){
+            this.addFormDataMessage();
+        }else{
+            this.app.notice(lp.importDataTitle);
+            MWF.require("o2.widget.Mask", null, false);
+            this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+            this.mask.loadNode(this.app.content);
+        }
         this.status = "ready";
         this.intervalId = setInterval( function(){
             this.actions.getImportStatus( this.id, function( json ){
                 var data = json.data;
-                if( data.processing && data.currentProcessName != "COMPLETE"){
-                    if( data.currentProcessName == "VALIDATE" ){
-                        if( this.status != data.currentProcessName ){
-                            this.setMessageTitle( lp.checkDataTitle );
-                            this.setMessageText( lp.checkDataContent.replace( "{count}", data.process_validate_total));
-                            this.status = data.currentProcessName;
+                if( layout.desktop.message ){
+                    if( data.processing && data.currentProcessName !== "COMPLETE"){
+                        if( data.currentProcessName === "VALIDATE" ){
+                            if( this.status !== data.currentProcessName ){
+                                this.setMessageTitle( lp.checkDataTitle );
+                                this.setMessageText( lp.checkDataContent.replace( "{count}", data.process_validate_total));
+                                this.status = data.currentProcessName;
+                            }
+                            this.updateProgress( data.currentProcessName, data.process_validate_count, data.process_validate_total, data.errorCount );
+                        }else if( data.currentProcessName === "SAVEDATA" ){
+                            if( this.status !== data.currentProcessName ){
+                                this.setMessageTitle(lp.importDataTitle);
+                                this.setMessageText(lp.importDataContent.replace("{count}", data.process_save_total));
+                                this.status = data.currentProcessName;
+                            }
+                            this.updateProgress( data.currentProcessName, data.process_save_count, data.process_save_total, data.errorCount );
                         }
-                        this.updateProgress( data.currentProcessName, data.process_validate_count, data.process_validate_total, data.errorCount );
-                    }else if( data.currentProcessName == "SAVEDATA" ){
-                        if( this.status != data.currentProcessName ){
-                            this.setMessageTitle( lp.importDataTitle );
-                            this.setMessageText( lp.importDataContent.replace( "{count}", data.process_save_total));
-                            this.status = data.currentProcessName;
-                        }
-                        this.updateProgress( data.currentProcessName, data.process_save_count, data.process_save_total, data.errorCount );
+                    }else{
+                        this.status = data.currentProcessName;
+                        clearInterval( this.intervalId );
+                        this.transferComplete( data );
+                        if( callback )callback();
                     }
                 }else{
-                    this.status = data.currentProcessName;
-                    clearInterval( this.intervalId );
-                    this.transferComplete( data );
-                    if( callback )callback();
+                    if( data.processing && data.currentProcessName !== "COMPLETE"){
+                        if( data.currentProcessName === "VALIDATE" ){
+                            if( this.status !== data.currentProcessName ){
+                                this.status = data.currentProcessName;
+                            }
+                        }else if( data.currentProcessName === "SAVEDATA" ){
+                            if( this.status !== data.currentProcessName ){
+                                this.status = data.currentProcessName;
+                            }
+                        }
+                    }else{
+                        // this.app.notice(lp.importSuccessTitle);
+                        this.status = data.currentProcessName;
+                        clearInterval( this.intervalId );
+                        if (this.mask) this.mask.hide();
+                        if( callback )callback();
+                    }
                 }
+
             }.bind(this), null)
         }.bind(this), 500 );
     },
