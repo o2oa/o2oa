@@ -22,6 +22,39 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 
 		this.form = form;
 	},
+	_createNode: function(){
+		this.node = this.moveNode.clone(true, true);
+		this.node.clearStyles(false);
+		this.node.setStyles(this.css.moduleNode);
+		this.node.set("id", this.json.id);
+		this.node.addEvent("selectstart", function(){
+			return false;
+		});
+		this._createIcon();
+	},
+	_createIcon: function(){
+		this.iconNode = new Element("div", {
+			"styles": this.css.iconNode,
+			"o2datatemplate": "icon"
+		}).inject(this.node, "top");
+		new Element("div", {
+			"styles": this.css.iconNodeIcon
+		}).inject(this.iconNode);
+		new Element("div", {
+			"styles": this.css.iconNodeText,
+			"text": "Datatemplate"
+		}).inject(this.iconNode);
+	},
+	_loadNodeStyles: function(){
+		this.iconNode = this.node.getElement("div[o2datatemplate='icon']");
+		if( this.iconNode ){
+			this.iconNode.setStyles(this.css.iconNode);
+			this.iconNode.getFirst("div").setStyles(this.css.iconNodeIcon);
+			this.iconNode.getLast("div").setStyles(this.css.iconNodeText);
+		}else{
+			this._createIcon()
+		}
+	},
 	createImmediately: function(data, relativeNode, position, selectDisabled){
 		this.json = data;
 		this.json.id = this._getNewId();
