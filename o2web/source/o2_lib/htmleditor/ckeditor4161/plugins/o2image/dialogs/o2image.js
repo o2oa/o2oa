@@ -173,6 +173,14 @@
 							heightValue = oImageOriginal.$.height;
 						}
 
+						//如果宽度超过编辑器宽度，设置为编辑器宽度
+						debugger;
+						var editorWidth = editor.container.$.clientWidth;
+						if( editorWidth && editorWidth < widthValue ){
+							heightValue = parseInt( heightValue * (editorWidth / widthValue) );
+							widthValue = parseInt( editorWidth );
+						}
+
 						widthField && widthField.setValue( widthValue );
 						heightField && heightField.setValue( heightValue );
 					}
