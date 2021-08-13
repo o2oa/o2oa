@@ -35,7 +35,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 	_createIcon: function(){
 		this.iconNode = new Element("div", {
 			"styles": this.css.iconNode,
-			"o2datatemplate": "icon"
+			"o2icon": "datatemplate"
 		}).inject(this.node, "top");
 		new Element("div", {
 			"styles": this.css.iconNodeIcon
@@ -46,7 +46,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 		}).inject(this.iconNode);
 	},
 	_loadNodeStyles: function(){
-		this.iconNode = this.node.getElement("div[o2datatemplate='icon']");
+		this.iconNode = this.node.getElement("div[o2icon='datatemplate']");
 		if( this.iconNode ){
 			this.iconNode.setStyles(this.css.iconNode);
 			this.iconNode.getFirst("div").setStyles(this.css.iconNodeIcon);
