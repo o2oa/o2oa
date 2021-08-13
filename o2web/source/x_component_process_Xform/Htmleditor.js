@@ -131,11 +131,9 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
             if( editorConfig && editorConfig.removePlugins ){
                 var removePlugins = editorConfig.removePlugins;
                 removePlugins = typeOf( removePlugins ) === "array" ? removePlugins : removePlugins.split(",");
-                removePlugins.push( 'image');
-                removePlugins.push( 'easyimage');
-                editorConfig.removePlugins = removePlugins;
+                editorConfig.removePlugins = removePlugins.concat(['image','easyimage','exportpdf','cloudservices']);
             }else{
-                editorConfig.removePlugins = ['image','easyimage'];
+                editorConfig.removePlugins = ['image','easyimage','exportpdf','cloudservices'];
             }
 
 
