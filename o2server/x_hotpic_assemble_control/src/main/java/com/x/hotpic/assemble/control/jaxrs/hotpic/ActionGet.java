@@ -56,9 +56,6 @@ public class ActionGet extends BaseAction {
 		return result;
 	}
 
-	public static class Wi {
-
-	}
 
 	public static class Wo extends HotPictureInfo {
 		public static List<String> Excludes = new ArrayList<String>();

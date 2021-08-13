@@ -23,21 +23,9 @@ public class ActionCheck extends BaseAction {
 		return result;
 	}
 
-	public static class Wi {
-
-	}
 
 	public static class Wo extends GsonPropertyObject {
 
-		private String value;
-
-		public String getValue() {
-			return value;
-		}
-
-		public void setValue(String value) {
-			this.value = value;
-		}
 	}
 
 }
