@@ -22,7 +22,9 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.program.center.Business;
 import com.x.program.center.ThisApplication;
+import org.apache.commons.lang3.StringUtils;
 
 class BaseAction extends StandardJaxrsAction {
 
@@ -114,6 +116,15 @@ class BaseAction extends StandardJaxrsAction {
 		parameters.put("key", key);
 		parameters.put("secret", secret);
 		ActionResponse resp = ConnectionAction.put(url, null, parameters);
+		return resp.getData(ReturnWoBoolean.class).getValue();
+	}
+
+	Boolean updateUnitMapping(String name, String urlMapping) throws Exception {
+		String url = Config.collect().url("/o2_collect_assemble/jaxrs/unit/urlMapping/");
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("name",  name);
+		parameters.put("urlMapping", urlMapping);
+		ActionResponse resp = ConnectionAction.put(url, null,parameters);
 		return resp.getData(ReturnWoBoolean.class).getValue();
 	}
 
