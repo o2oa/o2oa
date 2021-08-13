@@ -780,16 +780,16 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         this.nameInputNode.set("value", (this.data.name));
 
         tdContents[1].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.employeeInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[1]);
-        this.employeeInputNode.set("value", (this.data.employee));
+        this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[1]);
+        this.uniqueInputNode.set("value", (this.data.unique));
 
         tdContents[2].setStyles(this.style.baseInforContentNode_edit).empty();
         this.mobileInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[2]);
         this.mobileInputNode.set("value", (this.data.mobile));
 
         tdContents[3].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[3]);
-        this.uniqueInputNode.set("value", (this.data.unique));
+        this.employeeInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[3]);
+        this.employeeInputNode.set("value", (this.data.employee));
 
         tdContents[4].setStyles(this.style.baseInforContentNode_edit).empty();
         var html = "<input name=\"personGenderRadioNode\" value=\"m\" type=\"radio\" "+((this.data.genderType==="m") ? "checked" : "")+"/>"+this.explorer.app.lp.man;
@@ -989,9 +989,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         if (this.data.id){
             var tdContents = this.editContentNode.getElements("td.inforContent");
             tdContents[0].setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
-            tdContents[1].setStyles(this.style.baseInforContentNode).set("text", this.data.employee || "");
+            tdContents[1].setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
             tdContents[2].setStyles(this.style.baseInforContentNode).set("text", this.data.mobile || "");
-            tdContents[3].setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
+            tdContents[3].setStyles(this.style.baseInforContentNode).set("text", this.data.employee || "");
             tdContents[4].setStyles(this.style.baseInforContentNode).set("text", this.getGenderType());
             tdContents[5].setStyles(this.style.baseInforContentNode).set("text", "");
             if (this.data.superior) new MWF.widget.O2Person({"name": this.data.superior}, tdContents[5], {"style": "xform"});
