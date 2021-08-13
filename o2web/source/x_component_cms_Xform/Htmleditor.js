@@ -98,7 +98,7 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
 
             editorConfig.base64Encode = (this.json.base64Encode === "y");
             editorConfig.enablePreview = (this.json.enablePreview !== "n");
-            editorConfig.localImageMaxWidth = 980;
+            editorConfig.localImageMaxWidth = 10000;
             editorConfig.reference = this.form.businessData.document.id;
             editorConfig.referenceType = "cmsDocument";
 
@@ -114,11 +114,9 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
             if( editorConfig && editorConfig.removePlugins ){
                 var removePlugins = editorConfig.removePlugins;
                 removePlugins = typeOf( removePlugins ) === "array" ? removePlugins : removePlugins.split(",");
-                removePlugins.push( 'image' );
-                removePlugins.push( 'easyimage');
-                editorConfig.removePlugins = removePlugins;
+                editorConfig.removePlugins = removePlugins.concat(['image','easyimage','exportpdf','cloudservices']);
             }else{
-                editorConfig.removePlugins = ['image','easyimage'];
+                editorConfig.removePlugins = ['image','easyimage','exportpdf','cloudservices'];
             }
 
             if(!editorConfig.language)editorConfig.language = MWF.language;

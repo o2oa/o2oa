@@ -174,12 +174,12 @@
 						}
 
 						//如果宽度超过编辑器宽度，设置为编辑器宽度
-						debugger;
-						var editorWidth = editor.container.$.clientWidth;
-						if( editorWidth && editorWidth < widthValue ){
-							heightValue = parseInt( heightValue * (editorWidth / widthValue) );
-							widthValue = parseInt( editorWidth );
-						}
+						// debugger;
+						// var editorWidth = editor.container.$.clientWidth;
+						// if( editorWidth && editorWidth < widthValue ){
+						// 	heightValue = parseInt( heightValue * (editorWidth / widthValue) );
+						// 	widthValue = parseInt( editorWidth );
+						// }
 
 						widthField && widthField.setValue( widthValue );
 						heightField && heightField.setValue( heightValue );
@@ -206,12 +206,23 @@
 
 					var dialog = this.getDialog(),
 						value = '',
-						dimension = this.id == 'txtWidth' ? 'width' : 'height',
+						dimension = this.id == 'txtWidth' ? 'data-width' : 'data-height',
 						size = element.getAttribute( dimension );
 
-					if ( size )
+						if(!size){
+							dimension = this.id == 'txtWidth' ? 'width' : 'height';
+							size = element.getAttribute( dimension );
+						}
+
+					if ( size ){
 						value = checkDimension( size, value );
-					value = checkDimension( element.getStyle( dimension ), value );
+					}else{
+						value = checkDimension( element.getStyle( dimension ), value );
+					}
+
+					// if ( size )
+					// 	value = checkDimension( size, value );
+					// value = checkDimension( element.getStyle( dimension ), value );
 
 					this.setValue( value );
 				};
@@ -821,11 +832,13 @@
 										commit: function( type, element ) {
 											var value = this.getValue();
 											if ( type == IMAGE ) {
-												if ( value && editor.activeFilter.check( 'img{width,height}' ) )
+												if ( value && editor.activeFilter.check( 'img{width,height}' ) ){
 													element.setStyle( 'width', CKEDITOR.tools.cssLength( value ) );
-												else
+													element.setAttribute( 'data-width', CKEDITOR.tools.cssLength( value ) );
+												}else{
 													element.removeStyle( 'width' );
-
+													element.removeAttribute( 'data-width' );
+												}
 												element.removeAttribute( 'width' );
 											} else if ( type == PREVIEW ) {
 												var aMatch = value.match( regexGetSize );
@@ -837,6 +850,7 @@
 													element.setStyle( 'width', CKEDITOR.tools.cssLength( value ) );
 												}
 											} else if ( type == CLEANUP ) {
+												element.removeAttribute( 'data-width' );
 												element.removeAttribute( 'width' );
 												element.removeStyle( 'width' );
 											}
@@ -862,10 +876,13 @@
 										commit: function( type, element ) {
 											var value = this.getValue();
 											if ( type == IMAGE ) {
-												if ( value && editor.activeFilter.check( 'img{width,height}' ) )
-													element.setStyle( 'height', CKEDITOR.tools.cssLength( value ) );
-												else
+												if ( value && editor.activeFilter.check( 'img{width,height}' ) ){
+													// element.setStyle( 'height', CKEDITOR.tools.cssLength( value ) );
+													element.setAttribute( 'data-height', CKEDITOR.tools.cssLength( value ) );
+												}else{
 													element.removeStyle( 'height' );
+													element.removeAttribute( 'data-height' );
+												}
 
 												element.removeAttribute( 'height' );
 											} else if ( type == PREVIEW ) {
@@ -878,6 +895,7 @@
 													element.setStyle( 'height', CKEDITOR.tools.cssLength( value ) );
 												}
 											} else if ( type == CLEANUP ) {
+												element.removeAttribute( 'data-height' );
 												element.removeAttribute( 'height' );
 												element.removeStyle( 'height' );
 											}
@@ -1395,7 +1413,7 @@
 						requiredContent: 'img{cke-xyz}', // Random text like 'xyz' will check if all are allowed.
 						label: editor.lang.common.cssStyle,
 						validate: CKEDITOR.dialog.validate.inlineStyle( editor.lang.common.invalidInlineStyle ),
-						'default': '',
+						'default': 'max-width:100%',
 						setup: function( type, element ) {
 							if ( type == IMAGE ) {
 								var genStyle = element.getAttribute( 'style' );

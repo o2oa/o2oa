@@ -2613,7 +2613,7 @@ MDomItem.Rtf = new Class({
                 "readOnly": false,
                 "language": MWF.language || "zh-cn",
                 "enablePreview": true,
-                "removePlugins": ['image','easyimage'],
+                "removePlugins": ['image','easyimage','exportpdf','cloudservices'],
                 "extraPlugins": ['o2image']
                 // "extraAllowedContent " : "img[onerror,data-id]"
             };
