@@ -104,5 +104,18 @@ MWF.xApplication.process.FormDesigner.Module.Stat = MWF.FCStat = new Class({
 	},
 
     _setEditStyle: function(name, input, oldValue){
+		if (name=="name"){
+			var title = this.json.name || this.json.id;
+			var text = this.json.type.substr(this.json.type.lastIndexOf("$")+1, this.json.type.length);
+			this.treeNode.setText("<"+text+"> "+title);
+		}
+		if (name=="id"){
+			if (!this.json.name){
+				var text = this.json.type.substr(this.json.type.lastIndexOf("$")+1, this.json.type.length);
+				this.treeNode.setText("<"+text+"> "+this.json.id);
+			}
+			this.treeNode.setTitle(this.json.id);
+			this.node.set("id", this.json.id);
+		}
     }
 });
