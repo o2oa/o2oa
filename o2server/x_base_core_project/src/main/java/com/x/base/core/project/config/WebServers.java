@@ -12,6 +12,9 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.connection.ConnectionAction;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -176,7 +179,17 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		map.put("indexPage", Config.portal().getIndexPage());
 		map.put("webSocketEnable", Config.communicate().wsEnable());
 		map.put("urlMapping", Config.portal().getUrlMapping());
+		if(!(Config.portal().getUrlMapping().isEmpty())){
+			try {
+				String urlMapping = XGsonBuilder.toJson(Config.portal().getUrlMapping());
+				Map<String, String> urlmap = new HashMap<>();
+				urlmap.put("urlMapping", urlMapping);
+				CipherConnectionAction.put(true,Config.url_x_program_center_jaxrs("collect","urlMapping"),urlmap);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
+		}
 		/* 密码规则 */
 		map.put("passwordRegex", Config.person().getPasswordRegex());
 		map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
@@ -201,5 +214,4 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		}
 		FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 	}
-
 }
