@@ -14,18 +14,8 @@ public class Business {
 		return this.emc;
 	}
 	
-	//private Organization organization;
-	
+
 	private HotPictureInfoFactory hotPictureInfoFactory;
-	
-	/*
-	public Organization organization() throws Exception {
-		if (null == this.organization) {
-			this.organization = new Organization(ThisApplication.context());
-		}
-		return organization;
-	}
-	*/
 	
 	public HotPictureInfoFactory hotPictureInfoFactory() throws Exception {
 		if (null == this.hotPictureInfoFactory) {

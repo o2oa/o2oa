@@ -63,13 +63,9 @@ public class ActionGetList extends BaseAction {
 		return result;
 	}
 
-	public static class Wi {
-
-	}
 
 	public static class Wo extends HotPictureInfo {
 		private static final long serialVersionUID = 1L;
-		public static List<String> Excludes = new ArrayList<String>();
 		public static WrapCopier<HotPictureInfo, Wo> copier = WrapCopierFactory.wo(HotPictureInfo.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
