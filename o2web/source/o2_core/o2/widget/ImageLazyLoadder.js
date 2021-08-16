@@ -38,16 +38,14 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
 
                         var id = this.getAttributeValue(image, "data-id");
                         var src = id ? MWF.xDesktop.getImageSrc(id) : this.getAttributeValue(image, "src");
-                        image1 = this.addAttribute(image1, "data-src", src);
+                        var image1 = this.addAttribute(image, "data-src", src);
 
-                        var image1 = this.removeAttribute(image, "src");
+                        image1 = this.removeAttribute(image1, "src");
 
-                        image1 = this.removeStyle(image1, "width");
-                        image1 = this.removeStyle(image1, "height");
-
-                        image1 = this.addStyle(image1, "height", size.y+"px");
-                        image1 = this.addStyle(image1, "width", size.x+"px");
-
+                        image1 = this.replaceStyles(image1, {
+                            "height": size.y+"px",
+                            "width": size.x+"px"
+                        });
                         html = html.replace(image, image1);
                     }
                 }
@@ -55,26 +53,60 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
         }
         this.html = html;
     },
+    getAttrRegExp: function( attr ){
+        return "\\s+" + attr + "\\s*=\\s*[\"|\'](.*?)[\"|\']";
+    },
     getAttributeValue: function(str, attribute){
-        var regexp = new RegExp( attribute + "\\s*=\\s*[\"|\'](.*?)[\"|\']" , "i");
+        var regexp = new RegExp( this.getAttrRegExp(attribute) , "i");
         var array = str.match( regexp );
         return (o2.typeOf(array) === "array" && array.length === 2) ? array[1] : "";
     },
     addAttribute: function(str, attribute, value){
-        var last = str.lastIndexOf(">");
-        return str.substring(0, last) + ' ' + attribute + '"' + value + '"' + str.substring(last, str.length-1);
+        var regexp = new RegExp( "\\/*\\s*>" , "i");
+        return str.replace( regexp, ' ' + attribute + '="' + value + '"' + " />");
     },
     removeAttribute: function(str, attribute){
-        var regexp = new RegExp( attribute + "\\s*=\\s*[\"|\'](.*?)[\"|\']" , "ig");
+        var regexp = new RegExp( this.getAttrRegExp(attribute) , "ig");
         return str.replace( regexp, "" );
     },
-    removeStyle: function(str, key){
-        var regexp = new RegExp( key + "\\s*:\\s*.*?;" , "i");
-        return str.replace( regexp, "" );
+    replaceStyles: function(str, object){
+        /*object 参数 {
+           "width" : "100px", //添加或替换
+           "height": "" //删除
+        }*/
+        var regexp = new RegExp( this.getAttrRegExp("style") , "i");
+        var array = str.match( regexp );
+        var newArray = [];
+        Object.each(object, function (value, key) {
+            if(value)newArray.push( key + ":" + value )
+        });
+        if( o2.typeOf(array) === "array" && array.length>1){
+            var styles = array[1].split(";");
+            for(var j=0; j<styles.length; j++){
+                var ar = styles[j].split(":");
+                var key = ar[0].trim().toLowerCase();
+                if( !object.hasOwnProperty( key ) ){
+                    newArray.push( styles[j] );
+                }
+            }
+        }
+        if(o2.typeOf(array) === "array" && array[0]){ //原先有style
+            if( newArray.length === 0 ){
+                return str.replace(array[0], "")
+            }else{
+                return str.replace(array[0], " style=\""+ newArray.join("; ") + "\"")
+            }
+        }else{
+            if( newArray.length === 0 ){
+                return str;
+            }else{
+                return this.addAttribute(str, "style", newArray.join("; "));
+            }
+        }
     },
     getSize: function(imgStr){
         //获取占位图片高宽，先从style获取高宽，没有从data-width获取，并判断maxWidth
-        var width, height, maxWidth;
+        var width="", height="", maxWidth="";
         var style = this.getAttributeValue(imgStr, "style");
         var styles = style.split(";");
         for(var j=0; j<styles.length; j++){
@@ -90,6 +122,9 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
         }
         if( !width )width = this.getAttributeValue(imgStr, "data-width");
         if( !height )height = this.getAttributeValue(imgStr, "data-height");
+
+        if( !width )width = this.getAttributeValue(imgStr, "width");
+        if( !height )height = this.getAttributeValue(imgStr, "height");
 
         if( width && height ){
             width = parseFloat( width );
