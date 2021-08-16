@@ -33,6 +33,7 @@ MWF.xApplication.ForumDocument.Vote = new Class({
         }else{
             this.loadContent_read();
         }
+        this.fireEvent("postLoad");
     },
     reload : function(){
         this.container.empty();
@@ -232,9 +233,9 @@ MWF.xApplication.ForumDocument.Vote = new Class({
                             "src": MWF.xDesktop.getImageSrc(n.optionPictureId),
                             "styles": this.css.optionPicture
                         }).inject(area);
-                        img.addEvent("click", function () {
-                            window.open(o2.filterUrl(MWF.xDesktop.getImageSrc(this.id)), "_blank");
-                        }.bind({id: n.optionPictureId}));
+                        // img.addEvent("click", function () {
+                        //     window.open(o2.filterUrl(MWF.xDesktop.getImageSrc(this.id)), "_blank");
+                        // }.bind({id: n.optionPictureId}));
                     }
 
                     var present = ( ( n.chooseCount / sum ) * 100 ).toString().substr(0, 5) + "%";
@@ -382,9 +383,9 @@ MWF.xApplication.ForumDocument.Vote = new Class({
                         "src" : MWF.xDesktop.getImageSrc( n.optionPictureId ),
                         "styles" : this.css.optionPicture
                     }).inject( area );
-                    img.addEvent("click",function(){
-                        window.open( o2.filterUrl(MWF.xDesktop.getImageSrc( this.id )), "_blank" );
-                    }.bind({id: n.optionPictureId}))
+                    // img.addEvent("click",function(){
+                    //     window.open( o2.filterUrl(MWF.xDesktop.getImageSrc( this.id )), "_blank" );
+                    // }.bind({id: n.optionPictureId}))
                 }
             }else{
                 optionsDiv = new Element("div", {
