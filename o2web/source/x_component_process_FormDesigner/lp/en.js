@@ -829,6 +829,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "ckeditorInfo": "For more attribute help, please see ",
         "ckeditorInfo2": "Return the Config object of CKEditor, used for editor initialization",
         "ckeditorInfo3": "For more event help, please see",
+        "Base64Encode ":" Image Base64 Encode",
+        "ImagePreview ":" View larger images",
 
         "ieOnly": "Only available in IE browser",
         "keepHistory": "Whether to keep the historical version",
