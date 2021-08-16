@@ -326,7 +326,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"deleteParameter": "删除参数",
 		"responseScript": "响应脚本",
 		"use": "使用",
-		"getJson": "获取响应的JSON对象",
+		"getJson": "获取响应内容。如果响应内容是JSON格式的字符串，则返回JSON对象；否则返回原始响应内容。",
 		"systemRequest": "系统内请求",
 		"restAddr": "REST地址",
 		"requestBodyScript": "消息体脚本",
