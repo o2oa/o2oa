@@ -1,24 +1,9 @@
 ﻿/**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 ( function() {
-	function setupCheckbox(b) {
-		debugger;
-		if(!b.hasAttribute)return;
-		var c = this instanceof CKEDITOR.ui.dialog.checkbox;
-		b.hasAttribute(this.id) && (b = b.getAttribute(this.id), c ? this.setValue(checboxOptions[this.id]["true"] == b.toLowerCase()) : this.setValue(b))
-	}
-
-	function commitCheckbox(b) {
-		return true;
-		// var c = "" === this.getValue(), a = this instanceof CKEDITOR.ui.dialog.checkbox, d = this.getValue();
-		// c ? b.removeAttribute(this.att || this.id) : a ? b.setAttribute(this.id, checboxOptions[this.id][d]) : b.setAttribute(this.att || this.id, d)
-	}
-
-	var checboxOptions = {base64enable: {"true": "yes", "false": "no"}};
-
 	var imageDialog = function( editor, dialogType ) {
 			// Load image preview.
 			var IMAGE = 1,
@@ -188,6 +173,14 @@
 							heightValue = oImageOriginal.$.height;
 						}
 
+						//如果宽度超过编辑器宽度，设置为编辑器宽度
+						// debugger;
+						// var editorWidth = editor.container.$.clientWidth;
+						// if( editorWidth && editorWidth < widthValue ){
+						// 	heightValue = parseInt( heightValue * (editorWidth / widthValue) );
+						// 	widthValue = parseInt( editorWidth );
+						// }
+
 						widthField && widthField.setValue( widthValue );
 						heightField && heightField.setValue( heightValue );
 					}
@@ -213,12 +206,23 @@
 
 					var dialog = this.getDialog(),
 						value = '',
-						dimension = this.id == 'txtWidth' ? 'width' : 'height',
+						dimension = this.id == 'txtWidth' ? 'data-width' : 'data-height',
 						size = element.getAttribute( dimension );
 
-					if ( size )
+						if(!size){
+							dimension = this.id == 'txtWidth' ? 'width' : 'height';
+							size = element.getAttribute( dimension );
+						}
+
+					if ( size ){
 						value = checkDimension( size, value );
-					value = checkDimension( element.getStyle( dimension ), value );
+					}else{
+						value = checkDimension( element.getStyle( dimension ), value );
+					}
+
+					// if ( size )
+					// 	value = checkDimension( size, value );
+					// value = checkDimension( element.getStyle( dimension ), value );
 
 					this.setValue( value );
 				};
@@ -289,7 +293,7 @@
 				previewImageId = numbering( 'previewImage' );
 
 			return {
-				title: editor.lang.image[ dialogType == 'image' ? 'title' : 'titleButton' ],
+				title: editor.lang.o2image[ dialogType == 'image' ? 'title' : 'titleButton' ],
 				minWidth: ( CKEDITOR.skinName || editor.config.skin ) == 'moono-lisa' ? 500 : 420,
 				minHeight: 360,
 				getModel: function( editor ) {
@@ -404,7 +408,7 @@
 						var imgTagName = this.imageEditMode;
 
 						// Image dialog and Input element.
-						if ( dialogType == 'image' && imgTagName == 'input' && confirm( editor.lang.image.button2Img ) ) { // jshint ignore:line
+						if ( dialogType == 'image' && imgTagName == 'input' && confirm( editor.lang.o2image.button2Img ) ) { // jshint ignore:line
 							// Replace INPUT-> IMG
 							imgTagName = 'img';
 							this.imageElement = editor.document.createElement( 'img' );
@@ -412,7 +416,7 @@
 							editor.insertElement( this.imageElement );
 						}
 						// ImageButton dialog and Image element.
-						else if ( dialogType != 'image' && imgTagName == 'img' && confirm( editor.lang.image.img2Button ) ) { // jshint ignore:line
+						else if ( dialogType != 'image' && imgTagName == 'img' && confirm( editor.lang.o2image.img2Button ) ) { // jshint ignore:line
 							// Replace IMG -> INPUT
 							imgTagName = 'input';
 							this.imageElement = editor.document.createElement( 'input' );
@@ -453,10 +457,16 @@
 							"data-id": MWF.xDesktop.uploadedImageId
 						});
 					}
+					if( MWF.xDesktop.uploadedImageOrgid ){
+						this.imageElement.setAttributes({
+							"data-orgid": MWF.xDesktop.uploadedImageOrgid
+						});
+					}
 					this.imageElement.setAttributes({
 						"onerror": "MWF.xDesktop.setImageSrc()"
 					});
 					MWF.xDesktop.uploadedImageId = "";
+					MWF.xDesktop.uploadedImageOrgid = "";
 
 					// Remove empty style attribute.
 					if ( !this.imageElement.getAttribute( 'style' ) )
@@ -526,7 +536,7 @@
 				},
 				contents: [ {
 					id: 'info',
-					label: editor.lang.image.infoTab,
+					label: editor.lang.o2image.infoTab,
 					accessKey: 'I',
 					elements: [ {
 						type: 'vbox',
@@ -600,7 +610,7 @@
 										element.removeAttribute( 'src' );
 									}
 								},
-								validate: CKEDITOR.dialog.validate.notEmpty( editor.lang.image.urlMissing )
+								validate: CKEDITOR.dialog.validate.notEmpty( editor.lang.o2image.urlMissing )
 							},
 							{
 								type: 'button',
@@ -624,7 +634,7 @@
 								id: "browseLocal",
 								style: "display:inline-block;margin-bottom:4px;",
 								align: "center",
-								label: "选择本地图片",//c.lang.common.browseServer,
+								label: editor.lang.o2image.selectLocalImage, //c.lang.common.browseServer,
 								hidden: !( editor.config.reference && editor.config.referenceType ),
 								onClick: function (e) {
 									//var fileNode = document.getElementById("fckLocalFileUpload");
@@ -642,7 +652,7 @@
 											fileNode.addEvent("change", function(event){
 												var file= fileNode.files[0];
 												if(!/image\/\w+/.test(file.type)){           //判断获取的是否为图片文件
-													MWF.xDesktop.notice("请确保文件为图像文件","error");
+													MWF.xDesktop.notice(editor.lang.o2image.selectLocalImageNote,"error");
 													return false;
 												}
 												var reader=new FileReader();
@@ -664,14 +674,16 @@
 											var contentElement = dialogElement.getElement(".cke_dialog_body").getParent();
 											var upload = new MWF.widget.Upload(contentElement, {
 												"data": null,
-												"parameter": {"reference" : editor.config.reference, "referencetype": editor.config.referenceType, "scale" : 800 },
+												"parameter": {"reference" : editor.config.reference, "referencetype": editor.config.referenceType, "scale" : editor.config.localImageMaxWidth || 2000 },
 												"action": action,
 												"method": "uploadImageByScale",
 												"accept": "image/*",
 												"onEvery": function(json){
 													var id = json.data ? json.data.id : json.id;
+													var orgid = json.data ? json.data.origId : json.origId;
 													var src = MWF.xDesktop.getImageSrc( id );
 													MWF.xDesktop.uploadedImageId = id;
+													MWF.xDesktop.uploadedImageOrgid = orgid;
 													var txtUrlElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtUrl");
 													txtUrlElement.setValue( src );
 												}.bind(this)
@@ -687,13 +699,13 @@
 								id: "browseFiles",
 								style: "display:inline-block;margin-bottom:4px;",
 								align: "center",
-								label: "选择云文件图片",//c.lang.common.browseServer,
+								label: editor.lang.o2image.selectCloudImage,//c.lang.common.browseServer,
 								hidden: !0, //!( editor.config.reference && editor.config.referenceType ), //editor.config.filebrowserFilesImage ? !1 : !0, //!0,
 								onClick: function (e) {
 									MWF.xDesktop.requireApp("File", "FileSelector", function(){
 										( new MWF.xApplication.File.FileSelector( document.body ,{
 											"style" : "default",
-											"title": "选择云文件图片",
+											"title": editor.lang.o2image.selectCloudImage,
 											"reference" :  editor.config.reference,
 											"referenceType" : editor.config.referenceType,
 											"listStyle": "preview",
@@ -712,7 +724,7 @@
 								id: "browseDocumentAttachment",
 								style: "display:inline-block;margin-bottom:4px;",
 								align: "center",
-								label: "选择本文档图片",//c.lang.common.browseServer,
+								label: editor.lang.o2image.selectCurDocImage,//c.lang.common.browseServer,
 								hidden: !0, //editor.config.filebrowserCurrentDocumentImage ? !1 : !0,
 								onClick: function (e) {
 									var txtUrlElement = this.getDialog().getContentElement("info", "txtUrl");
@@ -729,7 +741,7 @@
                             hidden: !editor.config.enablePreview,
                             id: "data-prv",
                             type: "checkbox",
-                            label: "允许浏览大图",
+                            label: editor.lang.o2image.allowPreview,
                             "default": true,
                             setup: function (type, element) {
                                 if (IMAGE == type) {
@@ -752,18 +764,21 @@
                                 }
                             }
                         },{
+								hidden: !editor.config.base64Encode,
 								id: "base64enable",
 								type: "checkbox",
 								requiredContent: "img{src}",
-								label: "存为Base64编码",
-								setup: setupCheckbox,
-								commit: commitCheckbox
+								label: editor.lang.o2image.saveAsBase64,
+								setup: function(){
+								},
+								commit: function(){
+								}
 							}]
 						},
 					{
 						id: 'txtAlt',
 						type: 'text',
-						label: editor.lang.image.alt,
+						label: editor.lang.o2image.alt,
 						accessKey: 'T',
 						'default': '',
 						onChange: function() {
@@ -817,11 +832,13 @@
 										commit: function( type, element ) {
 											var value = this.getValue();
 											if ( type == IMAGE ) {
-												if ( value && editor.activeFilter.check( 'img{width,height}' ) )
+												if ( value && editor.activeFilter.check( 'img{width,height}' ) ){
 													element.setStyle( 'width', CKEDITOR.tools.cssLength( value ) );
-												else
+													element.setAttribute( 'data-width', CKEDITOR.tools.cssLength( value ) );
+												}else{
 													element.removeStyle( 'width' );
-
+													element.removeAttribute( 'data-width' );
+												}
 												element.removeAttribute( 'width' );
 											} else if ( type == PREVIEW ) {
 												var aMatch = value.match( regexGetSize );
@@ -833,6 +850,7 @@
 													element.setStyle( 'width', CKEDITOR.tools.cssLength( value ) );
 												}
 											} else if ( type == CLEANUP ) {
+												element.removeAttribute( 'data-width' );
 												element.removeAttribute( 'width' );
 												element.removeStyle( 'width' );
 											}
@@ -858,10 +876,13 @@
 										commit: function( type, element ) {
 											var value = this.getValue();
 											if ( type == IMAGE ) {
-												if ( value && editor.activeFilter.check( 'img{width,height}' ) )
-													element.setStyle( 'height', CKEDITOR.tools.cssLength( value ) );
-												else
+												if ( value && editor.activeFilter.check( 'img{width,height}' ) ){
+													// element.setStyle( 'height', CKEDITOR.tools.cssLength( value ) );
+													element.setAttribute( 'data-height', CKEDITOR.tools.cssLength( value ) );
+												}else{
 													element.removeStyle( 'height' );
+													element.removeAttribute( 'data-height' );
+												}
 
 												element.removeAttribute( 'height' );
 											} else if ( type == PREVIEW ) {
@@ -874,6 +895,7 @@
 													element.setStyle( 'height', CKEDITOR.tools.cssLength( value ) );
 												}
 											} else if ( type == CLEANUP ) {
+												element.removeAttribute( 'data-height' );
 												element.removeAttribute( 'height' );
 												element.removeStyle( 'height' );
 											}
@@ -927,10 +949,10 @@
 										}
 									},
 									html: '<div>' +
-										'<a href="javascript:void(0)" tabindex="-1" title="' + editor.lang.image.lockRatio +
-										'" class="cke_btn_locked" id="' + btnLockSizesId + '" role="checkbox"><span class="cke_icon"></span><span class="cke_label">' + editor.lang.image.lockRatio + '</span></a>' +
-										'<a href="javascript:void(0)" tabindex="-1" title="' + editor.lang.image.resetSize +
-										'" class="cke_btn_reset" id="' + btnResetSizeId + '" role="button"><span class="cke_label">' + editor.lang.image.resetSize + '</span></a>' +
+										'<a  style="display: none;" href="javascript:void(0)" tabindex="-1" title="' + editor.lang.o2image.lockRatio +
+										'" class="cke_btn_locked" id="' + btnLockSizesId + '" role="checkbox"><span class="cke_icon"></span><span class="cke_label">' + editor.lang.o2image.lockRatio + '</span></a>' +
+										'<a href="javascript:void(0)" tabindex="-1" title="' + editor.lang.o2image.resetSize +
+										'" class="cke_btn_reset" id="' + btnResetSizeId + '" role="button"><span class="cke_label">' + editor.lang.o2image.resetSize + '</span></a>' +
 										'</div>'
 								} ]
 							},
@@ -942,7 +964,7 @@
 									id: 'txtBorder',
 									requiredContent: 'img{border-width}',
 									width: '60px',
-									label: editor.lang.image.border,
+									label: editor.lang.o2image.border,
 									'default': '',
 									onKeyUp: function() {
 										updatePreview( this.getDialog() );
@@ -950,7 +972,7 @@
 									onChange: function() {
 										commitInternally.call( this, 'advanced:txtdlgGenStyle' );
 									},
-									validate: CKEDITOR.dialog.validate.integer( editor.lang.image.validateBorder ),
+									validate: CKEDITOR.dialog.validate.integer( editor.lang.o2image.validateBorder ),
 									setup: function( type, element ) {
 										if ( type == IMAGE ) {
 											var value,
@@ -986,7 +1008,7 @@
 									id: 'txtHSpace',
 									requiredContent: 'img{margin-left,margin-right}',
 									width: '60px',
-									label: editor.lang.image.hSpace,
+									label: editor.lang.o2image.hSpace,
 									'default': '',
 									onKeyUp: function() {
 										updatePreview( this.getDialog() );
@@ -994,7 +1016,7 @@
 									onChange: function() {
 										commitInternally.call( this, 'advanced:txtdlgGenStyle' );
 									},
-									validate: CKEDITOR.dialog.validate.integer( editor.lang.image.validateHSpace ),
+									validate: CKEDITOR.dialog.validate.integer( editor.lang.o2image.validateHSpace ),
 									setup: function( type, element ) {
 										if ( type == IMAGE ) {
 											var value, marginLeftPx, marginRightPx,
@@ -1037,7 +1059,7 @@
 									id: 'txtVSpace',
 									requiredContent: 'img{margin-top,margin-bottom}',
 									width: '60px',
-									label: editor.lang.image.vSpace,
+									label: editor.lang.o2image.vSpace,
 									'default': '',
 									onKeyUp: function() {
 										updatePreview( this.getDialog() );
@@ -1045,7 +1067,7 @@
 									onChange: function() {
 										commitInternally.call( this, 'advanced:txtdlgGenStyle' );
 									},
-									validate: CKEDITOR.dialog.validate.integer( editor.lang.image.validateVSpace ),
+									validate: CKEDITOR.dialog.validate.integer( editor.lang.o2image.validateVSpace ),
 									setup: function( type, element ) {
 										if ( type == IMAGE ) {
 											var value, marginTopPx, marginBottomPx,
@@ -1096,13 +1118,13 @@
 										[ editor.lang.common.right, 'right' ]
 										// Backward compatible with v2 on setup when specified as attribute value,
 										// while these values are no more available as select options.
-										//	[ editor.lang.image.alignAbsBottom , 'absBottom'],
-										//	[ editor.lang.image.alignAbsMiddle , 'absMiddle'],
-										//  [ editor.lang.image.alignBaseline , 'baseline'],
-										//  [ editor.lang.image.alignTextTop , 'text-top'],
-										//  [ editor.lang.image.alignBottom , 'bottom'],
-										//  [ editor.lang.image.alignMiddle , 'middle'],
-										//  [ editor.lang.image.alignTop , 'top']
+										//	[ editor.lang.o2image.alignAbsBottom , 'absBottom'],
+										//	[ editor.lang.o2image.alignAbsMiddle , 'absMiddle'],
+										//  [ editor.lang.o2image.alignBaseline , 'baseline'],
+										//  [ editor.lang.o2image.alignTextTop , 'text-top'],
+										//  [ editor.lang.o2image.alignBottom , 'bottom'],
+										//  [ editor.lang.o2image.alignMiddle , 'middle'],
+										//  [ editor.lang.o2image.alignTop , 'top']
 									],
 									onChange: function() {
 										updatePreview( this.getDialog() );
@@ -1172,7 +1194,7 @@
 				{
 					id: 'Link',
 					requiredContent: 'a[href]',
-					label: editor.lang.image.linkTab,
+					label: editor.lang.o2image.linkTab,
 					padding: 0,
 					elements: [ {
 						id: 'txtUrl',
@@ -1245,11 +1267,11 @@
 					id: 'Upload',
 					hidden: true,
 					filebrowser: 'uploadButton',
-					label: editor.lang.image.upload,
+					label: editor.lang.o2image.upload,
 					elements: [ {
 						type: 'file',
 						id: 'upload',
-						label: editor.lang.image.btnUpload,
+						label: editor.lang.o2image.btnUpload,
 						style: 'height:40px',
 						size: 38
 					},
@@ -1257,7 +1279,7 @@
 						type: 'fileButton',
 						id: 'uploadButton',
 						filebrowser: 'info:txtUrl',
-						label: editor.lang.image.btnUpload,
+						label: editor.lang.o2image.btnUpload,
 						'for': [ 'Upload', 'upload' ]
 					} ]
 				},
@@ -1391,7 +1413,7 @@
 						requiredContent: 'img{cke-xyz}', // Random text like 'xyz' will check if all are allowed.
 						label: editor.lang.common.cssStyle,
 						validate: CKEDITOR.dialog.validate.inlineStyle( editor.lang.common.invalidInlineStyle ),
-						'default': '',
+						'default': 'max-width:100%',
 						setup: function( type, element ) {
 							if ( type == IMAGE ) {
 								var genStyle = element.getAttribute( 'style' );
@@ -1434,11 +1456,11 @@
 			};
 		};
 
-	CKEDITOR.dialog.add( 'image', function( editor ) {
+	CKEDITOR.dialog.add( 'o2image', function( editor ) {
 		return imageDialog( editor, 'image' );
 	} );
 
-	CKEDITOR.dialog.add( 'imagebutton', function( editor ) {
+	CKEDITOR.dialog.add( 'o2imagebutton', function( editor ) {
 		return imageDialog( editor, 'imagebutton' );
 	} );
 } )();

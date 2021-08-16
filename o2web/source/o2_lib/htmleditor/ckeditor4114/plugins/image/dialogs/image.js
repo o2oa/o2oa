@@ -9,14 +9,25 @@
         var c = this instanceof CKEDITOR.ui.dialog.checkbox;
         b.hasAttribute(this.id) && (b = b.getAttribute(this.id), c ? this.setValue(checboxOptions[this.id]["true"] == b.toLowerCase()) : this.setValue(b))
     }
-
     function commitCheckbox(b) {
         return true;
         // var c = "" === this.getValue(), a = this instanceof CKEDITOR.ui.dialog.checkbox, d = this.getValue();
         // c ? b.removeAttribute(this.att || this.id) : a ? b.setAttribute(this.id, checboxOptions[this.id][d]) : b.setAttribute(this.att || this.id, d)
     }
-
     var checboxOptions = {base64enable: {"true": "yes", "false": "no"}};
+
+    // function setupEnablePreview(b) {
+    //     debugger;
+    //     if(!b.hasAttribute)return;
+    //     var c = this instanceof CKEDITOR.ui.dialog.checkbox;
+    //     b.hasAttribute(this.id) && (b = b.getAttribute(this.id), c ? this.setValue(enablePreviewOptions[this.id]["true"] == b.toLowerCase()) : this.setValue(b))
+    // }
+    // function commitEnablePreview(b) {
+    //     return true;
+    //     // var c = "" === this.getValue(), a = this instanceof CKEDITOR.ui.dialog.checkbox, d = this.getValue();
+    //     // c ? b.removeAttribute(this.att || this.id) : a ? b.setAttribute(this.id, checboxOptions[this.id][d]) : b.setAttribute(this.att || this.id, d)
+    // }
+    // var enablePreviewOptions = {enablePreview: {"true": "yes", "false": "no"}};
 
     var v = function (d, l) {
         function v() {
@@ -354,10 +365,37 @@
                         }
                     }]
                 }, {
+                    hidden: !d.config.enablePreview && !d.config.base64Encode,
                     type: "hbox",
-                    widths: ["100%"],
-                    hidden: !d.config.base64Encode,
+                    widths: !d.config.enablePreview ? ["0%","100%"] : ["27%","73%"],
                     children: [{
+                        hidden: !d.config.enablePreview,
+                        id: "data-prv",
+                        type: "checkbox",
+                        label: "允许浏览大图",
+                        "default": true,
+                        setup: function(a, b){
+                            if (1 == a) {
+                                var v = true;
+                                var c = b.getAttribute("data-prv");
+                                if( c === "false" || c === false ){
+                                    v = false;
+                                }
+                                this.setValue(v);
+                            }
+                        },
+                        commit:  function (a, b) {
+                            debugger;
+                            if( 1 == a ){
+                                b.setAttribute("data-prv", this.getValue())
+                            }else if( 4 == a ){
+                                b.setAttribute("data-prv", this.getValue())
+                            }else if( 8 == a){
+                                b.removeAttribute("data-prv")
+                            }
+                        }
+                    },{
+                        hidden: !d.config.base64Encode,
                         id: "base64enable",
                         type: "checkbox",
                         requiredContent: "img{src}",
@@ -365,7 +403,7 @@
                         setup: setupCheckbox,
                         commit: commitCheckbox
                     }]
-                }, {
+                },{
                     id: "txtAlt",
                     type: "text",
                     label: d.lang.image.alt,

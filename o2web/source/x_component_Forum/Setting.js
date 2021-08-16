@@ -427,7 +427,7 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
                         click : function( it, ev ){ this.selectColor()  }.bind(this)
                     }},
                     subjectType: {text: this.lp.subjectType, type: "text", defaultValue : this.lp.subjectTypeDefaultValue },
-                    forumNotice: {text: this.lp.forumNotice, type: "rtf", RTFConfig : { skin : "bootstrapck" }}
+                    forumNotice: {text: this.lp.forumNotice, type: "rtf", RTFConfig : { "enablePreview": false }}
                 }
             }, this.app);
             this.form.load();
@@ -1178,7 +1178,7 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
                     subjectType: {text: this.lp.subjectType, defaultValue : this.lp.subjectTypeDefaultValue },
                     typeCatagory: {text: this.lp.typeCatagory, selectValue : this.lp.typeCategorySelectValue.split("|"),  type : "checkbox", notEmpty : true},
                     sectionDescription : {text: this.lp.sectionDescription, type: "textarea", style:{"height":"45px"} },
-                    sectionNotice: {text: this.lp.sectionNotice, type: "rtf", RTFConfig : { skin : "bootstrapck" } },
+                    sectionNotice: {text: this.lp.sectionNotice, type: "rtf", RTFConfig : { "enablePreview": false } },
                     sectionIcon : { text : this.lp.sectionIcon }
                 }
             }, this.app);
