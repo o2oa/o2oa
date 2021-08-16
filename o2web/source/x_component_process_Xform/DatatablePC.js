@@ -95,6 +95,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
+			 * 编辑条目时触发（同时编辑多行不触发此事件）。通过this.event.line可以获取对应的条目对象。
+			 * @event MWF.xApplication.process.Xform.DatatablePC#editLine
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
+			/**
 			 * 删除条目前触发。通过this.event可以获取对应的条目对象。
 			 * @event MWF.xApplication.process.Xform.DatatablePC#deleteLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -150,7 +155,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad",
-				"beforeLoadLine", "afterLoadLine", "addLine", "deleteLine", "afterDeleteLine","completeLineEdit", "cancelLineEdit", "export", "import", "validImport"]
+				"beforeLoadLine", "afterLoadLine", "addLine", "deleteLine", "afterDeleteLine", "editLine", "completeLineEdit", "cancelLineEdit", "export", "import", "validImport"]
 		},
 
 		initialize: function(node, json, form, options){
@@ -1561,6 +1566,9 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		if( !this.options.isEditable )return;
 		this.options.isEdited = isEdited;
 		this.reload();
+		if( this.options.isEdited ){
+			this.datatable.fireEvent("editLine",[this]);
+		}
 	},
 	reload: function(){
 		for(var key in this.all){
