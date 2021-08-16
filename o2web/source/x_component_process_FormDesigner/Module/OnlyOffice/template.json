@@ -1,0 +1,50 @@
+{
+	"id": "",
+	"name": "",
+	"type": "OnlyOffice",
+	"description": "",
+	"officeType": "docx",
+	"template": "",
+	"isNotLoadNow": false,
+	"autosave": true,
+	"chat": false,
+	"comments":false,
+	"compatibleFeatures": true,
+	"forcesave": true,
+	"plugins": true,
+	"reviewDisplay": "markup",
+	"showReviewChanges": false,
+	"trackChanges": false,
+	"spellcheck": false,
+	"compactHeader": false,
+	"compactToolbar": false,
+	"feedback": false,
+	"help": false,
+	"toolbarHideFileName": false,
+	"toolbarNoTabs": false,
+	"unit": "cm",
+	"zoom": 100,
+	"hideRightMenu": false,
+	"script": {
+		"code": "",
+		"html": ""
+	},
+	"events": {
+		"afterOpen": {
+			"code": "",
+			"html": ""
+		},
+		"beforeOpen": {
+			"code": "",
+			"html": ""
+		},
+		"afterSave": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}
