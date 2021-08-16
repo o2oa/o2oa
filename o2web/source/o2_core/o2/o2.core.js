@@ -483,6 +483,7 @@
     }
 
     var _txt = function(v){
+        if(typeof v !== "string")return v;
         var t = v.replace(/\</g, "&lt;");
         t = t.replace(/\</g, "&gt;");
         return t;
