@@ -7,6 +7,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.CacheManager;
 
 public class ActionCipherDeleteCMS extends BaseAction {
@@ -38,12 +39,10 @@ public class ActionCipherDeleteCMS extends BaseAction {
 		return result;
 	}
 
-	public static class Wi {
-
-	}
 
 	public static class Wo extends GsonPropertyObject {
-
+		
+		@FieldDescribe("记录id")
 		private String value;
 
 		public String getValue() {
