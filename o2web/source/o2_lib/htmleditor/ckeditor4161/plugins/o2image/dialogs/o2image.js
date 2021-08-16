@@ -674,7 +674,7 @@
 											var contentElement = dialogElement.getElement(".cke_dialog_body").getParent();
 											var upload = new MWF.widget.Upload(contentElement, {
 												"data": null,
-												"parameter": {"reference" : editor.config.reference, "referencetype": editor.config.referenceType, "scale" : editor.config.localImageMaxWidth || 10000 },
+												"parameter": {"reference" : editor.config.reference, "referencetype": editor.config.referenceType, "scale" : editor.config.localImageMaxWidth || 2000 },
 												"action": action,
 												"method": "uploadImageByScale",
 												"accept": "image/*",
