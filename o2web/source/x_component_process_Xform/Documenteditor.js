@@ -118,13 +118,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return pageNode;
     },
     _getShow: function(name, typeItem, scriptItem){
+        debugger;
         switch (this.json[typeItem]) {
             case "y":
                 return true;
             case "n":
                 return false;
             case "a":
-                if (["copies", "secret", "priority", "attachment", "annotation", "copyto", "copyto2"].indexOf(name!=-1)){
+                if (["copies", "secret", "priority", "attachment", "annotation"].indexOf(name!=-1)){
                     return !!this.data[name] && (!!this.data[name].length);
                 }
                 return true;
@@ -852,61 +853,62 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     "font-family": "'Times New Roman',仿宋",
                     "letter-spacing": "-0.4pt"
                 }).x;
-                // var unitWidth = this.layout_issuanceUnit.getSize().x;
-                // var dateWidth = this.layout_issuanceDate.getSize().x;
-                if (unitWidth < dateWidth) {
-                    //日期右空四字，单位相对与日期居中
-                    var flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    if (flagTd) {
-                        var pt = 16*4;  //空四字
-                        flagTd.setStyle("width", "" + pt + "pt");
 
-                        flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                        if (flagTd) flagTd.setStyle("width", "" + pt + "pt");
+                if (table.hasClass("doc_layout_issuanceV2")){
+                    if (unitWidth<=dateWidth){
+                        //日期右空四字，单位相对与日期居中
+                        var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "64pt");
+                        flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "64pt");
+
+                        var dateP = this.layout_issuanceDate.getParent("p");
+                        if (dateP){
+                            dateP.setStyle("text-align", "right");
+                            var span = dateP.getElement("span.space");
+                            if (span) span.destroy();
+                        }
+                    }else{
+                        var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "32pt");
+                        flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "32pt");
+
+                        var dateP = this.layout_issuanceDate.getParent("p");
+                        if (dateP){
+                            dateP.setStyle("text-align", "left");
+                            var span = dateP.getElement("span.space");
+                            if (!span) new Element("span.space", { "html": "&#x3000;&#x3000;" }).inject(dateP, "top");
+                        }
                     }
-                    //var dateTd = this.layout_issuanceDate.getParent("td");
-                    var unitTd = this.layout_issuanceUnit.getParent("td");
-                    unitTd.setStyle("width", dateWidth);
-                    var p = this.layout_issuanceUnit.getParent("p");
-                    if (p) p.setStyle("text-align", "center");
+                }else{
+                    if (unitWidth <= dateWidth) {
+                        //日期右空四字，单位相对与日期居中
+                        var flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        if (flagTd) {
+                            var pt = 16*4;  //空四字
+                            flagTd.setStyle("width", "" + pt + "pt");
 
+                            flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "" + pt + "pt");
+                        }
+                        //var dateTd = this.layout_issuanceDate.getParent("td");
+                        var unitTd = this.layout_issuanceUnit.getParent("td");
+                        unitTd.setStyle("width", dateWidth);
+                        var p = this.layout_issuanceUnit.getParent("p");
+                        if (p) p.setStyle("text-align", "center");
+                    } else {
+                        var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "32pt");
 
-                    // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                    // if (flagTd) {
-                    //     var pt = ((dateWidth - unitWidth) / 96) * 72 + 32 + 32;
-                    //     flagTd.setStyle("width", "" + pt + "pt");
-                    // }
-                    // table = this.layout_issuanceDate.getParent("table");
-                    // table.setStyle("width", "auto");
-                    // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    // if (flagTd) flagTd.setStyle("width", "32pt");
-                    // var p = this.layout_issuanceDate.getParent("p");
-                    // if (p) p.setStyle("text-align", "right");
+                        var unitTd = this.layout_issuanceUnit.getParent("td");
+                        unitTd.setStyle("width", "auto");
 
-                } else {
-                    var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                    if (flagTd) flagTd.setStyle("width", "32pt");
-
-                    var unitTd = this.layout_issuanceUnit.getParent("td");
-                    unitTd.setStyle("width", "auto");
-
-                    flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    if (flagTd) flagTd.setStyle("width", "64pt");
-                    var p = this.layout_issuanceDate.getParent("p");
-                    if (p) p.setStyle("text-align", "right");
-
-                    // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                    // if (flagTd) flagTd.setStyle("width", "32pt");
-                    // var table = this.layout_issuanceUnit.getParent("table");
-                    // var x = table.getSize().x;
-                    //
-                    // table = this.layout_issuanceDate.getParent("table");
-                    // table.setStyle("width", "" + x + "px");
-                    //
-                    // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    // if (flagTd) flagTd.setStyle("width", "32pt");
-                    // var p = this.layout_issuanceDate.getParent("p");
-                    // if (p) p.setStyle("text-align", "center");
+                        flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "64pt");
+                        var p = this.layout_issuanceDate.getParent("p");
+                        if (p) p.setStyle("text-align", "right");
+                    }
                 }
             }
         }
@@ -917,27 +919,42 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.layout_editionArea) this.layout_editionArea.hide();
         }else{
             if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content) ){
+                if (this.layout_copytoContent){
+                    this.layout_copytoContentTr = this.layout_copytoContent.getParent("tr");
+                    this.layout_copytoContentTrP = this.layout_copytoContentTr.getParent();
+                }
+                if (this.layout_copyto2Content){
+                    this.layout_copyto2ContentTr = this.layout_copyto2Content.getParent("tr");
+                    this.layout_copyto2ContentTrP = this.layout_copyto2ContentTr.getParent();
+                }
+
                 if (this.layout_edition){
-                    if (this.layout_copytoContent) this.layout_copytoContent.getParent("tr").destroy();
-                    if (this.layout_copyto2Content) this.layout_copyto2Content.getParent("tr").destroy();
+                    if (this.layout_copytoContentTr) this.layout_copytoContentTr.dispose();
+                    if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.dispose();
                     // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td")[0].setStyles({
                     //     "border-top": "solid windowtext 1.5pt",
                     //     "mso-border-top-alt": "solid windowtext 1pt"
                     // });
                 }
             }else if (!control.copyto || !this.layout_copytoContent){
-                if (this.layout_copytoContent) this.layout_copytoContent.getParent("tr").destroy();
+                if (this.layout_copytoContentTr) this.layout_copytoContentTr.dispose();
+                if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
                 //if (this.layout_copyto2Content) this.layout_edition.getElement("tr").destroy();
                 // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
                 //     "border-top": "solid windowtext 1.5pt",
                 //     "mso-border-top-alt": "solid windowtext 1pt"
                 // });
             }else if (!control.copyto2 || !this.layout_copyto2Content) {
-                if (this.layout_copyto2Content) this.layout_copyto2Content.getParent("tr").destroy();
+                if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.dispose();
+                if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
                 // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
                 //     "border-bottom": "solid windowtext 0.75pt",
                 //     "mso-border-bottom-alt": "solid windowtext 0.75pt"
                 // });
+            }else{
+                if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+
             }
 
             if ((!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
@@ -2787,7 +2804,7 @@ debugger;
                                     if (annotation.substring(annotation.length-1, annotation.length)!=="）") annotation = annotation+"）";
                                     this[dom].set("text", annotation);
                                 }else{
-                                    this[dom].set("text", " ");
+                                    this[dom].set("text", "");
                                 }
                             }else{
                                 this[dom].set("text", this.data[name]|| "");
@@ -2830,6 +2847,9 @@ debugger;
                             break;
                         case "mainSend":
                             this.data[name] = v + "：";
+                            break;
+                        case "copyto":
+                            this.data[name] = v + "。";
                             break;
                         default:
                             if (name==="subject") v = o2.txt(v);
@@ -2891,6 +2911,9 @@ debugger;
                             break;
                         case "mainSend":
                             this.data[name] = strs.join("，") + "：";
+                            break;
+                        case "copyto":
+                            this.data[name] = strs.join("，") + "。";
                             break;
                         default:
                             this.data[name] = strs.join("，");
@@ -3270,7 +3293,7 @@ debugger;
                     if (annotation.substring(annotation.length-1, annotation.length)!=="）") annotation = annotation+"）";
                     this.layout_annotation.set("text", annotation);
                 }else{
-                    this.layout_annotation.set("text", " ");
+                    this.layout_annotation.set("text", "");
                 }
             }
             if (this.layout_copytoTitle) this.layout_copytoTitle.set("text", data.copytoTitle || " ");
@@ -3314,8 +3337,6 @@ debugger;
                 }.bind(this))
             }
 
-
-
             if (this.layout_issuanceUnit && this.layout_issuanceDate ){
                 var table = this.layout_issuanceUnit.getParent("table")
                 if (table && !table.hasClass("doc_layout_headIssuance")){
@@ -3330,60 +3351,61 @@ debugger;
                         "letter-spacing": "-0.2pt"
                     }).x;
 
-                    // var unitWidth = this.layout_issuanceUnit.getSize().x;
-                    // var dateWidth = this.layout_issuanceDate.getSize().x;
-                    if (unitWidth<dateWidth){
-                        //日期右空四字，单位相对与日期居中
-                        var flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                        if (flagTd) {
-                            var pt = 16*4;  //空四字
-                            flagTd.setStyle("width", "" + pt + "pt");
+                    if (table.hasClass("doc_layout_issuanceV2")){
+                        if (unitWidth<=dateWidth){
+                            //日期右空四字，单位相对与日期居中
+                            var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "64pt");
+                            flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "64pt");
 
-                            flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                            if (flagTd) flagTd.setStyle("width", "" + pt + "pt");
+                            var dateP = this.layout_issuanceDate.getParent("p");
+                            if (dateP){
+                                dateP.setStyle("text-align", "right");
+                                var span = dateP.getElement("span.space");
+                                if (span) span.destroy();
+                            }
+                        }else{
+                            var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "32pt");
+                            flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "32pt");
+
+                            var dateP = this.layout_issuanceDate.getParent("p");
+                            if (dateP){
+                                dateP.setStyle("text-align", "left");
+                                var span = dateP.getElement("span.space");
+                                if (!span) new Element("span.space", { "html": "&#x3000;&#x3000;" }).inject(dateP, "top");
+                            }
                         }
-                        //var dateTd = this.layout_issuanceDate.getParent("td");
-                        var unitTd = this.layout_issuanceUnit.getParent("td");
-                        unitTd.setStyle("width", dateWidth);
-                        var p = this.layout_issuanceUnit.getParent("p");
-                        if (p) p.setStyle("text-align", "center");
-
-                        // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                        // if (flagTd){
-                        //     var pt = ((dateWidth-unitWidth)/96)*72 +32+32;
-                        //     flagTd.setStyle("width", ""+pt+"pt");
-                        // }
-                        // table = this.layout_issuanceDate.getParent("table");
-                        // table.setStyle("width", "auto");
-                        // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                        // if (flagTd) flagTd.setStyle("width", "32pt");
-                        // var p = this.layout_issuanceDate.getParent("p");
-                        // if (p) p.setStyle("text-align", "right");
-
                     }else{
-                        var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                        if (flagTd) flagTd.setStyle("width", "32pt");
+                        if (unitWidth<=dateWidth){
+                            //日期右空四字，单位相对与日期居中
+                            var flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                            if (flagTd) {
+                                var pt = 16*4;  //空四字
+                                flagTd.setStyle("width", "" + pt + "pt");
 
-                        var unitTd = this.layout_issuanceUnit.getParent("td");
-                        unitTd.setStyle("width", "auto");
+                                flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                                if (flagTd) flagTd.setStyle("width", "" + pt + "pt");
+                            }
+                            //var dateTd = this.layout_issuanceDate.getParent("td");
+                            var unitTd = this.layout_issuanceUnit.getParent("td");
+                            unitTd.setStyle("width", dateWidth);
+                            var p = this.layout_issuanceUnit.getParent("p");
+                            if (p) p.setStyle("text-align", "center");
+                        }else{
+                            var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "32pt");
 
-                        flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                        if (flagTd) flagTd.setStyle("width", "64pt");
-                        var p = this.layout_issuanceDate.getParent("p");
-                        if (p) p.setStyle("text-align", "right");
+                            var unitTd = this.layout_issuanceUnit.getParent("td");
+                            unitTd.setStyle("width", "auto");
 
-                        // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                        // if (flagTd) flagTd.setStyle("width", "32pt");
-                        // var table = this.layout_issuanceUnit.getParent("table");
-                        // var x = table.getSize().x;
-                        //
-                        // table = this.layout_issuanceDate.getParent("table");
-                        // table.setStyle("width", ""+x+"px");
-                        //
-                        // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                        // if (flagTd) flagTd.setStyle("width", "32pt");
-                        // var p = this.layout_issuanceDate.getParent("p");
-                        // if (p) p.setStyle("text-align", "center");
+                            flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "64pt");
+                            var p = this.layout_issuanceDate.getParent("p");
+                            if (p) p.setStyle("text-align", "right");
+                        }
                     }
                 }
             }
@@ -3708,7 +3730,9 @@ debugger;
                 if (n==-1) fileName = fileName+".docx";
                 var content = this.getDocumentHtml();
                 o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
-                    (new o2.OOXML.WML()).load(content).then(function(oo_content){
+                    (new o2.OOXML.WML({
+                        "protection": (this.json.wordConversionEncryption===true)
+                    })).load(content).then(function(oo_content){
 
                         if (!notSave) {
                             oo_content.name = fileName
@@ -3736,27 +3760,6 @@ debugger;
                             if (cb) cb();
                         }
 
-
-                        //
-                        //
-                        //
-                        // if (this.form.businessData.workCompleted){
-                        //     o2.Actions.get("x_processplatform_assemble_surface").uploadAttachmentByWorkCompleted(this.form.businessData.workCompleted.id, formData, oo_content,function(json){
-                        //         o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
-                        //             if (callback) callback(attjson.data);
-                        //             this.showToWord(attjson.data);
-                        //         }.bind(this));
-                        //     }.bind(this));
-                        // }else{
-                        //     o2.Actions.get("x_processplatform_assemble_surface").uploadAttachment(this.form.businessData.work.id, formData, oo_content,function(json){
-                        //         o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
-                        //             if (callback) callback(attjson.data);
-                        //             this.showToWord(attjson.data);
-                        //         }.bind(this));
-                        //     }.bind(this));
-                        // }
-
-                        //if (callback) callback(oo_content, fileName);
                     }.bind(this));
                 }.bind(this));
             }
@@ -3785,7 +3788,6 @@ debugger;
         };
     },
     showToWord: function(att_word){
-        debugger;
         var site = this.json.toWordSite || "$doc";
         var attModule = this.form.all[site];
         if (attModule){

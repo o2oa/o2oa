@@ -632,15 +632,17 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
     },
     doError: function(xhr, text, error){
         if (this.appendFailure) this.appendFailure(xhr, text, error);
+        var flag = true;
         if (this.failure && this.failure.owner){
             if (this.failure.reject || (this.failure.rejectList && this.failure.rejectList.length)){
                 return this.failure(xhr, text, error);
             }
             this.failure = null;
         }else{
-            if (this.failure) return this.failure(xhr, text, error);
+            if (this.failure) flag = !this.failure(xhr, text, error);
         }
-        if (!this.failure && !this.appendFailure){
+        //if (!this.failure && !this.appendFailure){
+        if (flag && !this.appendFailure){
             if (xhr.status!=0){
                 var errorText = error;
                 if (xhr){
