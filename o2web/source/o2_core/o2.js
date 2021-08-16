@@ -1718,11 +1718,13 @@ if (window.Promise && !Promise.any){
     }
 
     var _txt = function(v){
+        if(typeof v !== "string")return v;
         var t = v.replace(/\</g, "&lt;");
         t = t.replace(/\>/g, "&gt;");
         return t;
     };
     var _dtxt = function(v){
+        if(typeof v !== "string")return v;
         var t = v.replace(/&lt;/g, "<");
         t = t.replace(/&gt;/g, ">");
         return t;
