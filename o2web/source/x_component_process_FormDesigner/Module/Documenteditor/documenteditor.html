@@ -216,8 +216,46 @@
 <!--					</td>-->
 <!--				</tr>-->
 			</table>
-
 			<div id="text{$.pid}toWordConditionArea" style="display: text{($.toWordCondition=='condition')?'block':'none'}" class="MWFFormulaArea" name="toWordConditionScript" title="{{$.lp.conversionCondition}} (S)"></div>
+
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.wordConversionEncryption}}:</td>
+					<td class="editTableValue">
+<!--						<input class="editTableRadio" name="wordConversionEncryption" onclick="if (this.checked) {$('text{$.pid}toWordPasswordArea').setStyle('display', 'block')}" text{($.wordConversionEncryption===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}-->
+<!--						<input class="editTableRadio" name="wordConversionEncryption" onclick="if (this.checked) {$('text{$.pid}toWordPasswordArea').setStyle('display', 'none')}" text{($.wordConversionEncryption!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}-->
+						<input class="editTableRadio" name="wordConversionEncryption" text{($.wordConversionEncryption===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+						<input class="editTableRadio" name="wordConversionEncryption" text{($.wordConversionEncryption!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+						<div style="color:#333333">{{$.lp.wordConversionEncryptionInfo1}}</div>
+						<div style="color:#999999">{{$.lp.wordConversionEncryptionInfo}}</div>
+					</td>
+				</tr>
+			</table>
+
+<!--			<div id="text{$.pid}toWordPasswordArea" style="display: text{($.wordConversionEncryption===true)?'block':'none'}">-->
+<!--				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--					<tr>-->
+<!--						<td class="editTableTitle">{{$.lp.wordEncryptionPasswordType}}:</td>-->
+<!--						<td class="editTableValue">-->
+<!--							<input class="editTableRadio" name="wordEncryptionPasswordType" onclick="if (this.checked) {$('text{$.pid}toWordPasswordInputArea').setStyle('display', 'block'); $('text{$.pid}toWordPasswordScriptArea').setStyle('display', 'none')}" text{($.wordEncryptionPasswordType!=='script')?'checked':''} type="radio" value="static"/>{{$.lp.static}}-->
+<!--							<input class="editTableRadio" name="wordEncryptionPasswordType" onclick="if (this.checked) {$('text{$.pid}toWordPasswordInputArea').setStyle('display', 'none'); $('text{$.pid}toWordPasswordScriptArea').setStyle('display', 'block')}" text{($.wordEncryptionPasswordType==='script')?'checked':''} type="radio" value="byScript"/>{{$.lp.byScript}}-->
+<!--						</td>-->
+<!--					</tr>-->
+<!--				</table>-->
+
+<!--				<div id="text{$.pid}toWordPasswordInputArea" style="display: text{($.wordEncryptionPasswordType!=='script')?'block':'none'}">-->
+<!--					<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--						<tr>-->
+<!--							<td class="editTableTitle">{{$.lp.wordEncryptionPasswordInput}}:</td>-->
+<!--							<td class="editTableValue"><input type="text" name="toWordPassword" value="text{$.toWordPassword}" class="editTableInput"/></td>-->
+<!--						</tr>-->
+<!--					</table>-->
+<!--				</div>-->
+<!--				<div id="text{$.pid}toWordPasswordScriptArea" style="display: text{($.wordEncryptionPasswordType=='script')?'block':'none'}">-->
+<!--					<div class="MWFFormulaArea" name="toWordPasswordScript" title="{{$.lp.toWordPasswordScript}} (S)"></div>-->
+<!--					<br><div style="color:#999999; padding: 0 10px">{{$.lp.toWordPasswordScriptInfo}}</div><br><br>-->
+<!--				</div>-->
+<!--			</div>-->
 
 		</div>
 

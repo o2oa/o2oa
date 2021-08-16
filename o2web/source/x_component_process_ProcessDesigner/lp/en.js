@@ -327,7 +327,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"deleteParameter": "Delete Parameter",
 		"responseScript": "Response Script",
 		"use": "Use",
-		"getJson": " get JSON Object",
+		"getJson": " get response content. If the response content is a string in JSON format, a JSON object is returned; otherwise, the original response content is returned.",
 		"systemRequest": "System Service",
 		"restAddr": "Restful Address ",
 		"requestBodyScript": "Request Body Script",

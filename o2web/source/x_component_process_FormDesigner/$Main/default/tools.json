@@ -217,6 +217,16 @@
     "text": "yozoOffice",
     "className": "YozoOffice"
   },
+  "onlyOffice": {
+    "icon": "onlyOffice.png",
+    "text": "onlyOffice",
+    "className": "OnlyOffice"
+  },
+  "wpsOffice": {
+    "icon": "wpsOffice.png",
+    "text": "wpsOffice",
+    "className": "WpsOffice"
+  },
   "statementSelector": {
     "icon": "statementSelector.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.statementSelector,
