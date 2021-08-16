@@ -1499,19 +1499,23 @@ if (window.Promise && !Promise.any){
                                 layout.session.token = xToken;
                             }
                         }
-                        var r = o2.runCallback(callback, "success", [responseJSON],null);
-                        resolve(r || responseJSON);
+                        //var r = o2.runCallback(callback, "success", [responseJSON],null);
+                        //resolve(r || responseJSON);
+                        resolve(responseJSON);
                         //return o2.runCallback(callback, "success", [responseJSON],null, resolve);
                     },
                     onFailure: function(xhr){
                         //var r = o2.runCallback(callback, "requestFailure", [xhr], null, reject);
-                        var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
-                        (r) ? reject(r) : reject(xhr, "", "");
+                        // var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
+                        // (r) ? reject(r) : reject(xhr, "", "");
+                        reject(xhr, "", "");
                         //return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                     }.bind(this),
                     onError: function(text, error){
-                        var r = o2.runCallback(callback, "error", [text, error], null, reject);
-                        (r) ? reject(r) : reject(null, text, error);
+                        // var r = o2.runCallback(callback, "error", [text, error], null, reject);
+                        // (r) ? reject(r) : reject(null, text, error);
+
+                        reject(null, text, error);
                         //return o2.runCallback(callback, "error", [text, error], null, reject);
                     }.bind(this)
                 });
@@ -1533,7 +1537,13 @@ if (window.Promise && !Promise.any){
                 }
                 //Content-Type	application/x-www-form-urlencoded; charset=utf-8
                 res.send(data);
-            }.bind(this));
+            }.bind(this)).then(function(responseJSON){
+                var r = o2.runCallback(callback, "success", [responseJSON],null);
+                return r || responseJSON;
+            }).catch(function(xhr, text, error){
+                var r = o2.runCallback(callback, "failure", [xhr, text, error], null);
+                return r || xhr || text || error;
+            });
 
             // p = p.then(function(responseJSON){
             //     return o2.runCallback(callback, "success", [responseJSON],null);
