@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.service;
 
 import java.util.List;
 
+import com.x.attendance.entity.AttendanceDetail;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.Business;
@@ -82,6 +83,18 @@ public class AttendanceScheduleSettingService {
 		if( attendanceScheduleSetting == null ) {
 			//如果没有找到，那么应该为该人员所属的组织创建一个新的排班配置
 			String topUnitName = userManagerService.getTopUnitNameWithUnitName( unitName );
+			attendanceScheduleSetting = createNewScheduleSetting( unitName, topUnitName, debugger );
+		}
+		return attendanceScheduleSetting;
+	}
+
+	public AttendanceScheduleSetting getAttendanceScheduleSettingWithDetail(AttendanceDetail detail, Boolean debugger ) throws Exception {
+		UserManagerService userManagerService = new UserManagerService();
+		String unitName = detail.getUnitName();
+		AttendanceScheduleSetting attendanceScheduleSetting = getAttendanceScheduleSettingWithUnitName( unitName );
+		if( attendanceScheduleSetting == null ) {
+			//如果没有找到，那么应该为该人员所属的组织创建一个新的排班配置
+			String topUnitName = detail.getTopUnitName();
 			attendanceScheduleSetting = createNewScheduleSetting( unitName, topUnitName, debugger );
 		}
 		return attendanceScheduleSetting;
