@@ -20,9 +20,23 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
         this.fireEvent("init");
     },
     load: function(){
-        this.loadRerource(function () {
-            this.parseHtml()
-        }.bind(this))
+        var checkLoaded = function () {
+            if( this.resourceLoaded && this.parseDone ){
+                this.node.set("html", this.html);
+                var observer = lozad('.lozad', {
+                    rootMargin: '10px 0px', // syntax similar to that of CSS Margin
+                    threshold: 0.1, // ratio of element convergence
+                    enableAutoReload: true // it will reload the new image when validating attributes changes
+                });
+                observer.observe();
+            }
+        }.bind(this);
+        this.loadResource(function () {
+            this.resourceLoaded = true;
+            checkLoaded()
+        }.bind(this));
+        this.parseHtml();
+        checkLoaded()
     },
     parseHtml: function(){
         debugger;
@@ -33,24 +47,30 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
             if (images.length){
                 for (var i=0; i<images.length; i++){
                     var image = images[i];
-                    var size = this.getSize(image);
-                    if( size ){
+                    var src =  this.getAttributeValue(image, "src");
+                    if( src.substr(0, 5) !== "data:" ){ //不是base64位
+                        var size = this.getSize(image);
+                        if( size ){
+                            var image1 = this.removeAttribute(image, "src");
 
-                        var id = this.getAttributeValue(image, "data-id");
-                        var src = id ? MWF.xDesktop.getImageSrc(id) : this.getAttributeValue(image, "src");
-                        var image1 = this.addAttribute(image, "data-src", src);
+                            var id = this.getAttributeValue(image1, "data-id");
+                            var src2 = id ? MWF.xDesktop.getImageSrc(id) : src;
+                            image1 = this.addAttribute(image1, "data-src", src2);
 
-                        image1 = this.removeAttribute(image1, "src");
+                            image1 = this.replaceStyles(image1, {
+                                "height": size.y+"px",
+                                "width": size.x+"px"
+                            });
 
-                        image1 = this.replaceStyles(image1, {
-                            "height": size.y+"px",
-                            "width": size.x+"px"
-                        });
-                        html = html.replace(image, image1);
+                            image1 = this.addAttribute(image1, "class", "lozad");
+
+                            html = html.replace(image, image1);
+                        }
                     }
                 }
             }
         }
+        this.parseDone = true;
         this.html = html;
     },
     getAttrRegExp: function( attr ){
@@ -81,10 +101,10 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
             if(value)newArray.push( key + ":" + value )
         });
         if( o2.typeOf(array) === "array" && array.length>1){
-            var styles = array[1].split(";");
+            var styles = array[1].split(/\s*;\s*/gi);
             for(var j=0; j<styles.length; j++){
-                var ar = styles[j].split(":");
-                var key = ar[0].trim().toLowerCase();
+                var ar = styles[j].split(/\s*:\s*/gi);
+                var key = ar[0].toLowerCase();
                 if( !object.hasOwnProperty( key ) ){
                     newArray.push( styles[j] );
                 }
@@ -146,7 +166,7 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
         }
         return null;
     },
-    loadRerource: function (callback) {
+    loadResource: function (callback) {
         var lozadPath = "../o2_lib/lozad/lozad.min.js";
         var observerPath = "../o2_lib/IntersectionObserver/intersection-observer.min.js";
         if( window.IntersectionObserver || window.MutationObserver ){
