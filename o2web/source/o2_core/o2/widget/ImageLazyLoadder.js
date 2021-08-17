@@ -19,10 +19,26 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
         // this._loadCss();
         this.fireEvent("init");
     },
-    load: function(){
-        this.loadRerource(function () {
-            this.parseHtml()
-        }.bind(this))
+    load: function(callback){
+        debugger;
+        var checkLoaded = function () {
+            if( this.resourceLoaded && this.parseDone ){
+                this.node.set("html", this.html);
+                var observer = lozad( this.node.querySelectorAll('img.lozad'), {
+                    rootMargin: '1000px 0px', // syntax similar to that of CSS Margin
+                    threshold: 0, // ratio of element convergence
+                    enableAutoReload: true // it will reload the new image when validating attributes changes
+                });
+                observer.observe();
+                if(callback)callback();
+            }
+        }.bind(this);
+        this.loadResource(function () {
+            this.resourceLoaded = true;
+            checkLoaded()
+        }.bind(this));
+        this.parseHtml();
+        checkLoaded()
     },
     parseHtml: function(){
         var html = this.html;
@@ -32,51 +48,113 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
             if (images.length){
                 for (var i=0; i<images.length; i++){
                     var image = images[i];
-                    var size = this.getSize(image);
-                    if( size ){
-                        var id = this.getValue(image, "data-id");
-                        var src = id ? MWF.xDesktop.getImageSrc(id) : this.getValue(image, "src");
-                        var image1 = this.removeAttribute(image, "src");
-                        
-                        html = html.replace(image, image1);
+                    var src =  this.getAttributeValue(image, "src");
+                    if( src.substr(0, 5) !== "data:" ){ //不是base64位
+                        var size = this.getSize(image);
+                        if( size ){
+                            var image1 = this.removeAttribute(image, "src");
+
+                            var id = this.getAttributeValue(image1, "data-id");
+                            var src2 = id ? MWF.xDesktop.getImageSrc(id) : src;
+                            image1 = this.addAttribute(image1, "data-src", src2);
+
+                            image1 = this.replaceStyles(image1, {
+                                "height": size.y+"px",
+                                "width": size.x+"px"
+                            });
+
+                            image1 = this.addAttribute(image1, "class", "lozad");
+
+                            html = html.replace(image, image1);
+                        }
                     }
                 }
             }
         }
+        this.parseDone = true;
+        this.html = html;
     },
-    removeAttribute: function(str, attribute){
-        var regexp = new RegExp( attribute + "\\s*=\\s*[\"|\'](.*?)[\"|\']" , "ig");
-        return str.replace( regexp, "" );
+    getAttrRegExp: function( attr ){
+        return "\\s+" + attr + "\\s*=\\s*[\"|\'](.*?)[\"|\']";
     },
-    getValue: function(str, attribute){
-        var regexp = new RegExp( attribute + "\\s*=\\s*[\"|\'](.*?)[\"|\']" , "i");
+    getAttributeValue: function(str, attribute){
+        var regexp = new RegExp( this.getAttrRegExp(attribute) , "i");
         var array = str.match( regexp );
         return (o2.typeOf(array) === "array" && array.length === 2) ? array[1] : "";
     },
+    addAttribute: function(str, attribute, value){
+        var regexp = new RegExp( "\\/*\\s*>" , "i");
+        return str.replace( regexp, ' ' + attribute + '="' + value + '"' + " />");
+    },
+    removeAttribute: function(str, attribute){
+        var regexp = new RegExp( this.getAttrRegExp(attribute) , "ig");
+        return str.replace( regexp, "" );
+    },
+    replaceStyles: function(str, object){
+        /*object 参数 {
+           "width" : "100px", //添加或替换
+           "height": "" //删除
+        }*/
+        var regexp = new RegExp( this.getAttrRegExp("style") , "i");
+        var array = str.match( regexp );
+        var newArray = [];
+        Object.each(object, function (value, key) {
+            if(value)newArray.push( key + ":" + value )
+        });
+        if( o2.typeOf(array) === "array" && array.length>1){
+            var styles = array[1].split(/\s*;\s*/gi);
+            for(var j=0; j<styles.length; j++){
+                var ar = styles[j].split(/\s*:\s*/gi);
+                var key = ar[0].toLowerCase();
+                if( !object.hasOwnProperty( key ) ){
+                    newArray.push( styles[j] );
+                }
+            }
+        }
+        if(o2.typeOf(array) === "array" && array[0]){ //原先有style
+            if( newArray.length === 0 ){
+                return str.replace(array[0], "")
+            }else{
+                return str.replace(array[0], " style=\""+ newArray.join("; ") + "\"")
+            }
+        }else{
+            if( newArray.length === 0 ){
+                return str;
+            }else{
+                return this.addAttribute(str, "style", newArray.join("; "));
+            }
+        }
+    },
     getSize: function(imgStr){
         //获取占位图片高宽，先从style获取高宽，没有从data-width获取，并判断maxWidth
-        var width, height, maxWidth;
-        var style = this.getValue(imgStr, "style");
-        for(var i=0; i<style.length; i++){
-            var styles = style[i].split(";");
-            for(var j=0; j<styles.length; j++){
-                var array = styles[j].split(":");
-                switch (array[0]) {
+        var width="", height="", maxWidth="";
+        var style = this.getAttributeValue(imgStr, "style");
+        var styles = style.split(";");
+        for(var j=0; j<styles.length; j++){
+            var array = styles[j].split(":");
+            if(array.length > 1){
+                array[1] = array[1].trim();
+                switch (array[0].trim() ) {
                     case "max-width": maxWidth = array[1]; break;
                     case "width":  width = array[1]; break;
                     case "height": height = array[1]; break;
                 }
             }
         }
-        if( !width )width = this.getValue(imgStr, "data-width");
-        if( !height )height = this.getValue(imgStr, "data-height");
+        if( !width )width = this.getAttributeValue(imgStr, "data-width");
+        if( !height )height = this.getAttributeValue(imgStr, "data-height");
+
+        if( !width )width = this.getAttributeValue(imgStr, "width");
+        if( !height )height = this.getAttributeValue(imgStr, "height");
 
         if( width && height ){
+            width = parseFloat( width );
+            height = parseFloat( height );
             var mWidth, x, y;
             if( maxWidth.indexOf("%") === maxWidth.length-1 ){
                 mWidth = this.nodeWidth * parseFloat(maxWidth) / 100;
             }else{
-                mWidth = parseFloat(mWidth);
+                mWidth = parseFloat(maxWidth);
             }
             if( mWidth && parseFloat(width) > mWidth ){
                 y = parseInt( height * ( mWidth / width ) );
@@ -89,13 +167,19 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
         }
         return null;
     },
-    loadRerource: function (callback) {
+    loadResource: function (callback) {
         var lozadPath = "../o2_lib/lozad/lozad.min.js";
         var observerPath = "../o2_lib/IntersectionObserver/intersection-observer.min.js";
-        if( window.IntersectionObserver || window.MutationObserver ){
+        var observerPath_ie11 = "../o2_lib/IntersectionObserver/polyfill_ie11.min.js";
+        var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+        if( isIE11 ){
+            o2.load(observerPath_ie11, function () {
+                o2.load(lozadPath, function () { if(callback)callback(); }.bind(this));
+            }.bind(this));
+        }else if( window.IntersectionObserver && window.MutationObserver){
             o2.load(lozadPath, function () { if(callback)callback(); }.bind(this));
         }else{
-            o2.load(observerPath, function () {
+            o2.load([observerPath, observerPath_ie11], function () {
                 o2.load(lozadPath, function () { if(callback)callback(); }.bind(this));
             }.bind(this));
         }
