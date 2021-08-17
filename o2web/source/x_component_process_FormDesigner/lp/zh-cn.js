@@ -844,7 +844,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "ckeditorInfo2": "返回CKEditor的Config对象，用于编辑器初始化",
         "ckeditorInfo3": "更多事件帮助请查看",
         "base64Encode": "图片Base64编码",
-        "imagePreview": "浏览大图",
+        "imagePreview": "浏览原图",
 
         "ieOnly": "仅IE浏览器可用",
         "keepHistory": "是否保留历史版本",
