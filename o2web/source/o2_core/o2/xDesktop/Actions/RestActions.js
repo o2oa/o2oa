@@ -657,6 +657,6 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
             }
             //	throw "request error: "+errorText;
         }
-        return Promise.reject(xhr);
+        return  {"xhr": xhr, "text": text, "error":error};
     }
 });

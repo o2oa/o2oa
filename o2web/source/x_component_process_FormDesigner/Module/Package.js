@@ -55,4 +55,6 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elradio", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcheckbox", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Importer", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.ReadLog", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elinput", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcommon", null, false);
 

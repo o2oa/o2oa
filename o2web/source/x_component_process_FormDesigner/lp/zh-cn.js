@@ -337,6 +337,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_number": "计数器",
         "el_switch": "开关",
         "el_slider": "滑块",
+        "el_common": "通用",
 
         "importer": "数据导入",
         "readLog": "阅读记录"

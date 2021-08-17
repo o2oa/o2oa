@@ -323,7 +323,25 @@ MWF.xApplication.process.FormDesigner.LP = {
         "office": "Office",
         "statementSelector": "StatementSelector",
         "statement": "Statement",
-        "importer": "DataImporter"
+
+        "group_system": "系统组件",
+        "group_element": "Element组件",
+
+        "el_container": "Container",
+        "el_icon": "Icon",
+        "el_button": "Button",
+        "el_radio": "Radio",
+        "el_checkbox": "Checkbox",
+        "el_select": "Select",
+        "el_input": "Input",
+        "el_cascader": "Cascader",
+        "el_number": "Number",
+        "el_switch": "Switch",
+        "el_slider": "Slider",
+        "el_common": "Common",
+
+        "importer": "DataImporter",
+        "readLog": "Read Log"
     },
     "propertyTemplate": {
         "base": "Base",
