@@ -179,7 +179,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		map.put("indexPage", Config.portal().getIndexPage());
 		map.put("webSocketEnable", Config.communicate().wsEnable());
 		map.put("urlMapping", Config.portal().getUrlMapping());
-		if(!(Config.portal().getUrlMapping().isEmpty())){
+		if(null != Config.portal().getUrlMapping() && !(Config.portal().getUrlMapping().isEmpty())){
 			try {
 				String urlMapping = XGsonBuilder.toJson(Config.portal().getUrlMapping());
 				Map<String, String> urlmap = new HashMap<>();
