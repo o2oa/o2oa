@@ -9,7 +9,7 @@ MWF.xApplication.process.FormDesigner.Module.Elbutton = MWF.FCElbutton = new Cla
 	},
 
 	_initModuleType: function(){
-		this.className = "Elbutton"
+		this.className = "Elbutton";
 		this.moduleType = "element";
 		this.moduleName = "elbutton";
 	},

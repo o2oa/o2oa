@@ -1508,12 +1508,12 @@ if (window.Promise && !Promise.any){
                     onFailure: function(xhr){
                         //var r = o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                         var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
-                        (r) ? reject(r) : reject(xhr, "", "");
+                        reject((r) ? r : xhr);
                         //return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                     }.bind(this),
                     onError: function(text, error){
                         var r = o2.runCallback(callback, "error", [text, error], null, reject);
-                        (r) ? reject(r) : reject(null, text, error);
+                        reject((r) ? r : {"xhr": xhr, "text": text, "error":error});
                         //return o2.runCallback(callback, "error", [text, error], null, reject);
                     }.bind(this)
                 });
@@ -1535,7 +1535,12 @@ if (window.Promise && !Promise.any){
                 }
                 //Content-Type	application/x-www-form-urlencoded; charset=utf-8
                 res.send(data);
-            }.bind(this));
+            }.bind(this)).then(function(responseJSON){
+                return responseJSON;
+            }).catch(function(err){
+                //var r = o2.runCallback(callback, "failure", [xhr, text, error], null);
+                return Promise.reject(err);
+            });
 
             // p = p.then(function(responseJSON){
             //     return o2.runCallback(callback, "success", [responseJSON],null);
