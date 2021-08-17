@@ -497,32 +497,10 @@ O2CMSComment.Document = new Class({
             //}
         }.bind(this) );
 
-
-        var contentNode = itemNode.getElement( "[item='content']" );
-        var images = contentNode.getElements("img");
-        var previewImageList = images.filter(function (img) {
-            var enablePreview = img.get("data-prv");
-            if( enablePreview !== "false" && enablePreview !== false ){
-                img.setStyle("cursor", "pointer");
-                return true;
-            }
-            return false;
-        });
-        if( previewImageList.length > 0 ){
-            this.loadViewerResource(function () {
-                new Viewer( contentNode, {
-                    url: function (image) {
-                        var id = image.get("data-orgid") || image.get("data-id");
-                        return id ? o2.xDesktop.getImageSrc(id) : image.get("src")
-                    },
-                    filter: function (image) {
-                        var enablePreview = image.get("data-prv");
-                        return enablePreview !== "false" && enablePreview !== false;
-                    }
-                });
-            }.bind(this))
-        }
-
+        o2.require("o2.widget.ImageViewer", function(){
+            var imageViewer = new o2.widget.ImageViewer(itemNode.getElement( "[item='content']" ));
+            imageViewer.load();
+        }.bind(this));
 
         if( itemData.parentId && itemData.parentId != "" ){
             var quoteContainer = itemNode.getElements( "[item='quoteContent']" )[0];
@@ -558,17 +536,6 @@ O2CMSComment.Document = new Class({
             )
         }
 
-    },
-    loadViewerResource : function( callback ){
-        if( window.Viewer ){
-            if( callback )callback();
-            return;
-        }
-        COMMON.AjaxModule.loadCss("../o2_lib/viewer/viewer.css", function () {
-            o2.load( "../o2_lib/viewer/viewer.js", function () {
-                if(callback)callback();
-            }.bind(this))
-        }.bind(this))
     },
     sendMessage : function(itemNode, ev ){
         var self = this;

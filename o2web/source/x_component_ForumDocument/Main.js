@@ -1789,39 +1789,9 @@ debugger;
 	loadImageViewer: function(node){
 		var contentNote = node.getElement("[item='content']");
 		var voteNode = node.getElement("[item='vote']");
-		var images = contentNote.getElements("img").concat(voteNode.getElements("img"));
-		var previewImageList = images.filter(function (img) {
-			var enablePreview = img.get("data-prv");
-			if( enablePreview !== "false" && enablePreview !== false ){
-				img.setStyle("cursor", "pointer");
-				img.set("preview", "true");
-				return true;
-			}
-			return false;
-		});
-		if( previewImageList.length > 0 ){
-			this.loadViewerResource(function () {
-				new Viewer( node, {
-					url: function (image) {
-						var id = image.get("data-orgid") || image.get("data-id");
-						return id ? o2.xDesktop.getImageSrc(id) : image.get("src")
-					},
-					filter: function (image) {
-						return image.get("preview") === "true";
-					}
-				});
-			}.bind(this))
-		}
-	},
-	loadViewerResource : function( callback ){
-		if( window.Viewer ){
-			if( callback )callback();
-			return;
-		}
-		COMMON.AjaxModule.loadCss("../o2_lib/viewer/viewer.css", function () {
-			o2.load( "../o2_lib/viewer/viewer.js", function () {
-				if(callback)callback();
-			}.bind(this))
+		o2.require("o2.widget.ImageViewer", function(){
+			var imageViewer = new o2.widget.ImageViewer(node, [contentNote, voteNode]);
+			imageViewer.load();
 		}.bind(this))
 	},
 	sendMessage : function(itemNode, ev ){
@@ -2224,39 +2194,9 @@ MWF.xApplication.ForumDocument.ReplyDocument = new Class({
 
 	},
 	loadImageViewer: function(node){
-		var images = node.getElements("img");
-		var previewImageList = images.filter(function (img) {
-			var enablePreview = img.get("data-prv");
-			if( enablePreview !== "false" && enablePreview !== false ){
-				img.setStyle("cursor", "pointer");
-				return true;
-			}
-			return false;
-		});
-		if( previewImageList.length > 0 ){
-			this.loadViewerResource(function () {
-				new Viewer( node, {
-					url: function (image) {
-						var id = image.get("data-orgid") || image.get("data-id");
-						return id ? o2.xDesktop.getImageSrc(id) : image.get("src")
-					},
-					filter: function (image) {
-						var enablePreview = image.get("data-prv");
-						return enablePreview !== "false" && enablePreview !== false;
-					}
-				});
-			}.bind(this))
-		}
-	},
-	loadViewerResource : function( callback ){
-		if( window.Viewer ){
-			if( callback )callback();
-			return;
-		}
-		COMMON.AjaxModule.loadCss("../o2_lib/viewer/viewer.css", function () {
-			o2.load( "../o2_lib/viewer/viewer.js", function () {
-				if(callback)callback();
-			}.bind(this))
+		o2.require("o2.widget.ImageViewer", function(){
+			var imageViewer = new o2.widget.ImageViewer(node);
+			imageViewer.load();
 		}.bind(this))
 	},
 	sendMessage : function(itemNode, ev ){

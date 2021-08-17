@@ -736,9 +736,10 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 				} else {
 					buffer.append("http://").append(Config.resource_node_centersPirmaryNode()).append(":" + port);
 				}
-				return buffer.append("/x_program_center/describe/api.json").toString();
+				urlDescribeApiJson = buffer.append("/x_program_center/describe/api.json").toString();
+			} else {
+				throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
 			}
-			throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
 		} else {
 			String applicationName = this.findApplicationName(name);
 			if (StringUtils.isEmpty(applicationName)) {
