@@ -681,7 +681,7 @@ MWF.xApplication.Collect.RegisterForm = new Class({
                     this.collect.showContent("checkContentNode");
                     this.collect.backNode.setStyle("display", "none");
                     window.setTimeout(function(){
-                        this.check.recheck();
+                        this.collect.check.recheck();
                     }.bind(this), 1000);
                 }.bind(this), function(xhr, text, error){
                     var errorText = error+":"+text;
@@ -921,6 +921,7 @@ MWF.xApplication.Collect.ModifyForm = new Class({
                     this.errorNode.empty();
                 }else{
                     this.errorInput(this.codeNode, this.lp.errorCode);
+                    this.nextStepWaited();
                 }
             }.bind(this), function(xhr, text, error){
                 if (xhr){
@@ -958,7 +959,7 @@ MWF.xApplication.Collect.ModifyForm = new Class({
                 this.firstStep();
                 this.collect.showContent("checkContentNode");
                 this.collect.backNode.setStyle("display", "none");
-                this.check.recheck();
+                this.collect.check.recheck();
             }.bind(this), function(xhr, text, error){
                 var errorText = error+":"+text;
                 if (xhr) errorText = xhr.responseText;
@@ -1112,6 +1113,7 @@ MWF.xApplication.Collect.ModifyPwdForm = new Class({
                     this.errorNode.empty();
                 }else{
                     this.errorInput(this.codeNode, this.lp.errorCode);
+                    this.nextStepWaited();
                 }
             }.bind(this), function(xhr, text, error){
                 if (xhr){
@@ -1145,7 +1147,7 @@ MWF.xApplication.Collect.ModifyPwdForm = new Class({
                     this.firstStep();
                     this.collect.showContent("checkContentNode");
                     this.collect.backNode.setStyle("display", "none");
-                    this.check.recheck();
+                    this.collect.check.recheck();
                 }.bind(this), function(xhr, text, error){
                     var errorText = error+":"+text;
                     if (xhr) errorText = xhr.responseText;
