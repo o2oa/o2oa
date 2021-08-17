@@ -81,7 +81,7 @@ public class HotPictureInfoCipherAction extends StandardJaxrsAction {
 	}
 
 	
-	@JaxrsMethodDescribe(value = "列示根据过滤条件的HotPictureInfo,下一页", action= StandardJaxrsAction.class )
+	@JaxrsMethodDescribe(value = "列示根据过滤条件的HotPictureInfo,下一页", action= ActionCipherList.class )
 	@PUT
 	@Path("filter/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

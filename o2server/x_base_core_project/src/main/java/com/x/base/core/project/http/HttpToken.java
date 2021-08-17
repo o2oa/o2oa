@@ -48,7 +48,6 @@ public class HttpToken {
 		// 加入调试标记
 		Object debugger = request.getHeader(HttpToken.X_Debugger);
 		effectivePerson.setDebugger((null != debugger) && BooleanUtils.toBoolean(Objects.toString(debugger)));
-		setAttribute(request, effectivePerson);
 		setToken(request, response, effectivePerson);
 		return effectivePerson;
 	}
@@ -116,9 +115,11 @@ public class HttpToken {
 		case anonymous:
 			break;
 		case user:
+			this.setAttribute(request, effectivePerson);
 			this.setResponseToken(request, response, effectivePerson);
 			break;
 		case manager:
+			this.setAttribute(request, effectivePerson);
 			this.setResponseToken(request, response, effectivePerson);
 			break;
 		case cipher:

@@ -112,12 +112,9 @@ public class ActionGetListForPage extends BaseAction {
 		return result;
 	}
 
-	public static class Wi {
 
-	}
 
 	public static class Wo extends HotPictureInfo {
-		public static List<String> Excludes = new ArrayList<String>();
 		public static WrapCopier<HotPictureInfo, Wo> copier = WrapCopierFactory.wo(HotPictureInfo.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 

@@ -53,9 +53,7 @@ public class ActionCipherGet extends BaseAction {
 		return result;
 	}
 
-	public static class Wi {
 
-	}
 
 	public static class Wo extends HotPictureInfo {
 		public static WrapCopier<HotPictureInfo, Wo> copier = WrapCopierFactory.wo(HotPictureInfo.class, Wo.class, null,
