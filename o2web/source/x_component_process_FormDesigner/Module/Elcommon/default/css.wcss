@@ -30,13 +30,13 @@
 		"background": "#ffa200"
 	},
 	"moduleNode": {
-		"border-radius": "5px",
-		"border-top": "1px solid #999",
-		"border-left": "1px solid #999",
-		"border-right": "1px solid #333",
-		"border-bottom": "1px solid #333",
-		"overflow": "hidden",
+		"border": "1px dashed #333",
+		"min-height": "30px",
 		"cursor": "pointer",
+		"line-height": "normal",
+		"width": "auto",
+		"background": "transparent",
+		"overflow": "hidden",
 		"margin": "3px",
 		"-webkit-user-select": "none",
 		"-moz-user-select": "none",
@@ -44,13 +44,8 @@
 		"top": "auto",
 		"left": "auto",
 		"opacity": 1,
-		"display": "inline-block"
-	},
-	"buttonIcon": {
-		"height": "26px",
-		"cursor": "pointer",
-		"border": "0px",
-		"margin": "0px"
+		"display": "inline-block",
+		"min-width": "60px"
 	}
 	
 }
