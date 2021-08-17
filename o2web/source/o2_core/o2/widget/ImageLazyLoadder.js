@@ -19,16 +19,18 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
         // this._loadCss();
         this.fireEvent("init");
     },
-    load: function(){
+    load: function(callback){
+        debugger;
         var checkLoaded = function () {
             if( this.resourceLoaded && this.parseDone ){
                 this.node.set("html", this.html);
-                var observer = lozad('.lozad', {
-                    rootMargin: '10px 0px', // syntax similar to that of CSS Margin
-                    threshold: 0.1, // ratio of element convergence
+                var observer = lozad( this.node.querySelectorAll('img.lozad'), {
+                    rootMargin: '1000px 0px', // syntax similar to that of CSS Margin
+                    threshold: 0, // ratio of element convergence
                     enableAutoReload: true // it will reload the new image when validating attributes changes
                 });
                 observer.observe();
+                if(callback)callback();
             }
         }.bind(this);
         this.loadResource(function () {
@@ -39,7 +41,6 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
         checkLoaded()
     },
     parseHtml: function(){
-        debugger;
         var html = this.html;
         var regexp_all = /(i?)(<img)([^>]+>)/gmi;
         var images = this.html.match(regexp_all);
@@ -169,10 +170,16 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
     loadResource: function (callback) {
         var lozadPath = "../o2_lib/lozad/lozad.min.js";
         var observerPath = "../o2_lib/IntersectionObserver/intersection-observer.min.js";
-        if( window.IntersectionObserver || window.MutationObserver ){
+        var observerPath_ie11 = "../o2_lib/IntersectionObserver/polyfill_ie11.min.js";
+        var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+        if( isIE11 ){
+            o2.load(observerPath_ie11, function () {
+                o2.load(lozadPath, function () { if(callback)callback(); }.bind(this));
+            }.bind(this));
+        }else if( window.IntersectionObserver && window.MutationObserver){
             o2.load(lozadPath, function () { if(callback)callback(); }.bind(this));
         }else{
-            o2.load(observerPath, function () {
+            o2.load([observerPath, observerPath_ie11], function () {
                 o2.load(lozadPath, function () { if(callback)callback(); }.bind(this));
             }.bind(this));
         }
