@@ -50,6 +50,16 @@
     "sub": []
   },
   {
+    "title": MWF.xApplication.Attendance.LP.exportSourceData,
+    "id": "1.6",
+    "action": "exportSourceData",
+    "icon": "download.png",
+    "expand": false,
+    "position": "left",
+    "styles": "toolbarItemNode",
+    "sub": []
+  },
+  {
     "title": MWF.xApplication.Attendance.LP.viewDescription,
     "id": "2.1",
     "action": "showDescription",

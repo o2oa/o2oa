@@ -16,6 +16,14 @@ MWF.xAction.RestActions.Action["x_attendance_assemble_control"] = new Class({
             window.open(this.action.address+url , "_blank");
         }.bind(this));
     },
+    exportSourceDetail: function(cycleYear, cycleMonth, success, failure){
+        this.action.getActions(function(){
+            var url = this.action.actions.exportSourceDetail.uri;
+            url = url.replace("{cycleYear}", cycleYear);
+            url = url.replace("{cycleMonth}", cycleMonth);
+            window.open(this.action.address+url , "_blank");
+        }.bind(this));
+    },
     uploadAttachment: function(success, failure, formData, file){
         this.action.invoke({"name": "uploadAttachment", "data": formData,"file": file,"success": success,"failure": failure});
     },

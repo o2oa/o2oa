@@ -79,6 +79,10 @@ MWF.xApplication.Attendance.ImportExplorer = new Class({
         var selector = new MWF.xApplication.Attendance.ImportExplorer.YearMonthSelctor(this);
         selector.edit();
     },
+    exportSourceData : function(){
+        var selector = new MWF.xApplication.Attendance.ImportExplorer.ExportSourceData(this);
+        selector.edit();
+    },
     analyseData : function(){
         this.actions.analyseDetail("0","0",function(){
             this.app.notice( this.app.lp.analyseDataSuccess,"success")
@@ -236,6 +240,68 @@ MWF.xApplication.Attendance.ImportExplorer.YearMonthSelctor = new Class({
     _ok: function( data, callback ){
         this.app.restActions.checkDetail( data.cycleYear, data.cycleMonth, function(json){
             this.app.notice( MWF.xApplication.Attendance.LP.checkDetailSuccess );
+            this.close();
+        }.bind(this));
+    }
+});
+
+MWF.xApplication.Attendance.ImportExplorer.ExportSourceData = new Class({
+    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
+    options : {
+        "width": 500,
+        "height": 300,
+        "hasTop" : true,
+        "hasBottom" : true,
+        "title" : MWF.xApplication.Attendance.LP.selectExportMonth,
+        "draggable" : true,
+        "closeAction" : true,
+    },
+    _createTableContent: function(){
+        this.formTableContainer.setStyles({
+            "width" : "300px"
+        });
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
+            "<tr><td styles='formTabelTitle' lable='cycleYear'></td>"+
+            "    <td styles='formTableValue' item='cycleYear'></td></tr>" +
+            "<tr><td styles='formTabelTitle' lable='cycleMonth'></td>"+
+            "    <td styles='formTableValue' item='cycleMonth'></td></tr>" +
+            "</table>";
+        this.formTableArea.set("html",html);
+        MWF.xDesktop.requireApp("Template", "MForm", function(){
+            this.form = new MForm( this.formTableArea, {}, {
+                style : "attendance",
+                isEdited : this.isEdited || this.isNew,
+                itemTemplate : {
+                    cycleYear : {
+                        text: MWF.xApplication.Attendance.LP.annuaal,
+                        type : "select",
+                        selectValue : function(){
+                            var years = []; d = new Date();
+                            for(var i=0 ; i<5; i++){
+                                years.push(d.getFullYear());
+                                d.setFullYear(d.getFullYear()-1)
+                            }
+                            return years;
+                        }
+                    },
+                    cycleMonth : {
+                        text: MWF.xApplication.Attendance.LP.months,
+                        type : "select",
+                        defaultValue : function(){ return new Date().getMonth(); },
+                        selectValue : ["1","2","3","4","5","6","7","8","9","10","11","12"]
+                    }
+                }
+            }, this.app);
+            this.form.load();
+        }.bind(this), true);
+    },
+    _ok: function( data, callback ){
+        var cycleMonth = data.cycleMonth;
+        if(parseInt(cycleMonth)<10){
+            cycleMonth = "0"+cycleMonth;
+        }
+        debugger;
+        this.app.restActions.exportSourceDetail( data.cycleYear, cycleMonth, function(json){
             this.close();
         }.bind(this));
     }

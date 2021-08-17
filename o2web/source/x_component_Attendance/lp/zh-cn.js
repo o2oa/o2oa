@@ -306,6 +306,8 @@ MWF.xApplication.Attendance.LP = {
 	"importDataResultThList" : [
 		"行号", "员工号", "员工名字", "日期","上午上班打卡时间","上午下班打卡时间","下午上班打卡时间","下午下班打卡时间","检查结果","描述"
 	],
+	"selectExportMonth":"选择导出月份",
+	"exportSourceData": "导出打卡数据",
 	"true": "正确",
 	"false": "错误",
 	"checkDataTitle": "正在检查数据",
