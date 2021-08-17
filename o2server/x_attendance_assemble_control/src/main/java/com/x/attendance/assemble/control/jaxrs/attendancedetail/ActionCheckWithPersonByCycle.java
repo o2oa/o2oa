@@ -24,11 +24,12 @@ public class ActionCheckWithPersonByCycle extends BaseAction {
 	private static  Logger logger = LoggerFactory.getLogger( ActionCheckWithPersonByCycle.class );
 	
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String cycleYear, String cycleMonth ) throws Exception {
-		logger.debug( effectivePerson, ">>>>>>>>>>系统尝试对统计周期[" + cycleYear + "-" + cycleMonth + "]的打卡数据核对......");
+		logger.info( ">>>>>>>>>>系统尝试对统计周期[" + cycleYear + "-" + cycleMonth + "]的打卡数据核对......");
 		ActionResult<Wo> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap = null;
 		List<AttendanceEmployeeConfig> attendanceEmployeeConfigList = null;
+		List<AttendanceEmployeeConfig> unitConfigList = null;
 		StatusSystemImportOpt statusSystemImportOpt = StatusSystemImportOpt.getInstance();
 		Boolean check = true;
 		
@@ -69,11 +70,8 @@ public class ActionCheckWithPersonByCycle extends BaseAction {
 			try {
 				attendanceEmployeeConfigList = attendanceEmployeeConfigServiceAdv.listByConfigType( "REQUIRED" );
 				if( ListTools.isEmpty( attendanceEmployeeConfigList ) ) {
-					attendanceEmployeeConfigList = new ArrayList<>();
-//					check = false;
-//					Exception exception = new ExceptionAttendanceDetailProcess( "系统未获取到需要考勤的人员配置，尚不需要补录任何信息." );
-//					result.error( exception );
 					//如果没有配置任何需要考勤的人员，那么就是全员需要考勤
+					attendanceEmployeeConfigList = new ArrayList<>();
 					AttendanceEmployeeConfig config = null;
 					String identity = null;
 					Unit unit = null;
@@ -95,11 +93,57 @@ public class ActionCheckWithPersonByCycle extends BaseAction {
 								config.setEmpInTopUnitTime("1900-01-01");
 								config.setEmployeeName( person.getDistinguishedName() );
 								config.setEmployeeNumber( person.getEmployee() );
-								config.setUnitOu( unit.getDistinguishedName() );
-								config.setUnitName( unit.getUnique() );
-								config.setTopUnitName( topUnit.getName() );
+								config.setUnitOu( unit.getUnique() );
+								config.setUnitName(  unit.getDistinguishedName());
+								config.setTopUnitName( topUnit.getDistinguishedName() );
 								config.setTopUnitOu( topUnit.getUnique() );
 								attendanceEmployeeConfigList.add( config );
+							}
+						}
+					}
+				}else{
+					//将现有考勤人员配置解析到人
+					unitConfigList = new ArrayList<>();
+					for(AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigList){
+						if(StringUtils.isNotEmpty(attendanceEmployeeConfig.getEmployeeName())){
+							unitConfigList.add(attendanceEmployeeConfig);
+						}else if(StringUtils.isNotEmpty(attendanceEmployeeConfig.getUnitName())){
+							List<String> unitPersons = userManagerService.listWithUnitSubNested(attendanceEmployeeConfig.getUnitName());
+							for(String personId :unitPersons){
+								Person person = userManagerService.getPersonObjByName(personId);
+								if(person !=null){
+									AttendanceEmployeeConfig newEmployeeConfig = new AttendanceEmployeeConfig();
+									newEmployeeConfig = attendanceEmployeeConfig;
+									newEmployeeConfig.setEmployeeName( person.getDistinguishedName() );
+									newEmployeeConfig.setEmployeeNumber( person.getEmployee() );
+									unitConfigList.add(newEmployeeConfig);
+								}
+							}
+						}else if(StringUtils.isNotEmpty(attendanceEmployeeConfig.getTopUnitName())){
+							//将公司的人员添加
+							AttendanceEmployeeConfig newEmployeeConfig = null;
+							String identity = null;
+							Unit unit = null;
+							List<String> unitPersons = userManagerService.listWithUnitSubNested(attendanceEmployeeConfig.getTopUnitName());
+							for(String personId :unitPersons){
+								Person person = userManagerService.getPersonObjByName(personId);
+								if(person !=null){
+									newEmployeeConfig = new AttendanceEmployeeConfig();
+									newEmployeeConfig.setTopUnitName(attendanceEmployeeConfig.getTopUnitName());
+									newEmployeeConfig.setTopUnitOu(attendanceEmployeeConfig.getTopUnitOu());
+									newEmployeeConfig.setConfigType(attendanceEmployeeConfig.getConfigType());
+									identity = userManagerService.getMajorIdentityWithPerson( person.getDistinguishedName() );
+									if(StringUtils.isNotEmpty(identity)){
+										unit = userManagerService.getUnitWithIdentity(identity);
+									}
+									if( unit != null ){
+										newEmployeeConfig.setUnitOu(unit.getUnique() );
+										newEmployeeConfig.setUnitName( unit.getDistinguishedName());
+									}
+									newEmployeeConfig.setEmployeeName( person.getDistinguishedName() );
+									newEmployeeConfig.setEmployeeNumber( person.getEmployee() );
+									unitConfigList.add(newEmployeeConfig);
+								}
 							}
 						}
 					}
@@ -123,11 +167,24 @@ public class ActionCheckWithPersonByCycle extends BaseAction {
 			}
 		}
 		if (check) {
+			List<AttendanceEmployeeConfig> emconfigList = new ArrayList<>();
+			if(ListTools.isNotEmpty(unitConfigList)){
+				emconfigList.addAll(unitConfigList);
+			}else{
+				emconfigList.addAll(attendanceEmployeeConfigList);
+			}
 			//由于检查统计周期是用的多线程，造成多份重复无法控制，改为提前检查统计周期
-			for(AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigList){
-				AttendanceStatisticalCycle attendanceStatisticalCycle = attendanceStatisticCycleServiceAdv.getAttendanceDetailStatisticCycle(
+			for(AttendanceEmployeeConfig attendanceEmployeeConfig : emconfigList){
+				/*AttendanceStatisticalCycle attendanceStatisticalCycle = attendanceStatisticCycleServiceAdv.getAttendanceDetailStatisticCycle(
 						attendanceEmployeeConfig.getTopUnitName(),
 						attendanceEmployeeConfig.getUnitName(),
+						cycleYear,
+						cycleMonth,
+						topUnitAttendanceStatisticalCycleMap,
+						false
+				);*/
+				AttendanceStatisticalCycle attendanceStatisticalCycle = attendanceStatisticCycleServiceAdv.getAttendanceDetailStatisticCycleByConfig(
+						attendanceEmployeeConfig,
 						cycleYear,
 						cycleMonth,
 						topUnitAttendanceStatisticalCycleMap,
@@ -135,8 +192,7 @@ public class ActionCheckWithPersonByCycle extends BaseAction {
 				);
 				attendanceStatisticCycleServiceAdv.checkAttendanceStatisticCycle(attendanceStatisticalCycle);
 			}
-
-			new SenderForSupplementData().execute( attendanceEmployeeConfigList, topUnitAttendanceStatisticalCycleMap, cycleYear, cycleMonth, effectivePerson.getDebugger() );
+			new SenderForSupplementData().execute( emconfigList, topUnitAttendanceStatisticalCycleMap, cycleYear, cycleMonth, effectivePerson.getDebugger() );
 		}
 		
 		return result;

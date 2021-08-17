@@ -342,6 +342,21 @@ public class UserManagerService {
 	}
 
 	/**
+	 * 根据组织名称获取所有人(递归)
+	 *
+	 * @param Unit
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listWithUnitSubNested(String Unit) throws Exception {
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.organization().person().listWithUnitSubNested(Unit);
+		}
+	}
+
+	/**
 	 * 根据人员姓名获取人员姓名
 	 * 
 	 * @param name
