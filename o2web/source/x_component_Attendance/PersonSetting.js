@@ -107,8 +107,8 @@ MWF.xApplication.Attendance.PersonSetting.Form = new Class({
                 itemTemplate : {
                     configType : { text:lp.configType, type : "select", selectText : lp.configTypeSelectText, selectValue : ["REQUIRED","NOTREQUIRED"] },
                     topUnitName : { text: lp.topUnitName,  type : "org", orgType : "unit", notEmpty:true },
-                    unitName : { text:lp.unitName,  type : "org", orgType : "unit", notEmpty:true },
-                    employeeName : { text:lp.employeeName, type : "org", orgType : "person", notEmpty:true , "event" : {
+                    unitName : { text:lp.unitName,  type : "org", orgType : "unit" },
+                    employeeName : { text:lp.employeeName, type : "org", orgType : "person",  "event" : {
                         change : function(  item , ev ){
                             if( typeOf( item.orgObject ) == "array" && item.orgObject.length > 0  ){
                                 var data = item.orgObject[0].data;
@@ -118,7 +118,7 @@ MWF.xApplication.Attendance.PersonSetting.Form = new Class({
                             }
                         }
                     } },
-                    employeeNumber : {  text:lp.employeeNumber, notEmpty:true },
+                    employeeNumber : {  text:lp.employeeNumber },
                     empInTopUnitTime : { text:lp.joininDate, tType : "date" }
                 }
             }, this.app);
