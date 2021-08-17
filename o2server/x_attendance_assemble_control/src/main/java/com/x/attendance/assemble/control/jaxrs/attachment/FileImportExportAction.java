@@ -136,6 +136,25 @@ public class FileImportExportAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "导出原始打卡记录", action = ActionExportDetailSource.class)
+	@GET
+	@Path("export/source/{cycleYear}/{cycleMonth}/stream/{stream}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void detailsSourceExportStream(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									@JaxrsParameterDescribe("统计周期年份,为空时输入0") @PathParam("cycleYear") String cycleYear,
+									@JaxrsParameterDescribe("统计周期月份,为空时输入0") @PathParam("cycleMonth") String cycleMonth,
+									@JaxrsParameterDescribe("用.APPLICATION_OCTET_STREAM头输出") @PathParam("stream") Boolean stream) {
+		ActionResult<ActionExportDetailSource.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExportDetailSource().execute(request, effectivePerson, cycleYear,cycleMonth, stream);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "导出个人出勤率统计记录,设定是否使用stream输出", action = ActionExportPersonStatistic.class)
 	@GET
 	@Path("export/person/{name}/{year}/{month}/stream/{stream}")
