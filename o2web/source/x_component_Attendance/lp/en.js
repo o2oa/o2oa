@@ -297,6 +297,8 @@ MWF.xApplication.Attendance.LP = {
 	"importDataResultThList": [
 		"Line number", "employee number", "employee name", "date", "morning clocking time", "morning clocking time", "afternoon clocking time", "afternoon clocking time", "check result ","description"
 	],
+	"selectExportMonth":"Select Export Month",
+	"exportSourceData": "Export Source Data",
 	"true": "Correct",
 	"false": "Error",
 	"checkDataTitle": "Checking data",

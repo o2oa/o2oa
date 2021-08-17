@@ -18,6 +18,7 @@
   "exportSelfHoliday" : {"uri":"/jaxrs/file/export/selfholiday/{startdate}/{enddate}/stream/true", "method": "GET"},
   //private String q_empName \ private String q_topUnitName; \ private String q_unitName;
   "listSelfHolidayFilterNext" : {"uri" : "/jaxrs/attendanceselfholiday/filter/list/{id}/next/{count}", "method": "PUT"},
+  "exportSourceDetail" : {"uri":"/jaxrs/file/export/source/{cycleYear}/{cycleMonth}/stream/true", "method": "GET"},
 
   "getSchedule" : {"uri":"/jaxrs/attendanceschedulesetting/{id}"},
   "listSchedule": {"uri" : "/jaxrs/attendanceschedulesetting/list/all"},
