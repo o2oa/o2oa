@@ -1,5 +1,5 @@
 MWF.xApplication.Collect.LP = {
-    "title": "Connect O2Cloud",
+    "title": "O2Cloud Config",
     "collectConnected": "You can already connect to O2 Cloud!",
     "collectDisconnect": "Your server cannot connect to O2 Cloud!",
     "checking": "Checking……",
