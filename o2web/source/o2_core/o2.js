@@ -1499,23 +1499,23 @@ if (window.Promise && !Promise.any){
                                 layout.session.token = xToken;
                             }
                         }
-                        //var r = o2.runCallback(callback, "success", [responseJSON],null);
+                        var r = o2.runCallback(callback, "success", [responseJSON],null);
                         //resolve(r || responseJSON);
                         resolve(responseJSON);
                         //return o2.runCallback(callback, "success", [responseJSON],null, resolve);
                     },
                     onFailure: function(xhr){
                         //var r = o2.runCallback(callback, "requestFailure", [xhr], null, reject);
-                        // var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
+                        var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
                         // (r) ? reject(r) : reject(xhr, "", "");
-                        reject(xhr, "", "");
+                        reject((r) ? r : {"xhr": xhr, "text": text, "error": "error"});
                         //return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                     }.bind(this),
                     onError: function(text, error){
                         // var r = o2.runCallback(callback, "error", [text, error], null, reject);
                         // (r) ? reject(r) : reject(null, text, error);
-
-                        reject(null, text, error);
+                        var r = o2.runCallback(callback, "failure", [text, error], null);
+                        reject((r) ? r : {"xhr": xhr, "text": text, "error": "error"});
                         //return o2.runCallback(callback, "error", [text, error], null, reject);
                     }.bind(this)
                 });
@@ -1538,11 +1538,9 @@ if (window.Promise && !Promise.any){
                 //Content-Type	application/x-www-form-urlencoded; charset=utf-8
                 res.send(data);
             }.bind(this)).then(function(responseJSON){
-                var r = o2.runCallback(callback, "success", [responseJSON],null);
-                return r || responseJSON;
-            }).catch(function(xhr, text, error){
-                var r = o2.runCallback(callback, "failure", [xhr, text, error], null);
-                return r || xhr || text || error;
+                return responseJSON;
+            }).catch(function(err){
+                return Promise.reject(err);
             });
 
             // p = p.then(function(responseJSON){
