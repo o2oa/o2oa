@@ -1,5 +1,5 @@
 MWF.xApplication.Collect.LP = {
-    "title": "连接到O2云",
+    "title": "O2云配置",
     "collectConnected": "您已经可以连接到O2云了！",
     "collectDisconnect": "您的服务器无法连接到O2云！",
     "checking": "检测中……",
