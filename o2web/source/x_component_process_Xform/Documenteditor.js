@@ -3196,7 +3196,17 @@ debugger;
                 tmpdiv.set("html", this.attachmentTemplete);
                 var serialNode = tmpdiv.getElement(".doc_layout_attachment_content_serial");
                 var nameNode = tmpdiv.getElement(".doc_layout_attachment_content_name");
-                if (serialNode) serialNode.set("text", idx+1);
+                if (this.data.attachment.length>1){
+                    if (serialNode){
+                        serialNode.set("text", idx+1);
+                        serialNode.getNext().set("text", ".");
+                    }
+                }else{
+                    if (serialNode){
+                        serialNode.set("text", "");
+                        serialNode.getNext().set("text", "");
+                    }
+                }
                 if (nameNode) nameNode.set("text", name);
                 var html = tmpdiv.get("html");
                 tmpdiv.empty();
