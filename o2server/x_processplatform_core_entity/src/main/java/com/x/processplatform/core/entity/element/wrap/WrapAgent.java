@@ -9,10 +9,10 @@ public class WrapAgent extends Agent {
 
 	private static final long serialVersionUID = -7592184343034018992L;
 
-	public static WrapCopier<Agent, WrapAgent> outCopier = WrapCopierFactory.wo(Agent.class, WrapAgent.class, null,
-			JpaObject.FieldsInvisible);
+	public static final WrapCopier<Agent, WrapAgent> outCopier = WrapCopierFactory.wo(Agent.class, WrapAgent.class,
+			null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapAgent, Agent> inCopier = WrapCopierFactory.wi(WrapAgent.class, Agent.class, null,
-			JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapAgent, Agent> inCopier = WrapCopierFactory.wi(WrapAgent.class, Agent.class, null,
+			JpaObject.FieldsUnmodifyExcludeId, false);
 
 }
