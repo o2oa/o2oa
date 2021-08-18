@@ -982,6 +982,11 @@
                     img.alt = alt;
                     img.setAttribute('data-index', index);
                     img.setAttribute('data-original-url', url || src);
+
+                    /*add by cxy*/
+                    var originalUrl = image.getAttribute("data-originalUrl");
+                    if(originalUrl)img.setAttribute('data-originalUrl', originalUrl);
+
                     img.setAttribute('data-viewer-action', 'view');
                     img.setAttribute('role', 'button');
                     item.appendChild(img);
@@ -1797,7 +1802,14 @@
                 canvas = this.canvas;
             var item = this.items[index];
             var img = item.querySelector('img');
-            var url = getData(img, 'originalUrl');
+            /*
+            add by cxy
+             */
+            var originalUrl = img.getAttribute("data-originalUrl");
+            var url = originalUrl ? originalUrl : getData(img, 'originalUrl');
+
+            //var url = getData(img, 'originalUrl');
+
             var alt = escapeHTMLEntities(img.getAttribute('alt'));
             var image = document.createElement('img');
             image.src = url;
