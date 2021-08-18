@@ -232,8 +232,11 @@ public class AttendanceDetailAnalyseService {
 		if( detail != null ){
 			selfHolidayList = attendanceSelfHolidayService.listWithPersonFromCache(emc, detail.getEmpName(), false );
 			//查询用户匹配的排班配置
-			//scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithPerson( detail.getEmpName(), debugger );
-			scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithDetail( detail, debugger );
+			if(StringUtils.isNotEmpty(detail.getUnitName())){
+				scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithDetail( detail, debugger );
+			}else{
+				scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithPerson( detail.getEmpName(), debugger );
+			}
 			return analyseAttendanceDetail( emc, detail, scheduleSetting, selfHolidayList, workDayConfigList, statisticalCycleMap, debugger );
 
 		}else{
