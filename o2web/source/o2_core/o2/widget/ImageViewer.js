@@ -8,6 +8,9 @@ o2.widget.ImageViewer = o2.ImageViewer = new Class({
         "imageUrl": ""
     },
     initialize: function (container, nodeList, options) {
+
+        this.isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+
         this.container = container;
         if(nodeList){
             this.nodeList = typeOf(nodeList) === "array" ? nodeList : [nodeList];
@@ -24,37 +27,43 @@ o2.widget.ImageViewer = o2.ImageViewer = new Class({
     },
     load: function (callback) {
         debugger;
-        var flag = false;
-        this.nodeList.each(function(node){
-            if(node)node.getElements("img").each(function(img){
-                var enablePreview = img.get("data-prv");
-                if( enablePreview !== "false" && enablePreview !== false ){
-                    flag = true;
-                    img.setStyle("cursor", "pointer");
-                    img.set("preview", "true");
-                    var orgId = img.get("data-orgid");
-                    if(orgId){
-                        img.set("data-originalUrl", o2.xDesktop.getImageSrc(orgId));
-                    }
-                }
-            }.bind(this))
-        }.bind(this));
-        if( flag ){
-            this.loadResource(function () {
-                new Viewer( this.container, {
-                    url: function (image) {
-                        // var id = image.get("data-orgid") || image.get("data-id");
-                        var id = image.get("data-id");
-                        return id ? o2.xDesktop.getImageSrc(id) : ( image.get("data-src") || image.get("src") )
-                    },
-                    filter: function (image) {
-                        return image.get("preview") === "true";
-                    }
-                });
-                if(callback)callback();
-            }.bind(this))
-        }else{
+        if( Browser.name === 'ie' && !this.isIE11 ){
             if(callback)callback();
+        }else{
+            var flag = false;
+            this.nodeList.each(function(node){
+                if(node)node.getElements("img").each(function(img){
+                    var enablePreview = img.get("data-prv");
+                    if( enablePreview !== "false" && enablePreview !== false ){
+                        flag = true;
+                        img.setStyle("cursor", "pointer");
+                        img.set("preview", "true");
+                        var orgId = img.get("data-orgid");
+                        if(orgId){
+                            img.set("data-originalUrl", o2.xDesktop.getImageSrc(orgId));
+                        }
+                    }
+                }.bind(this))
+            }.bind(this));
+            if( flag ){
+                this.loadResource(function () {
+                    if(window.Viewer){
+                        new Viewer( this.container, {
+                            url: function (image) {
+                                // var id = image.get("data-orgid") || image.get("data-id");
+                                var id = image.get("data-id");
+                                return id ? o2.xDesktop.getImageSrc(id) : ( image.get("data-src") || image.get("src") )
+                            },
+                            filter: function (image) {
+                                return image.get("preview") === "true";
+                            }
+                        });
+                    }
+                    if(callback)callback();
+                }.bind(this))
+            }else{
+                if(callback)callback();
+            }
         }
     },
     loadResource : function( callback ){
