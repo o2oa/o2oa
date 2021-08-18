@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -29,7 +31,6 @@ import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
@@ -38,10 +39,14 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
 
-	private final static String TASKLIST_FIELDNAME = "taskList";
-	private final static String TASKCOMPLETEDLIST_FIELDNAME = "taskCompletedList";
-	private final static String READLIST_FIELDNAME = "readList";
-	private final static String READCOMPLETEDLIST_FIELDNAME = "readCompletedList";
+	private static ExecutorService executor = Executors.newCachedThreadPool(
+			new BasicThreadFactory.Builder().namingPattern(ActionListWithWorkOrWorkCompleted.class.getName() + "-%d")
+					.daemon(true).priority(Thread.NORM_PRIORITY).build());
+
+	private static final String TASKLIST_FIELDNAME = "taskList";
+	private static final String TASKCOMPLETEDLIST_FIELDNAME = "taskCompletedList";
+	private static final String READLIST_FIELDNAME = "readList";
+	private static final String READCOMPLETEDLIST_FIELDNAME = "readCompletedList";
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
@@ -53,22 +58,22 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 		final String workLogJob = job;
 
-		CompletableFuture<List<WoTask>> _tasks = CompletableFuture.supplyAsync(() -> {
+		CompletableFuture<List<WoTask>> tasksFuture = CompletableFuture.supplyAsync(() -> {
 			return this.tasks(workLogJob);
-		});
-		CompletableFuture<List<WoTaskCompleted>> _taskCompleteds = CompletableFuture.supplyAsync(() -> {
+		}, executor);
+		CompletableFuture<List<WoTaskCompleted>> taskCompletedsFuture = CompletableFuture.supplyAsync(() -> {
 			return this.taskCompleteds(workLogJob);
-		});
-		CompletableFuture<List<WoRead>> _reads = CompletableFuture.supplyAsync(() -> {
+		}, executor);
+		CompletableFuture<List<WoRead>> readsFuture = CompletableFuture.supplyAsync(() -> {
 			return this.reads(workLogJob);
-		});
-		CompletableFuture<List<WoReadCompleted>> _readCompleteds = CompletableFuture.supplyAsync(() -> {
+		}, executor);
+		CompletableFuture<List<WoReadCompleted>> readCompletedsFuture = CompletableFuture.supplyAsync(() -> {
 			return this.readCompleteds(workLogJob);
-		});
-		CompletableFuture<List<WorkLog>> _workLogs = CompletableFuture.supplyAsync(() -> {
+		}, executor);
+		CompletableFuture<List<WorkLog>> workLogsFuture = CompletableFuture.supplyAsync(() -> {
 			return this.workLogs(workLogJob);
-		});
-		CompletableFuture<Boolean> _control = CompletableFuture.supplyAsync(() -> {
+		}, executor);
+		CompletableFuture<Boolean> controlFuture = CompletableFuture.supplyAsync(() -> {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
@@ -78,22 +83,23 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				logger.error(e);
 			}
 			return value;
-		});
+		}, executor);
 
-		if (BooleanUtils.isFalse(_control.get())) {
+		if (BooleanUtils.isFalse(controlFuture.get())) {
 			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
-		List<WoTask> tasks = _tasks.get();
-		List<WoTaskCompleted> taskCompleteds = _taskCompleteds.get();
-		List<WoRead> reads = _reads.get();
-		List<WoReadCompleted> readCompleteds = _readCompleteds.get();
-		List<WorkLog> workLogs = _workLogs.get();
+		List<WoTask> tasks = tasksFuture.get();
+		List<WoTaskCompleted> taskCompleteds = taskCompletedsFuture.get();
+		List<WoRead> reads = readsFuture.get();
+		List<WoReadCompleted> readCompleteds = readCompletedsFuture.get();
+		List<WorkLog> workLogs = workLogsFuture.get();
 
 		if (!workLogs.isEmpty()) {
 			WorkLogTree tree = new WorkLogTree(workLogs);
 			List<Wo> wos = new ArrayList<>();
-			for (WorkLog o : workLogs.stream().filter(o -> Objects.equals(ActivityType.manual, o.getFromActivityType()))
-					.collect(Collectors.toList())) {
+//			for (WorkLog o : workLogs.stream().filter(o -> Objects.equals(ActivityType.manual, o.getFromActivityType()))
+//					.collect(Collectors.toList())) {
+			for (WorkLog o : workLogs) {
 				Wo wo = Wo.copier.copy(o);
 				Node node = tree.find(o);
 				if (null != node) {
