@@ -380,7 +380,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 
 		"beforeBegin": "流程启动前",
 		"eventInfo1": "启动流程生成work实例",
-		"afterBegin": "流程启动后",
+		"afterBegin": "流程启动",
 		"beforeArrive": "活动到达前",
 		"eventInfo2": "执行Arrive操作<br/>活动属性设置",
 		"afterArrive": "活动到达后",
@@ -392,7 +392,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"afterInquire": "路由查询后",
 		"beforeEnd": "流程结束前",
 		"eventInfo5": "结束流程<br/>生成workCompleted",
-		"afterEnd": "流程结束后",
+		"afterEnd": "流程结束",
 		"beforeWorkArrive": "工作到达前",
 		"beforeArriveActivity": "文件收到前",
 		"afterArriveActivity": "文件收到后",
