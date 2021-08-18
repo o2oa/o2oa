@@ -22,33 +22,39 @@ o2.widget.ImageViewer = o2.ImageViewer = new Class({
         // this._loadCss();
         this.fireEvent("init");
     },
-    load: function () {
+    load: function (callback) {
         debugger;
-        var images = [];
+        var flag = false;
         this.nodeList.each(function(node){
-            if(node)images = images.concat( node.getElements("img") )
+            if(node)node.getElements("img").each(function(img){
+                var enablePreview = img.get("data-prv");
+                if( enablePreview !== "false" && enablePreview !== false ){
+                    flag = true;
+                    img.setStyle("cursor", "pointer");
+                    img.set("preview", "true");
+                    var orgId = img.get("data-orgid");
+                    if(orgId){
+                        img.set("data-originalUrl", o2.xDesktop.getImageSrc(orgId));
+                    }
+                }
+            }.bind(this))
         }.bind(this));
-        var previewImageList = images.filter(function (img) {
-            var enablePreview = img.get("data-prv");
-            if( enablePreview !== "false" && enablePreview !== false ){
-                img.setStyle("cursor", "pointer");
-                img.set("preview", "true");
-                return true;
-            }
-            return false;
-        });
-        if( previewImageList.length > 0 ){
+        if( flag ){
             this.loadResource(function () {
                 new Viewer( this.container, {
                     url: function (image) {
-                        var id = image.get("data-orgid") || image.get("data-id");
+                        // var id = image.get("data-orgid") || image.get("data-id");
+                        var id = image.get("data-id");
                         return id ? o2.xDesktop.getImageSrc(id) : ( image.get("data-src") || image.get("src") )
                     },
                     filter: function (image) {
                         return image.get("preview") === "true";
                     }
                 });
+                if(callback)callback();
             }.bind(this))
+        }else{
+            if(callback)callback();
         }
     },
     loadResource : function( callback ){

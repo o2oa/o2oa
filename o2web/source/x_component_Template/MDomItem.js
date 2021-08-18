@@ -2677,8 +2677,8 @@ MDomItem.Rtf = new Class({
         var parent = this.container ;
         var className = null ;
         item = new Element( "span", {
-            "name" : name,
-            "html" : value
+            "name" : name
+            // "html" : value
         });
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
@@ -2686,15 +2686,33 @@ MDomItem.Rtf = new Class({
 
         if(parent)item.inject(parent);
 
-        this.loadImageViewer();
+        this.loadLazyImage(item, value, function(){
+            if( this.options.enablePreview ) {
+                this.loadImageViewer(item);
+            }else if( this.options.RTFConfig && this.options.RTFConfig.enablePreview === false) {
+            }else{
+                this.loadImageViewer(item);
+            }
+        }.bind(this));
 
         this.items.push( item );
     },
-    loadImageViewer: function(){
-        o2.require("o2.widget.ImageViewer", function(){
-            var imageViewer = new o2.widget.ImageViewer(this.node);
-            imageViewer.load();
-        }.bind(this));
+    loadLazyImage: function(node, html, callback){
+        if( this.options && this.options.imageLazyLoading) {
+            o2.require("o2.widget.ImageLazyLoader", null, false);
+            var loadder = new o2.widget.ImageLazyLoader(node, html);
+            loadder.load(function () {
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            node.set("html", html);
+            if (callback) callback();
+        }
+    },
+    loadImageViewer: function(node){
+        o2.require("o2.widget.ImageViewer", null, false);
+        var imageViewer = new o2.widget.ImageViewer(node);
+        imageViewer.load();
     },
     get : function( vort ){
         if( this.options.disable ){
