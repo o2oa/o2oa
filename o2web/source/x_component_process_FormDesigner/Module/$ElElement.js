@@ -5,7 +5,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	Implements: [Options, Events],
 
 	_initModuleType: function(){
-		this.className = "Elbutton"
+		this.className = "Elbutton";
 		this.moduleType = "element";
 		this.moduleName = "elbutton";
 	},
@@ -134,6 +134,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	_setOtherNodeEvent: function(){},
 
 	_setEditStyle_custom: function(name){
+		debugger;
 		switch (name){
 			case "name": this.setPropertyName(); break;
 			case "id": this.setPropertyId(); break;
@@ -143,12 +144,16 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	setPropertyName: function(){},
 	setPropertyId: function(){},
 	resetElement: function(){
-		this._createVueAppNode();
+		//this._createVueAppNode();
+		//this.node.inject(this.vm.$el,"before");
+		// var node = this.vm.$el;
+		// this.vm.$destroy();
+		// node.destroy();
 
-		this.node.inject(this.vm.$el,"before");
 		var node = this.vm.$el;
 		this.vm.$destroy();
-		node.destroy();
+		node.empty();
+
 		this.vm = null;
 
 		this.isSetEvents = false;
