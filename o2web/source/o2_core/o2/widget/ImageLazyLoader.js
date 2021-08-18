@@ -11,6 +11,8 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
         this.html = html;
         this.setOptions(options);
 
+        this.isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+
         this.nodeWidth = this.node.getSize().x;
 
         this.path = this.options.path || (o2.session.path + "/widget/$ImageLazyLoader/");
@@ -21,24 +23,32 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
     },
     load: function(callback){
         debugger;
-        var checkLoaded = function () {
-            if( this.resourceLoaded && this.parseDone ){
-                this.node.set("html", this.html);
-                var observer = lozad( this.node.querySelectorAll('img.lozad'), {
-                    rootMargin: '1000px 0px', // syntax similar to that of CSS Margin
-                    threshold: 0, // ratio of element convergence
-                    enableAutoReload: true // it will reload the new image when validating attributes changes
-                });
-                observer.observe();
-                if(callback)callback();
-            }
-        }.bind(this);
-        this.loadResource(function () {
-            this.resourceLoaded = true;
+        if( Browser.name === 'ie' && !this.isIE11 ){
+            this.node.set("html", this.html);
+        }else{
+            var checkLoaded = function () {
+                if( this.resourceLoaded && this.parseDone ){
+                    if(window.lozad){
+                        this.node.set("html", this.html_new);
+                        var observer = lozad( this.node.querySelectorAll('img.lozad'), {
+                            rootMargin: '1000px 0px', // syntax similar to that of CSS Margin
+                            threshold: 0, // ratio of element convergence
+                            enableAutoReload: true // it will reload the new image when validating attributes changes
+                        });
+                        observer.observe();
+                    }else{
+                        this.node.set("html", this.html);
+                    }
+                    if(callback)callback();
+                }
+            }.bind(this);
+            this.loadResource(function () {
+                this.resourceLoaded = true;
+                checkLoaded()
+            }.bind(this));
+            this.parseHtml();
             checkLoaded()
-        }.bind(this));
-        this.parseHtml();
-        checkLoaded()
+        }
     },
     parseHtml: function(){
         var html = this.html;
@@ -72,7 +82,7 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
             }
         }
         this.parseDone = true;
-        this.html = html;
+        this.html_new = html;
     },
     getAttrRegExp: function( attr ){
         return "\\s+" + attr + "\\s*=\\s*[\"|\'](.*?)[\"|\']";
@@ -171,8 +181,7 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
         var lozadPath = "../o2_lib/lozad/lozad.min.js";
         var observerPath = "../o2_lib/IntersectionObserver/intersection-observer.min.js";
         var observerPath_ie11 = "../o2_lib/IntersectionObserver/polyfill_ie11.min.js";
-        var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
-        if( isIE11 ){
+        if( this.isIE11 ){
             o2.load(observerPath_ie11, function () {
                 o2.load(lozadPath, function () { if(callback)callback(); }.bind(this));
             }.bind(this));
