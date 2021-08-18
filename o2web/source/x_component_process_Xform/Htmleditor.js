@@ -16,6 +16,11 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
     {
 	Extends: MWF.APP$Module,
     options: {
+        /**
+         * 组件异步加载后触发.
+         * @event MWF.xApplication.process.Xform.Htmleditor#afterLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "moduleEvents": ["queryLoad", "load", "postLoad", "afterLoad"]
     },
     initialize: function(node, json, form, options){
@@ -35,6 +40,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
             //this._loadEvents();
 
             this._afterLoaded();
+
             this.fireEvent("postLoad");
             this.fireEvent("load");
         }
@@ -44,27 +50,39 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
 	    debugger;
 		this.node.empty();
         if (this.readonly || this.json.isReadonly){
-            this.node.set("html", this._getBusinessData());
+            // this.node.set("html", this._getBusinessData());
             this.node.setStyles({
                 "-webkit-user-select": "text",
                 "-moz-user-select": "text"
             });
-            var images = this.node.getElements("img");
-            //移动端设置图片宽度为100%
             if( layout.mobile ){
-                images.each( function( img ){
-                    //if( img.height )img.erase("height");
-                    img.setStyles({
-                        "height": "auto",
-                        "max-width" : "100%"
-                    });
+                this.loadLazyImage(function () { //图片懒加载
+                    var images = this.node.getElements("img");
+                    //移动端设置图片宽度为100%
+                    images.each( function( img ){
+                        if( img.hasClass("lozad") ){
+                            img.setStyles({
+                                "max-width" : "100%"
+                            });
+                        }else{
+                            img.setStyles({
+                                "height": "auto",
+                                "max-width" : "100%"
+                            });
+                        }
+                    }.bind(this));
+                    this.fireEvent("afterLoad");
+                    this.fieldModuleLoaded = true;
                 }.bind(this))
-            }else{ //PC端点击显示大图
-                if(this.json.enablePreview !== "n"){
-                    this.loadImageViewer();
-                }
+            }else{
+                this.loadLazyImage(function () { //图片懒加载
+                    if(this.json.enablePreview !== "n"){
+                        this.loadImageViewer(); //PC端点击显示大图
+                        this.fireEvent("afterLoad");
+                        this.fieldModuleLoaded = true;
+                    }
+                }.bind(this))
             }
-            this.fieldModuleLoaded = true;
         }else{
             var config = Object.clone(this.json.editorProperties);
             if (this.json.config){
@@ -79,6 +97,20 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
         }
     //    this._loadValue();
 	},
+    loadLazyImage: function(callback){
+        o2.require("o2.widget.ImageLazyLoader", function(){
+            var loadder = new o2.widget.ImageLazyLoader(this.node, this._getBusinessData());
+            loadder.load(function(){
+                if(callback)callback();
+            }.bind(this))
+        }.bind(this));
+    },
+    loadImageViewer: function(){
+        o2.require("o2.widget.ImageViewer", function(){
+            var imageViewer = new o2.widget.ImageViewer(this.node);
+            imageViewer.load();
+        }.bind(this));
+    },
     loadCkeditor: function(config){
         COMMON.AjaxModule.loadDom("ckeditor", function(){
             CKEDITOR.disableAutoInline = true;
@@ -166,6 +198,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                 // }.bind(this));
             }
 
+            this.fireEvent("afterLoad");
             this.fieldModuleLoaded = true;
 
             //    this._loadEvents();
@@ -404,13 +437,6 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                 body = null;
                 nodes = null;
             }
-        }.bind(this));
-    },
-
-    loadImageViewer: function(){
-        o2.require("o2.widget.ImageViewer", function(){
-            var imageViewer = new o2.widget.ImageViewer(this.node);
-            imageViewer.load();
         }.bind(this));
     },
     _loadEvents: function(editorConfig){
