@@ -26,7 +26,6 @@ o2.widget.ImageViewer = o2.ImageViewer = new Class({
         this.fireEvent("init");
     },
     load: function (callback) {
-        debugger;
         if( Browser.name === 'ie' && !this.isIE11 ){
             if(callback)callback();
         }else{
