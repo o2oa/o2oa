@@ -12,11 +12,11 @@ public class WrapForm extends Form {
 
 	private static final long serialVersionUID = -7244816539971035609L;
 
-	public static WrapCopier<Form, WrapForm> outCopier = WrapCopierFactory.wo(Form.class, WrapForm.class, null,
+	public static final WrapCopier<Form, WrapForm> outCopier = WrapCopierFactory.wo(Form.class, WrapForm.class, null,
 			JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapForm, Form> inCopier = WrapCopierFactory.wi(WrapForm.class, Form.class, null,
-			JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapForm, Form> inCopier = WrapCopierFactory.wi(WrapForm.class, Form.class, null,
+			JpaObject.FieldsUnmodifyExcludeId, false);
 
 	private List<WrapFormField> formFieldList = new ArrayList<>();
 

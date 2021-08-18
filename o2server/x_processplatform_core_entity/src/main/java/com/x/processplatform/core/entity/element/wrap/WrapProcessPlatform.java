@@ -14,12 +14,12 @@ public class WrapProcessPlatform extends Application {
 
 	private static final long serialVersionUID = 1863166064194774704L;
 
-	public static WrapCopier<Application, WrapProcessPlatform> outCopier = WrapCopierFactory.wo(Application.class,
+	public static final WrapCopier<Application, WrapProcessPlatform> outCopier = WrapCopierFactory.wo(Application.class,
 			WrapProcessPlatform.class, null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapProcessPlatform, Application> inCopier = WrapCopierFactory
+	public static final WrapCopier<WrapProcessPlatform, Application> inCopier = WrapCopierFactory
 			.wi(WrapProcessPlatform.class, Application.class, null, ListTools.toList(FieldsUnmodifyExcludeId,
-					creatorPerson_FIELDNAME, lastUpdatePerson_FIELDNAME, lastUpdateTime_FIELDNAME));
+					creatorPerson_FIELDNAME, lastUpdatePerson_FIELDNAME, lastUpdateTime_FIELDNAME), false);
 
 	@FieldDescribe("导出的流程")
 	private List<WrapProcess> processList = new ArrayList<>();

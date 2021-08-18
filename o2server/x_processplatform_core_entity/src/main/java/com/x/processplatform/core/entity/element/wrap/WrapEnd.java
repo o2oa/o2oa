@@ -9,10 +9,10 @@ public class WrapEnd extends End {
 
 	private static final long serialVersionUID = -8770201790121656238L;
 
-	public static WrapCopier<End, WrapEnd> outCopier = WrapCopierFactory.wo(End.class, WrapEnd.class, null,
+	public static final WrapCopier<End, WrapEnd> outCopier = WrapCopierFactory.wo(End.class, WrapEnd.class, null,
 			JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapEnd, End> inCopier = WrapCopierFactory.wi(WrapEnd.class, End.class, null,
-			JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapEnd, End> inCopier = WrapCopierFactory.wi(WrapEnd.class, End.class, null,
+			JpaObject.FieldsUnmodifyExcludeId, false);
 
 }
