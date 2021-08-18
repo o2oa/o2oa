@@ -1,7 +1,7 @@
 {
 	"id": "",
 	"name": "",
-	"type": "Elbutton",
+	"type": "Elcommon",
 	"description": "",
 	"events": {
 	  "queryLoad": {

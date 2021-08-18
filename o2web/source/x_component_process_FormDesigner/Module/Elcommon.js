@@ -5,7 +5,7 @@ MWF.xApplication.process.FormDesigner.Module.Elcommon = MWF.FCElcommon = new Cla
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "../x_component_process_FormDesigner/Module/Elinput/elinput.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Elcommon/elcommon.html"
 	},
 
 	_initModuleType: function(){
@@ -14,34 +14,7 @@ MWF.xApplication.process.FormDesigner.Module.Elcommon = MWF.FCElcommon = new Cla
 		this.moduleName = "elcommon";
 	},
 	_createElementHtml: function(){
-		var html = "";
-
-		// var html = "<el-button";
-		// if (this.json.size && this.json.size!=="auto") html += " size=\""+this.json.size+"\"";
-		// if (this.json.bttype && this.json.bttype!=="default") html += " type=\""+this.json.bttype+"\"";
-		// if (this.json.plain===true) html += " plain";
-		// if (this.json.round===true) html += " round";
-		// if (this.json.circle===true) html += " circle";
-		// if (this.json.icon) html += " icon=\""+this.json.icon+"\"";
-		// if (this.json.disabled===true) html += " disabled";
-		// if (this.json.loading===true) html += " loading";
-		// if (this.json.autofocus===true) html += " autofocus";
-		//
-		// if (this.json.elProperties){
-		// 	Object.keys(this.json.elProperties).forEach(function(k){
-		// 		if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
-		// 	}, this);
-		// }
-		//
-		// if (this.json.elStyles){
-		// 	var style = "";
-		// 	Object.keys(this.json.elStyles).forEach(function(k){
-		// 		if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-		// 	}, this);
-		// 	html += " style=\""+style+"\"";
-		// }
-		//
-		// html += ">"+((this.json.circle!==true && this.json.isText!==false) ? (this.json.name || this.json.id) : "")+"</el-button>";
+		var html = this.json.vueTemplate || "";
 		return html;
 	},
 	_createCopyNode: function(){
