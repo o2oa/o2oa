@@ -27,6 +27,11 @@ public class UnitFactory {
 		}
 	}
 
+	/** 校验用户是否在指定组织中注册身份.*/
+	public Boolean checkHasPerson(String person,String unit,Boolean recursive) throws Exception {
+		return ActionHasPerson.execute(context,person, unit,recursive);
+	}
+
 	/** 根据身份和组织等级,获取组织的distinguishedName */
 	public String getWithIdentityWithLevel(String identity, Integer level) throws Exception {
 		return ActionGetWithIdentityWithLevel.execute(context, identity, level);
