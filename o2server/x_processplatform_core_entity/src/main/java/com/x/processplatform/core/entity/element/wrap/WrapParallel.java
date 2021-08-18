@@ -9,9 +9,9 @@ public class WrapParallel extends Parallel {
 
 	private static final long serialVersionUID = 75933203079688664L;
 
-	public static WrapCopier<Parallel, WrapParallel> outCopier = WrapCopierFactory.wo(Parallel.class,
+	public static final WrapCopier<Parallel, WrapParallel> outCopier = WrapCopierFactory.wo(Parallel.class,
 			WrapParallel.class, null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapParallel, Parallel> inCopier = WrapCopierFactory.wi(WrapParallel.class, Parallel.class,
-			null, JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapParallel, Parallel> inCopier = WrapCopierFactory.wi(WrapParallel.class,
+			Parallel.class, null, JpaObject.FieldsUnmodifyExcludeId, false);
 }

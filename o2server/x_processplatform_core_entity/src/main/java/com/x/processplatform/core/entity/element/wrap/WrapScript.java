@@ -9,10 +9,10 @@ public class WrapScript extends Script {
 
 	private static final long serialVersionUID = -144375180428371919L;
 
-	public static WrapCopier<Script, WrapScript> outCopier = WrapCopierFactory.wo(Script.class, WrapScript.class, null,
-			JpaObject.FieldsInvisible);
+	public static final WrapCopier<Script, WrapScript> outCopier = WrapCopierFactory.wo(Script.class, WrapScript.class,
+			null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapScript, Script> inCopier = WrapCopierFactory.wi(WrapScript.class, Script.class, null,
-			JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapScript, Script> inCopier = WrapCopierFactory.wi(WrapScript.class, Script.class,
+			null, JpaObject.FieldsUnmodifyExcludeId, false);
 
 }
