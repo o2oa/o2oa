@@ -9,10 +9,10 @@ public class WrapFormField extends FormField {
 
 	private static final long serialVersionUID = -4604394687890476004L;
 
-	public static WrapCopier<FormField, WrapFormField> outCopier = WrapCopierFactory.wo(FormField.class,
+	public static final WrapCopier<FormField, WrapFormField> outCopier = WrapCopierFactory.wo(FormField.class,
 			WrapFormField.class, null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapFormField, FormField> inCopier = WrapCopierFactory.wi(WrapFormField.class,
-			FormField.class, null, JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapFormField, FormField> inCopier = WrapCopierFactory.wi(WrapFormField.class,
+			FormField.class, null, JpaObject.FieldsUnmodifyExcludeId, false);
 
 }

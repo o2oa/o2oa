@@ -9,9 +9,9 @@ public class WrapMessage extends Message {
 
 	private static final long serialVersionUID = 8424183834921411324L;
 
-	public static WrapCopier<Message, WrapMessage> outCopier = WrapCopierFactory.wo(Message.class, WrapMessage.class,
-			null, JpaObject.FieldsInvisible);
+	public static final WrapCopier<Message, WrapMessage> outCopier = WrapCopierFactory.wo(Message.class,
+			WrapMessage.class, null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapMessage, Message> inCopier = WrapCopierFactory.wi(WrapMessage.class, Message.class,
-			null, JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapMessage, Message> inCopier = WrapCopierFactory.wi(WrapMessage.class,
+			Message.class, null, JpaObject.FieldsUnmodifyExcludeId, false);
 }
