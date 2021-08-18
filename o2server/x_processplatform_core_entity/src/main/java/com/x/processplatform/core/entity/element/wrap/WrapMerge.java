@@ -9,10 +9,10 @@ public class WrapMerge extends Merge {
 
 	private static final long serialVersionUID = 2668844008956239077L;
 
-	public static WrapCopier<Merge, WrapMerge> outCopier = WrapCopierFactory.wo(Merge.class, WrapMerge.class, null,
-			JpaObject.FieldsInvisible);
+	public static final WrapCopier<Merge, WrapMerge> outCopier = WrapCopierFactory.wo(Merge.class, WrapMerge.class,
+			null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapMerge, Merge> inCopier = WrapCopierFactory.wi(WrapMerge.class, Merge.class, null,
-			JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapMerge, Merge> inCopier = WrapCopierFactory.wi(WrapMerge.class, Merge.class, null,
+			JpaObject.FieldsUnmodifyExcludeId, false);
 
 }

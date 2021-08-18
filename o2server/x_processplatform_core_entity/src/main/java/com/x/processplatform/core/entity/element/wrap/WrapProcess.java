@@ -13,12 +13,13 @@ public class WrapProcess extends Process {
 
 	private static final long serialVersionUID = 1439909268641168987L;
 
-	public static WrapCopier<Process, WrapProcess> outCopier = WrapCopierFactory.wo(Process.class, WrapProcess.class,
-			null, JpaObject.FieldsInvisible);
+	public static final WrapCopier<Process, WrapProcess> outCopier = WrapCopierFactory.wo(Process.class,
+			WrapProcess.class, null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapProcess, Process> inCopier = WrapCopierFactory.wi(WrapProcess.class, Process.class,
-			null, ListTools.toList(FieldsUnmodifyExcludeId, creatorPerson_FIELDNAME,
-					lastUpdatePerson_FIELDNAME, lastUpdateTime_FIELDNAME));
+	public static final WrapCopier<WrapProcess, Process> inCopier = WrapCopierFactory.wi(WrapProcess.class,
+			Process.class, null, ListTools.toList(FieldsUnmodifyExcludeId, creatorPerson_FIELDNAME,
+					lastUpdatePerson_FIELDNAME, lastUpdateTime_FIELDNAME),
+			false);
 
 	private List<WrapAgent> agentList = new ArrayList<>();
 	private WrapBegin begin;
