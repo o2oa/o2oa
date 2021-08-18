@@ -207,21 +207,21 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String icon;
 
-	public static final String beforeBeginScript_FIELDNAME = "beforeBeginScript";
-	@IdReference(Script.class)
-	@FieldDescribe("流程启动前事件脚本.")
-	/** 脚本可能使用名称,所以长度为255 */
-	@Column(length = length_255B, name = ColumnNamePrefix + beforeBeginScript_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String beforeBeginScript;
-
-	public static final String beforeBeginScriptText_FIELDNAME = "beforeBeginScriptText";
-	@FieldDescribe("流程启动前事件脚本文本.")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + beforeBeginScriptText_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String beforeBeginScriptText;
+//	public static final String beforeBeginScript_FIELDNAME = "beforeBeginScript";
+//	@IdReference(Script.class)
+//	@FieldDescribe("流程启动前事件脚本.")
+//	/** 脚本可能使用名称,所以长度为255 */
+//	@Column(length = length_255B, name = ColumnNamePrefix + beforeBeginScript_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String beforeBeginScript;
+//
+//	public static final String beforeBeginScriptText_FIELDNAME = "beforeBeginScriptText";
+//	@FieldDescribe("流程启动前事件脚本文本.")
+//	@Lob
+//	@Basic(fetch = FetchType.EAGER)
+//	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + beforeBeginScriptText_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String beforeBeginScriptText;
 
 	public static final String afterBeginScript_FIELDNAME = "afterBeginScript";
 	@IdReference(Script.class)
@@ -239,21 +239,21 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String afterBeginScriptText;
 
-	public static final String beforeEndScript_FIELDNAME = "beforeEndScript";
-	@IdReference(Script.class)
-	/** 脚本可能使用名称,所以长度为255 */
-	@FieldDescribe("流程结束后事件脚本.")
-	@Column(length = length_255B, name = ColumnNamePrefix + beforeEndScript_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String beforeEndScript;
-
-	public static final String beforeEndScriptText_FIELDNAME = "beforeEndScriptText";
-	@FieldDescribe("流程结束后事件脚本文本.")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + beforeEndScriptText_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String beforeEndScriptText;
+//	public static final String beforeEndScript_FIELDNAME = "beforeEndScript";
+//	@IdReference(Script.class)
+//	/** 脚本可能使用名称,所以长度为255 */
+//	@FieldDescribe("流程结束后事件脚本.")
+//	@Column(length = length_255B, name = ColumnNamePrefix + beforeEndScript_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String beforeEndScript;
+//
+//	public static final String beforeEndScriptText_FIELDNAME = "beforeEndScriptText";
+//	@FieldDescribe("流程结束后事件脚本文本.")
+//	@Lob
+//	@Basic(fetch = FetchType.EAGER)
+//	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + beforeEndScriptText_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String beforeEndScriptText;
 
 	public static final String afterEndScript_FIELDNAME = "afterEndScript";
 	@IdReference(Script.class)
@@ -578,13 +578,13 @@ public class Process extends SliceJpaObject {
 		this.application = application;
 	}
 
-	public String getBeforeBeginScript() {
-		return beforeBeginScript;
-	}
-
-	public void setBeforeBeginScript(String beforeBeginScript) {
-		this.beforeBeginScript = beforeBeginScript;
-	}
+//	public String getBeforeBeginScript() {
+//		return beforeBeginScript;
+//	}
+//
+//	public void setBeforeBeginScript(String beforeBeginScript) {
+//		this.beforeBeginScript = beforeBeginScript;
+//	}
 
 	public String getAfterEndScript() {
 		return afterEndScript;
@@ -618,13 +618,13 @@ public class Process extends SliceJpaObject {
 		this.startableUnitList = startableUnitList;
 	}
 
-	public String getBeforeBeginScriptText() {
-		return beforeBeginScriptText;
-	}
-
-	public void setBeforeBeginScriptText(String beforeBeginScriptText) {
-		this.beforeBeginScriptText = beforeBeginScriptText;
-	}
+//	public String getBeforeBeginScriptText() {
+//		return beforeBeginScriptText;
+//	}
+//
+//	public void setBeforeBeginScriptText(String beforeBeginScriptText) {
+//		this.beforeBeginScriptText = beforeBeginScriptText;
+//	}
 
 	public String getAfterBeginScript() {
 		return afterBeginScript;
@@ -642,21 +642,21 @@ public class Process extends SliceJpaObject {
 		this.afterBeginScriptText = afterBeginScriptText;
 	}
 
-	public String getBeforeEndScript() {
-		return beforeEndScript;
-	}
-
-	public void setBeforeEndScript(String beforeEndScript) {
-		this.beforeEndScript = beforeEndScript;
-	}
-
-	public String getBeforeEndScriptText() {
-		return beforeEndScriptText;
-	}
-
-	public void setBeforeEndScriptText(String beforeEndScriptText) {
-		this.beforeEndScriptText = beforeEndScriptText;
-	}
+//	public String getBeforeEndScript() {
+//		return beforeEndScript;
+//	}
+//
+//	public void setBeforeEndScript(String beforeEndScript) {
+//		this.beforeEndScript = beforeEndScript;
+//	}
+//
+//	public String getBeforeEndScriptText() {
+//		return beforeEndScriptText;
+//	}
+//
+//	public void setBeforeEndScriptText(String beforeEndScriptText) {
+//		this.beforeEndScriptText = beforeEndScriptText;
+//	}
 
 	public String getAfterEndScriptText() {
 		return afterEndScriptText;
