@@ -1,10 +1,10 @@
 o2.widget = o2.widget || {};
-o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
+o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
     Implements: [Options, Events],
     Extends: o2.widget.Common,
     options: {
         "style": "default",
-        "path": o2.session.path + "/widget/$ImageLazyLoadder/"
+        "path": o2.session.path + "/widget/$ImageLazyLoader/"
     },
     initialize: function (node, html, options) {
         this.node = node;
@@ -13,7 +13,7 @@ o2.widget.ImageLazyLoadder = o2.ImageLazyLoadder = new Class({
 
         this.nodeWidth = this.node.getSize().x;
 
-        this.path = this.options.path || (o2.session.path + "/widget/$ImageLazyLoadder/");
+        this.path = this.options.path || (o2.session.path + "/widget/$ImageLazyLoader/");
         // this.cssPath = this.path + this.options.style + "/css.wcss";
         //
         // this._loadCss();

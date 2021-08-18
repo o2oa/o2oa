@@ -497,10 +497,30 @@ O2CMSComment.Document = new Class({
             //}
         }.bind(this) );
 
-        o2.require("o2.widget.ImageViewer", function(){
-            var imageViewer = new o2.widget.ImageViewer(itemNode.getElement( "[item='content']" ));
-            imageViewer.load();
-        }.bind(this));
+        var contentNode = itemNode.getElement("[item='content']");
+        if( layout.mobile ){
+            this.loadLazyImage(contentNode, this.data.content, function () { //图片懒加载
+                var images = contentNode.getElements("img");
+                //移动端设置图片宽度为100%
+                images.each( function( img ){
+                    if( img.hasClass("lozad") ){
+                        img.setStyles({
+                            "max-width" : "100%"
+                        });
+                    }else{
+                        img.setStyles({
+                            "height": "auto",
+                            "max-width" : "100%"
+                        });
+                    }
+                }.bind(this));
+            }.bind(this))
+        }else{
+            this.loadLazyImage(contentNode, this.data.content, function () {
+                this.loadImageViewer(contentNode);
+            }.bind(this));
+        }
+
 
         if( itemData.parentId && itemData.parentId != "" ){
             var quoteContainer = itemNode.getElements( "[item='quoteContent']" )[0];
@@ -536,6 +556,20 @@ O2CMSComment.Document = new Class({
             )
         }
 
+    },
+    loadLazyImage: function(node, html, callback){
+        o2.require("o2.widget.ImageLazyLoader", function(){
+            var loadder = new o2.widget.ImageLazyLoader(node, html);
+            loadder.load(function(){
+                if(callback)callback();
+            }.bind(this))
+        }.bind(this));
+    },
+    loadImageViewer: function(node){
+        o2.require("o2.widget.ImageViewer", function(){
+            var imageViewer = new o2.widget.ImageViewer(node);
+            imageViewer.load();
+        }.bind(this));
     },
     sendMessage : function(itemNode, ev ){
         var self = this;

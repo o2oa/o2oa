@@ -1,6 +1,8 @@
 MWF.xApplication.Forum = MWF.xApplication.Forum || {};
 MWF.xApplication.ForumDocument = MWF.xApplication.ForumDocument || {};
 MWF.require("MWF.widget.O2Identity", null,false);
+MWF.require("MWF.widget.ImageViewer", null,false);
+MWF.require("MWF.widget.ImageLazyLoader", null,false);
 //MWF.xDesktop.requireApp("Forum", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("Forum", "Common", null, false);
 MWF.xDesktop.requireApp("Forum", "Attachment", null, false);
@@ -9,6 +11,7 @@ MWF.xDesktop.requireApp("Forum", "Access", null, false);
 MWF.xDesktop.requireApp("Template", "Explorer", null, false);
 MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
 MWF.xDesktop.requireApp("Forum", "TopNode", null, false);
+
 
 MWF.xApplication.ForumDocument.options = {
 	multitask: true,
@@ -1765,6 +1768,14 @@ debugger;
             }
         }
 
+        o2.require("o2.widget.ImageLazyLoader", function(){
+			var loadder = new o2.widget.ImageLazyLoader(itemNode.getElement("[item='content']"), this.data.content);
+			loadder.load(function(){
+				this.contentLoaded = true;
+				if(this.voteLoaded)this.loadImageViewer(itemNode)
+			}.bind(this))
+		}.bind(this));
+
 		if( this.data.attachmentList && this.data.attachmentList.length > 0 ){
 			var attachmentArea = itemNode.getElement("[item='attachment']");
 			this.app.loadAttachment(attachmentArea);
@@ -1777,13 +1788,15 @@ debugger;
 					isNew : false,
 					isEdited : false,
 					onPostLoad: function () {
-						this.loadImageViewer(itemNode)
+						this.voteLoaded = true;
+						if(this.contentLoaded)this.loadImageViewer(itemNode)
 					}.bind(this)
 				}, this.data);
 				this.vote.load();
 			}.bind(this), true)
 		}else{
-			this.loadImageViewer(itemNode)
+			this.voteLoaded = true;
+			if(this.contentLoaded)this.loadImageViewer(itemNode)
 		}
 	},
 	loadImageViewer: function(node){
@@ -2156,7 +2169,15 @@ MWF.xApplication.ForumDocument.ReplyDocument = new Class({
 			itemNode.getElements( "[item='todayReply']" )[0].set("text", d.replyCountToday);
 		}.bind(this));
 
-		this.loadImageViewer(itemNode.getElement( "[item='content']" ));
+		var contentNode = itemNode.getElement( "[item='content']");
+		o2.require("o2.widget.ImageLazyLoader", function(){
+			var loadder = new o2.widget.ImageLazyLoader(contentNode, this.data.content);
+			loadder.load(function(){
+				this.loadImageViewer(contentNode);
+			}.bind(this))
+		}.bind(this));
+
+
 
 		if( itemData.parentId && itemData.parentId != "" ){
 			var quoteContainer = itemNode.getElements( "[item='quoteContent']" )[0];
