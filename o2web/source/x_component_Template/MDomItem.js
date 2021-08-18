@@ -2687,7 +2687,8 @@ MDomItem.Rtf = new Class({
         if(parent)item.inject(parent);
 
         this.loadLazyImage(item, value, function(){
-            if( this.options.enablePreview ) {
+            if( window.layout && layout.mobile ){
+            }else if( this.options.enablePreview ) {
                 this.loadImageViewer(item);
             }else if( this.options.RTFConfig && this.options.RTFConfig.enablePreview === false) {
             }else{
