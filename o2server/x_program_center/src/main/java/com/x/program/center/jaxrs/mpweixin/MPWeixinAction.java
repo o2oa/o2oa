@@ -84,6 +84,22 @@ public class MPWeixinAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "微信公众号关注回复的菜单对象.", action = ActionSubscribeMenu.class)
+    @GET
+    @Path("menu/subscribe")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void menuWeixinSubscribe(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+        ActionResult<ActionSubscribeMenu.WoMenu> result = new ActionResult<>();
+        try {
+            result = new ActionSubscribeMenu().execute();
+        } catch (Exception e) {
+            logger.error(e);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "给微信公众号创建菜单，【注意这个接口会把公众号菜单全部替换掉！】.", action = ActionCreateMenu.class)
     @GET
     @Path("menu/create/to/weixin")

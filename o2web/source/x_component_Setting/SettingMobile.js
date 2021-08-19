@@ -470,6 +470,7 @@ MWF.xApplication.Setting.MPWeixinMenuSettingDocument = new Class({
             this.initMenuData();
             this.loadMenu();
             this.loadPublishBtn();
+            this.subscribeEvent();
         }.bind(this));
     },
     initMenuData: function() {
@@ -503,6 +504,55 @@ MWF.xApplication.Setting.MPWeixinMenuSettingDocument = new Class({
                 }
             }.bind(this)
         });
+    },
+    // 关注回复消息
+    subscribeEvent: function() {
+        if (this.explorer.mpweixinSubscribe) {
+            this.mpweixinSubscribe = this.explorer.mpweixinSubscribe;
+            if (this.mpweixinSubscribe.name && this.mpweixinSubscribe.name !== "") { //已经存在 name肯定不为空
+                this.mpwxMenuSubscribeInputNode.set("value", this.mpweixinSubscribe.content || "");
+            } else { // 新的 没有数据
+                this.mpweixinSubscribe = {
+                    id: "mock_new",
+                    name: "subscribe",
+                    type: "subscribe"
+                };
+            }
+        } else {
+            this.mpweixinSubscribe = {
+                id: "mock_new",
+                name: "subscribe",
+                type: "subscribe"
+            };
+        }
+        //保存事件
+        this.mpwxSaveSubscribeBtnNode.addEvents({
+            "click": function(){
+                this.saveSubscribeMenu();
+            }.bind(this)
+        });
+    },
+    saveSubscribeMenu: function() {
+        var content = this.mpwxMenuSubscribeInputNode.get("value");
+        if (!content || content === "") {
+            this.app.notice(this.lp.mobile_mpweixin_menu_form_subscribe_content_error_empty, "error", this.contentAreaNode);
+            return;
+        }
+        this.mpweixinSubscribe.content = content;
+        //新建的菜单 click类型需要设置key 
+        if (this.mpweixinSubscribe.id.startsWith('mock_')) {
+            delete this.mpweixinSubscribe.id; //新增要删除id
+        }
+        //写入数据 远程写入 还有 上级数组中
+        if (!this.mpweixinSubscribe.id) { //新增
+            o2.Actions.load("x_program_center").MPWeixinAction.menuAdd(this.mpweixinSubscribe,function (json) {
+                this.app.notice(this.lp.mobile_mpweixin_menu_save_success, "success", this.contentAreaNode);
+            }.bind(this));
+        }else { // 更新
+            o2.Actions.load("x_program_center").MPWeixinAction.menuUpdate(this.mpweixinSubscribe.id, this.mpweixinSubscribe,function (json) {
+                this.app.notice(this.lp.mobile_mpweixin_menu_save_success, "success", this.contentAreaNode);
+            }.bind(this));
+        }
     },
     loadMenu: function () {
         this.mpwxMenuListNode.empty();
@@ -572,6 +622,7 @@ MWF.xApplication.Setting.MPWeixinMenuSettingDocument = new Class({
         new Element("span", { "class": "js_l1Title", "text": menu.name }).inject(menuA);
         menuLi.addEvents({
             "click": function () {
+                menu.o2Level = "1"
                 this.clickMenu(menu.id, menu);
             }.bind(this)
         });
@@ -635,6 +686,7 @@ MWF.xApplication.Setting.MPWeixinMenuSettingDocument = new Class({
         new Element("span", { "class": "js_l2Title", "text": menu.name }).inject(firstSapn);
         menuLi.addEvents({
             "click": function (ev) {
+                menu.o2Level = "2"
                 this.clickMenu(parentMenu.id, menu);
                 ev.stopPropagation();
             }.bind(this)
@@ -697,7 +749,8 @@ MWF.xApplication.Setting.MPWeixinMenuSettingDocument = new Class({
             "name": this.lp.mobile_mpweixin_menu_default_new_name,
             "parentId": parent.id,
             "type": "click", //默认文字消息
-            "order": order
+            "order": order,
+            "o2Level": "2" // 2第二层级菜单
         };
         if (sub) {
             parent.sub_button.push(body);
@@ -740,7 +793,8 @@ MWF.xApplication.Setting.MPWeixinMenuSettingDocument = new Class({
             "id": "mock_" + o2.uuid(),
             "name": this.lp.mobile_mpweixin_menu_default_new_name,
             "type": "click", //默认文字消息
-            "order": order
+            "order": order,
+            "o2Level": "1" // 1第一层级菜单
         };
         if (this.menuList) {
             this.menuList.push(body);
@@ -899,7 +953,13 @@ MWF.xApplication.Setting.MPWeixinMenuSettingDocument.MenuForm = new Class({
         var spanNode = new Element("span", { "class": "frm_input_box with_counter counter_in append" }).inject(inputNode);
         this.nameInputNode = new Element("input", { "class": "frm_input js_menu_name", "type": "text", "value": this.menu.name }).inject(spanNode);
         //事件？
-        this.nameInputTipsNode = new Element("p", { "class": "frm_tips js_titleNolTips", "text": this.lp.mobile_mpweixin_menu_form_name_tips }).inject(inputNode);
+        var nameTips = this.lp.mobile_mpweixin_menu_form_name_tips_4
+        if (this.menu.o2Level && this.menu.o2Level === "1"){
+            nameTips = this.lp.mobile_mpweixin_menu_form_name_tips_4 
+        } else {
+            nameTips = this.lp.mobile_mpweixin_menu_form_name_tips_6
+        }
+        this.nameInputTipsNode = new Element("p", { "class": "frm_tips js_titleNolTips", "text": nameTips }).inject(inputNode);
         this.nameInputErrorTipsNode = new Element("p", { "class": "frm_msg fail js_titleEorTips dn", "text": this.lp.mobile_mpweixin_menu_form_name_error }).inject(inputNode);
     },
     //菜单排序号
@@ -1058,9 +1118,16 @@ MWF.xApplication.Setting.MPWeixinMenuSettingDocument.MenuForm = new Class({
             this.app.notice(this.lp.mobile_mpweixin_menu_form_name_error_empty, "error", this.menuApp.contentAreaNode);
             return;
         }
-        if (name.length > 4) {
-            this.app.notice(this.lp.mobile_mpweixin_menu_form_name_error_max_len, "error", this.menuApp.contentAreaNode);
-            return;
+        if (this.menu.o2Level && this.menu.o2Level === "1") {
+            if (name.length > 4) {
+                this.app.notice(this.lp.mobile_mpweixin_menu_form_name_error_max_len_4, "error", this.menuApp.contentAreaNode);
+                return;
+            }
+        } else {
+            if (name.length > 6) {
+                this.app.notice(this.lp.mobile_mpweixin_menu_form_name_error_max_len_6, "error", this.menuApp.contentAreaNode);
+                return;
+            }
         }
         var order = this.orderInputNode.get("value");
         if (!order || order === "") {

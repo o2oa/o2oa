@@ -27,4 +27,17 @@
   <div class="btn-box" style="justify-content: start;margin-top: 30px;" >
     <span class="btn btn_input btn_primary" data-o2-element="mpwxPublishBtnNode"><button>{{$.lp.publishMpweixin}}</button></span>
   </div>
+
+    <!-- 关注回复 -->
+  <div style="height: 40px; padding: 20px 0; font-size: 24px; color: rgb(51, 51, 51); font-weight: bold; line-height: 40px;">2. {{$.lp.subscribeMpweixin}}</div>
+  <div style="overflow: hidden; padding: 5px 0; font-size: 14px; color: rgb(153, 153, 153); clear: both;">{{$.lp.subscribeMpweixin_desc}}</div>
+  <div class="frm_controls">
+    <span class="frm_textarea_box with_counter counter_in append">
+      <textarea class="frm_textarea js_menu_name" data-o2-element="mpwxMenuSubscribeInputNode"></textarea>
+    </span>
+  </div>
+  <div class="btn-box" style="justify-content: start;margin-top: 30px;">
+    <span class="btn btn_input btn_primary" data-o2-element="mpwxSaveSubscribeBtnNode"><button>{{$.lp.subscribeMpweixin_save}}</button></span>
+  </div>
+
 </div>
