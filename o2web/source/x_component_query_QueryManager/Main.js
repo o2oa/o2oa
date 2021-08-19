@@ -243,7 +243,106 @@ MWF.xApplication.query.QueryManager.Menu = new Class({
 
 MWF.xApplication.query.QueryManager.QueryProperty = new Class({
     Extends: MWF.xApplication.process.ProcessManager.ApplicationProperty,
+    load: function(){
+        this.app.restActions.getApplication(this.app.options.application.id, function(json){
+            this.data = json.data;
+            this.propertyTitleBar = new Element("div", {
+                "styles": this.app.css.propertyTitleBar,
+                "text": this.data.name
+            }).inject(this.node);
 
+            this.contentNode =  new Element("div", {
+                "styles": this.app.css.propertyContentNode
+            }).inject(this.node);
+            this.contentAreaNode =  new Element("div", {
+                "styles": this.app.css.propertyContentAreaNode
+            }).inject(this.contentNode);
+
+            this.setContentHeight();
+            this.setContentHeightFun = this.setContentHeight.bind(this);
+            this.app.addEvent("resize", this.setContentHeightFun);
+            MWF.require("MWF.widget.ScrollBar", function(){
+                new MWF.widget.ScrollBar(this.contentNode, {"indent": false});
+            }.bind(this));
+
+            this.baseActionAreaNode = new Element("div", {
+                "styles": this.app.css.baseActionAreaNode
+            }).inject(this.contentAreaNode);
+
+            this.baseActionNode = new Element("div", {
+                "styles": this.app.css.propertyInforActionNode
+            }).inject(this.baseActionAreaNode);
+            this.baseTextNode = new Element("div", {
+                "styles": this.app.css.baseTextNode,
+                "text": this.app.lp.application.property
+            }).inject(this.baseActionAreaNode);
+
+            this.createEditBaseNode();
+
+            this.createPropertyContentNode();
+
+            this.createIconContentNode();
+
+            this.createAvailableNode();
+            this.createControllerListNode();
+
+            this.createInterfaceNode();
+        }.bind(this));
+    },
+    createInterfaceNode: function(){
+        this.interfaceAreaNode = new Element("div", {
+            "styles": this.app.css.baseActionAreaNode
+        }).inject(this.contentAreaNode);
+        this.interfaceAreaNode.setStyle("clear","both");
+
+        this.interfaceActionNode = new Element("div", {
+            "styles": this.app.css.propertyInforActionNode
+        }).inject(this.interfaceAreaNode);
+        this.interfaceTextNode = new Element("div", {
+            "styles": this.app.css.baseTextNode,
+            "text": "界面导航配置" //this.app.lp.application.property
+        }).inject(this.interfaceAreaNode);
+
+        this.interfaceContentNode = new Element("div", {"styles": {
+                "overflow": "hidden",
+                "-webkit-user-select": "text",
+                "-moz-user-select": "text"
+            }}).inject(this.contentAreaNode);
+
+        var d = {
+            disableViewList: []
+        };
+        var viewStyle = "font-size:14px;color:#666;heigh:16px;margin-top:6px;margin-left:10px;";
+        var inputTextStyle = "float:right; width:120px; border:1px solid #ccc";
+
+        var lp = this.app.lp;
+        var html = "<div>"+
+            "   <div style='"+ viewStyle +"'>" +
+            "<input type='checkbox' name='configAvailableView' "+( !d.disableViewList.contains( "toMyMeeting" ) ? "checked" : "")+" value='toMyMeeting'>"+ lp.viewName+
+            "<input type='text' name='toMyMeetingViewName' value='" + (d.toMyMeetingViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ lp.showText +"' >"+
+            "   </div>" +
+            "   <div style='"+ viewStyle +"'>" +
+            "<input type='checkbox' name='configAvailableView' "+( !d.disableViewList.contains( "toMonth" ) ? "checked" : "")+" value='toMonth'>"+lp.statName+
+            "<input type='text' name='toMonthViewName' value='" + (d.toMonthViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ lp.showText +"' >"+
+            "   </div>" +
+            "   <div style='"+ viewStyle +"'>" +
+            "<input type='checkbox' name='configAvailableView' "+( !d.disableViewList.contains( "toWeek" ) ? "checked" : "")+" value='toWeek'>"+lp.statementName+
+            "<input type='text' name='toWeekViewName' value='" + (d.toWeekViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ lp.showText +"' >"+
+            "   </div>" +
+            "   <div style='"+ viewStyle +"'>" +
+            "<input type='checkbox' name='configAvailableView' "+( !d.disableViewList.contains( "toDay" ) ? "checked" : "")+" value='toDay'>"+lp.importName+
+            "<input type='text' name='toDayViewName' value='" + (d.toDayViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ lp.showText +"' >"+
+            "   </div>" +
+            "</div>";
+
+        var html = "<table cellspacing='0' cellpadding='0' border='0' width='95%' align='center' style='margin-top: 20px'>";
+        html += "<tr><td class='formTitle'>"+lp.viewName+"</td><td id='formApplicationName'></td></tr>";
+        html += "<tr><td class='formTitle'>"+lp.statName+"</td><td id='formApplicationAlias'></td></tr>";
+        html += "<tr><td class='formTitle'>"+lp.statementName+"</td><td id='formApplicationDescription'></td></tr>";
+        html += "<tr><td class='formTitle'>"+lp.importName+"</td><td id='formApplicationType'></td></tr>";
+        html += "</table>";
+        this.interfaceContentNode.set("html", html);
+    },
     createPropertyContentNode: function(){
         this.propertyContentNode = new Element("div", {"styles": {
             "overflow": "hidden",
