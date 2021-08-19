@@ -91,7 +91,7 @@
             "value": "",
             "show": "function( d ){ return ( d.parentId && d.parentId!='' ) ? true : false }"
           },
-          "content": { "type" : "html" },
+//          "content": { "type" : "html" },
           "remove" : { "action" : "remove" },
           "userIcon" : {
             "value": "",
