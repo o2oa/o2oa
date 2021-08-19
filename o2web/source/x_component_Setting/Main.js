@@ -390,6 +390,12 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
                 this.mpweixinListData = [];
             }
         }.bind(this));
+        // 微信公众号关注 回复
+        o2.Actions.load("x_program_center").MPWeixinAction.menuWeixinSubscribe(function (json) {
+            if (json.data ) {
+                this.mpweixinSubscribe = json.data;
+            }
+        }.bind(this));
 
     },
 

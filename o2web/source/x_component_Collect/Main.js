@@ -1238,6 +1238,7 @@ MWF.xApplication.Collect.DeleteForm = new Class({
             this.action.deleteCollect(user,mobile,code, function(json){
                 this.collect.showContent("checkContentNode");
                 this.collect.backNode.setStyle("display", "none");
+                this.collect.check.recheck();
             }.bind(this), function(xhr, text, error){
                 var errorText = error+":"+text;
                 if (xhr) errorText = xhr.responseText;
