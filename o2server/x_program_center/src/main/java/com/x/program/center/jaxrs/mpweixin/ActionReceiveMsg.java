@@ -86,18 +86,6 @@ public class ActionReceiveMsg  extends BaseAction {
         return actionResult;
     }
 
-    private MPWeixinMenu findMenuWithEventKey(String eventKey) throws Exception {
-        if (StringUtils.isBlank(eventKey)) {
-            return null;
-        }
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            List<MPWeixinMenu> list = emc.listEqual(MPWeixinMenu.class, MPWeixinMenu.key_FIELDNAME, eventKey);
-            if (list != null && !list.isEmpty()) {
-                return list.get(0);
-            }
-        }
-        return null;
-    }
 
     private String txtMessageBack(String toUser, String from, String content) {
         long time = new Date().getTime();
