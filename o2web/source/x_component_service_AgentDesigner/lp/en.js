@@ -24,7 +24,7 @@ MWF.xApplication.service.AgentDesigner.LP = {
 
     "openLogViewer": "Open LogViewer",
     "debugger": "Debug",
-    "run": "Simulation Run",
+    "run": "Run",
     "runSuccess": "Run successfully",
 
     "notice": {

@@ -26,6 +26,19 @@ MWF.xApplication.query.QueryManager.LP = {
     "deleteElementTitle": "Delete Design Confirmation",
     "deleteElement": "Are you sure you want to delete the selected design element?",
 
+    "viewName": "View",
+    "statName": "Statistics",
+    "statementName": "Query",
+    "importerName": "Import",
+    "show": "Show",
+    "hide": "Hide",
+    "naviCategory": "Navigation Category",
+    "isShow": "Whether to display",
+    "isHidden": "Whether to hide",
+    "showText": "Display Name",
+    "interfaceConfig": "Interface Navigation Configuration",
+    "moveUp": "Move up",
+
     "select": {
         "create": "New Selector",
         "search": "Search Selector",
