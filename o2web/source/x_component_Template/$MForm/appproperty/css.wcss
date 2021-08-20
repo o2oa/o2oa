@@ -1,0 +1,55 @@
+{
+  "inputText": {
+    "width": "90%",
+    "height": "22px",
+    "border": "1px solid #CCC",
+    "box-shadow": "0px 0px 0px",
+    "font-size": "14px"
+  },
+  "inputTime" : {
+    "width": "90%",
+    "height": "22px",
+    "border": "1px solid #CCC",
+    "box-shadow": "0px 0px 0px",
+    "font-size": "14px",
+    "background" : "url(../x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
+  },
+  "inputPerson" : {
+    "width": "90%",
+    "height": "22px",
+    "border": "1px solid #CCC",
+    "box-shadow": "0px 0px 0px",
+    "font-size": "14px",
+    "overflow" : "hidden",
+    "background" : "url(../x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
+  },
+  "inputTextarea" : {
+    "width": "90%",
+    "border":"1px solid #CCC",
+    "background-color":"#FFF",
+    "border-radius": "3px",
+    "box-shadow": "0px 0px 0px",
+    "height": "40px"
+  },
+
+  "formTable" : {
+
+  },
+  "formTableHead" : {
+    "height": "50px",
+    "line-height": "50px",
+    "text-align": "center",
+    "min-width": "80px",
+    "font-size":"20px",
+    "font-weight": "bold"
+  },
+  "formTableTitle" : {
+    "height": "30px",
+    "line-height": "30px",
+    "text-align": "left"
+  },
+  "formTableValue" : {
+    "text-align": "left"
+  }
+}
+

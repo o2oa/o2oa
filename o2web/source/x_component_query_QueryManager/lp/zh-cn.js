@@ -29,7 +29,12 @@ MWF.xApplication.query.QueryManager.LP = {
     "viewName": "视图",
     "statName": "统计",
     "statementName": "查询",
-    "importName": "导入",
+    "importerName": "导入",
+    "show": "显示",
+    "hide": "隐藏",
+    "naviCategory": "导航分类",
+    "isShow": "是否显示",
+    "isHidden": "是否隐藏",
     "showText": "显示名称",
 
 
