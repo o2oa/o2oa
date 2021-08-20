@@ -1,33 +1,32 @@
-MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class Elbutton 基于Element UI的按钮组件。
+o2.xDesktop.requireApp("process.Xform", "$Module", null, false);
+/** @class Elinput 基于Element UI的输入框组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
- * var button = this.form.get("name"); //获取组件
+ * var input = this.form.get("name"); //获取组件
  * //方法2
- * var button = this.target; //在组件事件脚本中获取
+ * var input = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
-MWF.xApplication.process.Xform.Elbutton = MWF.APPElbutton =  new Class(
-    /** @lends MWF.xApplication.process.Xform.Elbutton# */
+o2.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
+    /** @lends o2.xApplication.process.Xform.Elinput# */
     {
     Implements: [Events],
-    Extends: MWF.APP$ElModule,
+    Extends: MWF.APP$Module,
     /**
      * @summary 组件的配置信息，同时也是Vue组件的data。
-     * @member MWF.xApplication.process.Xform.Elbutton#json {JsonObject}
+     * @member MWF.xApplication.process.Xform.Elinput#json {JsonObject}
      * @example
      *  //可以在脚本中获取此对象，下面两行代码是等价的，它们获取的是同一个对象
-     * var json = this.form.get("elbutton").json;       //获取组件的json对象
-     * var json = this.form.get("elbutton").vm.$data;   //获取Vue组件的data数据，
+     * var json = this.form.get("elinput").json;       //获取组件的json对象
+     * var json = this.form.get("elinput").vm.$data;   //获取Vue组件的data数据，
      *
      * //通过json对象操作Element组件
-     * json.bttype = "success"; //将按钮样式改为success
-     * json.loading = true;     //将按钮显示为加载中状态
-     * json.disabled = true;    //将按钮设置为禁用
+     * json.size = "mini";      //改变输入框大小
+     * json.disabled = true;     //设置输入框为禁用
      */
     load: function(){
         this._loadModuleEvents();
@@ -39,10 +38,10 @@ MWF.xApplication.process.Xform.Elbutton = MWF.APPElbutton =  new Class(
 
     _loadUserInterface: function(){
         this.node.appendHTML(this._createElementHtml(), "before");
-        var button = this.node.getPrevious();
+        var input = this.node.getPrevious();
 
         this.node.destroy();
-        this.node = button;
+        this.node = input;
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type
@@ -117,18 +116,7 @@ MWF.xApplication.process.Xform.Elbutton = MWF.APPElbutton =  new Class(
         html += " :circle=\"circle\"";
         html += " :disabled=\"disabled\"";
         html += " :loading=\"loading\"";
-        // html += " :loading=\"loading\"";
 
-
-
-        // if (this.json.size!=="auto") html += " size=\""+this.json.size+"\"";
-        // if (this.json.bttype!=="default") html += " type=\""+this.json.bttype+"\"";
-        // if (this.json.plain==="yes") html += " plain";
-        // if (this.json.round==="yes") html += " round";
-        // if (this.json.circle==="yes") html += " circle";
-        // if (this.json.icon) html += " icon=\""+this.json.icon+"\"";
-        // if (this.json.disabled==="yes") html += " disabled";
-        // if (this.json.loading==="yes") html += " :loading=\"loading\"";
         if (this.json.autofocus==="yes") html += " autofocus";
 
         if (this.json.elProperties){

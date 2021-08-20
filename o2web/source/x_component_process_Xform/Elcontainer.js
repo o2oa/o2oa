@@ -14,6 +14,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.Elcontainer = MWF.APPElcontainer =  new Class({
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
+        this.node.addClass("o2_vue");
         var asides = this.node.getElements("aside");
         var headers = this.node.getElements("header");
         var mains = this.node.getElements("main");

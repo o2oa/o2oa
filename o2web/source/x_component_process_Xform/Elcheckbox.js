@@ -113,7 +113,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
 
     _createElementHtml: function(radioValues){
         debugger;
-        var html = "<el-checkbox-group style='box-sizing: border-box!important'";
+        var html = "<el-checkbox-group class='o2_vue' style='box-sizing: border-box!important'";
         html += " v-model=\""+this.json.id+"\"";
         html += " :text-color=\"textColor\"";
         html += " :fill=\"fillColor\"";
@@ -171,8 +171,8 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         this.json[this.json.id] = (value) ? value : [];
     },
     __setData: function(data){
-        this._setBusinessData(value);
-        this.json[this.json.id] = value;
+        this._setBusinessData(data);
+        this.json[this.json.id] = data;
         this.validationMode();
         this.fireEvent("setData");
     },
@@ -218,7 +218,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
                 change: function(v){
                     _self.validationMode();
                     if (_self.validation()) {
-                        _self._setBusinessData(v);
+                        _self._setEnvironmentData(v);
                         _self.fireEvent("change");
                     }
                 }

@@ -14,34 +14,43 @@ MWF.xApplication.process.FormDesigner.Module.Elinput = MWF.FCElinput = new Class
 		this.moduleName = "elinput";
 	},
 	_createElementHtml: function(){
-		var html = "<el-input v-model=\"input\" placeholder=\"请输入内容\"></el-input>";
+		debugger;
+		//var html = "<el-input placeholder=\"请输入内容\"></el-input>";
+		var html = "<el-input";
+		if (this.json.description) html += " placeholder=\""+this.json.description+"\"";
+		html += " type=\""+(this.json.inputType || "text")+"\"";
+		if (this.json.maxlength) html += " maxlength=\""+this.json.maxlength+"\"";
+		if (this.json.showWordLimit) html += " show-word-limit";
+		if (this.json.clearable) html += " clearable";
+		if (this.json.showPassword) html += " show-password";
+		if (this.json.inputSize && this.json.inputSize!=="default") html += " size=\""+this.json.inputSize+"\"";
+		html += " rows=\""+(this.json.textareaRows || "2")+"\"";
 
-		// var html = "<el-button";
-		// if (this.json.size && this.json.size!=="auto") html += " size=\""+this.json.size+"\"";
-		// if (this.json.bttype && this.json.bttype!=="default") html += " type=\""+this.json.bttype+"\"";
-		// if (this.json.plain===true) html += " plain";
-		// if (this.json.round===true) html += " round";
-		// if (this.json.circle===true) html += " circle";
-		// if (this.json.icon) html += " icon=\""+this.json.icon+"\"";
-		// if (this.json.disabled===true) html += " disabled";
-		// if (this.json.loading===true) html += " loading";
-		// if (this.json.autofocus===true) html += " autofocus";
-		//
-		// if (this.json.elProperties){
-		// 	Object.keys(this.json.elProperties).forEach(function(k){
-		// 		if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
-		// 	}, this);
-		// }
-		//
-		// if (this.json.elStyles){
-		// 	var style = "";
-		// 	Object.keys(this.json.elStyles).forEach(function(k){
-		// 		if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-		// 	}, this);
-		// 	html += " style=\""+style+"\"";
-		// }
-		//
-		// html += ">"+((this.json.circle!==true && this.json.isText!==false) ? (this.json.name || this.json.id) : "")+"</el-button>";
+		if (this.json.autosize){
+			var o = {};
+			if (this.json.minRows) o.minRows = this.json.minRows;
+			if (this.json.maxRows) o.maxRows = this.json.maxRows;
+			html += " autosize=\""+JSON.stringify(o)+"\"";
+		}
+		if (this.json.resize) html += " resize=\""+this.json.resize+"\"";
+		if (this.json.prefixIcon) html += " prefix-icon=\""+this.json.prefixIcon+"\"";
+		if (this.json.suffixIcon) html += " suffix-icon=\""+this.json.suffixIcon+"\"";
+
+		if (this.json.elProperties){
+			Object.keys(this.json.elProperties).forEach(function(k){
+				if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
+			}, this);
+		}
+
+		if (this.json.elStyles){
+			var style = "";
+			Object.keys(this.json.elStyles).forEach(function(k){
+				if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+			}, this);
+			html += " style=\""+style+"\"";
+		}
+
+		html += " value=\""+this.json.id+"\"></el-input>";
 		return html;
 	},
 	_createCopyNode: function(){

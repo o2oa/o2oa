@@ -88,7 +88,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
 
         this.combox.addEvent("change", function(){
             this.validationMode();
-            if (this.validation()) this._setBusinessData(this.getInputData("change"));
+            if (this.validation()) this._setEnvironmentData(this.getInputData("change"));
         }.bind(this));
 
     },
