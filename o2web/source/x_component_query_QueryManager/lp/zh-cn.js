@@ -36,6 +36,8 @@ MWF.xApplication.query.QueryManager.LP = {
     "isShow": "是否显示",
     "isHidden": "是否隐藏",
     "showText": "显示名称",
+    "interfaceConfig": "界面导航配置",
+    "moveUp": "上移",
 
 
     "select": {

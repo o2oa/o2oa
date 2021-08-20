@@ -281,7 +281,7 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
 
             this.createPropertyContentNode();
 
-            //this.createInterfaceNode();
+            // this.createInterfaceNode();
 
             this.createIconContentNode();
 
@@ -300,7 +300,7 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
         }).inject(this.interfaceAreaNode);
         this.interfaceTextNode = new Element("div", {
             "styles": this.app.css.baseTextNode,
-            "text": "界面导航配置" //this.app.lp.application.property
+            "text":  this.app.lp.interfaceConfig
         }).inject(this.interfaceAreaNode);
 
         this.interfaceContentNode = new Element("div", {"styles": {
@@ -309,45 +309,83 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
                 "-moz-user-select": "text"
             }}).inject(this.contentAreaNode);
 
-        var d = {
-            disableViewList: []
+
+        var lp = this.app.lp;
+
+        var data = this.interfaceData || {
+            viewShow: "true",
+            viewNumber: 1,
+            viewName: lp.viewName,
+            statShow: "true",
+            statNumber: 2,
+            statName: lp.statName,
+            statementShow: "true",
+            statementNumber: 3,
+            statementName: lp.statementName,
+            importerShow: "true",
+            importerNumber: 4,
+            importerName: lp.importerName
         };
         // var viewStyle = "font-size:14px;color:#666;heigh:16px;margin-top:6px;margin-left:10px;";
         // var inputTextStyle = "float:right; width:120px; border:1px solid #ccc";
 
-        var lp = this.app.lp;
 
         var html = "<table cellspacing='0' cellpadding='0' border='0' align='left' style='margin-top: 20px;padding-left: 15%;width: 72%;'>";
-        html += "<tr>" +
+        html += "<tr class='title'>" +
             "<td class='formTitle' style='width:150px'>"+lp.naviCategory+"</td>" +
             "<td class='formTitle' style='width:200px'>"+lp.isShow+"</td> " +
             "<td class='formTitle' style='width: calc( 100% - 360px )'>"+lp.showText+"</td></tr>";
-        html += "<tr>" +
-            "<td class='formContent'>"+lp.viewName+"</td> " +
+
+        var view = {  index : data.viewNumber };
+        view.html = "<tr class='view'>" +
+            "<td class='formContent'><div class='sort'>↑</div>"+lp.viewName+"</td> " +
             "<td item='viewShow' class='formContent'></td> " +
             "<td item='viewName' class='formContent' style='padding:3px 0px;'></td></tr>";
-        html += "<tr><td class='formContent'>"+lp.statName+"</td>" +
+
+        var stat = {  index : data.statNumber };
+        stat.html = "<tr class='stat'><td class='formContent'><div class='sort'>↑</div>"+lp.statName+"</td>" +
             "<td item='statShow' class='formContent'></td>" +
             "<td item='statName' class='formContent' style='padding:3px 0px;'></td></tr>";
-        html += "<tr>" +
-            "<td class='formContent'>"+lp.statementName+"</td>" +
+
+        var statement = { index : data.statementNumber };
+        statement.html = "<tr class='statement'>" +
+            "<td class='formContent'><div class='sort'>↑</div>"+lp.statementName+"</td>" +
             "<td item='statementShow' class='formContent'></td> " +
             "<td item='statementName' class='formContent' style='padding:3px 0px;'></td></tr>";
-        html += "<tr>" +
-            "<td class='formContent'>"+lp.importerName+"</td> " +
+
+        var importer = {index : data.importerNumber};
+        importer.html = "<tr class='importer'>" +
+            "<td class='formContent'><div class='sort'>↑</div>"+lp.importerName+"</td> " +
             "<td item='importerShow' class='formContent'></td> " +
             "<td item='importerName' class='formContent' style='padding:3px 0px;'></td></tr>";
+
+        var array = [view,stat,statement,importer];
+        array.sort(function(a, b){
+            return a.index - b.index;
+        });
+        array.each(function(a){
+            html += a.html;
+        });
+
         html += "</table>";
+
         this.interfaceContentNode.set("html", html);
+        this.interfaceSortActions = this.interfaceContentNode.getElements("div.sort");
+        this.interfaceSortActions.setStyles({
+            "cursor":"pointer", "width":"20px", "font-size": "16px", "text-align":"center", "display": "none"
+        }).set("title", lp.moveUp).addEvent("click", function(ev){
+            var tr = ev.target.getParent("tr");
+            var trBefore = tr.getPrevious("tr");
+            if( !trBefore.hasClass("title") ){
+                tr.inject(trBefore, "before");
+            }
+            var trs = tr.getParent("table").getElements("tr[class!='title']");
+            trs.each(function(tr, i){
+                this.interfaceForm.data[0][tr.get("class")+"Number"] = i+1;
+            }.bind(this))
+        }.bind(this));
         this.interfaceContentNode.getElements("td.formTitle").setStyles(this.app.css.propertyInterfaceTdTitle);
         this.interfaceContentNode.getElements("td.formContent").setStyles(this.app.css.propertyInterfaceTdContent);
-
-        var data = this.interfaceData || {
-            viewShow: true,
-            statShow: true,
-            statementShow: true,
-            importerShow: true
-        };
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.interfaceForm = new MForm(this.interfaceContentNode, data, {
@@ -358,22 +396,22 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
                     statShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
                     statementShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
                     importerShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
-                    statName: { defaultValue : lp.statName, event: {
+                    statName: { event: {
                                 focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
                                 blur: function(node){ node.setStyles(this.app.css.input) }.bind(this)
                             }
                      },
-                    viewName: { defaultValue : lp.viewName , event: {
+                    viewName: {  event: {
                             focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
                             blur: function(node){ node.setStyles(this.app.css.input) }.bind(this)
                         }
                     },
-                    statementName: { defaultValue : lp.statementName , event: {
+                    statementName: {  event: {
                             focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
                             blur: function(node){ node.setStyles(this.app.css.input) }.bind(this)
                         }
                     },
-                    importerName: { defaultValue : lp.importerName , event: {
+                    importerName: { event: {
                             focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
                             blur: function(node){ node.setStyles(this.app.css.input) }.bind(this)
                         }
@@ -429,6 +467,7 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
         this.typeInput.editMode();
         //this.firstPageInput.editMode();
         if(this.interfaceForm)this.interfaceForm.changeMode();
+        if(this.interfaceSortActions)this.interfaceSortActions.setStyle("display","inline-block");
         this.isEdit = true;
     },
     readMode: function(){
@@ -438,6 +477,7 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
         this.typeInput.readMode();
         //this.firstPageInput.readMode();
         if(this.interfaceForm)this.interfaceForm.changeMode( this.interfaceSaved );
+        if(this.interfaceSortActions)this.interfaceSortActions.setStyle("display","none");
         this.interfaceSaved = false;
         this.isEdit = false;
     },
