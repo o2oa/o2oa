@@ -17,72 +17,72 @@ MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
     Implements: [Events],
     Extends: MWF.APP$Module,
 
-    load: function(){
-        this._loadModuleEvents();
-        if (this.fireEvent("queryLoad")){
-            this._queryLoaded();
-            this._loadUserInterface();
-        }
-    },
-
-    _loadUserInterface: function(){
-        this.node.appendHTML(this._createElementHtml(), "before");
-        var icon = this.node.getPrevious();
-
-        this.node.destroy();
-        this.node = icon;
-        this.node.set({
-            "id": this.json.id,
-            "MWFType": this.json.type
-        });
-        this._createVueApp();
-    },
-    _createVueApp: function(){
-        debugger;
-        if (!this.vm) this._loadVue(this._mountVueApp.bind(this));
-    },
-
-    _loadVue: function(callback){
-        if (!window.Vue){
-            o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": ["vue", "elementui"]}, { "sequence": true }, callback);
-        }else{
-            if (callback) callback();
-        }
-    },
-    _mountVueApp: function(){
-        if (!this.vueApp) this.vueApp = this._createVueExtend();
-
-        /**
-         * @summary Vue对象实例
-         * @see https://vuejs.org/
-         * @member {VueInstance}
-         */
-        this.vm = new Vue(this.vueApp).$mount(this.node);
-    },
-
-    _createVueExtend: function(){
-        var _self = this;
-        return {
-            data: this._createVueData(),
-            mounted: function(){
-                _self._afterMounted(this.$el);
-            }
-        };
-    },
+    // load: function(){
+    //     this._loadModuleEvents();
+    //     if (this.fireEvent("queryLoad")){
+    //         this._queryLoaded();
+    //         this._loadUserInterface();
+    //     }
+    // },
+    //
+    // _loadUserInterface: function(){
+    //     this.node.appendHTML(this._createElementHtml(), "before");
+    //     var icon = this.node.getPrevious();
+    //
+    //     this.node.destroy();
+    //     this.node = icon;
+    //     this.node.set({
+    //         "id": this.json.id,
+    //         "MWFType": this.json.type
+    //     });
+    //     this._createVueApp();
+    // },
+    // _createVueApp: function(){
+    //     debugger;
+    //     if (!this.vm) this._loadVue(this._mountVueApp.bind(this));
+    // },
+    //
+    // _loadVue: function(callback){
+    //     if (!window.Vue){
+    //         o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": ["vue", "elementui"]}, { "sequence": true }, callback);
+    //     }else{
+    //         if (callback) callback();
+    //     }
+    // },
+    // _mountVueApp: function(){
+    //     if (!this.vueApp) this.vueApp = this._createVueExtend();
+    //
+    //     /**
+    //      * @summary Vue对象实例
+    //      * @see https://vuejs.org/
+    //      * @member {VueInstance}
+    //      */
+    //     this.vm = new Vue(this.vueApp).$mount(this.node);
+    // },
+    //
+    // _createVueExtend: function(){
+    //     var _self = this;
+    //     return {
+    //         data: this._createVueData(),
+    //         mounted: function(){
+    //             _self._afterMounted(this.$el);
+    //         }
+    //     };
+    // },
     _createVueData: function(){
         return this.json;
     },
-    _afterMounted: function(el){
-        this.node = el;
-        this.node.set({
-            "id": this.json.id,
-            "MWFType": this.json.type
-        });
-        this._loadDomEvents();
-        this._afterLoaded();
-        this.fireEvent("postLoad");
-        this.fireEvent("load");
-    },
+    // _afterMounted: function(el){
+    //     this.node = el;
+    //     this.node.set({
+    //         "id": this.json.id,
+    //         "MWFType": this.json.type
+    //     });
+    //     this._loadDomEvents();
+    //     this._afterLoaded();
+    //     this.fireEvent("postLoad");
+    //     this.fireEvent("load");
+    // },
     _createElementHtml: function(){
         var html = "<i";
         html += " :class=\"icon\"";
