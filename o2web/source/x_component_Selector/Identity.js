@@ -1042,18 +1042,36 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
 
             var loadSubUnit = function () {
                 if( this.selector.options.expandSubEnable && !this.categoryLoaded ){
-                    this.selector.orgAction.listSubUnitDirect(function(json){
-                        json.data.each(function(subData){
-                            if( !this.selector.isExcluded( subData ) ) {
-                                if( subData && this.data.parentLevelName)subData.parentLevelName = this.data.parentLevelName +"/" + subData.name;
-                                var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
-                                this.subCategorys.push( category );
-                                this.subCategoryMap[subData.parentLevelName || subData.levelName] = category;
-                            }
-                        }.bind(this));
-                        this.loaded = true;
-                        if (callback) callback( true );
-                    }.bind(this), null, this.data.distinguishedName);
+                    o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitSubDirectObject({
+                            unitList: [this.data.distinguishedName],
+                            countSubDirectUnit: true,
+                            countSubDirectIdentity: true
+                        },
+                        function(json){
+                            json.data.each(function(subData){
+                                if( !this.selector.isExcluded( subData ) ) {
+                                    if( subData && this.data.parentLevelName)subData.parentLevelName = this.data.parentLevelName +"/" + subData.name;
+                                    var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
+                                    this.subCategorys.push( category );
+                                    this.subCategoryMap[subData.parentLevelName || subData.levelName] = category;
+                                }
+                            }.bind(this));
+                            this.loaded = true;
+                            if (callback) callback( true );
+                        }.bind(this)
+                    );
+                    // this.selector.orgAction.listSubUnitDirect(function(json){
+                    //     json.data.each(function(subData){
+                    //         if( !this.selector.isExcluded( subData ) ) {
+                    //             if( subData && this.data.parentLevelName)subData.parentLevelName = this.data.parentLevelName +"/" + subData.name;
+                    //             var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
+                    //             this.subCategorys.push( category );
+                    //             this.subCategoryMap[subData.parentLevelName || subData.levelName] = category;
+                    //         }
+                    //     }.bind(this));
+                    //     this.loaded = true;
+                    //     if (callback) callback( true );
+                    // }.bind(this), null, this.data.distinguishedName);
                 }else{
                     this.loaded = true;
                     if (callback) callback( true );
@@ -1133,18 +1151,36 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
     loadCategoryChildren: function(callback){
         if (!this.categoryLoaded){
             if( this.selector.options.expandSubEnable ){
-                this.selector.orgAction.listSubUnitDirect(function(json){
-                    json.data.each(function(subData){
-                        if( !this.selector.isExcluded( subData ) ) {
-                            if( subData && this.data.parentLevelName)subData.parentLevelName = this.data.parentLevelName +"/" + subData.name;
-                            var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
-                            this.subCategorys.push( category );
-                            this.subCategoryMap[subData.parentLevelName || subData.levelName] = category;
-                        }
-                    }.bind(this));
-                    this.categoryLoaded = true;
-                    if (callback) callback();
-                }.bind(this), null, this.data.distinguishedName);
+                o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitSubDirectObject({
+                        unitList: [this.data.distinguishedName],
+                        countSubDirectUnit: true,
+                        countSubDirectIdentity: true
+                    },
+                    function(json){
+                        json.data.each(function(subData){
+                            if( !this.selector.isExcluded( subData ) ) {
+                                if( subData && this.data.parentLevelName)subData.parentLevelName = this.data.parentLevelName +"/" + subData.name;
+                                var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
+                                this.subCategorys.push( category );
+                                this.subCategoryMap[subData.parentLevelName || subData.levelName] = category;
+                            }
+                        }.bind(this));
+                        this.categoryLoaded = true;
+                        if (callback) callback();
+                    }.bind(this)
+                );
+                // this.selector.orgAction.listSubUnitDirect(function(json){
+                //     json.data.each(function(subData){
+                //         if( !this.selector.isExcluded( subData ) ) {
+                //             if( subData && this.data.parentLevelName)subData.parentLevelName = this.data.parentLevelName +"/" + subData.name;
+                //             var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
+                //             this.subCategorys.push( category );
+                //             this.subCategoryMap[subData.parentLevelName || subData.levelName] = category;
+                //         }
+                //     }.bind(this));
+                //     this.categoryLoaded = true;
+                //     if (callback) callback();
+                // }.bind(this), null, this.data.distinguishedName);
             }else{
                 if (callback) callback();
             }
