@@ -2709,6 +2709,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (!where) where = { "x": "right", "y": "top" };
         //if (!target) target = this.node;
         if (!type) type = "ok";
+        var type2;
+        switch (type) {
+            case "warn":
+            case "wran":
+                type2 = "notice";
+                break;
+            case "success":
+                type2 = "ok";
+                break;
+            default:
+                type2 = type;
+        }
         var noticeTarget = target || this.app.window.content;
         var off = offset;
         if (!off) {
@@ -2718,7 +2730,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             };
         }
         var options = {
-            type: type,
+            type: type2,
             position: where,
             move: false,
             target: noticeTarget,
@@ -2730,8 +2742,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (this.json.noticeStyle) {
             options = Object.merge(options, this.json.noticeStyle);
         }
-        if (this.json["notice" + type.capitalize() + "Style"]) {
-            options = Object.merge(options, this.json["notice" + type.capitalize() + "Style"]);
+        if (this.json["notice" + type2.capitalize() + "Style"]) {
+            options = Object.merge(options, this.json["notice" + type2.capitalize() + "Style"]);
         }
         if (option && typeOf(option) === "object") {
             options = Object.merge(options, option);

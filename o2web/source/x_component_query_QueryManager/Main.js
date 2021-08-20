@@ -243,7 +243,148 @@ MWF.xApplication.query.QueryManager.Menu = new Class({
 
 MWF.xApplication.query.QueryManager.QueryProperty = new Class({
     Extends: MWF.xApplication.process.ProcessManager.ApplicationProperty,
+    load: function(){
+        this.app.restActions.getApplication(this.app.options.application.id, function(json){
+            this.data = json.data;
+            this.propertyTitleBar = new Element("div", {
+                "styles": this.app.css.propertyTitleBar,
+                "text": this.data.name
+            }).inject(this.node);
 
+            this.contentNode =  new Element("div", {
+                "styles": this.app.css.propertyContentNode
+            }).inject(this.node);
+            this.contentAreaNode =  new Element("div", {
+                "styles": this.app.css.propertyContentAreaNode
+            }).inject(this.contentNode);
+
+            this.setContentHeight();
+            this.setContentHeightFun = this.setContentHeight.bind(this);
+            this.app.addEvent("resize", this.setContentHeightFun);
+            MWF.require("MWF.widget.ScrollBar", function(){
+                new MWF.widget.ScrollBar(this.contentNode, {"indent": false});
+            }.bind(this));
+
+            this.baseActionAreaNode = new Element("div", {
+                "styles": this.app.css.baseActionAreaNode
+            }).inject(this.contentAreaNode);
+
+            this.baseActionNode = new Element("div", {
+                "styles": this.app.css.propertyInforActionNode
+            }).inject(this.baseActionAreaNode);
+            this.baseTextNode = new Element("div", {
+                "styles": this.app.css.baseTextNode,
+                "text": this.app.lp.application.property
+            }).inject(this.baseActionAreaNode);
+
+            this.createEditBaseNode();
+
+            this.createPropertyContentNode();
+
+            this.createInterfaceNode();
+
+            this.createIconContentNode();
+
+            this.createAvailableNode();
+            this.createControllerListNode();
+        }.bind(this));
+    },
+    createInterfaceNode: function(){
+        this.interfaceAreaNode = new Element("div", {
+            "styles": this.app.css.baseActionAreaNode
+        }).inject(this.contentAreaNode);
+        this.interfaceAreaNode.setStyle("clear","both");
+
+        this.interfaceActionNode = new Element("div", {
+            "styles": this.app.css.propertyInforActionNode
+        }).inject(this.interfaceAreaNode);
+        this.interfaceTextNode = new Element("div", {
+            "styles": this.app.css.baseTextNode,
+            "text": "界面导航配置" //this.app.lp.application.property
+        }).inject(this.interfaceAreaNode);
+
+        this.interfaceContentNode = new Element("div", {"styles": {
+                "overflow": "hidden",
+                "-webkit-user-select": "text",
+                "-moz-user-select": "text"
+            }}).inject(this.contentAreaNode);
+
+        var d = {
+            disableViewList: []
+        };
+        // var viewStyle = "font-size:14px;color:#666;heigh:16px;margin-top:6px;margin-left:10px;";
+        // var inputTextStyle = "float:right; width:120px; border:1px solid #ccc";
+
+        var lp = this.app.lp;
+
+        var html = "<table cellspacing='0' cellpadding='0' border='0' align='left' style='margin-top: 20px;padding-left: 15%;width: 72%;'>";
+        html += "<tr>" +
+            "<td class='formTitle' style='width:150px'>"+lp.naviCategory+"</td>" +
+            "<td class='formTitle' style='width:200px'>"+lp.isShow+"</td> " +
+            "<td class='formTitle' style='width: calc( 100% - 360px )'>"+lp.showText+"</td></tr>";
+        html += "<tr>" +
+            "<td class='formContent'>"+lp.viewName+"</td> " +
+            "<td item='viewShow' class='formContent'></td> " +
+            "<td item='viewName' class='formContent' style='padding:3px 0px;'></td></tr>";
+        html += "<tr><td class='formContent'>"+lp.statName+"</td>" +
+            "<td item='statShow' class='formContent'></td>" +
+            "<td item='statName' class='formContent' style='padding:3px 0px;'></td></tr>";
+        html += "<tr>" +
+            "<td class='formContent'>"+lp.statementName+"</td>" +
+            "<td item='statementShow' class='formContent'></td> " +
+            "<td item='statementName' class='formContent' style='padding:3px 0px;'></td></tr>";
+        html += "<tr>" +
+            "<td class='formContent'>"+lp.importerName+"</td> " +
+            "<td item='importerShow' class='formContent'></td> " +
+            "<td item='importerName' class='formContent' style='padding:3px 0px;'></td></tr>";
+        html += "</table>";
+        this.interfaceContentNode.set("html", html);
+        this.interfaceContentNode.getElements("td.formTitle").setStyles(this.app.css.propertyInterfaceTdTitle);
+        this.interfaceContentNode.getElements("td.formContent").setStyles(this.app.css.propertyInterfaceTdContent);
+
+        var data = this.interfaceData || {
+            viewShow: true,
+            statShow: true,
+            statementShow: true,
+            importerShow: true
+        };
+
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.interfaceForm = new MForm(this.interfaceContentNode, data, {
+                isEdited: false,
+                style : "appproperty",
+                itemTemplate: {
+                    viewShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
+                    statShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
+                    statementShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
+                    importerShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
+                    statName: { defaultValue : lp.statName, event: {
+                                focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
+                                blur: function(node){ node.setStyles(this.app.css.input) }.bind(this)
+                            }
+                     },
+                    viewName: { defaultValue : lp.viewName , event: {
+                            focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
+                            blur: function(node){ node.setStyles(this.app.css.input) }.bind(this)
+                        }
+                    },
+                    statementName: { defaultValue : lp.statementName , event: {
+                            focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
+                            blur: function(node){ node.setStyles(this.app.css.input) }.bind(this)
+                        }
+                    },
+                    importerName: { defaultValue : lp.importerName , event: {
+                            focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
+                            blur: function(node){ node.setStyles(this.app.css.input) }.bind(this)
+                        }
+                    }
+                }
+            }, this);
+            debugger;
+            this.interfaceForm.load();
+
+        }.bind(this), true);
+    },
     createPropertyContentNode: function(){
         this.propertyContentNode = new Element("div", {"styles": {
             "overflow": "hidden",
@@ -287,6 +428,7 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
         this.descriptionInput.editMode();
         this.typeInput.editMode();
         //this.firstPageInput.editMode();
+        if(this.interfaceForm)this.interfaceForm.changeMode();
         this.isEdit = true;
     },
     readMode: function(){
@@ -295,6 +437,8 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
         this.descriptionInput.readMode();
         this.typeInput.readMode();
         //this.firstPageInput.readMode();
+        if(this.interfaceForm)this.interfaceForm.changeMode( this.interfaceSaved );
+        this.interfaceSaved = false;
         this.isEdit = false;
     },
     save: function(callback, cancel) {
@@ -305,6 +449,9 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
         //this.data.applicationCategory = this.typeInput.input.get("value");
         this.data.queryCategory = this.typeInput.input.get("value");
         //this.data.firstPage = this.firstPageInput.input.get("value");
+
+        this.interfaceData = this.interfaceForm.getResult(true, ",", true, false, true );
+        this.interfaceSaved = true;
 
         this.app.restActions.saveApplication(this.data, function (json) {
             this.propertyTitleBar.set("text", this.data.name);
