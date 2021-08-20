@@ -59,7 +59,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		}).inject(this.form.container);
 	},
 	_createVueAppNode: function(){
-		this.node = new Element("div", {
+		this.node = new Element("div.o2_vue", {
 			"MWFType": this.moduleName,
 			"id": this.json.id,
 			"styles": this.css.moduleNode,

@@ -1006,7 +1006,32 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         "ckeditConfigInfor4": "更多配置请查看Ckeditor官方网站",
         "ckeditConfigInfor5": "https://ckeditor.com/ckeditor-4/",
-        "ckeditConfigInfor6": "注意：自定义了编辑器属性后，正文格式有可能不再符合国家党政机关公文格式标准"
+        "ckeditConfigInfor6": "注意：自定义了编辑器属性后，正文格式有可能不再符合国家党政机关公文格式标准",
+
+        "password": "密码",
+        "search": "搜索",
+        "email": "邮箱",
+        "datetime-local":"日期时间",
+        "month": "月份",
+        "date": "日期",
+        "time": "时间",
+        "week": "周",
+        "textarea": "多行文本",
+        "wordNumber": "字数统计",
+        "maxlength": "最大长度",
+        "clearable": "可清空",
+        "showPassword": "显示切换密码图标",
+        "prefixIcon": "头部图标",
+        "suffixIcon": "尾部图标",
+        "textareaRows": "多行文本行数",
+        "autosize": "适应高度",
+        "minRows": "最小行数",
+        "maxRows": "最大行数",
+        "resize": "改变大小",
+        "resizeNone": "不允许",
+        "resizeBoth": "允许",
+        "resizeHorizontal": "横向",
+        "resizeVertical": "纵向"
     },
     "actionBar": {
         "close":"关闭",

@@ -12,7 +12,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 	Extends: MWF.APP$Module,
 	iconStyle: "personfieldIcon",
     options: {
-        "moduleEvents": ["change"]
+        "moduleEvents": ["change", "load", "queryLoad", "postLoad"]
     },
     initialize: function(node, json, form, options){
         this.node = $(node);
@@ -183,6 +183,12 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                 this._setBusinessData(this.getInputData("change"));
                 this.fireEvent("change");
             }
+        }.bind(this));
+
+        var inputNode = this.node.getFirst();
+        if (inputNode) inputNode.addEvent("input", function(e){
+            var v=e.target.get("value");
+            this._setEnvironmentData(v);
         }.bind(this));
 	},
     _loadStyles: function(){

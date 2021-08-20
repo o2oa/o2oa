@@ -112,7 +112,7 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     },
 
     _createElementHtml: function(radioValues){
-        var html = "<el-radio-group style='box-sizing: border-box!important'";
+        var html = "<el-radio-group class='o2_vue' style='box-sizing: border-box!important'";
         html += " v-model=\""+this.json.id+"\"";
         html += " :text-color=\"textColor\"";
         html += " :fill=\"fillColor\"";
@@ -170,8 +170,8 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         this.json[this.json.id] = value;
     },
     __setData: function(data){
-        this._setBusinessData(value);
-        this.json[this.json.id] = value;
+        this._setBusinessData(data);
+        this.json[this.json.id] = data;
         this.validationMode();
         this.fireEvent("setData");
     },
@@ -217,7 +217,7 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
                 change: function(v){
                     _self.validationMode();
                     if (_self.validation()) {
-                        _self._setBusinessData(v);
+                        _self._setEnvironmentData(v);
                         _self.fireEvent("change");
                     }
                 }

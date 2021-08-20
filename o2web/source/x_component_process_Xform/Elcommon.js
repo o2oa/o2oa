@@ -38,11 +38,12 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     },
 
     _loadUserInterface: function(){
-        this.node.appendHTML(this._createElementHtml());
+        this.node.set("html", this._createElementHtml());
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type
         });
+        this.node.addClass("o2_vue");
         this._createVueApp();
     },
     _createVueApp: function(){
@@ -68,31 +69,72 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     },
 
     _createVueExtend: function(){
-        var _self = this;
-        return {
-            data: this._createVueData(),
-            mounted: function(){
-                _self._afterMounted(this.$el);
+        debugger;
+        var app = {};
+        if (this.json.vueApp && this.json.vueApp.code) app = this.form.Macro.exec(this.json.vueApp.code, this);
+        if (app.data){
+            var ty = o2.typeOf(app.data);
+            switch (ty){
+                case "object":
+                    Object.keys(app.data).each(function(k){
+                        this.form.Macro.environment.data.add(k, app.data[k]);
+                    });
+                    app.data = this.form.Macro.environment.data;
+                    // app.data = this.json;
+                    // app.data = Object.merge(this.json, this.form.Macro.environment.data);
+                    break;
+                case "function":
+                    var dataFun = app.data;
+                    var _slef = this;
+                    app.data = function(){
+                        var d = dataFun();
+
+                        //_self.form.Macro.environment.data.add(_self.json.id, d);
+
+                        Object.keys(d).each(function(k){
+                            _self.form.Macro.environment.data.add(k, d[k]);
+                        });
+                        //var data = Object.merge(_slef.json);
+                        return _self.form.Macro.environment.data;
+                    }
+                    break;
             }
-        };
-    },
-    _createVueData: function(){
-        if (this.json.vueData && this.json.vueData.code){
-            var d = this.form.Macro.exec(this.json.vueData.code, this);
-            this.json = Object.merge(d, this.json);
+        }else{
+            app.data = this.form.Macro.environment.data;
         }
-        return this.json;
+
+        var _self = this;
+        var mountedFun = app.mounted;
+        app.mounted = function(){
+            _self._afterMounted(this.$el);
+            if (mountedFun && o2.typeOf(mountedFun)=="function") mountedFun.apply(this);
+        }
+        return app;
     },
+    // _createVueData: function(){
+    //     if (this.json.vueData && this.json.vueData.code){
+    //         var d = this.form.Macro.exec(this.json.vueData.code, this);
+    //         this.json = Object.merge(d, this.json);
+    //     }
+    //     return this.json;
+    // },
     _afterMounted: function(el){
         this.node = el;
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type
         });
+        this._loadVueCss();
         this._loadDomEvents();
         this._afterLoaded();
         this.fireEvent("postLoad");
         this.fireEvent("load");
+    },
+    _loadVueCss: function(){
+        if (this.json.vueCss && this.json.vueCss.code){
+            this.styleNode = this.node.loadCssText(this.json.vueCss.code, {"notInject": true});
+            this.styleNode.inject(this.node, "before");
+        }
     },
     _createElementHtml: function(){
         var html = this.json.vueTemplate || "";

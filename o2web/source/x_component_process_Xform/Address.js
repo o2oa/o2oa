@@ -98,7 +98,11 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
 
         this.combox.addEvent("change", function(){
             this.validationMode();
-            if (this.validation()) this._setBusinessData(this.getInputData("change"));
+            if (this.validation()){
+                var v = this.getInputData("change");
+                //this._setBusinessData(v);
+                this._setEnvironmentData(v);
+            }
         }.bind(this));
     },
     _searchOptions: function(value, callback){
