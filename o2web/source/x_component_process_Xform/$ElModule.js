@@ -88,10 +88,21 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
             "id": this.json.id,
             "MWFType": this.json.type
         });
+        this._loadVueCss();
         this._loadDomEvents();
         this._afterLoaded();
         this.fireEvent("postLoad");
         this.fireEvent("load");
+    },
+    _loadVueCss: function(){
+        debugger;
+        if (this.styleNode){
+            this.node.removeClass(this.styleNode.get("id"));
+        }
+        if (this.json.vueCss && this.json.vueCss.code){
+            this.styleNode = this.node.loadCssText(this.json.vueCss.code, {"notInject": true});
+            this.styleNode.inject(this.node, "before");
+        }
     },
 
     _appendVueData: function(){},

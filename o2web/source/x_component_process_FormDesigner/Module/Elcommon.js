@@ -56,17 +56,17 @@ MWF.xApplication.process.FormDesigner.Module.Elcommon = MWF.FCElcommon = new Cla
 			if (!button) button = this.node.getFirst("input");
 			if (button) button.set("text", this.json.id);
 		}
-	},
-	_loadVueCss: function(){
-		if (this.json.vueCss && this.json.vueCss.code){
-			this.styleNode = this.node.loadCssText(this.json.vueCss.code, {"notInject": true});
-			this.styleNode.inject(this.node, "top");
-		}
-	},
-	_afterMounted: function(el, callback){
-		this.node = el;
-		this.node.store("module", this);
-		this._loadVueCss();
-		if (callback) callback();
 	}
+	// _loadVueCss: function(){
+	// 	if (this.json.vueCss && this.json.vueCss.code){
+	// 		this.styleNode = this.node.loadCssText(this.json.vueCss.code, {"notInject": true});
+	// 		this.styleNode.inject(this.node, "top");
+	// 	}
+	// },
+	// _afterMounted: function(el, callback){
+	// 	this.node = el;
+	// 	this.node.store("module", this);
+	// 	this._loadVueCss();
+	// 	if (callback) callback();
+	// }
 });
