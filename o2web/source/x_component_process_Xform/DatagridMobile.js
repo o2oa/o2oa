@@ -78,6 +78,10 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
 
         this.gridData = this._getValue();
 
+        if( this.gridData.data && typeOf(this.gridData.data)==="object"){
+            this.gridData.data = [];
+        }
+
         this.totalModules = [];
         this._loadDatagridTitleModules();
 

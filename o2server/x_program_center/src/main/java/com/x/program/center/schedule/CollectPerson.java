@@ -1,9 +1,13 @@
 package com.x.program.center.schedule;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.gson.XGsonBuilder;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
@@ -70,6 +74,21 @@ public class CollectPerson extends BaseAction {
 							response.getData(WrapOutBoolean.class);
 						} catch (Exception e) {
 							logger.warn("与云服务器连接错误:{}." + e.getMessage());
+						}
+						if(null != Config.portal().getUrlMapping() && !(Config.portal().getUrlMapping().isEmpty())){
+							try {
+								String url = Config.collect().url("/o2_collect_assemble/jaxrs/unit/urlMapping/");
+								String urlMapping = XGsonBuilder.toJson(Config.portal().getUrlMapping());
+								Map<String, String> parameters = new HashMap<String, String>();
+								parameters.put("name",  business.getUnitName());
+								parameters.put("urlMapping", urlMapping);
+								ActionResponse resp = ConnectionAction.put(url, null,parameters);
+								/*Map<String, String> urlmap = new HashMap<>();
+								urlmap.put("urlMapping", urlMapping);
+								CipherConnectionAction.put(true,Config.url_x_program_center_jaxrs("collect","urlMapping"),urlmap);*/
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 					} else {
 						logger.debug("无法登录到云服务器.");

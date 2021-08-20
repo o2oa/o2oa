@@ -941,8 +941,8 @@ MWF.xApplication.Collect.ModifyForm = new Class({
         var user = this.usernameInput.get("value");
         var newName = this.newNameInput.get("value");
         var code = this.codeInput.get("value");
-        var secret = this.secretInput.get("value");
-        var key = this.keyInput.get("value");
+        var secret = this.secretInput.get("value") == this.lp.secret ? "" : this.secretInput.get("value");
+        var key = this.keyInput.get("value")== this.lp.key ? "" : this.keyInput.get("value");
         var mobile = this.mobileInput.get("value");
 
         if (this.newNameVerification()){
@@ -956,6 +956,9 @@ MWF.xApplication.Collect.ModifyForm = new Class({
                 name: user
             };
             this.action.updateUnitCollect(data, function(json){
+                if (user != newName) {
+                    this.usernameInput.set("value", newName);
+                }
                 this.firstStep();
                 this.collect.showContent("checkContentNode");
                 this.collect.backNode.setStyle("display", "none");
@@ -1238,6 +1241,7 @@ MWF.xApplication.Collect.DeleteForm = new Class({
             this.action.deleteCollect(user,mobile,code, function(json){
                 this.collect.showContent("checkContentNode");
                 this.collect.backNode.setStyle("display", "none");
+                this.collect.check.recheck();
             }.bind(this), function(xhr, text, error){
                 var errorText = error+":"+text;
                 if (xhr) errorText = xhr.responseText;

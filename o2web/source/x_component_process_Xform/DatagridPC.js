@@ -190,6 +190,10 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 			this.gridData = this._getValue();
 
+			if( this.gridData.data && o2.typeOf(this.gridData.data)==="object"){
+				this.gridData.data = [];
+			}
+
 			this.totalModules = [];
 			this._loadDatagridTitleModules();
 

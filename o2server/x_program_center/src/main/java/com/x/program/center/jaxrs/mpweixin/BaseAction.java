@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.mpweixin;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -46,6 +48,19 @@ abstract class BaseAction extends StandardJaxrsAction {
                 parent.setSub_button(sub_button);
             }
         }
+    }
+
+    protected MPWeixinMenu findMenuWithEventKey(String eventKey) throws Exception {
+        if (StringUtils.isBlank(eventKey)) {
+            return null;
+        }
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            List<MPWeixinMenu> list = emc.listEqual(MPWeixinMenu.class, MPWeixinMenu.key_FIELDNAME, eventKey);
+            if (list != null && !list.isEmpty()) {
+                return list.get(0);
+            }
+        }
+        return null;
     }
 
     public static class WoMenu extends MPWeixinMenu {

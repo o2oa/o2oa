@@ -18,7 +18,7 @@ MWF.xApplication.service.AgentDesigner.LP = {
 
     "openLogViewer": "打开日志查看器",
     "debugger": "调试",
-    "run": "模拟运行",
+    "run": "立即运行",
     "runSuccess": "运行成功",
 
     "true" : "是",
