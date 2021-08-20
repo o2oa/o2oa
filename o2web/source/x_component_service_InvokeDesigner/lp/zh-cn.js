@@ -26,7 +26,7 @@ MWF.xApplication.service.InvokeDesigner.LP = {
 
     "openLogViewer": "打开日志查看器",
     "debugger": "调试",
-    "run": "模拟运行",
+    "run": "立即运行",
     "runSuccess": "运行成功",
     "requireArguments": "请求参数",
     "runResult": "执行结果",
