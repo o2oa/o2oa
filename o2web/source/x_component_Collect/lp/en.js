@@ -7,7 +7,7 @@ MWF.xApplication.Collect.LP = {
     "collectLogin": "You have logged in to O2 Cloud!",
     "collectNotLogin": "You have not logged into O2 Cloud yet!",
 
-    "recheck": "Recheck the connection",
+    "recheck": "Recheck",
     "doDisconnect": "Disconnect",
 
     "modifyAccountAction": "Modify account",
@@ -40,7 +40,7 @@ MWF.xApplication.Collect.LP = {
     "key": "Push message key",
 
     "back": "Back",
-    "backUp": "Back Up Level",
+    "backUp": "Back Pre Level",
     "errorUsername": "Enter the account name",
 
     "errorKey": "Enter the push message key",

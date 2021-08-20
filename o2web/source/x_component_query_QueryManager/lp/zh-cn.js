@@ -26,6 +26,20 @@ MWF.xApplication.query.QueryManager.LP = {
     "deleteElementTitle": "删除设计确认",
     "deleteElement": "是否确定要删除选中的设计元素？",
 
+    "viewName": "视图",
+    "statName": "统计",
+    "statementName": "查询",
+    "importerName": "导入",
+    "show": "显示",
+    "hide": "隐藏",
+    "naviCategory": "导航分类",
+    "isShow": "是否显示",
+    "isHidden": "是否隐藏",
+    "showText": "显示名称",
+    "interfaceConfig": "界面导航配置",
+    "moveUp": "上移",
+
+
     "select": {
         "create": "新建选择器",
         "search": "搜索选择器",

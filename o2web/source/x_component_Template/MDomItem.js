@@ -194,7 +194,8 @@ var MDomItem = new Class({
 
         this.fireEvent("postLoad", [this]);
     },
-    editMode : function(){
+    editMode : function( keep ){
+        if(keep)this.save();
         this.options.isEdited = true;
         this.dispose();
         this.load();
@@ -202,7 +203,8 @@ var MDomItem = new Class({
     save : function(){
         this.options.value = this.getValue();
     },
-    readMode : function(){
+    readMode : function( keep ){
+        if(keep)this.save();
         this.options.isEdited = false;
         this.dispose();
         this.load();

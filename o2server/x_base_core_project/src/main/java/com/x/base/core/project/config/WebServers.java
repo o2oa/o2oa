@@ -179,17 +179,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		map.put("indexPage", Config.portal().getIndexPage());
 		map.put("webSocketEnable", Config.communicate().wsEnable());
 		map.put("urlMapping", Config.portal().getUrlMapping());
-		if(null != Config.portal().getUrlMapping() && !(Config.portal().getUrlMapping().isEmpty())){
-			try {
-				String urlMapping = XGsonBuilder.toJson(Config.portal().getUrlMapping());
-				Map<String, String> urlmap = new HashMap<>();
-				urlmap.put("urlMapping", urlMapping);
-				CipherConnectionAction.put(true,Config.url_x_program_center_jaxrs("collect","urlMapping"),urlmap);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 
-		}
 		/* 密码规则 */
 		map.put("passwordRegex", Config.person().getPasswordRegex());
 		map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
