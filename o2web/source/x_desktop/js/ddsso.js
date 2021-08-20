@@ -128,6 +128,7 @@ o2.addReady(function () {
 
                 MWF.getJSON("res/config/config.json", function (config) {
                     layout.config = config;
+                    o2.tokenName = config.tokenName || "x-token";
                     MWF.xDesktop.getServiceAddress(layout.config, function (service, center) {
                         layout.serviceAddressList = service;
                         layout.centerServer = center;
