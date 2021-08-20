@@ -320,8 +320,8 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
         var html = "<table cellspacing='0' cellpadding='0' border='0' align='left' style='margin-top: 20px;padding-left: 15%;width: 72%;'>";
         html += "<tr>" +
             "<td class='formTitle' style='width:150px'>"+lp.naviCategory+"</td>" +
-            "<td class='formTitle' style='width:150px'>"+lp.isShow+"</td> " +
-            "<td class='formTitle' style='width: calc( 100% - 310px )'>"+lp.showText+"</td></tr>";
+            "<td class='formTitle' style='width:200px'>"+lp.isShow+"</td> " +
+            "<td class='formTitle' style='width: calc( 100% - 360px )'>"+lp.showText+"</td></tr>";
         html += "<tr>" +
             "<td class='formContent'>"+lp.viewName+"</td> " +
             "<td item='viewShow' class='formContent'></td> " +
@@ -354,10 +354,10 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
                 isEdited: false,
                 style : "appproperty",
                 itemTemplate: {
-                    viewShow: { type:"checkbox", selectValue : ["true"], selectText: [lp.show] },
-                    statShow: { type:"checkbox", selectValue : ["true"], selectText: [lp.show] },
-                    statementShow: { type:"checkbox", selectValue : ["true"], selectText: [lp.show] },
-                    importerShow: { type:"checkbox", selectValue : ["true"], selectText: [lp.show] },
+                    viewShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
+                    statShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
+                    statementShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
+                    importerShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
                     statName: { defaultValue : lp.statName, event: {
                                 focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
                                 blur: function(node){ node.setStyles(this.app.css.input) }.bind(this)
@@ -380,6 +380,7 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
                     }
                 }
             }, this);
+            debugger;
             this.interfaceForm.load();
 
         }.bind(this), true);
