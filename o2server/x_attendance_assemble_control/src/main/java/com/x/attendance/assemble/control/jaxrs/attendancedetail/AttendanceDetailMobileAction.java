@@ -158,4 +158,27 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "预打卡，根据当前人以及对应的排班设置，给出打卡的预判断", action = ActionMobilePreview.class)
+	@Path("mobilepreview")
+	@GET
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void mobilePreview(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request ) {
+		ActionResult<ActionMobilePreview.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionMobilePreview().execute( request, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionAttendanceDetailProcess(e, "查询登录者当天的所有移动打卡信息记录时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
