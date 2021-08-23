@@ -1858,6 +1858,7 @@ debugger;
     },
 
     processRunTextDom: function(span, oo_p, runPrs){
+        debugger;
         var node = span.firstChild;
         while (node){
             if (node.nodeType===Node.ELEMENT_NODE){

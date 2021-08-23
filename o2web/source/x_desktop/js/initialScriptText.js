@@ -1,6 +1,6 @@
 bind = {};
 var library = {
-    'version': '4.0',
+    'version': '6.2',
     "defineProperties": Object.defineProperties || function (obj, properties) {
         function convertToDescriptor(desc) {
             function hasProperty(obj, prop) {
@@ -151,23 +151,22 @@ var wrapWorkContext = {
 //applications
 
 
-var includedScripts = [];
-var _self = this;
-var include = function(name, callback){
-    if (includedScripts.indexOf(name)==-1){
-        var json = JSON.parse(_self.workContext.getScript(name, includedScripts));
-        includedScripts = includedScripts.concat(json.importedList);
-        if (json.text){
-            //MWF.Macro.exec(json.data.text, bind);
-            var f = eval("(function(){return function(){\n"+json.text+"\n}})();");
-            returnValue = f.apply(bind);
-
-            if (callback) callback.apply(bind);
-        }
-    }
-};
-
-var define = function(name, fun, overwrite){
+// var includedScripts = [];
+// var _self = this;
+// var include = function(name, callback){
+//     if (includedScripts.indexOf(name)==-1){
+//         var json = JSON.parse(_self.workContext.getScript(name, includedScripts));
+//         includedScripts = includedScripts.concat(json.importedList);
+//         if (json.text){
+//             //MWF.Macro.exec(json.data.text, bind);
+//             var f = eval("(function(){return function(){\n"+json.text+"\n}})();");
+//             returnValue = f.apply(bind);
+//
+//             if (callback) callback.apply(bind);
+//         }
+//     }
+// };
+var _define = function(name, fun, overwrite){
     var over = true;
     if (overwrite===false) over = false;
     var o = {};
@@ -175,29 +174,30 @@ var define = function(name, fun, overwrite){
     library.defineProperties(bind, o);
 };
 
-var Dict =  function(name){
-    var dictionary = _self.dictionary;
-    this.name = name;
-    this.get = function(path){
-        return JSON.parse(dictionary.select(this.name, path));
-    };
-    this.set = function(path, value){
-        try {
-            dictionary.update(this.name, library.JSONEncode(value), path);
-            return true;
-        }catch(e){
-            return false;
-        }
-    };
-    this.add = function(path, value){
-        try {
-            dictionary.insert(this.name, library.JSONEncode(value), path);
-            return true;
-        }catch(e){
-            return false;
-        }
-    };
-};
+// var Dict =  function(name){
+//     var dictionary = _self.dictionary;
+//     this.name = name;
+//     this.get = function(path){
+//         return JSON.parse(dictionary.select(this.name, path));
+//     };
+//     this.set = function(path, value){
+//         try {
+//             dictionary.update(this.name, library.JSONEncode(value), path);
+//             return true;
+//         }catch(e){
+//             return false;
+//         }
+//     };
+//     this.add = function(path, value){
+//         try {
+//             dictionary.insert(this.name, library.JSONEncode(value), path);
+//             return true;
+//         }catch(e){
+//             return false;
+//         }
+//     };
+// };
+
 if ((typeof JSON) == 'undefined'){
     JSON = {};
 }
@@ -814,6 +814,200 @@ var _Actions = {
 };
 bind.Actions = _Actions;
 
+//定义所需的服务
+var _processActions = new _Action("x_processplatform_assemble_surface", {
+    "getDictionary": {"uri": "/jaxrs/applicationdict/{applicationDict}/application/{applicationFlag}"},
+    "getDictRoot": {"uri": "/jaxrs/applicationdict/{applicationDict}/application/{application}/data"},
+    "getDictData": {"uri": "/jaxrs/applicationdict/{applicationDict}/application/{application}/{path}/data"},
+    "setDictData": {"uri": "/jaxrs/applicationdict/{applicationDict}/application/{application}/{path}/data", "method": "PUT"},
+    "addDictData": {"uri": "/jaxrs/applicationdict/{applicationDict}/application/{application}/{path}/data", "method": "POST"},
+    "deleteDictData": {"uri": "/jaxrs/applicationdict/{applicationDict}/application/{application}/{path}/data", "method": "DELETE"},
+    "getScript": {"uri": "/jaxrs/script/{flag}/application/{applicationFlag}", "method": "POST"},
+});
+var _cmsActions = new _Action("x_cms_assemble_control", {
+    "getDictionary": {"uri": "/jaxrs/design/appdict/{appDictId}"},
+    "getDictRoot": {"uri": "/jaxrs/surface/appdict/{appDictId}/appInfo/{appId}/data"},
+    "getDictData": {"uri": "/jaxrs/surface/appdict/{appDictId}/appInfo/{appId}/{path}/data"},
+    "setDictData": {"uri": "/jaxrs/surface/appdict/{appDictId}/appInfo/{appId}/{path}/data", "method": "PUT"},
+    "addDictData": {"uri": "/jaxrs/surface/appdict/{appDictId}/appInfo/{appId}/{path}/data", "method": "POST"},
+    "deleteDictData": {"uri": "/jaxrs/surface/appdict/{appDictId}/appInfo/{appId}/{path}/data", "method": "DELETE"},
+    "getDictRootAnonymous" : {"uri": "/jaxrs/anonymous/surface/appdict/{appDictId}/appInfo/{appId}/data"},
+    "getDictDataAnonymous" : {"uri": "/jaxrs/anonymous/surface/appdict/{appDictId}/appInfo/{appId}/{path}/data"},
+    "getScript": {"uri": "/jaxrs/script/{flag}/appInfo/{appInfoFlag}", "method": "POST"},
+});
+var _portalActions = new _Action("x_portal_assemble_surface", {
+    "getScript":  {"uri": "/jaxrs/script/portal/{portal}/name/{ }","method": "POST"}
+});
+
+//include 引用脚本
+//optionsOrName : {
+//  type : "", 默认为process, 可以为 portal  process  cms
+//  application : "", 门户/流程/CMS的名称/别名/id, 默认为当前应用
+//  name : "" // 脚本名称/别名/id
+//}
+//或者name: "" // 脚本名称/别名/id
+var _exec = function(code, _self){
+    var returnValue;
+    //try{
+    if (!_self) _self = this;
+    try {
+        var f = eval("(function(){return function(){\n"+code+"\n}})();");
+        returnValue = f.apply(_self);
+    }catch(e){
+        console.log("exec", new Error("exec script error"));
+        console.log(e);
+    }
+    return returnValue;
+}
+
+var includedScripts = this.includedScripts || {};
+this.includedScripts = includedScripts;
+
+var _include = function( optionsOrName , callback ){
+    var options = optionsOrName;
+    if( typeOf( options ) == "string" ){
+        options = { name : options };
+    }
+    var name = options.name;
+    var type = ( options.type && options.application ) ?  options.type : "process";
+    var application = options.application
+
+    if (!name || !type || !application){
+        console.log("include", new Error("can not find script. missing script name or application"));
+        return false;
+    }
+
+    if (!includedScripts[application]) includedScripts[application] = [];
+
+    if (includedScripts[application].indexOf( name )> -1){
+        if (callback) callback.apply(this);
+        return;
+    }
+
+    var scriptAction;
+    var scriptData;
+    switch ( type ){
+        case "portal" :
+            _portalActions.getScript( application, name, {"importedList":includedScripts[application]}, function(json){
+                if (json.data){
+                    includedScripts[application] = includedScripts[application].concat(json.data.importedList);
+                    scriptData = json.data;
+                }
+            }.bind(this));
+            break;
+        case "process" :
+            _processActions.getScript( name, application, {"importedList":includedScripts[application]}, function(json){
+                if (json.data){
+                    includedScripts[application] = includedScripts[application].concat(json.data.importedList);
+                    scriptData = json.data;
+                }
+            }.bind(this));
+            break;
+        case "cms" :
+            _cmsActions.getScript(name, application, {"importedList":includedScripts[application]}, function(json){
+                if (json.data){
+                    includedScripts[application] = includedScripts[application].concat(json.data.importedList);
+                    scriptData = json.data;
+                }
+            }.bind(this));
+            break;
+    }
+    includedScripts[application].push(name);
+    if (scriptData && scriptData.text){
+        bind.exec(scriptData.text, this);
+        if (callback) callback.apply(this);
+    }
+};
+
+var _createDict = function(application){
+    //optionsOrName : {
+    //  type : "", //默认为process, 可以为  process  cms
+    //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
+    //  name : "", // 数据字典名称/别名/id
+    //  enableAnonymous : false //允许在未登录的情况下读取CMS的数据字典
+    //}
+    //或者name: "" // 数据字典名称/别名/id
+    return function(optionsOrName){
+        var options = optionsOrName;
+        if( typeOf( options ) == "string" ){
+            options = { name : options };
+        }
+        var name = this.name = options.name;
+        var type = ( options.type && options.application ) ?  options.type : "process";
+        var applicationId = options.application || application;
+        var enableAnonymous = options.enableAnonymous || false;
+
+        //MWF.require("MWF.xScript.Actions.DictActions", null, false);
+        if( type == "cms" ){
+            var action = bind.cmsActions;
+        }else{
+            var action = bind.processActions;
+        }
+
+        var encodePath = function( path ){
+            var arr = path.split(/\./g);
+            var ar = arr.map(function(v){
+                return encodeURIComponent(v);
+            });
+            return ar.join("/");
+        };
+
+        this.get = function(path, success, failure){
+            var value = null;
+            if (path){
+                var p = encodePath( path );
+                action[(enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData"](encodeURIComponent(this.name), applicationId, p, function(json){
+                    value = json.data;
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                });
+            }else{
+                action[(enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot"](encodeURIComponent(this.name), applicationId, function(json){
+                    value = json.data;
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                }, false);
+            }
+
+            return value;
+        };
+
+        this.set = function(path, value, success, failure){
+            var p = encodePath( path );
+            //var p = path.replace(/\./g, "/");
+            action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        };
+        this.add = function(path, value, success, failure){
+            var p = encodePath( path );
+            //var p = path.replace(/\./g, "/");
+            action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        };
+        this["delete"] = function(path, success, failure){
+            var p = encodePath( path );
+            //var p = path.replace(/\./g, "/");
+            action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        };
+        this.destory = this["delete"];
+    }
+};
+bind.exec = _exec;
+bind.include = _include;
+bind.Dict = _createDict();
+
 try{
     oPrint = oPrint;
 }catch(e){
@@ -836,9 +1030,9 @@ bind.service = this.webservicesClient;
 bind.org = _org;
 bind.Action = _Action;
 //bind.organization = this.organization;
-bind.include = include;
-bind.define = define;
-bind.Dict = Dict;
+//bind.include = include;
+bind.define = _define;
+//bind.Dict = Dict;
 bind.form = null;
 bind.body = {
     "set": function(data){
@@ -927,55 +1121,6 @@ Object.defineProperty(response, "get", {enumerable: true,configurable: true,
     }
 });
 bind.response = response;
-
-// bind.response = (function(){
-//     // var _self = this;
-//     // if (this.jaxrsResponse){
-//         if (this.jaxrsResponse.get()){
-//             var value = this.jaxrsResponse.get();
-//             if (JSON.validate(value)){
-//                 return {
-//                     "status": this.jaxrsResponse.status,
-//                     "value": JSON.decode(value),
-//                     "get": function(){ JSON.decode(value) }
-//                 };
-//             }else{
-//                 return {
-//                     "status": this.jaxrsResponse.status,
-//                     "value": value,
-//                     "get": function(){ return value; }
-//                 };
-//             }
-//         }else{
-//             return {
-//                 "status": this.jaxrsResponse.status,
-//                 "value": this.jaxrsResponse.value,
-//                 "get": function(){ return _self.jaxrsResponse.value; }
-//             };
-//         }
-//     }else{
-//         return {
-//             "get": function(){
-//                 return _self.jaxwsResponse || null;
-//                 // if (_self.jaxwsResponse && _self.jaxwsResponse.get()){
-//                 //     if (JSON.validate(_self.jaxwsResponse.get())){
-//                 //         return {
-//                 //             "status": _self.jaxwsResponse.status,
-//                 //             "value": JSON.decode(_self.jaxwsResponse.get())
-//                 //         };
-//                 //     }else{
-//                 //         return {
-//                 //             "status": _self.jaxwsResponse.status,
-//                 //             "value": _self.jaxwsResponse.value
-//                 //         };
-//                 //     }
-//                 // }else{
-//                 //     return {"status": _self.jaxwsResponse.status};
-//                 // }
-//             }
-//         }
-//     }
-// }).apply(this);
 
 bind.assginData = {
     "data": null,

@@ -305,6 +305,10 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			this.close();
 		}, null);
 	},
+	selectedContainer: function(){
+		debugger;
+		if (this.parentContainer) this.parentContainer.selected();
+	},
 	styleBrush: function(){
 		//@todo
 		this.form.styleBrushContent = Object.clone(this.json.styles);
@@ -374,10 +378,10 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	_hideActions: function(){
 		if (this.actionArea) this.actionArea.setStyle("display", "none");
 	},
-	selected: function(){
+	selected: function(force){
 		if (this.form && this.form.node)this.form.node.focus();
 		if (this.form.currentSelectedModule){
-			if (this.form.currentSelectedModule==this){
+			if (!force && this.form.currentSelectedModule==this){
 				return true;
 			}else{
 				this.form.currentSelectedModule.unSelected();
@@ -461,7 +465,8 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if (this.property) this.property.hide();
 	},
 
-	create: function(data, e){
+	create: function(data, e, group){
+		data.moduleGroup = group;
 		this.json = data;
 		this.json.id = this._getNewId();
 		this._createMoveNode();
@@ -488,6 +493,8 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	_onEnterOther: function(dragging, inObj){
 	},
 	_onLeaveOther: function(dragging, inObj){
+		if (this.copyNode) this.copyNode.destroy();
+		this.copyNode = null;
 	},
 	_onMoveEnter: function(dragging, inObj){
 		var module = inObj.retrieve("module");
@@ -568,6 +575,33 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}
 		//	this.copyNode.setStyle("display", "block");
 		return this.copyNode;
+	},
+	_positionCopyNode: function(copyNode, isIn){
+		var display = this.node.getStyle("display");
+		copyNode.setStyle("margin", "0");
+
+		if (display.indexOf("inline") !==-1){
+			var size = this.node.getComputedSize();
+			copyNode.setStyle("position", "absolute");
+			copyNode.setStyle("width", "1px");
+			copyNode.setStyle("min-width", "0");
+			copyNode.setStyle("height", size.height+"px");
+			copyNode.position({
+				relativeTo: this.node,
+				position: 'leftTop',
+				edge: 'rightTop'
+			})
+		}else{
+			var w = copyNode.getStyle("width").toFloat();
+			if (!w) w = copyNode.getSize().x;
+			copyNode.setStyle("position", "absolute");
+			copyNode.setStyle("width", ""+w+"px");
+			copyNode.position({
+				relativeTo: this.node,
+				position: (!!isIn) ? 'leftBottom': 'leftTop',
+				edge: 'leftBottom'
+			})
+		}
 	},
 	_createCopyNode: function(){
 		this.copyNode = this.moveNode.clone();
@@ -934,9 +968,12 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}
 		if (name=="properties"){
 			try{
-				this.node.setProperties(this.json.properties);
+				this.setCustomProperties();
 			}catch(e){}
 		}
+	},
+	setCustomProperties: function(){
+		this.node.setProperties(this.json.properties);
 	},
 	setCustomNodeStyles: function(node, styles){
 		var border = node.getStyle("border");

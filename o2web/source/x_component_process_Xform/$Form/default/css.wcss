@@ -1184,5 +1184,17 @@
      "attachmentOrderFlagNode": {
         "height": "2px",
         "background-color": "#5c649c"
-     }
+     },
+     "el-container-aside": {
+        "background-color": "#D3DCE6",
+        "width": "240px"
+     },
+     "el-container-header": {
+       "background-color": "#B3C0D1",
+       "height": "60px"
+     },
+     "el-container-footer": {
+         "background-color": "#B3C0D1",
+         "height": "60px"
+      }
 }

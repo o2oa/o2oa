@@ -3263,7 +3263,6 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
     };
     var setter = function(data, callback, k, _self){
         return function(v){
-
             data[k] = v;
             //debugger;
             //this.add(k, v, true);
