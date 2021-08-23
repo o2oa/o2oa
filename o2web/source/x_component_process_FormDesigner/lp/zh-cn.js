@@ -1032,7 +1032,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resizeNone": "不允许",
         "resizeBoth": "允许",
         "resizeHorizontal": "横向",
-        "resizeVertical": "纵向"
+        "resizeVertical": "纵向",
+        "el_placement": "弹出位置",
+        "popperClass": "列表类名",
+        "triggerOnFocus": "激活即列出输入建议"
+
     },
     "actionBar": {
         "close":"关闭",

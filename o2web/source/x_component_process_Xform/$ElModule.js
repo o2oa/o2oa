@@ -80,7 +80,8 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
          * @see https://vuejs.org/
          * @member {VueInstance}
          */
-        this.vm = new Vue(this.vueApp).$mount(this.node);
+        this.vm = new Vue(this.vueApp);
+        this.vm.$mount(this.node);
     },
 
     _createVueExtend: function(){
@@ -91,10 +92,20 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
                 _self._afterMounted(this.$el);
             }
         };
+        app.methods = this._createVueMethods(app);
         this.appendVueExtend(app);
         return app;
     },
+    appendVueMethods: function(app){},
     appendVueExtend: function(app){},
+    _createVueMethods: function(){
+        var methods = {};
+        if (this.json.vueMethods && this.json.vueMethods.code){
+            methods = this.form.Macro.exec(this.json.vueMethods.code, this);
+        }
+        this.appendVueMethods();
+        return methods || {};
+    },
     _createVueData: function(){
         if (this.json.vueData && this.json.vueData.code){
             var d = this.form.Macro.exec(this.json.vueData.code, this);

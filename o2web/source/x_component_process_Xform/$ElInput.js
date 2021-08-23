@@ -22,9 +22,10 @@ Object.assign(o2.APP$Elinput.prototype, {
         if (this.readonly || this.json.isReadonly) this.node.set("text", value);
         if (old!==data) this.fireEvent("change");
         this.moduleValueAG = null;
+        this.validationMode();
     },
     getInputData: function(){
-        return this.json[this.json.id] || this._getBusinessData();
+        return this.json[this.json.id];
     },
     _loadNodeEdit: function(){
         this.node.appendHTML(this._createElementHtml(), "before");

@@ -1,40 +1,29 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.$ElElement", null, false);
-MWF.xApplication.process.FormDesigner.Module.Elinput = MWF.FCElinput = new Class({
+MWF.xApplication.process.FormDesigner.Module.Elautocomplete = MWF.FCElautocomplete = new Class({
 	Extends: MWF.FC$ElElement,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "../x_component_process_FormDesigner/Module/Elinput/elinput.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Elautocomplete/elautocomplete.html"
 	},
 
 	_initModuleType: function(){
-		this.className = "Elinput";
+		this.className = "Elautocomplete";
 		this.moduleType = "element";
-		this.moduleName = "elinput";
+		this.moduleName = "elautocomplete";
 	},
 	_createElementHtml: function(){
-		debugger;
 		//var html = "<el-input placeholder=\"请输入内容\"></el-input>";
-		var html = "<el-input";
+		var html = "<el-autocomplete";
 		if (this.json.description) html += " placeholder=\""+this.json.description+"\"";
-		html += " type=\""+(this.json.inputType || "text")+"\"";
-		if (this.json.maxlength) html += " maxlength=\""+this.json.maxlength+"\"";
-		if (this.json.showWordLimit) html += " show-word-limit";
-		if (this.json.clearable) html += " clearable";
-		if (this.json.showPassword) html += " show-password";
-		if (this.json.size && this.json.size!=="default") html += " size=\""+this.json.size+"\"";
-		html += " rows=\""+(this.json.textareaRows || "2")+"\"";
 
-		if (this.json.autosize){
-			var o = {};
-			if (this.json.minRows) o.minRows = this.json.minRows;
-			if (this.json.maxRows) o.maxRows = this.json.maxRows;
-			html += " autosize=\""+JSON.stringify(o)+"\"";
-		}
-		if (this.json.resize) html += " resize=\""+this.json.resize+"\"";
+		if (this.json.placement) html += " placement=\""+this.json.placement+"\"";
+		if (this.json.popperClass) html += " popper-class=\""+this.json.popperClass+"\"";
+		if (this.json.triggerOnFocus===false ) html += " :trigger-on-focus='false'";
 		if (this.json.prefixIcon) html += " prefix-icon=\""+this.json.prefixIcon+"\"";
 		if (this.json.suffixIcon) html += " suffix-icon=\""+this.json.suffixIcon+"\"";
+		html += " :fetch-suggestions=\"$fetchSuggestions\"";
 
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){
@@ -49,9 +38,32 @@ MWF.xApplication.process.FormDesigner.Module.Elinput = MWF.FCElinput = new Class
 			}, this);
 			html += " style=\""+style+"\"";
 		}
-
-		html += " value=\""+this.json.id+"\"></el-input>";
+		html += " value=\""+this.json.id+"\">";
+		if (this.json.vueSlot) html += this.json.vueSlot;
+		html += "</el-autocomplete>";
 		return html;
+	},
+	_createVueExtend: function(callback){
+		var _self = this;
+		return {
+			data: this._createVueData(),
+			mounted: function(){
+				_self._afterMounted(this.$el, callback);
+			},
+			methods: {
+				$fetchSuggestions: function(qs, cb){
+					if (this.json.itemType!=='script'){
+						if (this.json.itemValues){
+							cb(this.json.itemValues.map(function(v){
+								return {"value": v};
+							}));
+							return;
+						}
+					}
+					cb([]);
+				}.bind(this)
+			}
+		};
 	},
 	_createCopyNode: function(){
 		this.copyNode = new Element("div", {
