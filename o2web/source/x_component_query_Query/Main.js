@@ -59,15 +59,19 @@ MWF.xApplication.query.Query.Main = new Class({
                 viewShow: "true",
                 viewNumber: 1,
                 viewName: lp.view,
+                viewIcon: "../x_component_query_Query/$Main/"+this.options.style+"/icon/view_new.png",
                 statShow: "true",
                 statNumber: 2,
                 statName: lp.stat,
+                statIcon: "../x_component_query_Query/$Main/"+this.options.style+"/icon/stat_new.png",
                 statementShow: "true",
                 statementNumber: 3,
                 statementName: lp.statement,
+                statementIcon: "../x_component_query_Query/$Main/"+this.options.style+"/icon/statement_new.png",
                 importerShow: "true",
                 importerNumber: 4,
-                importerName: lp.importer
+                importerName: lp.importer,
+                importerIcon: "../x_component_query_Query/$Main/"+this.options.style+"/icon/importer_new.png",
             }, this.interfaceData || {} );
 
             this.createLayout();
@@ -101,9 +105,11 @@ MWF.xApplication.query.Query.Main = new Class({
 
         var object = [];
         if( data.viewShow !== "flase" && data.viewShow !== false ) {
-            this.naviViewTitleNode = new Element("div", {"styles": this.css.naviViewTitleNode, "text": data.viewName});
+            this.naviViewTitleNode = new Element("div", {"styles": this.css.naviCategoryNode });
+            // this.naviViewTitleNode = new Element("div", {"styles": this.css.naviViewTitleNode, "text": data.viewName});
             this.naviViewContentNode = new Element("div", {"styles": this.css.naviViewContentNode});
             object.push({
+                "type": "view",
                 "index": data.viewNumber,
                 "titleNode": this.naviViewTitleNode,
                 "contentNode": this.naviViewContentNode
@@ -111,9 +117,11 @@ MWF.xApplication.query.Query.Main = new Class({
         }
 
         if( data.statShow !== "flase" && data.statShow !== false ) {
-            this.naviStatTitleNode = new Element("div", {"styles": this.css.naviStatTitleNode, "text": data.statName});
+            this.naviStatTitleNode = new Element("div", {"styles": this.css.naviCategoryNode });
+            // this.naviStatTitleNode = new Element("div", {"styles": this.css.naviStatTitleNode, "text": data.statName});
             this.naviStatContentNode = new Element("div", {"styles": this.css.naviStatContentNode});
             object.push({
+                "type": "stat",
                 "index": data.statNumber,
                 "titleNode": this.naviStatTitleNode,
                 "contentNode": this.naviStatContentNode
@@ -121,9 +129,11 @@ MWF.xApplication.query.Query.Main = new Class({
         }
 
         if( data.statementShow !== "flase" && data.statementShow !== false ) {
-            this.naviStatementTitleNode = new Element("div", {"styles": this.css.naviStatementTitleNode, "text": data.statementName});
+            this.naviStatementTitleNode = new Element("div", {"styles": this.css.naviCategoryNode });
+            // this.naviStatementTitleNode = new Element("div", {"styles": this.css.naviStatementTitleNode, "text": data.statementName});
             this.naviStatementContentNode = new Element("div", {"styles": this.css.naviStatementContentNode});
             object.push({
+                "type": "statement",
                 "index": data.statementNumber,
                 "titleNode": this.naviStatementTitleNode,
                 "contentNode": this.naviStatementContentNode
@@ -131,12 +141,14 @@ MWF.xApplication.query.Query.Main = new Class({
         }
 
         if( data.importerShow !== "flase" && data.importerShow !== false ) {
-            this.naviImporterTitleNode = new Element("div", {
-                "styles": this.css.naviImporterTitleNode,
-                "text": data.importerName
-            });
+            this.naviImporterTitleNode = new Element("div", {"styles": this.css.naviCategoryNode });
+            // this.naviImporterTitleNode = new Element("div", {
+            //     "styles": this.css.naviImporterTitleNode,
+            //     "text": data.importerName
+            // });
             this.naviImporterContentNode = new Element("div", {"styles": this.css.naviImporterContentNode});
             object.push({
+                "type": "importer",
                 "index": data.importerNumber,
                 "titleNode": this.naviImporterTitleNode,
                 "contentNode": this.naviImporterContentNode
@@ -147,6 +159,29 @@ MWF.xApplication.query.Query.Main = new Class({
         });
         object.each(function(a){
             a.titleNode.inject(this.naviContentNode);
+            var actionNode = new Element("div", {"styles": this.css.naviExpandNode }).inject(a.titleNode);
+            var textNode = new Element("div", {"styles": this.css.naviTitleTextNode, "text": data[a.type+"Name"] }).inject(a.titleNode);
+            textNode.setStyle("background-image", "url('"+ data[a.type+"Icon"] +"')");
+            a.titleNode.addEvents({
+                "mouseover": function () {
+                    a.titleNode.setStyles(this.css.naviCategoryNode_over)
+                }.bind(this),
+                "mouseout": function () {
+                    a.titleNode.setStyles(this.css.naviCategoryNode)
+                }.bind(this),
+                "click": function () {
+                    if( actionNode.retrieve("collapse") ){
+                        actionNode.setStyles(this.css.naviExpandNode);
+                        actionNode.store("collapse",false);
+                        a.contentNode.show();
+                    }else{
+                        actionNode.setStyles(this.css.naviCollapseNode);
+                        actionNode.store("collapse",true);
+                        a.contentNode.hide();
+                    }
+                }.bind(this)
+            });
+
             a.contentNode.inject(this.naviContentNode);
         }.bind(this))
 
@@ -299,26 +334,26 @@ MWF.xApplication.query.Query.ViewItem = new Class({
     },
     load: function(){
         this.node = new Element("div", {
-            "styles": this.css.naviViewContentItemNode,
+            "styles": this.css.naviContentItemNode,
             "text": this.view.name,
             "title": this.view.name
         }).inject(this.content);
 
         this.node.addEvents({
-            "mouseover": function(){if (!this.isSelected) this.node.setStyles(this.css.naviViewContentItemNode_over); }.bind(this),
-            "mouseout": function(){if (!this.isSelected) this.node.setStyles(this.css.naviViewContentItemNode); }.bind(this),
+            "mouseover": function(){if (!this.isSelected) this.node.setStyles(this.css.naviContentItemNode_over); }.bind(this),
+            "mouseout": function(){if (!this.isSelected) this.node.setStyles(this.css.naviContentItemNode); }.bind(this),
             "click": function(){this.selected();}.bind(this)
         });
     },
     selected: function(){
         if (this.app.currentItem) this.app.currentItem.unselected();
-        this.node.setStyles(this.css.naviViewContentItemNode_selected);
+        this.node.setStyles(this.css.naviContentItemNode_selected);
         this.app.currentItem = this;
         this.isSelected = true;
         this.loadView();
     },
     unselected: function(){
-        this.node.setStyles(this.css.naviViewContentItemNode);
+        this.node.setStyles(this.css.naviContentItemNode);
         this.app.currentItem = null;
         this.isSelected = false;
     },
