@@ -1,0 +1,155 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.id}}:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.name}}:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.description}}:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.readonly}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.type}}:</td>
+				<td class="editTableValue">
+					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="text" text{(!$.inputType || $.inputType=='text')?'checked':''}/>{{$.lp.text}}(text)</div>
+					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="textarea" text{($.inputType=='textarea')?'checked':''}/>{{$.lp.textarea}}(textarea)</div>
+					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="number" text{($.inputType=='number')?'checked':''}/>{{$.lp.number}}(number)</div>
+					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="password" text{($.inputType=='password')?'checked':''}/>{{$.lp.password}}(password)</div>
+<!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="search" text{($.inputType=='search')?'checked':''}/>{{$.lp.search}}(search)</div>-->
+<!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="color" text{($.inputType=='color')?'checked':''}/>{{$.lp.color}}(color)</div>-->
+<!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="email" text{($.inputType=='email')?'checked':''}/>{{$.lp.email}}(email)</div>-->
+<!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="date" text{($.inputType=='date')?'checked':''}/>{{$.lp.date}}(date)</div>-->
+<!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="month" text{($.inputType=='month')?'checked':''}/>{{$.lp.month}}(month)</div>-->
+<!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="time" text{($.inputType=='time')?'checked':''}/>{{$.lp.time}}(time)</div>-->
+<!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="datetime-local" text{($.inputType=='datetime-local')?'checked':''}/>{{$.lp["datetime-local"]}}(datetime-local)</div>-->
+<!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="week" text{($.inputType=='week')?'checked':''}/>{{$.lp.week}}(week)</div>-->
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.maxlength}}:</td>
+				<td class="editTableValue"><input type="text" name="maxlength" value="text{$.maxlength}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wordNumber}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="showWordLimit" value="true" text{($.showWordLimit===true)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="showWordLimit" value="false" text{($.showWordLimit!==true)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.clearable}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="clearable" value="true" text{($.clearable===true)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="clearable" value="false" text{($.clearable!==true)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.showPassword}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="showPassword" value="true" text{($.showPassword===true)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="showPassword" value="false" text{($.showPassword!==true)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.size}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="size" value="default" text{(!$.size || $.inputSize==='default')?'checked':''}/>default
+					<input type="radio" name="size" value="medium" text{($.size==='medium')?'checked':''}/>medium
+					<input type="radio" name="size" value="small" text{($.size==='small')?'checked':''}/>small
+					<input type="radio" name="size" value="mini" text{($.size==='mini')?'checked':''}/>mini
+				</td>
+			</tr>
+
+			<tr>
+				<td class="editTableTitle">{{$.lp.textareaRows}}:</td>
+				<td class="editTableValue">
+					<input type="text" name="rows" value="text{$.rows || 2}" class="editTableInput"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.autosize}}:</td>
+				<td class="editTableValue">
+					<div>
+						<input onclick="if (this.checked){ $('text{$.pid}autosizeRangeArea').setStyle('display', 'block')}" type="radio" name="autosize" value="true" text{($.autosize===true)?'checked':''}/>{{$.lp.yes}}
+						<input onclick="if (this.checked){ $('text{$.pid}autosizeRangeArea').setStyle('display', 'none')}" type="radio" name="autosize" value="false" text{($.autosize!==true)?'checked':''}/>{{$.lp.no}}
+					</div>
+					<div id="text{$.pid}autosizeRangeArea" style="display: text{($.autosize===true)?'block':'none'}">
+						{{$.lp.minRows}}: <input style="width: 60px; border: 1px solid #CCCCCC" type="text" name="minRows" value="text{$.minRows}" />
+						{{$.lp.maxRows}}: <input style="width: 60px; border: 1px solid #CCCCCC" type="text" name="maxRows" value="text{$.maxRows}" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.resize}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="resize" value="none" text{(!$.resize || $.resize==='none')?'checked':''}/>{{$.lp.resizeNone}}
+					<input type="radio" name="resize" value="both" text{($.resize==='both')?'checked':''}/>{{$.lp.resizeBoth}}
+					<input type="radio" name="resize" value="horizontal" text{($.resize==='horizontal')?'checked':''}/>{{$.lp.resizeHorizontal}}
+					<input type="radio" name="resize" value="vertical" text{($.resize==='vertical')?'checked':''}/>{{$.lp.resizeVertical}}
+				</td>
+			</tr>
+		</table>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.prefixIcon}}</div>
+		<div style="display: text{($.prefixIcon)?'block':'none'}" class="MWFElIcon" name="prefixIcon"></div>
+
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.suffixIcon}}</div>
+		<div style="display: text{($.suffixIcon)?'block':'none'}" class="MWFElIcon" name="suffixIcon"></div>
+
+		<div class="MWFMaplist" name="elStyles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="elProperties" title="{{$.lp.attribute}}"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.compute}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="compute" value="create" text{(!$.compute || $.compute=='create')?'checked':''}/>{{$.lp.create}}
+					<input type="radio" name="compute" value="save" text{($.compute=='save')?'checked':''}/>{{$.lp.save}}
+					<input type="radio" name="compute" value="show" text{($.compute=='show')?'checked':''}/>{{$.lp.show}}
+				</td>
+			</tr>
+		</table>
+
+		<div class="MWFScriptArea" name="defaultValue" title="{{$.lp.defaultValue}} (S)"></div>
+
+		<div class="MWFValidation" name="validationConfig"></div>
+		<div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
+		
+	</div>
+	<div title="Vue"  class="MWFTab">
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Data</div>
+		<div style="display: text{($.vueData && $.vueData.code) ? 'block': 'none'}" class="MWFScriptArea" name="vueData" title="Vue Data (S)"></div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Method</div>
+		<div div style="display: text{($.vueMethods && $.vueMethods.code) ? 'block': 'none'}" class="MWFScriptArea" name="vueMethods" title="Vue Methods (S)"></div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue CSS</div>
+		<div div style="display: text{($.vueCss && $.vueCss.code) ? 'block': 'none'}" class="MWFCssArea" name="vueCss" title="Vue Css (S)"></div>
+
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Slots</div>
+		<div style="display: text{($.vueSlot) ? 'block' : 'none'}">
+			<div class="MWFHtmlEditorArea" name="vueSlot" title="Input Slot (HTML)"></div>
+		</div>
+	</div>
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="width:100%; height:400px; border:0px;font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

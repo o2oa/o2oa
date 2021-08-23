@@ -323,7 +323,26 @@ MWF.xApplication.process.FormDesigner.LP = {
         "office": "Office",
         "statementSelector": "StatementSelector",
         "statement": "Statement",
-        "importer": "DataImporter"
+
+        "group_system": "系统组件",
+        "group_element": "Element组件",
+
+        "el_container": "Container",
+        "el_icon": "Icon",
+        "el_button": "Button",
+        "el_radio": "Radio",
+        "el_checkbox": "Checkbox",
+        "el_select": "Select",
+        "el_input": "Input",
+        "el_autocomplete": "autocomplete",
+        "el_cascader": "Cascader",
+        "el_number": "Number",
+        "el_switch": "Switch",
+        "el_slider": "Slider",
+        "el_common": "Common",
+
+        "importer": "DataImporter",
+        "readLog": "Read Log"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -812,7 +831,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "fileNo": "FileNo",
         "signer": "Signer",
         "subject": "Subject",
-        "allowEdit": "Allow Edit",
         "editSubjectInfo": "When the title allows editing, please do not bind value",
         "mainSend": "Main Send",
         "attachment": "Attachment",
@@ -931,6 +949,38 @@ MWF.xApplication.process.FormDesigner.LP = {
         "datatableEditMode": "Edit Mode",
         "datatableEditModeValue": ["single row","multiple rows"],
         "onlyPc": "Available on PC only",
+
+        "size": "Size",
+        "color": "Color",
+        "el_bt_default": "Default",
+        "el_bt_primary": "Primary",
+        "el_bt_success": "Success",
+        "el_bt_warning": "Warning",
+        "el_bt_danger": "Danger",
+        "el_bt_info": "Info",
+        "el_bt_text": "Text",
+
+        "el_plain": "Plain",
+        "el_round": "Round",
+        "el_circle": "Circle",
+        "el_icon": "Icon",
+        "el_disabled": "Disabled",
+        "el_loading": "Loading",
+        "el_autofocus": "Autofocus",
+        "el_isText": "Show Text",
+
+        "layout": "Layout",
+        "layoutCode": "Layout Code",
+        "layoutTemplate": "Layout Template",
+
+        "elGroupStyles": "Group Styles",
+        "elGroupProperties": "Group Properties",
+
+        "el_border": "Show Border",
+        "el_radioColor": "Font Color",
+        "el_radioFillColor": "Fill Color",
+        "el_buttonRadio": "Button Mode",
+
         "datatemplateOuterNote": "Note: The data template can have multiple layers, and the external component identifier must be filled in with the following rules:<br/>" +
             "1. Single layer or the outermost data template, fill in \"fieldId\" to indicate the direct component on the form.<br/>" +
             "2. If there are multiple data templates, \"./fieldId\" means components at the same level as the current data template, \"../fieldId\" means components at the same level as the previous data template, and so on .<br/>" +
@@ -965,7 +1015,35 @@ MWF.xApplication.process.FormDesigner.LP = {
         "ckeditConfigInfor4": "For more configuration, please check the official website of Ckeditor",
         "ckeditConfigInfor5": "https://ckeditor.com/ckeditor-4/",
         "ckeditConfigInfor6": "Note: After the editor properties are customized, the text format may no longer meet the national party and government agency official document format standards",
-        "showRead": "Show Read"
+
+        "showRead": "Show Read",
+        "password": "password",
+        "search": "search",
+        "email": "email",
+        "datetime-local":"datetime-local",
+        "month": "month",
+        "date": "date",
+        "time": "time",
+        "week": "week",
+        "textarea": "textarea",
+        "wordNumber": "wordNumber",
+        "maxlength": "maxlength",
+        "clearable": "clearable",
+        "showPassword": "showPassword",
+        "prefixIcon": "prefixIcon",
+        "suffixIcon": "suffixIcon",
+        "textareaRows": "Textarea Rows",
+        "autosize": "autosize",
+        "minRows": "minRows",
+        "maxRows": "maxRows",
+        "resize": "resize",
+        "resizeNone": "none",
+        "resizeBoth": "both",
+        "resizeHorizontal": "horizontal",
+        "resizeVertical": "vertical",
+        "el_placement": "placement",
+        "popperClass": "Popper Class",
+        "triggerOnFocus": "trigger on focus"
     },
     "actionBar": {
         "close":"Close",

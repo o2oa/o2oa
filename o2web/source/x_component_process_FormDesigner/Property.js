@@ -99,6 +99,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadStatementFilter();
                     this.loadDocumentTempleteSelect();
                     this.loadFieldConfig();
+
+                    this.loadElSelectIcon();
+                    this.loadVueElementUI();
+
                     this.loadHelp();
                     // this.loadScriptIncluder();
                     // this.loadDictionaryIncluder();
@@ -685,6 +689,103 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     }, data);
                     filedConfigurator.load()
                 }.bind(this));
+            }.bind(this));
+        }
+    },
+    // _loadVue: function(callback){
+    //     if (!window.Vue){
+    //         o2.load(["vue", "elementui"], { "sequence": true }, callback);
+    //     }else{
+    //         if (callback) callback();
+    //     }
+    // },
+    loadVueElementUI: function(){
+        var nodes = this.propertyContent.getElements(".MWFElementColor");
+        if (nodes.length) {
+            this._loadVue(function(){
+                var _self = this;
+                nodes.each(function(node){
+                    var name = node.get("name");
+                    var v = _self.data[name] || "";
+                    var data = {};
+                    data[name] = v;
+                    new Vue({
+                        data: data,
+                        methods: {
+                            change: function(color){
+                                _self.data[name] = color;
+                                _self.changeData(name);
+                            }
+                        }
+                    }).$mount(node);
+                });
+            }.bind(this));
+        }
+    },
+    _loadVue: function(callback){
+        if (!window.Vue){
+            o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": ["vue", "elementui"]}, { "sequence": true }, callback);
+        }else{
+            if (callback) callback();
+        }
+    },
+    loadElSelectIcon: function(){
+	    debugger;
+        var nodes = this.propertyContent.getElements(".MWFElIcon");
+        if (nodes.length){
+            var _self = this;
+            var icons = ["el-icon-platform-eleme","el-icon-eleme","el-icon-delete-solid","el-icon-delete","el-icon-s-tools","el-icon-setting","el-icon-user-solid","el-icon-user","el-icon-phone","el-icon-phone-outline","el-icon-more","el-icon-more-outline","el-icon-star-on","el-icon-star-off","el-icon-s-goods","el-icon-goods","el-icon-warning","el-icon-warning-outline","el-icon-question","el-icon-info","el-icon-remove","el-icon-circle-plus","el-icon-success","el-icon-error","el-icon-zoom-in","el-icon-zoom-out","el-icon-remove-outline","el-icon-circle-plus-outline","el-icon-circle-check","el-icon-circle-close","el-icon-s-help","el-icon-help","el-icon-minus","el-icon-plus","el-icon-check","el-icon-close","el-icon-picture","el-icon-picture-outline","el-icon-picture-outline-round","el-icon-upload","el-icon-upload2","el-icon-download","el-icon-camera-solid","el-icon-camera","el-icon-video-camera-solid","el-icon-video-camera","el-icon-message-solid","el-icon-bell","el-icon-s-cooperation","el-icon-s-order","el-icon-s-platform","el-icon-s-fold","el-icon-s-unfold","el-icon-s-operation","el-icon-s-promotion","el-icon-s-home","el-icon-s-release","el-icon-s-ticket","el-icon-s-management","el-icon-s-open","el-icon-s-shop","el-icon-s-marketing","el-icon-s-flag","el-icon-s-comment","el-icon-s-finance","el-icon-s-claim","el-icon-s-custom","el-icon-s-opportunity","el-icon-s-data","el-icon-s-check","el-icon-s-grid","el-icon-menu","el-icon-share","el-icon-d-caret","el-icon-caret-left","el-icon-caret-right","el-icon-caret-bottom","el-icon-caret-top","el-icon-bottom-left","el-icon-bottom-right","el-icon-back","el-icon-right","el-icon-bottom","el-icon-top","el-icon-top-left","el-icon-top-right","el-icon-arrow-left","el-icon-arrow-right","el-icon-arrow-down","el-icon-arrow-up","el-icon-d-arrow-left","el-icon-d-arrow-right","el-icon-video-pause","el-icon-video-play","el-icon-refresh","el-icon-refresh-right","el-icon-refresh-left","el-icon-finished","el-icon-sort","el-icon-sort-up","el-icon-sort-down","el-icon-rank","el-icon-loading","el-icon-view","el-icon-c-scale-to-original","el-icon-date","el-icon-edit","el-icon-edit-outline","el-icon-folder","el-icon-folder-opened","el-icon-folder-add","el-icon-folder-remove","el-icon-folder-delete","el-icon-folder-checked","el-icon-tickets","el-icon-document-remove","el-icon-document-delete","el-icon-document-copy","el-icon-document-checked","el-icon-document","el-icon-document-add","el-icon-printer","el-icon-paperclip","el-icon-takeaway-box","el-icon-search","el-icon-monitor","el-icon-attract","el-icon-mobile","el-icon-scissors","el-icon-umbrella","el-icon-headset","el-icon-brush","el-icon-mouse","el-icon-coordinate","el-icon-magic-stick","el-icon-reading","el-icon-data-line","el-icon-data-board","el-icon-pie-chart","el-icon-data-analysis","el-icon-collection-tag","el-icon-film","el-icon-suitcase","el-icon-suitcase-1","el-icon-receiving","el-icon-collection","el-icon-files","el-icon-notebook-1","el-icon-notebook-2","el-icon-toilet-paper","el-icon-office-building","el-icon-school","el-icon-table-lamp","el-icon-house","el-icon-no-smoking","el-icon-smoking","el-icon-shopping-cart-full","el-icon-shopping-cart-1","el-icon-shopping-cart-2","el-icon-shopping-bag-1","el-icon-shopping-bag-2","el-icon-sold-out","el-icon-sell","el-icon-present","el-icon-box","el-icon-bank-card","el-icon-money","el-icon-coin","el-icon-wallet","el-icon-discount","el-icon-price-tag","el-icon-news","el-icon-guide","el-icon-male","el-icon-female","el-icon-thumb","el-icon-cpu","el-icon-link","el-icon-connection","el-icon-open","el-icon-turn-off","el-icon-set-up","el-icon-chat-round","el-icon-chat-line-round","el-icon-chat-square","el-icon-chat-dot-round","el-icon-chat-dot-square","el-icon-chat-line-square","el-icon-message","el-icon-postcard","el-icon-position","el-icon-turn-off-microphone","el-icon-microphone","el-icon-close-notification","el-icon-bangzhu","el-icon-time","el-icon-odometer","el-icon-crop","el-icon-aim","el-icon-switch-button","el-icon-full-screen","el-icon-copy-document","el-icon-mic","el-icon-stopwatch","el-icon-medal-1","el-icon-medal","el-icon-trophy","el-icon-trophy-1","el-icon-first-aid-kit","el-icon-discover","el-icon-place","el-icon-location","el-icon-location-outline","el-icon-location-information","el-icon-add-location","el-icon-delete-location","el-icon-map-location","el-icon-alarm-clock","el-icon-timer","el-icon-watch-1","el-icon-watch","el-icon-lock","el-icon-unlock","el-icon-key","el-icon-service","el-icon-mobile-phone","el-icon-bicycle","el-icon-truck","el-icon-ship","el-icon-basketball","el-icon-football","el-icon-soccer","el-icon-baseball","el-icon-wind-power","el-icon-light-rain","el-icon-lightning","el-icon-heavy-rain","el-icon-sunrise","el-icon-sunrise-1","el-icon-sunset","el-icon-sunny","el-icon-cloudy","el-icon-partly-cloudy","el-icon-cloudy-and-sunny","el-icon-moon","el-icon-moon-night","el-icon-dish","el-icon-dish-1","el-icon-food","el-icon-chicken","el-icon-fork-spoon","el-icon-knife-fork","el-icon-burger","el-icon-tableware","el-icon-sugar","el-icon-dessert","el-icon-ice-cream","el-icon-hot-water","el-icon-water-cup","el-icon-coffee-cup","el-icon-cold-drink","el-icon-goblet","el-icon-goblet-full","el-icon-goblet-square","el-icon-goblet-square-full","el-icon-refrigerator","el-icon-grape","el-icon-watermelon","el-icon-cherry","el-icon-apple","el-icon-pear","el-icon-orange","el-icon-coffee","el-icon-ice-tea","el-icon-ice-drink","el-icon-milk-tea","el-icon-potato-strips","el-icon-lollipop","el-icon-ice-cream-square","el-icon-ice-cream-round"];
+            nodes.each(function(node){
+                var name = node.get("name");
+                var data = this.data[name] || "";
+                var area = new Element("div", {
+                    "styles": {
+                        "height": "300px",
+                        "overflow": "auto",
+                        "font-size": "24px"
+                    }
+                }).inject(node);
+                icons.forEach(function(i){
+                    if (data==i){
+                         area.appendHTML("<i style=\"background-color: #999999; padding:5px}\" @click='selected' data-icon=\""+i+"\" class=\""+i+" mainColor_bg\"></i>");
+                    }else{
+                        area.appendHTML("<i style='cursor: pointer; padding:5px' @click='selected' data-icon=\""+i+"\" class='"+i+"'></i>");
+                    }
+                });
+                this._loadVue(function(){
+                    new Vue({
+                        methods:{
+                            selected: function(e){
+                                var iNode = (e.target || e.srcElement);
+                                if (iNode && iNode.hasClass("mainColor_bg")){
+                                    iNode.removeClass("mainColor_bg");
+                                    _self.data[name] = "";
+                                    _self.changeData(name);
+                                }else{
+                                    this.$el.getElements("i").forEach(function(el){
+                                        if (el.hasClass("mainColor_bg")) el.removeClass("mainColor_bg");
+                                    });
+                                    if (iNode){
+                                        iNode.addClass("mainColor_bg");
+                                        var iconName = iNode.dataset["icon"];
+                                        _self.data[name] = iconName;
+                                        _self.changeData(name);
+                                    }
+                                }
+                            }
+                        }
+                    }).$mount(node);
+                }.bind(this));
+
+                // MWF.xDesktop.requireApp("process.FormDesigner", "widget.FiledConfigurator", function(){
+                //     var filedConfigurator = new MWF.xApplication.process.FormDesigner.widget.FiledConfigurator(node, this.designer, {
+                //         "onChange": function(){
+                //             debugger;
+                //             this.data[name] = filedConfigurator.getData();
+                //         }.bind(this)
+                //     }, data);
+                //     filedConfigurator.load()
+                // }.bind(this));
             }.bind(this));
         }
     },

@@ -1,0 +1,112 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.id}}:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.name}}:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.description}}:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		</table>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.size}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="size" value="medium" text{($.size==='medium')?'checked':''}/>medium
+					<input type="radio" name="size" value="small" text{($.size==='small')?'checked':''}/>small
+					<input type="radio" name="size" value="mini" text{($.size==='mini')?'checked':''}/>mini
+					<input type="radio" name="size" value="auto" text{($.size!=='medium' && $.size!=='small' && $.size!=='mini')?'checked':''}/>auto
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.type}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="type" value="default" text{($.type!=='primary' && $.type!=='success' && $.type!=='warning' && $.type!=='danger' && $.type!=='info' && $.type!=='text')?'checked':''}/>{{$.lp.el_bt_default}}
+					<br/><input type="radio" name="type" value="primary" text{($.type=='primary')?'checked':''}/>{{$.lp.el_bt_primary}}
+					<br/><input type="radio" name="type" value="success" text{($.type==='success')?'checked':''}/>{{$.lp.el_bt_success}}
+					<br/><input type="radio" name="type" value="warning" text{($.type==='warning')?'checked':''}/>{{$.lp.el_bt_warning}}
+					<br/><input type="radio" name="type" value="danger" text{($.type==='danger')?'checked':''}/>{{$.lp.el_bt_danger}}
+					<br/><input type="radio" name="type" value="info" text{($.type==='info')?'checked':''}/>{{$.lp.el_bt_info}}
+					<br/><input type="radio" name="type" value="text" text{($.type==='text')?'checked':''}/>{{$.lp.el_bt_text}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.el_plain}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="plain" value="yes" text{($.plain==='yes')?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="plain" value="no" text{($.plain!=='yes')?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.el_round}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="round" value="yes" text{($.round==='yes')?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="round" value="no" text{($.round!=='yes')?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.el_circle}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="circle" value="yes" text{($.circle==='yes')?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="circle" value="no" text{($.circle!=='yes')?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.el_icon}}:</td>
+				<td class="editTableValue"><input type="text" name="icon" value="text{$.icon}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.el_disabled}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="disabled" value="yes" text{($.disabled==='yes')?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="disabled" value="no" text{($.disabled!=='yes')?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.el_loading}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="loading" value="yes" text{($.loading==='yes')?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="loading" value="no" text{($.loading!=='yes')?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+
+			<tr>
+				<td class="editTableTitle">{{$.lp.el_autofocus}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="autofocus" value="yes" text{($.autofocus==='yes')?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="autofocus" value="no" text{($.autofocus!=='yes')?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+
+			<tr>
+				<td class="editTableTitle">{{$.lp.el_isText}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isText" value="yes" text{($.isText!=='no')?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isText" value="no" text{($.isText==='no')?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+
+		</table>
+
+		
+		<div class="MWFMaplist" name="elStyles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="elProperties" title="{{$.lp.attribute}}"></div>
+		
+	</div>
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="width:100%; height:400px; border:0px;font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

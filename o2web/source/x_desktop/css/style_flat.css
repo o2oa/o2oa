@@ -31,10 +31,15 @@ body {
 #layout {
 	background: #f0f0f0;
 }
-#layout *{
+.layout *{
 	box-sizing: content-box!important;
 }
-
+.o2_vue{
+	box-sizing: border-box!important;
+}
+.o2_vue *{
+	box-sizing: border-box!important;
+}
 input,button,select,textarea{outline:none}
 
 /*
