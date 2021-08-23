@@ -1220,7 +1220,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (json.type === "Subpage" || json.moduleName === "subpage") this.subpageCount++;
         if (json.type === "Widget" || json.moduleName === "widget") this.widgetCount++;
         if (!MWF["APP" + json.type]) {
-            MWF.xDesktop.requireApp("process.Xform", json.type, null, false);
+            var moduleType = json.type;
+            if(moduleType === "AttachmentDg")moduleType = "Attachment";
+            MWF.xDesktop.requireApp("process.Xform", moduleType, null, false);
         }
         var module = new MWF["APP" + json.type](node, json, this);
         if (beforeLoad) beforeLoad.apply(module);
