@@ -169,8 +169,10 @@
 	},
 	"designMobileNode": {
 	    "margin": "15px",
-	    "width": "360px",
-	    "height": "580px",
+		"width": "660px",
+		"height": "680px",
+//	    "width": "360px",
+//	    "height": "580px",
         "box-shadow": "0px 0px 20px #606060",
         "background": "url("+"../x_component_process_FormDesigner/$Main/default/designerBg.png)",
         "font-siez": "12px",
