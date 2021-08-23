@@ -234,12 +234,7 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
     },
     loadChartBar: function(){
         MWF.require("MWF.widget.chart.Bar", function(){
-            this.bar = new MWF.widget.chart.Bar(this.chartNode, this.statGridData, "displayName", {
-                "delay": 0, "style": "monthly",
-                "onPostLoad": function () {
-                    alert("postLoad")
-                }
-            });
+            this.bar = new MWF.widget.chart.Bar(this.chartNode, this.statGridData, "displayName", {"delay": 0, "style": "monthly"});
             //this.bar.addBar("value");
             this.bar.addBar(function(d){
                 var value = d.value;
