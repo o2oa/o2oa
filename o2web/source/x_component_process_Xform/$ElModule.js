@@ -9,6 +9,25 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     {
     Implements: [Events],
     Extends: MWF.APP$Module,
+    options: {
+        /**
+         * 组件加载前触发。
+         * @event MWF.xApplication.process.Xform.$Module#queryLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 组件加载时触发.
+         * @event MWF.xApplication.process.Xform.$Module#load
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 组件加载后触发.
+         * @event MWF.xApplication.process.Xform.$Module#postLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        "moduleEvents": ["load", "queryLoad", "postLoad"],
+        "elEvents": ["focus", "blur", "change", "input", "clear"]
+    },
     /**
      * @summary 组件的配置信息，同时也是Vue组件的data。
      * @member MWF.xApplication.process.Xform.Elinput#json {JsonObject}
@@ -66,13 +85,16 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
 
     _createVueExtend: function(){
         var _self = this;
-        return {
+        var app = {
             data: this._createVueData(),
             mounted: function(){
                 _self._afterMounted(this.$el);
             }
         };
+        this.appendVueExtend(app);
+        return app;
     },
+    appendVueExtend: function(app){},
     _createVueData: function(){
         if (this.json.vueData && this.json.vueData.code){
             var d = this.form.Macro.exec(this.json.vueData.code, this);
@@ -95,7 +117,6 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         this.fireEvent("load");
     },
     _loadVueCss: function(){
-        debugger;
         if (this.styleNode){
             this.node.removeClass(this.styleNode.get("id"));
         }

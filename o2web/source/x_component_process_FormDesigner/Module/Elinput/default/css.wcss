@@ -13,7 +13,7 @@
 		"height": "26px",
 		"line-height": "26px",
 		"padding": "0 10px",
-		"display": "inline-block"
+		"display": "block"
 	},
 	"moduleNodeShow": {
 		"border": "1px solid #333",

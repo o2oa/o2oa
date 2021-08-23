@@ -1,4 +1,4 @@
-o2.xDesktop.requireApp("process.Xform", "$Module", null, false);
+o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
 /** @class Elinput 基于Element UI的输入框组件。
  * @example
  * //可以在脚本中获取该组件
@@ -11,11 +11,15 @@ o2.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
-o2.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
+v = MWF.APPElinput =  new Class(
     /** @lends o2.xApplication.process.Xform.Elinput# */
     {
     Implements: [Events],
-    Extends: MWF.APP$ElModule,
+    Extends: MWF.APP$Elinput,
+    options: {
+        "moduleEvents": ["load", "queryLoad", "postLoad"],
+        "elEvents": ["focus", "blur", "change", "input", "clear"]
+    },
     /**
      * @summary 组件的配置信息，同时也是Vue组件的data。
      * @member MWF.xApplication.process.Xform.Elinput#json {JsonObject}
@@ -29,26 +33,65 @@ o2.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
      * json.disabled = true;     //设置输入框为禁用
      */
     _appendVueData: function(){
-        if (!this.json.size) this.json.size = "";
-        if (!this.json.bttype) this.json.bttype = "";
-        if (!this.json.plain) this.json.plain = false;
-        if (!this.json.round) this.json.round = false;
-        if (!this.json.circle) this.json.circle = false;
+        if (!this.json[this.json.id]){
+            this.json[this.json.id] = this._getBusinessData();
+            // this.value = this._getBusinessData();
+            // Object.defineProperty(this.json, this.json.id, {
+            //     "configurable": true,
+            //     "enumerable": true,
+            //     "get": function(){
+            //         return this.value;
+            //     }.bind(this),
+            //     "set": function(v){
+            //         this._setEnvironmentData(v);
+            //         this.value = v;
+            //     }.bind(this),
+            // });
+        }
+
+        if (!this.json.maxlength) this.json.maxlength = "";
+        if (!this.json.minlength) this.json.minlength = "";
+        if (!this.json.showWordLimit) this.json.showWordLimit = false;
+        if (!this.json.showPassword) this.json.showPassword = false;
         if (!this.json.disabled) this.json.disabled = false;
-        if (!this.json.loading) this.json.loading = false;
+        if (!this.json.clearable) this.json.clearable = false;
+        if (!this.json.size) this.json.size = "";
+        if (!this.json.prefixIcon) this.json.prefixIcon = "";
+        if (!this.json.suffixIcon) this.json.suffixIcon = "";
+        if (!this.json.rows) this.json.rows = "2";
+        if (!this.json.autosize) this.json.autosize = false;
+        if (!this.json.readonly) this.json.readonly = false;
+        if (!this.json.resize) this.json.resize = "none";
+    },
+    appendVueExtend: function(app){
+        if (!app.methods) app.methods = {};
+        app.methods.$loadElEvent = function(ev){
+            alert(ev);
+            //return this.form.Macro.fire(e.code, this, event);
+        }.bind(this)
     },
     _createElementHtml: function(){
-        debugger;
-        var html = "<el-button";
-        html += " :size=\"size\"";
-        html += " :type=\"bttype\"";
-        html += " :plain=\"plain\"";
-        html += " :round=\"round\"";
-        html += " :circle=\"circle\"";
+        var html = "<el-input";
+        html += " v-model=\""+this.json.id+"\"";
+        html += " :maxlength=\"maxlength\"";
+        html += " :minlength=\"minlength\"";
+        html += " :show-word-limit=\"showWordLimit\"";
+        html += " :show-password=\"showPassword\"";
         html += " :disabled=\"disabled\"";
-        html += " :loading=\"loading\"";
+        html += " :size=\"size\"";
+        html += " :prefix-icon=\"prefixIcon\"";
+        html += " :suffix-icon=\"suffixIcon\"";
+        html += " :rows=\"rows\"";
+        html += " :autosize=\"autosize\"";
+        html += " :readonly=\"readonly\"";
+        html += " :resize=\"resize\"";
+        html += " :clearable=\"clearable\"";
+        html += " :type=\"inputType\"";
+        html += " :placeholder=\"description\"";
 
-        if (this.json.autofocus==="yes") html += " autofocus";
+        Object.keys(this.options.elEvents).forEach(function(k){
+            html += " @"+k+"=\"$loadElEvent("+k+")\"";
+        });
 
         if (this.json.elProperties){
             Object.keys(this.json.elProperties).forEach(function(k){
@@ -64,7 +107,7 @@ o2.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
             html += " style=\""+style+"\"";
         }
 
-        html += ">"+((this.json.circle!=="yes" && this.json.isText!=="no") ? (this.json.name || this.json.id) : "")+"</el-button>";
+        html += ">"+((this.json.circle!=="yes" && this.json.isText!=="no") ? (this.json.name || this.json.id) : "")+"</el-input>";
         return html;
     }
 }); 

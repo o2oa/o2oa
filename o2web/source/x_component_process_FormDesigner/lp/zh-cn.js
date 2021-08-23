@@ -333,6 +333,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_checkbox": "多选框",
         "el_select": "选择器",
         "el_input": "输入框",
+        "el_autocomplete": "自动完成框",
         "el_cascader": "级联选择器",
         "el_number": "计数器",
         "el_switch": "开关",
