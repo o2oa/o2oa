@@ -1003,6 +1003,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "ckeditConfigInfor5": "https://ckeditor.com/ckeditor-4/",
         "ckeditConfigInfor6": "Note: After the editor properties are customized, the text format may no longer meet the national party and government agency official document format standards",
 
+        "showRead": "Show Read",
         "password": "password",
         "search": "search",
         "email": "email",
