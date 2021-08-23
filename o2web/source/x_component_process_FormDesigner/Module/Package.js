@@ -49,6 +49,16 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Org", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Opinion", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Statement", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.StatementSelector", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elbutton", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcontainer$Container", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcontainer", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elicon", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elradio", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcheckbox", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Importer", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.ReadLog", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elinput", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcommon", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elautocomplete", null, false);
+
 

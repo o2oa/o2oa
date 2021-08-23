@@ -494,7 +494,9 @@ if (window.Promise && !Promise.any){
         "JSBeautifier_html": ["../o2_lib/JSBeautifier/beautify-html.js"],
         "JSONTemplate": ["../o2_lib/mootools/plugin/Template.js"],
         "kity": ["../o2_lib/kityminder/kity/kity.js"],
-        "kityminder": ["../o2_lib/kityminder/core/dist/kityminder.core.js"]
+        "kityminder": ["../o2_lib/kityminder/core/dist/kityminder.core.js"],
+        "vue": ["../o2_lib/vue/vue.js"],
+        "elementui": ["../o2_lib/vue/element/index.js"]
     };
     var _loaded = {};
     var _loadedCss = {};
@@ -641,59 +643,61 @@ if (window.Promise && !Promise.any){
             var cssText = xhr.responseText;
             try{
                 if (cssText){
-                    cssText = cssText.replace(/\/\*(\s|\S)*?\*\//g, "");
-                    if (op.bind) cssText = cssText.bindJson(op.bind);
-                    if (op.dom){
-
-                        var rex = new RegExp("(.+)(?=\\{)", "g");
-                        var match;
-                        var prefix = "." + uuid + " ";
-                        while ((match = rex.exec(cssText)) !== null) {
-                            // var rule = prefix + match[0];
-                            // cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                            // rex.lastIndex = rex.lastIndex + prefix.length;
-
-                            var rulesStr = match[0];
-                            if (rulesStr.substr(0,1)=="@" || rulesStr.indexOf("%")!=-1){
-                                // var begin = 0;
-                                // var end = 0;
-
-
-                            }else{
-                                if (rulesStr.indexOf(",")!=-1){
-                                    var rules = rulesStr.split(/\s*,\s*/g);
-                                    rules = rules.map(function(r){
-                                        return prefix + r;
-                                    });
-                                    var rule = rules.join(", ");
-                                    cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                                    rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
-
-                                }else{
-                                    var rule = prefix + match[0];
-                                    cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                                    rex.lastIndex = rex.lastIndex + prefix.length;
-                                }
-                            }
-                        }
-                    }
-                    var style = op.doc.createElement("style");
-                    style.setAttribute("type", "text/css");
-                    var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
-                    head.appendChild(style);
-                    if(style.styleSheet){
-                        var setFunc = function(){
-                            style.styleSheet.cssText = cssText;
-                        };
-                        if(style.styleSheet.disabled){
-                            setTimeout(setFunc, 10);
-                        }else{
-                            setFunc();
-                        }
-                    }else{
-                        var cssTextNode = op.doc.createTextNode(cssText);
-                        style.appendChild(cssTextNode);
-                    }
+                    op.uuid = uuid;
+                    var style = _loadCssText(cssText, op);
+                    // cssText = cssText.replace(/\/\*(\s|\S)*?\*\//g, "");
+                    // if (op.bind) cssText = cssText.bindJson(op.bind);
+                    // if (op.dom){
+                    //
+                    //     var rex = new RegExp("(.+)(?=\\{)", "g");
+                    //     var match;
+                    //     var prefix = "." + uuid + " ";
+                    //     while ((match = rex.exec(cssText)) !== null) {
+                    //         // var rule = prefix + match[0];
+                    //         // cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                    //         // rex.lastIndex = rex.lastIndex + prefix.length;
+                    //
+                    //         var rulesStr = match[0];
+                    //         if (rulesStr.substr(0,1)=="@" || rulesStr.indexOf("%")!=-1){
+                    //             // var begin = 0;
+                    //             // var end = 0;
+                    //
+                    //
+                    //         }else{
+                    //             if (rulesStr.indexOf(",")!=-1){
+                    //                 var rules = rulesStr.split(/\s*,\s*/g);
+                    //                 rules = rules.map(function(r){
+                    //                     return prefix + r;
+                    //                 });
+                    //                 var rule = rules.join(", ");
+                    //                 cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                    //                 rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
+                    //
+                    //             }else{
+                    //                 var rule = prefix + match[0];
+                    //                 cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                    //                 rex.lastIndex = rex.lastIndex + prefix.length;
+                    //             }
+                    //         }
+                    //     }
+                    // }
+                    // var style = op.doc.createElement("style");
+                    // style.setAttribute("type", "text/css");
+                    // var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
+                    // head.appendChild(style);
+                    // if(style.styleSheet){
+                    //     var setFunc = function(){
+                    //         style.styleSheet.cssText = cssText;
+                    //     };
+                    //     if(style.styleSheet.disabled){
+                    //         setTimeout(setFunc, 10);
+                    //     }else{
+                    //         setFunc();
+                    //     }
+                    // }else{
+                    //     var cssTextNode = op.doc.createTextNode(cssText);
+                    //     style.appendChild(cssTextNode);
+                    // }
                 }
                 style.id = uid;
                 var styleObj = {"module": module, "id": uid, "style": style, "doc": op.doc, "class": uuid};
@@ -765,7 +769,77 @@ if (window.Promise && !Promise.any){
         }
     };
 
+    var _loadCssText = function(cssText, options, callback){
+        var op =  (_typeOf(options)==="object") ? _getCssOptions(options) : _getCssOptions(null);
+        var cb = (_typeOf(options)==="function") ? options : callback;
+        var uuid = op.uuid || "css"+_uuid();
+
+        if (cssText){
+            if (op.dom) _parseDom(op.dom, function(node){ if (node.className.indexOf(uuid) == -1) node.className += ((node.className) ? " "+uuid : uuid);}, op.doc);
+            cssText = cssText.replace(/\/\*(\s|\S)*?\*\//g, "");
+            if (op.bind) cssText = cssText.bindJson(op.bind);
+            if (op.dom){
+
+                var rex = new RegExp("(.+)(?=\\{)", "g");
+                var match;
+                var prefix = "." + uuid + " ";
+                while ((match = rex.exec(cssText)) !== null) {
+                    // var rule = prefix + match[0];
+                    // cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                    // rex.lastIndex = rex.lastIndex + prefix.length;
+
+                    var rulesStr = match[0];
+                    if (rulesStr.substr(0,1)=="@" || rulesStr.indexOf("%")!=-1){
+                        // var begin = 0;
+                        // var end = 0;
+
+
+                    }else{
+                        if (rulesStr.indexOf(",")!=-1){
+                            var rules = rulesStr.split(/\s*,\s*/g);
+                            rules = rules.map(function(r){
+                                return prefix + r;
+                            });
+                            var rule = rules.join(", ");
+                            cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                            rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
+
+                        }else{
+                            var rule = prefix + match[0];
+                            cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                            rex.lastIndex = rex.lastIndex + prefix.length;
+                        }
+                    }
+                }
+            }
+            var style = op.doc.createElement("style");
+            style.setAttribute("type", "text/css");
+            style.setAttribute("id", uuid);
+            if (!op.notInject){
+                var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
+                head.appendChild(style);
+            }
+
+            if(style.styleSheet){
+                var setFunc = function(){
+                    style.styleSheet.cssText = cssText;
+                };
+                if(style.styleSheet.disabled){
+                    setTimeout(setFunc, 10);
+                }else{
+                    setFunc();
+                }
+            }else{
+                var cssTextNode = op.doc.createTextNode(cssText);
+                style.appendChild(cssTextNode);
+            }
+        }
+        if (callback) callback(style, uuid);
+        return style;
+    };
+
     this.o2.loadCss = _loadCss;
+    this.o2.loadCssText = _loadCssText;
     this.o2.removeCss = _removeCss;
     if (window.Element) Element.prototype.loadCss = function(modules, options, callback){
         var op =  (_typeOf(options)==="object") ? options : {};
@@ -773,6 +847,13 @@ if (window.Promise && !Promise.any){
         op.dom = this;
         _loadCss(modules, op, cb);
     };
+    if (window.Element) Element.prototype.loadCssText = function(cssText, options, callback){
+        var op =  (_typeOf(options)==="object") ? options : {};
+        var cb = (_typeOf(options)==="function") ? options : callback;
+        op.dom = this;
+        return _loadCssText(cssText, op, cb);
+    };
+
 
     //load html
     _loadSingleHtml = function(module, callback, op){
@@ -817,7 +898,6 @@ if (window.Promise && !Promise.any){
             var el = els.item(i);
             var name = el.getAttribute("data-o2-element");
             if (name) _bindToModule(op.module, el, name.toString());
-            debugger;
             if (el.hasAttribute("data-o2-events")){
 
                 var events = el.getAttribute("data-o2-events").toString();

@@ -1,0 +1,18 @@
+{
+	"moduleNodeMove": {
+
+	},
+	"moduleNodeShow": {
+
+	},
+	"moduleNode": {
+		"border": "1px dashed #333",
+		"background-color": "#B3C0D1",
+		"height": "60px",
+		"cursor": "pointer",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"opacity": 1
+	}
+	
+}

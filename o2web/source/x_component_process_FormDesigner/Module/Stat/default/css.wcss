@@ -30,7 +30,7 @@
 		"left": "auto",
 		"width": "auto",
 		"opacity": 0.5,
-		"background": "#ffffff"
+		"background": "#ffa200"
 	},
 	"moduleNode": {
 		"border": "1px dashed #333",

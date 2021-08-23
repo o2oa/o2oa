@@ -542,11 +542,11 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		return module;
 	},
 
-	createModule: function(className, e){
+	createModule: function(className, e, group){
 		this.getTemplateData(className, function(data){
 			var moduleData = Object.clone(data);
 			var newTool = new MWF["FC"+className](this);
-			newTool.create(moduleData, e);
+			newTool.create(moduleData, e, group);
 		}.bind(this));
 	},
 	getTemplateData: function(className, callback , async){

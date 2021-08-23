@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.gson.XGsonBuilder;
 import org.apache.commons.lang3.BooleanUtils;
@@ -68,27 +69,15 @@ public class CollectPerson extends BaseAction {
 						}
 						req.setCenterProxyPort(centerServer.getProxyPort());
 						req.setHttpProtocol(centerServer.getHttpProtocol());
+						if(null != Config.portal().getUrlMapping() && !(Config.portal().getUrlMapping().isEmpty())){
+							req.setUrlMapping(XGsonBuilder.instance().toJsonTree(Config.portal().getUrlMapping()));
+						}
 						try {
 							ActionResponse response = ConnectionAction
 									.put(Config.collect().url(ADDRESS_COLLECT_TRANSMIT_RECEIVE), null, req);
 							response.getData(WrapOutBoolean.class);
 						} catch (Exception e) {
 							logger.warn("与云服务器连接错误:{}." + e.getMessage());
-						}
-						if(null != Config.portal().getUrlMapping() && !(Config.portal().getUrlMapping().isEmpty())){
-							try {
-								String url = Config.collect().url("/o2_collect_assemble/jaxrs/unit/urlMapping/");
-								String urlMapping = XGsonBuilder.toJson(Config.portal().getUrlMapping());
-								Map<String, String> parameters = new HashMap<String, String>();
-								parameters.put("name",  business.getUnitName());
-								parameters.put("urlMapping", urlMapping);
-								ActionResponse resp = ConnectionAction.put(url, null,parameters);
-								/*Map<String, String> urlmap = new HashMap<>();
-								urlmap.put("urlMapping", urlMapping);
-								CipherConnectionAction.put(true,Config.url_x_program_center_jaxrs("collect","urlMapping"),urlmap);*/
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
 						}
 					} else {
 						logger.debug("无法登录到云服务器.");
@@ -126,6 +115,16 @@ public class CollectPerson extends BaseAction {
 		private String secret;
 
 		private String key;
+
+		private JsonElement urlMapping;
+
+		public JsonElement getUrlMapping() {
+			return urlMapping;
+		}
+
+		public void setUrlMapping(JsonElement urlMapping) {
+			this.urlMapping = urlMapping;
+		}
 
 		public String getName() {
 			return name;
