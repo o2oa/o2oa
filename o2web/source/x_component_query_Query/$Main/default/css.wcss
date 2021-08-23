@@ -11,7 +11,7 @@
         "overflow": "hidden",
         "height": "100%",
         "background-color": "#ffffff",
-        "margin-left": "301px",
+        "margin-left": "311px",
         "margin-right": "10px"
     },
 
@@ -156,8 +156,6 @@
         "background": "#EBF1F7",
         "color": "#4A90E2"
     },
-
-
 
 
     "maskNode": {
