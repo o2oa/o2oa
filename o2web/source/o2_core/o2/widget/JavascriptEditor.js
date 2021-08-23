@@ -87,6 +87,24 @@ o2.widget.JavascriptEditor = new Class({
             if (callback) callback();
         }
     },
+    setMonacoLayout: function(){
+	    if (this.editor && this.node){
+
+                var size = this.node.getSize();
+                var osize = this.node.retrieve("nodeSize");
+                if (!osize || (osize && (osize.x!==size.x || osize.y!==size.y))){
+                    this.node.store("nodeSize", size);
+                    this.editor.layout();
+                }
+                //if (!osize) this.node.store("nodeSize", size);
+
+                window.setTimeout(this.setMonacoLayout.bind(this), 500);
+        }
+
+	    if (this.editor && this.editor.getDomNode()){
+
+        }
+    },
     loadMonaco: function(callback){
         if (o2.editorData.javascriptEditor){
             this.theme = o2.editorData.javascriptEditor.monaco_theme;
@@ -114,9 +132,11 @@ o2.widget.JavascriptEditor = new Class({
                     lineNumbersMinChars: 3,
                     lineNumbers: this.options.option.lineNumbers ? "on" : "off",
                     mouseWheelZoom: true,
-                    automaticLayout: true
+                    automaticLayout: false
                 });
                 this.focus();
+                window.setTimeout(this.setMonacoLayout.bind(this), 500);
+
 
                 this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function(e){
                     this.fireEvent("save");

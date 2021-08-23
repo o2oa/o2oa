@@ -68,7 +68,8 @@ MWF.xApplication.process.FormDesigner.LP = {
             "insertBottom" : "插入到底部",
             "insertBefore" : "插入到前面",
             "insertAfter" : "插入到后面",
-            "injectNotice" : "按住Ctrl松开鼠标精确定位"
+            "injectNotice" : "按住Ctrl松开鼠标精确定位",
+            "selectedContainer": "选择父对象"
 		},
 
         "actionbar": {
@@ -321,6 +322,24 @@ MWF.xApplication.process.FormDesigner.LP = {
         "office": "Office控件",
         "statementSelector": "选择查询视图",
         "statement": "嵌入查询视图",
+
+        "group_system": "系统组件",
+        "group_element": "Element组件",
+
+        "el_container": "布局容器",
+        "el_icon": "图标",
+        "el_button": "按钮",
+        "el_radio": "单选框",
+        "el_checkbox": "多选框",
+        "el_select": "选择器",
+        "el_input": "输入框",
+        "el_autocomplete": "自动完成框",
+        "el_cascader": "级联选择器",
+        "el_number": "计数器",
+        "el_switch": "开关",
+        "el_slider": "滑块",
+        "el_common": "通用",
+
         "importer": "数据导入",
         "readLog": "阅读记录"
     },
@@ -818,7 +837,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "fileNo": "文号",
         "signer": "签发人",
         "subject": "文件标题",
-        "allowEdit": "允许编辑",
         "editSubjectInfo": "标题允许编辑时，请不要绑定数据",
         "mainSend": "主送",
         "attachment": "附件",
@@ -937,6 +955,39 @@ MWF.xApplication.process.FormDesigner.LP = {
         "datatableEditMode": "编辑方式",
         "datatableEditModeValue": ["每次编辑单行","同时编辑多行"],
         "onlyPc": "仅PC端可用",
+
+        "size": "尺寸",
+        "color": "颜色",
+        "el_bt_default": "默认按钮",
+        "el_bt_primary": "主要按钮",
+        "el_bt_success": "成功按钮",
+        "el_bt_warning": "警告按钮",
+        "el_bt_danger": "危险按钮",
+        "el_bt_info": "信息按钮",
+        "el_bt_text": "文字按钮",
+
+        "el_plain": "朴素按钮",
+        "el_round": "圆角按钮",
+        "el_circle": "圆型按钮",
+        "el_icon": "图标",
+        "el_disabled": "是否禁用",
+        "el_loading": "加载中",
+        "el_autofocus": "默认焦点",
+        "el_isText": "显示文字",
+
+        "layout": "布局",
+        "layoutCode": "布局代码",
+        "layoutTemplate": "常用布局",
+
+        "elGroupStyles": "组样式",
+        "elGroupProperties": "组属性",
+
+        "el_border": "显示边框",
+        "el_radioColor": "字体颜色",
+        "el_radioFillColor": "填充颜色",
+        "el_buttonRadio": "按钮模式",
+
+
         "datatemplateOuterNote": "注: 位于当前数据模板外部的相关组件标识。数据模板可以有多层，外部组件标识填写有下列规则：<br/>" +
             "1、单层或者是最外层的数据模板，填\"fieldId\"，表示表单上的直接组件。<br/>" +
             "2、如果有多层数据模板，\"./fieldId\"表示和当前数据模板同层次的组件，\"../fieldId\"表示和上一层数据模板同层次的组件，以此类推。<br/>" +
@@ -972,7 +1023,35 @@ MWF.xApplication.process.FormDesigner.LP = {
         "ckeditConfigInfor5": "https://ckeditor.com/ckeditor-4/",
         "ckeditConfigInfor6": "注意：自定义了编辑器属性后，正文格式有可能不再符合国家党政机关公文格式标准",
 
-        "showRead": "显示待阅"
+        "showRead": "显示待阅",
+        "password": "密码",
+        "search": "搜索",
+        "email": "邮箱",
+        "datetime-local":"日期时间",
+        "month": "月份",
+        "date": "日期",
+        "time": "时间",
+        "week": "周",
+        "textarea": "多行文本",
+        "wordNumber": "字数统计",
+        "maxlength": "最大长度",
+        "clearable": "可清空",
+        "showPassword": "显示切换密码图标",
+        "prefixIcon": "头部图标",
+        "suffixIcon": "尾部图标",
+        "textareaRows": "多行文本行数",
+        "autosize": "适应高度",
+        "minRows": "最小行数",
+        "maxRows": "最大行数",
+        "resize": "改变大小",
+        "resizeNone": "不允许",
+        "resizeBoth": "允许",
+        "resizeHorizontal": "横向",
+        "resizeVertical": "纵向",
+        "el_placement": "弹出位置",
+        "popperClass": "列表类名",
+        "triggerOnFocus": "激活即列出输入建议"
+
     },
     "actionBar": {
         "close":"关闭",
