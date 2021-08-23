@@ -91,6 +91,7 @@ MWF.xApplication.process.FormDesigner.Module.$Component = MWF.FC$Component = new
             var copyNode = module._getCopyNode(this);
             copyNode.show();
             copyNode.inject(this.node, "before");
+            this._positionCopyNode(copyNode);
         }
 
 		// var copyNode = module._getCopyNode();

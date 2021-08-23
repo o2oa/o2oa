@@ -659,6 +659,6 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
             }
             //	throw "request error: "+errorText;
         }
-        return {"xhr": xhr, "text": text, "error": "error"};
+        return  {"xhr": xhr, "text": text, "error":error};
     }
 });

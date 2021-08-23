@@ -78,14 +78,15 @@ o2.widget.ScriptArea = new Class({
 
         this.jsEditor.showLineNumbers();
         this.jsEditor.max();
-        this.container.inject(obj);
+        this.container.inject(obj, "top");
         this.container.setStyles({
-            "position": "absolute",
+            //"position": "absolute",
             // "top": coordinates.top,
             // "left": coordinates.left,
             "top": coordinates.top+"px",
             "left": coordinates.left+"px",
-            "width": coordinates.width,
+            //"width": coordinates.width,
+            "width": "100%",
             "height": coordinates.height-2,
             "z-index": 20001
         });
