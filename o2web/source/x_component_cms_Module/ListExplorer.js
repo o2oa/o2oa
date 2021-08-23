@@ -512,7 +512,8 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
             "categoryIdList": [this.explorer.categoryData.id ],
             "statusList": [this.explorer.options.status],
             "orderField" : this.orderField || "publishTime",
-            "orderType" : this.orderType || "desc"
+            "orderType" : this.orderType || "desc",
+            "documentType": "全部"
         };
         if( this.searchKey && this.searchKey!="" ){
             data.title = this.searchKey;
@@ -619,7 +620,8 @@ MWF.xApplication.cms.Module.ListExplorer.ListForALL = new Class({
             "appIdList": [ this.explorer.columnData.id ],
             "statusList": [ this.explorer.options.status ],
             "orderField" : this.orderField || "publishTime",
-            "orderType" : this.orderType || "desc"
+            "orderType" : this.orderType || "desc",
+            "documentType": "全部"
         };
         if( this.searchKey && this.searchKey!="" ){
             data.title = this.searchKey
@@ -707,7 +709,8 @@ MWF.xApplication.cms.Module.ListExplorer.ListForDraft = new Class({
             "appIdList": [ this.explorer.columnData.id ],
             "statusList": [ "draft" ],
             "orderField" : this.orderField || null,
-            "orderType" : this.orderType || null
+            "orderType" : this.orderType || null,
+            "documentType": "全部"
         };
         if( this.searchKey && this.searchKey!="" ){
             data.title = this.searchKey
@@ -1230,6 +1233,13 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultDocument = new Class({
                     "styles":this.css[cell.contentStyles],
                     "text" : this.data[cell.item] ? this.data[cell.item] : ""
                 }).inject(this.node);
+                if( this.data.isTop && cell.item === "title" ){
+                    var td = this[cell.name];
+                    td.setStyles( this.css.titleAreaContentNode_top );
+                    new Element("div.topNode", {
+                        styles : this.css.titleAreaContentTopNode
+                    }).inject(td)
+                }
             }
         }.bind(this));
 
@@ -1257,8 +1267,20 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultDocument = new Class({
     setEvents: function(){
 
         this.node.addEvents({
-            "mouseover": function(){if (!this.readyRemove) this.node.setStyles(this.css.documentItemDocumentNode_over);}.bind(this),
-            "mouseout": function(){if (!this.readyRemove) this.node.setStyles(this.css.documentItemDocumentNode);}.bind(this),
+            "mouseover": function(){
+                if (!this.readyRemove) {
+                    this.node.setStyles(this.css.documentItemDocumentNode_over);
+                }
+                var topNode = this.node.getElement(".topNode");
+                if(topNode)topNode.setStyles(this.css.titleAreaContentTopNode_over); //.addClass("mainColor_bg")
+            }.bind(this),
+            "mouseout": function(){
+                if (!this.readyRemove) {
+                    this.node.setStyles(this.css.documentItemDocumentNode);
+                }
+                var topNode = this.node.getElement(".topNode");
+                if(topNode)topNode.setStyles(this.css.titleAreaContentTopNode); //.removeClass("mainColor_bg")
+            }.bind(this),
             "click": function(e){
                 this.openDocument(e);
             }.bind(this)

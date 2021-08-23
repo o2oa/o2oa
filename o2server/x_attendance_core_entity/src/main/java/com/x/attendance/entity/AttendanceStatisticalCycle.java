@@ -170,7 +170,7 @@ public class AttendanceStatisticalCycle extends SliceJpaObject {
 		if (cycleStartDate == null) {
 			if (cycleStartDateString != null) {
 				try {
-					return (new DateOperation()).getDateFromString(cycleEndDateString);
+					return (new DateOperation()).getDateFromString(cycleStartDateString);
 				} catch (Exception e) {
 					return null;
 				}

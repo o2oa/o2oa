@@ -232,7 +232,11 @@ public class AttendanceDetailAnalyseService {
 		if( detail != null ){
 			selfHolidayList = attendanceSelfHolidayService.listWithPersonFromCache(emc, detail.getEmpName(), false );
 			//查询用户匹配的排班配置
-			scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithPerson( detail.getEmpName(), debugger );
+			if(StringUtils.isNotEmpty(detail.getUnitName())){
+				scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithDetail( detail, debugger );
+			}else{
+				scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithPerson( detail.getEmpName(), debugger );
+			}
 			return analyseAttendanceDetail( emc, detail, scheduleSetting, selfHolidayList, workDayConfigList, statisticalCycleMap, debugger );
 
 		}else{
@@ -306,13 +310,12 @@ public class AttendanceDetailAnalyseService {
 
 			if( check ){
 				if( scheduleSetting != null ){
-					detail.setTopUnitName( scheduleSetting.getTopUnitName() );
-					/*if( StringUtils.isNotEmpty( scheduleSetting.getUnitName() ) && !"*".equals( scheduleSetting.getUnitName() )) {
-						detail.setUnitName( scheduleSetting.getUnitName() );
-					}else {
+					if(StringUtils.isEmpty(detail.getTopUnitName())){
+						detail.setTopUnitName(scheduleSetting.getTopUnitName());
+					}
+					if(StringUtils.isEmpty(detail.getTopUnitName())){
 						detail.setUnitName( userManagerService.getUnitNameWithPersonName( detail.getEmpName() ) );
-					}*/
-					detail.setUnitName( userManagerService.getUnitNameWithPersonName( detail.getEmpName() ) );
+					}
 					detail.setOnWorkTime( scheduleSetting.getOnDutyTime() );
 					detail.setMiddayRestStartTime( scheduleSetting.getMiddayRestStartTime() );
 					detail.setMiddayRestEndTime( scheduleSetting.getMiddayRestEndTime() );

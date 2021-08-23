@@ -45,6 +45,39 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
         });
     },
 
+    getInputData: function(){
+        if( this.readonly || this.json.isReadonly ) {
+            return this._getBusinessData();
+        }else if (this.node.getFirst()){
+            return this.node.getFirst().get("value");
+        }else{
+            return this._getBusinessData();
+        }
+    },
+
+    toHtml: function(value){
+        var reg = new RegExp("\n","g");
+        var reg2 = new RegExp("\u003c","g"); //尖括号转义，否则内容会截断
+        var reg3 = new RegExp("\u003e","g");
+        return ( value || "").replace(reg2,"&lt").replace(reg3,"&gt").replace(reg,"<br/>");
+    },
+
+    __setData: function(data){
+        var old = this.getInputData();
+        this._setBusinessData(data);
+        if( this.readonly || this.json.isReadonly ){
+            this.node.set("html", this.toHtml(data));
+        }else if (this.node.getFirst()){
+            this.node.getFirst().set("value", data);
+            this.checkDescription();
+            this.validationMode();
+        }else{
+            this.node.set("html", this.toHtml(data));
+        }
+        if (old!==data) this.fireEvent("change");
+        this.moduleValueAG = null;
+    },
+
 
     _setValue: function(value){
 	    if (!value) value = "";
@@ -53,11 +86,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
             this._setBusinessData(v);
             if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
             if (this.readonly || this.json.isReadonly){
-                var reg = new RegExp("\n","g");
-                var reg2 = new RegExp("\u003c","g"); //尖括号转义，否则内容会截断
-                var reg3 = new RegExp("\u003e","g");
-                var text = value.replace(reg2,"&lt").replace(reg3,"&gt").replace(reg,"<br/>");
-                this.node.set("html", text);
+                this.node.set("html", this.toHtml(value));
             }
             this.fieldModuleLoaded = true;
             //this.__setValue(v);
@@ -106,6 +135,19 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
         //     }
         //     return value;
         // }
+    },
+
+    getTextData: function(){
+        //var value = this.node.get("value");
+        //var text = this.node.get("text");
+        if (this.readonly || this.json.isReadonly){
+            var value = this._getBusinessData();
+            return {"value": [value || ""] , "text": [value || ""]};
+        }else{
+            var value = (this.node.getFirst()) ? this.node.getFirst().get("value") : this.node.get("text");
+            var text = (this.node.getFirst()) ? this.node.getFirst().get("text") : this.node.get("text");
+            return {"value": [value || ""] , "text": [text || value || ""]};
+        }
     },
 
     // _setValue: function(value){

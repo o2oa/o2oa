@@ -11,8 +11,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversationExt;
 
-import java.util.Date;
-
 public class ActionConversationSetTop extends BaseAction  {
 
     private final Logger logger = LoggerFactory.getLogger(ActionConversationSetTop.class);

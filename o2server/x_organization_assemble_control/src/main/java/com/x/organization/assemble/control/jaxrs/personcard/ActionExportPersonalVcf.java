@@ -1,13 +1,8 @@
 package com.x.organization.assemble.control.jaxrs.personcard;
 
 import java.io.ByteArrayOutputStream;
-
-
 import java.util.Arrays;
 import java.util.List;
-
-
-
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;

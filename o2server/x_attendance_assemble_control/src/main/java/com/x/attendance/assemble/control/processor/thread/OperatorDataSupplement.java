@@ -42,9 +42,10 @@ public class OperatorDataSupplement implements Runnable{
 		
 		AttendanceEmployeeConfig attendanceEmployeeConfig = null;
 		AttendanceStatisticalCycle attendanceStatisticalCycle = null;
-		Boolean check = true;		
-		
-		if( check ) {
+		Boolean check = true;
+		attendanceEmployeeConfig = entitySupplementData.getAttendanceEmployeeConfig();
+
+		/*if( check ) {
 			//补充和检验一下配置文件中的人员的所属组织和顶层组织信息是否正常
 			try {
 				attendanceEmployeeConfig = attendanceEmployeeConfigServiceAdv.checkAttendanceEmployeeConfig( entitySupplementData.getAttendanceEmployeeConfig() );
@@ -54,9 +55,8 @@ public class OperatorDataSupplement implements Runnable{
 				logger.error(e);
 			}
 		}
-		
 		logger.debug( debugger, ">>>>>>>>>>系统正在核对并补充员工的考勤打卡信息：" + attendanceEmployeeConfig.getEmployeeName() );
-		
+		*/
 		if( check ) {
 			//根据组织信息、统计周期年、月从所有的顶层组织统计周期信息MAP中查询一个适合的统计周期，如果没有则为该组织新建一个新的配置
 			try {
@@ -86,6 +86,7 @@ public class OperatorDataSupplement implements Runnable{
 		
 		if( check ) {
 			if ( attendanceStatisticalCycle != null ) {
+				//System.out.println( ">>>>>>>>>>获取到统计周期：cycle="+attendanceStatisticalCycle.getTopUnitName()+", unitName="+attendanceStatisticalCycle.getUnitName()+", CycleStartDate="+attendanceStatisticalCycle.getCycleStartDateString()+", cycleEndDate="+ attendanceStatisticalCycle.getCycleEndDateString() );
 				try {
 					logger.warn( "系统尝试核对和补充人员考勤数据，"
 							+ "StartDate:" + attendanceStatisticalCycle.getCycleStartDate()

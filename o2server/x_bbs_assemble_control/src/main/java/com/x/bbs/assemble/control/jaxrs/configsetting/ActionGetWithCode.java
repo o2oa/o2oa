@@ -2,6 +2,7 @@ package com.x.bbs.assemble.control.jaxrs.configsetting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,6 +10,8 @@ import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -18,7 +21,6 @@ import com.x.bbs.assemble.control.jaxrs.configsetting.exception.ExceptionConfigS
 import com.x.bbs.assemble.control.jaxrs.configsetting.exception.ExceptionConfigSettingNotExists;
 import com.x.bbs.entity.BBSConfigSetting;
 
-import net.sf.ehcache.Element;
 
 public class ActionGetWithCode extends BaseAction {
 	
@@ -31,7 +33,6 @@ public class ActionGetWithCode extends BaseAction {
 		Wi wi = null;
 		BBSConfigSetting configSetting = null;
 		String code = null;
-		String cacheKey = null;
 		Boolean check = true;
 		
 		try {
@@ -46,23 +47,22 @@ public class ActionGetWithCode extends BaseAction {
 		if( check ){
 			
 			code = wi.getConfigCode();
-			cacheKey = catchNamePrefix + "#code#" + code;
 			
 			if( code == null || code.isEmpty() ){
 				Exception exception = new ExceptionConfigSettingCodeEmpty();
 				result.error( exception );
 			}else{
-				Element element = null;
-				element = cache.get( cacheKey );
-				if( element != null ){
-					wrap = ( Wo ) element.getObjectValue();
+				Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), code);
+				Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+				if( optional.isPresent() ){
+					wrap = ( Wo ) optional.get();
 					result.setData( wrap );
 				}else{
 					try {
 						configSetting = configSettingService.getWithConfigCode( code );
 						if( configSetting != null ){
 							wrap = Wo.copier.copy( configSetting );
-							cache.put( new Element( cacheKey, wrap ) );
+							CacheManager.put( cacheCategory, cacheKey, wrap );
 							result.setData(wrap);
 						}else{
 							Exception exception = new ExceptionConfigSettingNotExists( code );

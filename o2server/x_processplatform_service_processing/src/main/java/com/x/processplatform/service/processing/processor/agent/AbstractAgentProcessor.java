@@ -58,9 +58,9 @@ public abstract class AbstractAgentProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Agent agent = (Agent) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, agent);
+		this.executingCommitted(aeiObjects, agent, works);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public abstract class AbstractAgentProcessor extends AbstractProcessor {
 
 	protected abstract List<Work> executing(AeiObjects aeiObjects, Agent agent) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Agent agent) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Agent agent, List<Work> works) throws Exception;
 
 	protected abstract List<Route> inquiring(AeiObjects aeiObjects, Agent agent) throws Exception;
 

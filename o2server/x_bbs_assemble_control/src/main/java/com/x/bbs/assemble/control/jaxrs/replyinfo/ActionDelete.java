@@ -3,7 +3,7 @@ package com.x.bbs.assemble.control.jaxrs.replyinfo;
 import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.druid.util.StringUtils;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -75,9 +75,9 @@ public class ActionDelete extends BaseAction {
 				wo.setId(id);
 				result.setData(wo);
 
-				ApplicationCache.notify(BBSSubjectInfo.class);
-				ApplicationCache.notify(BBSReplyInfo.class);
-				ApplicationCache.notify(BBSSectionInfo.class);
+				CacheManager.notify(BBSSubjectInfo.class);
+				CacheManager.notify(BBSReplyInfo.class);
+				CacheManager.notify(BBSSectionInfo.class);
 
 				operationRecordService.replyOperation(effectivePerson.getDistinguishedName(), replyInfo, "DELETE", hostIp, hostName);
 			} catch (Exception e) {

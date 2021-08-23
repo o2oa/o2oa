@@ -78,14 +78,13 @@ MWF.xApplication.Attendance.PersonSetting.Form = new Class({
         "height": 450,
         "hasTop" : true,
         "hasBottom" : true,
-        "title" : "",
+        "title" : MWF.xApplication.Attendance.LP.personSetting,
         "draggable" : true,
         "closeAction" : true
     },
     _createTableContent: function(){
         var lp = MWF.xApplication.Attendance.LP;
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='2' styles='formTableHead'>"+lp.personSetting+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='configType'></td>"+
             "    <td styles='formTableValue' item='configType'></td></tr>" +
             "<tr><td styles='formTabelTitle' lable='topUnitName'></td>"+
@@ -103,12 +102,13 @@ MWF.xApplication.Attendance.PersonSetting.Form = new Class({
 
         MWF.xDesktop.requireApp("Template", "MForm", function(){
             this.form = new MForm( this.formTableArea, this.data, {
+                style: "attendance",
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
                     configType : { text:lp.configType, type : "select", selectText : lp.configTypeSelectText, selectValue : ["REQUIRED","NOTREQUIRED"] },
                     topUnitName : { text: lp.topUnitName,  type : "org", orgType : "unit", notEmpty:true },
-                    unitName : { text:lp.unitName,  type : "org", orgType : "unit", notEmpty:true },
-                    employeeName : { text:lp.employeeName, type : "org", orgType : "person", notEmpty:true , "event" : {
+                    unitName : { text:lp.unitName,  type : "org", orgType : "unit" },
+                    employeeName : { text:lp.employeeName, type : "org", orgType : "person",  "event" : {
                         change : function(  item , ev ){
                             if( typeOf( item.orgObject ) == "array" && item.orgObject.length > 0  ){
                                 var data = item.orgObject[0].data;
@@ -118,7 +118,7 @@ MWF.xApplication.Attendance.PersonSetting.Form = new Class({
                             }
                         }
                     } },
-                    employeeNumber : {  text:lp.employeeNumber, notEmpty:true },
+                    employeeNumber : {  text:lp.employeeNumber },
                     empInTopUnitTime : { text:lp.joininDate, tType : "date" }
                 }
             }, this.app);

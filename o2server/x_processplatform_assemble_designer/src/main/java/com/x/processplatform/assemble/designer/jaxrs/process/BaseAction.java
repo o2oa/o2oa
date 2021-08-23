@@ -32,6 +32,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Agent;
+import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Cancel;
 import com.x.processplatform.core.entity.element.Choice;
@@ -890,6 +891,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	void cacheNotify() throws Exception {
+		CacheManager.notify(Application.class);
 		CacheManager.notify(Process.class);
 		CacheManager.notify(Agent.class);
 		CacheManager.notify(Begin.class);
@@ -907,155 +909,5 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CacheManager.notify(Service.class);
 		CacheManager.notify(Split.class);
 	}
-
-	// public static class WiAgent extends Agent {
-	//
-	// private static final long serialVersionUID = 97907810148448429L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiAgent, Agent> copier =
-	// WrapCopierFactory.wi(WiAgent.class, Agent.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiBegin extends Begin {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiBegin, Begin> copier =
-	// WrapCopierFactory.wi(WiBegin.class, Begin.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiCancel extends Cancel {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiCancel, Cancel> copier =
-	// WrapCopierFactory.wi(WiCancel.class, Cancel.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiChoice extends Choice {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiChoice, Choice> copier =
-	// WrapCopierFactory.wi(WiChoice.class, Choice.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiDelay extends Delay {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiDelay, Delay> copier =
-	// WrapCopierFactory.wi(WiDelay.class, Delay.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiEmbed extends Embed {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiEmbed, Embed> copier =
-	// WrapCopierFactory.wi(WiEmbed.class, Embed.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiEnd extends End {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiEnd, End> copier = WrapCopierFactory.wi(WiEnd.class,
-	// End.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiInvoke extends Invoke {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiInvoke, Invoke> copier =
-	// WrapCopierFactory.wi(WiInvoke.class, Invoke.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiManual extends Manual {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiManual, Manual> copier =
-	// WrapCopierFactory.wi(WiManual.class, Manual.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiMerge extends Merge {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiMerge, Merge> copier =
-	// WrapCopierFactory.wi(WiMerge.class, Merge.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiMessage extends Message {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiMessage, Message> copier =
-	// WrapCopierFactory.wi(WiMessage.class, Message.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiRoute extends Route {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiRoute, Route> copier =
-	// WrapCopierFactory.wi(WiRoute.class, Route.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiParallel extends Parallel {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiParallel, Parallel> copier =
-	// WrapCopierFactory.wi(WiParallel.class, Parallel.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiService extends Service {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiService, Service> copier =
-	// WrapCopierFactory.wi(WiService.class, Service.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
-	//
-	// public static class WiSplit extends Split {
-	//
-	// private static final long serialVersionUID = -1743455783385531904L;
-	//
-	// /** 这里要允许id字段的拷贝 */
-	// static WrapCopier<WiSplit, Split> copier =
-	// WrapCopierFactory.wi(WiSplit.class, Split.class, null,
-	// ListTools.toList(DISTRIBUTEFACTOR, UPDATETIME, CREATETIME, SEQUENCE));
-	// }
 
 }

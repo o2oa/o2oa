@@ -1,5 +1,9 @@
 package com.x.file.assemble.control.jaxrs.attachment2;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -12,9 +16,6 @@ import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 class ActionListWithFolder extends BaseAction {
 

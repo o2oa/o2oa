@@ -11,11 +11,11 @@ public class WrapApplicationDict extends ApplicationDict {
 
 	private static final long serialVersionUID = 1354157015715480102L;
 
-	public static WrapCopier<ApplicationDict, WrapApplicationDict> outCopier = WrapCopierFactory
+	public static final WrapCopier<ApplicationDict, WrapApplicationDict> outCopier = WrapCopierFactory
 			.wo(ApplicationDict.class, WrapApplicationDict.class, null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapApplicationDict, ApplicationDict> inCopier = WrapCopierFactory
-			.wi(WrapApplicationDict.class, ApplicationDict.class, null, JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapApplicationDict, ApplicationDict> inCopier = WrapCopierFactory
+			.wi(WrapApplicationDict.class, ApplicationDict.class, null, JpaObject.FieldsUnmodifyExcludeId, false);
 
 	@FieldDescribe("数据字典数据")
 	private JsonElement data;

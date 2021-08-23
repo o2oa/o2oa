@@ -482,7 +482,7 @@ if (window.Promise && !Promise.any){
         "ie_adapter": ["../o2_core/o2/ie_adapter.js"],
         "jquery": ["../o2_lib/jquery/jquery.min.js"],
         "mootools": ["../o2_lib/mootools/mootools-1.6.0_all.js"],
-        "ckeditor": ["../o2_lib/htmleditor/ckeditor4114/ckeditor.js"],
+        "ckeditor": ["../o2_lib/htmleditor/ckeditor4161/ckeditor.js"],
         "ckeditor5": ["../o2_lib/htmleditor/ckeditor5-12-1-0/ckeditor.js"],
         "raphael": ["../o2_lib/raphael/raphael.js"],
         "d3": ["../o2_lib/d3/d3.min.js"],
@@ -1580,18 +1580,22 @@ if (window.Promise && !Promise.any){
                             }
                         }
                         var r = o2.runCallback(callback, "success", [responseJSON],null);
-                        resolve(r || responseJSON);
+                        //resolve(r || responseJSON);
+                        resolve(responseJSON);
                         //return o2.runCallback(callback, "success", [responseJSON],null, resolve);
                     },
                     onFailure: function(xhr){
                         //var r = o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                         var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
-                        reject((r) ? r : xhr);
+                        // (r) ? reject(r) : reject(xhr, "", "");
+                        reject((r) ? r : {"xhr": xhr, "text": text, "error": "error"});
                         //return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                     }.bind(this),
                     onError: function(text, error){
-                        var r = o2.runCallback(callback, "error", [text, error], null, reject);
-                        reject((r) ? r : {"xhr": xhr, "text": text, "error":error});
+                        // var r = o2.runCallback(callback, "error", [text, error], null, reject);
+                        // (r) ? reject(r) : reject(null, text, error);
+                        var r = o2.runCallback(callback, "failure", [text, error], null);
+                        reject((r) ? r : {"xhr": xhr, "text": text, "error": "error"});
                         //return o2.runCallback(callback, "error", [text, error], null, reject);
                     }.bind(this)
                 });
@@ -1616,7 +1620,6 @@ if (window.Promise && !Promise.any){
             }.bind(this)).then(function(responseJSON){
                 return responseJSON;
             }).catch(function(err){
-                //var r = o2.runCallback(callback, "failure", [xhr, text, error], null);
                 return Promise.reject(err);
             });
 
@@ -1803,11 +1806,13 @@ if (window.Promise && !Promise.any){
     }
 
     var _txt = function(v){
+        if(typeof v !== "string")return v;
         var t = v.replace(/\</g, "&lt;");
         t = t.replace(/\>/g, "&gt;");
         return t;
     };
     var _dtxt = function(v){
+        if(typeof v !== "string")return v;
         var t = v.replace(/&lt;/g, "<");
         t = t.replace(/&gt;/g, ">");
         return t;

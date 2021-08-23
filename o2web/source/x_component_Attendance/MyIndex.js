@@ -3,6 +3,7 @@ MWF.xApplication.Attendance = MWF.xApplication.Attendance || {};
 MWF.require("MWF.xAction.org.express.RestActions", null,false);
 MWF.xDesktop.requireApp("Attendance", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("Attendance", "Common", null, false);
+MWF.xDesktop.requireApp("Attendance", "widget.Calendar", null, false);
 
 MWF.xApplication.Attendance.MyIndex = new Class({
     Extends: MWF.widget.Common,
@@ -11,14 +12,14 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         "style": "default"
     },
     statusColor : {
-        "normal" : "#9acd32", //绿色，正常
-        "levelAsked":"#4f94cd", //蓝色，请假
-        "late":"#fede03", //黄色，迟到
+        "normal" : "#4A90E2", //蓝色，正常
+        "levelAsked":"#2BC497", //绿色，请假
+        "late":"#F5A623", //黄色，迟到
         //"leaveEarly":"#fe8d03", //橙色，早退
-        "noSign":"#ee807f", //粉红色,未签到
-        "appealSuccess" : "#2ac497", //黄绿色，申诉通过
+        "noSign":"#FF8080", //粉红色,未签到
+        "appealSuccess" : "#4FB2E3", //黄绿色，申诉通过
         //"lackOfTime" : "#dec674",//工时不足人次
-        "abNormalDuty" : "#fedcbd"//异常打卡人次
+        "abNormalDuty" : "#8B572A"//异常打卡人次
     },
     initialize: function(node, app, actions, options){
         this.setOptions(options);
@@ -72,32 +73,36 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             "styles" : this.css.titleNode
         }).inject(this.node);
 
+        this.titleRightNode = new Element("div.titleRightNode",{
+            "styles" : this.css.titleRightNode
+        }).inject(this.titleNode);
+
         //this.titleLeftArrowNode = new Element("div",{
         //    "styles" : this.css.titleLeftArrowNode
-        //}).inject(this.titleNode);
+        //}).inject(this.titleRightNode);
         this.titleTextNode = new Element("div",{
             "styles" : this.css.titleTextNode,
             "text" : text
-        }).inject(this.titleNode);
+        }).inject(this.titleRightNode);
         this.titleTextNode.setStyles( {
-            "margin-left": "30px",
             "cursor" : "default"
         } );
         //this.titleRightArrowNode = new Element("div",{
         //    "styles" : this.css.titleRightArrowNode
-        //}).inject(this.titleNode);
+        //}).inject(this.titleRightNode);
 
-        var cycleText = this.app.lp.cyclText.replace("{start}",this.cycleStartDateString).replace("{end}",this.cycleEndDateString);
+        var cycleText = this.app.lp.cyclText.
+        replace("{start}",this.cycleStartDate.format(this.app.lp.dateFormatMonthDayLocal)).
+        replace("{end}",this.cycleEndDate.format(this.app.lp.dateFormatMonthDayLocal));
         this.titleCycleTextNode = new Element("div",{
             "styles" : this.css.titleCycleTextNode,
             "text" : cycleText
-        }).inject(this.titleNode);
-
+        }).inject(this.titleRightNode);
 
         this.titleScheduleIconNode = new Element("div",{
             "styles" : this.css.titleScheduleIconNode,
             "title" : this.lp.seeSchedule
-        }).inject(this.titleNode);
+        }).inject(this.titleRightNode);
 
         //this.titleLeftArrowNode.addEvents({
         //    "mouseover": function(){this.titleLeftArrowNode.setStyles(this.css.titleLeftArrowNode_over);}.bind(this),
@@ -163,10 +168,16 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             this.cycleStartDate = new Date( this.cycleStartDateString );
             this.cycleEndDate = new Date( this.cycleEndDateString );
 
-            //this.cycleStartDateString = "2016-02-25";
-            //this.cycleEndDateString = "2016-03-25";
-            //this.cycleStartDate = new Date( this.cycleStartDateString );
-            //this.cycleEndDate = new Date( this.cycleEndDateString );
+            this.cycleYearMonth = [];
+            var start = new Date(this.cycleStartDate.getFullYear(), this.cycleStartDate.getMonth(), 1);
+            while( start < this.cycleEndDate ){
+                var year = start.getFullYear().toString();
+                var month = start.getMonth()+1;
+                month = month.toString().length === 2 ? month : "0"+month;
+
+                start.increment("month", 1);
+                this.cycleYearMonth.push( { year: year, month: month} )
+            }
 
             this.isCrossMonth = (this.cycleStartDate.getMonth() != this.cycleEndDate.getMonth());
 
@@ -252,10 +263,15 @@ MWF.xApplication.Attendance.MyIndex = new Class({
                     document.body.addEvent("mousedown", function(){ this.scheduleNode.setStyle("display","none")}.bind(this));
                     var d = data[0];
                     var table = new Element("table", {
-                        "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.filterTable, "class" : "filterTable"
+                        "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "class" : "filterTable"
                     }).inject( this.scheduleNode );
                     var tr = new Element("tr").inject(table);
                     new Element("td",{ "text" : this.lp.scheduleTable , "styles" : this.css.scheduleTdHead, "colspan" : "2"  }).inject(tr);
+
+
+                    var table = new Element("table", {
+                        "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "class" : "filterTable"
+                    }).inject( this.scheduleNode );
                     var tr = new Element("tr").inject(table);
                     new Element("td",{ "text" :  this.lp.schedule.workTime + "：" , "styles" : this.css.scheduleTdTitle  }).inject(tr);
                     new Element("td",{ "text" : d.onDutyTime || "" , "styles" : this.css.scheduleTdValue  }).inject(tr);
@@ -286,7 +302,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
     loadContent : function(){
         this.loadContentNode();
         this.loadData();
-        this.setNodeScroll();
+        // this.setNodeScroll();
         this.setContentSize();
     },
     reloadChart : function(){
@@ -316,26 +332,58 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             "styles" : this.css.calendarArea
         }).inject(this.topContentArea);
 
-        this.statusColorArea = new Element("div.statusColorArea",{
-            "styles" : this.css.statusColorArea
-        }).inject(this.topContentArea);
-
-        this.pieChartArea = new Element("div.pieChartArea",{
-            "styles" : this.css.pieChartArea
-        }).inject(this.topContentArea);
-
 
         this.middleContentArea = new Element("div.middleContentArea",{
             "styles" : this.css.middleContentArea
         }).inject(this.elementContentListNode);
 
+
+
+        this.middleLeftArea = new Element("div.middleLeftArea",{
+            "styles" : this.css.middleLeftArea
+        }).inject(this.middleContentArea);
+
+        this.middleLeftTitleArea = new Element("div.middleLeftTitleArea",{
+            "styles" : this.css.middleLeftTitleArea,
+            "text": this.lp.attendanceSummary
+        }).inject(this.middleLeftArea);
+
+        this.middleLeftContentArea = new Element("div.middleLeftContentArea",{
+            "styles" : this.css.middleLeftContentArea
+        }).inject(this.middleLeftArea);
+
+        this.statusColorArea = new Element("div.statusColorArea",{
+            "styles" : this.css.statusColorArea
+        }).inject(this.middleLeftContentArea);
+
+        this.pieChartArea = new Element("div.pieChartArea",{
+            "styles" : this.css.pieChartArea
+        }).inject(this.middleLeftContentArea);
+
+
+
+        this.middleRightArea = new Element("div.middleRightArea",{
+            "styles" : this.css.middleRightArea
+        }).inject(this.middleContentArea);
+
+        this.middleRightTitleArea = new Element("div.middleRightTitleArea",{
+            "styles" : this.css.middleRightTitleArea,
+            "text": this.lp.attendanceTrendChart
+        }).inject(this.middleRightArea);
+
+        this.middleRightContentArea = new Element("div.middleRightContentArea",{
+            "styles" : this.css.middleRightContentArea
+        }).inject(this.middleRightArea);
+
+
         this.lineChartArea = new Element("div.lineChartArea",{
             "styles" : this.css.lineChartArea
-        }).inject(this.middleContentArea)
+        }).inject(this.middleRightContentArea)
 
     },
     loadData : function(){
-        this.listDetailFilterUser( function( data ){
+        // this.listDetailFilterUser( function( data ){
+        this.listCycleDetailFileterUser( function(data){
             this.detailData = data || {};
             this.anaylyseDetail();
             this.loadStatusColorNode();
@@ -359,6 +407,18 @@ MWF.xApplication.Attendance.MyIndex = new Class({
                     names : []
                 };
                 data.each( function(d){
+                    if( this.dateMap[d.configDate] ){
+                        var m = this.dateMap[d.configDate];
+                        if( d.configType === "Holiday" ){
+                            m.isHoliday = true;
+                            m.holidayName = d.configName;
+                        }else if(d.configType === "Workday"){
+                            m.isWorkday = true;
+                            m.holidayName = d.configName;
+                        }
+                    }
+
+
                     if( !dates.names.contains(d.configName) ){
                         dates.names.push( d.configName )
                     }
@@ -380,7 +440,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
                         dates.workdays.push( d.configDate );
                         dates[d.configName].workdays.push( d.configDate )
                     }
-                });
+                }.bind(this));
                 this.holidayData[this.year] = dates;
 
                 if(callback)callback();
@@ -389,10 +449,9 @@ MWF.xApplication.Attendance.MyIndex = new Class({
     },
     loadCalendarContent : function(){
 
-        //this.calendarTitle = new Element("div.calendarTitle",{
-        //    "styles" : this.css.calendarTitle,
-        //    "text" : this.lp.index.attendanceCalendar
-        //}).inject(this.calendarArea)
+        // this.calendarTitle = new Element("div.calendarTitle",{
+        //    "styles" : this.css.calendarTitle
+        // }).inject(this.calendarArea)
 
         this.canlendarToolbar = new Element("div.canlendarToolbar",{
             "styles" : this.css.canlendarToolbar
@@ -406,18 +465,22 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         this.calendarDate = this.date.clone();
         if( this.isCrossMonth ){
 
+            this.calendarMonthNode = new Element("div",{
+                "styles" : this.css.calendarMonthNode
+            }).inject(this.canlendarToolbar);
+
             this.calendarRightArrowNode = new Element("div",{
                 "styles" : this.css.calendarRightArrowNode
-            }).inject(this.canlendarToolbar);
+            }).inject(this.calendarMonthNode);
 
             this.calendarCurrentMonthNode = new Element("div",{
                 "styles" : this.css.calendarCurrentMonthNode,
                 "text" : (this.calendarDate.getMonth()+1)+this.app.lp.month
-            }).inject(this.canlendarToolbar);
+            }).inject(this.calendarMonthNode);
 
             this.calendarLeftArrowNode = new Element("div",{
                 "styles" : this.css.calendarLeftArrowNode
-            }).inject(this.canlendarToolbar);
+            }).inject(this.calendarMonthNode);
 
             this.calendarLeftArrowNode.addEvents({
                 //"mouseover": function(){this.calendarLeftArrowNode.setStyles(this.css.calendarLeftArrowNode_over);}.bind(this),
@@ -443,11 +506,12 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             "styles" : this.css.calendarNode
         }).inject(this.calendarArea);
 
-        this.calendar = new MWF.xApplication.Attendance.Calendar(this.calendarNode, this,
+        this.calendar = new MWF.xApplication.Attendance.MyIndex.Calendar(this.calendarNode, this,
             {
                 "holiday" :this.holidayData[this.year],
                 "detail" :this.detailData,
-                "eventData" : this.eventData
+                "eventData" : this.eventData,
+                "dateMap": this.dateMap
             },
             {
                 date : this.date,
@@ -456,6 +520,20 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             }
         );
         this.calendar.load();
+
+        // this.calendar = new MWF.xApplication.Attendance.Calendar(this.calendarNode, this,
+        //     {
+        //         "holiday" :this.holidayData[this.year],
+        //         "detail" :this.detailData,
+        //         "eventData" : this.eventData
+        //     },
+        //     {
+        //         date : this.date,
+        //         cycleStart : this.cycleStartDate,
+        //         cycleEnd : this.cycleEndDate
+        //     }
+        // );
+        // this.calendar.load();
 
     },
     switchCalendarArrow : function( date ){
@@ -480,17 +558,23 @@ MWF.xApplication.Attendance.MyIndex = new Class({
     },
     changeCalendarMonthPrev: function(){
         if( this.calendarLeftDisable )return ;
-        jQuery(this.calendarNode).fullCalendar( 'prev' );
+        // jQuery(this.calendarNode).fullCalendar( 'prev' );
         this.calendarDate.decrement("month", 1);
         this.calendarCurrentMonthNode.set("text",(this.calendarDate.getMonth()+1)+ this.app.lp.month );
         this.switchCalendarArrow( this.calendarDate );
+
+        this.calendar.date = this.calendarDate;
+        this.calendar.reLoadCalendar();
     },
     changeCalendarMonthNext: function(){
         if( this.calendarRightDisable )return ;
-        jQuery(this.calendarNode).fullCalendar( 'next' );
+        // jQuery(this.calendarNode).fullCalendar( 'next' );
         this.calendarDate.increment("month", 1);
         this.calendarCurrentMonthNode.set("text",(this.calendarDate.getMonth()+1)+this.app.lp.month);
         this.switchCalendarArrow( this.calendarDate );
+
+        this.calendar.date = this.calendarDate;
+        this.calendar.reLoadCalendar();
 
         //this.date.increment("month", 1);
         //this.setDate( this.date );
@@ -598,7 +682,6 @@ MWF.xApplication.Attendance.MyIndex = new Class({
     },
     loadStatusColorNode : function(){
 
-
         this.statusColorTable = new Element("table",{
             "styles" : this.css.statusColorTable
         }).inject(this.statusColorArea);
@@ -606,21 +689,68 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         for(var status in this.statusColor){
 
             var tr = new Element("tr",{
-                "styles" : this.css.statusColorTr
+                "styles" : this.css.statusColorTr,
+                "title": this.lp[status]
             }).inject(this.statusColorTable);
-            var td = new Element("td",{
-                "styles" : this.css.statusColorTd
-            }).inject(tr);
-            td.setStyle("background-color",this.statusColor[status]);
 
-            var tr = new Element("tr",{
-                "styles" : this.css.statusTextTr
-            }).inject(this.statusColorTable);
-            var td = new Element("td",{
-                "styles" : this.css.statusTextTd,
-                "text" : this.lp[status] +":"+this.totalData[status] + " "+ this.app.lp.day + ( this.rateData[status] ? "("+this.rateData[status]+")" : "" )
-            }).inject(tr)
+            var td = new Element("td").inject(tr);
+            new Element("div",{
+                "styles" : {
+                    "margin-top": "8px",
+                    "width": "14px",
+                    "height": "14px",
+                    "border-radius": "14px",
+                    "background-color": this.statusColor[status]
+                }
+            }).inject(td);
+
+            var td = new Element("td").inject(tr);
+            new Element("div",{
+                "styles" : {
+                    "margin-top": "8px",
+                    "min-width": "30px",
+                    "padding-left": "4px",
+                    "font-size": "14px",
+                    "color": "#666"
+                },
+                "text": this.lp.statusText[status]
+            }).inject(td);
+
+            var td = new Element("td").inject(tr);
+            new Element("div",{
+                "styles" : {
+                    "margin-top": "8px",
+                    "min-width": "60px",
+                    "padding-left": "4px",
+                    "font-size": "12px",
+                    "color": "#999"
+                },
+                "text": "("+this.totalData[status] + ""+ this.app.lp.day+")"
+            }).inject(td);
         }
+
+        // this.statusColorTable = new Element("table",{
+        //     "styles" : this.css.statusColorTable
+        // }).inject(this.statusColorArea);
+        //
+        // for(var status in this.statusColor){
+        //
+        //     var tr = new Element("tr",{
+        //         "styles" : this.css.statusColorTr
+        //     }).inject(this.statusColorTable);
+        //     var td = new Element("td",{
+        //         "styles" : this.css.statusColorTd
+        //     }).inject(tr);
+        //     td.setStyle("background-color",this.statusColor[status]);
+        //
+        //     var tr = new Element("tr",{
+        //         "styles" : this.css.statusTextTr
+        //     }).inject(this.statusColorTable);
+        //     var td = new Element("td",{
+        //         "styles" : this.css.statusTextTd,
+        //         "text" : this.lp[status] +":"+this.totalData[status] + " "+ this.app.lp.day + ( this.rateData[status] ? "("+this.rateData[status]+")" : "" )
+        //     }).inject(tr)
+        // }
     },
     loadPieChart : function(){
 
@@ -659,6 +789,33 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         });
         this.lineChart.load();
     },
+    listCycleDetailFileterUser: function(callback, name){
+        debugger;
+        var data = [];
+        var loadCount = 0;
+        var startTime = Date.parse( this.cycleStartDate.format("%Y-%m-%d") ).getTime();
+        var endTime = Date.parse( this.cycleEndDate.format("%Y-%m-%d") ).getTime();
+        this.cycleYearMonth.each(function(cycle){
+            var filter = {};
+            if( name )filter.q_empName = name;
+            filter.cycleYear = cycle.year;
+            filter.cycleMonth =  cycle.month;
+            this.actions.listDetailFilterUser( filter, function(json){
+                data = data.concat( json.data || [] );
+                loadCount++;
+                if( loadCount >= this.cycleYearMonth.length ){
+                    data = data.filter( function (d) {
+                        var time = Date.parse(d.recordDateString).getTime();
+                        return (time >= startTime) && (time <= endTime);
+                    }.bind(this));
+                    data.sort( function( a, b ){
+                        return parseInt( a.recordDateString.replace(/-/g,"") ) -  parseInt( b.recordDateString.replace(/-/g,"") );
+                    });
+                    if( callback )callback(data);
+                }
+            }.bind(this))
+        }.bind(this))
+    },
     listDetailFilterUser :function( callback, name, year, month ){
         //{'q_empName':'林玲','q_year':'2016','q_month':'03'}
         var filter = {};
@@ -683,22 +840,24 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         //var filterSize = this.filterNode.getSize();
         var filterConditionSize = this.filterConditionNode ? this.filterConditionNode.getSize() : {"x":0,"y":0};
 
-        var height = nodeSize.y-toolbarSize.y-pt-pb-filterConditionSize.y-titlebarSize.y;
+        var height = nodeSize.y-toolbarSize.y-pt-pb-filterConditionSize.y-titlebarSize.y-10;
         this.elementContentNode.setStyle("height", ""+height+"px");
 
     },
-    setNodeScroll: function(){
-        var _self = this;
-        MWF.require("MWF.widget.ScrollBar", function(){
-            new MWF.widget.ScrollBar(this.elementContentNode, {
-                "indent": false,"style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
-                "onScroll": function(y){
-                }
-            });
-        }.bind(this));
-    },
+    // setNodeScroll: function(){
+    //     var _self = this;
+    //     MWF.require("MWF.widget.ScrollBar", function(){
+    //         new MWF.widget.ScrollBar(this.elementContentNode, {
+    //             "indent": false,"style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
+    //             "onScroll": function(y){
+    //             }
+    //         });
+    //     }.bind(this));
+    // },
     anaylyseDetail : function(){
         var events = [];
+        var dateMap = {};
+        this.dateMap = dateMap;
         var totals = {
             levelAsked : 0,
             noSign : 0,
@@ -709,7 +868,46 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             abNormalDuty : 0,
             normal : 0
         };
+
+        var setDateMap = function (d, type) {
+            var map = dateMap[d.recordDateString] = {
+                "on": d.onDutyTime,
+                "off": d.offDutyTime,
+                "detailId": d.id
+            };
+            if( type === "normal"){
+                map.text = this.lp.statusText[type];
+            }else if(type){
+                map.text = this.lp.statusText[type];
+                map.color = this.statusColor[type];
+            }
+            map.isWorkday = d.isWorkday;
+            map.isHoliday = d.isHoliday;
+        }.bind(this);
+
         this.detailData.each( function( d ){
+
+            if( this.isAskForLevel(d,"am") || this.isAskForLevel(d,"pm") ){
+                setDateMap( d, "levelAsked" );
+            }else if( this.isAppealSuccess(d,"am") || this.isAppealSuccess(d,"pm")){
+                setDateMap( d, "appealSuccess" );
+            }else if( this.isAbsent(d,"am") || this.isAbsent(d,"pm")){
+                setDateMap( d, "noSign" );
+            }else if( this.isLate(d,"am") || this.isLate(d,"pm")) {
+                setDateMap( d, "late" );
+            }else if( this.isLackOfTime(d,"am") || this.isLackOfTime(d,"pm")){
+                setDateMap( d, "lackOfTime" );
+            }else if( this.isAbnormalDuty(d,"am") || this.isAbnormalDuty(d,"pm")){
+                setDateMap( d, "abNormalDuty" );
+            }else if( this.isHoliday(d, "am") || this.isHoliday(d, "pm")){
+                setDateMap( d );
+            }else if( this.isWeekend(d, "am") || this.isWeekend(d, "pm") ){
+                setDateMap( d );
+            }else{
+                setDateMap( d, "normal" );
+            }
+
+
             if( this.isAskForLevel(d,"am") ){
                 events.push( {  text:this.lp.levelAsked, start: d.recordDateString,  backgroundColor :this.statusColor.levelAsked } );
                 totals.levelAsked = totals.levelAsked + 0.5
@@ -876,4 +1074,371 @@ MWF.xApplication.Attendance.MyIndex = new Class({
 
     }
 
+});
+
+
+MWF.xApplication.Attendance.MyIndex.Calendar = new Class({
+    Implements: [Options, Events],
+    options: {
+        date : "",
+        cycleStart : "",
+        cycleEnd : ""
+    },
+    initialize: function(container, view, data, options){
+        // {
+        //     "holiday" :this.holidayData[this.year],
+        //     "detail" :this.detailData,
+        //     "eventData" : this.eventData
+        // }
+
+        this.setOptions(options);
+        this.view = view;
+        this.css = this.view.css;
+        this.container = container;
+        this.app = this.view.app;
+        this.data = data;
+        this.date = this.options.date;
+        this.today = new Date();
+        this.days = {};
+        this.weekBegin = 1;
+    },
+    load: function(){
+
+        debugger;
+
+        // this.titleNode = new Element("div", {"styles": this.css.calendarTitleNode}).inject(this.container);
+
+
+        // this.scrollNode = new Element("div", {
+        //     "styles":  this.app.inContainer ? this.css.scrollNode_inContainer : this.css.scrollNode
+        // }).inject(this.container);
+
+        this.contentWarpNode = new Element("div", {
+            "styles": this.css.contentWarpNode
+        }).inject(this.container);
+
+        this.contentContainerNode = new Element("div",{
+            "styles" : this.css.contentContainerNode
+        }).inject(this.contentWarpNode);
+
+        this.bodyNode = new Element("div", {
+            "styles": this.css.contentNode
+        }).inject(this.contentContainerNode);
+
+        // this.setTitleNode();
+        this.setBodyNode();
+
+        this.resetBodySize();
+        this.app.addEvent("resize", this.resetBodySize.bind(this));
+
+    },
+    resetBodySize: function(){
+        var size = this.container.getSize();
+        var titleSize = this.titleNode ? this.titleNode.getSize() : {x:0, y:0};
+        var y = size.y-titleSize.y;
+
+        if(this.scrollNode)this.scrollNode.setStyle("height", ""+y+"px");
+
+        if (this.contentWarpNode){
+            this.contentWarpNode.setStyles({
+                "width": (size.x - 30) +"px"
+            });
+        }
+    },
+    // setTitleNode: function(){
+    //     this.prevMonthNode =  new Element("div", {"styles": this.css.calendarPrevMonthNode}).inject(this.titleNode);
+    //
+    //     var text = this.date.format(this.app.lp.dateFormatMonth);
+    //     this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
+    //
+    //     this.nextMonthNode =  new Element("div", {"styles": this.css.calendarNextMonthNode}).inject(this.titleNode);
+    //
+    //     this.prevMonthNode.addEvents({
+    //         "mouseover": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode_over);}.bind(this),
+    //         "mouseout": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode);}.bind(this),
+    //         "mousedown": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode_down);}.bind(this),
+    //         "mouseup": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode_over);}.bind(this),
+    //         "click": function(){this.changeMonthPrev();}.bind(this)
+    //     });
+    //     this.nextMonthNode.addEvents({
+    //         "mouseover": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode_over);}.bind(this),
+    //         "mouseout": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode);}.bind(this),
+    //         "mousedown": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode_down);}.bind(this),
+    //         "mouseup": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode_over);}.bind(this),
+    //         "click": function(){this.changeMonthNext();}.bind(this)
+    //     });
+    //     this.titleTextNode.addEvents({
+    //         "mouseover": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
+    //         "mouseout": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode);}.bind(this),
+    //         "mousedown": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_down);}.bind(this),
+    //         "mouseup": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
+    //         "click": function(){this.changeMonthSelect();}.bind(this)
+    //     });
+    // },
+    // changeMonthPrev: function(){
+    //     this.date.decrement("month", 1);
+    //     var text = this.date.format(this.app.lp.dateFormatMonth);
+    //     this.titleTextNode.set("text", text);
+    //     this.reLoadCalendar();
+    // },
+    // changeMonthNext: function(){
+    //     this.date.increment("month", 1);
+    //     var text = this.date.format(this.app.lp.dateFormatMonth);
+    //     this.titleTextNode.set("text", text);
+    //     this.reLoadCalendar();
+    // },
+    // changeMonthSelect: function(){
+    //     if (!this.monthSelector) this.createMonthSelector();
+    //     this.monthSelector.show();
+    // },
+    // createMonthSelector: function(){
+    //     this.monthSelector = new MWF.xApplication.Meeting.MonthView.Calendar.MonthSelector(this.date, this);
+    // },
+    // changeMonthTo: function(d){
+    //     this.date = d;
+    //     var text = this.date.format(this.app.lp.dateFormatMonth);
+    //     this.titleTextNode.set("text", text);
+    //     this.reLoadCalendar();
+    // },
+
+    setBodyNode: function(){
+        if( this.weekBegin == "1" ){
+            var html = "<tr><th>"+this.app.lp.weeks.Mon+"</th><th>"+this.app.lp.weeks.Tues+"</th><th>"+this.app.lp.weeks.Wed+"</th>" +
+                "<th>"+this.app.lp.weeks.Thur+"</th><th>"+this.app.lp.weeks.Fri+"</th><th>"+this.app.lp.weeks.Sat+"</th><th>"+this.app.lp.weeks.Sun+"</th></tr>";
+        }else{
+            var html = "<tr><th>"+this.app.lp.weeks.Sun+"</th><th>"+this.app.lp.weeks.Mon+"</th><th>"+this.app.lp.weeks.Tues+"</th><th>"+this.app.lp.weeks.Wed+"</th>" +
+                "<th>"+this.app.lp.weeks.Thur+"</th><th>"+this.app.lp.weeks.Fri+"</th><th>"+this.app.lp.weeks.Sat+"</th></tr>";
+        }
+        html += "<tr><td valign='top'></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+        html += "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+        html += "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+        html += "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+        html += "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+        html += "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+        this.calendarTable = new Element("table", {
+            "styles": this.css.calendarTable,
+            "height": "100%",
+            "border": "0",
+            "cellPadding": "0",
+            "cellSpacing": "0",
+            "html": html
+        }).inject(this.bodyNode);
+
+        this.calendarTableTitleTr = this.calendarTable.getElement("tr");
+        this.calendarTableTitleTr.setStyles(this.css.calendarTableTitleTr);
+        var ths = this.calendarTableTitleTr.getElements("th");
+        ths.setStyles(this.css.calendarTableTh);
+
+        //var tds = this.calendarTable.getElements("td");
+        //tds.setStyles(this.css.calendarTableCell);
+
+        this.loadCalendar();
+    },
+    reLoadCalendar: function(){
+        Object.each(this.days, function(day){
+            day.destroy();
+        }.bind(this));
+
+        this.loadCalendar();
+    },
+
+    loadCalendar: function(){
+        var date = this.date.clone();
+        date.set("date", 1);
+        var week = date.getDay();
+        if( this.weekBegin == "1" ){
+            var decrementDay = ((week-1)<0) ? 6 : week-1;
+        }else{
+            var decrementDay = week;
+        }
+
+        date.decrement("day", decrementDay);
+        var tds = this.calendarTable.getElements("td");
+        tds.each(function(td){
+            this.loadDay(td, date);
+            date.increment();
+        }.bind(this));
+    },
+    loadDay: function(td, date){
+        var type = "thisMonth";
+        var m = date.get("month");
+        var y = date.get("year");
+        var d = date.get("date");
+        var mm = this.date.get("month");
+        var yy = this.date.get("year");
+        var mmm = this.today.get("month");
+        var yyy = this.today.get("year");
+        var ddd = this.today.get("date");
+
+        if ((m==mmm) && (y==yyy) && (d==ddd)){
+            type = "today";
+        }else if ((m==mm) && (y==yy)){
+            type = "thisMonth";
+        }else{
+            type = "otherMonth";
+        }
+
+        debugger;
+
+        var key = date.format(this.app.lp.dateFormat);
+        var data = this.data.dateMap[date.format("%Y-%m-%d")] || {};
+        this.days[key] = new MWF.xApplication.Attendance.MyIndex.Calendar.Day(td, date, this, type, data);
+    },
+    reload : function(){
+        this.view.reload();
+    },
+    destroy: function(){
+        Object.each(this.days, function(day){
+            day.destroy();
+        }.bind(this));
+        this.container.empty();
+    }
+
+});
+
+MWF.xApplication.Attendance.MyIndex.Calendar.Day = new Class({
+    Implements: [Events],
+    initialize: function(td, date, calendar, type, data){
+        this.container = td;
+        this.calendar = calendar;
+        this.view = this.calendar.view;
+        this.css = this.calendar.css;
+        this.app = this.calendar.app;
+        this.date = date.clone();
+        this.key = this.date.format(this.app.lp.dateFormat);
+        this.data = data;
+        this.type = type; //today, otherMonth, thisMonth
+        this.load();
+    },
+    load: function(){
+        this.color = "#666";
+        if(  this.type == "thisMonth" ){
+        }else if( this.type == "otherMonth" ){
+            this.color = "#ccc";
+        }
+        this.day = this.date.getDate();
+        this.month = this.date.getMonth();
+        this.year = this.date.getYear();
+
+        this.node = new Element("div", {
+            "styles" : this.css["calendarTableCell_"+this.type]
+        }).inject( this.container );
+
+        if( this.type === "today" && (this.calendar.date.format("%Y-%m-%d") !== this.date.format("%Y-%m-%d")) ){
+            this.node.setStyle("opacity", "0.5");
+        }
+
+        if( this.data.color ){
+            this.node.setStyle("border-left", "6px solid "+ this.data.color);
+        }
+
+        this.titleNode = new Element("div", {"styles": this.css["dayTitle_"+this.type]}).inject(this.node);
+        if( !this.data.color ){
+            this.titleNode.setStyle("border-left","5px solid #fff");
+        }
+        this.titleDayNode = new Element("div", {"styles": this.css["dayTitleDay_"+this.type], "text": this.day}).inject(this.titleNode);
+
+        if ((new Date()).diff(this.date)>=0){
+            this.titleNode.set("title", this.app.lp.titleNode);
+            // this.titleNode.addEvent("click", function(){
+            //     this.app.addMeeting(this.date);
+            // }.bind(this));
+        }
+
+        // this.loadMeetings();
+
+        if( this.data.isHoliday ){
+            new Element("div", {
+                "styles": {
+                    "margin-top": "5px",
+                    "margin-left": "10px",
+                    "color": "#fff",
+                    "font-weight": "bold",
+                    "border-radius": "20px",
+                    "height": "20px",
+                    "width": "20px",
+                    // "background-color": "#F23030",
+                    "background-color": "#f49999",
+                    "float": "left",
+                    "line-height": "20px",
+                    "text-align": "center",
+                    "font-size" : "12px"
+                },
+                "text": this.app.lp.offDutyAbbrev,
+                "title": this.data.holidayName || ""
+            }).inject(this.titleNode)
+        }else if( this.data.isWorkday ){
+            new Element("div", {
+                "styles": {
+                    "margin-top": "5px",
+                    "margin-left": "10px",
+                    "color": "#fff",
+                    "font-weight": "bold",
+                    "border-radius": "20px",
+                    "height": "20px",
+                    "width": "20px",
+                    "background-color": "#ccc",
+                    "float": "left",
+                    "line-height": "20px",
+                    "text-align": "center",
+                    "font-size" : "12px"
+                },
+                "text": this.app.lp.onDutyAbbrev,
+                "title": this.data.holidayName || ""
+            }).inject(this.titleNode)
+        }
+
+        if( this.data.text ){
+            new Element("div", {
+                "styles": {
+                    "margin-right": "10px",
+                    "color": "#999",
+                    "float": "right",
+                    "font-size" : "14px"
+                },
+                "text": this.data.text
+            }).inject(this.titleNode)
+        }
+
+        this.contentNode = new Element("div", {"styles": this.css.dayContentNode}).inject(this.node);
+        if( !this.data.color ){
+            this.contentNode.setStyle("border-left","5px solid #fff");
+        }
+        if( this.data.on || this.data.off ){
+            new Element("div", {
+                "styles": {
+                    "margin-left": "10px",
+                    "margin-top": "10px",
+                    "color": "#333",
+                    "font-weight": "500",
+                    "font-size" : "14px"
+                },
+                "text": this.getMintue(this.data.on) + "-" + this.getMintue(this.data.off)
+            }).inject(this.contentNode)
+        }
+
+    },
+    getMintue: function(str){
+        var arr = (str || "").split(":");
+        if( arr[1] ){
+            return arr[0] + ":" + arr[1];
+        }else{
+            return arr[0]
+        }
+    },
+    destroy: function(){
+
+        this.node.destroy();
+        this.titleNode = null;
+        this.titleDayNode = null;
+        this.contentNode = null;
+
+        delete this.calendar.days[this.key];
+
+        this.container.empty();
+        MWF.release(this);
+    },
+    reload: function(){
+        this.view.reload();
+    }
 });

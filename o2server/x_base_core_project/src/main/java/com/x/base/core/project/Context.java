@@ -1,7 +1,6 @@
 package com.x.base.core.project;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +39,6 @@ import com.x.base.core.project.schedule.JobReportListener;
 import com.x.base.core.project.schedule.ScheduleLocalRequest;
 import com.x.base.core.project.schedule.ScheduleRequest;
 import com.x.base.core.project.schedule.SchedulerFactoryProperties;
-import com.x.base.core.project.thread.ThreadFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SslTools;
 
@@ -134,30 +132,14 @@ public class Context extends AbstractContext {
 
 	private AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue;
 
-	@Override
-	public AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue() {
-		return this.clearCacheRequestQueue;
-	}
+//	@Override
+//	public AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue() {
+//		return this.clearCacheRequestQueue;
+//	}
 
-	private volatile Date applicationsTimestamp = null;
-
-	public Applications applications() throws Exception {
-		if (null != Config.resource_node_applicationsTimestamp()) {
-			if (null == this.applicationsTimestamp
-					|| (this.applicationsTimestamp.before(Config.resource_node_applicationsTimestamp()))) {
-				synchronized (this) {
-					this.applications = XGsonBuilder.instance().fromJson(Config.resource_node_applications(),
-							Applications.class);
-					this.applicationsTimestamp = Config.resource_node_applicationsTimestamp();
-				}
-			}
-		}
-		return this.applications;
-	}
-
-	public ThreadFactory threadFactory() {
-		return this.threadFactory;
-	}
+//	public ThreadFactory threadFactory() {
+//		return this.threadFactory;
+//	}
 
 	/* 队列 */
 	private List<AbstractQueue<?>> queues;
@@ -165,10 +147,10 @@ public class Context extends AbstractContext {
 	private Context() throws Exception {
 		this.token = UUID.randomUUID().toString();
 		this.applications = new Applications();
-		this.queues = new ArrayList<AbstractQueue<?>>();
-		this.scheduler = new StdSchedulerFactory(SchedulerFactoryProperties.concrete()).getScheduler();
-		this.scheduler.getListenerManager().addJobListener(new JobReportListener(), EverythingMatcher.allJobs());
-		this.scheduler.start();
+		this.queues = new ArrayList<>();
+//		this.scheduler = new StdSchedulerFactory(SchedulerFactoryProperties.concrete()).getScheduler();
+//		this.scheduler.getListenerManager().addJobListener(new JobReportListener(), EverythingMatcher.allJobs());
+//		this.scheduler.start();
 	}
 
 	public static Context concrete(ServletContextEvent servletContextEvent) throws Exception {
@@ -187,8 +169,13 @@ public class Context extends AbstractContext {
 		context.scheduleWeight = Config.currentNode().getApplication().scheduleWeight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
 		context.initDatas();
-		context.threadFactory = new ThreadFactory(context);
 		servletContext.setAttribute(AbstractContext.class.getName(), context);
+		SchedulerFactoryProperties schedulerFactoryProperties = SchedulerFactoryProperties.concrete();
+		schedulerFactoryProperties.setProperty("org.quartz.scheduler.instanceName",
+				"ContextQuartzScheduler-" + context.clazz().getSimpleName());
+		context.scheduler = new StdSchedulerFactory(schedulerFactoryProperties).getScheduler();
+		context.scheduler.getListenerManager().addJobListener(new JobReportListener(), EverythingMatcher.allJobs());
+		context.scheduler.start();
 		context.initialized = true;
 		return context;
 	}
@@ -208,9 +195,12 @@ public class Context extends AbstractContext {
 		application.setScheduleLocalRequestList(this.scheduleLocalRequestList);
 		application.setScheduleRequestList(this.scheduleRequestList);
 		JsonElement jsonElement = XGsonBuilder.instance().toJsonTree(application);
-		JsonObject jsonObject = jsonElement.getAsJsonObject();
-		jsonObject.addProperty("type", "registApplication");
-		Config.resource_node_eventQueue().put(jsonObject);
+		// 将当前的application写入到servletContext
+		servletContext.setAttribute(SERVLETCONTEXT_ATTRIBUTE_APPLICATION, jsonElement.toString());
+		// 发送注册到本地的信号
+		// JsonObject registApplicationLocal = jsonElement.getAsJsonObject();
+		// registApplicationLocal.addProperty("type", "registApplicationLocal");
+		// Config.resource_node_eventQueue().put(registApplicationLocal);
 	}
 
 	public <T extends AbstractJob> void scheduleLocal(Class<T> cls, String cron) throws Exception {

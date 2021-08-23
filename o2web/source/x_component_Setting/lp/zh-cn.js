@@ -26,6 +26,7 @@ MWF.xApplication.Setting.LP = {
     "tab_ui_module": "模块部署",
     "tab_ui_resource": "资源部署",
     "tab_ui_service": "服务部署",
+    "tab_ui_menu": "菜单编辑",
 
     "base_nameSetting": "配置您的系统名称",
 
@@ -185,6 +186,9 @@ MWF.xApplication.Setting.LP = {
 
     "mpweixin": "公众号",
     "publishMpweixin": "发布到微信公众号",
+    "subscribeMpweixin": "关注回复",
+    "subscribeMpweixin_desc": "公众号有新用户关注的时候，自动发送的消息内容",
+    "subscribeMpweixin_save": "保存",
     "mpweixinInfo": "⚠️ 微信公众号菜单功能需要先启用相关的配置文件[mpweixin.json]，并到微信的公众号管理后台，开发模块中启用服务器配置！",
     "mobile_mpweixin_menu_msg_publish_2_wxmp": "注意！当前操作会把所有保存的菜单数据覆盖到微信公众号，确定要继续吗？",
     "mobile_mpweixin_menu_msg_publish_success": "发布成功，会在24小时后在手机端同步显示！",
@@ -195,9 +199,11 @@ MWF.xApplication.Setting.LP = {
     "mobile_mpweixin_menu_default_new_name": "新增菜单",
     "mobile_mpweixin_menu_form_name_label": "菜单名称",
     "mobile_mpweixin_menu_form_name_error_empty": "菜单名称不能为空！",
-    "mobile_mpweixin_menu_form_name_error_max_len": "菜单名称字数不能超过4个！",
+    "mobile_mpweixin_menu_form_name_error_max_len_4": "菜单名称字数不能超过4个！",
+    "mobile_mpweixin_menu_form_name_error_max_len_6": "菜单名称字数不能超过6个！",
     "mobile_mpweixin_menu_form_name_error": "字数超过上限",
-    "mobile_mpweixin_menu_form_name_tips": "仅支持中英文和数字，字数不超过4个",
+    "mobile_mpweixin_menu_form_name_tips_4": "仅支持中英文和数字，字数不超过4个",
+    "mobile_mpweixin_menu_form_name_tips_6": "仅支持中英文和数字，字数不超过6个",
     "mobile_mpweixin_menu_form_order_label": "菜单排序号",
     "mobile_mpweixin_menu_form_order_error_empty": "菜单排序号不能为空！",
     "mobile_mpweixin_menu_form_order_error_not_number": "菜单排序号只能输入数字！",
@@ -211,6 +217,7 @@ MWF.xApplication.Setting.LP = {
     "mobile_mpweixin_menu_form_type_msg_tips": "点击该菜单会发送下列文字给用户，未认证订阅号不支持文字消息",
     "mobile_mpweixin_menu_form_type_msg_label": "文字消息",
     "mobile_mpweixin_menu_form_type_msg_error_empty": "文字消息内容不能为空！",
+    "mobile_mpweixin_menu_form_subscribe_content_error_empty": "回复消息内容不能为空！",
     "mobile_mpweixin_menu_form_type_url_tips": "点击该菜单会跳到以下链接",
     "mobile_mpweixin_menu_form_type_url_label": "页面地址",
     "mobile_mpweixin_menu_form_type_url_error_empty": "页面地址不能为空！",
@@ -501,4 +508,24 @@ MWF.xApplication.Setting.LP = {
     "mobileServerSaveInfor": "数据已提交",
     "mobileServerSaveErrorInfor": "数据已提交, 旦有以下错误：{error}",
 
+    "saveDefaultMenuData": "保存为默认菜单设置",
+    "clearDefaultMenuData": "清除默认菜单设置",
+    "saveDefaultMenuDataInfor": "保存为默认菜单设置后，未进行个性化菜单设置的用户，会按此设置展现菜单。",
+    "saveDefaultMenuDataSuccess": "默认菜单设置保存成功",
+    "clearDefaultMenuDataSuccess": "默认菜单设置已清除",
+    "clearDefaultMenuDataConfirm": "您是否确认清除默认菜单设置？",
+    "loadDefaultMenuData": "载入默认配置",
+
+    "saveForceMenuData": "保存为强制菜单设置",
+    "clearForceMenuData": "清除强制菜单设置",
+    "saveForceMenuDataInfor": "保存为强制菜单设置后，所有的用户都会按此设置展现菜单，个性化设置将会失效。",
+    "saveForceMenuDataSuccess": "默认菜单设置保存成功",
+    "clearForceMenuDataSuccess": "强制菜单设置已清除",
+    "clearForceMenuDataConfirm": "您是否确认清除强制菜单设置？",
+    "loadForceMenuData": "载入强制配置",
+
+    "clearCustomMenuData": "清除用户个性化菜单设置",
+    "clearCustomMenuDataInfor": "所有用户的个性化菜单设置将被清除，以默认方式展现菜单。",
+    "clearCustomMenuDataSuccess": "用户个性化菜单设置已清除",
+    "clearCustomMenuDataConfirm": "您确定要清除所有用户的个性化菜单设置"
 };

@@ -46,9 +46,9 @@ public abstract class AbstractInvokeProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Invoke invoke = (Invoke) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, invoke);
+		this.executingCommitted(aeiObjects, invoke, works);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public abstract class AbstractInvokeProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Invoke invoke) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Invoke invoke) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Invoke invoke, List<Work> works) throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Invoke invoke) throws Exception;
 }

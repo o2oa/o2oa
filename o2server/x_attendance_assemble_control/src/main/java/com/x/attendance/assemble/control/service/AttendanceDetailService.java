@@ -61,10 +61,10 @@ public class AttendanceDetailService {
 		AttendanceDetail attendanceDetail = null;
 		for( String day : dayList ){
 			try {
-				if( dateOperation.getDateFromString(day).before( dateOperation.getDateFromString( attendanceEmployeeConfig.getEmpInTopUnitTime() )) ){
+				/*if( dateOperation.getDateFromString(day).before( dateOperation.getDateFromString( attendanceEmployeeConfig.getEmpInTopUnitTime() )) ){
 					logger.warn( "不需要补录员工["+attendanceEmployeeConfig.getEmployeeName()+"]入职前的打卡数据。" );
 					continue;
-				}
+				}*/
 				if( dateOperation.getDateFromString( day ).before(dateOperation.getDateFromString(dateOperation.getNowDate()))){
 					business = new Business(emc);
 					ids = business.getAttendanceDetailFactory().listByEmployeeNameAndDate( attendanceEmployeeConfig.getEmployeeName(), day );
@@ -72,6 +72,8 @@ public class AttendanceDetailService {
 						emc.beginTransaction( AttendanceDetail.class );
 						//需要补一条打卡数据
 						attendanceDetail = new AttendanceDetail();
+						attendanceDetail.setTopUnitName(attendanceEmployeeConfig.getTopUnitName());
+						attendanceDetail.setUnitName(attendanceEmployeeConfig.getUnitName());
 						attendanceDetail.setEmpNo( attendanceEmployeeConfig.getEmployeeNumber() );
 						attendanceDetail.setEmpName( attendanceEmployeeConfig.getEmployeeName() );
 						attendanceDetail.setYearString( dateOperation.getYear( dateOperation.getDateFromString(day)) );
@@ -84,6 +86,17 @@ public class AttendanceDetailService {
 						emc.persist( attendanceDetail );
 						emc.commit();
 						logger.info("员工["+attendanceEmployeeConfig.getEmployeeName()+"]在["+day+"]不存在打卡数据，成功补录一条数据。");
+					}else{
+						for(String id :ids){
+							AttendanceDetail detail = this.get(emc, id );
+							if(detail !=null){
+								detail.setTopUnitName(attendanceEmployeeConfig.getTopUnitName());
+								detail.setUnitName(attendanceEmployeeConfig.getUnitName());
+								emc.beginTransaction( AttendanceDetail.class );
+								emc.persist( detail , CheckPersistType.all );
+								emc.commit();
+							}
+						}
 					}
 				}else {
 					logger.warn( "员工["+attendanceEmployeeConfig.getEmployeeName()+"]的打卡数据数据["+day+"], 目前还不能补录." );

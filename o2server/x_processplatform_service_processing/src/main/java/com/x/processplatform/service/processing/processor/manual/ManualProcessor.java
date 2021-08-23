@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.script.Bindings;
+import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
 import org.apache.commons.collections4.ListUtils;
@@ -61,7 +62,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 	protected Work arriving(AeiObjects aeiObjects, Manual manual) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.manualArrive(aeiObjects.getWork().getActivityToken(), manual));
-		// 根据manual计算出来的活动处理人
+		// 根据manual计算出来的活动处理人parallelSoleTaskCompleted
 		List<String> identities = calculateTaskIdentities(aeiObjects, manual);
 		// 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作.
 		Work merge = this.arrivingMergeSameJob(aeiObjects, manual, identities);
@@ -320,8 +321,15 @@ public class ManualProcessor extends AbstractManualProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Manual manual) throws Exception {
-		// nothing
+	protected void executingCommitted(AeiObjects aeiObjects, Manual manual, List<Work> works) throws Exception {
+		// Manual Work 还没有处理完 发生了停留,出发了停留事件
+		if ((ListTools.isEmpty(works)) && this.hasManualStayScript(manual)) {
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			CompiledScript cs = null;
+			cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+					aeiObjects.getActivity(), Business.EVENT_MANUALSTAY);
+			cs.eval(scriptContext);
+		}
 	}
 
 	@Override
@@ -363,7 +371,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		List<String> names = new ArrayList<>();
 		ListTools.trim(list, false, false).stream().forEach(o -> names.add(o.getRouteName()));
 		// 进行优先路由的判断
-		Route soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSole())).findFirst().orElse(null);
+		Route soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSoleDirect())).findFirst().orElse(null);
 		if ((null != soleRoute) && names.contains(soleRoute.getName())) {
 			result = soleRoute.getName();
 		} else {
@@ -505,8 +513,8 @@ public class ManualProcessor extends AbstractManualProcessor {
 		boolean passThrough = false;
 		List<TaskCompleted> taskCompleteds = this.listJoinInquireTaskCompleted(aeiObjects, identities);
 		// 存在优先路由
-		Route soleRoute = aeiObjects.getRoutes().stream().filter(r -> BooleanUtils.isTrue(r.getSole())).findFirst()
-				.orElse(null);
+		Route soleRoute = aeiObjects.getRoutes().stream().filter(r -> BooleanUtils.isTrue(r.getSoleDirect()))
+				.findFirst().orElse(null);
 		if (null != soleRoute) {
 			TaskCompleted soleTaskCompleted = taskCompleteds.stream()
 					.filter(t -> BooleanUtils.isTrue(t.getJoinInquire())

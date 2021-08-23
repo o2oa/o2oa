@@ -1,19 +1,22 @@
 {
   "rightContentNode": {
     "height": "100%",
-    "margin-left": "190px",
+    "margin-left": "280px",
+    "margin-top": "10px",
+    "margin-right": "10px",
+    "margin-bottom": "10px",
     "overflow": "hidden",
     "background-color" : "#fff", //"#fcfcfc",
     "opacity": 1
   },
   "naviScrollNode" : {
-    "overflow": "hidden"
+    "overflow": "auto"
   },
   "naviAreaNode" : {
+
   },
   "naviNode": {
-    "padding-top" : "10px",
-    "width": "202px",
+    "width": "270px",
     "height": "100%",
     "overflow": "hidden",
     //    "border": "0px",
@@ -22,51 +25,332 @@
     "position": "static",
     //"margin-right" : "-7px",
     //"background-color" : "#fcfcfc",
-    "background-color" : "#365775" //"#476783"
-    //"border-right": "1px solid #e8e8e8"
+    "background-color" : "#fff", //"#476783"
+    "box-shadow": "0px 2px 4px 0px rgba(0, 0, 0, 0.25)"
   },
   "naviMenuNode": {
     "display" : "block",
-    "padding-top" :"10px",
-    "width": "198px",
-    "height": "30px",
+    "height": "40px",
     "margin": "0px",
-    "line-height" :"30px",
+    "line-height" :"40px",
     "font-family": "Microsoft YaHei",
     "font-size": "14px",
-    "color" : "#ddd",
-    "padding-left" : "10px"
+    "color" : "#333",
+    "padding-left" : "13px",
+    "background": "url(../x_component_Attendance/$Main/default/icon/triangle_down.png) no-repeat 15px center",
+    "cursor": "pointer"
+  },
+  "naviMenuNode_collapse": {
+    "background": "url(../x_component_Attendance/$Main/default/icon/triangle_right.png) no-repeat 15px center"
+  },
+  "naviMenuNode_normal": {
+    "background-color" : "#fff",
+    "color" : "#666666"
+  },
+  "naviMenuNode_over": {
+    "background-color" : "#F2F5F7",
+    "color" : "#666666"
+  },
+  "naviMenuTextNode": {
+    "margin-left": "25px",
+    "height": "40px",
+    "line-height" :"40px"
   },
 
   "naviItemNode" : {
-    "background-color" : "transparent",
+    "background-color" : "#fff",
     "cursor" : "pointer",
     //"color" : "#666",
-    "color" : "#fff",
-    "padding-left" : "30px",
-    "height" : "30px",
-    "line-height" : "30px",
+    "color" : "#666666",
+    "padding-left" : "40px",
+    "height" : "40px",
+    "line-height" : "40px",
     "font-family": "Microsoft YaHei",
     "font-size": "14px"
     //"text-shadow": "0px 0px 2px #fff"
   },
   "naviItemNode_current" : {
-//    "background-color" : "#e6f3ff",
-    "background-color" : "#fff",
-    "color" : "#666",
-    "font-weight" : "400"
-    //"text-shadow": "0px 0px 0px"
+    "background-color" : "#F2F5F7",
+    "cursor" : "pointer",
+    //"color" : "#666",
+    "color" : "#4A90E2",
+    "padding-left" : "40px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px"
   },
   "naviItemNode_over" : {
-    "background-color" : "#e6f3ff",
-    "color" : "#666"
+    "background-color" : "#F2F5F7",
+    "color" : "#666666"
     //"text-shadow": "0px 0px 2px #fff"
   },
   "viewNaviSepartorNode" : {
-    "margin" : "10px auto",
-    //"height" : "10px",
-    "width" : "100%",
+//    "margin" : "10px auto",
+//    "width" : "100%",
+//    "border-bottom" : "1px solid #ddd"
+  },
+
+  "toolbarNode": {
+    "width":"100%",
+    "overflow": "hidden",
+    "padding": "5px 10px 15px 0px",
+    "background-color": "#F0F0F0",
     "border-bottom" : "1px solid #ddd"
+  },
+  "toolbarTextNode": {
+    "height": "30px",
+    "line-height": "30px",
+    "float": "left",
+    "padding-left": "8px",
+    "color":"#666"
+  },
+  "toolbarItemNode": {
+    "height": "30px",
+    "line-height": "30px",
+    "float": "left",
+    "margin-left": "5px",
+    "margin-right": "5px",
+    "padding-right": "10px",
+    "cursor": "pointer",
+    "background-color": "#FFF",
+    "border": "1px solid #fff",
+    "color":"#666",
+    "border-radius":"15px"
+  },
+  "toolbarItemRightNode": {
+    "height": "30px",
+    "line-height": "30px",
+    "float": "right",
+    "margin-right": "15px",
+    "padding-right": "10px",
+    "cursor": "pointer",
+    "background-color": "#FFF",
+    "border": "1px solid #fff",
+    "color":"#666",
+    "border-radius":"15px"
+  },
+  "toolbarItemNode_normal": {
+    "color":"#666",
+    "background-color": "#FFF",
+    "border": "1px solid #FFF"
+  },
+  "toolbarItemNode_over": {
+    "color":"#FFF",
+    "background-color": "#4A90E2",
+    "border": "1px solid #4A90E2"
+  },
+  "toolbarItemNode_current": {
+    "background-color": "#4A90E2",
+    "border": "1px solid #4A90E2"
+  },
+  "toolbarItemNode_down": {
+    "background-color": "#4A90E2",
+    "border": "1px solid #4A90E2"
+  },
+  "toolbarItemIconNode": {
+    "width": "34px",
+    "height": "30px",
+    "float" :"left",
+    "background-repeat": "no-repeat",
+    "background-position": "10px center"
+  },
+  "toolbarItemTextNode": {
+    "float":"left",
+    "text-align": "left",
+    "line-height" :"30px",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px"
+  },
+  "toolbarSeparatorNode": {
+    "float":"left",
+    "border-left" : "1px solid #fff"
+  },
+  "toolbarSep": {
+    "float":"left",
+    "border-left" : "1px solid #fff"
+  },
+  "toolbarContent" : {
+    "float" : "left",
+//    "border-bottom" : "1px solid #e8e8e8",
+//    "height" :"30px",
+    "overflow" : "hidden"
+  },
+  "toolbarContentItem" : {
+    "cursor" : "pointer",
+    "height": "30px",
+    "line-height": "30px",
+    "float": "left",
+    "border" : "1px solid #fff",
+    "background-color" : "#fff",
+    "margin": "0px 5px",
+    "border-radius": "15px",
+    "padding-left": "8px",
+    "padding-right": "8px",
+    "color":"#666"
+  },
+
+  "fileterNode": {
+    "overflow": "hidden",
+    "min-height": "40px",
+    "padding-left" :"15px",
+    "padding-top" :"10px",
+    "padding-bottom" :"10px",
+    "background-color": "#F0F0F0",
+    "border-bottom" : "1px solid #ddd"
+  },
+  "filterTable" : {
+    "color" : "#666",
+    "font-size" : "14px"
+  },
+  "filterTableTitle" : {
+    "text-align" : "right"
+  },
+  "filterTableValue" : {
+    "text-align" : "left"
+  },
+  "filterButton" :{
+    "color": "#fff",
+    "cursor" : "pointer",
+    "height" : "26px",
+    "line-height" : "26px",
+    "padding": "0px 10px",
+    "min-width": "40px",
+    "background-color" : "#4A90E2",
+    "border": "1px solid #528BCC",
+    "border-radius": "15px"
+  },
+
+  "elementContentNode": {
+    "overflow": "hidden",
+    "position": "static"
+  },
+  "elementContentListNode": {
+    "overflow": "hidden",
+    "margin": "20px"
+  },
+  "noElementNode": {
+    "text-align": "center",
+    "padding": "20px",
+    "height": "60px",
+    "line-height": "60px",
+    "margin-top": "10px",
+    "margin-left": "0px",
+    "color": "#888",
+    "cursor": "pointer",
+    "font-size": "16px"
+  },
+
+
+  "listHeadNode": {
+    "width":"100%",
+    "height": "40px",
+    "background-color": "#F7F7F7",
+    "color": "#666666",
+    "font-weight": "normal",
+    "line-height": "40px",
+    "font-family": "Microsoft YaHei",
+    "font-size": "15px"
+  },
+
+  "normalThNode" : {
+    "background-color" : "#F7F7F7",
+    "text-align":"center",
+    "line-height": "24px",
+    "padding": "8px 0px",
+    "font-weight": "normal",
+    "border-top": "1px solid #FFF",
+    "border-bottom": "1px solid #E6E6E6"
+  },
+  "normalTdNode" : {
+    "height": "39px",
+    "text-align":"center",
+    "overflow" : "hidden",
+//    "box-shadow": "0px -1px 0px 0px #E6E6E6",
+    "border-bottom": "1px solid #E6E6E6"
+  },
+
+  "sortIconNode" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    //"float": "left",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(../x_component_Attendance/$Explorer/default/icon/dblsort.gif)"
+  },
+  "sortIconNode_asc" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    //"float": "left",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(../x_component_Attendance/$Explorer/default/icon/dblasc.gif)"
+  },
+  "sortIconNode_desc" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    //"float": "left",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(../x_component_Attendance/$Explorer/default/icon/dbldesc.gif)"
+  },
+
+  "documentItemNode": {
+    "overflow": "hidden",
+    "background-color": "#fff",
+    "min-height": "29px",
+    "color": "#666666",
+    //"line-height": "39px",
+    //"cursor": "pointer",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px"
+  },
+  "documentItemNode_noread": {
+    "background-color": "#fcfcfc"
+  },
+  "documentItemDocumentNode_over": {
+    "background-color": "#F7F7F7"
+  },
+  "documentItemDocumentNode_remove": {
+    "background-color": "#ffcccc"
+  },
+
+  "documentItemDocumentNode":{
+    "background-color": "#fff",
+    "min-height": "29px",
+    "overflow": "hidden",
+    "color": "#666666",
+    //"line-height": "39px",
+    //"cursor": "pointer",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px"
+  },
+  "documentActionNode": {
+    "height": "20px",
+    "border-radius": "3px",
+    "width": "20px",
+    "line-height": "20px",
+    "color": "#888",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center"
+  },
+  "documentActionNode_over":{
+  },
+  "actionDenyNode_down":{
   }
-	
 }

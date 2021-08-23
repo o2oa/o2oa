@@ -27,6 +27,8 @@ class ActionGet extends BaseAction {
 
 	public static class Wo extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 3728516737526214370L;
+
 		@FieldDescribe("上下文根")
 		private String servletContextName;
 

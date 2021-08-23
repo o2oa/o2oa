@@ -75,7 +75,7 @@
     "explorerContentTitleSubNode": {
         "padding": "5px 30px",
         "font-size": "14px",
-        "color": "#666666",
+        "color": "#666666"
     },
     "explorerContentItemTitleNode": {
         "height": "30px",
@@ -96,7 +96,7 @@
         "color": "#0000FF"
     },
     "explorerContentItemQrcodeNode": {
-        "padding": "5px 30px",
+        "padding": "5px 30px"
     },
     "explorerContentItemButton": {
         "margin-left": "10px",
@@ -365,7 +365,7 @@
         "overflow": "hidden",
         "padding": "0px 10px",
         "margin": "0px auto",
-        "text-align": "right",
+        "text-align": "right"
     },
 
     "explorerContentListEditTitleNode": {
@@ -414,7 +414,7 @@
     "explorerContentImgItemIconAreaNode": {
         "overflow": "hidden",
         "width": "auto",
-        "float": "left",
+        "float": "left"
 
     },
     "explorerContentImgItemIconNode": {
@@ -559,5 +559,20 @@
         "margin-left": "90px",
         "height": "80px"
     },
-
+    "buttonNode": {
+        "text-align": "center",
+        "padding": "8px 15px",
+        "float": "left",
+        "cursor": "pointer",
+        "margin-left": "10px",
+        "border-radius": "20px"
+    },
+    "menuDataInfor": {
+        "overflow": "hidden",
+        "padding": "10px 0",
+        "font-size": "14px",
+        "color": "#999999",
+        "clear": "both",
+        "margin": "10px"
+    }
 }

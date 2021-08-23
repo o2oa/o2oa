@@ -278,6 +278,7 @@ o2.addReady(function () {
     o2.getJSON("../x_desktop/res/config/config.json", function (config) {
         _loadProgressBar();
         layout.config = config;
+        o2.tokenName = config.tokenName || "x-token";
         configLoaded = true
         if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
     });
@@ -373,7 +374,7 @@ o2.addReady(function () {
             // 删除
             Cookie.dispose(o2.tokenName);
             // 写入
-            var host = window.location.host; // 域名 
+            var host = window.location.hostname; // 域名
             var domain = null;
             if (_isIp(host)) {
                 domain = host;

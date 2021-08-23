@@ -91,10 +91,10 @@ MWF.xApplication.Attendance.PeopleQywxDetail.Explorer = new Class({
     loadFilter: function () {
         var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
-            "styles": this.css.fileterNode
+            "styles": this.app.css.fileterNode
         }).inject(this.node);
 
-        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='filterTable'>" +
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='filterTable' style='width: 1000px;'>" +
             "<tr>" +
             "    <td styles='filterTableValue' lable='person'></td>" +
             "    <td styles='filterTableTitle' item='person'></td>" +
@@ -115,6 +115,7 @@ MWF.xApplication.Attendance.PeopleQywxDetail.Explorer = new Class({
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.fileterNode, {}, {
+                style: "attendance",
                 isEdited: true,
                 itemTemplate: {
                     person: { text: lp.person, type: "org", orgType: "person", notEmpty: true, style: { "min-width": "100px" } },
@@ -167,7 +168,7 @@ MWF.xApplication.Attendance.PeopleQywxDetail.Explorer = new Class({
                         }
                     }
                 }
-            }, this.app, this.css);
+            }, this.app, this.app.css);
             this.form.load();
         }.bind(this), true);
     },
@@ -246,10 +247,10 @@ MWF.xApplication.Attendance.PeopleQywxDetail.DetailStaticExplorer = new Class({
     loadFilter: function () {
         var lp = MWF.xApplication.Attendance.LP;
         this.fileterNode = new Element("div.fileterNode", {
-            "styles": this.css.fileterNode
+            "styles": this.app.css.fileterNode
         }).inject(this.node);
 
-        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' style='width: 460px;font-size: 14px;color:#666'>" +
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' style='width: 560px;font-size: 14px;color:#666'>" +
             "<tr>" +
             "    <td styles='filterTableValue' lable='q_empName'></td>" +
             "    <td styles='filterTableTitle' item='q_empName'></td>" +
@@ -264,6 +265,7 @@ MWF.xApplication.Attendance.PeopleQywxDetail.DetailStaticExplorer = new Class({
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.fileterNode, {}, {
+                style: "attendance",
                 isEdited: true,
                 itemTemplate: {
                     q_empName: { text: lp.person, type: "org", orgType: "person", notEmpty: true, style: { "min-width": "100px" } },
@@ -298,7 +300,7 @@ MWF.xApplication.Attendance.PeopleQywxDetail.DetailStaticExplorer = new Class({
                         }
                     }
                 }
-            }, this.app, this.css);
+            }, this.app, this.app.css);
             this.form.load();
         }.bind(this), true);
     },

@@ -9,10 +9,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
@@ -403,7 +401,7 @@ public class CmsBatchOperationProcessService {
 	 * 将AppName是旧栏目名称的所有分类以及文档的栏目相关的信息更新掉，最后删除当前的批处理信息
 	 * @param id
 	 * @param bundle
-	 * @param oldInfo
+	 * @param oldName
 	 * @throws Exception
 	 */
 	private void changeAppNameInCategory( String id, String bundle, String oldName ) throws Exception {

@@ -29,7 +29,8 @@ MWF.xScript.Environment = function(ev){
         /**
          * data对象是流程平台中，流程实例的业务数据；以及内容管理平台中，文档实例的业务数据。<br/>
          * 这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本进行创建和增删改查操作。<br/>
-         * data对象基本上是一个JSON对象，您可以用访问JSON对象的方法访问data对象的所有数据，但增加和删除数据时略有不同。
+         * data对象是一个Object对象，您可以用访问JSON对象的方法访问data对象的所有数据，但增加数据时略有不同。<br/>
+         * <b> 注：数组在this.data中会转变成对象。具体请查看本文下方数据网格的样例。</b>
          * @module data
          * @o2category web
          * @o2ordernumber 10
@@ -43,7 +44,8 @@ MWF.xScript.Environment = function(ev){
          * 访问或修改data对象的数据。<br/><br/>
          * data数据用于存储表单获取的数据，所有属性都是动态的，其格式和访问方式都和JSON类似。<br/>
          * 在表单脚本中使用data对象，实现了data和表单可编辑元素的双向绑定。<br/>
-         * 改变data对象，会自动更新表单元素，修改表单可编辑元素，也会自动修改data对象。
+         * 改变data对象，会自动更新表单元素，修改表单可编辑元素，也会自动修改data对象。<br/>
+         *<b> 注：数组在this.data中会转变成对象。如果要获取数组本身的格式，请通过this.form.get("fieldId").getData()获取。</b>
          * @member {String|Number} [[property]]
          * @memberOf module:data
          * @instance
@@ -68,20 +70,21 @@ MWF.xScript.Environment = function(ev){
          *
          * //获取到的data值格式如下：
          * {
-         *   "data": [
-         *       {
+         *   //请注意，在this.data中数组变成了对象。在其他地方，比如通过this.form.get("datagrid").getData()获取，得到的是数组。
+         *   "data": {
+         *       "0": {
          *           "amountCol": { "amount": "12000" },
          *          "countCol": { "number": "10" },
          *          "nameCol": { "name": "手机" },
          *          "priceCol": { "price": "1200" }
          *      },
-         *      {
+         *      "1": {
          *          "amountCol": { "amount": "15000" },
          *          "countCol": { "number": "5" },
          *          "nameCol": { "name": "电脑" },
          *          "priceCol": { "price": "3000" }
          *      }
-         *  ],
+         *  },
          *  "total": {
          *      "amountCol": "27000",
          *      "countCol": "15"
@@ -2665,7 +2668,7 @@ MWF.xScript.Environment = function(ev){
          * @method notice
          * @static
          * @param {String} content - 要显示的信息文本
-         * @param {String} [type] - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
+         * @param {String} [type] - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， warn : 警告
          * @param {Element} [target] - 信息框显示位置的参考DOM对象。
          * @param {Object} [where] - 信息框显示相对于target的x轴和y轴位置。<br/>
          * 如： {"x": "center", "y": "center"}<br/>

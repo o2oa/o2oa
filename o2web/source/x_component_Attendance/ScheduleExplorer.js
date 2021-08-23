@@ -88,7 +88,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
         "height": 600,
         "hasTop" : true,
         "hasBottom" : true,
-        "title" : "",
+        "title" : MWF.xApplication.Attendance.LP.schedule.setSchedule,
         "draggable" : true,
         "closeAction" : true
     },
@@ -97,7 +97,6 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
         var signProxy = this.data.signProxy||1;
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-            "<tr><td colspan='2' styles='formTableHead'>"+lp.setSchedule+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
             "    <td styles='formTableValue' item='unitName'></td></tr>" +
             "<tr><td styles='formTabelTitle' lable='signProxy'></td>"+
@@ -128,35 +127,36 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
             debugger
             var ob = Object;
             this.form = new MForm( this.formTableArea, this.data, {
+                style: "attendance",
                 onPostLoad: function(){
-                    if(signProxy!=0&&signProxy!=1){
-                        if(signProxy==3)
-                            this.options.height=670;
-                        else
-                            this.options.height=570;
-                    }
+                    // if(signProxy!=0&&signProxy!=1){
+                    //     if(signProxy==3)
+                    //         this.options.height=670;
+                    //     else
+                    //         this.options.height=570;
+                    // }
                 }.bind(this),
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
                     unitName : { text: lp.unit,  type : "org", orgType : "unit" },
                     signProxy : { text: lp.signProxy.name,  type : "select" ,selectText:ob.values(lp.signProxy.select),selectValue:ob.keys(lp.signProxy.select),defaultValue: signProxy,style:{
-                            "width": "99%",
-                            "border": "1px solid rgb(153, 153, 153)",
-                            "border-radius": "3px",
-                            "box-shadow": "rgb(204, 204, 204) 0px 0px 6px",
-                            "min-height": "26px",
-                            "overflow": "hidden"
+                            // "width": "99%",
+                            // "border": "1px solid rgb(153, 153, 153)",
+                            // "border-radius": "3px",
+                            // "box-shadow": "rgb(204, 204, 204) 0px 0px 6px",
+                            // "min-height": "26px",
+                            // "overflow": "hidden"
                         },event :{
                             "change":function(){
                                 var signProxy = this.form.getItem("signProxy").getValue();
                                 if(signProxy!="1"&&signProxy!="0"){
                                     this.formTableArea.getElement("[lable=middayRestStartTime]").getParent().setStyle("display","table-row");
                                     this.formTableArea.getElement("[lable=middayRestEndTime]").getParent().setStyle("display","table-row");
-                                    var tempH = "570px";
+                                    // var tempH = "570px";
                                     if(signProxy=="3"){
                                         this.formTableArea.getElement("[lable=leaveEarlyStartTimeMorning]").getParent().setStyle("display","table-row");
                                         this.formTableArea.getElement("[lable=lateStartTimeAfternoon]").getParent().setStyle("display","table-row");
-                                        tempH = "670px";
+                                        // tempH = "670px";
                                         this.form.options.itemTemplate.lateStartTimeAfternoon.notEmpty=true;
                                     }else{
                                         this.formTableArea.getElement("[lable=leaveEarlyStartTimeMorning]").getParent().setStyle("display","none");
@@ -164,7 +164,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
                                         this.form.options.itemTemplate.lateStartTimeAfternoon.notEmpty=false;
                                     }
 
-                                    this.formNode.setStyle("height",tempH);
+                                    // this.formNode.setStyle("height",tempH);
 
                                     this.form.options.itemTemplate.middayRestStartTime.text=lp.signProxy[signProxy].middayRestStartTime;
                                     this.form.options.itemTemplate.middayRestEndTime.text=lp.signProxy[signProxy].middayRestEndTime;
@@ -176,7 +176,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
                                     this.formTableArea.getElement("[lable=middayRestEndTime]").getParent().setStyle("display","none");
                                     this.formTableArea.getElement("[lable=leaveEarlyStartTimeMorning]").getParent().setStyle("display","none");
                                     this.formTableArea.getElement("[lable=lateStartTimeAfternoon]").getParent().setStyle("display","none");
-                                    this.formNode.setStyle("height","500px");
+                                    // this.formNode.setStyle("height","500px");
 
                                     this.form.options.itemTemplate.middayRestStartTime.notEmpty=false;
                                     this.form.options.itemTemplate.middayRestEndTime.notEmpty=false;

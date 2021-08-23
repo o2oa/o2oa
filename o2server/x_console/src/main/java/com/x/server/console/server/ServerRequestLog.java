@@ -5,6 +5,7 @@ import static java.lang.invoke.MethodHandles.foldArguments;
 import static java.lang.invoke.MethodType.methodType;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 //
 
@@ -28,6 +29,8 @@ import java.io.File;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -276,7 +279,7 @@ import com.x.base.core.project.http.HttpToken;
  * <tr>
  * <td valign="top">%{VARNAME}^ti</td>
  * <td>The contents of VARNAME: trailer line(s) in the request sent to the
- * server.</td>
+ * server.</td>, boolean appendBodyToRequest
  * </tr>
  *
  * <tr>
@@ -288,6 +291,7 @@ import com.x.base.core.project.http.HttpToken;
  */
 @ManagedObject("Custom format request log")
 public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
+
 	protected static final Logger LOG = Log.getLogger(ServerRequestLog.class);
 
 	public static final String DEFAULT_DATE_FORMAT = "dd/MMM/yyyy:HH:mm:ss ZZZ";
@@ -347,14 +351,21 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 
 			_logHandle.invoke(sb, request, response);
 
-			sb.append(" \"").append(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), ""))
-					.append("\"");
+			customLog(request, sb);
 
 			String log = sb.toString();
 			_requestLogWriter.write(log);
 		} catch (Throwable e) {
 			LOG.warn(e);
 		}
+	}
+
+	public void customLog(Request request, StringBuilder sb) throws UnsupportedEncodingException {
+		// java8不支持charset
+		sb.append(" \"")
+				.append(URLEncoder.encode(Objects.toString(request.getAttribute(HttpToken.X_DISTINGUISHEDNAME), ""),
+						StandardCharsets.UTF_8.toString()))
+				.append("\"");
 	}
 
 	/**

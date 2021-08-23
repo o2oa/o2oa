@@ -1220,7 +1220,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (json.type === "Subpage" || json.moduleName === "subpage") this.subpageCount++;
         if (json.type === "Widget" || json.moduleName === "widget") this.widgetCount++;
         if (!MWF["APP" + json.type]) {
-            MWF.xDesktop.requireApp("process.Xform", json.type, null, false);
+            var moduleType = json.type;
+            if(moduleType === "AttachmentDg")moduleType = "Attachment";
+            MWF.xDesktop.requireApp("process.Xform", moduleType, null, false);
         }
         var module = new MWF["APP" + json.type](node, json, this);
         if (beforeLoad) beforeLoad.apply(module);
@@ -2709,6 +2711,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (!where) where = { "x": "right", "y": "top" };
         //if (!target) target = this.node;
         if (!type) type = "ok";
+        var type2;
+        switch (type) {
+            case "warn":
+            case "wran":
+                type2 = "notice";
+                break;
+            case "success":
+                type2 = "ok";
+                break;
+            default:
+                type2 = type;
+        }
         var noticeTarget = target || this.app.window.content;
         var off = offset;
         if (!off) {
@@ -2718,7 +2732,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             };
         }
         var options = {
-            type: type,
+            type: type2,
             position: where,
             move: false,
             target: noticeTarget,
@@ -2730,8 +2744,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (this.json.noticeStyle) {
             options = Object.merge(options, this.json.noticeStyle);
         }
-        if (this.json["notice" + type.capitalize() + "Style"]) {
-            options = Object.merge(options, this.json["notice" + type.capitalize() + "Style"]);
+        if (this.json["notice" + type2.capitalize() + "Style"]) {
+            options = Object.merge(options, this.json["notice" + type2.capitalize() + "Style"]);
         }
         if (option && typeOf(option) === "object") {
             options = Object.merge(options, option);
@@ -3406,12 +3420,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             dlg.show();
         }.bind(this));
     },
-    selectPeople: function (dlg) {
+    selectPeople: function(dlg){
+        o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(this.businessData.work.id, function(json){
+            var identityList = [];
+            json.data.each(function(task){
+                identityList.push(task.identity);
+            });
+            this._selectPeople(dlg, identityList);
+        }.bind(this))
+    },
+    _selectPeople: function (dlg, exclude) {
         var range = this.businessData.activity.resetRange || "department";
         var count = this.businessData.activity.resetCount || 0;
         switch (range) {
             case "unit":
-                this.selectPeopleUnit(dlg, this.businessData.task.unit, count);
+                this.selectPeopleUnit(dlg, this.businessData.task.unit, count, null,  exclude);
                 // this.personActions.getDepartmentByIdentity(function(json){
                 //     this.selectPeopleDepartment(dlg, json.data, count);
                 // }.bind(this), null, this.businessData.task.identity);
@@ -3422,7 +3445,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     var data = { "unitList": [this.businessData.task.unit] };
                     orgActions.listUnitSupNested(data, function (json) {
                         v = json.data[0];
-                        this.selectPeopleUnit(dlg, v, count);
+                        this.selectPeopleUnit(dlg, v, count, null, exclude);
                     }.bind(this));
                 }.bind(this));
                 // this.personActions.getCompanyByIdentity(function(json){
@@ -3434,14 +3457,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     var scriptText = activityJson.data.activity.resetRangeScriptText;
                     if (!scriptText) return;
                     var resetRange = this.Macro.exec(activityJson.data.activity.resetRangeScriptText, this);
-                    this.selectPeopleUnit(dlg, "", count, resetRange);
+                    this.selectPeopleUnit(dlg, "", count, resetRange, exclude);
                 }.bind(this))
                 break;
             default:
                 this.selectPeopleAll(dlg, count);
         }
     },
-    selectPeopleUnit: function (dlg, unit, count, include) {
+    selectPeopleUnit: function (dlg, unit, count, include, exclude) {
         var names = dlg.identityList || [];
         var areaNode = $("resetWork_selPeopleArea");
         var options = {
@@ -3463,6 +3486,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (include) {
             options.noUnit = true;
             options.include = typeOf(include) === "array" ? include : [include];
+        }
+        if( exclude ){
+            options.exclude = exclude;
         }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);

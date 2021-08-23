@@ -9,9 +9,9 @@ public class WrapEmbed extends Embed {
 
 	private static final long serialVersionUID = 8427413538568458981L;
 
-	public static WrapCopier<Embed, WrapEmbed> outCopier = WrapCopierFactory.wo(Embed.class, WrapEmbed.class, null,
-			JpaObject.FieldsInvisible);
+	public static final WrapCopier<Embed, WrapEmbed> outCopier = WrapCopierFactory.wo(Embed.class, WrapEmbed.class,
+			null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapEmbed, Embed> inCopier = WrapCopierFactory.wi(WrapEmbed.class, Embed.class, null,
-			JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapEmbed, Embed> inCopier = WrapCopierFactory.wi(WrapEmbed.class, Embed.class, null,
+			JpaObject.FieldsUnmodifyExcludeId, false);
 }

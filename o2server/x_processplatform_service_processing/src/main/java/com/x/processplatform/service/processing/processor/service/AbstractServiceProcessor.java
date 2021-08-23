@@ -47,9 +47,9 @@ public abstract class AbstractServiceProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Service service = (Service) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, service);
+		this.executingCommitted(aeiObjects, service, works);
 	}
 
 	@Override
@@ -60,7 +60,8 @@ public abstract class AbstractServiceProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Service service) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Service service) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Service service, List<Work> works)
+			throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Service service) throws Exception;
 }

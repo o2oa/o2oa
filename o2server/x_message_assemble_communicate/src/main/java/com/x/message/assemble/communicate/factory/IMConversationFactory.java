@@ -1,15 +1,21 @@
 package com.x.message.assemble.communicate.factory;
 
-import com.x.message.assemble.communicate.AbstractFactory;
-import com.x.message.assemble.communicate.Business;
-import com.x.message.core.entity.*;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.List;
+
+import com.x.message.assemble.communicate.AbstractFactory;
+import com.x.message.assemble.communicate.Business;
+import com.x.message.core.entity.IMConversation;
+import com.x.message.core.entity.IMConversationExt;
+import com.x.message.core.entity.IMConversationExt_;
+import com.x.message.core.entity.IMConversation_;
+import com.x.message.core.entity.IMMsg;
+import com.x.message.core.entity.IMMsg_;
 
 public class IMConversationFactory extends AbstractFactory {
 

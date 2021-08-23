@@ -7,15 +7,15 @@
     "condition" : "onlock",
     "sub": []
   },
+//  {
+//    "title": MWF.xApplication.Attendance.LP.batchDeal,
+//    "id": "1.1",
+//    "position" : "left",
+//    "styles" : "toolbarTextNode",
+//    "sub": []
+//  },
   {
-    "title": MWF.xApplication.Attendance.LP.batchDeal,
-    "id": "1.1",
-    "position" : "left",
-    "styles" : "toolbarTextNode",
-    "sub": []
-  },
-  {
-    "title": MWF.xApplication.Attendance.LP.agree,
+    "title": MWF.xApplication.Attendance.LP.batchAgree,
     "id": "1.2",
     "action": "agreeAppeals",
     "icon": "agree.png",
@@ -24,7 +24,7 @@
     "sub": []
   },
   {
-    "title": MWF.xApplication.Attendance.LP.disagree,
+    "title": MWF.xApplication.Attendance.LP.batchDisagree,
     "id": "1.3",
     "action": "denyAppeals",
     "icon": "deny.png",

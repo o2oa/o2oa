@@ -1,5 +1,12 @@
 package com.x.file.assemble.control.jaxrs.share;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache.CacheCategory;
@@ -15,12 +22,6 @@ import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Share;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 class ActionDownload extends BaseAction {
 

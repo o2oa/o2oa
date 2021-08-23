@@ -9,9 +9,9 @@ public class WrapService extends Service {
 
 	private static final long serialVersionUID = 6862383643551191712L;
 
-	public static WrapCopier<Service, WrapService> outCopier = WrapCopierFactory.wo(Service.class, WrapService.class,
-			null, JpaObject.FieldsInvisible);
+	public static final WrapCopier<Service, WrapService> outCopier = WrapCopierFactory.wo(Service.class,
+			WrapService.class, null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapService, Service> inCopier = WrapCopierFactory.wi(WrapService.class, Service.class,
-			null, JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapService, Service> inCopier = WrapCopierFactory.wi(WrapService.class,
+			Service.class, null, JpaObject.FieldsUnmodifyExcludeId, false);
 }

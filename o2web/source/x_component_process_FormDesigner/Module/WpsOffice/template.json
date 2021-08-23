@@ -1,0 +1,61 @@
+{
+	"id": "",
+	"name": "",
+	"type": "WpsOffice",
+	"description": "",
+	"officeType": "word",
+	"template": "",
+	"isNotLoadNow": false,
+	"isShowTopArea" : true,
+	"isShowHeader" : true,
+	"isShowComment" : false,
+	"isCooperUsersAvatarVisible" : false,
+	"showMode" : "normal",
+	"isBrowserViewFullscreen" : false,
+	"isIframeViewFullscreen" : false,
+	"isShowDocMap" : true,
+	"isBestScale" : false,
+	"isShowBottomStatusBar" : true,
+	"isOpenIntoEdit" : false,
+	"HeaderLeft": true,
+	"HeaderRight": true,
+	"FloatQuickHelp": true,
+	"HistoryVersion": true,
+	"HistoryRecord": true,
+	"HistoryVersionDivider": true,
+	"TabPrintPreview": true,
+	"MenuPrintPreview": true,
+	"ReviewTrackChanges": true,
+	"TrackChanges": true,
+	"ContextMenuConvene": true,
+	"Logo": true,
+	"Cooperation": true,
+	"More": true,
+	"SendButton": true,
+	"CooperHistoryMenuItem": true,
+	"WriterHoverToolbars": true,
+	"ReadSetting": true,
+
+	"script": {
+		"code": "",
+		"html": ""
+	},
+	"events": {
+		"afterOpen": {
+			"code": "",
+			"html": ""
+		},
+		"beforeOpen": {
+			"code": "",
+			"html": ""
+		},
+		"afterSave": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

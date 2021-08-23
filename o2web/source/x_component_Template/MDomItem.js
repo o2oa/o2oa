@@ -194,7 +194,8 @@ var MDomItem = new Class({
 
         this.fireEvent("postLoad", [this]);
     },
-    editMode : function(){
+    editMode : function( keep ){
+        if(keep)this.save();
         this.options.isEdited = true;
         this.dispose();
         this.load();
@@ -202,7 +203,8 @@ var MDomItem = new Class({
     save : function(){
         this.options.value = this.getValue();
     },
-    readMode : function(){
+    readMode : function( keep ){
+        if(keep)this.save();
         this.options.isEdited = false;
         this.dispose();
         this.load();
@@ -772,6 +774,12 @@ MDomItem.Text = new Class({
             "name" : options.name,
             "value" : value
         });
+
+        var tType = this.options.tType;
+        if (tType == "time" || tType == "date" || tType.toLowerCase() == "datetime") {
+            item.set("autocomplete", "off");
+        }
+
         item.set( options.attr || {} );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( options.style || {} );
@@ -2606,7 +2614,10 @@ MDomItem.Rtf = new Class({
                 //"width": "",
                 "readOnly": false,
                 "language": MWF.language || "zh-cn",
-                "extraAllowedContent " : "img[onerror,data-id]"
+                "enablePreview": true,
+                "removePlugins": ['image','easyimage','exportpdf','cloudservices'],
+                "extraPlugins": ['o2image']
+                // "extraAllowedContent " : "img[onerror,data-id]"
             };
             if( this.options.RTFConfig ){
                 editorConfig = Object.merge( editorConfig, this.options.RTFConfig )
@@ -2668,15 +2679,43 @@ MDomItem.Rtf = new Class({
         var parent = this.container ;
         var className = null ;
         item = new Element( "span", {
-            "name" : name,
-            "html" : value
+            "name" : name
+            // "html" : value
         });
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( styles );
 
         if(parent)item.inject(parent);
+
+        this.loadLazyImage(item, value, function(){
+            if( window.layout && layout.mobile ){
+            }else if( this.options.enablePreview ) {
+                this.loadImageViewer(item);
+            }else if( this.options.RTFConfig && this.options.RTFConfig.enablePreview === false) {
+            }else{
+                this.loadImageViewer(item);
+            }
+        }.bind(this));
+
         this.items.push( item );
+    },
+    loadLazyImage: function(node, html, callback){
+        if( this.options && this.options.imageLazyLoading) {
+            o2.require("o2.widget.ImageLazyLoader", null, false);
+            var loadder = new o2.widget.ImageLazyLoader(node, html);
+            loadder.load(function () {
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            node.set("html", html);
+            if (callback) callback();
+        }
+    },
+    loadImageViewer: function(node){
+        o2.require("o2.widget.ImageViewer", null, false);
+        var imageViewer = new o2.widget.ImageViewer(node);
+        imageViewer.load();
     },
     get : function( vort ){
         if( this.options.disable ){
@@ -2926,14 +2965,20 @@ MDomItem.Org = new Class({
             options = Object.merge( options, this.options.orgWidgetOptions );
         }
         value.each(function( v ){
+            var data;
             var distinguishedName;
             if( typeOf(v) === "string" ){
                 distinguishedName = v;
+                data = {
+                    "distinguishedName" : distinguishedName,
+                    "name": distinguishedName.split("@")[0]
+                }
             }else{
-                distinguishedName = v.distinguishedName || v.name || ""
+                distinguishedName = v.distinguishedName || v.name || "";
+                if( !v.name )v.name = distinguishedName.split("@")[0];
+                data = v;
             }
             var flag = distinguishedName.substr(distinguishedName.length-1, 1);
-            var data = { "name" : distinguishedName };
             switch (flag.toLowerCase()){
                 case "i":
                     var widget = new MWF.widget.O2Identity( data, node, options );

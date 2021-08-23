@@ -1,5 +1,6 @@
 MWF.xApplication.Forum = MWF.xApplication.Forum || {};
 MWF.xApplication.ForumDocument = MWF.xApplication.ForumDocument || {};
+o2.require("o2.widget.ImageLazyLoader", null, false);
 MWF.xDesktop.requireApp("Forum", "Common", null, false);
 MWF.xDesktop.requireApp("Template", "Explorer", null, false);
 
@@ -201,12 +202,27 @@ MWF.xApplication.ForumDocument.Mobile.SubjectDocument = new Class({
     _queryCreateDocumentNode:function( itemData ){
     },
     _postCreateDocumentNode: function( itemNode, itemData ){
-        var content = itemNode.getElements( "[item='content']" )[0];
-        content.getElements("img").each( function( img ){
-            img.setStyles({
-                "height": "auto",
-                "max-width" : "100%"
-            });
+
+        var content = itemNode.getElement( "[item='content']" );
+
+        o2.require("o2.widget.ImageLazyLoader", function(){
+            var loadder = new o2.widget.ImageLazyLoader(content, this.data.content);
+            loadder.load(function(){
+
+                content.getElements("img").each( function( img ){
+                    if( img.hasClass("lozad") ){
+                        img.setStyles({
+                            "max-width" : "100%"
+                        });
+                    }else{
+                        img.setStyles({
+                            "height": "auto",
+                            "max-width" : "100%"
+                        });
+                    }
+                }.bind(this));
+
+            }.bind(this))
         }.bind(this));
 
         if( this.data.typeCategory == this.lp.vote || this.data.typeCategory == "投票" ){
@@ -297,13 +313,27 @@ MWF.xApplication.ForumDocument.Mobile.ReplyDocument = new Class({
     _queryCreateDocumentNode:function( itemData ){
     },
     _postCreateDocumentNode: function( itemNode, itemData ){
-        var content = itemNode.getElements( "[item='content']" )[0];
-        content.getElements("img").each( function( img ){
-            img.setStyles({
-                "height": "auto",
-                "max-width" : "100%"
-            });
+        var content = itemNode.getElement( "[item='content']" );
+        o2.require("o2.widget.ImageLazyLoader", function(){
+            var loadder = new o2.widget.ImageLazyLoader(content, this.data.content);
+            loadder.load(function(){
+
+                content.getElements("img").each( function( img ){
+                    if( img.hasClass("lozad") ){
+                        img.setStyles({
+                            "max-width" : "100%"
+                        });
+                    }else{
+                        img.setStyles({
+                            "height": "auto",
+                            "max-width" : "100%"
+                        });
+                    }
+                }.bind(this));
+
+            }.bind(this))
         }.bind(this));
+
         if( itemData.parentId && itemData.parentId != "" ){
             var quoteContainer = itemNode.getElements( "[item='quoteContent']" )[0];
             this.actions.getReply( itemData.parentId, function( json ){

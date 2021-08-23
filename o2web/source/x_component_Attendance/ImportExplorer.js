@@ -56,7 +56,7 @@ MWF.xApplication.Attendance.ImportExplorer = new Class({
                         this.actions.uploadAttachment( function( json ){
                             var id = json.id;
                             this.actions.getAttachmentInfo( id, function( info ){
-                                var progress = new MWF.xApplication.Attendance.ImportExplorer.Progress(id, this.actions);
+                                var progress = new MWF.xApplication.Attendance.ImportExplorer.Progress(id, this.actions, this.app);
                                 progress.load( function(){
                                     var form = new MWF.xApplication.Attendance.ImportExplorer.Result(this, info.data, { id : id }, { app : this.app , actions : this.app.restActions, css : {} });
                                     form.open();
@@ -77,6 +77,10 @@ MWF.xApplication.Attendance.ImportExplorer = new Class({
     },
     checkData : function(){
         var selector = new MWF.xApplication.Attendance.ImportExplorer.YearMonthSelctor(this);
+        selector.edit();
+    },
+    exportSourceData : function(){
+        var selector = new MWF.xApplication.Attendance.ImportExplorer.ExportSourceData(this);
         selector.edit();
     },
     analyseData : function(){
@@ -118,7 +122,7 @@ MWF.xApplication.Attendance.ImportExplorer = new Class({
             this.descriptionNode.addEvent("mousedown", function(e){e.stopPropagation();});
             document.body.addEvent("mousedown", function(){ this.descriptionNode.setStyle("display","none")}.bind(this));
             var table = new Element("table", {
-                "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.filterTable, "class" : "filterTable"
+                "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "class" : "filterTable"
             }).inject( this.descriptionNode );
 
             var tr = new Element("tr").inject(table);
@@ -182,9 +186,8 @@ MWF.xApplication.Attendance.ImportExplorer.Document = new Class({
 });
 
 MWF.xApplication.Attendance.ImportExplorer.YearMonthSelctor = new Class({
-    Extends: MPopupForm,
+    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
     options : {
-        "style" : "attendance",
         "width": 500,
         "height": 300,
         "hasTop" : true,
@@ -192,7 +195,6 @@ MWF.xApplication.Attendance.ImportExplorer.YearMonthSelctor = new Class({
         "title" : MWF.xApplication.Attendance.LP.selectCheckMonth,
         "draggable" : true,
         "closeAction" : true,
-        "false" : true
     },
     _createTableContent: function(){
         this.formTableContainer.setStyles({
@@ -209,6 +211,7 @@ MWF.xApplication.Attendance.ImportExplorer.YearMonthSelctor = new Class({
         this.formTableArea.set("html",html);
         MWF.xDesktop.requireApp("Template", "MForm", function(){
             this.form = new MForm( this.formTableArea, {}, {
+                style : "attendance",
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
                     cycleYear : {
@@ -242,10 +245,71 @@ MWF.xApplication.Attendance.ImportExplorer.YearMonthSelctor = new Class({
     }
 });
 
-MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
-    Extends: MPopupForm,
+MWF.xApplication.Attendance.ImportExplorer.ExportSourceData = new Class({
+    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
     options : {
-        "style" : "attendance",
+        "width": 500,
+        "height": 300,
+        "hasTop" : true,
+        "hasBottom" : true,
+        "title" : MWF.xApplication.Attendance.LP.selectExportMonth,
+        "draggable" : true,
+        "closeAction" : true,
+    },
+    _createTableContent: function(){
+        this.formTableContainer.setStyles({
+            "width" : "300px"
+        });
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
+            "<tr><td styles='formTabelTitle' lable='cycleYear'></td>"+
+            "    <td styles='formTableValue' item='cycleYear'></td></tr>" +
+            "<tr><td styles='formTabelTitle' lable='cycleMonth'></td>"+
+            "    <td styles='formTableValue' item='cycleMonth'></td></tr>" +
+            "</table>";
+        this.formTableArea.set("html",html);
+        MWF.xDesktop.requireApp("Template", "MForm", function(){
+            this.form = new MForm( this.formTableArea, {}, {
+                style : "attendance",
+                isEdited : this.isEdited || this.isNew,
+                itemTemplate : {
+                    cycleYear : {
+                        text: MWF.xApplication.Attendance.LP.annuaal,
+                        type : "select",
+                        selectValue : function(){
+                            var years = []; d = new Date();
+                            for(var i=0 ; i<5; i++){
+                                years.push(d.getFullYear());
+                                d.setFullYear(d.getFullYear()-1)
+                            }
+                            return years;
+                        }
+                    },
+                    cycleMonth : {
+                        text: MWF.xApplication.Attendance.LP.months,
+                        type : "select",
+                        defaultValue : function(){ return new Date().getMonth(); },
+                        selectValue : ["1","2","3","4","5","6","7","8","9","10","11","12"]
+                    }
+                }
+            }, this.app);
+            this.form.load();
+        }.bind(this), true);
+    },
+    _ok: function( data, callback ){
+        var cycleMonth = data.cycleMonth;
+        if(parseInt(cycleMonth)<10){
+            cycleMonth = "0"+cycleMonth;
+        }
+        debugger;
+        this.app.restActions.exportSourceDetail( data.cycleYear, cycleMonth, function(json){
+            this.close();
+        }.bind(this));
+    }
+});
+
+MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
+    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
+    options : {
         "width": 800,
         "height": 600,
         "hasTop" : true,
@@ -253,8 +317,9 @@ MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
         "title" : MWF.xApplication.Attendance.LP.importDataResult,
         "draggable" : true,
         "closeAction" : true,
-        "hasScroll" : true,
         "closeByClickMask" : true,
+        "resizeable" : true,
+        "maxAction" : true,
         "id" : ""
     },
     _createTableContent: function(){
@@ -265,6 +330,8 @@ MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
         }.bind(this));
     },
     createImportContent : function(){
+        this.formTableContainer.setStyle("width","90%");
+
         var lp = MWF.xApplication.Attendance.LP;
         if( this.checkData.errorCount == 0 ){
             var text = lp.importDataResultSuccess.replace("{fileName}", this.data.fileName ).
@@ -281,78 +348,108 @@ MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
         }).inject(this.formTableArea);
 
         var table = new Element("table", {
-            "width" : "100%", "border" : "", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.editTable, "class" : "editTable"
+            "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.explorer.css.editTable, "class" : "editTable"
         }).inject( this.formTableArea );
 
         var tr = new Element("tr").inject(table);
         var td;
         Array.each( lp.importDataResultThList, function(text){
-            td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : text  }).inject(tr);
+            td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : text  }).inject(tr);
         }.bind(this));
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "行号"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "员工号"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "员工名字"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "日期"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "上午上班打卡时间"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "上午下班打卡时间"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "下午上班打卡时间"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "下午下班打卡时间"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "检查结果"  }).inject(tr);
-        // var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "描述"  }).inject(tr);
-        td.setStyle( "width" , "300px" );
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "行号"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "员工号"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "员工名字"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "日期"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "上午上班打卡时间"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "上午下班打卡时间"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "下午上班打卡时间"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "下午下班打卡时间"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "检查结果"  }).inject(tr);
+        // var td = new Element("td", {  "styles" : this.explorer.css.editTableTitle, "text" : "描述"  }).inject(tr);
+        // td.setStyle( "width" , "300px" );
 
         this.checkData.detailList.each(function( d ){
             var tr = new Element("tr").inject(table);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.curRow }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.employeeNo }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.employeeName.split('@')[0] }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.recordDateString }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.onDutyTime }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.morningOffDutyTime }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.afternoonOnDutyTime }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.offDutyTime }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.checkStatus == "error" ? lp.false : lp.true }).inject(tr);
-            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.description }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.curRow }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.employeeNo }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.employeeName.split('@')[0] }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.recordDateString }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.onDutyTime }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.morningOffDutyTime }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.afternoonOnDutyTime }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.offDutyTime }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.checkStatus == "error" ? lp.false : lp.true }).inject(tr);
+            var td = new Element("td", { "styles" : this.explorer.css.editTableValue , "text": d.description }).inject(tr);
         }.bind(this))
     }
 });
 
 
 MWF.xApplication.Attendance.ImportExplorer.Progress = new Class({
-    initialize : function( id, actions ){
+    initialize : function( id, actions, app ){
         this.id = id;
         this.actions = actions;
+        this.app = app;
     },
     load : function( callback ){
         var lp = MWF.xApplication.Attendance.LP;
         this.currentDate = new Date();
-        this.addFormDataMessage();
+
+        if(layout.desktop.message){
+            this.addFormDataMessage();
+        }else{
+            this.app.notice(lp.importDataTitle);
+            MWF.require("o2.widget.Mask", null, false);
+            this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+            this.mask.loadNode(this.app.content);
+        }
         this.status = "ready";
         this.intervalId = setInterval( function(){
             this.actions.getImportStatus( this.id, function( json ){
                 var data = json.data;
-                if( data.processing && data.currentProcessName != "COMPLETE"){
-                    if( data.currentProcessName == "VALIDATE" ){
-                        if( this.status != data.currentProcessName ){
-                            this.setMessageTitle( lp.checkDataTitle );
-                            this.setMessageText( lp.checkDataContent.replace( "{count}", data.process_validate_total));
-                            this.status = data.currentProcessName;
+                if( layout.desktop.message ){
+                    if( data.processing && data.currentProcessName !== "COMPLETE"){
+                        if( data.currentProcessName === "VALIDATE" ){
+                            if( this.status !== data.currentProcessName ){
+                                this.setMessageTitle( lp.checkDataTitle );
+                                this.setMessageText( lp.checkDataContent.replace( "{count}", data.process_validate_total));
+                                this.status = data.currentProcessName;
+                            }
+                            this.updateProgress( data.currentProcessName, data.process_validate_count, data.process_validate_total, data.errorCount );
+                        }else if( data.currentProcessName === "SAVEDATA" ){
+                            if( this.status !== data.currentProcessName ){
+                                this.setMessageTitle(lp.importDataTitle);
+                                this.setMessageText(lp.importDataContent.replace("{count}", data.process_save_total));
+                                this.status = data.currentProcessName;
+                            }
+                            this.updateProgress( data.currentProcessName, data.process_save_count, data.process_save_total, data.errorCount );
                         }
-                        this.updateProgress( data.currentProcessName, data.process_validate_count, data.process_validate_total, data.errorCount );
-                    }else if( data.currentProcessName == "SAVEDATA" ){
-                        if( this.status != data.currentProcessName ){
-                            this.setMessageTitle( lp.importDataTitle );
-                            this.setMessageText( lp.importDataContent.replace( "{count}", data.process_save_total));
-                            this.status = data.currentProcessName;
-                        }
-                        this.updateProgress( data.currentProcessName, data.process_save_count, data.process_save_total, data.errorCount );
+                    }else{
+                        this.status = data.currentProcessName;
+                        clearInterval( this.intervalId );
+                        this.transferComplete( data );
+                        if( callback )callback();
                     }
                 }else{
-                    this.status = data.currentProcessName;
-                    clearInterval( this.intervalId );
-                    this.transferComplete( data );
-                    if( callback )callback();
+                    if( data.processing && data.currentProcessName !== "COMPLETE"){
+                        if( data.currentProcessName === "VALIDATE" ){
+                            if( this.status !== data.currentProcessName ){
+                                this.status = data.currentProcessName;
+                            }
+                        }else if( data.currentProcessName === "SAVEDATA" ){
+                            if( this.status !== data.currentProcessName ){
+                                this.status = data.currentProcessName;
+                            }
+                        }
+                    }else{
+                        // this.app.notice(lp.importSuccessTitle);
+                        this.status = data.currentProcessName;
+                        clearInterval( this.intervalId );
+                        if (this.mask) this.mask.hide();
+                        if( callback )callback();
+                    }
                 }
+
             }.bind(this), null)
         }.bind(this), 500 );
     },

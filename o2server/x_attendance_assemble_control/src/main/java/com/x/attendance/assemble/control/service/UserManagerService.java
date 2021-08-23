@@ -10,6 +10,7 @@ import com.x.base.core.project.organization.Identity;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -342,6 +343,21 @@ public class UserManagerService {
 	}
 
 	/**
+	 * 根据组织名称获取所有人(递归)
+	 *
+	 * @param Unit
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listWithUnitSubNested(String Unit) throws Exception {
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.organization().person().listWithUnitSubNested(Unit);
+		}
+	}
+
+	/**
 	 * 根据人员姓名获取人员姓名
 	 * 
 	 * @param name
@@ -424,6 +440,23 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			return business.organization().person().get(personName);
+		}
+	}
+
+	public Boolean checkHasPerson(String personName,String unitName,Boolean recursive) throws Exception {
+		if (personName == null || personName.isEmpty()) {
+			throw new Exception("personName is null!");
+		}
+		if (unitName == null || unitName.isEmpty()) {
+			throw new Exception("unitName is null!");
+		}
+		if (recursive ==null) {
+			throw new Exception("recursive is null!");
+		}
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.organization().unit().checkHasPerson(personName,unitName,recursive);
 		}
 	}
 

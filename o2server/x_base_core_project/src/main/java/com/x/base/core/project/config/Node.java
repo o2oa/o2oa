@@ -11,6 +11,7 @@ public class Node extends ConfigObject {
 	public static final Integer DEFAULT_NODEAGENTPORT = 20010;
 	public static final String DEFAULT_BANNER = "O2OA";
 	public static final Integer DEFAULT_LOGSIZE = 14;
+	public static final Boolean DEFAULT_SELFHEALTHCHECKENABLE = false;
 
 	public static Node defaultInstance() {
 		Node o = new Node();
@@ -29,6 +30,7 @@ public class Node extends ConfigObject {
 		o.nodeAgentPort = DEFAULT_NODEAGENTPORT;
 		o.quickStartWebApp = false;
 		o.autoStart = true;
+		o.selfHealthCheckEnable = false;
 		return o;
 	}
 
@@ -70,6 +72,12 @@ public class Node extends ConfigObject {
 	private Boolean autoStart;
 	@FieldDescribe("是否允许使用擦除数据功能")
 	private Boolean eraseContentEnable;
+	@FieldDescribe("是否启用节点上模块健康自检查,如果启用在提交到center之前将进行模块的健康检查.默认false")
+	private Boolean selfHealthCheckEnable;
+
+	public Boolean getSelfHealthCheckEnable() {
+		return BooleanUtils.isTrue(selfHealthCheckEnable);
+	}
 
 	/* 20191009兼容centerServer */
 	protected void setCenter(CenterServer centerServer) {

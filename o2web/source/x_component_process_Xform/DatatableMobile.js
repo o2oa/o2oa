@@ -26,6 +26,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			this._loadTotalTr();
 
 			this.fireEvent("load");
+
 			this._loadDatatable(function(){
 				this._loadImportExportAction();
 				this.fieldModuleLoaded = true;
@@ -271,6 +272,30 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 				div = new Element("div").inject(this.node);
 			}
 			return div;
+		},
+		_checkAddAction: function(){
+			if( this.data.data && this.data.data.length > 0 ){
+				if(this.addAction)this.addAction.hide();
+				return;
+			}
+			if( !this.editable || !this.addable ){
+				if(this.addAction)this.addAction.hide();
+				return;
+			}
+			if( !this.addAction ){
+				this._createAddAction();
+			}else{
+				this.addAction.show();
+			}
+		},
+		_createAddAction: function(){
+			if( !this.addAction ){
+				this.addAction = new Element("div", {"styles": this.form.css.gridMobileActionNode}).inject(this.node, "top");
+				this.addAction.set("text", MWF.xApplication.process.Xform.LP.addLine);
+				this.addAction.addEvent("click", function(){
+					this._addLine();
+				}.bind(this));
+			}
 		},
 		_loadStyles: function(){
 			// if (this.json.border) {

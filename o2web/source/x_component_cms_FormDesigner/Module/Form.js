@@ -425,7 +425,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		MWF.xDesktop.requireApp("cms.FormDesigner", "Preview", function(){
 
 			if (this.options.mode=="Mobile"){
-				this.previewBox = new MWF.xApplication.cms.FormDesigner.Preview(this, {"size": {"x": "340", "y": 580}});
+				this.previewBox = new MWF.xApplication.cms.FormDesigner.Preview(this, {"size": {"x": "400", "y": 580}});
 			}else{
 				this.previewBox = new MWF.xApplication.cms.FormDesigner.Preview(this);
 			}

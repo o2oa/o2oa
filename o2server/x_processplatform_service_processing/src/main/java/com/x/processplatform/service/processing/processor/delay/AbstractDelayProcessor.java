@@ -46,9 +46,9 @@ public abstract class AbstractDelayProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Delay delay = (Delay) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, delay);
+		this.executingCommitted(aeiObjects, delay, works);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public abstract class AbstractDelayProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Delay delay) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Delay delay) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Delay delay, List<Work> works) throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Delay delay) throws Exception;
 }

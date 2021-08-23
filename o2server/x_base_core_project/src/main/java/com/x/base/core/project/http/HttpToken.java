@@ -31,6 +31,7 @@ public class HttpToken {
 	public static final String X_Authorization = "authorization";
 	public static final String X_Person = "x-person";
 	public static final String X_DISTINGUISHEDNAME = "x-distinguishedName";
+	public static final String X_REQUESTBODY = "验证码x-requestBody";
 	public static final String X_Client = "x-client";
 	public static final String X_Debugger = "x-debugger";
 	public static final String COOKIE_ANONYMOUS_VALUE = "anonymous";
@@ -47,7 +48,7 @@ public class HttpToken {
 		// 加入调试标记
 		Object debugger = request.getHeader(HttpToken.X_Debugger);
 		effectivePerson.setDebugger((null != debugger) && BooleanUtils.toBoolean(Objects.toString(debugger)));
-		setAttribute(request, effectivePerson);
+		//this.setAttribute(request, effectivePerson);
 		setToken(request, response, effectivePerson);
 		return effectivePerson;
 	}
@@ -111,6 +112,7 @@ public class HttpToken {
 
 	public void setToken(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson)
 			throws Exception {
+		this.setAttribute(request, effectivePerson);
 		switch (effectivePerson.getTokenType()) {
 		case anonymous:
 			break;

@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.viewcategory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,7 +11,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.cms.assemble.control.Business;
@@ -24,11 +26,11 @@ public class ActionGet extends BaseAction {
 			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = null;
-		String cacheKey = ApplicationCache.concreteCacheKey(id);
-		Element element = cache.get(cacheKey);
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
-		if ((null != element) && (null != element.getObjectValue())) {
-			wrap = (Wo) element.getObjectValue();
+		if (optional.isPresent()) {
+			wrap = (Wo) optional.get();
 			result.setData(wrap);
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -39,7 +41,7 @@ public class ActionGet extends BaseAction {
 				}
 
 				wrap = Wo.copier.copy(view);
-				cache.put(new Element(cacheKey, wrap));
+				CacheManager.put(cacheCategory, cacheKey, wrap );
 
 				result.setData(wrap);
 			} catch (Throwable th) {

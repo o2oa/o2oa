@@ -407,7 +407,9 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
     _loadModule: function (json, node, beforeLoad) {
         if (!json) return;
         if (!MWF["CMS" + json.type]) {
-            MWF.xDesktop.requireApp("cms.Xform", json.type, null, false);
+            var moduleType = json.type;
+            if(moduleType === "AttachmentDg")moduleType = "Attachment";
+            MWF.xDesktop.requireApp("cms.Xform", moduleType, null, false);
         }
         var module = new MWF["CMS" + json.type](node, json, this);
         if (beforeLoad) beforeLoad.apply(module);

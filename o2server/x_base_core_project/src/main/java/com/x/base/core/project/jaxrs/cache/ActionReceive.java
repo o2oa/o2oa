@@ -4,7 +4,6 @@ import javax.servlet.ServletContext;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.AbstractContext;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -22,15 +21,13 @@ class ActionReceive extends BaseAction {
 		logger.debug(effectivePerson, "receive:{}.", jsonElement);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		// Object o =
-		// servletContext.getAttribute(com.x.base.core.project.AbstractContext.class.getName());
-		AbstractContext ctx = AbstractContext.fromServletContext(servletContext);
-		if (null != ctx.clearCacheRequestQueue()) {
-			ctx.clearCacheRequestQueue().send(wi);
-		} else {
-			ApplicationCache.receive(wi);
-			CacheManager.receive(wi);
-		}
+
+//		AbstractContext ctx = AbstractContext.fromServletContext(servletContext);
+//		if (null != ctx.clearCa cheRequestQueue()) {
+//			ctx.clearCacheRequestQueue().send(wi);
+//		} else {
+		CacheManager.receive(wi);
+//		}
 		result.setData(new Wo(wi.getClassName()));
 		return result;
 	}

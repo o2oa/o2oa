@@ -1,8 +1,20 @@
 package com.x.message.assemble.communicate.jaxrs.connector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import javax.script.Bindings;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,14 +34,6 @@ import com.x.message.assemble.communicate.Business;
 import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.Instant;
 import com.x.message.core.entity.Message;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.script.Bindings;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
 class ActionCreate extends BaseAction {
 

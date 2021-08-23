@@ -1,51 +1,56 @@
 {
-  "titleNode" : {
-    "background-color" : "#365775", //"#f1f3fc",
-    "margin-left" : "2px",
-    "height": "60px",
+  "titleNode": {
+    "background-color": "#fff",
+    "border-bottom": "1px solid #ccc",
+    "color": "#333",
+    "margin-left": "5px",
+    "height": "50px",
     "overflow": "hidden"
   },
-  "titleInforNode" : {
-    "float" : "right",
-    "height": "60px",
-    "line-height": "60px",
-    "color" : "#fff",
-    "font-size" : "16px",
-    "margin-right" : "20px"
+  "titleRightNode": {
+//    "float": "right"
   },
-  "titleLeftArrowNode" : {
-    "background": "url('../x_component_Attendance/$MyIndex/default/icon/left.png') no-repeat center",
-    "margin": "15px 0px 15px 40px",
-    "width" : "40px",
-    "height" : "30px",
-    "float" : "left",
-    "cursor" : "pointer"
+  "titleInforNode": {
+    "float": "right",
+    "height": "50px",
+    "line-height": "50px",
+    "color": "#333",
+    "font-size": "16px",
+    "margin-right": "20px"
+  },
+  "titleLeftArrowNode": {
+    "background": "url('../x_component_Attendance/$MyIndex/default/icon/left.png') no-repeat center center",
+    "width": "40px",
+    "height": "50px",
+    "line-height": "50px",
+    "float": "left",
+    "cursor": "pointer"
   },
   "titleLeftArrowNode_over": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_over.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left.png) no-repeat center center"
   },
   "titleLeftArrowNode_down": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left.png) no-repeat center center"
   },
   "titleRightArrowNode": {
-    "height": "30px",
+    "height": "50px",
+    "line-height": "50px",
     "width": "40px",
-    "margin": "15px 0px",
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center",
     "cursor": "pointer",
     "float": "left"
   },
   "titleRightArrowNode_over": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_over.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center"
   },
   "titleRightArrowNode_down": {
-    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center"
   },
   "titleTextNode": {
-    "line-height": "60px",
-    "color": "#eee",
-    "margin": "0px 10px",
-    "font-size": "36px",
+    "line-height": "50px",
+    "color": "#333",
+    "margin": "0px 10px 0px 15px",
+    "font-size": "18px",
     "float": "left",
     "cursor": "pointer"
   },
@@ -56,250 +61,308 @@
     "color": "#fff"
   },
   "titleCycleTextNode": {
-    "line-height": "30px",
-    "color": "#eee",
-    "margin-top": "20px",
+    "line-height": "50px",
+    "color": "#333",
     "margin-left": "20px",
-    "font-size": "18px",
+    "font-size": "16px",
     "float": "left"
   },
-  "titleScheduleIconNode" : {
+  "titleScheduleIconNode": {
     "float": "right",
-    "height": "60px",
+    "height": "50px",
     "width": "32px",
-    "line-height": "60px",
+    "line-height": "50px",
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/past.png) no-repeat center center",
-    "margin": "0px 20px 14px 0px",
-    "cursor" : "pointer"
+    "margin": "0px 20px 0px 0px",
+    "cursor": "pointer"
   },
-  "titleScheduleIconNode_over" : {
+  "titleScheduleIconNode_over": {
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/past_down.png) no-repeat center center"
   },
-  "titleScheduleIconNode_down" : {
+  "titleScheduleIconNode_down": {
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/past_down.png) no-repeat center center"
   },
   "scheduleNode": {
-    "width": "200px",
-    "height": "240px",
+    "width": "260px",
+    "height": "270px",
     "background-color": "#FFF",
     "position": "absolute",
     "text-align": "center",
-    "border": "2px solid #666",
-    "z-index" : "101",
-    "font-size" : "14px",
-    "color" : "#666"
+    "border-radius": "2px",
+    "box-shadow": "0px 0px 6px 0px rgba(0, 0, 0, 0.25)",
+    "z-index": "101",
+    "font-size": "14px",
+    "color": "#333"
   },
-  "scheduleTdHead" : {
-    "padding-top" : "20px",
-    "padding-bottom" : "10px",
-    "font-size" : "16px",
-    "font-weight" :"bold"
+  "scheduleTdHead": {
+    "line-height": "40px",
+    "height": "40px",
+    "font-size": "14px",
+    "padding-left": "20px",
+    "text-align": "center",
+    "border-bottom": "1px solid #E6E6E6"
   },
-  "scheduleTdTitle" : {
-    "text-align" : "left",
-    "padding-right" : "5px",
-    "padding-left" : "25px",
-    "width" : "80px"
+  "scheduleTdTitle": {
+    "color": "#666",
+    "height": "30px",
+    "font-size": "13px",
+    "text-align": "left",
+    "padding-right": "5px",
+    "padding-left": "25px",
+    "width": "80px"
   },
-  "scheduleTdValue" : {
-    "text-align" : "left",
-    "width" : "40px"
+  "scheduleTdValue": {
+    "color": "#666",
+    "height": "30px",
+    "font-size": "13px",
+    "text-align": "left",
+    "width": "40px"
   },
   "elementContentNode": {
-    "overflow": "hidden",
+    "overflow": "auto",
     "position": "static",
-    "margin-right" : "10px",
-    "margin-bottom" : "20px"
+//    "margin-right": "10px",
+    "margin-bottom": "20px"
   },
   "elementContentListNode": {
+    "min-width": "900px"
     //"overflow": "hidden"
   },
-  "topContentArea" : {
-    "overflow" : "hidden",
-    "display" : "block"
+  "topContentArea": {
+    "overflow": "hidden",
+    "display": "block",
+    "background": "#F0F0F0"
   },
-  "calendarArea" : {
-    "width" : "48%",
-    "margin":"20px 10px 10px 25px",
-    "float" : "left"
+  "calendarArea": {
+    "margin-top": "10px",
+    "margin-right": "10px",
+    "background-color": "#fff",
+    "width": "100%"
+//    "margin": "20px 10px 10px 25px"
+//    "float": "left"
   },
-  "calendarTitle" : {
-    "color" : "#666",
-    "height" : "30px",
-    "line-height" : "30px",
-    "padding-left" : "10px",
-    "font-size" : "14px",
-    "background-color" : "#f1f3fc" //"#476783" //"#e6f3ff"
-  },
-  "canlendarToolbar" : {
+//  "calendarTitle": {
+//    "overflow": "hidden",
+//    "color": "#333",
+//    "height": "30px",
+//    "padding-top": "11px",
+//    "padding-left": "20px",
+//    "font-size": "18px",
+//    "background-color": "#fff"
+//    //"#476783" //"#e6f3ff"
+//  },
+  "canlendarToolbar": {
+    "overflow": "hidden",
+    "color": "#333",
+    "height": "30px",
+    "padding-top": "5px",
+    "padding-left": "20px",
+    "padding-bottom": "5px",
+    "font-size": "18px",
+    "background-color": "#fff"
     //"overflow" : "hidden"
   },
-  "canlendarToolbarText" : {
-    "color" : "#333",
-    "height" : "30px",
-    "line-height" : "30px",
-    "padding-left" : "10px",
-    "font-size" : "18px",
-    "float" : "left"
+  "canlendarToolbarText": {
+    "color": "#333",
+    "height": "30px",
+    "line-height": "30px",
+    "font-size": "18px",
+    "float": "left"
   },
-  "calendarCurrentMonthNode" : {
-      "font-size" : "16px",
-      "width" : "40px",
-     "line-height" : "30px",
-     "height" : "30px",
-     "float" : "right",
-     "cursor" : "default"
+
+  "calendarMonthNode": {
+    "float": "left",
+    "margin-left": "30px"
   },
-  "calendarLeftArrowNode" : {
-      "background": "url('../x_component_Attendance/$MyIndex/default/icon/left.png') no-repeat center",
-      "width" : "40px",
-      "line-height" : "30px",
-      "height" : "30px",
-      "float" : "right",
-      "cursor" : "pointer"
-    },
-    "calendarLeftArrowNode_over": {
-      "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_over.png) no-repeat center center"
-    },
-    "calendarLeftArrowNode_down": {
-      "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_down.png) no-repeat center center"
-    },
-    "calendarLeftArrowNode_disable": {
-      "cursor" : "default",
-      "background": "none"
-    },
-    "calendarRightArrowNode": {
-      "height": "30px",
-      "line-height" : "30px",
-      "width": "40px",
-      "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center",
-      "cursor": "pointer",
-      "float": "right"
-    },
-    "calendarRightArrowNode_over": {
-      "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_over.png) no-repeat center center"
-    },
-    "calendarRightArrowNode_down": {
-      "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_down.png) no-repeat center center"
-    },
-    "calendarRightArrowNode_disable": {
-          "cursor" : "default",
-          "background": "none"
-   },
+  "calendarCurrentMonthNode": {
+    "font-size": "16px",
+    "width": "40px",
+    "line-height": "30px",
+    "height": "30px",
+    "float": "right",
+    "text-align": "center",
+    "cursor": "default"
+  },
+  "calendarLeftArrowNode": {
+    "background": "url('../x_component_Attendance/$MyIndex/default/icon/left.png') no-repeat center",
+    "width": "20px",
+    "line-height": "30px",
+    "height": "30px",
+    "float": "right",
+    "cursor": "pointer"
+  },
+  "calendarLeftArrowNode_over": {
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left.png) no-repeat center center"
+  },
+  "calendarLeftArrowNode_down": {
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left.png) no-repeat center center"
+  },
+  "calendarLeftArrowNode_disable": {
+    "cursor": "default",
+    "background": "none"
+  },
+  "calendarRightArrowNode": {
+    "height": "30px",
+    "line-height": "30px",
+    "width": "20px",
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center",
+    "cursor": "pointer",
+    "float": "right"
+  },
+  "calendarRightArrowNode_over": {
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center"
+  },
+  "calendarRightArrowNode_down": {
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center"
+  },
+  "calendarRightArrowNode_disable": {
+    "cursor": "default",
+    "background": "none"
+  },
   "calendarNode": {
     //"max-width": "436px",
     //"margin-top": "20px",
-    "float" : "left"
   },
-  "holidayAreaNode" : {
-    "float" : "right",
-    "margin-right" : "10px",
-    "position" : "relative"
+  "holidayAreaNode": {
+    "float": "right",
+    "margin-right": "10px",
+    "position": "relative"
   },
-  "holidayActionNode" : {
-      "overflow" : "hidden",
-      "border" : "1px solid #ccc",
-      "height" : "28px",
-      "line-height" : "28px",
-      "width" : "100px",
-      "cursor" : "pointer"
+  "holidayActionNode": {
+    "overflow": "hidden",
+    "border": "1px solid #ccc",
+    "height": "28px",
+    "line-height": "28px",
+    "width": "100px",
+    "cursor": "pointer"
   },
-  "holidayActionTextNode" : {
-    "padding-left" : "11px",
-    "padding-right" : "11px",
-    "float" : "left",
-    "color" : "#666"
+  "holidayActionTextNode": {
+    "padding-left": "11px",
+    "padding-right": "11px",
+    "float": "left",
+    "color": "#666"
   },
-  "holidayActionIconNode" : {
-    "float" : "left",
-    "width" : "28px",
-    "border-left" : "1px solid #ccc",
-    "height" : "28px",
-    "line-height" : "28px",
+  "holidayActionIconNode": {
+    "float": "left",
+    "width": "28px",
+    "border-left": "1px solid #ccc",
+    "height": "28px",
+    "line-height": "28px",
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/down.png) no-repeat center center"
   },
-  "holidayActionIconNode_over" : {
+  "holidayActionIconNode_over": {
     "background": "url(../x_component_Attendance/$MyIndex/default/icon/down_over.png) no-repeat center center"
   },
-  "holidayListNode" : {
-    "position" : "absolute",
-    "top" : "100%",
-    "left" : "0",
-    "overflow" : "hidden",
-    "z-index" : "100",
-    "border" : "1px solid #ddd",
-    "min-width" : "100px",
-    "margin" : "0px"
+  "holidayListNode": {
+    "position": "absolute",
+    "top": "100%",
+    "left": "0",
+    "overflow": "hidden",
+    "z-index": "100",
+    "border": "1px solid #ddd",
+    "min-width": "100px",
+    "margin": "0px"
   },
-  "holidayNode" : {
-    "height" : "28px",
-    "line-height" :"28px",
-    "background-color" : "#fff",
-    "cursor":"pointer",
-    "text-align":"left",
-    "padding-left" : "7px"
+  "holidayNode": {
+    "height": "28px",
+    "line-height": "28px",
+    "background-color": "#fff",
+    "cursor": "pointer",
+    "text-align": "left",
+    "padding-left": "7px"
   },
-  "holidayNode_over" : {
-    "background-color" : "#eee"
+  "holidayNode_over": {
+    "background-color": "#eee"
   },
-
-  "statusColorArea" : {
-    "width" : "10%",
-    "margin" : "30px 0 0 20px",
-    "float":"left"
-  },
-  "statusColorTable" : {
-    "width" : "98%",
-    "min-width" : "80px"
-  },
-  "statusColorTd" : {
-    "height" : "10px"
-  },
-  "statusTextTd" : {
-    "padding-top" : "0px",
-    "padding-bottom" : "10px"
-  },
-  "pieChartArea" : {
-    "width" : "35%",
-    "margin-top":"20px",
-    "float" : "left"
-  },
-  "pieChartTitle" : {
-    "color" : "#666",
-    "height" : "30px",
-    "line-height" : "30px",
-    "padding-left" : "10px",
-    "font-size" : "14px",
-    "background-color" : "#f1f3fc" //"#476783" //"#e6f3ff"
-  },
-  "pieChartNode" : {
-    //"margin-top": "20px",
-    "margin-left": "40px",
-    "height" : "400px"
-  },
-
-  "middleContentArea" : {
+  "middleContentArea": {
     //"overflow" : "hidden",
-    "display" : "block"
+    "padding-top": "10px",
+    "padding-bottom": "10px",
+    "display": "block",
+    "background": "#F0F0F0",
+    "overflow": "hidden"
   },
-  "lineChartArea" : {
-    "margin":"10px 10px 0px 10px"
+  "middleLeftArea": {
+    "background": "#fff",
+    "float": "left",
+    "width": "380px"
   },
-  "lineChartTitle" : {
-    "color" : "#666",
-    "height" : "30px",
-    "line-height" : "30px",
-    "padding-left" : "10px",
-    "font-size" : "14px",
-    "background-color" : "#f1f3fc" //"#476783" //"#e6f3ff"
+  "middleLeftTitleArea": {
+    "overflow": "hidden",
+    "color": "#333",
+    "height": "30px",
+    "padding-top": "11px",
+    "padding-left": "20px",
+    "font-size": "18px",
+    "background-color": "#fff"
+    //"#476783" //"#e6f3ff"
   },
-  "lineChartNode" : {
-    "margin-top": "20px",
+  "middleLeftContentArea": {
+    "overflow": "hidden"
+  },
+  "middleRightArea": {
     "margin-left": "10px",
-    "height" : "400px"
+    "background": "#fff",
+    "float": "left",
+    "width": "calc( 100% - 390px )"
   },
-
-
+  "middleRightTitleArea": {
+    "overflow": "hidden",
+    "color": "#333",
+    "height": "30px",
+    "padding-top": "11px",
+    "padding-left": "20px",
+    "font-size": "18px",
+    "background-color": "#fff"
+    //"#476783" //"#e6f3ff"
+  },
+  "middleRightContentArea": {
+    "overflow": "hidden"
+  },
+  "statusColorArea": {
+    "background": "#fff",
+    "width": "110px",
+    "margin-left": "20px",
+    "margin-top": "30px",
+    "float": "left"
+  },
+  "statusColorTable": {
+    "min-width": "80px"
+  },
+  "statusColorTd": {
+    "height": "10px"
+  },
+  "statusTextTd": {
+    "padding-top": "0px",
+    "padding-bottom": "10px"
+  },
+  "pieChartArea": {
+    "background": "#fff",
+    "width": "calc( 100% - 130px )",
+    "float": "left"
+  },
+  "pieChartNode": {
+    //"margin-top": "20px",
+    "margin-left": "10px",
+    "height": "280px"
+  },
+  "lineChartArea": {
+    "width": "100%",
+    "background": "#fff"
+  },
+  "lineChartTitle": {
+    "color": "#666",
+    "height": "30px",
+    "line-height": "30px",
+    "padding-left": "10px",
+    "font-size": "14px",
+    "background-color": "#f1f3fc"
+    //"#476783" //"#e6f3ff"
+  },
+  "lineChartNode": {
+    "margin-left": "10px",
+    "height": "280px"
+  },
   "calendarMonthSelectNode": {
     "width": "260px",
     "height": "300px",
@@ -307,7 +370,7 @@
     "position": "absolute",
     "text-align": "center",
     "border": "2px solid #666",
-    "z-index" : "101"
+    "z-index": "101"
   },
   "calendarMonthSelectTitleNode": {
     "height": "30px",
@@ -345,11 +408,206 @@
   "calendarMonthSelectTdNode_down": {
     "color": "#8894e9"
   },
-
   "calendarMonthSelectBottomNode": {
     "height": "40px",
     "font-size": "18px",
     "line-height": "40px",
     "cursor": "pointer"
+  },
+
+
+  "scrollNode": {
+    "overflow-x": "hidden",
+    "overflow-y": "scroll"
+  },
+  "scrollNode_inContainer": {
+    "overflow-x": "hidden",
+    "overflow-y": "scroll",
+    "background-color": "#f0f0f0"
+  },
+  "contentWarpNode": {
+    "padding": "0px 15px",
+//    "margin-right": "10px",
+    "background-color": "#Fff",
+    "overflow": "hidden"
+  },
+  "contentContainerNode": {
+    "height": "100%",
+    "overflow": "hidden"
+  },
+  "contentNode": {
+    "background-color": "#FFF",
+    "-webkit-user-select": "none",
+    "-moz-user-select": "none"
+  },
+//  "calendarTitleNode": {
+//    "height": "60px",
+//    "overflow": "hidden",
+//    "border-bottom": "1px solid #CCC"
+//  },
+//  "calendarBodyNode": {
+//    "overflow": "hidden"
+//  },
+//  "calendarPrevMonthNode": {
+//    "height": "30px",
+//    "width": "40px",
+//    "margin": "15px 0px 15px 40px",
+//    "background": "url(../x_component_Meeting/$MonthView/default/icon/left24_gray.png) no-repeat center center",
+//    "cursor": "pointer",
+//    "float": "left"
+//  },
+//  "calendarPrevMonthNode_over": {
+//    "background": "url(../x_component_Meeting/$MonthView/default/icon/left24_blue.png) no-repeat center center"
+//  },
+//  "calendarPrevMonthNode_down": {
+//    "background": "url(../x_component_Meeting/$MonthView/default/icon/left24_blue.png) no-repeat center center"
+//  },
+//  "calendarNextMonthNode": {
+//    "height": "30px",
+//    "width": "40px",
+//    "margin": "15px 0px",
+//    "background": "url(../x_component_Meeting/$MonthView/default/icon/right24_gray.png) no-repeat center center",
+//    "cursor": "pointer",
+//    "float": "left"
+//  },
+//  "calendarNextMonthNode_over": {
+//    "background": "url(../x_component_Meeting/$MonthView/default/icon/right24_blue.png) no-repeat center center"
+//  },
+//  "calendarNextMonthNode_down": {
+//    "background": "url(../x_component_Meeting/$MonthView/default/icon/right24_blue.png) no-repeat center center"
+//  },
+//  "calendarTitleTextNode": {
+//    "line-height": "60px",
+//    "color": "#333",
+//    "margin": "0px 10px",
+//    "font-size": "24px",
+//    "float": "left",
+//    "cursor": "pointer"
+//  },
+//  "calendarTitleTextNode_over": {
+//    "color": "#4990e2"
+//  },
+//  "calendarTitleTextNode_down": {
+//    "color": "#4990e2"
+//  },
+
+  "calendarTable": {
+    "width": "100%"
+  },
+  "calendarTableTitleTr": {
+    "height": "50px"
+  },
+  "calendarTableTh": {
+    "width": "14.28%",
+    "background-color": "#f0f0f0",
+    "color": "#333",
+    "font-size": "18px",
+    "font-weight": "normal",
+    "min-width": "120px",
+    "border-bottom": "1px solid #CCC",
+    "text-align": "center"
+  },
+  "calendarTableCell_thisMonth": {
+    "margin": "7px",
+    "overflow": "hidden",
+    "background-color": "#fff",
+    "border": "1px solid #CCC",
+    "border-radius": "4px",
+    "height": "82px"
+  },
+  "calendarTableCell_otherMonth": {
+    "margin": "7px",
+    "overflow": "hidden",
+    "color": "#ccc",
+    "background-color": "#fff",
+    "border": "1px solid #CCC",
+    "border-radius": "4px",
+    "height": "82px",
+    "opacity": "0.5"
+  },
+  "calendarTableCell_today": {
+    "margin": "7px",
+    "overflow": "hidden",
+    "background-color": "#F8FBFF",
+    "border": "1px solid #CCC",
+    "border-radius": "4px",
+    "height": "82px"
+  },
+  "dayTitle_thisMonth": {
+    "padding": "8px 0px 3px 5px",
+    "height": "30px",
+    "cursor": "pointer",
+    "line-height": "30px",
+    "background-color": "#FFF"
+  },
+  "dayTitle_otherMonth": {
+    "padding": "8px 0px 3px 5px",
+    "height": "30px",
+    "cursor": "pointer",
+    "line-height": "30px",
+    "background-color": "#FFF"
+  },
+  "dayTitle_today": {
+    "padding": "8px 0px 3px 5px",
+    "height": "30px",
+    "cursor": "pointer",
+    "line-height": "24px",
+    "background-color": "#F8FBFF"
+  },
+  "dayTitleDay_thisMonth": {
+    "font-size": "16px",
+    "margin-left": "5px",
+    "height": "30px",
+    "float": "left",
+    "color": "#333"
+  },
+  "dayTitleDay_otherMonth": {
+    "font-size": "16px",
+    "margin-left": "5px",
+    "height": "30px",
+    "float": "left",
+    "color": "#333"
+//    "color": "#ccc"
+  },
+  "dayTitleDay_today": {
+    "margin-top": "3px",
+    "font-size": "14px",
+    "background": "#4A90E2",
+    "border-radius": "100px",
+    "text-align": "center",
+    "width": "24px",
+    "height": "24px",
+    "float": "left",
+    "color": "#fff"
+  },
+  "dayTitleInfor_thisMonth": {
+    "margin-right": "10px",
+    "height": "30px",
+    "font-size": "14px",
+    "line-height": "30px",
+    "text-align": "right",
+    "color": "#3C76B7"
+  },
+  "dayTitleInfor_otherMonth": {
+    "margin-right": "10px",
+    "height": "30px",
+    "font-size": "14px",
+    "line-height": "30px",
+    "text-align": "right",
+    "color": "#999"
+  },
+  "dayTitleInfor_today": {
+    "margin-right": "10px",
+    "height": "30px",
+    "font-size": "14px",
+    "line-height": "30px",
+    "text-align": "right",
+    "color": "#3C76B7"
+  },
+  "dayContentNode": {
+    "position": "relative",
+    "overflow": "hidden",
+    //"border-top": "1px solid #ccc",
+    "margin": "0px 5px 0px 0px"
   }
 }

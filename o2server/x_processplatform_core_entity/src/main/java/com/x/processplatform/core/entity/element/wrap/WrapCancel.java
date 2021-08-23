@@ -9,9 +9,9 @@ public class WrapCancel extends Cancel {
 
 	private static final long serialVersionUID = -3049856052285398091L;
 
-	public static WrapCopier<Cancel, WrapCancel> outCopier = WrapCopierFactory.wo(Cancel.class, WrapCancel.class, null,
-			JpaObject.FieldsInvisible);
+	public static final WrapCopier<Cancel, WrapCancel> outCopier = WrapCopierFactory.wo(Cancel.class, WrapCancel.class,
+			null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapCancel, Cancel> inCopier = WrapCopierFactory.wi(WrapCancel.class, Cancel.class, null,
-			JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapCancel, Cancel> inCopier = WrapCopierFactory.wi(WrapCancel.class, Cancel.class,
+			null, JpaObject.FieldsUnmodifyExcludeId, false);
 }
