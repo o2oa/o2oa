@@ -14,7 +14,6 @@ MWF.xApplication.process.FormDesigner.Module.Elinput = MWF.FCElinput = new Class
 		this.moduleName = "elinput";
 	},
 	_createElementHtml: function(){
-		debugger;
 		//var html = "<el-input placeholder=\"请输入内容\"></el-input>";
 		var html = "<el-input";
 		if (this.json.description) html += " placeholder=\""+this.json.description+"\"";
@@ -50,7 +49,9 @@ MWF.xApplication.process.FormDesigner.Module.Elinput = MWF.FCElinput = new Class
 			html += " style=\""+style+"\"";
 		}
 
-		html += " value=\""+this.json.id+"\"></el-input>";
+		html += " value=\""+this.json.id+"\">";
+		if (this.json.vueSlot) html += this.json.vueSlot;
+		html += "</el-input>";
 		return html;
 	},
 	_createCopyNode: function(){

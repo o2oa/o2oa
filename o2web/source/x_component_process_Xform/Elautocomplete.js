@@ -1,5 +1,5 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
-/** @class Elinput 基于Element UI的输入框组件。
+/** @class Elautocomplete 基于Element UI的自动完成输入框组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -11,14 +11,14 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
-MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elinput# */
+MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Class(
+    /** @lends o2.xApplication.process.Xform.Elautocomplete# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
-        "elEvents": ["focus", "blur", "change", "input", "clear"]
+        "elEvents": ["select", "change"]
     },
     /**
      * @summary 组件的配置信息，同时也是Vue组件的data。
@@ -35,68 +35,62 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     _appendVueData: function(){
         if (!this.json[this.json.id]){
             this.json[this.json.id] = this._getBusinessData();
-            // this.value = this._getBusinessData();
-            // Object.defineProperty(this.json, this.json.id, {
-            //     "configurable": true,
-            //     "enumerable": true,
-            //     "get": function(){
-            //         return this.value;
-            //     }.bind(this),
-            //     "set": function(v){
-            //         this._setEnvironmentData(v);
-            //         this.value = v;
-            //     }.bind(this),
-            // });
         }
 
-        if (!this.json.maxlength) this.json.maxlength = "";
-        if (!this.json.minlength) this.json.minlength = "";
-        if (!this.json.showWordLimit) this.json.showWordLimit = false;
-        if (!this.json.showPassword) this.json.showPassword = false;
-        if (!this.json.disabled) this.json.disabled = false;
-        if (!this.json.clearable) this.json.clearable = false;
-        if (!this.json.size) this.json.size = "";
+        if (!this.json.placement) this.json.placement = "bottom-start";
+        if (!this.json.popperClass) this.json.popperClass = "";
+        if (!this.json.triggerOnFocus && this.json.triggerOnFocus!==false) this.json.triggerOnFocus = true;
         if (!this.json.prefixIcon) this.json.prefixIcon = "";
         if (!this.json.suffixIcon) this.json.suffixIcon = "";
-        if (!this.json.rows) this.json.rows = "2";
-        if (!this.json.autosize) this.json.autosize = false;
-        if (!this.json.readonly) this.json.readonly = false;
-        if (!this.json.resize) this.json.resize = "none";
         if (!this.json.description) this.json.description = "";
     },
     appendVueExtend: function(app){
         if (!app.methods) app.methods = {};
         app.methods.$loadElEvent = function(ev){
             this.validationMode();
-            // if (ev=="change"){
-            //     debugger;
-            //     this._setBusinessData(this.getInputData("change"));
-            // }
             if (this.json.events[ev] && this.json.events[ev].code){
                 this.form.Macro.fire(this.json.events[ev].code, this, event);
             }
         }.bind(this);
+        app.methods.$fetchSuggestions = function(qs, cb){
+            debugger;
+            if (this.json.itemType!=='script'){
+                if (this.json.itemValues){
+                    var items = this.json.itemValues.filter(function(v){
+                        return !qs || v.indexOf(qs)!=-1;
+                    }).map(function(v){
+                        return {"value": v};
+                    })
+                    cb(items);
+                    return;
+                }
+                cb();
+            }else{
+                this.form.Macro.environment.queryString = qs;
+                var list = this.form.Macro.exec(this.json.itemScript.code, this);
+                Promise.resolve(list).then(function(items){
+                    cb(items);
+                    delete this.form.Macro.environment.queryString;
+                }).catch(function(){
+                    cb();
+                    delete this.form.Macro.environment.queryString;
+                });
+            }
+        }.bind(this);
     },
     _createElementHtml: function(){
-        var html = "<el-input";
+        var html = "<el-autocomplete";
         html += " v-model=\""+this.json.id+"\"";
-        html += " :maxlength=\"maxlength\"";
-        html += " :minlength=\"minlength\"";
-        html += " :show-word-limit=\"showWordLimit\"";
-        html += " :show-password=\"showPassword\"";
-        html += " :disabled=\"disabled\"";
-        html += " :size=\"size\"";
+        html += " :placement=\"placement\"";
+        html += " :popper-class=\"popperClass\"";
+        html += " :trigger-on-focus=\"triggerOnFocus\"";
         html += " :prefix-icon=\"prefixIcon\"";
         html += " :suffix-icon=\"suffixIcon\"";
-        html += " :rows=\"rows\"";
-        html += " :autosize=\"autosize\"";
-        html += " :readonly=\"readonly\"";
-        html += " :resize=\"resize\"";
-        html += " :clearable=\"clearable\"";
-        html += " :type=\"inputType\"";
         html += " :placeholder=\"description\"";
+        html += " :fetch-suggestions=\"$fetchSuggestions\"";
+        html += " :hide-loading=\"false\"";
+        html += " :popper-append-to-body=\"false\"";
 
-        debugger;
         this.options.elEvents.forEach(function(k){
             html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
         });
@@ -119,7 +113,7 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
 
         if (this.json.vueSlot) html += this.json.vueSlot;
 
-        html += "</el-input>";
+        html += "</el-autocomplete>";
         return html;
     }
 }); 

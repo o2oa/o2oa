@@ -20,16 +20,27 @@
 					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.options}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemValues').setStyle('display', 'block'); $('text{$.pid}selectEditItemScript').setStyle('display', 'none')}" name="itemType" text{($.itemType!=='script')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
+					<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemScript').setStyle('display', 'block'); $('text{$.pid}selectEditItemValues').setStyle('display', 'none')}" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+				</td>
+			</tr>
 		</table>
+		<div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType!=='script')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
+		<div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">{{$.lp.type}}:</td>
+				<td class="editTableTitle">{{$.lp.el_placement}}:</td>
 				<td class="editTableValue">
-					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="text" text{(!$.inputType || $.inputType=='text')?'checked':''}/>{{$.lp.text}}(text)</div>
-					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="textarea" text{($.inputType=='textarea')?'checked':''}/>{{$.lp.textarea}}(textarea)</div>
-					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="number" text{($.inputType=='number')?'checked':''}/>{{$.lp.number}}(number)</div>
-					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="password" text{($.inputType=='password')?'checked':''}/>{{$.lp.password}}(password)</div>
+					<div style="width: 140px; float: left"><input type="radio" name="placement" value="top" text{($.placement=='top')?'checked':''}/>top</div>
+					<div style="width: 140px; float: left"><input type="radio" name="placement" value="top-start" text{($.placement=='top-start')?'checked':''}/>top-start</div>
+					<div style="width: 140px; float: left"><input type="radio" name="placement" value="top-end" text{($.placement=='top-end')?'checked':''}/>top-end</div>
+					<div style="width: 140px; float: left"><input type="radio" name="placement" value="bottom" text{($.placement=='bottom')?'checked':''}/>bottom</div>
+					<div style="width: 140px; float: left"><input type="radio" name="placement" value="bottom-start" text{(!$.placement || $.placement=='bottom-start')?'checked':''}/>bottom-start</div>
+					<div style="width: 140px; float: left"><input type="radio" name="placement" value="bottom-end" text{($.placement=='bottom-end')?'checked':''}/>bottom-end</div>
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="search" text{($.inputType=='search')?'checked':''}/>{{$.lp.search}}(search)</div>-->
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="color" text{($.inputType=='color')?'checked':''}/>{{$.lp.color}}(color)</div>-->
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="email" text{($.inputType=='email')?'checked':''}/>{{$.lp.email}}(email)</div>-->
@@ -41,66 +52,13 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">{{$.lp.maxlength}}:</td>
-				<td class="editTableValue"><input type="text" name="maxlength" value="text{$.maxlength}" class="editTableInput"/></td>
+				<td class="editTableTitle">{{$.lp.popperClass}}:</td>
+				<td class="editTableValue"><input type="text" name="popperClass" value="text{$.popperClass}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">{{$.lp.wordNumber}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="showWordLimit" value="true" text{($.showWordLimit===true)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="showWordLimit" value="false" text{($.showWordLimit!==true)?'checked':''}/>{{$.lp.no}}
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.clearable}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="clearable" value="true" text{($.clearable===true)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="clearable" value="false" text{($.clearable!==true)?'checked':''}/>{{$.lp.no}}
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.showPassword}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="showPassword" value="true" text{($.showPassword===true)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="showPassword" value="false" text{($.showPassword!==true)?'checked':''}/>{{$.lp.no}}
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.size}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="size" value="default" text{(!$.size || $.inputSize==='default')?'checked':''}/>default
-					<input type="radio" name="size" value="medium" text{($.size==='medium')?'checked':''}/>medium
-					<input type="radio" name="size" value="small" text{($.size==='small')?'checked':''}/>small
-					<input type="radio" name="size" value="mini" text{($.size==='mini')?'checked':''}/>mini
-				</td>
-			</tr>
-
-			<tr>
-				<td class="editTableTitle">{{$.lp.textareaRows}}:</td>
-				<td class="editTableValue">
-					<input type="text" name="rows" value="text{$.rows || 2}" class="editTableInput"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.autosize}}:</td>
-				<td class="editTableValue">
-					<div>
-						<input onclick="if (this.checked){ $('text{$.pid}autosizeRangeArea').setStyle('display', 'block')}" type="radio" name="autosize" value="true" text{($.autosize===true)?'checked':''}/>{{$.lp.yes}}
-						<input onclick="if (this.checked){ $('text{$.pid}autosizeRangeArea').setStyle('display', 'none')}" type="radio" name="autosize" value="false" text{($.autosize!==true)?'checked':''}/>{{$.lp.no}}
-					</div>
-					<div id="text{$.pid}autosizeRangeArea" style="display: text{($.autosize===true)?'block':'none'}">
-						{{$.lp.minRows}}: <input style="width: 60px; border: 1px solid #CCCCCC" type="text" name="minRows" value="text{$.minRows}" />
-						{{$.lp.maxRows}}: <input style="width: 60px; border: 1px solid #CCCCCC" type="text" name="maxRows" value="text{$.maxRows}" />
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.resize}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="resize" value="none" text{(!$.resize || $.resize==='none')?'checked':''}/>{{$.lp.resizeNone}}
-					<input type="radio" name="resize" value="both" text{($.resize==='both')?'checked':''}/>{{$.lp.resizeBoth}}
-					<input type="radio" name="resize" value="horizontal" text{($.resize==='horizontal')?'checked':''}/>{{$.lp.resizeHorizontal}}
-					<input type="radio" name="resize" value="vertical" text{($.resize==='vertical')?'checked':''}/>{{$.lp.resizeVertical}}
+				<td class="editTableValue" colspan="2"><b>{{$.lp.triggerOnFocus}}:</b>
+					<input type="radio" name="triggerOnFocus" value="true" text{($.showWordLimit!==false)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="triggerOnFocus" value="false" text{($.showWordLimit===false)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
