@@ -9,10 +9,13 @@
     },
     "contentNode": {
         "overflow": "hidden",
-        "height": "100%",
-        "background-color": "#ffffff",
+        "height": "calc( 100% - 21px )",
+        "padding": "0px 0px",
+        "background-color": "#fff",
         "margin-left": "311px",
-        "margin-right": "10px"
+        "margin-right": "10px",
+        "margin-top": "10px",
+        "margin-bottom": "10px"
     },
 
     "naviTitleNode": {
