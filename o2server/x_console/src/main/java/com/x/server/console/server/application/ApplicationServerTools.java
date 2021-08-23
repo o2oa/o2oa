@@ -71,6 +71,7 @@ import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -81,8 +82,11 @@ import com.x.base.core.project.tools.JarTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PathTools;
 import com.x.base.core.project.tools.StringTools;
+import com.x.server.console.node.RegistApplicationsEvent;
+import com.x.server.console.node.UpdateApplicationsEvent;
 import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
+import com.x.server.console.server.ServerRequestLogBody;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -92,8 +96,7 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(ApplicationServerTools.class);
 
-	private static final int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 50;
-	private static final int APPLICATIONSERVER_THREAD_POOL_SIZE_MAX = 500;
+	private static final int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 20;
 
 	private static final List<String> OFFICIAL_MODULE_SORTED_TEMPLATE = ListTools.toList(
 			x_general_assemble_control.class.getName(), x_organization_assemble_authentication.class.getName(),
@@ -127,6 +130,7 @@ public class ApplicationServerTools extends JettySeverTools {
 		deployCustom(applicationServer, handlers, customNames);
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
+		threadPool.setName("ApplicationServerQueuedThreadPool");
 		threadPool.setMinThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MIN);
 		threadPool.setMaxThreads(applicationServer.getMaxThread());
 		Server server = new Server(threadPool);
@@ -151,6 +155,11 @@ public class ApplicationServerTools extends JettySeverTools {
 		}
 
 		server.start();
+		// 将应用首先注册到本地,开机可以直接运行
+		new RegistApplicationsLocal().execute(server);
+		// 注册本地应用并推送到服务器
+		new RegistApplicationsEvent().execute(server);
+		new UpdateApplicationsEvent().execute(server);
 
 		System.out.println("****************************************");
 		System.out.println("* application server start completed.");
@@ -168,9 +177,15 @@ public class ApplicationServerTools extends JettySeverTools {
 				+ ".application.request.log");
 		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
 				+ "}t \"%r\" %s %O %{ms}T";
-		return new ServerRequestLog(asyncRequestLogWriter,
-				StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
-						: applicationServer.getRequestLogFormat());
+		if (BooleanUtils.isTrue(applicationServer.getRequestLogBodyEnable())) {
+			return new ServerRequestLogBody(asyncRequestLogWriter,
+					StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
+							: applicationServer.getRequestLogFormat());
+		} else {
+			return new ServerRequestLog(asyncRequestLogWriter,
+					StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
+							: applicationServer.getRequestLogFormat());
+		}
 	}
 
 	private static void deployCustom(ApplicationServer applicationServer, HandlerList handlers,

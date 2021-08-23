@@ -11,7 +11,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
@@ -87,20 +86,6 @@ public class ActionQueryListDraftNextWithFilter extends BaseAction {
 		}
 
 		return result;
-	}
-
-	private String getCacheKeyFormWrapInFilter(String flag, String id, Integer count, Wi wi) {
-
-		String cacheKey = ApplicationCache.concreteCacheKey(id, count, flag);
-		if (wi.getCategoryIdList() != null && !wi.getCategoryIdList().isEmpty()) {
-			for (String key : wi.getCategoryIdList()) {
-				cacheKey = ApplicationCache.concreteCacheKey(cacheKey, key);
-			}
-		}
-		if (wi.getDocumentType() != null && !wi.getDocumentType().isEmpty()) {
-			cacheKey = ApplicationCache.concreteCacheKey(cacheKey, wi.getDocumentType());
-		}
-		return cacheKey;
 	}
 
 	public static class Wi {

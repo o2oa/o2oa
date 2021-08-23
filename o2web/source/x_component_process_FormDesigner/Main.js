@@ -1655,6 +1655,21 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                 if (this.pcForm) this.pcForm.fireEvent("postSaveError");
                 if (this.mobileForm) this.mobileForm.fireEvent("postSaveError");
 
+                // if (xhr.status!=0){
+                //     var errorText = error;
+                //     if (xhr){
+                //         var json = JSON.decode(xhr.responseText);
+                //         if (json){
+                //             errorText = json.message.trim() || "request json error";
+                //         }else{
+                //             errorText = "request json error: "+xhr.responseText;
+                //         }
+                //     }
+                //     errorText = errorText.replace(/\</g, "&lt;");
+                //     errorText = errorText.replace(/\</g, "&gt;");
+                //     if (layout.session && layout.session.user) MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+                // }
+
                 var errorText = error+":"+text;
                 if (xhr) errorText = xhr.responseText;
                 MWF.xDesktop.notice("error", {x: "right", y:"top"}, "request json error: "+errorText);

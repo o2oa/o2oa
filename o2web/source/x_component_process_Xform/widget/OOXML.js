@@ -44,8 +44,24 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             "            xmlns:wps=\"http://schemas.microsoft.com/office/word/2010/wordprocessingShape\"\n" +
             "            xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"\n" +
             "            mc:Ignorable=\"w14 w15 w16se w16cid w16 w16cex w16sdtdh wp14\">",
+        "w_setting": "<w:settings xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"\n" +
+            "            xmlns:o=\"urn:schemas-microsoft-com:office:office\"\n" +
+            "            xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"\n" +
+            "            xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\" xmlns:v=\"urn:schemas-microsoft-com:vml\"\n" +
+            "            xmlns:w10=\"urn:schemas-microsoft-com:office:word\"\n" +
+            "            xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"\n" +
+            "            xmlns:w14=\"http://schemas.microsoft.com/office/word/2010/wordml\"\n" +
+            "            xmlns:w15=\"http://schemas.microsoft.com/office/word/2012/wordml\"\n" +
+            "            xmlns:w16cex=\"http://schemas.microsoft.com/office/word/2018/wordml/cex\"\n" +
+            "            xmlns:w16cid=\"http://schemas.microsoft.com/office/word/2016/wordml/cid\"\n" +
+            "            xmlns:w16=\"http://schemas.microsoft.com/office/word/2018/wordml\"\n" +
+            "            xmlns:w16sdtdh=\"http://schemas.microsoft.com/office/word/2020/wordml/sdtdatahash\"\n" +
+            "            xmlns:w16se=\"http://schemas.microsoft.com/office/word/2015/wordml/symex\"\n" +
+            "            xmlns:sl=\"http://schemas.openxmlformats.org/schemaLibrary/2006/main\"\n" +
+            "            mc:Ignorable=\"w14 w15 w16se w16cid w16 w16cex w16sdtdh\">",
         "xmlHead": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>",
-        "divAsP": false
+        "divAsP": false,
+        "protection": false
     },
     initialize: function(options){
         this.setOptions(options);
@@ -82,7 +98,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         }.bind(this));
     },
     processDocument: function(data){
-        return this.zip.file("word/document.xml").async("text").then(function(oo_string){
+        var promise = [];
+        var p1 = this.zip.file("word/document.xml").async("text").then(function(oo_string){
             return this.processWordDocument(oo_string, data);
         }.bind(this)).then(function(oo_str){
             if (oo_str.substring(0, 5)!=="<?xml"){
@@ -93,20 +110,84 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
             if (this.pics && this.pics.length){
                 return this.zip.file("word/_rels/document.xml.rels").async("text").then(function(oo_relString){
-                   return this.processWordRel(oo_relString);
+                    return this.processWordRel(oo_relString);
                 }.bind(this)).then(function(oo_relStr){
                     //return oo_relStrPromise.then(function(oo_relStr){
-                        if (oo_relStr.substring(0, 5)!=="<?xml"){
-                            oo_relStr = this.options.xmlHead + oo_relStr;
-                        }
-                        return this.zip.file("word/_rels/document.xml.rels", oo_relStr).generateAsync({type:"blob"});
+                    if (oo_relStr.substring(0, 5)!=="<?xml"){
+                        oo_relStr = this.options.xmlHead + oo_relStr;
+                    }
+                    //return this.zip.file("word/_rels/document.xml.rels", oo_relStr).generateAsync({type:"blob"});
+                    return this.zip.file("word/_rels/document.xml.rels", oo_relStr);
                     //}.bind(this));
                 }.bind(this));
             }
-            return this.zip.generateAsync({type:"blob"});
+            return this.zip;
             // this.zip.file("word/document.xml", oo_str).generateAsync({type:"blob"}).then(function(oo_content) {
             //     this.saveAs(oo_content, "example.docx");
             // }.bind(this));
+        }.bind(this));
+        promise.push(p1);
+
+        if (this.options.protection){
+            var p2 = this.zip.file("word/settings.xml").async("text").then(function(oo_string){
+                return this.processWordSetting(oo_string);
+            }.bind(this)).then(function(oo_settingStr){
+                if (oo_settingStr.substring(0, 5)!=="<?xml"){
+                    oo_settingStr = oo_settingStr.replace(/<w:settings.*\>/, this.options.w_setting);
+                    oo_settingStr = this.options.xmlHead + oo_settingStr;
+                }
+                return this.zip.file("word/settings.xml", oo_settingStr);
+            }.bind(this));
+            promise.push(p2);
+        }
+
+        return Promise.all(promise).then(function(){
+            return this.zip.generateAsync({type:"blob"});
+        }.bind(this));
+    },
+    processWordSetting: function(oo_string){
+        var domparser = new DOMParser();
+        var oo_doc = domparser.parseFromString(oo_string, "text/xml");
+
+        var oo_settings = oo_doc.documentElement;
+
+        return new Promise(function(resolve){
+            o2.require("o2.widget.Base64", function(){
+                o2.load(["../o2_lib/CryptoJS/tripledes.js", "../o2_lib/CryptoJS/components/aes.js"], function () {
+                    var keyStr = (new o2.widget.UUID()).toString();
+                    var key = CryptoJS.enc.Utf8.parse(keyStr.substr(0, 16));
+                    var iv = CryptoJS.enc.Utf8.parse(keyStr.substr(0, 16));
+
+                    var ps = new o2.widget.UUID().toString();
+                    //var srcs = CryptoJS.enc.Utf8.parse(ps);
+                    encrypted = CryptoJS.AES.encrypt(ps, key, {
+                        iv: iv,
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    });
+                    var hash = o2.widget.Base64.encode(encrypted.ciphertext.toString());
+                    var salt = o2.widget.Base64.encode(keyStr);
+
+                    var oo_protection = this.createEl(oo_doc, "documentProtection");
+                    this.setAttrs(oo_protection, {
+                        "salt": salt,
+                        "hash": hash,
+                        "cryptSpinCount": "100000",
+                        "cryptAlgorithmSid": "4",
+                        "cryptAlgorithmType": "typeAny",
+                        "cryptAlgorithmClass": "hash",
+                        "cryptProviderType": "rsaAES",
+                        "enforcement": "1",
+                        "formatting": "1",
+                        "edit": "readOnly"
+                    });
+                    oo_settings.appendChild(oo_protection);
+
+                    var s = new XMLSerializer();
+                    resolve(s.serializeToString(oo_doc));
+
+                }.bind(this));
+            }.bind(this));
         }.bind(this));
     },
     saveAs: function(content, name){
@@ -308,6 +389,25 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
                 }else if (dom.hasClass("doc_layout_filetext")){
                     this.processFiletext(dom, oo_body, append);
+                }else if (dom.hasClass("doc_layout_attachment_text")){
+                    this.processFiletext(dom, oo_body, append);
+                }else if (dom.hasClass("doc_layout_editionArea")){
+
+                    var h = dom.getSize().y;
+                    var top = dom.getPosition(dom.getParent(".WordSection1")).y;
+                    var pageH = this.pageHeight/20-this["page-margin-top"]/20-this["page-margin-bottom"]/20;
+                    var tmp = this.pxToPt(top+h)/pageH;
+                    var tmp2 = this.pxToPt(top)/pageH;
+                    var ps = tmp.toInt();
+                    var ps2 = tmp2.toInt();
+                    if (tmp>ps) ps = ps+1;
+                    if (tmp2>ps2) ps2 = ps2+1;
+                    if ((ps % 2)!=0){
+                        var p = new Element("p", {"styles": {"page-break-after":"always"}}).inject(dom, "top");
+                        if ((ps2 % 2)==0){new Element("p", {"styles": {"page-break-after":"always"}}).inject(dom, "top");}
+                    }
+                    this.processDom(dom, oo_body, append, divAsP);
+
                 }else if (dom.tagName.toLowerCase() === "p" || ((!!divAsP || !!this.options.divAsP) && dom.tagName.toLowerCase() === "div")){
                     this.processParagraph(dom, oo_body, append);
                     // }else if (dom.tagName.toLowerCase() === "span") {
@@ -349,6 +449,14 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     //     }
     // },
     processFiletext: function(dom, oo_body, append){
+        var node = dom.firstChild;
+        if (node && node.nodeType===Node.TEXT_NODE){
+            var text = node.nodeValue.replace(/[\u200B-\u200D\uFEFF]/g, '')
+            if (text){
+                var oo_p = this.createParagraphFromDom(dom, oo_body, append);
+                this.processRun(dom, oo_p, dom, node.nodeValue);
+            }
+        }
         node = dom.getFirst();
         while (node){
             if (node.tagName.toLowerCase() === "div" || node.tagName.toLowerCase() === "p") {
@@ -368,22 +476,24 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     isEmptyP: function(p){
         var oo_t = p.querySelector("t");
         var oo_drawing = p.querySelector("drawing");
-        return !oo_t && !oo_drawing;
+        var oo_br = p.querySelector("br");
+        return !oo_t && !oo_drawing && !oo_br;
     },
     processParagraphRun: function(node, oo_p, p, oo_body, append, ilvl){
         node = node.firstChild;
         while (node){
             if (node.nodeType===Node.TEXT_NODE){
-                if (node.nodeValue.trim()) this.processRun(node.parentElement || node.parentNode, oo_p, p, node.nodeValue);
+                if (node.nodeValue) this.processRun(node.parentElement || node.parentNode, oo_p, p, node.nodeValue);
             }else if (node.nodeType===Node.ELEMENT_NODE){
                 if (node.tagName.toLowerCase() === "span") {
                     this.processRun(node, oo_p, p);
                 }else if (node.tagName.toLowerCase() === "br") {
-                    this.processRun(node, oo_p, p, "", "br");
+                    if (node.nextSibling) this.processRun(node, oo_p, p, "", "br");
                 }else if (node.tagName.toLowerCase() === "div" || node.tagName.toLowerCase() === "p") {
                     if (!this.isEmptyP(oo_p)){
                         oo_p = this.createParagraphFromDom(node, oo_body, append);
                     }else{
+
                         this.setParagraphAttrFromDom(node, oo_p);
                     }
                     this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
@@ -475,10 +585,26 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 }
             }
         }
+
+        var line = dom.getStyle("line-height");
+        if (line && line.toFloat()){
+            var line = this.pxToPt(line)*20;
+            if (line) {
+                pPrs.spacing = {
+                    lineRule: "exact",
+                    line: line
+                };
+            }
+        }
+
         var pageBreak = dom.getStyle("page-break-after");
         if (pageBreak && pageBreak.toString().toLowerCase()=="avoid"){
             pPrs.keepNext = {};
         }
+        if (pageBreak && pageBreak.toString().toLowerCase()=="always"){
+            pPrs.pageBreak = {};
+        }
+
         return pPrs;
     },
     setParagraphAttrFromDom: function(dom, oo_p){
@@ -490,10 +616,18 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         }
 
         Object.keys(pPrs).each(function(k){
-            var node = oo_pPr.querySelector(k);
-            if (!node) node = this.createEl(oo_p.ownerDocument, k);
-            this.setAttrs(node, pPrs[k]);
-            oo_pPr.appendChild(node);
+            if (k=="pageBreak") {
+                var oo_r = this.createEl(oo_p.ownerDocument, "r");
+                var oo_br = this.createEl(oo_p.ownerDocument, "br");
+                this.setAttrs(oo_br, {"type": "page"});
+                oo_r.appendChild(oo_br);
+                oo_p.appendChild(oo_r);
+            }else{
+                var node = oo_pPr.querySelector(k);
+                if (!node) node = this.createEl(oo_p.ownerDocument, k);
+                this.setAttrs(node, pPrs[k]);
+                oo_pPr.appendChild(node);
+            }
         }.bind(this));
     },
     createParagraphFromDom: function(dom, oo_body, append){
@@ -1227,9 +1361,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_drawing = this.createEl(oo_doc, "drawing");
 
         var msoStyle = this.getMsoStyle(img);
-
+debugger;
         var position = img.getStyle("position");
-        var p = (position==="absolute" || msoStyle["mso-position-vertical"]==="absolute") ? "anchor" : "inline";
+        var p = (msoStyle["mso-position-vertical"]==="absolute") ? "anchor" : "inline";
 
         var oo_position;
         if (p==="anchor"){
@@ -1390,7 +1524,14 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     processHr: function(hr, oo_body, append){
         var oo_doc = oo_body.ownerDocument;
 
-        var oo_p = this.createParagraph(oo_doc, {});
+        var oo_p = this.createParagraph(oo_doc, {
+            "pPrs": {
+                "spacing": {
+                    "lineRule": "exact",
+                    "line": "40"    //段落行高设置为固定值2pt
+                }
+            }
+        });
         if (append){
             oo_body.appendChild(oo_p);
         }else{
@@ -1423,7 +1564,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_positionV = this.createEl(oo_doc, "positionV", "wp");
         this.setAttrs(oo_positionV, {"relativeFrom": "paragraph"}, false);
         var oo_posOffset = this.createEl(oo_doc, "posOffset", "wp");
-        oo_posOffset.appendChild(oo_doc.createTextNode("161290"));  //此处需要根据行高来设置数值,暂时固定数值
+        oo_posOffset.appendChild(oo_doc.createTextNode("3810"));  //此处需要根据行高来设置数值,暂时固定数值
         oo_positionV.appendChild(oo_posOffset);
 
         var oo_extent = this.createEl(oo_doc, "extent", "wp");
@@ -1583,8 +1724,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     processRun: function(span, oo_p, p, text, br){
         var rPrs = {"noProof": {}};
         var font = null;
-        var styles = span.getStyles("font-size", "color", "letter-spacing", "font-weight", "font-family")
+        var styles = span.getStyles("font-size", "color", "letter-spacing", "font-weight", "font-family", "line-height");
         var keys = Object.keys(styles);
+        var msoStyle = this.getMsoStyle(span);
 
         for (var i = 0; i<keys.length; i++){
             switch (keys[i]){
@@ -1617,9 +1759,32 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     }
                     if (fonts.length>1) font.other = this.parseFont(fonts[0]);
                     break;
+                case "line-height":
+                    var h = this.pxToPt(styles["line-height"])*20;
+                    if (oo_p){
+                        var oo_pPrs = oo_p.getElementsByTagNameNS(this.nsResolver("w"), "pPr");
+                        var oo_pPr = (oo_pPrs.length) ? oo_pPrs.item(0) : null;
+                        if (!oo_pPr){
+                            oo_pPr = this.createEl(oo_p.ownerDocument,"pPr");
+                            oo_p.appendChild(oo_pPr);
+                        }
+                        var oo_spacings = oo_pPr.getElementsByTagNameNS(this.nsResolver("w"), "spacing");
+                        var oo_spacing = (oo_spacings.length) ? oo_spacings.item(0) : null;
+                        if (!oo_spacing){
+                            oo_spacing = this.createEl(oo_p.ownerDocument,"spacing");
+                            oo_pPr.appendChild(oo_spacing);
+                        }
+                        var line = oo_spacing.getAttributeNS(this.nsResolver("w"), "line");
+                        if (line<h){
+                            this.setAttrs(oo_spacing, {"lineRule": "exact", "line": h});
+                        }
+                    }
                 default:
                 //nothing
             }
+        }
+        if (msoStyle["mso-letter-spacing"]){
+            rPrs.spacing = {"val": (msoStyle["mso-letter-spacing"].toFloat()*20 || 0)};
         }
         if (p) this.processRunFont(p, rPrs, font);
         this.processRunFont(span, rPrs, font);
@@ -1634,6 +1799,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             runPrs.br = br;
             var oo_run = this.createRun(oo_p.ownerDocument, runPrs);
             if (text){
+                text = text.replace(/[\u200B-\u200D\uFEFF]/g, '');
                 var oo_t = this.createEl(oo_run.ownerDocument,"t");
                 oo_t.appendChild(oo_run.ownerDocument.createTextNode(text));
                 oo_run.appendChild(oo_t);
@@ -1702,6 +1868,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     runPrs.br = "br";
                     var oo_run = this.createRun(oo_p.ownerDocument, runPrs);
                     oo_p.appendChild(oo_run);
+                    runPrs.br = "";
                 }else{
                     this.processRunTextDom(node, oo_p, runPrs);
                 }
@@ -1730,6 +1897,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                         var w = v[0].toFloat()*20, h=v[1].toFloat()*20;
                         var oo_pgSz = this.getOrCreateEl(oo_sectPr, "pgSz");
                         this.setAttrs(oo_pgSz, {"w": w, "h": h});
+                        this.pageHeight = h;
+                        this.pageWidth = w;
                         break;
                     case "margin-top":
                     case "margin-right":
@@ -1741,6 +1910,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                         var attrs = {};
                         attrs[p] = v
                         this.setAttrs(oo_pgMar, attrs);
+                        this["page-"+dom_pageRule.style[i]] = v;
                         break;
                     case "line-height":
                     case "letter-spacing":
@@ -1773,7 +1943,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     createParagraph: function(xmlDoc, options){
         var p = this.createEl(xmlDoc,"p");
         var pPr = this.createEl(xmlDoc,"pPr");
-
+        p.appendChild(pPr);
         /*
         * //如：对齐方式描述如下
         * {
@@ -1782,13 +1952,20 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         * */
         if (options && options.pPrs){
             Object.keys(options.pPrs).each(function(k){
-                var node = this.createEl(xmlDoc, k);
-                this.setAttrs(node, options.pPrs[k]);
-                pPr.appendChild(node);
+                if (k=="pageBreak"){
+                    var oo_r = this.createEl(xmlDoc, "r");
+                    var oo_br = this.createEl(xmlDoc, "br");
+                    this.setAttrs(oo_br, {"type": "page"});
+                    oo_r.appendChild(oo_br);
+                    p.appendChild(oo_r);
+                }else{
+                    var node = this.createEl(xmlDoc, k);
+                    this.setAttrs(node, options.pPrs[k]);
+                    pPr.appendChild(node);
+                }
+
             }.bind(this));
         }
-
-        p.appendChild(pPr);
         return p;
     },
     createRun: function(xmlDoc, options){
@@ -1798,6 +1975,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
         if (options && options.text){
             var t = this.createEl(xmlDoc,"t");
+            options.text = options.text.replace(/[\u200B-\u200D\uFEFF]/g, '');
             t.appendChild(xmlDoc.createTextNode(options.text));
             r.appendChild(t);
         }

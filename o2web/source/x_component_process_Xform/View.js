@@ -23,7 +23,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
-         * 异步加载视图后完成。
+         * 异步加载视图后执行。
          * @event MWF.xApplication.process.Xform.View#loadView
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */

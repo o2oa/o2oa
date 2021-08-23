@@ -1,6 +1,5 @@
 package com.x.base.core.project.message;
 
-import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.google.gson.Gson;
@@ -10,7 +9,6 @@ import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.logger.LoggerFactory;
 
 public class MessageConnector {
 
@@ -119,10 +117,10 @@ public class MessageConnector {
 
 	public static final String TYPE_MIND_FILESHARE = "mind_fileShare";
 
-	//审计日志通知
+	// 审计日志通知
 	public static final String TYPE_AUDIT_LOG = "audit_log";
 
-	//IM 聊天消息发送
+	// IM 聊天消息发送
 	public static final String TYPE_IM_CREATE = "im_create";
 
 	public static final String CONSUME_WS = "ws";
@@ -152,6 +150,7 @@ public class MessageConnector {
 	public static void start(Context context) {
 		MessageConnector.context = context;
 		ConnectorThread thread = new ConnectorThread();
+		thread.setName("MessageConnector-" + context.clazz().getSimpleName());
 		thread.start();
 	}
 
@@ -174,11 +173,11 @@ public class MessageConnector {
 
 	public static class ConnectorThread extends Thread {
 		public void run() {
-			out: while (true) {
+			while (true) {
 				try {
 					Wrap o = connectQueue.take();
 					if (o instanceof StopSignal) {
-						break out;
+						break;
 					} else {
 						context.applications().postQuery(x_message_assemble_communicate.class, "connector", o);
 					}

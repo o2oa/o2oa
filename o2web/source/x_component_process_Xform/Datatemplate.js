@@ -159,6 +159,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		_loadUserInterface: function(){
 			this.fireEvent("queryLoad");
 
+			var iconNode = this.node.getElement("div[o2icon='datatemplate']");
+			if(iconNode)iconNode.destroy();
+
 			this.editModules = [];
 			this.node.setStyle("overflow-x", "auto");
 			this.node.setStyle("overflow-y", "hidden");
@@ -314,7 +317,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var value = this._getBusinessData();
 			if (!value){
 				if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
-				if (!value.then) if (o2.typeOf(value)==="object") value = [value];
+				if (value && !value.then) if (o2.typeOf(value)==="object") value = [value];
 			}
 			if(!value){
 				value = [];
@@ -1068,6 +1071,8 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					if (this.form.forms[id])this.form.forms[id] = null;
 
 					var module = this.form._loadModule(json, node, function () {});
+					module.parentLine = this;
+					module.parentDatatemplate = this.template;
 
 					if( json.type==="Attachment" || json.type==="AttachmentDg" ){
 						module.addEvent("change", function(){

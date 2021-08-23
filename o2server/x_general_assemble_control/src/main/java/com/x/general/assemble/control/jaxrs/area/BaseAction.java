@@ -8,17 +8,15 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.general.assemble.control.Business;
 import com.x.general.core.entity.area.District;
 import com.x.general.core.entity.area.District_;
 
-import net.sf.ehcache.Ehcache;
-
 abstract class BaseAction extends StandardJaxrsAction {
 
-	protected static Ehcache cache = ApplicationCache.instance().getCache(District.class);
+	protected CacheCategory cacheCategory = new CacheCategory(District.class);
 
 	protected District getProvince(Business business, String name) throws Exception {
 		List<District> os = business.entityManagerContainer().listEqualAndEqual(District.class,

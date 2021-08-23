@@ -46,6 +46,9 @@
                                         if( preview.form && preview.form.designer && preview.form.designer.application && preview.form.designer.application.id ){
                                             data.document.appId = preview.form.designer.application.id;
                                         }
+                                        if( preview.form && preview.form.json && preview.form.json.mode && preview.form.json.mode === "Mobile" ){
+                                            layout.mobile = true;
+                                        }
                                         layout.appForm.businessData = {
                                             "data": data.data,
                                             "document": data.document,

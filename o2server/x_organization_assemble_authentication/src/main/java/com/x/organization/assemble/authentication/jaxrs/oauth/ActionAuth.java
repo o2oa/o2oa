@@ -4,14 +4,11 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.script.CompiledScript;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Token.Oauth;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -23,17 +20,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.organization.assemble.authentication.Business;
-import com.x.organization.core.entity.Group;
-import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.OauthCode;
-import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.PersonAttribute;
-import com.x.organization.core.entity.Role;
-import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.UnitAttribute;
-import com.x.organization.core.entity.UnitDuty;
-
-import net.sf.ehcache.Ehcache;
 
 class ActionAuth extends StandardJaxrsAction {
 

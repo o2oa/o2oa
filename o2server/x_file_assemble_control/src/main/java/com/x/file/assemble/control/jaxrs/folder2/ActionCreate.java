@@ -1,5 +1,7 @@
 package com.x.file.assemble.control.jaxrs.folder2;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -13,7 +15,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Folder2;
-import org.apache.commons.lang3.StringUtils;
 
 public class ActionCreate extends BaseAction {
 

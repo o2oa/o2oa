@@ -1,6 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.file;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -8,12 +9,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -29,16 +31,17 @@ import net.sf.ehcache.Element;
 
 class ActionDownloadWithApp extends StandardJaxrsAction {
 
-	private Ehcache cache = ApplicationCache.instance().getCache(File.class);
+	private Cache.CacheCategory cacheCategory = new Cache.CacheCategory(File.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String appInfoFlag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), flag, appInfoFlag);
-			Element element = cache.get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				wo = ((Wo) element.getObjectValue());
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), flag, appInfoFlag );
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+			if (optional.isPresent()) {
+				wo = ((Wo) optional.get());
 			} else {
 				Business business = new Business(emc);
 				AppInfo appInfo = business.getAppInfoFactory().pick(appInfoFlag);
@@ -56,7 +59,7 @@ class ActionDownloadWithApp extends StandardJaxrsAction {
 				}
 				wo = new Wo(bs, this.contentType(true, file.getFileName()),
 						this.contentDisposition(true, file.getFileName()));
-				cache.put(new Element(cacheKey, wo));
+				CacheManager.put(cacheCategory, cacheKey, wo );
 			}
 			result.setData(wo);
 			return result;

@@ -39,6 +39,28 @@ MWF.xApplication.Attendance.LP = {
 	"am": "a.m.",
 	"pm": "p.m.",
 
+	"statusText": {
+		"normal": "attendance", //green, normal
+		"levelAsked":"asked leave", //blue, ask for leave
+		"late":"late", //orange, late
+		"leaveEarly":"leave early", //orange, leave early
+		"noSign":"Absence", //Pink, not signed in
+		"appealSuccess": "Appeal",
+		"lackOfTime": "Lack of Time",
+		"abNormalDuty": "Exception",
+
+
+		"lateTimes": "Late",
+		"leaveEarlyTimes": "Leave Early",
+		"lackOfTimeCount": "Insufficient",
+		"abNormalDutyCount": "Exception",
+		"resultNormal": "Normal",
+		"seriousLateTimes": "Strictly Late",
+		"outsideDutyTimes": "Outside Sign",
+		"absenteeismTimes": "Absenteeism",
+		"notSignedCount": "Lack of Card",
+	},
+
 	"absent": "Absent",
 	"notAbsent": "Not Absent",
 	"absendSelectText": ["","yes","no"],
@@ -210,6 +232,8 @@ MWF.xApplication.Attendance.LP = {
 	"close": "Close",
 	"disagree": "Disagree",
 	"agree": "Agree",
+	"batchDisagree": "Batch Disagree",
+	"batchAgree": "Batch Agree",
 	"temporaryLeave": "Temporary Leave",
 	"out": "Business trip",
 	"businessTrip": "Going out on business",
@@ -273,6 +297,8 @@ MWF.xApplication.Attendance.LP = {
 	"importDataResultThList": [
 		"Line number", "employee number", "employee name", "date", "morning clocking time", "morning clocking time", "afternoon clocking time", "afternoon clocking time", "check result ","description"
 	],
+	"selectExportMonth":"Select Export Month",
+	"exportSourceData": "Export Source Data",
 	"true": "Correct",
 	"false": "Error",
 	"checkDataTitle": "Checking data",
@@ -375,7 +401,8 @@ MWF.xApplication.Attendance.LP = {
 	"statData": "Statistical data",
 	"analyzeData": "Analyze data",
 	"viewDescription": "View Description",
-	"myAppealTitleText": "Please file an appeal in 'My Statistics -> My Attendance Details'",
+	// "myAppealTitleText": "Please file an appeal in 'My Statistics -> My Attendance Details'",
+	"myAppealTitleText": "Please appeal in 'My Statistics'",
 
 	"createManager": "New Administrator Configuration",
 	"createPersonConfig": "Add attendance staff configuration",
@@ -416,5 +443,17 @@ MWF.xApplication.Attendance.LP = {
 		"addressSetting": "Workplace Settings",
 		"appSetting": "Appeal Settings",
 		"weekendSetting": "Weekend Setting",
+	},
+
+	"week": "Week",
+	"weeks": {
+		"Sun": "Sun",
+		"Mon": "Mon",
+		"Tues": "Tues",
+		"Wed": "Wed",
+		"Thur": "Thur",
+		"Fri": "Fri",
+		"Sat": "Sat",
+		"arr": ["Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat"]
 	}
 };

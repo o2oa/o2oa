@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.zxing.BarcodeFormat;

@@ -111,7 +111,7 @@
           "signature" : {},
           "summaryLabel" : { "value" : "function(d){ return ( d.summary && d.summary!='' ) ? (this.lp.summary + '：' ): ''  }" },
           "summary" : {  },
-          "content": { "type" : "html" },
+//          "content": { "type" : "html" },
           "remove" : { "action" : "remove" },
           "userIcon" : {
             "value": "",

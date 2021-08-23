@@ -118,13 +118,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return pageNode;
     },
     _getShow: function(name, typeItem, scriptItem){
+        debugger;
         switch (this.json[typeItem]) {
             case "y":
                 return true;
             case "n":
                 return false;
             case "a":
-                if (["copies", "secret", "priority", "attachment", "annotation", "copyto", "copyto2"].indexOf(name!=-1)){
+                if (["copies", "secret", "priority", "attachment", "annotation"].indexOf(name!=-1)){
                     return !!this.data[name] && (!!this.data[name].length);
                 }
                 return true;
@@ -358,6 +359,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         control.subject = this._getEdit("subject", "subjectEdit", "subjectEditScript");
         control.mainSend = this._getEdit("mainSend", "mainSendEdit", "mainSendEditScript");
         control.attachment = this._getEdit("attachment", "attachmentEdit", "attachmentEditScript");
+        control.attachmentText = this._getEdit("attachmentText", "attachmentTextEdit", "attachmentTextEditScript");
         control.issuanceUnit = this._getEdit("issuanceUnit", "issuanceUnitEdit", "issuanceUnitEditScript");
         control.issuanceDate = this._getEdit("issuanceDate", "issuanceDateEdit", "issuanceDateEditScript");
         control.annotation = this._getEdit("annotation", "annotationEdit", "annotationEditScript");
@@ -502,6 +504,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
          */
         this.layout_subject = this.contentNode.getElement(".doc_layout_subject");
         if (this.layout_subject) this.layout_subject.setStyles(this.css.doc_layout_subject);
+        if (this.json.subjectFontFamily){
+            if (this.layout_subject) this.layout_subject.setStyle("font-family", this.json.subjectFontFamily);
+        }
     },
 
     //主送
@@ -603,6 +608,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.layout_annotation = this.contentNode.getElement(".doc_layout_annotation");
         if (this.layout_annotation) this.layout_annotation.setStyles(this.css.doc_layout_annotation);
     },
+
+    //附件文本
+    _loadAttachmentText: function(){
+        this.layout_attachmentText = this.contentNode.getElement(".doc_layout_attachment_text");
+    },
+
 
     //版记
     _loadEdition: function(){
@@ -744,6 +755,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this._loadAnnotation();
 
+        this._loadAttachmentText()
+
         this._loadEdition();
 
         this.loadSeal();
@@ -840,61 +853,62 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     "font-family": "'Times New Roman',仿宋",
                     "letter-spacing": "-0.4pt"
                 }).x;
-                // var unitWidth = this.layout_issuanceUnit.getSize().x;
-                // var dateWidth = this.layout_issuanceDate.getSize().x;
-                if (unitWidth < dateWidth) {
-                    //日期右空四字，单位相对与日期居中
-                    var flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    if (flagTd) {
-                        var pt = 16*4;  //空四字
-                        flagTd.setStyle("width", "" + pt + "pt");
 
-                        flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                        if (flagTd) flagTd.setStyle("width", "" + pt + "pt");
+                if (table.hasClass("doc_layout_issuanceV2")){
+                    if (unitWidth<=dateWidth){
+                        //日期右空四字，单位相对与日期居中
+                        var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "64pt");
+                        flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "64pt");
+
+                        var dateP = this.layout_issuanceDate.getParent("p");
+                        if (dateP){
+                            dateP.setStyle("text-align", "right");
+                            var span = dateP.getElement("span.space");
+                            if (span) span.destroy();
+                        }
+                    }else{
+                        var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "32pt");
+                        flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "32pt");
+
+                        var dateP = this.layout_issuanceDate.getParent("p");
+                        if (dateP){
+                            dateP.setStyle("text-align", "left");
+                            var span = dateP.getElement("span.space");
+                            if (!span) new Element("span.space", { "html": "&#x3000;&#x3000;" }).inject(dateP, "top");
+                        }
                     }
-                    //var dateTd = this.layout_issuanceDate.getParent("td");
-                    var unitTd = this.layout_issuanceUnit.getParent("td");
-                    unitTd.setStyle("width", dateWidth);
-                    var p = this.layout_issuanceUnit.getParent("p");
-                    if (p) p.setStyle("text-align", "center");
+                }else{
+                    if (unitWidth <= dateWidth) {
+                        //日期右空四字，单位相对与日期居中
+                        var flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        if (flagTd) {
+                            var pt = 16*4;  //空四字
+                            flagTd.setStyle("width", "" + pt + "pt");
 
+                            flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "" + pt + "pt");
+                        }
+                        //var dateTd = this.layout_issuanceDate.getParent("td");
+                        var unitTd = this.layout_issuanceUnit.getParent("td");
+                        unitTd.setStyle("width", dateWidth);
+                        var p = this.layout_issuanceUnit.getParent("p");
+                        if (p) p.setStyle("text-align", "center");
+                    } else {
+                        var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "32pt");
 
-                    // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                    // if (flagTd) {
-                    //     var pt = ((dateWidth - unitWidth) / 96) * 72 + 32 + 32;
-                    //     flagTd.setStyle("width", "" + pt + "pt");
-                    // }
-                    // table = this.layout_issuanceDate.getParent("table");
-                    // table.setStyle("width", "auto");
-                    // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    // if (flagTd) flagTd.setStyle("width", "32pt");
-                    // var p = this.layout_issuanceDate.getParent("p");
-                    // if (p) p.setStyle("text-align", "right");
+                        var unitTd = this.layout_issuanceUnit.getParent("td");
+                        unitTd.setStyle("width", "auto");
 
-                } else {
-                    var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                    if (flagTd) flagTd.setStyle("width", "32pt");
-
-                    var unitTd = this.layout_issuanceUnit.getParent("td");
-                    unitTd.setStyle("width", "auto");
-
-                    flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    if (flagTd) flagTd.setStyle("width", "64pt");
-                    var p = this.layout_issuanceDate.getParent("p");
-                    if (p) p.setStyle("text-align", "right");
-
-                    // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                    // if (flagTd) flagTd.setStyle("width", "32pt");
-                    // var table = this.layout_issuanceUnit.getParent("table");
-                    // var x = table.getSize().x;
-                    //
-                    // table = this.layout_issuanceDate.getParent("table");
-                    // table.setStyle("width", "" + x + "px");
-                    //
-                    // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    // if (flagTd) flagTd.setStyle("width", "32pt");
-                    // var p = this.layout_issuanceDate.getParent("p");
-                    // if (p) p.setStyle("text-align", "center");
+                        flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "64pt");
+                        var p = this.layout_issuanceDate.getParent("p");
+                        if (p) p.setStyle("text-align", "right");
+                    }
                 }
             }
         }
@@ -905,27 +919,42 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.layout_editionArea) this.layout_editionArea.hide();
         }else{
             if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content) ){
+                if (this.layout_copytoContent){
+                    this.layout_copytoContentTr = this.layout_copytoContent.getParent("tr");
+                    this.layout_copytoContentTrP = this.layout_copytoContentTr.getParent();
+                }
+                if (this.layout_copyto2Content){
+                    this.layout_copyto2ContentTr = this.layout_copyto2Content.getParent("tr");
+                    this.layout_copyto2ContentTrP = this.layout_copyto2ContentTr.getParent();
+                }
+
                 if (this.layout_edition){
-                    if (this.layout_copytoContent) this.layout_copytoContent.getParent("tr").destroy();
-                    if (this.layout_copyto2Content) this.layout_copyto2Content.getParent("tr").destroy();
+                    if (this.layout_copytoContentTr) this.layout_copytoContentTr.dispose();
+                    if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.dispose();
                     // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td")[0].setStyles({
                     //     "border-top": "solid windowtext 1.5pt",
                     //     "mso-border-top-alt": "solid windowtext 1pt"
                     // });
                 }
             }else if (!control.copyto || !this.layout_copytoContent){
-                if (this.layout_copytoContent) this.layout_copytoContent.getParent("tr").destroy();
+                if (this.layout_copytoContentTr) this.layout_copytoContentTr.dispose();
+                if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
                 //if (this.layout_copyto2Content) this.layout_edition.getElement("tr").destroy();
                 // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
                 //     "border-top": "solid windowtext 1.5pt",
                 //     "mso-border-top-alt": "solid windowtext 1pt"
                 // });
             }else if (!control.copyto2 || !this.layout_copyto2Content) {
-                if (this.layout_copyto2Content) this.layout_copyto2Content.getParent("tr").destroy();
+                if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.dispose();
+                if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
                 // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
                 //     "border-bottom": "solid windowtext 0.75pt",
                 //     "mso-border-bottom-alt": "solid windowtext 0.75pt"
                 // });
+            }else{
+                if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+
             }
 
             if ((!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
@@ -1083,6 +1112,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }.bind(this));
             }
         }
+        if (this.layout_filetext){
+            if (this.allowEdit) {
+                if (!this.loadFileTextEditFun) this.loadFileTextEditFun = this._switchReadOrEditInline.bind(this);
+                this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
+                this.layout_filetext.addEvent("click", this.loadFileTextEditFun);
+            }
+        }
+        if (this.layout_attachmentText){
+            debugger;
+            if (control.attachmentText) {
+                if (!this.loadAttachmentTextEditFun) this.loadAttachmentTextEditFun = this.loadAttachmentTextEdit.bind(this);
+                this.layout_attachmentText.removeEvent("click", this.loadAttachmentTextEditFun);
+                this.layout_attachmentText.addEvent("click", this.loadAttachmentTextEditFun);
+                if (!this.data.attachmentText){
+                    this.layout_attachmentText.set("text", MWF.xApplication.process.Xform.LP.documentEditor.attachmentInfor);
+                }
+            }
+        }
 
 
         // this.layout_subject.addEvent("keydown", function(e){
@@ -1097,6 +1144,22 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         //         }
         //     }
         // }.bind(this));
+    },
+    loadAttachmentTextEdit: function(){
+        this._createEditor("inline", this.layout_attachmentText, this.data.attachmentText, "attachmentTextEditor", function(){
+            this.layout_attachmentText.removeEvent("click", this.loadAttachmentTextEditFun);
+            var text = this.layout_attachmentText.get("text");
+            text = text.replace(/\u3000*/g, "");
+            if (!text || text==MWF.xApplication.process.Xform.LP.documentEditor.attachmentInfor){
+                this.layout_attachmentText.empty();
+                this["attachmentTextEditor"].insertHtml("<div aria-label=\"分页符\" class=\"cke_pagebreak\" contenteditable=\"false\" data-cke-display-name=\"pagebreak\" data-cke-pagebreak=\"1\" style=\"page-break-after: always\" title=\"分页符\"></div>" +
+                    "<div style=\"font-family:黑体;font-size:16pt;\">附件1</div>" +
+                    "<div><span>　</span></div>" +
+                    "<div style=\"font-family: 方正小标宋简体; font-size: 22pt; text-align: center;\">附件标题</div>" +
+                    "<div><span>　</span></div>" +
+                    "<div>　　附件内容</div>");
+            }
+        }.bind(this));
     },
 
     _loadUserInterface: function(callback){
@@ -1424,8 +1487,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 // this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
             }
             this.editMode = false;
+            this.form.saveFormData();
         }else{
             this._editFiletext("inline");
+            if (this.loadFileTextEditFun) this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
             if (this.allowEdit){
                 if (!layout.mobile) {
                     var button = this.sideToolbar.childrenButton[0];
@@ -1550,11 +1615,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this._createEditor(inline);
         }.bind(this));
     },
-    _createEditor: function(inline){
+    _createEditor: function(inline, node, data, editorName, callback){
         if (this.allowEdit){
             this.loadCkeditorFiletext(function(e){
                 e.editor.focus();
-                var text = this.data.filetext.replace(/\u3000*/g, "");
+                var text = (data || this.data.filetext).replace(/\u3000*/g, "");
                 if (!text){
                     var range = e.editor.createRange();
                     range.moveToElementEditEnd(e.editor.editable());
@@ -1566,7 +1631,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
                 //e.editor.getSelection().scrollIntoView();
 
-                var text = this.data.filetext.replace(/\u3000*/g, "");
+                var text = (data || this.data.filetext).replace(/\u3000*/g, "");
                 if (!text){
                     var range = e.editor.createRange();
                     range.moveToElementEditEnd(e.editor.editable());
@@ -1581,44 +1646,51 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 //this.getFiletextToolber();
                 //this.filetextToolbarNode.inject(this.layout_filetext.getOffsetParent());
 
-                this.locationFiletextToolbar();
-            }.bind(this), inline);
+                this.locationFiletextToolbar(editorName);
+
+                if (callback) callback();
+            }.bind(this), inline, node, editorName);
         }
     },
-    getFiletextToolber: function(){
-        if (this.filetextEditor) {
-            if (!this.filetextToolbarNode) {
-                var className = "cke_editor_" + this.filetextEditor.name;
-                var filetextToolbarNode = $$("." + className)[0];
-                this.filetextToolbarNode = filetextToolbarNode;
+    getFiletextToolber: function(editorName){
+        if (editorName){
+            if (this[editorName]) {
+                if (!this[editorName+"ToolbarNode"]) {
+                    // var className = "cke_editor_" + this[editorName].name;
+                    // var toolbarNode = $$("." + className)[0];
 
-                //filetextToolbarNode.destroy();
+                    var className = "cke_" + this[editorName].name;
+                    var toolbarNode = $(className);
+
+                    this[editorName+"ToolbarNode"] = toolbarNode;
+                }
+            }
+        }else{
+            if (this.filetextEditor) {
+                if (!this.filetextToolbarNode) {
+                    // var className = "cke_editor_" + this.filetextEditor.name;
+                    // var filetextToolbarNode = $$("." + className)[0];
+
+                    var className = "cke_" + this.filetextEditor.name;
+                    var filetextToolbarNode = $(className);
+                    this.filetextToolbarNode = filetextToolbarNode;
+
+                    //filetextToolbarNode.destroy();
+                }
             }
         }
+
     },
-    reLocationFiletextToolbar: function(){
-        this.getFiletextToolber();
-        // if (this.filetextToolbarNode){
-        //     this.filetextToolbarNode.setStyle("display", "block");
-        //     var offsetNode = this.layout_filetext.getOffsetParent();
-        //
-        //     this.filetextToolbarNode.setStyle("left", 0);
-        //     var h = this.filetextToolbarNode.getSize().y;
-        //     var p = this.layout_filetext.getPosition(offsetNode).y-h;
-        //
-        //     var postion = this.layout_filetext.getPosition(this.form.app.content);
-        //     if (postion.y-h<0){
-        //         this.filetextToolbarNode.inject(this.form.app.content);
-        //         this.filetextToolbarNode.setStyle("top", 0);
-        //         this.filetextToolbarNode.setStyle("left", ""+postion.x+"px");
-        //     }else{
-        //         this.filetextToolbarNode.inject(offsetNode);
-        //         this.filetextToolbarNode.setStyle("top", "" + p + "px");
-        //         this.filetextToolbarNode.setStyle("left", 0);
-        //         this.filetextToolbarNode.setStyle("left", "auto");
-        //     }
-        // }
-        if (this.filetextToolbarNode){
+    reLocationFiletextToolbar: function(editorName){
+        debugger;
+        this.getFiletextToolber(editorName);
+        var toolbarNode = (editorName) ? this[editorName+"ToolbarNode"] : this.filetextToolbarNode;
+        var editor = (editorName) ? this[editorName] : this.filetextEditor;
+        var node = (editorName) ? this.layout_attachmentText : this.layout_filetext;
+
+        if (editorName)
+
+        if (toolbarNode){
             if (!this.filetextScrollNode){
                 var scrollNode = this.contentNode;
                 while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("4-y")!=="auto"))){
@@ -1626,57 +1698,55 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
                 this.filetextScrollNode = scrollNode;
             }
-            var h = this.filetextToolbarNode.getSize().y;
-            var position = this.layout_filetext.getPosition();
-            var size = this.layout_filetext.getSize();
+            var h = toolbarNode.getSize().y;
+            var position = node.getPosition();
+            var size = node.getSize();
             var contentSize = this.filetextScrollNode.getSize();
 
             if (layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1){
-                var x = this.filetextEditor.editable().$.getPosition().x;
-                this.filetextToolbarNode.setStyle("left", ""+x+"px");
+                var x = editor.editable().$.getPosition().x;
+                toolbarNode.setStyle("left", ""+x+"px");
             }
-            this.filetextToolbarNode.setStyle("min-width", "530px");
+            toolbarNode.setStyle("min-width", "530px");
 
 
             if (position.y<0 && size.y+position.y+h<contentSize.y){
-                // var top = size.y+position.y;
-                // this.filetextToolbarNode.setStyle("top", ""+top+"px");
-
                 var tp = this.toolbar.node.getPosition();
                 var tsy = this.toolbar.node.getSize().y;
                 var h = tp.y+tsy;
-                this.filetextToolbarNode.setStyle("top", ""+h+"px");
+                toolbarNode.setStyle("top", ""+h+"px");
             }else if (position.y-h<0){
                 var tp = this.toolbar.node.getPosition();
                 var tsy = this.toolbar.node.getSize().y;
                 var h = tp.y+tsy;
-                this.filetextToolbarNode.setStyle("top", ""+h+"px");
+                toolbarNode.setStyle("top", ""+h+"px");
             }else{
-                var p = this.layout_filetext.getPosition().y-h;
-                this.filetextToolbarNode.setStyle("top", "" + p + "px");
+                var p = node.getPosition().y-h;
+                toolbarNode.setStyle("top", "" + p + "px");
             }
-
-
         }
-
-        //
-        // this.filetextToolbarNode.inject(offsetNode);
-        //
-        //
-        // this.filetextToolbarNode.setStyle("top", ""+p+"px");
-
     },
-    locationFiletextToolbar: function(){
-        this.reLocationFiletextToolbar();
-        if (this.filetextToolbarNode) {
+    locationFiletextToolbar: function(editorName){
+        this.reLocationFiletextToolbar(editorName);
+
+        var toolbarNode = (editorName) ? this[editorName+"ToolbarNode"] : this.filetextToolbarNode;
+
+        if (toolbarNode) {
             var scrollNode = this.contentNode;
             while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("overflow-y")!=="auto"))){
                 scrollNode = scrollNode.getParent();
             }
             if (scrollNode){
-                this.filetextScrollNode = scrollNode;
-                this.reLocationFiletextToolbarFun = this.reLocationFiletextToolbar.bind(this);
-                this.filetextScrollNode.addEvent("scroll", this.reLocationFiletextToolbarFun);
+                this.filetextScrollNode = scrollNode
+                if (editorName){
+                    if (!this.reLocationAttachmentTextToolbarFun) this.reLocationAttachmentTextToolbarFun = function(){
+                        this.reLocationFiletextToolbar(editorName);
+                    }.bind(this);
+                    this.filetextScrollNode.addEvent("scroll", this.reLocationAttachmentTextToolbarFun);
+                }else{
+                    if (!this.reLocationFiletextToolbarFun) this.reLocationFiletextToolbarFun = this.reLocationFiletextToolbar.bind(this);
+                    this.filetextScrollNode.addEvent("scroll", this.reLocationFiletextToolbarFun);
+                }
             }
         }
     },
@@ -2194,7 +2264,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
 
-    _getEditorConfig: function(){
+    _getEditorConfig: function(editorName){
         // var mathElements = [
         //     'math',
         //     'maction',
@@ -2324,9 +2394,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         //editorConfig.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
         //editorConfig.removeButtons = 'NumberedList,Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,BulletedList,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
-        //editorConfig.removeButtons = 'Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
-        editorConfig.removeButtons = 'Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
-
+        editorConfig.removeButtons = 'ExportPdf,Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
+        //editorConfig.removeButtons = 'Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
         //editorConfig.extraAllowedContent = mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)';
 
         editorConfig.pasteFromWordRemoveFontStyles = false;
@@ -2343,6 +2412,34 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.json.ckeditConfigOptions && this.json.ckeditConfigOptions.code){
             var o = this.form.Macro.exec(this.json.ckeditConfigOptions.code, this);
             if (o) editorConfig = Object.merge(editorConfig, o);
+        }
+debugger;
+        if (editorName){
+            editorConfig.removeButtons = editorConfig.removeButtons.split(/,\s*/).erase("PageBreak").join(",");
+            var tags = editorConfig.format_tags.split(/;\s*/);
+            if (tags.indexOf("附件标题")==-1){
+                editorConfig.format_tags = "附件标题"+((editorConfig.format_tags) ? ";" : "")+editorConfig.format_tags;
+            }
+            if (tags.indexOf("附件序号")==-1){
+                editorConfig.format_tags = "附件序号"+((editorConfig.format_tags) ? ";" : "")+editorConfig.format_tags;
+            }
+            if (!editorConfig["format_附件序号"]) editorConfig["format_附件序号"] = {
+                name: '附件序号',
+                element: 'div',
+                styles: {
+                    'font-family': '黑体',
+                    'font-size': '16pt'
+                }
+            };
+            if (!editorConfig["format_附件标题"]) editorConfig["format_附件标题"] = {
+                name: '附件标题',
+                element: 'div',
+                styles: {
+                    'font-family': '方正小标宋简体',
+                    'font-size': '22pt',
+                    'text-align': 'center'
+                }
+            }
         }
 
         return editorConfig;
@@ -2486,39 +2583,52 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
 
-    loadCkeditorFiletext: function(callback, inline){
-        if (this.layout_filetext){
+    loadCkeditorFiletext: function(callback, inline, node, editorName){
+        if (node || this.layout_filetext){
             o2.load("../o2_lib/htmleditor/ckeditor4161/ckeditor.js", function(){
                 CKEDITOR.disableAutoInline = true;
-                this.layout_filetext.setAttribute('contenteditable', true);
+                (node || this.layout_filetext).setAttribute('contenteditable', true);
 
                 if (inline){
-                    this.filetextEditor = CKEDITOR.inline(this.layout_filetext, this._getEditorConfig());
+                    editor = CKEDITOR.inline(node || this.layout_filetext, this._getEditorConfig(editorName));
                 }else{
-                    this.filetextEditor = CKEDITOR.replace(this.layout_filetext, this._getEditorConfig());
+                    editor = CKEDITOR.replace(node || this.layout_filetext, this._getEditorConfig(editorName));
                 }
+                this[(editorName || "filetextEditor")] = editor;
 
-                this.filetextEditor.on("instanceReady", function(e){
+
+                editor.on("instanceReady", function(e){
                     if (callback) callback(e);
                 }.bind(this));
-                this.filetextEditor.on( 'focus', function( e ) {
-                    window.setTimeout(this.reLocationFiletextToolbar.bind(this), 10);
+                editor.on( 'focus', function( e ) {
+                    window.setTimeout(function(){
+                        this.reLocationFiletextToolbar(editorName);
+                    }.bind(this), 10);
                 }.bind(this) );
 
-                this.filetextEditor.on( 'loaded', function( e ) {
-                    this.filetextEditor.element.$.store("module", this);
-                    this.filetextEditor.element.$.store("scale", this.scale);
+                debugger;
+                if (!!editorName){
+                    debugger;
+                    editor.on( 'blur', function( e ) {
+                        debugger;
+                        this.getAttachmentTextData();
+                    }.bind(this) );
+                }
+
+                editor.on( 'loaded', function( e ) {
+                    editor.element.$.store("module", this);
+                    editor.element.$.store("scale", this.scale);
                 }.bind(this) );
 
-                this.filetextEditor.on( 'afterPaste', function( e ) {
+                editor.on( 'afterPaste', function( e ) {
                     debugger;
                 }.bind(this));
-                this.filetextEditor.on( 'afterPasteFromWord', function( e ) {
+                editor.on( 'afterPasteFromWord', function( e ) {
                     debugger;
                 }.bind(this));
 
 
-                this.filetextEditor.on( 'paste', function( e ) {
+                editor.on( 'paste', function( e ) {
                     debugger;
                     var html = e.data.dataValue;
                     //if (this.json.fullWidth=="y") html = html.replace(/\x20/g, "　");
@@ -2557,7 +2667,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
                     var tableList = tmp.getElements("table");
                     if (tableList && tableList.length){
-                        var w = this.layout_filetext.offsetWidth.toFloat()-2;
+                        var w = (node || this.layout_filetext).offsetWidth.toFloat()-2;
                         tableList.each(function(table){
                             var twstyle = table.getStyle("width");
                             var tws = (twstyle) ? (twstyle.toFloat() || 0) : 0;
@@ -2594,13 +2704,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     this.fireEvent("paste");
                 }.bind(this) );
 
-                this.filetextEditor.on( 'afterPaste', function( e ) {
+                editor.on( 'afterPaste', function( e ) {
                     this.resetNodeSize();
                     this.fireEvent("afterPaste");
                 }.bind(this) );
 
-                this.filetextEditor.on( 'change', function( e ) {
-                    this.filetextEditor.on( 'change', function( e ) {
+                editor.on( 'change', function( e ) {
+                    //editor.on( 'change', function( e ) {
                         var h = document.documentElement.scrollTop;
                         var scrollNode = this.contentNode;
                         while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("4-y")!=="auto"))){
@@ -2611,12 +2721,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             scrollNode.scrollTop = h+top;
                         }
                         document.documentElement.scrollTop = 0;
-                    }.bind(this) );
+
+                    if (!!editorName) this.getAttachmentTextData();
+                    //}.bind(this) );
                 }.bind(this) );
 
 
 
-                this.filetextEditor.on( 'insertElement', function( e ) {
+                editor.on( 'insertElement', function( e ) {
                     if (e.data.$.tagName.toString().toLowerCase()=="table"){
                         e.data.$.setStyles({
                             "margin-left": "",
@@ -2636,19 +2748,19 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }.bind(this) );
 
                 if (this.json.textIndent!=="n"){
-                    this.layout_filetext.addEvent("keyup", function(ev){
-                        if (ev.code==13) this.filetextEditor.insertText("　　");
+                    (node || this.layout_filetext).addEvent("keyup", function(ev){
+                        if (ev.code==13) editor.insertText("　　");
                     }.bind(this));
                 }
                 if (this.json.fullWidth!=="n"){
-                    this.filetextEditor.addCommand( 'insertHalfSpace', {
+                    editor.addCommand( 'insertHalfSpace', {
                         exec: function( editor ) {
                             editor.insertText(" ");
                         }
                     } );
-                    this.filetextEditor.setKeystroke( CKEDITOR.SHIFT + 32, 'insertHalfSpace' );
+                    editor.setKeystroke( CKEDITOR.SHIFT + 32, 'insertHalfSpace' );
 
-                    this.filetextEditor.on("key", function(e){
+                    editor.on("key", function(e){
                         if (this.json.fullWidth!=="n") if (e.data.keyCode==32){
                             e.editor.insertText("　");
                             e.cancel();
@@ -2692,7 +2804,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                                     if (annotation.substring(annotation.length-1, annotation.length)!=="）") annotation = annotation+"）";
                                     this[dom].set("text", annotation);
                                 }else{
-                                    this[dom].set("text", " ");
+                                    this[dom].set("text", "");
                                 }
                             }else{
                                 this[dom].set("text", this.data[name]|| "");
@@ -2735,6 +2847,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             break;
                         case "mainSend":
                             this.data[name] = v + "：";
+                            break;
+                        case "copyto":
+                            this.data[name] = v + "。";
                             break;
                         default:
                             if (name==="subject") v = o2.txt(v);
@@ -2796,6 +2911,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             break;
                         case "mainSend":
                             this.data[name] = strs.join("，") + "：";
+                            break;
+                        case "copyto":
+                            this.data[name] = strs.join("，") + "。";
                             break;
                         default:
                             this.data[name] = strs.join("，");
@@ -2981,15 +3099,19 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_signer) this.data.signer = this.layout_signer.get("html");
         if (this.layout_subject) this.data.subject = this.layout_subject.get("html");
         if (this.layout_mainSend) this.data.mainSend = this.layout_mainSend.get("text");
-        if (this.editMode) if (this.layout_filetext){
-            var text = this.layout_filetext.get("text");
-            text = text.replace(/\u3000*/g, "");
-            if (text && text !==this.json.defaultValue.filetext){
-                this.data.filetext = this.layout_filetext.get("html");
-            }else{
-                this.data.filetext = "";
+        if (this.editMode) {
+            if (this.layout_filetext){
+                var text = this.layout_filetext.get("text");
+                text = text.replace(/\u3000*/g, "");
+                if (text && text !==this.json.defaultValue.filetext){
+                    this.data.filetext = this.layout_filetext.get("html");
+                }else{
+                    this.data.filetext = "";
+                }
             }
         }
+        this.getAttachmentTextData();
+
         if (this.layout_signer) this.data.signer = this.layout_signer.get("html");
         if (this.layout_attachmentTitle) this.data.attachmentTitle = this.layout_attachmentTitle.get("text");
         if (this.layout_attachment){
@@ -3038,6 +3160,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         //}
         return this.data;
     },
+    getAttachmentTextData: function(){
+        if (this.layout_attachmentText && this.layout_attachmentText.get("contenteditable")=="true"){
+            var text = this.layout_attachmentText.get("text");
+            text = text.replace(/\u3000*/g, "");
+            if (text && text !==MWF.xApplication.process.Xform.LP.documentEditor.attachmentInfor){
+                this.data.attachmentText = this.layout_attachmentText.get("html");
+            }else{
+                this.data.attachmentText = "";
+            }
+        }
+    },
     getSealData: function(){
         if (this.layout_seals && this.layout_seals.length) {
             this.data.seals = [];
@@ -3051,6 +3184,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.attachmentTemplete = this.layout_attachment.get("html");
         }
         this.layout_attachment.empty();
+        if (this.data.attachment && !this.data.attachment.each){
+            this.data.attachment = this.data.attachment.split(/,\s*/g);
+        }
+
+
         if (this.data.attachment && this.data.attachment.length && this.data.attachment.each){
             //var tmpdiv = new Element("div", {"styles": {"display":"none"}}).inject(document.body);
             var tmpdiv = new Element("div");
@@ -3058,7 +3196,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 tmpdiv.set("html", this.attachmentTemplete);
                 var serialNode = tmpdiv.getElement(".doc_layout_attachment_content_serial");
                 var nameNode = tmpdiv.getElement(".doc_layout_attachment_content_name");
-                if (serialNode) serialNode.set("text", idx+1);
+                if (this.data.attachment.length>1){
+                    if (serialNode){
+                        serialNode.set("text", idx+1);
+                        serialNode.getNext().set("text", ".");
+                    }
+                }else{
+                    if (serialNode){
+                        serialNode.set("text", "");
+                        serialNode.getNext().set("text", "");
+                    }
+                }
                 if (nameNode) nameNode.set("text", name);
                 var html = tmpdiv.get("html");
                 tmpdiv.empty();
@@ -3067,6 +3215,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             tmpdiv.destroy();
         }
     },
+    setAttachmentText: function(data){
+        this.layout_attachmentText.empty();
+        if (data.attachmentText){
+            this.layout_attachmentText.set("html", data.attachmentText);
+        }else{
+            if (this._getEdit("attachmentText", "attachmentTextEdit", "attachmentTextEditScript")){
+                this.layout_attachmentText.set("text", MWF.xApplication.process.Xform.LP.documentEditor.attachmentInfor);
+            }
+        }
+    },
+
     /**设置公文编辑器数据
      * @param {Object} data
      * @example
@@ -3131,6 +3290,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.layout_attachment){
                 this.setAttachmentData();
             }
+            if (this.layout_attachmentText){
+                this.setAttachmentText(data);
+            }
 
             if (this.layout_issuanceUnit) this.layout_issuanceUnit.set("html", data.issuanceUnit || " ");
             if (this.layout_issuanceDate) this.layout_issuanceDate.set("text", data.issuanceDate || " ");
@@ -3141,7 +3303,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     if (annotation.substring(annotation.length-1, annotation.length)!=="）") annotation = annotation+"）";
                     this.layout_annotation.set("text", annotation);
                 }else{
-                    this.layout_annotation.set("text", " ");
+                    this.layout_annotation.set("text", "");
                 }
             }
             if (this.layout_copytoTitle) this.layout_copytoTitle.set("text", data.copytoTitle || " ");
@@ -3185,8 +3347,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }.bind(this))
             }
 
-
-
             if (this.layout_issuanceUnit && this.layout_issuanceDate ){
                 var table = this.layout_issuanceUnit.getParent("table")
                 if (table && !table.hasClass("doc_layout_headIssuance")){
@@ -3201,60 +3361,61 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         "letter-spacing": "-0.2pt"
                     }).x;
 
-                    // var unitWidth = this.layout_issuanceUnit.getSize().x;
-                    // var dateWidth = this.layout_issuanceDate.getSize().x;
-                    if (unitWidth<dateWidth){
-                        //日期右空四字，单位相对与日期居中
-                        var flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                        if (flagTd) {
-                            var pt = 16*4;  //空四字
-                            flagTd.setStyle("width", "" + pt + "pt");
+                    if (table.hasClass("doc_layout_issuanceV2")){
+                        if (unitWidth<=dateWidth){
+                            //日期右空四字，单位相对与日期居中
+                            var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "64pt");
+                            flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "64pt");
 
-                            flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                            if (flagTd) flagTd.setStyle("width", "" + pt + "pt");
+                            var dateP = this.layout_issuanceDate.getParent("p");
+                            if (dateP){
+                                dateP.setStyle("text-align", "right");
+                                var span = dateP.getElement("span.space");
+                                if (span) span.destroy();
+                            }
+                        }else{
+                            var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "32pt");
+                            flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "32pt");
+
+                            var dateP = this.layout_issuanceDate.getParent("p");
+                            if (dateP){
+                                dateP.setStyle("text-align", "left");
+                                var span = dateP.getElement("span.space");
+                                if (!span) new Element("span.space", { "html": "&#x3000;&#x3000;" }).inject(dateP, "top");
+                            }
                         }
-                        //var dateTd = this.layout_issuanceDate.getParent("td");
-                        var unitTd = this.layout_issuanceUnit.getParent("td");
-                        unitTd.setStyle("width", dateWidth);
-                        var p = this.layout_issuanceUnit.getParent("p");
-                        if (p) p.setStyle("text-align", "center");
-
-                        // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                        // if (flagTd){
-                        //     var pt = ((dateWidth-unitWidth)/96)*72 +32+32;
-                        //     flagTd.setStyle("width", ""+pt+"pt");
-                        // }
-                        // table = this.layout_issuanceDate.getParent("table");
-                        // table.setStyle("width", "auto");
-                        // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                        // if (flagTd) flagTd.setStyle("width", "32pt");
-                        // var p = this.layout_issuanceDate.getParent("p");
-                        // if (p) p.setStyle("text-align", "right");
-
                     }else{
-                        var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                        if (flagTd) flagTd.setStyle("width", "32pt");
+                        if (unitWidth<=dateWidth){
+                            //日期右空四字，单位相对与日期居中
+                            var flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                            if (flagTd) {
+                                var pt = 16*4;  //空四字
+                                flagTd.setStyle("width", "" + pt + "pt");
 
-                        var unitTd = this.layout_issuanceUnit.getParent("td");
-                        unitTd.setStyle("width", "auto");
+                                flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                                if (flagTd) flagTd.setStyle("width", "" + pt + "pt");
+                            }
+                            //var dateTd = this.layout_issuanceDate.getParent("td");
+                            var unitTd = this.layout_issuanceUnit.getParent("td");
+                            unitTd.setStyle("width", dateWidth);
+                            var p = this.layout_issuanceUnit.getParent("p");
+                            if (p) p.setStyle("text-align", "center");
+                        }else{
+                            var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "32pt");
 
-                        flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                        if (flagTd) flagTd.setStyle("width", "64pt");
-                        var p = this.layout_issuanceDate.getParent("p");
-                        if (p) p.setStyle("text-align", "right");
+                            var unitTd = this.layout_issuanceUnit.getParent("td");
+                            unitTd.setStyle("width", "auto");
 
-                        // var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                        // if (flagTd) flagTd.setStyle("width", "32pt");
-                        // var table = this.layout_issuanceUnit.getParent("table");
-                        // var x = table.getSize().x;
-                        //
-                        // table = this.layout_issuanceDate.getParent("table");
-                        // table.setStyle("width", ""+x+"px");
-                        //
-                        // flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                        // if (flagTd) flagTd.setStyle("width", "32pt");
-                        // var p = this.layout_issuanceDate.getParent("p");
-                        // if (p) p.setStyle("text-align", "center");
+                            flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                            if (flagTd) flagTd.setStyle("width", "64pt");
+                            var p = this.layout_issuanceDate.getParent("p");
+                            if (p) p.setStyle("text-align", "right");
+                        }
                     }
                 }
             }
@@ -3579,7 +3740,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 if (n==-1) fileName = fileName+".docx";
                 var content = this.getDocumentHtml();
                 o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
-                    (new o2.OOXML.WML()).load(content).then(function(oo_content){
+                    (new o2.OOXML.WML({
+                        "protection": (this.json.wordConversionEncryption===true)
+                    })).load(content).then(function(oo_content){
 
                         if (!notSave) {
                             oo_content.name = fileName
@@ -3607,27 +3770,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             if (cb) cb();
                         }
 
-
-                        //
-                        //
-                        //
-                        // if (this.form.businessData.workCompleted){
-                        //     o2.Actions.get("x_processplatform_assemble_surface").uploadAttachmentByWorkCompleted(this.form.businessData.workCompleted.id, formData, oo_content,function(json){
-                        //         o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
-                        //             if (callback) callback(attjson.data);
-                        //             this.showToWord(attjson.data);
-                        //         }.bind(this));
-                        //     }.bind(this));
-                        // }else{
-                        //     o2.Actions.get("x_processplatform_assemble_surface").uploadAttachment(this.form.businessData.work.id, formData, oo_content,function(json){
-                        //         o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
-                        //             if (callback) callback(attjson.data);
-                        //             this.showToWord(attjson.data);
-                        //         }.bind(this));
-                        //     }.bind(this));
-                        // }
-
-                        //if (callback) callback(oo_content, fileName);
                     }.bind(this));
                 }.bind(this));
             }
@@ -3656,7 +3798,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         };
     },
     showToWord: function(att_word){
-        debugger;
         var site = this.json.toWordSite || "$doc";
         var attModule = this.form.all[site];
         if (attModule){

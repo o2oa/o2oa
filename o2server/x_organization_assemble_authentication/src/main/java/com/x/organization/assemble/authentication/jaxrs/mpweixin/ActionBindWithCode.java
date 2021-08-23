@@ -1,5 +1,8 @@
 package com.x.organization.assemble.authentication.jaxrs.mpweixin;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -12,8 +15,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 绑定公众号openid 到当前登录用户

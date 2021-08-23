@@ -3,14 +3,11 @@ package com.x.bbs.assemble.control.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.x.base.core.project.x_organization_assemble_express;
-import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -22,7 +19,6 @@ import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
 import com.x.bbs.entity.BBSPermissionInfo;
 import com.x.bbs.entity.BBSUserInfo;
 
-import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 /**
@@ -34,7 +30,7 @@ import net.sf.ehcache.Element;
 public class UserPermissionService {
 
 	private static  Logger logger = LoggerFactory.getLogger(UserPermissionService.class);
-	private Ehcache cache = ApplicationCache.instance().getCache(BBSUserInfo.class);
+	private Cache.CacheCategory cacheCategory = new Cache.CacheCategory(BBSUserInfo.class);
 
 	private BBSUserInfoService userInfoService = new BBSUserInfoService();
 	private BBSPermissionInfoService permissionInfoService = new BBSPermissionInfoService();
@@ -126,11 +122,11 @@ public class UserPermissionService {
 			throw new Exception("user name is null!");
 		}
 
-		String cacheKey = ThisApplication.getRoleAndPermissionCacheKey(userName);
-		Element element = cache.get(cacheKey);
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), userName );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
-		if ((null != element) && (null != element.getObjectValue())) {
-			return (BBSUserInfo) element.getObjectValue();
+		if (optional.isPresent()) {
+			return (BBSUserInfo) optional.get();
 		} else {
 			if (check) {
 				try {
@@ -147,7 +143,7 @@ public class UserPermissionService {
 				}
 			}
 		}
-		cache.put(new Element(cacheKey, userInfo));
+		CacheManager.put(cacheCategory, cacheKey, userInfo );
 		return userInfo;
 	}
 
@@ -240,8 +236,8 @@ public class UserPermissionService {
 				userInfo.setPermissionContent(content);
 				userInfo = userInfoService.save(userInfo);
 
-				String cacheKey = ThisApplication.getRoleAndPermissionCacheKey(userName);
-				cache.put(new Element(cacheKey, userInfo));
+				Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), userName );
+				CacheManager.put(cacheCategory, cacheKey, userInfo );
 			}
 		}
 		return userInfo;

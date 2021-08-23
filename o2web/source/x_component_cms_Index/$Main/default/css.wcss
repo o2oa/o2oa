@@ -332,14 +332,16 @@
     "padding-left":"5px",
     "float" : "left",
     "position" : "static",
-    "border":"0"
+    "border":"0",
+    "z-index": 0
   },
   "categoryList_all" : {
     "width": "305px",
     "position" : "absolute",
     "border" : "1px solid #ccc",
     "background-color" : "#fff",
-    "padding-bottom" : "10px"
+    "padding-bottom" : "10px",
+    "z-index": 1
   },
   "categoryItem" : {
     "float" : "left",
@@ -385,6 +387,26 @@
   "documentItem_over" : {
     "color": "#3c76b7",//"#98b7d5",
     "background":"url(../x_component_cms_Index/$Main/default/icon/documentDot_over.png) 0px 12px no-repeat"
+  },
+  "documentItem_top": {
+    "position": "relative",
+    "padding-right": "24px"
+  },
+  "documentTopNode": {
+    "position": "absolute",
+    "top": "5px",
+    "right": "0px",
+    "height": "18px",
+    "width": "18px",
+    "border-radius": "5px",
+    "background-color": "#ccc",
+    "background-size":"12px",
+    "background-position":"center center",
+    "background-repeat": "no-repeat",
+    "background-image": "url(../x_component_Homepage/$Main/default/icon/top.png)"
+  },
+  "documentTopNode_over": {
+    "background-color": "#4A90E2"
   },
   "moreArea" : {
     "position" : "absolute",

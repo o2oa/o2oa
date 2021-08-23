@@ -9,9 +9,9 @@ public class WrapSplit extends Split {
 
 	private static final long serialVersionUID = 5651378255582879520L;
 
-	public static WrapCopier<Split, WrapSplit> outCopier = WrapCopierFactory.wo(Split.class, WrapSplit.class, null,
-			JpaObject.FieldsInvisible);
+	public static final WrapCopier<Split, WrapSplit> outCopier = WrapCopierFactory.wo(Split.class, WrapSplit.class,
+			null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapSplit, Split> inCopier = WrapCopierFactory.wi(WrapSplit.class, Split.class, null,
-			JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapSplit, Split> inCopier = WrapCopierFactory.wi(WrapSplit.class, Split.class, null,
+			JpaObject.FieldsUnmodifyExcludeId, false);
 }

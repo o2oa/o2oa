@@ -28,7 +28,7 @@
     {
       "name": "title",
       "head": {
-        "html": "<th styles='normalThNode'><div lable='allSubject' styles='thActionNodeCurrent'></div><div style='float:left'>|</div><div lable='prime' styles='thActionNode'></div></th>",
+        "html": "<th styles='normalThNode'><div lable='allSubject' styles='thActionNodeCurrent'></div><div style='float:left'>|</div><div lable='prime' styles='thActionNode'></div><div style='float:left'>|</div><div lable='sType' styles='thActionNode'></div><div lable='select' styles='thActionNode'></div></th>",
         "width": "58%"
       },
       "content": {

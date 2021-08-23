@@ -722,10 +722,36 @@
 								}
 							}]
 						}, {
+                            hidden: !editor.config.enablePreview && !editor.config.base64Encode,
 							type: "hbox",
-							widths: ["100%"],
-							hidden: !editor.config.base64Encode,
+                            widths: !editor.config.enablePreview ? ["0%", "100%"] : ["27%", "73%"],
 							children: [{
+                            hidden: !editor.config.enablePreview,
+                            id: "data-prv",
+                            type: "checkbox",
+                            label: "允许浏览大图",
+                            "default": true,
+                            setup: function (type, element) {
+                                if (IMAGE == type) {
+                                    var v = true;
+                                    var c = element.getAttribute("data-prv");
+                                    if (c === "false" || c === false) {
+                                        v = false;
+                                    }
+                                    this.setValue(v);
+                                }
+                            },
+                            commit: function (type, element) {
+                                debugger;
+                                if (IMAGE == type) {
+									element.setAttribute("data-prv", this.getValue())
+                                } else if (PREVIEW == type) {
+									element.setAttribute("data-prv", this.getValue())
+                                } else if (CLEANUP == type) {
+									element.removeAttribute("data-prv")
+                                }
+                            }
+                        },{
 								id: "base64enable",
 								type: "checkbox",
 								requiredContent: "img{src}",

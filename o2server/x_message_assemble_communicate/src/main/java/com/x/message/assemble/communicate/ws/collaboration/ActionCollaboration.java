@@ -10,8 +10,15 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.websocket.*;
+import javax.websocket.CloseReason;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -26,7 +33,6 @@ import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.message.WsMessage;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
-import org.apache.commons.lang3.StringUtils;
 
 @ServerEndpoint(value = "/ws/collaboration", configurator = WsConfigurator.class)
 public class ActionCollaboration {

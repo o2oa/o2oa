@@ -2,6 +2,9 @@ package com.x.attendance.assemble.control.service;
 
 import java.util.List;
 
+import com.x.attendance.entity.AttendanceDetail;
+import com.x.attendance.entity.AttendanceEmployeeConfig;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.Business;
@@ -17,7 +20,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class AttendanceScheduleSettingService {
 	
 	private static  Logger logger = LoggerFactory.getLogger( AttendanceScheduleSettingService.class );
-	
+	private AttendanceEmployeeConfigServiceAdv attendanceEmployeeConfigServiceAdv = new AttendanceEmployeeConfigServiceAdv();
+	private String topUnit = "";
 	public List<AttendanceScheduleSetting> listAll( EntityManagerContainer emc ) throws Exception {
 		Business business =  new Business( emc );
 		return business.getAttendanceScheduleSettingFactory().listAll();
@@ -76,12 +80,33 @@ public class AttendanceScheduleSettingService {
 	}
 
 	public AttendanceScheduleSetting getAttendanceScheduleSettingWithPerson( String personName, Boolean debugger ) throws Exception {
+		topUnit = "";
 		UserManagerService userManagerService = new UserManagerService();
-		String unitName = userManagerService.getUnitNameWithPersonName( personName );
+		//先根据考勤人员配置去计算组织及顶级组织，如果没有符合条件的再按personName的人员组织计算
+		//String unitName = userManagerService.getUnitNameWithPersonName( personName );
+		String unitName = this.getUnitByconfig(userManagerService,personName);
+		if(StringUtils.isEmpty(unitName)){
+			unitName = userManagerService.getUnitNameWithPersonName( personName );
+		}
 		AttendanceScheduleSetting attendanceScheduleSetting = getAttendanceScheduleSettingWithUnitName( unitName );
 		if( attendanceScheduleSetting == null ) {
 			//如果没有找到，那么应该为该人员所属的组织创建一个新的排班配置
-			String topUnitName = userManagerService.getTopUnitNameWithUnitName( unitName );
+			String topUnitName = topUnit;
+			if(StringUtils.isEmpty(topUnit)){
+				topUnitName = userManagerService.getTopUnitNameWithUnitName( unitName );
+			}
+			attendanceScheduleSetting = createNewScheduleSetting( unitName, topUnitName, debugger );
+		}
+		return attendanceScheduleSetting;
+	}
+
+	public AttendanceScheduleSetting getAttendanceScheduleSettingWithDetail(AttendanceDetail detail, Boolean debugger ) throws Exception {
+		UserManagerService userManagerService = new UserManagerService();
+		String unitName = detail.getUnitName();
+		AttendanceScheduleSetting attendanceScheduleSetting = getAttendanceScheduleSettingWithUnitName( unitName );
+		if( attendanceScheduleSetting == null ) {
+			//如果没有找到，那么应该为该人员所属的组织创建一个新的排班配置
+			String topUnitName = detail.getTopUnitName();
 			attendanceScheduleSetting = createNewScheduleSetting( unitName, topUnitName, debugger );
 		}
 		return attendanceScheduleSetting;
@@ -140,5 +165,24 @@ public class AttendanceScheduleSettingService {
 			throw e;
 		}
 		return new_attendanceScheduleSetting;
+	}
+	private String getUnitByconfig(UserManagerService userManagerService,String personName) throws Exception {
+		String result = "";
+		List<AttendanceEmployeeConfig> attendanceEmployeeConfigList = attendanceEmployeeConfigServiceAdv.listByConfigType( "REQUIRED" );
+		if( ListTools.isNotEmpty( attendanceEmployeeConfigList ) ) {
+			for(AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigList){
+				if(StringUtils.isNotEmpty(attendanceEmployeeConfig.getEmployeeName())){
+					if(StringUtils.equals(personName,attendanceEmployeeConfig.getEmployeeName())){
+						result = attendanceEmployeeConfig.getUnitName();
+					}
+				}else if(StringUtils.isNotEmpty(attendanceEmployeeConfig.getUnitName())){
+					if(userManagerService.checkHasPerson(personName,attendanceEmployeeConfig.getUnitName(),true)){
+						result = attendanceEmployeeConfig.getUnitName();
+						topUnit = attendanceEmployeeConfig.getTopUnitName();
+					}
+				}
+			}
+		}
+		return result;
 	}
 }

@@ -527,6 +527,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             "styles": this.css.inputTextarea,
             "value": this.options.opinion || MWF.xApplication.process.Work.LP.inputText
         }).inject(this.inputOpinionNode);
+        this.inputTextarea.setStyle("resize", "none");
         this.inputTextarea.addEvents({
             "focus": function () {
                 if (this.get("value") == MWF.xApplication.process.Work.LP.inputText) this.set("value", "");

@@ -7,6 +7,8 @@ import java.util.List;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -17,8 +19,6 @@ import com.x.processplatform.core.entity.element.Service;
 import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class ServiceProcessor extends AbstractServiceProcessor {
 
@@ -68,7 +68,7 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 	}
 
 	@Override
-	protected void executingCommitted(AeiObjects aeiObjects, Service service) throws Exception {
+	protected void executingCommitted(AeiObjects aeiObjects, Service service, List<Work> works) throws Exception {
 		// Do nothing
 	}
 

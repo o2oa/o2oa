@@ -232,7 +232,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				}
 			}
 			aeiObjects.commit();
-			this.executeCommitted(aeiObjects);
+			this.executeCommitted(aeiObjects, works);
 			/** 发送在队列中的待办消息, 待办消息必须在数据提交后发送,否则会不到待办 */
 			if (ListTools.isNotEmpty(works)) {
 				/** 已经有返回的work将要离开当前环节,执行AfterExecuteScript中的代码 */
@@ -399,7 +399,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 
 	protected abstract List<Work> executeProcessing(AeiObjects aeiObjects) throws Exception;
 
-	protected abstract void executeCommitted(AeiObjects aeiObjects) throws Exception;
+	protected abstract void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception;
 
 	protected abstract List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception;
 

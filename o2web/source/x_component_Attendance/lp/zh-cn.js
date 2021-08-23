@@ -39,6 +39,28 @@ MWF.xApplication.Attendance.LP = {
 	"am": "上午",
 	"pm": "下午",
 
+	"statusText": {
+		"normal" : "出勤", //绿色，正常
+		"levelAsked":"请假", //蓝色，请假
+		"late":"迟到", //橙色，迟到
+		"leaveEarly":"早退", //橙色，早退
+		"noSign":"缺勤", //粉红色,未签到
+		"appealSuccess" : "申诉",
+		"lackOfTime" : "不足",
+		"abNormalDuty" : "异常",
+
+
+		"lateTimes" : "迟到",
+		"leaveEarlyTimes" : "早退",
+		"lackOfTimeCount" : "不足",
+		"abNormalDutyCount" : "异常",
+		"resultNormal" : "正常",
+		"seriousLateTimes": "严迟",
+		"outsideDutyTimes": "外签",
+		"absenteeismTimes": "旷工",
+		"notSignedCount": "缺卡",
+	},
+
 	"absent" : "缺勤",
 	"notAbsent" : "未缺勤",
 	"absendSelectText": ["","缺勤","未缺勤"],
@@ -218,6 +240,8 @@ MWF.xApplication.Attendance.LP = {
 	"close": "关闭",
 	"disagree": "不同意",
 	"agree": "同意",
+	"batchDisagree": "批量不同意",
+	"batchAgree": "批量同意",
 	"temporaryLeave": "临时请假",
 	"out": "出差",
 	"businessTrip": "因公外出",
@@ -282,6 +306,8 @@ MWF.xApplication.Attendance.LP = {
 	"importDataResultThList" : [
 		"行号", "员工号", "员工名字", "日期","上午上班打卡时间","上午下班打卡时间","下午上班打卡时间","下午下班打卡时间","检查结果","描述"
 	],
+	"selectExportMonth":"选择导出月份",
+	"exportSourceData": "导出打卡数据",
 	"true": "正确",
 	"false": "错误",
 	"checkDataTitle": "正在检查数据",
@@ -306,7 +332,7 @@ MWF.xApplication.Attendance.LP = {
 	"myDetail": "我的出勤明细",
 	"myDetailStatic": "我的出勤率统计",
 
-	"cyclText" : "考勤周期：{start}至{end}",
+	"cyclText" : "考勤周期：{start}-{end}",
 
 	"personSetting": "考勤人员设置",
 	"configType": "配置类型",
@@ -384,7 +410,8 @@ MWF.xApplication.Attendance.LP = {
 	"statData": "统计考勤数据",
 	"analyzeData": "分析考勤数据",
 	"viewDescription": "查看说明",
-	"myAppealTitleText": "请在“我的考勤统计 -> 我的出勤明细”提出申述",
+	//"myAppealTitleText": "请在“我的考勤统计 -> 我的出勤明细”提出申述",
+	"myAppealTitleText": "请在“我的考勤统计”提出申述",
 
 	"createManager": "新建管理员配置",
 	"createPersonConfig": "新增考勤人员配置",
@@ -425,6 +452,18 @@ MWF.xApplication.Attendance.LP = {
 		"addressSetting": "工作场所设置",
 		"appSetting": "申诉设置",
 		"weekendSetting": "周末设置",
+	},
+
+	"week" : "周",
+	"weeks": {
+		"Sun": "周日",
+		"Mon": "周一",
+		"Tues": "周二",
+		"Wed": "周三",
+		"Thur": "周四",
+		"Fri": "周五",
+		"Sat": "周六",
+		"arr": ["周日","周一","周二","周三","周四","周五","周六"]
 	}
 
 

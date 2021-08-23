@@ -565,6 +565,10 @@ MWF.xApplication.ForumSection.Explorer = new Class({
 			"styles" : this.css.viewContainer
 		}).inject(this.container);
 
+        this.viewContainerType = Element("div",{
+            "styles" : this.css.viewContainer
+        }).inject(this.container);
+
 		this.loadToolbar();
 
 		//this.loadTopView();
@@ -630,10 +634,6 @@ MWF.xApplication.ForumSection.Explorer = new Class({
 	},
 	loadView : function(){
 
-		//this.resizeWindow();
-		//this.resizeWindowFun = this.resizeWindow.bind(this)
-		//this.app.addEvent("resize", this.resizeWindowFun );
-
 		this.view = new MWF.xApplication.ForumSection.View( this.viewContainer, this.app, this, {
 			templateUrl : this.parent.path+"listItem.json",
 			pagingEnable : true,
@@ -667,19 +667,22 @@ MWF.xApplication.ForumSection.Explorer = new Class({
 	},
 	reloadView : function() {
 		if( this.viewPrime )this.viewPrime.destroy();
+        if( this.viewType )this.viewType.destroy();
 		this.viewContainer.setStyle("display","");
 		this.viewContainerTop.setStyle("display","");
 		this.viewContainerPrime.setStyle("display","none");
-
+        this.viewContainerType.setStyle("display","none");
 		//this.loadTopView();
 		this.loadView();
 	},
 	loadPrimeView : function(){
 		if( this.view )this.view.destroy();
 		if( this.viewTop )this.viewTop.destroy();
+        if( this.viewType )this.viewType.destroy();
 		this.viewContainer.setStyle("display","none");
 		this.viewContainerTop.setStyle("display","none");
 		this.viewContainerPrime.setStyle("display","");
+        this.viewContainerType.setStyle("display","none");
 
 		this.viewPrime = new MWF.xApplication.ForumSection.PrimeView( this.viewContainerPrime, this.app, this, {
 			templateUrl : this.parent.path+"listItemPrime.json",
@@ -709,6 +712,125 @@ MWF.xApplication.ForumSection.Explorer = new Class({
 		this.viewPrime.pagingContainerBottom = this.pagingBarBottom;
 		this.viewPrime.load();
 	},
+    loadTypeView : function(){
+        debugger;
+        if( this.view )this.view.destroy();
+        if( this.viewTop )this.viewTop.destroy();
+        if( this.viewPrime )this.viewPrime.destroy();
+        this.viewContainer.setStyle("display","none");
+        this.viewContainerTop.setStyle("display","none");
+        this.viewContainerType.setStyle("display","");
+        this.viewContainerPrime.setStyle("display","none");
+
+        this.viewType = new MWF.xApplication.ForumSection.TypeView( this.viewContainerType, this.app, this, {
+            templateUrl : this.parent.path+"listItemType.json",
+            pagingEnable : true,
+            pagingPar : {
+                hasReturn : !this.app.naviMode,
+                currentPage : 1,
+                countPerPage : 30,
+                onPostLoad : function( pagingBar ){
+                    if(pagingBar.nextPageNode){
+                        pagingBar.nextPageNode.inject( this.toolbarBottom, "before" );
+                    }
+                }.bind(this),
+                onPageReturn : function( pagingBar ){
+                    var appId = "Forum";
+                    if (this.app.desktop.apps[appId]){
+                        this.app.desktop.apps[appId].setCurrent();
+                    }else {
+                        this.app.desktop.openApplication(null, "Forum", { "appId": appId });
+                    }
+                    this.app.close();
+                }.bind(this)
+            }
+        } );
+        this.viewType.filterData = { sectionId : this.app.sectionData.id ,sectionName:this.app.sectionData.sectionName,subjectType:"",withTopSubject:true};
+        this.viewType.pagingContainerTop = this.pagingBarTop;
+        this.viewType.pagingContainerBottom = this.pagingBarBottom;
+        this.viewType.load();
+        this.loadSelectType();
+    },
+	reloadTypeView : function(typeName){
+		debugger;
+		if( this.view )this.view.destroy();
+		if( this.viewTop )this.viewTop.destroy();
+		if( this.viewPrime )this.viewPrime.destroy();
+		if( this.viewType )this.viewType.destroy();
+		this.viewContainer.setStyle("display","none");
+		this.viewContainerTop.setStyle("display","none");
+		this.viewContainerType.setStyle("display","");
+		this.viewContainerPrime.setStyle("display","none");
+
+		this.viewType = new MWF.xApplication.ForumSection.TypeView( this.viewContainerType, this.app, this, {
+			templateUrl : this.parent.path+"listItemType.json",
+			pagingEnable : true,
+			pagingPar : {
+				hasReturn : !this.app.naviMode,
+				currentPage : 1,
+				countPerPage : 30,
+				onPostLoad : function( pagingBar ){
+					if(pagingBar.nextPageNode){
+						pagingBar.nextPageNode.inject( this.toolbarBottom, "before" );
+					}
+				}.bind(this),
+				onPageReturn : function( pagingBar ){
+					var appId = "Forum";
+					if (this.app.desktop.apps[appId]){
+						this.app.desktop.apps[appId].setCurrent();
+					}else {
+						this.app.desktop.openApplication(null, "Forum", { "appId": appId });
+					}
+					this.app.close();
+				}.bind(this)
+			}
+		} );
+		debugger;
+		this.viewType.filterData = { sectionId : this.app.sectionData.id ,sectionName:this.app.sectionData.sectionName,subjectType:typeName,withTopSubject:true};
+		this.viewType.pagingContainerTop = this.pagingBarTop;
+		this.viewType.pagingContainerBottom = this.pagingBarBottom;
+		this.viewType.load();
+		this.loadSelectType();
+	},
+    loadSelectType : function(){
+		var _self = this;
+	    debugger;
+        var selectNode = this.viewType.node.getElements("[lable='select']")[0];
+        var select = new Element("select",{
+            "name" : "type"
+        }).inject(selectNode);
+        var subjectTypeName = "";
+        if((this.viewType.filterData.subjectType) && this.viewType.filterData.subjectType!="请选择主题类别"){
+			subjectTypeName = this.viewType.filterData.subjectType;
+		}
+        var selectNotice = this.lp.selectSubjectType;
+		var optiondefault = new Element("option",{
+			"value" : selectNotice,
+			"text" : selectNotice
+		}).inject(select);
+		var subjectTypeList = this.app.sectionData.subjectTypeList;
+		subjectTypeList.each( function(subjectType, i){
+			if( !subjectType )return;
+			if(subjectTypeName!="" && subjectTypeName==subjectType){
+				var option = new Element("option",{
+					"value" : subjectType,
+					"text" : subjectType,
+					"selected":true
+				}).inject(select);
+			}else{
+				var option = new Element("option",{
+					"value" : subjectType,
+					"text" : subjectType
+				}).inject(select);
+			}
+
+		}.bind(this));
+		select.addEvent("change", function(){
+			debugger;
+			_self.reloadTypeView(this.value);
+		});
+
+    },
 	resizeWindow: function(){
 		var size = this.app.content.getSize();
 		this.viewContainer.setStyles({"height":(size.y-121)+"px"});
@@ -785,11 +907,14 @@ MWF.xApplication.ForumSection.TopView = new Class({
 	_queryCreateViewHead:function(){
 	},
 	_postCreateViewHead: function( headNode ){
-		//this.allSubjectNode = headNode.getElements("[lable='allSubject']")[0];
-		var primeNode = headNode.getElements("[lable='prime']")[0];
+		/*var primeNode = headNode.getElements("[lable='prime']")[0];
 		primeNode.addEvent( "click", function(){
 			this.explorer.loadPrimeView();
-		}.bind(this))
+		}.bind(this));
+        var typeNode = headNode.getElements("[lable='sType']")[0];
+        typeNode.addEvent( "click", function(){
+            this.explorer.loadTypeView();
+        }.bind(this));*/
 	}
 
 });
@@ -937,7 +1062,12 @@ MWF.xApplication.ForumSection.View = new Class({
 		var primeNode = headNode.getElements("[lable='prime']")[0];
 		primeNode.addEvent( "click", function(){
 			this.explorer.loadPrimeView();
-		}.bind(this))
+		}.bind(this));
+        var typeNode = headNode.getElements("[lable='sType']")[0];
+        typeNode.addEvent( "click", function(){
+            debugger;
+            this.explorer.loadTypeView();
+        }.bind(this));
 	}
 
 });
@@ -982,7 +1112,7 @@ MWF.xApplication.ForumSection.Document = new Class({
 MWF.xApplication.ForumSection.PrimeView = new Class({
 	Extends: MWF.xApplication.Template.Explorer.ComplexView,
 	_createDocument: function(data, index){
-		return new MWF.xApplication.ForumSection.PrimeDocument(this.viewNode, data, this.explorer, this, null,  index);
+		return new MWF.xApplication.ForumSection.TypeDocument(this.viewNode, data, this.explorer, this, null,  index);
 	},
 	_getCurrentPageData: function(callback, count, pageNum){
 		this.clearBody();
@@ -1030,8 +1160,84 @@ MWF.xApplication.ForumSection.PrimeView = new Class({
 		var allSubjectNode = headNode.getElements("[lable='allSubject']")[0];
 		allSubjectNode.addEvent( "click", function(){
 			this.explorer.reloadView();
-		}.bind(this))
+		}.bind(this));
+		debugger;
+        var typeNode = headNode.getElements("[lable='sType']")[0];
+        typeNode.addEvent( "click", function(){
+            this.explorer.loadTypeView();
+        }.bind(this));
 	}
+
+});
+
+MWF.xApplication.ForumSection.TypeView = new Class({
+    Extends: MWF.xApplication.Template.Explorer.ComplexView,
+    _createDocument: function(data, index){
+        debugger;
+        return new MWF.xApplication.ForumSection.TypeDocument(this.viewNode, data, this.explorer, this, null,  index);
+    },
+    _getCurrentPageData: function(callback, count, pageNum){
+        this.clearBody();
+        if(!count)count=30;
+        if(!pageNum)pageNum = 1;
+        var filter = this.filterData || {};
+        debugger;
+        if(this.filterData.subjectType!="" && this.filterData.subjectType!=this.app.lp.selectSubjectType){
+			this.actions.listSubjectWithSubjectTypeForPage( pageNum, count, filter, function(json){
+				if( !json.data )json.data = [];
+				if( !json.count )json.count=0;
+				if( callback )callback(json);
+			}.bind(this))
+		}else{
+			this.actions.listSubjectFilterPage( pageNum, count, filter, function(json){
+				if( !json.data )json.data = [];
+				if( !json.count )json.count=0;
+				if( callback )callback(json);
+			}.bind(this))
+		}
+
+    },
+    _removeDocument: function(documentData, all){
+        this.actions.deleteSubject(documentData.id, function(json){
+            this.reload();
+            this.app.reloadAllParents();
+            this.app.notice(this.app.lp.deleteDocumentOK, "success");
+        }.bind(this));
+    },
+    _create: function(){
+
+    },
+    _openDocument: function( documentData,index ){
+        var appId = "ForumDocument"+documentData.id;
+        if (this.app.desktop.apps[appId]){
+            this.app.desktop.apps[appId].setCurrent();
+        }else {
+            this.app.desktop.openApplication(null, "ForumDocument", {
+                "sectionId" : documentData.sectionId,
+                "id" : documentData.id,
+                "appId": appId,
+                "isEdited" : false,
+                "isNew" : false,
+                "index" : index
+            });
+        }
+    },
+    _queryCreateViewNode: function(){
+    },
+    _postCreateViewNode: function( viewNode ){
+    },
+    _queryCreateViewHead:function(){
+    },
+    _postCreateViewHead: function( headNode ){
+        var allSubjectNode = headNode.getElements("[lable='allSubject']")[0];
+        allSubjectNode.addEvent( "click", function(){
+            this.explorer.reloadView();
+        }.bind(this));
+        var primeNode = headNode.getElements("[lable='prime']")[0];
+        primeNode.addEvent( "click", function(){
+            this.explorer.loadPrimeView();
+        }.bind(this));
+    }
 
 });
 
@@ -1059,4 +1265,29 @@ MWF.xApplication.ForumSection.PrimeDocument = new Class({
 			});
 		}
 	}
+});
+MWF.xApplication.ForumSection.TypeDocument = new Class({
+    Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
+    _queryCreateDocumentNode:function( itemData ){
+    },
+    _postCreateDocumentNode: function( itemNode, itemData ){
+    },
+    open: function (e) {
+        this.view._openDocument(this.data, this.index);
+    },
+    edit : function(){
+        var appId = "ForumDocument"+this.data.id;
+        if (this.app.desktop.apps[appId]){
+            this.app.desktop.apps[appId].setCurrent();
+        }else {
+            this.app.desktop.openApplication(null, "ForumDocument", {
+                "sectionId" : this.data.sectionId,
+                "id" : this.data.id,
+                "appId": appId,
+                "isEdited" : true,
+                "isNew" : false,
+                "index" : this.index
+            });
+        }
+    }
 });

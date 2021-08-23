@@ -46,9 +46,9 @@ public abstract class AbstractMergeProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void executeCommitted(AeiObjects aeiObjects) throws Exception {
+	protected void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception {
 		Merge merge = (Merge) aeiObjects.getActivity();
-		this.executingCommitted(aeiObjects, merge);
+		this.executingCommitted(aeiObjects, merge, works);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public abstract class AbstractMergeProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Merge merge) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Merge merge) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Merge merge, List<Work> works) throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Merge merge) throws Exception;
 }

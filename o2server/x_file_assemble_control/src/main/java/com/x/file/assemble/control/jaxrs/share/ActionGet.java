@@ -1,5 +1,11 @@
 package com.x.file.assemble.control.jaxrs.share;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -9,11 +15,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Share;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Arrays;
-import java.util.List;
 
 class ActionGet extends BaseAction {
 

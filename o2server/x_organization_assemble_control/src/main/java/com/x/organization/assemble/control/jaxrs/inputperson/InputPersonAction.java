@@ -82,7 +82,7 @@ public class InputPersonAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "清空人员组织数据.", action = ActionWipeAll.class)
 	@GET
 	@Path("wipe")
@@ -92,7 +92,7 @@ public class InputPersonAction extends StandardJaxrsAction {
 		ActionResult<ActionWipeAll.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionWipeAll().execute(effectivePerson); 
+			result = new ActionWipeAll().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -20,7 +20,6 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         "hasTopIcon" : false,
         "hasTopContent" : false,
         "hasIcon": true,
-        "hasBottom": true,
         "hasMask" : true,
         "closeByClickMask" : false,
         "hasScroll" : true,
@@ -34,7 +33,12 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
 
         "relativeToApp" : true,
         "sizeRelateTo" : "app", //desktop
-        "resultSeparator" : ","
+        "resultSeparator" : ",",
+
+        "hasBottom": true,
+        "hideBottomWhenReading": false,
+        "closeByClickMaskWhenReading" : false,
+        "buttonList" : [{ "type":"cancel", "text": "" },{ "type":"ok", "text": "" }]
     },
     initialize: function (explorer, data, options, para) {
         this.setOptions(options);
@@ -75,23 +79,28 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
     load: function () {
         this._loadCss();
     },
-    _loadCss: function(){
+    _loadCss: function(reload){
         var css = {};
-        var r = new Request.JSON({
-            url: o2.filterUrl(this.cssPath),
-            secure: false,
-            async: false,
-            method: "get",
-            noCache: false,
-            onSuccess: function(responseJSON, responseText){
-                css = responseJSON;
-                MWF.widget.css[key] = responseJSON;
-            }.bind(this),
-            onError: function(text, error){
-                alert(error + text);
-            }
-        });
-        r.send();
+        var key = encodeURIComponent(this.cssPath);
+        if (!reload && o2.widget.css[key]){
+            css = Object.clone(o2.widget.css[key]);
+        }else{
+            var r = new Request.JSON({
+                url: o2.filterUrl(this.cssPath),
+                secure: false,
+                async: false,
+                method: "get",
+                noCache: false,
+                onSuccess: function(responseJSON, responseText){
+                    o2.widget.css[key] = responseJSON;
+                    css = Object.clone(responseJSON);
+                }.bind(this),
+                onError: function(text, error){
+                    alert(error + text);
+                }
+            });
+            r.send();
+       }
 
         var isEmptyObject = true;
         for( var key in css ){
@@ -101,7 +110,9 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
             }
         }
         if( !isEmptyObject ){
-            this.css = Object.merge(  css, this.css );
+            this.css = Object.merge(  css, this.css || {});
+        }else if( !this.css ){
+            this.css = {};
         }
     },
     reload : function( keepData ){
@@ -213,7 +224,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
             });
         }
 
-        if( this.options.closeByClickMask && this.formMaskNode ){
+        if( ( this.options.closeByClickMask || (!this.isNew && !this.isEdited && this.options.closeByClickMaskWhenReading) ) && this.formMaskNode ){
             this.formMaskNode.addEvent("click", function(e){
                 this.close(e)
             }.bind(this));
@@ -265,7 +276,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         this.createContent();
         //formContentNode.set("html", html);
 
-        if (this.options.hasBottom) {
+        if (this.options.hasBottom && (this.isNew || this.isEdited || !this.options.hideBottomWhenReading) ) {
             this.createBottomNode();
         }
 
@@ -451,21 +462,37 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         this.fireEvent("postCreateBottom");
     },
     _createBottomContent: function () {
+
+        if( !this.options.buttonList ){
+            this._createCancelActionNode();
+            this._createOkActionNode();
+        }else{
+            debugger;
+            this.options.buttonList.each(function (button) {
+                if(button.type === "cancel"){
+                    this._createCancelActionNode( button.text || "" );
+                }else if( button.type === "ok" ){
+                    this._createOkActionNode( button.text || "" );
+                }else{
+
+                }
+            }.bind(this))
+        }
+    },
+    _createCancelActionNode: function(text){
         this.cancelActionNode = new Element("div.formCancelActionNode", {
             "styles": this.css.formCancelActionNode,
-            "text": this.lp.cancel
+            "text": text || this.lp.cancel
         }).inject(this.formBottomNode);
-
-
         this.cancelActionNode.addEvent("click", function (e) {
             this.cancel(e);
         }.bind(this));
-
+    },
+    _createOkActionNode: function(text){
         if (this.isNew || this.isEdited) {
-
             this.okActionNode = new Element("div.formOkActionNode", {
                 "styles": this.css.formOkActionNode,
-                "text": this.lp.ok
+                "text": text || this.lp.ok
             }).inject(this.formBottomNode);
 
             this.okActionNode.addEvent("click", function (e) {

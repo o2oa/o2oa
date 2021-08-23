@@ -19,6 +19,7 @@
     "requestLogEnable": false,
     "requestLogFormat": "",
     "requestLogRetainDays": 7.0,
+    "requestLogBodyEnable": false,
     "persistentConnectionsEnable": true,
     "###enable": "是否启用###",
     "###order": "center节点顺序,顺序排列0,1,2...###",
@@ -38,6 +39,7 @@
     "###requestLogEnable": "启用访问日志功能.###",
     "###requestLogFormat": "访问日志记录格式.###",
     "###requestLogRetainDays": "访问日志记录天数,默认7天.###",
+    "###requestLogBodyEnable": "访问日志是否记录post或者put的body内容,只对content-type为application/json的请求有效.###",
     "###persistentConnectionsEnable": "是否启用长连接,默认false.###"
   },
   "application": {
@@ -60,6 +62,7 @@
     "requestLogEnable": false,
     "requestLogFormat": "",
     "requestLogRetainDays": 7.0,
+    "requestLogBodyEnable": false,
     "persistentConnectionsEnable": true,
     "###enable": "是否启用###",
     "###port": "http/https端口,负责向前端提供数据访问接口.默认为20020端口.###",
@@ -80,6 +83,7 @@
     "###requestLogEnable": "启用访问日志功能.###",
     "###requestLogFormat": "访问日志记录格式.###",
     "###requestLogRetainDays": "访问日志记录天数,默认7天.###",
+    "###requestLogBodyEnable": "访问日志是否记录post或者put的body内容,只对content-type为application/json的请求有效.###",
     "###persistentConnectionsEnable": "是否启用长连接,默认true.###"
   },
   "web": {
@@ -184,6 +188,7 @@
   "nodeAgentEncrypt": true,
   "quickStartWebApp": false,
   "autoStart": true,
+  "selfHealthCheckEnable": false,
   "###enable": "是否启用###",
   "###isPrimaryCenter": "是否是center节点,仅允许存在一个center节点###",
   "###center": "Center服务器配置###",
@@ -202,5 +207,6 @@
   "###quickStartWebApp": "是否使用快速应用部署###",
   "###banner": "服务器控制台启动标识###",
   "###autoStart": "是否自动启动###",
-  "###eraseContentEnable": "是否允许使用擦除数据功能###"
+  "###eraseContentEnable": "是否允许使用擦除数据功能###",
+  "###selfHealthCheckEnable": "是否启用节点上模块健康自检查,如果启用在提交到center之前将进行模块的健康检查.默认false###"
 }

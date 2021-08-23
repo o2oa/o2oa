@@ -22,7 +22,7 @@ o2.addReady(function () {
             // 删除
             Cookie.dispose(o2.tokenName);
             // 写入
-            var host = window.location.host; // 域名 
+            var host = window.location.hostname; // 域名
             var domain = null;
             if (_isIp(host)) {
                 domain = host;
@@ -379,7 +379,7 @@ o2.addReady(function () {
 
                 MWF.getJSON("res/config/config.json", function (config) {
                     layout.config = config;
-
+                    o2.tokenName = config.tokenName || "x-token";
                     MWF.xDesktop.getServiceAddress(layout.config, function (service, center) {
                         layout.serviceAddressList = service;
                         layout.centerServer = center;

@@ -5,13 +5,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -145,10 +145,10 @@ public class ActionSubjectSave extends BaseAction {
 			try {
 				subjectInfo = subjectInfoServiceAdv.save(subjectInfo, wrapIn.getContent());
 				wo.setId(subjectInfo.getId());
-				
-				ApplicationCache.notify( BBSSubjectInfo.class );
-				ApplicationCache.notify( BBSSectionInfo.class );
-				ApplicationCache.notify( BBSForumInfo.class );
+
+				CacheManager.notify( BBSSubjectInfo.class );
+				CacheManager.notify( BBSSectionInfo.class );
+				CacheManager.notify( BBSForumInfo.class );
 				
 			} catch (Exception e) {
 				check = false;

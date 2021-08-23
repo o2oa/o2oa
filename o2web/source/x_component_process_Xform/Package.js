@@ -32,6 +32,8 @@ MWF.xApplication.process.Xform.require = function(callback){
         ["process.Xform", "Office"],
         ["process.Xform", "IWebOffice"],
         ["process.Xform", "YozoOffice"],
+        ["process.Xform", "OnlyOffice"],
+        ["process.Xform", "WpsOffice"],
         ["process.Xform", "Attachment"],
         ["process.Xform", "Actionbar"],
         ["process.Xform", "Sidebar"],

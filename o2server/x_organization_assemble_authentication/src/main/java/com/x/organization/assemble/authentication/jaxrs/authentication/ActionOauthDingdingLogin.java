@@ -1,5 +1,17 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Date;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
@@ -13,16 +25,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Date;
 
 public class ActionOauthDingdingLogin extends BaseAction {
     private static Logger logger = LoggerFactory.getLogger(ActionOauthDingdingLogin.class);

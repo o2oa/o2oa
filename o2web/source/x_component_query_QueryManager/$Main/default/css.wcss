@@ -237,5 +237,30 @@
         "font-size": "14px",
         "color": "#666",
         "cursor": "pointer"
-     }
+     },
+    "propertyInterfaceTdTitle": {
+      "text-align": "left",
+      "color": "#da7429",
+      "font-size": "14px",
+      "line-height": "25px"
+    },
+  "propertyInterfaceTdContent": {
+    "text-align": "left",
+    "font-size": "14px",
+    "line-height": "25px"
+  },
+    "input": {
+      "width": "90%",
+      "height": "22px",
+      "border": "1px solid #CCC",
+      "box-shadow": "0px 0px 0px",
+      "font-size": "14px"
+    },
+    "input_focus": {
+      "width": "90%",
+      "height": "22px",
+      "border": "1px solid #da7429",
+      "box-shadow": "0px 0px 8px #fab37e",
+      "font-size": "14px"
+    }
 }

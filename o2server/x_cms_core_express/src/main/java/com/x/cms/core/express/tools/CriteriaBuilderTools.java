@@ -193,9 +193,9 @@ public class CriteriaBuilderTools {
 					continue;
 				}
 				if( "and".equalsIgnoreCase( queryFilter.getJoinType() )) {
-					p = CriteriaBuilderTools.predicate_and( cb, p, cb.between( root.get( cls_.getDeclaredField( term.getName() ).getName() ), term.getValue().get(0), term.getValue().get(1) ));
+					p = CriteriaBuilderTools.predicate_and( cb, p, cb.between( root.get(term.getName()), term.getValue().get(0), term.getValue().get(1) ));
 				} else if( "or".equalsIgnoreCase( queryFilter.getJoinType() )) {
-					p = CriteriaBuilderTools.predicate_or( cb, p, cb.between( root.get( cls_.getDeclaredField( term.getName() ).getName() ), term.getValue().get(0), term.getValue().get(1) ));
+					p = CriteriaBuilderTools.predicate_or( cb, p, cb.between( root.get(term.getName()), term.getValue().get(0), term.getValue().get(1) ));
 				}
 			}
 		}

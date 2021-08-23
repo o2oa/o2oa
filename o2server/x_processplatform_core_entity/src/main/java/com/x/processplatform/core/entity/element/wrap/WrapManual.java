@@ -9,9 +9,9 @@ public class WrapManual extends Manual {
 
 	private static final long serialVersionUID = 4037202596279188116L;
 
-	public static WrapCopier<Manual, WrapManual> outCopier = WrapCopierFactory.wo(Manual.class, WrapManual.class, null,
-			JpaObject.FieldsInvisible);
+	public static final WrapCopier<Manual, WrapManual> outCopier = WrapCopierFactory.wo(Manual.class, WrapManual.class,
+			null, JpaObject.FieldsInvisible);
 
-	public static WrapCopier<WrapManual, Manual> inCopier = WrapCopierFactory.wi(WrapManual.class, Manual.class, null,
-			JpaObject.FieldsUnmodifyExcludeId);
+	public static final WrapCopier<WrapManual, Manual> inCopier = WrapCopierFactory.wi(WrapManual.class, Manual.class,
+			null, JpaObject.FieldsUnmodifyExcludeId, false);
 }

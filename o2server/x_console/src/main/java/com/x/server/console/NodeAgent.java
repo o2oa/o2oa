@@ -63,6 +63,10 @@ import io.github.classgraph.ScanResult;
 
 public class NodeAgent extends Thread {
 
+	public NodeAgent() {
+		this.setName(NodeAgent.class.getName());
+	}
+
 	private static Logger logger = LoggerFactory.getLogger(NodeAgent.class);
 
 	private static ReentrantLock lock = new ReentrantLock();
@@ -228,13 +232,13 @@ public class NodeAgent extends Thread {
 						matcher = read_log_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
 							long lastTimeFileSize = dis.readLong();
-							if(lock.tryLock()) {
+							if (lock.tryLock()) {
 								try {
 									readLog(lastTimeFileSize, dos);
 								} finally {
 									lock.unlock();
 								}
-							}else {
+							} else {
 								dos.writeUTF("failure");
 								dos.flush();
 							}

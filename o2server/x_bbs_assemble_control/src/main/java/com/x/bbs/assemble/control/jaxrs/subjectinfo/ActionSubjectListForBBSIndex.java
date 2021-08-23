@@ -3,9 +3,12 @@ package com.x.bbs.assemble.control.jaxrs.subjectinfo;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
@@ -60,17 +63,16 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		}
 		
 		if( check ) {
-			String cacheKey = wrapIn.getCacheKey( effectivePerson, isBBSManager );
-			Element element = cache.get( cacheKey + "#ActionSubjectListForBBSIndex#" + count + "#" + page );
-			
-			if ((null != element) && (null != element.getObjectValue())) {
-				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) element.getObjectValue();
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(), isBBSManager, count, page);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+			if( optional.isPresent() ){
+				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) optional.get();
 				result.setData( result_cache.getData() );
 				result.setCount( result_cache.getCount() );
 			} else {
 				//继续进行数据查询
 				result = getSubjectQueryResult(wrapIn, request, effectivePerson, page, count);
-				cache.put(new Element(cacheKey, result ));
+				CacheManager.put( cacheCategory, cacheKey, result );
 			}
 		}
 		return result;

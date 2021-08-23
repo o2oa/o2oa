@@ -1,14 +1,5 @@
 package com.x.message.assemble.communicate.schedule;
 
-import java.util.Date;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.time.DateUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -19,14 +10,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.schedule.AbstractJob;
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.utils.time.TimeStamp;
-import com.x.message.assemble.communicate.Business;
 import com.x.message.assemble.communicate.ThisApplication;
-import com.x.message.core.entity.Instant;
-import com.x.message.core.entity.Instant_;
 import com.x.message.core.entity.Message;
-import com.x.message.core.entity.Message_;
 
 
 public class TriggerMq extends AbstractJob {

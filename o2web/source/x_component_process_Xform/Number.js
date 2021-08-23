@@ -35,7 +35,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     // },
 
     formatNumber: function(str){
-        var v = str.toFloat();
+        var v = (str || "0").toFloat();
         if (v){
             if (this.json.decimals && (this.json.decimals!="*")){
 

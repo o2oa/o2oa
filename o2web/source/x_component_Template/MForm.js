@@ -129,6 +129,21 @@ var MForm = new Class({
             if( callback )callback();
         }
     },
+    changeMode: function(keepData){
+        debugger;
+        // this.itemContainers.each(function(node){
+        //     node.empty();
+        // });
+        // this.items = {};
+        // this.itemsByKey = {};
+        //
+        // this.isEdited ? this.loadRead() : this.loadEdit();
+
+        for(var key in this.items){
+            this.isEdited ? this.items[key].readMode(keepData) : this.items[key].editMode(keepData)
+        }
+        this.isEdited = !this.isEdited;
+    },
     loadEdit : function() {
         if (this.options.isNew) {
             this.formatEdit(this.itemTemplate, true);
@@ -228,7 +243,7 @@ var MForm = new Class({
     //},
     formatRead : function(itemData) {
         var self = this;
-
+        this.isEdited = false;
         this.labelContainers.each(function( el ) {
             var obj = itemData[el.get("lable")];
             if (!obj)
@@ -255,7 +270,7 @@ var MForm = new Class({
     },
     formatEdit : function(itemData, isNew, unid) {
         var self = this;
-
+        this.isEdited = true;
         this.labelContainers.each(function( el ) {
             var obj = itemData[el.get("lable")];
             if (!obj)

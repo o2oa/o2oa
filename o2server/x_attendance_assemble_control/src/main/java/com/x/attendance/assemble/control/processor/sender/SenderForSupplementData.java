@@ -26,10 +26,11 @@ public class SenderForSupplementData {
 		StatusSystemImportOpt statusSystemImportOpt = StatusSystemImportOpt.getInstance();		
 
 		for ( AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigList ) {
-			if( attendanceEmployeeConfig.getEmpInTopUnitTime() == null || attendanceEmployeeConfig.getEmpInTopUnitTime().isEmpty() ){
+			//System.out.println( ">>>>>>>>>>当前参与人员配置：attendanceEmployeeConfig_topUnit="+attendanceEmployeeConfig.getTopUnitName()+", unitName="+attendanceEmployeeConfig.getUnitName()+", employeeName="+attendanceEmployeeConfig.getEmployeeName() );
+			/*if( attendanceEmployeeConfig.getEmpInTopUnitTime() == null || attendanceEmployeeConfig.getEmpInTopUnitTime().isEmpty() ){
 				logger.warn( "person["+attendanceEmployeeConfig.getEmployeeName()+"] in company date is null, system can not supplement data for person." );
 				return;
-			}else {
+			}else {*/
 				try {
 					statusSystemImportOpt.setProcessing( true );
 					statusSystemImportOpt.setProcessing_supplement( true );
@@ -38,7 +39,7 @@ public class SenderForSupplementData {
 				} catch (Exception e) {
 					logger.error( e );
 				}
-			}
+			//}
 		}
 	}
 	

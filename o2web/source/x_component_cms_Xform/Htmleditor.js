@@ -2,39 +2,39 @@ MWF.xDesktop.requireApp("process.Xform", "Htmleditor", null, false);
 MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
 	Extends: MWF.APPHtmleditor,
 
-	_loadUserInterface: function(){
-		this.node.empty();
-        if (this.readonly){
-            // var html = this.parseImage( this._getBusinessData() );
-            // this.node.set("html", html);
-            this.node.set("html", this._getBusinessData());
-            this.node.setStyles({
-                "-webkit-user-select": "text",
-                "-moz-user-select": "text"
-            });
-            if( layout.mobile ){
-                this.node.getElements("img").each( function( img ){
-                    //if( img.height )img.erase("height");
-                    img.setStyles({
-                        "height": "auto",
-                        "max-width" : "100%"
-                    });
-                }.bind(this))
-            }
-        }else{
-            var config = Object.clone(this.json.editorProperties);
-            if (this.json.config){
-                if (this.json.config.code){
-                    var obj = MWF.CMSMacro.exec(this.json.config.code, this);
-                    Object.each(obj, function(v, k){
-                        config[k] = v;
-                    });
-                }
-            }
-
-            this.loadCkeditor(config);
-        }
-	},
+	// _loadUserInterface: function(){
+	// 	this.node.empty();
+    //     if (this.readonly){
+    //         // var html = this.parseImage( this._getBusinessData() );
+    //         // this.node.set("html", html);
+    //         this.node.set("html", this._getBusinessData());
+    //         this.node.setStyles({
+    //             "-webkit-user-select": "text",
+    //             "-moz-user-select": "text"
+    //         });
+    //         if( layout.mobile ){
+    //             this.node.getElements("img").each( function( img ){
+    //                 //if( img.height )img.erase("height");
+    //                 img.setStyles({
+    //                     "height": "auto",
+    //                     "max-width" : "100%"
+    //                 });
+    //             }.bind(this))
+    //         }
+    //     }else{
+    //         var config = Object.clone(this.json.editorProperties);
+    //         if (this.json.config){
+    //             if (this.json.config.code){
+    //                 var obj = MWF.CMSMacro.exec(this.json.config.code, this);
+    //                 Object.each(obj, function(v, k){
+    //                     config[k] = v;
+    //                 });
+    //             }
+    //         }
+    //
+    //         this.loadCkeditor(config);
+    //     }
+	// },
     // parseImage : function( html ){
     //     html = ( html || "" ).replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (img, capture) {
     //         if( img.indexOf( "data-id" ) > -1 && img.indexOf("setImageSrc()") > -1 ){
@@ -97,9 +97,27 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
             //};
 
             editorConfig.base64Encode = (this.json.base64Encode === "y");
-            editorConfig.localImageMaxWidth = 800;
+            editorConfig.enablePreview = (this.json.enablePreview !== "n");
+            editorConfig.localImageMaxWidth = 2000;
             editorConfig.reference = this.form.businessData.document.id;
             editorConfig.referenceType = "cmsDocument";
+
+            if( editorConfig && editorConfig.extraPlugins ){
+                var extraPlugins = editorConfig.extraPlugins;
+                extraPlugins = typeOf( extraPlugins ) === "array" ? extraPlugins : extraPlugins.split(",");
+                extraPlugins.push( 'o2image' );
+                editorConfig.extraPlugins = extraPlugins;
+            }else{
+                editorConfig.extraPlugins = ['o2image'];
+            }
+
+            if( editorConfig && editorConfig.removePlugins ){
+                var removePlugins = editorConfig.removePlugins;
+                removePlugins = typeOf( removePlugins ) === "array" ? removePlugins : removePlugins.split(",");
+                editorConfig.removePlugins = removePlugins.concat(['image','easyimage','exportpdf','cloudservices']);
+            }else{
+                editorConfig.removePlugins = ['image','easyimage','exportpdf','cloudservices'];
+            }
 
             if(!editorConfig.language)editorConfig.language = MWF.language;
 

@@ -66,7 +66,7 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "更新群组.", action = ActionEdit.class)
@@ -84,7 +84,25 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "更新群组mockputtopost.", action = ActionEdit.class)
+	@POST
+	@Path("{flag}/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void editMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					 @JaxrsParameterDescribe("群组标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEdit().execute(effectivePerson, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "删除群组.", action = ActionDelete.class)
@@ -94,6 +112,24 @@ public class GroupAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("群组标识") @PathParam("flag") String flag) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDelete().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "删除群组mockdeletetoget.", action = ActionDelete.class)
+	@GET
+	@Path("{flag}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("群组标识") @PathParam("flag") String flag) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -286,7 +322,25 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "获取拼音首字母开始的群组mockputtopost.", action = ActionListPinyinInitial.class)
+	@POST
+	@Path("list/pinyininitial/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listPinyinInitialMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								  JsonElement jsonElement) {
+		ActionResult<List<ActionListPinyinInitial.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListPinyinInitial().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据名称进行模糊查询.", action = ActionListLike.class)
@@ -304,7 +358,25 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "根据名称进行模糊查询mockputtopost.", action = ActionListLike.class)
+	@POST
+	@Path("list/like/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listLikeMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						 JsonElement jsonElement) {
+		ActionResult<List<ActionListLike.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListLike().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据拼音或者首字母进行模糊查询", action = ActionListLikePinyin.class)
@@ -322,7 +394,25 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "根据拼音或者首字母进行模糊查询mockputtopost", action = ActionListLikePinyin.class)
+	@POST
+	@Path("list/like/pinyin/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listLikePinyinMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							   JsonElement jsonElement) {
+		ActionResult<List<ActionListLikePinyin.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListLikePinyin().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "添加群组成员.", action = ActionAddMember.class)
@@ -340,7 +430,25 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "添加群组成员mockputtopost.", action = ActionAddMember.class)
+	@POST
+	@Path("{flag}/add/member/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void addMemberMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						  @JaxrsParameterDescribe("群组标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<ActionAddMember.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionAddMember().execute(effectivePerson, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "删除群组成员.", action = ActionDeleteMember.class)
@@ -358,7 +466,25 @@ public class GroupAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "删除群组成员mockputtopost.", action = ActionDeleteMember.class)
+	@POST
+	@Path("{flag}/delete/member/mockputtopost")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMemberMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							 @JaxrsParameterDescribe("群组标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<ActionDeleteMember.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteMember().execute(effectivePerson, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 }
