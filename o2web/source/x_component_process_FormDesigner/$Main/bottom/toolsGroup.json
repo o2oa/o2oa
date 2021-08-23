@@ -1,0 +1,13 @@
+[
+  {
+    "name": "default",
+    "json": "tools.json",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.group_system,
+  },
+  {
+    "name": "element",
+    "json": "tools-element.json",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.group_element,
+    "className": "Textfield"
+  }
+]

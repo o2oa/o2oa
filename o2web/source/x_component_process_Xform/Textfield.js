@@ -147,13 +147,20 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
 
         this.node.getFirst().addEvent("change", function(){
             var v = this.getInputData("change");
-            this._setBusinessData(v);
+            //this._setBusinessData(v);
             this.validationMode();
             if (this.validation()) {
                 this._setBusinessData(v);
                 this.fireEvent("change");
             }
         }.bind(this));
+
+        var inputNode = this.node.getFirst();
+        if (inputNode) inputNode.addEvent("input", function(e){
+            var v=e.target.get("value");
+            this._setEnvironmentData(v);
+        }.bind(this));
+
         if (this.json.ANNModel){
             this.node.getFirst().addEvent("focus", function(){
                 o2.Actions.get("x_query_assemble_surface").calculateNeural(this.json.ANNModel, this.form.businessData.work.id, function(json){

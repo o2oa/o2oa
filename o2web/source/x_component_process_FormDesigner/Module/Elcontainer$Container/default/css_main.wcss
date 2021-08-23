@@ -1,0 +1,16 @@
+{
+	"moduleNodeMove": {
+
+	},
+	"moduleNodeShow": {
+
+	},
+	"moduleNode": {
+		"border": "1px dashed #333",
+		"cursor": "pointer",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"opacity": 1
+	}
+	
+}
