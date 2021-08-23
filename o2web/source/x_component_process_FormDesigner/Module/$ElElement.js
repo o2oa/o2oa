@@ -96,6 +96,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	},
 	_resetVueModuleDomNode: function(callback){
 		if (!this.vm){
+			if (!this.node.hasClass("o2_vue")) this.node.addClass("o2_vue");
 			this.node.set("html", this._createElementHtml());
 			this._loadVue(function(){
 				this._mountVueApp(callback);

@@ -419,8 +419,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     getBusinessDataById: function(d){
         var data = d || this.form.businessData.data;
+        var evdata = this.form.Macro.environment.data;
         //对id类似于 xx..0..xx 的字段进行拆分
         if(this.json.id.indexOf("..") < 1){
+            if (!data.hasOwnProperty(this.json.id)) evdata.add(this.json.id, data[this.json.id]||"");
             return data[this.json.id];
         }else{
             var idList = this.json.id.split("..");
@@ -434,8 +436,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if( !id && id !== 0 )return null;
                 if( ["object","array"].contains(o2.typeOf(data)) ){
                     if( i === lastIndex ){
+                        if (!data.hasOwnProperty(id)) evdata.add(id, data[id]||"");
                         return data[id];
                     }else{
+                        if (!data.hasOwnProperty(id)) evdata.add(id, {});
+                        evdata = evdata[id];
                         data = data[id];
                     }
                 }else{

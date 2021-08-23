@@ -334,6 +334,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_checkbox": "Checkbox",
         "el_select": "Select",
         "el_input": "Input",
+        "el_autocomplete": "autocomplete",
         "el_cascader": "Cascader",
         "el_number": "Number",
         "el_switch": "Switch",

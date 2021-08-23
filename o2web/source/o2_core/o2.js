@@ -644,7 +644,7 @@ if (window.Promise && !Promise.any){
             try{
                 if (cssText){
                     op.uuid = uuid;
-                    _loadCssText(cssText, op, callback);
+                    var style = _loadCssText(cssText, op);
                     // cssText = cssText.replace(/\/\*(\s|\S)*?\*\//g, "");
                     // if (op.bind) cssText = cssText.bindJson(op.bind);
                     // if (op.dom){

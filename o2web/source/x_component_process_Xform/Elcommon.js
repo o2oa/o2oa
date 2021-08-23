@@ -33,15 +33,15 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     //     }
     // },
     //
-    // _loadUserInterface: function(){
-    //     this.node.set("html", this._createElementHtml());
-    //     this.node.set({
-    //         "id": this.json.id,
-    //         "MWFType": this.json.type
-    //     });
-    //     this.node.addClass("o2_vue");
-    //     this._createVueApp();
-    // },
+    _loadUserInterface: function(){
+        this.node.set("html", this._createElementHtml());
+        this.node.set({
+            "id": this.json.id,
+            "MWFType": this.json.type
+        });
+        this.node.addClass("o2_vue");
+        this._createVueApp();
+    },
     // _createVueApp: function(){
     //     if (!this.vm) this._loadVue(this._mountVueApp.bind(this));
     // },
@@ -65,6 +65,7 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     // },
 
     _createVueExtend: function(){
+        debugger;
         var app = {};
         if (this.json.vueApp && this.json.vueApp.code) app = this.form.Macro.exec(this.json.vueApp.code, this);
         if (app.data){
