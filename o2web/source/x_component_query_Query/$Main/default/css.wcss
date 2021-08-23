@@ -1,8 +1,8 @@
 {
     "naviNode":{
-        "width": "290px",
+        "width": "300px",
         "height": "100%",
-        "background-color": "#f7f7f7",
+        "background-color": "#fff",
         "border-right": "1px solid #dddddd",
         "overflow": "hidden",
         "float": "left"
@@ -16,20 +16,51 @@
     },
 
     "naviTitleNode": {
-        "height": "100px",
-        "border-bottom": "3px solid #3c76b7"
+        "height": "76px",
+        "border-bottom": "2px solid #4A90E2"
     },
     "naviContentNode": {
         "overflow": "auto"
     },
-    "naviViewTitleNode": {
+    "naviCategoryNode": {
+        "overflow": "hidden",
+        "background-color": "#fff"
+    },
+    "naviCategoryNode_over": {
+        "background-color": "#F7F7F7"
+    },
+    "naviExpandNode": {
         "height": "40px",
         "line-height": "40px",
-        "padding-left": "65px",
-        "font-size": "16px",
-        "color": "#333333",
-        "background": "url('../x_component_query_Query/$Main/default/icon/view.png') 38px center no-repeat"
+        "width": "40px",
+        "float": "left",
+        "background": "url('../x_component_query_Query/$Main/default/icon/arrow_down.png') 16px center no-repeat"
     },
+    "naviCollapseNode": {
+        "height": "40px",
+        "line-height": "40px",
+        "width": "40px",
+        "float": "left",
+        "background": "url('../x_component_query_Query/$Main/default/icon/arrow_right.png') 16px center no-repeat"
+    },
+    "naviTitleTextNode": {
+        "height": "40px",
+        "line-height": "40px",
+        "padding-left": "64px",
+        "font-size": "15px",
+        "color": "#333333",
+        "background-position": "40px center",
+        "background-repeat": "no-repeat"
+    },
+
+//    "naviViewTitleNode": {
+//        "height": "40px",
+//        "line-height": "40px",
+//        "padding-left": "65px",
+//        "font-size": "16px",
+//        "color": "#333333",
+//        "background": "url('../x_component_query_Query/$Main/default/icon/view.png') 38px center no-repeat"
+//    },
     "naviViewContentNode": {
         "min-height": "40px",
         "overflow": "hidden",
@@ -37,14 +68,14 @@
         "color": "#333333",
         "line-height": "40px"
     },
-    "naviStatTitleNode": {
-        "height": "40px",
-        "line-height": "40px",
-        "padding-left": "65px",
-        "font-size": "16px",
-        "color": "#333333",
-        "background": "url('../x_component_query_Query/$Main/default/icon/stat.png') 38px center no-repeat"
-    },
+//    "naviStatTitleNode": {
+//        "height": "40px",
+//        "line-height": "40px",
+//        "padding-left": "65px",
+//        "font-size": "16px",
+//        "color": "#333333",
+//        "background": "url('../x_component_query_Query/$Main/default/icon/stat.png') 38px center no-repeat"
+//    },
     "naviStatContentNode": {
         "min-height": "40px",
         "overflow": "hidden",
@@ -52,14 +83,14 @@
         "color": "#333333",
         "line-height": "40px"
     },
-    "naviStatementTitleNode": {
-        "height": "40px",
-        "line-height": "40px",
-        "padding-left": "65px",
-        "font-size": "16px",
-        "color": "#333333",
-        "background": "url('../x_component_query_Query/$Main/default/icon/statement.png') 38px center no-repeat"
-    },
+//    "naviStatementTitleNode": {
+//        "height": "40px",
+//        "line-height": "40px",
+//        "padding-left": "65px",
+//        "font-size": "16px",
+//        "color": "#333333",
+//        "background": "url('../x_component_query_Query/$Main/default/icon/statement.png') 38px center no-repeat"
+//    },
     "naviStatementContentNode": {
         "min-height": "40px",
         "overflow": "hidden",
@@ -68,14 +99,14 @@
         "line-height": "40px"
     },
 
-    "naviImporterTitleNode": {
-        "height": "40px",
-        "line-height": "40px",
-        "padding-left": "65px",
-        "font-size": "16px",
-        "color": "#333333",
-        "background": "url('../x_component_query_Query/$Main/default/icon/importer.png') 38px center no-repeat"
-    },
+//    "naviImporterTitleNode": {
+//        "height": "40px",
+//        "line-height": "40px",
+//        "padding-left": "65px",
+//        "font-size": "16px",
+//        "color": "#333333",
+//        "background": "url('../x_component_query_Query/$Main/default/icon/importer.png') 38px center no-repeat"
+//    },
     "naviImporterContentNode": {
         "min-height": "40px",
         "overflow": "hidden",
@@ -85,53 +116,45 @@
     },
 
     "naviIconTitleNode": {
-        "width": "82px",
-        "height": "100px",
+        "width": "58px",
+        "height": "76px",
         "float": "left",
-        "background": "url('../x_component_query_Query/$Main/appicon.png') center right no-repeat"
+        "background": "url('../x_component_query_Query/$Main/default/icon/main.png') center right no-repeat"
     },
     "naviRightTitleNode": {
-        "margin-left": "100px",
-        "height": "80px",
-        "padding-top": "20px"
+        "margin-left": "76px",
+        "height": "56px",
+        "padding-top": "16px"
     },
     "naviTextTitleNode": {
-        "font-size": "20px",
-        "width": "170px"
+        "font-weight": "500",
+        "color": "#333",
+        "font-size": "18px",
+        "width": "214px"
     },
     "naviDescriptionTitleNode": {
-        "width": "170px",
+        "width": "214px",
         "height": "40px",
         "padding": "5px 0px",
         "font-size": "12px",
         "color": "#999999"
     },
 
-    "naviViewContentItemNode": {
+    "naviContentItemNode": {
         "overflow": "hidden",
         "height": "40px",
         "cursor": "pointer",
-        "padding-left": "70px",
-        "color": "#333333",
+        "font-size": "14px",
+        "padding-left": "64px",
+        "color": "#666",
         "background": "transparent"
     },
-    "naviViewContentItemNode_over": {
-        "background": "#f0f0f0"
+    "naviContentItemNode_over": {
+        "background": "#F7F7F7"
     },
-    "naviViewContentItemNode_selected":{
-        "background": "#3C76B7",
-        "color": "#ffffff"
-    },
-
-    "naviStatContentItemNode": {
-        "overflow": "hidden",
-        "height": "40px",
-        "cursor": "pointer",
-        "padding-left": "70px",
-        "background": "transparent"
-    },
-    "naviStatContentItemNode_over": {
-        "background": "#f0f0f0"
+    "naviContentItemNode_selected":{
+        "background": "#EBF1F7",
+        "color": "#4A90E2"
     },
 
 

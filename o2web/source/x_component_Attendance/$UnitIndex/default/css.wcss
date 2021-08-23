@@ -229,7 +229,8 @@
     "background-color": "#fff"
   },
   "topRightContentNode": {
-    "overflow" : "hidden"
+    "overflow" : "hidden",
+    "min-height": "30px"
   },
 
   "statusColorArea" : {
