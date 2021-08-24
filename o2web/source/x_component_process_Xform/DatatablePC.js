@@ -1356,9 +1356,12 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 
 				var hasData = this.data.hasOwnProperty(templateJsonId);
 
-				var module = this.form._loadModule(json, node, function () {});
-				module.parentLine = this;
-				module.parentDatatable = this.datatable;
+				var module = this.form._loadModule(json, node, function () {
+					this.parentLine = _self;
+					this.parentDatatable = _self.datatable;
+				});
+				if(!module.parentLine)module.parentLine = this;
+				if(!module.parentDatatable)module.parentDatatable = this.datatable;
 
 				if((json.type==="Attachment" || json.type==="AttachmentDg")){
 					module.addEvent("change", function(){
@@ -1401,6 +1404,9 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				}
 			}
 		}.bind(this));
+	},
+	getIndex: function(){
+		return this.options.index;
 	},
 	getModule: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
