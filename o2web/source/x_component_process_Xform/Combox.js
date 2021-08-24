@@ -88,7 +88,10 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
 
         this.combox.addEvent("change", function(){
             this.validationMode();
-            if (this.validation()) this._setEnvironmentData(this.getInputData("change"));
+            if (this.validation()){
+                var v = this.getInputData("change");
+                this._setEnvironmentData(v);
+            }
         }.bind(this));
 
     },
@@ -267,7 +270,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         //return this.node.get("text");
     },
     resetData: function(){
-        this.setData(this.getValue());
+        this._setBusinessData(this.getValue());
     }
 	
 }); 

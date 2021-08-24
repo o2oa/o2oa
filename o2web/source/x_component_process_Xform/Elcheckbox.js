@@ -165,7 +165,32 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         return html;
     },
 
-
+        _setValue: function(value, m){
+            var mothed = m || "__setValue";
+            if (!!value){
+                var p = o2.promiseAll(value).then(function(v){
+                    //if (o2.typeOf(v)=="array") v = v[0];
+                    if (this.moduleSelectAG){
+                        this.moduleValueAG = this.moduleSelectAG;
+                        this.moduleSelectAG.then(function(){
+                            this[mothed](v);
+                            return v;
+                        }.bind(this), function(){});
+                    }else{
+                        this[mothed](v)
+                    }
+                    return v;
+                }.bind(this), function(){});
+                this.moduleValueAG = p;
+                if (this.moduleValueAG) this.moduleValueAG.then(function(){
+                    this.moduleValueAG = null;
+                }.bind(this), function(){
+                    this.moduleValueAG = null;
+                }.bind(this));
+            }else{
+                this[mothed](value);
+            }
+        },
     __setValue: function(value){
         this._setBusinessData(value);
         this.json[this.json.id] = (value) ? value : [];

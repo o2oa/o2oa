@@ -94,10 +94,18 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	_createElementHtml: function(){
 		return "";
 	},
+	_filterHtml: function(html){
+		debugger;
+		// var reg = /(?:@|v-model|\:)\S*(?:\=)\S*(?:\"|\')/g;
+		// return html.replace(reg, "");
+		return html;
+	},
 	_resetVueModuleDomNode: function(callback){
 		if (!this.vm){
 			if (!this.node.hasClass("o2_vue")) this.node.addClass("o2_vue");
-			this.node.set("html", this._createElementHtml());
+			var html = this._filterHtml(this._createElementHtml());
+
+			this.node.set("html", html);
 			this._loadVue(function(){
 				this._mountVueApp(callback);
 			}.bind(this));
@@ -111,8 +119,15 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	_mountVueApp: function(callback){
 		//if (!this.vueApp)
 		this.vueApp = this._createVueExtend(callback);
-		this.vm = new Vue(this.vueApp);
-		this.vm.$mount(this.node);
+		try{
+			this.vm = new Vue(this.vueApp);
+			this.vm.$mount(this.node);
+		}catch(e){
+			this.node.store("module", this);
+			this._loadVueCss();
+			if (callback) callback();
+		}
+
 	},
 	_createVueData: function(){
 		var data = {};
