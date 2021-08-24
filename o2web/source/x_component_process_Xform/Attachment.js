@@ -153,6 +153,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                         flag = true;
                         break;
                     }
+                    if (["doc","docx","xls","xlsx","ppt","pptx"].contains(att.data.extension)) {
+                        if(layout.config.previewOffice){
+                            flag = true;
+                            break;
+                        }
+                    }
                 }
                 if(flag){
                     this.setActionEnabled(this.previewAttAction);
@@ -1977,6 +1983,9 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         if(extension === "pdf"){
             this.previewPdf();
         }
+        if(["doc","docx","xls","xlsx","ppt","pptx"].contains(extension)){
+            this.previewOffice();
+        }
         if(["png","jpg","bmp","jpeg","gif"].contains(extension)){
             this.previewImage();
         }
@@ -2145,6 +2154,19 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         this.app.getAttachmentUrl(this.att, function (url) {
             window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url)
         });
+    },
+    previewOffice : function(){
+        var srv = layout.serviceAddressList["x_libreoffice_assemble_control"];
+        var protocol = window.location.protocol;
+        var module;
+        if(this.att.data.activity){
+            module = "processPlatform";
+        }
+        if(this.att.data.categoryId){
+            module = "cms";
+        }
+        var url = protocol + "//" + srv.host+ ":"  + srv.port +  srv.context + "/jaxrs/office/doc/to/pdf/"+ module +"/" + this.att.data.id;
+        window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url);
     },
     previewOfd : function(){
         this.app.getAttachmentUrl(this.att,  function (url) {
