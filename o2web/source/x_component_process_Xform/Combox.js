@@ -267,7 +267,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         //return this.node.get("text");
     },
     resetData: function(){
-        this.setData(this.getValue());
+        this._setBusinessData(this.getValue());
     }
 	
 }); 
