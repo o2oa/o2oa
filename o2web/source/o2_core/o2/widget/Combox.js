@@ -564,11 +564,12 @@ o2.widget.Combox.Input = new Class({
                 }
             }.bind(this),
             "blur": function(e){
-                //if (!this.noBlur){
-                if ((this.combox.editItem == this.bind) || (!this.combox.editItem)){
-                    this.bind.commitInput();
+                if (this.combox){
+                    if ((this.combox.editItem == this.bind) || (!this.combox.editItem)){
+                        this.bind.commitInput();
+                    }
+                    this.hideOptionList();
                 }
-                this.hideOptionList();
                 e.stopPropagation();
                 //}
             }.bind(this)
