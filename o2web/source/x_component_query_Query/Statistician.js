@@ -29,10 +29,14 @@ MWF.xApplication.query.Query.Statistician = MWF.QStatistician = new Class({
     },
     load: function(){
         this.loadLayout();
+
+        this.fireEvent("loadLayout");
+
         this.loadStatData();
     },
     loadLayout: function(){
         this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
+
         //if (this.json.isChart) this.chartAreaNode = new Element("div", {"styles": this.css.statChartAreaNode}).inject(this.node);
         //if (this.json.isTable) this.tableAreaNode = new Element("div", {"styles": this.css.statTableAreaNode}).inject(this.node);
     },
@@ -59,6 +63,30 @@ MWF.xApplication.query.Query.Statistician = MWF.QStatistician = new Class({
             }
             this.fireEvent("loaded");
         }.bind(this));
+    },
+    setContentHeight: function(){
+        if(this.resizeTimeout){
+            window.clearTimeout(this.resizeTimeout);
+        }
+        this.resizeTimeout = window.setTimeout(function () {
+            if(this.stat)this.stat.resizeChartFun();
+            this._setContentHeight();
+            this.resizeTimeout = null;
+        }.bind(this), 200)
+    },
+    _setContentHeight: function(){
+        if( !this.overfloatFlag ){
+            this.node.setStyle("overflow-y", "auto");
+            this.overfloatFlag = true;
+        }
+
+        var h = this.container.getSize().y;
+
+        var paddingTop = (this.node.getStyle("padding-top") || "0").toInt();
+        var paddingBottom = (this.node.getStyle("padding-bottom") || "0").toInt();
+        h = h - paddingTop - paddingBottom;
+
+        this.node.setStyle("height", h+"px");
     }
 });
 

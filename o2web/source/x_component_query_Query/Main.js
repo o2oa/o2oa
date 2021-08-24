@@ -26,7 +26,7 @@ MWF.xApplication.query.Query.Main = new Class({
         }
 	},
     loadApplication: function(callback){
-        this.content.setStyle("background-color", "#ffffff");
+        this.content.setStyle("background-color", "#F0F0F0");
         this.node = new Element("div", {"styles": this.css.content}).inject(this.content);
         this.formNode = new Element("div", {"styles": {"min-height": "100%", "font-size": "14px"}}).inject(this.node);
         this.action = MWF.Actions.get("x_query_assemble_surface");
@@ -79,7 +79,7 @@ MWF.xApplication.query.Query.Main = new Class({
 
             this.addEvent("resize", function(){
                 if (this.currentItem){
-                    if (this.currentItem.viewer){
+                    if (this.currentItem.viewer && this.currentItem.viewer.setContentHeight){
                         this.currentItem.viewer.setContentHeight();
                     }
                 }
@@ -366,7 +366,19 @@ MWF.xApplication.query.Query.ViewItem = new Class({
                 "application": this.view.query,
                 "viewName": this.view.name,
                 "isExpand": data.isExpand
-            }, {"export": true}, this.app);
+            }, {
+                "export": true,
+                "onLoadLayout": function () {
+                    this.viewAreaNode.setStyles({
+                        "padding-left": "10px",
+                        "padding-right": "10px"
+                    });
+                    if( this.viewJson && this.viewJson.customFilterList && this.viewJson.customFilterList.length ) {
+                    }else{
+                        this.viewAreaNode.setStyles({"padding-top": "10px"})
+                    }
+                }
+            }, this.app);
         }.bind(this));
     }
 
@@ -387,6 +399,18 @@ MWF.xApplication.query.Query.StatItem = new Class({
                 "isTable": true,
                 "isChart": true,
                 "isLegend": true
+            }, {
+                "onLoadLayout": function () {
+                    this.node.setStyles({
+                        "padding-left": "10px",
+                        "padding-right": "10px",
+                        "padding-top": "10px",
+                        "padding-bottom": "10px"
+                    });
+                },
+                "onLoaded": function () {
+                    this._setContentHeight();
+                }
             });
         }.bind(this));
     }
@@ -405,7 +429,18 @@ MWF.xApplication.query.Query.StatementItem = new Class({
                 "application": this.view.query,
                 "statementName": this.view.name,
                 "statementId" : this.view.id
-            },{}, this.app);
+            },{
+                "onLoadLayout": function () {
+                    this.viewAreaNode.setStyles({
+                        "padding-left": "10px",
+                        "padding-right": "10px"
+                    });
+                    if( this.viewJson && this.viewJson.customFilterList && this.viewJson.customFilterList.length ) {
+                    }else{
+                        this.viewAreaNode.setStyles({"padding-top": "10px"})
+                    }
+                }
+            }, this.app);
         }.bind(this));
     }
 });
@@ -423,7 +458,14 @@ MWF.xApplication.query.Query.ImporterItem = new Class({
             this.viewer = new MWF.xApplication.query.Query.ImporterRecord( this.viewContent, this.app, {
                 "application": this.view.query,
                 "importerName": this.view.name,
-                "importerId" : this.view.id
+                "importerId" : this.view.id,
+                "onLoadLayout": function () {
+                    this.viewContainer.setStyles({
+                        "padding-left": "10px",
+                        "padding-right": "10px",
+                        "padding-top": "10px"
+                    });
+                }
             });
             this.viewer.load()
         }.bind(this));

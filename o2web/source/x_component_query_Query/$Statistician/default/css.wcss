@@ -55,7 +55,7 @@
         "border-left": "1px solid #DFDFDF",
         "border-top": "1px solid #DFDFDF",
         "background-color": "#FFF",
-        "width": "100%"
+        "width": "calc( 100% - 1px )"
     },
     "statHeadTh": {
         "height": "30px",

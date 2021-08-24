@@ -114,6 +114,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.viewAreaNode = new Element("div", {"styles": this.css.viewAreaNode}).inject(this.node);
         // this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
         this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.node);
+
+        this.fireEvent("loadLayout");
     },
     loadMacro: function (callback) {
         MWF.require("MWF.xScript.Macro", function () {
@@ -251,6 +253,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
         var pageSize = this.viewPageAreaNode.getComputedSize();
         h = h-pageSize.totalHeight;
+
+        var paddingTop = (this.viewAreaNode.getStyle("padding-top") || "0").toInt();
+        var paddingBottom = (this.viewAreaNode.getStyle("padding-bottom") || "0").toInt();
+        h = h - paddingTop - paddingBottom;
+
         this.viewAreaNode.setStyle("height", ""+h+"px");
     },
     createLoadding: function(){
