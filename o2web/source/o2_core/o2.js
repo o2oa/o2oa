@@ -772,7 +772,7 @@ if (window.Promise && !Promise.any){
     var _loadCssText = function(cssText, options, callback){
         var op =  (_typeOf(options)==="object") ? _getCssOptions(options) : _getCssOptions(null);
         var cb = (_typeOf(options)==="function") ? options : callback;
-        var uuid = op.uuid || "css"+_uuid();
+        var uuid = options.uuid || "css"+_uuid();
 
         if (cssText){
             if (op.dom) _parseDom(op.dom, function(node){ if (node.className.indexOf(uuid) == -1) node.className += ((node.className) ? " "+uuid : uuid);}, op.doc);
