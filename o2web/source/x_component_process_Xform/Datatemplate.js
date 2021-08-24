@@ -1070,9 +1070,12 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					if (this.form.all[id]) this.form.all[id] = null;
 					if (this.form.forms[id])this.form.forms[id] = null;
 
-					var module = this.form._loadModule(json, node, function () {});
-					module.parentLine = this;
-					module.parentDatatemplate = this.template;
+					var module = this.form._loadModule(json, node, function () {
+						this.parentLine = _self;
+						this.parentDatatemplate = _self.template;
+					});
+					if(!module.parentLine)module.parentLine = this;
+					if(!module.parentDatatemplate)module.parentDatatemplate = this.template;
 
 					if( json.type==="Attachment" || json.type==="AttachmentDg" ){
 						module.addEvent("change", function(){
@@ -1115,6 +1118,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			//让下级数据模板再去绑定下级模板外部事件
 			module._setSubDatatemplateOuterEvents();
 		})
+	},
+	getIndex: function(){
+		return this.options.index;
 	},
 	getModule: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
