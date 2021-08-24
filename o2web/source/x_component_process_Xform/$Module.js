@@ -306,16 +306,23 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             if (!evdata){
                 evdata = this.setEnvironmentDataById({});
             }
-            if (!evdata.hasOwnProperty(key)) evdata.add(key, v);
-            evdata[key] = v;
+            if (!evdata.hasOwnProperty(key)){
+                evdata.add(key, v);
+            }else{
+                evdata[key] = v;
+            }
         }
     },
     setEnvironmentDataById: function(v){
         //对id类似于 xx..0..xx 的字段进行拆分
         var evdata = this.form.Macro.environment.data;
         if(this.json.id.indexOf("..") < 1){
-            if (!evdata.hasOwnProperty(this.json.id)) evdata.add(this.json.id, v);
-            evdata[this.json.id] = v;
+            if (!evdata.hasOwnProperty(this.json.id)){
+                evdata.add(this.json.id, v);
+            }else{
+                evdata[this.json.id] = v;
+            }
+
         }else{
             var idList = this.json.id.split("..");
             idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
@@ -328,8 +335,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if( !id && id !== 0 )return;
 
                 if( i === lastIndex ){
-                    if (!evdata.hasOwnProperty(id)) evdata.add(id, v);
-                    evdata[id] = v;
+                    if (!evdata.hasOwnProperty(id)){
+                        evdata.add(id, v);
+                    }else{
+                        evdata[id] = v;
+                    }
                 }else{
                     var nexId = idList[i+1];
                     if(o2.typeOf(nexId) === "number"){ //下一个ID是数字
@@ -413,16 +423,16 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 dataObj = {};
                 evdata = this.setBusinessDataById(dataObj);
             }
-            if (!dataObj.hasOwnProperty(key)) evdata.add(key, v);
+            //if (!dataObj.hasOwnProperty(key)) evdata.add(key, v);
             dataObj[key] = v;
         }
     },
     getBusinessDataById: function(d){
         var data = d || this.form.businessData.data;
-        var evdata = this.form.Macro.environment.data;
+        //var evdata = this.form.Macro.environment.data;
         //对id类似于 xx..0..xx 的字段进行拆分
         if(this.json.id.indexOf("..") < 1){
-            if (!data.hasOwnProperty(this.json.id)) evdata.add(this.json.id, data[this.json.id]||"");
+            //if (!data.hasOwnProperty(this.json.id)) evdata.add(this.json.id, data[this.json.id]||"");
             return data[this.json.id];
         }else{
             var idList = this.json.id.split("..");
@@ -436,11 +446,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if( !id && id !== 0 )return null;
                 if( ["object","array"].contains(o2.typeOf(data)) ){
                     if( i === lastIndex ){
-                        if (!data.hasOwnProperty(id)) evdata.add(id, data[id]||"");
+                        //if (!data.hasOwnProperty(id)) evdata.add(id, data[id]||"");
                         return data[id];
                     }else{
-                        if (!data.hasOwnProperty(id)) evdata.add(id, {});
-                        evdata = evdata[id];
+                        //if (!data.hasOwnProperty(id)) evdata.add(id, {});
+                        //evdata = evdata[id];
                         data = data[id];
                     }
                 }else{
@@ -451,10 +461,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     setBusinessDataById: function(v){
         //对id类似于 xx..0..xx 的字段进行拆分
-        var evdata = this.form.Macro.environment.data;
+        //var evdata = this.form.Macro.environment.data;
         var data = this.form.businessData.data;
         if(this.json.id.indexOf("..") < 1){
-            if (!data.hasOwnProperty(this.json.id)) evdata.add(this.json.id, v);
+            //if (!data.hasOwnProperty(this.json.id)) evdata.add(this.json.id, v);
             data[this.json.id] = v;
             //this.form.businessData.data[this.json.id] = v;
         }else{
@@ -469,14 +479,14 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if( !id && id !== 0 )return;
 
                 if( i === lastIndex ){
-                    if (!data.hasOwnProperty(id)) evdata.add(id, v);
+                    //if (!data.hasOwnProperty(id)) evdata.add(id, v);
                     data[id] = v;
                 }else{
                     var nexId = idList[i+1];
                     if(o2.typeOf(nexId) === "number"){ //下一个ID是数字
                         if( !data[id] && o2.typeOf(data[id]) !== "array" ){
                             data[id] = [];
-                            evdata.add(id, []);
+                            //evdata.add(id, []);
                         }
                         if( nexId > data[id].length ){ //超过了最大下标，丢弃
                             return;
@@ -484,15 +494,15 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                     }else{ //下一个ID是字符串
                         if( !data[id] || o2.typeOf(data[id]) !== "object"){
                             data[id] = {};
-                            evdata.add(id, {});
+                            //evdata.add(id, {});
                         }
                     }
                     data = data[id];
-                    evdata = evdata[id];
+                    //evdata = evdata[id];
                 }
             }
         }
-        return evdata;
+        //return evdata;
     },
 
     _queryLoaded: function(){},

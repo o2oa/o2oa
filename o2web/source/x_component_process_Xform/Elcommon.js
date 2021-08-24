@@ -74,7 +74,7 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
                 case "object":
                     Object.keys(app.data).each(function(k){
                         this.form.Macro.environment.data.add(k, app.data[k]);
-                    });
+                    }.bind(this));
                     app.data = this.form.Macro.environment.data;
                     // app.data = this.json;
                     // app.data = Object.merge(this.json, this.form.Macro.environment.data);
