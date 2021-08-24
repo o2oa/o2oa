@@ -1850,6 +1850,7 @@
 
             var onViewed = function onViewed() {
                 var imageData = _this.imageData;
+                debugger;
                 var render = Array.isArray(options.title) ? options.title[1] : options.title;
                 title.innerHTML = escapeHTMLEntities(isFunction(render) ? render.call(_this, image, imageData) : "".concat(alt, " (").concat(imageData.naturalWidth, " \xD7 ").concat(imageData.naturalHeight, ")"));
             };
