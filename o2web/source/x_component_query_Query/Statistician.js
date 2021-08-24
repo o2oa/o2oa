@@ -71,6 +71,7 @@ MWF.xApplication.query.Query.Statistician = MWF.QStatistician = new Class({
         this.resizeTimeout = window.setTimeout(function () {
             if(this.stat)this.stat.resizeChartFun();
             this._setContentHeight();
+            this.resizeTimeout = null;
         }.bind(this), 200)
     },
     _setContentHeight: function(){
