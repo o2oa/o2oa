@@ -43,6 +43,7 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
             "styles" : this.css.viewContainer
         }).inject(this.container);
 
+        this.fireEvent("loadLayout");
 
         //this.loadTopView();
 
@@ -64,6 +65,11 @@ MWF.xApplication.query.Query.ImporterRecord = new Class({
         }
         var pageSize = this.view.pagingContainerBottom.getComputedSize();
         h = h-pageSize.totalHeight;
+
+        var paddingTop = (this.viewContainer.getStyle("padding-top") || "0").toInt();
+        var paddingBottom = (this.viewContainer.getStyle("padding-bottom") || "0").toInt();
+        h = h - paddingTop - paddingBottom;
+
         this.view.viewWrapNode.setStyles({
             "height": ""+h+"px",
             "overflow": "auto"
