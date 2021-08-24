@@ -64,6 +64,10 @@ public class CollectPerson extends BaseAction {
 						}
 						req.setCenterProxyPort(centerServer.getProxyPort());
 						req.setHttpProtocol(centerServer.getHttpProtocol());
+						if(null != Config.portal().getUrlMapping() && !(Config.portal().getUrlMapping().isEmpty())){
+							String urlMapping = XGsonBuilder.toJson(Config.portal().getUrlMapping());
+							req.setUrlMapping(urlMapping);
+						}
 						try {
 							ActionResponse response = ConnectionAction
 									.put(Config.collect().url(ADDRESS_COLLECT_TRANSMIT_RECEIVE), null, req);
@@ -107,6 +111,16 @@ public class CollectPerson extends BaseAction {
 		private String secret;
 
 		private String key;
+
+		private String urlMapping;
+
+		public String getUrlMapping() {
+			return urlMapping;
+		}
+
+		public void setUrlMapping(String urlMapping) {
+			this.urlMapping = urlMapping;
+		}
 
 		public String getName() {
 			return name;
