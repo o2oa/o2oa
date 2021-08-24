@@ -95,10 +95,16 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		return "";
 	},
 	_filterHtml: function(html){
-		debugger;
-		// var reg = /(?:@|v-model|\:)\S*(?:\=)\S*(?:\"|\')/g;
-		// return html.replace(reg, "");
-		return html;
+		var reg = /(?:@|\:)\S*(?:\=)\S*(?:\"|\')/g;
+		var v = html.replace(reg, "");
+
+		var tmp = new Element("div", {"html": v});
+		var nodes = tmp.querySelectorAll("*[v-model]");
+		this.tmpVueData = {};
+		nodes.forEach(function(node){
+			this.tmpVueData[node.get("v-model")] = "";
+		}.bind(this));
+		return v;
 	},
 	_resetVueModuleDomNode: function(callback){
 		if (!this.vm){
@@ -131,7 +137,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	},
 	_createVueData: function(){
 		var data = {};
-		return data;
+		return Object.assign(data, this.tmpVueData||{});
 	},
 	_createVueExtend: function(callback){
 		var _self = this;
