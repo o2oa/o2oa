@@ -59,6 +59,23 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
          * var container = form.container; //获取表单容器
          */
         this.form = form;
+
+
+        /**
+         * 当组件在数据表格或者数据模板中时，可以通过此属性获取所在行（条目）对象.
+         * @member {MWF.xApplication.process.Xform.Datatemplate.Line|MWF.xApplication.process.Xform.DatatablePC.Line|MWF.xApplication.process.Xform.DatatableMobile.Line}
+         * @example
+         * //获取组件所在数据模板/数据表格的行（条目）对象
+         * var line = this.form.get("fieldId").parentLine;
+         * //获取当前字段所在行下标
+         * var index = line.getIndex();
+         * //获取当前字段所在条目的subject字段的值
+         * var data = line.getModule("subject").getData();
+         * //设置当前字段所在条目的subject字段的值
+         * line.getModule("subject").setData("test1");
+         */
+        this.parentLine = null;
+
     },
     _getSource: function(){
         var parent = this.node.getParent();

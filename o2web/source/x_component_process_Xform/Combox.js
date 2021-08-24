@@ -63,6 +63,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
                 "count": this.json.count.toInt() || 0,
                 "splitStr": this.json.splitStr || ",\\s*|;\\s*|，\\s*|；\\s*",
                 "splitShow": this.json.splitShow || ", ",
+                "focusList": this.json.showOptions === "focus",
                 "list": this.getOptions(),
                 "onCommitInput": function(item){
                     this.fireEvent("commitInput");

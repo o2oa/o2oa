@@ -1050,8 +1050,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resizeVertical": "纵向",
         "el_placement": "弹出位置",
         "popperClass": "列表类名",
-        "triggerOnFocus": "激活即列出输入建议"
-
+        "triggerOnFocus": "激活即列出输入建议",
+        "showOptions": "显示选项",
+        "onInput": "输入时",
+        "onFocus": "点击时"
     },
     "actionBar": {
         "close":"关闭",
