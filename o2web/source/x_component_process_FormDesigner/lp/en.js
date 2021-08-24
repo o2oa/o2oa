@@ -1043,7 +1043,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resizeVertical": "vertical",
         "el_placement": "placement",
         "popperClass": "Popper Class",
-        "triggerOnFocus": "trigger on focus"
+        "triggerOnFocus": "trigger on focus",
+        "showOptions": "Show Options",
+        "onInput": "When inputting",
+        "onFocus": "On Click"
     },
     "actionBar": {
         "close":"Close",
