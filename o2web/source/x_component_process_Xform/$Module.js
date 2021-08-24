@@ -453,7 +453,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if( !id && id !== 0 )return null;
                 if( ["object","array"].contains(o2.typeOf(data)) ){
                     if( i === lastIndex ){
-                        if (!data.hasOwnProperty(id)) evdata.add(id, data[id]||"");
+                        //if (!data.hasOwnProperty(id)) evdata.add(id, data[id]||"");
                         return data[id];
                     }else{
                         //if (!data.hasOwnProperty(id)) evdata.add(id, {});
