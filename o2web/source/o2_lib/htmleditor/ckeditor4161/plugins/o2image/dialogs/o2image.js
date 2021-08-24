@@ -651,6 +651,10 @@
 											}).inject(document.body);
 											fileNode.addEvent("change", function(event){
 												var file= fileNode.files[0];
+
+												var txtAltElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtAlt");
+												if(file.name)txtAltElement.setValue(file.name);
+
 												if(!/image\/\w+/.test(file.type)){           //判断获取的是否为图片文件
 													MWF.xDesktop.notice(editor.lang.o2image.selectLocalImageNote,"error");
 													return false;
@@ -678,7 +682,11 @@
 												"action": action,
 												"method": "uploadImageByScale",
 												"accept": "image/*",
-												"onEvery": function(json){
+												"onEvery": function(json, index, count, file){
+
+													var txtAltElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtAlt");
+													if(file.name)txtAltElement.setValue(file.name);
+
 													var id = json.data ? json.data.id : json.id;
 													var orgid = json.data ? json.data.origId : json.origId;
 													var src = MWF.xDesktop.getImageSrc( id );
