@@ -2163,9 +2163,9 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             module = "processPlatform";
         }
         if(this.att.data.categoryId){
-            module = "processPlatform";
+            module = "cms";
         }
-        var url = protocol + "//" + srv.host + srv.port + ":" +  srv.context + "/jaxrs/office/doc/to/pdf/"+ module +"/" + this.att.data.id;
+        var url = protocol + "//" + srv.host+ ":"  + srv.port +  srv.context + "/jaxrs/office/doc/to/pdf/"+ module +"/" + this.att.data.id;
         window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url);
     },
     previewOfd : function(){
