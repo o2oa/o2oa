@@ -209,12 +209,12 @@
   },
   "iWebOffice": {
     "icon": "iWebOffice.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.iWebOffice,,
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.iWebOffice,
     "className": "IWebOffice"
   },
   "yozoOffice": {
     "icon": "yozoOffice.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.yozoOffice,,
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.yozoOffice,
     "className": "YozoOffice"
   },
   "onlyOffice": {
