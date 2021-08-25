@@ -139,8 +139,8 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                         this.validationMode();
                         if(this.validation()){
                             var v = this.getInputData("change");
-                            //this._setBusinessData(v);
-                            this._setEnvironmentData(v);
+                            this._setBusinessData(v);
+                            //this._setEnvironmentData(v);
                         }
                         this.fireEvent("complete");
                     }.bind(this),
@@ -151,8 +151,8 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                         this.validationMode();
                         if(this.validation()){
                             var v = this.getInputData("change");
-                            //this._setBusinessData(v);
-                            this._setEnvironmentData(v);
+                            this._setBusinessData(v);
+                            //this._setEnvironmentData(v);
                         }
                         this.fireEvent("clear");
                         if (!this.node.getFirst().get("value")) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");

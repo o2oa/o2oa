@@ -194,7 +194,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
 
         this.node.addEvent("input", function(e){
             var v=e.target.get("value");
-            this._setEnvironmentData(v);
+            this._setBusinessData(v);
         }.bind(this));
 
         this.node.getFirst().addEvent("blur", function(){

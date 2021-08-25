@@ -33,9 +33,8 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
      * json.disabled = true;     //设置输入框为禁用
      */
     _appendVueData: function(){
-        if (!this.json[this.json.id]){
-            this.json[this.json.id] = this._getBusinessData();
-        }
+        this.form.Macro.environment.data.check(this.json.id);
+        this.json[this.json.id] = this._getBusinessData();
 
         if (!this.json.placement) this.json.placement = "bottom-start";
         if (!this.json.popperClass) this.json.popperClass = "";
