@@ -34,6 +34,7 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
         this.node = $(node);
         this.searchNode = $(searchNode);
         this.initData();
+        this.countPerPage = 20;
         if (!this.personActions) this.personActions = MWF.Actions.get("x_organization_assemble_express");
     },
     setTooltip: function(tooltip){
@@ -165,31 +166,56 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
 
         this.pageCount = (height/40).toInt()+5;
 
-        if (this.view.items.length<this.pageCount ){
-            if( typeOf(this.view.itemDataCount) === "number" ){
-                if( this.view.items.length<this.view.itemDataCount ){
-                    this.view.loadElementList(this.pageCount-this.view.items.length);
+        var checkItems = function(){
+            if (!this.view.isItemsLoaded && this.view.items.length<this.pageCount ){
+                if( typeOf(this.view.itemDataCount) === "number" ){
+                    if( this.view.items.length<this.view.itemDataCount ){
+                        this.view.loadElementList(this.countPerPage, function(){
+                            checkItems();
+                        });
+                    }
+                }else{
+                    this.view.loadElementList(this.countPerPage, function(){
+                        checkItems();
+                    });
                 }
-            }else{
-                this.view.loadElementList(this.pageCount-this.view.items.length);
             }
-        }
+        }.bind(this);
+        checkItems();
     },
     setNodeScroll: function(){
         var _self = this;
-        MWF.require("MWF.widget.ScrollBar", function(){
-            new MWF.widget.ScrollBar(this.elementContentNode, {
-                "indent": false,"style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
-                "onScroll": function(y){
-                    var scrollSize = _self.elementContentNode.getScrollSize();
-                    var clientSize = _self.elementContentNode.getSize();
-                    var scrollHeight = scrollSize.y-clientSize.y;
-                    if (y+200>scrollHeight) {
+        this.elementContentNode.setStyle("overflow-y", "auto");
+        this.elementContentNode.addEvent("scroll", function () {
+            var scrollSize = _self.elementContentNode.getScrollSize();
+            var clientSize = _self.elementContentNode.getSize();
+            var scrollHeight = scrollSize.y-clientSize.y;
+            if ( _self.elementContentNode.scrollTop+200>scrollHeight ) {
+                // if (!_self.view.isItemsLoaded && !_self.view.isItemLoadding ) _self.view.loadElementList();
+                if( _self.view.isItemLoadding ){
+                    if( !_self.lastScrollTime || (new Date() - _self.lastScrollTime) > 220 ) {
+                        _self.lastScrollTime = new Date();
                         if (!_self.view.isItemsLoaded) _self.view.loadElementList();
                     }
+                }else{
+                    _self.lastScrollTime = new Date();
+                    if (!_self.view.isItemsLoaded) _self.view.loadElementList();
                 }
-            });
-        }.bind(this));
+            }
+        }.bind(this))
+        // MWF.require("MWF.widget.ScrollBar", function(){
+        //     new MWF.widget.ScrollBar(this.elementContentNode, {
+        //         "indent": false,"style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
+        //         "onScroll": function(y){
+        //             var scrollSize = _self.elementContentNode.getScrollSize();
+        //             var clientSize = _self.elementContentNode.getSize();
+        //             var scrollHeight = scrollSize.y-clientSize.y;
+        //             if (y+200>scrollHeight) {
+        //                 if (!_self.view.isItemsLoaded) _self.view.loadElementList();
+        //             }
+        //         }
+        //     });
+        // }.bind(this));
     },
 
     loadFileter : function( actionNode ){
@@ -504,7 +530,7 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
         }
     },
     _getCurrentPageData: function(callback, count){
-        if(!count)count=20;
+        if(!count)count=this.explorer.countPerPage;
         // var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
         var page = this.currentPage || 1;
         this.currentPage = page + 1;
@@ -524,7 +550,7 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
                 data[f] = filterResult[f];
             }
 
-            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count, data, function(json){
                 if (callback) callback(json);
             });
 
@@ -532,7 +558,7 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
             //     if (callback) callback(json);
             // });
         }else{
-            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count, data, function(json){
                 if (callback) callback(json);
             });
             // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
@@ -612,7 +638,7 @@ MWF.xApplication.cms.Module.ListExplorer.ListForALL = new Class({
         }.bind(this),false);
     },
     _getCurrentPageData: function(callback, count){
-        if(!count)count=20;
+        if(!count)count=this.explorer.countPerPage;
         // var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
         var page = this.currentPage || 1;
         this.currentPage = page + 1;
@@ -631,14 +657,14 @@ MWF.xApplication.cms.Module.ListExplorer.ListForALL = new Class({
             for(var f in filterResult ){
                 data[f] = filterResult[f];
             }
-            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count, data, function(json){
                 if (callback) callback(json);
             });
             // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
             //     if (callback) callback(json);
             // });
         }else{
-            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count, data, function(json){
                 if (callback) callback(json);
             });
             // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
@@ -701,7 +727,7 @@ MWF.xApplication.cms.Module.ListExplorer.ListForDraft = new Class({
         }.bind(this),false);
     },
     _getCurrentPageData: function(callback, count){
-        if(!count)count=20;
+        if(!count)count=this.explorer.countPerPage;
         // var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
         var page = this.currentPage || 1;
         this.currentPage = page + 1;
@@ -807,7 +833,7 @@ MWF.xApplication.cms.Module.ListExplorer.List = new Class({
         this.reload();
     },
     _getCurrentPageData: function(callback, count){
-        if(!count)count=20;
+        if(!count)count=this.explorer.countPerPage;
         var id = (this.items.length) ? this.items[this.items.length-1].data.document.id : "(0)";
         var data = {
             "orderField":this.orderField || "publishTime",

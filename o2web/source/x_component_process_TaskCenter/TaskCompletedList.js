@@ -349,12 +349,26 @@ MWF.xApplication.process.TaskCenter.TaskCompletedList.Item = new Class({
         }.bind(this));
     },
     openWorkByTaskCompleted: function(e, id){
-        var options = {"workId": id, "readonly": true, "appId": "process.Work"+id};
-        this.list.app.desktop.openApplication(e, "process.Work", options);
+        // 判断是否是钉钉环境 是否是独立窗口
+        var ua = navigator.userAgent.toLowerCase();
+        if (layout.inBrowser && ua.indexOf('dingtalk') >= 0 && !layout.mobile) {
+            var url = "../x_desktop/work.html?workid=" + id;
+            window.location = o2.filterUrl(url);
+        } else {
+            var options = {"workId": id, "readonly": true, "appId": "process.Work"+id};
+            this.list.app.desktop.openApplication(e, "process.Work", options);
+        }
     },
     openWorkCompleteedByTaskCompleted: function(e, id){
-        var options = {"workCompletedId": id, "readonly": true, "appId": "process.Work"+id};
-        this.list.app.desktop.openApplication(e, "process.Work", options);
+        // 判断是否是钉钉环境 是否是独立窗口
+        var ua = navigator.userAgent.toLowerCase();
+        if (layout.inBrowser && ua.indexOf('dingtalk') >= 0 && !layout.mobile) {
+            var url = "../x_desktop/work.html?workCompletedId=" + id;
+            window.location = o2.filterUrl(url);
+        } else {
+            var options = {"workCompletedId": id, "readonly": true, "appId": "process.Work"+id};
+            this.list.app.desktop.openApplication(e, "process.Work", options);
+        }
     },
 
     closeTaskCompleted: function(callback){
