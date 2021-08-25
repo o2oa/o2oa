@@ -95,16 +95,33 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		return "";
 	},
 	_filterHtml: function(html){
-		var reg = /(?:@|\:)\S*(?:\=)\S*(?:\"|\')/g;
+		var reg = /(?:@|\:)\S*(?:\=)\S*(?:\"|\'|\s)/g;
 		var v = html.replace(reg, "");
 
-		var tmp = new Element("div", {"html": v});
-		var nodes = tmp.querySelectorAll("*[v-model]");
+		// var tmp = new Element("div", {"html": v});
+		// var nodes = tmp.querySelectorAll("*[v-model]");
+		// this.tmpVueData = {};
+		// nodes.forEach(function(node){
+		// 	var model = node.get("v-model");
+		// 	if (!model) model = o2.uuid();
+		// 	node.set("v-model", model);
+		// 	this.tmpVueData[model] = "";
+		// }.bind(this));
+		// var v = tmp.get("html");
+		// tmp.destroy();
+		return v;
+	},
+	_checkVueHtml: function(){
+		var nodes = this.node.querySelectorAll("*[v-model]");
 		this.tmpVueData = {};
 		nodes.forEach(function(node){
-			this.tmpVueData[node.get("v-model")] = "";
+			var model = node.get("v-model");
+			if (!model){
+				model = o2.uuid();
+				node.set("v-model", model);
+			}
+			this.tmpVueData[model] = "";
 		}.bind(this));
-		return v;
 	},
 	_resetVueModuleDomNode: function(callback){
 		if (!this.vm){
@@ -112,6 +129,8 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 			var html = this._filterHtml(this._createElementHtml());
 
 			this.node.set("html", html);
+			this._checkVueHtml();
+
 			this._loadVue(function(){
 				this._mountVueApp(callback);
 			}.bind(this));
@@ -127,6 +146,18 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		this.vueApp = this._createVueExtend(callback);
 		try{
 			this.vm = new Vue(this.vueApp);
+
+			var p = {
+				"$options": {
+					"errorCaptured": function(err, vm, info){
+						alert("p: errorCaptured:"+info);
+					}
+				}
+			}
+			this.vm.$parent = p;
+			// this.vm.config.errorHandler = function (err, vm, info) {
+			// 	alert("errorHandler: "+info)
+			// }
 			this.vm.$mount(this.node);
 		}catch(e){
 			this.node.store("module", this);
@@ -145,6 +176,10 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 			data: this._createVueData(),
 			mounted: function(){
 				_self._afterMounted(this.$el, callback);
+			},
+			errorCaptured: function(err, vm, info){
+				alert("errorCaptured:"+info);
+				// return false;
 			}
 		};
 	},
@@ -171,6 +206,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	_setOtherNodeEvent: function(){},
 
 	_setEditStyle_custom: function(name){
+		debugger;
 		switch (name){
 			case "name": this.setPropertyName(); break;
 			case "id": this.setPropertyId(); break;
