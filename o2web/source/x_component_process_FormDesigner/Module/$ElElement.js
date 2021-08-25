@@ -86,7 +86,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	},
 	_loadVue: function(callback){
 		if (!window.Vue){
-			o2.load(["vue", "elementui"], { "sequence": true }, callback);
+			o2.load(["vue_develop", "elementui"], { "sequence": true }, callback);
 		}else{
 			if (callback) callback();
 		}
@@ -94,10 +94,43 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	_createElementHtml: function(){
 		return "";
 	},
+	_filterHtml: function(html){
+		var reg = /(?:@|\:)\S*(?:\=)\S*(?:\"|\'|\s)/g;
+		var v = html.replace(reg, "");
+
+		// var tmp = new Element("div", {"html": v});
+		// var nodes = tmp.querySelectorAll("*[v-model]");
+		// this.tmpVueData = {};
+		// nodes.forEach(function(node){
+		// 	var model = node.get("v-model");
+		// 	if (!model) model = o2.uuid();
+		// 	node.set("v-model", model);
+		// 	this.tmpVueData[model] = "";
+		// }.bind(this));
+		// var v = tmp.get("html");
+		// tmp.destroy();
+		return v;
+	},
+	_checkVueHtml: function(){
+		var nodes = this.node.querySelectorAll("*[v-model]");
+		this.tmpVueData = {};
+		nodes.forEach(function(node){
+			var model = node.get("v-model");
+			if (!model){
+				model = o2.uuid();
+				node.set("v-model", model);
+			}
+			this.tmpVueData[model] = "";
+		}.bind(this));
+	},
 	_resetVueModuleDomNode: function(callback){
 		if (!this.vm){
 			if (!this.node.hasClass("o2_vue")) this.node.addClass("o2_vue");
-			this.node.set("html", this._createElementHtml());
+			var html = this._filterHtml(this._createElementHtml());
+
+			this.node.set("html", html);
+			this._checkVueHtml();
+
 			this._loadVue(function(){
 				this._mountVueApp(callback);
 			}.bind(this));
@@ -111,12 +144,30 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	_mountVueApp: function(callback){
 		//if (!this.vueApp)
 		this.vueApp = this._createVueExtend(callback);
-		this.vm = new Vue(this.vueApp);
-		this.vm.$mount(this.node);
+		try{
+			this.vm = new Vue(this.vueApp);
+			// var p = {
+			// 	"$options": {
+			// 		"errorCaptured": function(err, vm, info){
+			// 			alert("p: errorCaptured:"+info);
+			// 		}
+			// 	}
+			// }
+			// this.vm.$parent = p;
+			// this.vm.config.errorHandler = function (err, vm, info) {
+			// 	alert("errorHandler: "+info)
+			// }
+			this.vm.$mount(this.node);
+		}catch(e){
+			this.node.store("module", this);
+			this._loadVueCss();
+			if (callback) callback();
+		}
+
 	},
 	_createVueData: function(){
 		var data = {};
-		return data;
+		return Object.assign(data, this.tmpVueData||{});
 	},
 	_createVueExtend: function(callback){
 		var _self = this;
@@ -124,6 +175,10 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 			data: this._createVueData(),
 			mounted: function(){
 				_self._afterMounted(this.$el, callback);
+			},
+			errorCaptured: function(err, vm, info){
+				alert("errorCaptured:"+info);
+				// return false;
 			}
 		};
 	},
@@ -180,19 +235,21 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		}.bind(this));
 	},
 	_preprocessingModuleData: function(){
-		this.node.clearStyles();
-		this.node.removeAttribute("class");
-		//if (this.initialStyles) this.node.setStyles(this.initialStyles);
-		this.json.recoveryStyles = Object.clone(this.json.styles);
+		try{
+			this.node.clearStyles();
+			this.node.removeAttribute("class");
+			//if (this.initialStyles) this.node.setStyles(this.initialStyles);
+			this.json.recoveryStyles = Object.clone(this.json.styles);
 
-		if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
-			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
-				//需要运行时处理
-			}else{
-				this.node.setStyle(key, value);
-				delete this.json.styles[key];
-			}
-		}.bind(this));
-		this.json.preprocessing = "y";
+			if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+				if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+					//需要运行时处理
+				}else{
+					this.node.setStyle(key, value);
+					delete this.json.styles[key];
+				}
+			}.bind(this));
+			this.json.preprocessing = "y";
+		}catch(e){};
 	},
 });

@@ -165,7 +165,32 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         return html;
     },
 
-
+        _setValue: function(value, m){
+            var mothed = m || "__setValue";
+            if (!!value){
+                var p = o2.promiseAll(value).then(function(v){
+                    //if (o2.typeOf(v)=="array") v = v[0];
+                    if (this.moduleSelectAG){
+                        this.moduleValueAG = this.moduleSelectAG;
+                        this.moduleSelectAG.then(function(){
+                            this[mothed](v);
+                            return v;
+                        }.bind(this), function(){});
+                    }else{
+                        this[mothed](v)
+                    }
+                    return v;
+                }.bind(this), function(){});
+                this.moduleValueAG = p;
+                if (this.moduleValueAG) this.moduleValueAG.then(function(){
+                    this.moduleValueAG = null;
+                }.bind(this), function(){
+                    this.moduleValueAG = null;
+                }.bind(this));
+            }else{
+                this[mothed](value);
+            }
+        },
     __setValue: function(value){
         this._setBusinessData(value);
         this.json[this.json.id] = (value) ? value : [];
@@ -203,7 +228,8 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
          * @see https://vuejs.org/
          * @member {VueInstance}
          */
-        this.vm = new Vue(this.vueApp).$mount(this.node);
+        this.vm = new Vue(this.vueApp);
+        this.vm.$mount(this.node);
     },
 
     _createVueExtend: function(callback){
@@ -218,7 +244,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
                 change: function(v){
                     _self.validationMode();
                     if (_self.validation()) {
-                        _self._setEnvironmentData(v);
+                        _self._setBusinessData(v || []);
                         _self.fireEvent("change");
                     }
                 }
@@ -226,7 +252,9 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         };
     },
     _createVueData: function(){
-        this.json[this.json.id] = [];
+        this.form.Macro.environment.data.check(this.json.id);
+        this.json[this.json.id] = this._getBusinessData();
+        if (!this.json[this.json.id] || !this.json[this.json.id].length) this.json[this.json.id] = [];
 
         if (this.json.vueData && this.json.vueData.code){
             var d = this.form.Macro.exec(this.json.vueData.code, this);

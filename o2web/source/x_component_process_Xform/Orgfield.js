@@ -182,7 +182,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
                     //this.fireEvent("change");
                 }.bind(this),
                 "onChange": function(){
-                    this._setEnvironmentData(this.getInputData());
+                    this._setBusinessData(this.getInputData());
                     this.fireEvent("change");
                 }.bind(this),
                 "optionsMethod": this._searchOptions.bind(this)
@@ -219,7 +219,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 
         this.combox.addEvent("change", function(){
             this.validationMode();
-            if (this.validation()) this._setEnvironmentData(this.getInputData("change"));
+            if (this.validation()) this._setBusinessData(this.getInputData("change"));
         }.bind(this));
     },
 
@@ -516,7 +516,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 			}
 		});
 		data.splice( index, 1 );
-		_self._setEnvironmentData( data );
+		_self._setBusinessData( data );
 		this.node.destroy();
 		ev.stopPropagation();
 	},

@@ -865,7 +865,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                 }.bind(this),
                 "onChange": function(){
                     this.node.store("data", this.getInputData());
-                    this._setEnvironmentData(this.getInputData());
+                    this._setBusinessData(this.getInputData());
                     this.fireEvent("change");
                 }.bind(this),
                 "optionsMethod": this._searchOptions.bind(this)
@@ -904,7 +904,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             this.validationMode();
             if (this.validation()){
                 this.node.store("data", this.getInputData());
-                this._setEnvironmentData(this.getInputData("change"));
+                this._setBusinessData(this.getInputData("change"));
             }
         }.bind(this));
     },
@@ -960,7 +960,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             this.validationMode();
             if (this.validation()){
                 this.node.store("data", this.getInputData());
-                this._setEnvironmentData(this.getInputData("change"));
+                this._setBusinessData(this.getInputData("change"));
             }
         }.bind(this));
     },
