@@ -86,7 +86,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	},
 	_loadVue: function(callback){
 		if (!window.Vue){
-			o2.load(["vue", "elementui"], { "sequence": true }, callback);
+			o2.load(["vue_develop", "elementui"], { "sequence": true }, callback);
 		}else{
 			if (callback) callback();
 		}
@@ -146,15 +146,14 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		this.vueApp = this._createVueExtend(callback);
 		try{
 			this.vm = new Vue(this.vueApp);
-
-			var p = {
-				"$options": {
-					"errorCaptured": function(err, vm, info){
-						alert("p: errorCaptured:"+info);
-					}
-				}
-			}
-			this.vm.$parent = p;
+			// var p = {
+			// 	"$options": {
+			// 		"errorCaptured": function(err, vm, info){
+			// 			alert("p: errorCaptured:"+info);
+			// 		}
+			// 	}
+			// }
+			// this.vm.$parent = p;
 			// this.vm.config.errorHandler = function (err, vm, info) {
 			// 	alert("errorHandler: "+info)
 			// }
