@@ -1,9 +1,14 @@
 package com.x.program.center.schedule;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.google.gson.JsonElement;
+import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.gson.XGsonBuilder;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
@@ -65,8 +70,7 @@ public class CollectPerson extends BaseAction {
 						req.setCenterProxyPort(centerServer.getProxyPort());
 						req.setHttpProtocol(centerServer.getHttpProtocol());
 						if(null != Config.portal().getUrlMapping() && !(Config.portal().getUrlMapping().isEmpty())){
-							String urlMapping = XGsonBuilder.toJson(Config.portal().getUrlMapping());
-							req.setUrlMapping(urlMapping);
+							req.setUrlMapping(XGsonBuilder.instance().toJsonTree(Config.portal().getUrlMapping()));
 						}
 						try {
 							ActionResponse response = ConnectionAction
@@ -112,13 +116,13 @@ public class CollectPerson extends BaseAction {
 
 		private String key;
 
-		private String urlMapping;
+		private JsonElement urlMapping;
 
-		public String getUrlMapping() {
+		public JsonElement getUrlMapping() {
 			return urlMapping;
 		}
 
-		public void setUrlMapping(String urlMapping) {
+		public void setUrlMapping(JsonElement urlMapping) {
 			this.urlMapping = urlMapping;
 		}
 
