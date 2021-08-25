@@ -303,7 +303,7 @@
     "overflow-x": "hidden",
     "position": "static",
     "margin-left" : "13px",
-    "margin-right" : "20px"
+    "margin-right" : "10px"
   },
   "elementContentListNode": {
     "overflow": "hidden",
