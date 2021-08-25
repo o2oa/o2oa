@@ -65,7 +65,11 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     // },
 
     _createVueExtend: function(){
-        debugger;
+        if (this.tmpVueData){
+            Object.keys(this.tmpVueData).each(function(k){
+                this.form.Macro.environment.data.check(k);
+            }.bind(this));
+        }
         var app = {};
         if (this.json.vueApp && this.json.vueApp.code) app = this.form.Macro.exec(this.json.vueApp.code, this);
         if (app.data){
@@ -74,7 +78,7 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
                 case "object":
                     Object.keys(app.data).each(function(k){
                         this.form.Macro.environment.data.add(k, app.data[k]);
-                    });
+                    }.bind(this));
                     app.data = this.form.Macro.environment.data;
                     // app.data = this.json;
                     // app.data = Object.merge(this.json, this.form.Macro.environment.data);
@@ -92,7 +96,7 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
                         });
                         //var data = Object.merge(_slef.json);
                         return _self.form.Macro.environment.data;
-                    }
+                    };
                     break;
             }
         }else{
@@ -126,8 +130,22 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     //         this.styleNode.inject(this.node, "before");
     //     }
     // },
+    _filterHtml: function(html){
+        var reg = /(?:@|\:)\S*(?:\=)\S*(?:\"|\')/g;
+        var v = html.replace(reg, "");
+
+        var tmp = new Element("div", {"html": v});
+        var nodes = tmp.querySelectorAll("*[v-model]");
+        this.tmpVueData = {};
+        nodes.forEach(function(node){
+            this.tmpVueData[node.get("v-model")] = "";
+        }.bind(this));
+
+
+        return v;
+    },
     _createElementHtml: function(){
         var html = this.json.vueTemplate || "";
-        return html;
+        return this._filterHtml(html);
     }
 }); 

@@ -12,7 +12,9 @@ MWF.xScript.PageEnvironment = function (ev) {
         return new MWF.xScript.JSONData(jData, function (data, key, _self) {
             var p = { "getKey": function () { return key; }, "getParent": function () { return _self; } };
             while (p && !_forms[p.getKey()]) p = p.getParent();
-            if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
+            var k = (p) ? p.getKey() : "";
+            if (k) if(_forms[k]) if(_forms[k].resetData) _forms[k].resetData();
+            //if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
         });
     };
     this.setData = function (data) {
