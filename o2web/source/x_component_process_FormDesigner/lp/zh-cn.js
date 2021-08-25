@@ -4,10 +4,10 @@ MWF.xApplication.process.FormDesigner.LP = {
 		"property": "属性",
 		"tools": "工具",
 		"all": "全部",
-		
+
 		"repetitionsId": "重复的元素标识符",
 		"notNullId": "元素标识符不能为空",
-		
+
 		"button":{
 			"ok": "确定",
 			"cancel": "取消"
@@ -28,10 +28,10 @@ MWF.xApplication.process.FormDesigner.LP = {
             "saveTemplate_success": "表单模板保存成功！",
             "saveTemplate_inputName": "请输入模板标题",
             "saveTemplate_inputCategory": "请确定模板分类",
-			
+
 			"deleteElementTitle": "删除表单元素确认",
 			"deleteElement": "是否确定删除当前元素，及其子元素吗？",
-			
+
 			"deleteRowTitle": "删除表格行确认",
 			"deleteRow": "删除当前行将删除该行所有单元格中的内容，是否确定删除当前选中的行？",
 			"deleteColTitle": "删除表格列确认",
@@ -50,7 +50,7 @@ MWF.xApplication.process.FormDesigner.LP = {
             "changeToSequenceTitle": "确认",
             "changeToSequence": "此操作会删除已经添加的组件，确定要改成“序号”列吗？"
 		},
-		
+
 		"formAction": {
 			"insertRow": "插入行",
 			"insertCol": "插入列",
@@ -320,6 +320,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "documenteditor": "公文编辑器",
         "htmledit": "HTML编辑器",
         "office": "Office控件",
+        "yozoOffice" : "永中控件",
+        "iWebOffice" : "金格控件",
         "statementSelector": "选择查询视图",
         "statement": "嵌入查询视图",
 
@@ -1053,7 +1055,83 @@ MWF.xApplication.process.FormDesigner.LP = {
         "triggerOnFocus": "激活即列出输入建议",
         "showOptions": "显示选项",
         "onInput": "输入时",
-        "onFocus": "点击时"
+        "onFocus": "点击时",
+        "wps" : {
+            "config":"配置",
+            "options" : "通用选项",
+            "topArea":"顶部区域",
+            "show":"显示",
+            "hide":"隐藏",
+            "headArea" : "头部区域",
+            "showMode" : "显示模式",
+            "showMode_normal" : "普通模式， 展示所有功能界面",
+            "showMode_simple" : "极简模式， 不显示头部和工具栏",
+            "wordConfig" : "Word配置项",
+            "comment" : "评论",
+            "isShowDocMap" : "是否开启目录功能",
+            "isBestScale" : "打开文档时，默认以最佳比例显示(PC)",
+            "isShowBottomStatusBar" : "底部状态栏(PC)",
+            "isOpenIntoEdit" : "移动端打开时是否进入编辑",
+            "component" : "组件",
+            "isComponent" : "是否启用组件（PC端）",
+            "HeaderLeft" :"头部左侧",
+            "HeaderRight" :"头部右侧",
+            "FloatQuickHelp" :"右下角帮助(金小豹)",
+            "HistoryVersion" :"顶部状态栏-历史记录菜单-历史版本",
+            "HistoryRecord" :"顶部状态栏-历史记录菜单-协作记录",
+            "HistoryVersionDivider" :"表格-右键菜单-历史版本/协作记录分割线",
+            "TabPrintPreview" : "顶部工具栏打印按钮",
+            "MenuPrintPreview" : "更多菜单打印按钮",
+            "ReviewTrackChanges" : "编辑、修订状态按钮",
+            "TrackChanges" :"编辑、修订状态下拉选项",
+            "ContextMenuConvene" : "文字右键召唤在线协助者",
+            "isComponentMobile" : "是否启用组件（手机端）",
+            "Logo" : "状态栏Logo",
+            "Cooperation" :"状态栏协作头像",
+            "More" : "状态栏更多按钮",
+            "SendButton" : "顶部工具栏-分享按钮",
+            "CooperHistoryMenuItem" :"顶部工具栏-协作记录菜单",
+            "WriterHoverToolbars" :"文字-底部工具栏",
+            "ReadSetting" :"文字-状态栏-阅读设置"
+        },
+        "onlyoffice" : {
+            "config":"配置",
+            "moduleConfig":"功能设置",
+            "autosave":"自动保存",
+            "chat" :"启用聊天",
+            "comments" :"开启评论",
+            "compatibleFeatures":"兼容旧版本",
+            "plugins":"启用插件",
+            "reviewDisplay":"修订显示方式",
+            "reviewDisplay_markup":"标记",
+            "reviewDisplay_final":"最终版",
+            "reviewDisplay_original":"原始",
+            "showReviewChanges":"显示跟踪变化",
+            "trackChanges":"打开审阅编辑模式",
+            "spellcheck" :"拼写检查",
+            "viewSet":"界面设置",
+            "compactHeader" : "隐藏编辑器头",
+            "compactToolbar" : "紧凑型工具栏",
+            "feedback" : "是否显示反馈",
+            "help" :"是否显示帮助",
+            "toolbarHideFileName":"标题栏是否显示文件名",
+            "toolbarNoTabs":"顶部工具栏是否高亮显示",
+            "unit":"标尺测量单位",
+            "unit_cm":"厘米",
+            "unit_pt":"像素",
+            "unit_inch":"英寸",
+            "zoom":"默认缩放",
+            "hideRightMenu":"隐藏侧栏",
+            "individualization" : "个性化信息",
+            "address":"地址",
+            "mail":"邮箱",
+            "info":"简介",
+            "company" :"公司名称",
+            "www":"网址",
+            "feedbackUrl":"反馈地址",
+            "logoImg":"左上角logo（172x40）",
+            "logoUrl":"logo链接"
+        }
     },
     "actionBar": {
         "close":"关闭",
