@@ -243,7 +243,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
                 change: function(v){
                     _self.validationMode();
                     if (_self.validation()) {
-                        _self._setEnvironmentData(v);
+                        _self._setBusinessData(v || []);
                         _self.fireEvent("change");
                     }
                 }
@@ -251,7 +251,9 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         };
     },
     _createVueData: function(){
-        this.json[this.json.id] = [];
+        this.form.Macro.environment.data.check(this.json.id);
+        this.json[this.json.id] = this._getBusinessData();
+        if (!this.json[this.json.id] || !this.json[this.json.id].length) this.json[this.json.id] = [];
 
         if (this.json.vueData && this.json.vueData.code){
             var d = this.form.Macro.exec(this.json.vueData.code, this);

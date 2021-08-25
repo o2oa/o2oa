@@ -171,7 +171,6 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	_setOtherNodeEvent: function(){},
 
 	_setEditStyle_custom: function(name){
-		debugger;
 		switch (name){
 			case "name": this.setPropertyName(); break;
 			case "id": this.setPropertyId(); break;
@@ -201,19 +200,21 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		}.bind(this));
 	},
 	_preprocessingModuleData: function(){
-		this.node.clearStyles();
-		this.node.removeAttribute("class");
-		//if (this.initialStyles) this.node.setStyles(this.initialStyles);
-		this.json.recoveryStyles = Object.clone(this.json.styles);
+		try{
+			this.node.clearStyles();
+			this.node.removeAttribute("class");
+			//if (this.initialStyles) this.node.setStyles(this.initialStyles);
+			this.json.recoveryStyles = Object.clone(this.json.styles);
 
-		if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
-			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
-				//需要运行时处理
-			}else{
-				this.node.setStyle(key, value);
-				delete this.json.styles[key];
-			}
-		}.bind(this));
-		this.json.preprocessing = "y";
+			if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+				if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+					//需要运行时处理
+				}else{
+					this.node.setStyle(key, value);
+					delete this.json.styles[key];
+				}
+			}.bind(this));
+			this.json.preprocessing = "y";
+		}catch(e){};
 	},
 });
