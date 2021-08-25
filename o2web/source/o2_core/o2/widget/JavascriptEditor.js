@@ -272,7 +272,7 @@ o2.widget.JavascriptEditor = new Class({
         }.bind(this));
     },
     registerCompletion: function(){
-        if (this.editor){
+        if (this.editor && this.options.option.mode==="javascript"){
             switch (this.options.type.toLowerCase()) {
                 case "ace": this.registerCompletionAce(); break;
                 case "monaco": this.registerCompletionMonaco(); break;
