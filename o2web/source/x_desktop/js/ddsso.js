@@ -39,6 +39,9 @@ o2.addReady(function () {
                                     signature: _config.signature,
                                     jsApiList: ['runtime.info']
                                 });
+                                dd.error(function (err) {
+                                    console.log('dd error: ' + JSON.stringify(err));
+                                });
 
                                 //document.all.testaaa.set("value", "1");
                                 // dd.biz.navigation.setTitle({
@@ -53,35 +56,43 @@ o2.addReady(function () {
                                 //     }
                                 // });
                                 //document.all.testaaa.set("value", "before");
-                                dd.runtime.permission.requestAuthCode({
+                                dd.ready(function() {
+                                    dd.runtime.permission.requestAuthCode({
+                                        corpId: _config.corpId,
+                                        onSuccess: function (info) {
+                                            action.invoke({
+                                                "name": "auth", "async": true, "parameter": { "code": info.code },
+                                                "success": function (json) {
+                                                    //document.all.testaaa.set("value", "auth");
+                                                    // "appMobile.html?app=process.TaskCenter".toURI().go();
 
-                                    corpId: _config.corpId,
-                                    onSuccess: function (info) {
-                                        action.invoke({
-                                            "name": "auth", "async": true, "parameter": { "code": info.code },
-                                            "success": function (json) {
-                                                //document.all.testaaa.set("value", "auth");
-                                                // "appMobile.html?app=process.TaskCenter".toURI().go();
+                                                    if (redirect) {
+                                                        history.replaceState(null, "page", redirect);
+                                                        redirect.toURI().go();
+                                                    } else {
+                                                        history.replaceState(null, "page", "../x_desktop/appMobile.html?app=process.TaskCenter");
+                                                        "appMobile.html?app=process.TaskCenter".toURI().go();
+                                                    }
 
-                                                if (redirect) {
-                                                    history.replaceState(null, "page", redirect);
-                                                    redirect.toURI().go();
-                                                } else {
+                                                }.bind(this), "failure": function (xhr, text, error) {
                                                     history.replaceState(null, "page", "../x_desktop/appMobile.html?app=process.TaskCenter");
                                                     "appMobile.html?app=process.TaskCenter".toURI().go();
-                                                }
-
-                                            }.bind(this), "failure": function (xhr, text, error) {
-                                                history.replaceState(null, "page", "../x_desktop/appMobile.html?app=process.TaskCenter");
-                                                "appMobile.html?app=process.TaskCenter".toURI().go();
-                                            }.bind(this)
-                                        });
-                                    }.bind(this),
-                                    onFail: function (err) { }
+                                                }.bind(this)
+                                            });
+                                        }.bind(this),
+                                        onFail: function (err) {
+                                            console.log('request错误');
+                                            console.log(err);
+                                        }
+                                    });
                                 });
 
 
-                            }.bind(this), "failure": function (xhr, text, error) { }.bind(this)
+                            }.bind(this), "failure": function (xhr, text, error) {
+                                console.log('info 请求错误');
+                                        console.log(xhr);
+                                        console.log(error);
+                             }.bind(this)
                         });
                     });
                 };
