@@ -2,7 +2,7 @@ package com.x.bbs.assemble.control.jaxrs.replyinfo;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.druid.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
