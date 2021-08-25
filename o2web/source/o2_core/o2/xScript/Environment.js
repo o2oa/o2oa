@@ -3348,10 +3348,57 @@ MWF.xScript.createTable = function(){
     }
 };
 
-
+var getArrayJSONData = function(jData, p, _form){
+    return new MWF.xScript.JSONData(jData, function(data, key, _self){
+        var p = {"getKey": function(){return key;}, "getParent": function(){return _self;}};
+        while (p && !_form.forms[p.getKey()]) p = p.getParent();
+        //if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
+        var k = (p) ? p.getKey() : "";
+        if (k) if(_form.forms[k]) if(_form.forms[k].resetData) _form.forms[k].resetData();
+        //if(p) if(p.getKey()) if(_forms[p.getKey()]) if(_forms[p.getKey()].render) _forms[p.getKey()].render();
+    }, "", p, _form);
+};
 MWF.xScript.JSONData = function(data, callback, key, parent, _form){
     var getter = function(data, callback, k, _self){
-        return function(){return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self, _form);};
+        return function(){
+            var t = typeOf(data[k]);
+            if (["array","object"].indexOf(t)===-1){
+                return data[k]
+            }else{
+                if (t==="array"){
+                    debugger;
+                    //if (!MWF.xScript.ArrayData){
+                    //     var ArrayData = function(data, callback, key, parent, _form){
+                    //         MWF.xScript.JSONData.call(this, data, callback, key, parent, _form);
+                    //         Array.call(this, data);
+                    //     };
+                    //     Object.assign(ArrayData.prototype, MWF.xScript.JSONData.prototype);
+                    //     Object.assign(ArrayData.prototype, Array.prototype);
+                    //}
+                    //return new MWF.xScript.ArrayData(data[k], callback, k, _self, _form);
+                    //return new ArrayData(data[k], callback, k, _self, _form)
+                    // var arr = Array.clone(data[k]);
+                    // for (x in arr){
+                    //     if (typeof x === 'number' && !isNaN(x)){
+                    //         arr
+                    //     }
+                    // }
+
+                    var arr =[];
+                    data[k].forEach(function(d, i){
+                        arr.push((o2.typeOf(d)==="object") ? getArrayJSONData(d, _self, _form) : d);
+                    });
+                    return arr;
+                    //return data[k];
+                }else{
+                    return new MWF.xScript.JSONData(data[k], callback, k, _self, _form);
+                }
+                // var obj =
+                // if (t==="array") obj.constructor = Array;
+                // return obj;
+            }
+            //return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self, _form);
+        };
     };
     var setter = function(data, callback, k, _self){
         return function(v){
@@ -3440,14 +3487,14 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
                     return this[newKey];
                 }else{
                     var keys = newKey.split("..");
-                    var key = keys.shift();
-                    var d = this.add(key, {}, false, true);
+                    var kk = keys.shift();
+                    var d = this.add(kk, {}, false, true);
                     if (keys.length) return d.add(keys.join(".."), newValue, overwrite, noreset);
                     return d;
                 }
             }},
-            "check": {"value": function(key){
-                this.add(key, null, false, true);
+            "check": {"value": function(kk, v){
+                this.add(kk, v||"", false, true);
             }},
             "del": {"value": function(delKey){
                 if (!this.hasOwnProperty(delKey)) return null;
@@ -3459,9 +3506,6 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
             }}
         };
         MWF.defineProperties(this, methods);
-
-
-
 
         //this.getKey = function(){ return key; };
         //this.getParent = function(){ return parent; };
@@ -3517,6 +3561,7 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
         //    return this;
         //};
     };
+
     var type = typeOf(data);
     if (type==="object" || type==="array") define.apply(this);
 };

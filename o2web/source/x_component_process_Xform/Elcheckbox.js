@@ -213,13 +213,14 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         }
     },
 
-    _loadVue: function(callback){
-        if (!window.Vue){
-            o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": ["vue", "elementui"]}, { "sequence": true }, callback);
-        }else{
-            if (callback) callback();
-        }
-    },
+    // _loadVue: function(callback){
+    //     if (!window.Vue){
+    //         var vue = (o2.session.isDebugger) ? "vue_develop" : "vue";
+    //         o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
+    //     }else{
+    //         if (callback) callback();
+    //     }
+    // },
     _mountVueApp: function(callback){
         if (!this.vueApp) this.vueApp = this._createVueExtend(callback);
 
