@@ -323,16 +323,23 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             if (!evdata){
                 evdata = this.setEnvironmentDataById({});
             }
-            if (!evdata.hasOwnProperty(key)) evdata.add(key, v);
-            evdata[key] = v;
+            if (!evdata.hasOwnProperty(key)){
+                evdata.add(key, v);
+            }else{
+                evdata[key] = v;
+            }
         }
     },
     setEnvironmentDataById: function(v){
         //对id类似于 xx..0..xx 的字段进行拆分
         var evdata = this.form.Macro.environment.data;
         if(this.json.id.indexOf("..") < 1){
-            if (!evdata.hasOwnProperty(this.json.id)) evdata.add(this.json.id, v);
-            evdata[this.json.id] = v;
+            if (!evdata.hasOwnProperty(this.json.id)){
+                evdata.add(this.json.id, v);
+            }else{
+                evdata[this.json.id] = v;
+            }
+
         }else{
             var idList = this.json.id.split("..");
             idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
@@ -345,8 +352,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if( !id && id !== 0 )return;
 
                 if( i === lastIndex ){
-                    if (!evdata.hasOwnProperty(id)) evdata.add(id, v);
-                    evdata[id] = v;
+                    if (!evdata.hasOwnProperty(id)){
+                        evdata.add(id, v);
+                    }else{
+                        evdata[id] = v;
+                    }
                 }else{
                     var nexId = idList[i+1];
                     if(o2.typeOf(nexId) === "number"){ //下一个ID是数字

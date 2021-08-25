@@ -184,12 +184,12 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                 this.fireEvent("change");
             }
         }.bind(this));
-
-        var inputNode = this.node.getFirst();
-        if (inputNode) inputNode.addEvent("input", function(e){
-            var v=e.target.get("value");
-            this._setEnvironmentData(v);
-        }.bind(this));
+        //
+        // var inputNode = this.node.getFirst();
+        // if (inputNode) inputNode.addEvent("input", function(e){
+        //     var v=e.target.get("value");
+        //     this._setEnvironmentData(v);
+        // }.bind(this));
 	},
     _loadStyles: function(){
         if (this.json.styles) this.node.setStyles(this.json.styles);
