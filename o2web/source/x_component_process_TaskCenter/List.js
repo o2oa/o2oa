@@ -809,8 +809,16 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
 
     openTask: function(e){
         //     this._getJobByTask(function(data){
-        var options = {"workId": this.data.work, "appId": "process.Work"+this.data.work};
-        this.list.app.desktop.openApplication(e, "process.Work", options);
+        // 判断是否是钉钉环境 是否是独立窗口
+        var ua = navigator.userAgent.toLowerCase();
+        if (layout.inBrowser && ua.indexOf('dingtalk') >= 0 && !layout.mobile) {
+            var url = "../x_desktop/work.html?workid=" + this.data.work;
+            window.location = o2.filterUrl(url);
+        } else {
+            var options = {"workId": this.data.work, "appId": "process.Work"+this.data.work};
+            this.list.app.desktop.openApplication(e, "process.Work", options);
+        }
+        
         //     }.bind(this));
     },
 
