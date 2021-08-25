@@ -1,10 +1,10 @@
 package com.x.cms.core.entity;
 
-import com.alibaba.druid.util.StringUtils;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 
