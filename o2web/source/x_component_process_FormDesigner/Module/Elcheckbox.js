@@ -15,7 +15,6 @@ MWF.xApplication.process.FormDesigner.Module.Elcheckbox = MWF.FCElcheckbox = new
 		this.moduleName = "elcheckbox";
 	},
 	_createElementHtml: function(){
-		debugger;
 		var html = "<el-checkbox-group v-model=\""+this.json.id+"\"";
 		if (this.json.textColor) html += " text-color=\""+this.json.textColor+"\"";
 		if (this.json.fillColor) html += " fill=\""+this.json.fillColor+"\"";

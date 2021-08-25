@@ -191,7 +191,8 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
 
     _loadVue: function(callback){
         if (!window.Vue){
-            o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": ["vue", "elementui"]}, { "sequence": true }, callback);
+            var vue = (o2.session.isDebugger) ? "vue_develop" : "vue";
+            o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
         }else{
             if (callback) callback();
         }

@@ -233,9 +233,15 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 			if (!this.form.isSubform) this._createIconAction();
 			this._setNodeEvent();
 		}.bind(this));
+		if (this._resetElementFun){
+			this.form.removeEvent("postSave", this._resetElementFun);
+			this._resetElementFun = null;
+		}
+
 	},
 	_preprocessingModuleData: function(){
 		try{
+			this.node.empty();
 			this.node.clearStyles();
 			this.node.removeAttribute("class");
 			//if (this.initialStyles) this.node.setStyles(this.initialStyles);
@@ -250,6 +256,10 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 				}
 			}.bind(this));
 			this.json.preprocessing = "y";
+
+			debugger;
+			this._resetElementFun = this.resetElement.bind(this);
+			this.form.addEvent("postSave", this._resetElementFun);
 		}catch(e){};
 	},
 });
