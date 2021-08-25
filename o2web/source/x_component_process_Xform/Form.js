@@ -2933,7 +2933,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         node.getLast().setStyles(this.css.rollbackItemTaskNode_current);
 
         var checkeds = item.getElements("input");
-        if (checkeds) checkeds.set("checked", true);
+        if (checkeds){
+            checkeds.set("checked", true);
+            checkeds.set("disabled", false);
+        }
     },
     setRollBackUnchecked: function (item) {
         item.store("isSelected", false);
@@ -2950,7 +2953,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         node.getLast().setStyles(this.css.rollbackItemTaskNode);
 
         var checkeds = item.getElements("input");
-        if (checkeds) checkeds.set("checked", false);
+        if (checkeds) {
+            checkeds.set("checked", false);
+            checkeds.set("disabled", true);
+        }
     },
     getRollbackLogs: function (rollbackItemNode) {
         var _self = this;
@@ -2976,6 +2982,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             var check = new Element("input", {
                                 "value": o.identity,
                                 "type": "checkbox",
+                                "disabled": true,
                                 "styles": this.css.rollbackItemTaskCheckNode
                             }).inject(div);
                             check.addEvent("click", function (e) {
@@ -4642,6 +4649,120 @@ debugger;
         }else{
             return "";
         }
+    },
+
+    sendRead: function () {
+        var opt = {};
+        MWF.require("MWF.xDesktop.Dialog", function () {
+            var width = 560;
+            var height = 260;
+            var p = MWF.getCenterPosition(this.app.content, width, height);
+
+            var _self = this;
+            var dlg = new MWF.xDesktop.Dialog({
+                "title": this.app.lp.sendRead,
+                "style": this.json.dialogStyle || "user", //|| "work",
+                "top": p.y - 100,
+                "left": p.x,
+                "fromTop": p.y - 100,
+                "fromLeft": p.x,
+                "width": width,
+                "height": height,
+                "url": this.app.path + "sendRead.html",
+                "lp": MWF.xApplication.process.Xform.LP.form,
+                "container": this.app.content,
+                "isClose": true,
+                "buttonList": [
+                    {
+                        "type": "ok",
+                        "text": MWF.LP.process.button.ok,
+                        "action": function (d, e) {
+                            if( !opt.identityList || !opt.identityList.length ){
+                                _self.app.notice(MWF.xApplication.process.Xform.LP.inputSendReadPeople, "error", dlg.node);
+                            }else{
+                                _self.doSendRead(opt);
+                            }
+                        }.bind(this)
+                    },
+                    {
+                        "type": "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () { dlg.close(); }
+                    }
+                ],
+                "onPostShow": function () {
+                    opt.dlg = this;
+                    opt.workId = (_self.businessData.work || _self.businessData.workCompleted).id;
+                    opt.complete = !!(_self.businessData.work || _self.businessData.workCompleted).completedTime;
+                    var selPeopleButton = this.content.getElement(".sendRead_selPeopleButton");
+                    selPeopleButton.addEvent("click", function () {
+                        _self.selectReadPeople(this, opt);
+                    }.bind(this));
+                }
+            });
+            dlg.show();
+        }.bind(this));
+    },
+    selectReadPeople: function (dlg, opt ) {
+        var names = opt.identityList || [];
+        var areaNode = dlg.content.getElement(".sendRead_selPeopleArea");
+        var options = {
+            "values": names,
+            "type": "identity",
+            "count": 0,
+            "title": this.app.lp.sendRead,
+            "onComplete": function (items) {
+                areaNode.empty();
+                var identityList = [];
+                items.each(function (item) {
+                    new MWF.widget.O2Identity(item.data, areaNode, { "style": "reset" });
+                    identityList.push(item.data.distinguishedName);
+                }.bind(this));
+                opt.identityList = identityList;
+            }.bind(this)
+        };
+        MWF.xDesktop.requireApp("Selector", "package", function () {
+            var selector = new MWF.O2Selector(this.app.content, options);
+        }.bind(this));
+    },
+    doSendRead: function(opt){
+        if( !opt.identityList || !opt.identityList.length ) {
+            this.app.notice(MWF.xApplication.process.Xform.LP.sendReadPeopleCanNotEmpty, "error", opt.dlg ? opt.dlg.node : null);
+            return false;
+        }
+
+        var nameArr = [];
+        var names = opt.identityList || [];
+        names.each(function (n) { nameArr.push(n); });
+
+
+        MWF.require("MWF.widget.Mask", function () {
+            this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+            this.mask.loadNode(this.app.content);
+
+            this.fireEvent("beforeSendRead");
+            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSendRead");
+
+            var method = opt.complete ? "createWithWorkCompleted" : "createWithWork";
+
+            o2.Actions.load("x_processplatform_assemble_surface").ReadAction[method](opt.id, {
+                "identityList": opt.identityList,
+                "notify": opt.notify
+            }, function () {
+                this.fireEvent("afterSendRead");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("afterSendRead");
+                this.app.notice(MWF.xApplication.process.Xform.LP.sendReadOk + ": " + names, "success");
+                if(opt.dlg)opt.dlg.close();
+                if(opt.success)opt.success();
+                if (this.mask) { this.mask.hide(); this.mask = null; }
+            }.bind(this), function (xhr, text, error) {
+                var errorText = error + ":" + text;
+                if (xhr) errorText = xhr.responseText;
+                this.app.notice("request json error: " + errorText, "error", dlg.node);
+                if(opt.failure)opt.failure();
+                if (this.mask) { this.mask.hide(); this.mask = null; }
+            }.bind(this));
+        }.bind(this));
     }
 
 });
