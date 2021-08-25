@@ -321,6 +321,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "documenteditor": "Documenteditor",
         "htmledit": "Htmleditor",
         "office": "Office",
+        "yozoOffice" : "yozoOffice",
+        "iWebOffice" : "iWebOffice",
         "statementSelector": "StatementSelector",
         "statement": "Statement",
 
