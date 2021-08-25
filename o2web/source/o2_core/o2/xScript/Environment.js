@@ -2448,8 +2448,8 @@ MWF.xScript.Environment = function(ev){
          {
             "names": "", //{Array|String} 要重置给哪些身份
             "opinion": "", //流转意见
-            "success ": function(){}, //重置成功后的回调方法
-            "failure ": function(){} //重置失败后的回调方法
+            "success": function(){}, //重置成功后的回调方法
+            "failure": function(){} //重置失败后的回调方法
         }
          </code></pre>
          * @example
@@ -2489,8 +2489,8 @@ MWF.xScript.Environment = function(ev){
          * 格式如下：
          <pre><code class="language-js">
          {
-            "success ": function(){}, //撤回成功后的回调方法
-            "failure ": function(){} //撤回失败后的回调方法
+            "success": function(){}, //撤回成功后的回调方法
+            "failure": function(){} //撤回失败后的回调方法
         }
          </code></pre>
          * @example
@@ -2528,8 +2528,8 @@ MWF.xScript.Environment = function(ev){
          {
             "value" : [], //splitValueList 添加的拆分值，拆分值取决于流程拆分节点的设置
             "trimExist" : true, //排除已经存在的拆分值.
-            "success ": function(){}, //执行成功后的回调方法
-            "failure ": function(){} //执行失败后的回调方法
+            "success": function(){}, //执行成功后的回调方法
+            "failure": function(){} //执行失败后的回调方法
         }
          </code></pre>
          * @example
@@ -2576,8 +2576,8 @@ MWF.xScript.Environment = function(ev){
          * 格式如下：
          <pre><code class="language-js">
          {
-            "success ": function(){}, //执行成功后的回调方法
-            "failure ": function(){} //执行失败后的回调方法
+            "success": function(){}, //执行成功后的回调方法
+            "failure": function(){} //执行失败后的回调方法
         }
          </code></pre>
          * @example
@@ -2617,8 +2617,8 @@ MWF.xScript.Environment = function(ev){
          {
             "identityList": "", //{Array|String} 要给哪些身份发送待阅
             "notify": true, //是否发送待阅通知（需要服务器开启消息）
-            "success ": function(){}, //成功后的回调方法
-            "failure ": function(){} //失败后的回调方法
+            "success": function(){}, //成功后的回调方法
+            "failure": function(){} //失败后的回调方法
         }
          </code></pre>
          * @example
@@ -2644,7 +2644,7 @@ MWF.xScript.Environment = function(ev){
             if (!option){
                 _form.sendRead();
             }else{
-                if( typeOf(option.identityList) === "string" ){
+                if( option.identityList && typeOf(option.identityList) === "string" ){
                     option.identityList = [option.identityList];
                 }
                 _form.doSendRead(option);
@@ -2661,8 +2661,8 @@ MWF.xScript.Environment = function(ev){
          <pre><code class="language-js">
          {
             "personList": "", //{Array|String} 要添加哪些阅读人
-            "success ": function(){}, //成功后的回调方法
-            "failure ": function(){} //失败后的回调方法
+            "success": function(){}, //成功后的回调方法
+            "failure": function(){} //失败后的回调方法
         }
          </code></pre>
          * @example
@@ -2687,7 +2687,7 @@ MWF.xScript.Environment = function(ev){
             if (!option){
                 _form.addReview();
             }else{
-                if( typeOf(option.personList) === "string" ){
+                if( option.personList && typeOf(option.personList) === "string" ){
                     option.personList = [option.personList];
                 }
                 _form.doAddReview(option);
