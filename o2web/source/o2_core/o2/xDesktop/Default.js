@@ -1377,8 +1377,6 @@ o2.xDesktop.Default.StartMenu = new Class({
         if (user.roleList) currentNames = currentNames.concat(user.roleList);
         if (user.groupList) currentNames = currentNames.concat(user.groupList);
 
-        debugger;
-
         var json_layout = Array.clone(layoutJson);
         var json_component = Array.clone(componentJson);
         var json_portal = Array.clone(portalJson);
