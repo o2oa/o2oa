@@ -1232,7 +1232,21 @@ o2.xDesktop.Default.StartMenu = new Class({
         }.bind(this));
     },
 
-
+    loadGroup: function(callback){
+        if( this.layout.session.user.groupList ){
+            if(callback) callback()
+        }else{
+            o2.Actions.load("x_organization_assemble_express").GroupAction.listWithPerson({
+                personList: [this.layout.session.user.unique],
+                recursiveGroupFlag: true,
+                referenceFlag: true,
+                recursiveOrgFlag: true
+            }, function (json) {
+                this.layout.session.user.groupList = json.data.groupList || [];
+                if(callback) callback()
+            }.bind(this))
+        }
+    },
     loadJsons: function(callback){
         this.clearAppContentNode();
 
@@ -1600,8 +1614,21 @@ o2.xDesktop.Default.StartMenu = new Class({
             var size = this.layout.menuNode.getSize();
             var left = size.x;
 
+            var jsonLoaded = false, groupLoaded = false;
+            var checkLoad = function () {
+                if(jsonLoaded && groupLoaded){
+                    (this.currentTab || this.appCategoryTab).click();
+                }
+            }.bind(this);
+
             this.loadJsons(function(){
-                (this.currentTab || this.appCategoryTab).click();
+                jsonLoaded = true;
+                checkLoad();
+            }.bind(this));
+
+            this.loadGroup(function(){
+                groupLoaded = true;
+                checkLoad();
             }.bind(this));
 
             //this.loadContent();
