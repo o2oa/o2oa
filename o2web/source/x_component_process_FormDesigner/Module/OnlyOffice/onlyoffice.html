@@ -1,193 +1,193 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">标识:</td>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
 				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">名称:</td>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
 				<td class="editTableValue"><input type="text" name="companyName" value="text{$.companyName}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">描述:</td>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
 				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">是否只读:</td>
+				<td class="editTableTitle">{{$.lp.readonly}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>是
-					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>否
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
-		<div class="MWFMaplist" name="styles" title="样式"></div>
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">类型:</td>
+				<td class="editTableTitle">{{$.lp.type}}:</td>
 				<td class="editTableValue">
-					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='docx')?'checked':''} type="radio" value="docx"/>Word 文档<br/>
-					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='xlsx')?'checked':''} type="radio" value="xlsx"/>Excel 电子表格<br/>
-					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='pptx')?'checked':''} type="radio" value="pptx"/>PowerPoint 幻灯片<br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='docx')?'checked':''} type="radio" value="docx"/>Word <br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='xlsx')?'checked':''} type="radio" value="xlsx"/>Excel <br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='pptx')?'checked':''} type="radio" value="pptx"/>PowerPoint <br/>
 				</td>
 			</tr>
 		</table>
-		<div class="MWFScriptArea" name="readScript" title="满足条件时只读 (S)"></div>
+		<div class="MWFScriptArea" name="readScript" title="{{$.lp.readonlyCondition}} (S)"></div>
 	</div>
-	<div title="配置" class="MWFTab">
-		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">功能设置</div>
+	<div title="{{$.lp.onlyoffice.config}}" class="MWFTab">
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.onlyoffice.moduleConfig}}</div>
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">自动保存:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.autosave}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="autosave" value="true" text{($.autosave)?'checked':''}/>是
-					<input type="radio" name="autosave" value="false" text{(!$.autosave)?'checked':''}/>否
+					<input type="radio" name="autosave" value="true" text{($.autosave)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="autosave" value="false" text{(!$.autosave)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">启用聊天:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.chat}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="chat" value="true" text{($.chat)?'checked':''}/>是
-					<input type="radio" name="chat" value="false" text{(!$.chat)?'checked':''}/>否
+					<input type="radio" name="chat" value="true" text{($.chat)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="chat" value="false" text{(!$.chat)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">开启评论:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.comments}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="comments" value="true" text{($.comments)?'checked':''}/>是
-					<input type="radio" name="comments" value="false" text{(!$.comments)?'checked':''}/>否
+					<input type="radio" name="comments" value="true" text{($.comments)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="comments" value="false" text{(!$.comments)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">兼容旧版本:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.compatibleFeatures}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="compatibleFeatures" value="true" text{($.compatibleFeatures)?'checked':''}/>是
-					<input type="radio" name="compatibleFeatures" value="false" text{(!$.compatibleFeatures)?'checked':''}/>否
+					<input type="radio" name="compatibleFeatures" value="true" text{($.compatibleFeatures)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="compatibleFeatures" value="false" text{(!$.compatibleFeatures)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+<!--			<tr>-->
+<!--				<td class="editTableTitle">强制保存:</td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input type="radio" name="forcesave" value="true" text{($.forcesave)?'checked':''}/>是-->
+<!--					<input type="radio" name="forcesave" value="false" text{(!$.forcesave)?'checked':''}/>否-->
+<!--				</td>-->
+<!--			</tr>-->
+			<tr>
+				<td class="editTableTitle">{{$.lp.onlyoffice.plugins}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="plugins" value="true" text{($.plugins)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="plugins" value="false" text{(!$.plugins)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">强制保存:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.reviewDisplay}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="forcesave" value="true" text{($.forcesave)?'checked':''}/>是
-					<input type="radio" name="forcesave" value="false" text{(!$.forcesave)?'checked':''}/>否
+					<input type="radio" name="reviewDisplay" value="markup" text{$.reviewDisplay=='markup'||!$.reviewDisplay ?'checked':''}/>{{$.lp.onlyoffice.reviewDisplay_markup}}
+					<input type="radio" name="reviewDisplay" value="final" text{$.reviewDisplay=='final'?'checked':''}/>{{$.lp.onlyoffice.reviewDisplay_final}}
+					<input type="radio" name="reviewDisplay" value="original" text{$.reviewDisplay=='original'?'checked':''}/>{{$.lp.onlyoffice.reviewDisplay_original}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">启用插件:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.showReviewChanges}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="plugins" value="true" text{($.plugins)?'checked':''}/>是
-					<input type="radio" name="plugins" value="false" text{(!$.plugins)?'checked':''}/>否
+					<input type="radio" name="showReviewChanges" value="true" text{($.showReviewChanges)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="showReviewChanges" value="false" text{(!$.showReviewChanges)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">修订显示方式:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.trackChanges}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="reviewDisplay" value="markup" text{$.reviewDisplay=='markup'||!$.reviewDisplay ?'checked':''}/>标记
-					<input type="radio" name="reviewDisplay" value="final" text{$.reviewDisplay=='final'?'checked':''}/>最终版
-					<input type="radio" name="reviewDisplay" value="original" text{$.reviewDisplay=='original'?'checked':''}/>原始
+					<input type="radio" name="trackChanges" value="true" text{($.trackChanges)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="trackChanges" value="false" text{(!$.trackChanges)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">显示跟踪变化:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.spellcheck}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="showReviewChanges" value="true" text{($.showReviewChanges)?'checked':''}/>是
-					<input type="radio" name="showReviewChanges" value="false" text{(!$.showReviewChanges)?'checked':''}/>否
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">打开审阅编辑模式:</td>
-				<td class="editTableValue">
-					<input type="radio" name="trackChanges" value="true" text{($.trackChanges)?'checked':''}/>是
-					<input type="radio" name="trackChanges" value="false" text{(!$.trackChanges)?'checked':''}/>否
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">拼写检查:</td>
-				<td class="editTableValue">
-					<input type="radio" name="spellcheck" value="true" text{($.spellcheck)?'checked':''}/>是
-					<input type="radio" name="spellcheck" value="false" text{(!$.spellcheck)?'checked':''}/>否
+					<input type="radio" name="spellcheck" value="true" text{($.spellcheck)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="spellcheck" value="false" text{(!$.spellcheck)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
-		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">界面设置</div>
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.onlyoffice.viewSet}}</div>
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">隐藏编辑器头:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.compactHeader}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="compactHeader" value="true" text{($.compactHeader)?'checked':''}/>是
-					<input type="radio" name="compactHeader" value="false" text{(!$.compactHeader)?'checked':''}/>否
+					<input type="radio" name="compactHeader" value="true" text{($.compactHeader)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="compactHeader" value="false" text{(!$.compactHeader)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">紧凑型工具栏:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.compactToolbar}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="compactToolbar" value="true" text{($.compactToolbar)?'checked':''}/>是
-					<input type="radio" name="compactToolbar" value="false" text{(!$.compactToolbar)?'checked':''}/>否
+					<input type="radio" name="compactToolbar" value="true" text{($.compactToolbar)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="compactToolbar" value="false" text{(!$.compactToolbar)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">是否显示反馈:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.feedback}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="feedback" value="true" text{($.feedback)?'checked':''}/>是
-					<input type="radio" name="feedback" value="false" text{(!$.feedback)?'checked':''}/>否
-				</td>
-			</tr>
-
-			<tr>
-				<td class="editTableTitle">是否显示帮助:</td>
-				<td class="editTableValue">
-					<input type="radio" name="help" value="true" text{($.help)?'checked':''}/>是
-					<input type="radio" name="help" value="false" text{(!$.help)?'checked':''}/>否
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">标题栏是否显示文件名:</td>
-				<td class="editTableValue">
-					<input type="radio" name="toolbarHideFileName" value="true" text{($.toolbarHideFileName)?'checked':''}/>是
-					<input type="radio" name="toolbarHideFileName" value="false" text{(!$.toolbarHideFileName)?'checked':''}/>否
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">顶部工具栏是否高亮显示:</td>
-				<td class="editTableValue">
-					<input type="radio" name="toolbarNoTabs" value="true" text{($.toolbarNoTabs)?'checked':''}/>是
-					<input type="radio" name="toolbarNoTabs" value="false" text{(!$.toolbarNoTabs)?'checked':''}/>否
+					<input type="radio" name="feedback" value="true" text{($.feedback)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="feedback" value="false" text{(!$.feedback)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 
 			<tr>
-				<td class="editTableTitle">标尺测量单位</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.help}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="unit" value="cm" text{$.unit=='cm'||!$.unit ?'checked':''}/>厘米
-					<input type="radio" name="unit" value="pt" text{$.unit=='pt'?'checked':''}/>像素
-					<input type="radio" name="unit" value="inch" text{$.unit=='inch'?'checked':''}/>英寸
+					<input type="radio" name="help" value="true" text{($.help)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="help" value="false" text{(!$.help)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">默认缩放</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.toolbarHideFileName}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="toolbarHideFileName" value="true" text{($.toolbarHideFileName)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="toolbarHideFileName" value="false" text{(!$.toolbarHideFileName)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.onlyoffice.toolbarNoTabs}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="toolbarNoTabs" value="true" text{($.toolbarNoTabs)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="toolbarNoTabs" value="false" text{(!$.toolbarNoTabs)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+
+			<tr>
+				<td class="editTableTitle">{{$.lp.onlyoffice.unit}}</td>
+				<td class="editTableValue">
+					<input type="radio" name="unit" value="cm" text{$.unit=='cm'||!$.unit ?'checked':''}/>{{$.lp.onlyoffice.unit_cm}}
+					<input type="radio" name="unit" value="pt" text{$.unit=='pt'?'checked':''}/>{{$.lp.onlyoffice.unit_pt}}
+					<input type="radio" name="unit" value="inch" text{$.unit=='inch'?'checked':''}/>{{$.lp.onlyoffice.unit_inch}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.onlyoffice.zoom}}</td>
 				<td class="editTableValue">
 					<input type="text" name="zoom"  value="text{!$.zoom?'100':$.zoom}" class="editTableInput"/>
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">隐藏侧栏:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.hideRightMenu}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="hideRightMenu" value="true" text{($.hideRightMenu)?'checked':''}/>是
-					<input type="radio" name="hideRightMenu" value="false" text{(!$.hideRightMenu)?'checked':''}/>否
+					<input type="radio" name="hideRightMenu" value="true" text{($.hideRightMenu)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="hideRightMenu" value="false" text{(!$.hideRightMenu)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
-		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">个性化信息</div>
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.onlyoffice.individualization}}</div>
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">地址:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.address}}:</td>
 				<td class="editTableValue">
 					<input type="text" name="address" value="text{$.address}" class="editTableInput"/>
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">简介:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.info}}:</td>
 				<td class="editTableValue">
 					<input type="text" name="info" value="text{$.info}" class="editTableInput"/>
 				</td>
@@ -199,44 +199,44 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">邮箱:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.mail}}:</td>
 				<td class="editTableValue">
 					<input type="text" name="mail" value="text{$.mail}" class="editTableInput"/>
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">公司名字:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.company}}:</td>
 				<td class="editTableValue">
 					<input type="text" name="name" value="text{$.name}" class="editTableInput"/>
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">网址:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.www}}:</td>
 				<td class="editTableValue">
 					<input type="text" name="www" value="text{$.www}" class="editTableInput"/>
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">反馈地址:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.feedbackUrl}}:</td>
 				<td class="editTableValue">
 					<input type="text" name="feedbackUrl" value="text{$.feedbackUrl}" class="editTableInput"/>
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">左上角logo（172x40）:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.logoImg}}:</td>
 				<td class="editTableValue">
 					<input type="text" name="logoImg" value="text{$.logoImg}" class="editTableInput"/>
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">logo链接:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.logoUrl}}:</td>
 				<td class="editTableValue">
 					<input type="text" name="logoUrl" value="text{$.logoUrl}" class="editTableInput"/>
 				</td>
 			</tr>
 		</table>
 	</div>
-	<div title="事件"  class="MWFTab">
+	<div title="{{$.lp.event}}"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
 	<div title="HTML"  class="MWFTab">
