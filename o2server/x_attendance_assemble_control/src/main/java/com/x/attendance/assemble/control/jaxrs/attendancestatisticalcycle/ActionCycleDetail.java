@@ -1,6 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle;
 
-import com.alibaba.druid.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import com.x.attendance.assemble.control.service.AttendanceStatisticalCycleServiceAdv;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.entity.JpaObject;
