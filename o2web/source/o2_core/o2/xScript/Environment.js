@@ -2451,8 +2451,8 @@ MWF.xScript.Environment = function(ev){
          {
             "names": "", //{Array|String} 要重置给哪些身份
             "opinion": "", //流转意见
-            "success ": function(){}, //重置成功后的回调方法
-            "failure ": function(){} //重置失败后的回调方法
+            "success": function(){}, //重置成功后的回调方法
+            "failure": function(){} //重置失败后的回调方法
         }
          </code></pre>
          * @example
@@ -2492,8 +2492,8 @@ MWF.xScript.Environment = function(ev){
          * 格式如下：
          <pre><code class="language-js">
          {
-            "success ": function(){}, //撤回成功后的回调方法
-            "failure ": function(){} //撤回失败后的回调方法
+            "success": function(){}, //撤回成功后的回调方法
+            "failure": function(){} //撤回失败后的回调方法
         }
          </code></pre>
          * @example
@@ -2531,8 +2531,8 @@ MWF.xScript.Environment = function(ev){
          {
             "value" : [], //splitValueList 添加的拆分值，拆分值取决于流程拆分节点的设置
             "trimExist" : true, //排除已经存在的拆分值.
-            "success ": function(){}, //执行成功后的回调方法
-            "failure ": function(){} //执行失败后的回调方法
+            "success": function(){}, //执行成功后的回调方法
+            "failure": function(){} //执行失败后的回调方法
         }
          </code></pre>
          * @example
@@ -2579,8 +2579,8 @@ MWF.xScript.Environment = function(ev){
          * 格式如下：
          <pre><code class="language-js">
          {
-            "success ": function(){}, //执行成功后的回调方法
-            "failure ": function(){} //执行失败后的回调方法
+            "success": function(){}, //执行成功后的回调方法
+            "failure": function(){} //执行失败后的回调方法
         }
          </code></pre>
          * @example
@@ -2605,6 +2605,95 @@ MWF.xScript.Environment = function(ev){
                 if (_form.businessData.control["allowDelete"]) _form.deleteWork();
             }else{
                 _form.doDeleteWork(option.success, option.failure);
+            }
+        },
+
+
+        /**对当前工作发送待阅。<b>（仅流程表单中可用）</b><br/>
+         * 能查看工作的人都有权限发送。<br/>
+         * this.form.sendRead()会触发 beforeSendRead、afterSendRead，因此在上述事件中不允许使用本方法。
+         * @method sendRead
+         * @static
+         * @param {Object} [option] - 发送待阅的相关参数，如果不带此参数，弹出发送待阅对话框<br/>
+         * 格式如下：
+         <pre><code class="language-js">
+         {
+            "identityList": "", //{Array|String} 要给哪些身份发送待阅
+            "notify": true, //是否发送待阅通知（需要服务器开启消息）
+            "success": function(){}, //成功后的回调方法
+            "failure": function(){} //失败后的回调方法
+        }
+         </code></pre>
+         * @example
+         //不带参数，弹出发送待阅对话框
+         this.form.sendRead();
+         * @example
+         //带参数，直接调用后台服务发送待阅
+         this.form.sendRead({
+            "identityList": ["张三@zhangsan@I"],
+            "notify": false,
+            "success": function(json){
+                this.form.notice("send read success", "success");
+            }.bind(this),
+            "failure": function(xhr, text, error){
+                //xhr--HttpRequest请求对象
+                //text--HttpResponse内容文本
+                //error--错误信息
+                this.form.notice("send read failure:"+error, "error");
+            }.bind(this)
+        });
+         */
+        "sendRead": function(option){
+            if (!option){
+                _form.sendRead();
+            }else{
+                if( option.identityList && typeOf(option.identityList) === "string" ){
+                    option.identityList = [option.identityList];
+                }
+                _form.doSendRead(option);
+            }
+        },
+
+        /**对当前工作添加阅读人（参阅）。<b>（仅流程表单中可用）</b><br/>
+         * 能查看工作的人都有权限添加。<br/>
+         * this.form.addReview()会触发 beforeAddReview、afterAddReview，因此在上述事件中不允许使用本方法。
+         * @method addReview
+         * @static
+         * @param {Object} [option] - 添加阅读人的相关参数，如果不带此参数，弹出添加阅读人对话框<br/>
+         * 格式如下：
+         <pre><code class="language-js">
+         {
+            "personList": "", //{Array|String} 要添加哪些阅读人
+            "success": function(){}, //成功后的回调方法
+            "failure": function(){} //失败后的回调方法
+        }
+         </code></pre>
+         * @example
+         //不带参数，弹出添加阅读人对话框
+         this.form.addReview();
+         * @example
+         //带参数，直接调用后台服务发送待阅
+         this.form.addReview({
+            "personList": ["张三@zhangsan@P"],
+            "success": function(json){
+                this.form.notice("add review success", "success");
+            }.bind(this),
+            "failure": function(xhr, text, error){
+                //xhr--HttpRequest请求对象
+                //text--HttpResponse内容文本
+                //error--错误信息
+                this.form.notice("add review failure:"+error, "error");
+            }.bind(this)
+        });
+         */
+        "addReview": function(option){
+            if (!option){
+                _form.addReview();
+            }else{
+                if( option.personList && typeOf(option.personList) === "string" ){
+                    option.personList = [option.personList];
+                }
+                _form.doAddReview(option);
             }
         },
 
