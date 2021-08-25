@@ -228,7 +228,8 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
          * @see https://vuejs.org/
          * @member {VueInstance}
          */
-        this.vm = new Vue(this.vueApp).$mount(this.node);
+        this.vm = new Vue(this.vueApp);
+        this.vm.$mount(this.node);
     },
 
     _createVueExtend: function(callback){
