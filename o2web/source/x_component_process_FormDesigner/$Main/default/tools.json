@@ -208,13 +208,13 @@
     "className": "Office"
   },
   "iWebOffice": {
-    "icon": "office.png",
-    "text": "iWebOffice",
+    "icon": "iWebOffice.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.iWebOffice,,
     "className": "IWebOffice"
   },
   "yozoOffice": {
     "icon": "yozoOffice.png",
-    "text": "yozoOffice",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.yozoOffice,,
     "className": "YozoOffice"
   },
   "onlyOffice": {
