@@ -19,7 +19,10 @@ MWF.xScript.Environment = function(ev){
         return new MWF.xScript.JSONData(jData, function(data, key, _self){
             var p = {"getKey": function(){return key;}, "getParent": function(){return _self;}};
             while (p && !_forms[p.getKey()]) p = p.getParent();
-            if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
+            //if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
+            var k = (p) ? p.getKey() : "";
+            if (k) if(_forms[k]) if(_forms[k].resetData) _forms[k].resetData();
+            //if(p) if(p.getKey()) if(_forms[p.getKey()]) if(_forms[p.getKey()].render) _forms[p.getKey()].render();
         }, "", null, _form);
     };
 
@@ -3298,44 +3301,67 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
                     }
                 }},
 
-            "add": {"value": function(newKey, newValue, overwrite){
-                var flag = true;
-                var type = typeOf(data);
-                if (type==="array"){
-                    if (arguments.length<2){
-                        data.push(newKey);
-                        newValue = newKey;
-                        newKey = data.length-1;
-                    }else{
-                        if (!newKey && newKey!==0){
-                            data.push(newValue);
+            "add": {"value": function(newKey, newValue, overwrite, noreset){
+                if (arguments.length<2 || newKey.indexOf("..")===-1){
+                    var flag = true;
+                    var type = typeOf(data);
+                    if (type==="array"){
+                        if (arguments.length<2){
+                            data.push(newKey);
+                            newValue = newKey;
                             newKey = data.length-1;
                         }else{
-                            flag = false;
+                            if (!newKey && newKey!==0){
+                                data.push(newValue);
+                                newKey = data.length-1;
+                            }else{
+                                if (newKey>=data.length){
+                                    data.push(newValue);
+                                    newKey = data.length-1;
+                                }else{
+                                    if (overwrite) data[newKey] = newValue;
+                                    newValue = data[newKey];
+                                    flag = false;
+                                }
+                            }
                         }
-                    }
-                    if (flag){
-                        var o = {};
-                        o[newKey] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, newKey, this]),"set": setter.apply(this, [data, callback, newKey, this])};
-                        MWF.defineProperties(this, o);
-                    }
-                    this[newKey] = newValue;
-                }else if (type==="object"){
-                    if (!this.hasOwnProperty(newKey)){
-                        data[newKey] = newValue;
-
                         if (flag){
                             var o = {};
                             o[newKey] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, newKey, this]),"set": setter.apply(this, [data, callback, newKey, this])};
                             MWF.defineProperties(this, o);
                         }
-                        this[newKey] = newValue;
-                    }else{
-                        if (overwrite) this[newKey] = newValue;
-                    }
-                }
+                        if (!noreset) this[newKey] = newValue;
+                    }else if (type==="object"){
+                        if (!this.hasOwnProperty(newKey)){
+                            if (!data[newKey] || overwrite){
+                                data[newKey] = newValue;
+                                newValue = data[newKey];
+                            }
 
-                return this[newKey];
+                            if (flag){
+                                var o = {};
+                                o[newKey] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, newKey, this]),"set": setter.apply(this, [data, callback, newKey, this])};
+                                MWF.defineProperties(this, o);
+                            }
+                            if (!noreset) this[newKey] = newValue;
+                        }else{
+                            if (overwrite){
+                                data[newKey] = newValue;
+                                if (!noreset)  this[newKey] = newValue;
+                            }
+                        }
+                    }
+                    return this[newKey];
+                }else{
+                    var keys = newKey.split("..");
+                    var key = keys.shift();
+                    var d = this.add(key, {}, false, true);
+                    if (keys.length) return d.add(keys.join(".."), newValue, overwrite, noreset);
+                    return d;
+                }
+            }},
+            "check": {"value": function(key){
+                this.add(key, null, false, true);
             }},
             "del": {"value": function(delKey){
                 if (!this.hasOwnProperty(delKey)) return null;

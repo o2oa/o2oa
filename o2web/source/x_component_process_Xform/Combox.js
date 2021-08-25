@@ -90,7 +90,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
             this.validationMode();
             if (this.validation()){
                 var v = this.getInputData("change");
-                this._setEnvironmentData(v);
+                this._setBusinessData(v);
             }
         }.bind(this));
 
@@ -270,7 +270,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         //return this.node.get("text");
     },
     resetData: function(){
-        this._setBusinessData(this.getValue());
+        //this._setBusinessData(this.getValue());
+        this.setData(this.getValue());
     }
-	
 }); 

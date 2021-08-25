@@ -33,21 +33,10 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
      * json.disabled = true;     //设置输入框为禁用
      */
     _appendVueData: function(){
-        if (!this.json[this.json.id]){
+        this.form.Macro.environment.data.check(this.json.id);
+        //if (!this.json[this.json.id]){
             this.json[this.json.id] = this._getBusinessData();
-            // this.value = this._getBusinessData();
-            // Object.defineProperty(this.json, this.json.id, {
-            //     "configurable": true,
-            //     "enumerable": true,
-            //     "get": function(){
-            //         return this.value;
-            //     }.bind(this),
-            //     "set": function(v){
-            //         this._setEnvironmentData(v);
-            //         this.value = v;
-            //     }.bind(this),
-            // });
-        }
+        //}
 
         if (!this.json.maxlength) this.json.maxlength = "";
         if (!this.json.minlength) this.json.minlength = "";
@@ -68,10 +57,7 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         if (!app.methods) app.methods = {};
         app.methods.$loadElEvent = function(ev){
             this.validationMode();
-            // if (ev=="change"){
-            //     debugger;
-            //     this._setBusinessData(this.getInputData("change"));
-            // }
+            if (ev==="change") this._setBusinessData(this.getInputData());
             if (this.json.events[ev] && this.json.events[ev].code){
                 this.form.Macro.fire(this.json.events[ev].code, this, event);
             }
@@ -96,7 +82,6 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         html += " :type=\"inputType\"";
         html += " :placeholder=\"description\"";
 
-        debugger;
         this.options.elEvents.forEach(function(k){
             html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
         });

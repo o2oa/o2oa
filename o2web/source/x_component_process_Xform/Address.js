@@ -100,8 +100,8 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
             this.validationMode();
             if (this.validation()){
                 var v = this.getInputData("change");
-                //this._setBusinessData(v);
-                this._setEnvironmentData(v);
+                this._setBusinessData(v);
+                //this._setEnvironmentData(v);
             }
         }.bind(this));
     },
