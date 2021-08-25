@@ -4660,7 +4660,7 @@ debugger;
 
             var _self = this;
             var dlg = new MWF.xDesktop.Dialog({
-                "title": this.app.lp.sendRead,
+                "title": MWF.xApplication.process.Xform.LP.sendRead,
                 "style": this.json.dialogStyle || "user", //|| "work",
                 "top": p.y - 100,
                 "left": p.x,
@@ -4710,7 +4710,7 @@ debugger;
             "values": names,
             "type": "identity",
             "count": 0,
-            "title": this.app.lp.sendRead,
+            "title": MWF.xApplication.process.Xform.LP.sendRead,
             "onComplete": function (items) {
                 areaNode.empty();
                 var identityList = [];
