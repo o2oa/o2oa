@@ -495,7 +495,8 @@ if (window.Promise && !Promise.any){
         "JSONTemplate": ["../o2_lib/mootools/plugin/Template.js"],
         "kity": ["../o2_lib/kityminder/kity/kity.js"],
         "kityminder": ["../o2_lib/kityminder/core/dist/kityminder.core.js"],
-        "vue": ["../o2_lib/vue/vue.js"],
+        "vue": ["../o2_lib/vue/vue.min.js"],
+        "vue_develop": ["../o2_lib/vue/vue.js"],
         "elementui": ["../o2_lib/vue/element/index.js"]
     };
     var _loaded = {};
@@ -622,7 +623,7 @@ if (window.Promise && !Promise.any){
 
         if (_loadedCss[key]) uuid = _loadedCss[key]["class"];
         if (op.dom) _parseDom(op.dom, function(node){ if (node.className.indexOf(uuid) == -1) node.className += ((node.className) ? " "+uuid : uuid);}, op.doc);
-
+debugger;
         var completed = function(){
             if (_loadCssRunning[key]){
                 _loadCssRunning[key] = false;
@@ -770,6 +771,7 @@ if (window.Promise && !Promise.any){
     };
 
     var _loadCssText = function(cssText, options, callback){
+        debugger;
         var op =  (_typeOf(options)==="object") ? _getCssOptions(options) : _getCssOptions(null);
         var cb = (_typeOf(options)==="function") ? options : callback;
         var uuid = options.uuid || "css"+_uuid();

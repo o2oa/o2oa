@@ -525,7 +525,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
                     //this.fireEvent("change");
                 }.bind(this),
                 "onChange": function () {
-                    this._setEnvironmentData(this.getInputData());
+                    this._setBusinessData(this.getInputData());
                     this.fireEvent("change");
                 }.bind(this),
                 "optionsMethod": this._searchOptions.bind(this)
@@ -562,7 +562,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
 
         this.combox.addEvent("change", function(){
             this.validationMode();
-            if (this.validation()) this._setEnvironmentData(this.getInputData("change"));
+            if (this.validation()) this._setBusinessData(this.getInputData("change"));
         }.bind(this));
     },
 
@@ -611,7 +611,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         this.node.getFirst().setStyle("height", "auto");
         this.node.getFirst().addEvent("change", function(){
             this.validationMode();
-            if (this.validation()) this._setEnvironmentData(this.getInputData("change"));
+            if (this.validation()) this._setBusinessData(this.getInputData("change"));
         }.bind(this));
     },
     getDataText: function(data){
