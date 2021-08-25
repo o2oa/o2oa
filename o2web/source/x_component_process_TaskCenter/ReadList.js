@@ -165,32 +165,46 @@ MWF.xApplication.process.TaskCenter.ReadList.Item = new Class({
         }, null, this.list.app.content);
     },
     openWorkByTaskCompleted: function(e, id){
-        var _self = this;
-        var options = {"workId": id, "readonly": true, "appId": "process.Work"+id,
-            "onQueryLoadForm" : function () {
-                this.appForm.addEvent("afterReaded", function () {
-                    _self.node.destroy();
-                    _self.list.refresh();
-                })
-            }, "onPostLoadForm" :function () {
+        // 判断是否是钉钉环境 是否是独立窗口
+        var ua = navigator.userAgent.toLowerCase();
+        if (layout.inBrowser && ua.indexOf('dingtalk') >= 0 && !layout.mobile) {
+            var url = "../x_desktop/work.html?workid=" + id;
+            window.location = o2.filterUrl(url);
+        } else {
+            var _self = this;
+            var options = {"workId": id, "readonly": true, "appId": "process.Work"+id,
+                "onQueryLoadForm" : function () {
+                    this.appForm.addEvent("afterReaded", function () {
+                        _self.node.destroy();
+                        _self.list.refresh();
+                    })
+                }, "onPostLoadForm" :function () {
 
-            }
-        };
-        this.list.app.desktop.openApplication(e, "process.Work", options);
+                }
+            };
+            this.list.app.desktop.openApplication(e, "process.Work", options);
+        }
     },
     openWorkCompleteedByTaskCompleted: function(e, id){
-        var _self = this;
-        var options = {"workCompletedId": id, "readonly": true, "appId": "process.Work"+id,
-            "onQueryLoadForm" : function () {
-                this.appForm.addEvent("afterReaded", function () {
-                    _self.node.destroy();
-                    _self.list.refresh();
-                })
-            }, "onPostLoadForm" :function () {
+        // 判断是否是钉钉环境 是否是独立窗口
+        var ua = navigator.userAgent.toLowerCase();
+        if (layout.inBrowser && ua.indexOf('dingtalk') >= 0 && !layout.mobile) {
+            var url = "../x_desktop/work.html?workCompletedId=" + id;
+            window.location = o2.filterUrl(url);
+        } else {
+            var _self = this;
+            var options = {"workCompletedId": id, "readonly": true, "appId": "process.Work"+id,
+                "onQueryLoadForm" : function () {
+                    this.appForm.addEvent("afterReaded", function () {
+                        _self.node.destroy();
+                        _self.list.refresh();
+                    })
+                }, "onPostLoadForm" :function () {
 
-            }
-        };
-        this.list.app.desktop.openApplication(e, "process.Work", options);
+                }
+            };
+            this.list.app.desktop.openApplication(e, "process.Work", options);
+        }
     },
     closeTaskCompleted: function(callback){
 

@@ -2029,6 +2029,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         //if (processNode) processNode.destroy();
                         if (callback) callback(json);
 
+                        debugger;
                         this.taskList = json.data;
                         this.fireEvent("afterProcess");
                         if (this.app && this.app.fireEvent) this.app.fireEvent("afterProcess");
@@ -2054,7 +2055,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                                         var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
                                         (new URI(url)).go();
                                     } else {
-                                        this.app.close();
+                                        // this.app.close();
+                                        this.dingTalkPcCloseOrAppClose();
                                     }
                                 }
                                 //}
@@ -2103,7 +2105,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
                             (new URI(url)).go();
                         } else {
-                            this.app.close();
+                            // this.app.close();
+                            this.dingTalkPcCloseOrAppClose();
                         }
                     }.bind(this)
                 }
@@ -2180,7 +2183,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                                 var url = _work.Macro.exec(_work.json.afterProcessRedirectScript.code, _work);
                                 (new URI(url)).go();
                             } else {
-                                _work.app.close();
+                                // _work.app.close();
+                                _work.dingTalkPcCloseOrAppClose();
                             }
                         }
                     };
@@ -2191,7 +2195,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             var url = _work.Macro.exec(_work.json.afterProcessRedirectScript.code, _work);
                             (new URI(url)).go();
                         } else {
-                            _work.app.close();
+                            // _work.app.close();
+                            _work.dingTalkPcCloseOrAppClose();
                         }
                     }, t);
                 }
@@ -4592,11 +4597,24 @@ debugger;
                     history.replaceState(null, "work", redirectlink);
                     redirectlink.toURI().go();
                 } else {
-                    window.location = o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter");
+                    // window.location = o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter");
                     history.replaceState(null, "work", o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter"));
                     o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter").toURI().go();
                 }
             }
+        }
+    },
+    // 判断是否是钉钉pc上 
+    dingTalkPcCloseOrAppClose: function () {
+        // 判断是否是钉钉环境 是否是独立窗口
+        var ua = navigator.userAgent.toLowerCase();
+        debugger;
+        if (layout.inBrowser && ua.indexOf('dingtalk') >= 0) {
+            var centerUrl = o2.filterUrl("../x_desktop/app.html?app=process.TaskCenter");
+            history.replaceState(null, "work", centerUrl);
+            centerUrl.toURI().go();
+        } else {
+            this.app.close();
         }
     },
     /**
