@@ -348,8 +348,16 @@ MWF.xApplication.process.Xform.LP = {
         "selectUnit": "Select Unit",
         "excludeBranches": "Exclude existing branches",
         "yes": "Yes",
-        "no": "No"
-    }
+        "no": "No",
+
+        "readIdentity": "Person to be read",
+        "sendReadNotify": "Send a pending notification"
+    },
+    "sendRead": "Send Read",
+    "sendReadOk": "Sent to be read:",
+    "noPermissionOrWorkNotExisted": "You do not have permission or the job does not exist",
+    "inputSendReadPeople": "Please select the person to be read",
+    "sendReadPeopleCanNotEmpty": "The person to be read cannot be empty"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;
