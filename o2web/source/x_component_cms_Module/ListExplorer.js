@@ -190,9 +190,14 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
             var scrollSize = _self.elementContentNode.getScrollSize();
             var clientSize = _self.elementContentNode.getSize();
             var scrollHeight = scrollSize.y-clientSize.y;
-            if (_self.elementContentNode.scrollTop+200>scrollHeight) {
+            if ( _self.elementContentNode.scrollTop+200>scrollHeight ) {
                 // if (!_self.view.isItemsLoaded && !_self.view.isItemLoadding ) _self.view.loadElementList();
-                if( !_self.lastScrollTime || (new Date() - _self.lastScrollTime) > 300 ) {
+                if( _self.view.isItemLoadding ){
+                    if( !_self.lastScrollTime || (new Date() - _self.lastScrollTime) > 220 ) {
+                        _self.lastScrollTime = new Date();
+                        if (!_self.view.isItemsLoaded) _self.view.loadElementList();
+                    }
+                }else{
                     _self.lastScrollTime = new Date();
                     if (!_self.view.isItemsLoaded) _self.view.loadElementList();
                 }
