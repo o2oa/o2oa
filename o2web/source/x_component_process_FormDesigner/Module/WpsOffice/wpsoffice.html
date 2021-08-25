@@ -1,23 +1,23 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+	<div title="{{$.lp.base}}" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">标识:</td>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
 				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">名称:</td>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
 				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">描述:</td>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
 				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">是否只读:</td>
+				<td class="editTableTitle">{{$.lp.readonly}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>是
-					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>否
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<!--			<tr>-->
@@ -28,251 +28,252 @@
 			<!--				</td>-->
 			<!--			</tr>-->
 		</table>
-		<div class="MWFMaplist" name="styles" title="样式"></div>
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">类型:</td>
+				<td class="editTableTitle">{{$.lp.type}}:</td>
 				<td class="editTableValue">
-					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='word')?'checked':''} type="radio" value="word"/>Word 文档<br/>
-					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='excel')?'checked':''} type="radio" value="excel"/>Excel 电子表格<br/>
-					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='ppt')?'checked':''} type="radio" value="ppt"/>PowerPoint 幻灯片<br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='word')?'checked':''} type="radio" value="word"/>Word<br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='excel')?'checked':''} type="radio" value="excel"/>Excel<br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='ppt')?'checked':''} type="radio" value="ppt"/>PowerPoint<br/>
 				</td>
 			</tr>
 		</table>
-		<div id="officeTemplateArea" title="src" style="display: text{($.officeType=='other')?'block':'none'}">
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">模板标识:</td>
-					<td class="editTableValue">
-						<input type="text" name="template" value="text{$.template}" class="editTableInput"/>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<div class="MWFScriptArea" name="readScript" title="满足条件时只读 (S)"></div>
+<!--		<div id="officeTemplateArea" title="src" style="display: text{($.officeType=='other')?'block':'none'}">-->
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">模板标识:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input type="text" name="template" value="text{$.template}" class="editTableInput"/>-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--		</div>-->
+		<div class="MWFScriptArea" name="readScript" title="{{$.lp.readonlyCondition}} (S)"></div>
 	</div>
-	<div title="配置" class="MWFTab">
-		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通用选项</div>
+	<div title="{{$.lp.wps.config}}" class="MWFTab">
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.wps.options}}</div>
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">顶部区域:</td>
+				<td class="editTableTitle">{{$.lp.wps.topArea}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="isShowTopArea" value="true" text{($.isShowTopArea)?'checked':''}/>显示
-					<input type="radio" name="isShowTopArea" value="false" text{(!$.isShowTopArea)?'checked':''}/>隐藏
+					<input type="radio" name="isShowTopArea" value="true" text{($.isShowTopArea)?'checked':''}/>{{$.lp.wps.show}}
+					<input type="radio" name="isShowTopArea" value="false" text{(!$.isShowTopArea)?'checked':''}/>{{$.lp.wps.hide}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">头部区域:</td>
+				<td class="editTableTitle">{{$.lp.wps.headArea}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="isShowHeader" value="true" text{($.isShowHeader)?'checked':''}/>显示
-					<input type="radio" name="isShowHeader" value="false" text{(!$.isShowHeader)?'checked':''}/>隐藏
+					<input type="radio" name="isShowHeader" value="true" text{($.isShowHeader)?'checked':''}/>{{$.lp.wps.show}}
+					<input type="radio" name="isShowHeader" value="false" text{(!$.isShowHeader)?'checked':''}/>{{$.lp.wps.hide}}
 				</td>
 			</tr>
+
+<!--			<tr>-->
+<!--				<td class="editTableTitle">头像:</td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input type="radio" name="isCooperUsersAvatarVisible" value="true" text{($.isCooperUsersAvatarVisible)?'checked':''}/>显示-->
+<!--					<input type="radio" name="isCooperUsersAvatarVisible" value="false" text{(!$.isCooperUsersAvatarVisible)?'checked':''}/>隐藏-->
+<!--				</td>-->
+<!--			</tr>-->
 			<tr>
-				<td class="editTableTitle">评论:</td>
+				<td class="editTableTitle">{{$.lp.wps.showMode}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="isShowComment" value="true" text{($.isShowComment)?'checked':''}/>显示
-					<input type="radio" name="isShowComment" value="false" text{(!$.isShowComment)?'checked':''}/>隐藏
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">头像:</td>
-				<td class="editTableValue">
-					<input type="radio" name="isCooperUsersAvatarVisible" value="true" text{($.isCooperUsersAvatarVisible)?'checked':''}/>显示
-					<input type="radio" name="isCooperUsersAvatarVisible" value="false" text{(!$.isCooperUsersAvatarVisible)?'checked':''}/>隐藏
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">显示模式:</td>
-				<td class="editTableValue">
-					<input type="radio" name="showMode" value="normal" text{($.showMode=='normal')||(!$.showMode)?'checked':''}/>普通模式， 展示所有功能界面
+					<input type="radio" name="showMode" value="normal" text{($.showMode=='normal')||(!$.showMode)?'checked':''}/>{{$.lp.wps.showMode_normal}}
 					<br>
-					<input type="radio" name="showMode" value="simple" text{($.showMode=='simple')?'checked':''}/>极简模式， 不显示头部和工具栏
+					<input type="radio" name="showMode" value="simple" text{($.showMode=='simple')?'checked':''}/>{{$.lp.wps.showMode_simple}}
 				</td>
 			</tr>
-			<tr>
-				<td class="editTableTitle">浏览器区域全屏:</td>
-				<td class="editTableValue">
-					<input type="radio" name="isBrowserViewFullscreen" value="true" text{($.isBrowserViewFullscreen)?'checked':''}/>是
-					<input type="radio" name="isBrowserViewFullscreen" value="false" text{(!$.isBrowserViewFullscreen)?'checked':''}/>否
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">在iframe区域内全屏:</td>
-				<td class="editTableValue">
-					<input type="radio" name="isIframeViewFullscreen" value="true" text{($.isIframeViewFullscreen)?'checked':''}/>是
-					<input type="radio" name="isIframeViewFullscreen" value="false" text{(!$.isIframeViewFullscreen)?'checked':''}/>否
-				</td>
-			</tr>
+<!--			<tr>-->
+<!--				<td class="editTableTitle">浏览器区域全屏:</td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input type="radio" name="isBrowserViewFullscreen" value="true" text{($.isBrowserViewFullscreen)?'checked':''}/>是-->
+<!--					<input type="radio" name="isBrowserViewFullscreen" value="false" text{(!$.isBrowserViewFullscreen)?'checked':''}/>否-->
+<!--				</td>-->
+<!--			</tr>-->
+<!--			<tr>-->
+<!--				<td class="editTableTitle">在iframe区域内全屏:</td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input type="radio" name="isIframeViewFullscreen" value="true" text{($.isIframeViewFullscreen)?'checked':''}/>是-->
+<!--					<input type="radio" name="isIframeViewFullscreen" value="false" text{(!$.isIframeViewFullscreen)?'checked':''}/>否-->
+<!--				</td>-->
+<!--			</tr>-->
 		</table>
-		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">Word配置项</div>
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.wps.wordConfig}}</div>
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">是否开启目录功能:</td>
+				<td class="editTableTitle">{{$.lp.wps.comment}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="isShowDocMap" value="true" text{($.isShowDocMap)?'checked':''}/>是
-					<input type="radio" name="isShowDocMap" value="false" text{(!$.isShowDocMap)?'checked':''}/>否
+					<input type="radio" name="isShowComment" value="true" text{($.isShowComment)?'checked':''}/>{{$.lp.wps.show}}
+					<input type="radio" name="isShowComment" value="false" text{(!$.isShowComment)?'checked':''}/>{{$.lp.wps.hide}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">打开文档时，默认以最佳比例显示(PC):</td>
+				<td class="editTableTitle">{{$.lp.wps.isShowDocMap}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="isBestScale" value="true" text{($.isBestScale)?'checked':''}/>是
-					<input type="radio" name="isBestScale" value="false" text{(!$.isBestScale)?'checked':''}/>否
+					<input type="radio" name="isShowDocMap" value="true" text{($.isShowDocMap)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isShowDocMap" value="false" text{(!$.isShowDocMap)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">底部状态栏(PC):</td>
+				<td class="editTableTitle">{{$.lp.wps.isBestScale}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="isShowBottomStatusBar" value="true" text{($.isShowBottomStatusBar)?'checked':''}/>显示
-					<input type="radio" name="isShowBottomStatusBar" value="false" text{(!$.isShowBottomStatusBar)?'checked':''}/>隐藏
+					<input type="radio" name="isBestScale" value="true" text{($.isBestScale)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isBestScale" value="false" text{(!$.isBestScale)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">移动端打开时是否进入编辑:</td>
+				<td class="editTableTitle">{{$.lp.wps.isShowBottomStatusBar}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="isOpenIntoEdit" value="true" text{($.isOpenIntoEdit)?'checked':''}/>是
-					<input type="radio" name="isOpenIntoEdit" value="false" text{(!$.isOpenIntoEdit)?'checked':''}/>否
+					<input type="radio" name="isShowBottomStatusBar" value="true" text{($.isShowBottomStatusBar)?'checked':''}/>{{$.lp.wps.show}}
+					<input type="radio" name="isShowBottomStatusBar" value="false" text{(!$.isShowBottomStatusBar)?'checked':''}/>{{$.lp.wps.hide}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.isOpenIntoEdit}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isOpenIntoEdit" value="true" text{($.isOpenIntoEdit)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isOpenIntoEdit" value="false" text{(!$.isOpenIntoEdit)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
 	</div>
-	<div title="组件" class="MWFTab">
-		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">是否启用组件（PC端）</div>
+	<div title="{{$.lp.wps.component}}" class="MWFTab">
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.wps.isComponent}}</div>
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">头部左侧:</td>
+				<td class="editTableTitle">{{$.lp.wps.HeaderLeft}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="HeaderLeft" value="true" text{($.HeaderLeft)?'checked':''}/>是
-					<input type="radio" name="HeaderLeft" value="false" text{(!$.HeaderLeft)?'checked':''}/>否
+					<input type="radio" name="HeaderLeft" value="true" text{($.HeaderLeft)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="HeaderLeft" value="false" text{(!$.HeaderLeft)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">头部右侧:</td>
+				<td class="editTableTitle">{{$.lp.wps.HeaderRight}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="HeaderRight" value="true" text{($.HeaderRight)?'checked':''}/>是
-					<input type="radio" name="HeaderRight" value="false" text{(!$.HeaderRight)?'checked':''}/>否
+					<input type="radio" name="HeaderRight" value="true" text{($.HeaderRight)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="HeaderRight" value="false" text{(!$.HeaderRight)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">右下角帮助(金小豹):</td>
+				<td class="editTableTitle">{{$.lp.wps.FloatQuickHelp}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="FloatQuickHelp" value="true" text{($.FloatQuickHelp)?'checked':''}/>是
-					<input type="radio" name="FloatQuickHelp" value="false" text{(!$.FloatQuickHelp)?'checked':''}/>否
+					<input type="radio" name="FloatQuickHelp" value="true" text{($.FloatQuickHelp)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="FloatQuickHelp" value="false" text{(!$.FloatQuickHelp)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">顶部状态栏-历史记录菜单-历史版本:</td>
+				<td class="editTableTitle">{{$.lp.wps.HistoryVersion}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="HistoryVersion" value="true" text{($.HistoryVersion)?'checked':''}/>是
-					<input type="radio" name="HistoryVersion" value="false" text{(!$.HistoryVersion)?'checked':''}/>否
+					<input type="radio" name="HistoryVersion" value="true" text{($.HistoryVersion)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="HistoryVersion" value="false" text{(!$.HistoryVersion)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">顶部状态栏-历史记录菜单-协作记录:</td>
+				<td class="editTableTitle">{{$.lp.wps.HistoryRecord}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="HistoryRecord" value="true" text{($.HistoryRecord)?'checked':''}/>是
-					<input type="radio" name="HistoryRecord" value="false" text{(!$.HistoryRecord)?'checked':''}/>否
+					<input type="radio" name="HistoryRecord" value="true" text{($.HistoryRecord)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="HistoryRecord" value="false" text{(!$.HistoryRecord)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">表格-右键菜单-历史版本/协作记录分割线:</td>
+				<td class="editTableTitle">{{$.lp.wps.HistoryVersionDivider}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="HistoryVersionDivider" value="true" text{($.HistoryVersionDivider)?'checked':''}/>是
-					<input type="radio" name="HistoryVersionDivider" value="false" text{(!$.HistoryVersionDivider)?'checked':''}/>否
+					<input type="radio" name="HistoryVersionDivider" value="true" text{($.HistoryVersionDivider)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="HistoryVersionDivider" value="false" text{(!$.HistoryVersionDivider)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">顶部工具栏打印按钮:</td>
+				<td class="editTableTitle">{{$.lp.wps.TabPrintPreview}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="TabPrintPreview" value="true" text{($.TabPrintPreview)?'checked':''}/>是
-					<input type="radio" name="TabPrintPreview" value="false" text{(!$.TabPrintPreview)?'checked':''}/>否
+					<input type="radio" name="TabPrintPreview" value="true" text{($.TabPrintPreview)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="TabPrintPreview" value="false" text{(!$.TabPrintPreview)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">更多菜单打印按钮:</td>
+				<td class="editTableTitle">{{$.lp.wps.MenuPrintPreview}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="MenuPrintPreview" value="true" text{($.MenuPrintPreview)?'checked':''}/>是
-					<input type="radio" name="MenuPrintPreview" value="false" text{(!$.MenuPrintPreview)?'checked':''}/>否
+					<input type="radio" name="MenuPrintPreview" value="true" text{($.MenuPrintPreview)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="MenuPrintPreview" value="false" text{(!$.MenuPrintPreview)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">编辑、修订状态按钮:</td>
+				<td class="editTableTitle">{{$.lp.wps.ReviewTrackChanges}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="ReviewTrackChanges" value="true" text{($.ReviewTrackChanges)?'checked':''}/>是
-					<input type="radio" name="ReviewTrackChanges" value="false" text{(!$.ReviewTrackChanges)?'checked':''}/>否
+					<input type="radio" name="ReviewTrackChanges" value="true" text{($.ReviewTrackChanges)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="ReviewTrackChanges" value="false" text{(!$.ReviewTrackChanges)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">编辑、修订状态下拉选项:</td>
+				<td class="editTableTitle">{{$.lp.wps.TrackChanges}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="TrackChanges" value="true" text{($.TrackChanges)?'checked':''}/>是
-					<input type="radio" name="TrackChanges" value="false" text{(!$.TrackChanges)?'checked':''}/>否
+					<input type="radio" name="TrackChanges" value="true" text{($.TrackChanges)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="TrackChanges" value="false" text{(!$.TrackChanges)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">文字右键召唤在线协助者:</td>
+				<td class="editTableTitle">{{$.lp.wps.ContextMenuConvene}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="ContextMenuConvene" value="true" text{($.ContextMenuConvene)?'checked':''}/>是
-					<input type="radio" name="ContextMenuConvene" value="false" text{(!$.ContextMenuConvene)?'checked':''}/>否
+					<input type="radio" name="ContextMenuConvene" value="true" text{($.ContextMenuConvene)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="ContextMenuConvene" value="false" text{(!$.ContextMenuConvene)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
-		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">是否启用组件（移动端）</div>
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.wps.isComponentMobile}}</div>
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">状态栏Logo:</td>
+				<td class="editTableTitle">{{$.lp.wps.Logo}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="Logo" value="true" text{($.Logo)?'checked':''}/>是
-					<input type="radio" name="Logo" value="false" text{(!$.Logo)?'checked':''}/>否
+					<input type="radio" name="Logo" value="true" text{($.Logo)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="Logo" value="false" text{(!$.Logo)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">状态栏协作头像:</td>
+				<td class="editTableTitle">{{$.lp.wps.Cooperation}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="Cooperation" value="true" text{($.Cooperation)?'checked':''}/>是
-					<input type="radio" name="Cooperation" value="false" text{(!$.Cooperation)?'checked':''}/>否
+					<input type="radio" name="Cooperation" value="true" text{($.Cooperation)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="Cooperation" value="false" text{(!$.Cooperation)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">状态栏更多按钮:</td>
+				<td class="editTableTitle">{{$.lp.wps.More}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="More" value="true" text{($.More)?'checked':''}/>是
-					<input type="radio" name="More" value="false" text{(!$.More)?'checked':''}/>否
+					<input type="radio" name="More" value="true" text{($.More)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="More" value="false" text{(!$.More)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">顶部工具栏-分享按钮:</td>
+				<td class="editTableTitle">{{$.lp.wps.SendButton}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="SendButton" value="true" text{($.SendButton)?'checked':''}/>是
-					<input type="radio" name="SendButton" value="false" text{(!$.SendButton)?'checked':''}/>否
+					<input type="radio" name="SendButton" value="true" text{($.SendButton)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="SendButton" value="false" text{(!$.SendButton)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">顶部工具栏-协作记录菜单:</td>
+				<td class="editTableTitle">{{$.lp.wps.CooperHistoryMenuItem}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="CooperHistoryMenuItem" value="true" text{($.CooperHistoryMenuItem)?'checked':''}/>是
-					<input type="radio" name="CooperHistoryMenuItem" value="false" text{(!$.CooperHistoryMenuItem)?'checked':''}/>否
+					<input type="radio" name="CooperHistoryMenuItem" value="true" text{($.CooperHistoryMenuItem)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="CooperHistoryMenuItem" value="false" text{(!$.CooperHistoryMenuItem)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">文字-底部工具栏:</td>
+				<td class="editTableTitle">{{$.lp.wps.WriterHoverToolbars}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="WriterHoverToolbars" value="true" text{($.WriterHoverToolbars)?'checked':''}/>是
-					<input type="radio" name="WriterHoverToolbars" value="false" text{(!$.WriterHoverToolbars)?'checked':''}/>否
+					<input type="radio" name="WriterHoverToolbars" value="true" text{($.WriterHoverToolbars)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="WriterHoverToolbars" value="false" text{(!$.WriterHoverToolbars)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">文字-状态栏-阅读设置:</td>
+				<td class="editTableTitle">{{$.lp.wps.ReadSetting}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="ReadSetting" value="true" text{($.ReadSetting)?'checked':''}/>是
-					<input type="radio" name="ReadSetting" value="false" text{(!$.ReadSetting)?'checked':''}/>否
+					<input type="radio" name="ReadSetting" value="true" text{($.ReadSetting)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="ReadSetting" value="false" text{(!$.ReadSetting)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
 	</div>
-	<div title="事件"  class="MWFTab">
+	<div title="{{$.lp.event}}"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
 	<div title="HTML"  class="MWFTab">

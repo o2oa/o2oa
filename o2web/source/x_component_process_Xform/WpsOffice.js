@@ -85,6 +85,9 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class({
             url : this.wpsUrl,
             mount: this.node,
             mode : this.json.showMode,
+            cooperUserAttribute: {
+                isCooperUsersAvatarVisible: this.json.isCooperUsersAvatarVisible //是否显示协作用户头像
+            },
             // 通用选项，所有类型文档适用
             commonOptions: {
                 isShowTopArea: this.json.isShowTopArea, // 隐藏顶部区域(头部和工具栏)

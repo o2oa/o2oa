@@ -67,7 +67,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             var docserviceApi = data.docserviceApi;
             o2.load(docserviceApi, function () {
                 if (callback) callback();
-            }.bind(this))
+            }.bind(this));
         }.bind(this),null, false);
     },
     getEditor: function (callback) {
@@ -176,19 +176,25 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             this.document.editor.events.onRequestHistoryClose = onRequestHistoryClose;
         }
         if(layout.mobile){
-            // this.document.editor.type = "mobile";
+            this.document.editor.type = "mobile";
         }
-
         this.officeNode = new Element("div#officeNode", {
             "styles": this.form.css.officeAreaNode
         }).inject(this.node);
         if (this.node.getSize().y<800) this.node.setStyle("height", "800px");
         debugger
         this.document.editor.editorConfig.mode = this.mode;
+
+        var lang = layout.session.user.language;
+        if(lang != "en"){
+            lang = "zh";
+        }
+        this.document.editor.editorConfig.lang = lang,
         this.document.editor.editorConfig.customization = {
             "chat": this.json.chat,
             "commentAuthorOnly": false,
             "comments": this.json.comments,
+            "autosave" : this.json.autosave,
             "compactHeader": this.json.compactHeader,
             "compactToolbar": this.json.compactToolbar,
             "compatibleFeatures": this.json.compatibleFeatures,
