@@ -42,7 +42,10 @@ MWF.xApplication.process.FormDesigner.Module.YozoOffice = MWF.FCYozoOffice = new
 		this.node.addEvent("selectstart", function(){
 			return false;
 		});
-
+		if(!layout.serviceAddressList["x_yozofile_assemble_control"]){
+			this.tipNode = new Element("div").inject(this.node);
+			this.tipNode.set("html","<h3><font color=red>请先安装永中应用</font></h3>");
+		}
 		this.iconNode = new Element("div", {
 			"styles": this.css.iconNode
 		}).inject(this.node);
