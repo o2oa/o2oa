@@ -1938,8 +1938,6 @@ MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
     },
     load: function(){
 
-        debugger;
-
         this.toolbarGroupNode = new Element("div", {
             "styles": this.css.toolbarGroupNode,
         }).inject(this.app.toolbarGroupContentNode);
