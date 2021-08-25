@@ -350,14 +350,21 @@ MWF.xApplication.process.Xform.LP = {
         "yes": "Yes",
         "no": "No",
 
-        "readIdentity": "Person to be read",
-        "sendReadNotify": "Send a pending notification"
+        "readIdentity": "Identity",
+        "sendReadNotify": "Send a pending notification",
+
+        "reviewIdentity": "Identity"
     },
     "sendRead": "Send Read",
-    "sendReadOk": "Sent to be read:",
+    "sendReadOk": "Sent Read:",
     "noPermissionOrWorkNotExisted": "You do not have permission or the job does not exist",
-    "inputSendReadPeople": "Please select the person to be read",
-    "sendReadPeopleCanNotEmpty": "The person to be read cannot be empty"
+    "inputSendReadPeople": "Please select the person",
+    "sendReadPeopleCanNotEmpty": "The person cannot be empty",
+
+    "sendReview": "Add Review",
+    "sendReviewOk": "Review has been added:",
+    "inputSendReviewPeople": "Please select the person",
+    "sendReviewPeopleCanNotEmpty": "Please select the person"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

@@ -4655,7 +4655,7 @@ debugger;
         var opt = {};
         MWF.require("MWF.xDesktop.Dialog", function () {
             var width = 560;
-            var height = 260;
+            var height = 270;
             var p = MWF.getCenterPosition(this.app.content, width, height);
 
             var _self = this;
@@ -4680,6 +4680,8 @@ debugger;
                             if( !opt.identityList || !opt.identityList.length ){
                                 _self.app.notice(MWF.xApplication.process.Xform.LP.inputSendReadPeople, "error", dlg.node);
                             }else{
+                                var notify = dlg.content.getElement(".sendRead_notify").get("checked");
+                                opt.notify = !!notify;
                                 _self.doSendRead(opt);
                             }
                         }.bind(this)
@@ -4733,7 +4735,7 @@ debugger;
 
         var nameArr = [];
         var names = opt.identityList || [];
-        names.each(function (n) { nameArr.push(n); });
+        names.each(function (n) { nameArr.push(n.split("@")[0]); });
 
 
         MWF.require("MWF.widget.Mask", function () {
@@ -4743,22 +4745,151 @@ debugger;
             this.fireEvent("beforeSendRead");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSendRead");
 
+            if( !opt.workId ){
+                opt.workId = (this.businessData.work || this.businessData.workCompleted).id;
+                opt.complete = !!(this.businessData.work || this.businessData.workCompleted).completedTime;
+            }
+
             var method = opt.complete ? "createWithWorkCompleted" : "createWithWork";
 
-            o2.Actions.load("x_processplatform_assemble_surface").ReadAction[method](opt.id, {
+            o2.Actions.load("x_processplatform_assemble_surface").ReadAction[method](opt.workId, {
                 "identityList": opt.identityList,
                 "notify": opt.notify
             }, function () {
                 this.fireEvent("afterSendRead");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterSendRead");
-                this.app.notice(MWF.xApplication.process.Xform.LP.sendReadOk + ": " + names, "success");
+                this.app.notice(MWF.xApplication.process.Xform.LP.sendReadOk + ": " + nameArr, "success");
+                if(opt.dlg)opt.dlg.close();
+                if(opt.success)opt.success();
+                if (this.mask) { this.mask.hide(); this.mask = null; }
+                this.app.reload();
+            }.bind(this), function (xhr, text, error) {
+                var errorText = error + ":" + text;
+                if (xhr) errorText = xhr.responseText;
+                this.app.notice("request json error: " + errorText, "error", opt.dlg ? opt.dlg.node : null);
+                if(opt.failure)opt.failure();
+                if (this.mask) { this.mask.hide(); this.mask = null; }
+            }.bind(this));
+        }.bind(this));
+    },
+
+    addReview: function () {
+        var opt = {};
+        MWF.require("MWF.xDesktop.Dialog", function () {
+            var width = 560;
+            var height = 270;
+            var p = MWF.getCenterPosition(this.app.content, width, height);
+
+            var _self = this;
+            var dlg = new MWF.xDesktop.Dialog({
+                "title": MWF.xApplication.process.Xform.LP.sendReview,
+                "style": this.json.dialogStyle || "user", //|| "work",
+                "top": p.y - 100,
+                "left": p.x,
+                "fromTop": p.y - 100,
+                "fromLeft": p.x,
+                "width": width,
+                "height": height,
+                "url": this.app.path + "sendReview.html",
+                "lp": MWF.xApplication.process.Xform.LP.form,
+                "container": this.app.content,
+                "isClose": true,
+                "buttonList": [
+                    {
+                        "type": "ok",
+                        "text": MWF.LP.process.button.ok,
+                        "action": function (d, e) {
+                            if( !opt.personList || !opt.personList.length ){
+                                _self.app.notice(MWF.xApplication.process.Xform.LP.inputSendReviewPeople, "error", dlg.node);
+                            }else{
+                                _self.doAddReview(opt);
+                            }
+                        }.bind(this)
+                    },
+                    {
+                        "type": "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () { dlg.close(); }
+                    }
+                ],
+                "onPostShow": function () {
+                    opt.dlg = this;
+                    opt.workId = (_self.businessData.work || _self.businessData.workCompleted).id;
+                    opt.complete = !!(_self.businessData.work || _self.businessData.workCompleted).completedTime;
+                    var selPeopleButton = this.content.getElement(".sendReview_selPeopleButton");
+                    selPeopleButton.addEvent("click", function () {
+                        _self.selectReviewPeople(this, opt);
+                    }.bind(this));
+                }
+            });
+            dlg.show();
+        }.bind(this));
+    },
+    selectReviewPeople: function (dlg, opt ) {
+        var names = opt.personList || [];
+        var areaNode = dlg.content.getElement(".sendReview_selPeopleArea");
+        var options = {
+            "values": names,
+            "type": "identity",
+            "resultType": "person",
+            "count": 0,
+            "title": MWF.xApplication.process.Xform.LP.sendReview,
+            "onComplete": function (items) {
+                areaNode.empty();
+                var personList = [];
+                items.each(function (item) {
+                    new MWF.widget.O2Person(item.data, areaNode, { "style": "reset" });
+                    personList.push(item.data.distinguishedName);
+                }.bind(this));
+                opt.personList = personList;
+            }.bind(this)
+        };
+        MWF.xDesktop.requireApp("Selector", "package", function () {
+            var selector = new MWF.O2Selector(this.app.content, options);
+        }.bind(this));
+    },
+    doAddReview: function(opt){
+        if( !opt.personList || !opt.personList.length ) {
+            this.app.notice(MWF.xApplication.process.Xform.LP.sendReviewPeopleCanNotEmpty, "error", opt.dlg ? opt.dlg.node : null);
+            return false;
+        }
+
+        var nameArr = [];
+        var names = opt.personList || [];
+        names.each(function (n) { nameArr.push(n.split("@")[0]); });
+
+
+        MWF.require("MWF.widget.Mask", function () {
+            this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+            this.mask.loadNode(this.app.content);
+
+            this.fireEvent("beforeAddReview");
+            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddReview");
+
+            if( !opt.workId ){
+                opt.workId = (this.businessData.work || this.businessData.workCompleted).id;
+                opt.complete = !!(this.businessData.work || this.businessData.workCompleted).completedTime;
+            }
+
+            var method = opt.complete ? "createWithWorkCompleted" : "createWithWork";
+            var data = { "personList": opt.personList };
+            if( opt.complete ){
+                data.workCompleted = opt.workId;
+            }else{
+                data.work = opt.workId;
+            }
+
+            o2.Actions.load("x_processplatform_assemble_surface").ReviewAction[method]( data, function () {
+                this.fireEvent("afterAddReview");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddReview");
+                this.app.notice(MWF.xApplication.process.Xform.LP.sendReviewOk + ": " + nameArr, "success");
                 if(opt.dlg)opt.dlg.close();
                 if(opt.success)opt.success();
                 if (this.mask) { this.mask.hide(); this.mask = null; }
             }.bind(this), function (xhr, text, error) {
                 var errorText = error + ":" + text;
                 if (xhr) errorText = xhr.responseText;
-                this.app.notice("request json error: " + errorText, "error", dlg.node);
+                this.app.notice("request json error: " + errorText, "error", opt.dlg ? opt.dlg.node : null);
                 if(opt.failure)opt.failure();
                 if (this.mask) { this.mask.hide(); this.mask = null; }
             }.bind(this));
