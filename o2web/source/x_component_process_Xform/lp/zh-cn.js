@@ -347,7 +347,23 @@ MWF.xApplication.process.Xform.LP = {
         "selectUnit": "选择组织或人员",
         "excludeBranches": "排除已有分支",
         "yes": "是",
-        "no": "否"
-    }
+        "no": "否",
+
+        "readIdentity": "待阅人",
+        "sendReadNotify": "发送待阅通知",
+
+        "reviewIdentity": "阅读人"
+    },
+
+    "sendRead": "发送待阅",
+    "sendReadOk": "已经发送待阅",
+    "noPermissionOrWorkNotExisted": "您没有权限或者工作不存在",
+    "inputSendReadPeople": "请选择待阅人",
+    "sendReadPeopleCanNotEmpty": "待阅人不能为空",
+
+    "sendReview": "添加阅读人",
+    "sendReviewOk": "已添加阅读人",
+    "inputSendReviewPeople": "请选择阅读人",
+    "sendReviewPeopleCanNotEmpty": "阅读人不能为空"
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;
