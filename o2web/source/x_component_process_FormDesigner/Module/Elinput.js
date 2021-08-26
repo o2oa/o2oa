@@ -69,16 +69,14 @@ MWF.xApplication.process.FormDesigner.Module.Elinput = MWF.FCElinput = new Class
 	},
 	setPropertyName: function(){
 		if (this.json.name){
-			var button = this.node.getElement("button");
-			if (!button) button = this.node.getFirst("input");
-			if (button) button.set("text", this.json.name);
+			var input = this.node.getElement("input");
+			if (input) input.set("value", this.json.name);
 		}
 	},
 	setPropertyId: function(){
 		if (!this.json.name){
-			var button = this.node.getElement("button");
-			if (!button) button = this.node.getFirst("input");
-			if (button) button.set("text", this.json.id);
+			var input = this.node.getElement("input");
+			if (input) input.set("value", this.json.id);
 		}
 	}
 });
