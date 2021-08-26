@@ -39,20 +39,6 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
          */
         "moduleEvents": ["load", "queryLoad", "postLoad", "change"]
     },
-    /**
-     * @summary 组件的配置信息，同时也是Vue组件的data。
-     * @member MWF.xApplication.process.Xform.Elradio#json {JsonObject}
-     * @example
-     *  //可以在脚本中获取此对象，下面两行代码是等价的，它们获取的是同一个对象
-     * var json = this.form.get("elradio").json;       //获取组件的json对象
-     * var json = this.form.get("elradio").vm.$data;   //获取Vue组件的data数据，
-     *
-     * //通过json对象操作Element组件
-     * json.border = true;      //带边框的单选按钮
-     * json.size = "small";     //设置单选按钮大小，仅border为true时有效
-     * json.textColor = "#ff0000";  //设置按钮样式时，选中状态的文本颜色
-     * json.fillColor = "#ff0000";  //设置按钮样式时，选中状态的背景颜色
-     */
     load: function(){
         this._loadModuleEvents();
         if (this.fireEvent("queryLoad")){

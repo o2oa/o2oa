@@ -20,18 +20,6 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         "elEvents": ["focus", "blur", "change", "input", "clear"]
     },
-    /**
-     * @summary 组件的配置信息，同时也是Vue组件的data。
-     * @member MWF.xApplication.process.Xform.Elinput#json {JsonObject}
-     * @example
-     *  //可以在脚本中获取此对象，下面两行代码是等价的，它们获取的是同一个对象
-     * var json = this.form.get("elinput").json;       //获取组件的json对象
-     * var json = this.form.get("elinput").vm.$data;   //获取Vue组件的data数据，
-     *
-     * //通过json对象操作Element组件
-     * json.size = "mini";      //改变输入框大小
-     * json.disabled = true;     //设置输入框为禁用
-     */
     _appendVueData: function(){
         this.form.Macro.environment.data.check(this.json.id);
         //if (!this.json[this.json.id]){

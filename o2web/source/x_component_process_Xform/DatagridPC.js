@@ -159,6 +159,12 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		},
 
 		initialize: function(node, json, form, options){
+			/**
+			 * @ignore
+			 * @member parentLine
+			 * @memberOf MWF.xApplication.process.Xform.DatagridPC#
+			 */
+
 			this.node = $(node);
 			this.node.store("module", this);
 			this.json = json;
