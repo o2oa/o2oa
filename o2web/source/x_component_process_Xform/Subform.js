@@ -17,6 +17,12 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
     Extends: MWF.APP$Module,
 
     _loadUserInterface: function () {
+        /**
+         * @ignore
+         * @member parentLine
+         * @memberOf MWF.xApplication.process.Xform.Subform#
+         */
+
         this.node.empty();
 
         this.modules = [];
