@@ -649,9 +649,13 @@ o2.widget.Combox.Input = new Class({
         if (this.node){
             var styles = this.combox.node.getStyles("font-family", "min-height", "font-size", "font-weight", "font-variant", "font-style", "line-height", "color", "text-align");
             if (!this.inputHeight){
-                var size = this.combox.node.getComputedSize();
-                this.inputHeight = ""+size.height+"px";
-                styles.height = ""+size.height+"px";
+                if(layout.mobile){
+
+                }else{
+                    var size = this.combox.node.getComputedSize();
+                    this.inputHeight = ""+size.height+"px";
+                    styles.height = ""+size.height+"px";
+                }
             }
             this.node.setStyles(styles);
         }
