@@ -1,7 +1,7 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
-MWF.xDesktop.requireApp("process.FormDesigner", "Module.$ElElement", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elinput", null, false);
 MWF.xApplication.process.FormDesigner.Module.Elautocomplete = MWF.FCElautocomplete = new Class({
-	Extends: MWF.FC$ElElement,
+	Extends: MWF.FCElinput,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
@@ -64,32 +64,5 @@ MWF.xApplication.process.FormDesigner.Module.Elautocomplete = MWF.FCElautocomple
 				}.bind(this)
 			}
 		};
-	},
-	_createCopyNode: function(){
-		this.copyNode = new Element("div", {
-			"styles": this.css.moduleNodeShow
-		});
-		this.copyNode.addEvent("selectstart", function(){
-			return false;
-		});
-	},
-	_getCopyNode: function(){
-		if (!this.copyNode) this._createCopyNode();
-		this.copyNode.setStyle("display", "inline-block");
-		return this.copyNode;
-	},
-	setPropertyName: function(){
-		if (this.json.name){
-			var button = this.node.getElement("button");
-			if (!button) button = this.node.getFirst("input");
-			if (button) button.set("text", this.json.name);
-		}
-	},
-	setPropertyId: function(){
-		if (!this.json.name){
-			var button = this.node.getElement("button");
-			if (!button) button = this.node.getFirst("input");
-			if (button) button.set("text", this.json.id);
-		}
 	}
 });
