@@ -11,6 +11,7 @@ Object.assign(o2.APP$Elinput.prototype, {
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);
+        this.json[this.json.id] = value;
         if (this.readonly || this.json.isReadonly) this.node.set("text", value);
         this.fieldModuleLoaded = true;
         return value;
