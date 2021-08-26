@@ -15,6 +15,11 @@ MWF.xApplication.process.Xform.SourceText = MWF.APPSourceText =  new Class({
     Extends: MWF.APP$Module,
 
 	_loadUserInterface: function(){
+        /**
+         * @ignore
+         * @member parentLine
+         * @memberOf MWF.xApplication.process.Xform.SourceText#
+         */
         this._loadJsonData();
 	},
     _getSource: function(){
