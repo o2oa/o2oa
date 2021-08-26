@@ -881,6 +881,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 * @example
 		 * //获取数据表格“dt1”的第一个条目。
 		 * var line = this.form.get("dt1").getLine(0);
+		 * //获取第一行的数据
+		 * var data = line.getData();
+		 * //设置第一行的数据
+		 * line.setData({"subject":"111"});
 		 * //获取第一个条目subject字段的值
 		 * var data = line.getModule("subject").getData();
 		 * //设置subject字段的值
