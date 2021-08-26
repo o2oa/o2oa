@@ -60,5 +60,7 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.ReadLog", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elinput", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcommon", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elautocomplete", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elnumber", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elswitch", null, false);
 
 
