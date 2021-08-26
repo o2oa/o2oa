@@ -10,7 +10,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     Implements: [Events],
     options: {
         /**
-         * 组件加载前触发。
+         * 组件加载前触发。当前组件的queryLoad事件还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取当前组件。
          * @event MWF.xApplication.process.Xform.$Module#queryLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
@@ -47,6 +47,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
          * var json = this.form.get("fieldId").json; //获取组件对象
          * var id = json.id; //获取组件的id
          * var type = json.type; //获取组件的类型，如Textfield 为文本输入组件，Select为下拉组件
+         *
+         * //在组件queryLoad事件里设置组件只读。
+         * //当前组件的queryLoad事件还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取当前组件。
+         * var json = this.target.json;
          * json.isReadonly = true; //设置组件为只读。
          */
         this.json = json;
@@ -65,8 +69,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
          * 当组件在数据表格或者数据模板中时，可以通过此属性获取所在行（条目）对象.
          * @member {MWF.xApplication.process.Xform.Datatemplate.Line|MWF.xApplication.process.Xform.DatatablePC.Line|MWF.xApplication.process.Xform.DatatableMobile.Line}
          * @example
-         * //获取组件所在数据模板/数据表格的行（条目）对象
-         * var line = this.form.get("fieldId").parentLine;
+         * //获取当前组件所在数据模板/数据表格的行（条目）对象
+         * var line = this.target.parentLine;
          * //获取当前字段所在行下标
          * var index = line.getIndex();
          * //获取当前字段所在条目的subject字段的值
