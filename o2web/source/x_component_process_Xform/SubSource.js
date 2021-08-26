@@ -13,7 +13,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
-    /** @lends MWF.xApplication.process.Xform.Subform# */
+    /** @lends MWF.xApplication.process.Xform.SubSource# */
 {
     Extends: MWF.APP$Module,
     options: {
@@ -30,6 +30,12 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
         "moduleEvents": ["queryLoad","postLoad","load", "postLoadData", "loadData"]
     },
     load: function(){
+        /**
+         * @ignore
+         * @member parentLine
+         * @memberOf MWF.xApplication.process.Xform.SubSource#
+         */
+
         this._loadModuleEvents();
         this._queryLoaded();
         this._loadUserInterface();
