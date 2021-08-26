@@ -66,7 +66,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
 
         /**
-         * 当组件在数据表格或者数据模板中时，可以通过此属性获取所在行（条目）对象.
+         * 当前组件在数据表格或者数据模板中时，可以通过此属性获取所在行（条目）对象.
          * @member {MWF.xApplication.process.Xform.Datatemplate.Line|MWF.xApplication.process.Xform.DatatablePC.Line|MWF.xApplication.process.Xform.DatatableMobile.Line}
          * @example
          * //获取当前组件所在数据模板/数据表格的行（条目）对象
