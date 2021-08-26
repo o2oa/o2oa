@@ -22,7 +22,7 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
     },
     /**
      * @summary 组件的配置信息，同时也是Vue组件的data。
-     * @member MWF.xApplication.process.Xform.Elinput#json {JsonObject}
+     * @member MWF.xApplication.process.Xform.Elautocomplete#json {JsonObject}
      * @example
      *  //可以在脚本中获取此对象，下面两行代码是等价的，它们获取的是同一个对象
      * var json = this.form.get("elinput").json;       //获取组件的json对象
