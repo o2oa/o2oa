@@ -10,7 +10,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     Implements: [Events],
     options: {
         /**
-         * 组件加载前触发。当前组件的queryLoad事件还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取当前组件。
+         * 组件加载前触发。当前组件的queryLoad事件运行时还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取。
          * @event MWF.xApplication.process.Xform.$Module#queryLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
@@ -49,7 +49,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
          * var type = json.type; //获取组件的类型，如Textfield 为文本输入组件，Select为下拉组件
          *
          * //在组件queryLoad事件里设置组件只读。
-         * //当前组件的queryLoad事件还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取当前组件。
+         * //当前组件的queryLoad事件运行时还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取。
          * var json = this.target.json;
          * json.isReadonly = true; //设置组件为只读。
          */
