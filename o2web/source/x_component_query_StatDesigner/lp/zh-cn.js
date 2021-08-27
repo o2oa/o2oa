@@ -71,6 +71,9 @@ MWF.xApplication.query.StatDesigner.LP = {
         "style": "样式",
         "attribute": "属性",
 
+        "hidden": "隐藏",
+        "orderNumber":"排序号",
+
         "view":"视图",
         "viewNote":"视图需要设置分类列",
         "column":"视图列",
