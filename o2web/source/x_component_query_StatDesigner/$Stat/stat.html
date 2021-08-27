@@ -17,6 +17,17 @@
                 <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.hidden}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="display" text{($.display===false)?'checked':''} type="radio" value="false"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="display" text{($.display!==false)?'checked':''} type="radio" value="true"/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.orderNumber}}:</td>
+                <td class="editTableValue"><input type="text" name="orderNumber" value="text{$.orderNumber}" class="editTableInput"/></td>
+            </tr>
             <!--<tr>-->
                 <!--<td class="editTableTitle">选择视图:</td>-->
                 <!--<td class="editTableValue"><div class="MWFViewSelect" name="view"></div></td>-->
