@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.TimeZone;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
@@ -130,6 +131,7 @@ public class WebServerTools extends JettySeverTools {
 	private static RequestLog requestLog(WebServer webServer) throws Exception {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setFilenameDateFormat("yyyy_MM_dd");
+		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);
 		asyncRequestLogWriter.setRetainDays(webServer.getRequestLogRetainDays());
 		asyncRequestLogWriter.setFilename(

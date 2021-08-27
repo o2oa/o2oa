@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.TimeZone;
 
 import javax.servlet.DispatcherType;
 
@@ -126,6 +127,7 @@ public class CenterServerTools extends JettySeverTools {
 	private static RequestLog requestLog(CenterServer centerServer) throws Exception {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setFilenameDateFormat("yyyy_MM_dd");
+		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);
 		asyncRequestLogWriter.setRetainDays(centerServer.getRequestLogRetainDays());
 		asyncRequestLogWriter.setFilename(
