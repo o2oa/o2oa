@@ -219,6 +219,9 @@ MWF.xApplication.query.Query.Main = new Class({
                         this.naviViewTitleNode.hide();
                         this.naviViewContentNode.hide();
                     }
+                    (json.data || []).sort(function(a, b){
+                        return (a.orderNumber || 999999999) - (b.orderNumber || 999999999 );
+                    });
                     json.data.each(function (view) {
                         if (view.display) {
                             var item = this.createViewNaviItem(view);
@@ -239,10 +242,15 @@ MWF.xApplication.query.Query.Main = new Class({
                         this.naviStatTitleNode.hide();
                         this.naviStatContentNode.hide();
                     }
+                    (json.data || []).sort(function(a, b){
+                        return (a.orderNumber || 999999999) - (b.orderNumber || 999999999 );
+                    });
                     json.data.each(function (stat) {
-                        var item = this.createStatNaviItem(stat);
-                        if (stat.id === this.options.statId) {
-                            item.selected()
+                        if (stat.display !== false ) {
+                            var item = this.createStatNaviItem(stat);
+                            if (stat.id === this.options.statId) {
+                                item.selected()
+                            }
                         }
                     }.bind(this));
                 }
@@ -260,11 +268,16 @@ MWF.xApplication.query.Query.Main = new Class({
                         this.naviStatementTitleNode.hide();
                         this.naviStatementContentNode.hide();
                     }
+                    (json.data || []).sort(function(a, b){
+                        return (a.orderNumber || 999999999) - (b.orderNumber || 999999999 );
+                    });
                     json.data.each(function (statement) {
                         debugger;
-                        var item = this.createStatementNaviItem(statement);
-                        if (statement.id === this.options.statementId) {
-                            item.selected()
+                        if (statement.display !== false ) {
+                            var item = this.createStatementNaviItem(statement);
+                            if (statement.id === this.options.statementId) {
+                                item.selected()
+                            }
                         }
                     }.bind(this));
                 }
@@ -279,11 +292,16 @@ MWF.xApplication.query.Query.Main = new Class({
                         this.naviImporterTitleNode.hide();
                         this.naviImporterContentNode.hide();
                     }
+                    (json.data || []).sort(function(a, b){
+                        return (a.orderNumber || 999999999) - (b.orderNumber || 999999999 );
+                    });
                     json.data.each(function (importer) {
                         debugger;
-                        var item = this.createImporterNaviItem(importer);
-                        if (importer.id === this.options.importerId) {
-                            item.selected()
+                        if (importer.display !== false ) {
+                            var item = this.createImporterNaviItem(importer);
+                            if (importer.id === this.options.importerId) {
+                                item.selected()
+                            }
                         }
                     }.bind(this));
                 }
