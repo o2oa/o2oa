@@ -25,49 +25,99 @@
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
 				<td class="editTableTitle">{{$.lp.max}}:</td>
-				<td class="editTableValue"><input type="number" name="max" value="text{$.max}" class="editTableInput"/></td>
+				<td class="editTableValue"><input type="number" name="max" value="text{$.max || 100}" class="editTableInput"/></td>
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.min}}:</td>
-				<td class="editTableValue"><input type="number" name="min" value="text{$.min}" class="editTableInput"/></td>
+				<td class="editTableValue"><input type="number" name="min" value="text{$.min || 0}" class="editTableInput"/></td>
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.step}}:</td>
 				<td class="editTableValue"><input type="number" name="step" value="text{$.step || '1'}" class="editTableInput"/></td>
 			</tr>
+
 			<tr>
-				<td class="editTableValue" colspan="2"><b>{{$.lp.step_strictly}}:</b>
-					<input type="radio" name="stepStrictly" value="true" text{($.stepStrictly===true)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="stepStrictly" value="false" text{($.stepStrictly!==true)?'checked':''}/>{{$.lp.no}}
+				<td colspan="2" class="editTableValue"><b>{{$.lp.showStops}}:</b>
+					<input type="radio" name="showStops" value="true" text{($.showStops)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="showStops" value="false" text{(!$.showStops)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">{{$.lp.precision}}:</td>
-				<td class="editTableValue"><input type="number" name="precision" value="text{$.precision || 0}" class="editTableInput"/></td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.size}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="size" value="default" text{(!$.size || $.size==='default')?'checked':''}/>default
-					<input type="radio" name="size" value="medium" text{($.size==='medium')?'checked':''}/>medium
-					<input type="radio" name="size" value="small" text{($.size==='small')?'checked':''}/>small
-					<input type="radio" name="size" value="mini" text{($.size==='mini')?'checked':''}/>mini
+				<td colspan="2" class="editTableValue"><b>{{$.lp.sliderRange}}:</b>
+					<input type="radio" name="range" value="true" text{($.range)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="range" value="false" text{(!$.range)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
-<!--			<tr>-->
-<!--				<td class="editTableValue" colspan="2"><b>{{$.lp.controls}}:</b>-->
-<!--					<input type="radio" name="controls" value="true" text{($.showPassword!==false)?'checked':''}/>{{$.lp.yes}}-->
-<!--					<input type="radio" name="controls" value="false" text{($.showPassword===false)?'checked':''}/>{{$.lp.no}}-->
-<!--				</td>-->
-<!--			</tr>-->
 			<tr>
-				<td class="editTableTitle">{{$.lp.controlsPosition}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="controlsPosition" value="default" text{(!$.controlsPosition || $.controlsPosition!=='right')?'checked':''}/>default
-					<input type="radio" name="controlsPosition" value="right" text{($.controlsPosition==='right')?'checked':''}/>right
+				<td colspan="2" class="editTableValue"><b>{{$.lp.sliderVertical}}:</b>
+					<input type="radio" name="vertical" value="true" text{($.vertical)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="vertical" value="false" text{(!$.vertical)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.height}}:</td>
+				<td class="editTableValue"><input type="text" name="height" value="text{$.height}" class="editTableInput"/></td>
+			</tr>
+		</table>
+		<div class="MWFFormulaArea" name="marksScript" title="{{$.lp.sliderMarks}} (S)"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td colspan="2" class="editTableValue"><b>{{$.lp.showInput}}:</b>
+					<input onclick="if (this.checked) this.getParent('table').getNext().show();" type="radio" name="showInput" value="true" text{($.showInput)?'checked':''}/>{{$.lp.yes}}
+					<input onclick="if (this.checked) this.getParent('table').getNext().hide();" type="radio" name="showInput" value="false" text{(!$.showInput)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
+
+		<div style="display: text{($.showInput)?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td colspan="2" class="editTableValue"><b>{{$.lp.showInputControls}}:</b>
+						<input type="radio" name="showInputControls" value="true" text{($.showInputControls!==false)?'checked':''}/>{{$.lp.yes}}
+						<input type="radio" name="showInputControls" value="false" text{($.showInputControls===false)?'checked':''}/>{{$.lp.no}}
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="editTableValue"><b>{{$.lp.inputSize}}:</b>
+						<input type="radio" name="inputSize" value="default" text{(!$.inputSize || $.inputSize==='default')?'checked':''}/>default
+						<input type="radio" name="inputSize" value="medium" text{($.inputSize==='medium')?'checked':''}/>medium
+						<input type="radio" name="inputSize" value="small" text{($.inputSize==='small')?'checked':''}/>small
+						<input type="radio" name="inputSize" value="mini" text{($.inputSize==='mini')?'checked':''}/>mini
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td colspan="2" class="editTableValue"><b>{{$.lp.showTooltip}}:</b>
+					<input onclick="if (this.checked) this.getParent('table').getNext().show();" type="radio" name="showTooltip" value="true" text{($.showTooltip!==false)?'checked':''}/>{{$.lp.yes}}
+					<input onclick="if (this.checked) this.getParent('table').getNext().hide();" type="radio" name="showTooltip" value="false" text{($.showTooltip===false)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+		<div style="display: text{($.showTooltip!==false)?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.tooltipClass}}:</td>
+					<td class="editTableValue"><input type="text" name="tooltipClass" value="text{$.tooltipClass}" class="editTableInput"/></td>
+				</tr>
+			</table>
+			<div class="MWFFormulaArea" name="formatTooltip" title="{{$.lp.formatTooltip}} (S)"></div>
+			<div style="padding: 5px">{{$.lp.formatTooltipScript}}</div>
+			<div style="padding: 5px 5px 10px 5px">
+				return function(value){<br/>
+				&nbsp;&nbsp;&nbsp;&nbsp;//do something<br/>
+				&nbsp;&nbsp;&nbsp;&nbsp;return value;<br/>
+				}
+			</div>
+		</div>
+
+
+
+
+
 		<div class="MWFMaplist" name="elStyles" title="{{$.lp.style}}"></div>
 		<div class="MWFMaplist" name="elProperties" title="{{$.lp.attribute}}"></div>
 
