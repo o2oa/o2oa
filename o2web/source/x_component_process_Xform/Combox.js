@@ -59,6 +59,8 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
 
         MWF.require("MWF.widget.Combox", function(){
             this.combox = select = new MWF.widget.Combox({
+                "style": this.form.json.comboxStyle ? this.form.json.comboxStyle.style : "default",
+                "positionX": this.form.json.addressStyle ? this.form.json.addressStyle.positionX : "left",
                 "onlySelect": this.json.onlySelect==="y",
                 "count": this.json.count.toInt() || 0,
                 "splitStr": this.json.splitStr || ",\\s*|;\\s*|，\\s*|；\\s*",
