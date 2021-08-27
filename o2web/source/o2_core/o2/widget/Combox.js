@@ -5,6 +5,7 @@ o2.widget.Combox = new Class({
     Extends: o2.widget.Common,
     options: {
         "style": "default",
+        "positionX": "left",
         "list": [],
         "optionsMethod": null,
         "splitStr": /,\s*|;\s*|，\s*|；\s*/g,
@@ -471,6 +472,7 @@ o2.widget.Combox.Input = new Class({
         this.setInputWidth();
         this.setEvent();
         this.hideOption = false;
+        if(this.combox.options.positionX === "right")this.node.setStyle("float","right");
     },
     hide: function(){
         this.node.hide();
@@ -622,18 +624,23 @@ o2.widget.Combox.Input = new Class({
     },
     setInputWidth: function(){
         if (this.node){
-            var value = this.node.get("value");
-            if (!this.tmpDivNode) this.tmpDivNode = new Element("div").set("style", this.node.get("style")).setStyles({"display": "none", "float": "left", "width": "auto"}).inject(document.body);
-            this.tmpDivNode.empty();
-            value = value.replace(/\s/g, "&nbsp");
-            this.tmpDivNode.set("html", value);
-            var size = this.tmpDivNode.getComputedSize();
-            var x = size.width-size.computedLeft-size.computedRight+5;
-            var nodeSize = this.combox.node.getComputedSize();
-            if (x<1) x=1;
-            if (x>nodeSize.width) x = nodeSize.width;
-            this.node.setStyle("width", ""+x+"px");
-            this.node.focus();
+            if( this.combox.options.positionX === "right" ){
+                this.node.setStyle("width", "auto");
+                this.node.focus();
+            }else{
+                var value = this.node.get("value");
+                if (!this.tmpDivNode) this.tmpDivNode = new Element("div").set("style", this.node.get("style")).setStyles({"display": "none", "float": "left", "width": "auto"}).inject(document.body);
+                this.tmpDivNode.empty();
+                value = value.replace(/\s/g, "&nbsp");
+                this.tmpDivNode.set("html", value);
+                var size = this.tmpDivNode.getComputedSize();
+                var x = size.width-size.computedLeft-size.computedRight+5;
+                var nodeSize = this.combox.node.getComputedSize();
+                if (x<1) x=1;
+                if (x>nodeSize.width) x = nodeSize.width;
+                this.node.setStyle("width", ""+x+"px");
+                this.node.focus();
+            }
         }
     },
     setInputPosition: function(where){
@@ -686,7 +693,7 @@ o2.widget.Combox.Input = new Class({
         // this.relativeOptionListLocation = new Element("div", {"styles": this.css.relativeOptionListLocation});
         // this.relativeOptionListLocation.inject(this.node, "after");
         this.optionListNode = new Element("div", {"styles": this.css.optionListNode});
-        this.optionListNode.inject(this.node, "after");;
+        this.optionListNode.inject(this.node, "after");
         this.optionListNode.addEvents({
             "mousedown": function(e){
                 this.noBlur = true;
@@ -732,8 +739,8 @@ o2.widget.Combox.Input = new Class({
 
         this.optionListNode.position({
             "relativeTo": this.node,
-            "position": "leftBottom",
-            "edge": "leftTop",
+            "position": this.combox.options.positionX === "right" ? "rightBottom" : "leftBottom",
+            "edge": this.combox.options.positionX === "right" ? "rightTop" : "leftTop",
             "offset": {"y": 3}
         });
         var pNode = this.optionListNode.getOffsetParent();
@@ -743,9 +750,9 @@ o2.widget.Combox.Input = new Class({
         //var ss = pNode.getScroll();
         if (p.y+s.y>ps.y){
             this.optionListNode.position({
-                "relativeTo": this.node,
-                "position": "leftTop",
-                "edge": "leftBottom",
+                "relativeTo":  this.node,
+                "position": this.combox.options.positionX === "right" ? "rightTop" : "leftTop",
+                "edge": this.combox.options.positionX === "right" ? "rightBottom" : "leftBottom",
                 "offset": {"y": 3}
             });
         }
