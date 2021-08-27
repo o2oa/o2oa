@@ -1,0 +1,13 @@
+{
+  "name": "手机默认",
+  "form": {
+    "addressStyle": {
+      "style": "blueMobile",
+      "positionX": "right"
+    },
+    "comboxStyle": {
+      "style": "mobile",
+      "positionX": "right"
+    }
+  }
+}
