@@ -39,21 +39,23 @@ MWF.xApplication.query.QueryManager.Main = new Class({
             this.importerConfigurator.keyCopy(e);
         }
     },
-    keyPasteItems: function(e){
-        if (this.viewConfigurator){
-            this.viewConfigurator.keyPaste(e);
-        }
-        if (this.statConfigurator) {
-            this.statConfigurator.keyPaste(e);
-        }
-        if (this.tableConfigurator) {
-            this.tableConfigurator.keyPaste(e);
-        }
-        if (this.statementConfigurator) {
-            this.statementConfigurator.keyPaste(e);
-        }
-        if (this.importerConfigurator) {
-            this.importerConfigurator.keyPaste(e);
+    keyPasteItems: function(e) {
+        if (layout.desktop.currentApp && layout.desktop.currentApp.appId === this.appId){
+            if (this.viewConfigurator) {
+                this.viewConfigurator.keyPaste(e);
+            }
+            if (this.statConfigurator) {
+                this.statConfigurator.keyPaste(e);
+            }
+            if (this.tableConfigurator) {
+                this.tableConfigurator.keyPaste(e);
+            }
+            if (this.statementConfigurator) {
+                this.statementConfigurator.keyPaste(e);
+            }
+            if (this.importerConfigurator) {
+                this.importerConfigurator.keyPaste(e);
+            }
         }
     },
     loadStartMenu: function(callback){
