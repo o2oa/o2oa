@@ -186,7 +186,12 @@ MWF.xApplication.query.QueryManager.StatExplorer = new Class({
     },
 
     _loadItemDataList: function(callback){
-        this.app.restActions.listStat(this.app.options.application.id,callback);
+        this.app.restActions.listStat(this.app.options.application.id,function(json){
+            (json.data || []).sort(function(a, b){
+                return (a.orderNumber || 999999999) - (b.orderNumber || 999999999 );
+            });
+            if(callback)callback(json)
+        });
     },
     _getItemObject: function(item){
         return new MWF.xApplication.query.QueryManager.StatExplorer.Stat(this, item);

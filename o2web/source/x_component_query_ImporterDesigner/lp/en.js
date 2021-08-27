@@ -78,6 +78,9 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "style": "Style",
         "attribute": "Attribute",
 
+        "hidden": "Hidden",
+        "orderNumber":"Order Number",
+
         "target": "Target",
         "importTarget": "Import Target",
         "cmsData": "Content Management Data",
