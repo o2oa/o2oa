@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.servlet.DispatcherType;
@@ -71,7 +72,6 @@ import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -171,6 +171,7 @@ public class ApplicationServerTools extends JettySeverTools {
 	private static RequestLog requestLog(ApplicationServer applicationServer) throws Exception {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setFilenameDateFormat("yyyy_MM_dd");
+		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);
 		asyncRequestLogWriter.setRetainDays(applicationServer.getRequestLogRetainDays());
 		asyncRequestLogWriter.setFilename(Config.dir_logs().toString() + File.separator + "yyyy_MM_dd." + Config.node()
