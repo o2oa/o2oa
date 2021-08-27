@@ -9,6 +9,7 @@ MWF.xApplication.query.QueryManager.LP = {
     "copyed": "所选元素已复制",
     "copyConfirmTitle": "复制元素确认",
     "copyConfirmInfor": "目标区域已包含相同的元素：",
+    "copyConfirmInfor_server": "本服务器已包含相同的元素：",
     "copySource": "原文件:",
     "copyTarget": "复制文件:",
     "copyConfirm_overwrite": "替换",
