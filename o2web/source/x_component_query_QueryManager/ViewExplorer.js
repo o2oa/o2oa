@@ -187,7 +187,12 @@ MWF.xApplication.query.QueryManager.ViewExplorer = new Class({
         this.app.desktop.openApplication(e, "query.ViewDesigner", options);
     },
     _loadItemDataList: function(callback){
-        this.app.restActions.listView(this.app.options.application.id,callback);
+        this.app.restActions.listView(this.app.options.application.id,function(json){
+            (json.data || []).sort(function(a, b){
+                return (a.orderNumber || 999999999) - (b.orderNumber || 999999999 );
+            });
+            if(callback)callback(json)
+        });
     },
     _getItemObject: function(item){
         return new MWF.xApplication.query.QueryManager.ViewExplorer.View(this, item)

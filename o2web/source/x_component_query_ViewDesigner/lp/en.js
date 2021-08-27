@@ -195,6 +195,7 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "nextPageText":"Next Page Text",
 
         "hideView":"Hidden",
+        "orderNumber":"Order Number",
         "viewStyles":"View Styles",
         "expandView":"Expand Category",
         "showSequence":"Show Sequence Number",
