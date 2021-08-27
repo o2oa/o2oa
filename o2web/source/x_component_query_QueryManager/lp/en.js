@@ -9,6 +9,7 @@ MWF.xApplication.query.QueryManager.LP = {
     "copyed": "The selected element has been copied",
     "copyConfirmTitle": "Copy element confirmation",
     "copyConfirmInfor": "The target area already contains the same elements:",
+    "copyConfirmInfor_server": "This server already contains the same elements:",
     "copySource": "Original file:",
     "copyTarget": "Copy file:",
     "copyConfirm_overwrite": "Replace",
