@@ -73,6 +73,9 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "executePerson": "执行人",
         "executeUnit": "执行组织",
 
+        "hidden": "隐藏",
+        "orderNumber":"排序号",
+
         // "systemTable":"系统表",
         // "customTable":"自建数据表",
         // "taskInstance":"待办",
