@@ -49,7 +49,8 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
 
         MWF.require(["MWF.widget.Combox","MWF.widget.PinYin"], function(){
             this.combox = new MWF.widget.Combox({
-                "style": "blue",
+                "style": this.form.json.addressStyle ? this.form.json.addressStyle.style : "blue",
+                "positionX": this.form.json.addressStyle ? this.form.json.addressStyle.positionX : "left",
                 "onlySelect": true,
                 "count": 4,
                 "focusList": true,

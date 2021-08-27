@@ -361,14 +361,14 @@
     "styles": {
       "border": "0px solid #ccc",
       "font-size": "18px",
-      "height": "26px",
+      "min-height": "26px",
       "color": "#666"
     },
     "inputStyles": {
-      "height": "26px",
+      "min-height": "26px",
+      "line-height": "26px",
       "color": "#666",
       "font-size": "18px",
-      "float": "right",
       "text-align": "right"
     }
   },
@@ -376,14 +376,14 @@
     "styles": {
       "border": "0px solid #ccc",
       "font-size": "18px",
-      "height": "26px",
+      "min-height": "26px",
       "color": "#666"
     },
     "inputStyles": {
-      "height": "26px",
+      "min-height": "26px",
+      "line-height": "26px",
       "color": "#666",
       "font-size": "18px",
-      "float": "right",
       "text-align": "right"
     }
   },
