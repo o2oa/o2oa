@@ -37,6 +37,7 @@
   "defaultMobile": {
     "name": "手机样式",
     "file": "styles_defaultMobile.json",
+    "extendFile": "styles_defaultMobile_extend.json",
     "mode": [
       "pc",
       "mobile"

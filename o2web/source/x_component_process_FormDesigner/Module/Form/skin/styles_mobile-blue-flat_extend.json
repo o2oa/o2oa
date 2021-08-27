@@ -78,6 +78,14 @@
       "injectToBody" : true,
       "itemHeight" : 44,
       "flatCategory" : true
+    },
+    "addressStyle": {
+      "style": "blue",
+      "positionX": "left"
+    },
+    "comboxStyle": {
+      "style": "default",
+      "positionX": "left"
     }
   }
 }

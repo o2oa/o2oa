@@ -30,6 +30,7 @@
   "defaultMobile": {
     "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.defaultMobileStyle,
     "file": "styles_defaultMobile.json",
+    "extendFile": "styles_defaultMobile_extend.json",
     "mode": [
       "pc",
       "mobile"
