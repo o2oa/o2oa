@@ -98,9 +98,9 @@ MWF.xApplication.query.QueryManager.StatementExplorer = new Class({
         }
     },
     saveItemAs: function(data, success, failure, cancel){
-        this.app.restActions.listStatement(this.app.options.application.id, function(dJson){
+        o2.Actions.load("x_query_assemble_designer").StatementAction.manageList(function(dJson){
             var i=1;
-            var someItems = dJson.data.filter(function(d){ return d.id===data.id });
+            var someItems = dJson.data.filter(function(d){ return (d.id && d.id===data.id) || (d.name && d.name===data.name) || (d.alias && d.alias===data.alias) });
             if (someItems.length){
                 var someItem = someItems[0];
                 var lp = this.app.lp;
@@ -108,7 +108,7 @@ MWF.xApplication.query.QueryManager.StatementExplorer = new Class({
 
                 var d1 = new Date().parse(data.lastUpdateTime || data.updateTime);
                 var d2 = new Date().parse(someItem.lastUpdateTime || someItem.updateTime);
-                var html = "<div>"+lp.copyConfirmInfor+"</div>";
+                var html = "<div>"+lp.copyConfirmInfor_server+"</div>";
                 html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'><div style='font-weight: bold; font-size:14px;'>"+lp.copySource+" "+someItem.name+"</div>";
                 html += "<div style='font-size:12px; color: #666666; float: left'>"+(someItem.lastUpdateTime || someItem.updateTime)+"</div>" +
                     "<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(someItem.lastUpdatePerson || "")+"</div>" +
@@ -217,7 +217,27 @@ MWF.xApplication.query.QueryManager.StatementExplorer = new Class({
 
 MWF.xApplication.query.QueryManager.StatementExplorer.Statement= new Class({
 	Extends: MWF.xApplication.query.QueryManager.StatExplorer.Stat,
-	
+    createIconNode: function(){
+        if (this.data.icon) this.icon = this.data.icon.substr(this.data.icon.lastIndexOf("/")+1, this.data.icon.length);
+        //if (this.data.name.icon) this.icon = this.data.name.icon;
+        var iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
+
+        var itemIconNode = new Element("div", {
+            "styles": this.css.itemIconNode
+        }).inject(this.node);
+        itemIconNode.setStyle("background", "url("+iconUrl+") center center no-repeat");
+
+        if( o2.AC.isQueryManager() ){
+            itemIconNode.addEvent("click", function(e){
+                this.toggleSelected();
+                e.stopPropagation();
+            }.bind(this));
+        }
+
+        itemIconNode.makeLnk({
+            "par": this._getLnkPar()
+        });
+    },
 	_open: function(e){
         var _self = this;
         var options = {
@@ -273,9 +293,9 @@ MWF.xApplication.query.QueryManager.StatementExplorer.Statement= new Class({
             data.data = dataJson;
             data.data.id = "";
             var oldName = data.name;
-            this.explorer.app.restActions.listStatement(id, function(dJson){
+            o2.Actions.load("x_query_assemble_designer").StatementAction.manageList(function(dJson){
                 var i=1;
-                while (dJson.data.some(function(d){ return d.name==data.name || d.alias==data.name })){
+                while (dJson.data.some(function(d){ return (d.name && d.name==data.name) || (d.alias && d.alias==data.name) })){
                     data.name = oldName+"_copy"+i;
                     data.alias = oldName+"_copy"+i;
                     i++;
