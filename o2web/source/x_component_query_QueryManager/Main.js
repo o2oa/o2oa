@@ -283,7 +283,7 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
 
             this.createPropertyContentNode();
 
-            // this.createInterfaceNode();
+            this.createInterfaceNode();
 
             this.createIconContentNode();
 
@@ -313,6 +313,8 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
 
 
         var lp = this.app.lp;
+
+        this.interfaceData = this.data.data ? JSON.parse(this.data.data) : "";
 
         var data = this.interfaceData || {
             viewShow: "true",
@@ -492,7 +494,10 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
         this.data.queryCategory = this.typeInput.input.get("value");
         //this.data.firstPage = this.firstPageInput.input.get("value");
 
-        if(this.interfaceForm)this.interfaceData = this.interfaceForm.getResult(true, ",", true, false, true );
+        if(this.interfaceForm){
+            this.interfaceData = this.interfaceForm.getResult(true, ",", true, false, true );
+            this.data.data = JSON.stringify(this.interfaceData);
+        }
         this.interfaceSaved = true;
 
         this.app.restActions.saveApplication(this.data, function (json) {

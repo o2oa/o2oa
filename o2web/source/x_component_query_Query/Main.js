@@ -55,6 +55,7 @@ MWF.xApplication.query.Query.Main = new Class({
             }
 
             var lp = this.lp;
+            var iData = this.query.data ? JSON.parse(this.query.data) : "";
             this.interfaceData = Object.merge({
                 viewShow: "true",
                 viewNumber: 1,
@@ -72,7 +73,7 @@ MWF.xApplication.query.Query.Main = new Class({
                 importerNumber: 4,
                 importerName: lp.importer,
                 importerIcon: "../x_component_query_Query/$Main/"+this.options.style+"/icon/importer_new.png",
-            }, this.interfaceData || {} );
+            }, iData || {} );
 
             this.createLayout();
             this.createNavi();
@@ -104,7 +105,7 @@ MWF.xApplication.query.Query.Main = new Class({
         var data = this.interfaceData;
 
         var object = [];
-        if( data.viewShow !== "flase" && data.viewShow !== false ) {
+        if( data.viewShow !== "false" && data.viewShow !== false ) {
             this.naviViewTitleNode = new Element("div", {"styles": this.css.naviCategoryNode });
             // this.naviViewTitleNode = new Element("div", {"styles": this.css.naviViewTitleNode, "text": data.viewName});
             this.naviViewContentNode = new Element("div", {"styles": this.css.naviViewContentNode});
@@ -116,7 +117,7 @@ MWF.xApplication.query.Query.Main = new Class({
             });
         }
 
-        if( data.statShow !== "flase" && data.statShow !== false ) {
+        if( data.statShow !== "false" && data.statShow !== false ) {
             this.naviStatTitleNode = new Element("div", {"styles": this.css.naviCategoryNode });
             // this.naviStatTitleNode = new Element("div", {"styles": this.css.naviStatTitleNode, "text": data.statName});
             this.naviStatContentNode = new Element("div", {"styles": this.css.naviStatContentNode});
@@ -128,7 +129,7 @@ MWF.xApplication.query.Query.Main = new Class({
             });
         }
 
-        if( data.statementShow !== "flase" && data.statementShow !== false ) {
+        if( data.statementShow !== "false" && data.statementShow !== false ) {
             this.naviStatementTitleNode = new Element("div", {"styles": this.css.naviCategoryNode });
             // this.naviStatementTitleNode = new Element("div", {"styles": this.css.naviStatementTitleNode, "text": data.statementName});
             this.naviStatementContentNode = new Element("div", {"styles": this.css.naviStatementContentNode});
@@ -140,7 +141,7 @@ MWF.xApplication.query.Query.Main = new Class({
             });
         }
 
-        if( data.importerShow !== "flase" && data.importerShow !== false ) {
+        if( data.importerShow !== "false" && data.importerShow !== false ) {
             this.naviImporterTitleNode = new Element("div", {"styles": this.css.naviCategoryNode });
             // this.naviImporterTitleNode = new Element("div", {
             //     "styles": this.css.naviImporterTitleNode,
