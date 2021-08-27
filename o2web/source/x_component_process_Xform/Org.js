@@ -27,7 +27,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
     Extends: MWF.APP$Input,
     options: {
         /**
-         * 组件加载前触发。
+         * 组件加载前触发。当前组件的queryLoad事件还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取当前组件。
          * @event MWF.xApplication.process.Xform.Org#queryLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
