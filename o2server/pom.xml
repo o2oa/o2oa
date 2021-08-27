@@ -343,7 +343,8 @@
 			<artifactId>activation</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.lingala.zip4j</groupId>
+			<groupId>
+			net.lingala.zip4j</groupId>
 			<artifactId>zip4j</artifactId>
 		</dependency>
 		<dependency>
@@ -541,7 +542,8 @@
 			</dependency>
 			<dependency>
 				<groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
+				<artifactId>
+				commons-codec</artifactId>
 				<version>1.13</version>
 			</dependency>
 			<dependency>
@@ -876,6 +878,16 @@
 				<groupId>com.alibaba</groupId>
 				<artifactId>druid</artifactId>
 				<version>1.2.6</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.sun</groupId>
+						<artifactId>tools</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.sun</groupId>
+						<artifactId>jconsole</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.itextpdf</groupId>
