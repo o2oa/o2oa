@@ -17,6 +17,17 @@
                 <td class="editTableTitle">{{$.lp.description}}:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.hidden}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="display" text{($.display===false)?'checked':''} type="radio" value="false"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="display" text{($.display!==false)?'checked':''} type="radio" value="true"/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.orderNumber}}:</td>
+                <td class="editTableValue"><input type="text" name="orderNumber" value="text{$.orderNumber}" class="editTableInput"/></td>
+            </tr>
         </table>
         <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.executionAuthority}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">

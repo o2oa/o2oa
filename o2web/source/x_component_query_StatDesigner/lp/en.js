@@ -71,6 +71,9 @@ MWF.xApplication.query.StatDesigner.LP = {
         "style": "Style",
         "attribute": "Attribute",
 
+        "hidden": "Hidden",
+        "orderNumber":"Order Number",
+
         "view":"View",
         "viewNote":"The view needs to set the classification column",
         "column":"View Column",
