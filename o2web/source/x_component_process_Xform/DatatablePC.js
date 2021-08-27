@@ -949,6 +949,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if( !line )return null;
 			return line.getModule(id);
 		},
+		get: function(index, id){
+			return this.getModule(index, id);
+		},
 		//api 相关
 
 		/**
@@ -1413,6 +1416,9 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		return this.options.index;
 	},
 	getModule: function(templateJsonId){
+		return this.all_templateId[templateJsonId];
+	},
+	get: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
 	},
 	getAttachmentSite: function(json, templateJsonId){
