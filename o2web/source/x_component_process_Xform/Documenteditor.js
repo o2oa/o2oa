@@ -126,7 +126,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 return false;
             case "a":
                 if (["copies", "secret", "priority", "attachment", "annotation"].indexOf(name!=-1)){
-                    return !!this.data[name] && (!!this.data[name].length);
+                    if (o2.typeOf(this.data[name])=="string"){
+                        var v = this.data[name].trim();
+                        return !!v && (!!v.length);
+                    }else{
+                        return !!this.data[name] && (!!this.data[name].length);
+                    }
+
                 }
                 return true;
             case "s":
@@ -918,16 +924,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content)  && (!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
             if (this.layout_editionArea) this.layout_editionArea.hide();
         }else{
+            if (this.layout_copytoContent){
+                if (!this.layout_copytoContentTr) this.layout_copytoContentTr = this.layout_copytoContent.getParent("tr");
+                if (!this.layout_copytoContentTrP) this.layout_copytoContentTrP = this.layout_copytoContentTr.getParent();
+            }
+            if (this.layout_copyto2Content){
+                if (!this.layout_copyto2ContentTr) this.layout_copyto2ContentTr = this.layout_copyto2Content.getParent("tr");
+                if (!this.layout_copyto2ContentTrP) this.layout_copyto2ContentTrP = this.layout_copyto2ContentTr.getParent();
+            }
             if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content) ){
-                if (this.layout_copytoContent){
-                    this.layout_copytoContentTr = this.layout_copytoContent.getParent("tr");
-                    this.layout_copytoContentTrP = this.layout_copytoContentTr.getParent();
-                }
-                if (this.layout_copyto2Content){
-                    this.layout_copyto2ContentTr = this.layout_copyto2Content.getParent("tr");
-                    this.layout_copyto2ContentTrP = this.layout_copyto2ContentTr.getParent();
-                }
-
                 if (this.layout_edition){
                     if (this.layout_copytoContentTr) this.layout_copytoContentTr.dispose();
                     if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.dispose();
