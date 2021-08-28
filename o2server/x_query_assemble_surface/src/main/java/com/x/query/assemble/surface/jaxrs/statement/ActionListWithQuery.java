@@ -12,8 +12,10 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.SortTools;
 import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.Query;
+import com.x.query.core.entity.View;
 import com.x.query.core.entity.schema.Statement;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +51,7 @@ class ActionListWithQuery extends BaseAction {
 					}
 				}
 			}
+			SortTools.asc(wos, View.orderNumber_FIELDNAME);
 			result.setData(wos);
 			return result;
 		}

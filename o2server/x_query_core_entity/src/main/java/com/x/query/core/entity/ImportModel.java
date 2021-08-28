@@ -172,6 +172,17 @@ public class ImportModel extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Integer count;
 
+	public static final String display_FIELDNAME = "display";
+	@FieldDescribe("是否前端可见.")
+	@Column(name = ColumnNamePrefix + display_FIELDNAME)
+	private Boolean display;
+
+	public static final String orderNumber_FIELDNAME = "orderNumber";
+	@FieldDescribe("排序号,为空在最后")
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + orderNumber_FIELDNAME)
+	private Integer orderNumber;
+
 	public String getName() {
 		return name;
 	}
@@ -270,5 +281,21 @@ public class ImportModel extends SliceJpaObject {
 
 	public void setProcessStatus(String processStatus) {
 		this.processStatus = processStatus;
+	}
+
+	public Boolean getDisplay() {
+		return display;
+	}
+
+	public void setDisplay(Boolean display) {
+		this.display = display;
+	}
+
+	public Integer getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(Integer orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 }
