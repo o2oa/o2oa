@@ -65,7 +65,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected SnapProperties snap(Business business, String job, List<Item> items, WorkCompleted workCompleted,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
-			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments) {
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments)
+			throws InterruptedException, ExecutionException {
 		SnapProperties properties = new SnapProperties();
 		properties.setJob(job);
 		properties.setWorkCompleted(workCompleted);
@@ -81,7 +82,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (BooleanUtils.isNotTrue(workCompleted.getMerged())) {
 			futures.add(mergeItem(business, job, properties, items));
 		}
-		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0]));
+		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).get();
 
 		return properties;
 	}

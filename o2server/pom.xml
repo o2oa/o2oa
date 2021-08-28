@@ -371,8 +371,19 @@
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-client</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-iostreams</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<pluginManagement>
@@ -863,15 +874,31 @@
 				<version>2.98</version>
 			</dependency>
 			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-				<version>1.7.25</version>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-web</artifactId>
+				<version>2.14.1</version>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-iostreams -->
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-iostreams</artifactId>
+				<version>2.14.1</version>
+			</dependency>
+			<!--用于与slf4j保持桥接 -->
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-slf4j-impl</artifactId>
+				<version>2.14.1</version>
+			</dependency>
+			<!-- slf4j核心包 -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.7.25</version>
+				<version>1.7.32</version>
 			</dependency>
+			<!-- dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-simple</artifactId> 
+				<version>1.7.25</version> </dependency> <dependency> <groupId>org.slf4j</groupId> 
+				<artifactId>slf4j-api</artifactId> <version>1.7.25</version> </dependency- -->
 			<!-- dependency> <groupId>cglib</groupId> <artifactId>cglib</artifactId> 
 				<version>3.2.0</version> </dependency -->
 			<dependency>
@@ -923,6 +950,16 @@
 				<groupId>com.github.xuwei-k</groupId>
 				<artifactId>html2image</artifactId>
 				<version>0.1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>2.14.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>2.14.1</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>

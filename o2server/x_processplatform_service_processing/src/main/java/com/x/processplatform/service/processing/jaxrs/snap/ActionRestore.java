@@ -155,6 +155,10 @@ class ActionRestore extends BaseAction {
 			restoreWorkLog(emc, snap);
 			restoreRecord(emc, snap);
 			restoreAttachment(emc, snap);
+			System.out.println("!!!!!!!!!!!!!!!!!!!");
+			System.out.println(snap.getProperties().getWorkCompleted().getMerged());
+			System.out.println(snap.getProperties().getData());
+			System.out.println("!!!!!!!!!!!!!!!!!!!");
 			emc.persist(snap.getProperties().getWorkCompleted(), CheckPersistType.all);
 			if (BooleanUtils.isNotTrue(snap.getProperties().getWorkCompleted().getMerged())) {
 				WorkDataHelper workDataHelper = new WorkDataHelper(emc, snap.getProperties().getWorkCompleted());
