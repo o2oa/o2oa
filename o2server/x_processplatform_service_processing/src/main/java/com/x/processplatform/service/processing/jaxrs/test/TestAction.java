@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -164,14 +166,15 @@ public class TestAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "测试test.", action = ActionTest.class)
 	@GET
-	@Path("test")
+	@Path("test/{sleep}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void test(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+	public void test(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("sleep秒") @PathParam("sleep") Long sleep) {
 		ActionResult<ActionTest.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionTest().execute(effectivePerson);
+			result = new ActionTest().execute(effectivePerson, sleep);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
