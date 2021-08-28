@@ -255,6 +255,12 @@ public class View extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String toolbar;
 
+	public static final String orderNumber_FIELDNAME = "orderNumber";
+	@FieldDescribe("排序号,为空在最后")
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + orderNumber_FIELDNAME)
+	private Integer orderNumber;
+
 	public String getName() {
 		return name;
 	}
@@ -397,5 +403,13 @@ public class View extends SliceJpaObject {
 
 	public void setToolbar(String toolbar) {
 		this.toolbar = toolbar;
+	}
+
+	public Integer getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(Integer orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 }
