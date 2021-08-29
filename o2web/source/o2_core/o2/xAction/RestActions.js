@@ -197,6 +197,7 @@ MWF.xAction.RestActions = MWF.Actions = {
                         cbf();
                     }
                     cb();
+                    return true;
                 });
                 //actionArgs.unshift(null);
                 actionArgs.unshift(function(json){
