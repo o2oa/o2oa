@@ -236,6 +236,7 @@ MWF.xApplication.process.Work.Main = new Class({
                         }, function(){
                             loadFormFlag = true;
                             check();
+                            return true;
                         });
                     // }
 
