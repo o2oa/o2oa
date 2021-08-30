@@ -246,11 +246,14 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
         switch (appNames) {
             case "process.Work":
-                var url = "../x_desktop/work.html".toURI();
+                var url = "../x_desktop/work.html";
                 if (options.draft){
                     url = "../x_desktop/app.html?" + par;
                 }else{
-                    url = url.setData(options).toString();
+                    Object.keys(options).forEach(function(k){
+                        url += ((url.indexOf("?")!=-1) ? "&" : "?") + k+"="+options[k];
+                    });
+                    //url = url.setData(options).toString();
                 }
                 var job = (options.jobid || options.jobId || options.job);
                 if (job) url += ((url.indexOf("?")!=-1) ? "&" : "?") + "jobid="+job;
