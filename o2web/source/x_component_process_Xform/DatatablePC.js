@@ -582,6 +582,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var line = this.getLine(index);
 			line.isNewAdd = true;
 
+			this.validationMode();
 			this.fireEvent("addLine", [{"line":line, "ev":ev}]);
 			return line;
 		},
@@ -602,6 +603,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var line = this.getLine(index);
 			line.isNewAdd = true;
 
+			this.validationMode();
 			this.fireEvent("addLine",[{"line":line, "ev":ev}]);
 			return line;
 		},
@@ -620,6 +622,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var line = this.getLine(index);
 			line.isNewAdd = true;
 
+			this.validationMode();
 			this.fireEvent("addLine",[{"line":line, "ev":ev}]);
 			return line;
 		},
@@ -668,6 +671,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			});
 
 			_self.setData( data );
+			this.validationMode();
 			if(saveFlag)this.form.saveFormData();
 		},
 		_deleteLine: function(ev, line){
@@ -697,6 +701,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			if(this.currentEditedLine === line)this.currentEditedLine = null;
 			this.setData( data );
+
+			this.validationMode();
 			this.fireEvent("afterDeleteLine");
 
 			if(saveFlag)this.form.saveFormData();
@@ -737,6 +743,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line.attachmentChangeFlag = false;
 			}
 			this.currentEditedLine = null;
+			this.validationMode();
 			this.fireEvent("completeLineEdit", [line]);
 			return true;
 		},
