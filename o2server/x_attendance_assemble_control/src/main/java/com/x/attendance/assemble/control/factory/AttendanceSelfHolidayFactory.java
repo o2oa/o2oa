@@ -158,11 +158,11 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 			index++;
 		}
 		if (null != wrapIn.getStartdate() && null != wrapIn.getEnddate()) {
-			sql_stringBuffer.append(" and o.startTime >  ?" + (index) );
+			sql_stringBuffer.append(" and o.startTime >=  ?" + (index) );
 			vs.add( wrapIn.getStartdate());
 			index++;
 
-			sql_stringBuffer.append(" and o.endTime < ?" + (index));
+			sql_stringBuffer.append(" and o.endTime <= ?" + (index));
 			vs.add( wrapIn.getEnddate());
 			index++;
 		}
@@ -174,7 +174,7 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 		}
 		
 		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceSelfHoliday.class );
-		System.out.println("query=" +query.toString());
+		//System.out.println("query=" +query.toString());
 		//为查询设置所有的参数值
 		for (int i = 0; i < vs.size(); i++) {
 			query.setParameter(i + 1, vs.get(i));

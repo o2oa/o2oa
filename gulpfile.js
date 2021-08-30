@@ -613,6 +613,7 @@ function build_bundle(){
         'o2web/source/o2_core/o2.js',
         'o2web/source/x_desktop/js/base.js',
         'o2web/source/x_desktop/js/base_loader.js',
+        'o2web/source/o2_core/o2/xScript/PageEnvironment.js',
         "o2web/source/o2_core/o2/framework.js"
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
