@@ -11,14 +11,14 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
-MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
+MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
     /** @lends o2.xApplication.process.Xform.Elnumber# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
-        "elEvents": ["change"]
+        "elEvents": ["change", "input"]
     },
     /**
      * @summary 组件的配置信息，同时也是Vue组件的data。
@@ -32,7 +32,6 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
      * json.disabled = true;     //设置输入框为禁用
      */
     _loadNode: function(){
-        debugger;
         if (this.isReadonly()) this.json.disabled = true;
         this._loadNodeEdit();
     },
@@ -40,39 +39,16 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
         this.form.Macro.environment.data.check(this.json.id);
         this.json[this.json.id] = this._getBusinessData();
 
-        if (!this.json.width || !this.json.width.toFloat()) this.json.width = 40;
-        if (!this.json.activeText) this.json.activeText = "";
-        if (!this.json.inactiveText) this.json.inactiveText = "";
-        if (!this.json.activeColor) this.json.activeColor = "#409EFF";
-        if (!this.json.inactiveColor) this.json.inactiveColor = "#C0CCDA";
+        if (!this.json.max || !this.json.max.toFloat()) this.json.max = 100;
+        if (!this.json.min || !this.json.min.toFloat()) this.json.min = 0;
+        if (!this.json.step || !this.json.step.toFloat()) this.json.step = 1;
+        if (this.json.showTooltip!==false) this.json.showTooltip = true;
 
-        if (!this.json.activeIconClass) this.json.activeIconClass = "";
-        if (!this.json.inactiveIconClass) this.json.inactiveIconClass = "";
+        if (this.json.vertical && !this.json.height) this.json.height = "100px";
+        if (!this.json.inputSize) this.json.inputSize = "";
+        if (!this.json.tooltipClass) this.json.tooltipClass = "";
 
-        if (!this.json.readonly) this.json.readonly = false;
-        if (!this.json.description) this.json.description = "";
         if (!this.json.disabled) this.json.disabled = false;
-
-        if (!this.json.valueType) this.json.activeValueType = "boolean";
-        switch(this.json.valueType){
-            case "boolean":
-                this.json.activeValue = true;
-                this.json.inactiveValue = false;
-                break;
-            case "string":
-                if (!this.json.activeValue) this.json.activeValue = "1";
-                if (!this.json.inactiveValue) this.json.inactiveValue = "0";
-                break;
-            case "number":
-                if (!this.json.activeValue) this.json.activeValue = 1;
-                if (!this.json.inactiveValue) this.json.inactiveValue = 0;
-                this.json.activeValue = this.json.activeValue.toFloat();
-                this.json.inactiveValue = this.json.inactiveValue.toFloat();
-                break;
-            default:
-                this.json.activeValue = true;
-                this.json.inactiveValue = false;
-        }
     },
     appendVueExtend: function(app){
         if (!app.methods) app.methods = {};
@@ -83,22 +59,36 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
                 this.form.Macro.fire(this.json.events[ev].code, this, event);
             }
         }.bind(this);
+
+        if (this.json.formatTooltip && this.json.formatTooltip.code){
+            var fun = this.form.Macro.exec(this.json.formatTooltip.code, this);
+            if (o2.typeOf(fun)==="function"){
+                app.methods.$formatTooltip = fun;
+            }else{
+                app.methods.$formatTooltip = function(){};
+            }
+        }
     },
     _createElementHtml: function(){
-        var html = "<el-switch";
+        var html = "<el-slider";
         html += " v-model=\""+this.json.id+"\"";
-        html += " :width=\"width\"";
-        html += " :active-text=\"activeText\"";
-        html += " :inactive-text=\"inactiveText\"";
-        html += " :active-color=\"activeColor\"";
-        html += " :inactive-color=\"inactiveColor\"";
-
+        html += " :max=\"max\"";
+        html += " :min=\"min\"";
+        html += " :step=\"step\"";
+        html += " :show-stops=\"showStops\""
+        html += " :range=\"range\"";
+        html += " :vertical=\"vertical\"";
+        html += " :height=\"height\"";
+        html += " :show-input=\"showInput\"";
+        html += " :show-input-controls=\"showInputControls\"";
+        html += " :input-size=\"inputSize\"";
+        html += " :show-tooltip=\"showTooltip\"";
+        html += " :tooltip-class=\"tooltipClass\"";
         html += " :disabled=\"disabled\"";
-        html += " :active-icon-class=\"activeIconClass\"";
-        html += " :inactive-icon-class=\"inactiveIconClass\"";
 
-        html += " :active-value=\"activeValue\"";
-        html += " :inactive-value=\"inactiveValue\"";
+        if (this.json.formatTooltip && this.json.formatTooltip.code){
+            html += " :format-tooltip=\"$formatTooltip\"";
+        }
 
         this.options.elEvents.forEach(function(k){
             html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
@@ -118,7 +108,7 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
             html += " style=\""+style+"\"";
         }
         html += ">";
-        html += "</el-switch>";
+        html += "</el-slider>";
         return html;
     },
     __setValue: function(value){
