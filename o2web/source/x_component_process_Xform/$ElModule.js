@@ -97,14 +97,14 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         this.appendVueExtend(app);
         return app;
     },
-    appendVueMethods: function(app){},
+    appendVueMethods: function(methods){},
     appendVueExtend: function(app){},
     _createVueMethods: function(){
         var methods = {};
         if (this.json.vueMethods && this.json.vueMethods.code){
             methods = this.form.Macro.exec(this.json.vueMethods.code, this);
         }
-        this.appendVueMethods();
+        this.appendVueMethods(methods);
         return methods || {};
     },
     _createVueData: function(){
