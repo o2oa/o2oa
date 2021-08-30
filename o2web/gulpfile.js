@@ -468,6 +468,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
             'source/' + path + '/o2.js',
             'source/x_desktop/js/base.js',
             'source/x_desktop/js/base_loader.js',
+            'source/o2_core/o2/xScript/PageEnvironment.js',
             "source/o2_core/o2/framework.js"
         ];
         var dest = option.dest+'/' + path + '/';

@@ -195,6 +195,7 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "nextPageText":"下一页文本",
 
         "hideView":"隐藏视图",
+        "orderNumber":"排序号",
         "viewStyles":"视图样式",
         "expandView":"展开分类",
         "showSequence":"显示序号",

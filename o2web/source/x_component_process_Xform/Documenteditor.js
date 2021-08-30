@@ -118,7 +118,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return pageNode;
     },
     _getShow: function(name, typeItem, scriptItem){
-        debugger;
         switch (this.json[typeItem]) {
             case "y":
                 return true;
@@ -126,7 +125,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 return false;
             case "a":
                 if (["copies", "secret", "priority", "attachment", "annotation"].indexOf(name!=-1)){
-                    return !!this.data[name] && (!!this.data[name].length);
+                    if (o2.typeOf(this.data[name])=="string"){
+                        var v = this.data[name].trim();
+                        return !!v && (!!v.length);
+                    }else{
+                        return !!this.data[name] && (!!this.data[name].length);
+                    }
+
                 }
                 return true;
             case "s":
@@ -840,7 +845,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
 
         if (this.layout_issuanceUnit && this.layout_issuanceDate){
-            debugger;
             var table = this.layout_issuanceUnit.getParent("table")
             if (table && !table.hasClass("doc_layout_headIssuance")) {
                 var unitWidth = o2.getTextSize(this.layout_issuanceUnit.get("text"), {
@@ -918,16 +922,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content)  && (!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
             if (this.layout_editionArea) this.layout_editionArea.hide();
         }else{
+            if (this.layout_copytoContent){
+                if (!this.layout_copytoContentTr) this.layout_copytoContentTr = this.layout_copytoContent.getParent("tr");
+                if (!this.layout_copytoContentTrP) this.layout_copytoContentTrP = this.layout_copytoContentTr.getParent();
+            }
+            if (this.layout_copyto2Content){
+                if (!this.layout_copyto2ContentTr) this.layout_copyto2ContentTr = this.layout_copyto2Content.getParent("tr");
+                if (!this.layout_copyto2ContentTrP) this.layout_copyto2ContentTrP = this.layout_copyto2ContentTr.getParent();
+            }
             if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content) ){
-                if (this.layout_copytoContent){
-                    this.layout_copytoContentTr = this.layout_copytoContent.getParent("tr");
-                    this.layout_copytoContentTrP = this.layout_copytoContentTr.getParent();
-                }
-                if (this.layout_copyto2Content){
-                    this.layout_copyto2ContentTr = this.layout_copyto2Content.getParent("tr");
-                    this.layout_copyto2ContentTrP = this.layout_copyto2ContentTr.getParent();
-                }
-
                 if (this.layout_edition){
                     if (this.layout_copytoContentTr) this.layout_copytoContentTr.dispose();
                     if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.dispose();
@@ -1120,7 +1123,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
         }
         if (this.layout_attachmentText){
-            debugger;
             if (control.attachmentText) {
                 if (!this.loadAttachmentTextEditFun) this.loadAttachmentTextEditFun = this.loadAttachmentTextEdit.bind(this);
                 this.layout_attachmentText.removeEvent("click", this.loadAttachmentTextEditFun);
@@ -1133,7 +1135,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
 
         // this.layout_subject.addEvent("keydown", function(e){
-        //     debugger;
         //     if (this.json.subjectValueType=="data" && this.json.subjectValueData){
         //         // var v = e.target.get("HTML");
         //         // this.form.businessData.data[this.json.subjectValueData] = v
@@ -1487,7 +1488,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 // this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
             }
             this.editMode = false;
-            this.form.saveFormData();
+            //this.form.saveFormData();
         }else{
             this._editFiletext("inline");
             if (this.loadFileTextEditFun) this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
@@ -1682,7 +1683,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     },
     reLocationFiletextToolbar: function(editorName){
-        debugger;
         this.getFiletextToolber(editorName);
         var toolbarNode = (editorName) ? this[editorName+"ToolbarNode"] : this.filetextToolbarNode;
         var editor = (editorName) ? this[editorName] : this.filetextEditor;
@@ -2413,7 +2413,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             var o = this.form.Macro.exec(this.json.ckeditConfigOptions.code, this);
             if (o) editorConfig = Object.merge(editorConfig, o);
         }
-debugger;
+
         if (editorName){
             editorConfig.removeButtons = editorConfig.removeButtons.split(/,\s*/).erase("PageBreak").join(",");
             var tags = editorConfig.format_tags.split(/;\s*/);
@@ -2606,11 +2606,8 @@ debugger;
                     }.bind(this), 10);
                 }.bind(this) );
 
-                debugger;
                 if (!!editorName){
-                    debugger;
                     editor.on( 'blur', function( e ) {
-                        debugger;
                         this.getAttachmentTextData();
                     }.bind(this) );
                 }
@@ -2621,15 +2618,14 @@ debugger;
                 }.bind(this) );
 
                 editor.on( 'afterPaste', function( e ) {
-                    debugger;
+
                 }.bind(this));
                 editor.on( 'afterPasteFromWord', function( e ) {
-                    debugger;
+
                 }.bind(this));
 
 
                 editor.on( 'paste', function( e ) {
-                    debugger;
                     var html = e.data.dataValue;
                     //if (this.json.fullWidth=="y") html = html.replace(/\x20/g, "　");
                     var rexbr = /\<br\>|\<br \/\>|\<br\/\>/g;

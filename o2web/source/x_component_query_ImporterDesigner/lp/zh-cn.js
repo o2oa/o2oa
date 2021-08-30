@@ -78,6 +78,9 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "style": "样式",
         "attribute": "属性",
 
+        "hidden": "隐藏",
+        "orderNumber":"排序号",
+
         "target": "目标",
         "importTarget": "导入目标",
         "cmsData": "内容管理数据",
