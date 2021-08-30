@@ -2728,7 +2728,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             default:
                 type2 = type;
         }
-        debugger;
         var noticeTarget = target || ((layout.mobile && document && document.body) ? $(document.body) : this.app.window.content);
         var off = offset;
         if (!off) {
