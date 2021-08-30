@@ -3728,6 +3728,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 "height":"auto"
             });
         }.bind(this), function(){
+            if (!this.data.attachmentText){
+                this.layout_attachmentText.set("text", "");
+            }
+
             var fileName = docNmae || this.json.toWordFilename || "$doc";
             var n = fileName.lastIndexOf(".");
 
