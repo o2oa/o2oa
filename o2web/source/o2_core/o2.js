@@ -1580,6 +1580,7 @@ debugger;
                                 if (!layout.session) layout.session = {};
                                 layout.session.token = xToken;
                             }
+                            if (layout.config && layout.config.sessionStorageEnable) sessionStorage.setItem("o2LayoutSessionToken",xToken);
                         }
                         var r = o2.runCallback(callback, "success", [responseJSON],null);
                         //resolve(r || responseJSON);
@@ -1590,7 +1591,7 @@ debugger;
                         //var r = o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                         var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
                         // (r) ? reject(r) : reject(xhr, "", "");
-                        reject((r) ? r : {"xhr": xhr, "text": text, "error": "error"});
+                        reject((r) ? r : {"xhr": xhr, "text": "", "error": "error"});
                         //return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
                     }.bind(this),
                     onError: function(text, error){
@@ -1610,12 +1611,26 @@ debugger;
                     if (layout["debugger"]){
                         res.setHeader("x-debugger", "true");
                     }
-                    if (layout.session && layout.session.user){
-                        if (layout.session.user.token) {
-                            res.setHeader(o2.tokenName, layout.session.user.token);
-                            res.setHeader("authorization", layout.session.user.token);
+                    var token = (layout.config && layout.config.sessionStorageEnable) ? sessionStorage.getItem("o2LayoutSessionToken") : "";
+                    if (!token){
+                        if (layout.session && (layout.session.user || layout.session.token)){
+                            token = layout.session.token;
+                            if (!token && layout.session.user && layout.session.user.token) token = layout.session.user.token;
                         }
                     }
+                    if (token) {
+                        res.setHeader(o2.tokenName, token);
+                        res.setHeader("Authorization", token);
+                    }
+
+                    // if (layout.session && (layout.session.user || layout.session.token)){
+                    //     token = layout.session.token;
+                    //     if (!token && layout.session.user && layout.session.user.token) token = layout.session.user.token;
+                    //     if (token) {
+                    //         res.setHeader(o2.tokenName, token);
+                    //         res.setHeader("Authorization", token);
+                    //     }
+                    // }
                 }
                 //Content-Type	application/x-www-form-urlencoded; charset=utf-8
                 res.send(data);
