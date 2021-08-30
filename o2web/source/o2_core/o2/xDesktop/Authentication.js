@@ -88,8 +88,9 @@ MWF.xDesktop.Authentication = new Class({
             }
             //Cookie.dispose("x-token");
             if (layout.session && layout.session.user) layout.session.user.token = "";
+            if (layout.config && layout.config.sessionStorageEnable) sessionStorage.removeItem("o2LayoutSessionToken");
             if( callback ){
-                callback()
+                callback();
             }else{
                 window.location.reload();
             }
