@@ -119,10 +119,13 @@
     },
 
     "naviIconTitleNode": {
-        "width": "58px",
-        "height": "76px",
+        "width": "40px",
+        "height": "40px",
+        "margin-left": "18px",
+        "margin-top": "18px",
         "float": "left",
-        "background": "url('../x_component_query_Query/$Main/default/icon/main.png') center right no-repeat"
+        "background": "url('../x_component_query_Query/$Main/default/icon/main.png') center center no-repeat",
+        "background-size": "40px 40px"
     },
     "naviRightTitleNode": {
         "margin-left": "76px",
