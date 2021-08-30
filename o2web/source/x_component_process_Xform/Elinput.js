@@ -46,7 +46,7 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         app.methods.$loadElEvent = function(ev){
             this.validationMode();
             if (ev==="change") this._setBusinessData(this.getInputData());
-            if (this.json.events[ev] && this.json.events[ev].code){
+            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
                 this.form.Macro.fire(this.json.events[ev].code, this, event);
             }
         }.bind(this);
