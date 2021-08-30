@@ -62,5 +62,5 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcommon", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elautocomplete", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elnumber", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elswitch", null, false);
-
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elslider", null, false);
 
