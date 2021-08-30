@@ -17,7 +17,6 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
     {
 	Implements: [Events],
 	Extends: MWF.APP$Input,
-
     loadDescription: function(){},
     _loadNode: function(){
         if (this.readonly || this.json.isReadonly ){

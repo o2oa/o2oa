@@ -2188,8 +2188,8 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
                             if (!this.hasOwnProperty(newKey)){
                                 if (!data[newKey] || overwrite){
                                     data[newKey] = newValue;
-                                    newValue = data[newKey];
                                 }
+                                newValue = data[newKey];
 
                                 if (flag){
                                     var o = {};
