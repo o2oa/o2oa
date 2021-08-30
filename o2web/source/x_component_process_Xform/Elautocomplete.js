@@ -47,7 +47,7 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         if (!app.methods) app.methods = {};
         app.methods.$loadElEvent = function(ev){
             this.validationMode();
-            if (this.json.events[ev] && this.json.events[ev].code){
+            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
                 this.form.Macro.fire(this.json.events[ev].code, this, event);
             }
         }.bind(this);
