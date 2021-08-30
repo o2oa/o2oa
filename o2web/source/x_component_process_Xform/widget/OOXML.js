@@ -483,9 +483,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         node = node.firstChild;
         while (node){
             if (node.nodeType===Node.TEXT_NODE){
-                if (node.nodeValue) this.processRun(node.parentElement || node.parentNode, oo_p, p, node.nodeValue);
+                if (node.nodeValue.trim()) this.processRun(node.parentElement || node.parentNode, oo_p, p, node.nodeValue);
             }else if (node.nodeType===Node.ELEMENT_NODE){
-                if (node.tagName.toLowerCase() === "span") {
+                if (node.getStyle("display") === "none") {
+                    continue;
+                }else if (node.tagName.toLowerCase() === "span") {
                     this.processRun(node, oo_p, p);
                 }else if (node.tagName.toLowerCase() === "br") {
                     if (node.nextSibling) this.processRun(node, oo_p, p, "", "br");
@@ -511,7 +513,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
                 }
             }else{
-                this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
+                    this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
             }
             node = node.nextSibling;
         }
@@ -830,7 +832,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         dom = dom.firstChild;
         while (dom){
             if (dom.nodeType===Node.ELEMENT_NODE){
-                if (dom.hasClass("doc_layout_filetext")){
+                if (dom.getStyle("display") === "none") {
+                    continue;
+                }else if (dom.hasClass("doc_layout_filetext")){
                     this.processFiletext(dom, oo_body, append);
                 }else if (dom.tagName.toLowerCase() === "p" || ((!!divAsP || !!this.options.divAsP) && dom.tagName.toLowerCase() === "div")){
                     this.processParagraph(dom, oo_body, append);
@@ -1862,7 +1866,9 @@ debugger;
         var node = span.firstChild;
         while (node){
             if (node.nodeType===Node.ELEMENT_NODE){
-                if (node.tagName.toLowerCase() === "span"){
+                if (node.getStyle("display") === "none") {
+                    continue;
+                }else if (node.tagName.toLowerCase() === "span"){
                     this.processRunSpan(node, oo_p, runPrs);
                 }else if (node.tagName.toLowerCase() === "br"){
                     runPrs.br = "br";
