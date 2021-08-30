@@ -393,11 +393,24 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.processFiletext(dom, oo_body, append);
                 }else if (dom.hasClass("doc_layout_editionArea")){
 
-                    var h = dom.getSize().y;
-                    var top = dom.getPosition(dom.getParent(".WordSection1")).y;
+                    var wordSection = dom.getParent(".WordSection1");
+
+                    var h = this.pxToPt(dom.getSize().y);
+                    var top = this.pxToPt(dom.getPosition(wordSection).y);
                     var pageH = this.pageHeight/20-this["page-margin-top"]/20-this["page-margin-bottom"]/20;
-                    var tmp = this.pxToPt(top+h)/pageH;
-                    var tmp2 = this.pxToPt(top)/pageH;
+
+                    var offsetY = 0;
+                    if (wordSection) {
+                        var pageBreakNodes = wordSection.querySelectorAll(".cke_pagebreak");
+                        pageBreakNodes.forEach(function(node){
+                            var t = this.pxToPt(node.getPosition(wordSection).y);
+                            offsetY += pageH-(t % pageH);
+                        }.bind(this));
+                    }
+                    top += offsetY;
+
+                    var tmp = (top+h)/pageH;
+                    var tmp2 = (top)/pageH;
                     var ps = tmp.toInt();
                     var ps2 = tmp2.toInt();
                     if (tmp>ps) ps = ps+1;
