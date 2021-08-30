@@ -174,6 +174,14 @@ public class Query extends SliceJpaObject {
 	@Column(length = length_255B, name = ColumnNamePrefix + queryCategory_FIELDNAME)
 	private String queryCategory;
 
+	public static final String data_FIELDNAME = "data";
+	@FieldDescribe("自定义字段.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + data_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String data;
+
 	public String getName() {
 		return name;
 	}
@@ -270,4 +278,11 @@ public class Query extends SliceJpaObject {
 		this.queryCategory = queryCategory;
 	}
 
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
 }

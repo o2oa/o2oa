@@ -313,7 +313,8 @@ public class AttendanceDetailAnalyseService {
 					if(StringUtils.isEmpty(detail.getTopUnitName())){
 						detail.setTopUnitName(scheduleSetting.getTopUnitName());
 					}
-					if(StringUtils.isEmpty(detail.getTopUnitName())){
+					//if(StringUtils.isEmpty(detail.getTopUnitName())){
+					if(StringUtils.isEmpty(detail.getUnitName())){
 						detail.setUnitName( userManagerService.getUnitNameWithPersonName( detail.getEmpName() ) );
 					}
 					detail.setOnWorkTime( scheduleSetting.getOnDutyTime() );
@@ -340,7 +341,7 @@ public class AttendanceDetailAnalyseService {
 
 			if( check ){
 				try{
-					System.out.println("isWeekend="+attendanceSettingServiceAdv.isWeekend( detail.getRecordDate()));
+					//System.out.println("isWeekend="+attendanceSettingServiceAdv.isWeekend( detail.getRecordDate()));
 					detail.setIsWeekend( attendanceSettingServiceAdv.isWeekend( detail.getRecordDate() ));
 				}catch( Exception e ){
 					check = false;
