@@ -429,6 +429,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.setData( data );
 			newLine = this.getLine(index);
 
+			this.validationMode();
 			this.fireEvent("addLine",[{"line":newLine, "ev":ev}]);
 			return newLine;
 		},
@@ -448,6 +449,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.setData( data );
 			newLine = this.getLine( index );
 
+			this.validationMode();
 			this.fireEvent("addLine",[{"line":newLine, "ev":ev}]);
 			return newLine;
 		},
@@ -465,6 +467,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.setData( data );
 			var newLine = this.getLine( index );
 
+			this.validationMode();
 			this.fireEvent("addLine",[{"line":newLine, "ev":ev}]);
 			return newLine;
 		},
@@ -511,6 +514,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			});
 
 			_self.setData( data );
+			this.validationMode();
 			if(saveFlag)this.form.saveFormData();
 		},
 		_deleteLine: function(ev, line){
@@ -537,6 +541,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			data.splice(line.options.index, 1);
 
 			this.setData( data );
+			this.validationMode();
 			this.fireEvent("afterDeleteLine");
 			if(saveFlag)this.form.saveFormData();
 		},
