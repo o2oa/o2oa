@@ -47,28 +47,34 @@
 					<div class="o2_vue MWFElementColor" name="inactiveColor"><el-color-picker v-model="inactiveColor" @change="change" size="mini"></el-color-picker></div>
 				</td>
 			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.activeValue}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="activeValueType" value="boolean-true" text{(!$.activeValueType || $.activeValueType=='boolean-true')?'checked':''}/>true
-					<input type="radio" name="activeValueType" value="boolean-false" text{($.activeValueType=='boolean-false')?'checked':''}/>false
-					<input type="radio" name="activeValueType" value="string" text{($.activeValueType=='string')?'checked':''}/>string
-					<input type="radio" name="activeValueType" value="number" text{($.activeValueType=='number')?'checked':''}/>number
-					<input type="text" name="activeValue" value="text{$.activeValue}" class="editTableInput"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.inactiveValue}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="inactiveValueType" value="boolean-true" text{($.inactiveValueType=='boolean-true')?'checked':''}/>true
-					<input type="radio" name="inactiveValueType" value="boolean-false" text{(!$.inactiveValueType || $.inactiveValueType=='boolean-false')?'checked':''}/>false
-					<input type="radio" name="inactiveValueType" value="string" text{($.inactiveValueType=='string')?'checked':''}/>string
-					<input type="radio" name="inactiveValueType" value="number" text{($.inactiveValueType=='number')?'checked':''}/>number
-					<input type="text" name="inactiveValue" value="text{$.inactiveValue}" class="editTableInput"/>
-				</td>
-			</tr>
-
 		</table>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.valueType}}:</td>
+				<td class="editTableValue">
+					<input type="radio" onclick="if (this.checked) this.getParent('table').getNext().hide();" name="valueType" value="boolean" text{(!$.valueType || $.valueType=='boolean')?'checked':''}/>boolean
+					<input type="radio" onclick="if (this.checked) this.getParent('table').getNext().show();" name="valueType" value="string" text{($.valueType=='string')?'checked':''}/>string
+					<input type="radio" onclick="if (this.checked) this.getParent('table').getNext().show();" name="valueType" value="number" text{($.valueType=='number')?'checked':''}/>number
+				</td>
+			</tr>
+		</table>
+
+		<div style="display: text{($.valueType=='string' || $.valueType=='number')?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.activeValue}}:</td>
+					<td class="editTableValue">
+						<input type="text" name="activeValue" value="text{$.activeValue}" class="editTableInput"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.inactiveValue}}:</td>
+					<td class="editTableValue">
+						<input type="text" name="inactiveValue" value="text{$.inactiveValue}" class="editTableInput"/>
+					</td>
+				</tr>
+			</table>
+		</div>
 
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.activeIconClass}}</div>
 		<div style="display: text{($.prefixIcon)?'block':'none'}" class="MWFElIcon" name="activeIconClass"></div>
