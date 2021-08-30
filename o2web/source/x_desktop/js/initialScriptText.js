@@ -838,6 +838,8 @@ var _cmsActions = new _Action("x_cms_assemble_control", {
 var _portalActions = new _Action("x_portal_assemble_surface", {
     "getScript":  {"uri": "/jaxrs/script/portal/{portal}/name/{ }","method": "POST"}
 });
+bind.processActions = _processActions;
+bind.cmsActions = _cmsActions;
 
 //include 引用脚本
 //optionsOrName : {
@@ -1006,7 +1008,8 @@ var _createDict = function(application){
 };
 bind.exec = _exec;
 bind.include = _include;
-bind.Dict = _createDict();
+var work = wrapWorkContext.getWork();
+bind.Dict = _createDict((work) ? work.application : "");
 
 try{
     oPrint = oPrint;
