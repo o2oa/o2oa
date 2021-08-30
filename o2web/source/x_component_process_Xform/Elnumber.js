@@ -38,7 +38,7 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
 
         // if (!this.json.max || o2.typeOf(this.json.max)!=="number") this.json.max = "Infinity";
         // if (!this.json.min || o2.typeOf(this.json.max)!=="number") this.json.min = "-Infinity";
-        if (!this.json.step || o2.typeOf(this.json.max)!=="number") this.json.step = 1;
+        if (!this.json.step || o2.typeOf(this.json.step)!=="number") this.json.step = 1;
         if (!this.json.stepStrictly) this.json.stepStrictly = false;
         if (!this.json.disabled) this.json.disabled = false;
         if (!this.json.precision) this.json.precision = 0;
@@ -50,9 +50,10 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
     appendVueExtend: function(app){
         if (!app.methods) app.methods = {};
         app.methods.$loadElEvent = function(ev){
+            debugger;
             this.validationMode();
             if (ev==="change") this._setBusinessData(this.getInputData());
-            if (this.json.events[ev] && this.json.events[ev].code){
+            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
                 this.form.Macro.fire(this.json.events[ev].code, this, event);
             }
         }.bind(this);
