@@ -32,6 +32,13 @@
                     <input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.emptyValue}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="emptyValue" value="zero" text{($.emptyValue!='string')?'checked':''}/>{{$.lp.showZero}}
+                    <input type="radio" name="emptyValue" value="string" text{($.emptyValue=='string')?'checked':''}/>{{$.lp.showNullString}}
+                </td>
+            </tr>
 		</table>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>

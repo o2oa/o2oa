@@ -1086,6 +1086,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showOptions": "显示选项",
         "onInput": "输入时",
         "onFocus": "点击时",
+        "emptyValue": "空值",
+        "showZero": "显示零",
+        "showNullString": "显示空字符串",
         "wps" : {
             "config":"配置",
             "options" : "通用选项",
