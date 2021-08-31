@@ -265,7 +265,6 @@ debugger;
         }
     },
     getValue: function(){
-        debugger;
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
