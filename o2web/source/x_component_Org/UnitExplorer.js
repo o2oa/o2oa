@@ -1,5 +1,6 @@
 MWF.require("MWF.widget.O2Identity", null, false);
 MWF.xDesktop.requireApp("Org", "$Explorer", null, false);
+MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
 MWF.xApplication.Org.UnitExplorer = new Class({
 	Extends: MWF.xApplication.Org.$Explorer,
 	Implements: [Options, Events],
@@ -1131,6 +1132,16 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
         tdContents[1].setStyles(this.style.baseInforContentNode_edit).empty();
         this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[1]);
         this.uniqueInputNode.set("value", (this.data.unique));
+        if( this.data.id ){
+            this.tooltip = new MWF.xApplication.Org.UnitExplorer.UnitContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
+                axis : "y",
+                position : {
+                    x : "right"
+                },
+                hiddenDelay : 300,
+                displayDelay : 300
+            });
+        }
 
         tdContents[2].setStyles(this.style.baseInforContentNode_edit).empty();
         this.typeListInputNode = new Element("input", {"styles": this.style.inputNode_type}).inject(tdContents[2]);
@@ -1364,10 +1375,27 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
         }else{
             this.item.destroy();
         }
+        if( this.tooltip ){
+            this.tooltip.destroy();
+            this.tooltip = null;
+        }
     },
     destroy: function(){
+        if( this.tooltip ){
+            this.tooltip.destroy();
+            this.tooltip = null;
+        }
         this.node.empty();
         this.node.destroy();
         MWF.release(this);
+    }
+});
+
+MWF.xApplication.Org.UnitExplorer.UnitContent.UniqueTooltip = new Class({
+    Extends: MTooltips,
+    _getHtml : function(){
+        var html =
+            "<div item='containr' style='line-height:24px;'><div style='font-size: 14px;color:red;float:left; '>"+ this.lp.unitUniqueModifyNote +"</div></div>";
+        return html;
     }
 });
