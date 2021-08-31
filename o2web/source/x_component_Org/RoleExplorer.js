@@ -1,3 +1,4 @@
+MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
 MWF.xDesktop.requireApp("Org", "$Explorer", null, false);
 MWF.xApplication.Org.RoleExplorer = new Class({
 	Extends: MWF.xApplication.Org.$Explorer,
@@ -448,6 +449,16 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
         tdContents[1].setStyles(this.style.baseInforContentNode_edit).empty();
         this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[1]);
         this.uniqueInputNode.set("value", (this.data.unique));
+        if( this.data.id ){
+            this.tooltip = new MWF.xApplication.Org.RoleExplorer.RoleContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
+                axis : "y",
+                position : {
+                    x : "right"
+                },
+                hiddenDelay : 300,
+                displayDelay : 300
+            });
+        }
 
         tdContents[2].setStyles(this.style.baseInforContentNode_edit).empty();
         this.descriptionInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[2]);
@@ -527,6 +538,10 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
         }else{
             this.item.destroy();
         }
+        if( this.tooltip ){
+            this.tooltip.destroy();
+            this.tooltip = null;
+        }
     },
 
     // getGenderType: function(){
@@ -546,6 +561,10 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
     //     return text;
     // },
     destroy: function(){
+        if( this.tooltip ){
+            this.tooltip.destroy();
+            this.tooltip = null;
+        }
         this.node.empty();
         this.node.destroy();
         MWF.release(this);
@@ -561,4 +580,13 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
     //     }
     //     return src;
     // }
+});
+
+MWF.xApplication.Org.RoleExplorer.RoleContent.UniqueTooltip = new Class({
+    Extends: MTooltips,
+    _getHtml : function(){
+        var html =
+            "<div item='containr' style='line-height:24px;'><div style='font-size: 14px;color:red;float:left; '>"+ this.lp.roleUniqueModifyNote +"</div></div>";
+        return html;
+    }
 });
