@@ -49,11 +49,15 @@ class ComposeDetailWithMobileInSignProxy3 {
 		String offDutyTime = getOffDutyTime( mobileDetails, middayRestEndTime );
 		String morningOffdutyTime = getMorningOffDutyTime(mobileDetails, onWorkTimeStr, middayRestEndTime);
 		String afternoonOndutyTime = getAfternoonOnDutyTime( mobileDetails, middayRestStartTime, offWorkTimeStr );
+		String recordAddress = this.getRecordAddress(mobileDetails);
+		String optMachineType = this.getOptMachineType(mobileDetails);
 
 		//组织员工当天的考勤打卡记录
 		AttendanceDetail detail = new AttendanceDetail();
 		detail.setEmpNo( mobileDetail.getEmpNo() );
 		detail.setEmpName( mobileDetail.getEmpName() );
+		detail.setRecordAddress(recordAddress);
+		detail.setOptMachineType(optMachineType);
 		if( mobileDetail.getRecordDate() != null ) {
 			detail.setYearString( dateOperation.getYear( mobileDetail.getRecordDate() ) );
 			detail.setMonthString( dateOperation.getMonth( mobileDetail.getRecordDate() ) );
@@ -194,5 +198,51 @@ class ComposeDetailWithMobileInSignProxy3 {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * 获取打卡地址
+	 * @param mobileDetails
+	 * @return
+	 * @throws Exception
+	 */
+	private String getRecordAddress(List<AttendanceDetailMobile> mobileDetails) throws Exception {
+		String recordAddress = "";
+		for( AttendanceDetailMobile detailMobile : mobileDetails ) {
+			String tmpRecordAddress = detailMobile.getWorkAddress();
+			if(StringUtils.isNotEmpty(tmpRecordAddress)){
+				if(StringUtils.isEmpty(recordAddress)){
+					recordAddress = tmpRecordAddress;
+				}else{
+					if(!StringUtils.contains(recordAddress,tmpRecordAddress)){
+						recordAddress = recordAddress+","+tmpRecordAddress;
+					}
+				}
+			}
+		}
+		return recordAddress;
+	}
+
+	/**
+	 * 获取设备信息
+	 * @param mobileDetails
+	 * @return
+	 * @throws Exception
+	 */
+	private String getOptMachineType(List<AttendanceDetailMobile> mobileDetails) throws Exception {
+		String optMachineType = "";
+		for( AttendanceDetailMobile detailMobile : mobileDetails ) {
+			String tmpOptMachineType = detailMobile.getOptMachineType();
+			if(StringUtils.isNotEmpty(tmpOptMachineType)){
+				if(StringUtils.isEmpty(optMachineType)){
+					optMachineType = tmpOptMachineType;
+				}else{
+					if(!StringUtils.contains(optMachineType,tmpOptMachineType)){
+						optMachineType = optMachineType+","+tmpOptMachineType;
+					}
+				}
+			}
+		}
+		return optMachineType;
 	}
 }
