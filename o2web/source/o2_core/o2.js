@@ -878,14 +878,22 @@ debugger;
     };
 
     var _injectHtml = function(op, data){
+        debugger;
         if (op.bind) data = data.bindJson(op.bind);
         if (op.dom) _parseDom(op.dom, function(node){
+            var scriptText;
+            var text = data.stripScripts(function(script){
+                scriptText = script;
+            });
+
             if (op.module){
-                _parseModule(node, data, op);
+                _parseModule(node, text, op);
                 //node.insertAdjacentHTML(op.position, data);
             }else{
-                node.insertAdjacentHTML(op.position, data);
+                node.insertAdjacentHTML(op.position, text);
             }
+
+            if (op.evalScripts && scriptText) Browser.exec(scriptText);
         }, op.doc);
     };
     var _parseModule = function(node, data, op){
