@@ -1067,6 +1067,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showOptions": "Show Options",
         "onInput": "When inputting",
         "onFocus": "On Click",
+        "emptyValue": "Empty Value",
+        "showZero": "Show Zero",
+        "showNullString": "Show an empty string",
         "wps" : {
             "config":"Config",
             "options" : "options",
@@ -1141,10 +1144,7 @@ MWF.xApplication.process.FormDesigner.LP = {
             "www":"www",
             "feedbackUrl":"feedbackUrl",
             "logoImg":"left logo（172x40）",
-            "logoUrl":"logo link",
-            "emptyValue": "Empty Value",
-            "showZero": "Show Zero",
-            "showNullString": "Show an empty string"
+            "logoUrl":"logo link"
         }
     },
     "actionBar": {

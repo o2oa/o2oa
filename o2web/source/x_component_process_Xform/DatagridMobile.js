@@ -1288,7 +1288,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
                     var tmpV = new Decimal(totalResaults[idx]);
                     if (m.type=="number"){
                         var cell = cells[m.index];
-                        var addv = cell.get("text").toFloat();
+                        var addv = ( cell.get("text") || "0" ).toFloat();
                         tmpV = tmpV.plus(addv||0);
                         //tmpV = tmpV + addv;
                     }
