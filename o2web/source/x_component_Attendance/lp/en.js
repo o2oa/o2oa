@@ -247,6 +247,8 @@ MWF.xApplication.Attendance.LP = {
 	"signinResult": "signin result",
 	"signinResultSelectText": ["", "normal", "leave early", "late", "severely late", "absentee late", "not clocked in", "Outside checkin"],
 	"signinQywxResultSelectText": ["", "正常", "时间异常", "地点异常", "未打卡", "wifi异常", "非常用设备"],
+	"recordAddress": "recordAddress",
+	"optMachineType": "optMachineType",
 
 	"systemSetting": "System Settings",
 	"reportTo": "Report object",

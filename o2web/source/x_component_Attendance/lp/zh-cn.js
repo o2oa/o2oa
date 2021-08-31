@@ -255,6 +255,8 @@ MWF.xApplication.Attendance.LP = {
 	"signinResult": "打卡结果",
 	"signinResultSelectText": ["", "正常", "早退", "迟到", "严重迟到", "旷工迟到", "未打卡"],
 	"signinQywxResultSelectText": ["", "正常", "时间异常", "地点异常", "未打卡", "wifi异常", "非常用设备"],
+	"recordAddress": "打卡地址",
+	"optMachineType": "设备信息",
 
 	"systemSetting" : "系统设置",
 	"reportTo": "汇报对象",
