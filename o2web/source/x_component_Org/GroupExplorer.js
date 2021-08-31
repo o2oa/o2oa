@@ -1,3 +1,4 @@
+MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
 MWF.xDesktop.requireApp("Org", "RoleExplorer", null, false);
 MWF.xApplication.Org.GroupExplorer = new Class({
     Extends: MWF.xApplication.Org.$Explorer,
@@ -529,6 +530,42 @@ MWF.xApplication.Org.GroupExplorer.GroupContent.BaseInfor = new Class({
 
         }
     },
+    edit: function(){
+        var tdContents = this.editContentNode.getElements("td.inforContent");
+        tdContents[0].setStyles(this.style.baseInforContentNode_edit).empty();
+        this.nameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[0]);
+        this.nameInputNode.set("value", (this.data.name));
+
+        tdContents[1].setStyles(this.style.baseInforContentNode_edit).empty();
+        this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[1]);
+        this.uniqueInputNode.set("value", (this.data.unique));
+        if( this.data.id ){
+            this.tooltip = new MWF.xApplication.Org.GroupExplorer.GroupContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
+                axis : "y",
+                position : {
+                    x : "right"
+                },
+                hiddenDelay : 300,
+                displayDelay : 300
+            });
+        }
+
+        tdContents[2].setStyles(this.style.baseInforContentNode_edit).empty();
+        this.descriptionInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[2]);
+        this.descriptionInputNode.set("value", (this.data.description));
+
+        var _self = this;
+        this.editContentNode.getElements("input").addEvents({
+            "focus": function(){if (this.get("type").toLowerCase()==="text"){this.setStyles(_self.style.inputNode_focus);}},
+            "blur": function(){if (this.get("type").toLowerCase()==="text"){this.setStyles(_self.style.inputNode_blur);}}
+        });
+
+        this.mode = "edit";
+
+        this.editNode.setStyle("display", "none");
+        this.saveNode.setStyle("display", "block");
+        this.cancelNode.setStyle("display", "block");
+    },
     save: function(){
         if (!this.nameInputNode.get("value")){
             this.explorer.app.notice(this.explorer.app.lp.inputGroupInfor, "error", this.explorer.propertyContentNode);
@@ -576,8 +613,21 @@ MWF.xApplication.Org.GroupExplorer.GroupContent.BaseInfor = new Class({
         }.bind(this));
     },
     destroy: function(){
+        if( this.tooltip ){
+            this.tooltip.destroy();
+            this.tooltip = null;
+        }
         this.node.empty();
         this.node.destroy();
         MWF.release(this);
+    }
+});
+
+MWF.xApplication.Org.GroupExplorer.GroupContent.UniqueTooltip = new Class({
+    Extends: MTooltips,
+    _getHtml : function(){
+        var html =
+            "<div item='containr' style='line-height:24px;'><div style='font-size: 14px;color:red;float:left; '>"+ this.lp.groupUniqueModifyNote +"</div></div>";
+        return html;
     }
 });
