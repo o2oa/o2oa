@@ -1181,6 +1181,21 @@ String.implement('stripScripts', function(exec){
 	else if (typeOf(exec) == 'function') exec(scripts, text);
 	return text;
 });
+String.implement('stripScriptSrcs', function(exec){
+	var scripts = '';
+	var text = this.replace(/<script[^<]src\s*=\s*"([^"]*)[^\]]>/gi, function(all, code){
+		scripts += code + '\n';
+		return '';
+	});
+	if (exec === true) Browser.exec(scripts);
+	else if (typeOf(exec) == 'function') exec(scripts, text);
+	return text;
+});
+
+
+
+
+
 
 // Window, Document
 

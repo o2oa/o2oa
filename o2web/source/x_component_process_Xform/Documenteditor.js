@@ -200,7 +200,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
 
         if (this.json.documentTempleteType=="cus"){
-            pageContentNode.loadHtml(o2.filterUrl(this.json.documentTempleteUrl), function(){
+            var url = this.json.documentTempleteUrl+((this.json.documentTempleteUrl.indexOf("?")!==-1) ? "&" : "?")+"v="+o2.version.v;
+            pageContentNode.loadHtml(o2.filterUrl(url), function(){
                 this._clearCopytoTrs();
                 if (this.json.toWordPageNumber=="y") this.doPageStyles(pageContentNode);
 
@@ -216,7 +217,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.getTempleteJson(function(){
                 this._clearCopytoTrs();
                 var templete = this.json.documentTempleteName || "standard";
-                pageContentNode.loadHtml(o2.filterUrl("../x_component_process_FormDesigner/Module/Documenteditor/templete/"+this.templeteJson[templete].file), function(){
+
+                var url = "../x_component_process_FormDesigner/Module/Documenteditor/templete/"+this.templeteJson[templete].file;
+                url = url+((url.indexOf("?")!==-1) ? "&" : "?")+"v="+o2.version.v;
+
+                pageContentNode.loadHtml(o2.filterUrl(url), function(){
                     if (this.json.toWordPageNumber=="y") this.doPageStyles(pageContentNode);
 
                     if (this.attachmentTemplete){
