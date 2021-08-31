@@ -1320,7 +1320,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 							var tmpV = new Decimal(totalResaults[i]);
 							if (m.type=="number"){
 								var cell = cells[m.index];
-								var addv = cell.get("text").toFloat();
+								var addv = ( cell.get("text") || "0" ).toFloat();
 								tmpV = tmpV.plus(addv||0);
 								//tmpV = tmpV + addv;
 							}
