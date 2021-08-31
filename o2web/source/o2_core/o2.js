@@ -358,6 +358,7 @@ if (window.Promise && !Promise.any){
             "reload": !!(options && options.reload),
             "sequence": (!(options && options.sequence == false)),
             "type": type,
+            "baseUrl": (options && options.baseUrl) ? options.baseUrl : "",
             "doc": doc
         }
     };
@@ -373,6 +374,7 @@ if (window.Promise && !Promise.any){
             "module": (options && options.module) || null,
             "noConflict": (options && options.noConflict) || false,
             "bind": (options && options.bind) || null,
+            "evalScripts": (options && options.evalScripts) || false,
             "position": (options && options.position) || "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
         }
     };
@@ -506,8 +508,30 @@ if (window.Promise && !Promise.any){
     var _loadCssQueue = [];
     var _loadingModules = {};
 
+    var _checkUrl = function(url, base){
+        debugger;
+        var urlStr = new URI(url, {base: base}).toString();
+        return urlStr;
+        // var baseFlag = base.substr(0, base.lastIndexOf("/"));
+        // var urlFlag = url.subString(0, 2);
+        // while (urlFlag==="./" || urlFlag==".."){
+        //     url = url.subString(2, url.length);
+        //     if (urlFlag === "./"){
+        //         base = base.substr(0, base.lastIndexOf("/"));
+        //     }else{
+        //
+        //     }
+        //     urlFlag = url.subString(0, 2);
+        // }
+        // return baseFlag+url;
+    }
     var _loadSingle = function(module, callback, op){
         var url = module;
+
+        if (op.baseUrl){
+            url = _checkUrl(url, op.baseUrl);
+        }
+
         var uuid = _uuid();
         if (op.noCache) url = (url.indexOf("?")!==-1) ? url+"&v="+uuid : addr_uri+"?v="+uuid;
         var key = encodeURIComponent(url+op.doc.unid);
@@ -877,14 +901,33 @@ debugger;
         _xhr_get(url, success, failure);
     };
 
-    var _injectHtml = function(op, data){
+    var _injectHtml = function(op, data, baseUrl){
         debugger;
         if (op.bind) data = data.bindJson(op.bind);
         if (op.dom) _parseDom(op.dom, function(node){
             var scriptText;
-            var text = data.stripScripts(function(script){
+            var scriptSrc;
+            var text = data.stripScriptSrcs(function(script){
+                scriptSrc = script;
+            });
+            text = text.stripScripts(function(script){
                 scriptText = script;
             });
+
+            var reg = /(?:href|src)\s*=\s*"([^"]*)"/gi;
+            var m = reg.exec(text);
+            while(m){
+                var l = m[0].length;
+                var u = new URI(m[1], {base: baseUrl}).toString();
+                var r = m[0].replace(m[1], u);
+                var i = r.length-l;
+                var left = text.substring(0, m.index);
+                var right = text.substring(m.index+l, text.length);
+                text = left+r+right;
+                reg.lastIndex = reg.lastIndex+i;
+
+                m = reg.exec(text);
+            }
 
             if (op.module){
                 _parseModule(node, text, op);
@@ -892,8 +935,17 @@ debugger;
             }else{
                 node.insertAdjacentHTML(op.position, text);
             }
-
-            if (op.evalScripts && scriptText) Browser.exec(scriptText);
+            if (op.evalScripts){
+                if (scriptSrc){
+                    var scriptSrcs = scriptSrc.split(/\n/g).trim();
+                    if (scriptSrcs && scriptSrcs.length){
+                        o2.load(scriptSrcs, {baseUrl:baseUrl}, function(){});
+                        if (op.evalScripts && scriptText) Browser.exec(scriptText);
+                    }else{
+                        if (op.evalScripts && scriptText) Browser.exec(scriptText);
+                    }
+                }
+            }
         }, op.doc);
     };
     var _parseModule = function(node, data, op){
@@ -960,9 +1012,9 @@ debugger;
 
         var thisLoaded = [];
         if (op.sequence){
-            _loadSequence(ms, cb, op, 0, thisLoaded, _loadSingleHtml, null, function(html){ if (html) _injectHtml(op, html.data ); });
+            _loadSequence(ms, cb, op, 0, thisLoaded, _loadSingleHtml, null, function(html){ if (html) _injectHtml(op, html.data, html.module ); });
         }else{
-            _loadDisarray(ms, cb, op, thisLoaded, _loadSingleHtml, null, function(html){ if (html) _injectHtml(op, html.data ); });
+            _loadDisarray(ms, cb, op, thisLoaded, _loadSingleHtml, null, function(html){ if (html) _injectHtml(op, html.data, html.module ); });
         }
     };
     this.o2.loadHtml = _loadHtml;
