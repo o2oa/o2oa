@@ -3728,7 +3728,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 "height":"auto"
             });
         }.bind(this), function(){
-            if (!this.data.attachmentText){
+            if (!this.data.attachmentText && this.layout_attachmentText){
                 this.layout_attachmentText.set("text", "");
             }
 
