@@ -1141,7 +1141,10 @@ MWF.xApplication.process.FormDesigner.LP = {
             "www":"www",
             "feedbackUrl":"feedbackUrl",
             "logoImg":"left logo（172x40）",
-            "logoUrl":"logo link"
+            "logoUrl":"logo link",
+            "emptyValue": "Empty Value",
+            "showZero": "Show Zero",
+            "showNullString": "Show an empty string"
         }
     },
     "actionBar": {

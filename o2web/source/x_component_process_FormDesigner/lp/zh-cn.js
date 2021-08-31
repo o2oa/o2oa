@@ -1160,7 +1160,10 @@ MWF.xApplication.process.FormDesigner.LP = {
             "www":"网址",
             "feedbackUrl":"反馈地址",
             "logoImg":"左上角logo（172x40）",
-            "logoUrl":"logo链接"
+            "logoUrl":"logo链接",
+            "emptyValue": "空值",
+            "showZero": "显示零",
+            "showNullString": "显示空字符串"
         }
     },
     "actionBar": {
