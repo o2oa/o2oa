@@ -267,5 +267,10 @@ MWF.xApplication.Org.LP = {
     "queryPrivateConfigDescribe":"Description",
     "queryPrivateConfigBtnEdit":"Edit",
     "queryPrivateConfigBtnSave":"Save",
-    "queryPrivateConfigBtnCancel":"Cancel"
+    "queryPrivateConfigBtnCancel":"Cancel",
+
+    "unitUniqueModifyNote": "Note: Modifying the unique code will affect the authority of the organization in the system, please modify it with caution",
+    "personUniqueModifyNote": "Note: Modifying the unique code will affect the authority of the person and identity in the system, please modify it with caution",
+    "roleUniqueModifyNote": "Note: Modifying the unique code will affect the permissions of the role in the system, please modify it carefully",
+    "groupUniqueModifyNote": "Note: Modifying the unique code will affect the permissions of the group in the system, please modify it with caution"
 };

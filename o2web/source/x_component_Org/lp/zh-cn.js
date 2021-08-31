@@ -266,5 +266,10 @@ MWF.xApplication.Org.LP = {
     "queryPrivateConfigDescribe":"描述",
     "queryPrivateConfigBtnEdit":"编辑",
     "queryPrivateConfigBtnSave":"保存",
-    "queryPrivateConfigBtnCancel":"取消"
+    "queryPrivateConfigBtnCancel":"取消",
+
+    "unitUniqueModifyNote": "注：修改唯一编码会影响该组织在系统中的权限，请谨慎修改",
+    "personUniqueModifyNote": "注：修改唯一编码会影响该人员及身份在系统中的权限，请谨慎修改",
+    "roleUniqueModifyNote": "注：修改唯一编码会影响该角色在系统中的权限，请谨慎修改",
+    "groupUniqueModifyNote": "注：修改唯一编码会影响该群组在系统中的权限，请谨慎修改"
 };
