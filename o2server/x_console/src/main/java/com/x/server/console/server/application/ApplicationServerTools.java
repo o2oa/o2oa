@@ -224,6 +224,7 @@ public class ApplicationServerTools extends JettySeverTools {
 					if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
 						FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
 						webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
+						webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
 					}
 					handlers.addHandler(webApp);
 				} else if (Files.exists(dir)) {
@@ -262,6 +263,11 @@ public class ApplicationServerTools extends JettySeverTools {
 						holder.setInitParameter("exclusions", applicationServer.getStatExclusions());
 						webApp.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
 						webApp.addServlet(StatViewServlet.class, "/druid/*");
+					}
+					if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
+						FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
+						webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
+						webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
 					}
 					handlers.addHandler(webApp);
 				} else if (Files.exists(dir)) {
