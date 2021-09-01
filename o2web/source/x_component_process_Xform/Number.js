@@ -150,13 +150,13 @@ debugger;
                     }
                     break;
                 case "contain":
-                    if (v.indexOf(data.value)!=-1){
+                    if (v.toString().indexOf(data.value)!=-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notcontain":
-                    if (v.indexOf(data.value)==-1){
+                    if (v.toString().indexOf(data.value)==-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
