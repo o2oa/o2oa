@@ -5,6 +5,8 @@ layout.addReady(function(){
     (function(layout){
         layout.inBrowser = false;
         layout.desktop.type = "layout";
+        layout.app = false;
+        layout.apps = [];
         var loadingNode = $("browser_loading");
 
         var _load = function(){
