@@ -75,6 +75,9 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			if( StringUtils.isNotEmpty(wrapIn.getRecordAddress()) ){
 				attendanceDetailMobile.setRecordAddress( wrapIn.getRecordAddress() );
 			}
+			if( StringUtils.isNotEmpty(wrapIn.getWorkAddress()) ){
+				attendanceDetailMobile.setWorkAddress( wrapIn.getWorkAddress() );
+			}
 		}
 		if( check ){
 			if( StringUtils.isNotEmpty(wrapIn.getLatitude())){

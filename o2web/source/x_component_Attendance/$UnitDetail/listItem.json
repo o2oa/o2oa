@@ -6,7 +6,7 @@
     "item" : "function( d ){ return d.empName.split('@')[0] }",
     "name" : "empName",
     "defaultSort" : "asc",
-    "width" : "11%"
+    "width" : "6%"
   },
   {
     "title" : MWF.xApplication.Attendance.LP.date,
@@ -14,7 +14,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "recordDateString",
     "name" : "recordDateString",
-    "width" : "11%"
+    "width" : "8%"
   },
 
   {
@@ -23,7 +23,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "function( data ){ if(data.isHoliday){ return MWF.xApplication.Attendance.LP.holiday1 }else if(data.isWeekend){return MWF.xApplication.Attendance.LP.weekend }else if(data.isWorkday){return MWF.xApplication.Attendance.LP.workDaysoff }else{return MWF.xApplication.Attendance.LP.workDay }  }",
     "name" : "description",
-    "width" : "11%"
+    "width" : "8%"
   },
 
   {
@@ -32,7 +32,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "onDutyTime",
     "name" : "onDutyTime",
-    "width" : "11%"
+    "width" : "8%"
   },
   {
     "title" : MWF.xApplication.Attendance.LP.middayRestStartTime,
@@ -40,7 +40,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "morningOffDutyTime",
     "name" : "morningOffDutyTime",
-    "width" : "11%"
+    "width" : "8%"
   },
   {
     "title" : MWF.xApplication.Attendance.LP.middayRestEndTime,
@@ -48,7 +48,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "afternoonOnDutyTime",
     "name" : "afternoonOnDutyTime",
-    "width" : "11%"
+    "width" : "8%"
   },
   {
     "title" : MWF.xApplication.Attendance.LP.offDutyTime,
@@ -56,7 +56,15 @@
     "contentStyles" : "normalTdNode",
     "item" : "offDutyTime",
     "name" : "offDutyTime",
-    "width" : "11%"
+    "width" : "8%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.workTime,
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "workTimeDuration",
+    "name" : "workTimeDuration",
+    "width" : "6%"
   },
   {
     "title": MWF.xApplication.Attendance.LP.attendanceStatus,
@@ -64,7 +72,7 @@
     "contentStyles": "normalTdNode",
     "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ if(d.leaveType && d.leaveType!=''){status =d.leaveType }else{status = MWF.xApplication.Attendance.LP.levelAsked } }else if(d.isLate){ status = MWF.xApplication.Attendance.LP.late }else if(d.isLeaveEarlier){ status = MWF.xApplication.Attendance.LP.leaveEarly }else if(d.isAbsent){ status = MWF.xApplication.Attendance.LP.noSign }else if(d.isAbnormalDuty){ status = MWF.xApplication.Attendance.LP.abNormalDuty }else if(d.isLackOfTime){ status = MWF.xApplication.Attendance.LP.lackOfTime }else{ status = MWF.xApplication.Attendance.LP.normal }; return status; }",
     "name" : "status",
-    "width" : "7%"
+    "width" : "8%"
   },
   {
     "title": MWF.xApplication.Attendance.LP.isCheckInOutOfRange,
@@ -73,6 +81,22 @@
     "item": "function( d ){  if(d.isExternal){ return MWF.xApplication.Attendance.LP.yes }else{ return MWF.xApplication.Attendance.LP.no }}",
     "name" : "appealStatus",
     "width" : "7%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.recordAddress,
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function( data ){ if(data.workAddress && data.workAddress!=\"\"){ return data.workAddress }else{return data.recordAddress }}",
+    "name" : "address",
+    "width" : "11%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.optMachineType,
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "optMachineType",
+    "name" : "optMachineType",
+    "width" : "11%"
   },
   {
     "title": MWF.xApplication.Attendance.LP.appealStatus,
