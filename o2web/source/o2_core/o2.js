@@ -385,20 +385,6 @@ if (!window.o2) {
                 }
             }
 
-            // if (!window.layout) window.layout = {};
-            // if (!window.layout.config){
-            //     new Request.JSON({
-            //         url: "../x_desktop/res/config/config.json",
-            //         secure: false,
-            //         method: "get",
-            //         noCache: true,
-            //         async: false,
-            //         onSuccess: function(responseJSON, responseText){
-            //             window.layout.config = responseJSON;
-            //         }.bind(this),
-            //     }).send();
-            // }
-
             if (window.layout && layout.config && layout.config.urlMapping) {
                 for (var k in layout.config.urlMapping) {
                     var regex = new RegExp(k);
@@ -508,14 +494,13 @@ if (!window.o2) {
         var _loadingModules = {};
 
         var _checkUrl = function (url, base) {
-            debugger;
             var urlStr = new URI(url, {base: base}).toString();
             return urlStr;
         }
         var _loadSingle = function (module, callback, op) {
             var url = module;
 
-            if (op.baseUrl) url = this._checkUrl(url, op.baseUrl);
+            if (op.baseUrl) url = _checkUrl(url, op.baseUrl);
 
             var uuid = _uuid();
             if (op.noCache) url = (url.indexOf("?") !== -1) ? url + "&v=" + uuid : addr_uri + "?v=" + uuid;
@@ -640,7 +625,7 @@ if (!window.o2) {
             if (op.dom) _parseDom(op.dom, function (node) {
                 if (node.className.indexOf(uuid) == -1) node.className += ((node.className) ? " " + uuid : uuid);
             }, op.doc);
-            debugger;
+
             var completed = function () {
                 if (_loadCssRunning[key]) {
                     _loadCssRunning[key] = false;
@@ -663,59 +648,6 @@ if (!window.o2) {
                     if (cssText) {
                         op.uuid = uuid;
                         var style = _loadCssText(cssText, op);
-                        // cssText = cssText.replace(/\/\*(\s|\S)*?\*\//g, "");
-                        // if (op.bind) cssText = cssText.bindJson(op.bind);
-                        // if (op.dom){
-                        //
-                        //     var rex = new RegExp("(.+)(?=\\{)", "g");
-                        //     var match;
-                        //     var prefix = "." + uuid + " ";
-                        //     while ((match = rex.exec(cssText)) !== null) {
-                        //         // var rule = prefix + match[0];
-                        //         // cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                        //         // rex.lastIndex = rex.lastIndex + prefix.length;
-                        //
-                        //         var rulesStr = match[0];
-                        //         if (rulesStr.substr(0,1)=="@" || rulesStr.indexOf("%")!=-1){
-                        //             // var begin = 0;
-                        //             // var end = 0;
-                        //
-                        //
-                        //         }else{
-                        //             if (rulesStr.indexOf(",")!=-1){
-                        //                 var rules = rulesStr.split(/\s*,\s*/g);
-                        //                 rules = rules.map(function(r){
-                        //                     return prefix + r;
-                        //                 });
-                        //                 var rule = rules.join(", ");
-                        //                 cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                        //                 rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
-                        //
-                        //             }else{
-                        //                 var rule = prefix + match[0];
-                        //                 cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                        //                 rex.lastIndex = rex.lastIndex + prefix.length;
-                        //             }
-                        //         }
-                        //     }
-                        // }
-                        // var style = op.doc.createElement("style");
-                        // style.setAttribute("type", "text/css");
-                        // var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
-                        // head.appendChild(style);
-                        // if(style.styleSheet){
-                        //     var setFunc = function(){
-                        //         style.styleSheet.cssText = cssText;
-                        //     };
-                        //     if(style.styleSheet.disabled){
-                        //         setTimeout(setFunc, 10);
-                        //     }else{
-                        //         setFunc();
-                        //     }
-                        // }else{
-                        //     var cssTextNode = op.doc.createTextNode(cssText);
-                        //     style.appendChild(cssTextNode);
-                        // }
                     }
                     style.id = uid;
                     var styleObj = {"module": module, "id": uid, "style": style, "doc": op.doc, "class": uuid};
@@ -788,7 +720,6 @@ if (!window.o2) {
         };
 
         var _loadCssText = function (cssText, options, callback) {
-            debugger;
             var op = (_typeOf(options) === "object") ? _getCssOptions(options) : _getCssOptions(null);
             var cb = (_typeOf(options) === "function") ? options : callback;
             var uuid = options.uuid || "css" + _uuid();
@@ -900,7 +831,6 @@ if (!window.o2) {
         };
 
         var _injectHtml = function (op, data, baseUrl) {
-            debugger;
             if (op.bind) data = data.bindJson(op.bind);
             if (op.dom) _parseDom(op.dom, function (node) {
                 var scriptText;
@@ -937,7 +867,7 @@ if (!window.o2) {
                     if (scriptSrc) {
                         var scriptSrcs = scriptSrc.split(/\n/g).trim();
                         if (scriptSrcs && scriptSrcs.length) {
-                            o2.load(scriptSrcs, {baseUrl: baseUrl}, function () {
+                            o2.load(scriptSrcs, {baseUrl: baseUrl, reload:true}, function () {
                             });
                             if (op.evalScripts && scriptText) Browser.exec(scriptText);
                         } else {
@@ -1693,32 +1623,13 @@ if (!window.o2) {
                             res.setHeader(o2.tokenName, token);
                             res.setHeader("Authorization", token);
                         }
-
-                        // if (layout.session && (layout.session.user || layout.session.token)){
-                        //     token = layout.session.token;
-                        //     if (!token && layout.session.user && layout.session.user.token) token = layout.session.user.token;
-                        //     if (token) {
-                        //         res.setHeader(o2.tokenName, token);
-                        //         res.setHeader("Authorization", token);
-                        //     }
-                        // }
                     }
-                    //Content-Type	application/x-www-form-urlencoded; charset=utf-8
                     res.send(data);
                 }.bind(this)).then(function (responseJSON) {
                     return responseJSON;
                 }).catch(function (err) {
                     return Promise.reject(err);
                 });
-
-                // p = p.then(function(responseJSON){
-                //     return o2.runCallback(callback, "success", [responseJSON],null);
-                // }, function(xhr, text, error){
-                //     return o2.runCallback(callback, "failure", [xhr, text, error], null);
-                // });
-                //p = p.catch(function(xhr, text, error){});
-
-                //var oReturn = (callback.success && callback.success.isAG) ? callback.success : callback;
                 var oReturn = p;
                 oReturn.res = res;
                 return oReturn;
@@ -3047,7 +2958,6 @@ if (!window.o2) {
             if (Browser.iecomp) {
                 o2.load("ie_adapter", null, false);
                 o2.session.isDebugger = true;
-                //layout["debugger"] = true;
             }
             o2.session.isMobile = (["mac", "win", "linux"].indexOf(Browser.Platform.name) === -1);
         }
