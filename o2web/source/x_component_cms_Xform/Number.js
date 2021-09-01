@@ -6,10 +6,11 @@ MWF.xApplication.cms.Xform.Number = MWF.CMSNumber =  new Class({
         var flag = (data.status=="all") ? true: (routeName == "publish");
         if (flag){
             var n = this.getInputData();
+            if( n === "" && this.json.emptyValue === "string" )n = 0;
             var v = (data.valueType=="value") ? n : n.length;
             switch (data.operateor){
                 case "isnull":
-                    if (!v){
+                    if (!v && v.toString()!=='0'){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
