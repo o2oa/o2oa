@@ -479,13 +479,23 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             }
         }
     },
+    _checkEvdata: function(evdata, id, v){
+        switch (o2.typeOf(evdata)){
+            case "array":
+
+                break;
+            default:
+                evdata.check(id, v);
+        }
+    },
     setBusinessDataById: function(v){
+        debugger;
         //对id类似于 xx..0..xx 的字段进行拆分
         var evdata = this.form.Macro.environment.data;
         var data = this.form.businessData.data;
         if(this.json.id.indexOf("..") < 1){
             data[this.json.id] = v;
-            evdata.check(this.json.id, v);
+            this._checkEvdata(evdata, this.json.id, v);
             //this.form.businessData.data[this.json.id] = v;
         }else{
             var idList = this.json.id.split("..");
@@ -500,13 +510,15 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
                 if( i === lastIndex ){
                     data[id] = v;
-                    evdata.check(id, v);
+                    //evdata.check(id, v);
+                    this._checkEvdata(evdata, id, v);
                 }else{
                     var nexId = idList[i+1];
                     if(o2.typeOf(nexId) === "number"){ //下一个ID是数字
                         if( !data[id] && o2.typeOf(data[id]) !== "array" ){
                             data[id] = [];
-                            evdata.check(id, []);
+                            //evdata.check(id, []);
+                            this._checkEvdata(evdata, id, []);
                         }
                         if( nexId > data[id].length ){ //超过了最大下标，丢弃
                             return;
@@ -514,7 +526,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                     }else{ //下一个ID是字符串
                         if( !data[id] || o2.typeOf(data[id]) !== "object"){
                             data[id] = {};
-                            evdata.check(id, {});
+                            //evdata.check(id, {});
+                            this._checkEvdata(evdata, id, {});
                         }
                     }
                     data = data[id];
