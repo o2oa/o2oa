@@ -515,7 +515,7 @@ if (!window.o2) {
         var _loadSingle = function (module, callback, op) {
             var url = module;
 
-            if (op.baseUrl) url = this._checkUrl(url, op.baseUrl);
+            if (op.baseUrl) url = _checkUrl(url, op.baseUrl);
 
             var uuid = _uuid();
             if (op.noCache) url = (url.indexOf("?") !== -1) ? url + "&v=" + uuid : addr_uri + "?v=" + uuid;
