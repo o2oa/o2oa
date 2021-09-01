@@ -348,6 +348,34 @@ public class AttendanceDetail extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Boolean isExternal = false;
 
+	public static final String recordAddress_FIELDNAME = "recordAddress";
+	@FieldDescribe("打卡地址")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + recordAddress_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String recordAddress;
+
+	public static final String optMachineType_FIELDNAME = "optMachineType";
+	@FieldDescribe("设备信息")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + optMachineType_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String optMachineType;
+
+	public String getRecordAddress() {
+		return recordAddress;
+	}
+
+	public void setRecordAddress(String recordAddress) {
+		this.recordAddress = recordAddress;
+	}
+
+	public String getOptMachineType() {
+		return optMachineType;
+	}
+
+	public void setOptMachineType(String optMachineType) {
+		this.optMachineType = optMachineType;
+	}
+
 	public String getMorningOffDutyTime() {
 		return morningOffDutyTime;
 	}
