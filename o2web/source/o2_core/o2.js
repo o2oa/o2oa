@@ -543,9 +543,57 @@ if (!window.o2) {
         var _loadSingle = function (module, callback, op) {
             var url = module;
 
-            if (op.baseUrl) {
-                url = _checkUrl(url, op.baseUrl);
-            }
+    //load js
+    //use framework url
+    var _frameworks = {
+        "o2.core": ["../o2_core/o2/o2.core.js"],
+        "o2.more": ["../o2_core/o2/o2.more.js"],
+        "ie_adapter": ["../o2_core/o2/ie_adapter.js"],
+        "jquery": ["../o2_lib/jquery/jquery.min.js"],
+        "mootools": ["../o2_lib/mootools/mootools-1.6.0_all.js"],
+        "ckeditor": ["../o2_lib/htmleditor/ckeditor4161/ckeditor.js"],
+        "ckeditor5": ["../o2_lib/htmleditor/ckeditor5-12-1-0/ckeditor.js"],
+        "raphael": ["../o2_lib/raphael/raphael.js"],
+        "d3": ["../o2_lib/d3/d3.min.js"],
+        "ace": ["../o2_lib/ace/src-min-noconflict/ace.js","../o2_lib/ace/src-min-noconflict/ext-language_tools.js"],
+        //"ace": ["../o2_lib/ace/src-noconflict/ace.js","../o2_lib/ace/src-noconflict/ext-language_tools.js"],
+        "monaco": ["../o2_lib/vs/loader.js"],
+        "JSBeautifier": ["../o2_lib/JSBeautifier/beautify.js"],
+        "JSBeautifier_css": ["../o2_lib/JSBeautifier/beautify-css.js"],
+        "JSBeautifier_html": ["../o2_lib/JSBeautifier/beautify-html.js"],
+        "JSONTemplate": ["../o2_lib/mootools/plugin/Template.js"],
+        "kity": ["../o2_lib/kityminder/kity/kity.js"],
+        "kityminder": ["../o2_lib/kityminder/core/dist/kityminder.core.js"],
+        "vue": ["../o2_lib/vue/vue.pro.js"],
+        "vue_develop": ["../o2_lib/vue/vue.js"],
+        "elementui": ["../o2_lib/vue/element/index.js"]
+    };
+    var _loaded = {};
+    var _loadedCss = {};
+    var _loadedHtml = {};
+    var _loadCssRunning = {};
+    var _loadCssQueue = [];
+    var _loadingModules = {};
+
+    var _checkUrl = function(url, base){
+        debugger;
+        var urlStr = new URI(url, {base: base}).toString();
+        return urlStr;
+        // var baseFlag = base.substr(0, base.lastIndexOf("/"));
+        // var urlFlag = url.subString(0, 2);
+        // while (urlFlag==="./" || urlFlag==".."){
+        //     url = url.subString(2, url.length);
+        //     if (urlFlag === "./"){
+        //         base = base.substr(0, base.lastIndexOf("/"));
+        //     }else{
+        //
+        //     }
+        //     urlFlag = url.subString(0, 2);
+        // }
+        // return baseFlag+url;
+    }
+    var _loadSingle = function(module, callback, op){
+        var url = module;
 
             var uuid = _uuid();
             if (op.noCache) url = (url.indexOf("?") !== -1) ? url + "&v=" + uuid : addr_uri + "?v=" + uuid;
