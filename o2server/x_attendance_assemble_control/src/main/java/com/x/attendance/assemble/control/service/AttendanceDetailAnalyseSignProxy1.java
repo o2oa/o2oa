@@ -46,6 +46,7 @@ class AttendanceDetailAnalyseSignProxy1 {
 		leaveEarlyStartTime = AttendanceDetailAnalyseCoreService.getLeaveEarlyStartTimeFromDetail( detail, scheduleSetting, debugger );
 		absenceStartTime = AttendanceDetailAnalyseCoreService.getAbsenceStartTimeFromDetail( detail, scheduleSetting, debugger );
 		afternoonStartTime = AttendanceDetailAnalyseCoreService.getMiddleRestEndTimeFromDetail( detail, scheduleSetting, debugger );
+		logger.info("开始分析员工:"+detail.getEmpName());
 
 		if ( onWorkTime != null && offWorkTime != null ) {
 			logger.debug( debugger, "上下班排班信息获取正常：onWorkTime=" +  onWorkTime + "， offWorkTime="+offWorkTime );
@@ -153,13 +154,13 @@ class AttendanceDetailAnalyseSignProxy1 {
 					//下午已经签退了，现在计算全天的工作时长
 					if( afternoonStartTime != null ){ //已经配置过了下午上班时间
 						minutes = dateOperation.getMinutes( afternoonStartTime, offDutyTime);
-						logger.debug( debugger, "计算下午工作时长, 从"+ afternoonStartTime +"到" + offDutyTime + " ：minutes=" + minutes + "分钟。" );
-						logger.debug( debugger, "计算全天工作时长, "+ detail.getWorkTimeDuration() +"+" + minutes + "=" + detail.getWorkTimeDuration() + minutes + "分钟。" );
+						logger.info( "计算下午工作时长, 从"+ afternoonStartTime +"到" + offDutyTime + " ：minutes=" + minutes + "分钟。" );
+						logger.info( "计算全天工作时长, "+ detail.getWorkTimeDuration() +"+" + minutes + "=" + detail.getWorkTimeDuration() + minutes + "分钟。" );
 						detail.setWorkTimeDuration( detail.getWorkTimeDuration() + minutes );//记录上午的工作时长 + 下午工作时长
 					}else{
 						minutes = dateOperation.getMinutes( onDutyTime, offDutyTime);
 						detail.setWorkTimeDuration( minutes );//记录上午的工作时长 + 下午工作时长
-						logger.debug( debugger, "直接计算全天工作时长, 从"+ onDutyTime +"到" + offDutyTime + " ：minutes=" + minutes + "分钟。" );
+						logger.info(  "直接计算全天工作时长, 从"+ onDutyTime +"到" + offDutyTime + " ：minutes=" + minutes + "分钟。" );
 					}
 				}else{
 					//员工未签退：有两种情况，还没有到打卡时间，或者说没有打卡
