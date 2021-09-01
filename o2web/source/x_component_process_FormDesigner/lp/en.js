@@ -1067,6 +1067,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showOptions": "Show Options",
         "onInput": "When inputting",
         "onFocus": "On Click",
+        "emptyValue": "Empty Value",
+        "showZero": "Show Zero",
+        "showNullString": "Show an empty string",
         "wps" : {
             "config":"Config",
             "options" : "options",
