@@ -841,14 +841,24 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
                 }.bind(this)
             });
         }
-        if (this.data.control.allowVisit) {
+        if (this.data.control.allowVisit ) {
             this.workAreaNode.addEvents({
-                "mouseover": function(){if (!this.readyRemove && !this.readyFlow) this.workAreaNode.setStyles(this.css.workItemWorkNode_over);}.bind(this),
-                "mouseout": function(){if (!this.readyRemove && !this.readyFlow) this.workAreaNode.setStyles(this.css.workItemWorkNode);}.bind(this)
+                "mouseover": function(){if (!this.readyRemove && !this.readyFlow) {
+                    this.workAreaNode.setStyles(this.css.workItemWorkNode_over);
+                    if(!this.explorer.app.isManager())this.workAreaNode.setStyle("cursor","default");
+                }}.bind(this),
+                "mouseout": function(){if (!this.readyRemove && !this.readyFlow){
+                    this.workAreaNode.setStyles(this.css.workItemWorkNode);
+                    if(!this.explorer.app.isManager())this.workAreaNode.setStyle("cursor","default");
+                }}.bind(this)
             });
-            this.titleAreaNode.addEvent("click", function(){
-                this.loadChild();
-            }.bind(this));
+            if(this.explorer.app.isManager()){
+                this.titleAreaNode.addEvent("click", function(){
+                    this.loadChild();
+                }.bind(this));
+            }else{
+                this.workAreaNode.setStyle("cursor","default");
+            }
         }
     },
     processWork: function(e){
@@ -1111,30 +1121,34 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
         this.readyRemove = true;
         this.explorer.app.confirm("warn", e, lp.deleteWorkTitle, text, 350, 120, function(){
             this.close();
-            _self.explorer.app.confirm("warn", e, lp.deleteWorkTitle, {"html": lp.deleteAllWork}, 400, 220, function(){
-                var inputs = this.content.getElements("input");
-                var flag = "";
-                for (var i=0; i<inputs.length; i++){
-                    if (inputs[i].checked){
-                        flag = inputs[i].get("value");
-                        break;
+            if( _self.explorer.app.isManager() ) {
+                _self.explorer.app.confirm("warn", e, lp.deleteWorkTitle, {"html": lp.deleteAllWork}, 400, 220, function () {
+                    var inputs = this.content.getElements("input");
+                    var flag = "";
+                    for (var i = 0; i < inputs.length; i++) {
+                        if (inputs[i].checked) {
+                            flag = inputs[i].get("value");
+                            break;
+                        }
                     }
-                }
-                if (flag){
-                    if (flag=="all"){
-                        _self.explorer.removeWork(_self, true);
-                    }else{
-                        _self.explorer.removeWork(_self, false);
+                    if (flag) {
+                        if (flag == "all") {
+                            _self.explorer.removeWork(_self, true);
+                        } else {
+                            _self.explorer.removeWork(_self, false);
+                        }
+                        this.close();
+                    } else {
+                        this.content.getElement("#deleteWork_checkInfor").set("text", lp.deleteAllWorkCheck).setStyle("color", "red");
                     }
+                }, function () {
+                    //_self.explorer.removeWork(_self, false);
+                    _self.workAreaNode.setStyles(_self.css.workItemWorkNode);
                     this.close();
-                }else{
-                    this.content.getElement("#deleteWork_checkInfor").set("text", lp.deleteAllWorkCheck).setStyle("color", "red");
-                }
-            }, function(){
-                //_self.explorer.removeWork(_self, false);
-                _self.workAreaNode.setStyles(_self.css.workItemWorkNode);
-                this.close();
-            });
+                });
+            }else{
+                _self.explorer.removeWork(_self, true);
+            }
         }, function(){
             _self.workAreaNode.setStyles(_self.css.workItemWorkNode);
             _self.readyRemove = false;

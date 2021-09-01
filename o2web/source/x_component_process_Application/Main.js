@@ -57,6 +57,19 @@ MWF.xApplication.process.Application.Main = new Class({
             "styles": {"width": "100%", "height": "100%", "overflow": "hidden", "background-color": "#ffffff"}
         }).inject(this.content);
     },
+    isManager: function(){
+	    if( o2.typeOf(this.managerFlag) === "boolean" )return this.managerFlag;
+	    if( o2.AC.isProcessManager() ){
+            this.managerFlag = true;
+            return true;
+        }
+	    if( (this.options.application.controllerList || [] ).contains( layout.desktop.session.user.distinguishedName ) ){
+            this.managerFlag = true;
+            return true;
+        }
+        this.managerFlag = false;
+	    return false;
+    },
 	loadApplication: function(callback){
         this.getApplication(function(){
             this.createNode();
@@ -359,6 +372,7 @@ MWF.xApplication.process.Application.Menu = new Class({
 
         MWF.getJSON(menuUrl, function(json){
             json.each(function(navi){
+                if( navi.permission === "manager" && !this.app.isManager() )return;
                 var naviNode = new Element("div", {
                     "styles": this.app.css.startMenuNaviNode
                 });
