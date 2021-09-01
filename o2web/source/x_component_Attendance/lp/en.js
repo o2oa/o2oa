@@ -249,6 +249,7 @@ MWF.xApplication.Attendance.LP = {
 	"signinQywxResultSelectText": ["", "正常", "时间异常", "地点异常", "未打卡", "wifi异常", "非常用设备"],
 	"recordAddress": "recordAddress",
 	"optMachineType": "optMachineType",
+	"workTime": "workTime",
 
 	"systemSetting": "System Settings",
 	"reportTo": "Report object",

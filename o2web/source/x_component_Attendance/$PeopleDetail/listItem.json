@@ -5,7 +5,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "function( d ){ return d.empName.split('@')[0] }",
     "name" : "empName",
-    "width" : "8%"
+    "width" : "6%"
   },
   {
     "title" : MWF.xApplication.Attendance.LP.date,
@@ -57,6 +57,14 @@
     "item" : "offDutyTime",
     "name" : "offDutyTime",
     "width" : "8%"
+  },
+  {
+    "title" : MWF.xApplication.Attendance.LP.workTime,
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "workTimeDuration",
+    "name" : "workTimeDuration",
+    "width" : "6%"
   },
   {
     "title": MWF.xApplication.Attendance.LP.attendanceStatus,
