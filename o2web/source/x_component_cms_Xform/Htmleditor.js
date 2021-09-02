@@ -108,7 +108,7 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
                 extraPlugins.push( 'o2image' );
                 editorConfig.extraPlugins = extraPlugins;
             }else{
-                editorConfig.extraPlugins = ['o2image'];
+                editorConfig.extraPlugins = ['o2image','o2uploadimage'];
             }
 
             if( editorConfig && editorConfig.removePlugins ){
