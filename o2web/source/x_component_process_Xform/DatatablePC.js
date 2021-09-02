@@ -1295,11 +1295,21 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 	});
 
 MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
-	Extends: MWF.APP$Module
+	Extends: MWF.APP$Module,
+	_loadUserInterface: function(){
+		if(this.json.recoveryStyles){
+			this.node.setStyles(this.json.recoveryStyles);
+		}
+	}
 });
 
 MWF.xApplication.process.Xform.DatatablePC$Data =  new Class({
-	Extends: MWF.APP$Module
+	Extends: MWF.APP$Module,
+	_loadUserInterface: function(){
+		if(this.json.recoveryStyles){
+			this.node.setStyles(this.json.recoveryStyles);
+		}
+	}
 });
 
 MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
