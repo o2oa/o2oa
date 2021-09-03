@@ -60,7 +60,6 @@ public class V2Reset extends BaseAction {
 	private EffectivePerson effectivePerson;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		Audit audit = logger.audit(effectivePerson);
 		ActionResult<Wo> result = new ActionResult<>();
 		this.wi = this.convertToWrapIn(jsonElement, Wi.class);
 		this.effectivePerson = effectivePerson;
@@ -133,7 +132,6 @@ public class V2Reset extends BaseAction {
 		}
 
 		this.updateTask();
-		audit.log(null, "重置处理人");
 		Wo wo = Wo.copier.copy(record);
 		result.setData(wo);
 		return result;

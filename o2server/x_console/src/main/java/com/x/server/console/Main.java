@@ -51,7 +51,7 @@ import com.x.server.console.action.ActionControl;
 import com.x.server.console.action.ActionCreateEncryptKey;
 import com.x.server.console.action.ActionSetPassword;
 import com.x.server.console.action.ActionVersion;
-import com.x.server.console.log.LogTools;
+import com.x.server.console.log.Log4j2Configuration;
 import com.x.server.console.server.Servers;
 
 public class Main {
@@ -116,8 +116,7 @@ public class Main {
 		scanWar(base);
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
-		SystemOutErrorSideCopyBuilder.start();
-		LogTools.configLog4j2();
+		Log4j2Configuration.reconfigure();
 		ResourceFactory.bind();
 		CommandFactory.printStartHelp();
 		// 初始化hadoop环境

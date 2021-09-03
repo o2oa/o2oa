@@ -27,7 +27,6 @@ class ActionCodeLogin extends BaseAction {
 			JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wo wo = new Wo();
@@ -66,7 +65,6 @@ class ActionCodeLogin extends BaseAction {
 					}
 				}
 				wo = this.user(request, response, business, o, Wo.class);
-				audit.log(o.getDistinguishedName(), "登录");
 			}
 			result.setData(wo);
 			return result;

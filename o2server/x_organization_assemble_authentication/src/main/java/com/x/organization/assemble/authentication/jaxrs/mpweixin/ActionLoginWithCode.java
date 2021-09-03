@@ -46,7 +46,6 @@ public class ActionLoginWithCode extends BaseAction  {
         }
 
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            Audit audit = logger.audit(effectivePerson);
             MPweixin.WeixinAuth2AccessResp resp = Config.mPweixin().mpAuth2(code);
             if (resp == null) {
                 throw new ExceptionGetAccessTokenFail();
@@ -68,7 +67,6 @@ public class ActionLoginWithCode extends BaseAction  {
             wo.setToken(effective.getToken());
             HttpToken httpToken = new HttpToken();
             httpToken.setToken(request, response, effective);
-            audit.log(person.getDistinguishedName(), "登录");
             result.setData(wo);
         }
         return result;

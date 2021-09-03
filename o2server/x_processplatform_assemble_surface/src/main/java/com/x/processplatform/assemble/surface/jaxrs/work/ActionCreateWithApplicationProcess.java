@@ -50,7 +50,6 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationFlag, String processFlag,
 			JsonElement jsonElement) throws Exception {
-		Audit audit = logger.audit(effectivePerson);
 		/* 新建工作id */
 		String workId = "";
 		/* 已存在草稿id */
@@ -145,7 +144,6 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 					}
 				}
 			}
-			audit.log(null, "填单");
 		}
 		result.setData(wos);
 		return result;

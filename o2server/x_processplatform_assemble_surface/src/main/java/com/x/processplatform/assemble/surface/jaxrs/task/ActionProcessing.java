@@ -79,8 +79,6 @@ class ActionProcessing extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
-		Audit audit = logger.audit(effectivePerson);
-
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			init(effectivePerson, business, id, jsonElement);
@@ -144,7 +142,6 @@ class ActionProcessing extends BaseAction {
 		if (exception != null) {
 			throw exception;
 		}
-		audit.log(null, "任务处理");
 		result.setData(wo);
 		return result;
 	}

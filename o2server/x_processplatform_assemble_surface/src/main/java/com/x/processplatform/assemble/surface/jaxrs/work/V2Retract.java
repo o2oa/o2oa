@@ -60,7 +60,6 @@ class V2Retract extends BaseAction {
 	private EffectivePerson effectivePerson;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		Audit audit = logger.audit(effectivePerson);
 		ActionResult<Wo> result = new ActionResult<>();
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -121,8 +120,6 @@ class V2Retract extends BaseAction {
 		this.processing();
 
 		this.record();
-
-		audit.log(null, "工作召回");
 
 		result.setData(Wo.copier.copy(record));
 

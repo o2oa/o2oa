@@ -62,7 +62,6 @@ class ActionProcessingNeural extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			logger.debug(effectivePerson, "receive:" + wi);
@@ -90,7 +89,6 @@ class ActionProcessingNeural extends BaseAction {
 			wo.setWorkLogList(this.referenceWorkLog(business, task));
 			wo.setRouteName(routeName);
 			result.setData(wo);
-			audit.log(null, "任务处理");
 			return result;
 		}
 	}

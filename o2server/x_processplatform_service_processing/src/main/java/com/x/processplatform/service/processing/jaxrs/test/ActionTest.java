@@ -12,9 +12,11 @@ class ActionTest extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTest.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, Long sleep) throws Exception {
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!test");
-		LOGGER.warn("aaaaa!!!!!!!!!!!!!!!!!!!!!!" + LOGGER.getClass().getName());
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!test");
+		LOGGER.trace("!!!TRACE");
+		LOGGER.debug("!!!DEBUG");
+		LOGGER.info("!!!INFO");
+		LOGGER.warn("!!!WARN");
+		LOGGER.error("!!!ERROR");
 		ActionResult<Wo> result = new ActionResult<>();
 		Thread.sleep(sleep * 1000);
 		Wo wo = new Wo();

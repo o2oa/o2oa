@@ -55,6 +55,7 @@ public class InstrumentationAgent {
 			if (Files.exists(base.resolve(DYNAMIC_JARS))) {
 				load(base, DYNAMIC_JARS);
 			}
+			setLog4j2(base);
 			loadWithCfg(base, STORE_JARS);
 			loadWithCfg(base, ext());
 		} catch (Exception e) {
@@ -126,6 +127,8 @@ public class InstrumentationAgent {
 		throw new IOException("can not define o2server base directory.");
 	}
 
-	
+	private static void setLog4j2(Path base) {
+		System.setProperty("log4j.configurationFile", base.resolve("commons").resolve("log4j2.xml").toString());
+	}
 
 }

@@ -27,7 +27,6 @@ class ActionOauthLogin extends BaseAction {
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			String name, String code, String redirectUri) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			OauthClient oauthClient = this.getOauthClient(name);
@@ -106,7 +105,6 @@ class ActionOauthLogin extends BaseAction {
 				}
 				Person o = emc.find(personId, Person.class);
 				wo = this.user(request, response, business, o, Wo.class);
-				audit.log(o.getDistinguishedName(), "登录");
 			}
 			result.setData(wo);
 			return result;

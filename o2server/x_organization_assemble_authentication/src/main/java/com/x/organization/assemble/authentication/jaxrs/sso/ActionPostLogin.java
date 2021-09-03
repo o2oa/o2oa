@@ -41,7 +41,6 @@ class ActionPostLogin extends BaseAction {
 			JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			if (StringUtils.isEmpty(wi.getClient())) {
 				throw new ExceptionClientEmpty();
@@ -97,7 +96,6 @@ class ActionPostLogin extends BaseAction {
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();
 			httpToken.setToken(request, response, effective);
-			audit.log(person.getDistinguishedName(), "登录");
 			result.setData(wo);
 		}
 		return result;

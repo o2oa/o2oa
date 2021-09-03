@@ -39,7 +39,6 @@ class ActionLogin extends BaseAction {
 			String code) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
 			logger.debug("receive:{}", code);
 			String dingUserId = this.getDingUserId(code);
 			String userId = this.getUserIdByDingUserId(dingUserId);
@@ -56,7 +55,6 @@ class ActionLogin extends BaseAction {
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();
 			httpToken.setToken(request, response, effective);
-			audit.log(person.getDistinguishedName(), "登录");
 			result.setData(wo);
 		}
 		return result;
