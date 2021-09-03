@@ -393,11 +393,24 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.processFiletext(dom, oo_body, append);
                 }else if (dom.hasClass("doc_layout_editionArea")){
 
-                    var h = dom.getSize().y;
-                    var top = dom.getPosition(dom.getParent(".WordSection1")).y;
+                    var wordSection = dom.getParent(".WordSection1");
+
+                    var h = this.pxToPt(dom.getSize().y);
+                    var top = this.pxToPt(dom.getPosition(wordSection).y);
                     var pageH = this.pageHeight/20-this["page-margin-top"]/20-this["page-margin-bottom"]/20;
-                    var tmp = this.pxToPt(top+h)/pageH;
-                    var tmp2 = this.pxToPt(top)/pageH;
+
+                    var offsetY = 0;
+                    if (wordSection) {
+                        var pageBreakNodes = wordSection.querySelectorAll(".cke_pagebreak");
+                        pageBreakNodes.forEach(function(node){
+                            var t = this.pxToPt(node.getPosition(wordSection).y);
+                            offsetY += pageH-(t % pageH);
+                        }.bind(this));
+                    }
+                    top += offsetY;
+
+                    var tmp = (top+h)/pageH;
+                    var tmp2 = (top)/pageH;
                     var ps = tmp.toInt();
                     var ps2 = tmp2.toInt();
                     if (tmp>ps) ps = ps+1;
@@ -483,9 +496,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         node = node.firstChild;
         while (node){
             if (node.nodeType===Node.TEXT_NODE){
-                if (node.nodeValue) this.processRun(node.parentElement || node.parentNode, oo_p, p, node.nodeValue);
+                if (node.nodeValue.trim()) this.processRun(node.parentElement || node.parentNode, oo_p, p, node.nodeValue);
             }else if (node.nodeType===Node.ELEMENT_NODE){
-                if (node.tagName.toLowerCase() === "span") {
+                if (node.getStyle("display") === "none") {
+                    continue;
+                }else if (node.tagName.toLowerCase() === "span") {
                     this.processRun(node, oo_p, p);
                 }else if (node.tagName.toLowerCase() === "br") {
                     if (node.nextSibling) this.processRun(node, oo_p, p, "", "br");
@@ -511,7 +526,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
                 }
             }else{
-                this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
+                    this.processParagraphRun(node, oo_p, p, oo_body, append, ilvl);
             }
             node = node.nextSibling;
         }
@@ -830,7 +845,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         dom = dom.firstChild;
         while (dom){
             if (dom.nodeType===Node.ELEMENT_NODE){
-                if (dom.hasClass("doc_layout_filetext")){
+                if (dom.getStyle("display") === "none") {
+                    continue;
+                }else if (dom.hasClass("doc_layout_filetext")){
                     this.processFiletext(dom, oo_body, append);
                 }else if (dom.tagName.toLowerCase() === "p" || ((!!divAsP || !!this.options.divAsP) && dom.tagName.toLowerCase() === "div")){
                     this.processParagraph(dom, oo_body, append);
@@ -1862,7 +1879,9 @@ debugger;
         var node = span.firstChild;
         while (node){
             if (node.nodeType===Node.ELEMENT_NODE){
-                if (node.tagName.toLowerCase() === "span"){
+                if (node.getStyle("display") === "none") {
+                    continue;
+                }else if (node.tagName.toLowerCase() === "span"){
                     this.processRunSpan(node, oo_p, runPrs);
                 }else if (node.tagName.toLowerCase() === "br"){
                     runPrs.br = "br";

@@ -200,7 +200,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
 
         if (this.json.documentTempleteType=="cus"){
-            pageContentNode.loadHtml(o2.filterUrl(this.json.documentTempleteUrl), function(){
+            var url = this.json.documentTempleteUrl+((this.json.documentTempleteUrl.indexOf("?")!==-1) ? "&" : "?")+"v="+o2.version.v;
+            pageContentNode.loadHtml(o2.filterUrl(url), function(){
+                this._clearCopytoTrs();
                 if (this.json.toWordPageNumber=="y") this.doPageStyles(pageContentNode);
 
                 if (this.attachmentTemplete){
@@ -213,8 +215,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }.bind(this));
         }else{
             this.getTempleteJson(function(){
+                this._clearCopytoTrs();
                 var templete = this.json.documentTempleteName || "standard";
-                pageContentNode.loadHtml(o2.filterUrl("../x_component_process_FormDesigner/Module/Documenteditor/templete/"+this.templeteJson[templete].file), function(){
+
+                var url = "../x_component_process_FormDesigner/Module/Documenteditor/templete/"+this.templeteJson[templete].file;
+                url = url+((url.indexOf("?")!==-1) ? "&" : "?")+"v="+o2.version.v;
+
+                pageContentNode.loadHtml(o2.filterUrl(url), function(){
                     if (this.json.toWordPageNumber=="y") this.doPageStyles(pageContentNode);
 
                     if (this.attachmentTemplete){
@@ -226,6 +233,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     if (callbackAftreLoad) callbackAftreLoad(control);
                 }.bind(this));
             }.bind(this));
+        }
+    },
+    _clearCopytoTrs: function(){
+        if (this.layout_copytoContentTr){
+            this.layout_copytoContentTr.destroy();
+            this.layout_copytoContentTr = null;
+        }
+        if (this.layout_copytoContentTrP){
+            this.layout_copytoContentTrP.destroy();
+            this.layout_copytoContentTrP = null;
+        }
+        if (this.layout_copyto2ContentTr){
+            this.layout_copyto2ContentTr.destroy();
+            this.layout_copyto2ContentTr = null;
+        }
+        if (this.layout_copyto2ContentTrP){
+            this.layout_copyto2ContentTrP.destroy();
+            this.layout_copyto2ContentTrP = null;
         }
     },
     doPageStyles: function(pageContentNode){
@@ -814,9 +839,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (!control.secret) n++;
         if (!control.priority) n++;
         if (this.layout_copiesSecretPriority_blank){
+            this.layout_copiesSecretPriority_blank.empty();
             while (n>0){
-                this.layout_copiesSecretPriority_blank.empty();
-                this.layout_copiesSecretPriority_blank.appendHTML("<span style='font-size:16.0pt'>&nbsp;</span>");
+                this.layout_copiesSecretPriority_blank.appendHTML("<p class=\"MsoNormal\"><span style='font-size:16.0pt'>&nbsp;</span></p>");
                 n--;
             }
         }
@@ -2845,6 +2870,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             this.data[name] = v + "：";
                             break;
                         case "copyto":
+                        case "copyto2":
                             this.data[name] = v + "。";
                             break;
                         default:
@@ -2909,6 +2935,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             this.data[name] = strs.join("，") + "：";
                             break;
                         case "copyto":
+                        case "copyto2":
                             this.data[name] = strs.join("，") + "。";
                             break;
                         default:
@@ -3706,6 +3733,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 "height":"auto"
             });
         }.bind(this), function(){
+            if (!this.data.attachmentText && this.layout_attachmentText){
+                this.layout_attachmentText.set("text", "");
+            }
+
             var fileName = docNmae || this.json.toWordFilename || "$doc";
             var n = fileName.lastIndexOf(".");
 

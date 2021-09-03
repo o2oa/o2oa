@@ -36,12 +36,12 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
         this.form.Macro.environment.data.check(this.json.id);
         this.json[this.json.id] = this._getBusinessData();
 
-        if (!this.json.max || o2.typeOf(this.json.max)!=="number") this.json.max = "Infinity";
-        if (!this.json.min || o2.typeOf(this.json.max)!=="number") this.json.min = "-Infinity";
-        if (!this.json.step || o2.typeOf(this.json.max)!=="number") this.json.step = 1;
+        // if (!this.json.max || o2.typeOf(this.json.max)!=="number") this.json.max = "Infinity";
+        // if (!this.json.min || o2.typeOf(this.json.max)!=="number") this.json.min = "-Infinity";
+        if (!this.json.step || o2.typeOf(this.json.step)!=="number") this.json.step = 1;
         if (!this.json.stepStrictly) this.json.stepStrictly = false;
         if (!this.json.disabled) this.json.disabled = false;
-        if (!this.json.precision) this.json.precision = "";
+        if (!this.json.precision) this.json.precision = 0;
         if (!this.json.size) this.json.size = "";
         if (!this.json.controlsPosition) this.json.controlsPosition = "";
         if (!this.json.readonly) this.json.readonly = false;
@@ -50,9 +50,10 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
     appendVueExtend: function(app){
         if (!app.methods) app.methods = {};
         app.methods.$loadElEvent = function(ev){
+            debugger;
             this.validationMode();
             if (ev==="change") this._setBusinessData(this.getInputData());
-            if (this.json.events[ev] && this.json.events[ev].code){
+            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
                 this.form.Macro.fire(this.json.events[ev].code, this, event);
             }
         }.bind(this);
@@ -60,8 +61,8 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
     _createElementHtml: function(){
         var html = "<el-input-number";
         html += " v-model=\""+this.json.id+"\"";
-        html += " :max=\"max\"";
-        html += " :min=\"min\"";
+        if (o2.typeOf(this.json.max)==="number") html += " :max=\"max\"";
+        if (o2.typeOf(this.json.min)==="number") html += " :min=\"min\"";
         html += " :step=\"step\"";
         html += " :step-strictly=\"stepStrictly\"";
         html += " :disabled=\"disabled\"";

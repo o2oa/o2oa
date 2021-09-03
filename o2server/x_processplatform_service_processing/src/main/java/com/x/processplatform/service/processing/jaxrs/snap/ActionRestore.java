@@ -72,7 +72,8 @@ class ActionRestore extends BaseAction {
 				if (null == snap) {
 					throw new ExceptionEntityNotExist(id, Snap.class);
 				}
-				if (Objects.equals(Snap.TYPE_ABANDONEDWORKCOMPLETED, snap.getType())) {
+				if (Objects.equals(Snap.TYPE_ABANDONEDWORKCOMPLETED, snap.getType())
+						|| Objects.equals(Snap.TYPE_SNAPWORKCOMPLETED, snap.getType())) {
 					CompletableFuture.allOf(deleteItem(business, snap.getJob()),
 							deleteWorkCompleted(business, snap.getJob()), deleteTask(business, snap.getJob()),
 							deleteTaskCompleted(business, snap.getJob()), deleteRead(business, snap.getJob()),
@@ -89,7 +90,8 @@ class ActionRestore extends BaseAction {
 							deleteDocumentVersion(business, snap.getJob())).get();
 				}
 				emc.commit();
-				if (Objects.equals(Snap.TYPE_ABANDONEDWORKCOMPLETED, snap.getType())) {
+				if (Objects.equals(Snap.TYPE_ABANDONEDWORKCOMPLETED, snap.getType())
+						|| Objects.equals(Snap.TYPE_SNAPWORKCOMPLETED, snap.getType())) {
 					restoreWorkCompleted(business, snap);
 				} else {
 					restore(business, snap);

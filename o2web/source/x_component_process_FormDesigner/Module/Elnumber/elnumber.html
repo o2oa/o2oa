@@ -25,11 +25,11 @@
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
 				<td class="editTableTitle">{{$.lp.max}}:</td>
-				<td class="editTableValue"><input type="number" name="max" value="text{($.max || $.max==0) ? $.max : 'Infinity'}" class="editTableInput"/></td>
+				<td class="editTableValue"><input type="number" name="max" value="text{$.max}" class="editTableInput"/></td>
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.min}}:</td>
-				<td class="editTableValue"><input type="number" name="min" value="text{($.min || $.min==0) ? $.min : '-Infinity'}" class="editTableInput"/></td>
+				<td class="editTableValue"><input type="number" name="min" value="text{$.min}" class="editTableInput"/></td>
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.step}}:</td>
@@ -43,12 +43,12 @@
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.precision}}:</td>
-				<td class="editTableValue"><input type="number" name="precision" value="text{$.precision}" class="editTableInput"/></td>
+				<td class="editTableValue"><input type="number" name="precision" value="text{$.precision || 0}" class="editTableInput"/></td>
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.size}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="size" value="default" text{(!$.size || $.inputSize==='default')?'checked':''}/>default
+					<input type="radio" name="size" value="default" text{(!$.size || $.size==='default')?'checked':''}/>default
 					<input type="radio" name="size" value="medium" text{($.size==='medium')?'checked':''}/>medium
 					<input type="radio" name="size" value="small" text{($.size==='small')?'checked':''}/>small
 					<input type="radio" name="size" value="mini" text{($.size==='mini')?'checked':''}/>mini
