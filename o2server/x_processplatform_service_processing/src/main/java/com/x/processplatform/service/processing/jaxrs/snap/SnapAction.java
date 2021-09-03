@@ -104,6 +104,24 @@ public class SnapAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "对已完成工作进行快照", action = ActionTypeSnapWorkCompleted.class)
+	@GET
+	@Path("workcompleted/{workCompletedId}/type/snapworkcompleted")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void typeSnapWorkCompleted(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId) {
+		ActionResult<ActionTypeSnapWorkCompleted.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionTypeSnapWorkCompleted().execute(effectivePerson, workCompletedId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "删除快照", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")

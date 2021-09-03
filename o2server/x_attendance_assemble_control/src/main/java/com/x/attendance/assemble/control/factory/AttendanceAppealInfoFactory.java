@@ -5,12 +5,12 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
+import com.x.attendance.assemble.control.CriteriaQueryTools;
 import com.x.attendance.assemble.control.service.UserManagerService;
+import com.x.attendance.entity.AttendanceSelfHoliday;
+import com.x.attendance.entity.AttendanceSelfHoliday_;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.AbstractFactory;
@@ -215,75 +215,55 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 	public List<AttendanceAppealInfo> listIdsNextWithFilter( String id, Integer count, Object sequence, WrapInFilterAppeal wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( AttendanceAppealInfo.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<AttendanceAppealInfo> cq = cb.createQuery(AttendanceAppealInfo.class);
+		Root<AttendanceAppealInfo> root = cq.from(AttendanceAppealInfo.class);
+
 		String order = wrapIn.getOrder();//排序方式
-		List<Object> vs = new ArrayList<>();
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		
 		if( order == null || order.isEmpty() ){
 			order = "DESC";
 		}
-		
-		Integer index = 1;
-		sql_stringBuffer.append( "SELECT o FROM "+AttendanceAppealInfo.class.getCanonicalName()+" o where 1=1" );
-
+		String orderFieldName = "";
+		if(StringUtils.isNotEmpty( wrapIn.getKey())){
+			orderFieldName = wrapIn.getKey();
+		}else{
+			orderFieldName = "sequence";
+		}
+		Order _order = CriteriaQueryTools.setOrder(cb, root, AttendanceAppealInfo_.class, orderFieldName,order);
+		Predicate p = cb.isNotNull(root.get(AttendanceAppealInfo_.detailId));
 		if ((null != sequence) ) {
-			sql_stringBuffer.append(" and o.sequence " + (StringUtils.equalsIgnoreCase(order, "DESC") ? "<" : ">") + (" ?" + (index)));
-			vs.add(sequence);
-			index++;
+			if(StringUtils.equalsIgnoreCase(order, "DESC")){
+				p = cb.and(p,cb.lessThan(root.get(AttendanceAppealInfo_.sequence),sequence.toString()));
+			}else{
+				p = cb.and(p,cb.greaterThan(root.get(AttendanceAppealInfo_.sequence),sequence.toString()));
+			}
 		}
-		if ((null != wrapIn.getDetailId()) && (!wrapIn.getDetailId().isEmpty())) {
-			sql_stringBuffer.append(" and o.detailId = ?" + (index));
-			vs.add( wrapIn.getDetailId() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getDetailId())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.detailId),wrapIn.getDetailId()));
 		}
-		if ((null != wrapIn.getEmpName()) && (!wrapIn.getEmpName().isEmpty())) {
-			sql_stringBuffer.append(" and o.empName = ?" + (index));
-			vs.add( wrapIn.getEmpName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getEmpName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.empName),wrapIn.getEmpName()));
 		}
-		if ((null != wrapIn.getUnitName()) && (!wrapIn.getUnitName().isEmpty())) {
-			sql_stringBuffer.append(" and o.unitName = ?" + (index));
-			vs.add( wrapIn.getUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getUnitName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.unitName),wrapIn.getUnitName()));
 		}
-		if ((null != wrapIn.getTopUnitName()) && (!wrapIn.getTopUnitName().isEmpty())) {
-			sql_stringBuffer.append(" and o.topUnitName = ?" + (index));
-			vs.add( wrapIn.getTopUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getTopUnitName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.topUnitName),wrapIn.getTopUnitName()));
 		}
-		if ((null != wrapIn.getYearString() ) && (!wrapIn.getYearString().isEmpty())) {
-			sql_stringBuffer.append(" and o.yearString = ?" + (index));
-			vs.add( wrapIn.getYearString() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getYearString())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.yearString),wrapIn.getYearString()));
 		}
-		if ((null != wrapIn.getMonthString()) && (!wrapIn.getMonthString().isEmpty())) {
-			sql_stringBuffer.append(" and o.monthString = ?" + (index));
-			vs.add( wrapIn.getMonthString() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getMonthString())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.monthString),wrapIn.getMonthString()));
+		}
+		if(StringUtils.isNotEmpty(wrapIn.getAppealReason())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.appealReason),wrapIn.getAppealReason()));
 		}
 		if (wrapIn.getStatus()!=999) {
-			sql_stringBuffer.append(" and o.status = ?" + (index));
-			vs.add( wrapIn.getStatus() );
-			index++;
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.status),wrapIn.getStatus()));
 		}
-		if ((null != wrapIn.getAppealReason()) && (!wrapIn.getAppealReason().isEmpty())) {
-			sql_stringBuffer.append(" and o.appealReason = ?" + (index));
-			vs.add( wrapIn.getAppealReason() );
-			index++;
-		}
-//		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
-//			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
-//			vs.add( wrapIn.getProcessPerson1() );
-//			index++;
-//		}
-//		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
-//			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
-//			vs.add( wrapIn.getProcessPerson2() );
-//			index++;
-//		}
-		
 		//添加OR条件
-		if (wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0) {
+		/*if (wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0) {
 			sql_stringBuffer.append(" and (");
 			NameValueCountPair nameValueCountPair = null;
 			for (int p = 0; p < wrapIn.getOrAtrribute().size(); p++) {
@@ -298,19 +278,8 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 				index++;
 			}
 			sql_stringBuffer.append(" )");
-		}
-		
-		if( StringUtils.isNotEmpty( wrapIn.getKey() )){
-			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
-		}else{
-			sql_stringBuffer.append(" order by o.sequence " + order );
-		}
-	
-		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceAppealInfo.class );
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}
+		}*/
+		Query query = em.createQuery(cq.select(root).where(p).orderBy(_order) );
 		return query.setMaxResults(count).getResultList();
 	}
 
@@ -327,106 +296,61 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 	public List<AttendanceAppealInfo> listIdsNextWithFilterWithCurrentProcessor( String id, Integer count, Object sequence, WrapInFilterAppeal wrapIn ,Boolean isManager) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( AttendanceAppealInfo.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<AttendanceAppealInfo> cq = cb.createQuery(AttendanceAppealInfo.class);
+		Root<AttendanceAppealInfo> root = cq.from(AttendanceAppealInfo.class);
+
 		String order = wrapIn.getOrder();//排序方式
-		List<Object> vs = new ArrayList<>();
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		UserManagerService userManagerService = new UserManagerService();
 		if( order == null || order.isEmpty() ){
 			order = "DESC";
 		}
-
-		Integer index = 1;
-		sql_stringBuffer.append( "SELECT o FROM "+AttendanceAppealInfo.class.getCanonicalName()+" o where 1=1" );
-
+		String orderFieldName = "";
+		if(StringUtils.isNotEmpty( wrapIn.getKey())){
+			orderFieldName = wrapIn.getKey();
+		}else{
+			orderFieldName = "sequence";
+		}
+		Order _order = CriteriaQueryTools.setOrder(cb, root, AttendanceAppealInfo_.class, orderFieldName,order);
+		Predicate p = cb.isNotNull(root.get(AttendanceAppealInfo_.detailId));
 		if ((null != sequence) ) {
-			sql_stringBuffer.append(" and o.sequence " + (StringUtils.equalsIgnoreCase(order, "DESC") ? "<" : ">") + (" ?" + (index)));
-			vs.add(sequence);
-			index++;
+			if(StringUtils.equalsIgnoreCase(order, "DESC")){
+				p = cb.and(p,cb.lessThan(root.get(AttendanceAppealInfo_.sequence),sequence.toString()));
+			}else{
+				p = cb.and(p,cb.greaterThan(root.get(AttendanceAppealInfo_.sequence),sequence.toString()));
+			}
 		}
-		if ((null != wrapIn.getDetailId()) && (!wrapIn.getDetailId().isEmpty())) {
-			sql_stringBuffer.append(" and o.detailId = ?" + (index));
-			vs.add( wrapIn.getDetailId() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getDetailId())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.detailId),wrapIn.getDetailId()));
 		}
-		if ((null != wrapIn.getEmpName()) && (!wrapIn.getEmpName().isEmpty())) {
-			sql_stringBuffer.append(" and o.empName = ?" + (index));
-			vs.add( wrapIn.getEmpName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getEmpName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.empName),wrapIn.getEmpName()));
 		}
-		if ((null != wrapIn.getUnitName()) && (!wrapIn.getUnitName().isEmpty())) {
-			sql_stringBuffer.append(" and o.unitName = ?" + (index));
-			vs.add( wrapIn.getUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getUnitName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.unitName),wrapIn.getUnitName()));
 		}
-		if ((null != wrapIn.getTopUnitName()) && (!wrapIn.getTopUnitName().isEmpty())) {
-			sql_stringBuffer.append(" and o.topUnitName = ?" + (index));
-			vs.add( wrapIn.getTopUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getTopUnitName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.topUnitName),wrapIn.getTopUnitName()));
 		}
-		if ((null != wrapIn.getYearString() ) && (!wrapIn.getYearString().isEmpty())) {
-			sql_stringBuffer.append(" and o.yearString = ?" + (index));
-			vs.add( wrapIn.getYearString() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getYearString())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.yearString),wrapIn.getYearString()));
 		}
-		if ((null != wrapIn.getMonthString()) && (!wrapIn.getMonthString().isEmpty())) {
-			sql_stringBuffer.append(" and o.monthString = ?" + (index));
-			vs.add( wrapIn.getMonthString() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getMonthString())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.monthString),wrapIn.getMonthString()));
+		}
+		if(StringUtils.isNotEmpty(wrapIn.getAppealReason())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.appealReason),wrapIn.getAppealReason()));
 		}
 		if (wrapIn.getStatus()!=999) {
-			sql_stringBuffer.append(" and o.status = ?" + (index));
-			vs.add( wrapIn.getStatus() );
-			index++;
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.status),wrapIn.getStatus()));
 		}
-		if ((null != wrapIn.getAppealReason()) && (!wrapIn.getAppealReason().isEmpty())) {
-			sql_stringBuffer.append(" and o.appealReason = ?" + (index));
-			vs.add( wrapIn.getAppealReason() );
-			index++;
-		}
+
 		if(!isManager){
 			if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
-				sql_stringBuffer.append(" and o.currentProcessor = ?" + (index));
-				vs.add( wrapIn.getProcessPerson1() );
-				index++;
+				p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.currentProcessor),wrapIn.getProcessPerson1()));
 			}
 		}
 
-//		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
-//			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
-//			vs.add( wrapIn.getProcessPerson2() );
-//			index++;
-//		}
-
-		//添加OR条件
-		if (wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0) {
-			sql_stringBuffer.append(" and (");
-			NameValueCountPair nameValueCountPair = null;
-			for (int p = 0; p < wrapIn.getOrAtrribute().size(); p++) {
-				nameValueCountPair = wrapIn.getOrAtrribute().get(p);
-				if (p == 0) {
-					sql_stringBuffer.append(" o." + nameValueCountPair.getName() + " = ?" + (index));
-
-				} else {
-					sql_stringBuffer.append(" or o." + nameValueCountPair.getName() + " = ?" + (index));
-				}
-				vs.add(nameValueCountPair.getValue());
-				index++;
-			}
-			sql_stringBuffer.append(" )");
-		}
-
-		if( StringUtils.isNotEmpty( wrapIn.getKey() )){
-			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
-		}else{
-			sql_stringBuffer.append(" order by o.sequence " + order );
-		}
-
-		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceAppealInfo.class );
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}
-		System.out.println("listIdsNextWithFilterWithCurrentProcessor="+query);
+		Query query = em.createQuery(cq.select(root).where(p).orderBy(_order) );
 		return query.setMaxResults(count).getResultList();
 	}
 
@@ -443,101 +367,71 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 	public List<AttendanceAppealInfo> listIdsPrevWithFilter( String id, Integer count, Object sequence, WrapInFilterAppeal wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( AttendanceAppealInfo.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<AttendanceAppealInfo> cq = cb.createQuery(AttendanceAppealInfo.class);
+		Root<AttendanceAppealInfo> root = cq.from(AttendanceAppealInfo.class);
+
 		String order = wrapIn.getOrder();//排序方式
-		List<Object> vs = new ArrayList<>();
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		Integer index = 1;
-		
 		if( order == null || order.isEmpty() ){
 			order = "DESC";
 		}
-		
-		sql_stringBuffer.append( "SELECT o FROM "+AttendanceAppealInfo.class.getCanonicalName()+" o where 1=1" );
+		String orderFieldName = "";
+		if(StringUtils.isNotEmpty( wrapIn.getKey())){
+			orderFieldName = wrapIn.getKey();
+		}else{
+			orderFieldName = "sequence";
+		}
+		Order _order = CriteriaQueryTools.setOrder(cb, root, AttendanceAppealInfo_.class, orderFieldName,order);
+		Predicate p = cb.isNotNull(root.get(AttendanceAppealInfo_.detailId));
 		if ((null != sequence) ) {
-			sql_stringBuffer.append(" and o.sequence " + (StringUtils.equalsIgnoreCase(order, "DESC") ? ">" : "<") + (" ?" + (index)));
-			vs.add(sequence);
-			index++;
+			if(StringUtils.equalsIgnoreCase(order, "DESC")){
+				p = cb.and(p,cb.greaterThan(root.get(AttendanceAppealInfo_.sequence),sequence.toString()));
+			}else{
+				p = cb.and(p,cb.lessThan(root.get(AttendanceAppealInfo_.sequence),sequence.toString()));
+			}
 		}
-		if ((null != wrapIn.getDetailId()) && (!wrapIn.getDetailId().isEmpty())) {
-			sql_stringBuffer.append(" and o.detailId = ?" + (index));
-			vs.add( wrapIn.getDetailId() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getDetailId())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.detailId),wrapIn.getDetailId()));
 		}
-		if ((null != wrapIn.getEmpName()) && (!wrapIn.getEmpName().isEmpty())) {
-			sql_stringBuffer.append(" and o.empName = ?" + (index));
-			vs.add( wrapIn.getEmpName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getEmpName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.empName),wrapIn.getEmpName()));
 		}
-		if ((null != wrapIn.getUnitName()) && (!wrapIn.getUnitName().isEmpty())) {
-			sql_stringBuffer.append(" and o.unitName = ?" + (index));
-			vs.add( wrapIn.getUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getUnitName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.unitName),wrapIn.getUnitName()));
 		}
-		if ((null != wrapIn.getTopUnitName()) && (!wrapIn.getTopUnitName().isEmpty())) {
-			sql_stringBuffer.append(" and o.topUnitName = ?" + (index));
-			vs.add( wrapIn.getTopUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getTopUnitName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.topUnitName),wrapIn.getTopUnitName()));
 		}
-		if ((null != wrapIn.getYearString() ) && (!wrapIn.getYearString().isEmpty())) {
-			sql_stringBuffer.append(" and o.yearString = ?" + (index));
-			vs.add( wrapIn.getYearString() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getYearString())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.yearString),wrapIn.getYearString()));
 		}
-		if ((null != wrapIn.getMonthString()) && (!wrapIn.getMonthString().isEmpty())) {
-			sql_stringBuffer.append(" and o.monthString = ?" + (index));
-			vs.add( wrapIn.getMonthString() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getMonthString())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.monthString),wrapIn.getMonthString()));
+		}
+		if(StringUtils.isNotEmpty(wrapIn.getAppealReason())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.appealReason),wrapIn.getAppealReason()));
 		}
 		if (wrapIn.getStatus()!=999) {
-			sql_stringBuffer.append(" and o.status = ?" + (index));
-			vs.add( wrapIn.getStatus() );
-			index++;
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.status),wrapIn.getStatus()));
 		}
-		if ((null != wrapIn.getAppealReason()) && (!wrapIn.getAppealReason().isEmpty())) {
-			sql_stringBuffer.append(" and o.appealReason = ?" + (index));
-			vs.add( wrapIn.getAppealReason() );
-			index++;
-		}
-//		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
-//			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
-//			vs.add( wrapIn.getProcessPerson1() );
-//			index++;
-//		}
-//		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
-//			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
-//			vs.add( wrapIn.getProcessPerson2() );
-//			index++;
-//		}
-		//添加OR
-		if( wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0){
-			sql_stringBuffer.append(" and (" );
+		//添加OR条件
+		/*if (wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0) {
+			sql_stringBuffer.append(" and (");
 			NameValueCountPair nameValueCountPair = null;
-			for( int p = 0 ; p< wrapIn.getOrAtrribute().size(); p++ ){
+			for (int p = 0; p < wrapIn.getOrAtrribute().size(); p++) {
 				nameValueCountPair = wrapIn.getOrAtrribute().get(p);
-				if( p == 0 ){
-					sql_stringBuffer.append(" o."+nameValueCountPair.getName()+" = ?" + (index));
-					
-				}else{
-					sql_stringBuffer.append(" or o."+nameValueCountPair.getName()+" = ?" + (index));					
+				if (p == 0) {
+					sql_stringBuffer.append(" o." + nameValueCountPair.getName() + " = ?" + (index));
+
+				} else {
+					sql_stringBuffer.append(" or o." + nameValueCountPair.getName() + " = ?" + (index));
 				}
-				vs.add( nameValueCountPair.getValue() );
+				vs.add(nameValueCountPair.getValue());
 				index++;
 			}
-			sql_stringBuffer.append(" )" );
-		}
-		
-		if( StringUtils.isNotEmpty( wrapIn.getKey() )){
-			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
-		}else{
-			sql_stringBuffer.append(" order by o.sequence " + order );
-		}
-		
-		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceAppealInfo.class );
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}
-		
+			sql_stringBuffer.append(" )");
+		}*/
+		Query query = em.createQuery(cq.select(root).where(p).orderBy(_order) );
 		return query.setMaxResults(20).getResultList();
 	}
 
@@ -550,86 +444,38 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 	public long getCountWithFilter( WrapInFilterAppeal wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( AttendanceAppealInfo.class );
-		List<Object> vs = new ArrayList<>();
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		Integer index = 1;
-		
-		sql_stringBuffer.append( "SELECT count(o.id) FROM "+AttendanceAppealInfo.class.getCanonicalName()+" o where 1=1" );
-		
-		if ((null != wrapIn.getDetailId()) && (!wrapIn.getDetailId().isEmpty())) {
-			sql_stringBuffer.append(" and o.detailId = ?" + (index));
-			vs.add( wrapIn.getDetailId() );
-			index++;
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<AttendanceAppealInfo> root = cq.from(AttendanceAppealInfo.class);
+		Predicate p = cb.isNotNull(root.get(AttendanceAppealInfo_.detailId));
+
+		if(StringUtils.isNotEmpty(wrapIn.getDetailId())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.detailId),wrapIn.getDetailId()));
 		}
-		if ((null != wrapIn.getEmpName()) && (!wrapIn.getEmpName().isEmpty())) {
-			sql_stringBuffer.append(" and o.empName = ?" + (index));
-			vs.add( wrapIn.getEmpName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getEmpName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.empName),wrapIn.getEmpName()));
 		}
-		if ((null != wrapIn.getUnitName()) && (!wrapIn.getUnitName().isEmpty())) {
-			sql_stringBuffer.append(" and o.unitName = ?" + (index));
-			vs.add( wrapIn.getUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getUnitName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.unitName),wrapIn.getUnitName()));
 		}
-		if ((null != wrapIn.getTopUnitName()) && (!wrapIn.getTopUnitName().isEmpty())) {
-			sql_stringBuffer.append(" and o.topUnitName = ?" + (index));
-			vs.add( wrapIn.getTopUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getTopUnitName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.topUnitName),wrapIn.getTopUnitName()));
 		}
-		if ((null != wrapIn.getYearString() ) && (!wrapIn.getYearString().isEmpty())) {
-			sql_stringBuffer.append(" and o.yearString = ?" + (index));
-			vs.add( wrapIn.getYearString() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getYearString())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.yearString),wrapIn.getYearString()));
 		}
-		if ((null != wrapIn.getMonthString()) && (!wrapIn.getMonthString().isEmpty())) {
-			sql_stringBuffer.append(" and o.monthString = ?" + (index));
-			vs.add( wrapIn.getMonthString() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getMonthString())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.monthString),wrapIn.getMonthString()));
+		}
+		if(StringUtils.isNotEmpty(wrapIn.getAppealReason())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.appealReason),wrapIn.getAppealReason()));
 		}
 		if (wrapIn.getStatus()!=999) {
-			sql_stringBuffer.append(" and o.status = ?" + (index));
-			vs.add( wrapIn.getStatus() );
-			index++;
-		}
-		if ((null != wrapIn.getAppealReason()) && (!wrapIn.getAppealReason().isEmpty())) {
-			sql_stringBuffer.append(" and o.appealReason = ?" + (index));
-			vs.add( wrapIn.getAppealReason() );
-			index++;
-		}
-//		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
-//			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
-//			vs.add( wrapIn.getProcessPerson1() );
-//			index++;
-//		}
-//		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
-//			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
-//			vs.add( wrapIn.getProcessPerson2() );
-//			index++;
-//		}
-		//添加OR
-		if (wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0) {
-			sql_stringBuffer.append(" and (");
-			NameValueCountPair nameValueCountPair = null;
-			for (int p = 0; p < wrapIn.getOrAtrribute().size(); p++) {
-				nameValueCountPair = wrapIn.getOrAtrribute().get(p);
-				if (p == 0) {
-					sql_stringBuffer.append(" o." + nameValueCountPair.getName() + " = ?" + (index));
-
-				} else {
-					sql_stringBuffer.append(" or o." + nameValueCountPair.getName() + " = ?" + (index));
-				}
-				vs.add(nameValueCountPair.getValue());
-				index++;
-			}
-			sql_stringBuffer.append(" )");
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.status),wrapIn.getStatus()));
 		}
 
-		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceAppealInfo.class );
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}		
-		return (Long) query.getSingleResult();
+		cq.select(cb.count(root)).where(p);
+		return em.createQuery(cq).getSingleResult();
 	}
 
 	/**
@@ -641,87 +487,41 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 	public long getCountWithFilterWithCurrentProcessor( WrapInFilterAppeal wrapIn ,boolean isManager) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( AttendanceAppealInfo.class );
-		List<Object> vs = new ArrayList<>();
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		Integer index = 1;
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<AttendanceAppealInfo> root = cq.from(AttendanceAppealInfo.class);
+		Predicate p = cb.isNotNull(root.get(AttendanceAppealInfo_.detailId));
 
-		sql_stringBuffer.append( "SELECT count(o.id) FROM "+AttendanceAppealInfo.class.getCanonicalName()+" o where 1=1" );
-
-		if ((null != wrapIn.getDetailId()) && (!wrapIn.getDetailId().isEmpty())) {
-			sql_stringBuffer.append(" and o.detailId = ?" + (index));
-			vs.add( wrapIn.getDetailId() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getDetailId())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.detailId),wrapIn.getDetailId()));
 		}
-		if ((null != wrapIn.getEmpName()) && (!wrapIn.getEmpName().isEmpty())) {
-			sql_stringBuffer.append(" and o.empName = ?" + (index));
-			vs.add( wrapIn.getEmpName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getEmpName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.empName),wrapIn.getEmpName()));
 		}
-		if ((null != wrapIn.getUnitName()) && (!wrapIn.getUnitName().isEmpty())) {
-			sql_stringBuffer.append(" and o.unitName = ?" + (index));
-			vs.add( wrapIn.getUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getUnitName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.unitName),wrapIn.getUnitName()));
 		}
-		if ((null != wrapIn.getTopUnitName()) && (!wrapIn.getTopUnitName().isEmpty())) {
-			sql_stringBuffer.append(" and o.topUnitName = ?" + (index));
-			vs.add( wrapIn.getTopUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getTopUnitName())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.topUnitName),wrapIn.getTopUnitName()));
 		}
-		if ((null != wrapIn.getYearString() ) && (!wrapIn.getYearString().isEmpty())) {
-			sql_stringBuffer.append(" and o.yearString = ?" + (index));
-			vs.add( wrapIn.getYearString() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getYearString())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.yearString),wrapIn.getYearString()));
 		}
-		if ((null != wrapIn.getMonthString()) && (!wrapIn.getMonthString().isEmpty())) {
-			sql_stringBuffer.append(" and o.monthString = ?" + (index));
-			vs.add( wrapIn.getMonthString() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getMonthString())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.monthString),wrapIn.getMonthString()));
+		}
+		if(StringUtils.isNotEmpty(wrapIn.getAppealReason())){
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.appealReason),wrapIn.getAppealReason()));
 		}
 		if (wrapIn.getStatus()!=999) {
-			sql_stringBuffer.append(" and o.status = ?" + (index));
-			vs.add( wrapIn.getStatus() );
-			index++;
-		}
-		if ((null != wrapIn.getAppealReason()) && (!wrapIn.getAppealReason().isEmpty())) {
-			sql_stringBuffer.append(" and o.appealReason = ?" + (index));
-			vs.add( wrapIn.getAppealReason() );
-			index++;
+			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.status),wrapIn.getStatus()));
 		}
 		if(!isManager){
 			if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
-				sql_stringBuffer.append(" and o.currentProcessor = ?" + (index));
-				vs.add( wrapIn.getProcessPerson1() );
-				index++;
+				p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.currentProcessor),wrapIn.getProcessPerson1()));
 			}
 		}
-//		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
-//			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
-//			vs.add( wrapIn.getProcessPerson2() );
-//			index++;
-//		}
-		//添加OR
-		if (wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0) {
-			sql_stringBuffer.append(" and (");
-			NameValueCountPair nameValueCountPair = null;
-			for (int p = 0; p < wrapIn.getOrAtrribute().size(); p++) {
-				nameValueCountPair = wrapIn.getOrAtrribute().get(p);
-				if (p == 0) {
-					sql_stringBuffer.append(" o." + nameValueCountPair.getName() + " = ?" + (index));
-
-				} else {
-					sql_stringBuffer.append(" or o." + nameValueCountPair.getName() + " = ?" + (index));
-				}
-				vs.add(nameValueCountPair.getValue());
-				index++;
-			}
-			sql_stringBuffer.append(" )");
-		}
-
-		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceAppealInfo.class );
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}
-		return (Long) query.getSingleResult();
+		cq.select(cb.count(root)).where(p);
+		return em.createQuery(cq).getSingleResult();
 	}
 }
