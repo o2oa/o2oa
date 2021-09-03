@@ -45,14 +45,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	/* 管理员通过密码登录 */
 	<T extends AbstractWoAuthentication> T manager(HttpServletRequest request, HttpServletResponse response,
-			Business business, Class<T> cls) throws Exception {
+			Business business, String credential, Class<T> cls) throws Exception {
 		HttpToken httpToken = new HttpToken();
-		EffectivePerson effectivePerson = new EffectivePerson(Config.token().getInitialManager(), TokenType.manager,
+		EffectivePerson effectivePerson = new EffectivePerson(credential, TokenType.manager,
 				Config.token().getCipher());
 		if ((null != request) && (null != response)) {
 			httpToken.setToken(request, response, effectivePerson);
 		}
-		T t = cls.newInstance();
+		T t = cls.getDeclaredConstructor().newInstance();
 		Config.token().initialManagerInstance().copyTo(t);
 		t.setTokenType(TokenType.manager);
 		t.setToken(effectivePerson.getToken());

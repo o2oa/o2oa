@@ -47,7 +47,7 @@ class ActionWho extends BaseAction {
 			case manager:
 				InitialManager o = Config.token().initialManagerInstance();
 				if (StringUtils.equals(effectivePerson.getDistinguishedName(), o.getName())) {
-					wo = this.manager(null, null, business, Wo.class);
+					wo = this.manager(null, null, business, o.getName(), Wo.class);
 				} else {
 					Person person = this.getPerson(business, effectivePerson);
 					wo = this.user(null, null, business, person, Wo.class);
