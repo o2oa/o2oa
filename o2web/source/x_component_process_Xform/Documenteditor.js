@@ -2871,7 +2871,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             break;
                         case "copyto":
                         case "copyto2":
-                            this.data[name] = v + "。";
+                            var flag = (v.substring(v.length-1, v.length)=="。");
+                            this.data[name] = v + ((flag) ? "" : "。");
                             break;
                         default:
                             if (name==="subject") v = o2.txt(v);
