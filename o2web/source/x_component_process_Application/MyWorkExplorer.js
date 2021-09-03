@@ -60,13 +60,24 @@ MWF.xApplication.process.Application.MyWorkExplorer = new Class({
         return new MWF.xApplication.process.Application.WorkExplorer.Work(data, this);
     },
     removeWork: function(work, all){
-        this.actions.removeWork(work.data.id, this.app.options.id, all, function(json){
-            json.data.each(function(item){
-                this.items.erase(this.works[item.id]);
-                if (this.works[item.id]) this.works[item.id].destroy();
-                MWF.release(this.works[item.id]);
-                delete this.works[item.id];
+	    if( this.app.isManager() ){
+            this.actions.removeWork(work.data.id, this.app.options.id, all, function(json){
+                json.data.each(function(item){
+                    this.items.erase(this.works[item.id]);
+                    if (this.works[item.id]) this.works[item.id].destroy();
+                    MWF.release(this.works[item.id]);
+                    delete this.works[item.id];
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
+        }else{
+            var workId = work.data.id;
+            o2.Actions.load("x_processplatform_assemble_surface").WorkAction.delete(workId, function () {
+                this.items.erase(this.works[workId]);
+                if (this.works[workId]) this.works[workId].destroy();
+                MWF.release(this.works[workId]);
+                delete this.works[workId];
+            }.bind(this))
+        }
+
     }
 });

@@ -37,7 +37,7 @@ public class SnapAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(SnapAction.class);
 
-	@JaxrsMethodDescribe(value = "对工作进行快照", action = ActionTypeSnap.class)
+	@JaxrsMethodDescribe(value = "对工作进行快照.", action = ActionTypeSnap.class)
 	@GET
 	@Path("work/{workId}/type/snap")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -55,7 +55,7 @@ public class SnapAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "对工作进行快照,并标记为废弃", action = ActionTypeAbandoned.class)
+	@JaxrsMethodDescribe(value = "对工作进行快照,并标记为废弃.", action = ActionTypeAbandoned.class)
 	@GET
 	@Path("work/{workId}/type/abandoned")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -66,25 +66,6 @@ public class SnapAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionTypeAbandoned().execute(effectivePerson, workId);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "对已完成工作进行快照,并标记为废弃", action = ActionTypeAbandonedWorkCompleted.class)
-	@GET
-	@Path("workcompleted/{workCompletedId}/type/abandonedworkcompleted")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void typeAbandonedWorkCompleted(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作标识") @PathParam("workCompletedId") String workCompletedId) {
-		ActionResult<ActionTypeAbandonedWorkCompleted.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionTypeAbandonedWorkCompleted().execute(effectivePerson, workCompletedId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -103,6 +84,43 @@ public class SnapAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionTypeSuspend().execute(effectivePerson, workId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对已完成工作进行快照.", action = ActionTypeSnapWorkCompleted.class)
+	@GET
+	@Path("workcompleted/{workCompletedId}/type/snapworkcompleted")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void typeSnapWorkCompleted(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("workCompletedId") String workCompletedId) {
+		ActionResult<ActionTypeSnapWorkCompleted.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionTypeSnapWorkCompleted().execute(effectivePerson, workCompletedId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对已完成工作进行快照,并标记为废弃.", action = ActionTypeAbandonedWorkCompleted.class)
+	@GET
+	@Path("workcompleted/{workCompletedId}/type/abandonedworkcompleted")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void typeAbandonedWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("workCompletedId") String workCompletedId) {
+		ActionResult<ActionTypeAbandonedWorkCompleted.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionTypeAbandonedWorkCompleted().execute(effectivePerson, workCompletedId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

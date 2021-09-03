@@ -1,4 +1,4 @@
-o2.xDesktop.requireApp("process.Xform", "$Elswitch", null, false);
+o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
 /** @class Elinput 基于Element UI的数字输入框组件。
  * @example
  * //可以在脚本中获取该组件
@@ -29,14 +29,18 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
      * var json = this.form.get("elinput").vm.$data;   //获取Vue组件的data数据，
      *
      * //通过json对象操作Element组件
-     * json.size = "mini";      //改变输入框大小
      * json.disabled = true;     //设置输入框为禁用
      */
+    _loadNode: function(){
+        debugger;
+        if (this.isReadonly()) this.json.disabled = true;
+        this._loadNodeEdit();
+    },
     _appendVueData: function(){
         this.form.Macro.environment.data.check(this.json.id);
         this.json[this.json.id] = this._getBusinessData();
 
-        if (!this.json.width || o2.typeOf(this.json.width)!=="number") this.json.width = 40;
+        if (!this.json.width || !this.json.width.toFloat()) this.json.width = 40;
         if (!this.json.activeText) this.json.activeText = "";
         if (!this.json.inactiveText) this.json.inactiveText = "";
         if (!this.json.activeColor) this.json.activeColor = "#409EFF";
@@ -49,38 +53,33 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
         if (!this.json.description) this.json.description = "";
         if (!this.json.disabled) this.json.disabled = false;
 
-        if (!this.json.activeValueType) this.json.activeValueType = "boolean-true";
-        switch(this.json.activeValueType){
-            case "boolean-false":
-                this.json.activeValue = false;
-                break;
-            case "boolean-true":
+        if (!this.json.valueType) this.json.activeValueType = "boolean";
+        switch(this.json.valueType){
+            case "boolean":
                 this.json.activeValue = true;
-                break;
-            default:
-                if (!this.json.activeValue) this.json.activeValue = true;
-        }
-
-        if (!this.json.inactiveValueType) this.json.inactiveValueType = "boolean-false";
-        switch(this.json.inactiveValueType){
-            case "boolean-false":
                 this.json.inactiveValue = false;
                 break;
-            case "boolean-true":
-                this.json.inactiveValue = true;
+            case "string":
+                if (!this.json.activeValue) this.json.activeValue = "1";
+                if (!this.json.inactiveValue) this.json.inactiveValue = "0";
+                break;
+            case "number":
+                if (!this.json.activeValue) this.json.activeValue = 1;
+                if (!this.json.inactiveValue) this.json.inactiveValue = 0;
+                this.json.activeValue = this.json.activeValue.toFloat();
+                this.json.inactiveValue = this.json.inactiveValue.toFloat();
                 break;
             default:
-                if (!this.json.activeValue) this.json.inactiveValue = false;
+                this.json.activeValue = true;
+                this.json.inactiveValue = false;
         }
-
-
     },
     appendVueExtend: function(app){
         if (!app.methods) app.methods = {};
         app.methods.$loadElEvent = function(ev){
             this.validationMode();
             if (ev==="change") this._setBusinessData(this.getInputData());
-            if (this.json.events[ev] && this.json.events[ev].code){
+            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
                 this.form.Macro.fire(this.json.events[ev].code, this, event);
             }
         }.bind(this);
@@ -121,5 +120,20 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
         html += ">";
         html += "</el-switch>";
         return html;
-    }
+    },
+    __setValue: function(value){
+        this.moduleValueAG = null;
+        this._setBusinessData(value);
+        this.json[this.json.id] = value;
+        this.fieldModuleLoaded = true;
+        return value;
+    },
+    __setData: function(data){
+        var old = this.getInputData();
+        this._setBusinessData(data);
+        this.json[this.json.id] = data;
+        if (old!==data) this.fireEvent("change");
+        this.moduleValueAG = null;
+        this.validationMode();
+    },
 }); 

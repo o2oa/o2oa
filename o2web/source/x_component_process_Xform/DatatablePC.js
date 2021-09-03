@@ -582,6 +582,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var line = this.getLine(index);
 			line.isNewAdd = true;
 
+			this.validationMode();
 			this.fireEvent("addLine", [{"line":line, "ev":ev}]);
 			return line;
 		},
@@ -602,6 +603,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var line = this.getLine(index);
 			line.isNewAdd = true;
 
+			this.validationMode();
 			this.fireEvent("addLine",[{"line":line, "ev":ev}]);
 			return line;
 		},
@@ -620,6 +622,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var line = this.getLine(index);
 			line.isNewAdd = true;
 
+			this.validationMode();
 			this.fireEvent("addLine",[{"line":line, "ev":ev}]);
 			return line;
 		},
@@ -668,6 +671,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			});
 
 			_self.setData( data );
+			this.validationMode();
 			if(saveFlag)this.form.saveFormData();
 		},
 		_deleteLine: function(ev, line){
@@ -697,6 +701,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			if(this.currentEditedLine === line)this.currentEditedLine = null;
 			this.setData( data );
+
+			this.validationMode();
 			this.fireEvent("afterDeleteLine");
 
 			if(saveFlag)this.form.saveFormData();
@@ -737,6 +743,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line.attachmentChangeFlag = false;
 			}
 			this.currentEditedLine = null;
+			this.validationMode();
 			this.fireEvent("completeLineEdit", [line]);
 			return true;
 		},
@@ -1007,6 +1014,30 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				return this._getBusinessData();
 			}
 		},
+		_getSectionKey: function(){
+			if (this.json.section!=="yes"){
+				return "";
+			}else {
+				switch (this.json.sectionBy){
+					case "person":
+						return layout.desktop.session.user.id;
+					case "unit":
+						return (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+					case "activity":
+						return (this.form.businessData.work) ? this.form.businessData.work.activity : "";
+					case "splitValue":
+						return (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
+					case "script":
+						if( this.json.sectionByScript && this.json.sectionByScript.code){
+							return this.form.Macro.exec(this.json.sectionByScript.code, this) || "";
+						}else{
+							return "";
+						}
+					default:
+						return "";
+				}
+			}
+		},
 		createErrorNode: function(text){
 			var node = new Element("div");
 			var iconNode = new Element("div", {
@@ -1264,11 +1295,21 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 	});
 
 MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
-	Extends: MWF.APP$Module
+	Extends: MWF.APP$Module,
+	_loadUserInterface: function(){
+		if(this.json.recoveryStyles){
+			this.node.setStyles(this.json.recoveryStyles);
+		}
+	}
 });
 
 MWF.xApplication.process.Xform.DatatablePC$Data =  new Class({
-	Extends: MWF.APP$Module
+	Extends: MWF.APP$Module,
+	_loadUserInterface: function(){
+		if(this.json.recoveryStyles){
+			this.node.setStyles(this.json.recoveryStyles);
+		}
+	}
 });
 
 MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
@@ -1331,6 +1372,9 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	loadModules: function(){
 		this.node.set("html", this.datatable.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.node, true);
+
+		//拆分状态
+		var sectionKey = this.datatable._getSectionKey();
 		moduleNodes.each(function (node) {
 			var mwfType = node.get("MWFtype");
 			if (mwfType === "form")return;
@@ -1347,7 +1391,12 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 
 				var index = this.options.index;
 
-				var id = this.datatable.json.id + "..data.." + index + ".." + json.id;
+				var id;
+				if( sectionKey ){
+					id = this.datatable.json.id + ".." + sectionKey + "..data.." + index + ".." + json.id;
+				}else{
+				    id = this.datatable.json.id + "..data.." + index + ".." + json.id;
+				}
 
 				json.id = id;
 				node.set("id", id);
@@ -1355,7 +1404,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				if( json.type==="Attachment" || json.type==="AttachmentDg" ){
 					json.type = "AttachmentDg";
 					json.ignoreSite = true;
-					json.site = this.getAttachmentSite(json, templateJsonId);
+					json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
 				}
 
 				if (this.form.all[id]) this.form.all[id] = null;
@@ -1421,7 +1470,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	get: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
 	},
-	getAttachmentSite: function(json, templateJsonId){
+	getAttachmentSite: function(json, templateJsonId, sectionKey){
 		//确保site最长为64，否则后台会报错
 
 		var index = this.options.index;
@@ -1429,12 +1478,21 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		var baseSite;
 		baseSite =  "." + index + "."  + (json.site || templateJsonId);
 
-		var maxLength = 64 - baseSite.length;
+		var maxLength;
+		var sectionId = "";
+		if( sectionKey ){
+			maxLength = Math.floor((63 - baseSite.length)/2 );
+
+			sectionId = (sectionKey.length > maxLength) ? sectionKey.substr(sectionKey.length-maxLength, maxLength) : sectionKey;
+			sectionId = "." + sectionId;
+		}else{
+			maxLength = 64 - baseSite.length;
+		}
 
 		var templateId = this.datatable.json.id;
 		templateId = (templateId.length > maxLength) ? templateId.substr(templateId.length-maxLength, maxLength) : templateId;
 
-		return templateId + baseSite;
+		return templateId + sectionId + baseSite;
 	},
 	deleteAttachment: function(){
 		var saveFlag = false;

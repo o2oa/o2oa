@@ -22,7 +22,8 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         if (this.node.getFirst()){
             var v = this.node.getElement("input").get("value");
             var n = v.toFloat();
-            return (isNaN(n)) ? 0 : n;
+            return (isNaN(n)) ? (this.json.emptyValue === "string" ? "" : 0) : n;
+            //return (isNaN(n)) ? 0 : n;
         }else{
             return this._getBusinessData();
         }
@@ -67,12 +68,15 @@ debugger;
         if( !this.node.getElement("input") )return true;
         var n = this.node.getElement("input").get("value");
         if (isNaN(n)) {
-            this.notValidationMode(MWF.xApplication.process.Xform.LP.notValidation_number);
-            return false;
+            if( n === "" && this.json.emptyValue === "string" ){
+                return true;
+            }else{
+                this.notValidationMode(MWF.xApplication.process.Xform.LP.notValidation_number);
+                return false;
+            }
+        }else{
+            this.node.getFirst().set("value", this.formatNumber(n));
         }
-
-        this.node.getFirst().set("value", this.formatNumber(n));
-
         // var v = n.toFloat();
         // if (v){
         //     if (this.json.decimals && (this.json.decimals!="*")){
@@ -106,6 +110,7 @@ debugger;
         var flag = (data.status=="all") ? true: (routeName == data.decision);
         if (flag){
             var n = this.getInputData();
+            if( n === "" && this.json.emptyValue === "string" )n = 0;
             var v = (data.valueType=="value") ? n : n.length;
             switch (data.operateor){
                 case "isnull":
@@ -145,13 +150,13 @@ debugger;
                     }
                     break;
                 case "contain":
-                    if (v.indexOf(data.value)!=-1){
+                    if (v.toString().indexOf(data.value)!=-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notcontain":
-                    if (v.indexOf(data.value)==-1){
+                    if (v.toString().indexOf(data.value)==-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
@@ -249,18 +254,30 @@ debugger;
         }.bind(this));
     },
     _computeValue: function(value){
-        return (this.json.defaultValue && this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "0");
+        if( this.json.defaultValue && this.json.defaultValue.code){
+            return this.form.Macro.exec(this.json.defaultValue.code, this)
+        }else{
+            if(value){
+                return value;
+            }else{
+                return this.json.emptyValue === "string" ? "" : "0";
+            }
+        }
     },
     getValue: function(){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
-        value = this.formatNumber(value);
-        return value || "0";
+        if(!value && this.json.emptyValue === "string"){
+            return "";
+        }else{
+            value = this.formatNumber(value);
+            return value || "0";
+        }
     },
     __setValue: function(value){
         this._setBusinessData(value);
-        if (this.node.getFirst()) this.node.getFirst().set("value", value || "0");
+        if (this.node.getFirst()) this.node.getFirst().set("value", value || (this.json.emptyValue === "string" ? "" : "0"));
         if (this.readonly || this.json.isReadonly) this.node.set("text", value);
         this.moduleValueAG = null;
         this.fieldModuleLoaded = true;

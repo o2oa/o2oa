@@ -22,7 +22,6 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         this.field = true;
         this.fieldModuleLoaded = false;
     },
-	
 	_loadUserInterface: function(){
 		this._loadNode();
         if (this.json.compute === "show"){
@@ -70,7 +69,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
 
     _loadNode: function(){
-        if (this.readonly){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
