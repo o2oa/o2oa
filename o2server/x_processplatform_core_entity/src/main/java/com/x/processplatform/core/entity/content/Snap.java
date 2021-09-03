@@ -48,6 +48,8 @@ public class Snap extends SliceJpaObject {
 
 	public static final String TYPE_ABANDONEDWORKCOMPLETED = "abandonedWorkCompleted";
 
+	public static final String TYPE_SNAPWORKCOMPLETED = "snapWorkCompleted";
+
 	public String getId() {
 		return id;
 	}
