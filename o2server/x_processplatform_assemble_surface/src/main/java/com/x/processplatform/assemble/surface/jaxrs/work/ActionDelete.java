@@ -23,7 +23,6 @@ class ActionDelete extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		Audit audit = logger.audit(effectivePerson);
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -40,9 +39,6 @@ class ActionDelete extends BaseAction {
 		}
 		Wo wo = ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
 				Applications.joinQueryUri("work", work.getId()), work.getJob()).getData(Wo.class);
-		if(wo!=null && StringUtils.isNotEmpty(wo.getId())){
-			audit.log(null, "废弃工单");
-		}
 		result.setData(wo);
 		return result;
 	}

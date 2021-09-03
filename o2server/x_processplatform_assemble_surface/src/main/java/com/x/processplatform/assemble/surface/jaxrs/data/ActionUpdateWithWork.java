@@ -25,7 +25,6 @@ class ActionUpdateWithWork extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
 			// 防止提交空数据清空data
 			if (null == jsonElement || (!jsonElement.isJsonObject())) {
 				throw new ExceptionNotJsonObject();

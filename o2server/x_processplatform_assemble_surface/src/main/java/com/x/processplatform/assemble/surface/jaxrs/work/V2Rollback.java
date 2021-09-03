@@ -49,7 +49,6 @@ class V2Rollback extends BaseAction {
 	private String series = StringTools.uniqueToken();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		Audit audit = logger.audit(effectivePerson);
 		wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -79,7 +78,6 @@ class V2Rollback extends BaseAction {
 		}
 
 		this.record();
-		audit.log(null, "回滚工作");
 
 		Wo wo = Wo.copier.copy(record);
 		result.setData(wo);

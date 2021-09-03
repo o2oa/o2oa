@@ -57,7 +57,6 @@ class V2Reroute extends BaseAction {
 	private Wi wi;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		Audit audit = logger.audit(effectivePerson);
 		this.effectivePerson = effectivePerson;
 		wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
@@ -88,7 +87,6 @@ class V2Reroute extends BaseAction {
 		reroute();
 		processing();
 		record();
-		audit.log(null, "工作调度");
 		Wo wo = Wo.copier.copy(record);
 		result.setData(wo);
 		return result;

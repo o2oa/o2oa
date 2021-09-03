@@ -33,7 +33,6 @@ class ActionLogin extends BaseAction {
 			String code) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
 			String url = "https://oapi.dingtalk.com/user/getuserinfo?access_token="
 					+ Config.dingding().corpAccessToken() + "&code=" + code;
 			String value = this.get(url);
@@ -71,7 +70,6 @@ class ActionLogin extends BaseAction {
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();
 			httpToken.setToken(request, response, effective);
-			audit.log(person.getDistinguishedName(), "登录");
 			result.setData(wo);
 		}
 		return result;

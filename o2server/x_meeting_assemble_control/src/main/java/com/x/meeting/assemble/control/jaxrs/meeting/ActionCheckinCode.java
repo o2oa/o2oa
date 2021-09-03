@@ -33,7 +33,6 @@ class ActionCheckInCode extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionCheckInCode.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String meetingId) throws Exception {
-		Audit audit = logger.audit(effectivePerson);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String meta = StringTools.uniqueToken();
@@ -73,7 +72,6 @@ class ActionCheckInCode extends BaseAction {
 		}
 		wo.setMeta(meta);
 		result.setData(wo);
-		audit.log(effectivePerson.getDistinguishedName(), "会议签到码生成.");
 		return result;
 	}
 

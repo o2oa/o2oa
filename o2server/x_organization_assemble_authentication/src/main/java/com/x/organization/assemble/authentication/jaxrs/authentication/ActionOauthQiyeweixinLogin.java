@@ -25,7 +25,6 @@ public class ActionOauthQiyeweixinLogin extends BaseAction {
     ActionResult<ActionOauthQiyeweixinLogin.Wo> execute(HttpServletRequest request, HttpServletResponse response,
                                                         EffectivePerson effectivePerson, String code) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            Audit audit = logger.audit(effectivePerson);
             ActionResult<ActionOauthQiyeweixinLogin.Wo> result = new ActionResult<>();
             Business business = new Business(emc);
 
@@ -51,7 +50,6 @@ public class ActionOauthQiyeweixinLogin extends BaseAction {
                 }
                 Person o = emc.find(personId, Person.class);
                 wo = this.user(request, response, business, o, Wo.class);
-                audit.log(o.getDistinguishedName(), "登录");
             }
             result.setData(wo);
             return result;
