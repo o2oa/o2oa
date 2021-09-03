@@ -35,7 +35,7 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         if (!this.json.size) this.json.size = "";
         if (!this.json.prefixIcon) this.json.prefixIcon = "";
         if (!this.json.suffixIcon) this.json.suffixIcon = "";
-        if (!this.json.rows) this.json.rows = "2";
+        if (!this.json.rows) this.json.rows = 2;
         if (!this.json.autosize) this.json.autosize = false;
         if (!this.json.readonly) this.json.readonly = false;
         if (!this.json.resize) this.json.resize = "none";

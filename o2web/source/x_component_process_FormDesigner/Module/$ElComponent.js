@@ -22,18 +22,20 @@ MWF.xApplication.process.FormDesigner.Module.$ElComponent = MWF.FC$ElComponent =
 		this.containerNode = null;
 		this.isPropertyLoaded = false;
 	},
-	showProperty: function(){
+	showProperty: function(callback){
 		if (!this.property){
 			this.property = new MWF.xApplication.process.FormDesigner.Property(this, this.form.designer.propertyContentArea, this.form.designer, {
 				"path": this.options.propertyPath,
 				"onPostLoad": function(){
 					this.property.show();
 					this.isPropertyLoaded = true;
+					if (callback) callback();
 				}.bind(this)
 			});
 			this.property.load();
 		}else{
 			this.property.show();
+			if (callback) callback();
 		}
 	},
 	_createMoveNode: function(){

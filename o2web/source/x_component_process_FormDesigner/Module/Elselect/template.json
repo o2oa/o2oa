@@ -1,47 +1,28 @@
 {
 	"id": "",
 	"name": "",
-	"type": "Elradio",
+	"type": "Elselect",
 	"description": "",
-	"itemType": "values",
-	"itemValues": [],
-	"itemScript": {
-		"code": "",
-		"html": ""
-	},
-	"defaultValue": {
-		"code": "",
-		"html": ""
-	},
-	"isReadonly" : false,
-	"buttonRadio" : false,
-	"border" : false,
-	"size" : "default",
-	"textColor" : "",
-	"fillColor" : "",
-
-	"vueData": {},
-	"vueMethods": {},
-	"vueCss": {},
-
-	elStyles: {},
-	elProperties: {},
-	elGroupStyles: {},
-	elGroupProperties: {},
-
-	"compute": "create", //create, show, save
 	"events": {
-		"queryLoad" : {
-		  "code": "",
-		  "html": ""
-		},
-		"postLoad" : {
-		  "code": "",
-		  "html": ""
-		},
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
 		"load": {
 		  "code": "",
 		  "html": ""
+		},
+		"select": {
+			"code": "",
+			"html": ""
+		},
+		"change": {
+			"code": "",
+			"html": ""
 		},
 		"click": {
 			"code": "",
@@ -50,10 +31,6 @@
 		"dblclick": {
 			"code": "",
 			"html": ""
-		},
-	  	"change" : {
-		  "code": "",
-		  "html": ""
 		},
 		"keydown": {
 			"code": "",
@@ -86,17 +63,10 @@
 		"mouseup": {
 			"code": "",
 			"html": ""
-		},
-		"focus": {
-			"code": "",
-			"html": ""
-		},
-		"blur": {
-			"code": "",
-			"html": ""
 		}
 	},
 	"properties": {},
 	"class": "",
+	"styles": {},
 	"container": ""
 }

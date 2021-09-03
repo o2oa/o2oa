@@ -2298,14 +2298,17 @@ debugger;
 						break;
 					default:
 						input.addEvent("change", function(e){
-							property.setValue(jsondata, this.value, this);
+						    var v = (this.type==="number") ? this.value.toFloat() : this.value;
+							property.setValue(jsondata, v, this);
 						});
 						input.addEvent("blur", function(e){
-							property.setValue(jsondata, this.value, this);
+                            var v = (this.type==="number") ? this.value.toFloat() : this.value;
+							property.setValue(jsondata, v, this);
 						});
 						input.addEvent("keydown", function(e){
 							if (e.code==13){
-								property.setValue(jsondata, this.value, this);
+                                var v = (this.type==="number") ? this.value.toFloat() : this.value;
+								property.setValue(jsondata, v, this);
 							}
                             e.stopPropagation();
 						});
@@ -2353,8 +2356,11 @@ debugger;
         var o = this.data;
         var len = key.length-1;
         key.each(function(n, i){
-            if (!o[n]) o[n] = {};
-            if (i<len) o = o[n];
+            if (i<len) {
+                if (!o.hasOwnProperty(n)) o[n] = {};
+                //if (!o[n]) o[n] = {};
+                o = o[n];
+            }
         }.bind(this));
         o[key[len]] = value;
 

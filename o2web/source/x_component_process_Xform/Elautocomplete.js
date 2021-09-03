@@ -51,31 +51,52 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
                 this.form.Macro.fire(this.json.events[ev].code, this, event);
             }
         }.bind(this);
-        app.methods.$fetchSuggestions = function(qs, cb){
-            debugger;
-            if (this.json.itemType!=='script'){
+        if (this.json.itemType!=='script'){
+            app.methods.$fetchSuggestions = function(qs){
                 if (this.json.itemValues){
                     var items = this.json.itemValues.filter(function(v){
                         return !qs || v.indexOf(qs)!=-1;
                     }).map(function(v){
                         return {"value": v};
-                    })
-                    cb(items);
-                    return;
+                    });
+                    //cb(items);
+                    return items;
                 }
-                cb();
-            }else{
-                this.form.Macro.environment.queryString = qs;
-                var list = this.form.Macro.exec(this.json.itemScript.code, this);
-                Promise.resolve(list).then(function(items){
-                    cb(items);
-                    delete this.form.Macro.environment.queryString;
-                }).catch(function(){
-                    cb();
-                    delete this.form.Macro.environment.queryString;
-                });
+                return [];
+            }.bind(this);
+        }else{
+            if (this.json.itemScript && this.json.itemScript.code){
+                var fetchSuggestions = this.form.Macro.exec(this.json.itemScript.code, this);
+                if (o2.typeOf(fetchSuggestions)==="function"){
+                    app.methods.$fetchSuggestions = fetchSuggestions;
+                }
             }
-        }.bind(this);
+
+        }
+        // app.methods.$fetchSuggestions = function(qs, cb){
+        //     if (this.json.itemType!=='script'){
+        //         if (this.json.itemValues){
+        //             var items = this.json.itemValues.filter(function(v){
+        //                 return !qs || v.indexOf(qs)!=-1;
+        //             }).map(function(v){
+        //                 return {"value": v};
+        //             });
+        //             cb(items);
+        //             return;
+        //         }
+        //         cb();
+        //     }else{
+        //         this.form.Macro.environment.queryString = qs;
+        //         var list = this.form.Macro.exec(this.json.itemScript.code, this);
+        //         Promise.resolve(list).then(function(items){
+        //             cb(items);
+        //             delete this.form.Macro.environment.queryString;
+        //         }).catch(function(){
+        //             cb();
+        //             delete this.form.Macro.environment.queryString;
+        //         });
+        //     }
+        // }.bind(this);
     },
     _createElementHtml: function(){
         var html = "<el-autocomplete";
