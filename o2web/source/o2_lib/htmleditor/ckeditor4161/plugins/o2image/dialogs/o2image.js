@@ -627,7 +627,7 @@
 					},
 					 {
 							type: "hbox",
-							widths: ["27%", "30%", "40%"],
+							widths: ["27%", "68%", "1%", "1%"],
 							hidden: ( editor.config.reference && editor.config.referenceType ) ? !1 : !0,
 							children: [{
 								type: "button",
@@ -702,7 +702,11 @@
 								},
 								onLoad: function () {
 								}
-							}, {
+							},{
+								type: "label",
+								hidden: !( editor.plugins.o2uploadimage ),
+								label: "上传多个文件？请直接从文件夹拖动文件到编辑器。",
+							},{
 								type: "button",
 								id: "browseFiles",
 								style: "display:inline-block;margin-bottom:4px;",
