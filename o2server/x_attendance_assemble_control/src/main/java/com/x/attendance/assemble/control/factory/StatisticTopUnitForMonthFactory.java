@@ -5,11 +5,11 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
+import com.x.attendance.assemble.control.CriteriaQueryTools;
+import com.x.attendance.entity.StatisticTopUnitForDay;
+import com.x.attendance.entity.StatisticTopUnitForDay_;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.AbstractFactory;
@@ -94,54 +94,39 @@ public class StatisticTopUnitForMonthFactory extends AbstractFactory {
 	public List<StatisticTopUnitForMonth> listIdsNextWithFilter( String id, Integer count, Object sequence, WrapInFilterStatisticTopUnitForMonth wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( StatisticTopUnitForMonth.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<StatisticTopUnitForMonth> cq = cb.createQuery(StatisticTopUnitForMonth.class);
+		Root<StatisticTopUnitForMonth> root = cq.from(StatisticTopUnitForMonth.class);
+
 		String order = wrapIn.getOrder();//排序方式
-		List<Object> vs = new ArrayList<>();
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		
 		if( order == null || order.isEmpty() ){
 			order = "DESC";
 		}
-		
-		Integer index = 1;
-		sql_stringBuffer.append( "SELECT o FROM "+StatisticTopUnitForMonth.class.getCanonicalName()+" o where 1=1" );
-
+		String orderFieldName = "";
+		if(StringUtils.isNotEmpty( wrapIn.getKey())){
+			orderFieldName = wrapIn.getKey();
+		}else{
+			orderFieldName = "sequence";
+		}
+		Order _order = CriteriaQueryTools.setOrder(cb, root, StatisticTopUnitForMonth_.class, orderFieldName,order);
+		Predicate p = cb.isNotNull(root.get(StatisticTopUnitForMonth_.id));
 		if ((null != sequence) ) {
-			sql_stringBuffer.append(" and o.sequence " + (StringUtils.equalsIgnoreCase(order, "DESC") ? "<" : ">") + (" ?" + (index)));
-			vs.add(sequence);
-			index++;
+			if(StringUtils.equalsIgnoreCase(order, "DESC")){
+				p = cb.and(p,cb.lessThan(root.get(StatisticTopUnitForMonth_.sequence),sequence.toString()));
+			}else{
+				p = cb.and(p,cb.greaterThan(root.get(StatisticTopUnitForMonth_.sequence),sequence.toString()));
+			}
 		}
-				
-		if ((null != wrapIn.getEmployeeName()) && wrapIn.getEmployeeName().size() > 0) {
-			sql_stringBuffer.append(" and o.employeeName in ?" + (index));
-			vs.add( wrapIn.getEmployeeName() );
-			index++;
+		if ((null != wrapIn.getUnitName()) && wrapIn.getTopUnitName().size() > 0) {
+			p = cb.and(p,root.get(StatisticTopUnitForMonth_.topUnitName).in(wrapIn.getTopUnitName()));
 		}
-		if ((null != wrapIn.getUnitName()) && wrapIn.getUnitName().size() > 0 ) {
-			sql_stringBuffer.append(" and o.unitName in ?" + (index));
-			vs.add( wrapIn.getUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getStatisticYear())){
+			p = cb.and(p,cb.equal(root.get(StatisticTopUnitForMonth_.statisticYear),wrapIn.getStatisticYear()));
 		}
-		if ((null != wrapIn.getTopUnitName()) && wrapIn.getTopUnitName().size() > 0 ) {
-			sql_stringBuffer.append(" and o.topUnitName in ?" + (index));
-			vs.add( wrapIn.getTopUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getStatisticMonth())){
+			p = cb.and(p,cb.equal(root.get(StatisticTopUnitForMonth_.statisticMonth),wrapIn.getStatisticMonth()));
 		}
-		if ((null != wrapIn.getStatisticYear() ) && (!wrapIn.getStatisticYear().isEmpty())) {
-			sql_stringBuffer.append(" and o.statisticYear = ?" + (index));
-			vs.add( wrapIn.getStatisticYear() );
-			index++;
-		}
-		if ((null != wrapIn.getStatisticMonth()) && (!wrapIn.getStatisticMonth().isEmpty())) {
-			sql_stringBuffer.append(" and o.statisticMonth = ?" + (index));
-			vs.add( wrapIn.getStatisticMonth() );
-			index++;
-		}
-		sql_stringBuffer.append(" order by o.sequence " + order );
-		Query query = em.createQuery( sql_stringBuffer.toString(), StatisticTopUnitForMonth.class );
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}
+		Query query = em.createQuery(cq.select(root).where(p).orderBy(_order) );
 		return query.setMaxResults(count).getResultList();
 	}	
 	
@@ -158,61 +143,44 @@ public class StatisticTopUnitForMonthFactory extends AbstractFactory {
 	public List<StatisticTopUnitForMonth> listIdsPrevWithFilter( String id, Integer count, Object sequence, WrapInFilterStatisticTopUnitForMonth wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( StatisticTopUnitForMonth.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<StatisticTopUnitForMonth> cq = cb.createQuery(StatisticTopUnitForMonth.class);
+		Root<StatisticTopUnitForMonth> root = cq.from(StatisticTopUnitForMonth.class);
+
 		String order = wrapIn.getOrder();//排序方式
-		List<Object> vs = new ArrayList<>();
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		Integer index = 1;
-		
 		if( order == null || order.isEmpty() ){
 			order = "DESC";
 		}
-		
-		sql_stringBuffer.append( "SELECT o FROM "+StatisticTopUnitForMonth.class.getCanonicalName()+" o where 1=1" );
+		String orderFieldName = "";
+		if(StringUtils.isNotEmpty( wrapIn.getKey())){
+			orderFieldName = wrapIn.getKey();
+		}else{
+			orderFieldName = "sequence";
+		}
+		Order _order = CriteriaQueryTools.setOrder(cb, root, StatisticTopUnitForMonth_.class, orderFieldName,order);
+		Predicate p = cb.isNotNull(root.get(StatisticTopUnitForMonth_.id));
 		if ((null != sequence) ) {
-			sql_stringBuffer.append(" and o.sequence " + (StringUtils.equalsIgnoreCase(order, "DESC") ? ">" : "<") + (" ?" + (index)));
-			vs.add(sequence);
-			index++;
+			if(StringUtils.equalsIgnoreCase(order, "DESC")){
+				p = cb.and(p,cb.greaterThan(root.get(StatisticTopUnitForMonth_.sequence),sequence.toString()));
+			}else{
+				p = cb.and(p,cb.lessThan(root.get(StatisticTopUnitForMonth_.sequence),sequence.toString()));
+			}
 		}
-		if ((null != wrapIn.getEmployeeName()) && wrapIn.getEmployeeName().size() > 0) {
-			sql_stringBuffer.append(" and o.employeeName in ?" + (index));
-			vs.add( wrapIn.getEmployeeName() );
-			index++;
+		if ((null != wrapIn.getUnitName()) && wrapIn.getTopUnitName().size() > 0) {
+			p = cb.and(p,root.get(StatisticTopUnitForMonth_.topUnitName).in(wrapIn.getTopUnitName()));
 		}
-		if ((null != wrapIn.getUnitName()) && wrapIn.getUnitName().size() > 0 ) {
-			sql_stringBuffer.append(" and o.unitName in ?" + (index));
-			vs.add( wrapIn.getUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getStatisticYear())){
+			p = cb.and(p,cb.equal(root.get(StatisticTopUnitForMonth_.statisticYear),wrapIn.getStatisticYear()));
 		}
-		if ((null != wrapIn.getTopUnitName()) && wrapIn.getTopUnitName().size() > 0 ) {
-			sql_stringBuffer.append(" and o.topUnitName in ?" + (index));
-			vs.add( wrapIn.getTopUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getStatisticMonth())){
+			p = cb.and(p,cb.equal(root.get(StatisticTopUnitForMonth_.statisticMonth),wrapIn.getStatisticMonth()));
 		}
-		if ((null != wrapIn.getStatisticYear() ) && (!wrapIn.getStatisticYear().isEmpty())) {
-			sql_stringBuffer.append(" and o.statisticYear = ?" + (index));
-			vs.add( wrapIn.getStatisticYear() );
-			index++;
-		}
-		if ((null != wrapIn.getStatisticMonth()) && (!wrapIn.getStatisticMonth().isEmpty())) {
-			sql_stringBuffer.append(" and o.statisticMonth = ?" + (index));
-			vs.add( wrapIn.getStatisticMonth() );
-			index++;
-		}
-		sql_stringBuffer.append(" order by o.sequence " + order );
-		Query query = em.createQuery( sql_stringBuffer.toString(), StatisticTopUnitForMonth.class );
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}
-		
+		Query query = em.createQuery(cq.select(root).where(p).orderBy(_order) );
 		return query.setMaxResults(20).getResultList();
 	}
 	
 	/**
 	 * 查询符合的文档信息总数
-	 * @param id
-	 * @param count
-	 * @param sequence
 	 * @param wrapIn
 	 * @return
 	 * @throws Exception
@@ -220,44 +188,22 @@ public class StatisticTopUnitForMonthFactory extends AbstractFactory {
 	public long getCountWithFilter( WrapInFilterStatisticTopUnitForMonth wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( StatisticTopUnitForMonth.class );
-		List<Object> vs = new ArrayList<>();
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		Integer index = 1;
-		
-		sql_stringBuffer.append( "SELECT count(o.id) FROM "+StatisticTopUnitForMonth.class.getCanonicalName()+" o where 1=1" );
-		
-		if ((null != wrapIn.getEmployeeName()) && wrapIn.getEmployeeName().size() > 0) {
-			sql_stringBuffer.append(" and o.employeeName in ?" + (index));
-			vs.add( wrapIn.getEmployeeName() );
-			index++;
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<StatisticTopUnitForMonth> root = cq.from(StatisticTopUnitForMonth.class);
+		Predicate p = cb.isNotNull(root.get(StatisticTopUnitForMonth_.id));
+
+		if ((null != wrapIn.getUnitName()) && wrapIn.getTopUnitName().size() > 0) {
+			p = cb.and(p,root.get(StatisticTopUnitForMonth_.topUnitName).in(wrapIn.getTopUnitName()));
 		}
-		if ((null != wrapIn.getUnitName()) && wrapIn.getUnitName().size() > 0 ) {
-			sql_stringBuffer.append(" and o.unitName in ?" + (index));
-			vs.add( wrapIn.getUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getStatisticYear())){
+			p = cb.and(p,cb.equal(root.get(StatisticTopUnitForMonth_.statisticYear),wrapIn.getStatisticYear()));
 		}
-		if ((null != wrapIn.getTopUnitName()) && wrapIn.getTopUnitName().size() > 0 ) {
-			sql_stringBuffer.append(" and o.topUnitName in ?" + (index));
-			vs.add( wrapIn.getTopUnitName() );
-			index++;
+		if(StringUtils.isNotEmpty(wrapIn.getStatisticMonth())){
+			p = cb.and(p,cb.equal(root.get(StatisticTopUnitForMonth_.statisticMonth),wrapIn.getStatisticMonth()));
 		}
-		if ((null != wrapIn.getStatisticYear() ) && (!wrapIn.getStatisticYear().isEmpty())) {
-			sql_stringBuffer.append(" and o.statisticYear = ?" + (index));
-			vs.add( wrapIn.getStatisticYear() );
-			index++;
-		}
-		if ((null != wrapIn.getStatisticMonth()) && (!wrapIn.getStatisticMonth().isEmpty())) {
-			sql_stringBuffer.append(" and o.statisticMonth = ?" + (index));
-			vs.add( wrapIn.getStatisticMonth() );
-			index++;
-		}
-		Query query = em.createQuery( sql_stringBuffer.toString(), StatisticTopUnitForMonth.class );
-		
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}		
-		return (Long) query.getSingleResult();
+		cq.select(cb.count(root)).where(p);
+		return em.createQuery(cq).getSingleResult();
 	}
 
 }
