@@ -29,6 +29,14 @@
 		return 'image-' + CKEDITOR.tools.array.map( dateParts, padNumber ).join( '' ) + '-' + uniqueNameCounter + '.' + type;
 	}
 
+	function isImageUploadUrl(uploadUrl){
+		return uploadUrl.indexOf("/x_file_assemble_control/jaxrs/file/upload/referencetype/") > -1;
+	}
+
+	function getImageMaxWidth(editor){
+		return editor.config.localImageMaxWidth || 2000;
+	}
+
 	CKEDITOR.plugins.add( 'o2uploadimage', {
 		requires: 'uploadwidget',
 
@@ -58,7 +66,7 @@
 				var port = layout.config.center.port;
 				var address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
 			}
-			var url = "/jaxrs/file/upload/referencetype/"+editor.config.referenceType+"/reference/"+editor.config.reference+"/scale/"+(editor.config.localImageMaxWidth || 2000);
+			var url = "/jaxrs/file/upload/referencetype/"+editor.config.referenceType+"/reference/"+editor.config.reference+"/scale/"+ getImageMaxWidth(editor);
 			return o2.filterUrl(address+url);
 		},
 
@@ -67,6 +75,8 @@
 			if ( !this.isSupportedEnvironment() ) {
 				return;
 			}
+
+			editor.filter.allow( 'img[alt,dir,id,lang,longdesc,!src,title,onerror,data-orgid,data-prv,data-id,data-width,data-height]{*}(*)' );
 
 			if( !editor.config.reference || !editor.config.referenceType )return;
 
@@ -79,9 +89,9 @@
 
 			editor.on( 'fileUploadRequest', function( evt ) {
 				var fileLoader = evt.data.fileLoader;
-				if( fileLoader.uploadUrl.indexOf("/x_file_assemble_control/jaxrs/file/upload/referencetype/") < 0 ){
-					return;
-				}
+
+				//不是上传图片链接
+				if( !isImageUploadUrl(fileLoader.uploadUrl) )return;
 
 				fileLoader.xhr.open( 'PUT', fileLoader.uploadUrl, true );
 
@@ -89,6 +99,70 @@
 				evt.data.requestData.file = fileLoader.file;
 				evt.data.requestData.fileName = fileLoader.fileName;
 				delete evt.data.requestData.upload;
+			}, null, null, 10 );
+
+			editor.on( 'fileUploadResponse', function( evt ) {
+				debugger;
+				var fileLoader = evt.data.fileLoader,
+					xhr = fileLoader.xhr,
+					data = evt.data;
+
+				//不是上传图片链接
+				if( !isImageUploadUrl(fileLoader.uploadUrl) )return;
+
+				try {
+					var responseJSON = JSON.parse( xhr.responseText );
+
+					var success = function (responseJSON) {
+						for ( var i in responseJSON ) {
+							data[ i ] = responseJSON[ i ];
+						}
+					};
+
+					var doError = function (xhr, text, error) {
+						if (xhr.status!=0){
+							var errorText = error;
+							if (xhr){
+								var json = JSON.decode(xhr.responseText);
+								if (json){
+									errorText = json.message.trim() || "request json error";
+								}else{
+									errorText = "request json error: "+xhr.responseText;
+								}
+							}
+							errorText = errorText.replace(/\</g, "&lt;");
+							errorText = errorText.replace(/\</g, "&gt;");
+							data.message = errorText;
+						}
+					};
+
+					if (responseJSON){
+						switch(responseJSON.type) {
+							case "warn":
+								data.message = responseJSON.errorMessage.join("\n");
+								success(responseJSON);
+								evt.stop();
+								break;
+							case "error":
+								doError(xhr, responseText, responseJSON.message);
+								evt.cancel();
+								break;
+							default:
+								success(responseJSON);
+								evt.stop();
+								break;
+						}
+					}else{
+						doError(xhr, xhr.responseText, "");
+						evt.cancel();
+					}
+				} catch ( err ) {
+					// Response parsing error.
+					data.message = fileLoader.lang.filetools.responseError;
+					CKEDITOR.warn( 'filetools-response-error', { responseText: xhr.responseText } );
+
+					evt.cancel();
+				}
 			}, null, null, 10 );
 
 			// Handle images which are available in the dataTransfer.
@@ -113,17 +187,43 @@
 				},
 
 				onUploaded: function( upload ) {
+
 					debugger;
+					var responseData = upload.responseData;
+					var editor = upload.editor;
+
+					var id = responseData.data ? responseData.data.id : responseData.id;
+					var orgid = responseData.data ? responseData.data.origId : responseData.origId;
+					var src = MWF.xDesktop.getImageSrc( id );
 
 					// Width and height could be returned by server (https://dev.ckeditor.com/ticket/13519).
 					var $img = this.parts.img.$,
 						width = upload.responseData.width || $img.naturalWidth,
 						height = upload.responseData.height || $img.naturalHeight;
 
+					//按最大宽度比率缩小
+					var maxWidth = getImageMaxWidth(editor);
+					if( maxWidth && maxWidth < width ){
+						height = parseInt( height * (maxWidth / width) );
+					}
+
+					width = Math.min(width, maxWidth);
+
+					var imgString = '<img src="' + src + '" ';
+					imgString += 'data-id="' + id + '" ';
+					imgString += 'data-orgid="' + orgid + '" ';
+					imgString += 'data-height="' + height + 'px" ';
+					imgString += 'data-width="' + width + 'px" ';
+					imgString += 'style="max-width:100%; width:' + width + 'px" ';
+					imgString += 'onerror="MWF.xDesktop.setImageSrc()" ';
+					if(upload.fileName){
+						imgString += 'alt="' + upload.fileName + '" ';
+					}
+					imgString += editor.config.enablePreview ? 'data-prv="true" ' : 'data-prv="false" ';
+					imgString += '">';
+
 					// Set width and height to prevent blinking.
-					this.replaceWith( '<img src="' + upload.url + '" ' +
-						'width="' + width + '" ' +
-						'height="' + height + '">' );
+					this.replaceWith( imgString );
 				}
 			} );
 
