@@ -29,5 +29,5 @@ CKEDITOR.plugins.setLang( 'o2image', 'en', {
 	selectCurDocImage:'Select this document picture',
 	allowPreview:'Allow browsing of original images',
 	saveAsBase64:'Save as Base64 encoding',
-	uploadimageNote: 'Upload multiple pictures at the same time?<br/>Please drag the file directly from the operating system to this editor.'
+	uploadimageNote: 'Need to upload multiple pictures at once? <br/>Please drag the image file from the local to the editor.'
 } );

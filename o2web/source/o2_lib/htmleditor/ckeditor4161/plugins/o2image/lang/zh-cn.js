@@ -29,5 +29,5 @@ CKEDITOR.plugins.setLang( 'o2image', 'zh-cn', {
 	selectCurDocImage: '选择本文档图片',
 	allowPreview: '允许浏览原图',
 	saveAsBase64: '存为Base64编码',
-	uploadimageNote: '同时上传多张图片？<br/>请直接从操作系统拖动文件到本编辑器。'
+	uploadimageNote: '需要一次上传多张图片？<br/>请从本地拖动图片文件到编辑器。'
 } );
