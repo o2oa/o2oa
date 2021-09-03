@@ -5,6 +5,31 @@
 	"description": "",
 	"inactiveColor": "#C0CCDA",
 	"activeColor": "#409EFF",
+
+	"max" : "100",
+	"min" : "0",
+	"step" : "1",
+	"isReadonly" : false,
+	"showStops" : false,
+	"range" : false,
+	"vertical" : false,
+	"showInput" : false,
+	"showInputControls" : true,
+	"inputSize" : "default",
+	"showTooltip" : true,
+
+	"marksScript": {},
+	"formatTooltip": {},
+	height : "",
+	tooltipClass : "",
+
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+
+	"elStyles": {},
+	"elProperties": {},
+
 	"events": {
 	  "queryLoad": {
 		"code": "",

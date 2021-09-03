@@ -5,6 +5,21 @@
 	"description": "",
 	"inactiveColor": "#C0CCDA",
 	"activeColor": "#409EFF",
+	"isReadonly" : false,
+	"valueType" : "boolean",
+	"width" : 40,
+	"activeText" : "",
+	"inactiveText" : "",
+	"activeIconClass" : "",
+	"inactiveIconClass" : "",
+
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+
+	"elStyles": {},
+	"elProperties": {},
+
 	"events": {
 	  "queryLoad": {
 		"code": "",

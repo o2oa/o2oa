@@ -11,6 +11,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	},
 
 	initialize: function(form, options){
+		debugger;
 		this.setOptions(options);
 		this._initModuleType();
 		this.path = "../x_component_process_FormDesigner/Module/"+this.className+"/";
@@ -29,20 +30,6 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 			}.bind(this));
 		}else{
 			this._dragMoveComplete();
-		}
-	},
-	showProperty: function(){
-		if (!this.property){
-			this.property = new MWF.xApplication.process.FormDesigner.Property(this, this.form.designer.propertyContentArea, this.form.designer, {
-				"path": this.options.propertyPath,
-				"onPostLoad": function(){
-					this.property.show();
-					this.isPropertyLoaded = true;
-				}.bind(this)
-			});
-			this.property.load();
-		}else{
-			this.property.show();
 		}
 	},
 	_createMoveNode: function(){
@@ -74,6 +61,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		this._createVueAppNode();
 		this._resetVueModuleDomNode(callback);
 	},
+
 	_initModule: function(){
 		if (!this.json.isSaved) this.setStyleTemplate();
 		this._resetVueModuleDomNode(function(){
@@ -95,7 +83,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		return "";
 	},
 	_filterHtml: function(html){
-		var reg = /(?:@|\:)\S*(?:\=)\S*(?:\"|\'|\s)/g;
+		var reg = /(?:@|v-on)\S*(?:\=)\S*(?:\"|\'|\s)/g;
 		var v = html.replace(reg, "");
 
 		// var tmp = new Element("div", {"html": v});
@@ -166,8 +154,10 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 
 	},
 	_createVueData: function(){
-		var data = {};
-		return Object.assign(data, this.tmpVueData||{});
+		//var data = this.json;
+		return function(){
+			return Object.assign(this.json, this.tmpVueData||{});
+		}.bind(this)
 	},
 	_createVueExtend: function(callback){
 		var _self = this;
@@ -205,11 +195,12 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	_setOtherNodeEvent: function(){},
 
 	_setEditStyle_custom: function(name){
-		debugger;
 		switch (name){
 			case "name": this.setPropertyName(); break;
 			case "id": this.setPropertyId(); break;
-			default: if (this.isPropertyLoaded) if (this.vm) this.resetElement();
+			case "buttonRadio":
+				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
+			default: ;
 		}
 	},
 	setPropertyName: function(){},
