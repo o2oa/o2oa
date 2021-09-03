@@ -75,6 +75,12 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			if( StringUtils.isNotEmpty(wrapIn.getRecordAddress()) ){
 				attendanceDetailMobile.setRecordAddress( wrapIn.getRecordAddress() );
 			}
+			if( StringUtils.isNotEmpty(wrapIn.getWorkAddress()) ){
+				attendanceDetailMobile.setWorkAddress( wrapIn.getWorkAddress() );
+			}
+			if( StringUtils.isNotEmpty(wrapIn.getOptMachineType()) ){
+				attendanceDetailMobile.setOptMachineType( wrapIn.getOptMachineType() );
+			}
 		}
 		if( check ){
 			if( StringUtils.isNotEmpty(wrapIn.getLatitude())){
@@ -248,7 +254,7 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		private String optSystemName = "其他";
 
 		@FieldDescribe( "工作地点描述, 可以为空." )
-		private String workAddress = "未知";
+		private String workAddress = "";
 
 		@FieldDescribe("是否范围外打卡")
 		private Boolean isExternal = false;

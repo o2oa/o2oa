@@ -201,13 +201,14 @@ public class ActionExportDetailWithFilter extends BaseAction {
 			row.createCell(1).setCellValue("组织名称");
 			row.createCell(2).setCellValue("姓名");
 			row.createCell(3).setCellValue("日期");
-			row.createCell(4).setCellValue("说明");
+			row.createCell(4).setCellValue("备注");
 			row.createCell(5).setCellValue("上午上班打卡时间");
 			row.createCell(6).setCellValue("上午下班打卡时间");
 			row.createCell(7).setCellValue("下午上班打卡时间");
 			row.createCell(8).setCellValue("下午下班打开时间");
 			row.createCell(9).setCellValue("考勤状态");
-			row.createCell(10).setCellValue("申诉状态");
+			row.createCell(10).setCellValue("出勤时长(分钟)");
+			row.createCell(11).setCellValue("申诉状态");
 
 			for (int i = 0; i < detailList.size(); i++) {
 				attendanceDetail = detailList.get(i);
@@ -228,7 +229,17 @@ public class ActionExportDetailWithFilter extends BaseAction {
 				row.createCell(1).setCellValue(unitName);
 				row.createCell(2).setCellValue(empName);
 				row.createCell(3).setCellValue(attendanceDetail.getRecordDateString());
-				row.createCell(4).setCellValue(attendanceDetail.getDescription());
+				String descrip = "";
+				if(attendanceDetail.getIsHoliday()){
+					descrip = "节假日";
+				}else if(attendanceDetail.getIsWeekend()){
+					descrip = "周末";
+				}else if(attendanceDetail.getIsGetSelfHolidays()){
+					descrip = "休假";
+				}else{
+					descrip = "工作日";
+				}
+				row.createCell(4).setCellValue(descrip);
 				row.createCell(5).setCellValue(attendanceDetail.getOnDutyTime());
 				row.createCell(6).setCellValue(attendanceDetail.getMorningOffDutyTime());
 				row.createCell(7).setCellValue(attendanceDetail.getAfternoonOnDutyTime());
@@ -253,19 +264,19 @@ public class ActionExportDetailWithFilter extends BaseAction {
 				} else {
 					row.createCell(9).setCellValue("正常");
 				}
-
+				row.createCell(10).setCellValue(attendanceDetail.getWorkTimeDuration());
 				switch(attendanceDetail.getAppealStatus()){
 					case 1 :
-						row.createCell(10).setCellValue("申诉中");
+						row.createCell(11).setCellValue("申诉中");
 						break;
 					case -1 :
-						row.createCell(10).setCellValue("申诉未通过");
+						row.createCell(11).setCellValue("申诉未通过");
 						break;
 					case 9 :
-						row.createCell(10).setCellValue("申诉通过");
+						row.createCell(11).setCellValue("申诉通过");
 						break;
 					default :
-						row.createCell(10).setCellValue("未申诉");
+						row.createCell(11).setCellValue("未申诉");
 				}
 			}
 		}

@@ -172,7 +172,7 @@ class AttendanceDetailAnalyseCoreService {
 	 */
 	static Date getMiddleRestEndTimeFromDetail(AttendanceDetail detail, AttendanceScheduleSetting scheduleSetting, Boolean debugger) {
 		try {
-			if( scheduleSetting.getMiddayRestEndTime() != null ){
+			if( StringUtils.isNotEmpty(scheduleSetting.getMiddayRestEndTime())){
 				logger.debug(debugger, "middleRestEndTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestEndTime());
 				return dateOperation.getDateFromString(detail.getRecordDateString() + " " + detail.getMiddayRestEndTime());
 			}
