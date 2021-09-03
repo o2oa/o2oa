@@ -704,7 +704,7 @@
 								}
 							},{
 								type: "html",
-								html: editor.isO2uploadimageLoaded ? "<div style='color:#999'>同时上传多张图片？<br/>请直接从操作系统拖动文件到本编辑器。</div>" : "",
+								html: editor.isO2uploadimageLoaded ? ("<div style='color:#999'>"+editor.lang.o2image.uploadimageNote+"</div>") : "",
 							},{
 								type: "button",
 								id: "browseFiles",
