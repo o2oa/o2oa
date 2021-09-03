@@ -133,6 +133,7 @@
 							errorText = errorText.replace(/\</g, "&lt;");
 							errorText = errorText.replace(/\</g, "&gt;");
 							data.message = errorText;
+							MWF.xDesktop.notice("error", {x: "right", y:"top"}, "request json error: "+errorText);
 						}
 					};
 
@@ -140,6 +141,7 @@
 						switch(responseJSON.type) {
 							case "warn":
 								data.message = responseJSON.errorMessage.join("\n");
+								MWF.xDesktop.notice("info", {x: "right", y:"top"}, data.message);
 								success(responseJSON);
 								evt.stop();
 								break;
@@ -159,7 +161,8 @@
 				} catch ( err ) {
 					// Response parsing error.
 					data.message = fileLoader.lang.filetools.responseError;
-					CKEDITOR.warn( 'filetools-response-error', { responseText: xhr.responseText } );
+					// CKEDITOR.warn( 'filetools-response-error', { responseText: xhr.responseText } );
+					MWF.xDesktop.notice("error", {x: "right", y:"top"}, "request json error: "+xhr.responseText);
 
 					evt.cancel();
 				}
@@ -168,6 +171,8 @@
 			// Handle images which are available in the dataTransfer.
 			fileTools.addUploadWidget( editor, 'o2uploadimage', {
 				supportedTypes: /image\/(jpeg|png|gif|bmp)/,
+
+				skipNotifications :  true,
 
 				uploadUrl: uploadUrl,
 
@@ -224,6 +229,12 @@
 
 					// Set width and height to prevent blinking.
 					this.replaceWith( imgString );
+
+					editor.fire( 'change' );
+
+					// this.replaceWith( '<img src="' + src + '" ' +
+					// 	'width="' + width + '" ' +
+					// 	'height="' + height + '">' );
 				}
 			} );
 
@@ -271,7 +282,7 @@
 
 						fileTools.markElement( img, 'o2uploadimage', loader.id );
 
-						fileTools.bindNotifications( editor, loader );
+						// fileTools.bindNotifications( editor, loader );
 					}
 				}
 
