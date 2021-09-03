@@ -288,6 +288,8 @@
 
 				data.dataValue = temp.getHtml();
 			} );
+
+			editor.isO2uploadimageLoaded = true;
 		}
 	} );
 
