@@ -6,11 +6,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
@@ -22,10 +20,11 @@ import com.x.base.core.project.tools.StringTools;
 
 public class Logger {
 
-	public static Gson gson = XGsonBuilder.instance();
+	private final org.slf4j.Logger internalLogger;
 
 	Logger(String name) {
 		this.name = name;
+		internalLogger = org.slf4j.LoggerFactory.getLogger(name);
 	}
 
 	private String name;
@@ -34,229 +33,170 @@ public class Logger {
 		return this.name;
 	}
 
-	static int level = 20;
+	private static final String PARAMETER_ID = "id";
+	private static final String PARAMETER_VERSION = "version";
+	private static final String PARAMETER_OCCURTIME = "occurTime";
+	private static final String PARAMETER_LOGGERNAME = "loggerName";
+	private static final String PARAMETER_EXCEPTIONCLASS = "exceptionClass";
+	private static final String PARAMETER_MESSAGE = "message";
+	private static final String PARAMETER_STACKTRACE = "stackTrace";
+	private static final String PARAMETER_PERSON = "person";
+	private static final String PARAMETER_REQUESTURL = "requestUrl";
+	private static final String PARAMETER_REQUESTMETHOD = "requestMethod";
+	private static final String PARAMETER_REQUESTREMOTEADDR = "requestRemoteAddr";
+	private static final String PARAMETER_REQUESTHOST = "requestRemoteHost";
+	private static final String PARAMETER_REQUESTHEAD = "requestHead";
+	private static final String PARAMETER_REQUESTBODY = "requestBody";
+	private static final String PARAMETER_REQUESTBODYLENGTH = "requestBodyLength";
 
-	final static int TRACE_INT = 00;
-	final static int DEBUG_INT = 10;
-	final static int INFO_INT = 20;
-	final static int WARN_INT = 30;
-	final static int ERROR_INT = 40;
+	private static final String ID_TAG = "id:";
+	private static final String NAME_TAG = ", name:";
+	private static final String MESSAGE_TAG = ", message:";
+	private static final String EXCEPTION_TAG = ", exception:";
 
-	public final static String PRINT = "PRINT";
-	public final static String TRACE = "TRACE";
-	public final static String DEBUG = "DEBUG";
-	public final static String INFO = "INFO";
-	public final static String WARN = "WARN";
-	public final static String ERROR = "ERROR";
-
-	private final static String PARAMETER_ID = "id";
-	private final static String PARAMETER_VERSION = "version";
-	private final static String PARAMETER_OCCURTIME = "occurTime";
-	private final static String PARAMETER_LOGGERNAME = "loggerName";
-	private final static String PARAMETER_EXCEPTIONCLASS = "exceptionClass";
-	private final static String PARAMETER_MESSAGE = "message";
-	private final static String PARAMETER_STACKTRACE = "stackTrace";
-	private final static String PARAMETER_PERSON = "person";
-	private final static String PARAMETER_REQUESTURL = "requestUrl";
-	private final static String PARAMETER_REQUESTMETHOD = "requestMethod";
-	private final static String PARAMETER_REQUESTREMOTEADDR = "requestRemoteAddr";
-	private final static String PARAMETER_REQUESTHOST = "requestRemoteHost";
-	private final static String PARAMETER_REQUESTHEAD = "requestHead";
-	private final static String PARAMETER_REQUESTBODY = "requestBody";
-	private final static String PARAMETER_REQUESTBODYLENGTH = "requestBodyLength";
-
-	private final static String HTTPMESSAGEFORMAT = " > person:{}, method:{}, request:{}, remote host:{} address:{}, head:{}, body:{}.";
-
-	public boolean isDebug(EffectivePerson effectivePerson) {
-		if (null != effectivePerson && BooleanUtils.isTrue(effectivePerson.getDebugger())) {
-			return true;
-		} else {
-			return this.isDebug();
-		}
-	}
-
-	public boolean isDebug() {
-		if (level <= DEBUG_INT) {
-			return true;
-		}
-		return false;
-	}
-
-	public void print(String message, Object... os) {
-		this.log(PRINT, message, os);
-	}
+	private static final String HTTPMESSAGEFORMAT = "person:{}, method:{}, request:{}, remoteHost:{}, emoteAddr:{}, head:{}, body:{}";
 
 	public void trace(String message, Object... os) {
-		if (level <= TRACE_INT) {
-			this.log(TRACE, message, os);
+		if (internalLogger.isTraceEnabled()) {
+			internalLogger.trace(message, os);
 		}
 	}
 
-	public void debug(EffectivePerson effectivePerson, String message, Object... os) {
-		if (null != effectivePerson && BooleanUtils.isTrue(effectivePerson.getDebugger())) {
-			this.log(DEBUG, message, os);
-		} else {
-			this.debug(message, os);
-		}
+	public void debug(EffectivePerson noUse, String message, Object... os) {
+		debug(message, os);
 	}
 
-	public void debug(boolean debugger, String message, Object... os) {
-		if (BooleanUtils.isTrue(debugger)) {
-			this.log(DEBUG, message, os);
-		} else {
-			this.debug(message, os);
-		}
+	public void debug(boolean noUse, String message, Object... os) {
+		debug(message, os);
 	}
 
 	public void debug(String message, Object... os) {
-		if (level <= DEBUG_INT) {
-			this.log(DEBUG, message, os);
+		if (internalLogger.isDebugEnabled()) {
+			internalLogger.debug(message, os);
 		}
 	}
 
 	public void info(String message, Object... os) {
-		if (level <= INFO_INT) {
-			this.log(INFO, message, os);
+		if (internalLogger.isInfoEnabled()) {
+			internalLogger.info(message, os);
 		}
 	}
 
 	public void warn(String message, Object... os) {
-		if (level <= WARN_INT) {
-			String id = StringTools.uniqueToken();
-			StringBuilder sb = this.create(WARN, id);
-			String str = format(message, os);
-			sb.append(str);
-			System.out.println(sb.toString());
-			String loggerName = this.getName();
-			Thread thread = new Thread(new Runnable() {
-				public void run() {
-					try {
-						Map<String, Object> parameters = new HashMap<>();
-						parameters.put(PARAMETER_ID, id);
-						parameters.put(PARAMETER_VERSION, Config.version());
-						parameters.put(PARAMETER_OCCURTIME, DateTools.now());
-						parameters.put(PARAMETER_LOGGERNAME, loggerName);
-						parameters.put(PARAMETER_MESSAGE, str);
-						String url = Config.url_x_program_center_jaxrs("warnlog");
-						CipherConnectionAction.post(false, url, parameters);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			});
-			thread.start();
+		String id = StringTools.uniqueToken();
+		String formattedMessage = format(message, os);
+		String text = this.message(id, formattedMessage);
+		if (internalLogger.isWarnEnabled()) {
+			internalLogger.warn(text);
 		}
-	}
-
-	public int level() {
-		return level;
+		String loggerName = this.getName();
+		new Thread(() -> {
+			try {
+				Map<String, Object> parameters = new HashMap<>();
+				parameters.put(PARAMETER_ID, id);
+				parameters.put(PARAMETER_VERSION, Config.version());
+				parameters.put(PARAMETER_OCCURTIME, DateTools.now());
+				parameters.put(PARAMETER_LOGGERNAME, loggerName);
+				parameters.put(PARAMETER_MESSAGE, formattedMessage);
+				String url = Config.url_x_program_center_jaxrs("warnlog");
+				CipherConnectionAction.post(false, url, parameters);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}, Logger.class.getName() + "-warn").start();
 	}
 
 	public void error(Exception e) {
 		String id = StringTools.uniqueToken();
-		StringBuilder sb = this.create(ERROR, id);
-		sb.append(e.getClass().getName());
-		sb.append("[");
-		sb.append(e.getMessage());
-		sb.append("]");
-		String stackTraceString = ExceptionUtils.getStackTrace(e);
-		if (!(e instanceof PromptException)) {
-			sb.append(System.lineSeparator());
-			sb.append(stackTraceString);
+		String formattedMessage = this.message(id, e);
+		if (internalLogger.isErrorEnabled()) {
+			internalLogger.error(formattedMessage, e);
 		}
-		System.err.println(sb.toString());
-		String loggerName = this.getName();
-		Thread thread = new Thread(new Runnable() {
-			public void run() {
-				try {
-					Map<String, Object> parameters = new HashMap<>();
-					parameters.put(PARAMETER_ID, id);
-					parameters.put(PARAMETER_VERSION, Config.version());
-					parameters.put(PARAMETER_OCCURTIME, DateTools.now());
-					parameters.put(PARAMETER_LOGGERNAME, loggerName);
-					parameters.put(PARAMETER_EXCEPTIONCLASS, e.getClass().getName());
-					parameters.put(PARAMETER_MESSAGE, e.getMessage());
-					parameters.put(PARAMETER_STACKTRACE, stackTraceString);
-					if (e instanceof PromptException) {
-						String url = Config.url_x_program_center_jaxrs("prompterrorlog");
-						CipherConnectionAction.post(false, url, parameters);
-					} else {
-						String url = Config.url_x_program_center_jaxrs("unexpectederrorlog");
-						CipherConnectionAction.post(false, url, parameters);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
+		new Thread(() -> {
+			try {
+				Map<String, Object> parameters = new HashMap<>();
+				parameters.put(PARAMETER_ID, id);
+				parameters.put(PARAMETER_VERSION, Config.version());
+				parameters.put(PARAMETER_OCCURTIME, DateTools.now());
+				parameters.put(PARAMETER_LOGGERNAME, this.getName());
+				parameters.put(PARAMETER_EXCEPTIONCLASS, e.getClass().getName());
+				parameters.put(PARAMETER_MESSAGE, e.getMessage());
+				parameters.put(PARAMETER_STACKTRACE, ExceptionUtils.getStackTrace(e));
+				if (e instanceof PromptException) {
+					String url = Config.url_x_program_center_jaxrs("prompterrorlog");
+					CipherConnectionAction.post(false, url, parameters);
+				} else {
+					String url = Config.url_x_program_center_jaxrs("unexpectederrorlog");
+					CipherConnectionAction.post(false, url, parameters);
 				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
-		});
-		thread.start();
+		}, Logger.class.getName() + "-error").start();
 	}
 
 	public void error(Exception e, EffectivePerson effectivePerson, HttpServletRequest request, JsonElement body) {
 		String id = StringTools.uniqueToken();
-		StringBuilder sb = this.create(ERROR, id);
-		sb.append(e.getMessage());
 		String headString = this.headToString(request);
 		String bodyString = this.bodyToString(body);
-		String requestUrl = request.getRequestURL().toString()
-				+ (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
-		String stackTraceString = ExceptionUtils.getStackTrace(e);
-		Object[] arr = new String[] { effectivePerson.getDistinguishedName(), request.getMethod(), requestUrl,
-				request.getRemoteHost(), request.getRemoteAddr(), headString, bodyString };
-		sb.append(format(HTTPMESSAGEFORMAT, arr));
-		if (!(e instanceof PromptException)) {
-			sb.append(System.lineSeparator());
-			sb.append(stackTraceString);
+		String requestUrl = url(request);
+		String formattedMessage = message(id, e, requestToString(effectivePerson, request, headString, bodyString));
+		if (internalLogger.isErrorEnabled()) {
+			internalLogger.error(this.message(id, e, formattedMessage), e);
 		}
-		System.err.println(sb.toString());
-		String loggerName = this.getName();
-		Thread thread = new Thread(new Runnable() {
-			public void run() {
-				try {
-					Map<String, Object> parameters = new HashMap<>();
-					parameters.put(PARAMETER_ID, id);
-					parameters.put(PARAMETER_VERSION, Config.version());
-					parameters.put(PARAMETER_OCCURTIME, DateTools.now());
-					parameters.put(PARAMETER_LOGGERNAME, loggerName);
-					parameters.put(PARAMETER_EXCEPTIONCLASS, e.getClass().getName());
-					parameters.put(PARAMETER_MESSAGE, e.getMessage());
-					parameters.put(PARAMETER_STACKTRACE, stackTraceString);
-					parameters.put(PARAMETER_PERSON,
-							(null == effectivePerson) ? null : effectivePerson.getDistinguishedName());
-					parameters.put(PARAMETER_REQUESTURL, requestUrl);
-					parameters.put(PARAMETER_REQUESTMETHOD, request.getMethod());
-					parameters.put(PARAMETER_REQUESTREMOTEADDR, request.getRemoteAddr());
-					parameters.put(PARAMETER_REQUESTHOST, request.getRemoteHost());
-					parameters.put(PARAMETER_REQUESTHEAD, headString);
-					parameters.put(PARAMETER_REQUESTBODY, bodyString);
-					parameters.put(PARAMETER_REQUESTBODYLENGTH, bodyString.length());
-					if (e instanceof PromptException) {
-						String url = Config.url_x_program_center_jaxrs("prompterrorlog");
-						CipherConnectionAction.post(false, url, parameters);
-					} else {
-						String url = Config.url_x_program_center_jaxrs("unexpectederrorlog");
-						CipherConnectionAction.post(false, url, parameters);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
+		new Thread(() -> {
+			try {
+				Map<String, Object> parameters = new HashMap<>();
+				parameters.put(PARAMETER_ID, id);
+				parameters.put(PARAMETER_VERSION, Config.version());
+				parameters.put(PARAMETER_OCCURTIME, DateTools.now());
+				parameters.put(PARAMETER_LOGGERNAME, getName());
+				parameters.put(PARAMETER_EXCEPTIONCLASS, e.getClass().getName());
+				parameters.put(PARAMETER_MESSAGE, e.getMessage());
+				parameters.put(PARAMETER_STACKTRACE, ExceptionUtils.getStackTrace(e));
+				parameters.put(PARAMETER_PERSON,
+						(null == effectivePerson) ? null : effectivePerson.getDistinguishedName());
+				parameters.put(PARAMETER_REQUESTURL, requestUrl);
+				parameters.put(PARAMETER_REQUESTMETHOD, request.getMethod());
+				parameters.put(PARAMETER_REQUESTREMOTEADDR, request.getRemoteAddr());
+				parameters.put(PARAMETER_REQUESTHOST, request.getRemoteHost());
+				parameters.put(PARAMETER_REQUESTHEAD, headString);
+				parameters.put(PARAMETER_REQUESTBODY, bodyString);
+				parameters.put(PARAMETER_REQUESTBODYLENGTH, bodyString.length());
+				if (e instanceof PromptException) {
+					String url = Config.url_x_program_center_jaxrs("prompterrorlog");
+					CipherConnectionAction.post(false, url, parameters);
+				} else {
+					String url = Config.url_x_program_center_jaxrs("unexpectederrorlog");
+					CipherConnectionAction.post(false, url, parameters);
 				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
-		});
-		thread.start();
+		}, Logger.class.getName() + "-error").start();
 	}
 
-	private void log(String logLevel, String message, Object... os) {
-		StringBuilder sb = this.create(logLevel, null);
-		sb.append(format(message, os));
-		System.out.println(sb.toString());
-	}
-
-	private StringBuilder create(String logLevel, String id) {
+	private String message(String id, String message) {
 		StringBuilder o = new StringBuilder();
-		o.append(DateTools.nowMs()).append(" ").append(logLevel);
-		o.append(" [").append(StringUtils.isEmpty(id) ? Thread.currentThread().getName() : id).append("] ");
-		o.append(this.name).append(" - ");
-		return o;
+		o.append(ID_TAG).append(StringUtils.isEmpty(id) ? Thread.currentThread().getName() : id).append(NAME_TAG)
+				.append(this.name).append(MESSAGE_TAG).append(message).append(".");
+		return o.toString();
+	}
+
+	private String message(String id, Throwable th) {
+		StringBuilder o = new StringBuilder();
+		o.append(ID_TAG).append(StringUtils.isEmpty(id) ? Thread.currentThread().getName() : id).append(NAME_TAG)
+				.append(this.name).append(MESSAGE_TAG).append(th.getMessage()).append(EXCEPTION_TAG)
+				.append(th.getClass().getName()).append(".");
+		return o.toString();
+	}
+
+	private String message(String id, Throwable th, String request) {
+		StringBuilder o = new StringBuilder();
+		o.append(ID_TAG).append(StringUtils.isEmpty(id) ? Thread.currentThread().getName() : id).append(NAME_TAG)
+				.append(this.name).append(MESSAGE_TAG).append(th.getMessage()).append(EXCEPTION_TAG)
+				.append(th.getClass().getName()).append(", ").append(request).append(".");
+		return o.toString();
 	}
 
 	private static String format(String message, Object... os) {
@@ -275,9 +215,9 @@ public class Logger {
 		Enumeration<String> en = request.getHeaderNames();
 		StringBuilder sb = new StringBuilder();
 		while (en.hasMoreElements()) {
-			String name = en.nextElement();
-			String value = request.getHeader(name);
-			sb.append(name).append(":").append(value);
+			String n = en.nextElement();
+			String v = request.getHeader(n);
+			sb.append(n).append(":").append(v);
 			if (en.hasMoreElements()) {
 				sb.append("\n");
 			}
@@ -285,10 +225,19 @@ public class Logger {
 		return sb.toString();
 	}
 
-	public Audit audit(EffectivePerson effectivePerson) {
-		Audit o = new Audit(effectivePerson.getDistinguishedName(), effectivePerson.getRemoteAddress(),
-				effectivePerson.getUri(), effectivePerson.getUserAgent(), this.name);
-		return o;
+	public void print(String message, Object... os) {
+		System.out.println(format(message, os));
+	}
+
+	private String requestToString(EffectivePerson effectivePerson, HttpServletRequest request, String headString,
+			String bodyString) {
+		return format(HTTPMESSAGEFORMAT, effectivePerson.getDistinguishedName(), request.getMethod(), this.url(request),
+				request.getRemoteHost(), request.getRemoteAddr(), headString, bodyString);
+	}
+
+	private String url(HttpServletRequest request) {
+		return request.getRequestURL().toString()
+				+ (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
 	}
 
 }
