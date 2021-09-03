@@ -66,7 +66,7 @@ public class ActionMobilePreview extends BaseAction {
 			}
 		}
 
-		//根据最后一次打卡信息，计算下一次打卡的信息
+		//根据当前时间和排班设置，计算当前预打卡信息
 		WoSign woSignFeature = null;
 		if (check) {
 			//打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班卡）
@@ -118,30 +118,23 @@ public class ActionMobilePreview extends BaseAction {
 		//排班设置中的下班时间
 		Date offDutyTime = dateOperation.getDateFromString( recordDateString+ " " + scheduleSetting.getOffDutyTime() );
 
-		if( ListTools.isEmpty( wraps )){
-			//一次都没有打过，不管几点，都是上班打卡
+		//根据当前时间和排班设置，判断当前时间是落在哪个区间
+		if(onDutyTime.after(now)){
+			woSignFeature.setSignSeq(1);
 			woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
-			//判断如果此时打卡，是否是正常|迟到|缺勤|
-			if(onDutyTime != null && onDutyTime.after(now)){
-				woSignFeature.setSignSeq(1);
-			}else if( absenceStartTime != null && now.after( absenceStartTime )){
-				woSignFeature.setSignSeq(3);
-			}else if(lateStartTime != null && now.after( lateStartTime )){
-				woSignFeature.setSignSeq(2);
-			}
+		}else if(lateStartTime.after(now)){
+			woSignFeature.setSignSeq(1);
+			woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
+		}else if(lateStartTime.before(now) && absenceStartTime.after(now)){
+			woSignFeature.setSignSeq(2);
+			woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
+		}else if(absenceStartTime.before(now) && leaveEarlyStartTime.after(now)){
+			//过了缺勤时间就算是第二次打卡-签退
+			woSignFeature.setSignSeq(4);
+			woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY);
 		}else{
-			//打了一次，就是下班打卡，打了两次，就没有了
-			if( wraps.size() == 1 ){
-				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
-				if(offDutyTime !=null && now.after( offDutyTime )){
-					woSignFeature.setSignSeq(1);
-				}else if(leaveEarlyStartTime != null && leaveEarlyStartTime.after(now)){
-					woSignFeature.setSignSeq(4);
-				}
-			}else{
-				woSignFeature.setSignSeq(5); //没有需要的打卡了
-				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
-			}
+			woSignFeature.setSignSeq(1);
+			woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY);
 		}
 		return woSignFeature;
 	}
@@ -167,15 +160,19 @@ public class ActionMobilePreview extends BaseAction {
 
 		//计算，上班下班时间
 		if( StringUtils.isNotEmpty( scheduleSetting.getOnDutyTime())) {
+			//排班设置中的上班时间
 			onDutyTime = dateOperation.getDateFromString( todayDateStr + " " + scheduleSetting.getOnDutyTime() );
 		}
 		if( StringUtils.isNotEmpty( scheduleSetting.getOffDutyTime())) {
+			//排班设置中的下班时间
 			offDutyTime = dateOperation.getDateFromString( todayDateStr + " " + scheduleSetting.getOffDutyTime() );
 		}
 		if( StringUtils.isNotEmpty( scheduleSetting.getMiddayRestStartTime())) {
+			//排班设置中的午休开始时间
 			morningOffdutyTime = dateOperation.getDateFromString( todayDateStr + " " + scheduleSetting.getMiddayRestStartTime() );
 		}
 		if( StringUtils.isNotEmpty( scheduleSetting.getMiddayRestEndTime())) {
+			//排班设置中的午休结束时间
 			afternoonOndutyTime = dateOperation.getDateFromString( todayDateStr + " " + scheduleSetting.getMiddayRestEndTime() );
 		}
 		//排班设置中的迟到时间
@@ -186,84 +183,38 @@ public class ActionMobilePreview extends BaseAction {
 		Date leaveEarlyStartTime = dateOperation.getDateFromString( todayDateStr + " " + scheduleSetting.getLeaveEarlyStartTime() );
 		signRecordStatus = getSignRecordStatus( wraps, onDutyTime, morningOffdutyTime, afternoonOndutyTime, offDutyTime );
 
-		if( ListTools.isEmpty( wraps )){
-			//一次都没有打过，只能打上班卡
+		//根据当前时间和排班设置，判断当前时间是落在哪个区间
+		if(onDutyTime.after(now)){
+			woSignFeature.setSignSeq(1);
 			woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
-			//判断如果此时打卡，是否是正常|迟到|缺勤|
-			if(onDutyTime != null && onDutyTime.after(now)){
-				woSignFeature.setSignSeq(1);
-			}else if( absenceStartTime != null && now.after( absenceStartTime )){
-				woSignFeature.setSignSeq(3);
-			}else if(lateStartTime != null && now.after( lateStartTime )){
+		}else if(lateStartTime.after(now)){
+			woSignFeature.setSignSeq(1);
+			woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
+		}else if(lateStartTime.before(now) && morningOffdutyTime.after(now)){
+			if(absenceStartTime.after(now)){
 				woSignFeature.setSignSeq(2);
-			}
-		}else{
-			//打了一次，之后，有可能是中午签到打卡，有可能是下午下班签退打卡
-			//woSignFeature.setSignSeq( wraps.size() + 1 );
-			//可能是午休或者下班卡了，上班打不可能打了
-			//看当前时间，有没有过中午签到时间
-			if( morningOffdutyTime !=null && morningOffdutyTime.before( now ) ){//现在已经是午休之后了
-				//看看下班没，如果下班了，就直接打下班卡了，否则，还可以打个午休卡
-				if( offDutyTime !=null && offDutyTime.before( now ) ){
-					//下班了，要么打下班卡
-					if( !signRecordStatus.getAlreadyOffDuty()){
-						woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
-						if(offDutyTime !=null && now.after( offDutyTime )){
-							woSignFeature.setSignSeq(1);
-						}else if(leaveEarlyStartTime != null && leaveEarlyStartTime.after(now)){
-							woSignFeature.setSignSeq(4);
-						}
-					}else{
-						//下班卡打过了，不用再打卡了
-						woSignFeature.setSignSeq(5);
-						woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
-					}
-				}else{
-					//还没有下午，可以打午休卡，看看是否已经打过午休卡了
-					if( !signRecordStatus.getAlreadyAfternoon()){
-						//没有打过午休卡，那么可以打一下午休卡
-						woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON );
-						woSignFeature.setSignSeq(1);
-					}else{
-						//午休卡打过了，看看下班卡打过没有，如果没有，可以打下班卡
-						if( !signRecordStatus.getAlreadyOffDuty() ){
-							woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
-							if(offDutyTime !=null && now.after( offDutyTime )){
-								woSignFeature.setSignSeq(1);
-							}else if(leaveEarlyStartTime != null && leaveEarlyStartTime.after(now)){
-								woSignFeature.setSignSeq(4);
-							}
-						}else{
-							//下班卡打过了，不用再打卡了
-							woSignFeature.setSignSeq(5);
-							woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
-						}
-					}
-				}
+				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
 			}else{
-				//现在在午休之前，要么上班卡，要么午休卡，已经打过一次了，肯定不能再打上班卡了，看看是否已经打过了午休卡
-				if( !signRecordStatus.getAlreadyAfternoon() ){
-					//没有打过午休卡，那么可以打午休卡
-					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON );
-					woSignFeature.setSignSeq(1);
-				}else{
-					//午休卡打过了，看看下班卡打过没有，如果没有，可以打下班卡
-					if( !signRecordStatus.getAlreadyOffDuty()){
-						woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
-						if(offDutyTime !=null && now.after( offDutyTime )){
-							woSignFeature.setSignSeq(1);
-						}else if(leaveEarlyStartTime != null && leaveEarlyStartTime.after(now)){
-							woSignFeature.setSignSeq(4);
-						}
-					}else{
-						//下班卡打过了，不用再打卡了
-						woSignFeature.setSignSeq(5);
-						woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
-					}
-				}
+				woSignFeature.setSignSeq(3);
+				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
 			}
+		}else if(morningOffdutyTime.before(now) && afternoonOndutyTime.after(now)){
+			//过了午休开始时间就算是第二次打卡-中午签到
+			woSignFeature.setSignSeq(1);
+			woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON);
+		}else if(afternoonOndutyTime.before(now) && leaveEarlyStartTime.after(now)){
+			//过了午休结束时间-可能是中午签到或下午下班签退
+			if(signRecordStatus.getAlreadyAfternoon()){
+				woSignFeature.setSignSeq(1);
+				woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON);
+			}else{
+				woSignFeature.setSignSeq(4);
+				woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY);
+			}
+		} else{
+			woSignFeature.setSignSeq(1);
+			woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY);
 		}
-
 		return woSignFeature;
 	}
 
@@ -307,89 +258,61 @@ public class ActionMobilePreview extends BaseAction {
 		Date leaveEarlyStartTime = dateOperation.getDateFromString( todayDateStr + " " + scheduleSetting.getLeaveEarlyStartTime() );
 		signRecordStatus = getSignRecordStatus( wraps, onDutyTime, morningOffdutyTime, afternoonOndutyTime, offDutyTime );
 
-		if( ListTools.isEmpty( wraps )){
-			//一次都没有打过，看看当前时间是上班还是下午，如果是上午，就是上午签到，如果是下午，就是下午签到
-			if( now.after(afternoonOndutyTime)){
-				//在下午下班时间之后了，下午上班签到打卡
-				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY );
-				if( absenceStartTime != null && now.after( absenceStartTime )){
-					woSignFeature.setSignSeq(3);
-				}else if(lateStartTimeAfternoon != null && now.after( lateStartTimeAfternoon )){
-					woSignFeature.setSignSeq(2);
-				}
+		//根据当前时间和排班设置，判断当前时间是落在哪个区间
+		if(onDutyTime.after(now)){
+			woSignFeature.setSignSeq(1);
+			woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
+		}else if(lateStartTime.after(now)){
+			woSignFeature.setSignSeq(1);
+			woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
+		}else if(lateStartTime.before(now) && leaveEarlyStartTimeMorning.after(now)) {
+			if(signRecordStatus.getAlreadyOnduty()){
+				//上午已打过上班卡，此时结果为上午早退
+				woSignFeature.setSignSeq(4);
+				woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY);
 			}else{
+				//上午没打过上班卡,即当前是第一次打卡,此时结果为上午迟到
+				woSignFeature.setSignSeq(2);
 				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
-				if(onDutyTime != null && onDutyTime.after(now)){
-					woSignFeature.setSignSeq(1);
-				}else if( absenceStartTime != null && now.after( absenceStartTime )){
+				if (absenceStartTime.after(now)) {
 					woSignFeature.setSignSeq(3);
-				}else if(lateStartTime != null && now.after( lateStartTime )){
-					woSignFeature.setSignSeq(2);
+					woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY);
 				}
 			}
-		}else{
-			//当前是什么区间
-			if( onDutyTime.after(now)){
-				//上午上班之前，无论几次，都只可能是上午的下班卡
-				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY );
-				if(leaveEarlyStartTimeMorning!=null && now.after(leaveEarlyStartTimeMorning)){
-					woSignFeature.setSignSeq(4);
-				}else{
-					woSignFeature.setSignSeq(1);
-				}
-			}else if( now.after(onDutyTime) && morningOffdutyTime.after(now)){
-				//上午上班时段: 上午签退
-				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY );
+		}else if(leaveEarlyStartTimeMorning.before(now) && morningOffdutyTime.after(now)){
+			//过了上午早退时间就算第二次打卡-上午下班打卡
+			if (absenceStartTime.after(now)) {
 				woSignFeature.setSignSeq(1);
-			}else if( now.after(morningOffdutyTime) && afternoonOndutyTime.after( now )){
-				//午休时段：前一次打卡有可能上午签到卡，可能下午签到卡
-				if( signRecordStatus.getAlreadyOnduty() ){ //已经上午签到过了，只有一次卡，应该就是签到
-					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY );
-					if(leaveEarlyStartTimeMorning!=null && now.after(leaveEarlyStartTimeMorning)){
-						woSignFeature.setSignSeq(4);
-					}else{
-						woSignFeature.setSignSeq(1);
-					}
-				}else if( signRecordStatus.getAlreadyAfternoonOnDuty()){
-					//如果上午没有签到，是下午的签到的话，第二次就应该是下午签退打卡了
-					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
-					if(leaveEarlyStartTime!=null && now.before(leaveEarlyStartTime)){
-						woSignFeature.setSignSeq(4);
-					}else{
-						woSignFeature.setSignSeq(1);
-					}
-				}
-			}else if( now.after(afternoonOndutyTime) && offDutyTime.after(now)){
-				//下午上班时段，如果前一次是下午签到，那么下一次就应该是下午签退了，否则，就是下午签到
-				if( signRecordStatus.getAlreadyAfternoonOnDuty()){
-					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY  );
-					 if(leaveEarlyStartTime != null && leaveEarlyStartTime.after(now)){
-						woSignFeature.setSignSeq(4);
-					}else{
-						 woSignFeature.setSignSeq(1);
-					 }
-				}else{
-					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY  );
-					if(lateStartTimeAfternoon!=null && now.after(lateStartTimeAfternoon)){
-						woSignFeature.setSignSeq(2);
-					}else{
-						woSignFeature.setSignSeq(1);
-					}
-				}
-			}else{
-				//下午下班之后，只可能是下午的签到签退卡了
-				if( signRecordStatus.getAlreadyAfternoonOnDuty()){
-					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY  );
-					woSignFeature.setSignSeq(1);
-				}else{
-					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY  );
-					if(lateStartTimeAfternoon!=null && now.after(lateStartTimeAfternoon)){
-						woSignFeature.setSignSeq(2);
-					}else{
-						woSignFeature.setSignSeq(1);
-					}
-				}
+				woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY);
+			} else {
+				woSignFeature.setSignSeq(3);
+				woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY);
 			}
+
+		}else if(morningOffdutyTime.before(now) && afternoonOndutyTime.after(now)){
+			//此时打卡，可能是上午下班打卡，可能是下午上班打卡
+			woSignFeature.setSignSeq(1);
+			if(signRecordStatus.getAlreadyMorningOffDuty()){
+				//已经打卡上午下班卡,此时是下午上班卡
+				woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY);
+			}else{
+				//未打卡上午下班卡,此时是上午下班卡
+				woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY);
+			}
+		}else if(afternoonOndutyTime.before(now) && leaveEarlyStartTime.after(now)){
+			//过了午休结束时间-下午上班签到或下午下班
+			if(signRecordStatus.getAlreadyAfternoonOnDuty()){
+				//已经打过下午上班卡-此时是下午下班卡
+				woSignFeature.setSignSeq(4);
+				woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY);
+			}else{
+				//未打过下午上班卡-此时是下午上班卡
+				woSignFeature.setSignSeq(1);
+				woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY);
+			}
+		} else{
+			woSignFeature.setSignSeq(1);
+			woSignFeature.setCheckinType(AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY);
 		}
 		return woSignFeature;
 	}
