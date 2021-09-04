@@ -764,9 +764,13 @@ MWF.xApplication.Selector.Identity.Item = new Class({
         var selectedItem;
         if(isPerson || !this.selector.selectedItemsMap){
             selectedItem = this.selector.selectedItems.filter(function(item, index){
-                return ( item.data.id && item.data.id === this.data.person ) ||
-                    ( item.data.person && item.data.person === this.data.id ) ||
-                    ( item.data.distinguishedName && item.data.distinguishedName === this.data.distinguishedName );
+                if( isPerson ){
+                    return ( item.data.id && item.data.id === this.data.person ) ||
+                        ( item.data.person && item.data.person === this.data.id ) ||
+                        ( item.data.distinguishedName && item.data.distinguishedName === this.data.distinguishedName );
+                }else{
+                    return item.data.distinguishedName === this.data.distinguishedName;
+                }
             }.bind(this));
         }else{
             var sItem = this.selector.selectedItemsMap[this.data.distinguishedName];
@@ -1117,7 +1121,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                         if( !this.selector.isExcluded( idSubData ) ) {
                             var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
                             this.selector.items.push(item);
-                            this.selector.addToItemMap(idSubData,item);
+                            if(this.selector.addToItemMap)this.selector.addToItemMap(idSubData,item);
                             if(this.subItems)this.subItems.push( item );
                         }
                     }.bind(this));
@@ -1251,7 +1255,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                     if( !this.selector.isExcluded( idSubData ) ) {
                         var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
                         this.selector.items.push(item);
-                        this.selector.addToItemMap(idSubData,item);
+                        if(this.selector.addToItemMap)this.selector.addToItemMap(idSubData,item);
                         if(this.subItems)this.subItems.push( item );
                     }
                     this.itemLoaded = true;

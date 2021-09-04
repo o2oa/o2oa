@@ -2111,6 +2111,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.selector.currentItem = null;
         this.isSelected = false;
         this.selector.selectedItems.erase(this);
+        if(this.selector.deleteFromSelectedItemsMap)this.selector.deleteFromSelectedItemsMap(this.data);
         this.node.setStyles(this.selector.css.selectorItem);
 
         this.textNode.setStyles(this.selector.css.selectorItemTextNode);
