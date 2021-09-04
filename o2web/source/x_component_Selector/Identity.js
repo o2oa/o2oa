@@ -26,6 +26,9 @@ MWF.xApplication.Selector.Identity = new Class({
         this.className = "Identity";
     },
     loadSelectItems : function(){
+        this.itemsMap = {};
+        this.selectedItemsMap = {}; //所有已选项按dn或id
+
         if( this.options.disabled ){
             this.afterLoadSelectItem();
             return;
@@ -175,8 +178,8 @@ MWF.xApplication.Selector.Identity = new Class({
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, ((typeOf(id)==="string") ? id : id.distinguishedName), async);
     },
-    _newItemSelected: function(data, selector, item, selectedNode){
-        return new MWF.xApplication.Selector.Identity.ItemSelected(data, selector, item, selectedNode)
+    _newItemSelected: function(data, selector, item, selectedNode, delay){
+        return new MWF.xApplication.Selector.Identity.ItemSelected(data, selector, item, selectedNode, delay)
     },
     _listItemByPinyin: function(callback, failure, key){
         this._listItem( "pinyin", callback, failure, key );
@@ -663,7 +666,29 @@ MWF.xApplication.Selector.Identity = new Class({
                 }
             }.bind(this));
         }.bind(this))
-    }
+    },
+    addToItemMap: function (data, item) {
+        if(!this.itemsMap)return;
+        if(data.distinguishedName){
+            if(!this.itemsMap[data.distinguishedName]){
+                this.itemsMap[data.distinguishedName] = [item];
+            }else{
+                this.itemsMap[data.distinguishedName].push(item);
+            }
+        }
+    },
+    addToSelectedItemsMap: function(data, selectedItem){
+        if(!this.selectedItemsMap)return;
+        if( data.distinguishedName ){
+            this.selectedItemsMap[data.distinguishedName] = selectedItem;
+        }
+    },
+    deleteFromSelectedItemsMap: function(data){
+        if(!this.selectedItemsMap)return;
+        if( data.distinguishedName && this.selectedItemsMap[data.distinguishedName] ){
+            delete this.selectedItemsMap[data.distinguishedName];
+        }
+    },
 
 });
 
@@ -736,15 +761,18 @@ MWF.xApplication.Selector.Identity.Item = new Class({
     },
     checkSelected: function(){
         var isPerson = this.selector.options.resultType === "person";
-        var selectedItem = this.selector.selectedItems.filter(function(item, index){
-            if( isPerson ){
+        var selectedItem;
+        if(isPerson || !this.selector.selectedItemsMap){
+            selectedItem = this.selector.selectedItems.filter(function(item, index){
                 return ( item.data.id && item.data.id === this.data.person ) ||
                     ( item.data.person && item.data.person === this.data.id ) ||
                     ( item.data.distinguishedName && item.data.distinguishedName === this.data.distinguishedName );
-            }else{
-                return item.data.distinguishedName === this.data.distinguishedName;
-            }
-        }.bind(this));
+            }.bind(this));
+        }else{
+            var sItem = this.selector.selectedItemsMap[this.data.distinguishedName];
+            selectedItem = sItem ? [sItem] : [];
+        }
+
         if (selectedItem.length){
             //selectedItem[0].item = this;
             selectedItem[0].addItem(this);
@@ -832,15 +860,20 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
         var items;
         if (this.selector.items.length){
             var isPerson = this.selector.options.resultType === "person";
-            items = this.selector.items.filter(function(item, index){
-                if( isPerson ){
-                    return (item.data.person && item.data.person === this.data.id) ||
-                        ( item.data.id && item.data.id === this.data.person) ||
-                        ( item.data.distinguishedName && item.data.distinguishedName === this.data.distinguishedName );
-                }else{
-                    return item.data.distinguishedName === this.data.distinguishedName;
-                }
-            }.bind(this));
+            if( this.selector.itemsMap ){
+                items = this.selector.itemsMap[this.data.distinguishedName];
+            }
+            if( !items ){
+                items = this.selector.items.filter(function(item, index){
+                    if( isPerson ){
+                        return (item.data.person && item.data.person === this.data.id) ||
+                            ( item.data.id && item.data.id === this.data.person) ||
+                            ( item.data.distinguishedName && item.data.distinguishedName === this.data.distinguishedName );
+                    }else{
+                        return item.data.distinguishedName === this.data.distinguishedName;
+                    }
+                }.bind(this));
+            }
             this.items = items;
             if (items.length){
                 items.each(function(item){
@@ -1084,6 +1117,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                         if( !this.selector.isExcluded( idSubData ) ) {
                             var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
                             this.selector.items.push(item);
+                            this.selector.addToItemMap(idSubData,item);
                             if(this.subItems)this.subItems.push( item );
                         }
                     }.bind(this));
@@ -1217,6 +1251,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                     if( !this.selector.isExcluded( idSubData ) ) {
                         var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
                         this.selector.items.push(item);
+                        this.selector.addToItemMap(idSubData,item);
                         if(this.subItems)this.subItems.push( item );
                     }
                     this.itemLoaded = true;
@@ -1755,6 +1790,7 @@ MWF.xApplication.Selector.Identity.Include = new Class({
 
                 var item = this.selector._newItem(data, this.selector, container || this.includeAreaNode, level || 1, category);
                 this.selector.items.push(item);
+                if(this.selector.addToItemMap)this.selector.addToItemMap(data,item);
                 if( category && category.subItems ){
                     category.subItems.push( item );
                 }else if(this.selector.subItems){
@@ -1777,6 +1813,7 @@ MWF.xApplication.Selector.Identity.Include = new Class({
 
                 var item = this.selector._newItem(data, this.selector, container || this.includeAreaNode, level || 1, category);
                 this.selector.items.push(item);
+                if(this.selector.addToItemMap)this.selector.addToItemMap(data,item);
                 if( category && category.subItems ){
                     category.subItems.push( item );
                 }else if(this.selector.subItems){
