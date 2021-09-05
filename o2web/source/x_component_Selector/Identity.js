@@ -16,7 +16,7 @@ MWF.xApplication.Selector.Identity = new Class({
         "exclude" : [], //排除的可选项
         "resultType" : "", //可以设置成个人，那么结果返回个人
         "expandSubEnable" : true, //是否允许展开下一层,
-        "selectAllEnable" : true  //分类是否允许全选下一层
+        "selectAllEnable" : true,  //分类是否允许全选下一层
     },
     setInitTitle: function(){
         this.setOptions({"title": MWF.xApplication.Selector.LP.selectIdentity});
@@ -141,8 +141,8 @@ MWF.xApplication.Selector.Identity = new Class({
     _getChildrenItemIds: function(){
         return null;
     },
-    _newItemCategory: function(type, data, selector, item, level, category, delay){
-        return new MWF.xApplication.Selector.Identity[type](data, selector, item, level, category, delay)
+    _newItemCategory: function(type, data, selector, item, level, category, delay, notActive){
+        return new MWF.xApplication.Selector.Identity[type](data, selector, item, level, category, delay, notActive)
     },
 
     _listItem : function( filterType, callback, failure, key ){
@@ -1001,82 +1001,51 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
             _selectAllFun();
         }
     },
-    clickItem: function( callback ){
+    clickItem: function( callback, notActive ){
+        debugger;
         if (this._hasChild() && !this.loading){
             var firstLoaded = !this.loaded;
             this.loading = true;
             this.loadSub(function(){
                 this.loading = false;
-                if( firstLoaded ){
-                    if( !this.selector.isFlatCategory ){
-                        this.children.setStyles({"display": "block", "height": "auto"});
-                        this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
-                        this.isExpand = true;
-                    }
-                    this.selector.fireEvent("expand", [this] );
-                    // this.checkSelectAll();
-                }else{
-                    var display = this.children.getStyle("display");
-                    if (display === "none"){
-                        this.children.setStyles({"display": "block", "height": "auto"});
-                        this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
-                        this.isExpand = true;
+                if( !notActive ){
+                    if( firstLoaded ){
+                        if( !this.selector.isFlatCategory ){
+                            if( this.subNotActive )this.activeSub();
+                            this.children.setStyles({"display": "block", "height": "auto"});
+                            this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
+                            this.isExpand = true;
+                        }
                         this.selector.fireEvent("expand", [this] );
+                        // this.checkSelectAll();
                     }else{
-                        this.children.setStyles({"display": "none", "height": "0px"});
-                        this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
-                        this.isExpand = false;
-                        this.selector.fireEvent("collapse", [this] );
+                        var display = this.children.getStyle("display");
+                        if (display === "none"){
+                            if( this.subNotActive )this.activeSub();
+                            this.children.setStyles({"display": "block", "height": "auto"});
+                            this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
+                            this.isExpand = true;
+                            this.selector.fireEvent("expand", [this] );
+                        }else{
+                            this.children.setStyles({"display": "none", "height": "0px"});
+                            this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
+                            this.isExpand = false;
+                            this.selector.fireEvent("collapse", [this] );
+                        }
                     }
                 }
                 if(callback)callback();
-            }.bind(this));
+            }.bind(this), notActive);
         }
     },
-    loadSub: function(callback){
+    loadSub: function(callback, notActive){
         this._loadSub( function( firstLoad ) {
             if(callback)callback();
-        }.bind(this))
+        }.bind(this), notActive)
     },
-    _loadSub: function(callback){
+    _loadSub: function(callback, notActive){
+        if(notActive)this.subNotActive = true;
         if (!this.loaded){
-            // if (this.selector.options.dutys && this.selector.options.dutys.length){
-            //     var ids = [];
-            //     var object = {};
-            //     this.selector.options.dutys.each(function(duty){
-            //         this.selector.orgAction.listIdentityWidthUnitWithDutyName(this.data.distinguishedName, duty, function(json){
-            //             if (json.data && json.data.length){
-            //                 ids = ids.concat(json.data);
-            //             }
-            //         }.bind(this), null, false);
-            //
-            //         ids.each(function(idSubData){
-            //             if( !this.selector.isExcluded( idSubData ) && !object[ idSubData.id || idSubData.distinguishedName ]) {
-            //                 var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
-            //                 this.selector.items.push(item);
-            //                 if(this.subItems)this.subItems.push( item );
-            //                 object[ idSubData.id || idSubData.distinguishedName ] = true;
-            //             }
-            //         }.bind(this));
-            //     }.bind(this));
-            //
-            //     if( this.selector.options.expandSubEnable ){
-            //         this.selector.orgAction.listSubUnitDirect(function(json){
-            //             json.data.each(function(subData){
-            //                 if( !this.selector.isExcluded( subData ) ) {
-            //                     var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
-            //                     this.subCategorys.push( category );
-            //                 }
-            //             }.bind(this));
-            //             this.loaded = true;
-            //             if(callback)callback();
-            //         }.bind(this), null, this.data.distinguishedName);
-            //     }else{
-            //         this.loaded = true;
-            //         if(callback)callback();
-            //     }
-            // }else{
-
             var loadSubUnit = function () {
                 if( this.selector.options.expandSubEnable && !this.categoryLoaded ){
                     o2.Actions.load("x_organization_assemble_express").UnitAction.listWithUnitSubDirectObject({
@@ -1088,7 +1057,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                             json.data.each(function(subData){
                                 if( !this.selector.isExcluded( subData ) ) {
                                     if( subData && this.data.parentLevelName)subData.parentLevelName = this.data.parentLevelName +"/" + subData.name;
-                                    var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
+                                    var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this, false, notActive);
                                     this.subCategorys.push( category );
                                     this.subCategoryMap[subData.parentLevelName || subData.levelName] = category;
                                 }
@@ -1097,18 +1066,6 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                             if (callback) callback( true );
                         }.bind(this)
                     );
-                    // this.selector.orgAction.listSubUnitDirect(function(json){
-                    //     json.data.each(function(subData){
-                    //         if( !this.selector.isExcluded( subData ) ) {
-                    //             if( subData && this.data.parentLevelName)subData.parentLevelName = this.data.parentLevelName +"/" + subData.name;
-                    //             var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
-                    //             this.subCategorys.push( category );
-                    //             this.subCategoryMap[subData.parentLevelName || subData.levelName] = category;
-                    //         }
-                    //     }.bind(this));
-                    //     this.loaded = true;
-                    //     if (callback) callback( true );
-                    // }.bind(this), null, this.data.distinguishedName);
                 }else{
                     this.loaded = true;
                     if (callback) callback( true );
@@ -1119,7 +1076,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                 this.selector.orgAction.listIdentityWithUnit(function(idJson){
                     idJson.data.each(function(idSubData){
                         if( !this.selector.isExcluded( idSubData ) ) {
-                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this, notActive);
                             this.selector.items.push(item);
                             if(this.selector.addToItemMap)this.selector.addToItemMap(idSubData,item);
                             if(this.subItems)this.subItems.push( item );
