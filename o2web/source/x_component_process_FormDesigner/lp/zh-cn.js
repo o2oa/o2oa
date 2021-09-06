@@ -1096,6 +1096,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "formatTooltipScript": "返回一个格式化函数：",
         "showStops": "是否显示间断点",
         "marksScriptInfo": "返回一个对象，key 的类型必须为 number 且取值在闭区间 [min, max] 内，每个标记可以单独设置样式",
+        "optionsGroup": "可选项分组",
+        "selectItemScriptInfo": "返回一个可选值数组列表；或者一个resolve了可选值数组的Promise对象",
 
 
         "showOptions": "显示选项",

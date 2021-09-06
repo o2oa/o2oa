@@ -33,9 +33,9 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 
 
 		html += " :placeholder=\"description\"";
-		html += " :size=\"size+\"";
+		html += " :size=\"size\"";
 		html += " :clearable=\"clearable\"";
-		html += " :popper-class=\"popperClass+\"";
+		html += " :popper-class=\"popperClass\"";
 		html += " :multiple=\"multiple\"";
 		html += " :collapse-tags=\"collapseTags\"";
 		html += " :multiple-limit=\"multipleLimit\"";
@@ -46,56 +46,15 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 		html += " :remote=\"filterRemote\"";
 		html += " :loading-text=\"loadingText\"";
 
+		html += " :style=\"elStyles\"";
 
-		if (this.json.elProperties){
-			Object.keys(this.json.elProperties).forEach(function(k){
-				if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
-			}, this);
-		}
-
-		if (this.json.elStyles){
-			var style = "";
-			Object.keys(this.json.elStyles).forEach(function(k){
-				if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-			}, this);
-			html += " style=\""+style+"\"";
-		}
 		html += " value=\""+this.json.id+"\">";
 		html += "<el-option></el-option>";
 		if (this.json.vueSlot) html += this.json.vueSlot;
 		html += "</el-select>";
 		return html;
 	},
-	_createVueExtend: function(callback){
-		debugger;
-		var _self = this;
-		return {
-			//data: this._createVueData(),
-			data: this.json,
-			mounted: function(){
-				_self._afterMounted(this.$el, callback);
-			}
-			// methods: {
-			// 	$fetchSuggestions: function(qs, cb){
-			// 		if (this.json.itemType!=='script'){
-			// 			if (this.json.itemValues){
-			// 				cb(this.json.itemValues.map(function(v){
-			// 					return {"value": v};
-			// 				}));
-			// 				return;
-			// 			}
-			// 		}
-			// 		cb([]);
-			// 	}.bind(this)
-			// }
-		};
-	},
-	_createVueData: function(){
-		//var data = this.json;
-		return function(){
-			return Object.assign(this.json, this.tmpVueData||{});
-		}.bind(this);
-	},
+
 	_setEditStyle_custom: function(name){
 		// switch (name){
 		// 	case "name": this.setPropertyName(); break;
