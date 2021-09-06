@@ -14,6 +14,7 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 		this.moduleName = "elselect";
 	},
 	_createElementHtml: function(){
+		debugger;
 		//var html = "<el-input placeholder=\"请输入内容\"></el-input>";
 		var html = "<el-select";
 		// if (this.json.description) html += " placeholder=\""+this.json.description+"\"";
@@ -31,7 +32,7 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 		// if (this.json.loadingText) html += " loading-text=\""+this.json.loadingText+"\"";
 		// html += " :fetch-suggestions=\"$fetchSuggestions\"";
 
-
+		// html += " v-model=\"id\"";
 		html += " :placeholder=\"description\"";
 		html += " :size=\"size\"";
 		html += " :clearable=\"clearable\"";
@@ -43,18 +44,25 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 		html += " :allow-create=\"allowCreate\"";
 		html += " :no-match-text=\"noMatchText\"";
 		html += " :no-data-text=\"noDataText\"";
-		html += " :remote=\"filterRemote\"";
+		html += " :remote=\"remote\"";
 		html += " :loading-text=\"loadingText\"";
 
 		html += " :style=\"elStyles\"";
 
-		html += " value=\""+this.json.id+"\">";
-		html += "<el-option></el-option>";
+		html += " :value=\"id\">";
+		//html += ">";
+		html += "<el-option label=\"\" value=\"\"></el-option>";
 		if (this.json.vueSlot) html += this.json.vueSlot;
 		html += "</el-select>";
 		return html;
 	},
-
+	_createVueData: function(){
+		//var data = this.json;
+		return function(){
+			this.json[this.json.id] = "";
+			return Object.assign(this.json, this.tmpVueData||{});
+		}.bind(this)
+	},
 	_setEditStyle_custom: function(name){
 		// switch (name){
 		// 	case "name": this.setPropertyName(); break;
@@ -66,7 +74,15 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 		this.node = el;
 		this.node.store("module", this);
 		this._loadVueCss();
-		this.node.getElement("input").removeEvents("click");
 		if (callback) callback();
+		//window.setTimeout(function(){
+		this.node.getElement("input").addEvent("click", function(e){
+			this.selected();
+			e.stopPropagation();
+		}.bind(this));
+		this.node.getElement(".el-select").addEvent("click", function(e){
+			this.selected();
+			e.stopPropagation();
+		}.bind(this));
 	},
 });

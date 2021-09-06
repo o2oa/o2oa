@@ -1098,6 +1098,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "marksScriptInfo": "返回一个对象，key 的类型必须为 number 且取值在闭区间 [min, max] 内，每个标记可以单独设置样式",
         "optionsGroup": "可选项分组",
         "selectItemScriptInfo": "返回一个可选值数组列表；或者一个resolve了可选值数组的Promise对象",
+        "selectTemplete": "自定义选项模板",
 
 
         "showOptions": "显示选项",

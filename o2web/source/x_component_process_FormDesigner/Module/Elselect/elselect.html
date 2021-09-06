@@ -21,7 +21,7 @@
 				</td>
 			</tr>
 		</table>
-		<div style="text-align: center; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">{{$.lp.options}}</div>
+		<div style="text-align: center; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #ccc; border-top: 1px solid #999;font-weight:bold;">{{$.lp.options}}</div>
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
 				<td class="editTableTitle">{{$.lp.optionsGroup}}:</td>
@@ -45,22 +45,39 @@
 
 			<div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType!=='script')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
 			<div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}; border-bottom: 1px solid #cccccc">
-				<div class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
+				<div class="MWFFormulaArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
 				<div style="padding: 5px">{{$.lp.selectItemScriptInfo}}</div>
-				<div style="padding: 5px">
-					<div>return [{"value": "value1", label: "label1"}, {"value": "value2", label: "label2"}, {"value": "value3", , label: "label3"}];</div>
-				</div>
+<!--				<div style="padding: 5px; border-bottom: 1px solid #cccccc">-->
+<!--					<div>return [{"value": "value1", label: "label1"}, {"value": "value2", label: "label2"}, {"value": "value3", , label: "label3"}];</div>-->
+<!--				</div>-->
 			</div>
 		</div>
 
-		<div></div>
+		<div style="display: text{($.itemsGroup!==true) ? 'none' : 'block'}; border-bottom: 1px solid #cccccc">
+			<div class="MWFFormulaArea" name="itemGroupScript" title="{{$.lp.optionScript}} (S)"></div>
+			<div style="padding: 5px">{{$.lp.selectItemScriptInfo}}</div>
+<!--			<div style="padding: 5px; border-bottom: 1px solid #cccccc">-->
+<!--				<div>return {</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>options: [{</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>label: '热门城市',</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>options: [{value: 'Shanghai', label: '上海'}, {value: 'Beijing', label: '北京'}]</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>}, {</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>label: '城市名',</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>options: [{value: 'Chengdu', label: '成都'}, {value: 'Shenzhen', label: '深圳'}, {value: 'Guangzhou', label: '广州'}]</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>}]</div>-->
+<!--				<div>}</div>-->
+<!--			</div>-->
+		</div>
+
+
+
 
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
 				<td class="editTableTitle">{{$.lp.size}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="size" value="default" text{(!$.size || $.inputSize==='default')?'checked':''}/>default
+					<input type="radio" name="size" value="default" text{(!$.size || $.size==='default')?'checked':''}/>default
 					<input type="radio" name="size" value="medium" text{($.size==='medium')?'checked':''}/>medium
 					<input type="radio" name="size" value="small" text{($.size==='small')?'checked':''}/>small
 					<input type="radio" name="size" value="mini" text{($.size==='mini')?'checked':''}/>mini
@@ -133,7 +150,7 @@
 				<tr>
 					<td class="editTableTitle">{{$.lp.noDataText}}:</td>
 					<td class="editTableValue">
-						<input type="text" name="noMatchText" value="text{$.noMatchText}" class="editTableInput"/>
+						<input type="text" name="noDataText" value="text{$.noDataText}" class="editTableInput"/>
 					</td>
 				</tr>
 			</table>
@@ -165,8 +182,12 @@
 
 		</div>
 
-		<div class="MWFMaplist" name="elStyles" title="{{$.lp.style}}"></div>
-		<div class="MWFMaplist" name="elProperties" title="{{$.lp.attribute}}"></div>
+		<div class="MWFMaplist" name="elStyles" collapse="true" title="Select {{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="elProperties" collapse="true" title="Select {{$.lp.attribute}}"></div>
+		<div class="MWFMaplist" name="elOptionStyles" collapse="true" title="Option {{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="elOptionProperties" collapse="true" title="Option {{$.lp.attribute}}"></div>
+		<div class="MWFMaplist" name="elGroupStyles" collapse="true" title="Group {{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="elGroupProperties" collapse="true" title="Group {{$.lp.attribute}}"></div>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
@@ -196,6 +217,11 @@
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Slots</div>
 		<div style="display: text{($.vueSlot) ? 'block' : 'none'}">
 			<div class="MWFHtmlEditorArea" name="vueSlot" title="Input Slot (HTML)"></div>
+		</div>
+
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">{{$.lp.selectTemplete}}</div>
+		<div style="display: text{($.customTemplete) ? 'block' : 'none'}">
+			<div class="MWFHtmlEditorArea" name="customTemplete" title="{{$.lp.selectTemplete}} (HTML)"></div>
 		</div>
 	</div>
 	<div title="{{$.lp.section}}" class="MWFTab">

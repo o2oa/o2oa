@@ -22,7 +22,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		this.containerNode = null;
 		this.isPropertyLoaded = false;
 	},
-	_dragMoveComplete: MWF.FC$Component.prototype._dragComplete,
+	_dragMoveComplete: MWF.FC$Module.prototype._dragComplete,
 	_dragComplete: function(){
 		if (!this.node){
 			this._createNode(function(){
@@ -164,7 +164,9 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		return {
 			data: this._createVueData(),
 			mounted: function(){
-				_self._afterMounted(this.$el, callback);
+				this.$nextTick(function(){
+					_self._afterMounted(this.$el, callback);
+				});
 			},
 			errorCaptured: function(err, vm, info){
 				alert("errorCaptured:"+info);
@@ -187,6 +189,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		}
 	},
 	_afterMounted: function(el, callback){
+		debugger;
 		this.node = el;
 		this.node.store("module", this);
 		this._loadVueCss();

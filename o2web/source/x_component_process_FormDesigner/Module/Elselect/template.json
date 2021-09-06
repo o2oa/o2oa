@@ -3,6 +3,39 @@
 	"name": "",
 	"type": "Elselect",
 	"description": "",
+
+	"isReadonly" : false,
+	"itemsGroup" : false,
+	"itemType" : "values",
+	"size" : "default",
+	"clearable" : false,
+	"multiple" : false,
+	"collapseTags" : false,
+	"filterable" : false,
+	"allowCreate" : false,
+	"remote" : false,
+	"popperClass" : "",
+	"multipleLimit" : 0,
+	"noMatchText" : "",
+	"noDataText": "",
+	"loadingText" : "",
+	"itemScript": {},
+	"itemGroupScript": {},
+	"filterMethod": {},
+	"remoteMethod": {},
+
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+	"vueSlot": "",
+
+	"elProperties": {},
+	"elStyles": {},
+	"elOptionProperties": {},
+	"elOptionStyles": {},
+	"elGroupProperties": {},
+	"elGroupStyles": {},
+
 	"events": {
 	  "queryLoad": {
 		"code": "",
@@ -16,7 +49,11 @@
 		  "code": "",
 		  "html": ""
 		},
-		"select": {
+		"visible-change": {
+			"code": "",
+			"html": ""
+		},
+		"remove-tag": {
 			"code": "",
 			"html": ""
 		},
