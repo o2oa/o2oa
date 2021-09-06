@@ -16,15 +16,25 @@ MWF.xApplication.process.FormDesigner.Module.Elbutton = MWF.FCElbutton = new Cla
 	_createElementHtml: function(){
 		debugger;
 		var html = "<el-button";
-		if (this.json.size && this.json.size!=="auto") html += " size=\""+this.json.size+"\"";
-		if (this.json.bttype && this.json.bttype!=="default") html += " type=\""+this.json.bttype+"\"";
-		if (this.json.plain===true) html += " plain";
-		if (this.json.round===true) html += " round";
-		if (this.json.circle===true) html += " circle";
-		if (this.json.icon) html += " icon=\""+this.json.icon+"\"";
-		if (this.json.disabled===true) html += " disabled";
-		if (this.json.loading===true) html += " loading";
-		if (this.json.autofocus===true) html += " autofocus";
+		// if (this.json.size && this.json.size!=="auto") html += " size=\""+this.json.size+"\"";
+		// if (this.json.bttype && this.json.bttype!=="default") html += " type=\""+this.json.bttype+"\"";
+		// if (this.json.plain===true) html += " plain";
+		// if (this.json.round===true) html += " round";
+		// if (this.json.circle===true) html += " circle";
+		// if (this.json.icon) html += " icon=\""+this.json.icon+"\"";
+		// if (this.json.disabled===true) html += " disabled";
+		// if (this.json.loading===true) html += " loading";
+		// if (this.json.autofocus===true) html += " autofocus";
+
+		html += " :size=\"size\"";
+		html += " :type=\"bttype\"";
+		html += " :plain=\"plain\"";
+		html += " :round=\"round\"";
+		html += " :circle=\"circle\"";
+		html += " :icon=\"icon\"";
+		html += " :disabled=\"disabled\"";
+		html += " :loading=\"loading\"";
+
 
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){
@@ -32,15 +42,18 @@ MWF.xApplication.process.FormDesigner.Module.Elbutton = MWF.FCElbutton = new Cla
 			}, this);
 		}
 
-		if (this.json.elStyles){
-			var style = "";
-			Object.keys(this.json.elStyles).forEach(function(k){
-				if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-			}, this);
-			html += " style=\""+style+"\"";
-		}
+		html += " :style=\"elStyles\"";
 
-		html += ">"+((this.json.circle!==true && this.json.isText!==false) ? (this.json.name || this.json.id) : "")+"</el-button>";
+		// if (this.json.elStyles){
+		// 	var style = "";
+		// 	Object.keys(this.json.elStyles).forEach(function(k){
+		// 		if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+		// 	}, this);
+		// 	html += " style=\""+style+"\"";
+		// }
+
+		// html += ">"+((this.json.circle!==true && this.json.isText!==false) ? (this.json.name || this.json.id) : "")+"</el-button>";
+		html += ">{{(isText===false) ? '' : name||id}}</el-button>";
 		return html;
 	},
 	_createCopyNode: function(){
@@ -55,19 +68,5 @@ MWF.xApplication.process.FormDesigner.Module.Elbutton = MWF.FCElbutton = new Cla
 		if (!this.copyNode) this._createCopyNode();
 		this.copyNode.setStyle("display", "inline-block");
 		return this.copyNode;
-	},
-	setPropertyName: function(){
-		if (this.json.name){
-			var button = this.node.getElement("button");
-			if (!button) button = this.node.getFirst("input");
-			if (button) button.set("text", this.json.name);
-		}
-	},
-	setPropertyId: function(){
-		if (!this.json.name){
-			var button = this.node.getElement("button");
-			if (!button) button = this.node.getFirst("input");
-			if (button) button.set("text", this.json.id);
-		}
 	}
 });

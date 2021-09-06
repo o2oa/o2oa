@@ -1,24 +1,40 @@
 {
 	"id": "",
 	"name": "",
-	"type": "Elswitch",
+	"type": "Elselect",
 	"description": "",
-	"inactiveColor": "#C0CCDA",
-	"activeColor": "#409EFF",
+
 	"isReadonly" : false,
-	"valueType" : "boolean",
-	"width" : 40,
-	"activeText" : "",
-	"inactiveText" : "",
-	"activeIconClass" : "",
-	"inactiveIconClass" : "",
+	"itemsGroup" : false,
+	"itemType" : "values",
+	"size" : "default",
+	"clearable" : false,
+	"multiple" : false,
+	"collapseTags" : false,
+	"filterable" : false,
+	"allowCreate" : false,
+	"remote" : false,
+	"popperClass" : "",
+	"multipleLimit" : 0,
+	"noMatchText" : "",
+	"noDataText": "",
+	"loadingText" : "",
+	"itemScript": {},
+	"itemGroupScript": {},
+	"filterMethod": {},
+	"remoteMethod": {},
 
 	"vueData": {},
 	"vueMethods": {},
 	"vueCss": {},
+	"vueSlot": "",
 
-	"elStyles": {},
 	"elProperties": {},
+	"elStyles": {},
+	"elOptionProperties": {},
+	"elOptionStyles": {},
+	"elGroupProperties": {},
+	"elGroupStyles": {},
 
 	"events": {
 	  "queryLoad": {
@@ -33,15 +49,15 @@
 		  "code": "",
 		  "html": ""
 		},
-		"input": {
+		"visible-change": {
+			"code": "",
+			"html": ""
+		},
+		"remove-tag": {
 			"code": "",
 			"html": ""
 		},
 		"change": {
-			"code": "",
-			"html": ""
-		},
-		"clear": {
 			"code": "",
 			"html": ""
 		},
@@ -82,14 +98,6 @@
 			"html": ""
 		},
 		"mouseup": {
-			"code": "",
-			"html": ""
-		},
-		"focus": {
-			"code": "",
-			"html": ""
-		},
-		"blur": {
 			"code": "",
 			"html": ""
 		}
