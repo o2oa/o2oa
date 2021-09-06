@@ -18,6 +18,7 @@ MWF.xApplication.Selector.Person = new Class({
         "embedded" : false, //是否嵌入在其他容器中
         "selectAllEnable" : false, //是否允许全选
         "selectAllRange" : "direct", //全选直属人员 还是 所有下级人员
+        "selectAllActiveNestSub": true, //全选时，是否展开子级级以后的层次
 
         "level1Indent" : 10, //第一级的缩进
         "indent" : 10, //后续的缩进
@@ -87,6 +88,7 @@ MWF.xApplication.Selector.Person = new Class({
         this.pageCount = "13";
 
         this.selectedItems = []; //所有已选项
+
         this.items = []; //所有选择项
 
         this.subCategorys = []; //直接的分类
@@ -437,7 +439,6 @@ MWF.xApplication.Selector.Person = new Class({
         }.bind(this));
         return count;
     },
-
     setEvent: function(){
         if (this.titleActionNode){
             this.titleActionNode.addEvent("click", function(){
@@ -1109,12 +1110,16 @@ MWF.xApplication.Selector.Person = new Class({
             this.options.values.each(function(v, i){
                 if (typeOf(v)==="object"){
                     v.isFromValues = true;
-                    this.selectedItems.push(this._newItemSelected(v, this, null));
+                    var selecteditem = this._newItemSelected(v, this, null);
+                    this.selectedItems.push(selecteditem);
+                    if(this.addToSelectedItemsMap)this.addToSelectedItemsMap(v, selecteditem);
                 }else{
                     this._getItem(function(json){
                         this.options.values[i] = json.data;
                         json.data.isFromValues = true;
-                        this.selectedItems.push(this._newItemSelected(json.data, this, null));
+                        var selecteditem = this._newItemSelected(json.data, this, null);
+                        this.selectedItems.push(selecteditem);
+                        if(this.addToSelectedItemsMap)this.addToSelectedItemsMap(json.data, selecteditem);
                     }.bind(this), null, v, false);
                 }
                 // this._getItem(function(json){
@@ -1882,7 +1887,12 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.subCategorys = [];
         this.subCategoryMap = {};
         this.subCategoryMapWithDuty = {};
-        if(!delay)this.load();
+        // if(!delay)this.load();
+        if(delay){
+            this.placeholderNode = new Element("div").inject(this.container);
+        }else{
+            this.load();
+        }
     },
     _getShowName: function(){
         return this.data.name + ( this.data.employee ? ("("+this.data.employee+")") : "" );
@@ -1899,9 +1909,18 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selector.fireEvent("queryLoadItem",[this]);
         }
 
-        if( !this.node )this.node = new Element("div", {
-            "styles": this.selector.css.selectorItem
-        }).inject(this.container);
+        if( !this.node ){
+            this.node = new Element("div", {
+                "styles": this.selector.css.selectorItem
+            });
+            if(this.placeholderNode){
+                this.node.inject( this.placeholderNode, "before");
+                this.placeholderNode.destroy();
+                this.placeholderNode = null;
+            }else{
+                this.node.inject(this.container);
+            }
+        }
 
         this.levelNode = new Element("div", {
             "styles": this.selector.css.selectorItemLevelNode
@@ -1984,7 +2003,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
             return item.data.distinguishedName === this.data.distinguishedName;
         }.bind(this));
         if (selectedItem.length){
-            //selectedItem[0].item = this;
             selectedItem[0].addItem(this);
             this.selectedItem = selectedItem[0];
             this.setSelected();
@@ -1999,14 +2017,16 @@ MWF.xApplication.Selector.Person.Item = new Class({
     },
     setSelected: function(){
         this.isSelected = true;
-        this.node.setStyles(this.selector.css.selectorItem_selected);
+        if(this.node) {
+            this.node.setStyles(this.selector.css.selectorItem_selected);
 
-        this.textNode.setStyles(this.selector.css.selectorItemTextNode_selected);
-        this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode_selected );
+            this.textNode.setStyles(this.selector.css.selectorItemTextNode_selected);
+            this.checkTextNodeIndent(this.textNode, this.selector.css.selectorItemTextNode_selected);
 
-        this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
-        if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
-            this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
+            this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
+            if ((this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer) && this.selector.css.selectorItemActionNode_single_selected) {
+                this.actionNode.setStyles(this.selector.css.selectorItemActionNode_single_selected);
+            }
         }
         // if( this.category ){
         //     this.category.checkSelectAll();
@@ -2076,7 +2096,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.getData(function(){
                 this.selector.currentItem = this;
                 this.isSelected = true;
+
                 this.selector.selectedItems.push(this);
+                if(this.selector.addToSelectedItemsMap)this.selector.addToSelectedItemsMap(this.data, this);
+
                 this.node.setStyles(this.selector.css.selectorItem_selected);
 
                 this.textNode.setStyles(this.selector.css.selectorItemTextNode_selected);
@@ -2103,6 +2126,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.selector.currentItem = null;
         this.isSelected = false;
         this.selector.selectedItems.erase(this);
+        if(this.selector.deleteFromSelectedItemsMap)this.selector.deleteFromSelectedItemsMap(this.data);
         this.node.setStyles(this.selector.css.selectorItem);
 
         this.textNode.setStyles(this.selector.css.selectorItemTextNode);
@@ -2138,6 +2162,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selectedItem = this.selector._newItemSelected(this.data, this.selector, this, selectedNode);
             // this.selectedItem.check();
             this.selector.selectedItems.push(this.selectedItem);
+            if(this.selector.addToSelectedItemsMap)this.selector.addToSelectedItemsMap(this.data, this.selectedItem);
 
             // if( this.category ){
             //     this.category.checkSelectAll();
@@ -2198,7 +2223,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         var countItems = [];
         if (this.selectedItem){
             this.selector.selectedItems.erase(this.selectedItem);
-
+            if(this.selector.deleteFromSelectedItemsMap)this.selector.deleteFromSelectedItemsMap(this.selectedItem.data);
             debugger;
 
             if( this.selector.isCheckStatusOrCount()){
@@ -2258,7 +2283,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
 
 MWF.xApplication.Selector.Person.ItemSelected = new Class({
     Extends: MWF.xApplication.Selector.Person.Item,
-    initialize: function(data, selector, item, selectedNode){
+    initialize: function(data, selector, item, selectedNode, delay){
         this.data = data;
         this.selector = selector;
         this.container = selectedNode || this.selector.selectedNode;
@@ -2280,7 +2305,11 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
 
         this.getData(function(){
             this.node.setStyle("display","");
-            this.load();
+            if(!delay){
+                this.load();
+            }else{
+                this.check();
+            }
         }.bind(this));
     },
     postLoad : function(){
@@ -2325,6 +2354,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
 
             this.destroy();
             this.selector.selectedItems.erase(this);
+            if(this.selector.deleteFromSelectedItemsMap)this.selector.deleteFromSelectedItemsMap(this.data);
             if( checkValid )this.selector.fireEvent("valid", [this.selector, this])
         }
     },
@@ -2404,7 +2434,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
 
 MWF.xApplication.Selector.Person.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Person.Item,
-    initialize: function(data, selector, container, level, parentCategory, delay){
+    initialize: function(data, selector, container, level, parentCategory, delay, notActive){
         this.data = data;
         this.selector = selector;
         this.container = container;
@@ -2415,16 +2445,29 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         this.subCategorys = [];
         this.subCategoryMap = {};
         this.subCategoryMapWithDuty = {};
+        this.notActive = notActive;
         if(!delay)this.load();
     },
     load : function(){
         if( this.selector.isFlatCategory ){
             this.loadForFlat();
-        }else{
+        }else if( !this.notActive ){
             this.loadForNormal();
+        }else{
+            this.createNode();
+            // this.node.hide();
+            this.children = new Element("div.children", {
+                "styles": this.selector.css.selectorItemCategoryChildrenNode
+            }).inject(this.node, "after");
+            // this.children.hide();
         }
     },
-
+    active: function(){
+        this.notActive = false;
+        this.node.show();
+        this.children.show();
+        this.loadForNormal();
+    },
     loadForFlat : function(){
         this.selector.fireEvent("queryLoadCategory",[this]);
 
@@ -2529,7 +2572,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
     },
     loadForNormal : function(){
         this.selector.fireEvent("queryLoadCategory",[this]);
-        this.createNode();
+        if(!this.node)this.createNode();
         this.levelNode = new Element("div", {
             "styles": this.selector.css.selectorItemLevelNode
         }).inject(this.node);
@@ -2551,8 +2594,16 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }).inject(this.node);
 
         if( this.selector.options.selectAllEnable && this.selector.options.count.toInt()!==1 ){
+            var selectAllNodeStyles = this.selector.css.selectorItemCategoryActionNode_selectAll;
+            if( this.isSelectedAll ){
+                if( this.selector.isFlatCategory ){
+                    selectAllNodeStyles = this.selector.css.flatCategory_selectAll_selected;
+                }else if( this.selector.css.selectorItemCategoryActionNode_selectAll_selected ){
+                    selectAllNodeStyles = this.selector.css.selectorItemCategoryActionNode_selectAll_selected;
+                }
+            }
             this.selectAllNode = new Element("div", {
-                "styles": this.selector.css.selectorItemCategoryActionNode_selectAll,
+                "styles": selectAllNodeStyles,
                 "title" : MWF.SelectorLP.selectChildren
             }).inject(this.node);
             this.selectAllNode.addEvent( "click", function(ev){
@@ -2599,7 +2650,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             this.selectedCountNode = new Element("span").inject(this.textNode);
         }
 
-        this.children = new Element("div.children", {
+        if(!this.children)this.children = new Element("div.children", {
             "styles": this.selector.css.selectorItemCategoryChildrenNode
         }).inject(this.node, "after");
         if (!this.selector.options.expand) this.children.setStyle("display", "none");
@@ -2653,6 +2704,19 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             "title" : this._getTtiteText()
         }).inject(this.container);
     },
+    setEvent: function(){
+        this.node.addEvents({
+            "mouseover": function(){
+                this.overItem();
+            }.bind(this),
+            "mouseout": function(){
+                this.outItem();
+            }.bind(this),
+            "click": function(){
+                this.clickItem();
+            }.bind(this)
+        });
+    },
     unselectAll : function(ev, exclude, checkValid ){
         var fun = function(){
             var excludeList = exclude || [];
@@ -2689,35 +2753,36 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             })
         }
     },
-    selectAllNested : function( ev, checkValid, selectedNode ){
+    selectAllNested : function( ev, checkValid, selectedNode, notActive ){
         var node;
         if(selectedNode)node = new Element("div.categorySelectedNode").inject( selectedNode );
+
         this.selectAll(ev, checkValid, node, function () {
             if( this.subCategorys && this.subCategorys.length ){
                 this.subCategorys.each( function( category ){
                     if(selectedNode)var node = new Element("div.categorySelectedNode").inject( selectedNode );
-                    category.selectAllNested(ev, checkValid, node)
+                    category.selectAllNested(ev, checkValid, node, notActive)
                 })
             }
-        }.bind(this));
+        }.bind(this), notActive);
     },
-    selectAll: function(ev, checkValid, selectedNode, callback){
+    selectAll: function(ev, checkValid, selectedNode, callback, notActive){
         if( this.loaded || this.selector.isFlatCategory ){
-            this._selectAll( ev, checkValid, selectedNode );
+            this._selectAll( ev, checkValid, selectedNode, notActive );
             if(callback)callback();
         }else{
             this.clickItem( function(){
-                this._selectAll( ev, checkValid, selectedNode );
+                this._selectAll( ev, checkValid, selectedNode, notActive );
                 if(callback)callback();
                 //this.children.setStyles({
                 //    "display": "none",
                 //    "height": "0px"
                 //});
                 //this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
-            }.bind(this));
+            }.bind(this), notActive);
         }
     },
-    _selectAll : function( ev, checkValid, selectedNode ){
+    _selectAll : function( ev, checkValid, selectedNode, notActive ){
         if( this.selector.options.selectAllRange === "direct" && ( !this.subItems || !this.subItems.length ) )return;
         var count = this.selector.options.maxCount || this.selector.options.count;
         if (!count) count = 0;
@@ -2867,6 +2932,17 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             }
             if(callback)callback()
         }
+    },
+    activeSub: function(){
+        if(this.subItems) {
+            this.subItems.each(function (item) {
+                item.load()
+            });
+        }
+        if(this.subCategorys)this.subCategorys.each(function(category){
+            if(category.notActive)category.active();
+        });
+        this.subNotActive = false;
     },
     overItem: function(){
         //if (!this.isSelected){
