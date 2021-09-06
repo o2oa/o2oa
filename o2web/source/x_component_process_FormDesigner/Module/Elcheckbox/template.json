@@ -13,6 +13,22 @@
 		"code": "",
 		"html": ""
 	},
+	"isReadonly" : false,
+	"buttonRadio" : false,
+	"border" : false,
+	"size" : "default",
+	"textColor" : "",
+	"fillColor" : "",
+
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+
+	"elStyles": {},
+	"elProperties": {},
+	"elGroupStyles": {},
+	"elGroupProperties": {},
+
     "compute": "create", //create, show, save
 	"events": {
 		"queryLoad" : {

@@ -38,7 +38,9 @@
 		"border-bottom": "1px dashed #CCC"
 	},
 	"editTableTitle": {
-		"width": "60px",
+		"min-width": "70px",
+		"max-width": "100px",
+		"width": "20%",
 		"font-weight": "bold",
 		"font-size": "12px",
 		"height": "24px",
