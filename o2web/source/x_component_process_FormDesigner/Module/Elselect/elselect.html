@@ -1,0 +1,265 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.id}}:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.name}}:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.description}}:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.readonly}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+		<div style="text-align: center; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #ccc; border-top: 1px solid #999;font-weight:bold;">{{$.lp.options}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.optionsGroup}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="if (this.checked){ var node = this.getParent('table').getNext(); node.hide(); node.getNext().show();}" name="itemsGroup" text{($.itemsGroup===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+					<input class="editTableRadio" onclick="if (this.checked){ var node = this.getParent('table').getNext(); node.show(); node.getNext().hide();}" name="itemsGroup" text{($.itemsGroup!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+		<div style="display: text{($.itemsGroup===true) ? 'none' : 'block'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.options}}:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemValues').setStyle('display', 'block'); $('text{$.pid}selectEditItemScript').setStyle('display', 'none')}" name="itemType" text{($.itemType!=='script')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
+						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemScript').setStyle('display', 'block'); $('text{$.pid}selectEditItemValues').setStyle('display', 'none')}" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+					</td>
+				</tr>
+
+			</table>
+
+			<div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType!=='script')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
+			<div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}; border-bottom: 1px solid #cccccc">
+				<div class="MWFFormulaArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
+				<div style="padding: 5px">{{$.lp.selectItemScriptInfo}}</div>
+<!--				<div style="padding: 5px; border-bottom: 1px solid #cccccc">-->
+<!--					<div>return [{"value": "value1", label: "label1"}, {"value": "value2", label: "label2"}, {"value": "value3", , label: "label3"}];</div>-->
+<!--				</div>-->
+			</div>
+		</div>
+
+		<div style="display: text{($.itemsGroup!==true) ? 'none' : 'block'}; border-bottom: 1px solid #cccccc">
+			<div class="MWFFormulaArea" name="itemGroupScript" title="{{$.lp.optionScript}} (S)"></div>
+			<div style="padding: 5px">{{$.lp.selectItemScriptInfo}}</div>
+<!--			<div style="padding: 5px; border-bottom: 1px solid #cccccc">-->
+<!--				<div>return {</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>options: [{</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>label: '热门城市',</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>options: [{value: 'Shanghai', label: '上海'}, {value: 'Beijing', label: '北京'}]</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>}, {</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>label: '城市名',</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>options: [{value: 'Chengdu', label: '成都'}, {value: 'Shenzhen', label: '深圳'}, {value: 'Guangzhou', label: '广州'}]</div>-->
+<!--				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>}]</div>-->
+<!--				<div>}</div>-->
+<!--			</div>-->
+		</div>
+
+
+
+
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.size}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="size" value="default" text{(!$.size || $.size==='default')?'checked':''}/>default
+					<input type="radio" name="size" value="medium" text{($.size==='medium')?'checked':''}/>medium
+					<input type="radio" name="size" value="small" text{($.size==='small')?'checked':''}/>small
+					<input type="radio" name="size" value="mini" text{($.size==='mini')?'checked':''}/>mini
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.clearable}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="clearable" value="true" text{($.clearable===true)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="clearable" value="false" text{($.clearable!==true)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.popperClass}}:</td>
+				<td class="editTableValue">
+					<input type="text" name="popperClass" value="text{$.popperClass}" class="editTableInput"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.multiple}}:</td>
+				<td class="editTableValue">
+					<input onclick="if (this.checked){ this.getParent('table').getNext().show();}" type="radio" name="multiple" value="true" text{($.multiple===true)?'checked':''}/>{{$.lp.yes}}
+					<input onclick="if (this.checked){ this.getParent('table').getNext().hide();}" type="radio" name="multiple" value="false" text{($.multiple!==true)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+		<div style="display: text{($.multiple===true) ? 'block' : 'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.collapseTags}}:</td>
+					<td class="editTableValue">
+						<input type="radio" name="collapseTags" value="true" text{($.collapseTags===true)?'checked':''}/>{{$.lp.yes}}
+						<input type="radio" name="collapseTags" value="false" text{($.collapseTags!==true)?'checked':''}/>{{$.lp.no}}
+					</td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.multipleLimit}}:</td>
+					<td class="editTableValue">
+						<input type="number" name="multipleLimit" value="text{$.multipleLimit || 0}" class="editTableInput"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.filterable}}:</td>
+				<td class="editTableValue">
+					<input type="radio" onclick="if (this.checked){ this.getParent('table').getNext().show();}" name="filterable" value="true" text{($.filterable===true)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" onclick="if (this.checked){ this.getParent('table').getNext().hide();}" name="filterable" value="false" text{($.filterable!==true)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+
+		<div style="display: text{($.filterable===true) ? 'block' : 'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.allowCreate}}:</td>
+					<td class="editTableValue">
+						<input type="radio" name="allowCreate" value="true" text{($.allowCreate===true)?'checked':''}/>{{$.lp.yes}}
+						<input type="radio" name="allowCreate" value="false" text{($.allowCreate!==true)?'checked':''}/>{{$.lp.no}}
+					</td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.noMatchText}}:</td>
+					<td class="editTableValue">
+						<input type="text" name="noMatchText" value="text{$.noMatchText}" class="editTableInput"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.noDataText}}:</td>
+					<td class="editTableValue">
+						<input type="text" name="noDataText" value="text{$.noDataText}" class="editTableInput"/>
+					</td>
+				</tr>
+			</table>
+<!--			<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; border-bottom: 1px solid #999;font-weight:bold;">{{$.lp.filterMethod}}</div>-->
+			<div class="MWFFormulaArea" name="filterMethod" title="{{$.lp.filterMethod}}"></div>
+
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.filterRemote}}:</td>
+					<td class="editTableValue">
+						<input type="radio" onclick="if (this.checked){ this.getParent('table').getNext().show();}" name="remote" value="true" text{($.remote===true)?'checked':''}/>{{$.lp.yes}}
+						<input type="radio" onclick="if (this.checked){ this.getParent('table').getNext().hide();}" name="remote" value="false" text{($.remote!==true)?'checked':''}/>{{$.lp.no}}
+					</td>
+				</tr>
+			</table>
+
+			<div style="display: text{($.remote===true) ? 'block' : 'none'}">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">{{$.lp.loadingText}}:</td>
+						<td class="editTableValue">
+							<input type="text" name="loadingText" value="text{$.loadingText}" class="editTableInput"/>
+						</td>
+					</tr>
+				</table>
+<!--				<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; border-top: 1px solid #999; font-weight:bold;">{{$.lp.remoteMethod}}</div>-->
+				<div class="MWFFormulaArea" name="remoteMethod" title="{{$.lp.remoteMethod}} (S)"></div>
+			</div>
+
+		</div>
+
+		<div class="MWFMaplist" name="elStyles" collapse="true" title="Select {{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="elProperties" collapse="true" title="Select {{$.lp.attribute}}"></div>
+		<div class="MWFMaplist" name="elOptionStyles" collapse="true" title="Option {{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="elOptionProperties" collapse="true" title="Option {{$.lp.attribute}}"></div>
+		<div class="MWFMaplist" name="elGroupStyles" collapse="true" title="Group {{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="elGroupProperties" collapse="true" title="Group {{$.lp.attribute}}"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.compute}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="compute" value="create" text{(!$.compute || $.compute=='create')?'checked':''}/>{{$.lp.create}}
+					<input type="radio" name="compute" value="save" text{($.compute=='save')?'checked':''}/>{{$.lp.save}}
+					<input type="radio" name="compute" value="show" text{($.compute=='show')?'checked':''}/>{{$.lp.show}}
+				</td>
+			</tr>
+		</table>
+
+		<div class="MWFScriptArea" name="defaultValue" title="{{$.lp.defaultValue}} (S)"></div>
+
+		<div class="MWFValidation" name="validationConfig"></div>
+		<div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
+		
+	</div>
+	<div title="Vue"  class="MWFTab">
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Data</div>
+		<div style="display: text{($.vueData && $.vueData.code) ? 'block': 'none'}" class="MWFScriptArea" name="vueData" title="Vue Data (S)"></div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Method</div>
+		<div div style="display: text{($.vueMethods && $.vueMethods.code) ? 'block': 'none'}" class="MWFScriptArea" name="vueMethods" title="Vue Methods (S)"></div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue CSS</div>
+		<div div style="display: text{($.vueCss && $.vueCss.code) ? 'block': 'none'}" class="MWFCssArea" name="vueCss" title="Vue Css (S)"></div>
+
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Slots</div>
+		<div style="display: text{($.vueSlot) ? 'block' : 'none'}">
+			<div class="MWFHtmlEditorArea" name="vueSlot" title="Input Slot (HTML)"></div>
+		</div>
+
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">{{$.lp.selectTemplete}}</div>
+		<div style="display: text{($.customTemplete) ? 'block' : 'none'}">
+			<div class="MWFHtmlEditorArea" name="customTemplete" title="{{$.lp.selectTemplete}} (HTML)"></div>
+		</div>
+	</div>
+	<div title="{{$.lp.section}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.enableSection}}:</td>
+				<td class="editTableValue">
+					<input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'block')}" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>{{$.lp.yes}}
+					<input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'none')}" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+
+		<div id="text{$.pid}sectionByEditArea" style="display: text{($.section=='yes')?'block':'none'};">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.sectionBy}}:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}" name="sectionBy" text{(($.sectionBy=='person') || ($.sectionBy!='unit' && $.sectionBy!='activity' && $.sectionBy!='script'))?'checked':''} type="radio" value="person"/>{{$.lp.handler}}<br/>
+						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='unit')?'checked':''} type="radio" value="unit"/>{{$.lp.handlerUnit}}<br/>
+						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='activity')?'checked':''} type="radio" value="activity"/>{{$.lp.activityId}}<br/>
+						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='splitValue')?'checked':''} type="radio" value="splitValue"/>{{$.lp.splitValue}}<br/>
+						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'block');}"  name="sectionBy" text{($.sectionBy=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}<br/>
+					</td>
+				</tr>
+			</table>
+			<div id="text{$.pid}sectionByScriptEditArea" style="display: text{($.sectionBy=='script')?'block':'none'};">
+				<div class="MWFScriptArea" name="sectionByScript" title="{{$.lp.sectionBy}} (S)"></div>
+			</div>
+		</div>
+	</div>
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="width:100%; height:400px; border:0px;font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>
