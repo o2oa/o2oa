@@ -651,17 +651,19 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	},
 	
 	
-	showProperty: function(){
+	showProperty: function(callback){
 		if (!this.property){
 			this.property = new MWF.xApplication.process.FormDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
 				"path": this.options.propertyPath,
 				"onPostLoad": function(){
 					this.property.show();
+					if (callback) callback();
 				}.bind(this)
 			});
 			this.property.load();	
 		}else{
 			this.property.show();
+			if (callback) callback();
 		}
 	},
     hideProperty: function(){
