@@ -260,7 +260,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                         url = "../x_desktop/app.html?" + par;
                     } else {
                         Object.keys(options).forEach(function (k) {
-                            url += ((url.indexOf("?") != -1) ? "&" : "?") + k + "=" + options[k];
+                            if (options[k]) url += ((url.indexOf("?") != -1) ? "&" : "?") + k + "=" + options[k];
                         });
                         //url = url.setData(options).toString();
                     }
