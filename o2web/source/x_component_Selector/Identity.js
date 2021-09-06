@@ -500,6 +500,8 @@ MWF.xApplication.Selector.Identity = new Class({
         var count;
         var selectedCount;
 
+        if(!groupLevelName)groupLevelName="";
+
         if(!this.allGrounUnitObject[groupLevelName+"/"+tree.levelName]){
             this.allGrounUnitObject[groupLevelName+"/"+tree.levelName] = tree;
             tree.groupUnitLevelName = groupLevelName+"/"+tree.levelName;
