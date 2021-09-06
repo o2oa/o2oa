@@ -4,6 +4,10 @@
 	"type": "Elicon",
 	"icon": "el-icon-platform-eleme",
 	"description": "",
+	"iconSize": "16px",
+	"iconColor": "",
+	"elProperties": {},
+	"elStyles": {},
 	"events": {
 	  "queryLoad": {
 		"code": "",
