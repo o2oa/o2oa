@@ -1091,6 +1091,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "marksScriptInfo": "Return an object, the type of key must be number and the value must be in the closed interval [min, max], and each mark can be styled separately",
         "optionsGroup": "Options Group",
         "selectItemScriptInfo": "Return a list of optional value arrays; or a Promise object that resolves the optional value array.",
+        "selectTemplete": "Custom Options Templete",
 
         "showOptions": "Show Options",
         "onInput": "When inputting",
