@@ -49,6 +49,12 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
         if (!this.json.tooltipClass) this.json.tooltipClass = "";
 
         if (!this.json.disabled) this.json.disabled = false;
+
+        if (this.json.marksScript && this.json.marksScript.code){
+            this.json.marks = this.form.Macro.exec(this.json.marksScript.code, this);
+        }else{
+            this.json.marks = {};
+        }
     },
     appendVueExtend: function(app){
         if (!app.methods) app.methods = {};
@@ -75,7 +81,7 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
         html += " :max=\"max\"";
         html += " :min=\"min\"";
         html += " :step=\"step\"";
-        html += " :show-stops=\"showStops\""
+        html += " :show-stops=\"showStops\"";
         html += " :range=\"range\"";
         html += " :vertical=\"vertical\"";
         html += " :height=\"height\"";
@@ -85,6 +91,7 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
         html += " :show-tooltip=\"showTooltip\"";
         html += " :tooltip-class=\"tooltipClass\"";
         html += " :disabled=\"disabled\"";
+        html += " :marks=\"marks\"";
 
         if (this.json.formatTooltip && this.json.formatTooltip.code){
             html += " :format-tooltip=\"$formatTooltip\"";
