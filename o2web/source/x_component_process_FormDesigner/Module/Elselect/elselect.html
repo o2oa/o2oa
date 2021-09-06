@@ -20,25 +20,40 @@
 					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
+		</table>
+		<div style="text-align: center; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">{{$.lp.options}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">{{$.lp.options}}:</td>
+				<td class="editTableTitle">{{$.lp.optionsGroup}}:</td>
 				<td class="editTableValue">
-					<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemValues').setStyle('display', 'block'); $('text{$.pid}selectEditItemScript').setStyle('display', 'none')}" name="itemType" text{($.itemType!=='script')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
-					<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemScript').setStyle('display', 'block'); $('text{$.pid}selectEditItemValues').setStyle('display', 'none')}" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+					<input class="editTableRadio" onclick="if (this.checked){ var node = this.getParent('table').getNext(); node.hide(); node.getNext().show();}" name="itemsGroup" text{($.itemsGroup===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+					<input class="editTableRadio" onclick="if (this.checked){ var node = this.getParent('table').getNext(); node.show(); node.getNext().hide();}" name="itemsGroup" text{($.itemsGroup!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
-		<div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType!=='script')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
-		<div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}; border-bottom: 1px solid #cccccc">
-			<div class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
-			<div style="padding: 5px">{{$.lp.itemScriptInfo}}</div>
-			<div style="padding: 5px">
-				<div>return function(queryString, callback){</div>
-				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>var list = [{"value": "value1"},{"value": "value2"},{"value": "value3"}];</div>
-				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>callback(list);</div>
-				<div>}</div>
+		<div style="display: text{($.itemsGroup===true) ? 'none' : 'block'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.options}}:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemValues').setStyle('display', 'block'); $('text{$.pid}selectEditItemScript').setStyle('display', 'none')}" name="itemType" text{($.itemType!=='script')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
+						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemScript').setStyle('display', 'block'); $('text{$.pid}selectEditItemValues').setStyle('display', 'none')}" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+					</td>
+				</tr>
+
+			</table>
+
+			<div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType!=='script')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
+			<div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}; border-bottom: 1px solid #cccccc">
+				<div class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
+				<div style="padding: 5px">{{$.lp.selectItemScriptInfo}}</div>
+				<div style="padding: 5px">
+					<div>return [{"value": "value1", label: "label1"}, {"value": "value2", label: "label2"}, {"value": "value3", , label: "label3"}];</div>
+				</div>
 			</div>
 		</div>
+
+		<div></div>
 
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
