@@ -2218,30 +2218,25 @@ if (!MWF.xScript.JSONData) {
                     return data[k]
                 } else {
                     if (t === "array") {
-                        debugger;
-                        //if (!MWF.xScript.ArrayData){
-                        //     var ArrayData = function(data, callback, key, parent, _form){
-                        //         MWF.xScript.JSONData.call(this, data, callback, key, parent, _form);
-                        //         Array.call(this, data);
-                        //     };
-                        //     Object.assign(ArrayData.prototype, MWF.xScript.JSONData.prototype);
-                        //     Object.assign(ArrayData.prototype, Array.prototype);
-                        //}
-                        //return new MWF.xScript.ArrayData(data[k], callback, k, _self, _form);
-                        //return new ArrayData(data[k], callback, k, _self, _form)
-                        // var arr = Array.clone(data[k]);
-                        // for (x in arr){
-                        //     if (typeof x === 'number' && !isNaN(x)){
-                        //         arr
-                        //     }
-                        // }
-
-                        var arr = [];
-                        data[k].forEach(function (d, i) {
-                            arr.push((o2.typeOf(d) === "object") ? getArrayJSONData(d, _self, _form) : d);
-                        });
-                        return arr;
-                        //return data[k];
+                        if (window.Proxy){
+                            var arr = new Proxy(data[k], {
+                                get: function(o, k){
+                                    return (o2.typeOf(o[k])==="object") ? getArrayJSONData(o[k], _self, _form) : o[k];
+                                },
+                                set: function(o, k, v){
+                                    o[k] = v;
+                                    if (callback) callback(o, k, _self);
+                                    return true;
+                                }
+                            });
+                            return arr;
+                        }else{
+                            var arr =[];
+                            data[k].forEach(function(d, i){
+                                arr.push((o2.typeOf(d)==="object") ? getArrayJSONData(d, _self, _form) : d);
+                            });
+                            return arr;
+                        }
                     } else {
                         return new MWF.xScript.JSONData(data[k], callback, k, _self, _form);
                     }
