@@ -1092,6 +1092,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "optionsGroup": "Options Group",
         "selectItemScriptInfo": "Return a list of optional value arrays; or a Promise object that resolves the optional value array.",
         "selectTemplete": "Custom Options Templete",
+        "firstPageNumber": "First Page Number",
 
         "showOptions": "Show Options",
         "onInput": "When inputting",
