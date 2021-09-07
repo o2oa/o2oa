@@ -369,6 +369,7 @@ if (!window.o2) {
                 "noConflict": (options && options.noConflict) || false,
                 "bind": (options && options.bind) || null,
                 "evalScripts": (options && options.evalScripts) || false,
+                "baseUrl": (options && options.baseUrl) || false,
                 "position": (options && options.position) || "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
             }
         };
@@ -842,19 +843,21 @@ if (!window.o2) {
                     scriptText = script;
                 });
 
-                var reg = /(?:href|src)\s*=\s*"([^"]*)"/gi;
-                var m = reg.exec(text);
-                while (m) {
-                    var l = m[0].length;
-                    var u = new URI(m[1], {base: baseUrl}).toString();
-                    var r = m[0].replace(m[1], u);
-                    var i = r.length - l;
-                    var left = text.substring(0, m.index);
-                    var right = text.substring(m.index + l, text.length);
-                    text = left + r + right;
-                    reg.lastIndex = reg.lastIndex + i;
+                if (op.baseUrl){
+                    var reg = /(?:href|src)\s*=\s*"([^"]*)"/gi;
+                    var m = reg.exec(text);
+                    while (m) {
+                        var l = m[0].length;
+                        var u = new URI(m[1], {base: baseUrl}).toString();
+                        var r = m[0].replace(m[1], u);
+                        var i = r.length - l;
+                        var left = text.substring(0, m.index);
+                        var right = text.substring(m.index + l, text.length);
+                        text = left + r + right;
+                        reg.lastIndex = reg.lastIndex + i;
 
-                    m = reg.exec(text);
+                        m = reg.exec(text);
+                    }
                 }
 
                 if (op.module) {
