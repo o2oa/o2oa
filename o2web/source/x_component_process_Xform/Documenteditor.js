@@ -3769,7 +3769,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 var content = this.getDocumentHtml();
                 o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
                     (new o2.OOXML.WML({
-                        "protection": (this.json.wordConversionEncryption===true)
+                        "protection": (this.json.wordConversionEncryption===true),
+                        "firstPageNumber": (this.json.firstPageNumber!==false)
                     })).load(content).then(function(oo_content){
 
                         if (!notSave) {
