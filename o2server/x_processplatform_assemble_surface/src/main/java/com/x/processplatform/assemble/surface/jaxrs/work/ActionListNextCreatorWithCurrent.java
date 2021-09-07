@@ -2,29 +2,15 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
-import com.x.base.core.project.jaxrs.InTerms;
-import com.x.base.core.project.jaxrs.LikeTerms;
-import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkControl;
-import com.x.processplatform.assemble.surface.jaxrs.work.ActionListNextWithApplication.Wo;
-import com.x.processplatform.assemble.surface.jaxrs.work.ActionListNextWithApplication.WoControl;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkStatus;
-import com.x.processplatform.core.entity.element.Application;
 
 class ActionListNextCreatorWithCurrent extends BaseAction {
 

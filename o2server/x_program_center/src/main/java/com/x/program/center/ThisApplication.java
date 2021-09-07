@@ -2,15 +2,11 @@ package com.x.program.center;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.BooleanUtils;
 
-import com.google.gson.internal.LinkedTreeMap;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.schedule.Area;
 import com.x.program.center.schedule.Cleanup;
 import com.x.program.center.schedule.CleanupCode;
@@ -22,7 +18,6 @@ import com.x.program.center.schedule.DingdingSyncOrganizationTrigger;
 import com.x.program.center.schedule.FireSchedule;
 import com.x.program.center.schedule.QiyeweixinSyncOrganization;
 import com.x.program.center.schedule.QiyeweixinSyncOrganizationTrigger;
-import com.x.program.center.schedule.RefreshApplications;
 import com.x.program.center.schedule.TriggerAgent;
 import com.x.program.center.schedule.WeLinkSyncOrganization;
 import com.x.program.center.schedule.WeLinkSyncOrganizationTrigger;
@@ -56,11 +51,8 @@ public class ThisApplication {
 	public static void init() {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
-			LoggerFactory.setLevel(Config.logLevel().x_program_center());
-			/* 20190927新报告机制 */
 			context().startQueue(centerQueue);
 			context().startQueue(logQueue);
-
 			/* 政务钉钉拉入同步 */
 			if (BooleanUtils.isTrue(Config.zhengwuDingding().getEnable())) {
 				/* 启动同步任务 */

@@ -50,10 +50,8 @@ public abstract class JettySeverTools {
 		server.addConnector(https);
 	}
 
-	protected static void addHttpConnector(Server server, Integer port, boolean persistentConnectionsEnable)
-			throws Exception {
+	protected static void addHttpConnector(Server server, Integer port, boolean persistentConnectionsEnable) {
 		HttpConfiguration config = new HttpConfiguration();
-		// config.setOutputBufferSize(1024 * 2048);
 		config.setPersistentConnectionsEnabled(persistentConnectionsEnable);
 		config.setRequestHeaderSize(8192 * 2);
 		config.setResponseHeaderSize(8192 * 2);
