@@ -127,12 +127,12 @@ public class CenterServerTools extends JettySeverTools {
 
 	private static RequestLog requestLog(CenterServer centerServer) throws Exception {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
-		asyncRequestLogWriter.setFilenameDateFormat("yyyy_MM_dd");
+		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");
 		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);
 		asyncRequestLogWriter.setRetainDays(centerServer.getRequestLogRetainDays());
 		asyncRequestLogWriter.setFilename(
-				Config.dir_logs().toString() + File.separator + "yyyy_MM_dd." + Config.node() + ".center.request.log");
+				Config.dir_logs().toString() + File.separator + "center.request.yyyyMMdd." + Config.node() + ".log");
 		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
 				+ "}t \"%r\" %s %O %{ms}T";
 		if (BooleanUtils.isTrue(centerServer.getRequestLogBodyEnable())) {

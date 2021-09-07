@@ -15,6 +15,8 @@ public class Log4j2Configuration {
 
 	}
 
+	private static final String CONVERSION_PATTERN = "%d{yyyy-MM-dd HH:mm:ss.SSS}";
+
 	public static void reconfigure() {
 
 		final PrintStream stderr = System.err;
@@ -33,7 +35,7 @@ public class Log4j2Configuration {
 
 	private static void addStandardOutAppender(final Configuration config, final PrintStream stdout) {
 		final PatternLayout layout = PatternLayout.newBuilder().withConfiguration(config)
-				.withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN).build();
+				.withPattern(CONVERSION_PATTERN).build();
 		final Appender appender = OutputStreamAppender.createAppender(layout, null, stdout, "stdout", true, true);
 		appender.start();
 		config.addAppender(appender);

@@ -18,6 +18,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 
+import jdk.jfr.Description;
+
 public class Logger {
 
 	private final org.slf4j.Logger internalLogger;
@@ -62,10 +64,12 @@ public class Logger {
 		}
 	}
 
+	@Deprecated
 	public void debug(EffectivePerson noUse, String message, Object... os) {
 		debug(message, os);
 	}
 
+	@Deprecated
 	public void debug(boolean noUse, String message, Object... os) {
 		debug(message, os);
 	}

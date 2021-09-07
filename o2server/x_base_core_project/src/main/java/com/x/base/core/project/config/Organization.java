@@ -17,7 +17,8 @@ public class Organization extends ConfigObject {
 
 	public static final Integer DEFAULT_UNITLEVELORDERNUMBERDIGITS = 10;
 	public static final Boolean DEFAULT_PICKPERSONWITHNAME = true;
-	public static final Boolean DEFAULT_PICKIDENTITYWITHNAME = true;
+	/* 默认改为false,避免自动补发待办 */
+	public static final Boolean DEFAULT_PICKIDENTITYWITHNAME = false;
 
 	public static Organization defaultInstance() {
 		return new Organization();

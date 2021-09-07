@@ -2,8 +2,6 @@ package com.x.query.assemble.surface;
 
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.surface.queue.QueueImportData;
 
 public class ThisApplication {
@@ -23,7 +21,6 @@ public class ThisApplication {
 	public static void init() {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
-			LoggerFactory.setLevel(Config.logLevel().x_query_assemble_surface());
 			context().startQueue(queueImportData);
 		} catch (Exception e) {
 			e.printStackTrace();
