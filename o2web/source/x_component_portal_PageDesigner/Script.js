@@ -29,7 +29,22 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
     },
     loadView: function(){
         this.content.show();
-        this.content.set("load", {"onSuccess": function(){
+        // this.content.set("load", {"onSuccess": function(){
+        //     this.node = this.content.getElement(".node");
+        //     this.listNode = this.content.getElement(".listNode");
+        //     this.listActionNode = this.content.getElement(".listActionNode");
+        //     this.actionButtons = this.content.getElements(".listActionButton");
+        //     this.listContentNode = this.content.getElement(".listContentNode");
+        //     this.separatorNode = this.content.getElement(".separatorNode");
+        //     this.scriptNode = this.content.getElement(".scriptNode");
+        //     this.scriptAreaNode = this.content.getElement(".scriptAreaNode");
+        //     this.listAreaNode = this.content.getElement(".listAreaNode");
+        //     this.scriptTabNode = this.content.getElement(".scriptTabNode");
+        //     o2.loadCss(this.stylePath, this.content, function(){
+        //         this.load();
+        //     }.bind(this));
+        // }.bind(this)}).loadHtml(this.viewPath,{"module": this});
+        this.content.loadHtml(this.viewPath,{"module": this}, function(){
             this.node = this.content.getElement(".node");
             this.listNode = this.content.getElement(".listNode");
             this.listActionNode = this.content.getElement(".listActionNode");
@@ -43,7 +58,7 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
             o2.loadCss(this.stylePath, this.content, function(){
                 this.load();
             }.bind(this));
-        }.bind(this)}).load(this.viewPath);
+        }.bind(this));
     },
     load: function(){
         this.actionButtons[0].set("text", this.designer.lp.byModule);
@@ -57,8 +72,10 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.setEvent();
 
         //form, page
+        debugger;
         if (!this.data.jsheader) this.data.jsheader = {"code": "", "html": ""};
         this.addScriptItem(this.data.jsheader, "code", this.data, "jsheader");
+        this.addScriptItem(this.data.css, "code", this.data, "css", "", "css");
         this.addScriptItem(this.data.validationOpinion, "code", this.data, "validationOpinion");
         this.addScriptItem(this.data.validationRoute, "code", this.data, "validationRoute");
         this.addScriptItem(this.data.validationFormCustom, "code", this.data, "validationFormCustom");
@@ -69,6 +86,29 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         Object.each(this.data.moduleList, function(v){
             this.createModuleScript(v);
         }.bind(this));
+    },
+    reload: function(){
+        debugger;
+        this.items.forEach(function(i){
+            i.reload();
+        });
+        // while (this.items.length) this.items[0].destroy();
+        // debugger;
+        //
+        // if (!this.data.jsheader) this.data.jsheader = {"code": "", "html": ""};
+        // this.addScriptItem(this.data.jsheader, "code", this.data, "jsheader");
+        // this.addScriptItem(this.data.css, "code", this.data, "css", "", "css");
+        // this.addScriptItem(this.data.validationOpinion, "code", this.data, "validationOpinion");
+        // this.addScriptItem(this.data.validationRoute, "code", this.data, "validationRoute");
+        // this.addScriptItem(this.data.validationFormCustom, "code", this.data, "validationFormCustom");
+        // Object.each(this.data.events, function(event, key){
+        //     this.addScriptItem(event, "code", this.data, this.designer.lp.events+"."+key);
+        // }.bind(this));
+        //
+        // Object.each(this.data.moduleList, function(v){
+        //     this.createModuleScript(v);
+        // }.bind(this));
+
     },
     createModuleScript: function(v){
         switch (v.type){
@@ -172,6 +212,8 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadStatementSelectorScript(v); break;
             case "Importer":
                 this.loadImporterScript(v); break;
+            case "Documenteditor":
+                this.loadDocumenteditorScript(v); break;
         }
         this.bindDataId(v);
     },
@@ -332,6 +374,10 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.addScriptItem(data.excelName, "code", data, "excelName");
         this.loadEventsScript(data);
     },
+    loadDocumenteditorScript: function(data){
+        this.addScriptItem(data.allowEditScript, "code", data, "allowEditScript");
+        this.loadEventsScript(data);
+    },
 
     loadActionbarScript: function(data){
         if (data.tools){
@@ -477,9 +523,11 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         }.bind(this));
     },
 
-    addScriptItem: function(data, key, module, path, par){
-        if (!data) return null;
-        var item = new MWF.xApplication.portal.PageDesigner.Script.Item(this, data, key, module, path, par);
+    addScriptItem: function(data, key, module, path, par, mode){
+        //if (!data) data = {};
+        if (!module[path]) module[path] = {};
+        data = module[path];
+        var item = new MWF.xApplication.portal.PageDesigner.Script.Item(this, data, key, module, path, par, mode);
         this.items.push(item);
         return item;
     },
@@ -648,13 +696,13 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         var keys = Object.keys(this.moduleCategorys);
         keys.each(function(k){
             var category = this.moduleCategorys[k];
-            if (category) if (!category.items.length) category.destroy();
+            if (category) if (!category.items.length) category.destroy(k);
         }.bind(this));
 
         keys = Object.keys(this.pathCategorys);
         keys.each(function(k){
             var category = this.pathCategorys[k];
-            if (category) if (!category.childrenNode.getFirst()) category.destroy();
+            if (category) if (!category.childrenNode.getFirst()) category.destroy(k);
         }.bind(this));
     }
 });
@@ -732,9 +780,9 @@ MWF.xApplication.portal.PageDesigner.Script.Category = new Class({
             item.resetText(id);
         }.bind(this));
     },
-    destroy: function(){
-        delete this.script.moduleCategorys[this.module.id];
-        delete this.script.pathCategorys[this.name];
+    destroy: function(k){
+        delete this.script.moduleCategorys[k];
+        delete this.script.pathCategorys[k];
         this.node.destroy();
         this.script.checkCategorys();
         MWF.release(this);
@@ -743,7 +791,7 @@ MWF.xApplication.portal.PageDesigner.Script.Category = new Class({
 
 
 MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
-    initialize: function(script, data, key, module, path, par){
+    initialize: function(script, data, key, module, path, par, mode){
         this.script = script;
         this.data = data;
         this.key = key;
@@ -751,18 +799,22 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
         this.path = path;
         this.text = path;
         this.par = par;
+        this.mode = mode;
         this.bind();
         if (this.data[this.key]) this.createNode();
     },
     reload: function(){
         // if (this.value){
-        if (!this.node) this.createNode();
+        if (this.data[this.key]){
+            if (!this.node) this.createNode();
             //if (this.isShow)
-        if (this.jsEditor){
-            this.jsEditor.setValue(this.value);
-            //this.editor.session.setValue(this.value);
-            //this.jsEditor.node.show();
+            if (this.jsEditor){
+                this.jsEditor.setValue(this.value);
+                //this.editor.session.setValue(this.value);
+                //this.jsEditor.node.show();
+            }
         }
+
         // }else{
         //     if (this.node) this.node.destroy();
         //     if (this.isShow){
@@ -895,7 +947,8 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
         this.jsEditor = new MWF.widget.JavascriptEditor(this.scriptContentNode,{
             "option": {
                 "value": this.data[this.key],
-                "lineNumbers": true
+                "lineNumbers": true,
+                "mode": this.mode || "javascript"
             },
             "onPostLoad": function(){
                 this.editor = this.jsEditor.editor;
@@ -960,6 +1013,7 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
     },
     destroy: function(){
         this.script.items.erase(this);
+        if (this.data.editors) this.data.editors.erase(this);
         var category = this.script.moduleCategorys[(this.module.type==="Form" || this.module.type==="Page") ? this.module.type : this.module.id];
         if (category) category.items.erase(this);
         if (this.scriptPage) this.scriptPage.closeTab();
