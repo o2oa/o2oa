@@ -2329,6 +2329,21 @@ if (!window.o2) {
                 return this.some(function (item) {
                     return (arr.indexOf(item) !== -1);
                 })
+            },
+            "add": function(newKey, newValue, overwrite){
+                if (arguments.length<2){
+                    this[this.length] = newKey;
+                    //this.push(newKey);
+                }else{
+                    if (o2.typeOf(newKey)=="number"){
+                        if (newKey<this.length){
+                            if (overwrite) this[newKey] = newValue;
+                        }else if (newKey==this.length){
+                            //this.push(newValue);
+                            this[this.length] = newValue;
+                        }
+                    }
+                }
             }
         });
         if (!Array.prototype.find) {
