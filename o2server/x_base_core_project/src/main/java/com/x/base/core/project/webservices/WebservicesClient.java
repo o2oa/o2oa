@@ -29,10 +29,9 @@ public class WebservicesClient {
 		return result;
 	}
 	
-	public static String jaxwsXml(String wsdlURL, String soapXML) throws Exception {
+	public  String jaxwsXml(String wsdlURL, String soapXML) throws Exception {
 	      List<NameValuePair> heads = new ArrayList<>();
 	      heads.add(new NameValuePair(ConnectionAction.CONTENT_TYPE,MediaType.TEXT_XML));
 		  return HttpConnection.postAsString( wsdlURL , heads, soapXML);
 	}
-	
 }
