@@ -4,7 +4,7 @@
     "id": "1.1",
     "position" : "left",
     "styles" : "toolbarTextNode",
-    "condition" : "onlock",
+    "condition" : "function(d){ return d.APPEALABLE.configValue == 'false' }",
     "sub": []
   },
 //  {
@@ -21,6 +21,7 @@
     "icon": "agree.png",
     "position" : "left",
     "styles" : "toolbarItemNode",
+    "condition" : "function(d){ return d.APPEALABLE.configValue !== 'false' && d.APPEAL_AUDIFLOWTYPE.configValue === 'BUILTIN' }",
     "sub": []
   },
   {
@@ -30,6 +31,7 @@
     "icon": "deny.png",
     "position" : "left",
     "styles" : "toolbarItemNode",
+    "condition" : "function(d){ return d.APPEALABLE.configValue !== 'false' && d.APPEAL_AUDIFLOWTYPE.configValue === 'BUILTIN' }",
     "sub": []
   }
 ]
