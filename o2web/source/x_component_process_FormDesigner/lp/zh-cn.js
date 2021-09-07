@@ -1099,7 +1099,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "optionsGroup": "可选项分组",
         "selectItemScriptInfo": "返回一个可选值数组列表；或者一个resolve了可选值数组的Promise对象",
         "selectTemplete": "自定义选项模板",
-
+        "firstPageNumber": "首页页码",
 
         "showOptions": "显示选项",
         "onInput": "输入时",

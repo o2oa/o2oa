@@ -220,6 +220,13 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
+					<td class="editTableTitle">{{$.lp.firstPageNumber}}:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" name="firstPageNumber" text{($.firstPageNumber!==false)?'checked':''} type="radio" value="true"/>{{$.lp.show}}
+						<input class="editTableRadio" name="firstPageNumber" text{($.firstPageNumber===false)?'checked':''} type="radio" value="false"/>{{$.lp.hide}}
+					</td>
+				</tr>
+				<tr>
 					<td class="editTableTitle">{{$.lp.wordConversionEncryption}}:</td>
 					<td class="editTableValue">
 <!--						<input class="editTableRadio" name="wordConversionEncryption" onclick="if (this.checked) {$('text{$.pid}toWordPasswordArea').setStyle('display', 'block')}" text{($.wordConversionEncryption===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}-->
