@@ -15,11 +15,18 @@
 		  </tr>
 		</table>
 
-		<div class="MWFHtmlEditorArea" name="vueTemplate" title="Vue Template (S)"></div>
-		<div class="MWFScriptArea" name="vueApp" title="Vue App (S)"></div>
-		<div class="MWFCssArea" name="vueCss" title="Vue Css (S)"></div>
+		<div class="MWFElCommonPreview mainColor_bg" style="width: 80%; margin: 10px auto; height: 24px; line-height: 24px; border-radius: 15px; text-align: center; cursor: pointer;">Preview</div>
+
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Template</div>
+		<div style="display: text{($.vueTemplate) ? 'block': 'none'}" class="MWFHtmlEditorArea" name="vueTemplate" title="Vue Template (S)"></div>
+
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue App</div>
+		<div style="display: text{($.vueApp && $.vueApp.code) ? 'block': 'none'}" class="MWFScriptArea" name="vueApp" title="Vue App (S)"></div>
+
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Css</div>
+		<div style="display: text{($.vueCss && $.vueCss.code) ? 'block': 'none'}" class="MWFCssArea" name="vueCss" title="Vue Css (S)"></div>
 		
-		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+<!--		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>-->
 		
 	</div>
 	<div title="{{$.lp.event}}"  class="MWFTab">
