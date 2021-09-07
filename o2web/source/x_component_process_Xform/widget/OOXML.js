@@ -61,7 +61,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             "            mc:Ignorable=\"w14 w15 w16se w16cid w16 w16cex w16sdtdh\">",
         "xmlHead": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>",
         "divAsP": false,
-        "protection": false
+        "protection": false,
+        "firstPageNumber": true,
     },
     initialize: function(options){
         this.setOptions(options);
@@ -77,7 +78,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         return dpi;
     },
     getZipTemplate: function(){
-        return fetch(this.path+"template.zip").then(function(res){
+        var zipFileName = (this.options.firstPageNumber) ? "template.zip" : "template_noPageFirst.zip";
+        return fetch(this.path+zipFileName).then(function(res){
             return res.blob().then(JSZip.loadAsync);
         });
     },
