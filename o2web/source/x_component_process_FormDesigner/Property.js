@@ -102,6 +102,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                     this.loadElSelectIcon();
                     this.loadVueElementUI();
+                    this.loadElCommonPreview();
 
                     this.loadHelp();
                     // this.loadScriptIncluder();
@@ -699,6 +700,17 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     //         if (callback) callback();
     //     }
     // },
+    loadElCommonPreview: function(){
+        var nodes = this.propertyContent.getElements(".MWFElCommonPreview");
+        if (nodes.length) {
+            nodes.each(function(node){
+                node.removeEvents("click")
+                node.addEvent("click", function(){
+                    if (this.module.resetElement) this.module.resetElement();
+                }.bind(this));
+            }.bind(this));
+        }
+    },
     loadVueElementUI: function(){
         var nodes = this.propertyContent.getElements(".MWFElementColor");
         if (nodes.length) {
