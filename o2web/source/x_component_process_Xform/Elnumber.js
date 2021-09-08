@@ -47,17 +47,17 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
         if (!this.json.readonly) this.json.readonly = false;
         if (!this.json.description) this.json.description = "";
     },
-    appendVueExtend: function(app){
-        if (!app.methods) app.methods = {};
-        app.methods.$loadElEvent = function(ev){
-            debugger;
-            this.validationMode();
-            if (ev==="change") this._setBusinessData(this.getInputData());
-            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
-                this.form.Macro.fire(this.json.events[ev].code, this, event);
-            }
-        }.bind(this);
-    },
+    // appendVueExtend: function(app){
+    //     if (!app.methods) app.methods = {};
+    //     app.methods.$loadElEvent = function(ev){
+    //         debugger;
+    //         this.validationMode();
+    //         if (ev==="change") this._setBusinessData(this.getInputData());
+    //         if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
+    //             this.form.Macro.fire(this.json.events[ev].code, this, event);
+    //         }
+    //     }.bind(this);
+    // },
     _createElementHtml: function(){
         var html = "<el-input-number";
         html += " v-model=\""+this.json.id+"\"";
@@ -73,22 +73,25 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
         html += " :placeholder=\"description\"";
 
         this.options.elEvents.forEach(function(k){
-            html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+            html += " @"+k+"=\"$loadElEvent_"+k.camelCase()+"\"";
         });
+        // this.options.elEvents.forEach(function(k){
+        //     html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+        // });
 
         if (this.json.elProperties){
             Object.keys(this.json.elProperties).forEach(function(k){
                 if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
             }, this);
         }
-
-        if (this.json.elStyles){
-            var style = "";
-            Object.keys(this.json.elStyles).forEach(function(k){
-                if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-            }, this);
-            html += " style=\""+style+"\"";
-        }
+        if (this.json.elStyles) html += " :style=\"elStyles\"";
+        // if (this.json.elStyles){
+        //     var style = "";
+        //     Object.keys(this.json.elStyles).forEach(function(k){
+        //         if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+        //     }, this);
+        //     html += " style=\""+style+"\"";
+        // }
 
         html += ">";
 
