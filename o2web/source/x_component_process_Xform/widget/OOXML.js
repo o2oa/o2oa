@@ -78,7 +78,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         return dpi;
     },
     getZipTemplate: function(){
-        var zipFileName = (this.options.firstPageNumber) ? "template.zip" : "template_noPageFirst.zip";
+        //var zipFileName = (this.options.firstPageNumber) ? "template.zip" : "template.zip";
+        var zipFileName = "template.zip";
         return fetch(this.path+zipFileName).then(function(res){
             return res.blob().then(JSZip.loadAsync);
         });
@@ -1399,8 +1400,9 @@ debugger;
             positionV = (positionV*12700).toInt();
 
             var oo_anchor = this.createEl(oo_doc, "anchor", "wp");
+            var behindDoc = (msoStyle["mso-behinddoc"]=="true") ? "1" : "0";
             this.setAttrs(oo_anchor, {
-                "distT": "0", "distB": "0", "distL": "0", "distR": "0", "simplePos": "false","behindDoc": "false","relativeHeight": "500", "locked": "false", "layoutInCell":"true", "allowOverlap": "false"
+                "distT": "0", "distB": "0", "distL": "0", "distR": "0", "simplePos": "0","behindDoc": behindDoc, "relativeHeight": "500", "locked": "0", "layoutInCell":"1", "allowOverlap": "0"
             }, false);
             oo_run.appendChild(oo_drawing);
             oo_drawing.appendChild(oo_anchor);
@@ -1946,7 +1948,10 @@ debugger;
                     default:
                     //nothing
                 }
-
+            }
+            if (!this.options.firstPageNumber){
+                var oo_titlePg = this.createEl(oo_body.ownerDocument, "titlePg");
+                oo_sectPr.appendChild(oo_titlePg);
             }
         }
 
