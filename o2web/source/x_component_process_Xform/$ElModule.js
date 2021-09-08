@@ -98,12 +98,32 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         return app;
     },
     appendVueMethods: function(methods){},
-    appendVueExtend: function(app){},
+    appendVueExtend: function(app){
+        if (!app.methods) app.methods = {};
+        this.options.elEvents.forEach(function(k){
+            this._createEventFunction(app, k);
+        }.bind(this));
+    },
+    appendVueEvents: function(methods){
+        this.options.elEvents.forEach(function(k){
+            this._createEventFunction(methods, k);
+        }.bind(this));
+    },
+    _createEventFunction: function(methods, k){
+        methods["$loadElEvent_"+k.camelCase()] = function(){
+            this.validationMode();
+            //if (k==="change") this._setBusinessData(this.getInputData());
+            if (this.json.events && this.json.events[k] && this.json.events[k].code){
+                this.form.Macro.fire(this.json.events[k].code, this, arguments);
+            }
+        }.bind(this);
+    },
     _createVueMethods: function(){
         var methods = {};
         if (this.json.vueMethods && this.json.vueMethods.code){
             methods = this.form.Macro.exec(this.json.vueMethods.code, this);
         }
+        this.appendVueEvents(methods);
         this.appendVueMethods(methods);
         return methods || {};
     },

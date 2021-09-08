@@ -784,3 +784,24 @@ bind.expire = {
         try{expire.setDate(date);}catch(e){}
     }
 };
+
+
+var app = this.form.getApp();
+var _form = app.appForm;
+
+_form.readedWork = function(){
+    var read = null;
+    for (var i = 0; i < _form.businessData.readList.length; i++) {
+        if (_form.businessData.readList[i].person === layout.session.user.distinguishedName) {
+            read = _form.businessData.readList[i];
+            break;
+        }
+    }
+    app.action.setReaded(function () {
+        if (layout.mobile) {
+            _form.finishOnMobile();
+        } else {
+            app.reload();
+        }
+    }, null, read.id, read);
+}

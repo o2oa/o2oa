@@ -1,5 +1,5 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
-/** @class Elinput 基于Element UI的输入框组件。
+/** @class Elselect 基于Element UI的选择框组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -12,7 +12,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elinput# */
+    /** @lends o2.xApplication.process.Xform.Elselect# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
@@ -20,28 +20,13 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         "elEvents": ["focus", "blur", "change", "visible-change", "remove-tag", "clear"]
     },
+    _loadNode: function(){
+        if (this.isReadonly()) this.json.disabled = true;
+        this._loadNodeEdit();
+    },
     _appendVueData: function(){
         this.form.Macro.environment.data.check(this.json.id);
-        //if (!this.json[this.json.id]){
         this.json[this.json.id] = this._getBusinessData();
-        //}
-
-        // "size" : "default",
-        //     "clearable" : false,
-        //     "multiple" : false,
-        //     "collapseTags" : false,
-        //     "filterable" : false,
-        //     "allowCreate" : false,
-        //     "remote" : false,
-        //     "popperClass" : "",
-        //     "multipleLimit" : 0,
-        //     "noMatchText" : "",
-        //     "noDataText": "",
-        //     "loadingText" : "",
-        //     "itemScript": {},
-        // "itemGroupScript": {},
-        // "filterMethod": {},
-        // "remoteMethod": {},
 
         if (!this.json.clearable) this.json.clearable = false;
         if (!this.json.size) this.json.size = "";
@@ -64,28 +49,21 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
 
         if (this.json.multiple===true) if (!this.json[this.json.id] || !this.json[this.json.id].length) this.json[this.json.id] = [];
     },
-    appendVueExtend: function(app){
-        if (!app.methods) app.methods = {};
-        app.methods.$loadElEvent = function(ev){
-            this.validationMode();
-            if (ev==="change") this._setBusinessData(this.getInputData());
-            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
-                this.form.Macro.fire(this.json.events[ev].code, this, null);
-            }
-        }.bind(this);
+        appendVueMethods: function(methods){
         if (this.json.filterMethod && this.json.filterMethod.code){
             var fn = this.form.Macro.exec(this.json.filterMethod.code, this);
-            app.methods.$filterMethod = function(){
+            methods.$filterMethod = function(){
                 fn.apply(this, arguments);
             }.bind(this)
         }
         if (this.json.remoteMethod && this.json.remoteMethod.code){
             var fn = this.form.Macro.exec(this.json.remoteMethod.code, this);
-            app.methods.$remoteMethod = function(){
+            methods.$remoteMethod = function(){
                 fn.apply(this, arguments);
             }.bind(this)
         }
     },
+
     _setOptionsWithCode: function(code){
         var v = this.form.Macro.exec(code, this);
         if (v.then){
@@ -148,7 +126,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         }
 
         this.options.elEvents.forEach(function(k){
-            html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+            html += " @"+k+"=\"$loadElEvent_"+k.camelCase()+"\"";
         });
 
         if (this.json.elProperties){
@@ -162,7 +140,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
 
         var itemFor = "item in options";
         if (this.json.itemsGroup===true){
-            html += "<el-option-group v-for=\"group in options\" :key=\"group.label\" :label=\"group.label\"";
+            html += "<el-option-group v-for=\"group in options\" :key=\"group.label\" :label=\"group.label\" :disabled=\"group.disabled\"";
             if (this.json.elGroupProperties){
                 Object.keys(this.json.elGroupProperties).forEach(function(k){
                     if (this.json.elGroupProperties[k]) html += " "+k+"=\""+this.json.elGroupProperties[k]+"\"";
@@ -173,7 +151,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
 
             itemFor = "item in group.options";
         }
-        html += "<el-option v-for=\""+itemFor+"\" :key=\"item.value\" :label=\"item.label\" :value=\"item.value\"";
+        html += "<el-option v-for=\""+itemFor+"\" :key=\"item.value\" :label=\"item.label\" :value=\"item.value\" :disabled=\"item.disabled\"";
         if (this.json.elOptionProperties){
             Object.keys(this.json.elOptionProperties).forEach(function(k){
                 if (this.json.elOptionProperties[k]) html += " "+k+"=\""+this.json.elOptionProperties[k]+"\"";
@@ -192,5 +170,22 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
 
         html += "</el-select>";
         return html;
-    }
+    },
+    __setValue: function(value){
+        this.moduleValueAG = null;
+        this._setBusinessData(value);
+        this.json[this.json.id] = value;
+        //if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+        this.fieldModuleLoaded = true;
+        return value;
+    },
+    __setData: function(data){
+        var old = this.getInputData();
+        this._setBusinessData(data);
+        this.json[this.json.id] = data;
+        //if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+        if (old!==data) this.fireEvent("change");
+        this.moduleValueAG = null;
+        this.validationMode();
+    },
 }); 

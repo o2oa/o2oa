@@ -45,7 +45,7 @@
     "className": "Elselect"
   },
   "elcascader": {
-    "fontIcon": "el-icon-caret-bottom",
+    "fontIcon": "el-icon-d-arrow-right",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_cascader,
     "className": "Elcascader"
   },

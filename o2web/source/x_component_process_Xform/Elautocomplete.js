@@ -45,12 +45,12 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
     },
     appendVueExtend: function(app){
         if (!app.methods) app.methods = {};
-        app.methods.$loadElEvent = function(ev){
-            this.validationMode();
-            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
-                this.form.Macro.fire(this.json.events[ev].code, this, event);
-            }
-        }.bind(this);
+        // app.methods.$loadElEvent = function(ev){
+        //     this.validationMode();
+        //     if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
+        //         this.form.Macro.fire(this.json.events[ev].code, this, event);
+        //     }
+        // }.bind(this);
         if (this.json.itemType!=='script'){
             app.methods.$fetchSuggestions = function(qs){
                 if (this.json.itemValues){
@@ -112,22 +112,25 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         html += " :popper-append-to-body=\"false\"";
 
         this.options.elEvents.forEach(function(k){
-            html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+            html += " @"+k+"=\"$loadElEvent_"+k.camelCase()+"\"";
         });
+        // this.options.elEvents.forEach(function(k){
+        //     html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+        // });
 
         if (this.json.elProperties){
             Object.keys(this.json.elProperties).forEach(function(k){
                 if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
             }, this);
         }
-
-        if (this.json.elStyles){
-            var style = "";
-            Object.keys(this.json.elStyles).forEach(function(k){
-                if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-            }, this);
-            html += " style=\""+style+"\"";
-        }
+        if (this.json.elStyles) html += " :style=\"elStyles\"";
+        // if (this.json.elStyles){
+        //     var style = "";
+        //     Object.keys(this.json.elStyles).forEach(function(k){
+        //         if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+        //     }, this);
+        //     html += " style=\""+style+"\"";
+        // }
 
         html += ">";
 

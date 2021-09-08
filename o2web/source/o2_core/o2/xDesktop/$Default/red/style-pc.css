@@ -824,6 +824,7 @@
     background: #ffffff;
     cursor: pointer;
     font-size: 12px;
+    color: #333333;
 }
 .layout_menu_scale_zoomSlider {
     width: 110px;
