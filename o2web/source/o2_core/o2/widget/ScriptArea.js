@@ -80,11 +80,11 @@ o2.widget.ScriptArea = new Class({
         this.jsEditor.max();
         this.container.inject(obj, "top");
         this.container.setStyles({
-            //"position": "absolute",
+            "position": "relative",
             // "top": coordinates.top,
             // "left": coordinates.left,
-            "top": coordinates.top+"px",
-            "left": coordinates.left+"px",
+            //"top": coordinates.top+"px",
+            //"left": coordinates.left+"px",
             //"width": coordinates.width,
             "width": "100%",
             "height": coordinates.height-2,

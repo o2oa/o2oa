@@ -41,10 +41,16 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
 
         if (!this.json.max || !this.json.max.toFloat()) this.json.max = 100;
         if (!this.json.min || !this.json.min.toFloat()) this.json.min = 0;
+        this.json.min = this.json.min.toFloat();
+        this.json.max = this.json.max.toFloat();
+
         if (!this.json.step || !this.json.step.toFloat()) this.json.step = 1;
+        this.json.step = this.json.step.toFloat();
+
         if (this.json.showTooltip!==false) this.json.showTooltip = true;
 
         if (this.json.vertical && !this.json.height) this.json.height = "100px";
+        if (!this.json.height) this.json.height = "";
         if (!this.json.inputSize) this.json.inputSize = "";
         if (!this.json.tooltipClass) this.json.tooltipClass = "";
 
@@ -58,13 +64,13 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
     },
     appendVueExtend: function(app){
         if (!app.methods) app.methods = {};
-        app.methods.$loadElEvent = function(ev){
-            this.validationMode();
-            if (ev==="change") this._setBusinessData(this.getInputData());
-            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
-                this.form.Macro.fire(this.json.events[ev].code, this, event);
-            }
-        }.bind(this);
+        // app.methods.$loadElEvent = function(ev){
+        //     this.validationMode();
+        //     if (ev==="change") this._setBusinessData(this.getInputData());
+        //     if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
+        //         this.form.Macro.fire(this.json.events[ev].code, this, event);
+        //     }
+        // }.bind(this);
 
         if (this.json.formatTooltip && this.json.formatTooltip.code){
             var fun = this.form.Macro.exec(this.json.formatTooltip.code, this);
@@ -98,22 +104,25 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
         }
 
         this.options.elEvents.forEach(function(k){
-            html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+            html += " @"+k+"=\"$loadElEvent_"+k.camelCase()+"\"";
         });
+        // this.options.elEvents.forEach(function(k){
+        //     html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+        // });
 
         if (this.json.elProperties){
             Object.keys(this.json.elProperties).forEach(function(k){
                 if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
             }, this);
         }
-
-        if (this.json.elStyles){
-            var style = "";
-            Object.keys(this.json.elStyles).forEach(function(k){
-                if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-            }, this);
-            html += " style=\""+style+"\"";
-        }
+        if (this.json.elStyles) html += " :style=\"elStyles\"";
+        // if (this.json.elStyles){
+        //     var style = "";
+        //     Object.keys(this.json.elStyles).forEach(function(k){
+        //         if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+        //     }, this);
+        //     html += " style=\""+style+"\"";
+        // }
         html += ">";
         html += "</el-slider>";
         return html;

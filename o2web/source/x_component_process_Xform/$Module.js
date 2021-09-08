@@ -217,7 +217,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 v = this._getBusinessSectionDataByPerson();
             }else{
                 // return this.form.businessData.data[this.json.id] || "";
-                return this.getBusinessDataById() || "";
+                var value = this.getBusinessDataById();
+                return (o2.typeOf(value)!=="null") ? value : "";
+                //return this.getBusinessDataById() || "";
             }
         }
         //if (o2.typeOf(v)==="string") v = o2.dtxt(v);

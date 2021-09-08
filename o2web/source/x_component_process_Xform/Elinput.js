@@ -41,16 +41,16 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         if (!this.json.resize) this.json.resize = "none";
         if (!this.json.description) this.json.description = "";
     },
-    appendVueExtend: function(app){
-        if (!app.methods) app.methods = {};
-        app.methods.$loadElEvent = function(ev){
-            this.validationMode();
-            if (ev==="change") this._setBusinessData(this.getInputData());
-            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
-                this.form.Macro.fire(this.json.events[ev].code, this, event);
-            }
-        }.bind(this);
-    },
+    // appendVueExtend: function(app){
+    //     if (!app.methods) app.methods = {};
+    //     app.methods.$loadElEvent = function(ev){
+    //         this.validationMode();
+    //         if (ev==="change") this._setBusinessData(this.getInputData());
+    //         if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
+    //             this.form.Macro.fire(this.json.events[ev].code, this, event);
+    //         }
+    //     }.bind(this);
+    // },
     _createElementHtml: function(){
         var html = "<el-input";
         html += " v-model=\""+this.json.id+"\"";
@@ -70,8 +70,11 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         html += " :type=\"inputType\"";
         html += " :placeholder=\"description\"";
 
+        // this.options.elEvents.forEach(function(k){
+        //     html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+        // });
         this.options.elEvents.forEach(function(k){
-            html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+            html += " @"+k+"=\"$loadElEvent_"+k.camelCase()+"\"";
         });
 
         if (this.json.elProperties){
@@ -80,13 +83,14 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
             }, this);
         }
 
-        if (this.json.elStyles){
-            var style = "";
-            Object.keys(this.json.elStyles).forEach(function(k){
-                if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-            }, this);
-            html += " style=\""+style+"\"";
-        }
+        if (this.json.elStyles) html += " :style=\"elStyles\"";
+        // if (this.json.elStyles){
+        //     var style = "";
+        //     Object.keys(this.json.elStyles).forEach(function(k){
+        //         if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+        //     }, this);
+        //     html += " style=\""+style+"\"";
+        // }
 
         html += ">";
 
