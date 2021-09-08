@@ -58,13 +58,14 @@ MWF.xApplication.process.Xform.Elbutton = MWF.APPElbutton =  new Class(
             }, this);
         }
 
-        if (this.json.elStyles){
-            var style = "";
-            Object.keys(this.json.elStyles).forEach(function(k){
-                if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-            }, this);
-            html += " style=\""+style+"\"";
-        }
+        if (this.json.elStyles) html += " :style=\"elStyles\"";
+        // if (this.json.elStyles){
+        //     var style = "";
+        //     Object.keys(this.json.elStyles).forEach(function(k){
+        //         if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+        //     }, this);
+        //     html += " style=\""+style+"\"";
+        // }
 
         html += ">"+((this.json.circle!=="yes" && this.json.isText!=="no") ? (this.json.name || this.json.id) : "")+"</el-button>";
         return html;

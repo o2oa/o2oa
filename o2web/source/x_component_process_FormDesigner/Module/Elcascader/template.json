@@ -1,0 +1,122 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Elcascader",
+	"description": "",
+
+	"isReadonly" : false,
+	"size" : "default",
+	"clearable" : false,
+	"collapseTags" : false,
+	"filterable" : false,
+
+	"popperClass" : "",
+	"showAllLevels": true,
+	"separator": "/",
+
+	"itemsScript": {},
+	"filterMethod": {},
+	"lazyLoadScript": {},
+	"beforeFilter": {},
+
+	"props": {
+		"expandTrigger": "click",
+		"multiple": false,
+		"checkStrictly": false,
+		"emitPath": true,
+		"lazy": false,
+		"lazyLoad": null,
+		"value": "value",
+		"label": "label",
+		"children": "children",
+		"disabled": "disabled",
+		"leaf": "leaf"
+	},
+
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+	"vueSlot": "",
+
+	"elProperties": {},
+	"elStyles": {},
+
+	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
+		"visible-change": {
+			"code": "",
+			"html": ""
+		},
+		"remove-tag": {
+			"code": "",
+			"html": ""
+		},
+		"expand-change":{
+			"code": "",
+			"html": ""
+		},
+		"before-filter": {
+			"code": "",
+			"html": ""
+		},
+		"change": {
+			"code": "",
+			"html": ""
+		},
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

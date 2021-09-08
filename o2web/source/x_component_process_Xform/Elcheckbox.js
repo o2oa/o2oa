@@ -126,13 +126,15 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
                 if (this.json.elGroupProperties[k]) html += " "+k+"=\""+this.json.elGroupProperties[k]+"\"";
             }, this);
         }
-        if (this.json.elGroupStyles){
-            var style = "";
-            Object.keys(this.json.elGroupStyles).forEach(function(k){
-                if (this.json.elGroupStyles[k]) style += k+":"+this.json.elGroupStyles[k]+";";
-            }, this);
-            html += " style=\""+style+"\"";
-        }
+        // if (this.json.elGroupStyles){
+        //     var style = "";
+        //     Object.keys(this.json.elGroupStyles).forEach(function(k){
+        //         if (this.json.elGroupStyles[k]) style += k+":"+this.json.elGroupStyles[k]+";";
+        //     }, this);
+        //     html += " style=\""+style+"\"";
+        // }
+        if (this.json.elGroupStyles) html += " :style=\"elGroupStyles\"";
+
         html += " >";
 
         radioValues.each(function(item){
@@ -150,13 +152,14 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
                 }, this);
             }
 
-            var radiostyle = "box-sizing: border-box!important;";
-            if (this.json.elStyles){
-                Object.keys(this.json.elStyles).forEach(function(k){
-                    if (this.json.elStyles[k]) radiostyle += k+":"+this.json.elStyles[k]+";";
-                }, this);
-            }
-            html += " style=\""+radiostyle+"\"";
+            // var radiostyle = "box-sizing: border-box!important;";
+            // if (this.json.elStyles){
+            //     Object.keys(this.json.elStyles).forEach(function(k){
+            //         if (this.json.elStyles[k]) radiostyle += k+":"+this.json.elStyles[k]+";";
+            //     }, this);
+            // }
+            // html += " style=\""+radiostyle+"\"";
+            if (this.json.elStyles) html += " :style=\"elStyles\"";
 
             html += " >"+text;
             html += (this.json.buttonRadio) ? "</el-checkbox-button>" : "</el-checkbox>";
