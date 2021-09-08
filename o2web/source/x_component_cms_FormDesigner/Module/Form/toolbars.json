@@ -1,0 +1,120 @@
+[
+  {
+    "type": "MWFToolBarButton",
+    "img": "close.png",
+    "img_over": "close_over.png",
+    "title": "{{$.lp.closeTitle}}",
+    "action": "closeDocument",
+    "text": "{{$.lp.close}}",
+    "id": "action_close",
+    "read": true,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "edit.png",
+    "img_over": "edit_over.png",
+    "title": "{{$.lp.editTitle}}",
+    "action": "editDocument",
+    "id": "action_edit",
+    "text": "{{$.lp.edit}}",
+    "control": "allowEditDocument",
+    "read": true,
+    "edit" : false
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "save.png",
+    "img_over": "save_over.png",
+    "title": "{{$.lp.saveTitle}}",
+    "action": "saveDocument",
+    "text": "{{$.lp.save}}",
+    "id": "action_saveData",
+    "control": "allowSave",
+    "read": false,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "submit.png",
+    "img_over": "submit_over.png",
+    "title": "{{$.lp.publishTitle}}",
+    "action": "publishDocument",
+    "text": "{{$.lp.publish}}",
+    "id": "action_publishDocument",
+    "control": "allowPublishDocument",
+    "read": false,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "save.png",
+    "img_over": "save_over.png",
+    "title": "{{$.lp.saveDraftTitle}}",
+    "action": "saveDraftDocument",
+    "text": "{{$.lp.saveDraft}}",
+    "id": "action_saveDraftDocument",
+    "control": "allowPublishDocument",
+    "read": false,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "popular.png",
+    "img_over": "popular_over.png",
+    "title": "{{$.lp.popularTitle}}",
+    "action": "setPopularDocument",
+    "id": "action_popular",
+    "text": "{{$.lp.popular}}",
+    "control": "allowPopularDocument",
+    "read": true,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "del.png",
+    "img_over": "del_over.png",
+    "title": "{{$.lp.deleteTitle}}",
+    "action": "deleteDocument",
+    "text": "{{$.lp.delete}}",
+    "id": "action_delete",
+    "control": "allowDeleteDocument",
+    "read": true,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "print.png",
+    "img_over": "print_over.png",
+    "title": "{{$.lp.printTitle}}",
+    "action": "printDocument",
+    "text": "{{$.lp.print}}",
+    "id": "action_print",
+    "read": true,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "top.png",
+    "img_over": "top_over.png",
+    "title": "{{$.lp.setTopTitle}}",
+    "action": "setTop",
+    "text": "{{$.lp.setTop}}",
+    "id": "action_setTop",
+    "read": true,
+    "edit" : true,
+    "control": "allowSetTop"
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "topcancel.png",
+    "img_over": "topcancel_over.png",
+    "title": "{{$.lp.cancelTopTitle}}",
+    "action": "cancelTop",
+    "text": "{{$.lp.cancelTop}}",
+    "id": "action_cancelTop",
+    "read": true,
+    "edit" : true,
+    "control": "allowCancelTop"
+  }
+]

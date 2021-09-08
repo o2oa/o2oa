@@ -385,7 +385,7 @@
         "width": "490px",
         "border": "0px",
         "font-size": "14px",
-        "font-family": "'Microsoft YaHei','Î¢ÈíÑÅºÚ','SimSun','ËÎÌå'",
+        "font-family": "'Microsoft YaHei','Î¢ï¿½ï¿½ï¿½Åºï¿½','SimSun','ï¿½ï¿½ï¿½ï¿½'",
         "overflow": "auto"
     },
     "attachmentOCRImageAreaNode": {
@@ -476,6 +476,99 @@
   "attachmentOrderFlagNode": {
     "height": "2px",
     "background-color": "#5c649c"
-  }
+  },
+  "html5ActionButtonDingdingMore": {
+        "height": "3em",
+        "float": "left",
+        "margin": "0.5em 0",
+        "font-size": "1em",
+        "color": "#191F25",
+        "text-align": "center",
+        "background": "#ffffff",
+        "line-height": "3em"
+    },
+    "html5ActionButtonDingdingNormal": {
+        "height": "3em",
+        "float": "left",
+        "margin": "0.5em 0",
+        "font-size": "1em",
+        "color": "#191F25",
+        "text-align": "center",
+        "background": "#ffffff",
+        "line-height": "3em",
+        "border-radius": "5px",
+        "border": "1px solid #dfdfdf"
+    },
+    "html5ActionButtonDingdingPrimary": {
+        "height": "3em",
+        "float": "left",
+        "margin": "0.5em 0",
+        "font-size": "1em",
+        "color": "#ffffff",
+        "text-align": "center",
+        "background": "#3296FA",
+        "line-height": "3em",
+        "border-radius": "5px",
+        "border": "1px solid #3296FA"
+    },
+    "html5ActionButtonDingdingDanger": {
+        "height": "3em",
+        "float": "left",
+        "margin": "0.5em 0",
+        "font-size": "1em",
+        "color": "#ffffff",
+        "text-align": "center",
+        "background": "#F25643",
+        "line-height": "3em",
+        "border-radius": "5px",
+        "border": "1px solid #F25643"
+    },
+    "html5ActionButtonDingdingSplit": {
+        "width": "1em",
+        "background-color": "#ffffff",
+        "height": "3em",
+        "margin": "0.5em 0",
+        "float": "left"
+    },
+    "html5ActionButton": {
+        "height": "100%",
+        "float": "left",
+        "font-size": "16px",
+        "color": "#fb4747",
+        "text-align": "center",
+        "background": "#ffffff",
+        "line-height": "50px"
+    },
+    "html5ActionButtonSplit": {
+        "width": "1px",
+        "background-color": "#dfdfdf",
+        "height": "34px",
+        "margin-top": "8px",
+        "float": "left"
+    },
+    "html5ActionOtherArea": {
+        "overflow": "hidden",
+        "background": "#ffffff",
+        "position": "absolute",
+        "left": "0",
+        "bottom": "50px",
+        "z-index": 100,
+        "padding": "0px 20px",
+        "border-top": "1px solid #dfdfdf",
+    },
+    "html5ActionOtherButton": {
+        "height": "50px",
+        "font-size": "16px",
+        "border-bottom": "1px solid #dfdfdf",
+        "color": "#068de7",
+        "text-align": "center",
+        "line-height": "50px"
+    },
+    "html5ActionButton_over": {
+        "background": "#eeeeee"
+    },
+    "html5ActionButton_up": {
+        "background": "#ffffff"
+    },
 
 }

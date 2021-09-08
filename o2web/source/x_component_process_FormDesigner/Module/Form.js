@@ -94,12 +94,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this.json.mode = this.options.mode;
 		if (!this.json.css) this.json.css = {"code":""};
 
-		if (this.options.mode==="Mobile"){
-			if (!this.json.defaultTools){
-				this.json.defaultTools = o2.JSON.get(this.path+"toolbars.json", null,false);
-			}
-			if (!this.json.tools) this.json.tools=[];
-		}
+		this.loadMobileActionToos();
 
 		this.isNewForm = (this.json.id) ? false : true;
 		if (this.isNewForm) this.checkUUID();
@@ -138,6 +133,15 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 				}.bind(this));
 			}
 		}.bind(this));
+	},
+	// 移动端表单加载工具栏
+	loadMobileActionToos: function() {
+		if (this.options.mode==="Mobile"){
+			if (!this.json.defaultTools){
+				this.json.defaultTools = o2.JSON.get(this.path+"toolbars.json", null,false);
+			}
+			if (!this.json.tools) this.json.tools=[];
+		}
 	},
 	_load : function( templateStyles, oldStyleValue ){
 		this.templateStyles = templateStyles;
