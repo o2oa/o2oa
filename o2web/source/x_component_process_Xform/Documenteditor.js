@@ -727,7 +727,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.layout_seals[p].show();
                 this.layout_seals[p].setStyles({
                     "border": "0",
-                    "border-radius": "0"
+                    "border-radius": "0",
+                    "z-index": -1
                 });
             }
             this.getSealData();
@@ -903,6 +904,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
                         if (flagTd) flagTd.setStyle("width", "32pt");
 
+                        var dateP = this.layout_issuanceDate.getParent("p");
                         var dateP = this.layout_issuanceDate.getParent("p");
                         if (dateP){
                             dateP.setStyle("text-align", "left");
@@ -2251,6 +2253,22 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             this.resizeSidebar();
             this.clearWaitSplitPage();
+
+            this.pages.forEach(function(page, i){
+                var s = i+1;
+                var pageNumberNode = new Element("div", {
+                    "html": "<span>—</span><span> "+s+" </span><span>—</span>",
+                    "styles": {
+                        "right": "0",
+                        "bottom": "-60px",
+                        "margin-top": "10px",
+                        "position": "absolute"
+                    }
+                }).inject(page.getFirst());
+
+
+            }.bind(this));
+
         }.bind(this), 1000);
     },
     _getDefaultData: function(){
@@ -3354,7 +3372,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             this.layout_seals[i].show();
                             this.layout_seals[i].setStyles({
                                 "border": "0",
-                                "border-radius": "0"
+                                "border-radius": "0",
+                                "z-index": -1
                             });
                         }
                     }.bind(this));
