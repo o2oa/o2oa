@@ -53,6 +53,14 @@
     background-color: #ffffff;
     color: #bf6364;
 }
+.refreshButton{
+    height: 20px;
+    width: 20px;
+    float: right;
+    margin: 2px 3px 2px 0;
+    background: url("../x_component_portal_PageDesigner/$Script/default/refresh.png") no-repeat center center;
+    cursor: pointer;
+}
 .listContentNode {
     overflow: hidden;
 }
