@@ -214,6 +214,69 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadImporterScript(v); break;
             case "Documenteditor":
                 this.loadDocumenteditorScript(v); break;
+            case "Common":
+                this.loadCommonScript(v); break;
+            case "ReadLog":
+                this.loadEventsScript(v); break;
+            case "IWebOffice":
+                this.addScriptItem(v.readScript, "code", v, "readScript");
+                this.loadEventsScript(v);
+                break;
+            case "IWebOffice":
+                this.addScriptItem(v.readScript, "code", v, "readScript");
+                this.loadEventsScript(v);
+                break;
+            case "WpsOffice":
+                this.addScriptItem(v.readScript, "code", v, "readScript");
+                this.loadEventsScript(v);
+                break;
+            case "YozoOffice":
+                this.addScriptItem(v.readScript, "code", v, "readScript");
+                this.loadEventsScript(v);
+                break;
+
+            case "Elautocomplete":
+                this.loadVueElementScript(v, true);
+                this.addScriptItem(v.itemScript, "code", v, "itemScript");
+                break;
+            case "Elbutton":
+                this.loadVueElementScript(v); break;
+            case "Elcheckbox":
+            case "Elradio":
+                this.loadVueElementScript(v, true);
+                this.addScriptItem(v.itemScript, "code", v, "itemScript");
+                break;
+            case "Elcommon":
+                this.addScriptItem(v.vueTemplate, "code", v, "vueTemplate");
+                this.addScriptItem(v.vueApp, "code", v, "vueApp");
+                this.addScriptItem(v.vueCss, "code", v, "vueCss");
+                this.loadEventsScript(v);
+                break;
+            case "Elcontainer":
+            case "Elcontainer$Main":
+            case "Elcontainer$Aside":
+            case "Elcontainer$Footer":
+            case "Elcontainer$Header":
+            case "Elicon":
+                this.loadEventsScript(v); break;
+            case "Elinput":
+            case "Elnumber":
+                this.loadVueElementScript(v, true); break;
+            case "Elselect":
+                this.loadVueElementScript(v);
+                this.addScriptItem(v.itemScript, "code", v, "itemScript");
+                this.addScriptItem(v.itemGroupScript, "code", v, "itemGroupScript");
+                this.addScriptItem(v.filterMethod, "code", v, "filterMethod");
+                this.addScriptItem(v.remoteMethod, "code", v, "remoteMethod");
+                break;
+
+            case "Elslider":
+                this.loadVueElementScript(v, true);
+                this.addScriptItem(v.marksScript, "code", v, "marksScript");
+                this.addScriptItem(v.formatTooltip, "code", v, "formatTooltip");
+                break;
+            case "Elswitch":
+                this.loadVueElementScript(v, true); break;
         }
         this.bindDataId(v);
     },
@@ -376,6 +439,58 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
     },
     loadDocumenteditorScript: function(data){
         this.addScriptItem(data.allowEditScript, "code", data, "allowEditScript");
+        this.addScriptItem(data.allowPrintScript, "code", data, "allowPrintScript");
+        this.addScriptItem(data.allowHistoryScript, "code", data, "allowHistoryScript");
+        this.addScriptItem(data.css, "code", data, "css", "css");
+        this.addScriptItem(data.validation, "code", data, "validation");
+        this.addScriptItem(data.ckeditConfigOptions, "code", data, "ckeditConfigOptions");
+        this.addScriptItem(data.copiesSecretPriorityShowScript, "code", data, "copiesSecretPriorityShowScript");
+        this.addScriptItem(data.copiesShowScript, "code", data, "copiesShowScript");
+        this.addScriptItem(data.copiesValueScript, "code", data, "copiesValueScript");
+        this.addScriptItem(data.secretShowScript, "code", data, "secretShowScript");
+        this.addScriptItem(data.secretValueScript, "code", data, "secretValueScript");
+        this.addScriptItem(data.priorityShowScript, "code", data, "priorityShowScript");
+        this.addScriptItem(data.priorityValueScript, "code", data, "priorityValueScript");
+        this.addScriptItem(data.redHeaderShowScript, "code", data, "redHeaderShowScript");
+        this.addScriptItem(data.redHeaderValueScript, "code", data, "redHeaderValueScript");
+        this.addScriptItem(data.redLineShowScript, "code", data, "redLineShowScript");
+        this.addScriptItem(data.filenoShowScript, "code", data, "filenoShowScript");
+        this.addScriptItem(data.filenoValueScript, "code", data, "filenoValueScript");
+        this.addScriptItem(data.signerShowScript, "code", data, "signerShowScript");
+        this.addScriptItem(data.signerValueScript, "code", data, "signerValueScript");
+        this.addScriptItem(data.subjectShowScript, "code", data, "subjectShowScript");
+        this.addScriptItem(data.subjectEditScript, "code", data, "subjectEditScript");
+        this.addScriptItem(data.subjectValueScript, "code", data, "subjectValueScript");
+        this.addScriptItem(data.mainSendShowScript, "code", data, "mainSendShowScript");
+        this.addScriptItem(data.mainSendValueScript, "code", data, "mainSendValueScript");
+        this.addScriptItem(data.attachmentShowScript, "code", data, "attachmentShowScript");
+        this.addScriptItem(data.attachmentValueScript, "code", data, "attachmentValueScript");
+        this.addScriptItem(data.attachmentTextEditScript, "code", data, "attachmentTextEditScript");
+        this.addScriptItem(data.issuanceUnitShowScript, "code", data, "issuanceUnitShowScript");
+        this.addScriptItem(data.issuanceUnitEditScript, "code", data, "issuanceUnitEditScript");
+        this.addScriptItem(data.issuanceUnitValueScript, "code", data, "issuanceUnitValueScript");
+        this.addScriptItem(data.issuanceDateShowScript, "code", data, "issuanceDateShowScript");
+        this.addScriptItem(data.issuanceDateValueScript, "code", data, "issuanceDateValueScript");
+        this.addScriptItem(data.annotationShowScript, "code", data, "annotationShowScript");
+        this.addScriptItem(data.annotationValueScript, "code", data, "annotationValueScript");
+        this.addScriptItem(data.copytoShowScript, "code", data, "copytoShowScript");
+        this.addScriptItem(data.copytoValueScript, "code", data, "copytoValueScript");
+        this.addScriptItem(data.copyto2ShowScript, "code", data, "copyto2ShowScript");
+        this.addScriptItem(data.copyto2ValueScript, "code", data, "copyto2ValueScript");
+        this.addScriptItem(data.editionUnitShowScript, "code", data, "editionUnitShowScript");
+        this.addScriptItem(data.editionUnitValueScript, "code", data, "editionUnitValueScript");
+        this.addScriptItem(data.editionDateShowScript, "code", data, "editionDateShowScript");
+        this.addScriptItem(data.editionDateValueScript, "code", data, "editionDateValueScript");
+        this.addScriptItem(data.meetingAttendShowScript, "code", data, "meetingAttendShowScript");
+        this.addScriptItem(data.meetingAttendValueScript, "code", data, "meetingAttendValueScript");
+        this.addScriptItem(data.meetingLeaveShowScript, "code", data, "meetingLeaveShowScript");
+        this.addScriptItem(data.meetingLeaveValueScript, "code", data, "meetingLeaveValueScript");
+        this.addScriptItem(data.meetingSitShowScript, "code", data, "meetingSitShowScript");
+        this.addScriptItem(data.meetingSitValueScript, "code", data, "meetingSitValueScript");
+        this.loadEventsScript(data);
+    },
+
+    loadCommonScript: function(data){
         this.loadEventsScript(data);
     },
 
@@ -513,6 +628,17 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
     },
     loadStatementSelectorScript: function(data){
         this.addScriptItem(data.selectedScript, "code", data, "selectedScript");
+
+    },
+    loadVueElementScript: function(data, isField){
+        if (isField){
+            this.addScriptItem(data.defaultValue, "code", data, "defaultValue");
+            this.addScriptItem(data.validation, "code", data, "validation");
+            this.addScriptItem(data.sectionByScript, "code", data, "sectionByScript");
+        }
+        this.addScriptItem(data.vueData, "code", data, "vueData");
+        this.addScriptItem(data.vueMethods, "code", data, "vueMethods");
+        this.addScriptItem(data.vueCss, "code", data, "vueCss", "css");
         this.loadEventsScript(data);
     },
 
