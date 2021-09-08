@@ -52,5 +52,18 @@ Object.assign(o2.APP$Elinput.prototype, {
             }
         }.bind(this));
     },
+    getValue: function(){
+        if (this.moduleValueAG) return this.moduleValueAG;
+        var value = this._getBusinessData();
+        if (o2.typeOf(value)!=="null"){
+            return value;
+        }else{
+            value = this._computeValue();
+            return (o2.typeOf(value)!=="null") ? value : "";
+        }
+        // if (!value) value = this._computeValue();
+        // return (o2.typeOf(value)!=="null") ? value : "";
+        //return value || "";
+    },
     _afterLoaded: function(){}
 })

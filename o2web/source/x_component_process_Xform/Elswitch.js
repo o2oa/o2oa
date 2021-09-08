@@ -37,6 +37,7 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
         this._loadNodeEdit();
     },
     _appendVueData: function(){
+        debugger;
         this.form.Macro.environment.data.check(this.json.id);
         this.json[this.json.id] = this._getBusinessData();
 
@@ -74,16 +75,16 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
                 this.json.inactiveValue = false;
         }
     },
-    appendVueExtend: function(app){
-        if (!app.methods) app.methods = {};
-        app.methods.$loadElEvent = function(ev){
-            this.validationMode();
-            if (ev==="change") this._setBusinessData(this.getInputData());
-            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
-                this.form.Macro.fire(this.json.events[ev].code, this, event);
-            }
-        }.bind(this);
-    },
+    // appendVueExtend: function(app){
+    //     if (!app.methods) app.methods = {};
+    //     app.methods.$loadElEvent = function(ev){
+    //         this.validationMode();
+    //         if (ev==="change") this._setBusinessData(this.getInputData());
+    //         if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
+    //             this.form.Macro.fire(this.json.events[ev].code, this, event);
+    //         }
+    //     }.bind(this);
+    // },
     _createElementHtml: function(){
         var html = "<el-switch";
         html += " v-model=\""+this.json.id+"\"";
@@ -101,8 +102,11 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
         html += " :inactive-value=\"inactiveValue\"";
 
         this.options.elEvents.forEach(function(k){
-            html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+            html += " @"+k+"=\"$loadElEvent_"+k.camelCase()+"\"";
         });
+        // this.options.elEvents.forEach(function(k){
+        //     html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+        // });
 
         if (this.json.elProperties){
             Object.keys(this.json.elProperties).forEach(function(k){
@@ -110,13 +114,14 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
             }, this);
         }
 
-        if (this.json.elStyles){
-            var style = "";
-            Object.keys(this.json.elStyles).forEach(function(k){
-                if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-            }, this);
-            html += " style=\""+style+"\"";
-        }
+        if (this.json.elStyles) html += " :style=\"elStyles\"";
+        // if (this.json.elStyles){
+        //     var style = "";
+        //     Object.keys(this.json.elStyles).forEach(function(k){
+        //         if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+        //     }, this);
+        //     html += " style=\""+style+"\"";
+        // }
         html += ">";
         html += "</el-switch>";
         return html;
