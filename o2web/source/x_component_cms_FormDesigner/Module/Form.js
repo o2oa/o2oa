@@ -54,6 +54,15 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		this.selectedModules = [];
 	},
 
+	// 移动端表单加载工具栏
+	loadMobileActionToos: function() {
+		if (this.options.mode==="Mobile"){
+			if (!this.json.defaultTools){
+				this.json.defaultTools = o2.JSON.get("../x_component_cms_FormDesigner/Module/Form/toolbars.json", null,false);
+			}
+			if (!this.json.tools) this.json.tools=[];
+		}
+	},
 
 	//loadTemplateStyles : function( file, callback ){
 	//	debugger;
