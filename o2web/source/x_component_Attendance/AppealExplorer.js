@@ -80,11 +80,18 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             var toolbarUrl = this.path + "toolbar.json";
             MWF.getJSON(toolbarUrl, function (json) {
                 json.each(function (tool) {
-                   if( !this.config.APPEALABLE && tool.condition=="onlock" ){
-                       this.createToolbarItemNode(tool)
-                    }else if( this.config.APPEALABLE && tool.condition!="onlock" ){
-                       this.createToolbarItemNode(tool)
-                   }
+                   // if( !this.config.APPEALABLE && tool.condition=="onlock" ){
+                   //     this.createToolbarItemNode(tool)
+                   //  }else if( this.config.APPEALABLE && tool.condition!="onlock" ){
+                   //     this.createToolbarItemNode(tool)
+                   // }
+                    if( tool.condition && tool.condition.substr( 0, "function".length ) == "function"){
+                        eval("var fun = " + tool.condition);
+                        var flag = fun.call(this, this.configSetting);
+                        if(flag)this.createToolbarItemNode(tool)
+                    }else{
+                        this.createToolbarItemNode(tool)
+                    }
                 }.bind(this));
             }.bind(this));
     },
