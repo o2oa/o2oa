@@ -84,7 +84,8 @@ public class CenterServerTools extends JettySeverTools {
 			if (BooleanUtils.isFalse(centerServer.getExposeJest())) {
 				FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
 				webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
-				webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
+				webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*",
+						EnumSet.of(DispatcherType.REQUEST));
 			}
 			handlers.addHandler(webApp);
 		} else {
@@ -159,7 +160,7 @@ public class CenterServerTools extends JettySeverTools {
 		if ((!Files.exists(lastModified)) || Files.isDirectory(lastModified)
 				|| (Files.getLastModifiedTime(war).toMillis() != NumberUtils
 						.toLong(FileUtils.readFileToString(lastModified.toFile(), DefaultCharset.charset_utf_8), 0))) {
-			logger.print("deploy war:{}.", war.getFileName().toAbsolutePath());
+			logger.info("deploy war:{}.", war.getFileName().toAbsolutePath());
 			if (Files.exists(dir)) {
 				PathUtils.cleanDirectory(dir);
 			}
