@@ -23,7 +23,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.EverythingMatcher;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.Module;
@@ -283,7 +282,7 @@ public class Context extends AbstractContext {
 
 	private void initDatas() throws Exception {
 		if (ArrayUtils.isNotEmpty(this.module.containerEntities())) {
-			logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
+			logger.info("{} loading datas, entity size:{}.", this.clazz.getName(),
 					this.module.containerEntities().length);
 			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()));
 		}

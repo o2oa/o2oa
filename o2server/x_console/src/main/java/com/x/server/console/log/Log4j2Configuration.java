@@ -15,7 +15,7 @@ public class Log4j2Configuration {
 
 	}
 
-	private static final String CONVERSION_PATTERN = "%d{yyyy-MM-dd HH:mm:ss.SSS}";
+	private static final String CONVERSION_PATTERN = "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %p %c - %m%n";
 
 	public static void reconfigure() {
 
