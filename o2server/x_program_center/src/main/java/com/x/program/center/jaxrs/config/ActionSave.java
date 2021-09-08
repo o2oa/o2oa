@@ -1,11 +1,8 @@
 package com.x.program.center.jaxrs.config;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,29 +58,13 @@ public class ActionSave extends BaseAction {
 			throw new ExceptionModifyConfig();
 		}
 
-		File configFold = new File(Config.base(), Config.DIR_CONFIG);
-		if (!configFold.exists()) {
-			configFold.mkdir();
-		}
-
-		File file = new File(Config.base(), Config.DIR_CONFIG + "/" + fileName);
-		if (!file.exists()) {
-			file.createNewFile();
-		}
-
-		if (file.exists()) {
-			if (file.isFile()) {
-				FileUtils.writeStringToFile(file, data, DefaultCharset.charset);
-			}
-		}
+		byte[] bytes = wi.getFileContent().getBytes(StandardCharsets.UTF_8);
 
 		Nodes nodes = Config.nodes();
 		// 同步config文件
 		for (String node : nodes.keySet()) {
 			if (nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()) {
-				// boolean Syncflag = executeSyncFile(Config.DIR_CONFIG + "/" + fileName, node,
-				// nodes.get(node).nodeAgentPort());
-				executeSyncFile(Config.DIR_CONFIG + "/" + fileName, node, nodes.get(node).nodeAgentPort());
+				executeSyncFile(Config.DIR_CONFIG + "/" + fileName, node, nodes.get(node).nodeAgentPort(), bytes);
 			}
 		}
 
@@ -101,17 +82,15 @@ public class ActionSave extends BaseAction {
 		return result;
 	}
 
-	private boolean executeSyncFile(String syncFilePath, String nodeName, int nodePort) {
+	private boolean executeSyncFile(String syncFilePath, String nodeName, int nodePort, byte[] byteArray) {
 		boolean syncFileFlag = false;
-		File syncFile;
 
 		try (Socket socket = new Socket(nodeName, nodePort)) {
-			syncFile = new File(Config.base(), syncFilePath);
 			socket.setKeepAlive(true);
 			socket.setSoTimeout(5000);
 			try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 					DataInputStream dis = new DataInputStream(socket.getInputStream());
-					InputStream fileInputStream = new FileInputStream(syncFile)) {
+				 InputStream fileInputStream = new ByteArrayInputStream(byteArray)) {
 				Map<String, Object> commandObject = new HashMap<>();
 				commandObject.put("command", "syncFile:" + syncFilePath);
 				commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
