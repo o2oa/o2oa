@@ -80,6 +80,10 @@
         <div class="MWFScriptArea" name="validationPublish" title="{{$.lp.validationPublish}} (S)"></div>
 
 	</div>
+    <div title="{{$.lp.action}}"  class="MWFTab" style="overflow: hidden; display: text{($.mode=='Mobile')?'block':'none'}">
+        <div class="MWFDefaultActionArea" name="defaultTools" data-target="mobileForm"></div>
+        <div class="MWFActionArea" name="tools"></div>
+    </div>
 	<div title="{{$.lp.event}}"  class="MWFTab">
         <div style="padding: 5px;color:#999;">{{$.lp.noEventInfo}}</div>
 		<div class="MWFEventsArea" name="events"></div>

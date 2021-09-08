@@ -332,16 +332,362 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             this.app.fireEvent("postLoad");
             this.app.fireEvent("afterLoad");
         }
-        // 告诉移动端表单加载完成
-        if (this.app && this.app.mobile) {
-            if (callback) callback();
+        // 移动端表单 展现底部工具栏
+        debugger;
+        if (this.json.mode === "Mobile") {
+            var node = document.body.getElement(".o2_form_mobile_actions");
+            if (node) {
+                node.empty();
+                this._loadMobileActions(node, callback);
+            } else {
+                if (callback) callback();
+            }
         }
+        // 告诉移动端表单加载完成
+        // if (this.app && this.app.mobile) {
+        //     if (callback) callback();
+        // }
     },
     autoSave: function () {
         //this.autoSaveTimerID = window.setInterval(function(){
         //    this.saveDocument();
         //}.bind(this), 300000);
     },
+
+    // 默认的移动端底部工具栏
+    _loadMobileDefaultTools: function (callback) {
+        if (this.json.defaultTools) {
+            if (callback) callback();
+        } else {
+            this.json.defaultTools = o2.JSON.get("../x_component_process_FormDesigner/Module/Actionbar/toolbars.json", function (json) {
+                this.json.defaultTools = json;
+                if (callback) callback();
+            }.bind(this));
+        }
+    },
+    // 移动端生成底部工具栏
+    _loadMobileActions: function (node, callback) {
+        var tools = [];
+        this._loadMobileDefaultTools(function () {
+            if (this.json.defaultTools) {
+                var jsonStr = JSON.stringify(this.json.defaultTools);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.cms.Xform.LP.form});
+                this.json.defaultTools = JSON.parse(jsonStr);
+                this.json.defaultTools.each(function (tool) {
+                    var flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
+                    if (flag) tools.push(tool);
+                }.bind(this));
+            }
+            if (this.json.tools) {
+                var jsonStr = JSON.stringify(this.json.tools);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.cms.Xform.LP.form});
+                this.json.tools = JSON.parse(jsonStr);
+                this.json.tools.each(function (tool) {
+                    var flag = this._checkCustomMobileActionItem(tool, this.options.readonly);
+                    if (flag) tools.push(tool);
+                }.bind(this));
+            }
+            this.mobileTools = tools;
+            //app上用原来的按钮样式
+            if (window.o2android) {
+                if (tools.length) if (node) this._createMobileActions(node, tools);
+            } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mLog) {
+                if (tools.length) if (node) this._createMobileActions(node, tools);
+            } else {
+                //钉钉 企业微信用新的样式
+                if (tools.length) if (node) this._createMobileActionsDingdingStyle(node, tools);
+            }
+            if (callback) callback();
+        }.bind(this));
+    },
+    // 检查默认按钮是否显示
+    _checkDefaultMobileActionItem: function (tool, readonly, noCondition) {
+        var flag = true;
+        if (tool.control) {
+            flag = this.businessData.control[tool.control]
+        }
+        if (!noCondition) if (tool.condition) {
+            var hideFlag = this.Macro.exec(tool.condition, this);
+            flag = flag && (!hideFlag);
+        }
+        // if (readonly) if (!tool.read) flag = false;
+        if (readonly){
+            if (!tool.read) flag = false;
+        }else{
+            if (!tool.edit) flag = false;
+        }
+        // 移动端禁用 关闭和打印
+        if (tool.id === "action_close" || tool.id === "action_print" || tool.id === "action_popular") {
+            flag = false;
+        }
+        return flag;
+    },
+    // 检查自定义按钮是否显示
+    _checkCustomMobileActionItem: function (tool, readonly) {
+        var flag = true;
+        if (readonly) {
+            flag = tool.readShow;
+        } else {
+            flag = tool.editShow;
+        }
+        if (flag) {
+            flag = true;
+            if (tool.control) {
+                flag = this.businessData.control[tool.control]
+            }
+            if (tool.condition) {
+                var hideFlag = this.Macro.exec(tool.condition, this);
+                flag = !hideFlag;
+            }
+        }
+        return flag;
+    },
+    // 创建默认样式的底部工具栏 
+    _createMobileActions: function (node, tools) {
+        node.show();
+        var count = tools.length;
+        if (count <= 2) {
+            this.css.html5ActionButton.width = "100%";
+            if (count == 2) this.css.html5ActionButton.width = "49%";
+            tools.each(function (tool) {
+                var action = new Element("div", { "styles": this.css.html5ActionButton, "text": tool.text }).inject(node);
+                action.store("tool", tool);
+                action.addEvent("click", function (e) {
+                    var t = e.target.retrieve("tool");
+                    e.setDisable = function () { }
+                    if (t.actionScript) {
+                        this._runCustomAction(t.actionScript);
+                    } else {
+                        if (this[t.action]) this[t.action](e);
+                    }
+                }.bind(this));
+                this._setMobileBottonStyle(action);
+            }.bind(this));
+            if (count == 2) new Element("div", { "styles": this.css.html5ActionButtonSplit }).inject(node.getLast(), "before");
+        } else {
+            this.css.html5ActionButton.width = "38%"
+            for (var i = 0; i < 2; i++) {
+                tool = tools[i];
+                var action = new Element("div", { "styles": this.css.html5ActionButton, "text": tool.text }).inject(node);
+                action.store("tool", tool);
+                action.addEvent("click", function (e) {
+                    var t = e.target.retrieve("tool");
+                    e.setDisable = function () { }
+                    if (t.actionScript) {
+                        this._runCustomAction(t.actionScript);
+                    } else {
+                        if (this[t.action]) this[t.action](e);
+                    }
+                }.bind(this));
+                this._setMobileBottonStyle(action);
+            }
+            new Element("div", { "styles": this.css.html5ActionButtonSplit }).inject(node.getLast(), "before");
+            new Element("div", { "styles": this.css.html5ActionButtonSplit }).inject(node);
+            this.css.html5ActionButton.width = "23%"
+            var action = new Element("div", { "styles": this.css.html5ActionButton, "text": "…" }).inject(node);
+            action.addEvent("click", function (e) {
+                this._loadMoreMobileActions(tools, 2, node);
+            }.bind(this));
+            this._setMobileBottonStyle(action);
+        }
+    },
+    // 更多按钮
+    _loadMoreMobileActions: function (tools, n, node) {
+        document.body.mask({
+            "id": "cms_toolbar_mask_id",
+            "style": {
+                "background-color": "#cccccc",
+                "opacity": 0.6
+            },
+            "hideOnClick": true,
+            "onHide": function () {
+                if (this.actionMoreArea){
+                    this.actionMoreArea.setStyle("display", "none");
+                }
+            }.bind(this)
+        });
+        if (this.actionMoreArea) {
+            this.actionMoreArea.setStyle("display", "block");
+        } else {
+            var size = document.body.getSize();
+            this.actionMoreArea = new Element("div", { "styles": this.css.html5ActionOtherArea }).inject(document.body);
+            var pl = this.actionMoreArea.getStyle("padding-left").toInt();
+            var pr = this.actionMoreArea.getStyle("padding-right").toInt();
+            var w = size.x - pl - pr;
+            this.actionMoreArea.setStyle("width", "" + w + "px");
+            for (var i = n; i < tools.length; i++) {
+                tool = tools[i];
+                var action = new Element("div", { "styles": this.css.html5ActionOtherButton, "text": tool.text }).inject(this.actionMoreArea);
+                action.store("tool", tool);
+                action.addEvent("click", function (e) {
+                    //隐藏更多菜单
+                    var mask = document.id("cms_toolbar_mask_id");
+                    mask.destroy();
+                    this.actionMoreArea.setStyle("display", "none");
+                    
+                    var t = e.target.retrieve("tool");
+                    e.setDisable = function () { }
+                    if (t.actionScript) {
+                        this._runCustomAction(t.actionScript);
+                    } else {
+                        if (this[t.action]) this[t.action](e);
+                    }
+                }.bind(this));
+                this._setMobileBottonStyle(action);
+            }
+        }
+
+        // actionArea.position({
+        //     relativeTo: node,
+        //     position: 'topCenter',
+        //     edge: 'bottomCenter'
+        // });
+    },
+    _setMobileBottonStyle: function (action) {
+        var _self = this;
+        action.addEvents({
+            "mouseover": function (e) { this.setStyles(_self.css.html5ActionButton_over) },
+            "mouseout": function (e) { this.setStyles(_self.css.html5ActionButton_up) },
+            "mousedown": function (e) { this.setStyles(_self.css.html5ActionButton_over) },
+            "mouseup": function (e) { this.setStyles(_self.css.html5ActionButton_up) },
+            "touchstart": function (e) { this.setStyles(_self.css.html5ActionButton_over) },
+            "touchcancel": function (e) { this.setStyles(_self.css.html5ActionButton_up) },
+            "touchend": function (e) { this.setStyles(_self.css.html5ActionButton_up) },
+            "touchmove": function (e) { this.setStyles(_self.css.html5ActionButton_over) }
+        });
+    },
+
+    // 钉钉企业微信样式的按钮
+    _createMobileActionsDingdingStyle: function (node, tools) {
+        node.show();
+        var count = tools.length;
+        if (count <= 2) {
+            //左边 间隔
+            var dingdingSplitLeft = new Element("div", { "styles": this.css.html5ActionButtonDingdingSplit, "text": " " }).inject(node);
+            var splitSize = dingdingSplitLeft.getSize();
+            var size = document.body.getSize();
+            var buttonWidth = (size.x - splitSize.x * (count + 1) - (count * 2)) / count;
+            tools.each(function (tool) {
+                var actionStyle = this.css.html5ActionButtonDingdingNormal;
+                if (tool.id === "action_edit" || tool.id === "action_saveData" || tool.id === "action_saveDraftDocument" || tool.id === "action_publishDocument") {
+                    actionStyle = this.css.html5ActionButtonDingdingPrimary;
+                } else if (tool.id === "action_delete") {
+                    actionStyle = this.css.html5ActionButtonDingdingDanger;
+                }
+                actionStyle.width = buttonWidth + "px";
+                var action = new Element("div", { "styles": actionStyle, "text": tool.text }).inject(node);
+                action.store("tool", tool);
+                action.addEvent("click", function (e) {
+                    var clickFun = function () {
+                        var t = e.target.retrieve("tool");
+                        e.setDisable = function () { };
+                        if (t.actionScript) {
+                            this._runCustomAction(t.actionScript);
+                        } else {
+                            if (this[t.action]) this[t.action](e);
+                        }
+                    }.bind(this);
+                    if (tool.text === "继续流转" || tool.id === "action_processWork") {
+                        //输入法激活的时候，需要一段时间等待输入法关闭
+                        window.setTimeout(clickFun, 100)
+                    } else {
+                        clickFun();
+                    }
+                }.bind(this));
+                new Element("div", { "styles": this.css.html5ActionButtonDingdingSplit, "text": " " }).inject(node);
+            }.bind(this));
+        } else {
+            //左边 间隔
+            var dingdingSplitLeft = new Element("div", { "styles": this.css.html5ActionButtonDingdingSplit, "text": " " }).inject(node);
+            var splitSize = dingdingSplitLeft.getSize();
+            var size = document.body.getSize();
+            var buttonWidth = (size.x - splitSize.x * 4 - 6) / 5;
+            for (var i = 0; i < 3; i++) {
+                tool = tools[i];
+                var actionStyle = this.css.html5ActionButtonDingdingNormal;
+                if (tool.id === "action_edit" || tool.id === "action_saveData" || tool.id === "action_saveDraftDocument" || tool.id === "action_publishDocument") {
+                    actionStyle = this.css.html5ActionButtonDingdingPrimary;
+                } else if (tool.id === "action_delete") {
+                    actionStyle = this.css.html5ActionButtonDingdingDanger;
+                }
+                if (i == 2) {
+                    this.css.html5ActionButtonDingdingMore.width = buttonWidth + "px";
+                    var action = new Element("div", { "styles": this.css.html5ActionButtonDingdingMore, "text": "…" }).inject(node);
+                    action.addEvent("click", function (e) {
+                        this._loadMoreMobileActionsDingdingStyle(tools, 2, node);
+                    }.bind(this));
+                } else {
+                    actionStyle.width = (buttonWidth * 2) + "px";
+                    var action = new Element("div", { "styles": actionStyle, "text": tool.text }).inject(node);
+                    action.store("tool", tool);
+                    action.addEvent("click", function (e) {
+                        var t = e.target.retrieve("tool");
+                        e.setDisable = function () { }
+                        if (t.actionScript) {
+                            this._runCustomAction(t.actionScript);
+                        } else {
+                            if (this[t.action]) this[t.action](e);
+                        }
+                    }.bind(this));
+                }
+                new Element("div", { "styles": this.css.html5ActionButtonDingdingSplit, "text": " " }).inject(node);
+            }
+        }
+    },
+    // 
+    _loadMoreMobileActionsDingdingStyle: function (tools, n, node) {
+        document.body.mask({
+            "id": "cms_toolbar_mask_id",
+            "style": {
+                "background-color": "#cccccc",
+                "opacity": 0.6
+            },
+            "hideOnClick": true,
+            "onHide": function () {
+                if (this.actionMoreArea){
+                    this.actionMoreArea.setStyle("display", "none");
+                }
+            }.bind(this)
+        });
+        if (this.actionMoreArea) {
+            this.actionMoreArea.setStyle("display", "block");
+        } else {
+            var size = document.body.getSize();
+            this.actionMoreArea = new Element("div", { "styles": this.css.html5ActionOtherArea }).inject(document.body);
+            var pl = this.actionMoreArea.getStyle("padding-left").toInt();
+            var pr = this.actionMoreArea.getStyle("padding-right").toInt();
+            var w = size.x - pl - pr;
+            this.actionMoreArea.setStyle("width", "" + w + "px");
+            for (var i = n; i < tools.length; i++) {
+                tool = tools[i];
+                var actionStyle = this.css.html5ActionButtonDingdingNormal;
+                if (tool.id === "action_edit" || tool.id === "action_saveData" || tool.id === "action_saveDraftDocument" || tool.id === "action_publishDocument") {
+                    actionStyle = this.css.html5ActionButtonDingdingPrimary;
+                } else if (tool.id === "action_delete") {
+                    actionStyle = this.css.html5ActionButtonDingdingDanger;
+                }
+                actionStyle.width = "100%";
+                var action = new Element("div", { "styles": actionStyle, "text": tool.text }).inject(this.actionMoreArea);
+                action.store("tool", tool);
+                action.addEvent("click", function (e) {
+                    //隐藏更多菜单
+                    var mask = document.id("cms_toolbar_mask_id");
+                    mask.destroy();
+                    this.actionMoreArea.setStyle("display", "none");
+
+                    var t = e.target.retrieve("tool");
+                    e.setDisable = function () { }
+                    if (t.actionScript) {
+                        this._runCustomAction(t.actionScript);
+                    } else {
+                        if (this[t.action]) this[t.action](e);
+                    }
+                }.bind(this));
+            }
+        }
+    },
+
+
     _loadBusinessData: function () {
         if (!this.businessData) {
             this.businessData = {
@@ -563,7 +909,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         }
         if (!this.formSaveValidation()) {
             this.app.content.unmask();
-            if (callback) callback();
+            if (callback  && typeof callback === "function") callback();
             return false;
         }
         var data = this.getData();
@@ -587,9 +933,24 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             this.app.notice(MWF.xApplication.cms.Xform.LP.dataSaved, "success");
             this.businessData.data.isNew = false;
             this.fireEvent("afterSave");
-            if (callback) callback();
+            if (callback && typeof callback === "function") callback();
+            this._reloadReadForm();
             //}.bind(this), null, this.businessData.document.id, data, !sync );
         }.bind(this), null, !sync);
+    },
+    // 重新加载阅读表单
+    _reloadReadForm: function() {
+        if (this.app.inBrowser) {
+            this.modules.each(function (module) {
+                MWF.release(module);
+            });
+            //MWF.release(this);
+            this.app.node.destroy();
+
+            this.app.options.readonly = true;
+
+            this.app.loadApplication();
+        }
     },
     closeDocument: function () {
         this.fireEvent("beforeClose");
@@ -795,6 +1156,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 "clientY": p.y - 200
             }
         };
+        debugger;
         this.app.confirm("infor", event, MWF.xApplication.cms.Xform.LP.deleteDocumentTitle, MWF.xApplication.cms.Xform.LP.deleteDocumentText, 380, 120, function () {
             _self.app.content.mask({
                 "style": {
@@ -807,6 +1169,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
 
             _self.documentAction.removeDocument(_self.businessData.document.id, function (json) {
+                debugger;
                 _self.fireEvent("afterDelete");
                 if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
                 _self.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete + ": “" + _self.businessData.document.title + "”", "success");
