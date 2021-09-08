@@ -16,6 +16,8 @@
 
 	"itemsScript": {},
 	"filterMethod": {},
+	"lazyLoadScript": {},
+	"beforeFilter": {},
 
 	"props": {
 		"expandTrigger": "click",
@@ -25,7 +27,7 @@
 		"lazy": false,
 		"lazyLoad": null,
 		"value": "value",
-		"label": "label\"",
+		"label": "label",
 		"children": "children",
 		"disabled": "disabled",
 		"leaf": "leaf"
@@ -57,6 +59,14 @@
 			"html": ""
 		},
 		"remove-tag": {
+			"code": "",
+			"html": ""
+		},
+		"expand-change":{
+			"code": "",
+			"html": ""
+		},
+		"before-filter": {
 			"code": "",
 			"html": ""
 		},

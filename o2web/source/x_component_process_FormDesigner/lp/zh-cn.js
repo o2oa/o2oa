@@ -1112,6 +1112,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "props_disabled": "选项禁用属性",
         "props_leaf": "叶子节点标志属性",
         "expandTrigger": "展开方式",
+        "beforeFilter": "筛选之前",
+        "filterMethodInfo": "返回一个Function。自定义搜索逻辑，第一个参数是节点node，第二个参数是搜索关键词keyword，通过返回布尔值表示是否命中",
+        "beforeFilterInfo": "返回一个Function。筛选之前的钩子，参数为输入的值，若返回 false 或者返回 Promise 且被 reject，则停止筛选",
+        "lazyLoadScriptInfo": "加载动态数据的方法，仅在 lazy 为 true 时有效; 返回一个function(node, resolve)，node为当前点击的节点，resolve为数据加载完成的回调(必须调用)",
 
         "showOptions": "显示选项",
         "onInput": "输入时",

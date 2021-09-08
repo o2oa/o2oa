@@ -1,5 +1,5 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
-/** @class Elinput 基于Element UI的输入框组件。
+/** @class Elselect 基于Element UI的选择框组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -12,7 +12,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elinput# */
+    /** @lends o2.xApplication.process.Xform.Elselect# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,

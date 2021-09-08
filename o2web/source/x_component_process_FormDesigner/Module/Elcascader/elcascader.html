@@ -69,7 +69,15 @@
 				</td>
 			</tr>
 		</table>
-		<div style="display: text{($.filterable===true) ? 'block' : 'none'}" class="MWFFormulaArea" name="filterMethod" title="{{$.lp.filterMethod}} (S)"></div>
+		<div style="display: text{($.filterable===true) ? 'block' : 'none'}">
+			<div class="MWFFormulaArea" name="filterMethod" title="{{$.lp.filterMethod}} (S)"></div>
+			<div style="padding: 5px; border-bottom: 1px solid #666666">{{$.lp.filterMethodInfo}}</div>
+			<div class="MWFFormulaArea" name="beforeFilter" title="{{$.lp.beforeFilter}} (S)"></div>
+			<div style="padding: 5px; border-bottom: 1px solid #666666">{{$.lp.beforeFilterInfo}}</div>
+		</div>
+
+
+
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
@@ -118,13 +126,15 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.lazy}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="props.lazy" value="true" text{($.props.lazy===true)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="props.lazy" value="false" text{($.props.lazy!==true)?'checked':''}/>{{$.lp.no}}
+					<input type="radio" onclick="if (this.checked){ this.getParent('table').getNext().show();}" name="props.lazy" value="true" text{($.props.lazy===true)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" onclick="if (this.checked){ this.getParent('table').getNext().hide();}" name="props.lazy" value="false" text{($.props.lazy!==true)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
-		<div style="display: text{($.props.lazy===true) ? 'block' : 'none'}" class="MWFFormulaArea" name="lazyLoadScript" title="{{$.lp.lazyLoadScript}} (S)"></div>
-
+		<div style="display: text{($.props.lazy===true) ? 'block' : 'none'}">
+			<div class="MWFFormulaArea" name="lazyLoadScript" title="{{$.lp.lazyLoadScript}} (S)"></div>
+			<div style="padding: 5px; border-bottom: 1px solid #666666">{{$.lp.lazyLoadScriptInfo}}</div>
+		</div>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
@@ -159,8 +169,8 @@
 			</tr>
 		</table>
 
-		<div class="MWFMaplist" name="elStyles" title="Select {{$.lp.style}}"></div>
-		<div class="MWFMaplist" name="elProperties"  title="Select {{$.lp.attribute}}"></div>
+		<div class="MWFMaplist" name="elStyles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="elProperties"  title="{{$.lp.attribute}}"></div>
 
 
 <!--		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
@@ -193,10 +203,10 @@
 			<div class="MWFHtmlEditorArea" name="vueSlot" title="Input Slot (HTML)"></div>
 		</div>
 
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">{{$.lp.selectTemplete}}</div>
-		<div style="display: text{($.customTemplete) ? 'block' : 'none'}">
-			<div class="MWFHtmlEditorArea" name="customTemplete" title="{{$.lp.selectTemplete}} (HTML)"></div>
-		</div>
+<!--		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">{{$.lp.selectTemplete}}</div>-->
+<!--		<div style="display: text{($.customTemplete) ? 'block' : 'none'}">-->
+<!--			<div class="MWFHtmlEditorArea" name="customTemplete" title="{{$.lp.selectTemplete}} (HTML)"></div>-->
+<!--		</div>-->
 	</div>
 	<div title="{{$.lp.section}}" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

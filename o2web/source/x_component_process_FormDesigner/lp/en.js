@@ -1105,6 +1105,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "props_disabled": "Disabled Key",
         "props_leaf": "Leaf key",
         "expandTrigger": "Expand Trigger",
+        "beforeFilter": "Before Filter",
+        "filterMethodInfo": "Return a Function. Custom search logic, the first parameter is the node node, the second parameter is the search keyword keyword, by returning a boolean value to indicate whether it is hit or not",
+        "beforeFilterInfo": "Return a Function. Filter the hook before, the parameter is the input value, if it returns false or returns a Promise and is rejected, then stop filtering",
+        "lazyLoadScriptInfo": "The method of loading dynamic data is only valid when lazy is true; it returns a function (node, resolve), where node is the currently clicked node, and resolve is the callback for the completion of data loading (must be called)",
 
         "showOptions": "Show Options",
         "onInput": "When inputting",
