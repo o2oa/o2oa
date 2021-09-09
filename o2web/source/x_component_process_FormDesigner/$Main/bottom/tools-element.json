@@ -9,6 +9,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_input,
     "className": "Elinput"
   },
+  "elautocomplete": {
+    "fontIcon": "el-icon-finished",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_autocomplete,
+    "className": "Elautocomplete"
+  },
   "elnumber": {
     "fontIcon": "el-icon-edit-outline",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_number,
@@ -40,7 +45,7 @@
     "className": "Elselect"
   },
   "elcascader": {
-    "fontIcon": "el-icon-caret-bottom",
+    "fontIcon": "el-icon-d-arrow-right",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_cascader,
     "className": "Elcascader"
   },
@@ -54,5 +59,9 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_slider,
     "className": "Elslider"
   },
-
+  "elcommon": {
+    "fontIcon": "el-icon-full-screen",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_common,
+    "className": "Elcommon"
+  }
 }
