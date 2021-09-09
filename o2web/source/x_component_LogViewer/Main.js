@@ -140,7 +140,7 @@ MWF.xApplication.LogViewer.Main = new Class({
         this.clearBtn = new Element("button",{"text":"clear","style":"margin:10px;float:right"}).inject(this.toolbarNode);
         this.clearBtn.addEvent("click",function () {
             this.screenInforAreaNode.empty();
-            //this.tagId = o2.uuid();
+            this.tagId = o2.uuid();
         }.bind(this));
         this.stopBtn = new Element("button",{"text":"stop","style":"margin:10px;float:right"}).inject(this.toolbarNode);
         this.startBtn = new Element("button",{"text":"start","style":"margin:10px;display:none;;float:right"}).inject(this.toolbarNode);
