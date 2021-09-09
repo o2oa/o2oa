@@ -483,7 +483,7 @@ if (!window.o2) {
             "JSONTemplate": ["../o2_lib/mootools/plugin/Template.js"],
             "kity": ["../o2_lib/kityminder/kity/kity.js"],
             "kityminder": ["../o2_lib/kityminder/core/dist/kityminder.core.js"],
-            "vue": ["../o2_lib/vue/vue.min.js"],
+            "vue": ["../o2_lib/vue/vue.pro.js"],
             "vue_develop": ["../o2_lib/vue/vue.js"],
             "elementui": ["../o2_lib/vue/element/index.js"]
         };
