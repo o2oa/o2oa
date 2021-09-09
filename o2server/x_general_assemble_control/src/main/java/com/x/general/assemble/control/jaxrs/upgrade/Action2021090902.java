@@ -1,6 +1,8 @@
-package com.x.general.assemble.control.jaxrs.update;
+package com.x.general.assemble.control.jaxrs.upgrade;
 
 import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,7 +22,10 @@ public class Action2021090902 extends BaseAction {
 			emc.beginTransaction(Route.class);
 
 			for (Route route : list) {
-				if (null != route.getProperties().getSoleDirect()) {
+				if (BooleanUtils.isTrue(route.getProperties().getSoleDirect())
+						&& BooleanUtils.isTrue(route.getSole())) {
+					route.getProperties().setSoleDirect(true);
+				} else {
 					route.getProperties().setSoleDirect(false);
 				}
 			}
