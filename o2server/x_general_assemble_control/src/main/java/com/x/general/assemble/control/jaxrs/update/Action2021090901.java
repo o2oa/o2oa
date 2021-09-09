@@ -27,6 +27,12 @@ public class Action2021090901 extends BaseAction {
 
 			emc.commit();
 
+			Wo wo = new Wo();
+
+			wo.setValue(true);
+
+			result.setData(wo);
+
 			return result;
 		}
 	}
