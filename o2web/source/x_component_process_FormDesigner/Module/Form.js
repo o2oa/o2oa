@@ -82,7 +82,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         this.propertyMultiTd = null;
 
         if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
-        this.load(data);
+        this.load(data||this.data);
         this.selected();
     },
 
