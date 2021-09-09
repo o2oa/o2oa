@@ -4,6 +4,8 @@ import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
 
+import org.apache.hadoop.hdfs.protocol.HdfsConstants.UpgradeAction;
+
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
 import com.x.general.assemble.control.jaxrs.area.AreaAction;
 import com.x.general.assemble.control.jaxrs.ecnet.EcnetAction;
@@ -20,6 +22,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(OfficeAction.class);
 		classes.add(WorkTimeAction.class);
 		classes.add(GeneralFileAction.class);
+		classes.add(UpgradeAction.class);
 		return classes;
 	}
 
