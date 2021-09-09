@@ -371,12 +371,25 @@ public class ManualProcessor extends AbstractManualProcessor {
 		List<String> names = new ArrayList<>();
 		ListTools.trim(list, false, false).stream().forEach(o -> names.add(o.getRouteName()));
 		// 进行优先路由的判断
+//		Route soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSoleDirect())).findFirst().orElse(null);
+//		if ((null != soleRoute) && names.contains(soleRoute.getName())) {
+//			result = soleRoute.getName();
+//		} else {
+//			// 进行默认的策略,选择占比多的
+//			result = maxCountOrLatest(list);
+//		}
+		//已经开始选择路由,如果选择了soleDirect那么就直接返回了,如果没有选择这个路由在进行sole的判断,顺序是 soleDirct -> sole -> max.
 		Route soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSoleDirect())).findFirst().orElse(null);
 		if ((null != soleRoute) && names.contains(soleRoute.getName())) {
 			result = soleRoute.getName();
 		} else {
-			// 进行默认的策略,选择占比多的
-			result = maxCountOrLatest(list);
+			soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSole())).findFirst().orElse(null);
+			if ((null != soleRoute) && names.contains(soleRoute.getName())) {
+				result = soleRoute.getName();
+			} else {
+				// 进行默认的策略,选择占比多的
+				result = maxCountOrLatest(list);
+			}
 		}
 		if (StringUtils.isEmpty(result)) {
 			throw new ExceptionChoiceRouteNameError(
