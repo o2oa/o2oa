@@ -1,4 +1,4 @@
-package com.x.general.assemble.control.jaxrs.update;
+package com.x.general.assemble.control.jaxrs.upgrade;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
