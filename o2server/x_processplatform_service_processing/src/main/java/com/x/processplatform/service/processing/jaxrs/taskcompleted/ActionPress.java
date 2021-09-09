@@ -69,9 +69,9 @@ class ActionPress extends BaseAction {
 						taskCompleted.setPressActivityToken(work.getActivityToken());
 						taskCompleted.setPressCount(1);
 					} else {
-						if (DateTools.beforeNowMinutesNullIsFalse(taskCompleted.getPressTime(),
-								Config.processPlatform().getPress().getIntervalMinutes())) {
+						if (taskCompleted.getPressCount()!=null && taskCompleted.getPressCount() > 0) {
 							taskCompleted.setPressCount(taskCompleted.getPressCount() + 1);
+							taskCompleted.setPressTime(new Date());
 						} else {
 							taskCompleted.setPressTime(new Date());
 							taskCompleted.setPressActivityToken(work.getActivityToken());
