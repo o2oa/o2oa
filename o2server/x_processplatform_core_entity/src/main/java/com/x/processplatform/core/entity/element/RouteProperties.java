@@ -12,8 +12,11 @@ public class RouteProperties extends JsonProperties {
 	@FieldDescribe("是否启用异步返回.")
 	private Boolean asyncSupported = true;
 
-	@FieldDescribe("选择优先路由时是否直接执行路由(一票否决),默认true.")
+	@FieldDescribe("选择优先路由时是否直接执行路由(一票否决),默认null.")
 	private Boolean soleDirect;
+
+	@FieldDescribe("默认选中的路由.")
+	private Boolean defaultSelected;
 
 	public Boolean getAsyncSupported() {
 		return asyncSupported;
@@ -24,11 +27,19 @@ public class RouteProperties extends JsonProperties {
 	}
 
 	public Boolean getSoleDirect() {
-		return BooleanUtils.isNotFalse(soleDirect);
+		return BooleanUtils.isTrue(soleDirect);
 	}
 
 	public void setSoleDirect(Boolean soleDirect) {
 		this.soleDirect = soleDirect;
+	}
+
+	public Boolean getDefaultSelected() {
+		return defaultSelected;
+	}
+
+	public void setDefaultSelected(Boolean defaultSelected) {
+		this.defaultSelected = defaultSelected;
 	}
 
 }
