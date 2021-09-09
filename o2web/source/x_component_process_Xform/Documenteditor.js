@@ -957,6 +957,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 if (!this.layout_copyto2ContentTr) this.layout_copyto2ContentTr = this.layout_copyto2Content.getParent("tr");
                 if (!this.layout_copyto2ContentTrP) this.layout_copyto2ContentTrP = this.layout_copyto2ContentTr.getParent();
             }
+            if (!this.copyToOrder){
+                this.copyToOrder = "unknow"
+                if (this.layout_copytoContentTr && this.layout_copyto2ContentTr){   //需要知道顺序
+                    if (this.layout_copytoContentTrP && this.layout_copyto2ContentTrP && this.layout_copytoContentTrP==this.layout_copyto2ContentTrP){
+                        var n = this.layout_copytoContentTrP.getFirst();
+                        while (n && n!=this.layout_copytoContentTr && n!=this.layout_copyto2ContentTr){
+                            n = n.getNext();
+                        }
+                        if (n==this.layout_copytoContentTr){
+                            this.copyToOrder = "copyto";
+                        }
+                        if (n==this.layout_copyto2ContentTr){
+                            this.copyToOrder = "copyto2";
+                        }
+                    }
+                }
+            }
+
             if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content) ){
                 if (this.layout_edition){
                     if (this.layout_copytoContentTr) this.layout_copytoContentTr.dispose();
@@ -982,9 +1000,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 //     "mso-border-bottom-alt": "solid windowtext 0.75pt"
                 // });
             }else{
-                if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
-                if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
-
+                if (this.copyToOrder == "copyto2"){
+                    if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                    if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                }else{
+                    if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                    if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                }
             }
 
             if ((!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
