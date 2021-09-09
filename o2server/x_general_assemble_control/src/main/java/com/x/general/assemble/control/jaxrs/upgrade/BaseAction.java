@@ -1,4 +1,4 @@
-package com.x.general.assemble.control.jaxrs.update;
+package com.x.general.assemble.control.jaxrs.upgrade;
 
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
