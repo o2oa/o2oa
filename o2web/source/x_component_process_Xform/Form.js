@@ -2645,7 +2645,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (!layout.mobile) { // pc上鼠标位置偏移20
                 x = x - 20
             }
-            var dlg = new MWF.xDesktop.Dialog({
+
+
+            var opt = {
                 "title": title,
                 "style": style || "o2",
                 "top": y,
@@ -2654,7 +2656,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "fromLeft": (Browser.name === "firefox") ? e.event.clientX - 20 : e.event.x - 20,
                 "width": width,
                 "height": height,
-                "text": text,
                 "container": this.app.content,
                 "maskNode": mask || this.app.content,
                 "buttonList": [
@@ -2669,7 +2670,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         "action": cancel
                     }
                 ]
-            });
+            };
+            if( /<\/?[a-z][\s\S]*>/i.test(text||"")){
+                opt.html = text;
+            }else{
+                opt.text = text
+            }
+
+            var dlg = new MWF.xDesktop.Dialog(opt);
 
             switch (type.toLowerCase()) {
                 case "success":
