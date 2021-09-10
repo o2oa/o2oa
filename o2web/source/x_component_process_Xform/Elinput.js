@@ -21,11 +21,6 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         "elEvents": ["focus", "blur", "change", "input", "clear"]
     },
     _appendVueData: function(){
-        this.form.Macro.environment.data.check(this.json.id);
-        //if (!this.json[this.json.id]){
-            this.json[this.json.id] = this._getBusinessData();
-        //}
-
         if (!this.json.maxlength) this.json.maxlength = "";
         if (!this.json.minlength) this.json.minlength = "";
         if (!this.json.showWordLimit) this.json.showWordLimit = false;
@@ -52,8 +47,9 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     //     }.bind(this);
     // },
     _createElementHtml: function(){
+        debugger;
         var html = "<el-input";
-        html += " v-model=\""+this.json.id+"\"";
+        html += " v-model=\""+this.json.$id+"\"";
         html += " :maxlength=\"maxlength\"";
         html += " :minlength=\"minlength\"";
         html += " :show-word-limit=\"showWordLimit\"";

@@ -11,24 +11,35 @@ Object.assign(o2.APP$Elinput.prototype, {
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);
-        this.json[this.json.id] = value;
-        if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+        this.json[this.json.$id] = value;
+        this.__setReadonly(value);
         this.fieldModuleLoaded = true;
         return value;
     },
     __setData: function(data){
         var old = this.getInputData();
         this._setBusinessData(data);
-        this.json[this.json.id] = data;
-        if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+        this.json[this.json.$id] = data;
+        this.__setReadonly(data);
         if (old!==data) this.fireEvent("change");
         this.moduleValueAG = null;
         this.validationMode();
     },
-    getInputData: function(){
-        return this.json[this.json.id];
+    __setReadonly: function(data){
+        if (this.readonly || this.json.isReadonly) this.node.set("text", data);
     },
+    getInputData: function(){
+        return this.json[this.json.$id];
+    },
+    // _getVueModelBindId: function(){
+    //     if (this.json.id.indexOf("..")!==-1){
+    //         this.json["$id"] ="__"+this.json.id.replace(/\.\./g, "_")
+    //     }else{
+    //         this.json["$id"] = this.json.id;
+    //     }
+    // },
     _loadNodeEdit: function(){
+        this.json["$id"] = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
         this.node.appendHTML(this._createElementHtml(), "before");
         var input = this.node.getPrevious();
 
