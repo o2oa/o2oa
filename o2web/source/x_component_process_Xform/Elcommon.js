@@ -33,6 +33,15 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     //     }
     // },
     //
+    // initialize: function(node, json, form, options){
+    //     debugger;
+    //     this.node = $(node);
+    //     this.node.store("module", this);
+    //     this.json = json;
+    //     this.form = form;
+    //     this.field = true;
+    //     this.parentLine = null;
+    // },
     _checkVueHtml: function(){
         var nodes = this.node.querySelectorAll("*[v-model]");
         this.tmpVueData = {};
@@ -43,8 +52,6 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
         }.bind(this));
     },
     _loadUserInterface: function(){
-        debugger;
-        this.field = true;
         this.node.set("html", this._createElementHtml());
         //this._checkVueHtml();
         this._checkVmodel();
@@ -92,6 +99,7 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
 
         var app = {};
         if (this.json.vueApp && this.json.vueApp.code) app = this.form.Macro.exec(this.json.vueApp.code, this);
+        if (!app) app = {};
         if (app.data){
             var ty = o2.typeOf(app.data);
             switch (ty){
