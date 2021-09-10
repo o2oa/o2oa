@@ -77,11 +77,17 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     // },
 
     _createVueExtend: function(){
-        if (this.tmpVueData){
-            Object.keys(this.tmpVueData).each(function(k){
-                this.form.Macro.environment.data.check(k, this.tmpVueData[k]);
+        // if (this.tmpVueData){
+        //     Object.keys(this.tmpVueData).each(function(k){
+        //         this.form.Macro.environment.data.check(k, this.tmpVueData[k]);
+        //     }.bind(this));
+        // }
+        if (this.vModels && this.vModels.length){
+            this.vModels.forEach(function(m){
+                if (!this.json.hasOwnProperty(m)) this.json[m] = "";
             }.bind(this));
         }
+
         var app = {};
         if (this.json.vueApp && this.json.vueApp.code) app = this.form.Macro.exec(this.json.vueApp.code, this);
         if (app.data){
@@ -89,9 +95,10 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
             switch (ty){
                 case "object":
                     Object.keys(app.data).each(function(k){
-                        this.form.Macro.environment.data.add(k, app.data[k]);
+                        if (!this.json.hasOwnProperty(k)) this.json[k] = app.data[k];
+                        //this.form.Macro.environment.data.add(k, app.data[k]);
                     }.bind(this));
-                    app.data = this.form.Macro.environment.data;
+                    app.data = this.this.json;
                     // app.data = this.json;
                     // app.data = Object.merge(this.json, this.form.Macro.environment.data);
                     break;
@@ -104,15 +111,18 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
                         //_self.form.Macro.environment.data.add(_self.json.id, d);
 
                         Object.keys(d).each(function(k){
-                            _self.form.Macro.environment.data.add(k, d[k]);
+                            if (!_self.json.hasOwnProperty(k)) _self.json[k] = d[k];
+                            //_self.form.Macro.environment.data.add(k, d[k]);
                         });
                         //var data = Object.merge(_slef.json);
-                        return _self.form.Macro.environment.data;
+                        //return _self.form.Macro.environment.data;
+                        return _self.json;
                     };
                     break;
             }
         }else{
-            app.data = this.form.Macro.environment.data;
+            //app.data = this.form.Macro.environment.data;
+            app.data = this.json;
         }
 
         var _self = this;
@@ -121,6 +131,9 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
             _self._afterMounted(this.$el);
             if (mountedFun && o2.typeOf(mountedFun)=="function") return mountedFun.apply(this);
         };
+
+        this.appendVueWatch(app);
+
         return app;
     },
 
@@ -142,17 +155,34 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     //         this.styleNode.inject(this.node, "before");
     //     }
     // },
-    _filterHtml: function(html){
-        var tmp = new Element("div", {"html": html});
-        var nodes = tmp.querySelectorAll("*[v-model]");
-        this.tmpVueData = {};
-        nodes.forEach(function(node){
-            this.tmpVueData[node.get("v-model")] = "";
-        }.bind(this));
-        return html;
+    // _filterHtml: function(html){
+    //     var tmp = new Element("div", {"html": html});
+    //     var nodes = tmp.querySelectorAll("*[v-model]");
+    //     this.tmpVueData = {};
+    //     nodes.forEach(function(node){
+    //         this.tmpVueData[node.get("v-model")] = "";
+    //     }.bind(this));
+    //     return html;
+    // },
+    _checkVmodel: function(text){
+        if (text){
+            this.vModels = [];
+            var reg = /(?:v-model)(?:.lazy|.number|.trim)?(?:\s*=\s*)(?:["'])?([^"']*)/g;
+            var arr;
+            while ((arr = reg.exec(text)) !== null) {
+                if (arr.length>1 && arr[1]){
+                    var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
+                    modelId = (modelId) ? modelId+".."+arr[1] : arr[1];
+                    this.json[arr[1]] = this.getBusinessDataById(null, modelId);
+                    this.vModels.push(arr[1]);
+                }
+            }
+        }
     },
     _createElementHtml: function(){
         var html = this.json.vueTemplate || "";
-        return this._filterHtml(html);
+        if (html) this._checkVmodel(html);
+        // return this._filterHtml(html);
+        return html;
     }
 }); 
