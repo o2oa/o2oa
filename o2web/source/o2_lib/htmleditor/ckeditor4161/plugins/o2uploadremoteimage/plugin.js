@@ -49,7 +49,7 @@
 		return editor.config.localImageMaxWidth || 2000;
 	}
 
-	CKEDITOR.plugins.add( 'o2remoteimage', {
+	CKEDITOR.plugins.add( 'o2uploadremoteimage', {
 		requires: 'uploadwidget',
 
 		onLoad: function() {
@@ -92,8 +92,7 @@
 
 			if( !editor.config.reference || !editor.config.referenceType )return;
 
-			var fileTools = CKEDITOR.fileTools,
-				uploadUrl = this.getImageUploadUrl( editor, 'image' );
+			var uploadUrl = this.getImageUploadUrl( editor, 'image' );
 
 			if ( !uploadUrl ) {
 				return;
