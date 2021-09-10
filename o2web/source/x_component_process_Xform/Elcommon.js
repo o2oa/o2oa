@@ -44,8 +44,10 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     },
     _loadUserInterface: function(){
         debugger;
+        this.field = true;
         this.node.set("html", this._createElementHtml());
-        this._checkVueHtml();
+        //this._checkVueHtml();
+        this._checkVmodel();
 
         this.node.set({
             "id": this.json.id,
@@ -95,10 +97,10 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
             switch (ty){
                 case "object":
                     Object.keys(app.data).each(function(k){
-                        if (!this.json.hasOwnProperty(k)) this.json[k] = app.data[k];
+                        this.json[k] = app.data[k];
                         //this.form.Macro.environment.data.add(k, app.data[k]);
                     }.bind(this));
-                    app.data = this.this.json;
+                    app.data = this.json;
                     // app.data = this.json;
                     // app.data = Object.merge(this.json, this.form.Macro.environment.data);
                     break;
@@ -111,7 +113,7 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
                         //_self.form.Macro.environment.data.add(_self.json.id, d);
 
                         Object.keys(d).each(function(k){
-                            if (!_self.json.hasOwnProperty(k)) _self.json[k] = d[k];
+                            _self.json[k] = d[k];
                             //_self.form.Macro.environment.data.add(k, d[k]);
                         });
                         //var data = Object.merge(_slef.json);
@@ -165,24 +167,49 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     //     return html;
     // },
     _checkVmodel: function(text){
-        if (text){
-            this.vModels = [];
-            var reg = /(?:v-model)(?:.lazy|.number|.trim)?(?:\s*=\s*)(?:["'])?([^"']*)/g;
-            var arr;
-            while ((arr = reg.exec(text)) !== null) {
-                if (arr.length>1 && arr[1]){
-                    var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
-                    modelId = (modelId) ? modelId+".."+arr[1] : arr[1];
-                    this.json[arr[1]] = this.getBusinessDataById(null, modelId);
-                    this.vModels.push(arr[1]);
+        // if (text){
+        //     this.vModels = [];
+        //     var reg = /(?:v-model)(?:.lazy|.number|.trim)?(?:\s*=\s*)(?:["'])?([^"']*)/g;
+        //     var arr;
+        //     while ((arr = reg.exec(text)) !== null) {
+        //         if (arr.length>1 && arr[1]){
+        //             var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
+        //             modelId = (modelId) ? modelId+".."+arr[1] : arr[1];
+        //             this.json[arr[1]] = this._getBusinessData(modelId);
+        //             this.vModels.push(arr[1]);
+        //         }
+        //     }
+        // }
+        var nodes = this.node.querySelectorAll("*[v-model]");
+        this.vModels = [];
+        var arrs = ["el-checkbox-group"];
+        nodes.forEach(function(node){
+            var model = node.get("v-model");
+            var tag = node.tagName.toString().toLowerCase();
+            if (model){
+                var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
+                modelId = (modelId) ? modelId+".."+model : model;
+                this.json[model] = this._getBusinessData(modelId);
+                if (!this.json[model]){
+                    this.json[model] = (arrs.indexOf(tag)===-1) ? "" : []
                 }
+                this.vModels.push(model);
             }
-        }
+        }.bind(this));
     },
     _createElementHtml: function(){
         var html = this.json.vueTemplate || "";
-        if (html) this._checkVmodel(html);
+        // if (html) this._checkVmodel(html);
         // return this._filterHtml(html);
         return html;
-    }
+    },
+    resetData: function(){
+        if (this.vModels && this.vModels.length){
+            this.vModels.forEach(function(m){
+                var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
+                modelId = (modelId) ? modelId+".."+m : m;
+                this.json[m] = this._getBusinessData(modelId);
+            }.bind(this));
+        }
+    },
 }); 
