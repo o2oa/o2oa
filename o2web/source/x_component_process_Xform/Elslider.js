@@ -127,19 +127,5 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
         html += "</el-slider>";
         return html;
     },
-    __setValue: function(value){
-        this.moduleValueAG = null;
-        this._setBusinessData(value);
-        this.json[this.json.id] = value;
-        this.fieldModuleLoaded = true;
-        return value;
-    },
-    __setData: function(data){
-        var old = this.getInputData();
-        this._setBusinessData(data);
-        this.json[this.json.id] = data;
-        if (old!==data) this.fireEvent("change");
-        this.moduleValueAG = null;
-        this.validationMode();
-    },
+    __setReadonly: function(data){}
 }); 

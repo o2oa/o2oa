@@ -12,6 +12,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         /**
          * 组件加载前触发。当前组件的queryLoad事件运行时还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取。
          * @event MWF.xApplication.process.Xform.$Module#queryLoad
+         * @event MWF.xApplication.process.Xform.$Module#queryLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
@@ -449,18 +450,16 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             if (evdata) evdata.check(key, v);
         }
     },
-    getBusinessDataById: function(d){
+    getBusinessDataById: function(d, id){
         var data = d || this.form.businessData.data;
-        //var evdata = this.form.Macro.environment.data;
+        var thisId = id || this.json.id;
         //对id类似于 xx..0..xx 的字段进行拆分
-        if(this.json.id.indexOf("..") < 1){
-            //if (!data.hasOwnProperty(this.json.id)) evdata.add(this.json.id, data[this.json.id]||"");
-            return data[this.json.id];
+        if(thisId.indexOf("..") < 1){
+            return data[thisId];
         }else{
-            var idList = this.json.id.split("..");
+            var idList = thisId.split("..");
             idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
 
-            //var data = this.form.businessData.data;
             var lastIndex = idList.length - 1;
 
             for(var i=0; i<=lastIndex; i++){
@@ -468,11 +467,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if( !id && id !== 0 )return null;
                 if( ["object","array"].contains(o2.typeOf(data)) ){
                     if( i === lastIndex ){
-                        //if (!data.hasOwnProperty(id)) evdata.add(id, data[id]||"");
                         return data[id];
                     }else{
-                        //if (!data.hasOwnProperty(id)) evdata.add(id, {});
-                        //evdata = evdata[id];
                         data = data[id];
                     }
                 }else{
@@ -490,17 +486,18 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 evdata.check(id, v);
         }
     },
-    setBusinessDataById: function(v){
+    setBusinessDataById: function(v, id){
         debugger;
         //对id类似于 xx..0..xx 的字段进行拆分
         var evdata = this.form.Macro.environment.data;
         var data = this.form.businessData.data;
-        if(this.json.id.indexOf("..") < 1){
-            data[this.json.id] = v;
-            this._checkEvdata(evdata, this.json.id, v);
+        var thisId = id || this.json.id;
+        if(thisId.indexOf("..") < 1){
+            data[thisId] = v;
+            this._checkEvdata(evdata, thisId, v);
             //this.form.businessData.data[this.json.id] = v;
         }else{
-            var idList = this.json.id.split("..");
+            var idList = thisId.split("..");
             idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
 
             //var data = this.form.businessData.data;

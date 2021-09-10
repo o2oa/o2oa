@@ -1486,9 +1486,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         pathList = pathList || [];
         if (typeOf(data) === "object") {
             for (var key in data) {
+                //if (key.substring(0,2)!=="__"){
                 var pList = Array.clone(pathList);
                 pList.push(key);
                 this.setModifedData(data[key], pList);
+                //}
             }
         } else if (typeOf(data) === "array") {
             var od = this.getOrigianlPathData(pathList);
