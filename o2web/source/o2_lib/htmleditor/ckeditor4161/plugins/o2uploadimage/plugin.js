@@ -274,16 +274,20 @@
 				debugger;
 				//兼容几种模式: 1、File 2、Base64 3、图片地址指向本地，sr以 file:/// 开始，且带有File
 
-				var flag = false;
-				var localData = evt.data.dataTransfer._ ;
-				if ( evt.data.dataValue.match( /<img[\s\S]+data:/i ) ) { //1、File 2、Base64
-					flag = true;
-				}else if( localData && localData.files && localData.files.length ){ //3、带有File
-					if( evt.data.dataValue.match( /<img[\s\S]+file:\/\/\//i ) ){ //有图片地址指向 file:///
-						flag = true;
-					}
+				if( !evt.data.dataValue.match( /<img[\s\S]+data:/i ) && !evt.data.dataValue.match( /<img[\s\S]+file:\/\/\//i ) ){
+					return;
 				}
-				if(!flag)return;
+
+				// var localData = evt.data.dataTransfer._ ;
+				// var flag = false;
+				// if ( evt.data.dataValue.match( /<img[\s\S]+data:/i ) ) { //1、File 2、Base64
+				// 	flag = true;
+				// }else if( localData && localData.files && localData.files.length ){ //3、带有File
+				// 	if( evt.data.dataValue.match( /<img[\s\S]+file:\/\/\//i ) ){ //有图片地址指向 file:///
+				// 		flag = true;
+				// 	}
+				// }
+				// if(!flag)return;
 
 				var data = evt.data,
 					// Prevent XSS attacks.
@@ -303,23 +307,26 @@
 
 					// Assign src once, as it might be a big string, so there's no point in duplicating it all over the place.
 					var imgSrc = img.getAttribute( 'src' ),
-						// Image have to contain src=data:...
-						isDataInSrc = imgSrc && imgSrc.substring( 0, 5 ) == 'data:',
 						isRealObject = img.data( 'cke-realelement' ) === null;
 
 					// We are not uploading images in non-editable blocs and fake objects (https://dev.ckeditor.com/ticket/13003).
 					if ( imgSrc && isRealObject && !img.data( 'cke-upload-id' ) && !img.isReadOnly( 1 ) ) {
 						var file, imgFormat;
-						if( isDataInSrc ){
+						if( imgSrc.substring( 0, 5 ) == 'data:' ){
 							file = imgSrc;
 							// Note that normally we'd extract this logic into a separate function, but we should not duplicate this string, as it might
 							// be large.
 							imgFormat = imgSrc.match( /image\/([a-z]+?);/i );
 							imgFormat = ( imgFormat && imgFormat[ 1 ] ) || 'jpg';
-						}else if( imgSrc.substring( 0, 5 ) === 'file:' && localData.files.length ){
-							file = localData.files[0];
-							imgFormat = (file.type || "").split("/");
-							imgFormat = imgFormat.length > 1 ? imgFormat[imgFormat.length-1] : 'jpg';
+						}else if( imgSrc.substring( 0, 5 ) == 'file:' ){
+							var localData = evt.data.dataTransfer._ ;
+							if( localData.files.length ){
+								file = localData.files[0];
+								imgFormat = (file.type || "").split("/");
+								imgFormat = imgFormat.length > 1 ? imgFormat[imgFormat.length-1] : 'jpg';
+							}else{
+								img.remove();
+							}
 						}
 						if(file){
 							var loader = editor.uploadRepository.create( file, getUniqueImageFileName( imgFormat ) );
