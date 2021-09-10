@@ -1,9 +1,9 @@
 MWF.xDesktop.requireApp("process.Xform", "Htmleditor", null, false);
-MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
-	Extends: MWF.APPHtmleditor,
+MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor = new Class({
+    Extends: MWF.APPHtmleditor,
 
-	// _loadUserInterface: function(){
-	// 	this.node.empty();
+    // _loadUserInterface: function(){
+    // 	this.node.empty();
     //     if (this.readonly){
     //         // var html = this.parseImage( this._getBusinessData() );
     //         // this.node.set("html", html);
@@ -34,7 +34,7 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
     //
     //         this.loadCkeditor(config);
     //     }
-	// },
+    // },
     // parseImage : function( html ){
     //     html = ( html || "" ).replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (img, capture) {
     //         if( img.indexOf( "data-id" ) > -1 && img.indexOf("setImageSrc()") > -1 ){
@@ -59,29 +59,32 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
     //         return src_str.substr(0, tag.length + 1) + ' ' + attr + '=' + val + ' ' + src_str.substr(tag.length + 2, src_str.length);
     //     }
     // },
-    loadCkeditor: function(config){
+    loadCkeditor: function (config) {
         _self = this;
-        // o2.load("../o2_lib/htmleditor/ckeditor4130/ckeditor.js", function(){
+        // o2.load("../o2_lib/htmleditor/ckeditor4-major/ckeditor.js", function(){
 
-        COMMON.AjaxModule.loadDom("ckeditor", function(){
+        COMMON.AjaxModule.loadDom("ckeditor", function () {
             CKEDITOR.disableAutoInline = true;
             var editorDiv = new Element("div").inject(this.node);
             var htmlData = this._getBusinessData();
-            if (htmlData){
+            if (htmlData) {
                 editorDiv.set("html", htmlData);
-            }else if (this.json.templateCode){
+            } else if (this.json.templateCode) {
                 editorDiv.set("html", this.json.templateCode);
             }
 
             var height = this.node.getSize().y;
             var editorConfig = config || {};
 
-            if (this.form.json.mode=="Mobile"){
-                if (!editorConfig.toolbar && !editorConfig.toolbarGroups){
+            if (this.form.json.mode == "Mobile") {
+                if (!editorConfig.toolbar && !editorConfig.toolbarGroups) {
                     editorConfig.toolbar = [
-                        { name: 'paragraph',   items: [ 'Bold', 'Italic', "-" , 'TextColor', "BGColor", 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', "-", 'Undo', 'Redo' ] },
-                        { name: 'basicstyles', items: [ 'Styles', 'FontSize']},
-                        { name: 'insert', items : [ 'Image' ] }
+                        {
+                            name: 'paragraph',
+                            items: ['Bold', 'Italic', "-", 'TextColor', "BGColor", 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', "-", 'Undo', 'Redo']
+                        },
+                        {name: 'basicstyles', items: ['Styles', 'FontSize']},
+                        {name: 'insert', items: ['Image']}
                     ];
                 }
             }
@@ -102,27 +105,29 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
             editorConfig.reference = this.form.businessData.document.id;
             editorConfig.referenceType = "cmsDocument";
 
-            if( editorConfig && editorConfig.extraPlugins ){
+            if (editorConfig && editorConfig.extraPlugins) {
                 var extraPlugins = editorConfig.extraPlugins;
-                extraPlugins = typeOf( extraPlugins ) === "array" ? extraPlugins : extraPlugins.split(",");
-                extraPlugins.push( 'o2image' );
-                extraPlugins.push( 'o2uploadimage' );
+                extraPlugins = typeOf(extraPlugins) === "array" ? extraPlugins : extraPlugins.split(",");
+                extraPlugins.push('o2image');
+                extraPlugins.push('o2uploadimage');
+                extraPlugins.push('o2clipboardimage');
                 editorConfig.extraPlugins = extraPlugins;
-            }else{
-                editorConfig.extraPlugins = ['o2image','o2uploadimage'];
+            } else {
+                editorConfig.extraPlugins = ['o2image', 'o2uploadimage', 'o2clipboardimage'];
             }
 
-            if( editorConfig && editorConfig.removePlugins ){
+            if (editorConfig && editorConfig.removePlugins) {
                 var removePlugins = editorConfig.removePlugins;
-                removePlugins = typeOf( removePlugins ) === "array" ? removePlugins : removePlugins.split(",");
-                editorConfig.removePlugins = removePlugins.concat(['image','easyimage','exportpdf','cloudservices']);
-            }else{
-                editorConfig.removePlugins = ['image','easyimage','exportpdf','cloudservices'];
+                removePlugins = typeOf(removePlugins) === "array" ? removePlugins : removePlugins.split(",");
+                editorConfig.removePlugins = removePlugins.concat(['image', 'easyimage', 'exportpdf', 'cloudservices']);
+            } else {
+                editorConfig.removePlugins = ['image', 'easyimage', 'exportpdf', 'cloudservices'];
             }
 
-            if(!editorConfig.language)editorConfig.language = MWF.language;
+            if (!editorConfig.language) editorConfig.language = MWF.language;
 
-            if( editorConfig.skin )editorConfig.skin = "moono-lisa";
+            if (editorConfig.skin) editorConfig.skin = "moono-lisa";
+
             this.editor = CKEDITOR.replace(editorDiv, editorConfig);
             this._loadEvents();
 
@@ -132,39 +137,39 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
 
             //this.setData(data)
 
-            this.editor.on("change", function(){
+            this.editor.on("change", function () {
                 this._setBusinessData(this.getData());
             }.bind(this));
             //    this._loadEvents();
         }.bind(this));
     },
-    getText : function(){
+    getText: function () {
         return this.editor.document.getBody().getText();
     },
-    getImages : function(){
+    getImages: function () {
         var result = [];
         var imgaes = this.editor.document.find("img");
-        if( imgaes ){
-            for( var i=0; i< imgaes.$.length; i++ ){
-                result.push( imgaes.getItem(i).$ );
+        if (imgaes) {
+            for (var i = 0; i < imgaes.$.length; i++) {
+                result.push(imgaes.getItem(i).$);
             }
         }
         return result;
     },
-    getImageIds : function(){
+    getImageIds: function () {
         var result = [];
         var images = this.getImages();
-        for( var i=0; i<images.length; i++ ){
+        for (var i = 0; i < images.length; i++) {
             var img = images[i];
-            if( img.getAttribute("data-id") ){
-                result.push( img.getAttribute("data-id") )
+            if (img.getAttribute("data-id")) {
+                result.push(img.getAttribute("data-id"))
             }
         }
         return result;
     },
-    _loadStyles: function(){
+    _loadStyles: function () {
         if (this.json.styles) this.node.setStyles(this.json.styles);
-        this.node.setStyle("overflow","hidden");
+        this.node.setStyle("overflow", "hidden");
     },
     //selectCurrentDocumentImage : function( e, callback ){
     //    var _self = this;
@@ -202,56 +207,56 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
     //    }, true);
     //
     //},
-    validationConfigItem: function(routeName, data){
-        var flag = (data.status=="all") ? true: (routeName == "publish");
-        if (flag){
+    validationConfigItem: function (routeName, data) {
+        var flag = (data.status == "all") ? true : (routeName == "publish");
+        if (flag) {
             var n = this.getData();
-            var v = (data.valueType=="value") ? n : n.length;
-            switch (data.operateor){
+            var v = (data.valueType == "value") ? n : n.length;
+            switch (data.operateor) {
                 case "isnull":
-                    if (!v){
+                    if (!v) {
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notnull":
-                    if (v){
+                    if (v) {
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "gt":
-                    if (v>data.value){
+                    if (v > data.value) {
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "lt":
-                    if (v<data.value){
+                    if (v < data.value) {
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "equal":
-                    if (v==data.value){
+                    if (v == data.value) {
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "neq":
-                    if (v!=data.value){
+                    if (v != data.value) {
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "contain":
-                    if (v.indexOf(data.value)!=-1){
+                    if (v.indexOf(data.value) != -1) {
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notcontain":
-                    if (v.indexOf(data.value)==-1){
+                    if (v.indexOf(data.value) == -1) {
                         this.notValidationMode(data.prompt);
                         return false;
                     }

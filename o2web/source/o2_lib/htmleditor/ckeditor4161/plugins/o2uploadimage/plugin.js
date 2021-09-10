@@ -1,6 +1,7 @@
 /**
  * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * 本插件允许从本地拖动/复制图片到编辑器中，编辑器自动上传到服务器
  */
 
 'use strict';
@@ -88,6 +89,7 @@
 			}
 
 			editor.on( 'fileUploadRequest', function( evt ) {
+				debugger;
 				var fileLoader = evt.data.fileLoader;
 
 				//不是上传图片链接
@@ -96,7 +98,21 @@
 				fileLoader.xhr.open( 'PUT', fileLoader.uploadUrl, true );
 
 				// Adding file to event's data by default - allows overwriting it by user's event listeners. (https://dev.ckeditor.com/ticket/13518)
-				evt.data.requestData.file = fileLoader.file;
+
+				// if( (typeof fileLoader.file.name) === "string" ){ //is File
+				// 	evt.data.requestData.file = fileLoader.file;
+				// }else{  //is blob
+				// 	evt.data.requestData.file = new window.File( [fileLoader.file], fileLoader.fileName, {
+				// 		type: fileLoader.file.type
+				// 	})
+				// }
+				// evt.data.requestData.file = fileLoader.file;
+				// evt.data.requestData.name = fileLoader.fileName;
+
+				evt.data.requestData.file = {
+					file: fileLoader.file,
+					name: fileLoader.fileName
+				};
 				evt.data.requestData.fileName = fileLoader.fileName;
 				delete evt.data.requestData.upload;
 			}, null, null, 10 );
@@ -202,9 +218,22 @@
 					var src = MWF.xDesktop.getImageSrc( id );
 
 					// Width and height could be returned by server (https://dev.ckeditor.com/ticket/13519).
-					var $img = this.parts.img.$,
-						width = upload.responseData.width || $img.naturalWidth,
+					var width = this.parts.img.getStyle("width");
+					var $img = this.parts.img.$;
+					if( width && !isNaN(parseInt(width)) ){
+						width = parseInt(width);
+					}
+					if( !width || isNaN(parseInt(width)) ){
+						width = upload.responseData.width || $img.naturalWidth;
+					}
+
+					var height = this.parts.img.getStyle("height");
+					if( height && !isNaN(parseInt(height)) ){
+						height = parseInt(height);
+					}
+					if( !height || isNaN(parseInt(height)) ){
 						height = upload.responseData.height || $img.naturalHeight;
+					}
 
 					//按最大宽度比率缩小
 					var maxWidth = getImageMaxWidth(editor);
@@ -225,7 +254,7 @@
 						imgString += 'alt="' + upload.fileName + '" ';
 					}
 					imgString += editor.config.enablePreview ? 'data-prv="true" ' : 'data-prv="false" ';
-					imgString += '">';
+					imgString += '/>';
 
 					// Set width and height to prevent blinking.
 					this.replaceWith( imgString );
@@ -242,9 +271,19 @@
 			// This means that we need to read them from the <img src="data:..."> elements.
 			editor.on( 'paste', function( evt ) {
 				// For performance reason do not parse data if it does not contain img tag and data attribute.
-				if ( !evt.data.dataValue.match( /<img[\s\S]+data:/i ) ) {
-					return;
+				debugger;
+				//兼容几种模式: 1、File 2、Base64 3、图片地址指向本地，sr以 file:/// 开始，且带有File
+
+				var flag = false;
+				var localData = evt.data.dataTransfer._ ;
+				if ( evt.data.dataValue.match( /<img[\s\S]+data:/i ) ) { //1、File 2、Base64
+					flag = true;
+				}else if( localData && localData.files && localData.files.length ){ //3、带有File
+					if( evt.data.dataValue.match( /<img[\s\S]+file:\/\/\//i ) ){ //有图片地址指向 file:///
+						flag = true;
+					}
 				}
+				if(!flag)return;
 
 				var data = evt.data,
 					// Prevent XSS attacks.
@@ -269,20 +308,27 @@
 						isRealObject = img.data( 'cke-realelement' ) === null;
 
 					// We are not uploading images in non-editable blocs and fake objects (https://dev.ckeditor.com/ticket/13003).
-					if ( isDataInSrc && isRealObject && !img.data( 'cke-upload-id' ) && !img.isReadOnly( 1 ) ) {
-						// Note that normally we'd extract this logic into a separate function, but we should not duplicate this string, as it might
-						// be large.
-						var imgFormat = imgSrc.match( /image\/([a-z]+?);/i ),
-							loader;
+					if ( imgSrc && isRealObject && !img.data( 'cke-upload-id' ) && !img.isReadOnly( 1 ) ) {
+						var file, imgFormat;
+						if( isDataInSrc ){
+							file = imgSrc;
+							// Note that normally we'd extract this logic into a separate function, but we should not duplicate this string, as it might
+							// be large.
+							imgFormat = imgSrc.match( /image\/([a-z]+?);/i );
+							imgFormat = ( imgFormat && imgFormat[ 1 ] ) || 'jpg';
+						}else if( imgSrc.substring( 0, 5 ) === 'file:' && localData.files.length ){
+							file = localData.files[0];
+							imgFormat = (file.type || "").split("/");
+							imgFormat = imgFormat.length > 1 ? imgFormat[imgFormat.length-1] : 'jpg';
+						}
+						if(file){
+							var loader = editor.uploadRepository.create( file, getUniqueImageFileName( imgFormat ) );
+							loader.upload( uploadUrl );
 
-						imgFormat = ( imgFormat && imgFormat[ 1 ] ) || 'jpg';
+							fileTools.markElement( img, 'o2uploadimage', loader.id );
 
-						loader = editor.uploadRepository.create( imgSrc, getUniqueImageFileName( imgFormat ) );
-						loader.upload( uploadUrl );
-
-						fileTools.markElement( img, 'o2uploadimage', loader.id );
-
-						// fileTools.bindNotifications( editor, loader );
+							// fileTools.bindNotifications( editor, loader );
+						}
 					}
 				}
 
