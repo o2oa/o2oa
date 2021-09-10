@@ -110,10 +110,10 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor = new Class({
                 extraPlugins = typeOf(extraPlugins) === "array" ? extraPlugins : extraPlugins.split(",");
                 extraPlugins.push('o2image');
                 extraPlugins.push('o2uploadimage');
-                extraPlugins.push('o2clipboardimage');
+                extraPlugins.push('o2remoteimage');
                 editorConfig.extraPlugins = extraPlugins;
             } else {
-                editorConfig.extraPlugins = ['o2image', 'o2uploadimage', 'o2clipboardimage'];
+                editorConfig.extraPlugins = ['o2image', 'o2uploadimage', 'o2remoteimage'];
             }
 
             if (editorConfig && editorConfig.removePlugins) {

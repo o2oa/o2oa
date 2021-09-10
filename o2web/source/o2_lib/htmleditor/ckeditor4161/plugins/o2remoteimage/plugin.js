@@ -49,7 +49,7 @@
 		return editor.config.localImageMaxWidth || 2000;
 	}
 
-	CKEDITOR.plugins.add( 'o2clipboardimage', {
+	CKEDITOR.plugins.add( 'o2remoteimage', {
 		requires: 'uploadwidget',
 
 		onLoad: function() {
@@ -88,7 +88,7 @@
 			}
 
 			editor.filter.allow( 'img[alt,dir,id,lang,longdesc,!src,title,onerror,data-orgid,data-prv,data-id,data-width,data-height]{*}(*)' );
-			// editor.filter.allow( 'img[data-cke-img-unique-id]' );
+			editor.filter.allow( 'img[data-cke-img-unique-id]' );
 
 			if( !editor.config.reference || !editor.config.referenceType )return;
 
@@ -101,12 +101,7 @@
 
 
 			editor.on( 'paste', function( evt ) {
-				return;
 				debugger;
-				// base64图片不在本组件接收.
-				// if ( evt.data.dataValue.match( /<img[\s\S]+data:/i ) ) {
-				// 	return;
-				// }
 
 				if( evt.data.type !== "html" ){
 					return;
