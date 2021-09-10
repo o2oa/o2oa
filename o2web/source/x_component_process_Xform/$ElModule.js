@@ -56,7 +56,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
                 if (arr.length>1 && arr[1]){
                     var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
                     modelId = (modelId) ? modelId+".."+arr[1] : arr[1];
-                    this.json[arr[1]] = this.getBusinessDataById(null, modelId);
+                    this.json[arr[1]] = this._getBusinessData(modelId) || "";
                     this.vModels.push(arr[1]);
                 }
             }
@@ -121,7 +121,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
                 app.watch[m] = function(val, oldVal){
                     var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
                     modelId = (modelId) ? modelId+".."+m : m;
-                    this.setBusinessDataById(val, modelId);
+                    this._setBusinessData(val, modelId);
                 }.bind(this);
             }.bind(this));
         }
