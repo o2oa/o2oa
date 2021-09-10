@@ -21,11 +21,6 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         "elEvents": ["focus", "blur", "change", "input", "clear"]
     },
     _appendVueData: function(){
-        this.form.Macro.environment.data.check(this.json.$id);
-        //if (!this.json[this.json.id]){
-            this.json[this.json.$id] = this._getBusinessData();
-        //}
-
         if (!this.json.maxlength) this.json.maxlength = "";
         if (!this.json.minlength) this.json.minlength = "";
         if (!this.json.showWordLimit) this.json.showWordLimit = false;
@@ -53,7 +48,6 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     // },
     _createElementHtml: function(){
         debugger;
-        this.json["$id"] = this.json.id.replace(/\.\./g, "_");
         var html = "<el-input";
         html += " v-model=\""+this.json.$id+"\"";
         html += " :maxlength=\"maxlength\"";
@@ -100,26 +94,5 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
 
         html += "</el-input>";
         return html;
-    },
-    __setValue: function(value){
-        this.moduleValueAG = null;
-        this._setBusinessData(value);
-        this.json[this.json.$id] = value;
-        if (this.readonly || this.json.isReadonly) this.node.set("text", value);
-        this.fieldModuleLoaded = true;
-        return value;
-    },
-    __setData: function(data){
-        var old = this.getInputData();
-        this._setBusinessData(data);
-        this.json[this.json.$id] = data;
-        if (this.readonly || this.json.isReadonly) this.node.set("text", value);
-        if (old!==data) this.fireEvent("change");
-        this.moduleValueAG = null;
-        this.validationMode();
-    },
-    getInputData: function(){
-        debugger;
-        return this.json[this.json.$id];
-    },
+    }
 }); 

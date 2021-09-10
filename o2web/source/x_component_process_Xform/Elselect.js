@@ -171,21 +171,5 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         html += "</el-select>";
         return html;
     },
-    __setValue: function(value){
-        this.moduleValueAG = null;
-        this._setBusinessData(value);
-        this.json[this.json.id] = value;
-        //if (this.readonly || this.json.isReadonly) this.node.set("text", value);
-        this.fieldModuleLoaded = true;
-        return value;
-    },
-    __setData: function(data){
-        var old = this.getInputData();
-        this._setBusinessData(data);
-        this.json[this.json.id] = data;
-        //if (this.readonly || this.json.isReadonly) this.node.set("text", value);
-        if (old!==data) this.fireEvent("change");
-        this.moduleValueAG = null;
-        this.validationMode();
-    },
+    __setReadonly: function(data){}
 }); 

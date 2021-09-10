@@ -202,6 +202,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 			case "name": this.setPropertyName(); break;
 			case "id": this.setPropertyId(); break;
 			case "buttonRadio":
+			case "vueSlot":
 				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
 			default: ;
 		}
