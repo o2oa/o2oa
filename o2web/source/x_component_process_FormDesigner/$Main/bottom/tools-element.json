@@ -19,16 +19,6 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_number,
     "className": "Elnumber"
   },
-  "elicon": {
-    "fontIcon": "el-icon-picture-outline-round",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_icon,
-    "className": "Elicon"
-  },
-  "elbutton": {
-    "fontIcon": "el-icon-thumb",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_button,
-    "className": "Elbutton"
-  },
   "elradio": {
     "fontIcon": "el-icon-success",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_radio,
@@ -58,6 +48,16 @@
     "fontIcon": "el-icon-s-operation",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_slider,
     "className": "Elslider"
+  },
+  "elbutton": {
+    "fontIcon": "el-icon-thumb",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_button,
+    "className": "Elbutton"
+  },
+  "elicon": {
+    "fontIcon": "el-icon-picture-outline-round",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_icon,
+    "className": "Elicon"
   },
   "elcommon": {
     "fontIcon": "el-icon-full-screen",

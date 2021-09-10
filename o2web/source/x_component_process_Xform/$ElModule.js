@@ -47,6 +47,17 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
             this._loadUserInterface();
         }
     },
+    _checkVmodel: function(){
+        var nodes = this.node.querySelectorAll("*[v-model]");
+        this.vModels = [];
+        nodes.forEach(function(node){
+            var model = node.get("v-model");
+            if (model){
+                this.form.Macro.environment.data.check(model);
+                this.vModels.push(model);
+            }
+        }.bind(this));
+    },
 
     _loadUserInterface: function(){
         this.node.appendHTML(this._createElementHtml(), "before");
@@ -95,7 +106,18 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         };
         app.methods = this._createVueMethods(app);
         this.appendVueExtend(app);
+        this.appendVueWatch(app);
         return app;
+    },
+    appendVueWatch: function(app){
+        if (this.vModels && this.vModels.length){
+            app.watch = {};
+            this.vModels.forEach(function(m){
+                app.watch[m] = function(val, oldVal){
+
+                }.bind(this);
+            }.bind(this));
+        }
     },
     appendVueMethods: function(methods){},
     appendVueExtend: function(app){
@@ -112,7 +134,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     _createEventFunction: function(methods, k){
         methods["$loadElEvent_"+k.camelCase()] = function(){
             this.validationMode();
-            //if (k==="change") this._setBusinessData(this.getInputData());
+            if (k==="change") this._setBusinessData(this.getInputData());
             if (this.json.events && this.json.events[k] && this.json.events[k].code){
                 this.form.Macro.fire(this.json.events[k].code, this, arguments);
             }
@@ -128,6 +150,11 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         return methods || {};
     },
     _createVueData: function(){
+        if (this.vModels && this.vModels.length){
+            this.vModels.forEach(function(m){
+                if (!this.json.hasOwnProperty(m)) this.json[m] = "";
+            }.bind(this));
+        }
         if (this.json.vueData && this.json.vueData.code){
             var d = this.form.Macro.exec(this.json.vueData.code, this);
             this.json = Object.merge(d, this.json);
