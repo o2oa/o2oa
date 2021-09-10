@@ -204,12 +204,13 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 			}
 			var data = null;
 			if (dataStr){
-				data = JSON.decode(MWF.decodeJsonString(dataStr));
+				// data = JSON.decode(MWF.decodeJsonString(dataStr));
+				data = JSON.decode(dataStr);
 			}
 
 			var tmpNode = new Element("div").inject( this.form.container );
 			tmpNode.set("html", data.html);
-			var html = tmpNode.getFirst().get("html");
+			var html = tmpNode.get("html");
 			tmpNode.destroy();
 
 			containerNode.set("html", html );
