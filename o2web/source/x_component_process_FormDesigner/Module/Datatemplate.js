@@ -196,20 +196,27 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 
 			containerNode = this.containerModule.node;
 
-			var dataStr = null;
+			// var dataStr = null;
+			// if (this.form.options.mode !== "Mobile"){
+			// 	dataStr = responseJSON.data;
+			// }else{
+			// 	dataStr = responseJSON.mobileData;
+			// }
+			// var data = null;
+			// if (dataStr){
+			// 	// data = JSON.decode(MWF.decodeJsonString(dataStr));
+			// 	data = JSON.decode(dataStr);
+			// }
+			var data;
 			if (this.form.options.mode !== "Mobile"){
-				dataStr = responseJSON.data;
+				data = responseJSON.data;
 			}else{
-				dataStr = responseJSON.mobileData;
-			}
-			var data = null;
-			if (dataStr){
-				data = JSON.decode(MWF.decodeJsonString(dataStr));
+				data = responseJSON.mobileData;
 			}
 
 			var tmpNode = new Element("div").inject( this.form.container );
 			tmpNode.set("html", data.html);
-			var html = tmpNode.getFirst().get("html");
+			var html = tmpNode.get("html");
 			tmpNode.destroy();
 
 			containerNode.set("html", html );
@@ -224,7 +231,13 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 				var oid = moduleJson.id;
 				var id = moduleJson.id;
 				var idx = 1;
-				while (this.form.json.moduleList[id]) {
+
+				// while (this.form.json.moduleList[id]) {
+				// 	id = oid + "_" + idx;
+				// 	idx++;
+				// }
+
+				while (this.form.checkModuleId(id, moduleJson.type).elementConflict){
 					id = oid + "_" + idx;
 					idx++;
 				}
