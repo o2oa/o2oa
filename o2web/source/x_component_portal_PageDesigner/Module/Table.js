@@ -38,6 +38,7 @@ MWF.xApplication.portal.PageDesigner.Module.Table = MWF.PCTable = new Class({
                     tdContainer.table = this;
                     tdContainer.load(moduleData, td, this);
                 }else{
+                    if(!json.event)json.events = Object.clone(data.events);
                     tdContainer = new MWF.PCTable$Td(this.form);
                     tdContainer.table = this;
                     tdContainer.load(json, td, this);
