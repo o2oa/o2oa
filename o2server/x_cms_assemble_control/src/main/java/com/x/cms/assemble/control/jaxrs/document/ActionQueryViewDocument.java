@@ -156,12 +156,6 @@ public class ActionQueryViewDocument extends BaseAction {
 			}
 		}
 
-		check = this.hasReadPermission(business, document, null, null, effectivePerson, null);
-
-		if(!check){
-			throw new ExceptionAccessDenied(effectivePerson, document);
-		}
-
 		if (check) {
 			try {
 				appInfo = appInfoServiceAdv.get( document.getAppId() );
@@ -334,6 +328,14 @@ public class ActionQueryViewDocument extends BaseAction {
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
+			}
+		}
+
+		if(!isEditor) {
+			check = this.hasReadPermission(business, document, unitNames, groupNames, effectivePerson, null);
+
+			if (!check) {
+				throw new ExceptionAccessDenied(effectivePerson, document);
 			}
 		}
 
