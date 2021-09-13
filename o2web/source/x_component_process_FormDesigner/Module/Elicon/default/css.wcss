@@ -43,6 +43,22 @@
 		"opacity": 1,
 		"font-size": "16px",
 		"display": "inline-block"
+	},
+	"moduleNodeError": {
+		"border": "1px dashed #333",
+		"overflow": "hidden",
+		"cursor": "pointer",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"top": "auto",
+		"left": "auto",
+		"opacity": 1,
+		"font-size": "16px",
+		"display": "inline-block",
+		"width": "40px",
+		"height": "40px"
 	}
 	
 }
