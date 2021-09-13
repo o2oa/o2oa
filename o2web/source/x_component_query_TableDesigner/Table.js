@@ -1329,6 +1329,20 @@ MWF.xApplication.query.TableDesigner.Table.ExcelUtils = new Class({
             window.navigator.msSaveBlob( url, saveName);
         }
     },
+    index2ColName : function( index ){
+        if (index < 0) {
+            return null;
+        }
+        var num = 65;// A的Unicode码
+        var colName = "";
+        do {
+            if (colName.length > 0)index--;
+            var remainder = index % 26;
+            colName =  String.fromCharCode(remainder + num) + colName;
+            index = (index - remainder) / 26;
+        } while (index > 0);
+        return colName;
+    },
     export : function(array, fileName){
         this._loadResource( function(){
             data = xlsxUtils.format2Sheet(array, 0, 0, null);//偏移3行按keyMap顺序转换
@@ -1341,7 +1355,8 @@ MWF.xApplication.query.TableDesigner.Table.ExcelUtils = new Class({
 
                 widthArray.push( {wpx: 100} );
 
-                var at = String.fromCharCode(97 + i).toUpperCase();
+                // var at = String.fromCharCode(97 + i).toUpperCase();
+                var at = this.index2ColName(i);
                 var di = dataInfo[at+"1"];
                 // di.v = v;
                 // di.t = "s";
