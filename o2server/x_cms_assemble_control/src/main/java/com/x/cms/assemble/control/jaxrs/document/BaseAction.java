@@ -214,6 +214,10 @@ public class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected boolean hasReadPermission(Business business, Document document, List<String> unitNames, List<String> groupNames, EffectivePerson effectivePerson, String queryPerson) throws Exception{
+		if("数据".equals(document.getDocumentType())){
+			return true;
+		}
+
 		String personName = effectivePerson.getDistinguishedName();
 		if(effectivePerson.isManager()){
 			if(StringUtils.isNotEmpty(queryPerson)){
@@ -227,6 +231,13 @@ public class BaseAction extends StandardJaxrsAction {
 				return true;
 			}
 		}
+
+		if(ListTools.isEmpty(document.getReadPersonList())
+				&& ListTools.isEmpty(document.getReadUnitList())
+				&& ListTools.isEmpty(document.getReadGroupList())){
+			return true;
+		}
+
 		//是否是读者
 		if(ListTools.contains(document.getReadPersonList(), getShortTargetFlag(personName)) ||
 				ListTools.contains(document.getReadPersonList(), "所有人")){
