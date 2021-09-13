@@ -4025,7 +4025,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
         // "getInfor": function () { return ev.pageInfor; },
         // "infor": ev.pageInfor,
-        // "getApp": function () { return _form.app; },
+        /**获取打开当前页面的component对象。
+         * @method getApp
+         * @static
+         * @see module:form.getApp
+         */
+        getApp: function () { return _form.app; },
         // "app": _form.app,
 
         /**获取queryView对应的DOM对象。
