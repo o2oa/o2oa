@@ -2644,7 +2644,8 @@ MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
 
 				if( !colWidthArr )widthArray.push( {wpx: 100} );
 
-				var at = String.fromCharCode(97 + i).toUpperCase();
+				// var at = String.fromCharCode(97 + i).toUpperCase();
+				var at = this.index2ColName(i);
 				var di = dataInfo[at+"1"];
 				// di.v = v;
 				// di.t = "s";
