@@ -546,9 +546,11 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.deleteAction = this.createAction(this.editActionsGroupNode, "delete", o2.LP.widget["delete"], function (e, node) {
             this.deleteAttachment(e, node);
         }.bind(this));
-        this.previewAttAction = this.createAction(this.editActionsGroupNode, "previewAtt", o2.LP.widget["previewAtt"], function (e, node) {
-            this.previewAttachment(e, node);
-        }.bind(this));
+        if(!layout.mobile){
+            this.previewAttAction = this.createAction(this.editActionsGroupNode, "previewAtt", o2.LP.widget["previewAtt"], function (e, node) {
+                this.previewAttachment(e, node);
+            }.bind(this));
+        }
         if (!this.options.isReplaceHidden) {
             this.replaceAction = this.createAction(this.editActionsGroupNode, "replace", o2.LP.widget.replace, function (e, node) {
                 this.replaceAttachment(e, node);
