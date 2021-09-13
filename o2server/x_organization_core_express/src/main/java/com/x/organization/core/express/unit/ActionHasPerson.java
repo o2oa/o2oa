@@ -17,7 +17,7 @@ class ActionHasPerson extends BaseAction {
 		wi.setPerson(person);
 		wi.setUnit(unit);
 		wi.setRecursive(recursive);
-		Wo wo = context.applications().postQuery(applicationClass, "check/unit/has/person", wi).getData(Wo.class);
+		Wo wo = context.applications().postQuery(applicationClass, "unit/check/unit/has/person", wi).getData(Wo.class);
 		if (null == wo) {
 			return false;
 		}

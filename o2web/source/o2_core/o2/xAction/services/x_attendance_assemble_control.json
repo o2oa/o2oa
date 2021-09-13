@@ -169,6 +169,7 @@ URL：x_attendance_assemble_control/jaxrs/attendancedetail/filter/list/{id}/prev
    processPerson1:   第一审批人
    processPerson2:   第二审批人*/
   "listAppealFilterNext": {"uri" : "/jaxrs/attendanceappealInfo/filter/list/{id}/next/{count}","method" :"PUT"},
+  "listAppealWithFilterWithManager": {"uri" : "/jaxrs/attendanceappealInfo/manager/list/{id}/next/{count}","method" :"PUT"},
   "listAppealFilterPrev": {"uri" : "/jaxrs/attendanceappealInfo/filter/list/{id}/prev/{count}","method" :"PUT"},
   "deleteAppeal" : {"uri":"/jaxrs/attendanceappealInfo/{id}","method": "DELETE"},
 
