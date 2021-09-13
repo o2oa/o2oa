@@ -141,7 +141,9 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }
     },
     checkPreviewAttAction: function () {
-        if (!this.options.isPreviewAtt){
+        if(layout.mobile){
+            this.setActionDisabled(this.previewAttAction);
+        } else if (!this.options.isPreviewAtt){
             this.setActionDisabled(this.previewAttAction);
             //this.setActionDisabled(this.min_downloadAction);
         }else{
