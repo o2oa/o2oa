@@ -75,14 +75,14 @@ MWF.xApplication.process.FormDesigner.Module.WritingBoard = MWF.FCWritingBoard =
 		if (styles){
 			if (styles.styles) this.removeStyles(styles.styles, "styles");
 			if (styles.actionStyles) this.removeStyles(styles.actionStyles, "actionStyles");
-			if (styles.imageStyle) this.removeStyles(styles.imageStyle, "imageStyle");
+			if (styles.imageStyles) this.removeStyles(styles.imageStyles, "imageStyles");
 			if (styles.properties) this.removeStyles(styles.properties, "properties");
 		}
 	},
 	setTemplateStyles: function(styles){
 		if (styles.styles) this.copyStyles(styles.styles, "styles");
 		if (styles.actionStyles) this.copyStyles(styles.actionStyles, "actionStyles");
-		if (styles.imageStyle) this.copyStyles(styles.imageStyle, "imageStyle");
+		if (styles.imageStyles) this.copyStyles(styles.imageStyles, "imageStyles");
 		if (styles.properties) this.copyStyles(styles.properties, "properties");
 	},
 
@@ -93,16 +93,17 @@ MWF.xApplication.process.FormDesigner.Module.WritingBoard = MWF.FCWritingBoard =
 			var actionNode = this.node.getFirst();
 			if(actionNode){
 				actionNode.clearStyles();
-				this.parseStyles(actionNode, this.json.actionStyles);
+				this.parseStyles(actionNode, this.json.actionStyles, true);
 			}
 
 		}
-		if (name=="imageStyle"){
+		if (name=="imageStyles"){
+			debugger;
 			this._recoveryModuleData();
-			var imageStyle = this.node.getLast();
-			if(imageStyle){
-				imageStyle.clearStyles();
-				this.parseStyles(imageStyle, this.json.imageStyles);
+			var imageNode = this.node.getLast();
+			if(imageNode){
+				imageNode.clearStyles();
+				this.parseStyles(imageNode, this.json.imageStyles, true);
 			}
 
 		}
@@ -112,21 +113,22 @@ MWF.xApplication.process.FormDesigner.Module.WritingBoard = MWF.FCWritingBoard =
 	},
 
 	_setEditStyle_custom: function(name, obj, oldValue){
-		if( ["styles","actionStyles","imageStyle","properties"].contains(name) ){
+		if( ["styles","actionStyles","imageStyles","properties"].contains(name) ){
 			this.setPropertiesOrStyles(name)
 		}
 	},
 
 	setCustomStyles: function(){
+		debugger;
+		var border = this.node.getStyle("border");
 		this._recoveryModuleData();
 		this.node.clearStyles();
 		this.node.setStyles(this.css.moduleNode);
 		if (this.initialStyles) this.node.setStyles(this.initialStyles);
+		this.node.setStyle("border", border);
 		this.parseStyles(this.node, this.json.styles);
 	},
 	parseStyles: function (node, style, ignoreBorder) {
-		node.clearStyles();
-
 		if (style) Object.each(style, function(value, key){
 			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
 				var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
@@ -145,7 +147,7 @@ MWF.xApplication.process.FormDesigner.Module.WritingBoard = MWF.FCWritingBoard =
 			}
 
 			var reg = /^border\w*/ig;
-			if (!ignoreBorder || !key.test(reg)){
+			if (ignoreBorder || !key.test(reg)){
 				if (key){
 					if (key.toString().toLowerCase()==="display"){
 						if (value.toString().toLowerCase()==="none"){
