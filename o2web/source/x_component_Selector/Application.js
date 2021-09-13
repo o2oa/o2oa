@@ -8,7 +8,8 @@ MWF.xApplication.Selector.Application = new Class({
         "title": "",
         "values": [],
         "expand": false,
-        "forceSearchInItem" : true
+        "forceSearchInItem" : true,
+        "designer": true
     },
     setInitTitle: function(){
         if (!this.options.title) this.setOptions({"title": MWF.xApplication.Selector.LP.selectAppliction});
@@ -18,12 +19,21 @@ MWF.xApplication.Selector.Application = new Class({
         this.className = "Application"
     },
     loadSelectItems: function(addToNext){
-        o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction.list(function(json){
-            json.data.each(function(data){
-                var category = this._newItem(data, this, this.itemAreaNode);
-                this.items.push( category );
+	    if( this.options.designer ){
+            o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction.list(function(json){
+                json.data.each(function(data){
+                    var category = this._newItem(data, this, this.itemAreaNode);
+                    this.items.push( category );
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
+        }else{
+            o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPerson(function(json){
+                json.data.each(function(data){
+                    var category = this._newItem(data, this, this.itemAreaNode);
+                    this.items.push( category );
+                }.bind(this));
+            }.bind(this));
+        }
     },
 
     _scrollEvent: function(y){
