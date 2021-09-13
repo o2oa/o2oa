@@ -1381,6 +1381,7 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
                     "type": type,
                     "values": this.configData[type],
                     "count": 0,
+                    "designer": false,
                     "onComplete": function (items) {
                         node.empty();
                         this[type] = {};
