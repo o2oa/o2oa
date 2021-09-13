@@ -323,11 +323,21 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 	},
 	
 	loadModule: function(json, dom, parent){
+		var module;
         if (json) {
-            var module = new MWF["PC" + json.type](this);
-            module.load(json, dom, parent);
-            return module;
+        	if( json.events ){
+				module = new MWF["PC" + json.type](this);
+				module.load(json, dom, parent);
+			}else{
+				var className = json.type.capitalize();
+				this.getTemplateData(className, function(data){
+					json.events = Object.clone(data.events);
+					module = new MWF["PC" + json.type](this);
+					module.load(json, dom, parent);
+				}.bind(this), false);
+			}
         }
+		return module;
 	},
 	
 	setNodeEvents: function(){
