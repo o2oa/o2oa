@@ -70,10 +70,12 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             v.then(function(o){
                 if (o2.typeOf(o)==="array"){
                     this.json.options = o;
+                    this.json.$options = o;
                 }
             }.bind(this));
         }else if (o2.typeOf(v)==="array"){
             this.json.options = v;
+            this.json.$options = v;
         }
     },
     _loadOptions: function(){

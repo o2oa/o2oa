@@ -1065,7 +1065,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "noDataText": "无数据文本",
         "loadingText": "加载中文本",
         "remoteMethod": "远程搜索方法",
-        "multipleLimit": "最多可以数",
+        "multipleLimit": "最多可选数",
 
         "max": "最大值",
         "min": "最小值",

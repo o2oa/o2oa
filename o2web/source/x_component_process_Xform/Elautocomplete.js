@@ -68,7 +68,9 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
             if (this.json.itemScript && this.json.itemScript.code){
                 var fetchSuggestions = this.form.Macro.exec(this.json.itemScript.code, this);
                 if (o2.typeOf(fetchSuggestions)==="function"){
-                    app.methods.$fetchSuggestions = fetchSuggestions;
+                    app.methods.$fetchSuggestions = function(){
+                        fetchSuggestions.apply(this, arguments);
+                    }.bind(this);
                 }
             }
 
