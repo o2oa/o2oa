@@ -75,7 +75,9 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
         if (this.json.formatTooltip && this.json.formatTooltip.code){
             var fun = this.form.Macro.exec(this.json.formatTooltip.code, this);
             if (o2.typeOf(fun)==="function"){
-                app.methods.$formatTooltip = fun;
+                app.methods.$formatTooltip = function(){
+                    fun.apply(this, arguments);
+                }.bind(this);
             }else{
                 app.methods.$formatTooltip = function(){};
             }
