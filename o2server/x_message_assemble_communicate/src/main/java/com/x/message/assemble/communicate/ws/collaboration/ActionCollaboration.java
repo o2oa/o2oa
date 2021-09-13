@@ -102,8 +102,8 @@ public class ActionCollaboration {
 			Predicate p = cb.equal(root.get(Message_.person), effectivePerson.getDistinguishedName());
 			p = cb.and(p, cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_WS));
 			p = cb.and(p, cb.equal(root.get(Message_.consumed), false));
-			cq.select(root).where(p).orderBy(cb.asc(root.get(Message_.createTime)));
-			os = em.createQuery(cq).setMaxResults(100).getResultList();
+			cq.select(root).where(p).orderBy(cb.desc(root.get(Message_.createTime)));
+			os = em.createQuery(cq).setMaxResults(10).getResultList();
 			emc.beginTransaction(Message.class);
 			for (Message o : os) {
 				o.setConsumed(true);
