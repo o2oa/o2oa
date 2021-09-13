@@ -336,7 +336,8 @@ MWF.xApplication.Attendance.AppealExplorer.View = new Class({
         var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
         var filter = this.filterData || {};
         filter.processPerson1 = layout.desktop.session.user.distinguishedName;
-        this.actions.listAppealFilterNext(id, count, filter, function(json){
+        //this.actions.listAppealFilterNext(id, count, filter, function(json){
+        this.actions.listAppealWithFilterWithManager(id, count, filter, function(json){
             var data = json.data;
             data.each(function(d){
                 d.APPEALABLE = this.explorer.config.APPEALABLE;
