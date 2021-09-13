@@ -47,6 +47,25 @@
 		"display": "block",
 		"min-width": "60px"
 	},
+	"moduleNodeError": {
+		"border": "1px dashed #333",
+		"min-height": "60px",
+		"cursor": "pointer",
+		"line-height": "normal",
+		"width": "auto",
+		"background": "transparent",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"top": "auto",
+		"left": "auto",
+		"opacity": 1,
+		"display": "block",
+		"min-width": "60px"
+	},
+
 	"iconNode": {
 		"width": "70px",
 		"height": "24px",
