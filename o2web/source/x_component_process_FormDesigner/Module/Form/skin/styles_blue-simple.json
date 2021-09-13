@@ -523,5 +523,25 @@
   },
   "attachment" : {
     "style" : "default"
+  },
+  "writingBoard": {
+    "styles": {
+      "border": "0px"
+    },
+    "actionStyles": {
+      "float": "right",
+      "border": "1px solid #6681a5",
+      "border-radius": "3px",
+      "cursor": "pointer",
+      "height": "25px",
+      "line-height": "25px",
+      "width": "30px",
+      "padding-left": "24px",
+      "padding-right": "5px",
+      "margin-left": "5px",
+      "background": "url(../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+    },
+    "imageStyle": {
+    }
   }
 }

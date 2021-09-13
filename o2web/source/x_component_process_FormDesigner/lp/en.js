@@ -188,6 +188,7 @@ MWF.xApplication.process.FormDesigner.LP = {
 
     "refreshDatatemplateImpExpTitle": "Import field confirmation",
     "refreshDatatemplateImpExpContent": "This operation gets the fields from the internal components of the data template. If you perform this operation, the previously configured fields will be replaced. Do you want to continue?",
+    "handWriting": "handwriting",
 
     "filter": {
         "and": "and",
@@ -326,8 +327,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "statementSelector": "StatementSelector",
         "statement": "Statement",
 
-        "group_system": "系统组件",
-        "group_element": "Element组件",
+        "group_system": "System",
+        "group_element": "Element",
 
         "el_container": "Container",
         "el_icon": "Icon",
@@ -344,7 +345,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_common": "Common",
 
         "importer": "DataImporter",
-        "readLog": "Read Log"
+        "readLog": "Read Log",
+        "writingBoard": "writingBoard"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -432,6 +434,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readonly": "Readonly",
         "AIInput": "AI Input",
         "inputStyle": "Input Style",
+        "actionStyles": "Button Styles",
+        "imageStyle": "Picture Style",
         "compute": "Compute",
         "create": "Create",
         "save": "Save",
@@ -1192,7 +1196,9 @@ MWF.xApplication.process.FormDesigner.LP = {
             "feedbackUrl":"feedbackUrl",
             "logoImg":"left logo（172x40）",
             "logoUrl":"logo link"
-        }
+        },
+        "tabletWidth": "Tablet Width",
+        "tabletHeight": "Tablet Height"
     },
     "actionBar": {
         "close":"Close",
