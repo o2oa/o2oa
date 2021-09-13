@@ -42,6 +42,21 @@
 		"opacity": 1,
 		"padding": "0 3px",
 		"display": "inline-block"
+	},
+	"moduleNodeError": {
+		"border": "1px dashed #999",
+		"cursor": "pointer",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"top": "auto",
+		"left": "auto",
+		"opacity": 1,
+		"padding": "0 3px",
+		"display": "inline-block",
+		"height": "40px",
+		"width": "100px"
 	}
-	
 }
