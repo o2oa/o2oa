@@ -56,19 +56,19 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             var fn = this.form.Macro.exec(this.json.filterMethod.code, this);
             methods.$filterMethod = function(){
                 fn.apply(this, arguments);
-            }.bind(this)
+            }.bind(this);
         }
         if (this.json.lazyLoadScript && this.json.lazyLoadScript.code){
             var fn = this.form.Macro.exec(this.json.lazyLoadScript.code, this);
             this.json.props.lazyLoad = function(){
                 fn.apply(this, arguments);
-            }.bind(this)
+            }.bind(this);
         }
         if (this.json.beforeFilter && this.json.beforeFilter.code){
             var fn = this.form.Macro.exec(this.json.beforeFilter.code, this);
             methods.$beforeFilter = function(){
                 fn.apply(this, arguments);
-            }.bind(this)
+            }.bind(this);
         }
     },
 
@@ -78,10 +78,12 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             v.then(function(o){
                 if (o2.typeOf(o)==="array"){
                     this.json.options = o;
+                    this.json.$options = o;
                 }
             }.bind(this));
         }else if (o2.typeOf(v)==="array"){
             this.json.options = v;
+            this.json.$options = v;
         }
     },
     _loadOptions: function(){
