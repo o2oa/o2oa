@@ -44,6 +44,27 @@
 		"top": "auto",
 		"left": "auto",
 		"opacity": 1,
+		"height": "auto",
+		"width": "auto",
+		"display": "inline-block"
+	},
+	"moduleNodeError": {
+		"border-radius": "5px",
+		"border-top": "1px dashed #999",
+		"border-left": "1px dashed #999",
+		"border-right": "1px dashed #999",
+		"border-bottom": "1px dashed #999",
+		"height": "40px",
+		"width": "200px",
+		"overflow": "hidden",
+		"cursor": "pointer",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"top": "auto",
+		"left": "auto",
+		"opacity": 1,
 		"display": "inline-block"
 	},
 	"buttonIcon": {
