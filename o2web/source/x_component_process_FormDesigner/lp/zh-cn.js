@@ -187,6 +187,7 @@ MWF.xApplication.process.FormDesigner.LP = {
 
     "refreshDatatemplateImpExpTitle": "导入字段确认",
     "refreshDatatemplateImpExpContent": "本操作从数据模板的内部组件获取字段。如果执行本操作，之前配置的字段会被替换，是否继续？",
+    "handWriting": "手写",
 
     "filter": {
         "and": "并且",
@@ -343,7 +344,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_common": "通用",
 
         "importer": "数据导入",
-        "readLog": "阅读记录"
+        "readLog": "阅读记录",
+        "writingBoard": "手写板"
     },
     "propertyTemplate": {
         "base": "基本",
@@ -430,6 +432,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readonly": "是否只读",
         "AIInput": "智能输入",
         "inputStyle": "Input样式",
+        "actionStyles": "按钮样式",
+        "imageStyle": "图片样式",
         "compute": "计算",
         "create": "创建",
         "save": "保存",
@@ -1199,7 +1203,9 @@ MWF.xApplication.process.FormDesigner.LP = {
             "feedbackUrl":"反馈地址",
             "logoImg":"左上角logo（172x40）",
             "logoUrl":"logo链接"
-        }
+        },
+        "tabletWidth": "手写板宽度",
+        "tabletHeight": "手写板高度"
     },
     "actionBar": {
         "close":"关闭",
