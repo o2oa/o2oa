@@ -572,7 +572,7 @@
   },
   "writingBoard": {
     "styles": {
-      "border": "0px"
+      "overflow": "hidden"
     },
     "actionStyles": {
       "float": "right",
@@ -587,7 +587,7 @@
       "margin-left": "5px",
       "background": "url(../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
     },
-    "imageStyle": {
+    "imageStyles": {
 
     }
   }

@@ -433,7 +433,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "AIInput": "智能输入",
         "inputStyle": "Input样式",
         "actionStyles": "按钮样式",
-        "imageStyle": "图片样式",
+        "imageStyles": "图片样式",
         "compute": "计算",
         "create": "创建",
         "save": "保存",
