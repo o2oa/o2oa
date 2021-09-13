@@ -49,7 +49,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
 
         if (this.json.multiple===true) if (!this.json[this.json.id] || !this.json[this.json.id].length) this.json[this.json.id] = [];
     },
-        appendVueMethods: function(methods){
+    appendVueMethods: function(methods){
         if (this.json.filterMethod && this.json.filterMethod.code){
             var fn = this.form.Macro.exec(this.json.filterMethod.code, this);
             methods.$filterMethod = function(){

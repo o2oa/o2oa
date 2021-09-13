@@ -20,6 +20,10 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         "elEvents": ["focus", "blur", "change", "visible-change", "remove-tag", "expand-change", "before-filter"]
     },
+    _loadNode: function(){
+        if (this.isReadonly()) this.json.disabled = true;
+        this._loadNodeEdit();
+    },
     _appendVueData: function(){
         this.form.Macro.environment.data.check(this.json.id);
         this.json[this.json.id] = this._getBusinessData();
