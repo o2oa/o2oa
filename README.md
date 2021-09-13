@@ -1,3 +1,5 @@
+master_java8已经不再更新，java8版本请移步至wrdp_java8分支
+
 # O2OA : Java企业信息化系统,开源OA openSource OA Platform
 
 O2OA应用开发平台是兰德纵横网络技术股份有限公司发布和维护的开源产品，是使用JavaEE技术栈，分布式架构设计的一款真正全代码开源的企业应用定制化开发平台。适用于企业OA、协同办公类信息化系统的建设和开发。
