@@ -17,7 +17,7 @@ import java.util.List;
 public class WorkFlowSyncService {
 
 	public static WoWorkOrCompletedComplex getWorkComplex( String workId ) throws Exception {
-		String serviceUri = "work/" + workId;
+		String serviceUri = "work/v2/workorworkcompleted/" + workId;
 		ActionResponse resp = ThisApplication.context().applications().getQuery(
 				x_processplatform_assemble_surface.class, serviceUri
 		);
