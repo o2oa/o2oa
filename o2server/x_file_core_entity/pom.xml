@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>6.3.java8</version>
+		<version>6.4.java8</version>
 	</parent>
 	<artifactId>x_file_core_entity</artifactId>
 	<packaging>jar</packaging>
