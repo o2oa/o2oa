@@ -635,7 +635,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "disabled": "Disable",
         "onlyExport": "Export Only",
         "onlyImport": "Import Only",
-        "exportInfo": "Note: Serial numbers, image, attachment and hidden columns cannot be imported or exported.",
+        "exportInfo": "Note: Serial numbers, image, writingBoard, attachment and hidden columns cannot be imported or exported.",
         "buttonLocation": "Button Location",
         "centerTop": "centerTop",
         "centerBottom": "centerBottom",
