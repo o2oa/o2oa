@@ -23,20 +23,14 @@ public class ActionWorkFlowSync extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger( ActionWorkFlowSync.class );
 	
-	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id, JsonElement jsonElement ) throws Exception {
+	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		AttendanceAppealInfo attendanceAppealInfo = null;
 		AttendanceAppealAuditInfo attendanceAppealAuditInfo = null;
 		WorkFlowSyncService.WoWorkOrCompletedComplex woWorkComplex = null;
 		ActionAppealCreate.Wi wrapIn = null;
 		Boolean check = true;
-
-		if (check) {
-			if ( StringUtils.isEmpty( id )) {
-				check = false;
-				result.error(new Exception("传入的id为空，或者不合法，无法同步流程数据。"));
-			}
-		}
+		String id = "";
 
 		if (check) {
 			try {
@@ -46,6 +40,14 @@ public class ActionWorkFlowSync extends BaseAction {
 				Exception exception = new ExceptionWrapInConvert(e, jsonElement);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
+			}
+		}
+
+		if (check) {
+			id = wrapIn.getId();
+			if ( StringUtils.isEmpty( id )) {
+				check = false;
+				result.error(new Exception("传入的id为空，或者不合法，无法同步流程数据。"));
 			}
 		}
 
@@ -147,9 +149,11 @@ public class ActionWorkFlowSync extends BaseAction {
 	}
 
 	public static class Wi {
+		@FieldDescribe("考勤申诉id")
+		private  String id = "";
 
-		@FieldDescribe("申诉状态:0-未申诉，1-申诉中，-1-申诉未通过，9-申诉通过.")
-		private Integer status = 1;
+		@FieldDescribe("1-审批通过，-1-审批不能过")
+		private Integer status = 0;
 
 		public Integer getStatus() {
 			return status;
@@ -157,6 +161,14 @@ public class ActionWorkFlowSync extends BaseAction {
 
 		public void setStatus(Integer status) {
 			this.status = status;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
 		}
 	}
 
