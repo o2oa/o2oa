@@ -1,10 +1,12 @@
 package com.x.base.core.project.config;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.event.Level;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.logger.Logger;
 
 public class LogLevel extends ConfigObject {
 
@@ -241,22 +243,22 @@ public class LogLevel extends ConfigObject {
 	}
 
 	private String getLevel(String str) {
-		if (StringUtils.equalsIgnoreCase(str, Logger.ERROR)) {
-			return Logger.ERROR;
+		if (StringUtils.equalsIgnoreCase(str, Objects.toString(Level.ERROR))) {
+			return Objects.toString(Level.ERROR);
 		}
-		if (StringUtils.equalsIgnoreCase(str, Logger.WARN)) {
-			return Logger.WARN;
+		if (StringUtils.equalsIgnoreCase(str, Objects.toString(Level.WARN))) {
+			return Objects.toString(Level.WARN);
 		}
-		if (StringUtils.equalsIgnoreCase(str, Logger.INFO)) {
-			return Logger.INFO;
+		if (StringUtils.equalsIgnoreCase(str, Objects.toString(Level.INFO))) {
+			return Objects.toString(Level.INFO);
 		}
-		if (StringUtils.equalsIgnoreCase(str, Logger.DEBUG)) {
-			return Logger.DEBUG;
+		if (StringUtils.equalsIgnoreCase(str, Objects.toString(Level.DEBUG))) {
+			return Objects.toString(Level.DEBUG);
 		}
-		if (StringUtils.equalsIgnoreCase(str, Logger.TRACE)) {
-			return Logger.TRACE;
+		if (StringUtils.equalsIgnoreCase(str, Objects.toString(Level.TRACE))) {
+			return Objects.toString(Level.TRACE);
 		}
-		return Logger.INFO;
+		return Objects.toString(Level.INFO);
 	}
 
 	public static class Audit extends ConfigObject {

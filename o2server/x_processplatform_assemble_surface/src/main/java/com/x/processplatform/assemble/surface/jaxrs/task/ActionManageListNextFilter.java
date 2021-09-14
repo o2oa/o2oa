@@ -1,5 +1,9 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,9 +20,6 @@ import com.x.base.core.project.jaxrs.LikeTerms;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Task;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 class ActionManageListNextFilter extends BaseAction {
 
