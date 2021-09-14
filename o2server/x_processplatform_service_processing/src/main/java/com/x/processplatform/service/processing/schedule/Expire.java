@@ -61,7 +61,7 @@ public class Expire extends AbstractJob {
 					}
 				}
 			} while (!targets.isEmpty());
-			logger.print("标识{}个过期待办, {}个待办处于挂起状态, 耗时:{}.", count.intValue(), pause.intValue(),
+			logger.info("标识{}个过期待办, {}个待办处于挂起状态, 耗时:{}.", count.intValue(), pause.intValue(),
 					stamp.consumingMilliseconds());
 		} catch (Exception e) {
 			throw new JobExecutionException(e);

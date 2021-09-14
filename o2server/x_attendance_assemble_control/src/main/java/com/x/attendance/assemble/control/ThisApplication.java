@@ -18,7 +18,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class ThisApplication {
 
 	private ThisApplication() {
-		//nothing
+		// nothing
 	}
 
 	protected static Context context;
@@ -41,7 +41,6 @@ public class ThisApplication {
 	public static void init() throws Exception {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
-			LoggerFactory.setLevel(Config.logLevel().x_attendance_assemble_control());
 			new AttendanceSettingService().initAllSystemConfig();
 			context.startQueue(detailAnalyseQueue);
 			context.startQueue(detailStatisticQueue);
@@ -59,7 +58,7 @@ public class ThisApplication {
 				context.schedule(QywxAttendanceSyncScheduleTask.class, "0 0 1 * * ?");
 			}
 			context.schedule(AttendanceStatisticTask.class, "0 0 0/4 * * ?");
-			//context.schedule(MobileRecordAnalyseTask.class, "0 0 * * * ?");
+			// context.schedule(MobileRecordAnalyseTask.class, "0 0 * * * ?");
 			// 每天凌晨1点，计算前一天所有的未签退和未分析的打卡数据
 			context.schedule(DetailLastDayRecordAnalyseTask.class, "0 0 1 * * ?");
 

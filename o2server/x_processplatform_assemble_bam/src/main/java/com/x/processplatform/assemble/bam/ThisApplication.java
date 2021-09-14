@@ -2,8 +2,6 @@ package com.x.processplatform.assemble.bam;
 
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.bam.jaxrs.period.Period;
 import com.x.processplatform.assemble.bam.jaxrs.state.State;
 import com.x.processplatform.assemble.bam.schedule.PeriodTimer;
@@ -24,7 +22,6 @@ public class ThisApplication {
 	public static void init() {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
-			LoggerFactory.setLevel(Config.logLevel().x_processplatform_assemble_bam());
 			context().scheduleLocal(PeriodTimer.class, 180, 60 * 30);
 			/* state 运行统计需要读取组织库,如果开始运行的时候组织应用还没启动那么会为空 */
 			context().scheduleLocal(StateTimer.class, 180, 60 * 60 * 1);

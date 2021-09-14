@@ -1,6 +1,6 @@
 package com.x.base.core.project.exception;
 
-import com.x.base.core.project.logger.MessageFormatter;
+import org.slf4j.helpers.MessageFormatter;
 
 public abstract class PromptException extends Exception {
 
@@ -10,27 +10,27 @@ public abstract class PromptException extends Exception {
 
 	private static final long serialVersionUID = -6306372564902986731L;
 
-	public PromptException() {
+	protected PromptException() {
 		super();
 	}
 
-	public PromptException(String message) {
+	protected PromptException(String message) {
 		super(message);
 	}
 
-	public PromptException(String message, Object... os) {
+	protected PromptException(String message, Object... os) {
 		super(format(message, os));
 	}
 
-	public PromptException(Throwable cause) {
+	protected PromptException(Throwable cause) {
 		super(cause);
 	}
 
-	public PromptException(Throwable cause, String message) {
+	protected PromptException(Throwable cause, String message) {
 		super(message, cause);
 	}
 
-	public PromptException(Throwable cause, String message, Object... os) {
+	protected PromptException(Throwable cause, String message, Object... os) {
 		super(format(message, os), cause);
 	}
 
