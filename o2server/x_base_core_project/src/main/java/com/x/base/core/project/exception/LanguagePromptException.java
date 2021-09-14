@@ -1,8 +1,9 @@
 package com.x.base.core.project.exception;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.logger.MessageFormatter;
 import com.x.base.core.project.tools.LanguageTools;
-import org.apache.commons.lang3.StringUtils;
 
 public abstract class LanguagePromptException extends PromptException {
 

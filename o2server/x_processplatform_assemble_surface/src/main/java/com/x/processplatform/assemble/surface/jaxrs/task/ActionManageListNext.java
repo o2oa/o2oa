@@ -1,5 +1,8 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -8,9 +11,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
 import com.x.processplatform.core.entity.content.Task;
-
-import java.util.ArrayList;
-import java.util.List;
 
 class ActionManageListNext extends BaseAction {
 

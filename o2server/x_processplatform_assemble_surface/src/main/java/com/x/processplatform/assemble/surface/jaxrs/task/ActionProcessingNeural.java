@@ -14,7 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.logger.Audit;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.neuroph.core.data.DataSet;
@@ -62,7 +61,6 @@ class ActionProcessingNeural extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			logger.debug(effectivePerson, "receive:" + wi);
@@ -90,7 +88,6 @@ class ActionProcessingNeural extends BaseAction {
 			wo.setWorkLogList(this.referenceWorkLog(business, task));
 			wo.setRouteName(routeName);
 			result.setData(wo);
-			audit.log(null, "任务处理");
 			return result;
 		}
 	}

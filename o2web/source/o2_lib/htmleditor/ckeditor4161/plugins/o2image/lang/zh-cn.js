@@ -28,5 +28,6 @@ CKEDITOR.plugins.setLang( 'o2image', 'zh-cn', {
 	selectCloudImage: '选择云文件图片',
 	selectCurDocImage: '选择本文档图片',
 	allowPreview: '允许浏览原图',
-	saveAsBase64: '存为Base64编码'
+	saveAsBase64: '存为Base64编码',
+	uploadimageNote: '需要一次上传多张图片？<br/>请从本地拖动图片文件到编辑器。'
 } );

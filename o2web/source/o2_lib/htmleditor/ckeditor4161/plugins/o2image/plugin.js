@@ -62,7 +62,7 @@
 			if ( editor.addMenuItems ) {
 				editor.addMenuItems( {
 					image: {
-						label: editor.lang.image.menu,
+						label: editor.lang.o2image.menu,
 						command: 'o2image',
 						group: 'image'
 					}
