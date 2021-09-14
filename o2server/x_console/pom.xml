@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>6.3</version>
+		<version>6.3.java8</version>
 	</parent>
 	<artifactId>x_console</artifactId>
 	<packaging>jar</packaging>
@@ -43,6 +43,10 @@
 		<dependency>
 			<groupId>o2oa</groupId>
 			<artifactId>x_message_core_entity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
