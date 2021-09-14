@@ -3,11 +3,7 @@ package com.x.program.center.jaxrs.warnlog;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import org.apache.commons.lang3.BooleanUtils;
@@ -34,6 +30,8 @@ class ActionGetSystemLog extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionGetSystemLog.class);
 
+	private static long durationTime = 30 * 60 * 1000;
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String tag) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 
@@ -45,10 +43,29 @@ class ActionGetSystemLog extends BaseAction {
 		String key = effectivePerson.getDistinguishedName();
 		if (key.indexOf("@") > -1) {
 			key = key.split("@")[1] + tag;
+		}else{
+			key = key + tag;
 		}
 
 		if (Config.node().equals(Config.resource_node_centersPirmaryNode())) {
-			woList = getSystemLog(key);
+			//控制台最长展现日志时间为30分钟
+			CacheCategory cacheCategory = new CacheCategory(CacheLogObject.class);
+			CacheKey cacheKey = new CacheKey(key, "time");
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			CacheLogObject clo = new CacheLogObject();
+			long startTime = new Date().getTime();
+			if (optional.isPresent()) {
+				clo = (CacheLogObject) optional.get();
+				startTime = clo.getStartTime();
+				long curTime = new Date().getTime();
+				if((curTime - startTime) < durationTime){
+					woList = getSystemLog(key);
+				}
+			}else{
+				woList = getSystemLog(key);
+			}
+			clo.setStartTime(startTime);
+			CacheManager.put(cacheCategory, cacheKey, clo);
 		} else {
 			List<NameValuePair> headers = ListTools
 					.toList(new NameValuePair(Config.person().getTokenName(), effectivePerson.getToken()));

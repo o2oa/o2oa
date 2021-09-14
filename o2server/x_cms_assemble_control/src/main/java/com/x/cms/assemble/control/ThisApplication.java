@@ -5,8 +5,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.cms.assemble.control.queue.DataImportStatus;
 import com.x.cms.assemble.control.queue.QueueBatchOperation;
@@ -16,7 +14,6 @@ import com.x.cms.assemble.control.queue.QueueDocumentUpdate;
 import com.x.cms.assemble.control.queue.QueueDocumentViewCountUpdate;
 import com.x.cms.assemble.control.queue.QueueSendDocumentNotify;
 import com.x.cms.assemble.control.timertask.Timertask_BatchOperationTask;
-import com.x.cms.assemble.control.timertask.Timertask_CheckDocumentReviewStatus;
 import com.x.cms.assemble.control.timertask.Timertask_InitOperationRunning;
 import com.x.cms.assemble.control.timertask.Timertask_LogRecordCheckTask;
 import com.x.cms.assemble.control.timertask.Timertask_RefreshAllDocumentReviews;
@@ -51,14 +48,12 @@ public class ThisApplication {
 
 	public static void init() throws Exception {
 		CacheManager.init(context.clazz().getSimpleName());
-		LoggerFactory.setLevel(Config.logLevel().x_cms_assemble_control());
 		MessageConnector.start(context());
 		context().startQueue(queueBatchOperation);
 		context().startQueue(queueDocumentDelete);
 		context().startQueue(queueDataRowImport);
 		context().startQueue(queueDocumentUpdate);
 		context().startQueue(queueDocumentViewCountUpdate);
-		//queueSendDocumentNotify.initFixedThreadPool(3);
 		context().startQueue(queueSendDocumentNotify);
 
 		// 每天凌晨2点执行一次
@@ -67,8 +62,7 @@ public class ThisApplication {
 
 		// 每天凌晨1点，计算所有的文档的权限信息
 		context.schedule(Timertask_RefreshAllDocumentReviews.class, "0 0 1 * * ?");
-		//集群下多台会一起运行，Timertask_BatchOperationTask运行即可
-		//context.scheduleLocal(Timertask_CheckDocumentReviewStatus.class, 1200);
+		// 集群下多台会一起运行，Timertask_BatchOperationTask运行即可
 		context.scheduleLocal(Timertask_InitOperationRunning.class, 150);
 	}
 

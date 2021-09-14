@@ -145,9 +145,11 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                 extraPlugins = typeOf( extraPlugins ) === "array" ? extraPlugins : extraPlugins.split(",");
                 extraPlugins.push( 'pagebreak' );
                 extraPlugins.push( 'o2image' );
+                extraPlugins.push( 'o2uploadimage' );
+                extraPlugins.push('o2uploadremoteimage');
                 editorConfig.extraPlugins = extraPlugins;
             }else{
-                editorConfig.extraPlugins = ['pagebreak', 'o2image'];
+                editorConfig.extraPlugins = ['pagebreak', 'o2image','o2uploadimage', 'o2uploadremoteimage'];
             }
 
             if( editorConfig && editorConfig.removePlugins ){
