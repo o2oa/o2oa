@@ -33,6 +33,7 @@ public class ActionAppealCreate extends BaseAction {
 		String appeal_auditor_value = null;
 		String appeal_checker_type = null;
 		String appeal_checker_value = null;
+		String appeal_flowType_value = null;
 		String personName = null;
 		Wi wrapIn = null;
 		Boolean check = true;
@@ -69,6 +70,7 @@ public class ActionAppealCreate extends BaseAction {
 				appeal_auditor_value = attendanceSettingServiceAdv.getValueByCode( "APPEAL_AUDITOR_VALUE" );
 				appeal_checker_type = attendanceSettingServiceAdv.getValueByCode( "APPEAL_CHECKER_TYPE" );
 				appeal_checker_value = attendanceSettingServiceAdv.getValueByCode( "APPEAL_CHECKER_VALUE" );
+				appeal_flowType_value = attendanceSettingServiceAdv.getValueByCode( "APPEAL_AUDIFLOWTYPE" );
 			}catch( Exception e ) {
 				check = false;
 				Exception exception = new ExceptionAttendanceAppealProcess( e, "系统在获取申诉审核配置时发生异常！" );
@@ -103,6 +105,7 @@ public class ActionAppealCreate extends BaseAction {
 						attendanceAppealInfo.setCurrentProcessor( appealAuditPersonName );// 将第一个处理人设置为当前处理人
 						attendanceAppealAuditInfo.setAuditFlowType( AppealConfig.APPEAL_AUDIFLOWTYPE_BUILTIN );
 					}
+
 				}catch( Exception e ) {
 					check = false;
 					Exception exception = new ExceptionAttendanceAppealProcess(e, "系统在根据根据考勤人员查询申诉审核人信息时发生异常！personName:"+personName );
@@ -111,9 +114,22 @@ public class ActionAppealCreate extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
+			if(StringUtils.equals(appeal_flowType_value,AppealConfig.APPEAL_AUDIFLOWTYPE_WORKFLOW)){
+				attendanceAppealAuditInfo.setAuditFlowType( AppealConfig.APPEAL_AUDIFLOWTYPE_WORKFLOW );
+				attendanceAppealAuditInfo.setCurrentProcessor( "" );
+				attendanceAppealInfo.setCurrentProcessor( "" );
+				if(StringUtils.isNotEmpty(wrapIn.getUnitName())){
+					attendanceAppealInfo.setUnitName(wrapIn.getUnitName());
+					attendanceAppealAuditInfo.setProcessPersonUnit1(wrapIn.getUnitName());
+					attendanceAppealAuditInfo.setProcessPersonUnit2(wrapIn.getUnitName());
+				}
+				if(StringUtils.isNotEmpty(wrapIn.getWorkId())){
+					attendanceAppealAuditInfo.setWorkId(wrapIn.getWorkId());
+				}
+			}
 		}
 		
-		if (check) {
+		if (check && !StringUtils.equals(appeal_flowType_value,AppealConfig.APPEAL_AUDIFLOWTYPE_WORKFLOW)) {
 			if( StringUtils.isEmpty(appealAuditPersonName) ) {
 				//申诉审核人不存在
 				check = false;
@@ -143,8 +159,8 @@ public class ActionAppealCreate extends BaseAction {
 		}
 		
 		//查询申诉复核人
-		if (check) {
-			if( StringUtils.isNotEmpty( appeal_checker_type ) && !"无".equals( appeal_checker_type  ) ) {
+		if (check && (!StringUtils.equals(appeal_flowType_value,AppealConfig.APPEAL_AUDIFLOWTYPE_WORKFLOW))) {
+			if( StringUtils.isNotEmpty( appeal_checker_type )   && !"无".equals( appeal_checker_type  ) ) {
 				try {
 					appealCheckPersonName = attendanceAppealInfoServiceAdv.getAppealCheckPerson( personName, attendanceAppealInfo.getUnitName(), wrapIn.getIdentity() );
 					attendanceAppealAuditInfo.setProcessPerson2( appealCheckPersonName );
@@ -157,8 +173,8 @@ public class ActionAppealCreate extends BaseAction {
 				}
 			}
 		}
-		if (check) {
-			if( StringUtils.isNotEmpty( appeal_checker_type ) && !StringUtils.equals( appeal_checker_type, "无" ) ) {
+		if (check && (!StringUtils.equals(appeal_flowType_value,AppealConfig.APPEAL_AUDIFLOWTYPE_WORKFLOW))) {
+			if( StringUtils.isNotEmpty( appeal_checker_type )  && !StringUtils.equals( appeal_checker_type, "无" ) ) {
 				if( StringUtils.isEmpty(appealCheckPersonName) ) {
 					//申诉复核人不存在
 					check = false;
@@ -186,7 +202,7 @@ public class ActionAppealCreate extends BaseAction {
 		}
 		
 		//查询申诉审核人所属组织
-		if (check) {
+		if (check && (!StringUtils.equals(appeal_flowType_value,AppealConfig.APPEAL_AUDIFLOWTYPE_WORKFLOW))) {
 			if( AppealConfig.APPEAL_AUDITTYPE_UNITDUTY.equalsIgnoreCase( appeal_auditor_type ) ) {
 				attendanceAppealAuditInfo.setProcessPersonUnit1(
 						attendanceAppealInfoServiceAdv.getPersonUnitName( appealAuditPersonName, attendanceDetail.getUnitName(), wrapIn.getIdentity() ) );
@@ -206,7 +222,7 @@ public class ActionAppealCreate extends BaseAction {
 			}
 		}
 		//根据所属组织名称查询申诉审核人所属顶层组织
-		if (check) {
+		if (check && !StringUtils.equals(appeal_flowType_value,AppealConfig.APPEAL_AUDIFLOWTYPE_WORKFLOW)) {
 			if( StringUtils.isNotEmpty( attendanceAppealAuditInfo.getProcessPersonUnit1() )) {
 				try {
 					attendanceAppealAuditInfo.setProcessPersonTopUnit1( userManagerService.getTopUnitNameWithUnitName( attendanceAppealAuditInfo.getProcessPersonUnit1() ) );
@@ -221,7 +237,7 @@ public class ActionAppealCreate extends BaseAction {
 		}
 		
 		//查询申诉复核人所属组织
-		if (check) {
+		if (check && !StringUtils.equals(appeal_flowType_value,AppealConfig.APPEAL_AUDIFLOWTYPE_WORKFLOW)) {
 			if( AppealConfig.APPEAL_AUDITTYPE_UNITDUTY.equalsIgnoreCase( appeal_auditor_type ) ) {
 				attendanceAppealAuditInfo.setProcessPersonUnit2( attendanceAppealInfoServiceAdv.getPersonUnitName( appealCheckPersonName, attendanceDetail.getUnitName(), wrapIn.getIdentity() ) );
 			}else {
@@ -240,7 +256,7 @@ public class ActionAppealCreate extends BaseAction {
 			}
 		}
 		//根据所属组织名称查询申诉复核人所属顶层组织
-		if (check) {
+		if (check && !StringUtils.equals(appeal_flowType_value,AppealConfig.APPEAL_AUDIFLOWTYPE_WORKFLOW)) {
 			if( StringUtils.isNotEmpty(attendanceAppealAuditInfo.getProcessPersonUnit2())) {
 				try {//获取复核人顶层组织信息
 					attendanceAppealAuditInfo.setProcessPersonTopUnit2(  userManagerService.getTopUnitNameWithUnitName( attendanceAppealAuditInfo.getProcessPersonUnit2()) );
@@ -294,6 +310,17 @@ public class ActionAppealCreate extends BaseAction {
 
 		public void setIdentity(String identity) {
 			this.identity = identity;
+		}
+
+		@FieldDescribe("自定义流程workId")
+		private String workId = null;
+
+		public String getWorkId() {
+			return workId;
+		}
+
+		public void setWorkId(String workId) {
+			this.workId = workId;
 		}
 	}
 	
