@@ -367,8 +367,19 @@
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-client</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<pluginManagement>
@@ -471,13 +482,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<!--plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-pmd-plugin</artifactId> 
-				<version>3.13.0</version> <configuration> <linkXRef>true</linkXRef> <sourceEncoding>utf-8</sourceEncoding> 
-				<minimumTokens>100</minimumTokens> <targetJdk>1.8</targetJdk> <failOnViolation>false</failOnViolation> 
-				<outputDirectory>${basedir}</outputDirectory> </configuration> <executions> 
-				<execution> <id>pmd-check</id> <phase>verify</phase> <goals> <goal>check</goal> 
-				</goals> </execution> </executions> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
-				<artifactId>maven-jxr-plugin</artifactId> <version>2.3</version> </plugin -->
 		</plugins>
 	</build>
 	<dependencyManagement>
@@ -835,6 +839,16 @@
 				<groupId>com.github.neuroph</groupId>
 				<artifactId>neuroph-contrib</artifactId>
 				<version>2.98</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>2.14.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>2.14.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
