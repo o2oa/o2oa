@@ -1,17 +1,25 @@
 package com.x.processplatform.service.processing.jaxrs.test;
 
-import com.x.base.core.project.gson.XGsonBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapString;
-import com.x.processplatform.service.processing.ThisApplication;
 
 class ActionTest extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTest.class);
+
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, Long sleep) throws Exception {
+		LOGGER.trace("!!!TRACE");
+		LOGGER.debug("!!!DEBUG");
+		LOGGER.info("!!!INFO");
+		LOGGER.warn("!!!WARN");
+		LOGGER.error("!!!ERROR");
 		ActionResult<Wo> result = new ActionResult<>();
+		Thread.sleep(sleep * 1000);
 		Wo wo = new Wo();
-		wo.setValue(XGsonBuilder.toJson(ThisApplication.context().applications()));
 		result.setData(wo);
 		return result;
 	}

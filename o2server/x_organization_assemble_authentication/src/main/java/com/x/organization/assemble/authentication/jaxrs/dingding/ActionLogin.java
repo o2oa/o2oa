@@ -19,7 +19,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.http.TokenType;
-import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
@@ -33,7 +32,6 @@ class ActionLogin extends BaseAction {
 			String code) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
 			String url = "https://oapi.dingtalk.com/user/getuserinfo?access_token="
 					+ Config.dingding().corpAccessToken() + "&code=" + code;
 			String value = this.get(url);
@@ -71,7 +69,6 @@ class ActionLogin extends BaseAction {
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();
 			httpToken.setToken(request, response, effective);
-			audit.log(person.getDistinguishedName(), "登录");
 			result.setData(wo);
 		}
 		return result;

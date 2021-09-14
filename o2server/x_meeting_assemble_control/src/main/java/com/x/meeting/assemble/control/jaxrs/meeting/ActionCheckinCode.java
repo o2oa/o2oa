@@ -1,9 +1,6 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Hashtable;
 
@@ -22,7 +19,6 @@ import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
@@ -33,7 +29,6 @@ class ActionCheckInCode extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionCheckInCode.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String meetingId) throws Exception {
-		Audit audit = logger.audit(effectivePerson);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String meta = StringTools.uniqueToken();
@@ -73,7 +68,6 @@ class ActionCheckInCode extends BaseAction {
 		}
 		wo.setMeta(meta);
 		result.setData(wo);
-		audit.log(effectivePerson.getDistinguishedName(), "会议签到码生成.");
 		return result;
 	}
 

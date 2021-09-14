@@ -2,8 +2,6 @@ package com.x.processplatform.assemble.surface;
 
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.processplatform.assemble.surface.schedule.CleanKeyLock;
 
@@ -22,7 +20,6 @@ public class ThisApplication {
 	public static void init() {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
-			LoggerFactory.setLevel(Config.logLevel().x_processplatform_assemble_surface());
 			context.schedule(CleanKeyLock.class, "2 0/2 * * * ?");
 			MessageConnector.start(context());
 		} catch (Exception e) {
