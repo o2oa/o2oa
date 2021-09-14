@@ -284,17 +284,16 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "根据考勤申诉ID，更新申诉审核流程的审批信息以及最终审核状态", action = ActionWorkFlowSync.class)
 	@PUT
-	@Path("workflow/sync/{id}")
+	@Path("workflow/sync")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void syncWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						@JaxrsParameterDescribe("考勤申诉信息ID") @PathParam("id") String id, JsonElement jsonElement) {
+	public void syncWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<ActionWorkFlowSync.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		if (check) {
 			try {
-				result = new ActionWorkFlowSync().execute(request, effectivePerson, id, jsonElement);
+				result = new ActionWorkFlowSync().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAttendanceAppealProcess(e, "根据ID对打卡结果进行归档时发生异常！");
