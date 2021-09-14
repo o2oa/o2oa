@@ -23,7 +23,6 @@ import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Work;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -43,7 +42,7 @@ public class ActionFileUploadWithUrl extends BaseAction {
 
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		if(StringUtils.isEmpty(wi.getDocId())){
-			throw new ExceptionEntityFieldEmpty(Work.class, wi.getDocId());
+			throw new ExceptionEntityFieldEmpty(Document.class, wi.getDocId());
 		}
 		if(StringUtils.isEmpty(wi.getFileName())){
 			throw new ExceptionEntityFieldEmpty(Attachment.class, wi.getFileName());
