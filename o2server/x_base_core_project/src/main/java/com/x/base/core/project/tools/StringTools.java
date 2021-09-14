@@ -1,7 +1,5 @@
 package com.x.base.core.project.tools;
 
-import static java.util.Locale.ENGLISH;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
@@ -30,9 +28,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.slf4j.helpers.MessageFormatter;
 
-import com.alibaba.druid.sql.visitor.functions.Char;
+import com.x.base.core.project.logger.MessageFormatter;
 
 public class StringTools {
 

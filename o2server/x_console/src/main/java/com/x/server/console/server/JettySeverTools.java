@@ -50,10 +50,8 @@ public abstract class JettySeverTools {
 		server.addConnector(https);
 	}
 
-	protected static void addHttpConnector(Server server, Integer port, boolean persistentConnectionsEnable)
-			throws Exception {
+	protected static void addHttpConnector(Server server, Integer port, boolean persistentConnectionsEnable) {
 		HttpConfiguration config = new HttpConfiguration();
-		// config.setOutputBufferSize(1024 * 2048);
 		config.setPersistentConnectionsEnabled(persistentConnectionsEnable);
 		config.setRequestHeaderSize(8192 * 2);
 		config.setResponseHeaderSize(8192 * 2);
@@ -117,9 +115,10 @@ public abstract class JettySeverTools {
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-proxy-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("quartz-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
+//		filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-api-*.jar"));
+//		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
+//		filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
+//		filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-slf4j-impl-*.jar"));
 		/* jersey从AppClassLoader加载 */
 		for (File o : FileUtils.listFiles(Config.dir_commons_ext().toFile(), filter, null)) {
 			jars.add(o.getAbsolutePath());

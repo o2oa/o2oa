@@ -2616,7 +2616,7 @@ MDomItem.Rtf = new Class({
                 "language": MWF.language || "zh-cn",
                 "enablePreview": true,
                 "removePlugins": ['image','easyimage','exportpdf','cloudservices'],
-                "extraPlugins": ['o2image']
+                "extraPlugins": ['o2image','o2uploadimage','o2uploadremoteimage']
                 // "extraAllowedContent " : "img[onerror,data-id]"
             };
             if( this.options.RTFConfig ){

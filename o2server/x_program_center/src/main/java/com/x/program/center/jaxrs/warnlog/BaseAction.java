@@ -13,6 +13,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
         private long lastPoint;
 
+        private long startTime;
+
         public long getLastPoint() {
             return lastPoint;
         }
@@ -35,6 +37,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
         public void setUserToken(String userToken) {
             this.userToken = userToken;
+        }
+
+        public long getStartTime() {
+            return startTime;
+        }
+
+        public void setStartTime(long startTime) {
+            this.startTime = startTime;
         }
     }
 

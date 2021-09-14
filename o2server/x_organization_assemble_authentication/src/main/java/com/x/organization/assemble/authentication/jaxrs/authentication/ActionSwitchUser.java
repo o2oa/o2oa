@@ -14,7 +14,6 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
@@ -29,7 +28,6 @@ class ActionSwitchUser extends BaseAction {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
 			if (effectivePerson.isNotManager()) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
@@ -41,7 +39,6 @@ class ActionSwitchUser extends BaseAction {
 			Person o = emc.find(personId, Person.class);
 			Wo wo = this.user(request, response, business, o, Wo.class);
 			result.setData(wo);
-			audit.log(o.getDistinguishedName(), "切换用户");
 			return result;
 		}
 	}

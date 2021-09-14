@@ -21,7 +21,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.http.TokenType;
-import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
@@ -46,7 +45,6 @@ public class ActionLoginWithCode extends BaseAction  {
         }
 
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            Audit audit = logger.audit(effectivePerson);
             MPweixin.WeixinAuth2AccessResp resp = Config.mPweixin().mpAuth2(code);
             if (resp == null) {
                 throw new ExceptionGetAccessTokenFail();
@@ -68,7 +66,6 @@ public class ActionLoginWithCode extends BaseAction  {
             wo.setToken(effective.getToken());
             HttpToken httpToken = new HttpToken();
             httpToken.setToken(request, response, effective);
-            audit.log(person.getDistinguishedName(), "登录");
             result.setData(wo);
         }
         return result;
