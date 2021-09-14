@@ -638,7 +638,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "disabled": "禁用",
         "onlyExport": "仅导出",
         "onlyImport": "仅导入",
-        "exportInfo": "注：序号、图片、附件和隐藏列不能导入导出。",
+        "exportInfo": "注：序号、图片、手写板、附件和隐藏列不能导入导出。",
         "buttonLocation": "按钮位置",
         "centertop": "中上",
         "centerbottom": "中下",

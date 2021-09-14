@@ -1867,7 +1867,7 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 	isAvaliableColumn : function(thJson, mJson){
 		if (thJson && ( thJson.isShow === false || thJson.isImpExp === false ))return false; //隐藏列，不允许导入导出
 		if (mJson && (mJson.type == "sequence" || mJson.cellType == "sequence") )return false; //序号列
-		if (mJson && ["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
+		if (mJson && ["Image","Button","ImageClipper","WritingBoard","Attachment","AttachmentDg","Label"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
 		// if (type==="import" && module && ["Label"].contains(module.json.type))return false; //Label 不导入
 		return true;
 	},
@@ -1982,7 +1982,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 	isAvaliableColumn : function(thJson, mJson){
 		if (thJson && ( thJson.isShow === false || thJson.isImpExp === false ))return false; //隐藏列，不允许导入导出
 		if (mJson && (mJson.type == "sequence" || mJson.cellType == "sequence") )return false; //序号列
-		if (mJson && ["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
+		if (mJson && ["Image","Button","ImageClipper","WritingBoard","Attachment","AttachmentDg","Label"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
 		// if (type==="import" && module && ["Label"].contains(module.json.type))return false; //Label 不导入
 		return true;
 	},

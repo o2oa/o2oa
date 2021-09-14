@@ -43,7 +43,7 @@ MWF.xApplication.process.FormDesigner.Module.WritingBoard = MWF.FCWritingBoard =
 		}).inject(this.form.container);
 		var actionNode = new Element("div", {
 			"styles": this.css.actionNode,
-			"text": MWF.xApplication.process.FormDesigner.LP.handWriting
+			"text": this.json.name || MWF.xApplication.process.FormDesigner.LP.handWriting
 		}).inject(this.moveNode);
 		var imageAreaNode = new Element("div", {
 			"styles": this.css.imageNode
