@@ -295,8 +295,6 @@
 			<groupId>com.squareup</groupId>
 			<artifactId>javapoet</artifactId>
 		</dependency>
-		<!-- dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId> 
-			</dependency -->
 		<dependency>
 			<groupId>com.github.neuroph</groupId>
 			<artifactId>neuroph-core</artifactId>
@@ -706,7 +704,7 @@
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-parsers</artifactId>
-				<version>1.22</version>
+				<version>1.27</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.pdfbox</groupId>
@@ -818,8 +816,6 @@
 				<artifactId>javapoet</artifactId>
 				<version>1.11.1</version>
 			</dependency>
-			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId> 
-				<version>20200316</version> </dependency -->
 			<dependency>
 				<groupId>com.github.neuroph</groupId>
 				<artifactId>neuroph-core</artifactId>
@@ -841,14 +837,14 @@
 				<version>2.98</version>
 			</dependency>
 			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-				<version>1.7.25</version>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-slf4j-impl</artifactId>
+				<version>2.14.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.7.25</version>
+				<version>1.7.32</version>
 			</dependency>
 			<dependency>
 				<groupId>cglib</groupId>
