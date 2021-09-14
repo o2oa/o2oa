@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>o2oa</groupId>
 	<artifactId>o2server</artifactId>
-	<version>6.3.java8</version>
+	<version>6.4.java8</version>
 	<packaging>pom</packaging>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8
 		</project.reporting.outputEncoding>
-		<o2.version>6.3.java8</o2.version>
+		<o2.version>6.4.java8</o2.version>
 	</properties>
 	<modules>
 		<module>x_base_core_project</module>
