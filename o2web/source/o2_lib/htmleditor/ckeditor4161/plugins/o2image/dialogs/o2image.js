@@ -627,7 +627,7 @@
 					},
 					 {
 							type: "hbox",
-							widths: ["27%", "30%", "40%"],
+							widths: ["27%", "68%", "1%", "1%"],
 							hidden: ( editor.config.reference && editor.config.referenceType ) ? !1 : !0,
 							children: [{
 								type: "button",
@@ -702,7 +702,10 @@
 								},
 								onLoad: function () {
 								}
-							}, {
+							},{
+								type: "html",
+								html: editor.isO2uploadimageLoaded ? ("<div style='color:#999'>"+editor.lang.o2image.uploadimageNote+"</div>") : "",
+							},{
 								type: "button",
 								id: "browseFiles",
 								style: "display:inline-block;margin-bottom:4px;",
