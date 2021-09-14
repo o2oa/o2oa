@@ -109,7 +109,7 @@ O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开�
     Linux环境：https://www.o2oa.net/course/yto8af.html
 
 
-# 最新版本 v6.2.x\:
+# 最新版本 v6.3.x\:
 
 功能新增
 
