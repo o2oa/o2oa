@@ -43,11 +43,11 @@
 		    		$('text{$.pid}handwritingSize').setStyle('display', 'none');
 		    	 }"  name="mode" text{($.mode=='text')?'checked':''} type="radio" value="text"/>{{$.lp.text}}
 					<input class="editTableRadio" onclick="if (this.checked){
-                 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'block');
+                 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'none');
 		    		$('text{$.pid}handwritingSize').setStyle('display', '');
                  }"  name="mode" text{($.mode=='table')?'checked':''} type="radio" value="table"/>{{$.lp.recordTable}}<br>
 					<input class="editTableRadio" onclick="if (this.checked){
-				 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'block');
+				 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'none');
 		    		$('text{$.pid}handwritingSize').setStyle('display', '');
 				 }"  name="mode" text{($.mode=='media')?'checked':''} type="radio" value="media"/>{{$.lp.recordMedia}}
 				</td>
@@ -77,7 +77,9 @@
 		</table>
 
 		<div id="text{$.pid}labelTextStyleValue" title="{{$.lp.logFormat}}" style="display: text{( !$.mode || ($.mode=='text') || ($.mode=='default')) ?'block':'none'}">
-			<textarea  name="textStyle" class="editTableTextarea">text{$.textStyle}</textarea>
+<!--			<div style="text-align:center; line-height:20px; height: 20px; background: #f0f0f0; border-top: 1px solid #cccccc">{{$.lp.logFormat}}</div>-->
+<!--			<textarea  name="textStyle" class="editTableTextarea">text{$.textStyle}</textarea>-->
+			<div class="MWFHtmlEditorArea" name="textStyle" title="{{$.lp.logFormat}} (H)"></div>
 			<div class="MWFScriptArea" name="textStyleScript" title="{{$.lp.logFormatScript}} (S)" collapse="true"></div>
 		</div>
 
