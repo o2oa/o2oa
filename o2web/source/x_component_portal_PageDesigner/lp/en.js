@@ -1,6 +1,6 @@
 MWF.xApplication.portal.PageDesigner = MWF.xApplication.portal.PageDesigner || {};
-MWF.APPPD = MWF.xApplication.portal.PageDesigner;
-MWF.APPPD.LP = {
+MWF.APPPOD = MWF.xApplication.portal.PageDesigner;
+MWF.APPPOD.LP = {
     "title": "PageEditor",
     "newPage": "Create Page",
     "property": "Property",

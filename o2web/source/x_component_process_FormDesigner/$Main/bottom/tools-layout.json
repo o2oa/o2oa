@@ -1,0 +1,67 @@
+{
+  "label": {
+    "icon": "label.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.label,
+    "className": "Label"
+  },
+  "button": {
+    "icon": "button.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.button,
+    "className": "Button"
+  },
+  "image": {
+    "icon": "image.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.image,
+    "className": "Image"
+  },
+  "imageclipper": {
+    "icon": "imageclipper.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.imageclipper,
+    "className": "ImageClipper"
+  },
+  "div": {
+    "icon": "div.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.div,
+    "className": "Div"
+  },
+  "table": {
+    "icon": "table.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.table,
+    "className": "Table"
+  },
+  "datatemplate": {
+    "icon": "datatemplate.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.datatemplate,
+    "className": "Datatemplate"
+  },
+  "subform": {
+    "icon": "subform.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.subform,
+    "className": "Subform"
+  },
+  "html": {
+    "icon": "html.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.html,
+    "className": "Html"
+  },
+  "common": {
+    "icon": "common.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.common,
+    "className": "Common"
+  },
+  "tab": {
+    "icon": "tabs.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.tab,
+    "className": "Tab"
+  },
+  "tree": {
+    "icon": "tree.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.tree,
+    "className": "Tree"
+  },
+  "iframe": {
+    "icon": "iframe.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.iframe,
+    "className": "Iframe"
+  }
+}

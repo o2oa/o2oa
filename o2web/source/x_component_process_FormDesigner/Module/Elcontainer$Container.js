@@ -102,7 +102,7 @@ MWF.xApplication.process.FormDesigner.Module.Elcontainer$Aside = MWF.FCElcontain
     Extends: MWF.FCElcontainer$Main,
     Implements: [Options, Events],
     _initModuleType: function(){
-        this.className = "Elcontainer$Aside"
+        this.className = "Elcontainer$Aside";
         this.moduleType = "container";
         this.moduleName = "elcontainer$Aside";
         this.cssName = "css_aside";
@@ -112,7 +112,7 @@ MWF.xApplication.process.FormDesigner.Module.Elcontainer$Footer = MWF.FCElcontai
     Extends: MWF.FCElcontainer$Main,
     Implements: [Options, Events],
     _initModuleType: function(){
-        this.className = "Elcontainer$Footer"
+        this.className = "Elcontainer$Footer";
         this.moduleType = "container";
         this.moduleName = "elcontainer$Footer";
         this.cssName = "css_footer";
@@ -122,7 +122,7 @@ MWF.xApplication.process.FormDesigner.Module.Elcontainer$Header = MWF.FCElcontai
     Extends: MWF.FCElcontainer$Main,
     Implements: [Options, Events],
     _initModuleType: function(){
-        this.className = "Elcontainer$Header"
+        this.className = "Elcontainer$Header";
         this.moduleType = "container";
         this.moduleName = "elcontainer$Header";
         this.cssName = "css_header";

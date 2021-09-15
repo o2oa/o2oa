@@ -52,8 +52,21 @@
 		"float": "right",
 		"cursor": "pointer"
 	},
+	"toolbarTitleCategoryActionNode": {
+		"width": "22px",
+		"height": "22px",
+		"margin-top": "-26px",
+		"margin-right": "22px",
+		"background": "url(../x_component_process_FormDesigner/$Main/default/category.png) no-repeat center center",
+		"float": "right",
+		"cursor": "pointer"
+	},
+
+	"toolbarGroupContentNode": {
+		"overflow": "hidden"
+	},
 	"toolbarContentNode": {
-		"background-color": "#DDD",
+		"background-color": "#FFFFFF",
 		"border-radius": "0px",
 		"margin": "2px",
 		"padding-right": "4px",

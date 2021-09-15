@@ -50,6 +50,19 @@
 		"float": "right",
 		"cursor": "pointer"
 	},
+	"toolbarTitleCategoryActionNode": {
+		"width": "22px",
+		"height": "22px",
+		"margin-top": "-26px",
+		"margin-right": "22px",
+		"background": "url(../x_component_portal_PageDesigner/$Main/default/category.png) no-repeat center center",
+		"float": "right",
+		"cursor": "pointer"
+	},
+
+	"toolbarGroupContentNode": {
+		"overflow": "hidden"
+	},
 	"toolbarContentNode": {
 		"background-color": "#DDD",
 		"border-radius": "0px",
@@ -125,7 +138,10 @@
 		"height": "42px",
 		"background-position": "center center",
 		"background-repeat": "no-repeat",
-		"float": "left"
+		"float": "left",
+		"font-size": "24px",
+		"line-height": "40px",
+		"text-align": "center"
 	},
 	"toolbarToolTextNode": {
 		"margin-left": "46px",
