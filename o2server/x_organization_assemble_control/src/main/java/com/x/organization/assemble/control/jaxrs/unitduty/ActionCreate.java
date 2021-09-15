@@ -30,7 +30,7 @@ class ActionCreate extends BaseAction {
 			if (null == unit) {
 				throw new ExceptionUnitNotExist(wi.getUnit());
 			}
-			if (!business.editableUnitDuty(effectivePerson, unit)) {
+			if (!business.editable(effectivePerson, unit)) {
 				throw new ExceptionDenyEditUnit(effectivePerson, unit.getName());
 			}
 			if (StringUtils.isEmpty(wi.getName())) {
