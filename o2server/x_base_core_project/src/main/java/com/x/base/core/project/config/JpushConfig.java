@@ -13,9 +13,11 @@ public class JpushConfig extends ConfigObject {
         return new JpushConfig();
     }
     public JpushConfig() {
-        this.enable = false;
+        this.enable = true;
         this.appKey = O2_app_key_default;
         this.masterSecret = O2_master_secret_default;
+        this.huaweiPushEnable = false;
+        this.huaweiPushConfig = HuaweiPushConfig.defaultInstance();
     }
 
 
@@ -25,6 +27,12 @@ public class JpushConfig extends ConfigObject {
     private String appKey;
     @FieldDescribe("极光推送应用的Master Secret")
     private String masterSecret;
+    @FieldDescribe("是否开启华为推送")
+    private Boolean huaweiPushEnable;
+    @FieldDescribe("华为推送的配置")
+    private HuaweiPushConfig huaweiPushConfig;
+
+
 
     public Boolean getEnable() {
         return BooleanUtils.isTrue(this.enable);
@@ -48,5 +56,21 @@ public class JpushConfig extends ConfigObject {
 
     public void setMasterSecret(String masterSecret) {
         this.masterSecret = masterSecret;
+    }
+
+    public Boolean getHuaweiPushEnable() {
+        return huaweiPushEnable;
+    }
+
+    public void setHuaweiPushEnable(Boolean huaweiPushEnable) {
+        this.huaweiPushEnable = huaweiPushEnable;
+    }
+
+    public HuaweiPushConfig getHuaweiPushConfig() {
+        return huaweiPushConfig;
+    }
+
+    public void setHuaweiPushConfig(HuaweiPushConfig huaweiPushConfig) {
+        this.huaweiPushConfig = huaweiPushConfig;
     }
 }
