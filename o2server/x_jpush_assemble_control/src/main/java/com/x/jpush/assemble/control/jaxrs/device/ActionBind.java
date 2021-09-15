@@ -3,20 +3,20 @@ package com.x.jpush.assemble.control.jaxrs.device;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.jpush.assemble.control.Business;
 import com.x.jpush.assemble.control.jaxrs.sample.BaseAction;
 import com.x.jpush.assemble.control.jaxrs.sample.ExceptionSampleEntityClassFind;
+import com.x.jpush.core.entity.PushDevice;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActionBind extends BaseAction {
 
@@ -27,44 +27,62 @@ public class ActionBind extends BaseAction {
         ActionResult<Wo> result = new ActionResult<>();
         Wo wraps  = new Wo();
         if (jsonElement == null) {
-            Exception exception = new ExceptionDeviceParameterEmpty();
-            result.error(exception);
-            return result;
+            throw  new ExceptionDeviceParameterEmpty();
+
         }
 
         Wi wi = convertToWrapIn(jsonElement, Wi.class);
-        if (wi.getDeviceName() == null || wi.getDeviceType() == null || wi.getDeviceName().equals("") || wi.getDeviceType().equals("")) {
-            Exception exception = new ExceptionDeviceParameterEmpty();
-            result.error(exception);
-            return result;
+        if (StringUtils.isEmpty(wi.getDeviceName()) || StringUtils.isEmpty(wi.getDeviceType()) ) {
+            throw new ExceptionDeviceParameterEmpty();
+
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
-            List<String> deviceList = business.organization().personAttribute()
-                    .listAttributeWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY);
-            String device = wi.getDeviceName()+"_"+wi.getDeviceType().toLowerCase();
-            if(ListTools.isNotEmpty( deviceList ) ){
-                if (deviceList.contains(device)) {
-                    wraps.setValue(false);
-                    result.setMessage("当前设备已存在！");
-                }else {
-                    deviceList.add(device);
-                    wraps.setValue(business.organization().personAttribute()
-                            .setWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY, deviceList));
-                }
-            }else {
-                deviceList = new ArrayList<>();
-                deviceList.add(device);
-                wraps.setValue(business.organization().personAttribute()
-                        .setWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY, deviceList));
+            String pushType = wi.getPushType();
+            if (StringUtils.isEmpty(pushType)) {
+                pushType = PushDevice.PUSH_TYPE_JPUSH; //默认极光推送
             }
+            String person = effectivePerson.getDistinguishedName();
+            String unique = deviceUnique(wi.getDeviceType(), wi.getDeviceName(), pushType, person);
+            if (business.sampleEntityClassNameFactory().existDeviceUnique(unique)) {
+                wraps.setValue(true);
+                result.setMessage("当前设备已存在！");
+            } else {
+                PushDevice pushDevice = new PushDevice();
+                pushDevice.setDeviceId(wi.getDeviceName());
+                pushDevice.setDeviceType(wi.getDeviceType());
+                pushDevice.setPerson(person);
+                pushDevice.setPushType(pushType);
+                pushDevice.setUnique(unique);
+                emc.beginTransaction(PushDevice.class);
+                emc.persist(pushDevice, CheckPersistType.all);
+                emc.commit();
+                wraps.setValue(true);
+            }
+            // 以前存放在个人属性中， 现在切换到数据库
+//            List<String> deviceList = business.organization().personAttribute()
+//                    .listAttributeWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY);
+//            String device = wi.getDeviceName()+"_"+wi.getDeviceType().toLowerCase();
+//            if(ListTools.isNotEmpty( deviceList ) ){
+//                if (deviceList.contains(device)) {
+//                    wraps.setValue(false);
+//                    result.setMessage("当前设备已存在！");
+//                }else {
+//                    deviceList.add(device);
+//                    wraps.setValue(business.organization().personAttribute()
+//                            .setWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY, deviceList));
+//                }
+//            }else {
+//                deviceList = new ArrayList<>();
+//                deviceList.add(device);
+//                wraps.setValue(business.organization().personAttribute()
+//                        .setWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY, deviceList));
+//            }
             result.setData(wraps);
         } catch (Exception e) {
-            Exception exception = new ExceptionSampleEntityClassFind( e, "系统在绑定设备时发生异常!" );
-            result.error( exception );
             logger.error(e);
+            throw new ExceptionSampleEntityClassFind( e, "系统在绑定设备时发生异常!" );
         }
-
         logger.info("action 'ActionBind' execute completed!");
         return result;
     }
@@ -76,6 +94,16 @@ public class ActionBind extends BaseAction {
         private String deviceName;
         @FieldDescribe("设备类型deviceType：ios|android")
         private String deviceType;
+        @FieldDescribe("推送通道类型：jpush|huawei")
+        private String pushType;
+
+        public String getPushType() {
+            return pushType;
+        }
+
+        public void setPushType(String pushType) {
+            this.pushType = pushType;
+        }
 
         public String getDeviceName() {
             return deviceName;
