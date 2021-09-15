@@ -9,7 +9,7 @@
 	"controlsPosition" : "default",
 	"precision": 0,
 	"min" : 0,
-	"max" : 0,
+	"max" : 100,
 	"step" : 1,
 	"vueData": {},
 	"vueMethods": {},

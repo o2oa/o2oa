@@ -1,0 +1,67 @@
+{
+  "div": {
+    "icon": "div.png",
+    "text": MWF.APPPOD.LP.modules.div,
+    "className": "Div"
+  },
+  "label": {
+    "icon": "label.png",
+    "text": MWF.APPPOD.LP.modules.label,
+    "className": "Label"
+  },
+  "source": {
+    "icon": "source.png",
+    "text": MWF.APPPOD.LP.modules.source,
+    "className": "Source"
+  },
+  "SubSource": {
+    "icon": "subSource.png",
+    "text": MWF.APPPOD.LP.modules.subSource,
+    "className": "SubSource"
+  },
+  "sourceText": {
+    "icon": "sourceText.png",
+    "text": MWF.APPPOD.LP.modules.sourceText,
+    "className": "SourceText"
+  },
+  "table": {
+    "icon": "table.png",
+    "text": MWF.APPPOD.LP.modules.table,
+    "className": "Table"
+  },
+  "tab": {
+    "icon": "tabs.png",
+    "text": MWF.APPPOD.LP.modules.tab,
+    "className": "Tab"
+  },
+  "image": {
+    "icon": "image.png",
+    "text": MWF.APPPOD.LP.modules.image,
+    "className": "Image"
+  },
+  "button": {
+    "icon": "button.png",
+    "text": MWF.APPPOD.LP.modules.button,
+    "className": "Button"
+  },
+  "iframe": {
+    "icon": "iframe.png",
+    "text": MWF.APPPOD.LP.modules.iframe,
+    "className": "Iframe"
+  },
+  "html": {
+    "icon": "html.png",
+    "text": MWF.APPPOD.LP.modules.html,
+    "className": "Html"
+  },
+  "common": {
+    "icon": "common.png",
+    "text": MWF.APPPOD.LP.modules.common,
+    "className": "Common"
+  },
+  "tree": {
+    "icon": "tree.png",
+    "text": MWF.APPPOD.LP.modules.tree,
+    "className": "Tree"
+  }
+}
