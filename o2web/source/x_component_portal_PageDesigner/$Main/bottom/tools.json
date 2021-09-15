@@ -1,82 +1,82 @@
 {
   "div": {
     "icon": "div.png",
-    "text": MWF.APPPD.LP.modules.div,
+    "text": MWF.APPPOD.LP.modules.div,
     "className": "Div"
   },
   "label": {
     "icon": "label.png",
-    "text": MWF.APPPD.LP.modules.label,
+    "text": MWF.APPPOD.LP.modules.label,
     "className": "Label"
   },
   "source": {
     "icon": "source.png",
-    "text": MWF.APPPD.LP.modules.source,
+    "text": MWF.APPPOD.LP.modules.source,
     "className": "Source"
   },
   "SubSource": {
     "icon": "subSource.png",
-    "text": MWF.APPPD.LP.modules.subSource,
+    "text": MWF.APPPOD.LP.modules.subSource,
     "className": "SubSource"
   },
   "sourceText": {
     "icon": "sourceText.png",
-    "text": MWF.APPPD.LP.modules.sourceText,
+    "text": MWF.APPPOD.LP.modules.sourceText,
     "className": "SourceText"
   },
   "table": {
     "icon": "table.png",
-    "text": MWF.APPPD.LP.modules.table,
+    "text": MWF.APPPOD.LP.modules.table,
     "className": "Table"
   },
   "tab": {
     "icon": "tabs.png",
-    "text": MWF.APPPD.LP.modules.tab,
+    "text": MWF.APPPOD.LP.modules.tab,
     "className": "Tab"
   },
   "image": {
     "icon": "image.png",
-    "text": MWF.APPPD.LP.modules.image,
+    "text": MWF.APPPOD.LP.modules.image,
     "className": "Image"
   },
   "button": {
     "icon": "button.png",
-    "text": MWF.APPPD.LP.modules.button,
+    "text": MWF.APPPOD.LP.modules.button,
     "className": "Button"
   },
   "iframe": {
     "icon": "iframe.png",
-    "text": MWF.APPPD.LP.modules.iframe,
+    "text": MWF.APPPOD.LP.modules.iframe,
     "className": "Iframe"
   },
   "html": {
     "icon": "html.png",
-    "text": MWF.APPPD.LP.modules.html,
+    "text": MWF.APPPOD.LP.modules.html,
     "className": "Html"
   },
   "common": {
     "icon": "common.png",
-    "text": MWF.APPPD.LP.modules.common,
+    "text": MWF.APPPOD.LP.modules.common,
     "className": "Common"
   },
   "tree": {
     "icon": "tree.png",
-    "text": MWF.APPPD.LP.modules.tree,
+    "text": MWF.APPPOD.LP.modules.tree,
     "className": "Tree"
   },
   "view": {
     "icon": "view.png",
-    "text": MWF.APPPD.LP.modules.view,
+    "text": MWF.APPPOD.LP.modules.view,
     "className": "View"
   },
   "stat": {
     "icon": "stat.png",
-    "text": MWF.APPPD.LP.modules.stat,
+    "text": MWF.APPPOD.LP.modules.stat,
     "className": "Stat"
   },
   "textfield": {
     "icon": "textfield.png",
-    "text": MWF.APPPD.LP.modules.textfield,
+    "text": MWF.APPPOD.LP.modules.textfield,
     "className": "Textfield"
   },
   //  "personfield": {
@@ -86,77 +86,77 @@
   //  },
   "org": {
     "icon": "personfield.png",
-    "text": MWF.APPPD.LP.modules.org,
+    "text": MWF.APPPOD.LP.modules.org,
     "className": "Org"
   },
   "calendar": {
     "icon": "calendar.png",
-    "text": MWF.APPPD.LP.modules.calendar,
+    "text": MWF.APPPOD.LP.modules.calendar,
     "className": "Calendar"
   },
   "textarea": {
     "icon": "textarea.png",
-    "text": MWF.APPPD.LP.modules.textarea,
+    "text": MWF.APPPOD.LP.modules.textarea,
     "className": "Textarea"
   },
   "select": {
     "icon": "select.png",
-    "text": MWF.APPPD.LP.modules.select,
+    "text": MWF.APPPOD.LP.modules.select,
     "className": "Select"
   },
   "radio": {
     "icon": "radio.png",
-    "text": MWF.APPPD.LP.modules.radio,
+    "text": MWF.APPPOD.LP.modules.radio,
     "className": "Radio"
   },
   "checkbox": {
     "icon": "checkbox.png",
-    "text": MWF.APPPD.LP.modules.checkbox,
+    "text": MWF.APPPOD.LP.modules.checkbox,
     "className": "Checkbox"
   },
   "address": {
     "icon": "address.png",
-    "text": MWF.APPPD.LP.modules.address,
+    "text": MWF.APPPOD.LP.modules.address,
     "className": "Address"
   },
   "combox": {
     "icon": "combox.png",
-    "text": MWF.APPPD.LP.modules.combox,
+    "text": MWF.APPPOD.LP.modules.combox,
     "className": "Combox"
   },
   "widget": {
     "icon": "subpage.png",
-    "text": MWF.APPPD.LP.modules.widget,
+    "text": MWF.APPPOD.LP.modules.widget,
     "className": "Widget"
   },
   "widgetmodules": {
     "icon": "subpage.png",
-    "text": MWF.APPPD.LP.modules.widgetmodules,
+    "text": MWF.APPPOD.LP.modules.widgetmodules,
     "className": "Widgetmodules"
   },
   "statement": {
     "icon": "statement.png",
-    "text": MWF.APPPD.LP.modules.statement,
+    "text": MWF.APPPOD.LP.modules.statement,
     "className": "Statement"
   },
   "datagrid": {
     "icon": "datagrid.png",
-    "text": MWF.APPPD.LP.modules.datagrid,
+    "text": MWF.APPPOD.LP.modules.datagrid,
     "className": "Datagrid"
   },
   "datatable": {
     "icon": "datagrid.png",
-    "text": MWF.APPPD.LP.modules.datatable,
+    "text": MWF.APPPOD.LP.modules.datatable,
     "className": "Datatable"
   },
   "datatemplate": {
     "icon": "datatemplate.png",
-    "text": MWF.APPPD.LP.modules.datatemplate,
+    "text": MWF.APPPOD.LP.modules.datatemplate,
     "className": "Datatemplate"
   },
   "importer": {
     "icon": "importer.png",
-    "text": MWF.APPPD.LP.modules.importer,
+    "text": MWF.APPPOD.LP.modules.importer,
     "className": "Importer"
   }
 }

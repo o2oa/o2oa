@@ -10,28 +10,28 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 				"icon": "move1.png",
 				"event": "mousedown",
 				"action": "move",
-				"title": MWF.APPPD.LP.formAction.move
+				"title": MWF.APPPOD.LP.formAction.move
 			},
 			{
 				"name": "copy",
 				"icon": "copy1.png",
 				"event": "mousedown",
 				"action": "copy",
-				"title": MWF.APPPD.LP.formAction.copy
+				"title": MWF.APPPOD.LP.formAction.copy
 			},
 			{
 				"name": "delete",
 				"icon": "delete1.png",
 				"event": "click",
 				"action": "delete",
-				"title": MWF.APPPD.LP.formAction["delete"]
+				"title": MWF.APPPOD.LP.formAction["delete"]
 			},
 			{
 				"name" : "makeWidget",
 				"icon": "makeWidget1.png",
 				"event": "click",
 				"action": "makeWidget",
-				"title": MWF.APPPD.LP.formAction["makeWidget"]
+				"title": MWF.APPPOD.LP.formAction["makeWidget"]
 			}
 		]
 	},
@@ -59,7 +59,7 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 				obj.pcData.id="";
 				obj.pcData.isNewPage = true;
 				obj.pcData.json = obj.pcData.json || {};
-				obj.pcData.json.name = name; //MWF.APPPD.LP.formAction.defaultWidgetName;
+				obj.pcData.json.name = name; //MWF.APPPOD.LP.formAction.defaultWidgetName;
 				obj.pcData.json.application = this.page.designer.application.id;
 				obj.pcData.json.applicationName = this.page.designer.application.name;
 
@@ -81,7 +81,7 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 	_getWidgetData: function( data ){
 		//var data = {
 		//	json : {
-		//		name : MWF.APPPD.LP.formAction.defaultWidgetName,
+		//		name : MWF.APPPOD.LP.formAction.defaultWidgetName,
 		//		application : this.page.designer.application.id
 		//	},
 		//	isNewPage : true
@@ -249,7 +249,7 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 			debugger;
 
 			this.page.designer.actions.saveWidget(pcData, mobileData, fieldList, function(responseJSON){
-				this.page.designer.notice(MWF.APPPD.LP.notice["widget_save_success"], "ok", null, {x: "left", y:"bottom"});
+				this.page.designer.notice(MWF.APPPOD.LP.notice["widget_save_success"], "ok", null, {x: "left", y:"bottom"});
 
 				//if (!this.pcPage.json.name) this.pcPage.treeNode.setText("<"+this.json.type+"> "+this.json.id);
 				//this.pcPage.treeNode.setTitle(this.pcPage.json.id);

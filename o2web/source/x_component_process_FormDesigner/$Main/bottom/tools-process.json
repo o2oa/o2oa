@@ -1,0 +1,47 @@
+{
+  "opinion": {
+    "icon": "opinion.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.opinion,
+    "className": "Opinion"
+  },
+  "Actionbar": {
+    "icon": "actionbar.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.Actionbar,
+    "className": "Actionbar"
+  },
+  "Sidebar": {
+    "icon": "sidebar.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.Sidebar,
+    "className": "Sidebar"
+  },
+  "attachment": {
+    "icon": "attachment.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.attachment,
+    "className": "Attachment"
+  },
+  "subform": {
+    "icon": "subform.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.subform,
+    "className": "Subform"
+  },
+  "log": {
+    "icon": "log.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.log,
+    "className": "Log"
+  },
+  "readLog": {
+    "icon": "log.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.readLog,
+    "className": "ReadLog"
+  },
+  "monitor": {
+    "icon": "monitor.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.monitor,
+    "className": "Monitor"
+  },
+  "documenteditor": {
+    "icon": "documenteditor.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.documenteditor,
+    "className": "Documenteditor"
+  }
+}
