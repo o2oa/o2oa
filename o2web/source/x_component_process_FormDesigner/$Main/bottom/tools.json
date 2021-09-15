@@ -14,16 +14,6 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.number,
     "className": "Number"
   },
-  //  "personfield": {
-  //    "icon": "personfield.png",
-  //    "text": "人员",
-  //    "className": "Personfield"
-  //  },
-  //  "orgfield": {
-  //    "icon": "orgfield.png",
-  //    "text": "组织",
-  //    "className": "Orgfield"
-  //  },
   "org": {
     "icon": "personfield.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.org,
@@ -107,11 +97,6 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.div,
     "className": "Div"
   },
-  //  "splitdiv": {
-  //    "icon": "splitdiv.png",
-  //    "text": "分布数据容器",
-  //    "className": "Div"
-  //  },
   "table": {
     "icon": "table.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.table,
