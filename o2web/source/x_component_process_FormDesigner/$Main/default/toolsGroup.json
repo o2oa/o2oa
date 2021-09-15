@@ -10,7 +10,7 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.group_form,
   },
   {
-    "name": "form",
+    "name": "layout",
     "json": "tools-layout.json",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.group_layout,
   },

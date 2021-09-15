@@ -45,8 +45,10 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         this.selectMarkItems = [];
     },
     reload: function(){
-        this.node.empty();
-        this.load();
+        if (this.app && this.app.content){
+            this.node.empty();
+            this.load();
+        }
     },
     load: function(){
         this.loadToolbar();
@@ -73,7 +75,7 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             "styles": this.css.iconElementNode
         }).inject(this.toolbarNode);
 
-        if (this.app.options.application){
+        if (this.app.options && this.app.options.application){
             if (this.app.options.application.icon){
                 this.iconElementNode.setStyle("background-image", "url(data:image/png;base64,"+this.app.options.application.icon+")");
             }else{
