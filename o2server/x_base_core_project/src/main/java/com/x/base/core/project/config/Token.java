@@ -231,12 +231,12 @@ public class Token extends ConfigObject {
 		o.roleList = new ArrayList<String>();
 		// o.roleList.add(RoleDefinition.UnitManager);
 		// o.roleList.add(RoleDefinition.GroupCreator);
-		o.roleList.add(OrganizationDefinition.Manager);
-		o.roleList.add(OrganizationDefinition.OrganizationManager);
-		o.roleList.add(OrganizationDefinition.MeetingManager);
+		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.Manager));
+		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.OrganizationManager));
+		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.MeetingManager));
 		// o.roleList.add(RoleDefinition.PersonManager);
 		// o.roleList.add(RoleDefinition.ProcessPlatformCreator);
-		o.roleList.add(OrganizationDefinition.ProcessPlatformManager);
+		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.ProcessPlatformManager));
 		return o;
 	}
 

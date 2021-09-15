@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.config.TernaryManagement;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -54,6 +55,19 @@ class ActionWho extends BaseAction {
 					this.record(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_Client));
 				}
 				wo.setTokenType(TokenType.manager);
+				wo.setToken(effectivePerson.getToken());
+				break;
+			case systemManager:
+			case securityManager:
+			case auditManager:
+				if (Config.ternaryManagement().isTernaryManagement(effectivePerson.getName())) {
+					wo = this.manager(null, null, business, effectivePerson.getName(), Wo.class);
+				} else {
+					Person person = this.getPerson(business, effectivePerson);
+					wo = this.user(null, null, business, person, Wo.class);
+					this.record(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_Client));
+				}
+				wo.setTokenType(effectivePerson.getTokenType());
 				wo.setToken(effectivePerson.getToken());
 				break;
 			case user:

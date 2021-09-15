@@ -7,6 +7,6 @@
   "securityManagerDistinguishedName": "安全管理员@securityManager@P",
   "securityManagerPassword": "",
   "auditManager": "auditManager",
-  "auditManagerDistinguishedName": "审计管理员@auditManager@P",
+  "auditManagerDistinguishedName": "安全审计员@auditManager@P",
   "auditManagerPassword": ""
 }

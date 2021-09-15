@@ -76,10 +76,18 @@ public class EffectivePerson extends GsonPropertyObject {
 		case manager:
 			this.token = this.concreteToken(key);
 			break;
+		case systemManager:
+			this.token = this.concreteToken(key);
+			break;
+		case securityManager:
+			this.token = this.concreteToken(key);
+			break;
+		case auditManager:
+			this.token = this.concreteToken(key);
+			break;
 		case cipher:
 			this.token = this.concreteToken(key);
 			break;
-
 		}
 	}
 
@@ -118,6 +126,8 @@ public class EffectivePerson extends GsonPropertyObject {
 		switch (this.tokenType) {
 		case manager:
 			return true;
+		case systemManager:
+			return true;
 		case cipher:
 			return true;
 		default:
@@ -147,7 +157,10 @@ public class EffectivePerson extends GsonPropertyObject {
 
 	public boolean isPerson(Collection<String> names) {
 		if (Objects.equals(TokenType.user, this.getTokenType())
-				|| Objects.equals(TokenType.manager, this.getTokenType())) {
+				|| Objects.equals(TokenType.manager, this.getTokenType())
+				|| Objects.equals(TokenType.systemManager, this.getTokenType())
+				|| Objects.equals(TokenType.auditManager, this.getTokenType())
+				|| Objects.equals(TokenType.securityManager, this.getTokenType())) {
 			if (null != names) {
 				List<String> list = new ArrayList<>(names);
 				if (list.contains(this.distinguishedName)) {

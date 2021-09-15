@@ -35,7 +35,7 @@ class ActionEdit extends BaseAction {
 			if (null == unit) {
 				throw new ExceptionUnitNotExist(o.getUnit());
 			}
-			if (!business.editable(effectivePerson, unit)) {
+			if (!business.editableUnitDuty(effectivePerson, unit)) {
 				throw new ExceptionDenyEditUnit(effectivePerson, unit.getName());
 			}
 			if (StringUtils.isEmpty(wi.getName())) {

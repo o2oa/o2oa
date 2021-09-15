@@ -47,14 +47,22 @@ abstract class BaseAction extends StandardJaxrsAction {
 	<T extends AbstractWoAuthentication> T manager(HttpServletRequest request, HttpServletResponse response,
 			Business business, String credential, Class<T> cls) throws Exception {
 		HttpToken httpToken = new HttpToken();
-		EffectivePerson effectivePerson = new EffectivePerson(credential, TokenType.manager,
+		TokenType tokenType = TokenType.manager;
+		if (BooleanUtils.isTrue(Config.ternaryManagement().getEnable())){
+			tokenType = Config.ternaryManagement().getTokenType(credential);
+		}
+		EffectivePerson effectivePerson = new EffectivePerson(credential, tokenType,
 				Config.token().getCipher());
 		if ((null != request) && (null != response)) {
 			httpToken.setToken(request, response, effectivePerson);
 		}
 		T t = cls.getDeclaredConstructor().newInstance();
-		Config.token().initialManagerInstance().copyTo(t);
-		t.setTokenType(TokenType.manager);
+		if (BooleanUtils.isTrue(Config.ternaryManagement().getEnable())){
+			Config.ternaryManagement().initialManagerInstance(credential).copyTo(t);
+		}else {
+			Config.token().initialManagerInstance().copyTo(t);
+		}
+		t.setTokenType(tokenType);
 		t.setToken(effectivePerson.getToken());
 		return t;
 	}
@@ -62,14 +70,21 @@ abstract class BaseAction extends StandardJaxrsAction {
 	/** 创建普通用户返回信息 */
 	<T extends AbstractWoAuthentication> T user(HttpServletRequest request, HttpServletResponse response,
 			Business business, Person person, Class<T> cls) throws Exception {
-		T t = cls.newInstance();
+		T t = cls.getDeclaredConstructor().newInstance();
 		person.copyTo(t, Person.password_FIELDNAME, Person.pinyin_FIELDNAME, Person.pinyinInitial_FIELDNAME);
 		HttpToken httpToken = new HttpToken();
 		TokenType tokenType = TokenType.user;
-		boolean isManager = business.organization().person().hasRole(person.getDistinguishedName(),
-				OrganizationDefinition.Manager);
-		if (isManager) {
+		List<String> roles = business.organization().role().listWithPerson(person.getDistinguishedName());
+//		boolean isManager = business.organization().person().hasRole(person.getDistinguishedName(),
+//				OrganizationDefinition.Manager);
+		if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.Manager))) {
 			tokenType = TokenType.manager;
+		} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SystemManager))) {
+			tokenType = TokenType.systemManager;
+		} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SecurityManager))) {
+			tokenType = TokenType.securityManager;
+		} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager))) {
+			tokenType = TokenType.auditManager;
 		}
 		EffectivePerson effectivePerson = new EffectivePerson(person.getDistinguishedName(), tokenType,
 				Config.token().getCipher());
@@ -86,7 +101,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		t.setToken(effectivePerson.getToken());
 		t.setTokenType(tokenType);
 		/** 添加角色 */
-		t.setRoleList(business.organization().role().listWithPerson(effectivePerson.getDistinguishedName()));
+		t.setRoleList(roles);
 		/** 添加身份 */
 		t.setIdentityList(listIdentity(business, person.getId()));
 		/** 判断密码是否过期需要修改密码 */

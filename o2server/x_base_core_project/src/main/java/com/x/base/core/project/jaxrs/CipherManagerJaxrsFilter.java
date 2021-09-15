@@ -31,7 +31,8 @@ public abstract class CipherManagerJaxrsFilter extends TokenFilter {
 				HttpToken httpToken = new HttpToken();
 				EffectivePerson effectivePerson = httpToken.who(request, response, Config.token().getCipher());
 				if ((!TokenType.cipher.equals(effectivePerson.getTokenType()))
-						&& (!TokenType.manager.equals(effectivePerson.getTokenType()))) {
+						&& (!TokenType.manager.equals(effectivePerson.getTokenType()))
+						&& (!TokenType.systemManager.equals(effectivePerson.getTokenType()))) {
 					/** 需要自己标志500 */
 					response.setStatus(500);
 					response.setHeader("Content-Type", "application/json;charset=UTF-8");

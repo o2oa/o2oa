@@ -193,7 +193,7 @@ public class Business {
 			return true;
 		}
 		if (this.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
-				OrganizationDefinition.GroupManager)) {
+				OrganizationDefinition.GroupManager, OrganizationDefinition.SystemManager, OrganizationDefinition.SecurityManager)) {
 			return true;
 		}
 		return false;
@@ -204,7 +204,32 @@ public class Business {
 			return true;
 		}
 		if (this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager, OrganizationDefinition.OrganizationManager,
-				OrganizationDefinition.UnitManager)) {
+				OrganizationDefinition.UnitManager, OrganizationDefinition.SystemManager, OrganizationDefinition.SecurityManager)) {
+			return true;
+		}
+		if (ListTools.isNotEmpty(unit.getControllerList())) {
+			List<Person> os = this.person().pick(unit.getControllerList());
+			List<String> list = ListTools.extractProperty(os, JpaObject.DISTINGUISHEDNAME, String.class, true, true);
+			if (ListTools.contains(list, effectivePerson.getDistinguishedName())) {
+				return true;
+			}
+		}
+		for (Unit u : unit().pick(unit().listSupNested(unit.getId()))) {
+			List<Person> os = this.person().pick(u.getControllerList());
+			List<String> list = ListTools.extractProperty(os, JpaObject.DISTINGUISHEDNAME, String.class, true, true);
+			if (ListTools.contains(list, effectivePerson.getDistinguishedName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean editableUnitDuty(EffectivePerson effectivePerson, Unit unit) throws Exception {
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager, OrganizationDefinition.OrganizationManager,
+				OrganizationDefinition.UnitManager, OrganizationDefinition.SecurityManager)) {
 			return true;
 		}
 		if (ListTools.isNotEmpty(unit.getControllerList())) {
@@ -229,7 +254,7 @@ public class Business {
 			return true;
 		}
 		if (this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager, OrganizationDefinition.OrganizationManager,
-				OrganizationDefinition.PersonManager)) {
+				OrganizationDefinition.PersonManager, OrganizationDefinition.SystemManager, OrganizationDefinition.SecurityManager)) {
 			return true;
 		}
 		return false;
@@ -240,7 +265,7 @@ public class Business {
 			return true;
 		}
 		if (this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager, OrganizationDefinition.OrganizationManager,
-				OrganizationDefinition.RoleManager)) {
+				OrganizationDefinition.RoleManager, OrganizationDefinition.SecurityManager)) {
 			return true;
 		}
 		return false;
