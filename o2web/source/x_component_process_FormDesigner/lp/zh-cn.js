@@ -325,7 +325,12 @@ MWF.xApplication.process.FormDesigner.LP = {
         "statementSelector": "选择查询视图",
         "statement": "嵌入查询视图",
 
-        "group_system": "系统组件",
+        "group_all": "所有组件",
+        "group_form": "表单组件",
+        "group_layout": "布局组件",
+        "group_process": "流程组件",
+        "group_filetext": "文件编辑组件",
+        "group_function": "功能组件",
         "group_element": "Element组件",
 
         "el_container": "布局容器",
