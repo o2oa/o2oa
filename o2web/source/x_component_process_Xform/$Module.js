@@ -12,6 +12,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         /**
          * 组件加载前触发。当前组件的queryLoad事件运行时还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取。
          * @event MWF.xApplication.process.Xform.$Module#queryLoad
+         * @event MWF.xApplication.process.Xform.$Module#queryLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
@@ -208,78 +209,80 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             }.bind(this));
         }
     },
-    _getBusinessData: function(){
+    _getBusinessData: function(id){
         var v;
         if (this.json.section=="yes"){
-            v = this._getBusinessSectionData();
+            v = this._getBusinessSectionData(id);
         }else {
             if (this.json.type==="Opinion"){
-                v = this._getBusinessSectionDataByPerson();
+                v = this._getBusinessSectionDataByPerson(id);
             }else{
                 // return this.form.businessData.data[this.json.id] || "";
-                return this.getBusinessDataById() || "";
+                var value = this.getBusinessDataById(null, id);
+                return (o2.typeOf(value)!=="null") ? value : "";
+                //return this.getBusinessDataById() || "";
             }
         }
         //if (o2.typeOf(v)==="string") v = o2.dtxt(v);
         return v;
     },
-    _getBusinessSectionData: function(){
+    _getBusinessSectionData: function(id){
         switch (this.json.sectionBy){
             case "person":
-                return this._getBusinessSectionDataByPerson();
+                return this._getBusinessSectionDataByPerson(id);
             case "unit":
-                return this._getBusinessSectionDataByUnit();
+                return this._getBusinessSectionDataByUnit(id);
             case "activity":
-                return this._getBusinessSectionDataByActivity();
+                return this._getBusinessSectionDataByActivity(id);
             case "splitValue":
-                return this._getBusinessSectionDataBySplitValue();
+                return this._getBusinessSectionDataBySplitValue(id);
             case "script":
-                return this._getBusinessSectionDataByScript(((this.json.sectionByScript) ? this.json.sectionByScript.code : ""));
+                return this._getBusinessSectionDataByScript(((this.json.sectionByScript) ? this.json.sectionByScript.code : ""), id);
             default:
                 // return this.form.businessData.data[this.json.id] || "";
-                return this.getBusinessDataById() || "";
+                return this.getBusinessDataById(null, id) || "";
         }
     },
-    _getBusinessSectionDataByPerson: function(){
-        this.form.sectionListObj[this.json.id] = layout.desktop.session.user.id;
+    _getBusinessSectionDataByPerson: function(id){
+        this.form.sectionListObj[id||this.json.id] = layout.desktop.session.user.id;
         // var dataObj = this.form.businessData.data[this.json.id];
-        var dataObj = this.getBusinessDataById();
+        var dataObj = this.getBusinessDataById(null, id);
         return (dataObj) ? (dataObj[layout.desktop.session.user.id] || "") : "";
     },
-    _getBusinessSectionDataByUnit: function(){
-        this.form.sectionListObj[this.json.id] = "";
+    _getBusinessSectionDataByUnit: function(id){
+        this.form.sectionListObj[id || this.json.id] = "";
         // var dataObj = this.form.businessData.data[this.json.id];
-        var dataObj = this.getBusinessDataById();
+        var dataObj = this.getBusinessDataById(null, id);
         if (!dataObj) return "";
         var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
-        if (key) this.form.sectionListObj[this.json.id] = key;
+        if (key) this.form.sectionListObj[id||this.json.id] = key;
         return (key) ? (dataObj[key] || "") : "";
     },
-    _getBusinessSectionDataByActivity: function(){
-        this.form.sectionListObj[this.json.id] = "";
+    _getBusinessSectionDataByActivity: function(id){
+        this.form.sectionListObj[id||this.json.id] = "";
         // var dataObj = this.form.businessData.data[this.json.id];
-        var dataObj = this.getBusinessDataById();
+        var dataObj = this.getBusinessDataById(null, id);
         if (!dataObj) return "";
         var key = (this.form.businessData.work) ? this.form.businessData.work.activity : "";
-        if (key) this.form.sectionListObj[this.json.id] = key;
+        if (key) this.form.sectionListObj[id||this.json.id] = key;
         return (key) ? (dataObj[key] || "") : "";
     },
-    _getBusinessSectionDataBySplitValue: function(){
-        this.form.sectionListObj[this.json.id] = "";
+    _getBusinessSectionDataBySplitValue: function(id){
+        this.form.sectionListObj[id||this.json.id] = "";
         // var dataObj = this.form.businessData.data[this.json.id];
-        var dataObj = this.getBusinessDataById();
+        var dataObj = this.getBusinessDataById(null, id);
         if (!dataObj) return "";
         var key = (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
-        if (key) this.form.sectionListObj[this.json.id] = key;
+        if (key) this.form.sectionListObj[id||this.json.id] = key;
         return (key) ? (dataObj[key] || "") : "";
     },
-    _getBusinessSectionDataByScript: function(code){
-        this.form.sectionListObj[this.json.id] = "";
+    _getBusinessSectionDataByScript: function(code, id){
+        this.form.sectionListObj[id||this.json.id] = "";
         // var dataObj = this.form.businessData.data[this.json.id];
-        var dataObj = this.getBusinessDataById();
+        var dataObj = this.getBusinessDataById(null, id);
         if (!dataObj) return "";
         var key = this.form.Macro.exec(code, this);
-        if (key) this.form.sectionListObj[this.json.id] = key;
+        if (key) this.form.sectionListObj[id||this.json.id] = key;
         return (key) ? (dataObj[key] || "") : "";
     },
     _setEnvironmentData: function(v){
@@ -381,84 +384,82 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         return evdata;
     },
 
-    _setBusinessData: function(v){
+    _setBusinessData: function(v, id){
         //if (o2.typeOf(v)==="string") v = o2.txt(v);
         if (this.json.section=="yes"){
-            this._setBusinessSectionData(v);
+            this._setBusinessSectionData(v, id);
         }else {
             if (this.json.type==="Opinion"){
-                this._setBusinessSectionDataByPerson(v);
+                this._setBusinessSectionDataByPerson(v, id);
             }else{
-                this.setBusinessDataById(v);
+                this.setBusinessDataById(v, id);
                 if (this.json.isTitle) this.form.businessData.$work.title = v;
             }
         }
     },
-    _setBusinessSectionData: function(v){
+    _setBusinessSectionData: function(v, id){
         switch (this.json.sectionBy){
             case "person":
-                this._setBusinessSectionDataByPerson(v);
+                this._setBusinessSectionDataByPerson(v, id);
                 break;
             case "unit":
-                this._setBusinessSectionDataByUnit(v);
+                this._setBusinessSectionDataByUnit(v, id);
                 break;
             case "activity":
-                this._setBusinessSectionDataByActivity(v);
+                this._setBusinessSectionDataByActivity(v, id);
                 break;
             case "splitValue":
-                this._setBusinessSectionDataBySplitValue(v);
+                this._setBusinessSectionDataBySplitValue(v, id);
                 break;
             case "script":
-                this._setBusinessSectionDataByScript(this.json.sectionByScript.code, v);
+                this._setBusinessSectionDataByScript(this.json.sectionByScript.code, v, id);
                 break;
             default:
-                this.setBusinessDataById(v);
+                this.setBusinessDataById(v, id);
         }
     },
-    _setBusinessSectionDataByPerson: function(v){
+    _setBusinessSectionDataByPerson: function(v, id){
         var key = layout.desktop.session.user.id;
-        this._setBusinessSectionDataByKey(key, v);
+        this._setBusinessSectionDataByKey(key, v, id);
     },
-    _setBusinessSectionDataByUnit: function(v){
+    _setBusinessSectionDataByUnit: function(v, id){
         var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
-        this._setBusinessSectionDataByKey(key, v);
+        this._setBusinessSectionDataByKey(key, v, id);
     },
-    _setBusinessSectionDataByActivity: function(v){
+    _setBusinessSectionDataByActivity: function(v, id){
         var key = (this.form.businessData.work) ? this.form.businessData.work.activity : "";
-        this._setBusinessSectionDataByKey(key, v);
+        this._setBusinessSectionDataByKey(key, v, id);
     },
-    _setBusinessSectionDataBySplitValue: function(v){
+    _setBusinessSectionDataBySplitValue: function(v, id){
         var key = (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
-        this._setBusinessSectionDataByKey(key, v);
+        this._setBusinessSectionDataByKey(key, v, id);
     },
-    _setBusinessSectionDataByScript: function(code, v){
+    _setBusinessSectionDataByScript: function(code, v, id){
         var key = this.form.Macro.exec(code, this);
-        this._setBusinessSectionDataByKey(key, v);
+        this._setBusinessSectionDataByKey(key, v, id);
     },
-    _setBusinessSectionDataByKey: function(key, v){
+    _setBusinessSectionDataByKey: function(key, v, id){
         if (key){
-            var dataObj = this.getBusinessDataById();
+            var dataObj = this.getBusinessDataById(null, id);
             var evdata;
             if (!dataObj){
                 dataObj = {};
-                evdata = this.setBusinessDataById(dataObj);
+                evdata = this.setBusinessDataById(dataObj, id);
             }
             dataObj[key] = v;
             if (evdata) evdata.check(key, v);
         }
     },
-    getBusinessDataById: function(d){
+    getBusinessDataById: function(d, id){
         var data = d || this.form.businessData.data;
-        //var evdata = this.form.Macro.environment.data;
+        var thisId = id || this.json.id;
         //对id类似于 xx..0..xx 的字段进行拆分
-        if(this.json.id.indexOf("..") < 1){
-            //if (!data.hasOwnProperty(this.json.id)) evdata.add(this.json.id, data[this.json.id]||"");
-            return data[this.json.id];
+        if(thisId.indexOf("..") < 1){
+            return data[thisId];
         }else{
-            var idList = this.json.id.split("..");
+            var idList = thisId.split("..");
             idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
 
-            //var data = this.form.businessData.data;
             var lastIndex = idList.length - 1;
 
             for(var i=0; i<=lastIndex; i++){
@@ -466,11 +467,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if( !id && id !== 0 )return null;
                 if( ["object","array"].contains(o2.typeOf(data)) ){
                     if( i === lastIndex ){
-                        //if (!data.hasOwnProperty(id)) evdata.add(id, data[id]||"");
                         return data[id];
                     }else{
-                        //if (!data.hasOwnProperty(id)) evdata.add(id, {});
-                        //evdata = evdata[id];
                         data = data[id];
                     }
                 }else{
@@ -488,17 +486,18 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 evdata.check(id, v);
         }
     },
-    setBusinessDataById: function(v){
+    setBusinessDataById: function(v, id){
         debugger;
         //对id类似于 xx..0..xx 的字段进行拆分
         var evdata = this.form.Macro.environment.data;
         var data = this.form.businessData.data;
-        if(this.json.id.indexOf("..") < 1){
-            data[this.json.id] = v;
-            this._checkEvdata(evdata, this.json.id, v);
+        var thisId = id || this.json.id;
+        if(thisId.indexOf("..") < 1){
+            data[thisId] = v;
+            this._checkEvdata(evdata, thisId, v);
             //this.form.businessData.data[this.json.id] = v;
         }else{
-            var idList = this.json.id.split("..");
+            var idList = thisId.split("..");
             idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
 
             //var data = this.form.businessData.data;

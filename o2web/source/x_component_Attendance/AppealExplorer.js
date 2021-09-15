@@ -80,11 +80,18 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             var toolbarUrl = this.path + "toolbar.json";
             MWF.getJSON(toolbarUrl, function (json) {
                 json.each(function (tool) {
-                   if( !this.config.APPEALABLE && tool.condition=="onlock" ){
-                       this.createToolbarItemNode(tool)
-                    }else if( this.config.APPEALABLE && tool.condition!="onlock" ){
-                       this.createToolbarItemNode(tool)
-                   }
+                   // if( !this.config.APPEALABLE && tool.condition=="onlock" ){
+                   //     this.createToolbarItemNode(tool)
+                   //  }else if( this.config.APPEALABLE && tool.condition!="onlock" ){
+                   //     this.createToolbarItemNode(tool)
+                   // }
+                    if( tool.condition && tool.condition.substr( 0, "function".length ) == "function"){
+                        eval("var fun = " + tool.condition);
+                        var flag = fun.call(this, this.configSetting);
+                        if(flag)this.createToolbarItemNode(tool)
+                    }else{
+                        this.createToolbarItemNode(tool)
+                    }
                 }.bind(this));
             }.bind(this));
     },
@@ -329,7 +336,8 @@ MWF.xApplication.Attendance.AppealExplorer.View = new Class({
         var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
         var filter = this.filterData || {};
         filter.processPerson1 = layout.desktop.session.user.distinguishedName;
-        this.actions.listAppealFilterNext(id, count, filter, function(json){
+        //this.actions.listAppealFilterNext(id, count, filter, function(json){
+        this.actions.listAppealWithFilterWithManager(id, count, filter, function(json){
             var data = json.data;
             data.each(function(d){
                 d.APPEALABLE = this.explorer.config.APPEALABLE;

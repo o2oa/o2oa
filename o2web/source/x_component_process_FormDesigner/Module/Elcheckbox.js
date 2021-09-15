@@ -10,49 +10,24 @@ MWF.xApplication.process.FormDesigner.Module.Elcheckbox = MWF.FCElcheckbox = new
 		"propertyPath": "../x_component_process_FormDesigner/Module/Elcheckbox/elcheckbox.html"
 	},
 	_initModuleType: function(){
-		this.className = "Elcheckbox"
+		this.className = "Elcheckbox";
 		this.moduleType = "element";
 		this.moduleName = "elcheckbox";
 	},
 	_createElementHtml: function(){
 		var html = "<el-checkbox-group v-model=\""+this.json.id+"\"";
-		if (this.json.textColor) html += " text-color=\""+this.json.textColor+"\"";
-		if (this.json.fillColor) html += " fill=\""+this.json.fillColor+"\"";
-		if (this.json.size && this.json.size!=="default") html += " size=\""+this.json.size+"\"";
 
-		if (this.json.elGroupProperties){
-			Object.keys(this.json.elGroupProperties).forEach(function(k){
-				if (this.json.elGroupProperties[k]) html += " "+k+"=\""+this.json.elGroupProperties[k]+"\"";
-			}, this);
-		}
-		if (this.json.elGroupStyles){
-			var style = "";
-			Object.keys(this.json.elGroupStyles).forEach(function(k){
-				if (this.json.elGroupStyles[k]) style += k+":"+this.json.elGroupStyles[k]+";";
-			}, this);
-			html += " style=\""+style+"\"";
-		}
-
+		html += " :text-color=\"textColor\"";
+		html += " :fill=\"fillColor\"";
+		html += " :size=\"size\"";
+		html += " :style=\"elGroupStyles\"";
 
 		html += (this.json.buttonRadio) ? " ><el-checkbox-button" : " ><el-checkbox";
-		if (this.json.border===true) html += " border";
+		html += " :border=\"border\"";
 
+		html += " :style=\"elStyles\"";
 
-		if (this.json.elProperties){
-			Object.keys(this.json.elProperties).forEach(function(k){
-				if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
-			}, this);
-		}
-
-		var radiostyle = "box-sizing: border-box!important;";
-		if (this.json.elStyles){
-			Object.keys(this.json.elStyles).forEach(function(k){
-				if (this.json.elStyles[k]) radiostyle += k+":"+this.json.elStyles[k]+";";
-			}, this);
-		}
-		html += " style=\""+radiostyle+"\"";
-
-		html += " label=\""+this.json.id+"\">"+((this.json.buttonRadio) ? "</el-checkbox-button></el-checkbox-group>" : "</el-checkbox></el-checkbox-group>");
+		html += " :label=\"id\">{{id}}"+((this.json.buttonRadio) ? "</el-checkbox-button></el-checkbox-group>" : "</el-checkbox></el-checkbox-group>");
 		return html;
 	},
 	_createCopyNode: function(){
@@ -71,9 +46,9 @@ MWF.xApplication.process.FormDesigner.Module.Elcheckbox = MWF.FCElcheckbox = new
 	setPropertyId: function(){
 		if (this.isPropertyLoaded) if (this.vm) this.resetElement();
 	},
-	_createVueData: function(){
-		var data = {};
-		data[this.json.id] = [this.json.id];
-		return data;
-	},
+	// _createVueData: function(){
+	// 	var data = {};
+	// 	data[this.json.id] = [this.json.id];
+	// 	return data;
+	// },
 });

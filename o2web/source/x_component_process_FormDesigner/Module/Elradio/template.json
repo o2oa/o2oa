@@ -13,7 +13,23 @@
 		"code": "",
 		"html": ""
 	},
-    "compute": "create", //create, show, save
+	"isReadonly" : false,
+	"buttonRadio" : false,
+	"border" : false,
+	"size" : "default",
+	"textColor" : "",
+	"fillColor" : "",
+
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+
+	elStyles: {},
+	elProperties: {},
+	elGroupStyles: {},
+	elGroupProperties: {},
+
+	"compute": "create", //create, show, save
 	"events": {
 		"queryLoad" : {
 		  "code": "",
@@ -82,7 +98,5 @@
 	},
 	"properties": {},
 	"class": "",
-	"buttonStyles": {},
-	"styles": {},
 	"container": ""
 }

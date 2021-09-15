@@ -169,11 +169,11 @@ public class Learn {
 				inTextBag.saveToInValue(business);
 				this.cleanOutValue(business, model);
 				outTextBag.saveToOutValue(business);
-				if (logger.isDebug()) {
-					File file = new File(Config.dir_local_temp(), model.getId() + ".nnet");
-					neuralNetwork.save(file.getAbsolutePath());
-					logger.debug("save nnet file to ", file.getAbsolutePath());
-				}
+///				if (logger.isDebug()) {
+//					File file = new File(Config.dir_local_temp(), model.getId() + ".nnet");
+//					neuralNetwork.save(file.getAbsolutePath());
+//					logger.debug("save nnet file to ", file.getAbsolutePath());
+//				}
 				if (neuralNetwork.getLearningRule().getErrorFunction().getTotalError() > maxError) {
 					logger.print("神经网络多层感知机 ({}) 学习失败, 耗时: {}, 总误差: {}, 未能达到预期值: {}.", modelName,
 							stamp.consumingMilliseconds(),

@@ -56,7 +56,7 @@ class ActionPress extends BaseAction {
 			if (StringUtils.equals(taskCompleted.getPressActivityToken(), work.getActivityToken())) {
 				if (!NumberTools.nullOrLessThan(taskCompleted.getPressCount(),
 						Config.processPlatform().getPress().getCount())) {
-					if (DateTools.beforeNowMinutesNullIsFalse(taskCompleted.getPressTime(),
+					if (!DateTools.beforeNowMinutesNullIsFalse(taskCompleted.getPressTime(),
 							Config.processPlatform().getPress().getIntervalMinutes())) {
 						throw new ExceptionPressLimit(Config.processPlatform().getPress().getIntervalMinutes(),
 								Config.processPlatform().getPress().getCount());

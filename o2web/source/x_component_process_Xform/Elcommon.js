@@ -33,6 +33,15 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     //     }
     // },
     //
+    // initialize: function(node, json, form, options){
+    //     debugger;
+    //     this.node = $(node);
+    //     this.node.store("module", this);
+    //     this.json = json;
+    //     this.form = form;
+    //     this.field = true;
+    //     this.parentLine = null;
+    // },
     _checkVueHtml: function(){
         var nodes = this.node.querySelectorAll("*[v-model]");
         this.tmpVueData = {};
@@ -43,9 +52,9 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
         }.bind(this));
     },
     _loadUserInterface: function(){
-        debugger;
         this.node.set("html", this._createElementHtml());
-        this._checkVueHtml();
+        //this._checkVueHtml();
+        this._checkVmodel();
 
         this.node.set({
             "id": this.json.id,
@@ -77,21 +86,29 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     // },
 
     _createVueExtend: function(){
-        if (this.tmpVueData){
-            Object.keys(this.tmpVueData).each(function(k){
-                this.form.Macro.environment.data.check(k, this.tmpVueData[k]);
+        // if (this.tmpVueData){
+        //     Object.keys(this.tmpVueData).each(function(k){
+        //         this.form.Macro.environment.data.check(k, this.tmpVueData[k]);
+        //     }.bind(this));
+        // }
+        if (this.vModels && this.vModels.length){
+            this.vModels.forEach(function(m){
+                if (!this.json.hasOwnProperty(m)) this.json[m] = "";
             }.bind(this));
         }
+
         var app = {};
         if (this.json.vueApp && this.json.vueApp.code) app = this.form.Macro.exec(this.json.vueApp.code, this);
+        if (!app) app = {};
         if (app.data){
             var ty = o2.typeOf(app.data);
             switch (ty){
                 case "object":
                     Object.keys(app.data).each(function(k){
-                        this.form.Macro.environment.data.add(k, app.data[k]);
+                        this.json[k] = app.data[k];
+                        //this.form.Macro.environment.data.add(k, app.data[k]);
                     }.bind(this));
-                    app.data = this.form.Macro.environment.data;
+                    app.data = this.json;
                     // app.data = this.json;
                     // app.data = Object.merge(this.json, this.form.Macro.environment.data);
                     break;
@@ -104,15 +121,18 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
                         //_self.form.Macro.environment.data.add(_self.json.id, d);
 
                         Object.keys(d).each(function(k){
-                            _self.form.Macro.environment.data.add(k, d[k]);
+                            _self.json[k] = d[k];
+                            //_self.form.Macro.environment.data.add(k, d[k]);
                         });
                         //var data = Object.merge(_slef.json);
-                        return _self.form.Macro.environment.data;
+                        //return _self.form.Macro.environment.data;
+                        return _self.json;
                     };
                     break;
             }
         }else{
-            app.data = this.form.Macro.environment.data;
+            //app.data = this.form.Macro.environment.data;
+            app.data = this.json;
         }
 
         var _self = this;
@@ -121,6 +141,9 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
             _self._afterMounted(this.$el);
             if (mountedFun && o2.typeOf(mountedFun)=="function") return mountedFun.apply(this);
         };
+
+        this.appendVueWatch(app);
+
         return app;
     },
 
@@ -142,17 +165,59 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     //         this.styleNode.inject(this.node, "before");
     //     }
     // },
-    _filterHtml: function(html){
-        var tmp = new Element("div", {"html": html});
-        var nodes = tmp.querySelectorAll("*[v-model]");
-        this.tmpVueData = {};
+    // _filterHtml: function(html){
+    //     var tmp = new Element("div", {"html": html});
+    //     var nodes = tmp.querySelectorAll("*[v-model]");
+    //     this.tmpVueData = {};
+    //     nodes.forEach(function(node){
+    //         this.tmpVueData[node.get("v-model")] = "";
+    //     }.bind(this));
+    //     return html;
+    // },
+    _checkVmodel: function(text){
+        // if (text){
+        //     this.vModels = [];
+        //     var reg = /(?:v-model)(?:.lazy|.number|.trim)?(?:\s*=\s*)(?:["'])?([^"']*)/g;
+        //     var arr;
+        //     while ((arr = reg.exec(text)) !== null) {
+        //         if (arr.length>1 && arr[1]){
+        //             var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
+        //             modelId = (modelId) ? modelId+".."+arr[1] : arr[1];
+        //             this.json[arr[1]] = this._getBusinessData(modelId);
+        //             this.vModels.push(arr[1]);
+        //         }
+        //     }
+        // }
+        var nodes = this.node.querySelectorAll("*[v-model]");
+        this.vModels = [];
+        var arrs = ["el-checkbox-group"];
         nodes.forEach(function(node){
-            this.tmpVueData[node.get("v-model")] = "";
+            var model = node.get("v-model");
+            var tag = node.tagName.toString().toLowerCase();
+            if (model){
+                var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
+                modelId = (modelId) ? modelId+".."+model : model;
+                this.json[model] = this._getBusinessData(modelId);
+                if (!this.json[model]){
+                    this.json[model] = (arrs.indexOf(tag)===-1) ? "" : []
+                }
+                this.vModels.push(model);
+            }
         }.bind(this));
-        return html;
     },
     _createElementHtml: function(){
         var html = this.json.vueTemplate || "";
-        return this._filterHtml(html);
-    }
+        // if (html) this._checkVmodel(html);
+        // return this._filterHtml(html);
+        return html;
+    },
+    resetData: function(){
+        if (this.vModels && this.vModels.length){
+            this.vModels.forEach(function(m){
+                var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
+                modelId = (modelId) ? modelId+".."+m : m;
+                this.json[m] = this._getBusinessData(modelId);
+            }.bind(this));
+        }
+    },
 }); 

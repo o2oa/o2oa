@@ -211,6 +211,30 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据根据过滤条件对考勤申诉信息进行下一页查询(带权限)", action = ActionListNextWithFilterWithManager.class)
+	@PUT
+	@Path("manager/list/{id}/next/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listNextWithFilterWithManager(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								   @JaxrsParameterDescribe("最后一条信息ID") @PathParam("id") String id,
+								   @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		ActionResult<List<ActionListNextWithFilterWithManager.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+		if (check) {
+			try {
+				result = new ActionListNextWithFilterWithManager().execute(request, effectivePerson, id, count, jsonElement);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionAttendanceAppealProcess(e, "根据条件对申诉信息进行下一页查询时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据根据过滤条件对考勤申诉信息进行上一页查询", action = ActionListPrevWithFilter.class)
 	@PUT
 	@Path("filter/list/{id}/prev/{count}")
@@ -260,17 +284,16 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "根据考勤申诉ID，更新申诉审核流程的审批信息以及最终审核状态", action = ActionWorkFlowSync.class)
 	@PUT
-	@Path("workflow/sync/{id}")
+	@Path("workflow/sync")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void syncWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						@JaxrsParameterDescribe("考勤申诉信息ID") @PathParam("id") String id, JsonElement jsonElement) {
+	public void syncWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<ActionWorkFlowSync.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		if (check) {
 			try {
-				result = new ActionWorkFlowSync().execute(request, effectivePerson, id, jsonElement);
+				result = new ActionWorkFlowSync().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAttendanceAppealProcess(e, "根据ID对打卡结果进行归档时发生异常！");

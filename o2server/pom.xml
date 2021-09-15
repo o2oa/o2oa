@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>o2oa</groupId>
 	<artifactId>o2server</artifactId>
-	<version>6.3</version>
+	<version>6.4</version>
 	<packaging>pom</packaging>
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
@@ -371,8 +371,19 @@
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-client</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<pluginManagement>
@@ -415,8 +426,6 @@
 						</compilerArgs>
 					</configuration>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -484,13 +493,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<!-- plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-pmd-plugin</artifactId> 
-				<version>3.13.0</version> <configuration> <linkXRef>true</linkXRef> <sourceEncoding>utf-8</sourceEncoding> 
-				<minimumTokens>100</minimumTokens> <targetJdk>1.8</targetJdk> <failOnViolation>false</failOnViolation> 
-				<outputDirectory>${basedir}</outputDirectory> </configuration> <executions> 
-				<execution> <id>pmd-check</id> <phase>verify</phase> <goals> <goal>check</goal> 
-				</goals> </execution> </executions> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
-				<artifactId>maven-jxr-plugin</artifactId> <version>2.3</version> </plugin -->
 		</plugins>
 	</build>
 	<dependencyManagement>
@@ -840,8 +842,6 @@
 				<artifactId>javapoet</artifactId>
 				<version>1.11.1</version>
 			</dependency>
-			<!--dependency> <groupId>javax.visrec</groupId> <artifactId>visrec-api</artifactId> 
-				<version>20200316</version> </dependency -->
 			<dependency>
 				<groupId>com.github.neuroph</groupId>
 				<artifactId>neuroph-core</artifactId>
@@ -862,18 +862,7 @@
 				<artifactId>neuroph-contrib</artifactId>
 				<version>2.98</version>
 			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-				<version>1.7.25</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>1.7.25</version>
-			</dependency>
-			<!-- dependency> <groupId>cglib</groupId> <artifactId>cglib</artifactId> 
-				<version>3.2.0</version> </dependency -->
+
 			<dependency>
 				<groupId>com.alibaba</groupId>
 				<artifactId>druid</artifactId>
@@ -925,144 +914,154 @@
 				<version>0.1.0</version>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>2.14.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>2.14.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.32</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-slf4j-impl</artifactId>
+				<version>2.14.1</version>
+			</dependency>
+			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_base_core_project</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_attendance_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_bbs_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_calendar_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_cms_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_cms_core_express</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_component_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_file_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_general_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_hotpic_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_meeting_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_message_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_mind_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_organization_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_jpush_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_organization_core_express</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_portal_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_processplatform_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_processplatform_core_express</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_query_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_query_core_express</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_report_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_strategydeploy_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_strategydeploy_assemble_control</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_program_center</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_program_center_core_entity</artifactId>
-				<version>6.3</version>
-			</dependency>
-			<dependency>
-				<groupId>o2oa</groupId>
-				<artifactId>x_teamwork_core_entity</artifactId>
-				<version>6.3</version>
-			</dependency>
-			<dependency>
-				<groupId>o2oa</groupId>
-				<artifactId>x_workschedu_core_entity</artifactId>
-				<version>6.3</version>
+				<version>6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>net.lingala.zip4j</groupId>

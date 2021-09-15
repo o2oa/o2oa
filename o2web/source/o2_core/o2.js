@@ -369,6 +369,7 @@ if (!window.o2) {
                 "noConflict": (options && options.noConflict) || false,
                 "bind": (options && options.bind) || null,
                 "evalScripts": (options && options.evalScripts) || false,
+                "baseUrl": (options && options.baseUrl) || false,
                 "position": (options && options.position) || "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
             }
         };
@@ -482,7 +483,7 @@ if (!window.o2) {
             "JSONTemplate": ["../o2_lib/mootools/plugin/Template.js"],
             "kity": ["../o2_lib/kityminder/kity/kity.js"],
             "kityminder": ["../o2_lib/kityminder/core/dist/kityminder.core.js"],
-            "vue": ["../o2_lib/vue/vue.min.js"],
+            "vue": ["../o2_lib/vue/vue.pro.js"],
             "vue_develop": ["../o2_lib/vue/vue.js"],
             "elementui": ["../o2_lib/vue/element/index.js"]
         };
@@ -842,19 +843,21 @@ if (!window.o2) {
                     scriptText = script;
                 });
 
-                var reg = /(?:href|src)\s*=\s*"([^"]*)"/gi;
-                var m = reg.exec(text);
-                while (m) {
-                    var l = m[0].length;
-                    var u = new URI(m[1], {base: baseUrl}).toString();
-                    var r = m[0].replace(m[1], u);
-                    var i = r.length - l;
-                    var left = text.substring(0, m.index);
-                    var right = text.substring(m.index + l, text.length);
-                    text = left + r + right;
-                    reg.lastIndex = reg.lastIndex + i;
+                if (op.baseUrl){
+                    var reg = /(?:href|src)\s*=\s*"([^"]*)"/gi;
+                    var m = reg.exec(text);
+                    while (m) {
+                        var l = m[0].length;
+                        var u = new URI(m[1], {base: baseUrl}).toString();
+                        var r = m[0].replace(m[1], u);
+                        var i = r.length - l;
+                        var left = text.substring(0, m.index);
+                        var right = text.substring(m.index + l, text.length);
+                        text = left + r + right;
+                        reg.lastIndex = reg.lastIndex + i;
 
-                    m = reg.exec(text);
+                        m = reg.exec(text);
+                    }
                 }
 
                 if (op.module) {
@@ -2329,6 +2332,21 @@ if (!window.o2) {
                 return this.some(function (item) {
                     return (arr.indexOf(item) !== -1);
                 })
+            },
+            "add": function(newKey, newValue, overwrite){
+                if (arguments.length<2){
+                    this[this.length] = newKey;
+                    //this.push(newKey);
+                }else{
+                    if (o2.typeOf(newKey)=="number"){
+                        if (newKey<this.length){
+                            if (overwrite) this[newKey] = newValue;
+                        }else if (newKey==this.length){
+                            //this.push(newValue);
+                            this[this.length] = newValue;
+                        }
+                    }
+                }
             }
         });
         if (!Array.prototype.find) {

@@ -21,11 +21,6 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         "elEvents": ["focus", "blur", "change", "input", "clear"]
     },
     _appendVueData: function(){
-        this.form.Macro.environment.data.check(this.json.id);
-        //if (!this.json[this.json.id]){
-            this.json[this.json.id] = this._getBusinessData();
-        //}
-
         if (!this.json.maxlength) this.json.maxlength = "";
         if (!this.json.minlength) this.json.minlength = "";
         if (!this.json.showWordLimit) this.json.showWordLimit = false;
@@ -35,25 +30,26 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         if (!this.json.size) this.json.size = "";
         if (!this.json.prefixIcon) this.json.prefixIcon = "";
         if (!this.json.suffixIcon) this.json.suffixIcon = "";
-        if (!this.json.rows) this.json.rows = "2";
+        if (!this.json.rows) this.json.rows = 2;
         if (!this.json.autosize) this.json.autosize = false;
         if (!this.json.readonly) this.json.readonly = false;
         if (!this.json.resize) this.json.resize = "none";
         if (!this.json.description) this.json.description = "";
     },
-    appendVueExtend: function(app){
-        if (!app.methods) app.methods = {};
-        app.methods.$loadElEvent = function(ev){
-            this.validationMode();
-            if (ev==="change") this._setBusinessData(this.getInputData());
-            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
-                this.form.Macro.fire(this.json.events[ev].code, this, event);
-            }
-        }.bind(this);
-    },
+    // appendVueExtend: function(app){
+    //     if (!app.methods) app.methods = {};
+    //     app.methods.$loadElEvent = function(ev){
+    //         this.validationMode();
+    //         if (ev==="change") this._setBusinessData(this.getInputData());
+    //         if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
+    //             this.form.Macro.fire(this.json.events[ev].code, this, event);
+    //         }
+    //     }.bind(this);
+    // },
     _createElementHtml: function(){
+        debugger;
         var html = "<el-input";
-        html += " v-model=\""+this.json.id+"\"";
+        html += " v-model=\""+this.json.$id+"\"";
         html += " :maxlength=\"maxlength\"";
         html += " :minlength=\"minlength\"";
         html += " :show-word-limit=\"showWordLimit\"";
@@ -70,8 +66,11 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         html += " :type=\"inputType\"";
         html += " :placeholder=\"description\"";
 
+        // this.options.elEvents.forEach(function(k){
+        //     html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+        // });
         this.options.elEvents.forEach(function(k){
-            html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+            html += " @"+k+"=\"$loadElEvent_"+k.camelCase()+"\"";
         });
 
         if (this.json.elProperties){
@@ -80,13 +79,14 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
             }, this);
         }
 
-        if (this.json.elStyles){
-            var style = "";
-            Object.keys(this.json.elStyles).forEach(function(k){
-                if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-            }, this);
-            html += " style=\""+style+"\"";
-        }
+        if (this.json.elStyles) html += " :style=\"elStyles\"";
+        // if (this.json.elStyles){
+        //     var style = "";
+        //     Object.keys(this.json.elStyles).forEach(function(k){
+        //         if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+        //     }, this);
+        //     html += " style=\""+style+"\"";
+        // }
 
         html += ">";
 

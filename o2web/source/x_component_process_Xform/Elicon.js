@@ -16,6 +16,17 @@ MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
     {
     Implements: [Events],
     Extends: MWF.APP$Module,
+    _loadVue: function(callback){
+        if (!window.Vue){
+            var vue = (o2.session.isDebugger) ? "vue_develop" : "vue";
+            o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
+        }else{
+            if (callback) callback();
+        }
+    },
+    _queryLoaded: function(){
+        this._loadVue();
+    }
 
     // load: function(){
     //     this._loadModuleEvents();
@@ -69,9 +80,9 @@ MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
     //         }
     //     };
     // },
-    _createVueData: function(){
-        return this.json;
-    },
+    // _createVueData: function(){
+    //     return this.json;
+    // },
     // _afterMounted: function(el){
     //     this.node = el;
     //     this.node.set({
@@ -83,30 +94,34 @@ MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
     //     this.fireEvent("postLoad");
     //     this.fireEvent("load");
     // },
-    _createElementHtml: function(){
-        var html = "<i";
-        html += " :class=\"icon\"";
-
-        if (this.json.elProperties){
-            Object.keys(this.json.elProperties).forEach(function(k){
-                if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
-            }, this);
-        }
-
-        var styles = {};
-        if (this.json.iconSize) styles["font-size"] = this.json.iconSize+"px";
-        if (this.json.iconColor) styles["color"] = this.json.iconColor;
-        styles = Object.merge(styles, this.json.elStyles);
-
-        if (styles){
-            var style = "";
-            Object.keys(styles).forEach(function(k){
-                if (styles[k]) style += k+":"+styles[k]+";";
-            }, this);
-            html += " style=\""+style+"\"";
-        }
-
-        html += "></i>";
-        return html;
-    }
+    // _createElementHtml: function(){
+    //     debugger;
+    //     var html = "<i";
+    //     html += " :class=\"icon\"";
+    //
+    //     if (this.json.elProperties){
+    //         Object.keys(this.json.elProperties).forEach(function(k){
+    //             if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
+    //         }, this);
+    //     }
+    //
+    //     // var styles = {};
+    //     // if (this.json.iconSize) styles["font-size"] = this.json.iconSize+"px";
+    //     // if (this.json.iconColor) styles["color"] = this.json.iconColor;
+    //     // styles = Object.merge(styles, this.json.elStyles);
+    //     //
+    //     // if (styles){
+    //     //     var style = "";
+    //     //     Object.keys(styles).forEach(function(k){
+    //     //         if (styles[k]) style += k+":"+styles[k]+";";
+    //     //     }, this);
+    //     //     html += " style=\""+style+"\"";
+    //     // }
+    //
+    //     html += " :style=\"[elStyles, {fontSize: iconSize+'px', color: iconColor}]\"";
+    //
+    //
+    //     html += "></i>";
+    //     return html;
+    // }
 }); 

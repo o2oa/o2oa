@@ -82,7 +82,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         this.propertyMultiTd = null;
 
         if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
-        this.load(data);
+        this.load(data||this.data);
         this.selected();
     },
 
@@ -94,12 +94,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this.json.mode = this.options.mode;
 		if (!this.json.css) this.json.css = {"code":""};
 
-		if (this.options.mode==="Mobile"){
-			if (!this.json.defaultTools){
-				this.json.defaultTools = o2.JSON.get(this.path+"toolbars.json", null,false);
-			}
-			if (!this.json.tools) this.json.tools=[];
-		}
+		this.loadMobileActionToos();
 
 		this.isNewForm = (this.json.id) ? false : true;
 		if (this.isNewForm) this.checkUUID();
@@ -138,6 +133,15 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 				}.bind(this));
 			}
 		}.bind(this));
+	},
+	// 移动端表单加载工具栏
+	loadMobileActionToos: function() {
+		if (this.options.mode==="Mobile"){
+			if (!this.json.defaultTools){
+				this.json.defaultTools = o2.JSON.get(this.path+"toolbars.json", null,false);
+			}
+			if (!this.json.tools) this.json.tools=[];
+		}
 	},
 	_load : function( templateStyles, oldStyleValue ){
 		this.templateStyles = templateStyles;
@@ -651,17 +655,19 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	},
 	
 	
-	showProperty: function(){
+	showProperty: function(callback){
 		if (!this.property){
 			this.property = new MWF.xApplication.process.FormDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
 				"path": this.options.propertyPath,
 				"onPostLoad": function(){
 					this.property.show();
+					if (callback) callback();
 				}.bind(this)
 			});
 			this.property.load();	
 		}else{
 			this.property.show();
+			if (callback) callback();
 		}
 	},
     hideProperty: function(){

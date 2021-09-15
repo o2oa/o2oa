@@ -102,6 +102,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                     this.loadElSelectIcon();
                     this.loadVueElementUI();
+                    this.loadElCommonPreview();
 
                     this.loadHelp();
                     // this.loadScriptIncluder();
@@ -699,6 +700,17 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     //         if (callback) callback();
     //     }
     // },
+    loadElCommonPreview: function(){
+        var nodes = this.propertyContent.getElements(".MWFElCommonPreview");
+        if (nodes.length) {
+            nodes.each(function(node){
+                node.removeEvents("click")
+                node.addEvent("click", function(){
+                    if (this.module.resetElement) this.module.resetElement();
+                }.bind(this));
+            }.bind(this));
+        }
+    },
     loadVueElementUI: function(){
         var nodes = this.propertyContent.getElements(".MWFElementColor");
         if (nodes.length) {
@@ -2298,14 +2310,17 @@ debugger;
 						break;
 					default:
 						input.addEvent("change", function(e){
-							property.setValue(jsondata, this.value, this);
+						    var v = (this.type==="number") ? this.value.toFloat() : this.value;
+							property.setValue(jsondata, v, this);
 						});
 						input.addEvent("blur", function(e){
-							property.setValue(jsondata, this.value, this);
+                            var v = (this.type==="number") ? this.value.toFloat() : this.value;
+							property.setValue(jsondata, v, this);
 						});
 						input.addEvent("keydown", function(e){
 							if (e.code==13){
-								property.setValue(jsondata, this.value, this);
+                                var v = (this.type==="number") ? this.value.toFloat() : this.value;
+								property.setValue(jsondata, v, this);
 							}
                             e.stopPropagation();
 						});
@@ -2353,8 +2368,11 @@ debugger;
         var o = this.data;
         var len = key.length-1;
         key.each(function(n, i){
-            if (!o[n]) o[n] = {};
-            if (i<len) o = o[n];
+            if (i<len) {
+                if (!o.hasOwnProperty(n)) o[n] = {};
+                //if (!o[n]) o[n] = {};
+                o = o[n];
+            }
         }.bind(this));
         o[key[len]] = value;
 

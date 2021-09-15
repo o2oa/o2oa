@@ -31,7 +31,7 @@
 	},
 	"moduleNode": {
 		"border": "1px dashed #333",
-		"min-height": "30px",
+		"min-height": "60px",
 		"cursor": "pointer",
 		"line-height": "normal",
 		"width": "auto",
@@ -46,6 +46,51 @@
 		"opacity": 1,
 		"display": "block",
 		"min-width": "60px"
+	},
+	"moduleNodeError": {
+		"border": "1px dashed #333",
+		"min-height": "60px",
+		"cursor": "pointer",
+		"line-height": "normal",
+		"width": "auto",
+		"background": "transparent",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"top": "auto",
+		"left": "auto",
+		"opacity": 1,
+		"display": "block",
+		"min-width": "60px"
+	},
+
+	"iconNode": {
+		"width": "70px",
+		"height": "24px",
+		"float": "left",
+		"color": "#999",
+		"font-size": "12px",
+		"margin": "auto",
+		"margin-top": "0px",
+		"border-top": "1px solid #FFF",
+		"border-left": "1px solid #FFF",
+		"border-right": "1px solid #CCC",
+		"border-bottom": "1px solid #CCC",
+		"background": "#EEE",
+		"position": "absolute"
+	},
+	"iconNodeIcon":{
+		"width": "24px",
+		"height": "24px",
+		"background": "url(../x_component_process_FormDesigner/Module/Elcommon/default/icon/reload.png) 5px center no-repeat",
+		"float": "left"
+	},
+	"iconNodeText":{
+		"line-height": "24px",
+		"height": "24px",
+		"width": "44px",
+		"float": "right"
 	}
-	
 }

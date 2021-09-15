@@ -448,17 +448,20 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}
 	},
 
-	showProperty: function(){
+	showProperty: function(callback){
 		if (!this.property){
 			this.property = new MWF.xApplication.process.FormDesigner.Property(this, this.form.designer.propertyContentArea, this.form.designer, {
 				"path": this.options.propertyPath,
 				"onPostLoad": function(){
 					this.property.show();
+					this.isPropertyLoaded = true;
+					if (callback) callback();
 				}.bind(this)
 			});
 			this.property.load();
 		}else{
 			this.property.show();
+			if (callback) callback();
 		}
 	},
 	hideProperty: function(){
@@ -466,6 +469,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 
 	create: function(data, e, group){
+		debugger;
 		data.moduleGroup = group;
 		this.json = data;
 		this.json.id = this._getNewId();

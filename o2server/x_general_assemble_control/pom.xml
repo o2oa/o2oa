@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>6.3</version>
+		<version>6.4</version>
 	</parent>
 	<artifactId>x_general_assemble_control</artifactId>
 	<packaging>war</packaging>
@@ -27,6 +27,10 @@
 		<dependency>
 			<groupId>o2oa</groupId>
 			<artifactId>x_general_core_entity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>o2oa</groupId>
+			<artifactId>x_processplatform_core_entity</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

@@ -514,17 +514,17 @@ MWF.xApplication.Attendance.MyDetail.SelfHoliday = new Class({
 MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
     Extends: MWF.xApplication.Attendance.MyDetail.Explorer,
 
-    load: function(){
+   /* load: function(){
         //this.loadFilter();
         this.loadContentNode();
         this.setNodeScroll();
-
+        debugger;
         var filterData = {
             cycleYear : this.preMonthDate.getFullYear().toString(),
             cycleMonth : this.preMonthDate.format(this.app.lp.dateFormatOnlyMonth)
         };
         this.loadView( filterData );
-    },
+    },*/
     loadFilter : function(){
 
         this.fileterNode = new Element("div.fileterNode", {
@@ -539,14 +539,30 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
             }).inject( this.fileterNode );
             table.setStyle("width","360px");
             var tr = new Element("tr").inject(table);
-
             this.createYearSelectTd( tr );
             this.createMonthSelectTd( tr );
-            //this.createDateSelectTd( tr )
-            this.createActionTd( tr )
+            this.createActionTd( tr );
 
-        }.bind(this))
+        }.bind(this));
 
+    },
+    createYearSelectTd : function( tr ){
+        var _self = this;
+        var td = new Element("td", {  "styles" : this.app.css.filterTableTitle, "text" : this.app.lp.annuaal  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.app.css.filterTableValue }).inject(tr);
+        this.yearString = new MDomItem( td, {
+            "name" : "yearString",
+            "type" : "select",
+            "selectValue" : function(){
+                var years = [];
+                var year = new Date().getFullYear();
+                for(var i=0; i<6; i++ ){
+                    years.push( year-- );
+                }
+                return years;
+            }
+        }, true, this.app, this.filterFormCss );
+        this.yearString.load();
     },
     createMonthSelectTd : function( tr ){
         var _self = this;
@@ -568,13 +584,21 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
             "text" : MWF.xApplication.Attendance.LP.query,
             "styles" : this.app.css.filterButton
         }).inject(td);
+        debugger;
         input.addEvent("click", function(){
-            //var filterData = {
-            //    cycleYear : this.cycleYear.getValue(),
-            //    cycleMonth : this.cycleMonth.getValue()
-            //}
-            var year = this.preMonthDate.getFullYear().toString();
-            var month = (this.preMonthDate.getMonth()+1).toString();
+            var year = this.yearString.getValue("year");
+            var month = this.cycleMonth.getValue("month");
+            if(year && year!=""){
+            }else{
+                year = this.preMonthDate.getFullYear().toString();
+            }
+            if(month && month!=""){
+            }else{
+                month = (this.preMonthDate.getMonth()+1).toString();
+            }
+            /*var year = this.preMonthDate.getFullYear().toString();
+            var month = (this.preMonthDate.getMonth()+1).toString();*/
+            debugger;
             if( month.length == 1 )month = "0"+month;
             var filterData = {
                 cycleYear : year,
@@ -695,10 +719,11 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticView = new Class({
         filter.key = this.sortField || this.sortFieldDefault || "";
         filter.order = this.sortType || this.sortTypeDefault || "";
         filter.q_empName = layout.desktop.session.user.distinguishedName;
-        //if( filter.cycleMonth == "" )filter.cycleMonth="(0)";
-        var month = (new Date().getMonth()+1).toString();
+        if( filter.cycleMonth == "" )filter.cycleMonth="(0)";
+        /*var month = (new Date().getMonth()+1).toString();
         if( month.length == 1 )month = "0"+month;
-        filter.cycleMonth = month;
+        filter.cycleMonth = month;*/
+        debugger;
         this.actions.listStaticMonthPerson( filter.q_empName, filter.cycleYear,filter.cycleMonth, function(json){
 
             if( callback )callback(json);
@@ -763,6 +788,7 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
                         this.afterStartProcess(data, title, processName);
                     }.bind(this)
                 });
+                debugger;
                 starter.load();
             }.bind(this));
         }.bind(this));
@@ -770,21 +796,35 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
     afterStartProcess: function(data, title, processName){
         var workInfors = [];
         var currentTask = [];
+        var createUnit = "";
+        var workId = "";
+        debugger;
         data.each(function(work){
+            debugger;
             if (work.currentTaskIndex !== -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
             workInfors.push(this.getStartWorkInforObj(work));
+            createUnit = work.taskList[work.currentTaskIndex].creatorUnit;
+            workId = work.taskList[work.currentTaskIndex].work;
         }.bind(this));
 
         if (currentTask.length===1){
             var options = {"workId": currentTask[0], "appId": currentTask[0]};
             this.app.desktop.openApplication(null, "process.Work", options);
-
-            this.createStartWorkResault(workInfors, title, processName, false);
+            debugger;
+            this.createStartWorkResault(workInfors, title, processName, false,createUnit,workId);
         }else{
-            this.createStartWorkResault(workInfors, title, processName, true);
+            this.createStartWorkResault(workInfors, title, processName, true,createUnit,workId);
         }
     },
-    createStartWorkResault: function(workInfors, title, processName, isopen){
+    createStartWorkResault: function(workInfors, title, processName, isopen,createUnit,workId){
+        var data = {};
+        data["appealDescription"] = this.app.lp.appealAuditFlow+":"+processName;
+        data["workId"] = workId;
+        if(createUnit !=""){
+            data["unitName"] = createUnit;
+        }
+        debugger;
+        this.createAppeal(data);
         if(!layout.desktop.message)return;
         var content = "";
         workInfors.each(function(infor){
@@ -819,7 +859,7 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
         var currentTask = "";
         work.taskList.each(function(task, idx){
             title = task.title;
-            users.push(task.person+"("+task.department + ")");
+            users.push(task.person+"("+task.creatorUnit + ")");
             if (work.currentTaskIndex===idx) currentTask = task.id;
         }.bind(this));
         return {"activity": work.fromActivityName, "users": users, "currentTask": currentTask, "title" : title };
@@ -839,6 +879,10 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
         this.action.invoke({"name": "getProces", "async": false, "parameter": {"id": id}, "success": function(json){
                 if (callback) callback(json.data);
             }.bind(this)});
+    },
+    createAppeal: function(data){
+        this.app.restActions.createAppeal(this.data.id, data, function (json) {
+        }.bind(this));
     },
     seeAppeal : function(){
 

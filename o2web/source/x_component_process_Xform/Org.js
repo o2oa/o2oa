@@ -1021,24 +1021,17 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         }
         if (change) this.fireEvent("change");
     },
-    setData: function(value){
+    setData: function(value, fireChange){
         if (!value) return false;
         var oldValues = this.getData();
         if (value.length==1 && !(value[0])) value=[];
 
         var promise = this._setValue(value);
-        Promise.resolve(promise).then(function(values){
+
+        if (fireChange) Promise.resolve(promise).then(function(values){
             o2.promiseAll(values).then(function(v){
                 this.checkChange(oldValues, v)
             }.bind(this), function(){});
-
-            // if (values && values.isAG){
-            //     values.then(function(v){
-            //         this.checkChange(oldValues, v)
-            //     }.bind(this));
-            // }else{
-            //     this.checkChange(oldValues, values)
-            // }
         }.bind(this), function(){});
     },
     // __setData: function(value){

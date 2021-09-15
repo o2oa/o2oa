@@ -3366,7 +3366,6 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
                 return data[k]
             }else{
                 if (t==="array"){
-                    debugger;
                     //if (!MWF.xScript.ArrayData){
                     //     var ArrayData = function(data, callback, key, parent, _form){
                     //         MWF.xScript.JSONData.call(this, data, callback, key, parent, _form);
@@ -3384,12 +3383,34 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
                     //     }
                     // }
 
-                    var arr =[];
-                    data[k].forEach(function(d, i){
-                        arr.push((o2.typeOf(d)==="object") ? getArrayJSONData(d, _self, _form) : d);
-                    });
-                    return arr;
                     //return data[k];
+                    if (window.Proxy){
+                        var arr = new Proxy(data[k], {
+                            get: function(o, k){
+                                return (o2.typeOf(o[k])==="object") ? getArrayJSONData(o[k], _self, _form) : o[k];
+                            },
+                            set: function(o, k, v){
+                                o[k] = v;
+                                if (callback) callback(o, k, _self);
+                                return true;
+                            }
+                        });
+                        return arr;
+                    }else{
+                        var arr =[];
+                        data[k].forEach(function(d, i){
+                            arr.push((o2.typeOf(d)==="object") ? getArrayJSONData(d, _self, _form) : d);
+                        });
+                        return arr;
+                    }
+
+
+                    // var arr =[];
+                    // data[k].forEach(function(d, i){
+                    //     arr.push((o2.typeOf(d)==="object") ? getArrayJSONData(d, _self, _form) : d);
+                    // });
+                    // return arr;
+                    //return getArrayJSONData(data[k], _self, _form);
                 }else{
                     return new MWF.xScript.JSONData(data[k], callback, k, _self, _form);
                 }
