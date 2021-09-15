@@ -326,8 +326,13 @@ MWF.xApplication.process.FormDesigner.LP = {
         "statementSelector": "StatementSelector",
         "statement": "Statement",
 
-        "group_system": "系统组件",
-        "group_element": "Element组件",
+        "group_all": "All Module",
+        "group_form": "Form",
+        "group_layout": "Layout",
+        "group_process": "Process",
+        "group_filetext": "Filetext",
+        "group_function": "Feature",
+        "group_element": "Element UI",
 
         "el_container": "Container",
         "el_icon": "Icon",
