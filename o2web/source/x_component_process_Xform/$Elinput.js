@@ -9,6 +9,7 @@ Object.assign(o2.APP$Elinput.prototype, o2.APP$Input.prototype);
 
 Object.assign(o2.APP$Elinput.prototype, {
     __setValue: function(value){
+        debugger;
         this.moduleValueAG = null;
         this._setBusinessData(value);
         this.json[this.json.$id] = value;
@@ -66,7 +67,7 @@ Object.assign(o2.APP$Elinput.prototype, {
     getValue: function(){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
-        if (o2.typeOf(value)!=="null"){
+        if (value || value===false){
             return value;
         }else{
             value = this._computeValue();
