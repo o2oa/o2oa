@@ -26,9 +26,7 @@ public class ActionRemoveBind extends BaseAction {
         ActionResult<Wo> result = new ActionResult<>();
         Wo wraps  = new Wo();
         if (deviceName == null || deviceType == null || deviceName.equals("") || deviceType.equals("")) {
-            Exception exception = new ExceptionDeviceParameterEmpty();
-            result.error(exception);
-            return result;
+            throw new ExceptionDeviceParameterEmpty();
         }
         deviceType = deviceType.toLowerCase();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -50,14 +48,14 @@ public class ActionRemoveBind extends BaseAction {
                 result.setMessage("当前设备不存在，无需解绑！");
             }
             result.setData(wraps);
+            logger.info("action 'ActionRemoveBind' execute completed!");
+            return result;
         } catch (Exception e) {
-            Exception exception = new ExceptionSampleEntityClassFind( e, "系统在设备解除绑定时发生异常!" );
-            result.error( exception );
             logger.error(e);
+            throw new ExceptionSampleEntityClassFind( e, "系统在设备解除绑定时发生异常!" );
         }
 
-        logger.info("action 'ActionRemoveBind' execute completed!");
-        return result;
+
     }
 
 
