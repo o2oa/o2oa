@@ -225,6 +225,7 @@ public class ActionExportAll extends BaseAction {
 		Row row = null;
 		// 创建新的表格
 		Sheet sheet = wb.createSheet(sheetName);
+		sheet.setDefaultColumnWidth(25);
 		// 先创建表头
 		row = sheet.createRow(0);
 		row.createCell(0).setCellValue("组织名称 *");
@@ -288,6 +289,7 @@ public class ActionExportAll extends BaseAction {
 		Row row = null;
 		// 创建新的表格
 		Sheet sheet = wb.createSheet(sheetName);
+		sheet.setDefaultColumnWidth(25);
 		// 先创建表头
 		row = sheet.createRow(0);
 		row.createCell(0).setCellValue("人员姓名 *");
@@ -337,6 +339,7 @@ public class ActionExportAll extends BaseAction {
 		Row row = null;
 		// 创建新的表格
 		Sheet sheet = wb.createSheet(sheetName);
+		sheet.setDefaultColumnWidth(25);
 		// 先创建表头
 		row = sheet.createRow(0);
 		row.createCell(0).setCellValue("人员唯一编码 *");
@@ -369,17 +372,19 @@ public class ActionExportAll extends BaseAction {
 		UnitDuty duty = null;
 		EntityManagerContainer emc = business.entityManagerContainer();
 		Row row = null;
+		// 创建新的表格
+		Sheet sheet = wb.createSheet(sheetName);
+		sheet.setDefaultColumnWidth(40);
+		// 先创建表头
+		row = sheet.createRow(0);
+		row.createCell(0).setCellValue("职务名称 *");
+		row.createCell(1).setCellValue("职务所在组织唯一编码 *");
+		row.createCell(2).setCellValue("职务编码");
+		row.createCell(3).setCellValue("职务描述");
+		row.createCell(4).setCellValue("职务所含人员唯一编码");
+		row.createCell(5).setCellValue("职务所含人员所在组织唯一编码");
 		if (ListTools.isNotEmpty(dutyList) ) {
-			// 创建新的表格
-			Sheet sheet = wb.createSheet(sheetName);
-			// 先创建表头
-			row = sheet.createRow(0);
-			row.createCell(0).setCellValue("职务名称 *");
-			row.createCell(1).setCellValue("职务所在组织唯一编码 *");
-			row.createCell(2).setCellValue("职务编码");
-			row.createCell(3).setCellValue("职务描述");
-			row.createCell(4).setCellValue("职务所含人员唯一编码");
-			row.createCell(5).setCellValue("职务所含人员所在组织唯一编码");
+
 			int currentRow = 0;
 			for (int i = 0; i < dutyList.size(); i++) {
 				duty = dutyList.get(i);
@@ -439,6 +444,7 @@ public class ActionExportAll extends BaseAction {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		// 创建新的表格
 		Sheet sheet = wb.createSheet(sheetName);
+		sheet.setDefaultColumnWidth(25);
 		// 先创建表头
 		row = sheet.createRow(0);
 		row.createCell(0).setCellValue("群组名称 *");

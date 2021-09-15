@@ -70,6 +70,7 @@ public class ActionTemplate extends BaseAction {
 	
 	private void templateUnit(XSSFWorkbook workbook) throws Exception {
 		XSSFSheet sheet = workbook.createSheet("组织信息");
+		sheet.setDefaultColumnWidth(25);
 		Row row = sheet.createRow(0);
 		Cell cell = row.createCell(0);
 		cell.setCellValue("组织名称 *");
@@ -92,6 +93,7 @@ public class ActionTemplate extends BaseAction {
 	
 	private void templatePerson(XSSFWorkbook workbook) throws Exception {
 		XSSFSheet sheet = workbook.createSheet("人员基本信息");
+		sheet.setDefaultColumnWidth(25);
 		Row row = sheet.createRow(0);
 		Cell cell = row.createCell(0);
 		cell.setCellValue("人员姓名 *");
@@ -116,6 +118,7 @@ public class ActionTemplate extends BaseAction {
 	
 	private void templateIdentity(XSSFWorkbook workbook) throws Exception {
 		XSSFSheet sheet = workbook.createSheet("人员身份信息");
+		sheet.setDefaultColumnWidth(25);
 		Row row = sheet.createRow(0);
 		Cell cell = row.createCell(0);
 		cell.setCellValue("人员唯一编码 *");
@@ -134,6 +137,7 @@ public class ActionTemplate extends BaseAction {
 	
 	private void templateDuty(XSSFWorkbook workbook) throws Exception {
 		XSSFSheet sheet = workbook.createSheet("职务信息");
+		sheet.setDefaultColumnWidth(45);
 		Row row = sheet.createRow(0);
 		Cell cell = row.createCell(0);
 		cell.setCellValue("职务名称 *");
@@ -156,6 +160,7 @@ public class ActionTemplate extends BaseAction {
 	
 	private void templateGroup(XSSFWorkbook workbook) throws Exception {
 		XSSFSheet sheet = workbook.createSheet("群组信息");
+		sheet.setDefaultColumnWidth(25);
 		Row row = sheet.createRow(0);
 		Cell cell = row.createCell(0);
 		cell.setCellValue("群组名称 *");
