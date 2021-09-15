@@ -288,7 +288,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
         // }.bind(this));
 	},
 
-    _setValue: function(value, m){
+    _setValue: function(value, m, fireChange){
         var mothed = m || "__setValue";
 	    if (!!value){
             var p = o2.promiseAll(value).then(function(v){
@@ -296,11 +296,11 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
                 if (this.moduleSelectAG){
                     this.moduleValueAG = this.moduleSelectAG;
                     this.moduleSelectAG.then(function(){
-                        this[mothed](v);
+                        this[mothed](v, fireChange);
                         return v;
                     }.bind(this), function(){});
                 }else{
-                    this[mothed](v)
+                    this[mothed](v, fireChange)
                 }
                 return v;
             }.bind(this), function(){});
@@ -312,7 +312,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
                 this.moduleValueAG = null;
             }.bind(this));
         }else{
-            this[mothed](value);
+            this[mothed](value, fireChange);
         }
 
 
@@ -411,8 +411,8 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
         return null;
     },
 
-    setData: function(data){
-        return this._setValue(data, "__setData");
+    setData: function(data, fireChange){
+        return this._setValue(data, "__setData", fireChange);
         // if (data && data.isAG){
         //     this.moduleValueAG = o2.AG.all(data).then(function(v){
         //         if (o2.typeOf(v)=="array") v = v[0];
@@ -433,7 +433,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
         // }
     },
 
-    __setData: function(data){
+    __setData: function(data, fireChange){
         this.moduleValueAG = null;
         var old = this.getInputData();
         this._setBusinessData(data);
@@ -451,7 +451,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
 		}
         this.fieldModuleLoaded = true;
         this.fireEvent("setData");
-        if (old!==data) this.fireEvent("change");
+        if (fireChange && old!==data) this.fireEvent("change");
 	},
 
     notValidationMode: function(text){

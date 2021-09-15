@@ -354,6 +354,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
      * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
      * @summary 为组件赋值。
      * @param data{String|Promise} .
+     * @param fireChange{boolean} 可选，是否触发change事件，默认false.
      * @example
      *  this.form.get("fieldId").setData("test"); //赋文本值
      * @example
@@ -370,7 +371,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
      *  var promise = dict.get("tools", true); //异步使用数据字典的get方法时返回Promise，参数true表示异步
      *  field.setData( promise );
      */
-	setData: function(data){
+	setData: function(data, fireChange){
         // if (data && data.isAG){
         //     var ag = o2.AG.all(data).then(function(v){
         //         if (o2.typeOf(v)=="array") v = v[0];
@@ -383,7 +384,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         // }else{
         if (!!data && o2.typeOf(data.then)=="function"){
             var p = o2.promiseAll(data).then(function(v){
-                this.__setData(v);
+                this.__setData(v, fireChange);
                 // if (this.node.getFirst() && !this.readonly && !this.json.isReadonly) {
                 //     this.checkDescription();
                 //     this.validationMode();
@@ -397,7 +398,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             }.bind(this));
         }else{
             this.moduleValueAG = null;
-            this.__setData(data);
+            this.__setData(data, fireChange);
             // if (this.node.getFirst() && !this.readonly && !this.json.isReadonly) {
             //     this.checkDescription();
             //     this.validationMode();
@@ -406,7 +407,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             //this.__setData(data);
         //}
 	},
-    __setData: function(data){
+    __setData: function(data, fireChange){
 	    var old = this.getInputData();
         this._setBusinessData(data);
         if (this.node.getFirst()){
@@ -416,7 +417,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         }else{
             this.node.set("text", data);
         }
-        if (old!==data) this.fireEvent("change");
+        if (fireChange && old!==data) this.fireEvent("change");
         this.moduleValueAG = null;
     },
 
