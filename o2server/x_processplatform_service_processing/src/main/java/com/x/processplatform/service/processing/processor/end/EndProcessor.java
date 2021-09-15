@@ -131,7 +131,7 @@ public class EndProcessor extends AbstractEndProcessor {
 				o.setWorkCompleted(workCompleted.getId());
 				// 加入到更新队列保证事务开启
 				aeiObjects.getUpdateWorkLogs().add(o);
-				// 删除未连接的WorkLog
+				// 删除未连接的WorkLogd0431924-849f-4bf6-81b2-bfe997e62b7f
 				if (BooleanUtils.isNotTrue(o.getConnected())) {
 					aeiObjects.getDeleteWorkLogs().add(o);
 				}
@@ -184,128 +184,128 @@ public class EndProcessor extends AbstractEndProcessor {
 		workCompleted.setActivityAlias(end.getAlias());
 		workCompleted.setActivityDescription(end.getDescription());
 		workCompleted.setActivityName(end.getName());
-		if (StringUtils.isNotEmpty(work.getForm())) {
-			Form form = (aeiObjects.business().element().get(work.getForm(), Form.class));
-			if (null != form) {
-				StoreForm storeForm = new StoreForm();
-				StoreForm mobileStoreForm = new StoreForm();
-				storeForm.setForm(new RelatedForm(form, form.getDataOrMobileData()));
-				mobileStoreForm.setForm(new RelatedForm(form, form.getMobileDataOrData()));
-				CompletableFuture<Map<String, RelatedForm>> _relatedForm = CompletableFuture.supplyAsync(() -> {
-					Map<String, RelatedForm> map = new TreeMap<>();
-					try {
-						Form _f;
-						for (String _id : form.getProperties().getRelatedFormList()) {
-							_f = aeiObjects.business().element().get(_id, Form.class);
-							if (null != _f) {
-								map.put(_id, new RelatedForm(_f, _f.getDataOrMobileData()));
-							}
-						}
-					} catch (Exception e) {
-						logger.error(e);
-					}
-					return map;
-				});
-				CompletableFuture<Map<String, RelatedScript>> _relatedScript = CompletableFuture.supplyAsync(() -> {
-					Map<String, RelatedScript> map = new TreeMap<>();
-					try {
-						for (Entry<String, String> entry : form.getProperties().getRelatedScriptMap().entrySet()) {
-							switch (entry.getValue()) {
-							case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
-								Script _pp = aeiObjects.business().element().get(entry.getKey(), Script.class);
-								if (null != _pp) {
-									map.put(entry.getKey(), new RelatedScript(_pp.getId(), _pp.getName(),
-											_pp.getAlias(), _pp.getText(), entry.getValue()));
-								}
-								break;
-							case WorkCompletedProperties.RelatedScript.TYPE_CMS:
-								com.x.cms.core.entity.element.Script _cms = aeiObjects.business().element()
-										.get(entry.getKey(), com.x.cms.core.entity.element.Script.class);
-								if (null != _cms) {
-									map.put(entry.getKey(), new RelatedScript(_cms.getId(), _cms.getName(),
-											_cms.getAlias(), _cms.getText(), entry.getValue()));
-								}
-								break;
-							case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
-								com.x.portal.core.entity.Script _portal = aeiObjects.business().element()
-										.get(entry.getKey(), com.x.portal.core.entity.Script.class);
-								if (null != _portal) {
-									map.put(entry.getKey(), new RelatedScript(_portal.getId(), _portal.getName(),
-											_portal.getAlias(), _portal.getText(), entry.getValue()));
-								}
-								break;
-							default:
-								break;
-							}
-						}
-					} catch (Exception e) {
-						logger.error(e);
-					}
-					return map;
-				});
-				CompletableFuture<Map<String, RelatedForm>> _relatedFormMobile = CompletableFuture.supplyAsync(() -> {
-					Map<String, RelatedForm> map = new TreeMap<>();
-					try {
-						Form _f;
-						for (String _id : form.getProperties().getMobileRelatedFormList()) {
-							_f = aeiObjects.business().element().get(_id, Form.class);
-							if (null != _f) {
-								map.put(_id, new RelatedForm(_f, _f.getMobileDataOrData()));
-							}
-						}
-					} catch (Exception e) {
-						logger.error(e);
-					}
-					return map;
-				});
-				CompletableFuture<Map<String, RelatedScript>> _relatedScriptMobile = CompletableFuture
-						.supplyAsync(() -> {
-							Map<String, RelatedScript> map = new TreeMap<>();
-							try {
-								for (Entry<String, String> entry : form.getProperties().getMobileRelatedScriptMap()
-										.entrySet()) {
-									switch (entry.getValue()) {
-									case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
-										Script _pp = aeiObjects.business().element().get(entry.getKey(), Script.class);
-										if (null != _pp) {
-											map.put(entry.getKey(), new RelatedScript(_pp.getId(), _pp.getName(),
-													_pp.getAlias(), _pp.getText(), entry.getValue()));
-										}
-										break;
-									case WorkCompletedProperties.RelatedScript.TYPE_CMS:
-										com.x.cms.core.entity.element.Script _cms = aeiObjects.business().element()
-												.get(entry.getKey(), com.x.cms.core.entity.element.Script.class);
-										if (null != _cms) {
-											map.put(entry.getKey(), new RelatedScript(_cms.getId(), _cms.getName(),
-													_cms.getAlias(), _cms.getText(), entry.getValue()));
-										}
-										break;
-									case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
-										com.x.portal.core.entity.Script _portal = aeiObjects.business().element()
-												.get(entry.getKey(), com.x.portal.core.entity.Script.class);
-										if (null != _portal) {
-											map.put(entry.getKey(),
-													new RelatedScript(_portal.getId(), _portal.getName(),
-															_portal.getAlias(), _portal.getText(), entry.getValue()));
-										}
-										break;
-									default:
-										break;
-									}
-								}
-							} catch (Exception e) {
-								logger.error(e);
-							}
-							return map;
-						});
-				storeForm.setRelatedFormMap(_relatedForm.get());
-				storeForm.setRelatedScriptMap(_relatedScript.get());
-				mobileStoreForm.setRelatedFormMap(_relatedFormMobile.get());
-				mobileStoreForm.setRelatedScriptMap(_relatedScriptMobile.get());
-				workCompleted.getProperties().setStoreForm(storeForm);
-				workCompleted.getProperties().setMobileStoreForm(mobileStoreForm);
-			}
-		}
+//		if (StringUtils.isNotEmpty(work.getForm())) {
+//			Form form = (aeiObjects.business().element().get(work.getForm(), Form.class));
+//			if (null != form) {
+//				StoreForm storeForm = new StoreForm();
+//				StoreForm mobileStoreForm = new StoreForm();
+//				storeForm.setForm(new RelatedForm(form, form.getDataOrMobileData()));
+//				mobileStoreForm.setForm(new RelatedForm(form, form.getMobileDataOrData()));
+//				CompletableFuture<Map<String, RelatedForm>> _relatedForm = CompletableFuture.supplyAsync(() -> {
+//					Map<String, RelatedForm> map = new TreeMap<>();
+//					try {
+//						Form _f;
+//						for (String _id : form.getProperties().getRelatedFormList()) {
+//							_f = aeiObjects.business().element().get(_id, Form.class);
+//							if (null != _f) {
+//								map.put(_id, new RelatedForm(_f, _f.getDataOrMobileData()));
+//							}
+//						}
+//					} catch (Exception e) {
+//						logger.error(e);
+//					}
+//					return map;
+//				});
+//				CompletableFuture<Map<String, RelatedScript>> _relatedScript = CompletableFuture.supplyAsync(() -> {
+//					Map<String, RelatedScript> map = new TreeMap<>();
+//					try {
+//						for (Entry<String, String> entry : form.getProperties().getRelatedScriptMap().entrySet()) {
+//							switch (entry.getValue()) {
+//							case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
+//								Script _pp = aeiObjects.business().element().get(entry.getKey(), Script.class);
+//								if (null != _pp) {
+//									map.put(entry.getKey(), new RelatedScript(_pp.getId(), _pp.getName(),
+//											_pp.getAlias(), _pp.getText(), entry.getValue()));
+//								}
+//								break;
+//							case WorkCompletedProperties.RelatedScript.TYPE_CMS:
+//								com.x.cms.core.entity.element.Script _cms = aeiObjects.business().element()
+//										.get(entry.getKey(), com.x.cms.core.entity.element.Script.class);
+//								if (null != _cms) {
+//									map.put(entry.getKey(), new RelatedScript(_cms.getId(), _cms.getName(),
+//											_cms.getAlias(), _cms.getText(), entry.getValue()));
+//								}
+//								break;
+//							case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
+//								com.x.portal.core.entity.Script _portal = aeiObjects.business().element()
+//										.get(entry.getKey(), com.x.portal.core.entity.Script.class);
+//								if (null != _portal) {
+//									map.put(entry.getKey(), new RelatedScript(_portal.getId(), _portal.getName(),
+//											_portal.getAlias(), _portal.getText(), entry.getValue()));
+//								}
+//								break;
+//							default:
+//								break;
+//							}
+//						}
+//					} catch (Exception e) {
+//						logger.error(e);
+//					}
+//					return map;
+//				});
+//				CompletableFuture<Map<String, RelatedForm>> _relatedFormMobile = CompletableFuture.supplyAsync(() -> {
+//					Map<String, RelatedForm> map = new TreeMap<>();
+//					try {
+//						Form _f;
+//						for (String _id : form.getProperties().getMobileRelatedFormList()) {
+//							_f = aeiObjects.business().element().get(_id, Form.class);
+//							if (null != _f) {
+//								map.put(_id, new RelatedForm(_f, _f.getMobileDataOrData()));
+//							}
+//						}
+//					} catch (Exception e) {
+//						logger.error(e);
+//					}
+//					return map;
+//				});
+//				CompletableFuture<Map<String, RelatedScript>> _relatedScriptMobile = CompletableFuture
+//						.supplyAsync(() -> {
+//							Map<String, RelatedScript> map = new TreeMap<>();
+//							try {
+//								for (Entry<String, String> entry : form.getProperties().getMobileRelatedScriptMap()
+//										.entrySet()) {
+//									switch (entry.getValue()) {
+//									case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
+//										Script _pp = aeiObjects.business().element().get(entry.getKey(), Script.class);
+//										if (null != _pp) {
+//											map.put(entry.getKey(), new RelatedScript(_pp.getId(), _pp.getName(),
+//													_pp.getAlias(), _pp.getText(), entry.getValue()));
+//										}
+//										break;
+//									case WorkCompletedProperties.RelatedScript.TYPE_CMS:
+//										com.x.cms.core.entity.element.Script _cms = aeiObjects.business().element()
+//												.get(entry.getKey(), com.x.cms.core.entity.element.Script.class);
+//										if (null != _cms) {
+//											map.put(entry.getKey(), new RelatedScript(_cms.getId(), _cms.getName(),
+//													_cms.getAlias(), _cms.getText(), entry.getValue()));
+//										}
+//										break;
+//									case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
+//										com.x.portal.core.entity.Script _portal = aeiObjects.business().element()
+//												.get(entry.getKey(), com.x.portal.core.entity.Script.class);
+//										if (null != _portal) {
+//											map.put(entry.getKey(),
+//													new RelatedScript(_portal.getId(), _portal.getName(),
+//															_portal.getAlias(), _portal.getText(), entry.getValue()));
+//										}
+//										break;
+//									default:
+//										break;
+//									}
+//								}
+//							} catch (Exception e) {
+//								logger.error(e);
+//							}
+//							return map;
+//						});
+//				storeForm.setRelatedFormMap(_relatedForm.get());
+//				storeForm.setRelatedScriptMap(_relatedScript.get());
+//				mobileStoreForm.setRelatedFormMap(_relatedFormMobile.get());
+//				mobileStoreForm.setRelatedScriptMap(_relatedScriptMobile.get());
+//				workCompleted.getProperties().setStoreForm(storeForm);
+//				workCompleted.getProperties().setMobileStoreForm(mobileStoreForm);
+//			}
+//		}
 		return workCompleted;
 	}
 }

@@ -2616,7 +2616,7 @@ MDomItem.Rtf = new Class({
                 "language": MWF.language || "zh-cn",
                 "enablePreview": true,
                 "removePlugins": ['image','easyimage','exportpdf','cloudservices'],
-                "extraPlugins": ['o2image']
+                "extraPlugins": ['o2image','o2uploadimage','o2uploadremoteimage']
                 // "extraAllowedContent " : "img[onerror,data-id]"
             };
             if( this.options.RTFConfig ){
@@ -2969,9 +2969,16 @@ MDomItem.Org = new Class({
             var distinguishedName;
             if( typeOf(v) === "string" ){
                 distinguishedName = v;
-                data = {
-                    "distinguishedName" : distinguishedName,
-                    "name": distinguishedName.split("@")[0]
+                if( distinguishedName.indexOf("@") > 0 ){
+                    data = {
+                        "distinguishedName" : distinguishedName,
+                        "name": distinguishedName.split("@")[0]
+                    }
+                }else{
+                    data = {
+                        "id" : distinguishedName,
+                        "name": distinguishedName.split("@")[0]
+                    }
                 }
             }else{
                 distinguishedName = v.distinguishedName || v.name || "";
@@ -3008,13 +3015,14 @@ MDomItem.Org = new Class({
                     }else if( t == "group" ){
                         var widget = new MWF.widget.O2Group(data, node, options);
                     }else if( t == "process" ){
-                        var d = { id : distinguishedName };
-                        var widget = new MWF.widget.O2Process(d, node, options);
+                        // var d = { id : distinguishedName };
+                        if( data.id === data.name )delete data.name;
+                        var widget = new MWF.widget.O2Process(data, node, options);
                         //}else if( t == "duty" ){
                         //    var widget = new MWF.widget.O2Duty(data, node, options);
                     }else if( t == "CMSView" ){
-                        var d = { id : distinguishedName };
-                        var widget = new MWF.widget.O2CMSView(d, node, options);
+                        // var d = { id : distinguishedName };
+                        var widget = new MWF.widget.O2CMSView(data, node, options);
                         //}else if( t == "duty" ){
                         //    var widget = new MWF.widget.O2Duty(data, node, options);
                     }else{

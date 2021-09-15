@@ -5,7 +5,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.message.assemble.communicate.schedule.Clean;
 import com.x.message.assemble.communicate.schedule.TriggerMq;
@@ -45,8 +44,6 @@ public class ThisApplication {
 	public static void init() {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
-			LoggerFactory.setLevel(Config.logLevel().x_message_assemble_communicate());
-
 			MessageConnector.start(context());
 			startQueue();
 			if (BooleanUtils.isTrue(Config.communicate().clean().getEnable())) {
@@ -92,7 +89,8 @@ public class ThisApplication {
 		if (BooleanUtils.isTrue(Config.mq().getEnable())) {
 			context().startQueue(mqConsumeQueue);
 		}
-		if (BooleanUtils.isTrue(Config.mPweixin().getEnable()) && BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
+		if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
+				&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
 			context().startQueue(mpWeixinConsumeQueue);
 		}
 	}

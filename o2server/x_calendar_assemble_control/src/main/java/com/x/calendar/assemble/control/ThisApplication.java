@@ -6,9 +6,7 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.assemble.control.schedule.AlarmTrigger;
@@ -33,7 +31,6 @@ public class ThisApplication {
 	public static void init() throws Exception {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
-			LoggerFactory.setLevel(Config.logLevel().x_calendar_assemble_control());
 			MessageConnector.start(context());
 			// 每30秒检查一次需要推送的消息
 			context.schedule(AlarmTrigger.class, "0/30 * * * * ?");

@@ -11,10 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.FilterTools;
-import com.x.base.core.project.http.HttpToken;
-import com.x.base.core.project.http.TokenType;
+import com.x.base.core.project.exception.ExceptionUnauthorized;
+import com.x.base.core.project.http.*;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 必须由前台已经登陆的用户访问
@@ -31,11 +30,18 @@ public abstract class ManagerUserJaxrsFilter extends TokenFilter {
 				HttpToken httpToken = new HttpToken();
 				EffectivePerson effectivePerson = httpToken.who(request, response, Config.token().getCipher());
 				if (TokenType.anonymous.equals(effectivePerson.getTokenType())) {
-					/** 需要自己标志500 */
-					response.setStatus(500);
+					/** 401 Unauthorized 未登录访问被拒绝 */
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 					response.setHeader("Content-Type", "application/json;charset=UTF-8");
-					response.getWriter().write(FilterTools.Application_Not_ManagerUser_Json);
-				} else {
+					ActionResult result = new ActionResult();
+					ExceptionUnauthorized e = new ExceptionUnauthorized();
+					result.error(e);
+					String message = e.getFormatMessage(result.getPrompt(), request.getHeader(ResponseFactory.Accept_Language));
+					if(StringUtils.isNotBlank(message)) {
+						result.setMessage(message);
+					}
+					response.getWriter().write(result.toJson());
+				}  else {
 					chain.doFilter(request, response);
 				}
 			} else {

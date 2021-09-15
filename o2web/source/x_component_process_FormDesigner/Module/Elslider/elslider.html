@@ -60,6 +60,7 @@
 			</tr>
 		</table>
 		<div class="MWFFormulaArea" name="marksScript" title="{{$.lp.sliderMarks}} (S)"></div>
+		<div style="padding: 5px; border-bottom: 1px solid #cccccc">{{$.lp.marksScriptInfo}}</div>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
@@ -146,10 +147,10 @@
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue CSS</div>
 		<div div style="display: text{($.vueCss && $.vueCss.code) ? 'block': 'none'}" class="MWFCssArea" name="vueCss" title="Vue Css (S)"></div>
 
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Slots</div>
-		<div style="display: text{($.vueSlot) ? 'block' : 'none'}">
-			<div class="MWFHtmlEditorArea" name="vueSlot" title="Input Slot (HTML)"></div>
-		</div>
+<!--		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Slots</div>-->
+<!--		<div style="display: text{($.vueSlot) ? 'block' : 'none'}">-->
+<!--			<div class="MWFHtmlEditorArea" name="vueSlot" title="Input Slot (HTML)"></div>-->
+<!--		</div>-->
 	</div>
 	<div title="{{$.lp.section}}" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

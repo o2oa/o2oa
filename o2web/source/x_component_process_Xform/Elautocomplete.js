@@ -45,37 +45,60 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
     },
     appendVueExtend: function(app){
         if (!app.methods) app.methods = {};
-        app.methods.$loadElEvent = function(ev){
-            this.validationMode();
-            if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
-                this.form.Macro.fire(this.json.events[ev].code, this, event);
-            }
-        }.bind(this);
-        app.methods.$fetchSuggestions = function(qs, cb){
-            debugger;
-            if (this.json.itemType!=='script'){
+        // app.methods.$loadElEvent = function(ev){
+        //     this.validationMode();
+        //     if (this.json.events && this.json.events[ev] && this.json.events[ev].code){
+        //         this.form.Macro.fire(this.json.events[ev].code, this, event);
+        //     }
+        // }.bind(this);
+        if (this.json.itemType!=='script'){
+            app.methods.$fetchSuggestions = function(qs){
                 if (this.json.itemValues){
                     var items = this.json.itemValues.filter(function(v){
                         return !qs || v.indexOf(qs)!=-1;
                     }).map(function(v){
                         return {"value": v};
-                    })
-                    cb(items);
-                    return;
+                    });
+                    //cb(items);
+                    return items;
                 }
-                cb();
-            }else{
-                this.form.Macro.environment.queryString = qs;
-                var list = this.form.Macro.exec(this.json.itemScript.code, this);
-                Promise.resolve(list).then(function(items){
-                    cb(items);
-                    delete this.form.Macro.environment.queryString;
-                }).catch(function(){
-                    cb();
-                    delete this.form.Macro.environment.queryString;
-                });
+                return [];
+            }.bind(this);
+        }else{
+            if (this.json.itemScript && this.json.itemScript.code){
+                var fetchSuggestions = this.form.Macro.exec(this.json.itemScript.code, this);
+                if (o2.typeOf(fetchSuggestions)==="function"){
+                    app.methods.$fetchSuggestions = function(){
+                        fetchSuggestions.apply(this, arguments);
+                    }.bind(this);
+                }
             }
-        }.bind(this);
+
+        }
+        // app.methods.$fetchSuggestions = function(qs, cb){
+        //     if (this.json.itemType!=='script'){
+        //         if (this.json.itemValues){
+        //             var items = this.json.itemValues.filter(function(v){
+        //                 return !qs || v.indexOf(qs)!=-1;
+        //             }).map(function(v){
+        //                 return {"value": v};
+        //             });
+        //             cb(items);
+        //             return;
+        //         }
+        //         cb();
+        //     }else{
+        //         this.form.Macro.environment.queryString = qs;
+        //         var list = this.form.Macro.exec(this.json.itemScript.code, this);
+        //         Promise.resolve(list).then(function(items){
+        //             cb(items);
+        //             delete this.form.Macro.environment.queryString;
+        //         }).catch(function(){
+        //             cb();
+        //             delete this.form.Macro.environment.queryString;
+        //         });
+        //     }
+        // }.bind(this);
     },
     _createElementHtml: function(){
         var html = "<el-autocomplete";
@@ -91,22 +114,25 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         html += " :popper-append-to-body=\"false\"";
 
         this.options.elEvents.forEach(function(k){
-            html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+            html += " @"+k+"=\"$loadElEvent_"+k.camelCase()+"\"";
         });
+        // this.options.elEvents.forEach(function(k){
+        //     html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
+        // });
 
         if (this.json.elProperties){
             Object.keys(this.json.elProperties).forEach(function(k){
                 if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
             }, this);
         }
-
-        if (this.json.elStyles){
-            var style = "";
-            Object.keys(this.json.elStyles).forEach(function(k){
-                if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-            }, this);
-            html += " style=\""+style+"\"";
-        }
+        if (this.json.elStyles) html += " :style=\"elStyles\"";
+        // if (this.json.elStyles){
+        //     var style = "";
+        //     Object.keys(this.json.elStyles).forEach(function(k){
+        //         if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
+        //     }, this);
+        //     html += " style=\""+style+"\"";
+        // }
 
         html += ">";
 

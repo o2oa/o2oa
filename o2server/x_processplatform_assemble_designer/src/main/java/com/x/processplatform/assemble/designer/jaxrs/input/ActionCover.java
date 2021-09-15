@@ -123,11 +123,11 @@ class ActionCover extends BaseAction {
 			}
 			if (StringUtils.isNotEmpty(form.getAlias())) {
 				form.setAlias(this.idleAliasWithApplication(business, application.getId(), form.getAlias(), Form.class,
-						form.getId()));
+						form.getId(), null));
 			}
 			if (StringUtils.isNotEmpty(form.getName())) {
 				form.setName(this.idleNameWithApplication(business, application.getId(), form.getName(), Form.class,
-						form.getId()));
+						form.getId(), null));
 			}
 			form.setApplication(application.getId());
 			persistObjects.addAll(this.coverFormElement(business, form, WrapFormField.inCopier, _o.getFormFieldList(),
@@ -145,11 +145,11 @@ class ActionCover extends BaseAction {
 			}
 			if (StringUtils.isNotEmpty(obj.getAlias())) {
 				obj.setAlias(this.idleAliasWithApplication(business, application.getId(), obj.getAlias(), Script.class,
-						obj.getId()));
+						obj.getId(), null));
 			}
 			if (StringUtils.isNotEmpty(obj.getName())) {
 				obj.setName(this.idleNameWithApplication(business, application.getId(), obj.getName(), Script.class,
-						obj.getId()));
+						obj.getId(), null));
 			}
 			obj.setApplication(application.getId());
 		}
@@ -163,11 +163,11 @@ class ActionCover extends BaseAction {
 			}
 			if (StringUtils.isNotEmpty(obj.getAlias())) {
 				obj.setAlias(this.idleAliasWithApplication(business, application.getId(), obj.getAlias(), File.class,
-						obj.getId()));
+						obj.getId(), null));
 			}
 			if (StringUtils.isNotEmpty(obj.getName())) {
 				obj.setName(this.idleNameWithApplication(business, application.getId(), obj.getName(), File.class,
-						obj.getId()));
+						obj.getId(), null));
 			}
 			obj.setApplication(application.getId());
 		}
@@ -194,11 +194,11 @@ class ActionCover extends BaseAction {
 			}
 			if (StringUtils.isNotEmpty(obj.getAlias())) {
 				obj.setAlias(this.idleAliasWithApplication(business, application.getId(), obj.getAlias(),
-						ApplicationDict.class, obj.getId()));
+						ApplicationDict.class, obj.getId(), null));
 			}
 			if (StringUtils.isNotEmpty(obj.getName())) {
 				obj.setName(this.idleNameWithApplication(business, application.getId(), obj.getName(),
-						ApplicationDict.class, obj.getId()));
+						ApplicationDict.class, obj.getId(), null));
 			}
 			obj.setApplication(application.getId());
 		}
@@ -212,11 +212,11 @@ class ActionCover extends BaseAction {
 			}
 			if (StringUtils.isNotEmpty(process.getAlias())) {
 				process.setAlias(this.idleAliasWithApplication(business, application.getId(), process.getAlias(),
-						Process.class, process.getId()));
+						Process.class, process.getId(), process.getEdition()));
 			}
 			if (StringUtils.isNotEmpty(process.getName())) {
 				process.setName(this.idleNameWithApplication(business, application.getId(), process.getName(),
-						Process.class, process.getId()));
+						Process.class, process.getId(), process.getEdition()));
 			}
 			process.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			process.setLastUpdateTime(new Date());
@@ -425,7 +425,7 @@ class ActionCover extends BaseAction {
 	}
 
 	private <T extends JpaObject> String idleNameWithApplication(Business business, String applicationId, String name,
-			Class<T> cls, String excludeId) throws Exception {
+			Class<T> cls, String excludeId, String edition) throws Exception {
 		if (StringUtils.isEmpty(name)) {
 			return "";
 		}
@@ -444,6 +444,9 @@ class ActionCover extends BaseAction {
 		if (StringUtils.isNotEmpty(excludeId)) {
 			p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), excludeId));
 		}
+		if (StringUtils.isNotEmpty(edition)) {
+			p = cb.and(p, cb.notEqual(root.get(Process.edition_FIELDNAME), edition));
+		}
 		cq.select(root.get("name")).where(p);
 		List<String> os = em.createQuery(cq).getResultList();
 		list = ListUtils.subtract(list, os);
@@ -451,7 +454,7 @@ class ActionCover extends BaseAction {
 	}
 
 	private <T extends JpaObject> String idleAliasWithApplication(Business business, String applicationId, String alias,
-			Class<T> cls, String excludeId) throws Exception {
+			Class<T> cls, String excludeId, String edition) throws Exception {
 		if (StringUtils.isEmpty(alias)) {
 			return "";
 		}
@@ -469,6 +472,9 @@ class ActionCover extends BaseAction {
 		p = cb.and(p, cb.equal(root.get("application"), applicationId));
 		if (StringUtils.isNotEmpty(excludeId)) {
 			p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), excludeId));
+		}
+		if (StringUtils.isNotEmpty(edition)) {
+			p = cb.and(p, cb.notEqual(root.get(Process.edition_FIELDNAME), edition));
 		}
 		cq.select(root.get("alias")).where(p);
 		List<String> os = em.createQuery(cq).getResultList();

@@ -727,7 +727,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.layout_seals[p].show();
                 this.layout_seals[p].setStyles({
                     "border": "0",
-                    "border-radius": "0"
+                    "border-radius": "0",
+                    "z-index": -1
                 });
             }
             this.getSealData();
@@ -904,6 +905,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         if (flagTd) flagTd.setStyle("width", "32pt");
 
                         var dateP = this.layout_issuanceDate.getParent("p");
+                        var dateP = this.layout_issuanceDate.getParent("p");
                         if (dateP){
                             dateP.setStyle("text-align", "left");
                             var span = dateP.getElement("span.space");
@@ -955,6 +957,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 if (!this.layout_copyto2ContentTr) this.layout_copyto2ContentTr = this.layout_copyto2Content.getParent("tr");
                 if (!this.layout_copyto2ContentTrP) this.layout_copyto2ContentTrP = this.layout_copyto2ContentTr.getParent();
             }
+            if (!this.copyToOrder){
+                this.copyToOrder = "unknow"
+                if (this.layout_copytoContentTr && this.layout_copyto2ContentTr){   //需要知道顺序
+                    if (this.layout_copytoContentTrP && this.layout_copyto2ContentTrP && this.layout_copytoContentTrP==this.layout_copyto2ContentTrP){
+                        var n = this.layout_copytoContentTrP.getFirst();
+                        while (n && n!=this.layout_copytoContentTr && n!=this.layout_copyto2ContentTr){
+                            n = n.getNext();
+                        }
+                        if (n==this.layout_copytoContentTr){
+                            this.copyToOrder = "copyto";
+                        }
+                        if (n==this.layout_copyto2ContentTr){
+                            this.copyToOrder = "copyto2";
+                        }
+                    }
+                }
+            }
+
             if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content) ){
                 if (this.layout_edition){
                     if (this.layout_copytoContentTr) this.layout_copytoContentTr.dispose();
@@ -980,9 +1000,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 //     "mso-border-bottom-alt": "solid windowtext 0.75pt"
                 // });
             }else{
-                if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
-                if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
-
+                if (this.copyToOrder == "copyto2"){
+                    if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                    if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                }else{
+                    if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                    if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                }
             }
 
             if ((!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
@@ -1713,7 +1737,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         var editor = (editorName) ? this[editorName] : this.filetextEditor;
         var node = (editorName) ? this.layout_attachmentText : this.layout_filetext;
 
-        if (editorName)
+        //if (editorName)
 
         if (toolbarNode){
             if (!this.filetextScrollNode){
@@ -2251,6 +2275,22 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             this.resizeSidebar();
             this.clearWaitSplitPage();
+
+            this.pages.forEach(function(page, i){
+                var s = i+1;
+                var pageNumberNode = new Element("div", {
+                    "html": "<span>—</span><span> "+s+" </span><span>—</span>",
+                    "styles": {
+                        "right": "0",
+                        "bottom": "-60px",
+                        "margin-top": "10px",
+                        "position": "absolute"
+                    }
+                }).inject(page.getFirst());
+
+
+            }.bind(this));
+
         }.bind(this), 1000);
     },
     _getDefaultData: function(){
@@ -2419,7 +2459,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         //editorConfig.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
         //editorConfig.removeButtons = 'NumberedList,Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,BulletedList,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
-        editorConfig.removeButtons = 'ExportPdf,Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
+        editorConfig.removeButtons = 'EasyImageUpload,ExportPdf,Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
         //editorConfig.removeButtons = 'Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
         //editorConfig.extraAllowedContent = mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)';
 
@@ -2427,7 +2467,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         editorConfig.pasteFromWordRemoveStyles = false;
 
         //editorConfig.removeButtons = 'NewPage,Templates,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,Iframe,Styles,Font,FontSize,TextColor,BGColor,ShowBlocks,About';
-        editorConfig.removePlugins = ['magicline'];
+        editorConfig.removePlugins = ['magicline','cloudservices','easyimage', 'exportpdf'];
         editorConfig.enterMode = CKEDITOR.ENTER_DIV;
         editorConfig.pasteFilter = "plain-text";
         // editorConfig.extraPlugins = ['ecnet','mathjax'];
@@ -2871,7 +2911,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             break;
                         case "copyto":
                         case "copyto2":
-                            this.data[name] = v + "。";
+                            var flag = (v.substring(v.length-1, v.length)=="。");
+                            this.data[name] = v + ((flag) ? "" : "。");
                             break;
                         default:
                             if (name==="subject") v = o2.txt(v);
@@ -3353,7 +3394,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             this.layout_seals[i].show();
                             this.layout_seals[i].setStyles({
                                 "border": "0",
-                                "border-radius": "0"
+                                "border-radius": "0",
+                                "z-index": -1
                             });
                         }
                     }.bind(this));
@@ -3768,7 +3810,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 var content = this.getDocumentHtml();
                 o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
                     (new o2.OOXML.WML({
-                        "protection": (this.json.wordConversionEncryption===true)
+                        "protection": (this.json.wordConversionEncryption===true),
+                        "firstPageNumber": (this.json.firstPageNumber!==false)
                     })).load(content).then(function(oo_content){
 
                         if (!notSave) {

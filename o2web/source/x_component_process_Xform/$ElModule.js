@@ -47,6 +47,21 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
             this._loadUserInterface();
         }
     },
+    _checkVmodel: function(text){
+        if (text){
+            this.vModels = [];
+            var reg = /(?:v-model)(?:.lazy|.number|.trim)?(?:\s*=\s*)(?:["'])?([^"']*)/g;
+            var arr;
+            while ((arr = reg.exec(text)) !== null) {
+                if (arr.length>1 && arr[1]){
+                    var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
+                    modelId = (modelId) ? modelId+".."+arr[1] : arr[1];
+                    this.json[arr[1]] = this._getBusinessData(modelId) || "";
+                    this.vModels.push(arr[1]);
+                }
+            }
+        }
+    },
 
     _loadUserInterface: function(){
         this.node.appendHTML(this._createElementHtml(), "before");
@@ -62,6 +77,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         this._createVueApp();
     },
     _createVueApp: function(){
+        if (this.json.vueSlot) this._checkVmodel(this.json.vueSlot);
         if (!this.vm) this._loadVue(this._mountVueApp.bind(this));
     },
 
@@ -95,23 +111,63 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         };
         app.methods = this._createVueMethods(app);
         this.appendVueExtend(app);
+        this.appendVueWatch(app);
         return app;
     },
+    appendVueWatch: function(app){
+        if (this.vModels && this.vModels.length){
+            app.watch = app.watch || {};
+            this.vModels.forEach(function(m){
+                app.watch[m] = function(val, oldVal){
+                    var modelId = this.json.id.substring(0, this.json.id.lastIndexOf(".."));
+                    modelId = (modelId) ? modelId+".."+m : m;
+                    this._setBusinessData(val, modelId);
+                }.bind(this);
+            }.bind(this));
+        }
+    },
     appendVueMethods: function(methods){},
-    appendVueExtend: function(app){},
+    appendVueExtend: function(app){
+        // if (!app.methods) app.methods = {};
+        // this.options.elEvents.forEach(function(k){
+        //     this._createEventFunction(app, k);
+        // }.bind(this));
+    },
+    appendVueEvents: function(methods){
+        this.options.elEvents.forEach(function(k){
+            this._createEventFunction(methods, k);
+        }.bind(this));
+    },
+    _createEventFunction: function(methods, k){
+        methods["$loadElEvent_"+k.camelCase()] = function(){
+            this.validationMode();
+            if (k==="change") this._setBusinessData(this.getInputData());
+            if (this.json.events && this.json.events[k] && this.json.events[k].code){
+                this.form.Macro.fire(this.json.events[k].code, this, arguments);
+            }
+        }.bind(this);
+    },
     _createVueMethods: function(){
         var methods = {};
         if (this.json.vueMethods && this.json.vueMethods.code){
             methods = this.form.Macro.exec(this.json.vueMethods.code, this);
         }
+        this.appendVueEvents(methods);
         this.appendVueMethods(methods);
         return methods || {};
     },
     _createVueData: function(){
+        if (this.vModels && this.vModels.length){
+            this.vModels.forEach(function(m){
+                if (!this.json.hasOwnProperty(m)) this.json[m] = "";
+            }.bind(this));
+        }
         if (this.json.vueData && this.json.vueData.code){
             var d = this.form.Macro.exec(this.json.vueData.code, this);
             this.json = Object.merge(d, this.json);
         }
+        if (this.json.$id===this.json.id) this.form.Macro.environment.data.check(this.json.$id);
+        this.json[this.json.$id] = this._getBusinessData();
         this._appendVueData();
         return this.json;
     },

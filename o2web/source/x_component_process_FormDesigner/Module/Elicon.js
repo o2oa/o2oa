@@ -9,30 +9,32 @@ MWF.xApplication.process.FormDesigner.Module.Elicon = MWF.FCElicon = new Class({
 	},
 
 	_initModuleType: function(){
-		this.className = "Elicon"
+		this.className = "Elicon";
 		this.moduleType = "element";
 		this.moduleName = "elicon";
 	},
 	_createElementHtml: function(){
-		var html = "<i class='"+(this.json.icon || "el-icon-platform-eleme")+"'";
+		var html = "<i :class='icon'";
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){
 				if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
 			}, this);
 		}
 
-		var styles = {};
-		if (this.json.iconSize) styles["font-size"] = this.json.iconSize+"px";
-		if (this.json.iconColor) styles["color"] = this.json.iconColor;
-		styles = Object.merge(styles, this.json.elStyles);
+		html += " :style=\"[elStyles, {fontSize: iconSize+'px', color: iconColor}]\"";
 
-		if (styles){
-			var style = "";
-			Object.keys(styles).forEach(function(k){
-				if (styles[k]) style += k+":"+styles[k]+";";
-			}, this);
-			html += " style=\""+style+"\"";
-		}
+		// var styles = {};
+		// if (this.json.iconSize) styles["font-size"] = this.json.iconSize+"px";
+		// if (this.json.iconColor) styles["color"] = this.json.iconColor;
+		// styles = Object.merge(styles, this.json.elStyles);
+		//
+		// if (styles){
+		// 	var style = "";
+		// 	Object.keys(styles).forEach(function(k){
+		// 		if (styles[k]) style += k+":"+styles[k]+";";
+		// 	}, this);
+		// 	html += " style=\""+style+"\"";
+		// }
 
 		html += "></i>";
 		return html;
@@ -62,5 +64,20 @@ MWF.xApplication.process.FormDesigner.Module.Elicon = MWF.FCElicon = new Class({
 		return this.copyNode;
 	},
 	setPropertyName: function(){},
-	setPropertyId: function(){}
+	setPropertyId: function(){},
+	_preprocessingModuleData: function(){
+		this.node.clearStyles();
+		//if (this.initialStyles) this.node.setStyles(this.initialStyles);
+		this.json.recoveryStyles = Object.clone(this.json.styles);
+
+		if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+				//需要运行时处理
+			}else{
+				this.node.setStyle(key, value);
+				delete this.json.styles[key];
+			}
+		}.bind(this));
+		this.json.preprocessing = "y";
+	},
 });

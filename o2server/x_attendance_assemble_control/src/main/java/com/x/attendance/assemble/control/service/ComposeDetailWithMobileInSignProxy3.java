@@ -207,20 +207,25 @@ class ComposeDetailWithMobileInSignProxy3 {
 	 * @throws Exception
 	 */
 	private String getRecordAddress(List<AttendanceDetailMobile> mobileDetails) throws Exception {
-		String recordAddress = "";
+		String mobileAddress = "";
 		for( AttendanceDetailMobile detailMobile : mobileDetails ) {
-			String tmpRecordAddress = detailMobile.getWorkAddress();
-			if(StringUtils.isNotEmpty(tmpRecordAddress)){
-				if(StringUtils.isEmpty(recordAddress)){
-					recordAddress = tmpRecordAddress;
-				}else{
-					if(!StringUtils.contains(recordAddress,tmpRecordAddress)){
-						recordAddress = recordAddress+","+tmpRecordAddress;
-					}
+			String recordAddress = detailMobile.getRecordAddress();
+			String workAddress = detailMobile.getWorkAddress();
+			String oneAddress = "";
+			if(StringUtils.isNotEmpty(workAddress)){
+				oneAddress = workAddress;
+			}else{
+				oneAddress = recordAddress;
+			}
+			if(StringUtils.isEmpty(mobileAddress)){
+				mobileAddress = oneAddress;
+			}else{
+				if(StringUtils.isNotEmpty(oneAddress) && !StringUtils.contains(mobileAddress,oneAddress)){
+					mobileAddress = mobileAddress+","+oneAddress;
 				}
 			}
 		}
-		return recordAddress;
+		return mobileAddress;
 	}
 
 	/**

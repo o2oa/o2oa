@@ -25,7 +25,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.jaxrs.WrapStringList;
-import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -71,7 +70,6 @@ class ActionProcessing2 extends BaseAction {
 	private static final String TYPE_TASK = "task";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		Audit audit = logger.audit(effectivePerson);
 		this.effectivePerson = effectivePerson;
 		wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -105,7 +103,6 @@ class ActionProcessing2 extends BaseAction {
 			this.type = this.type(business, task, wi);
 		}
 		this.processing();
-		audit.log(null, "任务处理");
 		Wo wo = Wo.copier.copy(record);
 		result.setData(wo);
 		return result;

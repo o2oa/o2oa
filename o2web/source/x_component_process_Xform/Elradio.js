@@ -98,8 +98,10 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     },
 
     _createElementHtml: function(radioValues){
+        this.json["$id"] = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
+
         var html = "<el-radio-group class='o2_vue' style='box-sizing: border-box!important'";
-        html += " v-model=\""+this.json.id+"\"";
+        html += " v-model=\""+this.json.$id+"\"";
         html += " :text-color=\"textColor\"";
         html += " :fill=\"fillColor\"";
         html += " :size=\"size\"";
@@ -111,13 +113,15 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
                 if (this.json.elGroupProperties[k]) html += " "+k+"=\""+this.json.elGroupProperties[k]+"\"";
             }, this);
         }
-        if (this.json.elGroupStyles){
-            var style = "";
-            Object.keys(this.json.elGroupStyles).forEach(function(k){
-                if (this.json.elGroupStyles[k]) style += k+":"+this.json.elGroupStyles[k]+";";
-            }, this);
-            html += " style=\""+style+"\"";
-        }
+        // if (this.json.elGroupStyles){
+        //     var style = "";
+        //     Object.keys(this.json.elGroupStyles).forEach(function(k){
+        //         if (this.json.elGroupStyles[k]) style += k+":"+this.json.elGroupStyles[k]+";";
+        //     }, this);
+        //     html += " style=\""+style+"\"";
+        // }
+        if (this.json.elGroupStyles) html += " :style=\"elGroupStyles\"";
+
         html += " >";
 
         radioValues.each(function(item){
@@ -135,13 +139,14 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
                 }, this);
             }
 
-            var radiostyle = "box-sizing: border-box!important;";
-            if (this.json.elStyles){
-                Object.keys(this.json.elStyles).forEach(function(k){
-                    if (this.json.elStyles[k]) radiostyle += k+":"+this.json.elStyles[k]+";";
-                }, this);
-            }
-            html += " style=\""+radiostyle+"\"";
+            // var radiostyle = "box-sizing: border-box!important;";
+            // if (this.json.elStyles){
+            //     Object.keys(this.json.elStyles).forEach(function(k){
+            //         if (this.json.elStyles[k]) radiostyle += k+":"+this.json.elStyles[k]+";";
+            //     }, this);
+            // }
+            // html += " style=\""+radiostyle+"\"";
+            if (this.json.elStyles) html += " :style=\"elStyles\"";
 
             html += " >"+text;
             html += (this.json.buttonRadio) ? "</el-radio-button>" : "</el-radio>";
@@ -154,12 +159,12 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);
-        this.json[this.json.id] = value;
+        this.json[this.json.$id] = value;
     },
     __setData: function(data){
         this.moduleValueAG = null;
         this._setBusinessData(data);
-        this.json[this.json.id] = data;
+        this.json[this.json.$id] = data;
         this.validationMode();
         this.fireEvent("setData");
     },
@@ -216,8 +221,8 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         };
     },
     _createVueData: function(){
-        this.form.Macro.environment.data.check(this.json.id);
-        this.json[this.json.id] = this._getBusinessData();
+        if (this.json.$id===this.json.id) this.form.Macro.environment.data.check(this.json.$id);
+        this.json[this.json.$id] = this._getBusinessData();
         // if (!this.json[this.json.id]){
         //     this.json[this.json.id] = this._getBusinessData();
         // }
@@ -233,12 +238,14 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
 
         return this.json;
     },
+
     _afterMounted: function(el){
         this.node = el;
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type
         });
+        this._loadVueCss();
         this._loadDomEvents();
         this._afterLoaded();
         this.fireEvent("postLoad");
@@ -246,7 +253,15 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     },
 
     getInputData: function(){
-        return this.json[this.json.id];
+        return this.json[this.json.$id];
     },
-
+    _loadVueCss: function(){
+        if (this.styleNode){
+            this.node.removeClass(this.styleNode.get("id"));
+        }
+        if (this.json.vueCss && this.json.vueCss.code){
+            this.styleNode = this.node.loadCssText(this.json.vueCss.code, {"notInject": true});
+            this.styleNode.inject(this.node, "before");
+        }
+    }
 }); 

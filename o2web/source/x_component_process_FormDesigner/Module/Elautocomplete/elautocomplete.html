@@ -29,7 +29,17 @@
 			</tr>
 		</table>
 		<div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType!=='script')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
-		<div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
+		<div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}; border-bottom: 1px solid #cccccc">
+			<div class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
+			<div style="padding: 5px">{{$.lp.itemScriptInfo}}</div>
+			<div style="padding: 5px">
+				<div>return function(queryString, callback){</div>
+				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>var list = [{"value": "value1"},{"value": "value2"},{"value": "value3"}];</div>
+				<div><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>callback(list);</div>
+				<div>}</div>
+			</div>
+		</div>
+
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
@@ -49,6 +59,15 @@
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="time" text{($.inputType=='time')?'checked':''}/>{{$.lp.time}}(time)</div>-->
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="datetime-local" text{($.inputType=='datetime-local')?'checked':''}/>{{$.lp["datetime-local"]}}(datetime-local)</div>-->
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="week" text{($.inputType=='week')?'checked':''}/>{{$.lp.week}}(week)</div>-->
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.size}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="size" value="default" text{(!$.size || $.size==='default')?'checked':''}/>default
+					<input type="radio" name="size" value="medium" text{($.size==='medium')?'checked':''}/>medium
+					<input type="radio" name="size" value="small" text{($.size==='small')?'checked':''}/>small
+					<input type="radio" name="size" value="mini" text{($.size==='mini')?'checked':''}/>mini
 				</td>
 			</tr>
 			<tr>

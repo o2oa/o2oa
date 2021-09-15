@@ -1,0 +1,109 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Elselect",
+	"description": "",
+
+	"isReadonly" : false,
+	"itemsGroup" : false,
+	"itemType" : "values",
+	"size" : "default",
+	"clearable" : false,
+	"multiple" : false,
+	"collapseTags" : false,
+	"filterable" : false,
+	"allowCreate" : false,
+	"remote" : false,
+	"popperClass" : "",
+	"multipleLimit" : 0,
+	"noMatchText" : "",
+	"noDataText": "",
+	"loadingText" : "",
+	"itemScript": {},
+	"itemGroupScript": {},
+	"filterMethod": {},
+	"remoteMethod": {},
+
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+	"vueSlot": "",
+
+	"elProperties": {},
+	"elStyles": {},
+	"elOptionProperties": {},
+	"elOptionStyles": {},
+	"elGroupProperties": {},
+	"elGroupStyles": {},
+
+	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
+		"visible-change": {
+			"code": "",
+			"html": ""
+		},
+		"remove-tag": {
+			"code": "",
+			"html": ""
+		},
+		"change": {
+			"code": "",
+			"html": ""
+		},
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

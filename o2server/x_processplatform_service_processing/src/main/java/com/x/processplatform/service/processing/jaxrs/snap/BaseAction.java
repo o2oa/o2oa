@@ -65,7 +65,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected SnapProperties snap(Business business, String job, List<Item> items, WorkCompleted workCompleted,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
-			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments) throws InterruptedException, ExecutionException {
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments)
+			throws InterruptedException, ExecutionException {
 		SnapProperties properties = new SnapProperties();
 		properties.setJob(job);
 		properties.setWorkCompleted(workCompleted);

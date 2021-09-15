@@ -507,7 +507,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
         var _self = this;
 
         var appId = "cms.Document"+id;
-        if (_self.app.desktop.apps[appId]){
+        if (_self.app.desktop && _self.app.desktop.apps && _self.app.desktop.apps[appId]){
             _self.app.desktop.apps[appId].setCurrent();
         }else {
             var options = {
