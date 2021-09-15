@@ -37,11 +37,11 @@ public class ActionSetTernaryManagement extends BaseAction {
 		Wi.copier.copy(wi, Config.ternaryManagement());
 		Config.ternaryManagement().save();
 		this.configFlush(effectivePerson);
-		if(BooleanUtils.isTrue(Config.ternaryManagement().getEnable())){
+		/*if(BooleanUtils.isTrue(Config.ternaryManagement().getEnable())){
 			this.saveDefaultRole();
 		}else{
 			this.deleteDefaultRole();
-		}
+		}*/
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);

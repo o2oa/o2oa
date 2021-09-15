@@ -141,8 +141,6 @@ public class TernaryManagement extends ConfigObject {
         o.roleList = new ArrayList<>();
         if(isSystemManager(name)){
             o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SystemManager));
-            o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.PersonManager));
-            o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.GroupManager));
             o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.ProcessPlatformManager));
             o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.MeetingManager));
             o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.QueryManager));
@@ -155,7 +153,6 @@ public class TernaryManagement extends ConfigObject {
             o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.TeamWorkManager));
         }else if(isSecurityManager(name)){
             o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SecurityManager));
-            o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.OrganizationManager));
         }else if(isAuditManager(name)){
             o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager));
         }
