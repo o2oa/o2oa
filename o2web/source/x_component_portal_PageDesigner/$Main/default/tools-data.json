@@ -1,17 +1,17 @@
 {
   "source": {
     "icon": "source.png",
-    "text": MWF.APPPD.LP.modules.source,
+    "text": MWF.APPPOD.LP.modules.source,
     "className": "Source"
   },
   "SubSource": {
     "icon": "subSource.png",
-    "text": MWF.APPPD.LP.modules.subSource,
+    "text": MWF.APPPOD.LP.modules.subSource,
     "className": "SubSource"
   },
   "sourceText": {
     "icon": "sourceText.png",
-    "text": MWF.APPPD.LP.modules.sourceText,
+    "text": MWF.APPPOD.LP.modules.sourceText,
     "className": "SourceText"
   }
 }

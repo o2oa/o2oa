@@ -1,67 +1,67 @@
 {
   "div": {
     "icon": "div.png",
-    "text": MWF.APPPD.LP.modules.div,
+    "text": MWF.APPPOD.LP.modules.div,
     "className": "Div"
   },
   "label": {
     "icon": "label.png",
-    "text": MWF.APPPD.LP.modules.label,
+    "text": MWF.APPPOD.LP.modules.label,
     "className": "Label"
   },
   "source": {
     "icon": "source.png",
-    "text": MWF.APPPD.LP.modules.source,
+    "text": MWF.APPPOD.LP.modules.source,
     "className": "Source"
   },
   "SubSource": {
     "icon": "subSource.png",
-    "text": MWF.APPPD.LP.modules.subSource,
+    "text": MWF.APPPOD.LP.modules.subSource,
     "className": "SubSource"
   },
   "sourceText": {
     "icon": "sourceText.png",
-    "text": MWF.APPPD.LP.modules.sourceText,
+    "text": MWF.APPPOD.LP.modules.sourceText,
     "className": "SourceText"
   },
   "table": {
     "icon": "table.png",
-    "text": MWF.APPPD.LP.modules.table,
+    "text": MWF.APPPOD.LP.modules.table,
     "className": "Table"
   },
   "tab": {
     "icon": "tabs.png",
-    "text": MWF.APPPD.LP.modules.tab,
+    "text": MWF.APPPOD.LP.modules.tab,
     "className": "Tab"
   },
   "image": {
     "icon": "image.png",
-    "text": MWF.APPPD.LP.modules.image,
+    "text": MWF.APPPOD.LP.modules.image,
     "className": "Image"
   },
   "button": {
     "icon": "button.png",
-    "text": MWF.APPPD.LP.modules.button,
+    "text": MWF.APPPOD.LP.modules.button,
     "className": "Button"
   },
   "iframe": {
     "icon": "iframe.png",
-    "text": MWF.APPPD.LP.modules.iframe,
+    "text": MWF.APPPOD.LP.modules.iframe,
     "className": "Iframe"
   },
   "html": {
     "icon": "html.png",
-    "text": MWF.APPPD.LP.modules.html,
+    "text": MWF.APPPOD.LP.modules.html,
     "className": "Html"
   },
   "common": {
     "icon": "common.png",
-    "text": MWF.APPPD.LP.modules.common,
+    "text": MWF.APPPOD.LP.modules.common,
     "className": "Common"
   },
   "tree": {
     "icon": "tree.png",
-    "text": MWF.APPPD.LP.modules.tree,
+    "text": MWF.APPPOD.LP.modules.tree,
     "className": "Tree"
   }
 }
