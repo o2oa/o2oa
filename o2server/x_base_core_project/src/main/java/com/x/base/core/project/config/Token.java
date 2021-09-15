@@ -13,6 +13,7 @@ import com.x.base.core.project.tools.Crypto;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -196,9 +197,21 @@ public class Token extends ConfigObject {
 		BaseTools.executeSyncFile(Config.PATH_CONFIG_TOKEN);
 	}
 
-	public boolean isInitialManager(String name) {
-		return StringUtils.equals(this.getInitialManager(), name)
-				|| StringUtils.equals(this.getInitialManagerDistinguishedName(), name);
+	public boolean isInitialManager(String name) throws Exception {
+		if(BooleanUtils.isTrue(Config.ternaryManagement().getEnable())){
+			return Config.ternaryManagement().isTernaryManagement(name);
+		}else {
+			return StringUtils.equals(this.getInitialManager(), name)
+					|| StringUtils.equals(this.getInitialManagerDistinguishedName(), name);
+		}
+	}
+
+	public boolean verifyPassword(String name, String password) throws Exception {
+		if(BooleanUtils.isTrue(Config.ternaryManagement().getEnable())){
+			return Config.ternaryManagement().verifyPassword(name, password);
+		}else{
+			return StringUtils.equals(this.getPassword(), password);
+		}
 	}
 
 	public InitialManager initialManagerInstance() {
@@ -218,12 +231,12 @@ public class Token extends ConfigObject {
 		o.roleList = new ArrayList<String>();
 		// o.roleList.add(RoleDefinition.UnitManager);
 		// o.roleList.add(RoleDefinition.GroupCreator);
-		o.roleList.add(OrganizationDefinition.Manager);
-		o.roleList.add(OrganizationDefinition.OrganizationManager);
-		o.roleList.add(OrganizationDefinition.MeetingManager);
+		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.Manager));
+		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.OrganizationManager));
+		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.MeetingManager));
 		// o.roleList.add(RoleDefinition.PersonManager);
 		// o.roleList.add(RoleDefinition.ProcessPlatformCreator);
-		o.roleList.add(OrganizationDefinition.ProcessPlatformManager);
+		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.ProcessPlatformManager));
 		return o;
 	}
 
