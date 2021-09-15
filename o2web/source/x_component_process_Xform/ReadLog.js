@@ -69,6 +69,7 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
         },
         _loadUserInterface: function(){
             this.node.setStyle("-webkit-user-select", "text");
+            this.node.setStyles(this.form.css.logActivityNode_record);
 
             this.form.app.action.getReadRecord(this.form.businessData.work.id, function(json){
                 this.readLog = json.data;
@@ -108,8 +109,12 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
         loadReadLogDefault: function(){
             var text = this.json.textStyle;
             var readPersons = [];
-            this.readLog.each(function(log){
+            this.lineClass = "logTaskNode";
+            this.readLog.each(function(log, i){
                 if (log.type == "readCompleted"){
+                    var div = new Element("div", {styles: this.form.css[this.lineClass]}).inject(this.node);
+                    var leftDiv = new Element("div", {styles: this.form.css.logTaskIconNode_record}).inject(div);
+                    var rightDiv = new Element("div", {styles: this.form.css.logTaskTextNode}).inject(div);
                     var html = text.replace(/{person}/g, o2.name.cn(log.person))
                         .replace(/{datetime}/g, log.completedTime)
                         .replace(/{date}/g, log.completedTime.substring(0.10))
@@ -117,18 +122,29 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
                         .replace(/{startDate}/g, log.startTime.substring(0.10))
                         .replace(/{startDatetime}/g, log.startTime)
                         .replace(/{unit}/g, o2.name.cn(log.unit))
+                        .replace(/{department}/g, o2.name.cn(log.unit))
                         .replace(/{identity}/g, o2.name.cn(log.identity))
                         .replace(/{activity}/g, o2.name.cn(log.activityName))
                         .replace(/{title}/g, log.title)
                         .replace(/{opinion}/g, log.opinion);
-                    this.node.appendHTML(html);
+                    rightDiv.appendHTML(html);
+
+                    if (this.lineClass === "logTaskNode"){
+                        this.lineClass = "logTaskNode_even";
+                    }else{
+                        this.lineClass = "logTaskNode";
+                    }
                 }
                 if (!!this.json.isShowRead && log.type == "read"){
                     readPersons.push(o2.name.cn(log.person)+"("+o2.name.cn(log.unit)+")");
                 }
             }.bind(this));
             if (readPersons.length){
-                this.node.appendHTML("<div><font style='font-weight: bold'>"+MWF.xApplication.process.Xform.LP.showReadTitle+": </font><font style='color: #00F'>"+readPersons.join(", ")+"</font></div>");
+                var div = new Element("div", {styles: this.form.css[this.lineClass]}).inject(this.node);
+                var leftDiv = new Element("div", {styles: this.form.css.logTaskIconNode_record}).inject(div);
+                var rightDiv = new Element("div", {styles: this.form.css.logTaskTextNode}).inject(div);
+                leftDiv.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+                rightDiv.appendHTML("<div><font style='font-weight: bold'>"+MWF.xApplication.process.Xform.LP.showReadTitle+": </font><font style='color: #00F'>"+readPersons.join(", ")+"</font></div>");
             }
         }
     });

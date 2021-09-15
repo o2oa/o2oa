@@ -245,7 +245,7 @@
         "line-height": "28px",
         //"border-bottom": "1px solid #CCC",
         "font-size": "12px",
-        "background": "#e7ecf6"
+        "background": "#f6f6f6"
     },
 	"logTaskIconNode": {
         "height": "28px",
