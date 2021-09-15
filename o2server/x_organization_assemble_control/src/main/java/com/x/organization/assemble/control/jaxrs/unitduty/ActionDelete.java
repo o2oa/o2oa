@@ -26,7 +26,7 @@ class ActionDelete extends BaseAction {
 			if (null == unit) {
 				throw new ExceptionUnitNotExist(o.getUnit());
 			}
-			if (!business.editable(effectivePerson, unit)) {
+			if (!business.editableUnitDuty(effectivePerson, unit)) {
 				throw new ExceptionDenyEditUnit(effectivePerson, unit.getName());
 			}
 			/** pick出来的需要重新取出 */
