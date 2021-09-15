@@ -38,7 +38,7 @@ public class HttpToken {
 	public static final String SET_COOKIE = "Set-Cookie";
 
 	private static final String RegularExpression_IP = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
-	private static final String RegularExpression_Token = "^(anonymous|user|manager|cipher)([2][0][1-9][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])(\\S{1,})$";
+	private static final String RegularExpression_Token = "^(anonymous|user|manager|cipher|systemManager|securityManager|auditManager)([2][0][1-9][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])(\\S{1,})$";
 
 	public EffectivePerson who(HttpServletRequest request, HttpServletResponse response, String key) throws Exception {
 		EffectivePerson effectivePerson = this.who(this.getToken(request), key, remoteAddress(request));
@@ -77,7 +77,9 @@ public class HttpToken {
 			TokenType tokenType = TokenType.valueOf(matcher.group(1));
 			long diff = (System.currentTimeMillis() - date.getTime());
 			diff = Math.abs(diff);
-			if (TokenType.user.equals(tokenType) || TokenType.manager.equals(tokenType)) {
+			if (TokenType.user.equals(tokenType) || TokenType.manager.equals(tokenType)
+					|| TokenType.systemManager.equals(tokenType) || TokenType.auditManager.equals(tokenType)
+					|| TokenType.securityManager.equals(tokenType)) {
 				if (diff > (60000L * Config.person().getTokenExpiredMinutes())) {
 					// 不报错,跳过错误,将用户设置为anonymous
 					logger.warn("token expired, user:{}, token:{}, remote address:{}.",
@@ -120,6 +122,15 @@ public class HttpToken {
 			this.setResponseToken(request, response, effectivePerson);
 			break;
 		case manager:
+			this.setResponseToken(request, response, effectivePerson);
+			break;
+		case systemManager:
+			this.setResponseToken(request, response, effectivePerson);
+			break;
+		case securityManager:
+			this.setResponseToken(request, response, effectivePerson);
+			break;
+		case auditManager:
 			this.setResponseToken(request, response, effectivePerson);
 			break;
 		case cipher:

@@ -80,6 +80,15 @@ public class OrganizationDefinition {
 	public final static String ServiceManager = "ServiceManager";
 	public final static String ServiceManager_description = "服务管理员(系统角色)，可以进行服务管理的接口和代理配置。";
 
+	public final static String SystemManager = "SystemManager";
+	public final static String SystemManager_description = "三元管理中的系统管理员(系统角色)，负责为系统添加用户和系统运行维护工作。";
+
+	public final static String SecurityManager = "SecurityManager";
+	public final static String SecurityManager_description = "三元管理中的安全管理员(系统角色)，负责权限设定，负责系统审计日志、用户和系统管理员操作行为的审查分析。";
+
+	public final static String AuditManager = "AuditManager";
+	public final static String AuditManager_description = "三元管理中的安全审计员(系统角色)，负责对系统管理员、安全管理员的操作行为进行审计、跟踪。";
+
 	public final static String RoleDefinitionSuffix = "SystemRole";
 
 	public final static Pattern person_distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@P$");
@@ -100,10 +109,17 @@ public class OrganizationDefinition {
 
 	public final static Pattern distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@(P|PA|G|R|I|U|UA|UD)$");
 
-	public final static List<String> DEFAULTROLES = new UnmodifiableList<String>(ListTools.toList(Manager,
+	public final static List<String> DEFAULTROLES = new UnmodifiableList<String>(ListTools.toList(Manager,SystemManager,SecurityManager,AuditManager,
 			AttendanceManager, OrganizationManager, PersonManager, GroupManager, UnitManager, RoleManager,
 			ProcessPlatformManager, ProcessPlatformCreator, MeetingManager, MeetingViewer, PortalManager, BBSManager,
 			CMSManager, OKRManager, CRMManager,TeamWorkManager, QueryManager, MessageManager, HotPictureManager, SearchPrivilege, FileManager, ServiceManager));
+
+	public static String toDistinguishedName(String name) {
+		if (!StringUtils.contains(name, "@")) {
+			name = name + "@" + name + RoleDefinitionSuffix + "@R";
+		}
+		return name;
+	}
 
 	public static String name(String distinguishedName) {
 		if (StringUtils.contains(distinguishedName, "@")) {
