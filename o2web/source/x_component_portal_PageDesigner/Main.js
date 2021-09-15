@@ -1,5 +1,5 @@
-MWF.APPPD = MWF.xApplication.portal.PageDesigner;
-MWF.APPPD.options = {
+MWF.APPPOD = MWF.xApplication.portal.PageDesigner;
+MWF.APPPOD.options = {
 	"multitask": true,
 	"executable": false
 };
@@ -11,12 +11,12 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-        "template": "template.json",
+        "template": "page.json",
         "templateId": "",
         "name": "portal.PageDesigner",
         "icon": "icon.png",
-        "title": MWF.APPPD.LP.title,
-        "appTitle": MWF.APPPD.LP.title,
+        "title": MWF.APPPOD.LP.title,
+        "appTitle": MWF.APPPOD.LP.title,
         "id": "",
         "actions": null,
         "category": null,
@@ -30,7 +30,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 		}
 		if (!this.options.id){
 			this.options.desktopReload = false;
-			this.options.title = this.options.title + "-"+MWF.APPPD.LP.newPage;
+			this.options.title = this.options.title + "-"+MWF.APPPOD.LP.newPage;
 		}
         this.actions = MWF.Actions.get("x_portal_assemble_designer");
 		//this.actions = new MWF.xApplication.portal.PortalManager.Actions.RestActions();
@@ -253,7 +253,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 	loadToolbar: function(){
 		this.toolbarTitleNode = new Element("div", {
 			"styles": this.css.toolbarTitleNode,
-			"text": MWF.APPPD.LP.tools
+			"text": MWF.APPPOD.LP.tools
 		}).inject(this.toolbarNode);
 		
 		this.toolbarTitleActionNode = new Element("div", {
@@ -342,7 +342,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 				node.getLast().setStyle("display", "block");
 			});
 			
-			this.toolbarTitleNode.set("text", MWF.APPPD.LP.tools);
+			this.toolbarTitleNode.set("text", MWF.APPPOD.LP.tools);
 			
 			this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNode);
 
@@ -871,7 +871,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 
 		this.propertyTitleNode = new Element("div", {
 			"styles": this.css.propertyTitleNode,
-			"text": MWF.APPPD.LP.property
+			"text": MWF.APPPOD.LP.property
 		}).inject(this.propertyNode);
         if (this.options.style=="bottom"){
             this.propertyTitleNode.setStyle("cursor", "row-resize");
@@ -1519,7 +1519,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             var fieldList = this.getFieldList();
 
             this._savePage(pcData, mobileData, fieldList, function(responseJSON){
-                this.notice(MWF.APPPD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"});
+                this.notice(MWF.APPPOD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"});
                 if (!this.pcPage.json.name) this.pcPage.treeNode.setText("<"+this.json.type+"> "+this.json.id);
                 this.pcPage.treeNode.setTitle(this.pcPage.json.id);
                 this.pcPage.node.set("id", this.pcPage.json.id);
@@ -1687,11 +1687,11 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         var category = (categorySelect.options[categorySelect.selectedIndex].value=="$newCategory") ? newCategoryNode.get("value") : categorySelect.options[categorySelect.selectedIndex].value;
         var description = descriptionNode.get("value");
         if (!name){
-            this.notice(MWF.APPPD.LP.notice["saveTemplate_inputName"], "error", nameNode, {x: "left", y:"top"});
+            this.notice(MWF.APPPOD.LP.notice["saveTemplate_inputName"], "error", nameNode, {x: "left", y:"top"});
             return false;
         }
         if (categorySelect.options[categorySelect.selectedIndex].value=="$newCategory" && !newCategoryNode.get("value")){
-            this.notice(MWF.APPPD.LP.notice["saveTemplate_inputCategory"], "error", categorySelect, {x: "left", y:"top"});
+            this.notice(MWF.APPPOD.LP.notice["saveTemplate_inputCategory"], "error", categorySelect, {x: "left", y:"top"});
             return false;
         }
 
@@ -1702,7 +1702,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             "outline": iconNode.get("html")
         };
         this.addPageTemplate(pcData, mobileData, data, function(){
-            this.notice(MWF.APPPD.LP.notice["saveTemplate_success"], "ok", null, {x: "left", y:"bottom"});
+            this.notice(MWF.APPPOD.LP.notice["saveTemplate_success"], "ok", null, {x: "left", y:"bottom"});
             markNode.destroy();
             areaNode.destroy();
         }.bind(this), function(xhr, text, error){
@@ -1831,7 +1831,6 @@ MWF.xApplication.portal.PageDesigner.ToolsGroup = new Class({
         var memuItem = this.app.categoryActionMenu.addMenuItem(this.data.text, "click", function(){this.show();}.bind(this));
     },
     setContentHeight: function(height){
-        debugger;
         this.height = height;
         if (this.isShow){
             this.toolbarContentNode.setStyle("height", ""+this.height+"px");

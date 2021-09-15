@@ -1,62 +1,62 @@
 {
   "label": {
     "icon": "label.png",
-    "text": MWF.APPPD.LP.modules.label,
+    "text": MWF.APPPOD.LP.modules.label,
     "className": "Label"
   },
   "textfield": {
     "icon": "textfield.png",
-    "text": MWF.APPPD.LP.modules.textfield,
+    "text": MWF.APPPOD.LP.modules.textfield,
     "className": "Textfield"
   },
   "org": {
     "icon": "personfield.png",
-    "text": MWF.APPPD.LP.modules.org,
+    "text": MWF.APPPOD.LP.modules.org,
     "className": "Org"
   },
   "calendar": {
     "icon": "calendar.png",
-    "text": MWF.APPPD.LP.modules.calendar,
+    "text": MWF.APPPOD.LP.modules.calendar,
     "className": "Calendar"
   },
   "textarea": {
     "icon": "textarea.png",
-    "text": MWF.APPPD.LP.modules.textarea,
+    "text": MWF.APPPOD.LP.modules.textarea,
     "className": "Textarea"
   },
   "select": {
     "icon": "select.png",
-    "text": MWF.APPPD.LP.modules.select,
+    "text": MWF.APPPOD.LP.modules.select,
     "className": "Select"
   },
   "radio": {
     "icon": "radio.png",
-    "text": MWF.APPPD.LP.modules.radio,
+    "text": MWF.APPPOD.LP.modules.radio,
     "className": "Radio"
   },
   "checkbox": {
     "icon": "checkbox.png",
-    "text": MWF.APPPD.LP.modules.checkbox,
+    "text": MWF.APPPOD.LP.modules.checkbox,
     "className": "Checkbox"
   },
   "address": {
     "icon": "address.png",
-    "text": MWF.APPPD.LP.modules.address,
+    "text": MWF.APPPOD.LP.modules.address,
     "className": "Address"
   },
   "combox": {
     "icon": "combox.png",
-    "text": MWF.APPPD.LP.modules.combox,
+    "text": MWF.APPPOD.LP.modules.combox,
     "className": "Combox"
   },
   "datatable": {
     "icon": "datagrid.png",
-    "text": MWF.APPPD.LP.modules.datatable,
+    "text": MWF.APPPOD.LP.modules.datatable,
     "className": "Datatable"
   },
   "datatemplate": {
     "icon": "datatemplate.png",
-    "text": MWF.APPPD.LP.modules.datatemplate,
+    "text": MWF.APPPOD.LP.modules.datatemplate,
     "className": "Datatemplate"
   }
 }
