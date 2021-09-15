@@ -1,0 +1,32 @@
+{
+  "view": {
+    "icon": "view.png",
+    "text": MWF.APPPD.LP.modules.view,
+    "className": "View"
+  },
+  "stat": {
+    "icon": "stat.png",
+    "text": MWF.APPPD.LP.modules.stat,
+    "className": "Stat"
+  },
+  "widget": {
+    "icon": "subpage.png",
+    "text": MWF.APPPD.LP.modules.widget,
+    "className": "Widget"
+  },
+  "widgetmodules": {
+    "icon": "subpage.png",
+    "text": MWF.APPPD.LP.modules.widgetmodules,
+    "className": "Widgetmodules"
+  },
+  "statement": {
+    "icon": "statement.png",
+    "text": MWF.APPPD.LP.modules.statement,
+    "className": "Statement"
+  },
+  "importer": {
+    "icon": "importer.png",
+    "text": MWF.APPPD.LP.modules.importer,
+    "className": "Importer"
+  }
+}
