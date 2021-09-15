@@ -42,10 +42,10 @@ class ActionLogin extends BaseAction {
 				throw new ExceptionPasswordEmpty();
 			}
 			if (Config.token().isInitialManager(credential)) {
-				if (!StringUtils.equals(Config.token().getPassword(), password)) {
+				if (!Config.token().verifyPassword(credential, password)) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
-				wo = this.manager(request, response, business, Wo.class);
+				wo = this.manager(request, response, business, credential, Wo.class);
 			} else {
 				/** 普通用户登录,也有可能拥有管理员角色 */
 				String personId = business.person().getWithCredential(credential);

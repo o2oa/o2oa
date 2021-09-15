@@ -43,7 +43,8 @@ public abstract class CipherManagerJaxrsFilter extends TokenFilter {
 					}
 					response.getWriter().write(result.toJson());
 				} else if ((!TokenType.cipher.equals(effectivePerson.getTokenType()))
-						&& (!TokenType.manager.equals(effectivePerson.getTokenType()))) {
+						&& (!TokenType.manager.equals(effectivePerson.getTokenType()))
+						&& (!TokenType.systemManager.equals(effectivePerson.getTokenType()))) {
 					/** 需要自己标志500 */
 					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					response.setHeader("Content-Type", "application/json;charset=UTF-8");

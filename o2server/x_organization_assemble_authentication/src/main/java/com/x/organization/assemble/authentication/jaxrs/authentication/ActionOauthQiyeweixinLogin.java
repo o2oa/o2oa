@@ -40,7 +40,7 @@ public class ActionOauthQiyeweixinLogin extends BaseAction {
             }
             Wo wo = new Wo();
             if (Config.token().isInitialManager(userId)) {
-                wo = this.manager(request, response, business, Wo.class);
+                wo = this.manager(request, response, business, userId, Wo.class);
             } else {
                 /* 普通用户登录,也有可能拥有管理员角色 */
                 String personId = business.person().getWithCredential(userId);
