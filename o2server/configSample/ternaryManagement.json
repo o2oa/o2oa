@@ -1,0 +1,12 @@
+{
+  "enable": false,
+  "systemManager": "systemManager",
+  "systemManagerDistinguishedName": "系统管理员@systemManager@P",
+  "systemManagerPassword": "",
+  "securityManager": "securityManager",
+  "securityManagerDistinguishedName": "安全管理员@securityManager@P",
+  "securityManagerPassword": "",
+  "auditManager": "auditManager",
+  "auditManagerDistinguishedName": "安全审计员@auditManager@P",
+  "auditManagerPassword": ""
+}
