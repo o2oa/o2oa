@@ -265,7 +265,15 @@ MWF.APPPD.LP = {
         "widget": "部件",
         "widgetmodules": "部件元素",
         "address": "地址",
-        "importer": "数据导入"
+        "importer": "数据导入",
+
+        "group_all": "所有组件",
+        "group_form": "表单组件",
+        "group_layout": "布局组件",
+        "group_data": "数据组件",
+        "group_filetext": "文件编辑组件",
+        "group_function": "功能组件",
+        "group_element": "Element组件",
     },
     "filedConfigurator": {
         "sequence": "序号",
