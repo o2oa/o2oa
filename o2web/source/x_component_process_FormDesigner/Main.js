@@ -33,11 +33,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 			this.options.title = this.options.title + "-"+MWF.APPFD.LP.newForm;
 		}
         this.actions = MWF.Actions.get("x_processplatform_assemble_designer");
-		//this.actions = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
-		
 		this.lp = MWF.xApplication.process.FormDesigner.LP;
-
-//		this.processData = this.options.processData;
 	},
 	
 	loadApplication: function(callback){
@@ -91,11 +87,6 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     copyModule: function(){
         if (this.shortcut) {
             if (this.form) {
-                //           if (this.form.isFocus){
-                debugger;
-                // if (!this.form.node.contains(document.activeElement)){
-                //     return false;
-                // }
                 if (this.form.currentSelectedModule) {
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
@@ -125,8 +116,6 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     cutModule: function(){
         if (this.shortcut) {
             if (this.form) {
-                //          if (this.form.isFocus){
-                //if (!this.form.node.contains(document.activeElement)) return false;
                 if (this.form.currentSelectedModule) {
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
@@ -136,19 +125,14 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                         _form.currentSelectedModule = null;
                         _form.selected();
                         _form = null;
-                        //module.form.selected();
                     }
                 }
-                //           }
             }
         }
     },
     pasteModule: function(){
         if (this.shortcut) {
             if (this.form) {
-                debugger;
-                //if (!this.form.node.contains(document.activeElement)) return false;
-                //    if (this.form.isFocus){
                 if (MWF.clipboard.data) {
                     if (MWF.clipboard.data.type == "form") {
                         var html = MWF.clipboard.data.data.html;
@@ -157,26 +141,14 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                             "styles": {"display": "none"},
                             "html": html
                         }).inject(this.content);
-                        //var pid = "";
                         Object.each(json, function (moduleJson) {
                             var oid = moduleJson.id;
                             var id = moduleJson.id;
-                        //    if (!pid){
-                                var idx = 1;
-                                while (this.form.json.moduleList[id]) {
-                                    id = oid + "_" + idx;
-                                    idx++;
-                                }
-                        //        pid = id;
-                        //    }else{
-                        //        idx = 1;
-                        //        var id = pid+"_"+moduleJson.moduleName;
-                        //        var prefix = pid+"_"+moduleJson.moduleName;
-                        //        while (this.form.json.moduleList[id]){
-                        //            id = prefix+"_"+idx;
-                        //            idx++;
-                        //        }
-                        //    }
+                            var idx = 1;
+                            while (this.form.json.moduleList[id]) {
+                                id = oid + "_" + idx;
+                                idx++;
+                            }
 
                             if (oid != id) {
                                 moduleJson.id = id;
@@ -185,7 +157,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                             }
                             this.form.json.moduleList[moduleJson.id] = moduleJson;
                         }.bind(this));
-                        delete json;
+                        json = null;
 
                         var injectNode = this.form.node;
                         var where = "bottom";
@@ -207,15 +179,13 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                             module = this.form.loadModule(copyModuleJson, copyModuleNode, parent);
                             module._setEditStyle_custom("id");
                             module.selected();
-                            //loadModule: function(json, dom, parent)
 
                             copyModuleNode = tmpNode.getFirst();
                         }
                         tmpNode.destroy();
-                        delete tmpNode;
+                        tmpNode = null;
                     }
                 }
-                //      }
             }
         }
     },
@@ -307,35 +277,41 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 			}
 		}).inject(this.toolbarNode);
 
+        this.toolbarTitleCategoryActionNode = new Element("div", {
+            "styles": this.css.toolbarTitleCategoryActionNode
+        }).inject(this.toolbarNode);
+
+        this.categoryActionMenu = new o2.xDesktop.Menu(this.toolbarTitleCategoryActionNode, {
+            "event": "click", "style": "flatUser", "offsetX": 0, "offsetY": 0, "container": this.node,
+            "onQueryShow": this.showCategoryMenu.bind(this)
+        });
+        this.categoryActionMenu.load();
+
         this.toolbarGroupContentNode = new Element("div", {"styles": this.css.toolbarGroupContentNode}).inject(this.toolbarNode);
         this.toolbarGroupContentNode.addEvent("selectstart", function(e){
             e.preventDefault();
             e.stopPropagation();
         });
-
-		// this.toolbarContentNode = new Element("div", {
-		// 	"styles": this.css.toolbarContentNode,
-		// 	"events": {
-		// 		"selectstart": function(e){
-        //             e.preventDefault();
-        //             e.stopPropagation();
-		// 		}
-		// 	}
-		// }).inject(this.toolbarNode);
-        //
-        // if (this.toolbarContentNode){
-        //     this.setScrollBar(this.toolbarContentNode, null, {
-        //         "V": {"x": 0, "y": 0},
-        //         "H": {"x": 0, "y": 0}
-        //     });
-        //     MWF.require("MWF.widget.ScrollBar", function(){
-        //         new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
-        //             "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
-        //         });
-        //     }.bind(this));
-        // }
-
 	},
+
+    showCategoryMenu: function(){
+        this.categoryActionMenu.items.each(function(item){
+            debugger;
+            if (this.currentToolGroup && this.currentToolGroup.data.text==item.options.text){
+                item.setDisable(true);
+                var imgDiv = item.item.getFirst();
+                var img = imgDiv.getElement("img");
+                if (!img) img = new Element("img", {"styles": item.menu.css.menuItemImg}).inject(imgDiv);
+                img.set("src", this.path+this.options.style+"/check.png");
+            }else{
+                item.setDisable(false);
+                var imgDiv = item.item.getFirst();
+                var img = imgDiv.getElement("img");
+                if (img) img.destroy();
+            }
+        }.bind(this));
+    },
+
 	switchToolbarMode: function(){
 		if (this.toolbarMode=="all"){
 			var size = this.toolbarNode.getSize();
@@ -354,7 +330,9 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 			this.formNode.setStyle("margin-left", ""+formMargin+"px");
 			
 			this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNodeRight);
-			
+
+			this.toolbarGroupContentNode.getElements(".o2formModuleTools").hide();
+
 			this.toolbarMode="simple";
 		}else{
 			sizeX = 60 + this.toolbarDecrease;
@@ -371,6 +349,9 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 			this.toolbarTitleNode.set("text", MWF.APPFD.LP.tools);
 			
 			this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNode);
+
+            this.toolbarGroupContentNode.getElements(".o2formModuleTools").show();
+
 			this.toolbarMode="all";
 		}
 		
@@ -1017,112 +998,6 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             }.bind(this));
         }
     },
-
-	// loadTools1: function(){
-	// 	var designer = this;
-    //
-    //     this.toolbarContentNode = new Element("div", {
-    //         "styles": this.css.toolbarContentNode,
-    //     }).inject(this.toolbarGroupContentNode);
-    //
-    //
-    //
-    //
-    //     if (this.toolbarContentNode){
-    //         this.setScrollBar(this.toolbarContentNode, null, {
-    //             "V": {"x": 0, "y": 0},
-    //             "H": {"x": 0, "y": 0}
-    //         });
-    //         MWF.require("MWF.widget.ScrollBar", function(){
-    //             new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
-    //                 "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
-    //             });
-    //         }.bind(this));
-    //     }
-    //
-    //
-
-// 		this.getTools(function(){
-// 			Object.each(this.toolsData, function(value, key){
-// 				var toolNode = new Element("div", {
-// 					"styles": this.css.toolbarToolNode,
-// 					"title": value.text,
-// 					"events": {
-// 						"mouseover": function(e){
-// 							try {
-// 								this.setStyles(designer.css.toolbarToolNodeOver);
-// 							}catch(e){
-// 								this.setStyles(designer.css.toolbarToolNodeOverCSS2);
-// 							};
-// 						},
-// 						"mouseout": function(e){
-// 							try {
-// 								this.setStyles(designer.css.toolbarToolNode);
-// 							}catch(e){};
-// 						},
-// 						"mousedown": function(e){
-// 							try {
-// 								this.setStyles(designer.css.toolbarToolNodeDown);
-// 							}catch(e){
-// 								this.setStyles(designer.css.toolbarToolNodeDownCSS2);
-// 							};
-// 						},
-// 						"mouseup": function(e){
-// 							try {
-// 								this.setStyles(designer.css.toolbarToolNodeUp);
-// 							}catch(e){
-// 								this.setStyles(designer.css.toolbarToolNodeUpCSS2);
-// 							};
-// 						}
-// 					}
-// 				}).inject(this.toolbarContentNode);
-// 				toolNode.store("toolClass", value.className);
-//
-// 				var iconNode = new Element("div", {
-// 					"styles": this.css.toolbarToolIconNode
-// 				}).inject(toolNode);
-// 				iconNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/"+value.icon+")");
-//
-// 				var textNode = new Element("div", {
-// 					"styles": this.css.toolbarToolTextNode,
-// 					"text": value.text
-// 				});
-// 				textNode.inject(toolNode);
-//
-// //				var designer = this;
-// 				toolNode.addEvent("mousedown", function(e){
-//
-// 					var className = this.retrieve("toolClass");
-// 					designer.form.createModule(className, e);
-// 				});
-//
-// 				this.tools.push(toolNode);
-// 			}.bind(this));
-// 		}.bind(this));
-// 	},
-// 	getTools: function(callback){
-//
-// 		if (this.toolsData){
-// 			if (callback) callback();
-// 		}else{
-// 			var toolsDataUrl = this.path+this.options.style+"/tools.json";
-// 			var r = new Request.JSON({
-// 				url: toolsDataUrl,
-// 				secure: false,
-// 				async: false,
-// 				method: "get",
-// 				noCache: true,
-// 				onSuccess: function(responseJSON, responseText){
-// 					this.toolsData = responseJSON;
-// 					if (callback) callback();
-// 				}.bind(this),
-// 				onError: function(text, error){
-// 					this.notice("request tools data error: "+error, "error");
-// 				}.bind(this)
-// 			});
-// 			r.send();
-// 		}
-// 	},
 	
 	//resizeNode------------------------------------------------
     resizeNodeLeftRight: function(){
@@ -1162,9 +1037,9 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         y = nodeSize.y-y;
         this.toolbarGroupContentNode.setStyle("height", ""+y+"px");
         var groupHeight = 0;
-        this.toolGroups.each(function(g){
-            groupHeight += g.toolbarGroupTitleNode.getSize().y;
-        });
+        // this.toolGroups.each(function(g){
+        //     groupHeight += g.toolbarGroupTitleNode.getSize().y;
+        // });
         var contentHeight = y-groupHeight-5;
         this.toolGroups.each(function(g){
             g.setContentHeight(contentHeight);
@@ -1224,9 +1099,9 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         y = nodeSize.y-y;
         this.toolbarGroupContentNode.setStyle("height", ""+y+"px");
         var groupHeight = 0;
-        this.toolGroups.each(function(g){
-            groupHeight += g.toolbarGroupTitleNode.getSize().y;
-        });
+        // this.toolGroups.each(function(g){
+        //     groupHeight += g.toolbarGroupTitleNode.getSize().y;
+        // });
         var contentHeight = y-groupHeight-5;
         this.toolGroups.each(function(g){
             g.setContentHeight(contentHeight);
@@ -1937,19 +1812,18 @@ MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
         this.load();
     },
     load: function(){
-
         this.toolbarGroupNode = new Element("div", {
             "styles": this.css.toolbarGroupNode,
         }).inject(this.app.toolbarGroupContentNode);
 
-        this.toolbarGroupTitleNode = new Element("div", {
-            "class": "mainColor_bg",
-            "styles": this.css.toolbarGroupTitleNode,
-            "text": this.data.text,
-            "events": {
-                "click": this.show.bind(this)
-            }
-        }).inject(this.toolbarGroupNode);
+        // this.toolbarGroupTitleNode = new Element("div", {
+        //     "class": "mainColor_bg",
+        //     "styles": this.css.toolbarGroupTitleNode,
+        //     "text": this.data.text,
+        //     "events": {
+        //         "click": this.show.bind(this)
+        //     }
+        // }).inject(this.toolbarGroupNode);
 
         this.toolbarContentNode = new Element("div", {
             "styles": this.css.toolbarContentNode,
@@ -1968,6 +1842,15 @@ MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
 
         this.toolbarContentNode.setStyle("height", "0px");
         this.toolbarContentNode.hide();
+
+
+
+
+        var memuItem = this.app.categoryActionMenu.addMenuItem(this.data.text, "click", function(){this.show();}.bind(this));
+        //memuItem.styleName = style.style;
+        // var imgDiv = memuItem.item.getFirst();
+        // var imgNode = new Element("div", {"styles": memuItem.menu.css.menuItemImg}).inject(imgDiv);
+        // imgNode.setStyle("background-color", color);
     },
     setContentHeight: function(height){
         debugger;
@@ -1979,35 +1862,46 @@ MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
     show: function(){
         if (this.app.currentToolGroup != this){
             if (this.app.currentToolGroup) this.app.currentToolGroup.hide();
-            if (!this.morph){
-                this.morph = new Fx.Morph(this.toolbarContentNode, {
-                    "duration": "100",
-                    transition: Fx.Transitions.Sine.easeOut
-                });
-            }
+            // if (!this.morph){
+            //     this.morph = new Fx.Morph(this.toolbarContentNode, {
+            //         "duration": "100",
+            //         transition: Fx.Transitions.Sine.easeOut
+            //     });
+            // }
+            // this.toolbarContentNode.show();
+            // this.morph.start({"height": [0, this.height]}).chain(function(){
+            //     if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.show();
+            //     this.app.currentToolGroup = this;
+            //     this.isShow = true;
+            // }.bind(this));
             this.toolbarContentNode.show();
-            this.morph.start({"height": [0, this.height]}).chain(function(){
-                if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.show();
-                this.app.currentToolGroup = this;
-                this.isShow = true;
-            }.bind(this));
+            this.toolbarContentNode.setStyle("height", this.height);
+            if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.show();
+            this.app.currentToolGroup = this;
+            this.isShow = true;
+
+            if (this.app.toolbarMode=="all") this.app.toolbarTitleNode.set("text", this.data.text);
         }
     },
     hide: function(){
         if (this.app.currentToolGroup==this) this.app.currentToolGroup = null;
-        if (!this.morph){
-            this.morph = new Fx.Morph(this.toolbarContentNode, {
-                "duration": "100",
-                transition: Fx.Transitions.Sine.easeOut
-            });
-        }
-        this.isShow = false;
+        // if (!this.morph){
+        //     this.morph = new Fx.Morph(this.toolbarContentNode, {
+        //         "duration": "100",
+        //         transition: Fx.Transitions.Sine.easeOut
+        //     });
+        // }
+        // this.isShow = false;
+        // if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.hide();
+        // this.morph.start({
+        //     "height": [this.height, 0]
+        // }).chain(function(){
+        //     this.toolbarContentNode.hide();
+        // }.bind(this));
+
+        this.toolbarContentNode.hide();
         if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.hide();
-        this.morph.start({
-            "height": [this.height, 0]
-        }).chain(function(){
-            this.toolbarContentNode.hide();
-        }.bind(this));
+        this.isShow = false;
     },
 
     loadTools: function(){
@@ -2058,15 +1952,13 @@ MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
                     iconNode.set("html", "<i class=\""+value.fontIcon+"\"></i>");
                 }
 
-                var textNode = new Element("div", {
+                var textNode = new Element("div.o2formModuleTools", {
                     "styles": this.css.toolbarToolTextNode,
                     "text": value.text
                 });
                 textNode.inject(toolNode);
 
-//				var designer = this;
                 toolNode.addEvent("mousedown", function(e){
-
                     var className = this.retrieve("toolClass");
                     designer.form.createModule(className, e, group.data.name);
                 });
