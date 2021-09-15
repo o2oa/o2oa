@@ -100,6 +100,7 @@ public class Config {
 	public static final String PATH_CONFIG_EMAIL = "config/email.json";
 	public static final String PATH_CONFIG_WEB = "config/web.json";
 	public static final String PATH_CONFIG_MOCK = "config/mock.json";
+	public static final String PATH_CONFIG_TERNARY_MANAGEMENT = "config/ternaryManagement.json";
 
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
@@ -598,6 +599,19 @@ public class Config {
 			instance().token = o;
 		}
 		return instance().token;
+	}
+
+	private TernaryManagement ternaryManagement;
+
+	public static synchronized TernaryManagement ternaryManagement() throws Exception {
+		if (null == instance().ternaryManagement) {
+			TernaryManagement o = BaseTools.readConfigObject(PATH_CONFIG_TERNARY_MANAGEMENT, TernaryManagement.class);
+			if (null == o) {
+				o = TernaryManagement.defaultInstance();
+			}
+			instance().ternaryManagement = o;
+		}
+		return instance().ternaryManagement;
 	}
 
 	private ExternalDataSources externalDataSources;
