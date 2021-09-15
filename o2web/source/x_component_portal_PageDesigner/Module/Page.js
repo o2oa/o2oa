@@ -14,14 +14,14 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 				"styles" : "injectActionTop",
 				"event" : "click",
 				"action" : "injectTop",
-				"title": MWF.APPPD.LP.formAction["insertTop"]
+				"title": MWF.APPPOD.LP.formAction["insertTop"]
 			},
 			{
 				"name" : "bottom",
 				"styles" : "injectActionBottom",
 				"event" : "click",
 				"action" : "injectBottom",
-				"title": MWF.APPPD.LP.formAction["insertBottom"]
+				"title": MWF.APPPOD.LP.formAction["insertBottom"]
 			}
 		]
 	},
@@ -272,36 +272,38 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		return moduleNodes;
 	},
 
+	// parseModules: function(parent, dom){
+	// 	var tmpDom = null;
+	// 	var subDom = dom.getFirst();
+	// 	while (subDom){
+	// 		if (subDom.get("MWFtype")){
+	// 			var json = this.getDomjson(subDom);
+	// 			if (json) module = this.loadModule(json, subDom, parent);
+	// 		}
+	// 		if (!json) tmpDom = subDom;
+	// 		subDom = subDom.getNext();
+	//
+	// 		if (tmpDom){
+	// 			tmpDom.destroy();
+	// 			tmpDom = null;
+	// 		}
+	// 	}
+	// },
 	parseModules: function(parent, dom){
-        var tmpDom = null;
+		var moduleNodes = [];
 		var subDom = dom.getFirst();
 		while (subDom){
 			if (subDom.get("MWFtype")){
-//				var module = subDom.retrieve("module");
-//				alert(subDom.get("id")+": "+module);
-//				if (!module){
-					var json = this.getDomjson(subDom);
-                    if (json) module = this.loadModule(json, subDom, parent);
-
-//				}
-//                if (module.moduleType=="container") this.parseModules(module, subDom);
-//			}else{
-//				this.parseModules(parent, subDom);
+				var json = this.getDomjson(subDom);
+				var moduleNode = subDom;
+				moduleNodes.push({"dom": moduleNode, "json": json});
 			}
-//			else if (subDom.getFirst()){
-//				subDom = subDom.getFirst();
-//				this.parseModules(parent, subDom);
-//			}else{
-//				subDom = subDom.getNext();
-//			}
-            if (!json) tmpDom = subDom;
 			subDom = subDom.getNext();
-
-            if (tmpDom){
-                tmpDom.destroy();
-                tmpDom = null;
-            }
 		}
+
+		moduleNodes.each(function(obj){
+			module = this.loadModule(obj.json, obj.dom, parent);
+		}.bind(this));
 	},
 	
 	getDomjson: function(dom){
@@ -371,10 +373,11 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		}.bind(this));
 	},
 	getTemplateData: function(className, callback, async){
+		debugger;
 		if (this.dataTemplate[className]){
 			if (callback) callback(this.dataTemplate[className]);
 		}else{
-			var templateUrl = "../x_component_portal_PageDesigner/Module/"+className+"/template.json";
+			var templateUrl = (MWF["PC"+className].templateJsonPath || "../x_component_portal_PageDesigner/Module/")+className+"/template.json";
 			MWF.getJSON(templateUrl, function(responseJSON, responseText){
 				this.dataTemplate[className] = responseJSON;
 				if (callback) callback(responseJSON);

@@ -1,5 +1,5 @@
-MWF.APPPD = MWF.xApplication.portal.PageDesigner;
-MWF.APPPD.options = {
+MWF.APPPOD = MWF.xApplication.portal.PageDesigner;
+MWF.APPPOD.options = {
 	"multitask": true,
 	"executable": false
 };
@@ -11,12 +11,12 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-        "template": "template.json",
+        "template": "page.json",
         "templateId": "",
         "name": "portal.PageDesigner",
         "icon": "icon.png",
-        "title": MWF.APPPD.LP.title,
-        "appTitle": MWF.APPPD.LP.title,
+        "title": MWF.APPPOD.LP.title,
+        "appTitle": MWF.APPPOD.LP.title,
         "id": "",
         "actions": null,
         "category": null,
@@ -30,7 +30,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 		}
 		if (!this.options.id){
 			this.options.desktopReload = false;
-			this.options.title = this.options.title + "-"+MWF.APPPD.LP.newPage;
+			this.options.title = this.options.title + "-"+MWF.APPPOD.LP.newPage;
 		}
         this.actions = MWF.Actions.get("x_portal_assemble_designer");
 		//this.actions = new MWF.xApplication.portal.PortalManager.Actions.RestActions();
@@ -202,9 +202,14 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 		this.loadToolbar();
 		this.loadPageNode();
 		this.loadProperty();
-		this.loadTools();
-		this.resizeNode();
-		this.addEvent("resize", this.resizeNode.bind(this));
+		//this.loadTools();
+        this.loadTools(function(){
+            this.resizeNode();
+            this.addEvent("resize", this.resizeNode.bind(this));
+        }.bind(this));
+
+		// this.resizeNode();
+		// this.addEvent("resize", this.resizeNode.bind(this));
 		this.loadPage();
 		
 		if (this.toolbarContentNode){
@@ -223,6 +228,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 		this.toolsData = null;
 		this.toolbarMode = "all";
 		this.tools = [];
+        this.toolGroups = [];
 		this.toolbarDecrease = 0;
 		
 		this.designNode = null;
@@ -247,7 +253,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 	loadToolbar: function(){
 		this.toolbarTitleNode = new Element("div", {
 			"styles": this.css.toolbarTitleNode,
-			"text": MWF.APPPD.LP.tools
+			"text": MWF.APPPOD.LP.tools
 		}).inject(this.toolbarNode);
 		
 		this.toolbarTitleActionNode = new Element("div", {
@@ -258,17 +264,50 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 				}.bind(this)
 			}
 		}).inject(this.toolbarNode);
-		
-		this.toolbarContentNode = new Element("div", {
-			"styles": this.css.toolbarContentNode,
-			"events": {
-				"selectstart": function(e){
-                    e.preventDefault();
-                    e.stopPropagation();
-				}
-			}
-		}).inject(this.toolbarNode);
+
+        this.toolbarTitleCategoryActionNode = new Element("div", {
+            "styles": this.css.toolbarTitleCategoryActionNode
+        }).inject(this.toolbarNode);
+
+        this.categoryActionMenu = new o2.xDesktop.Menu(this.toolbarTitleCategoryActionNode, {
+            "event": "click", "style": "flatUser", "offsetX": 0, "offsetY": 0, "container": this.node,
+            "onQueryShow": this.showCategoryMenu.bind(this)
+        });
+        this.categoryActionMenu.load();
+
+        this.toolbarGroupContentNode = new Element("div", {"styles": this.css.toolbarGroupContentNode}).inject(this.toolbarNode);
+        this.toolbarGroupContentNode.addEvent("selectstart", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+		// this.toolbarContentNode = new Element("div", {
+		// 	"styles": this.css.toolbarContentNode,
+		// 	"events": {
+		// 		"selectstart": function(e){
+        //             e.preventDefault();
+        //             e.stopPropagation();
+		// 		}
+		// 	}
+		// }).inject(this.toolbarNode);
 	},
+    showCategoryMenu: function(){
+        this.categoryActionMenu.items.each(function(item){
+            debugger;
+            if (this.currentToolGroup && this.currentToolGroup.data.text==item.options.text){
+                item.setDisable(true);
+                var imgDiv = item.item.getFirst();
+                var img = imgDiv.getElement("img");
+                if (!img) img = new Element("img", {"styles": item.menu.css.menuItemImg}).inject(imgDiv);
+                img.set("src", this.path+this.options.style+"/check.png");
+            }else{
+                item.setDisable(false);
+                var imgDiv = item.item.getFirst();
+                var img = imgDiv.getElement("img");
+                if (img) img.destroy();
+            }
+        }.bind(this));
+    },
 	switchToolbarMode: function(){
 		if (this.toolbarMode=="all"){
 			var size = this.toolbarNode.getSize();
@@ -287,7 +326,9 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 			this.pageNode.setStyle("margin-left", ""+pageMargin+"px");
 			
 			this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNodeRight);
-			
+
+            this.toolbarGroupContentNode.getElements(".o2formModuleTools").hide();
+
 			this.toolbarMode="simple";
 		}else{
 			sizeX = 60 + this.toolbarDecrease;
@@ -301,9 +342,12 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 				node.getLast().setStyle("display", "block");
 			});
 			
-			this.toolbarTitleNode.set("text", MWF.APPPD.LP.tools);
+			this.toolbarTitleNode.set("text", MWF.APPPOD.LP.tools);
 			
 			this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNode);
+
+            this.toolbarGroupContentNode.getElements(".o2formModuleTools").show();
+
 			this.toolbarMode="all";
 		}
 		
@@ -827,7 +871,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 
 		this.propertyTitleNode = new Element("div", {
 			"styles": this.css.propertyTitleNode,
-			"text": MWF.APPPD.LP.property
+			"text": MWF.APPPOD.LP.property
 		}).inject(this.propertyNode);
         if (this.options.style=="bottom"){
             this.propertyTitleNode.setStyle("cursor", "row-resize");
@@ -1032,90 +1076,113 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 	},
 	
 	//loadTools------------------------------
-	loadTools: function(){
-		var designer = this;
-		this.getTools(function(){
-			Object.each(this.toolsData, function(value, key){
-				var toolNode = new Element("div", {
-					"styles": this.css.toolbarToolNode,
-					"title": value.text,
-					"events": {
-						"mouseover": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNodeOver);
-							}catch(e){
-								this.setStyles(designer.css.toolbarToolNodeOverCSS2);
-							};
-						},
-						"mouseout": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNode);
-							}catch(e){};
-						},
-						"mousedown": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNodeDown);
-							}catch(e){
-								this.setStyles(designer.css.toolbarToolNodeDownCSS2);
-							};
-						},
-						"mouseup": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNodeUp);
-							}catch(e){
-								this.setStyles(designer.css.toolbarToolNodeUpCSS2);
-							};
-						}
-					}
-				}).inject(this.toolbarContentNode);
-				toolNode.store("toolClass", value.className);
-				
-				var iconNode = new Element("div", {
-					"styles": this.css.toolbarToolIconNode
-				}).inject(toolNode);
-				iconNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/"+value.icon+")");
-				
-				var textNode = new Element("div", {
-					"styles": this.css.toolbarToolTextNode,
-					"text": value.text
-				});
-				textNode.inject(toolNode);
-				
-//				var designer = this;
-				toolNode.addEvent("mousedown", function(e){
+    loadTools: function(callback){
+        o2.loadCss("../o2_lib/vue/element/index.css");
+        this.getGroups(function(){
+            this.toolsGroupData.forEach(function(o){
+                //var o = this.toolsGroupData[key];
+                this.toolGroups.push(new MWF.xApplication.portal.PageDesigner.ToolsGroup(o, this));
+            }, this);
 
-					var className = this.retrieve("toolClass");
-					designer.page.createModule(className, e);
-				});
-				
-				this.tools.push(toolNode);
-			}.bind(this));
-		}.bind(this));
-	},
-	getTools: function(callback){
+            if (callback) callback();
+        }.bind(this));
+    },
+    getGroups: function(callback){
+        if (this.toolsGroupData){
+            if (callback) callback();
+        }else{
+            var toolsGroupDataUrl = this.path+this.options.style+"/toolsGroup.json";
+            o2.JSON.get(toolsGroupDataUrl, function(responseJSON){
+                this.toolsGroupData = responseJSON;
+                if (callback) callback();
+            }.bind(this));
+        }
+    },
 
-		if (this.toolsData){
-			if (callback) callback();
-		}else{
-			var toolsDataUrl = this.path+this.options.style+"/tools.json";
-			var r = new Request.JSON({
-				url: toolsDataUrl,
-				secure: false,
-				async: false,
-				method: "get",
-				noCache: true,
-				onSuccess: function(responseJSON, responseText){
-					this.toolsData = responseJSON;
-					if (callback) callback();
-				}.bind(this),
-				onError: function(text, error){
-				    debugger;
-					this.notice("request tools data error: "+error, "error");
-				}.bind(this)
-			});
-			r.send();
-		}
-	},
+// 	loadTools: function(){
+// 		var designer = this;
+// 		this.getTools(function(){
+// 			Object.each(this.toolsData, function(value, key){
+// 				var toolNode = new Element("div", {
+// 					"styles": this.css.toolbarToolNode,
+// 					"title": value.text,
+// 					"events": {
+// 						"mouseover": function(e){
+// 							try {
+// 								this.setStyles(designer.css.toolbarToolNodeOver);
+// 							}catch(e){
+// 								this.setStyles(designer.css.toolbarToolNodeOverCSS2);
+// 							};
+// 						},
+// 						"mouseout": function(e){
+// 							try {
+// 								this.setStyles(designer.css.toolbarToolNode);
+// 							}catch(e){};
+// 						},
+// 						"mousedown": function(e){
+// 							try {
+// 								this.setStyles(designer.css.toolbarToolNodeDown);
+// 							}catch(e){
+// 								this.setStyles(designer.css.toolbarToolNodeDownCSS2);
+// 							};
+// 						},
+// 						"mouseup": function(e){
+// 							try {
+// 								this.setStyles(designer.css.toolbarToolNodeUp);
+// 							}catch(e){
+// 								this.setStyles(designer.css.toolbarToolNodeUpCSS2);
+// 							};
+// 						}
+// 					}
+// 				}).inject(this.toolbarContentNode);
+// 				toolNode.store("toolClass", value.className);
+//
+// 				var iconNode = new Element("div", {
+// 					"styles": this.css.toolbarToolIconNode
+// 				}).inject(toolNode);
+// 				iconNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/"+value.icon+")");
+//
+// 				var textNode = new Element("div", {
+// 					"styles": this.css.toolbarToolTextNode,
+// 					"text": value.text
+// 				});
+// 				textNode.inject(toolNode);
+//
+// //				var designer = this;
+// 				toolNode.addEvent("mousedown", function(e){
+//
+// 					var className = this.retrieve("toolClass");
+// 					designer.page.createModule(className, e);
+// 				});
+//
+// 				this.tools.push(toolNode);
+// 			}.bind(this));
+// 		}.bind(this));
+// 	},
+// 	getTools: function(callback){
+//
+// 		if (this.toolsData){
+// 			if (callback) callback();
+// 		}else{
+// 			var toolsDataUrl = this.path+this.options.style+"/tools.json";
+// 			var r = new Request.JSON({
+// 				url: toolsDataUrl,
+// 				secure: false,
+// 				async: false,
+// 				method: "get",
+// 				noCache: true,
+// 				onSuccess: function(responseJSON, responseText){
+// 					this.toolsData = responseJSON;
+// 					if (callback) callback();
+// 				}.bind(this),
+// 				onError: function(text, error){
+// 				    debugger;
+// 					this.notice("request tools data error: "+error, "error");
+// 				}.bind(this)
+// 			});
+// 			r.send();
+// 		}
+// 	},
 	
 	//resizeNode------------------------------------------------
     resizeNodeLeftRight: function(){
@@ -1153,7 +1220,15 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 
         y = titleSize.y+titleMarginTop+titleMarginBottom+titlePaddingTop+titlePaddingBottom;
         y = nodeSize.y-y;
-        this.toolbarContentNode.setStyle("height", ""+y+"px");
+
+        this.toolbarGroupContentNode.setStyle("height", ""+y+"px");
+        var groupHeight = 0;
+        var contentHeight = y-groupHeight-5;
+        this.toolGroups.each(function(g){
+            g.setContentHeight(contentHeight);
+        });
+
+        //this.toolbarContentNode.setStyle("height", ""+y+"px");
 
 
         titleSize = this.propertyTitleNode.getSize();
@@ -1205,9 +1280,18 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 
         y = titleSize.y+titleMarginTop+titleMarginBottom+titlePaddingTop+titlePaddingBottom;
         y = nodeSize.y-y;
-        this.toolbarContentNode.setStyle("height", ""+y+"px");
 
+        this.toolbarGroupContentNode.setStyle("height", ""+y+"px");
+        var groupHeight = 0;
+        // this.toolGroups.each(function(g){
+        //     groupHeight += g.toolbarGroupTitleNode.getSize().y;
+        // });
+        var contentHeight = y-groupHeight-5;
+        this.toolGroups.each(function(g){
+            g.setContentHeight(contentHeight);
+        });
 
+        //this.toolbarContentNode.setStyle("height", ""+y+"px");
 
         titleSize = this.propertyTitleNode.getSize();
         titleMarginTop = this.propertyTitleNode.getStyle("margin-top").toFloat();
@@ -1435,7 +1519,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             var fieldList = this.getFieldList();
 
             this._savePage(pcData, mobileData, fieldList, function(responseJSON){
-                this.notice(MWF.APPPD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"});
+                this.notice(MWF.APPPOD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"});
                 if (!this.pcPage.json.name) this.pcPage.treeNode.setText("<"+this.json.type+"> "+this.json.id);
                 this.pcPage.treeNode.setTitle(this.pcPage.json.id);
                 this.pcPage.node.set("id", this.pcPage.json.id);
@@ -1603,11 +1687,11 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         var category = (categorySelect.options[categorySelect.selectedIndex].value=="$newCategory") ? newCategoryNode.get("value") : categorySelect.options[categorySelect.selectedIndex].value;
         var description = descriptionNode.get("value");
         if (!name){
-            this.notice(MWF.APPPD.LP.notice["saveTemplate_inputName"], "error", nameNode, {x: "left", y:"top"});
+            this.notice(MWF.APPPOD.LP.notice["saveTemplate_inputName"], "error", nameNode, {x: "left", y:"top"});
             return false;
         }
         if (categorySelect.options[categorySelect.selectedIndex].value=="$newCategory" && !newCategoryNode.get("value")){
-            this.notice(MWF.APPPD.LP.notice["saveTemplate_inputCategory"], "error", categorySelect, {x: "left", y:"top"});
+            this.notice(MWF.APPPOD.LP.notice["saveTemplate_inputCategory"], "error", categorySelect, {x: "left", y:"top"});
             return false;
         }
 
@@ -1618,7 +1702,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             "outline": iconNode.get("html")
         };
         this.addPageTemplate(pcData, mobileData, data, function(){
-            this.notice(MWF.APPPD.LP.notice["saveTemplate_success"], "ok", null, {x: "left", y:"bottom"});
+            this.notice(MWF.APPPOD.LP.notice["saveTemplate_success"], "ok", null, {x: "left", y:"bottom"});
             markNode.destroy();
             areaNode.destroy();
         }.bind(this), function(xhr, text, error){
@@ -1710,7 +1794,149 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         }
     }
 });
-//
-// MWF.APPPD.Script = new Class({
-//
-// })
+
+MWF.xApplication.portal.PageDesigner.ToolsGroup = new Class({
+    Implements: [Events],
+
+    initialize: function(data, app){
+        this.data = data;
+        this.app = app;
+        this.css = this.app.css;
+        this.tools = [];
+        this.load();
+    },
+    load: function(){
+        this.toolbarGroupNode = new Element("div", {
+            "styles": this.css.toolbarGroupNode,
+        }).inject(this.app.toolbarGroupContentNode);
+
+        this.toolbarContentNode = new Element("div", {
+            "styles": this.css.toolbarContentNode,
+        }).inject(this.toolbarGroupNode);
+
+        this.loadTools();
+
+        if (this.toolbarContentNode){
+            this.app.setScrollBar(this.toolbarContentNode, null, {
+                "V": {"x": 0, "y": 0},
+                "H": {"x": 0, "y": 0}
+            }, function(scrollBar){
+                this.scrollBar = scrollBar;
+            }.bind(this));
+        }
+
+        this.toolbarContentNode.setStyle("height", "0px");
+        this.toolbarContentNode.hide();
+
+        var memuItem = this.app.categoryActionMenu.addMenuItem(this.data.text, "click", function(){this.show();}.bind(this));
+    },
+    setContentHeight: function(height){
+        this.height = height;
+        if (this.isShow){
+            this.toolbarContentNode.setStyle("height", ""+this.height+"px");
+        }
+    },
+    show: function(){
+        if (this.app.currentToolGroup != this){
+            if (this.app.currentToolGroup) this.app.currentToolGroup.hide();
+            this.toolbarContentNode.show();
+            this.toolbarContentNode.setStyle("height", this.height);
+            if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.show();
+            this.app.currentToolGroup = this;
+            this.isShow = true;
+
+            if (this.app.toolbarMode=="all") this.app.toolbarTitleNode.set("text", this.data.text);
+        }
+    },
+    hide: function(){
+        if (this.app.currentToolGroup==this) this.app.currentToolGroup = null;
+        this.toolbarContentNode.hide();
+        if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.hide();
+        this.isShow = false;
+    },
+
+    loadTools: function(){
+        var designer = this.app;
+        var group = this;
+        this.getTools(function(){
+            Object.each(this.toolsData, function(value, key){
+                var toolNode = new Element("div", {
+                    "styles": this.css.toolbarToolNode,
+                    "title": value.text,
+                    "events": {
+                        "mouseover": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeOver);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeOverCSS2);
+                            };
+                        },
+                        "mouseout": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNode);
+                            }catch(e){};
+                        },
+                        "mousedown": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeDown);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeDownCSS2);
+                            };
+                        },
+                        "mouseup": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeUp);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeUpCSS2);
+                            };
+                        }
+                    }
+                }).inject(this.toolbarContentNode);
+                toolNode.store("toolClass", value.className);
+
+                var iconNode = new Element("div", {
+                    "styles": this.css.toolbarToolIconNode
+                }).inject(toolNode);
+                if (value.icon) iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+value.icon+")");
+                if (value.fontIcon){
+                    iconNode.addClass("mainColor_color");
+                    iconNode.set("html", "<i class=\""+value.fontIcon+"\"></i>");
+                }
+
+                var textNode = new Element("div.o2formModuleTools", {
+                    "styles": this.css.toolbarToolTextNode,
+                    "text": value.text
+                });
+                textNode.inject(toolNode);
+
+                toolNode.addEvent("mousedown", function(e){
+                    var className = this.retrieve("toolClass");
+                    designer.page.createModule(className, e, group.data.name);
+                });
+
+                this.tools.push(toolNode);
+            }.bind(this));
+
+            if (this.data.name==="default") this.show();
+        }.bind(this));
+    },
+
+    getTools: function(callback){
+        if (this.toolsData){
+            if (callback) callback();
+        }else{
+            var toolsDataUrl = this.app.path+this.app.options.style+"/"+this.data.json;
+            o2.JSON.get(toolsDataUrl, function(responseJSON){
+                this.toolsData = responseJSON;
+
+                if (!this.app.toolsData){
+                    this.app.toolsData = this.toolsData;
+                }else{
+                    this.app.toolsData = Object.merge(this.app.toolsData, this.toolsData)
+                }
+
+                if (callback) callback();
+            }.bind(this));
+        }
+    },
+});
