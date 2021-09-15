@@ -416,24 +416,10 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		var subDom = dom.getFirst();
 		while (subDom){
 			if (subDom.get("MWFtype")){
-//				var module = subDom.retrieve("module");
-//				alert(subDom.get("id")+": "+module);
-//				if (!module){
-					var json = this.getDomjson(subDom);
-					var moduleNode = subDom;
+				var json = this.getDomjson(subDom);
+				var moduleNode = subDom;
 				moduleNodes.push({"dom": moduleNode, "json": json});
-					//module = this.loadModule(json, subDom, parent);
-//				}
-//                if (module.moduleType=="container") this.parseModules(module, subDom);
-//			}else{
-//				this.parseModules(parent, subDom);
 			}
-//			else if (subDom.getFirst()){
-//				subDom = subDom.getFirst();
-//				this.parseModules(parent, subDom);
-//			}else{
-//				subDom = subDom.getNext();
-//			}
 			subDom = subDom.getNext();
 		}
 
