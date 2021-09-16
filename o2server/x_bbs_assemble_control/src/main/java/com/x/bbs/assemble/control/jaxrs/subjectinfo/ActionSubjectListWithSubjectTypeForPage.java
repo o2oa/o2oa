@@ -13,6 +13,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.MD5Tool;
 import com.x.base.core.project.tools.SortTools;
 import com.x.base.core.project.x_bbs_assemble_control;
 import com.x.bbs.assemble.control.ThisApplication;
@@ -65,7 +66,7 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 		}
 		
 		if( check ) {
-			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(),isBBSManager,page,count);
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(), MD5Tool.getMD5Str(gson.toJson(wrapIn)) ,isBBSManager,page,count);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 			if( optional.isPresent() ){
 				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) optional.get();
