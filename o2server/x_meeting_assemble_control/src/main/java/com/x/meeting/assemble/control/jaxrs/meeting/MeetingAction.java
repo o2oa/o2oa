@@ -68,7 +68,7 @@ public class MeetingAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "修改会议,标题,说明,邀请人", action = ActionEdit.class)
+	@JaxrsMethodDescribe(value = "修改会议,标题,说明,只能增加邀请人", action = ActionEdit.class)
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -85,6 +85,25 @@ public class MeetingAction extends BaseAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+	
+	@JaxrsMethodDescribe(value = "修改会议、标题、说明、邀请人", action = ActionModify.class)
+	@POST
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("{id}")
+	public void modify(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionModify.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionModify().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
 
 	@JaxrsMethodDescribe(value = "会议提前开始,修改开始时间", action = ActionEditStartTime.class)
 	@PUT
