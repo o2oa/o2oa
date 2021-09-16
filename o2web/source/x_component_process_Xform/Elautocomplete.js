@@ -52,15 +52,15 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         //     }
         // }.bind(this);
         if (this.json.itemType!=='script'){
-            app.methods.$fetchSuggestions = function(qs){
+            app.methods.$fetchSuggestions = function(qs, cb){
                 if (this.json.itemValues){
                     var items = this.json.itemValues.filter(function(v){
                         return !qs || v.indexOf(qs)!=-1;
                     }).map(function(v){
                         return {"value": v};
                     });
-                    //cb(items);
-                    return items;
+                    cb(items);
+                    //return items;
                 }
                 return [];
             }.bind(this);
