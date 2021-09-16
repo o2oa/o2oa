@@ -3,6 +3,7 @@ package com.x.base.core.project.logger;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,10 +57,24 @@ public class Logger {
 
 	private static final String HTTPMESSAGEFORMAT = "person:{}, method:{}, request:{}, remoteHost:{}, emoteAddr:{}, head:{}, body:{}";
 
-	public void trace(String message, Object... os) {
-		if (internalLogger.isTraceEnabled()) {
-			internalLogger.trace(message, os);
-		}
+	public boolean isTraceEnabled() {
+		return internalLogger.isTraceEnabled();
+	}
+
+	public boolean isDebugEnabled() {
+		return internalLogger.isDebugEnabled();
+	}
+
+	public boolean isInfoEnabled() {
+		return internalLogger.isInfoEnabled();
+	}
+
+	public boolean isWarnEnabled() {
+		return internalLogger.isWarnEnabled();
+	}
+
+	public boolean isErrorEnabled() {
+		return internalLogger.isErrorEnabled();
 	}
 
 	@Deprecated
@@ -72,15 +87,39 @@ public class Logger {
 		debug(message, os);
 	}
 
+	public void trace(String message, Object... os) {
+		if (internalLogger.isTraceEnabled()) {
+			internalLogger.trace(message, os);
+		}
+	}
+
+	public void trace(String message, Supplier<?>... suppliers) {
+		if (internalLogger.isTraceEnabled()) {
+			internalLogger.trace(message, getAll(suppliers));
+		}
+	}
+
 	public void debug(String message, Object... os) {
 		if (internalLogger.isDebugEnabled()) {
 			internalLogger.debug(message, os);
 		}
 	}
 
+	public void debug(String message, Supplier<?>... suppliers) {
+		if (internalLogger.isDebugEnabled()) {
+			internalLogger.debug(message, getAll(suppliers));
+		}
+	}
+
 	public void info(String message, Object... os) {
 		if (internalLogger.isInfoEnabled()) {
 			internalLogger.info(message, os);
+		}
+	}
+
+	public void info(String message, Supplier<?>... suppliers) {
+		if (internalLogger.isInfoEnabled()) {
+			internalLogger.info(message, getAll(suppliers));
 		}
 	}
 
@@ -106,6 +145,10 @@ public class Logger {
 				e.printStackTrace();
 			}
 		}, Logger.class.getName() + "-warn").start();
+	}
+
+	public void warn(String message, Supplier<?>... suppliers) {
+		warn(message, getAll(suppliers));
 	}
 
 	public void error(Exception e) {
@@ -240,6 +283,18 @@ public class Logger {
 	private String url(HttpServletRequest request) {
 		return request.getRequestURL().toString()
 				+ (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
+	}
+
+	private static Object[] getAll(final Supplier<?>... suppliers) {
+		if (suppliers == null) {
+			return new Object[0];
+		}
+		final Object[] result = new Object[suppliers.length];
+		for (int i = 0; i < result.length; i++) {
+			Supplier<?> supplier = suppliers[i];
+			result[i] = (supplier == null) ? null : supplier.get();
+		}
+		return result;
 	}
 
 }
