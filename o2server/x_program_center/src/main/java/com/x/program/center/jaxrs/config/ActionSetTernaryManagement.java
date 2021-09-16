@@ -34,7 +34,7 @@ public class ActionSetTernaryManagement extends BaseAction {
 		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
 			throw new ExceptionModifyConfig();
 		}
-		Wi.copier.copy(wi, Config.ternaryManagement());
+		Config.ternaryManagement().setEnable(wi.getEnable());
 		Config.ternaryManagement().save();
 		this.configFlush(effectivePerson);
 		/*if(BooleanUtils.isTrue(Config.ternaryManagement().getEnable())){
