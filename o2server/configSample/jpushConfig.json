@@ -5,11 +5,13 @@
   "huaweiPushEnable": false,
   "huaweiPushConfig": {
     "appId": "100016851",
-    "appSecret": "b3ad9287e8d1d16d0aad8fde66e59118"
+    "appSecret": "b3ad9287e8d1d16d0aad8fde66e59118",
+    "###appId": "华为推送应用的appId###",
+    "###appSecret": "华为推送应用的appSecret###"
   },
   "###enable": "是否启用.###",
   "###appKey": "极光推送应用的AppKey###",
   "###masterSecret": "极光推送应用的Master Secret###",
-  "###huaweiPushEnable": "是否启用华为推送###",
-  "###huaweiPushConfig": "华为推送配置###"
+  "###huaweiPushEnable": "是否开启华为推送###",
+  "###huaweiPushConfig": "华为推送的配置###"
 }
