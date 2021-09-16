@@ -3750,7 +3750,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * })
     */
     toWord: function(callback, name, cb, notSave){
-
         var docNmae = name || "";
         if (!docNmae){
             try{
@@ -3791,20 +3790,21 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     "site": this.json.toWordSite || "$doc",
                     "content": content
                 };
-                o2.Actions.get("x_processplatform_assemble_surface").docToWord(this.form.businessData.work.id, body, function(json){
-                    if (this.form.businessData.workCompleted){
-                        o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
-                            if (callback) callback(attjson.data);
-                            this.showToWord(attjson.data);
-                        }.bind(this));
-                    }else{
-                        o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
-                            if (callback) callback(attjson.data);
-                            this.showToWord(attjson.data);
-                        }.bind(this));
-                    }
-                }.bind(this));
-                if (cb) cb();
+                this.toWordServiceService(body, callback, cb);
+                // o2.Actions.get("x_processplatform_assemble_surface").docToWord(this.form.businessData.work.id, body, function(json){
+                //     if (this.form.businessData.workCompleted){
+                //         o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
+                //             if (callback) callback(attjson.data);
+                //             this.showToWord(attjson.data);
+                //         }.bind(this));
+                //     }else{
+                //         o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
+                //             if (callback) callback(attjson.data);
+                //             this.showToWord(attjson.data);
+                //         }.bind(this));
+                //     }
+                //     if (cb) cb();
+                // }.bind(this));
             }else{
                 if (n==-1) fileName = fileName+".docx";
                 var content = this.getDocumentHtml();
@@ -3821,20 +3821,22 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             formData.append("fileName", fileName);
                             formData.append('file', oo_content);
 
-                            o2.Actions.get("x_processplatform_assemble_surface").V2UploadWorkOrWorkCompleted(this.form.businessData.work.id, formData, oo_content, function (json) {
-                                if (this.form.businessData.workCompleted) {
-                                    o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id, function (attjson) {
-                                        if (callback) callback(attjson.data);
-                                        this.showToWord(attjson.data);
-                                    }.bind(this));
-                                } else {
-                                    o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id, function (attjson) {
-                                        if (callback) callback(attjson.data);
-                                        this.showToWord(attjson.data);
-                                    }.bind(this));
-                                }
-                                if (cb) cb();
-                            }.bind(this));
+
+                            this.toWordOOXMLService(formData, oo_content, callback, cb);
+                            // o2.Actions.get("x_processplatform_assemble_surface").V2UploadWorkOrWorkCompleted(this.form.businessData.work.id, formData, oo_content, function (json) {
+                            //     if (this.form.businessData.workCompleted) {
+                            //         o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id, function (attjson) {
+                            //             if (callback) callback(attjson.data);
+                            //             this.showToWord(attjson.data);
+                            //         }.bind(this));
+                            //     } else {
+                            //         o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id, function (attjson) {
+                            //             if (callback) callback(attjson.data);
+                            //             this.showToWord(attjson.data);
+                            //         }.bind(this));
+                            //     }
+                            //     if (cb) cb();
+                            // }.bind(this));
                         }else{
                             if (callback) callback(oo_content, fileName);
                             if (cb) cb();
@@ -3848,6 +3850,84 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this._readFiletext();
             }else{
                 this._createEditor("inline");
+            }
+        }.bind(this));
+    },
+    toWordServiceService: function(body, callback, cb){
+        if (this.toWordServiceServiceProcessing){
+            if (!this.toWordServiceServiceProcessList) this.toWordServiceServiceProcessList = [];
+            this.toWordServiceServiceProcessList.push({
+                body: body,
+                callback: callback,
+                cb: cb
+            });
+            return false;
+        }
+
+        this.toWordServiceServiceProcessing = true;
+
+        o2.Actions.get("x_processplatform_assemble_surface").docToWord(this.form.businessData.work.id, body, function(json){
+            if (this.form.businessData.workCompleted){
+                o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
+                    if (callback) callback(attjson.data);
+                    this.showToWord(attjson.data);
+                }.bind(this));
+            }else{
+                o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
+                    if (callback) callback(attjson.data);
+                    this.showToWord(attjson.data);
+                }.bind(this));
+            }
+            if (cb) cb();
+            this.toWordServiceServiceProcessing = false;
+            if (this.toWordServiceServiceProcessList &&  this.toWordServiceServiceProcessList.length){
+                var o = this.toWordServiceServiceProcessList.shift();
+                this.toWordServiceService(o.body, o.callback, o.cb);
+            }
+        }.bind(this), function(){
+            this.toWordServiceServiceProcessing = false;
+            if (this.toWordServiceServiceProcessList &&  this.toWordServiceServiceProcessList.length){
+                var o = this.toWordServiceServiceProcessList.shift();
+                this.toWordServiceService(o.body, o.callback, o.cb);
+            }
+        });
+    },
+    toWordOOXMLService: function(formData, oo_content, callback, cb){
+        if (this.toWordOOXMLServiceProcessing){
+            if (!this.toWordOOXMLServiceProcessList) this.toWordOOXMLServiceProcessList = [];
+            this.toWordOOXMLServiceProcessList.push({
+                formData: formData,
+                oo_content: oo_content,
+                callback: callback,
+                cb: cb
+            });
+            return false;
+        }
+
+        this.toWordOOXMLServiceProcessing = true;
+        o2.Actions.get("x_processplatform_assemble_surface").V2UploadWorkOrWorkCompleted(this.form.businessData.work.id, formData, oo_content, function (json) {
+            if (this.form.businessData.workCompleted) {
+                o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id, function (attjson) {
+                    if (callback) callback(attjson.data);
+                    this.showToWord(attjson.data);
+                }.bind(this));
+            } else {
+                o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id, function (attjson) {
+                    if (callback) callback(attjson.data);
+                    this.showToWord(attjson.data);
+                }.bind(this));
+            }
+            if (cb) cb();
+            this.toWordOOXMLServiceProcessing = false;
+            if (this.toWordOOXMLServiceProcessList &&  this.toWordOOXMLServiceProcessList.length){
+                var o = this.toWordOOXMLServiceProcessList.shift();
+                this.toWordOOXMLService(o.formData, o.oo_content, o.callback, o.cb);
+            }
+        }.bind(this), function(){
+            this.toWordOOXMLServiceProcessing = false;
+            if (this.toWordOOXMLServiceProcessList &&  this.toWordOOXMLServiceProcessList.length){
+                var o = this.toWordOOXMLServiceProcessList.shift();
+                this.toWordOOXMLService(o.formData, o.oo_content, o.callback, o.cb);
             }
         }.bind(this));
     },
