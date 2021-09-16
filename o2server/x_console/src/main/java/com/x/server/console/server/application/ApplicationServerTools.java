@@ -150,7 +150,8 @@ public class ApplicationServerTools extends JettySeverTools {
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
 
-		if (BooleanUtils.isTrue(applicationServer.getRequestLogEnable())) {
+		if (BooleanUtils.isTrue(applicationServer.getRequestLogEnable())
+				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			server.setRequestLog(requestLog(applicationServer));
 		}
 
@@ -178,7 +179,8 @@ public class ApplicationServerTools extends JettySeverTools {
 				+ "application.request.yyyyMMdd." + Config.node() + ".log");
 		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
 				+ "}t \"%r\" %s %O %{ms}T";
-		if (BooleanUtils.isTrue(applicationServer.getRequestLogBodyEnable())) {
+		if (BooleanUtils.isTrue(applicationServer.getRequestLogBodyEnable())
+				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			return new ServerRequestLogBody(asyncRequestLogWriter,
 					StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
 							: applicationServer.getRequestLogFormat());
