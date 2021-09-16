@@ -113,7 +113,8 @@ public class CenterServerTools extends JettySeverTools {
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
 
-		if (BooleanUtils.isTrue(centerServer.getRequestLogEnable())) {
+		if (BooleanUtils.isTrue(centerServer.getRequestLogEnable())
+				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			server.setRequestLog(requestLog(centerServer));
 		}
 
@@ -136,7 +137,8 @@ public class CenterServerTools extends JettySeverTools {
 				Config.dir_logs().toString() + File.separator + "center.request.yyyyMMdd." + Config.node() + ".log");
 		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
 				+ "}t \"%r\" %s %O %{ms}T";
-		if (BooleanUtils.isTrue(centerServer.getRequestLogBodyEnable())) {
+		if (BooleanUtils.isTrue(centerServer.getRequestLogBodyEnable())
+				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			return new ServerRequestLog(asyncRequestLogWriter,
 					StringUtils.isEmpty(centerServer.getRequestLogFormat()) ? format
 							: centerServer.getRequestLogFormat());
