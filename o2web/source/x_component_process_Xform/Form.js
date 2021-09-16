@@ -2547,9 +2547,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
 
                     var promise;
-                    if (this.toWordSubmitList && this.toWordSubmitList.length){
+                    if (_self.toWordSubmitList && _self.toWordSubmitList.length){
                         var p = [];
-                        this.toWordSubmitList.each(function(editor){
+                        _self.toWordSubmitList.each(function(editor){
                             if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
                         });
                         Promise.all(p).then(function(){
