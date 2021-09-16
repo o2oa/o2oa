@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.tools.MD5Tool;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -62,7 +63,7 @@ public class ActionSubjectListForPage extends BaseAction {
 		}
 		
 		if( check ) {
-			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(),isBBSManager,page,count);
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(), MD5Tool.getMD5Str(gson.toJson(wrapIn)), isBBSManager, page, count);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 			if( optional.isPresent() ){
 				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) optional.get();
