@@ -19,7 +19,6 @@ import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.MessageFactory;
 import com.x.meeting.core.entity.ConfirmStatus;
 import com.x.meeting.core.entity.Meeting;
-import com.x.meeting.core.entity.Room;
 
 class ActionDeleteInvite extends BaseAction {
 
