@@ -1,5 +1,5 @@
-echo "ready to stop server $(cd "$(dirname "$0")"; pwd)"
-$(cd "$(dirname "$0")"; pwd)/jvm/linux_java11/bin/java -javaagent:$(cd "$(dirname "$0")"; pwd)/console.jar -cp $(cd "$(dirname "$0")"; pwd)/console.jar com.x.server.console.swapcommand.Exit
+echo ready to stop server $(cd "$(dirname "$0")"; pwd)
+$(cd "$(dirname "$0")"; pwd)/jvm/linux/bin/java -javaagent:$(cd "$(dirname "$0")"; pwd)/console.jar -cp $(cd "$(dirname "$0")"; pwd)/console.jar com.x.server.console.swapcommand.Exit
 echo 'check server stoped wait 2s-10s'
 sleep 2
 PID=`ps -ef | grep "$(cd "$(dirname "$0")"; pwd)"  | grep -v grep | awk '{print $2}'`
