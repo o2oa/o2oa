@@ -142,6 +142,19 @@ public class Meeting extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + invitePersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> invitePersonList;
+	
+	
+	public static final String inviteDelPersonList_FIELDNAME = "inviteDelPersonList";
+	@FieldDescribe("邀请人员,身份,组织已删列表.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ inviteDelPersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + inviteDelPersonList_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + inviteDelPersonList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + inviteDelPersonList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> inviteDelPersonList;
 
 	// public static final String expandInvitePersonList_FIELDNAME =
 	// "expandInvitePersonList";
@@ -418,5 +431,15 @@ public class Meeting extends SliceJpaObject {
 	public void removeCheckinPerson(String distinguishedName) {
 		this.checkinPersonList = ListTools.removeStringFromList(distinguishedName, this.checkinPersonList);
 	}
+
+	public List<String> getInviteDelPersonList() {
+		return inviteDelPersonList;
+	}
+
+	public void setInviteDelPersonList(List<String> inviteDelPersonList) {
+		this.inviteDelPersonList = inviteDelPersonList;
+	}
+	
+	
 
 }
