@@ -597,6 +597,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideModeButton": "隐藏模式操作",
         "showInDatagrid": "数据网格中的展现",
 
+        "hideSizeButton": "隐藏粗细按钮",
+        "hideColorButton": "隐藏颜色按钮",
+        "hideImageButton": "隐藏插入图片按钮",
+        "hideImageClipperButton": "隐藏图片剪切按钮",
+
         "tableSize": "表格大小",
         "row": "行",
         "col": "列",
@@ -1205,7 +1210,9 @@ MWF.xApplication.process.FormDesigner.LP = {
             "logoUrl":"logo链接"
         },
         "tabletWidth": "手写板宽度",
-        "tabletHeight": "手写板高度"
+        "tabletHeight": "手写板高度",
+        "tabletSizeNote": "仅PC端有效，移动端横向满屏",
+        "tabletToolbarNote": "仅PC端有效，移动端不显示"
     },
     "actionBar": {
         "close":"关闭",

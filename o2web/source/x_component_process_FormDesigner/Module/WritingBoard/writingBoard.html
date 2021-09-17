@@ -27,12 +27,24 @@
                     <td class="editTableTitle">{{$.lp.tabletWidth}}</td>
                     <td class="editTableValue">
                         <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 100px;"/>px
+                        <div style="color: #666">({{$.lp.tabletSizeNote}})</div>
                     </td>
                 </tr>
                 <tr>
                     <td class="editTableTitle">{{$.lp.tabletHeight}}</td>
                     <td class="editTableValue">
                         <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 100px;"/>px
+                        <div style="color: #666">({{$.lp.tabletSizeNote}})</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.actionBar}}:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('size')!=-1)?'checked':''} type="checkbox" value="size"/>{{$.lp.hideSizeButton}}<br/>
+                        <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('color')!=-1)?'checked':''} type="checkbox" value="color"/>{{$.lp.hideColorButton}}<br/>
+                        <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('image')!=-1)?'checked':''} type="checkbox" value="image"/>{{$.lp.hideImageButton}}<br/>
+                        <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('imageClipper')!=-1)?'checked':''} type="checkbox" value="imageClipper"/>{{$.lp.hideImageClipperButton}}<br/>
+                        <div style="color: #666">({{$.lp.tabletToolbarNote}})</div>
                     </td>
                 </tr>
             </table>

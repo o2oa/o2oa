@@ -47,7 +47,7 @@
     "cursor": "pointer",
     "height": "25px",
     "line-height": "25px",
-    "width": "30px",
+    "min-width": "30px",
     "padding-left": "24px",
     "padding-right": "5px",
     "margin-left": "5px",
