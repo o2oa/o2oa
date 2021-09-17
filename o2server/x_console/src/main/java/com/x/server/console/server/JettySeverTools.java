@@ -1,6 +1,7 @@
 package com.x.server.console.server;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,6 +27,10 @@ import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.Config;
 
 public abstract class JettySeverTools {
+
+	protected JettySeverTools() {
+		// nothing
+	}
 
 	protected static void addHttpsConnector(Server server, Integer port, boolean persistentConnectionsEnable)
 			throws Exception {
@@ -64,7 +69,7 @@ public abstract class JettySeverTools {
 		server.addConnector(http);
 	}
 
-	protected static void cleanDirectory(File dir) throws Exception {
+	protected static void cleanDirectory(File dir) throws IOException {
 		FileUtils.forceMkdir(dir);
 		FileUtils.cleanDirectory(dir);
 	}
@@ -115,10 +120,6 @@ public abstract class JettySeverTools {
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-proxy-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("quartz-*.jar"));
-//		filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-api-*.jar"));
-//		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
-//		filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
-//		filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-slf4j-impl-*.jar"));
 		/* jersey从AppClassLoader加载 */
 		for (File o : FileUtils.listFiles(Config.dir_commons_ext().toFile(), filter, null)) {
 			jars.add(o.getAbsolutePath());

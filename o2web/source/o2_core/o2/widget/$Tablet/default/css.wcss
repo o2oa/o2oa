@@ -87,5 +87,64 @@
     "canvasWrap": {
         "border": "1px solid #ccc",
         "margin": "0px auto"
+    },
+    "cancel_mobile": {
+        "color": "#333",
+        "font-size": "16px",
+        "width": "36px",
+        "height": "36px",
+        "font-weight": "bold",
+        "position": "absolute",
+        "top": "20px",
+        "left": "30px"
+    },
+    "save_mobile": {
+        "color": "#4A90E2",
+        "font-size": "16px",
+        "width": "36px",
+        "height": "36px",
+        "font-weight": "bold",
+        "position": "absolute",
+        "top": "20px",
+        "right": "30px"
+    },
+    "undo_mobile": {
+        "background":"#fff url(../o2_core/o2/widget/$Tablet/default/icon/undo_normal.png) no-repeat center center",
+        "width": "36px",
+        "height": "36px",
+        "border-radius": "18px",
+        "box-shadow": "5px 4px 5px #ccc",
+        "position": "absolute",
+        "bottom": "20px",
+        "right": "130px"
+    },
+    "undo_mobile_disable": {
+        "background":"#fff url(../o2_core/o2/widget/$Tablet/default/icon/undo_disable.png) no-repeat center center"
+    },
+    "redo_mobile": {
+        "background":"#fff url(../o2_core/o2/widget/$Tablet/default/icon/redo_normal.png) no-repeat center center",
+        "width": "36px",
+        "height": "36px",
+        "border-radius": "18px",
+        "box-shadow": "5px 4px 5px #ccc",
+        "position": "absolute",
+        "bottom": "20px",
+        "right": "80px"
+    },
+    "redo_mobile_disable": {
+        "background":"#fff url(../o2_core/o2/widget/$Tablet/default/icon/redo_disable.png) no-repeat center center"
+    },
+    "reset_mobile": {
+        "background":"#fff url(../o2_core/o2/widget/$Tablet/default/icon/reset_normal.png) no-repeat center center",
+        "width": "36px",
+        "height": "36px",
+        "border-radius": "18px",
+        "box-shadow": "5px 4px 5px #ccc",
+        "position": "absolute",
+        "bottom": "20px",
+        "right": "30px"
+    },
+    "reset_mobile_disable": {
+        "background":"#fff url(../o2_core/o2/widget/$Tablet/default/icon/reset_disable.png) no-repeat center center"
     }
 }
