@@ -82,6 +82,8 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
                 this.loadHtmleditorScript(v); break;
             case "ImageClipper":
                 this.loadImageClipperScript(v); break;
+            case "WritingBoard":
+                this.loadWritingBoardScript(v); break;
             case "Log":
                 this.loadLogScript(v); break;
             case "Monitor":
