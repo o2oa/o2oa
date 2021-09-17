@@ -217,7 +217,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         }.bind(this));
 	},
 
-    _setValue: function(value, m){
+    _setValue: function(value, m, fireChange){
         var mothed = m || "__setValue";
 	    if (!!value){
             var p = o2.promiseAll(value).then(function(v){
@@ -225,11 +225,11 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
                 if (this.moduleSelectAG){
                     this.moduleValueAG = this.moduleSelectAG;
                     this.moduleSelectAG.then(function(){
-                        this[mothed](v);
+                        this[mothed](v, fireChange);
                         return v;
                     }.bind(this), function(){});
                 }else{
-                    this[mothed](v)
+                    this[mothed](v, fireChange)
                 }
                 return v;
             }.bind(this), function(){});
@@ -240,7 +240,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
                 this.moduleValueAG = null;
             }.bind(this));
         }else{
-            this[mothed](value);
+            this[mothed](value, fireChange);
         }
 
 
@@ -339,6 +339,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
     /**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}
      * @summary 为字段赋值，并且使值对应的选项选中。
      *  @param data{String|Promise} .
+     *  @param fireChange{boolean} 可选，是否触发change事件，默认false.
      *  @example
      *  this.form.get("fieldId").setData("test"); //赋文本值
      *  @example
@@ -348,8 +349,8 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
      *  var promise = dict.get("tools", true); //异步使用数据字典的get方法时返回Promise，参数true表示异步
      *  field.setData( promise );
      */
-    setData: function(data){
-	    return this._setValue(data, "__setData");
+    setData: function(data, fireChange){
+	    return this._setValue(data, "__setData", fireChange);
         // if (data && data.isAG){
         //     this.moduleValueAG = data;
         //     data.addResolve(function(v){
@@ -361,7 +362,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         // }
     },
 
-    __setData: function(data){
+    __setData: function(data, fireChange){
         this.moduleValueAG = null;
         var old = this.getInputData();
         this._setBusinessData(data);
@@ -387,7 +388,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
 		}
         this.fieldModuleLoaded = true;
         this.fireEvent("setData");
-        if (old!==data) this.fireEvent("change");
+        if (fireChange && old!==data) this.fireEvent("change");
 	},
 
     notValidationMode: function(text){

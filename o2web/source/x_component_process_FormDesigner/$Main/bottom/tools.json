@@ -14,16 +14,6 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.number,
     "className": "Number"
   },
-  //  "personfield": {
-  //    "icon": "personfield.png",
-  //    "text": "人员",
-  //    "className": "Personfield"
-  //  },
-  //  "orgfield": {
-  //    "icon": "orgfield.png",
-  //    "text": "组织",
-  //    "className": "Orgfield"
-  //  },
   "org": {
     "icon": "personfield.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.org,
@@ -107,11 +97,6 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.div,
     "className": "Div"
   },
-  //  "splitdiv": {
-  //    "icon": "splitdiv.png",
-  //    "text": "分布数据容器",
-  //    "className": "Div"
-  //  },
   "table": {
     "icon": "table.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.table,
@@ -177,6 +162,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.log,
     "className": "Log"
   },
+  "readLog": {
+    "icon": "log.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.readLog,
+    "className": "ReadLog"
+  },
   "monitor": {
     "icon": "monitor.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.monitor,
@@ -201,6 +191,26 @@
     "icon": "office.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.office,
     "className": "Office"
+  },
+  "iWebOffice": {
+    "icon": "iWebOffice.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.iWebOffice,
+    "className": "IWebOffice"
+  },
+  "yozoOffice": {
+    "icon": "yozoOffice.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.yozoOffice,
+    "className": "YozoOffice"
+  },
+  "onlyOffice": {
+    "icon": "onlyOffice.png",
+    "text": "onlyOffice",
+    "className": "OnlyOffice"
+  },
+  "wpsOffice": {
+    "icon": "wpsOffice.png",
+    "text": "wpsOffice",
+    "className": "WpsOffice"
   },
   "statementSelector": {
     "icon": "statementSelector.png",

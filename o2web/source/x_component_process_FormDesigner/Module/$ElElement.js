@@ -74,7 +74,18 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	},
 	_loadVue: function(callback){
 		if (!window.Vue){
-			o2.load(["vue_develop", "elementui"], { "sequence": true }, callback);
+			o2.load(["vue_develop", "elementui"], { "sequence": true }, function(){
+				window.Vue.config.errorHandler = function (err, vm, info) {
+					if (vm.$o2module && info=="nextTick"){
+						vm.$o2module._createVueAppNode();
+						vm.$o2module.node.setStyles(vm.$o2module.css.moduleNodeError);
+						vm.$el.parentNode.replaceChild(vm.$o2module.node, vm.$el);
+						vm.$el = vm.$o2module.node;
+						if (vm.$o2callback) vm.$o2module._afterMounted(vm.$o2module.node, vm.$o2callback);
+					}
+				}
+				if (callback) callback();
+			});
 		}else{
 			if (callback) callback();
 		}
@@ -134,17 +145,9 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		this.vueApp = this._createVueExtend(callback);
 		try{
 			this.vm = new Vue(this.vueApp);
-			// var p = {
-			// 	"$options": {
-			// 		"errorCaptured": function(err, vm, info){
-			// 			alert("p: errorCaptured:"+info);
-			// 		}
-			// 	}
-			// }
-			// this.vm.$parent = p;
-			// this.vm.config.errorHandler = function (err, vm, info) {
-			// 	alert("errorHandler: "+info)
-			// }
+			this.vm.$o2module = this;
+			this.vm.$o2callback = callback;
+
 			this.vm.$mount(this.node);
 		}catch(e){
 			this.node.store("module", this);
@@ -170,7 +173,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 			},
 			errorCaptured: function(err, vm, info){
 				alert("errorCaptured:"+info);
-				// return false;
+				return false;
 			}
 		};
 	},

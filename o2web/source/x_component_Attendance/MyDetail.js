@@ -788,6 +788,7 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
                         this.afterStartProcess(data, title, processName);
                     }.bind(this)
                 });
+                debugger;
                 starter.load();
             }.bind(this));
         }.bind(this));
@@ -795,21 +796,35 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
     afterStartProcess: function(data, title, processName){
         var workInfors = [];
         var currentTask = [];
+        var createUnit = "";
+        var workId = "";
+        debugger;
         data.each(function(work){
+            debugger;
             if (work.currentTaskIndex !== -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
             workInfors.push(this.getStartWorkInforObj(work));
+            createUnit = work.taskList[work.currentTaskIndex].creatorUnit;
+            workId = work.taskList[work.currentTaskIndex].work;
         }.bind(this));
 
         if (currentTask.length===1){
             var options = {"workId": currentTask[0], "appId": currentTask[0]};
             this.app.desktop.openApplication(null, "process.Work", options);
-
-            this.createStartWorkResault(workInfors, title, processName, false);
+            debugger;
+            this.createStartWorkResault(workInfors, title, processName, false,createUnit,workId);
         }else{
-            this.createStartWorkResault(workInfors, title, processName, true);
+            this.createStartWorkResault(workInfors, title, processName, true,createUnit,workId);
         }
     },
-    createStartWorkResault: function(workInfors, title, processName, isopen){
+    createStartWorkResault: function(workInfors, title, processName, isopen,createUnit,workId){
+        var data = {};
+        data["appealDescription"] = this.app.lp.appealAuditFlow+":"+processName;
+        data["workId"] = workId;
+        if(createUnit !=""){
+            data["unitName"] = createUnit;
+        }
+        debugger;
+        this.createAppeal(data);
         if(!layout.desktop.message)return;
         var content = "";
         workInfors.each(function(infor){
@@ -844,7 +859,7 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
         var currentTask = "";
         work.taskList.each(function(task, idx){
             title = task.title;
-            users.push(task.person+"("+task.department + ")");
+            users.push(task.person+"("+task.creatorUnit + ")");
             if (work.currentTaskIndex===idx) currentTask = task.id;
         }.bind(this));
         return {"activity": work.fromActivityName, "users": users, "currentTask": currentTask, "title" : title };
@@ -864,6 +879,10 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
         this.action.invoke({"name": "getProces", "async": false, "parameter": {"id": id}, "success": function(json){
                 if (callback) callback(json.data);
             }.bind(this)});
+    },
+    createAppeal: function(data){
+        this.app.restActions.createAppeal(this.data.id, data, function (json) {
+        }.bind(this));
     },
     seeAppeal : function(){
 

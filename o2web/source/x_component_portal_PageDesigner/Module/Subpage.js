@@ -12,21 +12,21 @@ MWF.xApplication.portal.PageDesigner.Module.Subpage = MWF.PCSubpage = new Class(
                 "icon": "move1.png",
                 "event": "mousedown",
                 "action": "move",
-                "title": MWF.APPPD.LP.formAction.move
+                "title": MWF.APPPOD.LP.formAction.move
             },
             {
                 "name": "delete",
                 "icon": "delete1.png",
                 "event": "click",
                 "action": "delete",
-                "title": MWF.APPPD.LP.formAction["delete"]
+                "title": MWF.APPPOD.LP.formAction["delete"]
             }
             // {
             //     "name": "styleBrush",
             //     "icon": "styleBrush.png",
             //     "event": "click",
             //     "action": "styleBrush",
-            //     "title": MWF.APPPD.LP.formAction["styleBrush"]
+            //     "title": MWF.APPPOD.LP.formAction["styleBrush"]
             // }
         ]
 	},
@@ -164,7 +164,7 @@ MWF.xApplication.portal.PageDesigner.Module.Subpage = MWF.PCSubpage = new Class(
     "delete": function(e){
         var module = this;
         this.page.designer.shortcut = false;
-        this.page.designer.confirm("warn", module.node, MWF.APPPD.LP.notice.deleteElementTitle, MWF.APPPD.LP.notice.deleteElement, 300, 120, function(){
+        this.page.designer.confirm("warn", module.node, MWF.APPPOD.LP.notice.deleteElementTitle, MWF.APPPOD.LP.notice.deleteElement, 300, 120, function(){
             if (this.queryGetPageDataFun) module.page.removeEvent("queryGetPageData", this.queryGetPageDataFun);
             if (this.postGetPageDataFun) module.page.removeEvent("postGetPageData", this.postGetPageDataFun);
 

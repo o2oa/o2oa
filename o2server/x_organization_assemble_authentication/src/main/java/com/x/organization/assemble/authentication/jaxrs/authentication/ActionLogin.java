@@ -14,7 +14,6 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
@@ -29,7 +28,6 @@ class ActionLogin extends BaseAction {
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -44,10 +42,10 @@ class ActionLogin extends BaseAction {
 				throw new ExceptionPasswordEmpty();
 			}
 			if (Config.token().isInitialManager(credential)) {
-				if (!StringUtils.equals(Config.token().getPassword(), password)) {
+				if (!Config.token().verifyPassword(credential, password)) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
-				wo = this.manager(request, response, business, Wo.class);
+				wo = this.manager(request, response, business, credential, Wo.class);
 			} else {
 				/** 普通用户登录,也有可能拥有管理员角色 */
 				String personId = business.person().getWithCredential(credential);
@@ -65,7 +63,6 @@ class ActionLogin extends BaseAction {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				wo = this.user(request, response, business, o, Wo.class);
-				audit.log(o.getDistinguishedName(), "登录");
 			}
 			result.setData(wo);
 			return result;

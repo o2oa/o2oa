@@ -401,6 +401,7 @@ public class AttendanceAppealInfoServiceAdv {
 
 			emc.beginTransaction( AttendanceAppealInfo.class );
 			emc.beginTransaction( AttendanceAppealAuditInfo.class );
+			emc.beginTransaction( AttendanceDetail.class );
 
 			attendanceAppealInfo.setStatus(status);
 			if( StringUtils.equalsAnyIgnoreCase( "end", activityType )){//审核结束了
@@ -409,6 +410,11 @@ public class AttendanceAppealInfoServiceAdv {
 			}else{
 				attendanceAppealInfo.setCurrentProcessor( currentProcessor );
 				attendanceAppealAuditInfo.setCurrentProcessor( currentProcessor );
+			}
+			if ( status == 1 ) {
+				attendanceDetailService.updateAppealProcessStatus( emc, attendanceAppealInfo.getId(), 9, false );
+			}else{
+				attendanceDetailService.updateAppealProcessStatus( emc, attendanceAppealInfo.getId(), -1, false );
 			}
 			emc.commit();
 		} catch ( Exception e ) {
