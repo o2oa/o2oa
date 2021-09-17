@@ -258,7 +258,13 @@ public class ApplicationServerTools extends JettySeverTools {
 					webApp.setContextPath("/" + clz.getSimpleName());
 					webApp.setResourceBase(dir.toAbsolutePath().toString());
 					webApp.setDescriptor(dir.resolve(Paths.get(PathTools.WEB_INF_WEB_XML)).toString());
-					webApp.setExtraClasspath(calculateExtraClassPath(clz));
+					Path ext = dir.resolve("WEB-INF").resolve("ext");
+					if (Files.exists(ext)) {
+						webApp.setExtraClasspath(calculateExtraClassPath(clz, ext));
+					} else {
+						webApp.setExtraClasspath(calculateExtraClassPath(clz));
+					}
+					logger.debug("{} extra class path:{}.", clz::getSimpleName, webApp::getExtraClasspath);
 					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
 							BooleanUtils.toStringTrueFalse(false));
 					webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled",
