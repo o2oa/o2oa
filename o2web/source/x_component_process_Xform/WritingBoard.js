@@ -3,9 +3,9 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
- * var WritingBoard = this.form.get("name"); //获取组件
+ * var writingBoard = this.form.get("name"); //获取组件
  * //方法2
- * var WritingBoard = this.target; //在组件事件脚本中获取
+ * var writingBoard = this.target; //在组件事件脚本中获取
  * @extends MWF.xApplication.process.Xform.$Module
  * @o2category FormComponents
  * @o2range {Process|CMS}
@@ -16,6 +16,9 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
     {
         Implements: [Events],
         Extends: MWF.APP$Module,
+        options: {
+            "moduleEvents": ["load", "queryLoad", "postLoad","change"]
+        },
         initialize: function (node, json, form, options) {
             this.node = $(node);
             this.node.store("module", this);
@@ -25,7 +28,6 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
             this.fieldModuleLoaded = false;
         },
         _loadUserInterface: function () {
-            debugger;
             this.field = true;
             this.node.empty();
 
@@ -207,10 +209,6 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
 
             this.handwritingFile = {};
             MWF.require("MWF.widget.Tablet", function () {
-                /**
-                 * @summary 手写板组件.
-                 * @member {o2.widget.Tablet}
-                 */
                 var id = this.getData();
                 var opt = {
                     "style": "default",
@@ -225,6 +223,7 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
                             var data = json.data;
                             this.setData(data ? data.id : "");
                             this.validation();
+                            this.fireEvent("change");
                         }.bind(this));
 
 
@@ -232,7 +231,7 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
                     "onCancel": function () {
                         this.handwritingNode.hide();
                     }.bind(this)
-                }
+                };
                 if (layout.mobile) {
                     opt.tools = [
                         "save", "|",
@@ -242,6 +241,14 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
                         "cancel"
                     ]
                 }
+
+                /**
+                 * @summary 手写板组件.
+                 * @member {o2.widget.Tablet}
+                 * @example
+                 * var tablet = this.form.get("fieldId").tablet; //获取手写板
+                 * tablet.cancel(); //关闭手写板
+                 */
                 this.tablet = new MWF.widget.Tablet(this.handwritingAreaNode, opt, null);
                 this.tablet.load();
             }.bind(this));
