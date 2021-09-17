@@ -445,7 +445,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		// }
 	},
 
-	__setData: function(data){
+	__setData: function(data, fireChange){
 		var old = this.getInputData();
         this._setBusinessData(data);
 		if (this.readonly|| this.json.isReadonly){
