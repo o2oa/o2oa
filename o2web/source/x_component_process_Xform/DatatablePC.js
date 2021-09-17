@@ -1889,8 +1889,8 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		var dateIndexArr = []; //日期格式列下标
 		var idx=0;
 		this.columnJsonList.each(function(c){
-			if ( c.available && c.mJson && c.mJson.type === "Calendar") {
-				dateIndexArr.push(idx);
+			if ( c.available && c.mJson ) {
+				if(c.mJson.type === "Calendar")dateIndexArr.push(idx);
 				idx++;
 			}
 		}.bind(this));
@@ -2099,8 +2099,8 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		this.columnJsonList.each(function(c){
 			if ( c.mJson && c.mJson.type === "Calendar") {
 				dateIndexArr.push(idx);
-				idx++;
 			}
+			idx++;
 		}.bind(this));
 		return dateIndexArr;
 	},
