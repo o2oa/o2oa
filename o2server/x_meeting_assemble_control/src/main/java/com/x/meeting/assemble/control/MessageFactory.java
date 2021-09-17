@@ -29,4 +29,9 @@ public class MessageFactory {
 		MessageConnector.send(MessageConnector.TYPE_MEETING_DELETE, title, person, meeting);
 	}
 
+	public static void meeting_deleteInvitePerson(String person, Meeting meeting) throws Exception {
+		String title = "会议:" + meeting.getSubject() + "已取消.";
+		MessageConnector.send(MessageConnector.TYPE_MEETING_DELETE, title, person, meeting);
+	}
+	
 }
