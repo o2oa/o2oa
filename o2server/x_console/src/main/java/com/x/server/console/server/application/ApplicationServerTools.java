@@ -150,7 +150,8 @@ public class ApplicationServerTools extends JettySeverTools {
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
 
-		if (BooleanUtils.isTrue(applicationServer.getRequestLogEnable())) {
+		if (BooleanUtils.isTrue(applicationServer.getRequestLogEnable())
+				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			server.setRequestLog(requestLog(applicationServer));
 		}
 
@@ -178,7 +179,8 @@ public class ApplicationServerTools extends JettySeverTools {
 		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");
 		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
 				+ "}t \"%r\" %s %O %{ms}T";
-		if (BooleanUtils.isTrue(applicationServer.getRequestLogBodyEnable())) {
+		if (BooleanUtils.isTrue(applicationServer.getRequestLogBodyEnable())
+				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			return new ServerRequestLogBody(asyncRequestLogWriter,
 					StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
 							: applicationServer.getRequestLogFormat());
@@ -258,7 +260,13 @@ public class ApplicationServerTools extends JettySeverTools {
 					webApp.setContextPath("/" + clz.getSimpleName());
 					webApp.setResourceBase(dir.toAbsolutePath().toString());
 					webApp.setDescriptor(dir.resolve(Paths.get(PathTools.WEB_INF_WEB_XML)).toString());
-					webApp.setExtraClasspath(calculateExtraClassPath(clz));
+					Path ext = dir.resolve("WEB-INF").resolve("ext");
+					if (Files.exists(ext)) {
+						webApp.setExtraClasspath(calculateExtraClassPath(clz, ext));
+					} else {
+						webApp.setExtraClasspath(calculateExtraClassPath(clz));
+					}
+					logger.debug("{} extra class path:{}.", clz::getSimpleName, webApp::getExtraClasspath);
 					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
 							BooleanUtils.toStringTrueFalse(false));
 					webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled",

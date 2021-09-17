@@ -63,6 +63,7 @@ MWFForum.getSystemConfig = function( code ){
         MWFForum.SystemSetting[code] = json.data;
     }.bind(this), function(){
         MWFForum.SystemSetting[code] = "";
+        return true;
     }, false );
 
     return MWFForum.SystemSetting[code];
