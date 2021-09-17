@@ -52,15 +52,15 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         //     }
         // }.bind(this);
         if (this.json.itemType!=='script'){
-            app.methods.$fetchSuggestions = function(qs){
+            app.methods.$fetchSuggestions = function(qs, cb){
                 if (this.json.itemValues){
                     var items = this.json.itemValues.filter(function(v){
                         return !qs || v.indexOf(qs)!=-1;
                     }).map(function(v){
                         return {"value": v};
                     });
-                    //cb(items);
-                    return items;
+                    cb(items);
+                    //return items;
                 }
                 return [];
             }.bind(this);
@@ -68,7 +68,9 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
             if (this.json.itemScript && this.json.itemScript.code){
                 var fetchSuggestions = this.form.Macro.exec(this.json.itemScript.code, this);
                 if (o2.typeOf(fetchSuggestions)==="function"){
-                    app.methods.$fetchSuggestions = fetchSuggestions;
+                    app.methods.$fetchSuggestions = function(){
+                        fetchSuggestions.apply(this, arguments);
+                    }.bind(this);
                 }
             }
 

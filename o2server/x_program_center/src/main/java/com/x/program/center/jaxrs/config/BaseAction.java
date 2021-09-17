@@ -1,8 +1,10 @@
 package com.x.program.center.jaxrs.config;
 
 import java.util.List;
+import java.util.Map;
 
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -153,6 +155,15 @@ class BaseAction extends StandardJaxrsAction {
 				}
 			});
 		});
+		List<Map.Entry<String, CenterServer>> centerList = Config.nodes().centerServers().orderedEntry();
+		for (Map.Entry<String, CenterServer> centerEntry : centerList) {
+			try {
+				CipherConnectionAction.get(effectivePerson.getDebugger(),
+						Config.url_x_program_center_jaxrs(centerEntry, "cache", "config", "flush"));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static class CacheLogObject extends GsonPropertyObject {

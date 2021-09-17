@@ -193,7 +193,7 @@ public class Business {
 			return true;
 		}
 		if (this.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
-				OrganizationDefinition.GroupManager)) {
+				OrganizationDefinition.GroupManager, OrganizationDefinition.SystemManager, OrganizationDefinition.SecurityManager)) {
 			return true;
 		}
 		return false;
@@ -204,7 +204,7 @@ public class Business {
 			return true;
 		}
 		if (this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager, OrganizationDefinition.OrganizationManager,
-				OrganizationDefinition.UnitManager)) {
+				OrganizationDefinition.UnitManager, OrganizationDefinition.SystemManager, OrganizationDefinition.SecurityManager)) {
 			return true;
 		}
 		if (ListTools.isNotEmpty(unit.getControllerList())) {
@@ -229,18 +229,18 @@ public class Business {
 			return true;
 		}
 		if (this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager, OrganizationDefinition.OrganizationManager,
-				OrganizationDefinition.PersonManager)) {
+				OrganizationDefinition.PersonManager, OrganizationDefinition.SystemManager, OrganizationDefinition.SecurityManager)) {
 			return true;
 		}
 		return false;
 	}
 
 	public boolean editable(EffectivePerson effectivePerson, Role role) throws Exception {
-		if (effectivePerson.isManager()) {
+		if (effectivePerson.isSecurityManager()) {
 			return true;
 		}
 		if (this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager, OrganizationDefinition.OrganizationManager,
-				OrganizationDefinition.RoleManager)) {
+				OrganizationDefinition.RoleManager, OrganizationDefinition.SecurityManager)) {
 			return true;
 		}
 		return false;

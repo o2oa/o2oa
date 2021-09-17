@@ -14,7 +14,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.logger.LoggerAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
@@ -22,7 +21,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("响应")
 public class EchoAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(LoggerAction.class);
+	private static Logger logger = LoggerFactory.getLogger(EchoAction.class);
 
 	@JaxrsMethodDescribe(value = "获取应答.", action = ActionGet.class)
 	@GET

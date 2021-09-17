@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,12 +18,12 @@ import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Unit;
@@ -50,7 +49,6 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationFlag, String processFlag,
 			JsonElement jsonElement) throws Exception {
-		Audit audit = logger.audit(effectivePerson);
 		/* 新建工作id */
 		String workId = "";
 		/* 已存在草稿id */
@@ -145,7 +143,6 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 					}
 				}
 			}
-			audit.log(null, "填单");
 		}
 		result.setData(wos);
 		return result;

@@ -121,6 +121,13 @@ MWF.xApplication.process.FormDesigner.Module.Htmleditor = MWF.FCHtmleditor = new
                     ];
             //    }
             }
+			if (!editorConfig.removeButtons){
+				editorConfig.removeButtons = "EasyImageUpload,ExportPdf";
+			}else{
+				editorConfig.removeButtons += ",EasyImageUpload,ExportPdf";
+			}
+			if (!editorConfig.removePlugins || !editorConfig.removePlugins.length) editorConfig.removePlugins = [];
+			editorConfig.removePlugins = editorConfig.removePlugins.concat(['cloudservices','easyimage', 'exportpdf']);
 
 
           //  CKEDITOR.basePath = COMMON.contentPath+"/res/framework/htmleditor/ckeditor/";

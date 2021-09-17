@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -85,9 +86,14 @@ class ActionGetLogin extends BaseAction {
 			List<String> roles = business.organization().role().listWithPerson(person.getDistinguishedName());
 			wo.setRoleList(roles);
 			TokenType tokenType = TokenType.user;
-			if (business.organization().person().hasRole(person.getDistinguishedName(),
-					OrganizationDefinition.Manager)) {
+			if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.Manager))) {
 				tokenType = TokenType.manager;
+			} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SystemManager))) {
+				tokenType = TokenType.systemManager;
+			} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SecurityManager))) {
+				tokenType = TokenType.securityManager;
+			} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager))) {
+				tokenType = TokenType.auditManager;
 			}
 			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), tokenType,
 					Config.token().getCipher());

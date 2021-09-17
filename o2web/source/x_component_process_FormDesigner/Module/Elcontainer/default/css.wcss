@@ -38,6 +38,15 @@
 		"-webkit-user-select": "none",
 		"-moz-user-select": "none",
 		"opacity": 1
+	},
+	"moduleNodeError": {
+		"border": "1px dashed #333",
+		"min-height": "30px",
+		"cursor": "pointer",
+		"margin": "3px 3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"opacity": 1
 	}
 
 }

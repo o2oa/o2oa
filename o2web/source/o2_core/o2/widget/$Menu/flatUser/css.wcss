@@ -9,8 +9,8 @@
 		"opacity": 0,
 		"position": "absolute",
 		"float": "left",
-		"min-width": "130px" ,
-		"border-radius": "2px",
+		"min-width": "140px" ,
+		"border-radius": "5px",
 		"box-shadow": "0 0 10px 0 rgba(0,0,0,0.25)",
 		"cursor": "default"
 	},

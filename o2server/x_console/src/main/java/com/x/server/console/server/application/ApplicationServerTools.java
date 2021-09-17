@@ -122,7 +122,7 @@ public class ApplicationServerTools extends JettySeverTools {
 
 		HandlerList handlers = new HandlerList();
 
-		logger.print("start to deploy official module: {}, custom module: {}.", officialClassInfos.size(),
+		logger.info("start to deploy official module: {}, custom module: {}.", officialClassInfos.size(),
 				customNames.size());
 
 		deployOfficial(applicationServer, handlers, officialClassInfos);
@@ -170,12 +170,12 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static RequestLog requestLog(ApplicationServer applicationServer) throws Exception {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
-		asyncRequestLogWriter.setFilenameDateFormat("yyyy_MM_dd");
 		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);
 		asyncRequestLogWriter.setRetainDays(applicationServer.getRequestLogRetainDays());
-		asyncRequestLogWriter.setFilename(Config.dir_logs().toString() + File.separator + "yyyy_MM_dd." + Config.node()
-				+ ".application.request.log");
+		asyncRequestLogWriter.setFilename(Config.dir_logs().toString() + File.separator
+				+ "application.request.yyyy_MM_dd." + Config.node() + ".log");
+		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");
 		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
 				+ "}t \"%r\" %s %O %{ms}T";
 		if (BooleanUtils.isTrue(applicationServer.getRequestLogBodyEnable())) {
@@ -206,7 +206,13 @@ public class ApplicationServerTools extends JettySeverTools {
 					webApp.setContextPath("/" + name);
 					webApp.setResourceBase(dir.toAbsolutePath().toString());
 					webApp.setDescriptor(dir.resolve(Paths.get(PathTools.WEB_INF_WEB_XML)).toString());
-					webApp.setExtraClasspath(calculateExtraClassPath(cls));
+					Path ext = dir.resolve("WEB-INF").resolve("ext");
+					if (Files.exists(ext)) {
+						webApp.setExtraClasspath(calculateExtraClassPath(cls, ext));
+					} else {
+						webApp.setExtraClasspath(calculateExtraClassPath(cls));
+					}
+					logger.debug("{} extra class path:{}.", name, webApp.getExtraClasspath());
 					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
 							BooleanUtils.toStringTrueFalse(false));
 					webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled",
@@ -224,7 +230,8 @@ public class ApplicationServerTools extends JettySeverTools {
 					if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
 						FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
 						webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
-						webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
+						webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*",
+								EnumSet.of(DispatcherType.REQUEST));
 					}
 					handlers.addHandler(webApp);
 				} else if (Files.exists(dir)) {
@@ -267,7 +274,8 @@ public class ApplicationServerTools extends JettySeverTools {
 					if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
 						FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
 						webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
-						webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
+						webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*",
+								EnumSet.of(DispatcherType.REQUEST));
 					}
 					handlers.addHandler(webApp);
 				} else if (Files.exists(dir)) {

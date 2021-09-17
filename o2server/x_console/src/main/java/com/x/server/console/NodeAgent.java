@@ -24,6 +24,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.x.base.core.project.config.WebServers;
 import com.x.base.core.project.tools.*;
 import org.apache.commons.codec.binary.Base64;
@@ -87,6 +88,8 @@ public class NodeAgent extends Thread {
 	public static final int LOG_MAX_READ_SIZE = 4 * 1024;
 
 	private static final int BUFFER_SIZE = 1024 * 1024 * 1000;
+
+	private static List<String> logLevelList = ImmutableList.of("debug", "info", "warn", "error", "print");
 
 	private LinkedBlockingQueue<String> commandQueue;
 
@@ -313,7 +316,7 @@ public class NodeAgent extends Thread {
 
 	private void readLog(long lastTimeFileSize, DataOutputStream dos) throws Exception {
 		try {
-			File logFile = new File(Config.base(), "logs/" + DateTools.format(new Date(), "yyyy_MM_dd") + ".out.log");
+			File logFile = new File(Config.base(), "logs/out.log");
 			if (logFile.exists()) {
 				List<Map<String, String>> list = new ArrayList<>();
 				try (RandomAccessFile randomFile = new RandomAccessFile(logFile, "r")) {
@@ -333,19 +336,25 @@ public class NodeAgent extends Thread {
 						String logLevel = "";
 						if (lineStr.length() > 0) {
 							if (lineStr.length() > 23) {
-								time = StringUtils.left(lineStr, 19);
-								if (DateTools.isDateTime(time)) {
-									time = StringUtils.left(lineStr, 23);
-									curTime = time;
-									if (lineStr.length() > 29) {
-										logLevel = StringUtils.right(StringUtils.left(lineStr, 29), 5).trim();
+								String arr[] = lineStr.split(" ");
+								if(arr.length > 3){
+									time = arr[0]+ " " +arr[1];
+									if (time.length()>19 &&  DateTools.isDateTime(StringUtils.left(time, 19))) {
+										curTime = time;
+										if (logLevelList.contains(arr[3].toLowerCase())) {
+											logLevel = arr[3];
+										}
+									} else {
+										time = curTime;
 									}
-								} else {
-									time = curTime;
 								}
 							}
 						} else {
-							continue;
+							if (curReadSize > LOG_MAX_READ_SIZE) {
+								break;
+							}else {
+								continue;
+							}
 						}
 						Map<String, String> map = new HashMap<>();
 						map.put("logTime", time + "#" + Config.node());
@@ -459,7 +468,9 @@ public class NodeAgent extends Thread {
 	}
 
 	private void storeWar(String simpleName, byte[] bytes) throws Exception {
-		ClassInfo classInfo = this.scanModuleClassInfo(simpleName);
+		File war = new File(Config.dir_store(), simpleName + ".war");
+		FileUtils.writeByteArrayToFile(war, bytes);
+		/*ClassInfo classInfo = this.scanModuleClassInfo(simpleName);
 		Class<?> cls = Class.forName(classInfo.getName());
 		Module module = cls.getAnnotation(Module.class);
 		File war = new File(Config.dir_store(), cls.getSimpleName() + ".war");
@@ -498,7 +509,7 @@ public class NodeAgent extends Thread {
 					}
 				}
 			}
-		}
+		}*/
 	}
 
 	private void storeJar(String simpleName, byte[] bytes) throws Exception {
@@ -534,7 +545,7 @@ public class NodeAgent extends Thread {
 		File war = new File(Config.dir_custom(true), simpleName + ".war");
 		File dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
 		FileUtils.writeByteArrayToFile(war, bytes, false);
-		boolean isStartApplication = false;// 第一次上传
+		/*boolean isStartApplication = false;// 第一次上传
 		if (Servers.applicationServerIsRunning()) {
 			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
@@ -556,7 +567,7 @@ public class NodeAgent extends Thread {
 					customWarPublish(simpleName);
 				}
 			}
-		}
+		}*/
 	}
 
 	private void customWarPublish(String name) throws Exception {
@@ -820,47 +831,31 @@ public class NodeAgent extends Thread {
 	}
 
 	public static void main(String[] args) throws Exception {
-		// File logFile = new File(Config.base(), "logs/" + DateTools.format(new Date(),
-		// "yyyy_MM_dd") + ".out.log");
-		File logFile = new File("/Users/chengjian/Desktop/temp/temp/2020_03_12.out.log");
-		RandomAccessFile randomFile = new RandomAccessFile(logFile, "r");
-		long lastTimeFileSize = randomFile.length() - 10 * 1024;
-		long tempSize = lastTimeFileSize;
-		randomFile.seek(lastTimeFileSize);
-		String tmp = "";
+		String lineStr = "2021-09-07 13:52:14,878 [ContextQuartzScheduler-x_calendar_assemble_control_Worker-1] INFO com.x.calendar.assemble.control.schedule.AlarmTrigger - The trigger for calendar alarm execute completed.Tue Sep 07 13:52:14 GMT+08:00 2021";
+		String time = "";
 		String curTime = "";
-		while ((tmp = randomFile.readLine()) != null) {
-			byte[] bytes = tmp.getBytes("ISO8859-1");
-			String lineStr = new String(bytes);
-			tempSize = tempSize + bytes.length + 1;
-			String time = curTime;
+		String logLevel = "";
+		if (lineStr.length() > 0) {
 			if (lineStr.length() > 23) {
-				time = StringUtils.left(lineStr, 19);
-				if (DateTools.isDateTime(time)) {
-					time = StringUtils.left(lineStr, 23);
-					curTime = time;
-					// System.out.println(lineStr);
-				} else {
-					if (StringUtils.isEmpty(curTime)) {
-						continue;
+				String arr[] = lineStr.split(" ");
+				if(arr.length > 3){
+					time = arr[0]+ " " +arr[1];
+					System.out.println(time);
+					System.out.println(StringUtils.left(time, 19));
+					if (time.length()>19 &&  DateTools.isDateTime(StringUtils.left(time, 19))) {
+						curTime = time;
+						if (logLevelList.contains(arr[3].toLowerCase())) {
+							logLevel = arr[3];
+						}
 					} else {
 						time = curTime;
-						// System.out.println(lineStr);
 					}
-				}
-			} else {
-				if (StringUtils.isEmpty(curTime)) {
-					continue;
-				} else {
-					time = curTime;
-					// System.out.println(lineStr);
 				}
 			}
 		}
-		lastTimeFileSize = randomFile.length();
-		tempSize = tempSize - 1;
-		System.out.println(lastTimeFileSize);
-		System.out.println(tempSize);
+		System.out.println(time);
+		System.out.println(curTime);
+		System.out.println(logLevel);
 	}
 
 }

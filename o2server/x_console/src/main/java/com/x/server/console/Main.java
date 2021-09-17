@@ -1,6 +1,13 @@
 package com.x.server.console;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Method;
@@ -15,12 +22,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.Crypto;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -33,6 +42,8 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.StorageServer;
 import com.x.base.core.project.config.WebServer;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.StringTools;
 import com.x.server.console.action.ActionConfig;
@@ -40,7 +51,7 @@ import com.x.server.console.action.ActionControl;
 import com.x.server.console.action.ActionCreateEncryptKey;
 import com.x.server.console.action.ActionSetPassword;
 import com.x.server.console.action.ActionVersion;
-import com.x.server.console.log.LogTools;
+import com.x.server.console.log.Log4j2Configuration;
 import com.x.server.console.server.Servers;
 
 public class Main {
@@ -105,8 +116,7 @@ public class Main {
 		scanWar(base);
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
-		SystemOutErrorSideCopyBuilder.start();
-		LogTools.setSlf4jSimple();
+		Log4j2Configuration.reconfigure();
 		ResourceFactory.bind();
 		CommandFactory.printStartHelp();
 		// 初始化hadoop环境
