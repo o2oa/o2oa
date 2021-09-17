@@ -124,7 +124,6 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
     },
     setContentSize : function(){
-        debugger;
         this.computeContentSize();
         this.contentNode.setStyle("width", this.contentWidth );
         this.contentNode.setStyle("height", this.contentHeight );
@@ -299,7 +298,6 @@ o2.widget.Tablet = o2.Tablet = new Class({
             this.storeToPreArray();
 
             var mousemove = function(ev){
-                debugger;
                 var mx , my;
                 if(_self.rotate && _self.transform > 0){
                     mx = ev.client.y;
@@ -852,7 +850,6 @@ o2.widget.Tablet.ToolbarMobile = new Class({
                 styles : this.css[item.name+"_mobile"],
                 events: {
                     click: function () {
-                        debugger;
                         if( this.tablet[item.name] )this.tablet[item.name]( this.items[item.name] );
                     }.bind(this)
                 }
