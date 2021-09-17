@@ -29,8 +29,10 @@ class ActionGet extends BaseAction {
 			} else {
 				Definition o = emc.flag(name, Definition.class);
 				if (null != o) {
-					wo = o.getData();
+					 wo = o.getData();
 					CacheManager.put(business.cache(), cacheKey, wo);
+				}else {
+					 wo ="{\"process\":null,\"weekBegin\":\"0\",\"meetingViewer\":[],\"mobileCreateEnable\":\"true\",\"disableViewList\":[],\"toMyMeetingViewName\":\"\",\"toMonthViewName\":\"\",\"toWeekViewName\":\"\",\"toDayViewName\":\"\",\"toListViewName\":\"\",\"toRoomViewName\":\"\"}"; 
 				}
 			}
 			result.setData(wo);
