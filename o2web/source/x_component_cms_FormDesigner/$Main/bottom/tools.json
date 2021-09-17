@@ -224,5 +224,10 @@
     "icon": "importer.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.importer,
     "className": "Importer"
+  },
+  "writingBoard": {
+    "icon": "writingBoard.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.writingBoard,
+    "className": "WritingBoard"
   }
 }
