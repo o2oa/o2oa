@@ -79,8 +79,10 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.addScriptItem(this.data.validationOpinion, "code", this.data, "validationOpinion");
         this.addScriptItem(this.data.validationRoute, "code", this.data, "validationRoute");
         this.addScriptItem(this.data.validationFormCustom, "code", this.data, "validationFormCustom");
+        this.addScriptItem(this.data.languageScript, "code", this.data, "languageScript");
         Object.each(this.data.events, function(event, key){
-            this.addScriptItem(event, "code", this.data, this.designer.lp.events+"."+key);
+            //this.addScriptItem(event, "code", this.data, this.designer.lp.events+"."+key);
+            this.addModuleEventScriptItem(event, "code", key, this.data);
         }.bind(this));
 
         Object.each(this.data.moduleList, function(v){
