@@ -190,6 +190,8 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadHtmleditorScript(v); break;
             case "ImageClipper":
                 this.loadImageClipperScript(v); break;
+            case "WritingBoard":
+                this.loadWritingBoardScript(v); break;
             case "Log":
                 this.loadLogScript(v); break;
             case "Monitor":
@@ -220,10 +222,6 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadCommonScript(v); break;
             case "ReadLog":
                 this.loadEventsScript(v); break;
-            case "IWebOffice":
-                this.addScriptItem(v.readScript, "code", v, "readScript");
-                this.loadEventsScript(v);
-                break;
             case "IWebOffice":
                 this.addScriptItem(v.readScript, "code", v, "readScript");
                 this.loadEventsScript(v);
@@ -578,6 +576,7 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.loadEventsScript(data);
     },
     loadImageClipperScript: function(data){  this.loadEventsScript(data); },
+    loadWritingBoardScript: function(data){  this.loadEventsScript(data); },
 
     loadLogScript: function(data){
         this.addScriptItem(data.filterScript, "code", data, "filterScript");
