@@ -198,7 +198,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             (node.getStyle("border-right-width").toInt() || 0 );
     },
     loadToolBar: function(){
-        if(layout.mobile){
+        if( layout.mobile ){ //this.rotate && this.transform > 0
             this.toolbar = new o2.widget.Tablet.ToolbarMobile( this );
             this.toolbar.load();
         }else{
@@ -260,9 +260,11 @@ o2.widget.Tablet = o2.Tablet = new Class({
                         _self.ctx.drawImage(this, 0, 0);
                         var preData=_self.ctx.getImageData(0,0,_self.contentWidth,_self.contentHeight);
                         _self.middleAry.push(preData);
+                        _self.toolbar.enableItem("reset");
                     }
                 }
             })
+
         }else{
             var preData=this.ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
             this.middleAry.push(preData);
@@ -627,7 +629,22 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
     },
     cancel: function(){
+        var _self = this;
         this.reset();
+        if( this.options.imageSrc ){
+            var img = new Element("img", {
+                "crossOrigin": "",
+                "src": this.options.imageSrc,
+                "events": {
+                    "load": function () {
+                        _self.ctx.drawImage(this, 0, 0);
+                        var preData=_self.ctx.getImageData(0,0,_self.contentWidth,_self.contentHeight);
+                        _self.middleAry.push(preData);
+                        _self.toolbar.enableItem("reset");
+                    }
+                }
+            })
+        }
         this.fireEvent("cancel");
     }
 });
@@ -798,6 +815,12 @@ o2.widget.Tablet.Toolbar = new Class({
         var item = itemNode.get("item");
         itemNode.setStyles( this.css.toolItem_disable );
         itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_disable.png)");
+    },
+    _setItemNodeActive: function( itemNode ){
+        if( itemNode.retrieve("status") == "disable" )return;
+        var item = itemNode.get("item");
+        itemNode.setStyles( this.css.toolItem_over );
+        itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_active.png)");
     },
     _setItemNodeNormal: function( itemNode ){
         if( itemNode.retrieve("status") == "disable" )return;
