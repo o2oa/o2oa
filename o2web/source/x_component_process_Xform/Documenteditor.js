@@ -986,7 +986,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
             }else if (!control.copyto || !this.layout_copytoContent){
                 if (this.layout_copytoContentTr) this.layout_copytoContentTr.dispose();
-                if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                if (this.layout_copyto2ContentTr){
+                    try{
+                        this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                    }catch (e){
+                        this.layout_copyto2ContentTrP.appendHTML(this.layout_copyto2ContentTr.outerHTML, "top");
+                    }
+                }
                 //if (this.layout_copyto2Content) this.layout_edition.getElement("tr").destroy();
                 // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
                 //     "border-top": "solid windowtext 1.5pt",
@@ -994,18 +1000,54 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 // });
             }else if (!control.copyto2 || !this.layout_copyto2Content) {
                 if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.dispose();
-                if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                // if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                if (this.layout_copytoContentTr){
+                    try{
+                        this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                    }catch (e){
+                        this.layout_copytoContentTrP.appendHTML(this.layout_copytoContentTr.outerHTML, "top");
+                    }
+                }
                 // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
                 //     "border-bottom": "solid windowtext 0.75pt",
                 //     "mso-border-bottom-alt": "solid windowtext 0.75pt"
                 // });
             }else{
                 if (this.copyToOrder == "copyto2"){
-                    if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
-                    if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                    // if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                    // if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                    if (this.layout_copytoContentTr){
+                        try{
+                            this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                        }catch (e){
+                            this.layout_copytoContentTrP.appendHTML(this.layout_copytoContentTr.outerHTML, "top");
+                        }
+                    }
+                    if (this.layout_copyto2ContentTr){
+                        try{
+                            this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                        }catch (e){
+                            this.layout_copyto2ContentTrP.appendHTML(this.layout_copyto2ContentTr.outerHTML, "top");
+                        }
+                    }
+
                 }else{
-                    if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
-                    if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                    // if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                    // if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                    if (this.layout_copyto2ContentTr){
+                        try{
+                            this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                        }catch (e){
+                            this.layout_copyto2ContentTrP.appendHTML(this.layout_copyto2ContentTr.outerHTML, "top");
+                        }
+                    }
+                    if (this.layout_copytoContentTr){
+                        try{
+                            this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                        }catch (e){
+                            this.layout_copytoContentTrP.appendHTML(this.layout_copytoContentTr.outerHTML, "top");
+                        }
+                    }
                 }
             }
 
