@@ -1441,7 +1441,7 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		return exportData;
 	},
 	isAvaliableField : function(json){
-		if (["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains( json.type) )return false; //图片，附件,Label不导入导出
+		if (["Image","Button","ImageClipper","WritingBoard","Attachment","AttachmentDg","Label"].contains( json.type) )return false; //图片，附件,Label不导入导出
 		return true;
 	},
 	getExcelName: function(){
@@ -1550,7 +1550,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 
 	},
 	isAvaliableField : function(json, module, type){
-		if (["Image","Button","ImageClipper","Attachment","AttachmentDg","Label"].contains( json.type) )return false; //图片，附件,Label不导入导出
+		if (["Image","Button","ImageClipper","WritingBoard","Attachment","AttachmentDg","Label"].contains( json.type) )return false; //图片，附件,Label不导入导出
 		return true;
 	},
 	importFromExcel : function () {
