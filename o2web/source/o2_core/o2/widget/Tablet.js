@@ -26,7 +26,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
             //"clear" //橡皮
             "cancel"
         ],
+        "toolHidden": [],
         "description" : "", //描述文字
+        "imageSrc": "",
 
 
         "action" : null, //uploadImage方法的上传服务，可选，如果不设置，使用公共图片服务
@@ -36,7 +38,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
         "data": null, //formdata 的data
         "reference": "",  //uploadImage方法的使用 使用公共图片服务上传时的参数
         "referenceType" : "", //使用公共图片服务上传时的参数, 目前支持 processPlatformJob, processPlatformForm, portalPage, cmsDocument, forumDocument
-        "resultMaxSize" : 0 //使用 reference 时有效
+        "resultMaxSize" : 0, //使用 reference 时有效
+
+        "rotateWithMobile": true
     },
     initialize: function(node, options, app){
         this.node = node;
@@ -65,6 +69,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.fireEvent("init");
     },
     load: function(  ){
+        if( layout.mobile && this.options.rotateWithMobile ){
+            this.rotate = true;
+        }
         //存储当前表面状态数组-上一步
         this.preDrawAry = [];
         //存储当前表面状态数组-下一步
@@ -75,6 +82,10 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.container = new Element("div.container", {
             styles :  this.css.container
         }).inject(this.node);
+
+        if( this.rotate ){ //强制横屏显示
+            this.detectOrient();
+        }
 
         this.loadToolBar();
 
@@ -113,36 +124,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
     },
     setContentSize : function(){
-        var nodeSize = this.node.getSize();
-
-        this.contentWidth = this.options.contentWidth ||  nodeSize.x;
-        if( this.contentWidth < 100 )this.contentWidth = 100;
+        debugger;
+        this.computeContentSize();
         this.contentNode.setStyle("width", this.contentWidth );
-
-        if( this.options.contentHeight ){
-            this.contentHeight = this.options.contentHeight;
-        }else{
-            var toolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : { x : 0, y : 0 };
-            var descriptionSize = this.descriptionNode ? this.descriptionNode.getSize() : { x : 0, y : 0 };
-
-            var toolbarMargin = this.toolbarNode ? this.toolbarNode.getStyles("margin-top", "margin-bottom", "padding-top", "padding-bottom", "bordrt-top-width", "bordrt-bottom-width") : null;
-            var m1 = (toolbarMargin) ? toolbarMargin["margin-top"].toInt()+toolbarMargin["margin-bottom"].toInt()+
-                toolbarMargin["padding-bottom"].toInt()+toolbarMargin["padding-top"].toInt()+
-                (toolbarMargin["bordrt-top-width"].toInt() || 0)+(toolbarMargin["bordrt-bottom-width"].toInt() || 0) : 0;
-
-            var descriptionMargin = this.descriptionNode ? this.descriptionNode.getStyles("margin-top", "margin-bottom", "padding-top", "padding-bottom", "bordrt-top-width", "bordrt-bottom-width") : null;
-            var m2 = (descriptionMargin) ? descriptionMargin["margin-top"].toInt()+descriptionMargin["margin-bottom"].toInt()+
-                descriptionMargin["padding-bottom"].toInt()+descriptionMargin["padding-top"].toInt()+
-                (descriptionMargin["bordrt-top-width"].toInt() || 0)+(descriptionMargin["bordrt-bottom-width"].toInt() || 0) : 0;
-
-            var contentMargin = this.contentNode.getStyles("margin-top", "margin-bottom", "padding-top", "padding-bottom", "bordrt-top-width", "bordrt-bottom-width");
-            var m3 = contentMargin["margin-top"].toInt()+contentMargin["margin-bottom"].toInt()+
-                contentMargin["padding-bottom"].toInt()+contentMargin["padding-top"].toInt()+
-                (contentMargin["bordrt-top-width"].toInt() || 0)+(contentMargin["bordrt-bottom-width"].toInt() || 0);
-
-            this.contentHeight = nodeSize.y - toolbarSize.y - descriptionSize.y - m1 - m2 - m3;
-        }
-        if( this.contentHeight < 150 )this.contentHeight = 150;
         this.contentNode.setStyle("height", this.contentHeight );
 
         if(this.canvasWrap){
@@ -159,13 +143,72 @@ o2.widget.Tablet = o2.Tablet = new Class({
             this.ctx.putImageData(d,0,0);
         }
     },
-    loadToolBar: function(){
-        this.toolbarNode = new Element("div.toolbar", {
-            "styles" : this.css.toolbar
-        }).inject(this.container);
+    computeContentSize: function(){
+        var toolbarSize,descriptionSize, m1,m2,m3;
+        var nodeSize = this.node.getSize();
+        if( this.rotate && this.transform > 0 ){
+            this.contentWidth = this.options.contentHeight ||  nodeSize.y;
+            if( this.contentWidth < 150 )this.contentWidth = 150;
 
-        this.toolbar = new o2.widget.Tablet.Toolbar( this , this.toolbarNode  );
-        this.toolbar.load();
+            if( this.options.contentWidth ){
+                this.contentHeight = this.options.contentWidth;
+            }else{
+                toolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : { x : 0, y : 0 };
+                descriptionSize = this.descriptionNode ? this.descriptionNode.getSize() : { x : 0, y : 0 };
+                m1 = this.getOffsetX(this.toolbarNode);
+                m2 = this.getOffsetX(this.descriptionNode);
+                m3 = this.getOffsetX(this.contentNode);
+                this.contentOffSetX = toolbarSize.x + descriptionSize.x + m1 + m2 + m3;
+                this.contentHeight = nodeSize.x - toolbarSize.x - descriptionSize.x - m1 - m2 - m3;
+            }
+            if( this.contentHeight < 100 )this.contentHeight = 100;
+        }else{
+            this.contentWidth = this.options.contentWidth ||  nodeSize.x;
+            if( this.contentWidth < 100 )this.contentWidth = 100;
+
+            if( this.options.contentHeight ){
+                this.contentHeight = this.options.contentHeight;
+            }else{
+                toolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : { x : 0, y : 0 };
+                descriptionSize = this.descriptionNode ? this.descriptionNode.getSize() : { x : 0, y : 0 };
+                m1 = this.getOffsetY(this.toolbarNode);
+                m2 = this.getOffsetY(this.descriptionNode);
+                m3 = this.getOffsetY(this.contentNode);
+                this.contentHeight = nodeSize.y - toolbarSize.y - descriptionSize.y - m1 - m2 - m3;
+            }
+            if( this.contentHeight < 150 )this.contentHeight = 150;
+        }
+    },
+    getOffsetY : function(node){
+        if( !node )return 0;
+        return (node.getStyle("margin-top").toInt() || 0 ) +
+            (node.getStyle("margin-bottom").toInt() || 0 ) +
+            (node.getStyle("padding-top").toInt() || 0 ) +
+            (node.getStyle("padding-bottom").toInt() || 0 )+
+            (node.getStyle("border-top-width").toInt() || 0 ) +
+            (node.getStyle("border-bottom-width").toInt() || 0 );
+    },
+    getOffsetX : function(node){
+        if( !node )return 0;
+        return (node.getStyle("margin-left").toInt() || 0 ) +
+            (node.getStyle("margin-right").toInt() || 0 ) +
+            (node.getStyle("padding-left").toInt() || 0 ) +
+            (node.getStyle("padding-right").toInt() || 0 )+
+            (node.getStyle("border-left-width").toInt() || 0 ) +
+            (node.getStyle("border-right-width").toInt() || 0 );
+    },
+    loadToolBar: function(){
+        if(layout.mobile){
+            this.toolbar = new o2.widget.Tablet.ToolbarMobile( this );
+            this.toolbar.load();
+        }else{
+            this.toolbarNode = new Element("div.toolbar", {
+                "styles" : this.css.toolbar
+            }).inject(this.container);
+
+            this.toolbar = new o2.widget.Tablet.Toolbar( this , this.toolbarNode  );
+            this.toolbar.load();
+        }
     },
     storeToPreArray : function(){
         //当前绘图表面状态
@@ -193,6 +236,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
     },
     loadContent : function( ){
+        var _self = this;
 
         this.canvasWrap = new Element("div.canvasWrap", { styles :  this.css.canvasWrap}).inject(this.contentNode);
         this.canvasWrap.setStyles({
@@ -207,10 +251,22 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         this.ctx = this.canvas.getContext("2d");
 
-
-        var preData=this.ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
-        //空绘图表面进栈
-        this.middleAry.push(preData);
+        if( this.options.imageSrc ){
+            var img = new Element("img", {
+                "crossOrigin": "",
+                "src": this.options.imageSrc,
+                "events": {
+                    "load": function () {
+                        _self.ctx.drawImage(this, 0, 0);
+                        var preData=_self.ctx.getImageData(0,0,_self.contentWidth,_self.contentHeight);
+                        _self.middleAry.push(preData);
+                    }
+                }
+            })
+        }else{
+            var preData=this.ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
+            this.middleAry.push(preData);
+        }
 
         this.canvas.ontouchstart = this.canvas.onmousedown = function(ev){
             var ev = ev || event;
@@ -224,12 +280,33 @@ o2.widget.Tablet = o2.Tablet = new Class({
             if( this.options.lineWidth  )ctx.lineWidth= this.currentWidth || this.options.lineWidth; //默认1 像素
 
             ctx.beginPath();
-            ctx.moveTo(ev.clientX-position.x,ev.clientY-position.y);
+
+            var x , y;
+            if(this.rotate && _self.transform > 0){
+                var clientY = ev.type.indexOf('touch') !== -1 ? ev.touches[0].clientY : ev.clientY;
+                var clientX = ev.type.indexOf('touch') !== -1 ? ev.touches[0].clientX : ev.clientX;
+                var newX = clientY;
+                var newY = _self.canvas.height - clientX; //y轴旋转偏移 // - parseInt(_self.transformOrigin)
+            }else{
+                x = ev.clientX-position.x;
+                y = ev.clientY-position.y
+            }
+
+            ctx.moveTo(x, y);
 
             this.storeToPreArray();
 
             var mousemove = function(ev){
-                ctx.lineTo(ev.client.x - position.x,ev.client.y - position.y);
+                debugger;
+                var mx , my;
+                if(_self.rotate && _self.transform > 0){
+                    mx = ev.client.y;
+                    my = _self.canvas.height - ev.client.x //y轴旋转偏移 //  - + parseInt(_self.transformOrigin);
+                }else{
+                    mx = ev.client.x - position.x;
+                    my = ev.client.y - position.y;
+                }
+                ctx.lineTo(mx, my);
                 ctx.stroke();
             };
             doc.addEvent( "mousemove", mousemove );
@@ -253,6 +330,40 @@ o2.widget.Tablet = o2.Tablet = new Class({
             //    ctx.closePath();
             //}
         }.bind(this)
+    },
+    detectOrient: function(){
+        // 利用 CSS3 旋转 对根容器逆时针旋转 90 度
+        var size = $(document.body).getSize();
+        var width = size.x,
+            height = size.y,
+            styles = {};
+
+        if( width >= height ){ // 横屏
+            this.transform = 0;
+            this.transformOrigin = 0;
+            styles = {
+                "width": width+"px",
+                "height": height+"px",
+                "webkit-transform": "rotate(0)",
+                "transform": "rotate(0)",
+                "webkit-transform-origin": "0 0",
+                "transform-origin": "0 0"
+            }
+        }
+        else{ // 竖屏
+            this.options.lineWidth = 1.5;
+            this.transform = 90;
+            this.transformOrigin = width / 2;
+            styles = {
+                "width": height+"px",
+                "height": width+"px",
+                "webkit-transform": "rotate(90deg)",
+                "transform": "rotate(90deg)",
+                "webkit-transform-origin": ( this.transformOrigin + "px " + this.transformOrigin + "px"),
+                "transform-origin": ( this.transformOrigin + "px " + this.transformOrigin + "px")
+            }
+        }
+        this.container.setStyles(styles);
     },
     uploadImage: function(  success, failure  ){
         var image = this.getImage( null, true );
@@ -578,6 +689,16 @@ o2.widget.Tablet.Toolbar = new Class({
             ];
         }
 
+        items = items.filter(function(tool){
+            return !(this.tablet.options.toolHidden || []).contains(tool)
+        }.bind(this));
+        items = items.clean();
+
+        for( var i=1; i<items.length; i++ ){
+            if( items[i-1]==="|" && items[i]==="|")items[i-1] = null;
+        }
+        items = items.clean();
+
         var html = "";
         var style = "toolItem";
         items.each( function( item ){
@@ -666,23 +787,17 @@ o2.widget.Tablet.Toolbar = new Class({
     disableItem : function( itemName ){
         var itemNode =  this.items[ itemName ]; //this.container.getElement("[item='+itemName+']");
         itemNode.store("status", "disable");
-        this._setItemNodeDisable( itemNode );
+        this._setItemNodeDisable( itemNode, itemName );
     },
     enableItem : function( itemName ){
         var itemNode =  this.items[ itemName ];
         itemNode.store("status", "enable");
-        this._setItemNodeNormal( itemNode );
+        this._setItemNodeNormal( itemNode, itemName );
     },
     _setItemNodeDisable : function( itemNode ){
         var item = itemNode.get("item");
         itemNode.setStyles( this.css.toolItem_disable );
         itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_disable.png)");
-    },
-    _setItemNodeActive: function( itemNode ){
-        if( itemNode.retrieve("status") == "disable" )return;
-        var item = itemNode.get("item");
-        itemNode.setStyles( this.css.toolItem_over );
-        itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_active.png)");
     },
     _setItemNodeNormal: function( itemNode ){
         if( itemNode.retrieve("status") == "disable" )return;
@@ -690,6 +805,52 @@ o2.widget.Tablet.Toolbar = new Class({
         var style = itemNode.get("styles");
         itemNode.setStyles( this.css[style] );
         itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_normal.png)");
+    }
+
+});
+
+o2.widget.Tablet.ToolbarMobile = new Class({
+    Extends: o2.widget.Tablet.Toolbar,
+    Implements: [Options, Events],
+    load: function(){
+        this.tablet.container.setStyle("position","relative");
+        Array.each([{
+            "name": "cancel", "text": this.lp.cancel
+        },{
+            "name": "save", "text": this.lp.save
+        },{
+            "name": "undo"
+        },{
+            "name": "redo"
+        },{
+            "name": "reset"
+        }], function (item) {
+            this.items[item.name] = new Element("div",{
+                styles : this.css[item.name+"_mobile"],
+                events: {
+                    click: function () {
+                        debugger;
+                        if( this.tablet[item.name] )this.tablet[item.name]( this.items[item.name] );
+                    }.bind(this)
+                }
+            }).inject(this.tablet.container);
+            if(item.text)this.items[item.name].set("text", item.text)
+        }.bind(this))
+        this.setAllItemsStatus();
+    },
+    _setItemNodeDisable : function( itemNode, itemName ){
+        var item = itemNode.get("item");
+        itemNode.setStyles( this.css[itemName+"_mobile_disable"] );
+    },
+    _setItemNodeActive: function( itemNode, itemName ){
+        if( itemNode.retrieve("status") == "disable" )return;
+        var item = itemNode.get("item");
+        itemNode.setStyles( this.css[itemName+"_mobile_over"] );
+    },
+    _setItemNodeNormal: function( itemNode, itemName ){
+        if( itemNode.retrieve("status") == "disable" )return;
+        var item = itemNode.get("item");
+        itemNode.setStyles( this.css[itemName+"_mobile"] );
     }
 
 });

@@ -360,7 +360,12 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class(
                         this.previewNode.destroy();
                         this.previewNode = null;
                     }
-                    if(this.json.isHandwritingPreview!=="no") this.previewNode = new Element("img", {"src": base64Image}).inject(this.node);
+                    if(this.json.isHandwritingPreview!=="no"){
+                        this.previewNode = new Element("img", {"src": base64Image}).inject(this.node);
+                        this.previewNode.setStyles({
+                            "max-width": "90%"
+                        })
+                    }
                     this.handwritingNode.hide();
                     // this.page.get("div_image").node.set("src",base64Image);
                 }.bind(this),

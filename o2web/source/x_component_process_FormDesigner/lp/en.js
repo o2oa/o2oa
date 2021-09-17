@@ -594,6 +594,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideModeButton": "Hide Mode Button",
         "showInDatagrid": "Show In Datagrid",
 
+        "hideSizeButton": "Hide Size Button",
+        "hideColorButton": "Hide Color Button",
+        "hideImageButton": "Hide the Insert Picture Button",
+        "hideImageClipperButton": "Hide ImageClipper Button",
+
         "tableSize": "Table Size",
         "row": "Row",
         "col": "Column",
