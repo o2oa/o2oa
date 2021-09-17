@@ -49,6 +49,7 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Org", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Opinion", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Statement", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.StatementSelector", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.WritingBoard", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elbutton", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcontainer$Container", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcontainer", null, false);

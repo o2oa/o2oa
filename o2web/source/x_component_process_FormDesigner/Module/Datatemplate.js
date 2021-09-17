@@ -194,7 +194,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 			this.containerModule = this.form.createModuleImmediately(
 				"Div", parentModule, relativeNode || this.copyNode, position || "before", true, false);
 
-			containerNode = this.containerModule.node;
+			var containerNode = this.containerModule.node;
 
 			// var dataStr = null;
 			// if (this.form.options.mode !== "Mobile"){

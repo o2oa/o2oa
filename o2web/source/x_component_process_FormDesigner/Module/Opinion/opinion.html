@@ -30,12 +30,14 @@
                 <td class="editTableTitle">{{$.lp.writingBoard}}<br/>{{$.lp.width}}:</td>
                 <td class="editTableValue">
                     <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 100px;margin-right:5px;" />px
+                    <div style="color: #666">({{$.lp.tabletSizeNote}})</div>
                 </td>
             </tr>
             <tr id="text{$.pid}tabletHeight" style="display: text{($.isHandwriting=='no')?'none':''};">
                 <td class="editTableTitle">{{$.lp.writingBoard}}<br/>{{$.lp.height}}:</td>
                 <td class="editTableValue">
                     <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 100px;;margin-right:5px;" />px
+                    <div style="color: #666">({{$.lp.tabletSizeNote}})</div>
                 </td>
             </tr>
             <tr>
