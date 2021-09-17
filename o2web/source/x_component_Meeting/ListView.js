@@ -330,7 +330,7 @@ MWF.xApplication.Meeting.ListView.View.Line = new Class({
             //     }
             // };
             MWF.require("MWF.widget.O2Identity", function(){
-                var person = new MWF.widget.O2Person({"name": this.data.applicant}, this.personNode, {"style": "room"});
+                var person = new MWF.widget.O2Person({"displayName": this.data.applicant.split("@")[0], "name": this.data.applicant}, this.personNode, {"style": "room"});
             }.bind(this));
         }
 

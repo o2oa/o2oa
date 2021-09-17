@@ -4606,6 +4606,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *
      *      failure 参数：服务执行失败时的回调方法，形如 function(xhr){
      *          xhr XmlHttpRequest对象，服务器请求失败时有值
+     *          return true; //从v6.3开始，返回true, 可以避免系统自动弹出错误信息；否则弹出错误信息。
      *       }
      *      此参数可以省略，如果省略，系统会自动弹出错误信息。
      *

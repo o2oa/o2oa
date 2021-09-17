@@ -707,13 +707,17 @@ MWF.xApplication.process.Work.Processor = new Class({
             });
         }
         this.handwritingAreaNode = new Element("div", {"styles": this.css.handwritingAreaNode}).inject(this.handwritingNode);
-        this.handwritingActionNode = new Element("div", {
-            "styles": this.css.handwritingActionNode,
-            "text": MWF.xApplication.process.Work.LP.saveWrite
-        }).inject(this.handwritingNode);
-        var h = this.handwritingActionNode.getSize().y + this.handwritingActionNode.getStyle("margin-top").toInt() + this.handwritingActionNode.getStyle("margin-bottom").toInt();
-        h = y - h;
-        this.handwritingAreaNode.setStyle("height", "" + h + "px");
+        if( !layout.mobile ) {
+            this.handwritingActionNode = new Element("div", {
+                "styles": this.css.handwritingActionNode,
+                "text": MWF.xApplication.process.Work.LP.saveWrite
+            }).inject(this.handwritingNode);
+            var h = this.handwritingActionNode.getSize().y + this.handwritingActionNode.getStyle("margin-top").toInt() + this.handwritingActionNode.getStyle("margin-bottom").toInt();
+            h = y - h;
+            this.handwritingAreaNode.setStyle("height", "" + h + "px");
+        }else{
+            this.handwritingAreaNode.setStyle("height", "" + y + "px");
+        }
 
         MWF.require("MWF.widget.Tablet", function () {
             var handWritingOptions = {
@@ -747,10 +751,12 @@ MWF.xApplication.process.Work.Processor = new Class({
             this.tablet.load();
         }.bind(this));
 
-        this.handwritingActionNode.addEvent("click", function () {
-            //this.handwritingNode.hide();
-            if (this.tablet) this.tablet.save();
-        }.bind(this));
+        if(this.handwritingActionNode) {
+            this.handwritingActionNode.addEvent("click", function () {
+                //this.handwritingNode.hide();
+                if (this.tablet) this.tablet.save();
+            }.bind(this));
+        }
     },
 
     setIdeaList: function (ideas) {
