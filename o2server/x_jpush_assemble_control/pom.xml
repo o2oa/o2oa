@@ -28,7 +28,7 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_jpush_core_entity</artifactId>
 		</dependency>
-		<!--极光推送 sdk-->
+		<!--极光推送 sdk -->
 		<dependency>
 			<groupId>cn.jpush.api</groupId>
 			<artifactId>jpush-client</artifactId>
@@ -137,6 +137,28 @@
 				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
 					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.3</version>
+				<configuration>
+					<archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+					</archive>
+					<packagingExcludes>persistence.xml,WEB-INF/lib/**,META-INF
+					</packagingExcludes>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<webResources>
+						<resource>
+							<directory>ext</directory>
+							<includes>
+								<include>**/*.jar</include>
+							</includes>
+							<targetPath>WEB-INF/ext</targetPath>
+						</resource>
+					</webResources>
 				</configuration>
 			</plugin>
 		</plugins>
