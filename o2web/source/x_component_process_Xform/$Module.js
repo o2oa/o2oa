@@ -487,7 +487,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
     setBusinessDataById: function(v, id){
-        debugger;
         //对id类似于 xx..0..xx 的字段进行拆分
         var evdata = this.form.Macro.environment.data;
         var data = this.form.businessData.data;
