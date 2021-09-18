@@ -202,6 +202,9 @@ o2.LP.desktop = {
         "meetingRejectMessage": "会议邀请已被拒绝",
         "meetingReject": "<font style='color: #ea621f'>{person}</font> 已拒绝您的会议邀请。会议时间：<font style='color: #ea621f'>{date}</font>；会议标题: “{subject}”",
 
+        "meetingDeleteInviteMessage": "会议邀请已取消",
+        "meetingDeleteInvite": "<font style='color: #ea621f'>{person}</font> 取消了您的会议邀请，会议信息：时间<font style='color: #ea621f'>{date}</font>，标题“{subject}”，地点<font style='color: #ea621f'>{addr}</font>",
+
         "attendanceAppealInviteMessage": "有考勤申述需要您审批",
         "attendanceAppealInvite": "{subject}",
         "attendanceAppealAcceptMessage": "考勤申述通过",
