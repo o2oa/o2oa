@@ -7,7 +7,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.jpush.assemble.control.Business;
 import com.x.jpush.assemble.control.jaxrs.sample.BaseAction;
 import com.x.jpush.assemble.control.jaxrs.sample.ExceptionSampleEntityClassFind;
@@ -16,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 public class ActionRemoveBindNew extends BaseAction {
 
