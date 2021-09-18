@@ -573,7 +573,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             if (this.json.isInput){
                 this.addData(values);
             }else{
-                this.setData(values);
+                this.setData(values, true);
             }
             //this._setBusinessData(values);
             this.validationMode();
