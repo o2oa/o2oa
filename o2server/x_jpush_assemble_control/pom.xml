@@ -28,11 +28,16 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_jpush_core_entity</artifactId>
 		</dependency>
-		<!--极光推送 sdk -->
+		<!--极光推送 sdk-->
 		<dependency>
 			<groupId>cn.jpush.api</groupId>
 			<artifactId>jpush-client</artifactId>
 			<version>3.4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.fernandospr</groupId>
+			<artifactId>javapns-jdk16</artifactId>
+			<version>2.4.0</version>
 		</dependency>
 
 	</dependencies>
