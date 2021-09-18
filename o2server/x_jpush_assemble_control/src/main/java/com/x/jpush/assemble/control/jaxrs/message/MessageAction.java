@@ -40,7 +40,7 @@ public class MessageAction extends StandardJaxrsAction {
 			result = new ActionSendMessageTest().execute(request, this.effectivePerson(request), jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new ExceptionSendMessage(e, "绑定设备时发生异常！");
+			Exception exception = new ExceptionSendMessage(e, "发送测试消息时发生异常！");
 			result.error(exception);
 			logger.error(e, this.effectivePerson(request), request, null);
 		}
@@ -59,7 +59,7 @@ public class MessageAction extends StandardJaxrsAction {
 			result = new ActionSendMessage().execute(request, this.effectivePerson(request), jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new ExceptionSendMessage(e, "绑定设备时发生异常！");
+			Exception exception = new ExceptionSendMessage(e, "发送消息时发生异常！");
 			result.error(exception);
 			logger.error(e, this.effectivePerson(request), request, null);
 		}
