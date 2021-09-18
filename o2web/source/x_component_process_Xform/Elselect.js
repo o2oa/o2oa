@@ -25,8 +25,8 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         this._loadNodeEdit();
     },
     _appendVueData: function(){
-        this.form.Macro.environment.data.check(this.json.id);
-        this.json[this.json.id] = this._getBusinessData();
+        // this.form.Macro.environment.data.check(this.json.id);
+        // this.json[this.json.id] = this._getBusinessData();
 
         if (!this.json.clearable) this.json.clearable = false;
         if (!this.json.size) this.json.size = "";
@@ -47,7 +47,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
 
         this._loadOptions();
 
-        if (this.json.multiple===true) if (!this.json[this.json.id] || !this.json[this.json.id].length) this.json[this.json.id] = [];
+        if (this.json.multiple===true) if (!this.json[this.json.$id] || !this.json[this.json.$id].length) this.json[this.json.$id] = [];
     },
     appendVueMethods: function(methods){
         if (this.json.filterMethod && this.json.filterMethod.code){
@@ -69,13 +69,25 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         if (v.then){
             v.then(function(o){
                 if (o2.typeOf(o)==="array"){
-                    this.json.options = o;
-                    this.json.$options = o;
+                    this.json.options = o.map(function(item){
+                        if (o2.typeOf(item)!=="object"){
+                            var value = item.toString();
+                            return {"value": value, "label": value};
+                        }
+                        return item;
+                    });
+                    this.json.$options = Array.clone(this.json.options);
                 }
             }.bind(this));
         }else if (o2.typeOf(v)==="array"){
-            this.json.options = v;
-            this.json.$options = v;
+            this.json.options = v.map(function(item){
+                if (o2.typeOf(item)!=="object"){
+                    var value = item.toString();
+                    return {"value": value, "label": value};
+                }
+                return item;
+            });
+            this.json.$options = Array.clone(this.json.options);
         }
     },
     _loadOptions: function(){
@@ -103,7 +115,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
     _createElementHtml: function(){
         debugger;
         var html = "<el-select";
-        html += " v-model=\""+this.json.id+"\"";
+        html += " v-model=\""+this.json.$id+"\"";
         html += " :clearable=\"clearable\"";
         html += " :size=\"size\"";
         html += " :filterable=\"filterable\"";
