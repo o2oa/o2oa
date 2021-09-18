@@ -12,7 +12,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 	Extends: MWF.APP$Module,
 	iconStyle: "personfieldIcon",
     options: {
-        "moduleEvents": ["change"]
+        "moduleEvents": ["change", "load", "queryLoad", "postLoad"]
     },
     initialize: function(node, json, form, options){
         this.node = $(node);
