@@ -88,6 +88,7 @@ MWF.xDesktop.WebSocket = new Class({
                     return true;
                 }
                 var data = JSON.decode(e.data);
+                debugger;
                 switch (data.category){
                     case "dialog":
                         switch (data.type){
@@ -127,6 +128,10 @@ MWF.xDesktop.WebSocket = new Class({
                             case "meetingInvite":
                             case "meeting_invite":
                                 this.receiveMeetingInviteMessage(data);
+                                break;
+                            case "meetingDelete":
+                            case "meeting_delete":
+                                this.receiveMeetingDeleteInviteMessage(data);
                                 break;
                             case "meetingCancel":
                             case "meeting_cancel":
@@ -510,6 +515,34 @@ MWF.xDesktop.WebSocket = new Class({
 
             var msg = {
                 "subject": MWF.LP.desktop.messsage.meetingInviteMessage,
+                "content": content
+            };
+            var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+            var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
+            tooltipItem.contentNode.addEvent("click", function(e){
+                layout.desktop.message.hide();
+                layout.desktop.openApplication(e, "Meeting", null);
+            });
+
+            messageItem.contentNode.addEvent("click", function(e){
+                layout.desktop.message.addUnread(-1);
+                layout.desktop.message.hide();
+                layout.desktop.openApplication(e, "Meeting", null);
+            });
+        }.bind(this));
+    },
+    receiveMeetingDeleteInviteMessage: function(data){
+
+        this.getMeeting(data, function(meeting){
+            var content = MWF.LP.desktop.messsage.meetingDeleteInvite;
+            content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
+            var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
+            content = content.replace(/{date}/g, date);
+            content = content.replace(/{subject}/g, meeting.subject);
+            content = content.replace(/{addr}/g, meeting.roomName+"("+meeting.buildingName+")");
+
+            var msg = {
+                "subject": MWF.LP.desktop.messsage.meetingDeleteInviteMessage,
                 "content": content
             };
             var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));

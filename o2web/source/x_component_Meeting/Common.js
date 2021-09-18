@@ -649,13 +649,14 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         this.fireEvent("postEdit");
     },
     _createTableContent: function () {
+        var _self = this;
         this.userName = layout.desktop.session.user.distinguishedName;
         this.userId = layout.desktop.session.user.id;
         if( this.isNew ){
             this.formTopTextNode.set( "text", this.lp.addMeeting );
         }else if( this.isEdited ){
             this.formTopTextNode.set( "text", this.lp.editMeeting );
-            this.options.height = "630";
+            this.options.height = this.isShowInviteDelPersonList() ? "660" : "630";
         }else{
             this.formTopTextNode.set( "text", this.lp.metting );
             this.options.height = "540";
@@ -711,33 +712,49 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             finishImmediatelyEnable = true;
         }
 
+        var html = "<div item='qrCode' style='position: absolute;right:0px;top:-20px;width:150px;height:180px;'></div>" +
 
-        var html = "<div item='qrCode' style='position: absolute;right:0px;top:-20px;width:150px;height:180px;'></div><table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
+            (( this.isShowCurrentUserDelPersonInfor() ) ?
+                    "<div style='position: absolute;left:0px;top:-25px;height:20px;min-width:200px;color: rgb(246, 166, 35);'>"+this.lp.userDeleteInvitePerson+"</div>" : ""
+            ) +
+
+            "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
                 //"<tr><td colspan='2' styles='formTableHead'>申诉处理单</td></tr>" +
             "<tr>"+
             "   <td styles='formTableTitle' width='70'>"+this.lp.applyPerson+":</td>" +
             "    <td styles='formTableValue' item='applicant'></td>" +
             "</tr>"+
+
             "<tr><td styles='formTableTitle' width='100'>"+this.lp.beginDate+":</td>" +
             "    <td styles='formTableValue' item='dateInput'></td>" +
             "</tr>" +
+
             "<tr><td styles='formTableTitle'>"+ this.lp.time +":</td>" +
             "    <td styles='formTableValue'>" +
             "       <div item='beginTimeInput' style='float:left'></div>"+
             "       <div style='float:left; "+ ( isEditing ? "margin:5px;" : "margin:0px 5px;") + "'>"+ this.lp.to+ "</div>"+
             "       <div item='endTimeInput' style='float:left'></div>"+
             "   </td></tr>" +
+
             "<tr><td styles='formTableTitle'>"+ this.lp.selectRoom +":</td>" +
             "    <td styles='formTableValue' item='meetingRoom'></td></tr>" +
+
             "<tr><td styles='formTableTitle'>"+this.lp.invitePerson2+":</td>" +
-            "    <td styles='formTableValue'>" +
+            "    <td styles='formTableValue' style='overflow: hidden;'>" +
             "       <div item='invitePersonList'></div>" +
-            "       <div style='display:"+ ( this.isEdited ? "" : "none") +";' item='selectinvitePerson'></div>" +
-            (( !this.isNew && this.data.myWaitAccept ) ?
-            "       <tr><td></td><td styles='formTableValue'><div item='acceptAction'></div><div item='rejectAction'></div></td></tr>" : ""
-            ) +
+            "       <div style='display:"+ ( this.isEdited ? "" : "none") +";float:left; margin-left:20px;' item='selectinvitePerson'></div>" +
+            "       <div style='display:"+ ( this.isShowDisInviateButton() ? "" : "none") +";float:left; margin-left:20px;' item='selectDisinvitePerson'></div>" +
             "   </td>" +
             "</tr>" +
+
+            (( !this.isNew && this.data.myWaitAccept ) ?
+                    "<tr><td></td><td styles='formTableValue'><div item='acceptAction'></div><div item='rejectAction'></div></td></tr>" : ""
+            ) +
+
+           "<tr style='display:"+(this.isShowInviteDelPersonList()?'':'none')+"' class='inviteDelPersonListTr'>" +
+            "   <td styles='formTableTitle'>"+this.lp.deleteInvitePerson2+":</td>" +
+            "   <td styles='formTableValue'><div item='inviteDelPersonList'></div></td></tr>"+
+
             "<tr style='display:"+ ( this.isNew ? "none" : "") +" ;' item='checkPersonTr'><td styles='formTableTitle'>"+this.lp.needSignInPerson+":</td>" +
             "    <td styles='formTableValue' item='checkinPersonList'></td></tr>" +
             "<tr><td styles='formTableTitle'>"+this.lp.meetingSubject+":</td>" +
@@ -811,32 +828,37 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                             this.loadAcceptAndReject( item );
                         }.bind(this)
                     }},
+                    inviteDelPersonList: { type: "org", isEdited : false, orgType: ["identity","person"], count : 0},
                     checkinPersonList : { type: "org", isEdited : false, orgType: ["identity","person"], count : 0},
-                    selectinvitePerson : { type : "button", value : this.lp.addInvitePerson1, style : {"margin-left": "20px"}, event : {
+                    selectinvitePerson : { type : "button", value : this.lp.addInvitePerson1, style : {"float": "left"}, event : {
                         click : function( it ){
                             var options = {
-                                "type" : "",
-                                "types": ["identity","person"],
+                                "type" : "identity",
+                                "resultType": "person",
                                 "exclude" : this.getInvitePersonExclude(),
                                 "values": [],
                                 "count": 0,
                                 "onComplete": function(items){
                                     MWF.require("MWF.widget.O2Identity", function(){
-                                        var invitePersonList = [];
-                                        items.each(function(item){
-                                            var _self = this;
-                                            if( item.data.distinguishedName.split("@").getLast().toLowerCase() == "i" ){
-                                                var person = new MWF.widget.O2Identity(item.data, it.form.getItem("invitePersonList").container, {"style": "room"});
-                                                invitePersonList.push( item.data.distinguishedName );
-                                            }else{
-                                                var person = new MWF.widget.O2Person(item.data, it.form.getItem("invitePersonList").container, {"style": "room"});
-                                                invitePersonList.push(item.data.distinguishedName);
-                                            }
+                                        var invitePersonList = items.map(function(item){
+                                            return item.data.distinguishedName;
                                         }.bind(this));
+                                        // items.each(function(item){
+                                        //     var _self = this;
+                                        //     if( item.data.distinguishedName.split("@").getLast().toLowerCase() == "i" ){
+                                        //         var person = new MWF.widget.O2Identity(item.data, it.form.getItem("invitePersonList").container, {"style": "room"});
+                                        //         invitePersonList.push( item.data.distinguishedName );
+                                        //     }else{
+                                        //         var person = new MWF.widget.O2Person(item.data, it.form.getItem("invitePersonList").container, {"style": "room"});
+                                        //         invitePersonList.push(item.data.distinguishedName);
+                                        //     }
+                                        // }.bind(this));
 
                                         this.app.actions.addMeetingInvite(this.data.id, {"invitePersonList": invitePersonList, "id": this.data.id}, function(json){
                                             this.app.actions.getMeeting(json.data.id, function(meeting){
-                                                this.invitePersonList = meeting.data.invitePersonList;
+                                                this.data.invitePersonList = meeting.data.invitePersonList;
+                                                this.reloadInvitePerson();
+                                                this.checkShowDisInviateButton();
                                                 this.app.notice(this.app.lp.addedInvitePerson1, "success", this.node );
                                             }.bind(this));
                                         }.bind(this));
@@ -847,6 +869,38 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                             var selector = new MWF.O2Selector(this.app.content, options);
                         }.bind(this)
                     } },
+                    selectDisinvitePerson : { type : "button", value : this.lp.deleteInvitePerson1, className : "inputButtonGrey", event : {
+                            click : function( it ){
+                                var options = {
+                                    "title": this.lp.deleteInvitePerson1,
+                                    "type": "identity",
+                                    "include" : this.data.invitePersonList,
+                                    "noUnit": true,
+                                    "onlyMajorIdentity": true,
+                                    "onComplete": function(items){
+                                        MWF.require("MWF.widget.O2Identity", function(){
+                                            var removeList = items.map(function(item){
+                                                return item.data.distinguishedName;
+                                            }.bind(this));
+
+                                            o2.Actions.load("x_meeting_assemble_control").MeetingAction.deleteInvite(this.data.id, {"InvitePersonList": removeList}, function(json){
+                                                this.app.actions.getMeeting(json.data.id, function(meeting){
+                                                    this.data.invitePersonList = meeting.data.invitePersonList;
+                                                    this.data.inviteDelPersonList = meeting.data.inviteDelPersonList;
+                                                    this.reloadInvitePerson();
+                                                    this.reloadinviteDelPerson();
+                                                    this.checkShowInviteDelPersonList();
+                                                    this.checkShowDisInviateButton();
+                                                    this.app.notice(this.app.lp.deleteInvitePerson, "success", this.node );
+                                                }.bind(this));
+                                            }.bind(this));
+
+                                        }.bind(this));
+                                    }.bind(this)
+                                };
+                                var selector = new MWF.O2Selector(this.app.content, options);
+                            }.bind(this)
+                        } },
                     subject: {},
                     summary: {type: "textarea"},
                     acceptAction : { type : "button", value : this.lp.accept,  className : "inputAcceptButton",
@@ -890,6 +944,51 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 this.qrCodeArea.destroy();
             }
         }.bind(this), true);
+    },
+    reloadInvitePerson: function(){
+        if(!this.form)return;
+        this.form.getItem("invitePersonList").setValue(this.data.invitePersonList);
+        // var container = this.form.getItem("invitePersonList").container;
+        // container.empty();
+        // this.data.invitePersonList.each(function(item){
+        //     var _self = this;
+        //     if( item.split("@").getLast().toLowerCase() === "i" ){
+        //         new MWF.widget.O2Identity(item, container, {"style": "room"});
+        //     }else{
+        //         new MWF.widget.O2Person(item, container, {"style": "room"});
+        //     }
+        // }.bind(this));
+    },
+    isShowDisInviateButton : function (){
+        return this.isEdited && this.data.invitePersonList && this.data.invitePersonList.length > 0;
+    },
+    checkShowDisInviateButton: function(){
+        var node = this.formTableArea.getElement("[item='selectDisinvitePerson']");
+        node.setStyle( "display", this.isShowDisInviateButton() ? "" : "none" );
+    },
+    isShowInviteDelPersonList : function () {
+        return this.isEdited && this.data.inviteDelPersonList && this.data.inviteDelPersonList.length > 0;
+    },
+    checkShowInviteDelPersonList: function(){
+        var node = this.formTableArea.getElement('.inviteDelPersonListTr');
+        node.setStyle( "display", this.isShowInviteDelPersonList() ? "" : "none" );
+    },
+    isShowCurrentUserDelPersonInfor : function () {
+        return (!this.isEdited) && (this.data.inviteDelPersonList||[]).contains(this.userName) && !(this.data.invitePersonList||[]).contains(this.userName);
+    },
+    reloadinviteDelPerson: function(){
+        if(!this.form)return;
+        this.form.getItem("inviteDelPersonList").setValue(this.data.inviteDelPersonList);
+        // var container = this.form.getItem("inviteDelPersonList").container;
+        // container.empty();
+        // this.data.inviteDelPersonList.each(function(item){
+        //     var _self = this;
+        //     if( item.split("@").getLast().toLowerCase() === "i" ){
+        //         new MWF.widget.O2Identity(item, container, {"style": "room"});
+        //     }else{
+        //         new MWF.widget.O2Person(item, container, {"style": "room"});
+        //     }
+        // }.bind(this));
     },
     startImmediately : function(){
         o2.Actions.load("x_meeting_assemble_control").MeetingAction.editStartTime( this.data.id, {
@@ -1481,7 +1580,14 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         var endTime = this.getString( endDate.getHours() ) + ":" + this.getString( endDate.getMinutes() );
         var meetingTime = dateStr + " " +  beginTime + "-" + endTime;
         var description = (data.description || "")+(data.summary || "");
-        var html =
+
+        debugger;
+        var deletedInfor = "";
+        this.userName = layout.desktop.session.user.distinguishedName;
+        if((this.data.inviteDelPersonList||[]).contains(this.userName) && !(this.data.invitePersonList||[]).contains(this.userName)){
+            deletedInfor = "<div style='position: absolute;left:20px;top:5px;height:20px;min-width:200px;color: rgb(246, 166, 35);'>"+this.lp.userDeleteInvitePerson+"</div>";
+        }
+        var html = deletedInfor +
             "<div style='overflow: hidden;padding:15px 20px 20px 10px;height:16px;line-height:16px;'>" +
             "   <div style='font-size: 12px;color:#666; float: right'>"+ this.lp.applyPerson  +":" + data.applicant.split("@")[0] +"</div>" +
             "   <div style='font-size: 16px;color:#333;float: left'>"+ this.lp.meetingDetail +"</div>"+
@@ -1529,7 +1635,7 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         MWF.require("MWF.widget.O2Identity", function(){
             area.empty();
             this.data.invitePersonList.each(function( person ){
-                var O2person = new MWF.widget.O2Person({name : person}, area, {"style": "room", "onLoadedInfor": function(item){
+                var O2person = new MWF.widget.O2Person({name : person, displayName:person.split("@")[0]}, area, {"style": "room", "onLoadedInfor": function(item){
                     this.loadAcceptAndReject( item );
                 }.bind(this) });
                 this.O2PersonList.push( O2person );

@@ -1673,10 +1673,17 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                             checkCallback();
                         }.bind(this), checkCallback, d);
                     }else{
-                        this.orgAction.listIdentityByPerson(function(json){
-                            this.loadIdentityItem(json, container , null, null, true);
-                            checkCallback();
-                        }.bind(this), checkCallback, d);
+                        if( this.selector.options.onlyMajorIdentity ){
+                            o2.Actions.load("x_organization_assemble_express").IdentityAction.listMajorWithPersonObject({"personList":[d]}, function (json) {
+                                this.loadIdentityItem(json, container , null, null, true);
+                                checkCallback();
+                            }.bind(this), checkCallback)
+                        }else{
+                            this.orgAction.listIdentityByPerson(function(json){
+                                this.loadIdentityItem(json, container , null, null, true);
+                                checkCallback();
+                            }.bind(this), checkCallback, d);
+                        }
                     }
                 }else{
                     if( this.options.resultType === "person" ){
