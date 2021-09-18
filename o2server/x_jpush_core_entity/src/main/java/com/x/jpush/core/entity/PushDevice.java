@@ -77,8 +77,8 @@ public class PushDevice extends SliceJpaObject {
     private String deviceType;
 
     //推送通道类型
-    public static final String PUSH_TYPE_JPUSH = "jpush";
-    public static final String PUSH_TYPE_HUAWEI = "huawei";
+    public static final String PUSH_TYPE_JPUSH = "jpush"; // 极光推送
+    public static final String PUSH_TYPE_HUAWEI = "huawei"; // 华为推送
 
     private static final String pushType_FIELDNAME = "pushType";
     @FieldDescribe("推送通道类型：jpush|huawei")

@@ -58,6 +58,7 @@ $RECYCLE.BIN/
 .mtj.tmp/
 # Package Files #
 **/*.jar
+!/o2server/**/ext/*.jar
 **/*.war
 **/*.nar
 **/*.ear
