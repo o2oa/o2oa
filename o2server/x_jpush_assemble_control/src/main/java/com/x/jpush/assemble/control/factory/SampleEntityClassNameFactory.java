@@ -107,6 +107,7 @@ public class SampleEntityClassNameFactory extends AbstractFactory {
 		return false;
 	}
 
+
 	/**
 	 * 查询用户的极光推送的设备列表
 	 * @param person

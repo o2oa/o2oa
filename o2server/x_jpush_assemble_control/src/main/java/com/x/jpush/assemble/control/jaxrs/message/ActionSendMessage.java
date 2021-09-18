@@ -23,13 +23,20 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.jpush.assemble.control.Business;
 import com.x.jpush.assemble.control.huawei.model.Importance;
 import com.x.jpush.assemble.control.huawei.model.Urgency;
 import com.x.jpush.assemble.control.huawei.model.Visibility;
 import com.x.jpush.core.entity.PushDevice;
+import javapns.Push;
+import javapns.notification.PushNotificationBigPayload;
+import javapns.notification.PushedNotification;
+import javapns.notification.PushedNotifications;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,29 +64,39 @@ public class ActionSendMessage  extends StandardJaxrsAction {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             logger.info("person:"+ wi.getPerson());
+
             HuaweiPushConfig config = Config.pushConfig().getHuaweiPushConfig();
             if (config !=null && Config.pushConfig().getHuaweiPushEnable()) { // 华为推送通道
                 logger.info("华为推送通道启用中，消息发送到华为");
                 List<PushDevice> pushDeviceList = business.sampleEntityClassNameFactory().listHuaweiDevice(wi.getPerson());
+                // 华为推送只支持Android端， ios 使用苹果自带的apns推送
                 if (pushDeviceList !=null && !pushDeviceList.isEmpty()) {
-                    send2HuaweiPush(pushDeviceList, wi.getMessage());
-                    wraps.setValue(true);
-                    result.setData(wraps);
-                }else {
-                    throw new ExceptionSendMessageDeviceEmpty();
-                }
+                    List<String> androidList = pushDeviceList.stream().filter((p)-> p.getDeviceType().equals(PushDevice.DEVICE_TYPE_ANDROID)).map(PushDevice::getDeviceId).collect(Collectors.toList());
+                    if (!androidList.isEmpty()) {
+                        send2HuaweiPushOnlyAndroid(androidList, wi.getMessage());
+                    }
 
+                    List<String> iosList = pushDeviceList.stream().filter((p)-> p.getDeviceType().equals(PushDevice.DEVICE_TYPE_IOS)).map(PushDevice::getDeviceId).collect(Collectors.toList());
+                    if (!iosList.isEmpty()) {
+                        send2APNS(iosList, wi.getMessage());
+                    }
+
+                }else {
+                    logger.info("华为推送设备为空，"+ wi.getPerson());
+                }
             } else {
                 logger.info("极光推送通道启用中，消息发送到极光推送");
                 List<PushDevice> pushDeviceList = business.sampleEntityClassNameFactory().listJpushDevice(wi.getPerson());
                 if (pushDeviceList !=null && !pushDeviceList.isEmpty()) {
                     send2Jpush(pushDeviceList, wi.getMessage(), business.sampleEntityClassNameFactory().jpushClient());
-                    wraps.setValue(true);
-                    result.setData(wraps);
                 }else {
-                    throw new ExceptionSendMessageDeviceEmpty();
+                    logger.info("极光推送设备为空，"+ wi.getPerson());
                 }
             }
+
+            wraps.setValue(true);
+            result.setData(wraps);
+
 //            List<String> deviceList = business.organization().personAttribute()
 //                    .listAttributeWithPersonWithName(wi.getPerson(), ActionListAll.DEVICE_PERSON_ATTR_KEY);
 //            if(ListTools.isNotEmpty( deviceList ) ){
@@ -121,21 +138,12 @@ public class ActionSendMessage  extends StandardJaxrsAction {
 
     /**
      * 华为推送消息
-     * @param pushDeviceList
+     * @param androidList
      * @param message
      * @throws Exception
      */
-    private void send2HuaweiPush(List<PushDevice> pushDeviceList, String message) throws Exception {
+    private void send2HuaweiPushOnlyAndroid(List<String> androidList, String message) throws Exception {
         logger.info("开始发送华为推送消息， "+message);
-        List<String> iosList = pushDeviceList.stream().filter((p)-> p.getDeviceType().equals(PushDevice.DEVICE_TYPE_IOS)).map(PushDevice::getDeviceId).collect(Collectors.toList());
-        List<String> androidList = pushDeviceList.stream().filter((p)-> p.getDeviceType().equals(PushDevice.DEVICE_TYPE_ANDROID)).map(PushDevice::getDeviceId).collect(Collectors.toList());
-
-        if (!iosList.isEmpty()) {
-            com.x.jpush.assemble.control.huawei.model.Message m = iosMessage(iosList, message);
-            sendHuaweiMessage(m);
-        } else {
-          logger.info("没有ios设备需要发送消息");
-        }
         if (!androidList.isEmpty()) {
             com.x.jpush.assemble.control.huawei.model.Message m = androidMessage(androidList, message);
             sendHuaweiMessage(m);
@@ -212,35 +220,6 @@ public class ActionSendMessage  extends StandardJaxrsAction {
 
     }
 
-    /**
-     * 华为ios消息
-     * @param deviceList
-     * @param message
-     * @return
-     */
-    private com.x.jpush.assemble.control.huawei.model.Message iosMessage(List<String> deviceList, String message) {
-        com.x.jpush.assemble.control.huawei.apns.Alert alert = com.x.jpush.assemble.control.huawei.apns.Alert.builder()
-                .setTitle(message)
-                .setBody(message)
-                .build();
-        com.x.jpush.assemble.control.huawei.apns.Aps aps = com.x.jpush.assemble.control.huawei.apns.Aps.builder()
-                .setAlert(alert)
-                .setBadge(1)
-                .build();
-        com.x.jpush.assemble.control.huawei.apns.ApnsHmsOptions apnsHmsOptions = com.x.jpush.assemble.control.huawei.apns.ApnsHmsOptions
-                .builder()
-                .setTargetUserType(2)//目标用户类型，取值如下： 1：测试用户 2：正式用户 3：VoIP用户
-                .build();
-        com.x.jpush.assemble.control.huawei.apns.ApnsConfig apns = com.x.jpush.assemble.control.huawei.apns.ApnsConfig
-                .builder()
-                .addPayloadAps(aps)
-                .setHmsOptions(apnsHmsOptions)
-                .build();
-        return com.x.jpush.assemble.control.huawei.model.Message.builder()
-                .addAllToken(deviceList)
-                .setApns(apns)
-                .build();
-    }
 
 
 
@@ -259,7 +238,47 @@ public class ActionSendMessage  extends StandardJaxrsAction {
                 .setNotification(Notification.alert(message))
                 .setOptions(Options.newBuilder().setApnsProduction(true).build()).build();
         PushResult pushResult = client.sendPush(pushPayload);
-        logger.info("发送结果:{}.", pushResult);
+        logger.info("极光推送 发送结果:{}.", pushResult);
+    }
+
+    /**
+     * 消息推送到 苹果消息推送中心
+     * @param deviceList
+     * @param message
+     */
+    private void send2APNS(List<String> deviceList, String message) throws Exception {
+        logger.info("开始发送APNS推送消息。。。。。。。。。。。device: " + ListTools.toStringJoin(deviceList));
+        File file = Config.pushConfig().getAPNSKeystoreFilePath();
+        if (file == null || !file.exists()) {
+            throw new ExceptionSendMessageAPNSFileNotExist();
+        }
+        String password = Config.pushConfig().getApnsKeystorePassword();
+        if (StringUtils.isEmpty(password)) {
+            throw new ExceptionSendMessageAPNSPasswordEmpty();
+        }
+        PushNotificationBigPayload payload = PushNotificationBigPayload.complex();
+        payload.addAlert(message);
+        payload.addBadge(1);
+        List<PushedNotification> notifications = Push.payload(payload, file, password, true, deviceList);
+        if (notifications != null) {
+            try{
+                for (int i = 0; i < notifications.size(); i++) {
+                    PushedNotification n = notifications.get(i);
+                    if (n.isSuccessful()) {
+                        logger.info("发送成功"+ n.getDevice().getToken());
+                    } else  {
+                        logger.info("发送失败"+ n.getDevice().getToken());
+                        Exception e = n.getException();
+                        e.printStackTrace();
+                    }
+                }
+            }catch (Exception e) {
+                logger.error(e);
+            }
+        }else {
+            logger.info("苹果推送发送失败， 没有返回值");
+        }
+        logger.info("苹果推送 发送完成！");
     }
 
     public static class HuaweiSendResponse {

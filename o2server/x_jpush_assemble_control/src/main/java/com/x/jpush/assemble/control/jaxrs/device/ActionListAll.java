@@ -40,7 +40,6 @@ public class ActionListAll extends BaseAction {
                 wraps = Wo.copyFromPushDeviceList(list);
                 result.setData(wraps);
                 result.setCount(Long.parseLong(wraps.size()+""));
-
             } else {
                 List<PushDevice> list = business.sampleEntityClassNameFactory().listHuaweiDevice(effectivePerson.getDistinguishedName());
                 wraps = Wo.copyFromPushDeviceList(list);
