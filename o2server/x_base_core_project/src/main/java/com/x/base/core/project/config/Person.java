@@ -43,7 +43,7 @@ public class Person extends ConfigObject {
 	public static final Integer DEFAULT_TOKENEXPIREDMINUTES = 60 * 24 * 15;
 	public static final Boolean DEFAULT_TOKENCOOKIEHTTPONLY = false;
 
-	public static final String DEFAULT_PASSWORDREGEX = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$";
+	public static final String DEFAULT_PASSWORDREGEX = "((?=.*\\d)(?=.*\\D)|(?=.*[a-zA-Z])(?=.*[^a-zA-Z]))^.{6,}$";
 	public static final String DEFAULT_PASSWORDREGEXHINT = "6位以上,包含数字和字母.";
 	public static final String DEFAULT_LANGUAGE = "zh-CN";
 	public static final String DEFAULT_CAPTCHAFONT = "";
