@@ -5,11 +5,18 @@
   "huaweiPushEnable": false,
   "huaweiPushConfig": {
     "appId": "100016851",
-    "appSecret": "b3ad9287e8d1d16d0aad8fde66e59118"
+    "appSecret": "b3ad9287e8d1d16d0aad8fde66e59118",
+    "###appId": "华为推送应用的appId###",
+    "###appSecret": "华为推送应用的appSecret###"
   },
+  "apnsKeystorePath": "configSample/o2oa_apns.p12",
+  "apnsKeystorePassword": "1209",
   "###enable": "是否启用.###",
   "###appKey": "极光推送应用的AppKey###",
   "###masterSecret": "极光推送应用的Master Secret###",
   "###huaweiPushEnable": "是否启用华为推送###",
-  "###huaweiPushConfig": "华为推送配置###"
+  "###huaweiPushConfig": "华为推送配置###",
+  "###apnsKeystorePath": "苹果推送证书路径###",
+  "###apnsKeystorePassword": "苹果推送证书的密码###"
+
 }
