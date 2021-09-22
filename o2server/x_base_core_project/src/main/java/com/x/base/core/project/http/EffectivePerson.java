@@ -148,6 +148,17 @@ public class EffectivePerson extends GsonPropertyObject {
 		}
 	}
 
+	public boolean isTernaryManager() {
+		switch (this.tokenType) {
+			case systemManager:
+			case securityManager:
+			case auditManager:
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	public boolean isAnonymous() {
 		switch (this.tokenType) {
 		case anonymous:
