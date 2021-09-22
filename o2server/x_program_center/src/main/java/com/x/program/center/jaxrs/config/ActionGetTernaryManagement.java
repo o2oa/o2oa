@@ -6,6 +6,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.TernaryManagement;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
 
 class ActionGetTernaryManagement extends BaseAction {
 
@@ -18,7 +19,8 @@ class ActionGetTernaryManagement extends BaseAction {
 
 	public static class Wo extends TernaryManagement {
 
-		static WrapCopier<TernaryManagement, Wo> copier = WrapCopierFactory.wo(TernaryManagement.class, Wo.class, null, null);
+		static WrapCopier<TernaryManagement, Wo> copier = WrapCopierFactory.wo(TernaryManagement.class, Wo.class, null,
+				ListTools.toList("auditManagerPassword", "securityManagerPassword", "systemManagerPassword"));
 
 	}
 }

@@ -213,6 +213,25 @@ public class MeetingAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
+	@JaxrsMethodDescribe(value = "删除会议邀请人.", action = ActionDeleteInvite.class)
+	@PUT
+	@Path("{id}/delete/invite")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteInvite(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionDeleteInvite.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteInvite().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	
 	@JaxrsMethodDescribe(value = "会议签到", action = ActionCheckIn.class)
 	@GET
 	@Path("{id}/checkin")

@@ -187,6 +187,7 @@ MWF.xApplication.process.FormDesigner.LP = {
 
     "refreshDatatemplateImpExpTitle": "导入字段确认",
     "refreshDatatemplateImpExpContent": "本操作从数据模板的内部组件获取字段。如果执行本操作，之前配置的字段会被替换，是否继续？",
+    "handWriting": "手写",
 
     "filter": {
         "and": "并且",
@@ -349,7 +350,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_common": "通用",
 
         "importer": "数据导入",
-        "readLog": "阅读记录"
+        "readLog": "阅读记录",
+        "writingBoard": "手写板"
     },
     "propertyTemplate": {
         "base": "基本",
@@ -436,6 +438,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readonly": "是否只读",
         "AIInput": "智能输入",
         "inputStyle": "Input样式",
+        "actionStyles": "按钮样式",
+        "imageStyles": "图片样式",
         "compute": "计算",
         "create": "创建",
         "save": "保存",
@@ -599,6 +603,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideModeButton": "隐藏模式操作",
         "showInDatagrid": "数据网格中的展现",
 
+        "hideSizeButton": "隐藏粗细按钮",
+        "hideColorButton": "隐藏颜色按钮",
+        "hideImageButton": "隐藏插入图片按钮",
+        "hideImageClipperButton": "隐藏图片剪切按钮",
+
         "tableSize": "表格大小",
         "row": "行",
         "col": "列",
@@ -640,7 +649,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "disabled": "禁用",
         "onlyExport": "仅导出",
         "onlyImport": "仅导入",
-        "exportInfo": "注：序号、图片、附件和隐藏列不能导入导出。",
+        "exportInfo": "注：序号、图片、手写板、附件和隐藏列不能导入导出。",
         "buttonLocation": "按钮位置",
         "centertop": "中上",
         "centerbottom": "中下",
@@ -1208,7 +1217,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         },
         "smartbi":{
             "select":"资源选择"
-        }
+        },
+        "tabletWidth": "手写板宽度",
+        "tabletHeight": "手写板高度",
+        "tabletSizeNote": "仅PC端有效，移动端横向满屏",
+        "tabletToolbarNote": "仅PC端有效，移动端不显示"
     },
     "smartbi":{
         "nosetup":"请先安装SmartBI应用",
