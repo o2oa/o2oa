@@ -324,6 +324,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "iWebOffice" : "金格控件",
         "statementSelector": "选择查询视图",
         "statement": "嵌入查询视图",
+        "SmartBI":"SmartBI报表",
 
         "group_all": "所有组件",
         "group_form": "表单组件",
@@ -1204,6 +1205,9 @@ MWF.xApplication.process.FormDesigner.LP = {
             "feedbackUrl":"反馈地址",
             "logoImg":"左上角logo（172x40）",
             "logoUrl":"logo链接"
+        },
+        "smartbi":{
+            "select":"资源选择"
         }
     },
     "actionBar": {

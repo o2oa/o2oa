@@ -302,6 +302,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "image": "Image",
         "imageclipper": "Imageclipper",
         "attachment": "Attachment",
+        "SmartBI":"SmartBI",
         "div": "Div",
         "table": "Table",
         "datagrid": "Datagrid(Deprecated)",

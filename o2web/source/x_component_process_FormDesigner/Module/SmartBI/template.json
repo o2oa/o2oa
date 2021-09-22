@@ -1,0 +1,101 @@
+{
+  "id": "",
+  "name": "",
+  "type": "SmartBI",
+  "description": "",
+  "events": {
+    "queryLoad" : {
+      "code": "",
+      "html": ""
+    },
+    "queryLoadController" : {
+      "code": "",
+      "html": ""
+    },
+    "loadController" : {
+      "code": "",
+      "html": ""
+    },
+    "postLoadController" : {
+      "code": "",
+      "html": ""
+    },
+    "load" : {
+      "code": "",
+      "html": ""
+    },
+    "upload": {
+      "code": "",
+      "html": ""
+    },
+    "delete": {
+      "code": "",
+      "html": ""
+    },
+    "afterDelete": {
+      "code": "",
+      "html": ""
+    },
+    "queryDownload": {
+      "code": "",
+      "html": ""
+    },
+    "download": {
+      "code": "",
+      "html": ""
+    },
+    "queryOpen": {
+      "code": "",
+      "html": ""
+    },
+    "open": {
+      "code": "",
+      "html": ""
+    },
+    "click": {
+      "code": "",
+      "html": ""
+    },
+    "dblclick": {
+      "code": "",
+      "html": ""
+    },
+    "mousedown": {
+      "code": "",
+      "html": ""
+    },
+    "mousemove": {
+      "code": "",
+      "html": ""
+    },
+    "mouseout": {
+      "code": "",
+      "html": ""
+    },
+    "mouseover": {
+      "code": "",
+      "html": ""
+    },
+    "mouseup": {
+      "code": "",
+      "html": ""
+    }
+  },
+  "size": "", //max, min
+  "isSizeChange": "y",
+  "attachmentCount": "0",
+  "resize": "n",
+  "listStyle": "", //list, icon, preview
+  "readonly": "n",
+  "isUpload": "y",
+  "isDelete": "y",
+  "isReplace": "y",
+  "isDownload": "y",
+  "toolbarGroupHidden" : [],
+  "availableListStyles" : ["list","seq","icon","preview"],
+
+
+  "class": "",
+  "styles": {},
+  "container": ""
+}
