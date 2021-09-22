@@ -122,11 +122,11 @@ public class TernaryManagement extends ConfigObject {
             name = this.getSystemManager();
             distinguishedName = this.getSystemManagerDistinguishedName();
         }else if(isSecurityManager(name)){
-            name = this.getSystemManager();
-            distinguishedName = this.getSystemManagerDistinguishedName();
+            name = this.getSecurityManager();
+            distinguishedName = this.getSecurityManagerDistinguishedName();
         }else if(isAuditManager(name)){
-            name = this.getSystemManager();
-            distinguishedName = this.getSystemManagerDistinguishedName();
+            name = this.getAuditManager();
+            distinguishedName = this.getAuditManagerDistinguishedName();
         }
         o.name = name;
         o.id = name;
