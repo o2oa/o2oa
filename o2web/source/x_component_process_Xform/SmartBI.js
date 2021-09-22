@@ -15,9 +15,6 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
     Extends: MWF.APP$Module,
 
     _loadUserInterface: function(){
-        var resId = this.json.smartbiresource||"none";
-        if(resId=="" || resId == "none"){
-            this.node.destroy()
-        }
+        if (!this.json.smartbiresource || this.json.smartbiresource==="none") this.node.destroy();
 	}
 });
