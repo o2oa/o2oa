@@ -36,7 +36,7 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
 	},
     _setEditStyle: function(name){ 
         if (name=="smartbiresource"){
-            var value = this.json.smartbiresource; 
+            var value = this.json.smartbiresource||"none"; 
 			if(value =="" || value == "none"){
 				this.setNodeContainer()
 			}else{
@@ -72,9 +72,9 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
 		}).inject(this.nodeContainer);
 
 		if(!layout.serviceAddressList["x_custom_smartbi_assemble_control"]){
-            new Element("div",{styles:this.css.nodeTxt,text:"请先安装SmartBI应用"}).inject(this.nodeContainer);
-		}else{
-            var t = new Element("div",{styles:this.css.nodeTxt,text:"SmartBI报表"}).inject(this.nodeContainer);
+            new Element("div",{styles:this.css.nodeTxt,text:MWF.APPFD.LP.smartbi.nosetup}).inject(this.nodeContainer);
+		}else{ debugger
+            var t = new Element("div",{styles:this.css.nodeTxt,text:MWF.APPFD.LP.smartbi.txt}).inject(this.nodeContainer);
             t.setStyles({"color":"#409EFF"});
         }
 	}
