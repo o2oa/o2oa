@@ -38,13 +38,16 @@ class ActionDeleteInvite extends BaseAction {
 			emc.beginTransaction(Meeting.class);
 			List<String> invitePersonList = ListUtils.subtract(meeting.getInvitePersonList(),inviteDelPersonList);
 			meeting.setInvitePersonList(invitePersonList);
-			inviteDelPersonList.addAll(meeting.getInviteDelPersonList());
-			meeting.setInviteDelPersonList(inviteDelPersonList);
+			
+			List<String> originalList = meeting.getInviteDelPersonList();
+			originalList.addAll(inviteDelPersonList);
+			originalList = ListTools.trim(originalList, true, true);
+			meeting.setInviteDelPersonList(originalList);
 			
 			emc.check(meeting, CheckPersistType.all);
 			emc.commit();
 			
-			if (ConfirmStatus.wait.equals(meeting.getConfirmStatus())) {
+			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
 				for (String _s : inviteDelPersonList) {
 					MessageFactory.meeting_deleteInvitePerson(_s, meeting);
 				}
