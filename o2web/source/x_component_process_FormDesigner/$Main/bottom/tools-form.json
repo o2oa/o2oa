@@ -9,11 +9,6 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.textfield,
     "className": "Textfield"
   },
-  "smartBI": {
-    "icon": "smartbi.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.SmartBI,
-    "className": "SmartBI"
-  },
   "number": {
     "icon": "number.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.number,

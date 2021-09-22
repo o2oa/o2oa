@@ -1210,6 +1210,10 @@ MWF.xApplication.process.FormDesigner.LP = {
             "select":"资源选择"
         }
     },
+    "smartbi":{
+        "nosetup":"请先安装SmartBI应用",
+        "txt":"SmartBI报表"
+    },
     "actionBar": {
         "close":"关闭",
         "closeTitle": "关闭文档",

@@ -52,38 +52,6 @@
 		"padding":"5px",
 		"height":"500px"
 	},
-	"iconNode": {
-		"width": "90px",
-		"height": "24px",
-		"color": "#999",
-		"font-size": "12px",
-		"margin": "auto",
-		"margin-top": "86px",
-		"border-top": "1px solid #FFF",
-		"border-left": "1px solid #FFF",
-		"border-right": "1px solid #CCC",
-		"border-bottom": "1px solid #CCC",
-		"background": "#EEE",
-		"position": "static",
-		"float": "none"
-	},
-	"iconNodeIcon":{
-		"width": "24px",
-		"height": "24px",
-		"background": "url("+"../x_component_process_FormDesigner/Module/Htmleditor/default/icon/editor.png) 5px center no-repeat",
-		"float": "left"
-	},
-	"iconNodeText":{
-		"line-height": "24px",
-		"height": "24px",
-		"width": "62px",
-		"float": "right"
-	},
-	"iframe": {
-		"width": "100%",
-		"height": "100%",
-		"border": "0"
-	},
 	"nodeContainer":{
 		"margin-top":"20px",
 		"font-size":"20px",
@@ -102,10 +70,11 @@
 		"float":"left",
 		"line-height":"32px"
 	},
-	"propertyRefreshNode":{
-		"float":"right",
-		"width":"16px",
-		"height":"16px",
-		"background": "url("+"../x_component_process_FormDesigner/Module/SmartBI/default/icon/smartbi-32.png) center no-repeat",
+	"propertyRefreshResourceNode":{
+		"width": "24px",
+	    "height": "24px",
+	    "float": "right",
+	    "background": "url(../x_component_process_FormDesigner/Module/SmartBI/default/icon/refresh.png) no-repeat center center",
+	    "cursor": "pointer"
 	}
 }

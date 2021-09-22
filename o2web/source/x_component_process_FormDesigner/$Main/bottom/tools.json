@@ -87,11 +87,6 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.imageclipper,
     "className": "ImageClipper"
   },
-  "smartBI": {
-    "icon": "smartbi.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.SmartBI,
-    "className": "SmartBI"
-  },
   "attachment": {
     "icon": "attachment.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.attachment,

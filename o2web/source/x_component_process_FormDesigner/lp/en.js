@@ -302,7 +302,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "image": "Image",
         "imageclipper": "Imageclipper",
         "attachment": "Attachment",
-        "SmartBI":"SmartBI",
         "div": "Div",
         "table": "Table",
         "datagrid": "Datagrid(Deprecated)",
@@ -326,6 +325,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "iWebOffice" : "iWebOffice",
         "statementSelector": "StatementSelector",
         "statement": "Statement",
+        "SmartBI":"SmartBI",
 
         "group_all": "All Module",
         "group_form": "Form",
@@ -1198,7 +1198,14 @@ MWF.xApplication.process.FormDesigner.LP = {
             "feedbackUrl":"feedbackUrl",
             "logoImg":"left logo（172x40）",
             "logoUrl":"logo link"
+        },
+        "smartbi":{
+            "select":"select"
         }
+    },
+    "smartbi":{
+        "nosetup":"please install SmartBI APP first",
+        "txt":"SmartBI"
     },
     "actionBar": {
         "close":"Close",
