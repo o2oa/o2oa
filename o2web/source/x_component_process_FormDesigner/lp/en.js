@@ -326,6 +326,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "iWebOffice" : "iWebOffice",
         "statementSelector": "StatementSelector",
         "statement": "Statement",
+        "SmartBI":"SmartBI",
 
         "group_all": "All Module",
         "group_form": "Form",
@@ -1207,8 +1208,17 @@ MWF.xApplication.process.FormDesigner.LP = {
             "logoImg":"left logo（172x40）",
             "logoUrl":"logo link"
         },
+        "smartbi":{
+            "select":"select"
+        },
         "tabletWidth": "Tablet Width",
-        "tabletHeight": "Tablet Height"
+        "tabletHeight": "Tablet Height",
+        "tabletSizeNote": "Valid only on the PC terminal, full screen horizontally on the mobile terminal",
+        "tabletToolbarNote": "Only valid on PC, not displayed on mobile"
+    },
+    "smartbi":{
+        "nosetup":"please install SmartBI APP first",
+        "txt":"SmartBI"
     },
     "actionBar": {
         "close":"Close",
