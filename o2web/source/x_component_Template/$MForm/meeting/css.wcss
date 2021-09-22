@@ -76,6 +76,17 @@
     "cursor" : "pointer",
     "font-size" : "14px"
   },
+  "inputButtonGrey" : {
+    "background": "#f0f0f0",
+    "border-radius": "4px",
+    "padding" : "0px 10px",
+    "line-height" : "30px",
+    "height" : "30px",
+    "border" : "0px",
+    "color" : "#666",
+    "cursor" : "pointer",
+    "font-size" : "14px"
+  },
   "inputAcceptButton" : {
     "background-color": "#3C76B7",
     "border-radius": "4px",

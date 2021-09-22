@@ -1673,10 +1673,27 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                             checkCallback();
                         }.bind(this), checkCallback, d);
                     }else{
-                        this.orgAction.listIdentityByPerson(function(json){
-                            this.loadIdentityItem(json, container , null, null, true);
-                            checkCallback();
-                        }.bind(this), checkCallback, d);
+                        // if( this.selector.options.onlyMajorIdentity ){
+                        //     o2.Actions.load("x_organization_assemble_express").IdentityAction.listMajorWithPersonObject({"personList":[d]}, function (json) {
+                        //         this.loadIdentityItem(json, container , null, null, true);
+                        //         checkCallback();
+                        //     }.bind(this), checkCallback)
+                        // }else{
+                            this.orgAction.listIdentityByPerson(function(json){
+                                var obj;
+                                if(json.data.length > 1 && this.selector.options.onlyMajorIdentity){
+                                    for(var i=0; i<json.data.length; i++){
+                                        if( json.data[i].major ){
+                                            obj = {"data": [json.data[i]]};
+                                            break;
+                                        }
+                                    }
+                                    if(!obj)obj = {"data": [json.data[0]]};
+                                }
+                                this.loadIdentityItem(obj || json, container , null, null, true);
+                                checkCallback();
+                            }.bind(this), checkCallback, d);
+                        // }
                     }
                 }else{
                     if( this.options.resultType === "person" ){
