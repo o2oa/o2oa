@@ -3,10 +3,14 @@ package com.x.base.core.project.config;
 import com.x.base.core.project.annotation.FieldDescribe;
 import org.apache.commons.lang3.BooleanUtils;
 
+import java.io.File;
+
 public class JpushConfig extends ConfigObject {
 
     private static final String O2_app_key_default = "9aca7cc20fe0cc987cd913ca";
     private static final String O2_master_secret_default = "96ee7e2e0daffd51bac57815";
+    private static final String O2_apns_path_default = "configSample/o2oa_apns.p12";
+    private static final String O2_apns_password_default = "1209";
 
 
     public static JpushConfig defaultInstance() {
@@ -18,6 +22,9 @@ public class JpushConfig extends ConfigObject {
         this.masterSecret = O2_master_secret_default;
         this.huaweiPushEnable = false;
         this.huaweiPushConfig = HuaweiPushConfig.defaultInstance();
+        this.apnsKeystorePassword = O2_apns_password_default;
+        this.apnsKeystorePath = O2_apns_path_default;
+
     }
 
 
@@ -31,8 +38,36 @@ public class JpushConfig extends ConfigObject {
     private Boolean huaweiPushEnable;
     @FieldDescribe("华为推送的配置")
     private HuaweiPushConfig huaweiPushConfig;
+    @FieldDescribe("苹果推送证书路径")
+    private String apnsKeystorePath;
+    @FieldDescribe("苹果推送证书的密码")
+    private String apnsKeystorePassword;
 
 
+    /**
+     * 获取苹果推送证书文件
+     * @return
+     * @throws Exception
+     */
+    public File getAPNSKeystoreFilePath() throws Exception {
+        return new File(Config.base(), apnsKeystorePath);
+    }
+
+    public String getApnsKeystorePath() {
+        return apnsKeystorePath;
+    }
+
+    public void setApnsKeystorePath(String apnsKeystorePath) {
+        this.apnsKeystorePath = apnsKeystorePath;
+    }
+
+    public String getApnsKeystorePassword() {
+        return apnsKeystorePassword;
+    }
+
+    public void setApnsKeystorePassword(String apnsKeystorePassword) {
+        this.apnsKeystorePassword = apnsKeystorePassword;
+    }
 
     public Boolean getEnable() {
         return BooleanUtils.isTrue(this.enable);

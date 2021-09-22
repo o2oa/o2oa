@@ -188,6 +188,7 @@ MWF.xApplication.process.FormDesigner.LP = {
 
     "refreshDatatemplateImpExpTitle": "Import field confirmation",
     "refreshDatatemplateImpExpContent": "This operation gets the fields from the internal components of the data template. If you perform this operation, the previously configured fields will be replaced. Do you want to continue?",
+    "handWriting": "handwriting",
 
     "filter": {
         "and": "and",
@@ -350,7 +351,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_common": "Common",
 
         "importer": "DataImporter",
-        "readLog": "Read Log"
+        "readLog": "Read Log",
+        "writingBoard": "writingBoard"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -438,6 +440,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readonly": "Readonly",
         "AIInput": "AI Input",
         "inputStyle": "Input Style",
+        "actionStyles": "Button Styles",
+        "imageStyles": "Picture Style",
         "compute": "Compute",
         "create": "Create",
         "save": "Save",
@@ -596,6 +600,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideModeButton": "Hide Mode Button",
         "showInDatagrid": "Show In Datagrid",
 
+        "hideSizeButton": "Hide Size Button",
+        "hideColorButton": "Hide Color Button",
+        "hideImageButton": "Hide the Insert Picture Button",
+        "hideImageClipperButton": "Hide ImageClipper Button",
+
         "tableSize": "Table Size",
         "row": "Row",
         "col": "Column",
@@ -637,7 +646,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "disabled": "Disable",
         "onlyExport": "Export Only",
         "onlyImport": "Import Only",
-        "exportInfo": "Note: Serial numbers, image, attachment and hidden columns cannot be imported or exported.",
+        "exportInfo": "Note: Serial numbers, image, writingBoard, attachment and hidden columns cannot be imported or exported.",
         "buttonLocation": "Button Location",
         "centerTop": "centerTop",
         "centerBottom": "centerBottom",
@@ -1201,7 +1210,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         },
         "smartbi":{
             "select":"select"
-        }
+        },
+        "tabletWidth": "Tablet Width",
+        "tabletHeight": "Tablet Height",
+        "tabletSizeNote": "Valid only on the PC terminal, full screen horizontally on the mobile terminal",
+        "tabletToolbarNote": "Only valid on PC, not displayed on mobile"
     },
     "smartbi":{
         "nosetup":"please install SmartBI APP first",
