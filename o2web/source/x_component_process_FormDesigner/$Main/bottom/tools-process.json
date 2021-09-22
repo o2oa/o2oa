@@ -14,6 +14,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.Sidebar,
     "className": "Sidebar"
   },
+  "smartBI": {
+    "icon": "smartbi.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.SmartBI,
+    "className": "SmartBI"
+  },
   "attachment": {
     "icon": "attachment.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.attachment,
