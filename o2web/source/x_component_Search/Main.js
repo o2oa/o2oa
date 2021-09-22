@@ -181,6 +181,7 @@ MWF.xApplication.Search.ResaultItem = new Class({
                 }.bind(this), function(){
                     this.data.permission = "n";
                     if (callback) callback();
+                    return true;
                 }.bind(this))
             }
             if (this.data.type==="workCompleted"){
@@ -190,6 +191,7 @@ MWF.xApplication.Search.ResaultItem = new Class({
                 }.bind(this), function(){
                     this.data.permission = "n";
                     if (callback) callback();
+                    return true;
                 }.bind(this))
             }
             if (this.data.type==="cms"){
@@ -205,6 +207,7 @@ MWF.xApplication.Search.ResaultItem = new Class({
                 }.bind(this), function(){
                     this.data.permission = "n";
                     if (callback) callback();
+                    return true;
                 }.bind(this))
             }
         }else{
