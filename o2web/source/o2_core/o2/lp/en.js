@@ -201,6 +201,9 @@ o2.LP.desktop = {
 		"meetingRejectMessage": "Meeting invitation has been rejected",
 		"meetingReject": "<font style='color: #ea621f'>{person}</font> has declined your meeting invitation。Time: <font style='color: #ea621f'>{date}</font>; Subject: \"{subject}\"",
 
+		"meetingDeleteInviteMessage": "Meeting invitation has been cancelled",
+		"meetingDeleteInvite": "<font style='color: #ea621f'>{person}</font> cancelled your meeting invitation, meeting information: time <font style='color: #ea621f'>{date}</font>, title \"{subject}\", location <font style='color: #ea621f'>{addr}</font>",
+
 		"attendanceAppealInviteMessage": "There is an attendance claim that needs your approval",
 		"attendanceAppealInvite": "{subject}",
 		"attendanceAppealAcceptMessage": "Attendance application passed",

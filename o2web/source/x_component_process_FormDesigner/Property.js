@@ -104,6 +104,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadVueElementUI();
                     this.loadElCommonPreview();
 
+                    this.loadSmartBISelect();
+
                     this.loadHelp();
                     // this.loadScriptIncluder();
                     // this.loadDictionaryIncluder();
@@ -2562,6 +2564,43 @@ debugger;
 			}
 		}.bind(this));
 	},
+    loadSmartBISelect: function(){ 
+        var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
+        var SmartBINodes = this.propertyContent.getElements(".MWFSmartBISelect");
+        
+        if (SmartBINodes.length){ 
+            var node = SmartBINodes[0];
+            var select = new Element("select").inject(node);
+            this.setSmartBIOptions(select);
+            select.addEvent("change", function(e){
+                var value = e.target.options[e.target.selectedIndex].value;
+                this.setValue(e.target.getParent("div").get("name"), value, select);
+            }.bind(this));
+            
+            var refreshNode = new Element("div.propertyRefreshFormNode",{styles:this.form.css.propertyRefreshFormNode}).inject(node);
+            refreshNode.addEvent("click",function(){
+                SmartBIAction.ResourceAction.sync(function(){
+                    this.setSmartBIOptions(select)
+                }.bind(this))
+            }.bind(this))
+            
+        }
+    },
+    setSmartBIOptions:function(node){
+        node.empty();
+        new Element("option",{text:"none",value:"none"}).inject(node);
+        var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
+        var selectedValue = this.data.smartbiresource;
+        SmartBIAction.ResourceAction.list(function(json){
+            json.data.each(function(d){ 
+                new Element("option", {
+                    "text": d.name,
+                    "value": d.resid,
+                    "selected": (selectedValue==d.resid)
+                }).inject(node);
+            });
+        });
+    },
     loadHelp: function () {
         var nodes = this.propertyContent.getElements(".MWFHelp");
         if (nodes.length){
