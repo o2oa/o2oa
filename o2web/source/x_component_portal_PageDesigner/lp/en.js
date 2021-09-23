@@ -303,7 +303,8 @@ MWF.APPPOD.LP = {
         "widget": "Widget",
         "widgetmodules": "WidgetEl",
         "address": "Address",
-        "importer": "DataImport"
+        "importer": "DataImport",
+        "SmartBI":"SmartBI"
     },
     "filedConfigurator": {
         "sequence": "Sequence",
