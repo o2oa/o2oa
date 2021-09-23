@@ -48,12 +48,17 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
 				url = o2.filterUrl(address+url);
 				this.node.empty(); 
 				
-				new Element("iframe",{src:url,styles:{"width":"100%","height":"100%","min-height":"500px"},frameborder:"0",scrolling:"auto"}).inject(this.node);
+				new Element("iframe",{src:url,styles:this.css.iframe,frameborder:"0",scrolling:"auto"}).inject(this.node);
 			}
         }
     },
+	_loadNodeStyles: function(){
+		var _iframe = this.node.getElements("iframe");
+		if(_iframe.length>0){
+			_iframe[0].setStyles(this.css.iframe)
+		}
+	},
 	_createNode: function(){
-        
 		this.node = this.moveNode.clone(true, true);
 		this.node.setStyles(this.css.moduleNode);
 		this.node.set("id", this.json.id);
