@@ -244,7 +244,6 @@ MWF.xApplication.TernaryLog.Main = new Class({
                             "change" : function( item, ev ){
                                 var array;
                                 var v = item.getValue();
-                                debugger;
                                 if( v ){
                                     o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.listOperation(v, function(json){
                                         array = [""].concat(json.data.valueList);
