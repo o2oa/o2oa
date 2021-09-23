@@ -233,19 +233,30 @@ MWF.xApplication.TernaryLog.Main = new Class({
                     module : {
                         "text" : lp.module,
                         "type" : "select",
-                        "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"],
+                        "selectValue" :function () {
+                            var array = [""];
+                            o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.listModule( function(json){
+                                array = array.concat(json.data.valueList);
+                            }.bind(this), null, false);
+                            return array;
+                        },
                         "event" : {
                             "change" : function( item, ev ){
-                                var values = this.getDateSelectValue();
-                                item.form.getItem( "date").resetItemOptions( values , values )
+                                var array;
+                                var v = item.getValue();
+                                debugger;
+                                if( v ){
+                                    o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.listOperation(v, function(json){
+                                        array = [""].concat(json.data.valueList);
+                                    }.bind(this), null, false);
+                                }else{
+                                    array = [];
+                                }
+                                item.form.getItem( "operation").resetItemOptions( array , array )
                             }.bind(this)
                         }
                     },
-                    operation : { text : lp.operation,  "type" : "select", "selectValue" : function(){
-
-                            return [];
-                        }.bind(this)
-                    },
+                    operation : { text : lp.operation,  "type" : "select", "selectValue" : []},
                     startTime : { text: lp.startTime, "tType" : "datetime", "calendarOptions":{"secondEnable":true, "format":"db"}},
                     endTime : { text: lp.endTime, "tType" : "datetime", "calendarOptions":{"secondEnable":true, "format":"db"} },
                     action : { "value" : lp.query, type : "button", className : "filterButton", event : {
