@@ -27,7 +27,8 @@
         "padding": "3.7cm 2.6cm 3.5cm 2.8cm",
         "margin": "0.2cm auto 0 auto",
         "background": "#ffffff",
-        "overflow": "hidden"
+        "overflow": "hidden",
+        "transform": "scale(1)"
     },
 
     "doc_layout_page_content": {
