@@ -125,7 +125,7 @@ MWF.xApplication.TernaryLog.Main = new Class({
         var nodeSize = this.node.getSize();
         var h = nodeSize.y - this.getOffsetY(this.node);
 
-        var topY = this.topNode ? ( this.getOffsetY(this.topNode) + this.topNode.getSize().y ): 0;
+        var topY = this.topContainerNode ? ( this.getOffsetY(this.topContainerNode) + this.topContainerNode.getSize().y ): 0;
         h = h - topY;
 
         h = h - this.getOffsetY(this.viewContainerNode);

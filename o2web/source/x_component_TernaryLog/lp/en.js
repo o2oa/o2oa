@@ -1,9 +1,23 @@
 MWF.xApplication.TernaryLog.LP = {
-	"title": "Hot Information",
-	"delete": "Delete",
-	"deleteDocumentTitle": "Cancel Confirmation",
-	"deleteDocument": "Are you sure you want to cancel this hot information?",
-	"deleteDocumentOK": "Successfully canceled hotspot",
+	"title": "Three-Member Management Log",
+
+	"person": "User",
+	"node": "Node",
+	"clientIp": "Client IP",
+	"module": "Module",
+	"operation": "operation",
+	"httpType": "Type",
+	"httpStatus": "Status",
+	"httpUrl": "Request address",
+	"startTime": "Start Time",
+	"endTime": "End Time",
+	"createTime": "Start Time",
+	"updateTime": "End Time",
+	"spendTime": "Execution duration (milliseconds)",
+	"firstPage": "First Page",
+	"lastPage": "Last Page",
+	"query": "Search",
+	"reset": "Reset",
 
 	"cancel": "Cancel",
 	"close": "Close",
@@ -14,15 +28,10 @@ MWF.xApplication.TernaryLog.LP = {
 
 	"yesterday": "Yesterday",
 	"twoDaysAgo": "The day before yesterday",
-	"weekAgo": " Week Ago",
-	"dayAgo": " Day Ago",
-	"hourAgo": " Hours ago",
-	"minuteAgo": " minutes ago",
-	"justNow": "justNow",
-	"publishJustNow": "Just published",
-
-	"cancelHotspot": "Cancel Hotspot",
-	"from": "From",
-	"CMS": "Content Management",
-	"forum": "Forum"
+	"weekAgo": "Week Ago",
+	"dayAgo": "Day Ago",
+	"hourAgo": "Hours ago",
+	"minuteAgo": "minutes ago",
+	"justNow": "JustNow",
+	"publishJustNow": "Just published"
 };
