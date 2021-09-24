@@ -29,7 +29,7 @@ public class VoteCenterEvent implements Event {
 		List<Entry<String, CenterServer>> list = listCenterServer();
 		for (Entry<String, CenterServer> entry : list) {
 			try {
-				ActionResponse response = CipherConnectionAction.get(false, 1000, 2000,
+				ActionResponse response = CipherConnectionAction.get(false, 4000, 8000,
 						Config.url_x_program_center_jaxrs(entry, "echo"));
 				JsonElement jsonElement = response.getData(JsonElement.class);
 				if (null != jsonElement && (!jsonElement.isJsonNull())) {
