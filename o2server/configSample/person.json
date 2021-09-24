@@ -6,7 +6,7 @@
   "faceLogin": true,
   "password": "(var v \\u003d person.getMobile();\\u000a return v.substring(v.length - 6))",
   "passwordPeriod": 0.0,
-  "passwordRegex": "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$",
+  "passwordRegex": "((?\u003d.*\\d)(?\u003d.*\\D)|(?\u003d.*[a-zA-Z])(?\u003d.*[^a-zA-Z]))^.{6,}$",
   "passwordRegexHint": "6位以上,包含数字和字母.",
   "register": "disable",
   "superPermission": true,
