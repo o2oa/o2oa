@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -1274,64 +1275,103 @@ public class Config {
 		return (LinkedBlockingQueue<JsonElement>) initialContext().lookup(RESOURCE_NODE_EVENTQUEUE);
 	}
 
-	public static synchronized JsonElement resource_node_applications() throws Exception {
-		Object o = initialContext().lookup(RESOURCE_NODE_APPLICATIONS);
-		if (null != o) {
-			return (JsonElement) o;
-		}
-		return null;
+	@SuppressWarnings("unchecked")
+	public static JsonElement resource_node_applications() throws Exception {
+		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
+				.lookup(RESOURCE_NODE_APPLICATIONS);
+		return (JsonElement) map.get(RESOURCE_NODE_APPLICATIONS);
+//		Object o = initialContext().lookup(RESOURCE_NODE_APPLICATIONS);
+//		if (null != o) {
+//			return (JsonElement) o;
+//		}
+//		return null;
 	}
 
-	public static synchronized void resource_node_applications(JsonElement jsonElement) throws Exception {
-		initialContext().rebind(RESOURCE_NODE_APPLICATIONS, jsonElement);
+	@SuppressWarnings("unchecked")
+	public static void resource_node_applications(JsonElement jsonElement) throws Exception {
+		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
+				.lookup(RESOURCE_NODE_APPLICATIONS);
+		map.put(RESOURCE_NODE_APPLICATIONS, jsonElement);
+		// initialContext().rebind(RESOURCE_NODE_APPLICATIONS, jsonElement);
 	}
 
-	public static synchronized Date resource_node_applicationsTimestamp() throws Exception {
-		Object o = initialContext().lookup(RESOURCE_NODE_APPLICATIONSTIMESTAMP);
-		if (null != o) {
-			return (Date) o;
-		}
-		return null;
+	@SuppressWarnings("unchecked")
+	public static Date resource_node_applicationsTimestamp() throws Exception {
+		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
+				.lookup(RESOURCE_NODE_APPLICATIONS);
+		return (Date) map.get(RESOURCE_NODE_APPLICATIONSTIMESTAMP);
+		// Object o = initialContext().lookup(RESOURCE_NODE_APPLICATIONSTIMESTAMP);
+//		if (null != o) {
+//			return (Date) o;
+//		}
+//		return null;
 	}
 
-	public static synchronized void resource_node_applicationsTimestamp(Date date) throws Exception {
-		initialContext().rebind(RESOURCE_NODE_APPLICATIONSTIMESTAMP, date);
+	@SuppressWarnings("unchecked")
+	public static void resource_node_applicationsTimestamp(Date date) throws Exception {
+		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
+				.lookup(RESOURCE_NODE_APPLICATIONS);
+		map.put(RESOURCE_NODE_APPLICATIONSTIMESTAMP, date);
+		// initialContext().rebind(RESOURCE_NODE_APPLICATIONSTIMESTAMP, date);
 	}
 
-	public static synchronized String resource_node_centersPirmaryNode() throws Exception {
-		Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYNODE);
-		if (null != o) {
-			return (String) o;
-		}
-		return null;
+	@SuppressWarnings("unchecked")
+	public static String resource_node_centersPirmaryNode() throws Exception {
+		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
+				.lookup(RESOURCE_NODE_APPLICATIONS);
+		return (String) map.get(RESOURCE_NODE_CENTERSPRIMARYNODE);
+//		Object o = initialContext().lookup()RESOURCE_NODE_CENTERSPRIMARYNODE;
+//		if (null != o) {
+//			return (String) o;
+//		}
+//		return null;
 	}
 
-	public static synchronized void resource_node_centersPirmaryNode(String node) throws Exception {
-		initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYNODE, node);
+	@SuppressWarnings("unchecked")
+	public static void resource_node_centersPirmaryNode(String node) throws Exception {
+		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
+				.lookup(RESOURCE_NODE_APPLICATIONS);
+		map.put(RESOURCE_NODE_CENTERSPRIMARYNODE, node);
 	}
 
-	public static synchronized Integer resource_node_centersPirmaryPort() throws Exception {
-		Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYPORT);
-		if (null != o) {
-			return (Integer) o;
-		}
-		return null;
+	@SuppressWarnings("unchecked")
+	public static Integer resource_node_centersPirmaryPort() throws Exception {
+		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
+				.lookup(RESOURCE_NODE_APPLICATIONS);
+		return (Integer) map.get(RESOURCE_NODE_CENTERSPRIMARYPORT);
+		// Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYPORT);
+//		if (null != o) {
+//			return (Integer) o;
+//		}
+//		return null;
 	}
 
-	public static synchronized void resource_node_centersPirmaryPort(Integer port) throws Exception {
-		initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYPORT, port);
+	@SuppressWarnings("unchecked")
+	public static void resource_node_centersPirmaryPort(Integer port) throws Exception {
+		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
+				.lookup(RESOURCE_NODE_APPLICATIONS);
+		map.put(RESOURCE_NODE_CENTERSPRIMARYPORT, port);
+		// initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYPORT, port);
 	}
 
-	public static synchronized Boolean resource_node_centersPirmarySslEnable() throws Exception {
-		Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE);
-		if (null != o) {
-			return (Boolean) o;
-		}
-		return null;
+	@SuppressWarnings("unchecked")
+	public static Boolean resource_node_centersPirmarySslEnable() throws Exception {
+		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
+				.lookup(RESOURCE_NODE_APPLICATIONS);
+		return (Boolean) map.get(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE);
+		// Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE);
+//		if (null != o) {
+//			return (Boolean) o;
+//		}
+//		return null;
 	}
 
-	public static synchronized void resource_node_centersPirmarySslEnable(Boolean sslEnable) throws Exception {
-		initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, sslEnable);
+	@SuppressWarnings("unchecked")
+	public static void resource_node_centersPirmarySslEnable(Boolean sslEnable) throws Exception {
+		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
+				.lookup(RESOURCE_NODE_APPLICATIONS);
+		map.put(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, sslEnable);
+		// initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, sslEnable);
 	}
 
 	public static synchronized ExecutorService[] resource_node_processPlatformExecutors() throws Exception {
