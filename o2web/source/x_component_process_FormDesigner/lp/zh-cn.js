@@ -351,7 +351,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         "importer": "数据导入",
         "readLog": "阅读记录",
-        "writingBoard": "手写板"
+        "writingBoard": "手写板",
+        "tinymceEditor": "TinyMCE编辑器"
     },
     "propertyTemplate": {
         "base": "基本",

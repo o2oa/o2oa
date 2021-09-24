@@ -4,6 +4,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.htmledit,
     "className": "Htmleditor"
   },
+  "tinymceEditor": {
+    "icon": "tinymceeditor.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.tinymceEditor,
+    "className": "TinyMCEEditor"
+  },
   "office": {
     "icon": "office.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.office,
