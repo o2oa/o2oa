@@ -197,7 +197,7 @@ public class Logger {
 		StringBuilder sb = this.create(ERROR, id);
 		sb.append(e.getMessage());
 		String headString = this.headToString(request);
-		String bodyString = this.bodyToString(body);
+		String bodyString = StringTools.utf8SubString(this.bodyToString(body), 300);
 		String requestUrl = request.getRequestURL().toString()
 				+ (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
 		String stackTraceString = ExceptionUtils.getStackTrace(e);
