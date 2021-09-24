@@ -70,7 +70,8 @@ MWF.xApplication.Org.RoleExplorer = new Class({
         this.loadPingyinArea();
     },
     _isActionManager: function(){
-        return (MWF.AC.isOrganizationManager() || MWF.AC.isRoleManager());
+	    debugger;
+        return (MWF.AC.isOrganizationManager() || MWF.AC.isRoleManager() || MWF.AC.isSecurityManager());
     }
 });
 
