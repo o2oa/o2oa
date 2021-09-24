@@ -46,7 +46,8 @@ MWF.xScript.Environment = function(ev){
          * 访问或修改data对象的数据。<br/><br/>
          * data数据用于存储表单获取的数据，所有属性都是动态的，其格式和访问方式都和JSON类似。<br/>
          * 在表单脚本中使用data对象，实现了data和表单可编辑元素的双向绑定。<br/>
-         * 改变data对象，会自动更新表单元素，修改表单可编辑元素，也会自动修改data对象。
+         * 改变data对象，会自动更新表单元素，修改表单可编辑元素，也会自动修改data对象。<br/>
+         * <b>修改数据(this.data.subject = '')仅适用于表单上有该字段组件；建议使用this.data.add("subject","",true)方法，适用所有情况。</b>
          * @member {String|Number} [[property]]
          * @memberOf module:data
          * @instance
