@@ -151,7 +151,7 @@ MWF.xApplication.Setting.BaseExplorer = new Class({
     },
     getData: function(){
         var checkData = function(){
-            if (this.collectData && this.personData &&  this.tokenData && this.portalData && this.publicData){
+            if (this.collectData && this.personData &&  this.tokenData && this.portalData && this.publicData && this.ternaryData){
                 if (this.loadDataBack){
                     var fun = this.loadDataBack;
                     this.loadDataBack = null;
@@ -173,6 +173,10 @@ MWF.xApplication.Setting.BaseExplorer = new Class({
         }.bind(this));
         this.actions.getPortal(function(json){
             this.portalData = json.data;
+            checkData();
+        }.bind(this));
+        o2.Actions.load("x_program_center").ConfigAction.getTernaryManagement(function(json){
+            this.ternaryData = json.data;
             checkData();
         }.bind(this));
         //o2.UD.deletePublicData("faceKeys");

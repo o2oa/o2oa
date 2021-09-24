@@ -259,7 +259,15 @@ o2.widget.O2Person = new Class({
         return this.data;
     },
     setText: function(){
-        this.node.set("text", this.data.displayName || this.data.name);
+        var displayName;
+        if(this.data.displayName){
+            displayName = this.data.displayName;
+        }else if(this.data.name && this.data.name.indexOf("@") > -1){
+            displayName = this.data.name.split("@")[0];
+        }else{
+            displayName = this.data.name || "";
+        }
+        this.node.set("text", displayName);
     }
 });
 o2.widget.O2Unit = new Class({
