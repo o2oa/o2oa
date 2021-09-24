@@ -29,6 +29,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapString;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.server.console.server.Servers;
 
 public class RegistApplicationsEvent implements Event {
@@ -49,6 +50,9 @@ public class RegistApplicationsEvent implements Event {
 			if (BooleanUtils.isTrue(Servers.applicationServerIsStarted())
 					&& (null != Config.resource_node_applications())) {
 				List<Application> list = listApplication(applicationServer);
+				if (ListTools.isEmpty(list)) {
+					logger.warn("applications on node:{} is empty.", Config.node());
+				}
 				if (BooleanUtils.isTrue(Config.currentNode().getSelfHealthCheckEnable()) && (!this.healthCheck(list))) {
 					logger.warn("health check result is false.");
 					list.clear();
