@@ -12,6 +12,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,6 +35,8 @@ import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 
 class ActionListIdentityWithUnitWithNameObject extends BaseAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionListIdentityWithUnitWithNameObject.class);
 
 	@SuppressWarnings("unchecked")
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
@@ -214,7 +218,8 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 			Root<UnitDuty> root = cq.from(UnitDuty.class);
-			Predicate p = root.get(UnitDuty_.name).in(names);
+//			Predicate p = root.get(UnitDuty_.name).in(names);
+			Predicate p = cb.isMember(root.get(UnitDuty_.name), cb.literal(names));
 			os = em.createQuery(cq.select(root).where(p)).getResultList();
 		} else {
 			List<Unit> unitList = business.unit().pick(units);
@@ -241,27 +246,47 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 				os = em.createQuery(cq.select(root).where(p)).getResultList();
 			}
 		}
-
+		List<String> identityIdList = new ArrayList<>();
+		for (UnitDuty o : os) {
+			identityIdList.addAll(o.getIdentityList());
+		}
+		identityIdList = ListTools.trim(identityIdList, true, true);
+		List<Identity> identityList = business.entityManagerContainer().list(Identity.class, identityIdList);
+		Map<String,Identity> identityMap = new HashMap<>();
+		for (Identity identity: identityList){
+			identityMap.put(identity.getId(), identity);
+		}
+		List<String> unitIdList = ListTools.extractProperty(identityList, Identity.unit_FIELDNAME, String.class, true, true);
+		List<String> personIdList = ListTools.extractProperty(identityList, Identity.person_FIELDNAME, String.class, true, true);
+		List<Person> personList = business.entityManagerContainer().fetch(personIdList, Person.class, ListTools.toList(Person.distinguishedName_FIELDNAME, Person.id_FIELDNAME));
+		List<Unit> unitList = business.entityManagerContainer().fetch(unitIdList, Unit.class, ListTools.toList(Unit.distinguishedName_FIELDNAME, Unit.id_FIELDNAME, Unit.orderNumber_FIELDNAME));
+		Map<String,Person> personMap = new HashMap<>();
+		for (Person person: personList){
+			personMap.put(person.getId(), person);
+		}
+		Map<String,Unit> unitObjMap = new HashMap<>();
+		for (Unit unit: unitList){
+			unitObjMap.put(unit.getId(), unit);
+		}
 		for (UnitDuty o : os) {
 			int i = 0;
-			for (Identity identity : business.identity().pick(o.getIdentityList())) {
-				Unit matchUnit = unitMap.get(o.getUnit());
-				if (matchUnit == null) {
-					matchUnit = business.unit().pick(o.getUnit());
-					unitMap.put(matchUnit.getId(), matchUnit);
+			for (String identityId : o.getIdentityList()) {
+				Identity identity = identityMap.get(identityId);
+				if(identity!=null) {
+					Unit matchUnit = unitMap.get(o.getUnit());
+					if (matchUnit == null) {
+						matchUnit = business.unit().pick(o.getUnit());
+						unitMap.put(matchUnit.getId(), matchUnit);
+					}
+					Unit unit = unitObjMap.get(identity.getUnit());
+					Person person = personMap.get(identity.getPerson());
+					Wo wo = this.convertToIdentity(matchUnit, unit, person, identity);
+					i++;
+					wo.setMatchUnitDutyNumber(i);
+					wo.setMatchUnitDutyId(o.getId());
+					wo.setMatchUnitDutyName(o.getName());
+					wos.add(wo);
 				}
-				Unit unit = unitMap.get(identity.getUnit());
-				if (unit == null) {
-					unit = business.unit().pick(identity.getUnit());
-					unitMap.put(unit.getId(), unit);
-				}
-				Person person = business.person().pick(identity.getPerson());
-				Wo wo = this.convertToIdentity(matchUnit, unit, person, identity);
-				i++;
-				wo.setMatchUnitDutyNumber(i);
-				wo.setMatchUnitDutyId(o.getId());
-				wo.setMatchUnitDutyName(o.getName());
-				wos.add(wo);
 			}
 		}
 		return wos;
