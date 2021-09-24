@@ -2,13 +2,10 @@ package com.x.program.center;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.BooleanUtils;
 
-import com.google.gson.internal.LinkedTreeMap;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.schedule.Area;
@@ -22,7 +19,6 @@ import com.x.program.center.schedule.DingdingSyncOrganizationTrigger;
 import com.x.program.center.schedule.FireSchedule;
 import com.x.program.center.schedule.QiyeweixinSyncOrganization;
 import com.x.program.center.schedule.QiyeweixinSyncOrganizationTrigger;
-import com.x.program.center.schedule.RefreshApplications;
 import com.x.program.center.schedule.TriggerAgent;
 import com.x.program.center.schedule.WeLinkSyncOrganization;
 import com.x.program.center.schedule.WeLinkSyncOrganizationTrigger;
