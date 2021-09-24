@@ -27,7 +27,7 @@ public class URLTools {
 	 */
 	public static String encode(String str) {
 		try {
-			return URLEncoder.encode(str, StandardCharsets.UTF_8);
+			return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
