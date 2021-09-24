@@ -63,7 +63,7 @@ public class RegistApplicationsEvent implements Event {
 				req.setValue(gson.toJson(list));
 
 				for (Entry<String, CenterServer> entry : Config.nodes().centerServers().orderedEntry()) {
-					CipherConnectionAction.put(false, 1000, 2000,
+					CipherConnectionAction.put(false, 4000, 8000,
 							Config.url_x_program_center_jaxrs(entry, "center", "regist", "applications"), req);
 				}
 
@@ -124,7 +124,7 @@ public class RegistApplicationsEvent implements Event {
 	private CompletableFuture<Long> healthCheckTask(Application application) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				Resp resp = CipherConnectionAction.get(false, 1000, 1000, application, "echo").getData(Resp.class);
+				Resp resp = CipherConnectionAction.get(false, 2000, 4000, application, "echo").getData(Resp.class);
 				Date date = resp.getServerTime();
 				return Math.abs(date.getTime() - ((new Date()).getTime()));
 			} catch (Exception e) {
