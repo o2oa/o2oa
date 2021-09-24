@@ -264,6 +264,10 @@ o2.widget.O2Person = new Class({
             displayName = this.data.displayName;
         }else if(this.data.name && this.data.name.indexOf("@") > -1){
             displayName = this.data.name.split("@")[0];
+        }else if( this.data.name && this.data.name.length === 36 ){
+            this.data.id = this.data.name;
+            this.getPersonData();
+            displayName = this.data.name || this.data.distinguishedName.split("@")[0];
         }else{
             displayName = this.data.name || "";
         }
