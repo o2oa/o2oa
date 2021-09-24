@@ -61,7 +61,7 @@ MWF.xApplication.Org.UnitExplorer = new Class({
         }.bind(this));
     },
     _listElementNext: function(callback){
-        if (MWF.AC.isOrganizationManager()){
+        if (MWF.AC.isOrganizationManager() || MWF.AC.isSecurityManager() || MWF.AC.isAuditManager()){
             this.actions.listTopUnit(function(json){
                 if (callback) callback.apply(this, [json]);
             }.bind(this));

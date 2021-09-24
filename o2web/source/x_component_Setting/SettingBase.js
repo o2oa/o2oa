@@ -126,6 +126,13 @@ MWF.xApplication.Setting.BaseLoginDocument = new Class({
             "value": this.explorer.portalData.indexPage.portal,
             "options": getOptions
         });
+
+        this.baseTemaryInput = new MWF.xApplication.Setting.Document.Check(this.explorer, this.node, {
+            "lp": {"title": this.lp.base_temary, "infor": this.lp.base_temary_info, "action": this.lp.base_temary_action},
+            "data": {"key": "ternaryData", "valueKey": "enable", "notEmpty": false },
+            "value": this.explorer.ternaryData.enable
+        });
+
     }
 });
 
