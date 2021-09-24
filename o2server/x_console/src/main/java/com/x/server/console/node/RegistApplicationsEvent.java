@@ -29,6 +29,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapString;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.server.console.server.Servers;
 
 public class RegistApplicationsEvent implements Event {
@@ -49,6 +50,9 @@ public class RegistApplicationsEvent implements Event {
 			if (BooleanUtils.isTrue(Servers.applicationServerIsStarted())
 					&& (null != Config.resource_node_applications())) {
 				List<Application> list = listApplication(applicationServer);
+				if (ListTools.isEmpty(list)) {
+					logger.warn("applications on node:{} is empty.", Config.node());
+				}
 				if (BooleanUtils.isTrue(Config.currentNode().getSelfHealthCheckEnable()) && (!this.healthCheck(list))) {
 					logger.warn("health check result is false.");
 					list.clear();
@@ -63,7 +67,7 @@ public class RegistApplicationsEvent implements Event {
 				req.setValue(gson.toJson(list));
 
 				for (Entry<String, CenterServer> entry : Config.nodes().centerServers().orderedEntry()) {
-					CipherConnectionAction.put(false, 1000, 2000,
+					CipherConnectionAction.put(false, 4000, 8000,
 							Config.url_x_program_center_jaxrs(entry, "center", "regist", "applications"), req);
 				}
 
@@ -124,7 +128,7 @@ public class RegistApplicationsEvent implements Event {
 	private CompletableFuture<Long> healthCheckTask(Application application) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				Resp resp = CipherConnectionAction.get(false, 1000, 1000, application, "echo").getData(Resp.class);
+				Resp resp = CipherConnectionAction.get(false, 2000, 4000, application, "echo").getData(Resp.class);
 				Date date = resp.getServerTime();
 				return Math.abs(date.getTime() - ((new Date()).getTime()));
 			} catch (Exception e) {

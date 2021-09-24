@@ -24,7 +24,7 @@ public class UpdateApplicationsEvent implements Event {
 	public void execute(Server applicationServer) {
 		try {
 			if ((null != applicationServer) && applicationServer.isStarted()) {
-				ActionResponse respone = CipherConnectionAction.get(false, 1000, 2000,
+				ActionResponse respone = CipherConnectionAction.get(false, 4000, 8000,
 						Config.url_x_program_center_jaxrs("center", "applications"));
 				Applications applications = respone.getData(Applications.class);
 				Config.resource_node_applications(XGsonBuilder.instance().toJsonTree(applications));
