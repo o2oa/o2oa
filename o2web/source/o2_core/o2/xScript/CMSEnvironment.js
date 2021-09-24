@@ -2092,6 +2092,11 @@ MWF.xScript.CMSJSONData = function(data, callback, key, parent, _form){
                                 }
                                 if (!noreset) this[newKey] = newValue;
                             }else{
+                                if (!Object.getOwnPropertyDescriptor(this, newKey).get){
+                                    var o = {};
+                                    o[newKey] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, newKey, this]),"set": setter.apply(this, [data, callback, newKey, this])};
+                                    MWF.defineProperties(this, o);
+                                }
                                 if (overwrite){
                                     data[newKey] = newValue;
                                     if (!noreset)  this[newKey] = newValue;
