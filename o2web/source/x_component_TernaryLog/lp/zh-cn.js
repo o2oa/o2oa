@@ -1,0 +1,37 @@
+MWF.xApplication.TernaryLog.LP = {
+	"title": "三元管理日志",
+
+	"person" : "用户",
+	"node": "节点",
+	"clientIp": "客户端IP",
+	"module": "模块",
+	"operation": "操作",
+	"httpType": "类型",
+	"httpStatus": "状态",
+	"httpUrl": "请求地址",
+	"startTime": "开始时间",
+	"endTime": "结束时间",
+	"createTime": "开始时间",
+	"updateTime": "结束时间",
+	"spendTime": "执行持续时间(毫秒)",
+	"firstPage": "第一页",
+	"lastPage": "最后一页",
+	"query": "搜索",
+	"reset": "重置",
+
+	"cancel" : "取消",
+	"close" : "关闭",
+	"ok" : "确定",
+	"edit" : "编辑",
+	"remove" : "删除",
+	"action" : "操作",
+
+	"yesterday": "昨天",
+	"twoDaysAgo" : "前天",
+	"weekAgo" : "周前",
+	"dayAgo" : "天前",
+	"hourAgo" : "小时前",
+	"minuteAgo" : "分钟前",
+	"justNow" : "刚才",
+	"publishJustNow": "刚刚发表"
+};

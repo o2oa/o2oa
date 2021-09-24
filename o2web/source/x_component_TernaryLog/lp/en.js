@@ -1,0 +1,37 @@
+MWF.xApplication.TernaryLog.LP = {
+	"title": "Three-Member Management Log",
+
+	"person": "User",
+	"node": "Node",
+	"clientIp": "Client IP",
+	"module": "Module",
+	"operation": "operation",
+	"httpType": "Type",
+	"httpStatus": "Status",
+	"httpUrl": "Request address",
+	"startTime": "Start Time",
+	"endTime": "End Time",
+	"createTime": "Start Time",
+	"updateTime": "End Time",
+	"spendTime": "Execution duration (milliseconds)",
+	"firstPage": "First Page",
+	"lastPage": "Last Page",
+	"query": "Search",
+	"reset": "Reset",
+
+	"cancel": "Cancel",
+	"close": "Close",
+	"ok": "OK",
+	"edit": "Edit",
+	"remove": "Remove",
+	"action": "Action",
+
+	"yesterday": "Yesterday",
+	"twoDaysAgo": "The day before yesterday",
+	"weekAgo": "Week Ago",
+	"dayAgo": "Day Ago",
+	"hourAgo": "Hours ago",
+	"minuteAgo": "minutes ago",
+	"justNow": "JustNow",
+	"publishJustNow": "Just published"
+};
