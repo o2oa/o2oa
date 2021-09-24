@@ -352,7 +352,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         "importer": "DataImporter",
         "readLog": "Read Log",
-        "writingBoard": "writingBoard"
+        "writingBoard": "writingBoard",
+        "tinymceEditor": "TinyMCE"
     },
     "propertyTemplate": {
         "base": "Base",
