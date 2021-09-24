@@ -29,10 +29,15 @@ public class RegistApplicationsAndVoteCenterTask implements Job {
 				// 先选举center
 				Config.resource_node_eventQueue().put(XGsonBuilder.instance().toJsonTree(new VoteCenterEvent()));
 			}
-			// 从主center更新本地数据
-			Config.resource_node_eventQueue().put(XGsonBuilder.instance().toJsonTree(new UpdateApplicationsEvent()));
-			// 刷新本地application
-			Config.resource_node_eventQueue().put(XGsonBuilder.instance().toJsonTree(new RefreshApplicationsEvent()));
+			if (BooleanUtils.isTrue(Servers.centerServerIsStarted())) {
+				// 刷新本地application
+				Config.resource_node_eventQueue()
+						.put(XGsonBuilder.instance().toJsonTree(new RefreshApplicationsEvent()));
+			} else {
+				// 从主center更新本地数据
+				Config.resource_node_eventQueue()
+						.put(XGsonBuilder.instance().toJsonTree(new UpdateApplicationsEvent()));
+			}
 		} catch (Exception e) {
 			logger.error(e);
 			Thread.currentThread().interrupt();
