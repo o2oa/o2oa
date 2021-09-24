@@ -64,7 +64,7 @@
 		"float":"left",
 		"width":"48px",
 		"height":"32px",
-		"background": "url("+"../x_component_process_FormDesigner/Module/SmartBI/default/icon/smartbi-32.png) center no-repeat",
+		"background": "url("+"../x_component_portal_PageDesigner/Module/SmartBI/default/icon/smartbi-32.png) center no-repeat",
 	},
 	"nodeTxt":{
 		"float":"left",
@@ -79,7 +79,7 @@
 		"width": "24px",
 	    "height": "24px",
 	    "float": "right",
-	    "background": "url(../x_component_process_FormDesigner/Module/SmartBI/default/icon/refresh.png) no-repeat center center",
+	    "background": "url(../x_component_portal_PageDesigner/Module/SmartBI/default/icon/refresh.png) no-repeat center center",
 	    "cursor": "pointer"
 	}
 }
