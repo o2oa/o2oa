@@ -232,17 +232,23 @@ MWF.xApplication.Setting.Document.Check = new Class({
                         this.explorer.nativeData.indexType = "portal";
                     }
                 }
+                if(this.data.data.key==="ternaryData"){
+                    debugger;
+                    o2.Actions.load("x_program_center").ConfigAction.setTernaryManagement(this.explorer[this.data.data.key], function(json){
+                        this.fireEvent("editSuccess");
+                    }.bind(this));
+                }else {
+                    this.actions[method](this.explorer[this.data.data.key], function () {
+                        // if (this.data.data.valueKey==="faceLogin"){
+                        //     if (this.explorer[this.data.data.key][this.data.data.valueKey]){
+                        //
+                        //     }
+                        // }
 
-                this.actions[method](this.explorer[this.data.data.key], function(){
-                    // if (this.data.data.valueKey==="faceLogin"){
-                    //     if (this.explorer[this.data.data.key][this.data.data.valueKey]){
-                    //
-                    //     }
-                    // }
-
-                    this.fireEvent("editSuccess");
-                    //this.app.notice(this.lp.setSaved, "success");
-                }.bind(this));
+                        this.fireEvent("editSuccess");
+                        //this.app.notice(this.lp.setSaved, "success");
+                    }.bind(this));
+                }
             }.bind(this));
         }
     }

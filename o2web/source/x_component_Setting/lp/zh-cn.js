@@ -98,6 +98,9 @@ MWF.xApplication.Setting.LP = {
     "base_indexPortalId": "系统首页门户",
     "base_indexPortalId_infor": "选择系统首页的门户。",
 
+    "base_temary": "三员管理",
+    "base_temary_info": "三员管理（系统管理员、安全保密管理员、安全审计员）。本功能开启后请重启服务器以启动日志。",
+    "base_temary_action": "",
 
     "base_ssoSetting": "配置与其它系统的鉴权和单点登录设置",
     "base_ssos": "鉴权配置",

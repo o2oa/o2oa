@@ -99,6 +99,9 @@ MWF.xApplication.Setting.LP = {
     "base_indexPortalId": "System Home Portal",
     "base_indexPortalId_infor": "Select the portal of the system homepage.",
 
+    "base_temary": "Three member management",
+    "base_temary_info": "Three-member management (system manager, security manager, and security auditor). After this function is enabled, please restart the server to start the log.",
+    "base_temary_action": "",
 
     "base_ssoSetting": "Configure authentication and single sign-on settings with other systems",
     "base_ssos": "Authentication configuration",

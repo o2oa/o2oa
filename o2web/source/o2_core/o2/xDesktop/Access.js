@@ -16,7 +16,7 @@ MWF.xDesktop.Access = MWF.AC = {
     },
     isAdministrator: function(){
         this.getRoleList();
-        return (layout.desktop.session.user.name.toLowerCase() === "xadmin") || (this.roleList.indexOf("manager")!==-1);
+        return (layout.desktop.session.user.name.toLowerCase() === "xadmin") || (this.roleList.indexOf("manager")!==-1) || (this.roleList.indexOf("systemmanager")!==-1);
     },
     isProcessManager: function(){
         if (!layout.desktop.session.user.roleList) return false;
@@ -68,6 +68,21 @@ MWF.xDesktop.Access = MWF.AC = {
         if (!layout.desktop.session.user.roleList) return false;
         this.getRoleList();
         return this.isAdministrator() || (this.roleList.indexOf("personmanager")!==-1);
+    },
+    isSystemManager: function(){
+        if (!layout.desktop.session.user.roleList) return false;
+        this.getRoleList();
+        return (this.roleList.indexOf("systemmanager")!==-1);
+    },
+    isSecurityManager: function(){
+        if (!layout.desktop.session.user.roleList) return false;
+        this.getRoleList();
+        return (this.roleList.indexOf("securitymanager")!==-1);
+    },
+    isAuditManager: function(){
+        if (!layout.desktop.session.user.roleList) return false;
+        this.getRoleList();
+        return (this.roleList.indexOf("auditmanager")!==-1);
     },
 
     isGroupCreator: function(){
