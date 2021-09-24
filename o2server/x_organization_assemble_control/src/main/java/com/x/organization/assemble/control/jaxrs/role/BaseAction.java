@@ -64,8 +64,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected <T extends WoRoleAbstract> void updateControl(EffectivePerson effectivePerson, Business business,
 			List<T> list) throws Exception {
-		if (effectivePerson.isManager() || business.hasAnyRole(effectivePerson,
-				OrganizationDefinition.OrganizationManager, OrganizationDefinition.RoleManager)) {
+		if (effectivePerson.isSecurityManager() || business.hasAnyRole(effectivePerson,
+				OrganizationDefinition.OrganizationManager, OrganizationDefinition.RoleManager, OrganizationDefinition.SecurityManager)) {
 			for (T t : list) {
 				t.getControl().setAllowDelete(true);
 				t.getControl().setAllowEdit(true);
@@ -80,8 +80,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected <T extends WoRoleAbstract> void updateControl(EffectivePerson effectivePerson, Business business, T t)
 			throws Exception {
-		if (effectivePerson.isManager() || business.hasAnyRole(effectivePerson,
-				OrganizationDefinition.OrganizationManager, OrganizationDefinition.RoleManager)) {
+		if (effectivePerson.isSecurityManager() || business.hasAnyRole(effectivePerson,
+				OrganizationDefinition.OrganizationManager, OrganizationDefinition.RoleManager, OrganizationDefinition.SecurityManager)) {
 			t.getControl().setAllowDelete(true);
 			t.getControl().setAllowEdit(true);
 		} else {
