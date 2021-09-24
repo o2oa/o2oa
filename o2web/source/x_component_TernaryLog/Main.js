@@ -233,6 +233,7 @@ MWF.xApplication.TernaryLog.Main = new Class({
                     module : {
                         "text" : lp.module,
                         "type" : "select",
+                        "style": {"max-width":"150px"},
                         "selectValue" :function () {
                             var array = [""];
                             o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.listModule( function(json){
@@ -255,7 +256,7 @@ MWF.xApplication.TernaryLog.Main = new Class({
                             }.bind(this)
                         }
                     },
-                    operation : { text : lp.operation,  "type" : "select", "selectValue" : []},
+                    operation : { text : lp.operation,  "type" : "select", "style": {"max-width":"150px"}, "selectValue" : []},
                     startTime : { text: lp.startTime, "tType" : "datetime", "calendarOptions":{"secondEnable":true, "format":"db"}},
                     endTime : { text: lp.endTime, "tType" : "datetime", "calendarOptions":{"secondEnable":true, "format":"db"} },
                     action : { "value" : lp.query, type : "button", className : "filterButton", event : {
