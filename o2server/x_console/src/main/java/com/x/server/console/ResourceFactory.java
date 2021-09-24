@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -96,12 +97,15 @@ public class ResourceFactory {
 		eventQueueExecutor.start();
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUE, eventQueue);
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUEEXECUTOR, eventQueueExecutor);
-		new Resource(Config.RESOURCE_NODE_APPLICATIONS, null);
-		new Resource(Config.RESOURCE_NODE_APPLICATIONSTIMESTAMP, null);
+		new Resource(Config.RESOURCE_NODE_APPLICATIONS, new ConcurrentHashMap<String, Object>());
+		// new Resource(Config.RESOURCE_NODE_APPLICATIONSTIMESTAMP, null);
 		Entry<String, CenterServer> entry = Config.nodes().centerServers().first();
-		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYNODE, entry.getKey());
-		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYPORT, entry.getValue().getPort());
-		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, entry.getValue().getSslEnable());
+		Config.resource_node_centersPirmaryNode(entry.getKey());
+		Config.resource_node_centersPirmaryPort(entry.getValue().getPort());
+		Config.resource_node_centersPirmarySslEnable(entry.getValue().getSslEnable());
+//		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYNODE, entry.getKey());
+//		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYPORT, entry.getValue().getPort());
+//		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, entry.getValue().getSslEnable());
 	}
 
 	private static void containerEntityNames(ClassLoader classLoader, ScanResult sr) throws Exception {
