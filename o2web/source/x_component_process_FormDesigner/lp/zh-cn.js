@@ -879,6 +879,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "ckeditorInfo": "更多属性帮助请查看",
         "ckeditorInfo2": "返回CKEditor的Config对象，用于编辑器初始化",
         "ckeditorInfo3": "更多事件帮助请查看",
+        "tinymceInfo": "更多属性帮助请查看",
+        "tinymceInfo2": "返回TinyMCE的Config对象，用于编辑器初始化",
+        "tinymceInfo3": "更多事件帮助请查看",
         "base64Encode": "图片Base64编码",
         "imagePreview": "浏览原图",
 
