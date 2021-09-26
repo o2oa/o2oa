@@ -4,14 +4,6 @@
 	"type": "TinyMCEEditor",
 	"description": "",
 	"events": {
-		"beforeCommandExec": {
-			"code": "",
-			"html": ""
-		},
-		"afterCommandExec": {
-			"code": "",
-			"html": ""
-		},
 		"blur": {
 			"code": "",
 			"html": ""
@@ -29,18 +21,6 @@
 			"html": ""
 		},
 		"getData": {
-			"code": "",
-			"html": ""
-		},
-		"insertElement": {
-			"code": "",
-			"html": ""
-		},
-		"insertHtml": {
-			"code": "",
-			"html": ""
-		},
-		"insertText": {
 			"code": "",
 			"html": ""
 		},
@@ -70,10 +50,8 @@
 		}
 	},
 	"editorProperties": {
-		"height": "200", 
-		"width": "",
-		"readOnly": false,
-		"title": ""
+		"height": "200",
+		"readOnly": false
 	},
     "config": {
       "code": "",
