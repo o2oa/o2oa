@@ -46,6 +46,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         "pagingEnable" : false,
         "documentSortable" : false, //item可以拖动排序，和 onSortCompleted 结合使用
         "documentKeyWord" : null,
+        "noItemText": null,
         "pagingPar" : {
             position : [ "top" , "bottom" ], //分页条，上下
             countPerPage : 0,
@@ -490,6 +491,12 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         }
         this.loadElementList();
     },
+    createNoItemNode: function(){
+        new Element("div", {
+            styles : this.css.noItemTextNode,
+            text: this.options.noItemText
+        }).inject(this.viewWrapNode || this.node);
+    },
     loadElementList: function () {
         if( this.options.pagingEnable ){
             var currentItem = this.options.pagingPar.currentItem;
@@ -577,6 +584,10 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
 
             if( this.options.documentSortable && this.items.length){
                 this.makeSortable();
+            }
+
+            if( !this.dataCount && this.options.noItemText ){
+                this.createNoItemNode()
             }
 
             var top;
