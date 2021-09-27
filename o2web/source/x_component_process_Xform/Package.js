@@ -29,6 +29,7 @@ MWF.xApplication.process.Xform.require = function(callback){
         ["process.Xform", "Tree"],
         ["process.Xform", "Iframe"],
         ["process.Xform", "Htmleditor"],
+        ["process.Xform", "TinyMCEEditor"],
         ["process.Xform", "Office"],
         ["process.Xform", "IWebOffice"],
         ["process.Xform", "YozoOffice"],

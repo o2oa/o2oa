@@ -1821,6 +1821,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 						colWidthArr.push(260);
 					} else if (module && module.json.type === "Htmleditor") {
 						colWidthArr.push(500);
+					} else if (module && module.json.type === "TinyMCEEditor") {
+						colWidthArr.push(500);
 					} else if (module && module.json.type === "Calendar") {
 						colWidthArr.push(150);
 					} else {
