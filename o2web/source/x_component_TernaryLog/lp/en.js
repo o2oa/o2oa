@@ -18,6 +18,8 @@ MWF.xApplication.TernaryLog.LP = {
 	"lastPage": "Last Page",
 	"query": "Search",
 	"reset": "Reset",
+	"noItem": "No data can be queried under current conditions",
+	"all": "All Logs",
 
 	"cancel": "Cancel",
 	"close": "Close",
