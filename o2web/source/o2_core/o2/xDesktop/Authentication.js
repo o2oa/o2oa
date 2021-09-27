@@ -515,7 +515,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             "<tr item='passwordTr'><td styles='formTableValueTop20' item='password'></td></tr>";
         if (this.captchaLogin) {
             html += "<tr item='captchaTr'><td styles='formTableValueTop20'>" +
-                "<div item='captchaAnswer' style='float:left;'></div><div item='captchaPic' style='float:left;'></div><div item='changeCaptchaAction' style='float:left;'></div>" +
+                "<div item='captchaAnswer' style='float:left;'></div><div item='captchaPic' style='float:left;padding-left:5px'></div><div item='changeCaptchaAction' style='float:left;'></div>" +
                 "</td></tr>";
         }
         if (this.codeLogin) {

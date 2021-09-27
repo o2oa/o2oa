@@ -46,7 +46,10 @@ o2.widget.Paging = new Class({
         this.fireEvent("queryLoad", this);
         this.options.pageSize = Math.ceil(this.options.itemSize / this.options.countPerPage);
 
-        if ( this.options.pageSize == 0 && this.options.hiddenWithNoItem) return;
+        if ( this.options.pageSize == 0 && this.options.hiddenWithNoItem) {
+            this.fireEvent("postLoad", this);
+            return;
+        }
 
         this.container.empty();
         this.createNode();
