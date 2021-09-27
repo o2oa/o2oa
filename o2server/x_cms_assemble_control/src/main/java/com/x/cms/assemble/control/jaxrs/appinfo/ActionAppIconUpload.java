@@ -94,9 +94,9 @@ public class ActionAppIconUpload extends BaseAction {
 				if( ListTools.isNotEmpty( colorList ) ){
 					iconMainColor = colorList.get(0);
 				}*/
-				iconMainColor = ImageTools.hue(image);
-				
 				image = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH, width, height, Scalr.OP_ANTIALIAS);
+
+				iconMainColor = ImageTools.hue(image);
 
 				//再获取图片base64编码信息
 				ImageIO.write(image, "png", baos);
