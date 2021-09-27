@@ -544,7 +544,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }
     },
     loadStatementFilter: function(){
-	    debugger;
         var nodes = this.propertyContent.getElements(".MWFStatementFilter");
         var filtrData = this.data.filterList;
         nodes.each(function(node){
@@ -652,7 +651,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var nodes = this.propertyContent.getElements(".MWFFieldConfigArea");
         if (nodes.length){
             nodes.each(function(node){
-                debugger;
                 var name = node.get("name");
                 var data;
                if( this.data[name] ){
@@ -665,7 +663,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         "title": node.get("data-title"),
                         "hasRefresh": true,
                         "onRefresh": function () {
-                            debugger;
                             var _self = this;
                             if( typeOf(this.data[name]) === "array" && this.data[name].length > 0 ){
                                 //this.form.designer.lp.selectIcon
@@ -686,7 +683,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             }
                         }.bind(this),
                         "onChange": function(){
-                            debugger;
                             this.data[name] = filedConfigurator.getData();
                         }.bind(this)
                     }, data);
@@ -744,7 +740,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }
     },
     loadElSelectIcon: function(){
-	    debugger;
         var nodes = this.propertyContent.getElements(".MWFElIcon");
         if (nodes.length){
             var _self = this;
@@ -1047,7 +1042,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var pathInput = node.getElement("input");
                 //var select = new Element("select").inject(node);
                 //var methodSelect = new Element("select").inject(node);
-debugger;
+
                 var getValue = function(){
                     var v;
                     try {
@@ -1478,7 +1473,6 @@ debugger;
             }.bind(this));
 
             dutyNameNodes.each(function(node){
-                debugger;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "dutyName",
                     "names": this.data[node.get("name")],
@@ -1619,7 +1613,6 @@ debugger;
 
             var _self = this;
             formStyleNodes.each(function(node){
-                debugger;
                 var data = this.data[node.get("name")];
                 if( typeOf( data ) === "string" ){
                     for( var key in this.module.form.stylesList ){
@@ -1647,7 +1640,6 @@ debugger;
                             flag = false;
                         }else if( ids[0].data.type === "script" ){
                             this.designer.actions.getScriptByName(  ids[0].data.name, ids[0].data.application,  function( json ) {
-                                debugger;
                                 try{
                                     var f = eval("(function(){\n return "+json.data.text+"\n})");
                                     var j = f();
@@ -1709,7 +1701,6 @@ debugger;
                         if( ids.length > 0 ){
                             // var d = ids[0].data;
                             ids.each( function (id) {
-                                debugger;
                                 var d = id.data;
                                 data.push({
                                     "type" : "dictionary",
@@ -2141,7 +2132,6 @@ debugger;
 
 	loadMaplist: function(){
 		var maplists = this.propertyContent.getElements(".MWFMaplist");
-		debugger;
 		maplists.each(function(node){
 			var title = node.get("title");
 			var name = node.get("name");

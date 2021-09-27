@@ -98,7 +98,7 @@ MWF.xApplication.process.FormDesigner.Module.TinyMCEEditor = MWF.FCTinyMCEEditor
 					if (value=="true") this.json.editorProperties[key] = true;
 					if (value=="false") this.json.editorProperties[key] = false;
 				}.bind(this));
-				this.distroyCkeditor();
+				this.distroyEditor();
 
                 var config = Object.clone(this.json.editorProperties);
                 if (this.json.config){
@@ -115,7 +115,9 @@ MWF.xApplication.process.FormDesigner.Module.TinyMCEEditor = MWF.FCTinyMCEEditor
 		}
 
         if (name=="templateCode"){
-            if (this.editor) this.editor.setData(this.json.templateCode);
+            if (this.editor) {
+				this.editor.setContent(this.json.templateCode);
+			}
         }
 	},
 	
@@ -144,14 +146,20 @@ MWF.xApplication.process.FormDesigner.Module.TinyMCEEditor = MWF.FCTinyMCEEditor
 		o2.load("../o2_lib/tinymce/tinymce_5.9.2/tinymce.min.js", function(){
 			var editorConfig = Object.merge(this.getDefaultConfig(), config || {});
 
-			var id = this.json.id + "_div";
+			var id = this.form.json.id +"_"+this.json.id + "_div";
 			editorConfig.selector = '#'+id;
 			var editorDiv = new Element("div", {"id": id}).inject(this.node);
 			editorConfig.readonly = true;
 
-			tinymce.init(editorConfig).then(function(v1, v2, v3){
+			editorConfig.init_instance_callback = function(editor) {
 				debugger;
-			}.bind(this));
+				this.editor = editor;
+				if( this.json.templateCode ){
+					this.editor.setContent(this.json.templateCode);
+				}
+			}.bind(this);
+
+			tinymce.init(editorConfig);
 
 			// this.editor.on("dataReady", function(){
 			// 	this.editor.setReadOnly(true);
@@ -159,7 +167,7 @@ MWF.xApplication.process.FormDesigner.Module.TinyMCEEditor = MWF.FCTinyMCEEditor
 		}.bind(this));
 	},
 	destroy: function(){
-		this.distroyCkeditor();
+		this.distroyEditor();
 		this.form.moduleList.erase(this);
 		this.form.moduleNodeList.erase(this.node);
 		this.form.moduleElementNodeList.erase(this.node);
@@ -179,7 +187,7 @@ MWF.xApplication.process.FormDesigner.Module.TinyMCEEditor = MWF.FCTinyMCEEditor
 		this.treeNode.destroy();
 		o2.release(this);
 	},
-	distroyCkeditor: function(){
+	distroyEditor: function(){
 		if (this.editor) this.editor.destroy();
 		this.editor = null;
 	}
