@@ -35,28 +35,48 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
 		}).inject(this.form.container);
 	},
     _setEditStyle: function(name){ 
-        if (name=="smartbiresource"){
+		var options = {
+			"showtoolbar":this.json.smartbidisplaytoolbar||false  //showtoolbar对应SmartBI系统中的参数名
+		};
+        if (name=="smartbiresource"){ 
             var value = this.json.smartbiresource||"none"; 
 			if(value =="" || value == "none"){
 				this.setNodeContainer()
 			}else{
-				var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
-				var address = SmartBIAction.ResourceAction.action.getAddress();
-				var uri = SmartBIAction.ResourceAction.action.actions.open.uri;
-				var url = uri.replace("{id}", encodeURIComponent(value));
-				
-				url = o2.filterUrl(address+url);
-				this.node.empty(); 
-				
-				new Element("iframe",{src:url,styles:this.css.iframe,frameborder:"0",scrolling:"auto"}).inject(this.node);
+				this.createIframeNode(value,options)
 			}
         }
+		if(name=="smartbidisplaytoolbar"){
+			if (this.json.smartbiresource && this.json.smartbiresource!=="none"){
+				this.createIframeNode(this.json.smartbiresource,options)
+			}
+		}
     },
 	_loadNodeStyles: function(){
 		var _iframe = this.node.getElements("iframe");
 		if(_iframe.length>0){
 			_iframe[0].setStyles(this.css.iframe)
 		}
+	},
+	createIframeNode:function(id,options){
+		var value = id;
+		var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
+		var address = SmartBIAction.ResourceAction.action.getAddress();
+		var uri = SmartBIAction.ResourceAction.action.actions.open.uri;
+		var url = uri.replace("{id}", encodeURIComponent(value));
+
+		if(options){ 
+			var paraString = "";
+			for(var key in options){
+				paraString = paraString + "&" + key + "=" + options[key]
+			}
+			url = url + "?"+paraString
+		}
+		
+		url = o2.filterUrl(address+url);
+		this.node.empty(); 
+		
+		new Element("iframe",{src:url,styles:this.css.iframe,frameborder:"0",scrolling:"auto"}).inject(this.node);
 	},
 	_createNode: function(){
 		this.node = this.moveNode.clone(true, true);

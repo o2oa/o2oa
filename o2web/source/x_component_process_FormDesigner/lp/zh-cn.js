@@ -1216,7 +1216,10 @@ MWF.xApplication.process.FormDesigner.LP = {
             "logoUrl":"logo链接"
         },
         "smartbi":{
-            "select":"资源选择"
+            "select":"资源选择",
+            "displayToolbar":"显示工具栏",
+            "toolbarShow":"显示",
+            "toolbarHide":"隐藏"
         },
         "tabletWidth": "手写板宽度",
         "tabletHeight": "手写板高度",
