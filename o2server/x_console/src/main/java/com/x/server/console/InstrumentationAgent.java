@@ -7,8 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
+
 
 public class InstrumentationAgent {
 
@@ -39,6 +41,8 @@ public class InstrumentationAgent {
 	public static final String OS_ARM = "arm";
 	public static final String OS_MIPS = "mips";
 
+	public static final String INSTRUMENTATIONTYPESHADOW = "shadow";
+
 	public static void premain(String args, Instrumentation inst) {
 		String version = System.getProperty("java.vm.specification.version");
 		if (version.startsWith("1.8")) {
@@ -55,7 +59,7 @@ public class InstrumentationAgent {
 			if (Files.exists(base.resolve(DYNAMIC_JARS))) {
 				load(base, DYNAMIC_JARS);
 			}
-			setLog4j2(base);
+			setLog4j2(base, args);
 			loadWithCfg(base, STORE_JARS);
 			loadWithCfg(base, ext());
 		} catch (Exception e) {
@@ -127,8 +131,10 @@ public class InstrumentationAgent {
 		throw new IOException("can not define o2server base directory.");
 	}
 
-	private static void setLog4j2(Path base) {
-		System.setProperty("log4j.configurationFile", base.resolve("commons").resolve("log4j2.xml").toString());
+	private static void setLog4j2(Path base, String args) {
+		if (!Objects.equals(args, INSTRUMENTATIONTYPESHADOW)) {
+			System.setProperty("log4j.configurationFile", base.resolve("commons").resolve("log4j2.xml").toString());
+		}
 	}
 
 }
