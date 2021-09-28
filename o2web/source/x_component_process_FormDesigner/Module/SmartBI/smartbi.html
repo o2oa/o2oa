@@ -22,6 +22,15 @@
                     <div class="MWFSmartBISelect" name="smartbiresource"></div>
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.smartbi.displayToolbar}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFSmartBIDisplayToolbar" name="smartbidisplaytoolbar">
+                        <input type="radio" class="MWFSmartBIToolbar" name="MWFSmartBIToolbar" value="true" text{($.smartbidisplaytoolbar)?'checked':''} /> {{$.lp.smartbi.toolbarShow}}
+                        <input type="radio" class="MWFSmartBIToolbar" name="MWFSmartBIToolbar" value="false" text{(!$.smartbidisplaytoolbar)?'checked':''} /> {{$.lp.smartbi.toolbarHide}}
+                    </div>
+                </td>
+            </tr>
         </table>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
