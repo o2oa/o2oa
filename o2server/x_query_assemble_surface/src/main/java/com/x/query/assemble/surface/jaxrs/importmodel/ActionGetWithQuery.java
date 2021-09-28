@@ -36,7 +36,7 @@ class ActionGetWithQuery extends BaseAction {
 			if (optional.isPresent()) {
 				model = (ImportModel) optional.get();
 			} else {
-				String id = business.stat().getWithQuery(flag, query);
+				String id = business.importModel().getWithQuery(flag, query);
 				model = business.pick(id, ImportModel.class);
 				if (null != model) {
 					business.entityManagerContainer().get(ImportModel.class).detach(model);
