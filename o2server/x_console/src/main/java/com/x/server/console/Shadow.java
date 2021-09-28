@@ -2,13 +2,13 @@ package com.x.server.console;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.channels.FileLock;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,14 +26,15 @@ public class Shadow {
 			logger.print("can not find log file,server not running.");
 		} else {
 			new Thread(() -> {
-				try (FileReader fr = new FileReader(logFile); BufferedReader br = new BufferedReader(fr)) {
-					logger.print("console start, type close to exit console.");
-					br.skip(logFile.length());
+				logger.print("console start, type close to exit console.");
+				try (RandomAccessFile randomFile = new RandomAccessFile(logFile, "r")) {
+					randomFile.seek(randomFile.length());
 					String line = null;
 					while (true) {
-						if ((line = br.readLine()) != null) {
-							logger.debug("line:{}.", line);
+						if ((line = randomFile.readLine()) != null) {
+							line = new String(line.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 							System.out.println(line);
+							continue;
 						}
 						sleep();
 					}
