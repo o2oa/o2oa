@@ -3,9 +3,9 @@ package com.x.base.core.project.scripting;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Map.Entry;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -200,6 +200,13 @@ public class ScriptingExecutor {
 			}
 		}
 		return Optional.empty();
+	}
+
+	public static void evalResult(CompiledScript cs, ScriptContext scriptContext, Consumer<JsonElement> consumer) {
+		Optional<JsonElement> optional = evalResultToJsonElement(cs, scriptContext);
+		if (optional.isPresent() && (!optional.get().isJsonNull())) {
+			consumer.accept(optional.get());
+		}
 	}
 
 }
