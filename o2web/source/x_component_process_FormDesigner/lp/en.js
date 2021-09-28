@@ -1209,7 +1209,10 @@ MWF.xApplication.process.FormDesigner.LP = {
             "logoUrl":"logo link"
         },
         "smartbi":{
-            "select":"select"
+            "select":"select",
+            "displayToolbar":"toolbar",
+            "toolbarShow":"show",
+            "toolbarHide":"hide"
         },
         "tabletWidth": "Tablet Width",
         "tabletHeight": "Tablet Height",

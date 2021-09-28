@@ -2567,6 +2567,7 @@ debugger;
     loadSmartBISelect: function(){ 
         var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
         var SmartBINodes = this.propertyContent.getElements(".MWFSmartBISelect");
+        var SmartBIToolbarNodes = this.propertyContent.getElements(".MWFSmartBIToolbar");
         
         if (SmartBINodes.length){ 
             var node = SmartBINodes[0];
@@ -2582,8 +2583,15 @@ debugger;
                 SmartBIAction.ResourceAction.sync(function(){
                     this.setSmartBIOptions(select)
                 }.bind(this))
-            }.bind(this))
-            
+            }.bind(this)) 
+        }
+        if(SmartBIToolbarNodes.length){
+            SmartBIToolbarNodes.addEvent("change",function(e){
+                var value = e.target.get("value");
+                if (value=="false") value = false;
+                if (value=="true") value = true;
+                this.setValue(e.target.getParent("div").get("name"), value);
+            }.bind(this));
         }
     },
     setSmartBIOptions:function(node){
