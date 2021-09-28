@@ -76,6 +76,15 @@ public class Business {
 		return stat;
 	}
 
+	private ImportModelFactory importModel;
+
+	public ImportModelFactory importModel() throws Exception {
+		if (null == this.importModel) {
+			this.importModel = new ImportModelFactory(this);
+		}
+		return importModel;
+	}
+
 	private RevealFactory reveal;
 
 	public RevealFactory reveal() throws Exception {
