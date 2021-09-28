@@ -74,7 +74,7 @@ MWF.xApplication.Selector.Identity = new Class({
                 if( typeOf( unit ) === "string" ){
                     unitList.push(unit);
                 }else if( typeOf(unit)==="object"){
-                    unitList.push(unit.id ||  unit.distinguishedName || unit.unique || unit.levelName);
+                    unitList.push( unit.distinguishedName || unit.unique || unit.levelName || unit.id);
                 }
             }
 
@@ -268,7 +268,7 @@ MWF.xApplication.Selector.Identity = new Class({
         } else if (this.options.units.length) {
             parseInclude();
             this.options.units.each(function (u) {
-                unitList.push(typeOf(u) === "string" ? u : (u.distinguishedName || u.id || u.unique || u.levelName))
+                unitList.push(typeOf(u) === "string" ? u : (u.distinguishedName || u.unique || u.levelName || u.id))
             }.bind(this));
             this._loadUnitAndGroupCount(unitList, groupList, check);
         } else {
@@ -385,7 +385,7 @@ MWF.xApplication.Selector.Identity = new Class({
                 json.data.each( function (d) { map[ d.matchKey ] =  d; });
                 var identityObjectList = [];
                 identityList.each( function (d) {
-                    var key = typeOf( d ) === "object" ? ( d.distinguishedName || d.id || d.unique ) : d;
+                    var key = typeOf( d ) === "object" ? ( d.distinguishedName || d.unique || d.id ) : d;
                     identityObjectList.push( map[key] ? map[key] : d );
                 });
                 if( callback )callback( identityObjectList );
@@ -401,7 +401,7 @@ MWF.xApplication.Selector.Identity = new Class({
             return;
         }
         var list = identityList.map( function (d) {
-            return typeOf( d ) === "object" ? (d.distinguishedName || d.id || d.unique ) : d;
+            return typeOf( d ) === "object" ? (d.distinguishedName || d.unique || d.id ) : d;
         });
         o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({
             identityList : list, referenceFlag: true, recursiveFlag: true
@@ -887,7 +887,7 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
                     item.setSelected();
 
                     if( this.selector.options.selectAllRange === "all" && !this.selector.isCheckStatusOrCount() ){
-                         if(item.category && item.category._addSelectAllSelectedCount )item.category._addSelectAllSelectedCount( 1, true );
+                        if(item.category && item.category._addSelectAllSelectedCount )item.category._addSelectAllSelectedCount( 1, true );
                     }
 
                 }.bind(this));
@@ -1679,20 +1679,20 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                         //         checkCallback();
                         //     }.bind(this), checkCallback)
                         // }else{
-                            this.orgAction.listIdentityByPerson(function(json){
-                                var obj;
-                                if(json.data.length > 1 && this.selector.options.onlyMajorIdentity){
-                                    for(var i=0; i<json.data.length; i++){
-                                        if( json.data[i].major ){
-                                            obj = {"data": [json.data[i]]};
-                                            break;
-                                        }
+                        this.orgAction.listIdentityByPerson(function(json){
+                            var obj;
+                            if(json.data.length > 1 && this.selector.options.onlyMajorIdentity){
+                                for(var i=0; i<json.data.length; i++){
+                                    if( json.data[i].major ){
+                                        obj = {"data": [json.data[i]]};
+                                        break;
                                     }
-                                    if(!obj)obj = {"data": [json.data[0]]};
                                 }
-                                this.loadIdentityItem(obj || json, container , null, null, true);
-                                checkCallback();
-                            }.bind(this), checkCallback, d);
+                                if(!obj)obj = {"data": [json.data[0]]};
+                            }
+                            this.loadIdentityItem(obj || json, container , null, null, true);
+                            checkCallback();
+                        }.bind(this), checkCallback, d);
                         // }
                     }
                 }else{
