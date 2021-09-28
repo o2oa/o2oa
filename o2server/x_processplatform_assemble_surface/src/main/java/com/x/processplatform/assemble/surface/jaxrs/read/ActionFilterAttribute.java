@@ -106,7 +106,7 @@ class ActionFilterAttribute extends BaseAction {
 		Root<Read> root = cq.from(Read.class);
 		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
 		cq.select(root.get(Read_.application)).where(p);
-		List<String> os = em.createQuery(cq).getResultList().stream().collect(Collectors.toList());
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -134,7 +134,7 @@ class ActionFilterAttribute extends BaseAction {
 		Root<Read> root = cq.from(Read.class);
 		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
 		cq.select(root.get(Read_.process)).where(p);
-		List<String> os = em.createQuery(cq).getResultList().stream().collect(Collectors.toList());
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -162,7 +162,7 @@ class ActionFilterAttribute extends BaseAction {
 		Root<Read> root = cq.from(Read.class);
 		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
 		cq.select(root.get(Read_.creatorUnit)).where(p);
-		List<String> os = em.createQuery(cq).getResultList().stream().collect(Collectors.toList());
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -184,7 +184,7 @@ class ActionFilterAttribute extends BaseAction {
 		Root<Read> root = cq.from(Read.class);
 		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
 		cq.select(root.get(Read_.activityName)).where(p);
-		List<String> list = em.createQuery(cq).getResultList().stream().collect(Collectors.toList());
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : list) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -206,7 +206,7 @@ class ActionFilterAttribute extends BaseAction {
 		Root<Read> root = cq.from(Read.class);
 		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
 		cq.select(root.get(Read_.startTimeMonth)).where(p);
-		List<String> os = em.createQuery(cq).getResultList().stream().collect(Collectors.toList());
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
