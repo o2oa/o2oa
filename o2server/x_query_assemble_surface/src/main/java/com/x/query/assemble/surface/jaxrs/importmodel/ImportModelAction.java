@@ -44,13 +44,13 @@ public class ImportModelAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据查询获取统计对象.", action = ActionGetWithQuery.class)
+	@JaxrsMethodDescribe(value = "根据查询获取导入模型对象.", action = ActionGetWithQuery.class)
 	@GET
 	@Path("flag/{flag}/query/{queryFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getWithQuery(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("统计标识") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("导入模型标识") @PathParam("flag") String flag,
 			@JaxrsParameterDescribe("查询标识") @PathParam("queryFlag") String queryFlag) {
 		ActionResult<ActionGetWithQuery.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -63,7 +63,7 @@ public class ImportModelAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据查询列示统计对象.", action = ActionListWithQuery.class)
+	@JaxrsMethodDescribe(value = "根据查询列示导入模型对象.", action = ActionListWithQuery.class)
 	@GET
 	@Path("list/query/{queryFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
