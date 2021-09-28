@@ -7,6 +7,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ImageTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.jaxrs.fileinfo.URLParameterGetException;
 import com.x.cms.common.image.maincolor.ImageMainColorUtil;
@@ -89,12 +90,13 @@ public class ActionAppIconUpload extends BaseAction {
 					}
 				}
 				//先取图片主色调
-				colorList = imageUtil.getColorSolution( image, 30, 1);
+				/*colorList = imageUtil.getColorSolution( image, 30, 1);
 				if( ListTools.isNotEmpty( colorList ) ){
 					iconMainColor = colorList.get(0);
-				}
-				
+				}*/
 				image = Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH, width, height, Scalr.OP_ANTIALIAS);
+
+				iconMainColor = ImageTools.hue(image);
 
 				//再获取图片base64编码信息
 				ImageIO.write(image, "png", baos);

@@ -24,27 +24,20 @@ import com.x.base.core.project.tools.ListTools;
 
 public class HttpConnection {
 
-//	public static final String Access_Control_Allow_Credentials = "Access-Control-Allow-Credentials";
-//	public static final String Access_Control_Allow_Credentials_Value = "true";
-//	public static final String Access_Control_Allow_Headers = "Access-Control-Allow-Headers";
-//	public static final String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, x-token,Content-Type, x-cipher";
-//	public static final String Access_Control_Allow_Methods = "Access-Control-Allow-Methods";
-//	public static final String Access_Control_Allow_Methods_Value = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
-//	public static final String Cache_Control = "Cache-Control";
-//	public static final String Cache_Control_Value = "no-cache, no-transform";
-//	public static final String Content_Type = "Content-Type";
-//	public static final String Content_Type_Value = "application/json;charset=UTF-8";
-//
-//	public static final String METHOD_POST = "POST";
-//	public static final String METHOD_GET = "GET";
-//	public static final String METHOD_PUT = "PUT";
-//	public static final String METHOD_DELETE = "DELETE";
+	private static final int DEFAULT_CONNECTTIMEOUT = 2000;
+	private static final int DEFAULT_READTIMEOUT = 5 * 60 * 1000;
 
 	public static String getAsString(String address, List<NameValuePair> heads) throws Exception {
+		return getAsString(address, heads, DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT);
+	}
+
+	public static String getAsString(String address, List<NameValuePair> heads, int connectTimeout, int readTimeout) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_GET);
 		connection.setDoOutput(false);
 		connection.setDoInput(true);
+		connection.setConnectTimeout(connectTimeout);
+		connection.setReadTimeout(readTimeout);
 		String str = readResultString(connection);
 		connection.disconnect();
 		return str;
@@ -63,10 +56,16 @@ public class HttpConnection {
 	}
 
 	public static String postAsString(String address, List<NameValuePair> heads, String body) throws Exception {
+		return postAsString(address, heads, body, DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT);
+	}
+
+	public static String postAsString(String address, List<NameValuePair> heads, String body, int connectTimeout, int readTimeout) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_POST);
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
+		connection.setConnectTimeout(connectTimeout);
+		connection.setReadTimeout(readTimeout);
 		connection.connect();
 		doOutput(connection, body);
 		String str = readResultString(connection);
@@ -89,10 +88,16 @@ public class HttpConnection {
 	}
 
 	public static String putAsString(String address, List<NameValuePair> heads, String body) throws Exception {
+		return putAsString(address, heads, body, DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT);
+	}
+
+	public static String putAsString(String address, List<NameValuePair> heads, String body, int connectTimeout, int readTimeout) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_PUT);
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
+		connection.setConnectTimeout(connectTimeout);
+		connection.setReadTimeout(readTimeout);
 		connection.connect();
 		doOutput(connection, body);
 		String str = readResultString(connection);
@@ -115,10 +120,16 @@ public class HttpConnection {
 	}
 
 	public static String deleteAsString(String address, List<NameValuePair> heads) throws Exception {
+		return deleteAsString(address, heads, DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT);
+	}
+
+	public static String deleteAsString(String address, List<NameValuePair> heads, int connectTimeout, int readTimeout) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_DELETE);
 		connection.setDoOutput(false);
 		connection.setDoInput(true);
+		connection.setConnectTimeout(connectTimeout);
+		connection.setReadTimeout(readTimeout);
 		String str = readResultString(connection);
 		connection.disconnect();
 		return str;
