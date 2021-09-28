@@ -64,8 +64,8 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                     units.push(unit);
                     unitUniques.push( this.getUnitUniqueFormDn(unit) );
                 } else {
-                    units.push(unit.distinguishedName || unit.unique || unit.id || unit.levelName);
-                    unitUniques.push( unit.distinguishedName ? this.getUnitUniqueFormDn(unit.distinguishedName) : (unit.unique || unit.id || unit.levelName) );
+                    units.push(unit.distinguishedName || unit.unique || unit.levelName || unit.id );
+                    unitUniques.push( unit.distinguishedName ? this.getUnitUniqueFormDn(unit.distinguishedName) : (unit.unique || unit.levelName || unit.id) );
                 }
             }
             this.unitStringList = units;
@@ -199,7 +199,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             this.unitFlagMap = {};
             this.options.units.each(function (e) {
                 if (!e) return;
-                this.unitFlagMap[typeOf(e) === "string" ? e : (e.distinguishedName || e.id || e.unique || e.employee || e.levelName)] = true;
+                this.unitFlagMap[typeOf(e) === "string" ? e : (e.distinguishedName || e.unique || e.employee || e.levelName || e.id)] = true;
             }.bind(this));
         }
         if (!this.unitUniqueMap) {
@@ -317,7 +317,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
                 (d.unique && map[d.unique])) {
                 return true;
             } else {
-                var key = typeOf(d) === "string" ? d : (d.distinguishedName || d.id || d.unique || d.employee || d.levelName);
+                var key = typeOf(d) === "string" ? d : (d.distinguishedName || d.unique || d.employee || d.levelName || d.id);
                 map[key] = true;
                 indexMap[key] = index+1;
                 return false;
@@ -390,7 +390,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
 
                 var _self = this;
                 function checkIdentity(data) {
-                    var id = data.distinguishedName || data.id || data.name || data.text;
+                    var id = data.distinguishedName || data.name || data.id || data.text;
                     if (initIds.indexOf( id )==-1){
                         var text = data.name || "";
                         if( !text && data.distinguishedName ){
@@ -705,7 +705,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Cla
             //    if( d.employee )this.createdItemObject[ d.employee ] = true;
             //    if( d.levelName )this.createdItemObject[ d.levelName ] = true;
             //}
-            this.createdItemObject[typeOf(d) === "string" ? d : (d.distinguishedName || d.id || d.unique || d.employee || d.levelName)] = true;
+            this.createdItemObject[typeOf(d) === "string" ? d : (d.distinguishedName || d.unique || d.employee || d.levelName || d.id)] = true;
             return false;
         }
     },
