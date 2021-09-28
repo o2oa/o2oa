@@ -81,7 +81,7 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
             }else{
                 var unitList = [];
                 this.options.units.each(function(u) {
-                    var unitName = typeOf(u) === "string" ? u : (u.distinguishedName || u.unique || u.id || u.levelName);
+                    var unitName = typeOf(u) === "string" ? u : (u.distinguishedName || u.unique || u.levelName || u.id);
                     if (unitName)unitList.push( unitName )
                 });
 
@@ -106,7 +106,7 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                                 }
                             }else{
                                 unitObjectList.each( function ( u ) {
-                                    unitNames.push( u.distinguishedName || u.unique || u.id || u.levelName );
+                                    unitNames.push( u.distinguishedName || u.unique || u.levelName || u.id );
                                     for( var i=0; i<json1.data.length; i++ ){
                                         if( json1.data[i].levelName.indexOf(u.levelName) > -1 ){
                                             unitNames.push( json1.data[i].distinguishedName );
@@ -635,7 +635,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.Filter = new Class({
                             if (typeOf(u)==="string"){
                                 data.unit = u;
                             }else{
-                                data.unit = u.distinguishedName || u.unique || u.id || u.levelName
+                                data.unit = u.distinguishedName || u.unique || u.levelName || u.id
                             }
                             action.getDuty(data, function(json){
                                 json.data.each(function(d){
