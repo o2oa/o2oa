@@ -1095,6 +1095,7 @@ bind.parameters = {
 };
 //bind.parameters = this.parameters || null;
 
+var _self = this;
 var response = {};
 Object.defineProperty(response, "status", {enumerable: true,configurable: true,
     get: function(){ return _self.jaxrsResponse.status; }
