@@ -112,23 +112,25 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
             }.bind(this));
         },
         getDefaultConfig: function () {
+            debugger;
             var config = {
                 "branding": false,
                 //skin:'oxide-dark',
                 // language:'zh_CN',
                 plugins: 'print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link' +
                     ' media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime' +
-                    ' advlist lists wordcount imagetools textpattern help emoticons autosave' +
-                    ' o2indent2em autoresize o2upimgs', //bdmap formatpainter
+                    ' advlist lists wordcount o2imagetools textpattern help emoticons autosave' +
+                    ' o2indent2em o2upimgs', //bdmap formatpainter autoresize
                 toolbar: 'code undo redo | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough |' + //restoredraft
                     ' alignleft aligncenter alignright alignjustify outdent indent o2indent2em lineheight | table image o2upimgs link |' + //\\'+
                     ' styleselect formatselect fontselect fontsizeselect | bullist numlist | blockquote subscript superscript removeformat |' + // \\'+
                     ' media charmap emoticons anchor hr pagebreak insertdatetime print preview | fullscreen', //bdmap formatpainter
                 height: 650, //编辑器高度
-                min_height: 400,
+                min_height: 650,
                 toolbar_mode: 'sliding',
+                // toolbar_sticky: true,
                 fontsize_formats: '12px 14px 16px 18px 24px 36px 48px 56px 72px',
-                importcss_append: true,
+                // importcss_append: true,
                 //自定义文件选择器的回调内容
                 // file_picker_callback: function (callback, value, meta) {
                 // 	if (meta.filetype === 'file') {
@@ -141,8 +143,8 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                 // 		callback('movie.mp4', { source2: 'alt.ogg', poster: 'https://www.baidu.com/img/bd_logo1.png' });
                 // 	}
                 // },
-                toolbar_sticky: true,
                 autosave_ask_before_unload: false,
+                imagetools_toolbar: 'editimage imageoptions'
             };
             if (o2.language === "zh-cn") {
                 config.language = 'zh_CN';
@@ -156,6 +158,13 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                     'Book Antiqua=book antiqua,palatino;';
             }
             return config;
+        },
+        getImageUploadOption: function(){
+            return {
+                localImageMaxWidth : 2000,
+                reference: this.form.businessData.work.job,
+                referenceType: "processPlatformJob"
+            };
         },
         loadTinyMCEEditor: function (config) {
             o2.load("../o2_lib/tinymce/tinymce_5.9.2/tinymce.min.js", function(){
@@ -171,7 +180,7 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                 } else if (this.json.templateCode) {
                     editorDiv.set("html", this.json.templateCode);
                 }
-                var height = this.node.getSize().y;
+                // var height = this.node.getSize().y;
 
 
                 if (this.form.json.mode === "Mobile") {
@@ -189,9 +198,10 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
 
                 editorConfig.base64Encode = (this.json.base64Encode === "y");
                 editorConfig.enablePreview = (this.json.enablePreview !== "n");
-                editorConfig.localImageMaxWidth = 2000;
-                editorConfig.reference = this.form.businessData.work.job;
-                editorConfig.referenceType = "processPlatformJob";
+                var options = this.getImageUploadOption();
+                for(var key in options){
+                    editorConfig[key] = options[key];
+                }
 
                 var init_instance_callback;
                 if(editorConfig.init_instance_callback){
@@ -206,8 +216,11 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                     if(init_instance_callback)init_instance_callback(editor);
                 }.bind(this);
 
-                tinymce.init(editorConfig);
+                // editorConfig.images_upload_handler = function (blobInfo, succuss, failure) {
+                //     this.images_upload_handler(blobInfo, succuss, failure);
+                // }.bind(this);
 
+                tinymce.init(editorConfig);
 
                 this._loadEvents();
 
