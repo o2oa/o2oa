@@ -49,6 +49,12 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "inputName": "请输入导入模型名称",
         "noModifyName": "不能修改名称或者别名",
 
+        "inputType": "请选择导入目标",
+        "inputProcess": "请选择流程",
+        "inputCategory": "请选择分类",
+        "inputTable": "请选择自建表",
+
+
         "deleteEventTitle": "删除事件确认",
         "deleteEvent": "是否确定删除当前事件吗？",
 
