@@ -367,6 +367,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "appearance": "外观类型",
         "style": "样式",
         "attribute": "属性",
+        "imageStyle": "图片样式",
 
         "hideSystemTools": "系统操作",
         "show": "显示",
