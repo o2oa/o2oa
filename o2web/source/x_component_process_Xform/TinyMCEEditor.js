@@ -126,7 +126,7 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                     ' styleselect formatselect fontselect fontsizeselect | bullist numlist | blockquote subscript superscript removeformat |' + // \\'+
                     ' media charmap emoticons anchor hr pagebreak insertdatetime print preview | fullscreen', //bdmap formatpainter
                 height: 650, //编辑器高度
-                min_height: 650,
+                min_height: 400,
                 toolbar_mode: 'sliding',
                 // toolbar_sticky: true,
                 fontsize_formats: '12px 14px 16px 18px 24px 36px 48px 56px 72px',
