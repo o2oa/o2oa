@@ -120,6 +120,14 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         this.excelUtils.upload( this.getDateColIndexArray(), function (importedData) {
 
+            importedData = importedData.filter(function (array) {
+                for( var i=0; i<array.length; i++ ){
+                    if(array[i])return true;
+                }
+                return false;
+            });
+            debugger;
+
             this.progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar( this, {
                 "onPostShow": function(){
                     this.progressBar.showCheckData();
@@ -996,7 +1004,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             if( !value )return;
 
             var data = this.parseData(value, (json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess), columnJson);
-            if( !data )return;
+            if( !data && data !== 0 )return;
 
             if( json.type === "dynamicTable" ){
                 this.data[ columnJson.path ] = data;
