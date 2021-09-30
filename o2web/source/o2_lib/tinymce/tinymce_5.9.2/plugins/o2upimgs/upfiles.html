@@ -48,8 +48,9 @@
 
 <script>
 	var editor=parent.tinymce.activeEditor;
-	var o2upimgs=parent.o2upimgs;
+	var o2upimgs=parent["o2upimgs_"+editor.id];
 	o2upimgs.res = []; //存放本地文件的数组
+	o2upimgs.iframeWindow = window;
 	var blobInfo = {file:null}
 	blobInfo.blob = function(){return this.file;}
 	var upload_handler = o2upimgs.images_upload_handler;
@@ -57,19 +58,20 @@
 
 	//为列表添加排序
 	function reSort(){
-        document.querySelectorAll('#file_list li').forEach((el,i)=>{
-            el.setAttribute('data-num',i);
-        });
+		var lis = document.querySelectorAll('#file_list li');
+		for(var i=0; i<lis.length; i++){
+			lis[i].setAttribute('data-num',i);
+		}
 	}
 
     function addList(files){
         var files_sum = files.length;
         var vDom = document.createDocumentFragment();
-        for(let i=0;i<files_sum;i++){
-            let file = files[i];
-            let blobUrl = window.URL.createObjectURL(file)
+        for(var i=0;i<files_sum;i++){
+            var file = files[i];
+            var blobUrl = window.URL.createObjectURL(file)
             o2upimgs.res.push({file:file,blobUrl:blobUrl,url:''});
-            let li = document.createElement('li');
+            var li = document.createElement('li');
             li.setAttribute('class','up-no');
             li.setAttribute('data-time',file.lastModified);
             li.innerHTML='<div class="picbox"><img src="'+blobUrl+'"></div><div class="namebox"><span>'+file.name+'</span></div><div class="tools"><a class="remove"></a></div>';
@@ -81,19 +83,20 @@
 
 
     //清空列表
-    document.querySelector('#topbar .removeall').addEventListener('click',()=>{
-        o2upimgs.res=[]
-        document.querySelectorAll('#file_list li').forEach((el,i)=>{
-            el.parentNode.removeChild(el)
-        });
-    });
+    document.querySelector('#topbar .removeall').addEventListener('click', function () {
+		o2upimgs.res=[];
+		var lis = document.querySelectorAll('#file_list li');
+		for(var i=0; i<lis.length; i++){
+			lis[i].parentNode.removeChild(lis[i]);
+		}
+	});
     //拖拽添加
-    document.addEventListener('dragover', (e)=>{
+    document.addEventListener('dragover', function(e){
         e.stopPropagation();
         e.preventDefault();
         e.dataTransfer.dropEffect = 'copy';
     });
-    document.addEventListener('drop', (e)=>{
+    document.addEventListener('drop', function(e){
         e.stopPropagation();
         e.preventDefault();
         if(!e.dataTransfer.files){return false;}
@@ -101,11 +104,12 @@
         if(!(dropfiles.length>0)){return false;}
         var exts=o2upimgs.o2upimgs_filetype.replace(/(\s)+/g,'').toLowerCase().split(',');
         var files=[];
-        for( let file of dropfiles ){
+        for( var i=0; i < dropfiles.length; i++ ){
+        	var file = dropfiles[i];
             ext = file.name.split('.');
             ext = '.'+ext[ext.length-1];
-            for(let s of exts){
-                if(s==ext){
+            for(var j=0; j<exts.length; j++){
+                if(exts[j]===ext){
                     files.push(file);
                     break;
                 }
@@ -115,34 +119,37 @@
     });
 
     //添加文件
-    document.querySelector('#topbar .addfile').addEventListener('click',()=>{
+    document.querySelector('#topbar .addfile').addEventListener('click',function(){
+    	debugger;
         var input = document.createElement('input');
         input.setAttribute('type', 'file');
         input.setAttribute('multiple', 'multiple');
         input.setAttribute('accept', o2upimgs.o2upimgs_filetype);
+		input.addEventListener('change', function() {
+			var files = this.files;
+			addList(files);
+		})
         input.click();
-        input.onchange = function() {
-            var files = this.files;
-            addList(files);
-        }
     });
 
 	var file_i = 0;
 
-	function upAllFiles(n){
+	function upAllFiles(n, callback){
 		var len = o2upimgs.res.length;
 		file_i = n;
 		if(len == n){
 			file_i=0;
             document.querySelector('#topbar .upall').innerText='全部上传';
+            if(callback)callback();
 			return true;
 		}
 		if( o2upimgs.res[n].url!='' ){
 			n++;
-			upAllFiles(n)
+			upAllFiles(n, callback)
 		}else{
+			var img = document.querySelectorAll('#file_list li')[file_i].querySelector("img");
 			blobInfo.file=o2upimgs.res[n].file;
-			upload_handler(blobInfo,function(url){
+			upload_handler(blobInfo, function(url, attributes){
 				if(upload_base_path){
 					
 					if(upload_base_path.slice(-1)=='/' && url.substr(0,1)=='/' ){
@@ -154,45 +161,88 @@
 					}
 				}
 				o2upimgs.res[file_i].url = url;
-				filename = url.split('/').pop();
+				o2upimgs.res[file_i].attributes = attributes;
+				// filename = url.split('/').pop();
                 var li = document.querySelectorAll('#file_list li')[file_i];
                 li.setAttribute('class','up-over');
-				li.querySelector('.namebox span').innerText = filename;
-				n++
-				upAllFiles(n);
+				// li.querySelector('.namebox span').innerText = filename;
+				n++;
+				upAllFiles(n, callback);
 			},function(err){
                 document.querySelector('#topbar .upall').innerText='全部上传';
-                document.querySelectorAll('#file_list li.up-now').forEach((el,i)=>{
-                    el.setAttribute('class','up-no');
-                });
+                var lis = document.querySelectorAll('#file_list li.up-now');
+                for(var i=0; i<lis.length; i++){
+                	lis[i].setAttribute('class','up-no');
+				}
                 alert(err);
-            });
+            }, img);
 		}
 		
 	}
 
-    document.querySelector('#topbar .upall').addEventListener('click',(e)=>{
-        if(e.target.innerText!='全部上传'){return false;}
-        if(o2upimgs.res.length>0){
-            document.querySelectorAll('#file_list li.up-no').forEach((el,i)=>{
-                el.classList ? el.classList.add('up-now') : el.className+=' up-now';
-            });
-            e.target.innerText='上传中...';
-            upAllFiles(0);
-        }
+	function uploadAll(callback){
+		var button = document.querySelector('#topbar .upall');
+		if(button.innerText!='全部上传'){return false;}
+		if(o2upimgs.res.length>0){
+			var lis = document.querySelectorAll('#file_list li.up-no');
+			for(var i=0; i<lis.length; i++) {
+				var el = lis[i];
+				el.classList ? el.classList.add('up-now') : el.className += ' up-now';
+			}
+			button.innerText='上传中...';
+			upAllFiles(0, callback);
+		}
+	}
+
+	function querySave( callback ){
+		if(o2upimgs.res.length>0){
+			var lis = document.querySelectorAll('#file_list li.up-now');
+			if(lis.length > 0){
+				editor.windowManager.alert('正在上传，请稍等...');
+				return false;
+			}
+			lis = document.querySelectorAll('#file_list li.up-no');
+			if(lis.length > 0){
+				editor.windowManager.confirm("还有图片没有上传，是否继续？", function(flag) {
+					if (flag){
+						if(callback)callback()
+						// uploadAll(callback)
+					}else{
+						return;
+					}
+				});
+			}else{
+				if(callback)callback()
+			}
+		}
+	}
+
+    document.querySelector('#topbar .upall').addEventListener('click', function(e){
+		uploadAll();
+        // if(e.target.innerText!='全部上传'){return false;}
+        // if(o2upimgs.res.length>0){
+		// 	var lis = document.querySelectorAll('#file_list li.up-no');
+		// 	for(var i=0; i<lis.length; i++) {
+		// 		var el = lis[i];
+		// 		el.classList ? el.classList.add('up-now') : el.className += ' up-now';
+		// 	}
+        //     e.target.innerText='上传中...';
+        //     upAllFiles(0);
+        // }
     });
 
-    var observ_flist = new MutationObserver( (muList,observe)=>{
+    var observ_flist = new MutationObserver( function(muList,observe){
         if(muList[0].addedNodes.length>0){
-            muList[0].addedNodes.forEach((el)=>{
-                el.querySelector('.remove').addEventListener('click',(e)=>{
+			for( var i=0; i< muList[0].addedNodes.length; i++){
+				var el = muList[0].addedNodes[i];
+                el.querySelector('.remove').addEventListener('click', function(e){
                     var li = e.target.parentNode.parentNode;
                     var n = li.getAttribute('data-num');
                     var el = document.querySelectorAll('#file_list li')[n];
                     el.parentNode.removeChild(el);
                     o2upimgs.res.splice(n,1);
                 });
-            });
+            }
         }
         reSort();
     });
