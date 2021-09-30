@@ -47,6 +47,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
                     })
                 }
             }
+            if(this.json.imageStyles)img.setStyles(this.json.imageStyles);
             img.inject( this.node );
         }
         if( this.readonly || this.json.isReadonly )return;
@@ -146,6 +147,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
                 })
             }
         }
+        if(this.json.imageStyles)img.setStyles(this.json.imageStyles);
     },
 
     selectImage: function(d, callback){
