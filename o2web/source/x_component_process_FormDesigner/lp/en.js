@@ -368,6 +368,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "appearance": "Appearance",
         "style": "Style",
         "attribute": "Attribute",
+        "imageStyle": "Image Style",
 
         "hideSystemTools": "SystemTools",
         "show": "Show",
