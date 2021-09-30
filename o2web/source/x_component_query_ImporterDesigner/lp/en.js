@@ -49,6 +49,11 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "inputName": "Please enter the name of the imported model",
         "noModifyName": "Cannot modify the name or alias",
 
+        "inputType": "Please select the import destination",
+        "inputProcess": "Please select a process",
+        "inputCategory": "Please select a category",
+        "inputTable": "Please select a self-built table",
+
         "deleteEventTitle": "Delete Event Confirmation",
         "deleteEvent": "Are you sure you want to delete the current event?",
 
