@@ -37,7 +37,7 @@ Describe.doPost = function(address, m, data) {
 			},
 			data : ((m.contentType.indexOf('application/json') > -1) && (!m.useStringParameter) ? JSON.stringify(data) : data)
 		}).always(function(resultJson) {
-			$('#result').html(JSON.stringify(resultJson, null, 4));
+			$('#result').text(JSON.stringify(resultJson, null, 4));
 			Describe.writeOut(m.outs, resultJson);
 		});
 	} else {
@@ -72,7 +72,7 @@ Describe.doPut = function(address, m, data) {
 			},
 			data : ((m.contentType.indexOf('application/json') > -1) && (!m.useStringParameter) ? JSON.stringify(data) : data)
 		}).always(function(resultJson) {
-			$('#result').html(JSON.stringify(resultJson, null, 4));
+			$('#result').text(JSON.stringify(resultJson, null, 4));
 			Describe.writeOut(m.outs, resultJson);
 		});
 	} else {
@@ -107,7 +107,7 @@ Describe.doGet = function(address, m) {
 			},
 			crossDomain : true
 		}).always(function(resultJson) {
-			$('#result').html(JSON.stringify(resultJson, null, 4));
+			$('#result').text(JSON.stringify(resultJson, null, 4));
 			Describe.writeOut(m.outs, resultJson);
 		});
 	} else {
@@ -130,7 +130,7 @@ Describe.doDelete = function(address, m) {
 			},
 			crossDomain : true
 		}).always(function(resultJson) {
-			$('#result').html(JSON.stringify(resultJson, null, 4));
+			$('#result').text(JSON.stringify(resultJson, null, 4));
 			Describe.writeOut(m.outs, resultJson);
 		});
 	} else {
@@ -152,7 +152,7 @@ Describe.doDelete = function(address, m) {
 Describe.writeOut = function(outs, json) {
 	if (outs && (outs.length) && json && json.data) {
 		$.each(Object.keys(json.data), function(i, k) {
-			$('#out_' + k + '_out', '#outs').html(json.data[k]);
+			$('#out_' + k + '_out', '#outs').text(json.data[k]);
 		});
 	}
 }
@@ -723,7 +723,7 @@ Describe.prototype = {
 				$.each(j.methods, function(mi, m) {
 					$('#' + j.name + '_' + m.name).click(
 							function() {
-								$('#result').html('');
+								$('#result').text('');
 								var sample = "";
 								var txt = '<fieldset id="method"><legend>Method</legend>';
 								txt += '<table>';
@@ -1103,7 +1103,7 @@ Describe.prototype = {
 				$.each(j.methods, function(mi, m) {
 					$('#' + j.name + '_' + m.name).click(
 							function() {
-								$('#result').html('');
+								$('#result').text('');
 								var sample = "";
 								var txt = '<fieldset id="method"><legend>Method</legend>';
 								txt += '<table>';
