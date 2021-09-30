@@ -72,10 +72,13 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         }).inject(this.viewTitleNode);
 
         // this.refreshNode = new Element("div", {"styles": this.css.refreshNode}).inject(this.viewTitleNode);
-        this.addColumnLeftNode = new Element("div", {"styles": this.css.addColumnLeftNode}).inject(this.viewTitleNode);
-        this.addColumnNode = new Element("div", {"styles": this.css.addColumnNode}).inject(this.viewTitleNode);
 
-        this.viewTitleContentNode = new Element("div", {"styles": this.css.viewTitleContentNode}).inject(this.viewTitleNode);
+        this.viewColumnNode = new Element("div", {"styles": {"overflow":"hidden"}}).inject(this.viewTitleNode);
+
+        this.addColumnLeftNode = new Element("div", {"styles": this.css.addColumnLeftNode}).inject(this.viewColumnNode);
+        this.addColumnNode = new Element("div", {"styles": this.css.addColumnNode}).inject(this.viewColumnNode);
+
+        this.viewTitleContentNode = new Element("div", {"styles": this.css.viewTitleContentNode}).inject(this.viewColumnNode);
         this.viewTitleTableNode = new Element("table", {
             "styles": this.css.viewTitleTableNode,
             "border": "0px",
@@ -231,9 +234,6 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
     },
 
     addColumn: function( addToLeft ){
-
-        debugger;
-
         MWF.require("MWF.widget.UUID", function(){
             var id = (new MWF.widget.UUID).id;
             var json = {
@@ -261,11 +261,12 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
             //     }.bind(this));
             //     //this.setContentColumnWidth();
             // }
-            this.setViewWidth();
 
             this.items.each( function (item, i) {
                 item.resetIndex(i);
             });
+
+            this.setViewWidth();
 
             if( addToLeft ){
                 this.addColumnLeftNode.scrollIntoView(true);
@@ -332,29 +333,31 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
 //        this.addTopItemNode.addEvent("click", this.addTopItem.bind(this));
     },
     setViewWidth: function(){
-        if( !this.viewAreaNode )return;
-        this.viewAreaNode.setStyle("width", "auto");
-        this.viewTitleNode.setStyle("width", "auto");
+        // window.setTimeout(function() {
+            if (!this.viewAreaNode) return;
+            this.viewAreaNode.setStyle("width", "auto");
+            this.viewTitleNode.setStyle("width", "auto");
 
-        var s1 = this.viewTitleTableNode.getSize();
+            var s1 = this.viewTitleTableNode.getSize();
 
-        var m1 = this.viewTitleNode.getStyle("margin-left");
-        var m2 = this.viewTitleNode.getStyle("margin-right");
+            var m1 = this.viewTitleNode.getStyle("margin-left");
+            var m2 = this.viewTitleNode.getStyle("margin-right");
 
-        var s2 = this.addColumnLeftNode.getSize();
-        var s3 = this.addColumnNode.getSize();
-        var width = s1.x+s2.x+s2.x - m1.toFloat() - m2.toFloat();
-        var size = this.areaNode.getSize();
+            var s2 = this.addColumnLeftNode.getSize();
+            var s3 = this.addColumnNode.getSize();
+            var width = s1.x + s2.x + s2.x - m1.toFloat() - m2.toFloat();
+            var size = this.areaNode.getSize();
 
-        if (width>size.x){
-            this.viewTitleNode.setStyle("width", ""+width+"px");
-            this.viewAreaNode.setStyle("width", ""+width+"px");
-        }else{
-            this.viewTitleNode.setStyle("width", ""+size.x+"px");
-            this.viewAreaNode.setStyle("width", ""+size.x+"px");
-        }
-        this.setContentColumnWidth();
-        this.setContentHeight();
+            if (width > size.x) {
+                this.viewTitleNode.setStyle("width", "" + width + "px");
+                this.viewAreaNode.setStyle("width", "" + width + "px");
+            } else {
+                this.viewTitleNode.setStyle("width", "" + size.x + "px");
+                this.viewAreaNode.setStyle("width", "" + size.x + "px");
+            }
+            this.setContentColumnWidth();
+            this.setContentHeight();
+        // }.bind(this), 10);
     },
     setContentHeight: function(){
         var size = this.areaNode.getSize();
@@ -420,6 +423,28 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         if (!this.data.name){
             this.designer.notice(this.designer.lp.notice.inputName, "error");
             return false;
+        }
+
+        if( !this.json.type ){
+            this.designer.notice(this.designer.lp.notice.inputType, "error");
+            return false;
+        }
+
+        if (this.json.type==="cms"){
+            if( !this.json.data.category || !this.json.data.category.id ){
+                this.designer.notice(this.designer.lp.notice.inputCategory, "error");
+                return false;
+            }
+        }else if(this.json.type==="process"){
+            if( !this.json.data.process || !this.json.data.process.id ){
+                this.designer.notice(this.designer.lp.notice.inputProcess, "error");
+                return false;
+            }
+        }else if(this.json.type==="dynamicTable"){
+            if( !this.json.data.dynamicTable || !this.json.data.dynamicTable.name ){
+                this.designer.notice(this.designer.lp.notice.inputTable, "error");
+                return false;
+            }
         }
 
         var fieldArr=[], textArr=[], data = this.json.data;
@@ -869,11 +894,11 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
 
         this.view.selected();
 
-        this.view.setViewWidth();
-
         this.view.items.each( function (item, i) {
             item.resetIndex(i);
         });
+
+        this.view.setViewWidth();
 
         MWF.release(this);
         delete this;
@@ -909,11 +934,12 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
                     td.setStyles(this.css.viewContentTdNode);
                 }.bind(this));
             }
-            this.view.setViewWidth();
 
             this.view.items.each( function (item, i) {
                 item.resetIndex(i);
             });
+
+            this.view.setViewWidth();
 
         }.bind(this));
     },
