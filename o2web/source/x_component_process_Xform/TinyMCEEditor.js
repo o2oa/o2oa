@@ -159,13 +159,21 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                                 "accept": "image/*",
                                 "onEvery": function(json, index, count, file){
 
-                                    var attrs = {};
-                                    if(file.name)attrs.alt = file.name;
-
                                     var id = json.data ? json.data.id : json.id;
                                     attrs["data-id"] = id;
 
                                     attrs["data-orgid"] = json.data ? json.data.origId : json.origId;
+
+                                    var attributes = {
+                                        "data-id": id,
+                                        "data-orgid": orgid,
+                                        "data-height": height,
+                                        "data-width": width,
+                                        "style": 'max-width:100%; width:' + width + 'px',
+                                        "onerror": 'MWF.xDesktop.setImageSrc()',
+                                        "alt": file.name || '',
+                                        "data-prv": enablePreview ? 'true' : 'false'
+                                    };
 
                                     var src = MWF.xDesktop.getImageSrc( id );
                                     callback( src, attrs )
