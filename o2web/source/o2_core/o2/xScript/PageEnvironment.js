@@ -2541,12 +2541,18 @@ if (!MWF.xScript.createDict) {
     };
 
     MWF.xScript.insertDictToCache = function (key, path, json) {
+        var p = path;
+        if( !p )p = "root";
+        if( p.indexOf("root") !== 0 )p = "root." + p ;
+
         if (MWF.xScript.dictLoaded[key]) {
             var matchedDict = MWF.xScript.getMatchedDict(key, path);
             var dict = matchedDict.dict;
             var list = matchedDict.unmatchedPathList;
             if (!dict) {
-                MWF.xScript.dictLoaded[key][path] = json;
+                MWF.xScript.dictLoaded[key][p] = json;
+        }else if( !list || list.length === 0 ){
+            MWF.xScript.dictLoaded[key][p] = json;
             } else {
                 for (var j = 0; j < list.length - 1; j++) {
                     if (!dict[list[j]]) {
@@ -2563,17 +2569,23 @@ if (!MWF.xScript.createDict) {
             }
         } else {
             MWF.xScript.dictLoaded[key] = {};
-            MWF.xScript.dictLoaded[key][path] = json;
+            MWF.xScript.dictLoaded[key][p] = json;
         }
     };
 
     MWF.xScript.setDictToCache = function (key, path, json) {
+        var p = path;
+        if( !p )p = "root";
+        if( p.indexOf("root") !== 0 )p = "root." + p ;
+
         if (MWF.xScript.dictLoaded[key]) {
             var matchedDict = MWF.xScript.getMatchedDict(key, path);
             var dict = matchedDict.dict;
             var list = matchedDict.unmatchedPathList;
             if (!dict) {
-                MWF.xScript.dictLoaded[key][path] = json;
+                MWF.xScript.dictLoaded[key][p] = json;
+            }else if( !list || list.length === 0 ){
+                MWF.xScript.dictLoaded[key][p] = json;
             } else {
                 for (var j = 0; j < list.length - 1; j++) {
                     if (!dict[list[j]]) {
@@ -2585,7 +2597,7 @@ if (!MWF.xScript.createDict) {
             }
         } else {
             MWF.xScript.dictLoaded[key] = {};
-            MWF.xScript.dictLoaded[key][path] = json;
+            MWF.xScript.dictLoaded[key][p] = json;
         }
     };
 
@@ -2613,7 +2625,9 @@ if (!MWF.xScript.createDict) {
                 dict = dict[list[j]];
                 if (!dict) return;
             }
-            delete dict[list[list.length - 1]];
+            if( list.length ){
+                delete dict[list[list.length - 1]];
+            }
         }
     };
 
