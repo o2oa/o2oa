@@ -102,10 +102,10 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
                 if (callback) callback();
             });
 
-            // this.setScrollBar(this.designerStatementArea, null, {
-            //     "V": {"x": 0, "y": 0},
-            //     "H": {"x": 0, "y": 0}
-            // });
+            this.setScrollBar(this.designerStatementArea, null, {
+                "V": {"x": 0, "y": 0},
+                "H": {"x": 0, "y": 0}
+            });
         }.bind(this));
     },
     loadNodes: function(){
@@ -281,7 +281,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         r.send();
     },
     loadEditContent: function(callback){
-        this.designNode = new Element("div", {
+        this.designNode = new Element("div.designNode", {
             "styles": this.css.designNode
         }).inject(this.editContentNode);
     },
@@ -298,26 +298,27 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         }).inject(this.designerNode);
         this.loadDesignerResize();
 
-        this.designerContentNode = new Element("div", {
+        this.designerContentNode = new Element("div.designerContentNode", {
             "styles": this.css.designerContentNode
         }).inject(this.designerNode);
 
-        this.designerStatementArea = new Element("div", {
+        this.designerStatementArea = new Element("div.designerStatementArea", {
             "styles": this.css.designerStatementArea
         }).inject(this.designerContentNode);
         this.propertyDomArea = this.designerStatementArea;
 
-        this.designerStatementPercent = 0.6;
-        this.designerContentResizeNode = new Element("div", {
+        this.designerStatementPercent = 0.3;
+        this.designerContentResizeNode = new Element("div.designerContentResizeNode", {
             "styles": this.css.designerContentResizeNode
         }).inject(this.designerContentNode);
 
-        this.designerContentArea = new Element("div", {
+        this.designerContentArea = new Element("div.designerContentArea", {
             "styles": this.css.designerContentArea
         }).inject(this.designerContentNode);
         this.propertyContentArea = this.designerContentArea;
 
         this.loadDesignerStatementResize();
+
         //this.setPropertyContent();
         this.designerNode.addEvent("keydown", function(e){e.stopPropagation();});
     },
@@ -386,15 +387,46 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
     },
     setDesignerStatementResize: function(){
         var size = this.designerContentNode.getSize();
-        //var resizeNodeSize = this.designerContentResizeNode.getSize();
-        //var height = size.y-resizeNodeSize.y;
-        var height = size.y
+        var contentHeight;
+        if( this.statement && this.statement.selectMode.contains("view") ){
+            this.designerContentResizeNode.show();
+            this.designerStatementArea.show();
 
-        // var domHeight = this.designerStatementPercent*height;
-        // var contentHeight = height-domHeight;
+            var resizeNodeSize = this.designerContentResizeNode.getSize();
+            var height = size.y-resizeNodeSize.y;
 
-        //this.designerStatementArea.setStyle("height", ""+domHeight+"px");
-        this.designerContentArea.setStyle("height", ""+height+"px");
+            var domHeight = this.designerStatementPercent*height;
+            contentHeight = height-domHeight;
+
+            this.designerStatementArea.setStyle("height", ""+domHeight+"px");
+            this.designerContentArea.setStyle("height", ""+contentHeight+"px");
+        }else{
+            contentHeight = size.y;
+            this.designerContentResizeNode.hide();
+            this.designerStatementArea.hide();
+
+            this.designerContentArea.setStyle("height", ""+contentHeight+"px");
+        }
+
+        if (this.statement){
+            if (this.statement.currentSelectedModule){
+                if (this.statement.currentSelectedModule.property){
+                    var tab = this.statement.currentSelectedModule.property.propertyTab;
+                    if (tab){
+                        var tabTitleSize = tab.tabNodeContainer.getSize();
+
+                        tab.pages.each(function(page){
+                            var topMargin = page.contentNodeArea.getStyle("margin-top").toFloat();
+                            var bottomMargin = page.contentNodeArea.getStyle("margin-bottom").toFloat();
+
+                            var tabContentNodeAreaHeight = contentHeight - topMargin - bottomMargin - tabTitleSize.y.toFloat()-15;
+                            page.contentNodeArea.setStyle("height", tabContentNodeAreaHeight);
+                        }.bind(this));
+
+                    }
+                }
+            }
+        }
     },
 
     //resizeNode------------------------------------------------
