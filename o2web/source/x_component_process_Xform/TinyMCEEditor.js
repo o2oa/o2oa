@@ -132,17 +132,53 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                 fontsize_formats: '12px 14px 16px 18px 24px 36px 48px 56px 72px',
                 // importcss_append: true,
                 //自定义文件选择器的回调内容
-                // file_picker_callback: function (callback, value, meta) {
-                // 	if (meta.filetype === 'file') {
-                // 		callback('https://www.baidu.com/img/bd_logo1.png', { text: 'My text' });
-                // 	}
-                // 	if (meta.filetype === 'image') {
-                // 		callback('https://www.baidu.com/img/bd_logo1.png', { alt: 'My alt text' });
-                // 	}
-                // 	if (meta.filetype === 'media') {
-                // 		callback('movie.mp4', { source2: 'alt.ogg', poster: 'https://www.baidu.com/img/bd_logo1.png' });
-                // 	}
-                // },
+                file_picker_callback: function (callback, value, meta) {
+                    //this 指向editor实例
+
+                    debugger;
+                	// if (meta.filetype === 'file') {
+                	// 	callback('https://www.baidu.com/img/bd_logo1.png', { text: 'My text' });
+                	// }
+                	if (meta.filetype === 'image') {
+
+
+                        var enablePreview = this.getParam('enablePreview', true);
+                        var localImageMaxWidth = this.getParam('localImageMaxWidth', 2000);
+                        var reference = this.getParam('reference');
+                        var referenceType = this.getParam('referenceType');
+                        if( !reference || !referenceType )return;
+
+                        MWF.require("MWF.widget.Upload", function(){
+                            var action =  new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
+
+                            var upload = new MWF.widget.Upload($(document.body), {
+                                "data": null,
+                                "parameter": {"reference" : reference, "referencetype": referenceType, "scale" : localImageMaxWidth || 2000 },
+                                "action": action,
+                                "method": "uploadImageByScale",
+                                "accept": "image/*",
+                                "onEvery": function(json, index, count, file){
+
+                                    var attrs = {};
+                                    if(file.name)attrs.alt = file.name;
+
+                                    var id = json.data ? json.data.id : json.id;
+                                    attrs["data-id"] = id;
+
+                                    attrs["data-orgid"] = json.data ? json.data.origId : json.origId;
+
+                                    var src = MWF.xDesktop.getImageSrc( id );
+                                    callback( src, attrs )
+
+                                }.bind(this)
+                            });
+                            upload.load();
+                        }.bind(this));
+                	}
+                	// if (meta.filetype === 'media') {
+                	// 	callback('movie.mp4', { source2: 'alt.ogg', poster: 'https://www.baidu.com/img/bd_logo1.png' });
+                	// }
+                },
                 autosave_ask_before_unload: false,
                 imagetools_toolbar: 'editimage imageoptions'
             };
