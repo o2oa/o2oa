@@ -8,7 +8,7 @@
         "background-color": "#EEE"
     },
     "designerNode": {
-        "width": "320px",
+        "width": "340px",
         "min-width": "300px",
         "overflow": "hidden",
         "float": "right",
@@ -17,7 +17,7 @@
     },
 	"contentNode": {
 	    "margin-left": "261px",
-		"margin-right": "320px",
+		"margin-right": "340px",
 		"border-right": "1px solid #505050",
 		"border-left": "1px solid #505050",
 		"background-color": "#FFF",
@@ -74,7 +74,7 @@
     "listStatementItemIcon": {
         "height": "24px",
         "width": "26px",
-        "background": "url("+"../x_component_query_StatementDesigner/$Main/default/statement.png) no-repeat center center",
+        "background": "url(../x_component_query_StatementDesigner/$Main/default/statement.png) no-repeat center center",
         "float": "left"
     },
     "listStatementItemText": {
@@ -98,7 +98,7 @@
 		"background": "#FFF",
 		"-webkit-user-select": "none",
 		"overflow": "hidden",
-		"background": "url("+"../x_component_query_ViewDesigner/$Main/default/designerBg.png)",
+		"background": "url(../x_component_query_ViewDesigner/$Main/default/designerBg.png)",
 		"-moz-user-select": "none"
 	},
 	"designerTitleNode": {
@@ -144,7 +144,7 @@
         "border-right": "1px solid #DDD"
     },
     "designerContentArea": {
-        "height": "100%",
+        //"height": "100%",
 		"overflow": "hidden",
 		"margin-bottom": "2px",
 		"background-color": "#ffffff"
