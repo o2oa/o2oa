@@ -2551,8 +2551,8 @@ if (!MWF.xScript.createDict) {
             var list = matchedDict.unmatchedPathList;
             if (!dict) {
                 MWF.xScript.dictLoaded[key][p] = json;
-        }else if( !list || list.length === 0 ){
-            MWF.xScript.dictLoaded[key][p] = json;
+            }else if( !list || list.length === 0 ){
+                MWF.xScript.dictLoaded[key][p] = json;
             } else {
                 for (var j = 0; j < list.length - 1; j++) {
                     if (!dict[list[j]]) {
