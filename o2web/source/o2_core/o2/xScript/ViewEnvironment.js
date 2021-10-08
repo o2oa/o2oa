@@ -254,7 +254,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {Function} [success] 获取数据成功时的回调函数。
      * @param {Function} [failure] 获取数据失败时的回调。
      * @param {Boolean} [async] 是否异步执行，默认为false。
-     * @param {Boolean} [refresh] 是否忽略本地缓存直接从服务器获取，默认为false。
+     * @param {Boolean} [refresh] 是否忽略本地缓存直接从服务器获取，默认为false。如果需要在脚本中该数据字典是变化的（比如编号），需设置为true。
      * @return {(Promise|Object|Array|String|Number|Boolean)}
      * 当async为true时返回Promise({@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise说明})；
      * 否则返回数据字典的数据，类型和配置数据字典时候指定的一致。
@@ -4868,12 +4868,18 @@ if( !MWF.xScript.createDict ){
     };
 
     MWF.xScript.insertDictToCache = function(key, path, json){
+        var p = path;
+        if( !p )p = "root";
+        if( p.indexOf("root") !== 0 )p = "root." + p ;
+
         if( MWF.xScript.dictLoaded[key] ){
             var matchedDict = MWF.xScript.getMatchedDict( key, path );
             var dict = matchedDict.dict;
             var list = matchedDict.unmatchedPathList;
             if( !dict ){
-                MWF.xScript.dictLoaded[key][path] = json;
+                MWF.xScript.dictLoaded[key][p] = json;
+            }else if( !list || list.length === 0 ){
+                MWF.xScript.dictLoaded[key][p] = json;
             }else{
                 for( var j=0; j<list.length-1; j++ ){
                     if( !dict[ list[j] ] ){
@@ -4890,18 +4896,24 @@ if( !MWF.xScript.createDict ){
             }
         }else{
             MWF.xScript.dictLoaded[key] = {};
-            MWF.xScript.dictLoaded[key][path] = json;
+            MWF.xScript.dictLoaded[key][p] = json;
         }
     };
 
 
     MWF.xScript.setDictToCache = function(key, path, json){
+        var p = path;
+        if( !p )p = "root";
+        if( p.indexOf("root") !== 0 )p = "root." + p ;
+
         if( MWF.xScript.dictLoaded[key] ){
             var matchedDict = MWF.xScript.getMatchedDict( key, path );
             var dict = matchedDict.dict;
             var list = matchedDict.unmatchedPathList;
             if( !dict ){
-                MWF.xScript.dictLoaded[key][path] = json;
+                MWF.xScript.dictLoaded[key][p] = json;
+            }else if( !list || list.length === 0 ){
+                MWF.xScript.dictLoaded[key][p] = json;
             }else{
                 for( var j=0; j<list.length-1; j++ ){
                     if( !dict[ list[j] ] ){
@@ -4913,7 +4925,7 @@ if( !MWF.xScript.createDict ){
             }
         }else{
             MWF.xScript.dictLoaded[key] = {};
-            MWF.xScript.dictLoaded[key][path] = json;
+            MWF.xScript.dictLoaded[key][p] = json;
         }
     };
 
@@ -4941,7 +4953,9 @@ if( !MWF.xScript.createDict ){
                 dict = dict[ list[j] ];
                 if( !dict )return;
             }
-            delete dict[list[list.length-1]];
+            if( list.length ){
+                delete dict[list[list.length-1]];
+            }
         }
     };
 
