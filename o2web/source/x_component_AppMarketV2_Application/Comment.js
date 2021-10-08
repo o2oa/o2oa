@@ -93,12 +93,13 @@ MWF.xApplication.AppMarketV2.Application.Comment.ViewPage= new Class({
         this.loadBbsInfo(content);
         var json = null;
         var commenturl =  this.bbsUrlPath +'/x_bbs_assemble_control/jaxrs/subject/statgrade/sectionName/'+encodeURI(content.app.lp.title)+'/subjectType/'+encodeURI(content.appdata.name)+'?time='+(new Date()).getMilliseconds();
+        debugger;
         var res = new Request.JSON({
             url: commenturl,
             headers : {'x-debugger' : true,'Authorization':content.app.collectToken,'c-token':content.app.collectToken},
             secure: false,
             method: "get",
-            async: false,
+            async: true,
             withCredentials: true,
             contentType : 'application/json',
             crossDomain : true,

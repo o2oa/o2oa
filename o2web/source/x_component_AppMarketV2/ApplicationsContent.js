@@ -202,7 +202,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
             }.bind(this),null,false //同步执行
         );
     },
-    loadCommentsGrade: function(appdata){
+    loadCommentsGrade: function(appdata,callback){
         debugger;
         var json = null;
         var commenturl =  this.bbsUrlPath +'/x_bbs_assemble_control/jaxrs/subject/statgrade/sectionName/'+encodeURI(this.app.lp.title)+'/subjectType/'+encodeURI(appdata.name)+'?time='+(new Date()).getMilliseconds();
@@ -211,17 +211,18 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
             headers : {'x-debugger' : true,'Authorization':this.collectToken,'c-token':this.collectToken},
             secure: false,
             method: "get",
-            async: false,
+            async: true,
             withCredentials: true,
             contentType : 'application/json',
             crossDomain : true,
             onSuccess: function(responseJSON, responseText){
                 debugger;
-                json =  responseJSON;
+                //json =  responseJSON;
+                if(callback)callback( responseJSON );
             }.bind(this)
         });
         res.send();
-        return json;
+        //return json;
     },
     loadCertainCategory:function(categorysdiv,d){
         var _self = this;
@@ -279,90 +280,95 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
     loadCertainApplication: function(appsdiv, d, i,rowappnum,rowappmargin){
         //app 排列 begin
         debugger;
-        var gradeData = this.loadCommentsGrade(d);
-        debugger;
-       var applicationdiv = new Element("div",{"class":"o2_appmarket_application"}).inject(appsdiv);
- 
-       if ((i+1)%rowappnum!=0){
-            applicationdiv.setStyle("margin-right",rowappmargin+"px");
-       }else{
-            applicationdiv.setStyle("margin-right","0px");
-       }
-       var applicationicon = new Element("div",{"class":"o2_appmarket_application_icon"}).inject(applicationdiv);
-       applicationicon.setStyle("background-image", "url(data:image/png;base64,"+d.icon+")");
-       var applicationinfo = new Element("div",{"class":"o2_appmarket_application_info"}).inject(applicationdiv);
-       var applicationinfo_name = new Element("div",{"text":d.name,"class":"o2_appmarket_application_info_name","title":d.name}).inject(applicationinfo);
-       //var applicationinfo_recommend = new Element("div",{"text":d.recommend,"class":"o2_appmarket_application_info_recommend"}).inject(applicationinfo);
-       //推荐指数改为显示评星
-       var applicationinfo_star = new Element("div",{"class":"o2_appmarket_application_info_recommend"}).inject(applicationinfo);
-        var commentcount = 0;
-        var grade = 0;
-        var totalgrade = 0;
-        var commentratiolist = gradeData.data;
-        var gradeList = ["0","0","0","0","0"];
-        commentratiolist.each(function(pergrade){
-            gradeList[parseInt(pergrade.grade)-1]=pergrade.count;
-            commentcount +=parseInt(pergrade.count)
-        }.bind(this));
-        gradeList.each(function(pergrade,index){
-            totalgrade += parseInt(pergrade)*(index+1)
-        })
-        if (commentcount>0){
-            grade = this.numberFix(totalgrade/commentcount,1)
-        }
-        var intgrade = parseInt(grade);
-        var dotgrade = grade - intgrade;
+        //var gradeData = this.loadCommentsGrade(d);
+        this.loadCommentsGrade(d,function( gradeData ){
+            debugger;
+            var applicationdiv = new Element("div",{"class":"o2_appmarket_application"}).inject(appsdiv);
 
-       /*var grade = d.grade;
-	   var intgrade = parseInt(grade);
-	   var dotgrade = grade - intgrade;*/
-	   for (var tmpnum=0;tmpnum<intgrade;tmpnum++){
-			new Element("img",{"src":this.app.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_info_starpic"}).inject(applicationinfo_star)
-	   }
-	  if (dotgrade>=0.5){
-			new Element("img",{"src":this.app.iconPath+"halffiveangular.png","class":"o2_appmarket_application_info_starpic"}).inject(applicationinfo_star);
-			intgrade++;
-	   }
-	   for (var tmpnum=0;tmpnum<5-intgrade;tmpnum++){
-			new Element("img",{"src":this.app.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_info_starpic"}).inject(applicationinfo_star);
-		}
-       var applicationinfo_category = new Element("div",{"text":d.category,"class":"o2_appmarket_application_info_category"}).inject(applicationinfo);
-       var applicationinfo_bottom = new Element("div",{"class":"o2_appmarket_application_info_bottom"}).inject(applicationinfo);
-       var applicationinfo_bottom_free = new Element("div",{"text":d.price==0?"Free":d.price+"","class":"o2_appmarket_application_info_bottom_free"}).inject(applicationinfo_bottom);
-       var applicationinfo_bottom_open = new Element("div",{"class":"o2_appmarket_application_info_bottom_button mainColor_bg"}).inject(applicationinfo_bottom);
-       var bottomtext =this.app.lp.setup;
-       if (d.installedVersion && d.installedVersion!=""){
-           if (d.installedVersion==d.version){
-                bottomtext = this.app.lp.setupDone;
-           }else{
-                bottomtext = this.app.lp.update;
-           }
-       }
-       var applicationinfo_bottom_open_text = new Element("div",{"text":bottomtext,"class":"o2_appmarket_application_info_bottom_button_text"}).inject(applicationinfo_bottom_open);
-        var _self = this;
-        applicationicon.store("data", d);
-        applicationicon.addEvents({
-            "mouseover": function(){
-            },
-            "mouseout": function(){
-            },
-            "click": function(e){
-                var d = this.retrieve("data");
-                if (d) {
-                    _self.open(e, d);
+            if ((i+1)%rowappnum!=0){
+                applicationdiv.setStyle("margin-right",rowappmargin+"px");
+            }else{
+                applicationdiv.setStyle("margin-right","0px");
+            }
+            var applicationicon = new Element("div",{"class":"o2_appmarket_application_icon"}).inject(applicationdiv);
+            applicationicon.setStyle("background-image", "url(data:image/png;base64,"+d.icon+")");
+            var applicationinfo = new Element("div",{"class":"o2_appmarket_application_info"}).inject(applicationdiv);
+            var applicationinfo_name = new Element("div",{"text":d.name,"class":"o2_appmarket_application_info_name","title":d.name}).inject(applicationinfo);
+            //var applicationinfo_recommend = new Element("div",{"text":d.recommend,"class":"o2_appmarket_application_info_recommend"}).inject(applicationinfo);
+            //推荐指数改为显示评星
+            var applicationinfo_star = new Element("div",{"class":"o2_appmarket_application_info_recommend"}).inject(applicationinfo);
+            var commentcount = 0;
+            var grade = 0;
+            var totalgrade = 0;
+            var commentratiolist = gradeData.data;
+            var gradeList = ["0","0","0","0","0"];
+            commentratiolist.each(function(pergrade){
+                gradeList[parseInt(pergrade.grade)-1]=pergrade.count;
+                commentcount +=parseInt(pergrade.count)
+            }.bind(this));
+            gradeList.each(function(pergrade,index){
+                totalgrade += parseInt(pergrade)*(index+1)
+            })
+            if (commentcount>0){
+                grade = this.numberFix(totalgrade/commentcount,1)
+            }
+            var intgrade = parseInt(grade);
+            var dotgrade = grade - intgrade;
+
+            /*var grade = d.grade;
+            var intgrade = parseInt(grade);
+            var dotgrade = grade - intgrade;*/
+            for (var tmpnum=0;tmpnum<intgrade;tmpnum++){
+                new Element("img",{"src":this.app.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_info_starpic"}).inject(applicationinfo_star)
+            }
+            if (dotgrade>=0.5){
+                new Element("img",{"src":this.app.iconPath+"halffiveangular.png","class":"o2_appmarket_application_info_starpic"}).inject(applicationinfo_star);
+                intgrade++;
+            }
+            for (var tmpnum=0;tmpnum<5-intgrade;tmpnum++){
+                new Element("img",{"src":this.app.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_info_starpic"}).inject(applicationinfo_star);
+            }
+            var applicationinfo_category = new Element("div",{"text":d.category,"class":"o2_appmarket_application_info_category"}).inject(applicationinfo);
+            var applicationinfo_bottom = new Element("div",{"class":"o2_appmarket_application_info_bottom"}).inject(applicationinfo);
+            var applicationinfo_bottom_free = new Element("div",{"text":d.price==0?"Free":d.price+"","class":"o2_appmarket_application_info_bottom_free"}).inject(applicationinfo_bottom);
+            var applicationinfo_bottom_open = new Element("div",{"class":"o2_appmarket_application_info_bottom_button mainColor_bg"}).inject(applicationinfo_bottom);
+            var bottomtext =this.app.lp.setup;
+            if (d.installedVersion && d.installedVersion!=""){
+                if (d.installedVersion==d.version){
+                    bottomtext = this.app.lp.setupDone;
+                }else{
+                    bottomtext = this.app.lp.update;
                 }
             }
-        })
-
-        applicationinfo_bottom_open.store("data",d);
-        applicationinfo_bottom_open.addEvents({
-            "click":function(e){
-                var d = this.retrieve("data");
-                if (d){
-                    _self.installapp(e,d);
+            var applicationinfo_bottom_open_text = new Element("div",{"text":bottomtext,"class":"o2_appmarket_application_info_bottom_button_text"}).inject(applicationinfo_bottom_open);
+            var _self = this;
+            applicationicon.store("data", d);
+            applicationicon.addEvents({
+                "mouseover": function(){
+                },
+                "mouseout": function(){
+                },
+                "click": function(e){
+                    var d = this.retrieve("data");
+                    if (d) {
+                        _self.open(e, d);
+                    }
                 }
-            }
-        })
+            })
+
+            applicationinfo_bottom_open.store("data",d);
+            applicationinfo_bottom_open.addEvents({
+                "click":function(e){
+                    var d = this.retrieve("data");
+                    if (d){
+                        _self.installapp(e,d);
+                    }
+                }
+            });
+
+            }.bind(this)
+        );
+
     },
     installapp:function(e,d){
             var p = e.target.getPosition();
