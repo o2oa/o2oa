@@ -63,6 +63,12 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         "divAsP": false,
         "protection": false,
         "firstPageNumber": true,
+        "pageHeight": "841.9",
+        "pageWidth": "595.3",
+        "page-margin-left": "79.4",
+        "page-margin-right": "73.7",
+        "page-margin-top": "104.9",
+        "page-margin-bottom": "99.25"
     },
     initialize: function(options){
         this.setOptions(options);
@@ -396,6 +402,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.processFiletext(dom, oo_body, append);
                 }else if (dom.hasClass("doc_layout_editionArea")){
 
+                    debugger;
                     var wordSection = dom.getParent(".WordSection1");
 
                     var h = this.pxToPt(dom.getSize().y);
@@ -1949,6 +1956,13 @@ debugger;
                     //nothing
                 }
             }
+            if (!this.pageHeight) this.pageHeight = this.options.pageHeight.toFloat()*20;
+            if (!this.pageWidth) this.pageWidth = this.options.pageWidth.toFloat()*20;
+            if (!this["page-margin-left"]) this["page-margin-left"] = this.options["page-margin-left"].toFloat()*20;
+            if (!this["page-margin-right"]) this["page-margin-right"] = this.options["page-margin-right"].toFloat()*20;
+            if (!this["page-margin-top"]) this["page-margin-top"] = this.options["page-margin-top"].toFloat()*20;
+            if (!this["page-margin-bottom"]) this["page-margin-bottom"] = this.options["page-margin-bottom"].toFloat()*20;
+
             if (!this.options.firstPageNumber){
                 var oo_titlePg = this.createEl(oo_body.ownerDocument, "titlePg");
                 oo_sectPr.appendChild(oo_titlePg);
