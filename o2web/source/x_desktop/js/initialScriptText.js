@@ -841,6 +841,50 @@ var _portalActions = new _Action("x_portal_assemble_surface", {
 bind.processActions = _processActions;
 bind.cmsActions = _cmsActions;
 
+
+try{
+    oPrint = oPrint;
+}catch(e){
+    oPrint = print
+}
+print = function(str, type){
+    var d = new Date();
+    var t = (type || "PRINT").toUpperCase();
+    var l = "[Script]";
+    oPrint(d.format("db")+"."+d.getMilliseconds()+" "+t+" "+l+" "+str);
+}
+bind.print = print;
+echo = print;
+bind.echo = print;
+
+bind.println = print;
+
+var _parsePrint = function(str){
+    var text = str.toString();
+    var i = 1;
+    while (text.indexOf("%s")!==-1 && i<arguments.length){
+        text = text.replace(/\%s/, arguments[i].toString());
+        i++;
+    }
+    while (i<arguments.length){
+        text += " "+arguments[i].toString();
+        i++;
+    }
+    return text;
+};
+var console = {
+    log: function(){ print(_parsePrint.apply(this, arguments)); },
+    error: function(){ print("[ERROR] "+_parsePrint.apply(this, arguments)); },
+    info: function(){ print("[INFO] "+_parsePrint.apply(this, arguments)); },
+    warn: function(){ print("[WARN] "+_parsePrint.apply(this, arguments)); }
+}
+var Error = function(msg){
+    this.msg = msg;
+}
+Error.prototype.toString = function(){
+    return this.msg;
+}
+
 //include 引用脚本
 //optionsOrName : {
 //  type : "", 默认为process, 可以为 portal  process  cms
@@ -1011,21 +1055,6 @@ bind.include = _include;
 var work = wrapWorkContext.getWork();
 bind.Dict = _createDict((work) ? work.application : "");
 
-try{
-    oPrint = oPrint;
-}catch(e){
-    oPrint = print
-}
-print = function(str, type){
-    var d = new Date();
-    var t = (type || "PRINT").toUpperCase();
-    var l = "[Script]";
-    oPrint(d.format("db")+"."+d.getMilliseconds()+" "+t+" "+l+" "+str);
-}
-bind.print = print;
-echo = print;
-bind.echo = print;
-
 bind.library = library;
 bind.data = this.data;
 bind.workContext = wrapWorkContext;
@@ -1095,6 +1124,7 @@ bind.parameters = {
 };
 //bind.parameters = this.parameters || null;
 
+var _self = this;
 var response = {};
 Object.defineProperty(response, "status", {enumerable: true,configurable: true,
     get: function(){ return _self.jaxrsResponse.status; }

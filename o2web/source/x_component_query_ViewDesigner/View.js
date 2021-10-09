@@ -1535,7 +1535,7 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         }
         this.node.setStyles(this.css.viewTitleColumnNode_selected);
         this.listNode.setStyles(this.css.cloumnListNode_selected);
-        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+        // new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
         new Fx.Scroll(this.view.designer.propertyDomArea, {"wheelStops": false, "duration": 100}).toElement(this.listNode);
 
         this.view.currentSelectedModule = this;

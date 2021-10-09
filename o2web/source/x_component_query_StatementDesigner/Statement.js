@@ -134,9 +134,11 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.view.domListNode.hide();
         }
 
+        this.selectMode = "statement";
         this.currentSelectedModule = this;
         this.isSelected = true;
         this.showProperty();
+        this.designer.setDesignerStatementResize();
     },
     unSelected: function () {
         this.currentSelectedModule = null;
@@ -1273,7 +1275,6 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         }.bind(this));
     },
     selected: function () {
-        debugger;
         if (this.statement.currentSelectedModule) {
             if (this.statement.currentSelectedModule == this) {
                 return true;
@@ -1283,9 +1284,11 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         }
         this.areaNode.setStyles(this.css.areaNode_selected);
         this.statement.currentSelectedModule = this;
+        this.statement.selectMode = "view";
         this.domListNode.show();
         this.isSelected = true;
         this.showProperty();
+        this.statement.designer.setDesignerStatementResize();
     },
     unSelected: function () {
         this.statement.currentSelectedModule = null;
@@ -1831,10 +1834,12 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
             "duration": 100
         }).toElement(this.listNode);
 
+        this.view.statement.selectMode = "viewColumn";
         this.view.statement.currentSelectedModule = this;
         this.isSelected = true;
         this._showActions();
         this.showProperty();
+        this.view.statement.designer.setDesignerStatementResize();
     },
     unSelected: function () {
         this.view.statement.currentSelectedModule = null;
@@ -1849,6 +1854,41 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
         this.isSelected = false;
         this._hideActions();
         this.hideProperty();
+    },
+    addColumn: function(e, data){
+        MWF.require("MWF.widget.UUID", function(){
+            var json;
+            if (data){
+                json = Object.clone(data);
+                json.id = (new MWF.widget.UUID).id;
+                json.column = (new MWF.widget.UUID).id;
+            }else{
+                var id = (new MWF.widget.UUID).id;
+                json = {
+                    "id": id,
+                    "column": id,
+                    "displayName": this.view.designer.lp.unnamed,
+                    "orderType": "original"
+                };
+            }
+
+            var idx = this.view.json.data.selectList.indexOf(this.json);
+            this.view.json.data.selectList.splice(idx, 0, json);
+
+            var column = new MWF.xApplication.query.StatementDesigner.View.Column(json, this.view, this);
+            this.view.items.splice(idx, 0, column);
+            column.selected();
+
+            if (this.view.viewContentTableNode){
+                var trs = this.view.viewContentTableNode.getElements("tr");
+                trs.each(function(tr){
+                    var td = tr.insertCell(idx);
+                    td.setStyles(this.css.viewContentTdNode);
+                }.bind(this));
+            }
+            this.view.setViewWidth();
+
+        }.bind(this));
     }
 });
 
@@ -1887,10 +1927,12 @@ MWF.xApplication.query.StatementDesigner.View.Actionbar = new Class({
         new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
         //new Fx.Scroll(this.view.designer.propertyDomArea, {"wheelStops": false, "duration": 100}).toElement(this.listNode);
 
+        this.view.statement.selectMode = "viewActionbar";
         this.view.statement.currentSelectedModule = this;
         this.isSelected = true;
         //this._showActions();
         this.showProperty();
+        this.view.statement.designer.setDesignerStatementResize();
     },
     unSelected: function () {
         this.view.statement.currentSelectedModule = null;
@@ -1930,9 +1972,11 @@ MWF.xApplication.query.StatementDesigner.View.Paging = new Class({
         this.node.setStyles(this.css.pagingWarpNode_selected);
         new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
 
+        this.view.statement.selectMode = "viewPaging";
         this.view.statement.currentSelectedModule = this;
         this.isSelected = true;
         this.showProperty();
+        this.view.statement.designer.setDesignerStatementResize();
     },
     unSelected: function () {
         this.view.statement.currentSelectedModule = null;

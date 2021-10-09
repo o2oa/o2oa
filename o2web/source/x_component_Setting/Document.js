@@ -549,7 +549,7 @@ MWF.xApplication.Setting.Document.List = new Class({
         this.itemArea = new Element("div", {"styles": {"overflow": "hidden", "clear": "both"}}).inject(inputArea);
 
         if (this.type=="list"){
-            if (value.length && value.length){
+            if (value && value.length){
                 value.each(function(v){
                     this.createItem(v);
                 }.bind(this));
