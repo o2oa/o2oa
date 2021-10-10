@@ -181,8 +181,8 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                                                     "data-orgid": json.data ? json.data.origId : json.origId,
                                                     "height": ''+height,
                                                     "width": ''+width,
-                                                    "data-height": ''+height+'px',
-                                                    "data-width": ''+width+'px',
+                                                    "data-height": ''+height,
+                                                    "data-width": ''+width,
                                                     "style": 'max-width:100%; width:' + width + 'px',
                                                     "onerror": 'MWF.xDesktop.setImageSrc()',
                                                     "alt": file.name || '',
@@ -226,12 +226,12 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
 
                             var width = ev.width, style = element.getAttribute("style") || "";
                             if(width && element.naturalHeight && element.naturalWidth){
-                                element.setAttribute("data-width", width);
+                                element.setAttribute("data-width", ''+width);
                                 element.setAttribute("style", replaceStyles(style, {"width" : width+"px"}));
                                 element.removeAttribute("width");
 
                                 var height = parseInt(width * ( element.naturalHeight / element.naturalWidth ));
-                                element.setAttribute("data-height", ''+height+'px');
+                                element.setAttribute("data-height", ''+height);
                                 element.removeAttribute("height");
                             }
                         }
