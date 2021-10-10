@@ -253,7 +253,7 @@
 					if(upload.fileName){
 						imgString += 'alt="' + upload.fileName + '" ';
 					}
-					imgString += editor.config.previewImg ? 'data-prv="true" ' : 'data-prv="false" ';
+					imgString += editor.config.enablePreview ? 'data-prv="true" ' : 'data-prv="false" ';
 					imgString += '/>';
 
 					// Set width and height to prevent blinking.
