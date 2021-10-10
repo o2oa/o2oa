@@ -136,6 +136,8 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                 //自定义文件选择器的回调内容
                 image_advtab: true,
                 file_picker_types: 'image', //file image media
+                extended_valid_elements : 'img[class|src|border|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name'+
+                    '|style|data-id|data-orgid|data-height|data-width|onerror|data-prv]',
                 file_picker_callback: function (callback, value, meta) {
                     //this 指向editor实例
                     // if (meta.filetype === 'file') {
