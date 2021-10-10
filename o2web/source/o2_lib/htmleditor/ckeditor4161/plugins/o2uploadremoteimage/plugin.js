@@ -170,7 +170,7 @@
 					imgString += 'style="max-width:100%; width:' + width + 'px" ';
 					imgString += 'onerror="MWF.xDesktop.setImageSrc()" ';
 					imgString += 'alt="' + (alt || fileName) + '" ';
-					imgString += editor.config.enablePreview ? 'data-prv="true" ' : 'data-prv="false" ';
+					imgString += 'data-prv="true" '; //editor.config.enablePreview ? 'data-prv="true" ' : 'data-prv="false" ';
 					imgString += '">';
 
 					var newImg = CKEDITOR.dom.element.createFromHtml( imgString );

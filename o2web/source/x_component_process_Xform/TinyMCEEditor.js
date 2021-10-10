@@ -188,7 +188,7 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                                                     "style": 'max-width:100%; width:' + width + 'px',
                                                     "onerror": 'MWF.xDesktop.setImageSrc()',
                                                     "alt": file.name || '',
-                                                    "data-prv": enablePreview ? 'true' : 'false'
+                                                    "data-prv": 'true' //enablePreview ? 'true' : 'false'
                                                 };
                                                 callback( src, attributes )
                                             }}

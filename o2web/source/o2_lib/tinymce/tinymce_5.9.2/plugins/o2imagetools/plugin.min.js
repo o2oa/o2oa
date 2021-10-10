@@ -1229,7 +1229,7 @@
 
                     debugger;
 
-                    var enablePreview = editor.getParam('enablePreview', true);
+                    //var enablePreview = editor.getParam('enablePreview', true);
                     var localImageMaxWidth = editor.getParam('localImageMaxWidth', 2000);
                     var reference = editor.getParam('reference');
                     var referenceType = editor.getParam('referenceType');
