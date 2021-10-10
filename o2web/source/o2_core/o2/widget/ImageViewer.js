@@ -32,8 +32,8 @@ o2.widget.ImageViewer = o2.ImageViewer = new Class({
             var flag = false;
             this.nodeList.each(function(node){
                 if(node)node.getElements("img").each(function(img){
-                    var enablePreview = img.get("data-prv");
-                    if( enablePreview !== "false" && enablePreview !== false ){
+                    var preview = img.get("data-prv");
+                    if( preview !== "false" && preview !== false ){
                         flag = true;
                         img.setStyle("cursor", "pointer");
                         img.set("preview", "true");
