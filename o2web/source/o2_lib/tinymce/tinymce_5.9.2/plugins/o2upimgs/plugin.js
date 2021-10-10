@@ -9,7 +9,7 @@ tinymce.PluginManager.add('o2upimgs', function(editor, url) {
 
     var images_upload_handler = editor.getParam('images_upload_handler', undefined, 'function');
     if( !images_upload_handler ){
-		var enablePreview = editor.getParam('enablePreview', true);
+		//var enablePreview = editor.getParam('enablePreview', true);
 		var localImageMaxWidth = editor.getParam('localImageMaxWidth', 2000);
 		var reference = editor.getParam('reference');
 		var referenceType = editor.getParam('referenceType');
@@ -42,7 +42,7 @@ tinymce.PluginManager.add('o2upimgs', function(editor, url) {
 					"style": 'max-width:100%; width:' + width + 'px',
 					"onerror": 'MWF.xDesktop.setImageSrc()',
 					"alt": file.name || '',
-					"data-prv": enablePreview ? 'true' : 'false'
+					"data-prv": 'true' //enablePreview ? 'true' : 'false'
 				};
 
 				if(success)success(src, attributes);
