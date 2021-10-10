@@ -179,16 +179,15 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                                                 var attributes = {
                                                     "data-id": id,
                                                     "data-orgid": json.data ? json.data.origId : json.origId,
-                                                    "height": height,
-                                                    "width": width,
-                                                    "data-height": height,
-                                                    "data-width": width,
+                                                    "height": ''+height,
+                                                    "width": ''+width,
+                                                    "data-height": ''+height+'px',
+                                                    "data-width": ''+width+'px',
                                                     "style": 'max-width:100%; width:' + width + 'px',
                                                     "onerror": 'MWF.xDesktop.setImageSrc()',
                                                     "alt": file.name || '',
                                                     "data-prv": enablePreview ? 'true' : 'false'
                                                 };
-
                                                 callback( src, attributes )
                                             }}
                                     });
@@ -232,7 +231,7 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                                 element.removeAttribute("width");
 
                                 var height = parseInt(width * ( element.naturalHeight / element.naturalWidth ));
-                                element.setAttribute("data-height", height);
+                                element.setAttribute("data-height", ''+height+'px');
                                 element.removeAttribute("height");
                             }
                         }

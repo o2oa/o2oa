@@ -1451,7 +1451,7 @@
           changeSrc(helpers, info, state, api);
         };
         blobToDataUri(file).then(function (dataUrl) {
-          var blobInfo = helpers.createBlobCache(file, blobUri, dataUrl);F
+          var blobInfo = helpers.createBlobCache(file, blobUri, dataUrl);
           if (info.automaticUploads) {
             helpers.uploadImage(blobInfo).then(function (result) {
               updateSrcAndSwitchTab(result.url);
@@ -1583,7 +1583,7 @@
           }
           if( data.dimensions && data.dimensions.width ){
               data["data-width"] = data.dimensions.width;
-              data["style"] = replaceStyles( data["style"] || "", {"width": data["data-width"]} );
+              data["style"] = replaceStyles( data["style"] || "", {"width": data["data-width"]+"px"} );
               data.dimensions.width = "";
           }
           if( data.dimensions.height ){
