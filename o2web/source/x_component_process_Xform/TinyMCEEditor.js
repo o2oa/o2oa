@@ -117,12 +117,12 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                 "branding": false,
                 //skin:'oxide-dark',
                 // language:'zh_CN',
-                plugins: 'print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link' +
+                plugins: 'print preview searchreplace autolink directionality visualblocks visualchars fullscreen o2image link' +
                     ' media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime' +
                     ' advlist lists wordcount o2imagetools textpattern help emoticons autosave' +
                     ' o2indent2em o2upimgs', //bdmap formatpainter autoresize
                 toolbar: 'code undo redo | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough |' + //restoredraft
-                    ' alignleft aligncenter alignright alignjustify outdent indent o2indent2em lineheight | table image o2upimgs link |' + //\\'+
+                    ' alignleft aligncenter alignright alignjustify outdent indent o2indent2em lineheight | table o2image o2upimgs link |' + //\\'+
                     ' styleselect formatselect fontselect fontsizeselect | bullist numlist | blockquote subscript superscript removeformat |' + // \\'+
                     ' media charmap emoticons anchor hr pagebreak insertdatetime print preview | fullscreen', //bdmap formatpainter
                 height: 650, //编辑器高度
@@ -131,15 +131,17 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                 // toolbar_sticky: true,
                 fontsize_formats: '12px 14px 16px 18px 24px 36px 48px 56px 72px',
                 // importcss_append: true,
+                autosave_ask_before_unload: false,
+                imagetools_toolbar: 'editimage imageoptions',
                 //自定义文件选择器的回调内容
+                image_advtab: true,
+                file_picker_types: 'image', //file image media
                 file_picker_callback: function (callback, value, meta) {
                     //this 指向editor实例
-
-                    debugger;
-                	// if (meta.filetype === 'file') {
-                	// 	callback('https://www.baidu.com/img/bd_logo1.png', { text: 'My text' });
-                	// }
-                	if (meta.filetype === 'image') {
+                    // if (meta.filetype === 'file') {
+                    // 	callback('https://www.baidu.com/img/bd_logo1.png', { text: 'My text' });
+                    // }
+                    if (meta.filetype === 'image') {
 
 
                         var enablePreview = this.getParam('enablePreview', true);
@@ -160,35 +162,82 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                                 "onEvery": function(json, index, count, file){
 
                                     var id = json.data ? json.data.id : json.id;
-                                    attrs["data-id"] = id;
-
-                                    attrs["data-orgid"] = json.data ? json.data.origId : json.origId;
-
-                                    var attributes = {
-                                        "data-id": id,
-                                        "data-orgid": orgid,
-                                        "data-height": height,
-                                        "data-width": width,
-                                        "style": 'max-width:100%; width:' + width + 'px',
-                                        "onerror": 'MWF.xDesktop.setImageSrc()',
-                                        "alt": file.name || '',
-                                        "data-prv": enablePreview ? 'true' : 'false'
-                                    };
-
                                     var src = MWF.xDesktop.getImageSrc( id );
-                                    callback( src, attrs )
+
+                                    new Element("img", {
+                                        src : src,
+                                        events : { load : function (ev) {
+                                                var width = ev.target.naturalWidth;
+                                                var height = ev.target.naturalHeight;
+
+                                                //按最大宽度比率缩小
+                                                if( localImageMaxWidth && localImageMaxWidth < width ){
+                                                    height = parseInt( height * (localImageMaxWidth / width) );
+                                                }
+                                                width = Math.min(width, localImageMaxWidth);
+
+                                                var attributes = {
+                                                    "data-id": id,
+                                                    "data-orgid": json.data ? json.data.origId : json.origId,
+                                                    "height": height,
+                                                    "width": width,
+                                                    "data-height": height,
+                                                    "data-width": width,
+                                                    "style": 'max-width:100%; width:' + width + 'px',
+                                                    "onerror": 'MWF.xDesktop.setImageSrc()',
+                                                    "alt": file.name || '',
+                                                    "data-prv": enablePreview ? 'true' : 'false'
+                                                };
+
+                                                callback( src, attributes )
+                                            }}
+                                    });
 
                                 }.bind(this)
                             });
                             upload.load();
                         }.bind(this));
-                	}
-                	// if (meta.filetype === 'media') {
-                	// 	callback('movie.mp4', { source2: 'alt.ogg', poster: 'https://www.baidu.com/img/bd_logo1.png' });
-                	// }
+                    }
+                    // if (meta.filetype === 'media') {
+                    // 	callback('movie.mp4', { source2: 'alt.ogg', poster: 'https://www.baidu.com/img/bd_logo1.png' });
+                    // }
                 },
-                autosave_ask_before_unload: false,
-                imagetools_toolbar: 'editimage imageoptions'
+                init_instance_defaultCallback: function(editor) {
+                    editor.on("ObjectResized", function(ev){
+                        var element = ev.target;
+                        if(element.tagName && element.tagName.toUpperCase() === "IMG"){
+                            var replaceStyles = function(str, object){
+                                /*object 参数 {
+                                   "width" : "100px", //添加或替换
+                                   "height": "" //删除
+                                }*/
+                                var newArray = [];
+                                Object.each(object, function (value, key) {
+                                    if(value)newArray.push( key + ":" + value )
+                                });
+                                var styles = str.split(/\s*;\s*/gi);
+                                for(var j=0; j<styles.length; j++){
+                                    var arr = styles[j].split(/\s*:\s*/gi);
+                                    if( !object.hasOwnProperty( arr[0].toLowerCase() ) ){
+                                        newArray.push( styles[j] );
+                                    }
+                                }
+                                return newArray.join(";");
+                            };
+
+                            var width = ev.width, style = element.getAttribute("style") || "";
+                            if(width && element.naturalHeight && element.naturalWidth){
+                                element.setAttribute("data-width", width);
+                                element.setAttribute("style", replaceStyles(style, {"width" : width+"px"}));
+                                element.removeAttribute("width");
+
+                                var height = parseInt(width * ( element.naturalHeight / element.naturalWidth ));
+                                element.setAttribute("data-height", height);
+                                element.removeAttribute("height");
+                            }
+                        }
+                    });
+                }
             };
             if (o2.language === "zh-cn") {
                 config.language = 'zh_CN';
@@ -211,7 +260,7 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
             };
         },
         loadTinyMCEEditor: function (config) {
-            o2.load("../o2_lib/tinymce/tinymce_5.9.2/tinymce.min.js", function(){
+            o2.load("../o2_lib/tinymce/tinymce_5.9.2/tinymce.js", function(){
                 var editorConfig = Object.merge(this.getDefaultConfig(), config || {});
 
                 var id = this.form.json.id +"_"+this.json.id + "_div";
@@ -258,6 +307,7 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                         this._setBusinessData(this.getData());
                     }.bind(this));
                     if(init_instance_callback)init_instance_callback(editor);
+                    if(editorConfig.init_instance_defaultCallback)editorConfig.init_instance_defaultCallback(editor);
                 }.bind(this);
 
                 // editorConfig.images_upload_handler = function (blobInfo, succuss, failure) {
