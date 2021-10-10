@@ -100,8 +100,7 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor = new Class({
             //};
 
             editorConfig.base64Encode = (this.json.base64Encode === "y");
-            editorConfig.enableSelectImgPreview = (this.json.enablePreview !== "n");
-            editorConfig.previewImg = (this.json.previewDefaultValue !== "n");
+            editorConfig.enablePreview = (this.json.enablePreview !== "n");
             editorConfig.localImageMaxWidth = 2000;
             editorConfig.reference = this.form.businessData.document.id;
             editorConfig.referenceType = "cmsDocument";
