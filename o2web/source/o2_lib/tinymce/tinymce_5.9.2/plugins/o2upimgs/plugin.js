@@ -37,8 +37,8 @@ tinymce.PluginManager.add('o2upimgs', function(editor, url) {
 				var attributes = {
 					"data-id": id,
 					"data-orgid": orgid,
-					"data-height": height,
-					"data-width": width,
+					"data-height": height+'px',
+					"data-width": width+'px',
 					"style": 'max-width:100%; width:' + width + 'px',
 					"onerror": 'MWF.xDesktop.setImageSrc()',
 					"alt": file.name || '',

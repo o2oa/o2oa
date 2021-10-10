@@ -1254,8 +1254,8 @@
                                         "src": src,
                                         "data-id": id,
                                         "data-orgid": orgid,
-                                        "data-height": height,
-                                        "data-width": width
+                                        "data-height": height+'px',
+                                        "data-width": width+'px'
                                     }).css({
                                         "width": width+"px",
                                         "max-width": "100%"
