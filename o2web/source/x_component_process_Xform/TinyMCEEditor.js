@@ -140,35 +140,52 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                     '|style|data-id|data-orgid|data-height|data-width|onerror|data-prv]',
                 file_picker_callback: function (callback, value, meta) {
                     //this 指向editor实例
-                    // if (meta.filetype === 'file') {
-                    // 	callback('https://www.baidu.com/img/bd_logo1.png', { text: 'My text' });
-                    // }
-                    if (meta.filetype === 'image') {
+                    if (meta.filetype === 'image') { //'file', 'media'
+                        if( this.activeO2ImageDialog && this.activeO2ImageDialog.getData().base64enable ) {
+                            var fileNode = new Element("input", {
+                                "type" : "file",
+                                "accept":"image/*",
+                                "styles" : {"display":"none"}
+                            });
+                            fileNode.addEvent("change", function(event){
+                                var file= fileNode.files[0];
+                                if(!/image\/\w+/.test(file.type)){           //判断获取的是否为图片文件
+                                    MWF.xDesktop.notice('请选择图片格式文件',"error");
+                                    return false;
+                                }
+                                var reader=new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = function(e){
+                                    callback( this.result, {
+                                        "style": 'max-width:100%;', //width:' + width + 'px',
+                                        "alt": file.name || '',
+                                        "data-prv": 'true' //enablePreview ? 'true' : 'false'
+                                    })
+                                }
+                            }.bind( this ));
+                            fileNode.click();
+                        }else{
+                            var enablePreview = this.getParam('enablePreview', true);
+                            var localImageMaxWidth = this.getParam('localImageMaxWidth', 2000);
+                            var reference = this.getParam('reference');
+                            var referenceType = this.getParam('referenceType');
+                            if( !reference || !referenceType )return;
 
+                            MWF.require("MWF.widget.Upload", function(){
+                                var action =  new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
 
-                        var enablePreview = this.getParam('enablePreview', true);
-                        var localImageMaxWidth = this.getParam('localImageMaxWidth', 2000);
-                        var reference = this.getParam('reference');
-                        var referenceType = this.getParam('referenceType');
-                        if( !reference || !referenceType )return;
-
-                        MWF.require("MWF.widget.Upload", function(){
-                            var action =  new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
-
-                            var upload = new MWF.widget.Upload($(document.body), {
-                                "data": null,
-                                "parameter": {"reference" : reference, "referencetype": referenceType, "scale" : localImageMaxWidth || 2000 },
-                                "action": action,
-                                "method": "uploadImageByScale",
-                                "accept": "image/*",
-                                "onEvery": function(json, index, count, file){
-
-                                    var id = json.data ? json.data.id : json.id;
-                                    var src = MWF.xDesktop.getImageSrc( id );
-
-                                    new Element("img", {
-                                        src : src,
-                                        events : { load : function (ev) {
+                                var upload = new MWF.widget.Upload($(document.body), {
+                                    "data": null,
+                                    "parameter": {"reference" : reference, "referencetype": referenceType, "scale" : localImageMaxWidth || 2000 },
+                                    "action": action,
+                                    "method": "uploadImageByScale",
+                                    "accept": "image/*",
+                                    "onEvery": function(json, index, count, file){
+                                        var id = json.data ? json.data.id : json.id;
+                                        var src = MWF.xDesktop.getImageSrc( id );
+                                        new Element("img", {
+                                            src : src,
+                                            events : { load : function (ev) {
                                                 var width = ev.target.naturalWidth;
                                                 var height = ev.target.naturalHeight;
 
@@ -192,16 +209,14 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                                                 };
                                                 callback( src, attributes )
                                             }}
-                                    });
+                                        });
 
-                                }.bind(this)
-                            });
-                            upload.load();
-                        }.bind(this));
+                                    }.bind(this)
+                                });
+                                upload.load();
+                            }.bind(this));
+                        }
                     }
-                    // if (meta.filetype === 'media') {
-                    // 	callback('movie.mp4', { source2: 'alt.ogg', poster: 'https://www.baidu.com/img/bd_logo1.png' });
-                    // }
                 },
                 init_instance_defaultCallback: function(editor) {
                     editor.on("ObjectResized", function(ev){
