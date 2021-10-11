@@ -1,7 +1,5 @@
 package com.x.base.core.project.scripting;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.script.Compilable;
@@ -10,7 +8,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -58,9 +55,6 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_SERIAL = "serial";
 	public static final String BINDING_NAME_PROCESS = "process";
 
-	private static Type stringsType = new TypeToken<ArrayList<String>>() {
-	}.getType();
-
 	public static ScriptEngine newScriptEngine() {
 		return (new ScriptEngineManager()).getEngineByName(Config.SCRIPTING_ENGINE_NAME);
 	}
@@ -87,12 +81,14 @@ public class ScriptingFactory {
 
 	public static String functionalization(String text) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("(function(){").append(System.lineSeparator());
+		sb.append("JSON.stringify((function(){").append(System.lineSeparator());
 		sb.append(Objects.toString(text, "")).append(System.lineSeparator());
-		sb.append("})();");
+		sb.append("})());");
 		return sb.toString();
 	}
 
-	
+	public static CompiledScript functionalizationCompile(String text) throws ScriptException {
+		return ((Compilable) scriptEngine).compile(functionalization(text));
+	}
 
 }
