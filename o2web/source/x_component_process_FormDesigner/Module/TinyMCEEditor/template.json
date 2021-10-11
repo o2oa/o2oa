@@ -4,47 +4,55 @@
 	"type": "TinyMCEEditor",
 	"description": "",
 	"events": {
-		"blur": {
+		"queryLoad" : {
 			"code": "",
 			"html": ""
 		},
-		"change": {
+		"postLoad" : {
 			"code": "",
 			"html": ""
 		},
-		"destroy": {
+		"load" : {
 			"code": "",
 			"html": ""
 		},
-		"focus": {
+		"afterLoad" : {
 			"code": "",
 			"html": ""
 		},
-		"getData": {
+		"activate": {
 			"code": "",
 			"html": ""
 		},
-		"key": {
+		"deactivate": {
 			"code": "",
 			"html": ""
 		},
-		"loaded": {
+		"remove": {
 			"code": "",
 			"html": ""
 		},
-		"maximize": {
+		"detach": {
 			"code": "",
 			"html": ""
 		},
-		"paste": {
+		"init": {
 			"code": "",
 			"html": ""
 		},
-		"resize": {
+		"ResizeWindow": {
 			"code": "",
 			"html": ""
 		},
-		"save": {
+		"BeforeExecCommand": {
+			"code": "",
+			"html": ""
+		},
+		"ExecCommand": {
+			"code": "",
+			"html": ""
+		},
+		"Change": {
 			"code": "",
 			"html": ""
 		}

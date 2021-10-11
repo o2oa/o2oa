@@ -875,7 +875,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "ckeditorInfo3": "For more event help, please see",
         "tinymceInfo": "For more attribute help, please see",
         "tinymceInfo2": "Return TinyMCE's Config object for editor initialization",
-        "tinymceInfo3": "For more event help, please see",
+        "tinymceInfo3": "queryLoad,postLoad, load and afterLoad events are O2 platform events, other events are Tinymce editor events, please see",
         "Base64Encode ":" Image Base64 Encode",
         "ImagePreview ":" View larger images",
 

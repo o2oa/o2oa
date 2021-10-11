@@ -1205,10 +1205,20 @@
             });
             blobCache.add(blobInfo);
             editor.undoManager.transact(function () {
+
+                debugger;
+                var base64enable = editor.getParam('base64Encode', false );
+                var isBlob = selectedImage.src.indexOf("blob:") === 0 || selectedImage.src.indexOf("data:") === 0;
                 var images_upload_handler = editor.getParam('images_upload_handler', undefined, 'function');
-                if( images_upload_handler ) {
+                if( ( base64enable && isBlob ) || images_upload_handler ) {
                     var imageLoadedHandler = function () {
-                        editor.$(selectedImage).off('load', imageLoadedHandler);
+                        editor.$(selectedImage).off('load', imageLoadedHandler).attr({
+                            "data-height": ''+selectedImage.naturalHeight,
+                            "data-width": ''+selectedImage.naturalWidth
+                        }).css({
+                            "width": selectedImage.naturalWidth+"px",
+                            "max-width": "100%"
+                        }).removeAttr('data-mce-src').removeAttr('height').removeAttr('width').removeAttr('data-mce-style');
                         editor.nodeChanged();
                         if (uploadImmediately) {
                             editor.editorUpload.uploadImagesAuto();
@@ -1226,9 +1236,6 @@
                     }
                     editor.$(selectedImage).attr({src: blobInfo.blobUri()}).removeAttr('data-mce-src');
                 }else{
-
-                    debugger;
-
                     //var enablePreview = editor.getParam('enablePreview', true);
                     var localImageMaxWidth = editor.getParam('localImageMaxWidth', 2000);
                     var reference = editor.getParam('reference');
