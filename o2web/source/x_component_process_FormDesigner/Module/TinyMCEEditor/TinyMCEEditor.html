@@ -1,0 +1,77 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+<!--			<tr>-->
+<!--				<td class="editTableTitle">{{$.lp.autoCorrect}}:</td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input class="editTableRadio" name="ecnet" text{($.ecnet=='y')?'checked':''} type="radio" value="y"/>{{$.lp.enabled}}-->
+<!--					<input class="editTableRadio" name="ecnet" text{($.ecnet!='y')?'checked':''} type="radio" value="n"/>{{$.lp.disabled}}-->
+
+<!--				</td>-->
+<!--			</tr>-->
+			<tr>
+				<td class="editTableTitle">{{$.lp.base64Encode}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="base64Encode" text{($.base64Encode=='y')?'checked':''} type="radio" value="y"/>{{$.lp.enabled}}
+					<input class="editTableRadio" name="base64Encode" text{($.base64Encode!='y')?'checked':''} type="radio" value="n"/>{{$.lp.disabled}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.imagePreview}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="enablePreview" text{($.enablePreview!='n')?'checked':''} type="radio" value="y"/>{{$.lp.enabled}}
+					<input class="editTableRadio" name="enablePreview" text{($.enablePreview=='n')?'checked':''} type="radio" value="n"/>{{$.lp.disabled}}
+				</td>
+			</tr>
+		</table>
+
+		<div class="MWFMaplist" name="editorProperties" title="{{$.lp.attribute}}"></div>
+		<div style="text-align:center">{{$.lp.tinymceInfo}}</div>
+		<div>
+			<a target="_blank" href="https://www.tiny.cloud/docs/configure/">TinyMCE Documentation</a>
+		</div>
+		<div>
+			<a target="_blank" href="http://tinymce.ax-z.cn/configure/editor-appearance.php">TinyMCE中文文档</a>
+		</div>
+		<br/>
+
+		<div class="MWFHtmlEditorArea" name="templateCode" title="{{$.lp.defaultValue}} (H)"></div>
+
+		<div class="MWFValidation" name="validationConfig"></div>
+		<div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
+	</div>
+	<div title="{{$.lp.config}}" class="MWFTab">
+		<div class="MWFScriptArea" name="config" title="TinyMCE Config"></div>
+		<div>{{$.lp.tinymceInfo2}}</div>
+		<div>
+			<a target="_blank" href="https://www.tiny.cloud/docs/configure/">TinyMCE Documentation</a>
+		</div>
+		<div>
+			<a target="_blank" href="http://tinymce.ax-z.cn/configure/editor-appearance.php">TinyMCE中文文档</a>
+		</div>
+		<br/>
+	</div>
+	<div title="{{$.lp.event}}"  class="MWFTab" style="overflow: hidden">
+		<div class="MWFEventsArea" name="events"></div>
+		<br />
+		<div style="text-align:center">{{$.lp.tinymceInfo3}} <a target="_blank" href="https://www.tiny.cloud/docs/advanced/events/#editorcoreevents">TinyMCE Events Documentation</a></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

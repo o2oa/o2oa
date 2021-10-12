@@ -188,6 +188,8 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadDatatemplateScript(v); break;
             case "Htmleditor":
                 this.loadHtmleditorScript(v); break;
+            case "TinyMCEEditor":
+                this.loadTinyMCEEditorScript(v); break;
             case "ImageClipper":
                 this.loadImageClipperScript(v); break;
             case "WritingBoard":
@@ -572,6 +574,10 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
 
 
     loadHtmleditorScript: function(data){
+        this.addScriptItem(data.config, "code", data, "config");
+        this.loadEventsScript(data);
+    },
+    loadTinyMCEEditorScript: function(data){
         this.addScriptItem(data.config, "code", data, "config");
         this.loadEventsScript(data);
     },
