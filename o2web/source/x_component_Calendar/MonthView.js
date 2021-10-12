@@ -94,10 +94,8 @@ var MWFCalendarMonthView = MWF.xApplication.Calendar.MonthView = new Class({
         if (this.calendar) this.calendar.reLoadCalendar();
     },
     recordStatus : function(){
-        var date = "";
-        if (this.calendar) date = this.calendar.date;
         return {
-            date : date.toString()
+            date : (this.calendar && this.calendar.date) ? this.calendar.date.format( "db" ) : ""
         };
     },
     destroy: function(){
