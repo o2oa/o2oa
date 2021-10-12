@@ -16,14 +16,7 @@ MWF.xApplication.cms.Xform.TinyMCEEditor = MWF.CMSTinyMCEEditor = new Class({
     },
     getImages: function () {
         if( !this.editor )return [];
-        var result = [];
-        var imgaes = this.editor.getBody();
-        if (imgaes) {
-            for (var i = 0; i < imgaes.$.length; i++) {
-                result.push(imgaes.getItem(i).$);
-            }
-        }
-        return result;
+        return this.editor.getBody().getElementsByTagName("img");
     },
     getImageIds: function () {
         var result = [];

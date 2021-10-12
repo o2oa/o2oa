@@ -95,6 +95,11 @@ o2.TinyMCEConfig =  function ( mobile ) {
             }
         },
         init_instance_defaultCallback: function(editor) {
+            var head_zindex = editor.getParam('head_zindex', 1);
+            if(head_zindex !== 1 && editor.editorContainer && editor.editorContainer.getElementsByClassName){
+                var list = editor.editorContainer.getElementsByClassName("tox-editor-header");
+                if( list && list.length )list[0].setStyle("z-index", head_zindex);
+            }
             editor.on("ObjectResized", function(ev){
                 var element = ev.target;
                 if(element.tagName && element.tagName.toUpperCase() === "IMG"){
@@ -144,8 +149,11 @@ o2.TinyMCEConfig =  function ( mobile ) {
     }
     if( mobile ){
         config.mobile = {
+            menubar : false,
             toolbar_mode : 'wrap'
         };
+        config.menubar = false;
+        config.head_zindex = 0;
         config.height = 450; //编辑器高度
         config.min_height = 200;
         config.toolbar_mode = 'wrap';
@@ -155,6 +163,7 @@ o2.TinyMCEConfig =  function ( mobile ) {
             ' alignleft aligncenter alignright alignjustify |' + //\\'+
             ' styleselect fontsizeselect | o2image';
     }else{
+        config.head_zindex = 0;
         config.height = 650; //编辑器高度
         config.min_height = 400;
         config.toolbar_mode = 'sliding';

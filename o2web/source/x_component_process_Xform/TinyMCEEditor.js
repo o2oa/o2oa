@@ -156,7 +156,13 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                 var setup = editorConfig.setup;
                 editorConfig.setup = function(editor) {
                     this.form.app.addEvent("queryClose", function () {
-                        editor.destroy();
+                        try{ editor.destroy(); }catch (e) {}
+                    });
+                    this.form.app.addEvent("queryReload", function () {
+                        try{ editor.destroy(); }catch (e) {}
+                    });
+                    this.form.addEvent("reloadReadForm", function () {
+                        try{ editor.destroy(); }catch (e) {}
                     });
                     this._loadEvents(editor);
                     if(setup)setup(editor);
