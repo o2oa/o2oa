@@ -38,6 +38,7 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Tab", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Tree", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Iframe", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Htmleditor", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.TinyMCEEditor", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Common", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Documenteditor", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Office", null, false);
