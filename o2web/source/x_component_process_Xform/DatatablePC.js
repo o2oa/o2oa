@@ -1883,6 +1883,8 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 					colWidthArr.push(260);
 				} else if (c.mJson && c.mJson.type === "Htmleditor") {
 					colWidthArr.push(500);
+				} else if (c.mJson && c.mJson.type === "TinyMCEEditor") {
+					colWidthArr.push(500);
 				} else if (c.mJson && c.mJson.type === "Calendar") {
 					colWidthArr.push(150);
 				} else {

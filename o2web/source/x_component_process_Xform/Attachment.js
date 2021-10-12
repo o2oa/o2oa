@@ -1127,6 +1127,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
+         * 附件组件（this.target）加载完成后触发。这时候附件容器和每个附件都已加载完成。
+         * @event MWF.xApplication.process.Xform.Attachment#afterLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
          * 附件上传后触发。本事件中可以通过this.event获取上传附件的数据
          * @event MWF.xApplication.process.Xform.Attachment#upload
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -1156,7 +1161,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @event MWF.xApplication.process.Xform.Attachment#open
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["upload", "delete", "afterDelete", "load", "change","download","open", "queryLoad", "queryLoadController", "loadController", "postLoadController"]
+        "moduleEvents": ["upload", "delete", "afterDelete", "load", "afterLoad", "change","download","open", "queryLoad", "queryLoadController", "loadController", "postLoadController"]
     },
 
     initialize: function (node, json, form, options) {
@@ -1167,13 +1172,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         this.field = true;
         this.fieldModuleLoaded = false;
     },
-
     _loadUserInterface: function () {
         this.node.empty();
         if (this.form.businessData.work.startTime){
-            this.fireEvent("queryLoad");
             this.loadAttachmentController();
-            this.fireEvent("load");
+            this.fireEvent("afterLoad");
         }
         this.fieldModuleLoaded = true;
     },

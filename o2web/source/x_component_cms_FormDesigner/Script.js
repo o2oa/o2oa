@@ -80,6 +80,8 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
                 this.loadDatatemplateScript(v); break;
             case "Htmleditor":
                 this.loadHtmleditorScript(v); break;
+            case "TinyMCEEditor":
+                this.loadTinyMCEEditorScript(v); break;
             case "ImageClipper":
                 this.loadImageClipperScript(v); break;
             case "WritingBoard":
