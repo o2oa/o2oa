@@ -127,7 +127,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                 var options = {
                     "style": layout.mobile ? "xform_mobile" : "xform",
                     "secondEnable" : this.json.isSelectSecond,
-                    "secondSelectType" : this.json.secondSelectType,
+                    "timeSelectType" : this.json.timeSelectType,
                     "isTime": (this.json.selectType==="datetime" || this.json.selectType==="time"),
                     "timeOnly": (this.json.selectType === "time"),
                     "monthOnly" : (this.json.selectType === "month"),
