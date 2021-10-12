@@ -25,7 +25,8 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
                 frameborder:"0",
                 scrolling:"auto"
             }).inject(this.node,"after");
-    
+            
+            var _recoveryStyles = this.json.recoveryStyles || {};
             this.node.destroy();
             this.node = this.iframe.setStyles({
                 "width":"100%",
@@ -33,6 +34,7 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
                 "min-height":"500px",
                 "min-width":"500px"
             });
+            this.node.setStyles(_recoveryStyles)
         }
         
 	}
