@@ -52,8 +52,8 @@
         <tr>
             <td class="editTableTitle">{{$.lp.timeSelectType}}:</td>
             <td class="editTableValue">
-                <input type="radio" name="timeSelectType" value="slider" text{$.timeSelectType=='select'||!$.timeSelectType ?'checked':''}/>滑块
-                <input type="radio" name="timeSelectType" value="select" text{$.timeSelectType=='slider' ?'checked':''}/>下拉
+                <input type="radio" name="timeSelectType" value="slider" text{$.timeSelectType=='select'||!$.timeSelectType ?'checked':''}/>{{$.lp.timeSelectType_slider}}
+                <input type="radio" name="timeSelectType" value="select" text{$.timeSelectType=='slider' ?'checked':''}/>{{$.lp.timeSelectType_select}}
             </td>
         </tr>
 		  <tr>
