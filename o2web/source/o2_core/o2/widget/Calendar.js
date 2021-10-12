@@ -9,7 +9,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		"defaultView": "day", //day, month, year
 		"baseDate": new Date(),
 		"secondEnable" : false,
-		"secondSelectType" : "slider",
+		"timeSelectType" : "slider",
 		"isTime": false,
 		"isMulti": false,
 		"before": null,
@@ -963,7 +963,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			//this.showMNode.set("text", sel.options[sel.selectedIndex].get("value"));
 		}else{
 
-			if(this.options.secondSelectType === "select"){
+			if(this.options.timeSelectType === "select"){
 
 				this.itmeHNode = this.contentTimeTable.getElement(".MWF_calendar_time_h").empty();
 				this.itmeMNode = this.contentTimeTable.getElement(".MWF_calendar_time_m").empty();
