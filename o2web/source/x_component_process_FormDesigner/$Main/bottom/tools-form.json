@@ -89,5 +89,10 @@
     "icon": "htmleditor.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.htmledit,
     "className": "Htmleditor"
+  },
+  "tinymceEditor": {
+    "icon": "tinymceeditor.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.tinymceEditor,
+    "className": "TinyMCEEditor"
   }
 }
