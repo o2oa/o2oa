@@ -520,6 +520,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "yearOnly": "仅年度",
         "timeOnly": "仅时间",
         "selectSecond": "是否选择秒",
+        "secondSelectType": "秒选择方式",
         "format": "格式化",
 
         "selectStyle": "Select样式",

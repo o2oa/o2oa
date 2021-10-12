@@ -522,6 +522,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "yearOnly": "YearOnly",
         "timeOnly": "TimeOnly",
         "selectSecond": "Select Second",
+        "secondSelectType": "Second Select Type",
         "format": "Format",
 
         "selectStyle": "Select Style",

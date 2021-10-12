@@ -127,6 +127,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                 var options = {
                     "style": layout.mobile ? "xform_mobile" : "xform",
                     "secondEnable" : this.json.isSelectSecond,
+                    "secondSelectType" : this.json.secondSelectType,
                     "isTime": (this.json.selectType==="datetime" || this.json.selectType==="time"),
                     "timeOnly": (this.json.selectType === "time"),
                     "monthOnly" : (this.json.selectType === "month"),
@@ -281,4 +282,4 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         }
         return resultArr[0] + "-" + resultArr[1] + "-" + resultArr[2] + " " + resultArr[3]+":"+resultArr[4]+":"+resultArr[5];
     }
-}); 
+});
