@@ -315,7 +315,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 if (this.options.saveOnClose && this.businessData.document.docStatus == "draft") this.saveDocument(null, true);
                 //if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
                 Object.each(this.forms, function (module, id) {
-                    if (module.json.type == "Htmleditor" && module.editor) {
+                    if (module.json && module.json.type == "Htmleditor" && module.editor) {
                         //if(CKEDITOR.currentImageDialog)CKEDITOR.currentImageDialog.destroy();
                         //CKEDITOR.currentImageDialog = null;
                         CKEDITOR.remove(module.editor);
@@ -868,6 +868,12 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
                 cloudPictures = cloudPictures.concat(module.getImageIds());
             }
+            if (module.json.type == "TinyMCEEditor") {
+                var text = module.getText();
+                summary = text.substr(0, 80);
+
+                cloudPictures = cloudPictures.concat(module.getImageIds());
+            }
         });
         if (data.processOwnerList && typeOf(data.processOwnerList) == "array") { //如果是流程中发布的
             var owner = { personValue: [] };
@@ -940,6 +946,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
     },
     // 重新加载阅读表单
     _reloadReadForm: function() {
+        this.fireEvent("reloadReadForm");
         if (this.app.inBrowser) {
             this.modules.each(function (module) {
                 MWF.release(module);
@@ -1193,6 +1200,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
      * this.form.getApp().appForm.editDocument();
      */
     editDocument: function () {
+        this.fireEvent("editDocument");
         if (this.app.inBrowser) {
             this.modules.each(function (module) {
                 MWF.release(module);
