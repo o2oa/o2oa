@@ -95,84 +95,87 @@ MWF.xApplication.AppMarketV2.Application.Main = new Class({
 						applicationicon.setStyle("width",this.applicationintroduceiconcontain.clientWidth);
 						applicationicon.setStyle("height",450*this.applicationintroduceiconcontain.clientWidth/300);
 					}
-					this.loadCommentsGrade(this.appdata);
-					var price=this.appdata.price>0?this.appdata.price+"":"Free";
-					this.applicationintroducememofree.set("text",price);
-					this.applicationintroducememoname.set("text",this.appdata.name);
-					debugger;
-					var commentcount = 0;
-					var grade = 0;
-					var totalgrade = 0;
-					var commentratiolist = this.gradeData.data;
-					var gradeList = ["0","0","0","0","0"];
-					commentratiolist.each(function(pergrade){
-						gradeList[parseInt(pergrade.grade)-1]=pergrade.count;
-						commentcount +=parseInt(pergrade.count)
-					}.bind(this));
+					this.loadCommentsGrade(this.appdata,function( gradeData ){
+						this.gradeData = gradeData;
+						var price=this.appdata.price>0?this.appdata.price+"":"Free";
+						this.applicationintroducememofree.set("text",price);
+						this.applicationintroducememoname.set("text",this.appdata.name);
+						debugger;
+						var commentcount = 0;
+						var grade = 0;
+						var totalgrade = 0;
+						var commentratiolist = this.gradeData.data;
+						var gradeList = ["0","0","0","0","0"];
+						commentratiolist.each(function(pergrade){
+							gradeList[parseInt(pergrade.grade)-1]=pergrade.count;
+							commentcount +=parseInt(pergrade.count)
+						}.bind(this));
 
-					gradeList.each(function(pergrade,index){
-						totalgrade += parseInt(pergrade)*(index+1)
-					})
-					if (commentcount>0){
-						grade = this.numberFix(totalgrade/commentcount,1)
-					}
-					this.applicationintroducememoremarkgrade.set("text",grade+"");
-					var intgrade = parseInt(grade);
-					var dotgrade = grade - intgrade;
-					/*var grade = this.numberFix(this.appdata.grade,1);
-					this.applicationintroducememoremarkgrade.set("text",grade);
-					var intgrade = parseInt(grade);
-					var dotgrade = grade - intgrade;*/
-debugger;
-
-
-					for (var tmpnum=0;tmpnum<intgrade;tmpnum++){
-						new Element("img",{"src":this.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular)
-					}
-					if (dotgrade>=0.5){
-						new Element("img",{"src":this.iconPath+"halffiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular);
-						intgrade++;
-					}
-					for (var tmpnum=0;tmpnum<5-intgrade;tmpnum++){
-						new Element("img",{"src":this.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular);
-					}
-					if (!this.appdata.commentCount) this.appdata.commentCount=0;					
-					this.applicationintroducememoremarkcommentcount.set("text",this.lp.commentCountText.replace("{n}", commentcount))
-					//this.applicationintroducememodownload.set("text",this.appdata.downloadCount);
-					this.applicationintroducememocategory.set("text", this.lp.category+":"+this.appdata.category);
-					this.applicationintroducememocontent.set("text",this.appdata.describe);
-					//this.applicationintroducedownloadprice.set("text","$"+this.appdata.price);
-					this.applicationintroducedownloadprice.set("text","");
-
-					var bottomtext =this.lp.setup;
-					if (this.appdata.installedVersion && this.appdata.installedVersion!=""){
-						if (this.appdata.installedVersion==this.appdata.version){
-							 bottomtext = this.lp.setupDone;
-						}else{
-							 bottomtext = this.lp.update;
+						gradeList.each(function(pergrade,index){
+							totalgrade += parseInt(pergrade)*(index+1)
+						})
+						if (commentcount>0){
+							grade = this.numberFix(totalgrade/commentcount,1)
 						}
-					}
-					this.applicationintroducedownloadbtntext.set("text",bottomtext);
-					
-					var _self = this;
-					this.applicationintroducedownloadbtn.store("data",this.appdata);
-					this.applicationintroducedownloadbtn.addEvents({
-						"click": function(e){
-							//updateorinstall application
-							var d = this.retrieve("data");
-							if (d){
-								_self.installapp(e,d);
+						this.applicationintroducememoremarkgrade.set("text",grade+"");
+						var intgrade = parseInt(grade);
+						var dotgrade = grade - intgrade;
+						/*var grade = this.numberFix(this.appdata.grade,1);
+                        this.applicationintroducememoremarkgrade.set("text",grade);
+                        var intgrade = parseInt(grade);
+                        var dotgrade = grade - intgrade;*/
+						debugger;
+
+
+						for (var tmpnum=0;tmpnum<intgrade;tmpnum++){
+							new Element("img",{"src":this.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular)
+						}
+						if (dotgrade>=0.5){
+							new Element("img",{"src":this.iconPath+"halffiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular);
+							intgrade++;
+						}
+						for (var tmpnum=0;tmpnum<5-intgrade;tmpnum++){
+							new Element("img",{"src":this.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular);
+						}
+						if (!this.appdata.commentCount) this.appdata.commentCount=0;
+						this.applicationintroducememoremarkcommentcount.set("text",this.lp.commentCountText.replace("{n}", commentcount))
+						//this.applicationintroducememodownload.set("text",this.appdata.downloadCount);
+						this.applicationintroducememocategory.set("text", this.lp.category+":"+this.appdata.category);
+						this.applicationintroducememocontent.set("text",this.appdata.describe);
+						//this.applicationintroducedownloadprice.set("text","$"+this.appdata.price);
+						this.applicationintroducedownloadprice.set("text","");
+
+						var bottomtext =this.lp.setup;
+						if (this.appdata.installedVersion && this.appdata.installedVersion!=""){
+							if (this.appdata.installedVersion==this.appdata.version){
+								bottomtext = this.lp.setupDone;
+							}else{
+								bottomtext = this.lp.update;
 							}
 						}
-					})
-					//add by xlq @20201104 for adding button which goes to bbs.
-					this.applicationintroduceforumbtntext.set("text",this.lp.bbsname);
-					this.applicationintroduceforumbtn.addEvents({
-						"click": function(e){
-							//updateorinstall application
-							window.open(_self.lp.bbslink);
-						}
-					})
+						this.applicationintroducedownloadbtntext.set("text",bottomtext);
+
+						var _self = this;
+						this.applicationintroducedownloadbtn.store("data",this.appdata);
+						this.applicationintroducedownloadbtn.addEvents({
+							"click": function(e){
+								//updateorinstall application
+								var d = this.retrieve("data");
+								if (d){
+									_self.installapp(e,d);
+								}
+							}
+						})
+						//add by xlq @20201104 for adding button which goes to bbs.
+						this.applicationintroduceforumbtntext.set("text",this.lp.bbsname);
+						this.applicationintroduceforumbtn.addEvents({
+							"click": function(e){
+								//updateorinstall application
+								window.open(_self.lp.bbslink);
+							}
+						})
+						}.bind(this)
+					);
 					//this.applicationintroducefavbtntext.set("text","下载");
 
 					this.loadIntroduceInfo();
@@ -196,7 +199,7 @@ debugger;
 			}.bind(this),null,false //同步执行
 		);
 	},
-	loadCommentsGrade: function(appdata){
+	loadCommentsGrade: function(appdata,callback){
     	debugger;
 		var json = null;
 		var commenturl =  this.bbsUrlPath +'/x_bbs_assemble_control/jaxrs/subject/statgrade/sectionName/'+encodeURI(this.lp.title)+'/subjectType/'+encodeURI(appdata.name)+'?time='+(new Date()).getMilliseconds();
@@ -205,13 +208,14 @@ debugger;
 			headers : {'x-debugger' : true,'Authorization':this.collectToken,'c-token':this.collectToken},
 			secure: false,
 			method: "get",
-			async: false,
+			async: true,
 			withCredentials: true,
 			contentType : 'application/json',
 			crossDomain : true,
 			onSuccess: function(responseJSON, responseText){
 				debugger;
-				this.gradeData = responseJSON;
+				//this.gradeData = responseJSON;
+				if(callback)callback( responseJSON );
 			}.bind(this)
 		});
 		res.send();
