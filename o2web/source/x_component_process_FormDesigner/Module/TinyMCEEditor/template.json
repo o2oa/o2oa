@@ -1,0 +1,71 @@
+{
+	"id": "",
+	"name": "",
+	"type": "TinyMCEEditor",
+	"description": "",
+	"events": {
+		"queryLoad" : {
+			"code": "",
+			"html": ""
+		},
+		"postLoad" : {
+			"code": "",
+			"html": ""
+		},
+		"load" : {
+			"code": "",
+			"html": ""
+		},
+		"afterLoad" : {
+			"code": "",
+			"html": ""
+		},
+		"activate": {
+			"code": "",
+			"html": ""
+		},
+		"deactivate": {
+			"code": "",
+			"html": ""
+		},
+		"remove": {
+			"code": "",
+			"html": ""
+		},
+		"detach": {
+			"code": "",
+			"html": ""
+		},
+		"init": {
+			"code": "",
+			"html": ""
+		},
+		"ResizeWindow": {
+			"code": "",
+			"html": ""
+		},
+		"BeforeExecCommand": {
+			"code": "",
+			"html": ""
+		},
+		"ExecCommand": {
+			"code": "",
+			"html": ""
+		},
+		"Change": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"editorProperties": {
+		"height": "650",
+		"readOnly": false
+	},
+    "config": {
+      "code": "",
+      "html": ""
+    },
+	"class": "",
+	"styles": {},
+	"container": ""
+}

@@ -91,7 +91,7 @@
     "cancel_mobile": {
         "color": "#333",
         "font-size": "16px",
-        "width": "36px",
+        "width": "40px",
         "height": "36px",
         "font-weight": "bold",
         "position": "absolute",
@@ -101,7 +101,7 @@
     "save_mobile": {
         "color": "#4A90E2",
         "font-size": "16px",
-        "width": "36px",
+        "width": "40px",
         "height": "36px",
         "font-weight": "bold",
         "position": "absolute",
