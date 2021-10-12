@@ -73,6 +73,9 @@ public class Token extends ConfigObject {
 	@FieldDescribe("初始管理员DistinguishedName,不可更改.")
 	private String initialManagerDistinguishedName;
 
+	@FieldDescribe("LDAP认证配置")
+	private LdapAuth ldapAuth;
+
 	@FieldDescribe("sso登录配置")
 	private List<Sso> ssos = new ArrayList<>();
 
@@ -181,6 +184,14 @@ public class Token extends ConfigObject {
 			return new ArrayList<Sso>();
 		}
 		return this.ssos;
+	}
+
+	public LdapAuth getLdapAuth() {
+		return this.ldapAuth == null ? LdapAuth.defaultInstance() : this.ldapAuth;
+	}
+
+	public void setLdapAuth(LdapAuth ldapAuth) {
+		this.ldapAuth = ldapAuth;
 	}
 
 	public void setOauths(List<Oauth> oauths) {
@@ -749,6 +760,65 @@ public class Token extends ConfigObject {
 			this.key = key;
 		}
 
+	}
+
+	public static class LdapAuth extends ConfigObject {
+
+		public static LdapAuth defaultInstance() {
+			LdapAuth o = new LdapAuth();
+			return o;
+		}
+
+		public LdapAuth() {
+			this.enable = false;
+			this.ldapUrl = "";
+			this.baseDn = "";
+			this.userDn = "";
+		}
+
+		@FieldDescribe("是否启用")
+		private Boolean enable;
+
+		@FieldDescribe("LDAP地址")
+		private String ldapUrl;
+
+		@FieldDescribe("LDAP查询的根名称如：dc=zone,DC=COM")
+		private String baseDn;
+
+		@FieldDescribe("认证用户的DN如：uid=*,ou=users,dc=zone,DC=COM，其中uid=*中的*表示用户的唯一编码，此唯一编码与O2用户的唯一编码对应")
+		private String userDn;
+
+		public Boolean getEnable() {
+			return enable;
+		}
+
+		public void setEnable(Boolean enable) {
+			this.enable = enable;
+		}
+
+		public String getLdapUrl() {
+			return ldapUrl;
+		}
+
+		public void setLdapUrl(String ldapUrl) {
+			this.ldapUrl = ldapUrl;
+		}
+
+		public String getBaseDn() {
+			return baseDn;
+		}
+
+		public void setBaseDn(String baseDn) {
+			this.baseDn = baseDn;
+		}
+
+		public String getUserDn() {
+			return userDn;
+		}
+
+		public void setUserDn(String userDn) {
+			this.userDn = userDn;
+		}
 	}
 
 	public List<OauthClient> getOauthClients() {
