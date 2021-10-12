@@ -110,6 +110,8 @@ MWF.xApplication.cms.Document.Main = new Class({
         }
     },
     reload: function(){
+	    this.fireEvent("queryReload");
+	    this.fireAppEvent("queryReload");
         this.formNode.empty();
         if (this.appForm){
             MWF.release(this.appForm);
