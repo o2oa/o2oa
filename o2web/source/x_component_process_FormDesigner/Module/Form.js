@@ -8,7 +8,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		"propertyPath": "../x_component_process_FormDesigner/Module/Form/form.html",
         "mode": "PC",
 		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Datatable", "Datatable$Title", "Datatable$Data",
-			"Datatemplate","Htmleditor", "Number", "Office", "Orgfield","Org", "org", "Personfield", "Radio", "Select", "Textarea", "Textfield", "Address","Combox"],
+			"Datatemplate","Htmleditor","TinyMCEEditor", "Number", "Office", "Orgfield","Org", "org", "Personfield", "Radio", "Select", "Textarea", "Textfield", "Address","Combox"],
 		"injectActions" : [
 			{
 				"name" : "top",

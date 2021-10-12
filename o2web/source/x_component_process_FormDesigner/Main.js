@@ -22,8 +22,6 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         "processData": null
 	},
 	onQueryLoad: function(){
-	    debugger;
-        debugger;
         this.shortcut = true;
 		if (this.status){
 			this.options.id = this.status.id;
@@ -1853,7 +1851,6 @@ MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
         // imgNode.setStyle("background-color", color);
     },
     setContentHeight: function(height){
-        debugger;
         this.height = height;
         if (this.isShow){
             this.toolbarContentNode.setStyle("height", ""+this.height+"px");

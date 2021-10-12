@@ -351,7 +351,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         "importer": "数据导入",
         "readLog": "阅读记录",
-        "writingBoard": "手写板"
+        "writingBoard": "手写板",
+        "tinymceEditor": "Tinymce编辑器"
     },
     "propertyTemplate": {
         "base": "基本",
@@ -879,6 +880,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "ckeditorInfo": "更多属性帮助请查看",
         "ckeditorInfo2": "返回CKEditor的Config对象，用于编辑器初始化",
         "ckeditorInfo3": "更多事件帮助请查看",
+        "tinymceInfo": "更多属性帮助请查看",
+        "tinymceInfo2": "返回TinyMCE的Config对象，用于编辑器初始化",
+        "tinymceInfo3": "queryLoad,postLoad,load和afterLoad事件为o2平台事件。其他事件为tinymce编辑器事件，可以通过this.target获取脚本环境，this.event获取事件对象，请查看",
         "base64Encode": "图片Base64编码",
         "imagePreview": "浏览原图",
 
