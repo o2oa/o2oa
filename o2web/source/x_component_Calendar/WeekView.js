@@ -106,7 +106,7 @@ var MWFCalendarWeekView = MWF.xApplication.Calendar.WeekView = new Class({
     },
     recordStatus : function(){
         return {
-            date : (this.calendar && this.calendar.date) ? this.calendar.date.format( "db" ) : ""
+            date : (this.calendar && this.calendar.baseDate) ? this.calendar.baseDate.format( "db" ) : ""
         };
     },
     destroy: function(){
