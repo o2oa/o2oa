@@ -462,7 +462,7 @@ abstract class V2Base extends StandardJaxrsAction {
 		if (StringUtils.isNotEmpty(wi.getTitle())) {
 			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
 			if (StringUtils.isNotEmpty(title)) {
-				p = cb.and(cb.like(root.get(ReadCompleted_.title), "%" + title + "%"));
+				p = cb.and(p, cb.like(root.get(ReadCompleted_.title), "%" + title + "%"));
 			}
 		}
 		return p;
