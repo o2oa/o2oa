@@ -25,6 +25,7 @@ public class AppStyle extends ConfigObject {
 		this.indexType = INDEXTYPE_DEFAULT;
 		this.indexPortal = "";
 		this.simpleMode = false;
+		this.systemMessageSwitch = true;
 		this.contactPermissionView = "addressPowerView"; // 默认视图名 addressPowerView 可到应用市场下载通讯录应用查看
 
 	}
@@ -117,6 +118,9 @@ public class AppStyle extends ConfigObject {
 	@FieldDescribe("移动端简易模式")
 	private Boolean simpleMode;
 
+	@FieldDescribe(("移动App消息列表中是否显示系统通知"))
+	private Boolean systemMessageSwitch;
+
 	@FieldDescribe("移动App通讯录权限视图")
 	private String contactPermissionView;
 
@@ -134,6 +138,13 @@ public class AppStyle extends ConfigObject {
 		this.indexPortal = indexPortal;
 	}
 
+	public Boolean getSystemMessageSwitch() {
+		return systemMessageSwitch;
+	}
+
+	public void setSystemMessageSwitch(Boolean systemMessageSwitch) {
+		this.systemMessageSwitch = systemMessageSwitch;
+	}
 
 	public Boolean getSimpleMode() {
 		return simpleMode;

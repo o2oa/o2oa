@@ -1647,6 +1647,20 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
         return false;
     },
+    addMessage: function(data) {
+        if (layout.desktop.message) {
+            var msg = {
+                "subject": MWF.xApplication.process.Xform.LP.taskProcessed,
+                "content": data
+            };
+            layout.desktop.message.addTooltip(msg);
+            return layout.desktop.message.addMessage(msg);
+        } else {
+            if (this.app.inBrowser) {
+                this.inBrowserDkg(data);
+            }
+        }
+    },
     downloadAttachment: function (e, node, attachments) {
         if (this.form.businessData.work && !this.form.businessData.work.completedTime) {
             attachments.each(function (att) {
@@ -1667,7 +1681,17 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                             window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
-                        this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
+                        var ua = navigator.userAgent.toLowerCase();
+                        if (ua.indexOf('dingtalk') >= 0) {
+                            this.addMessage("dingtalk");
+                            this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
+                                var xtoken = Cookie.read(o2.tokenName);
+                                window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                            });
+                        } else {
+                            this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
+                        }
+                        
                     }
                 }
                 this.fireEvent("download",[att])
@@ -1691,7 +1715,17 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                             window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
-                        this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
+                        var ua = navigator.userAgent.toLowerCase();
+                        if (ua.indexOf('dingtalk') >= 0) {
+                            this.addMessage("dingtalk");
+                            this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, this.form.businessData.workCompleted.id, function (url) {
+                                var xtoken = Cookie.read(o2.tokenName);
+                                window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                            });
+                        } else {
+                            this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
+                        }
+                        
                     }
                 }
                 this.fireEvent("download",[att])
@@ -1718,7 +1752,17 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                             window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
-                        this.form.workAction.getAttachmentData(att.data.id, this.form.businessData.work.id);
+                        // 钉钉客户端
+                        var ua = navigator.userAgent.toLowerCase();
+                        if (ua.indexOf('dingtalk') >= 0) {
+                            this.addMessage("dingtalk");
+                            this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
+                                var xtoken = Cookie.read(o2.tokenName);
+                                window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                            });
+                        } else {
+                            this.form.workAction.getAttachmentData(att.data.id, this.form.businessData.work.id);
+                        }
                     }
 
                 }
@@ -1744,7 +1788,17 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                             window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
-                        this.form.workAction.getWorkcompletedAttachmentData(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
+                        // 钉钉客户端
+                        var ua = navigator.userAgent.toLowerCase();
+                        if (ua.indexOf('dingtalk') >= 0) {
+                            this.addMessage("dingtalk");
+                            this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id), function (url) {
+                                var xtoken = Cookie.read(o2.tokenName);
+                                window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                            });
+                        }else {
+                            this.form.workAction.getWorkcompletedAttachmentData(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
+                        }
                     }
                 }
                 this.fireEvent("open",[att])

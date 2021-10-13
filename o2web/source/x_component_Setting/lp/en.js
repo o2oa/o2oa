@@ -169,6 +169,10 @@ MWF.xApplication.Setting.LP = {
     "mobile_module_simple_mode": "Simple mode on mobile",
     "mobile_module_simple_mode_infor": "Only the homepage and settings page will be displayed after the simple mode is enabled",
 
+    "mobile_module_system_message_switch": "Display system notifications",
+    "mobile_module_system_message_switch_infor": "Whether to display system notification in mobile app message list",
+
+
     "mobile_module_contact_permission_view": "Mobile app address book permission view",
     "mobile_module_contact_permission_view_infor": "You need to install the application market [address book] application, which contains the permission configuration view of the address book",
     "mobile_module_contact_permission_view_action": "Modify view name",
@@ -268,6 +272,7 @@ MWF.xApplication.Setting.LP = {
     "mobile_apppack_status_order_inline": "In line ......",
     "mobile_apppack_status_packing": "Packing......",
     "mobile_apppack_status_pack_end": "Package complete",
+    "mobile_apppack_status_pack_error": "Package Error",
     "mobile_apppack_message_appname_not_empty": "App name cannot be empty!",
     "mobile_apppack_message_appname_len_max_6": "App name cannot exceed 6 words!",
     "mobile_apppack_message_app_logo_not_empty": "Logo image cannot be empty!",
