@@ -25,13 +25,12 @@ import com.x.base.core.project.tools.URLTools;
 
 public class HttpToken {
 
-	private static Logger logger = LoggerFactory.getLogger(HttpToken.class);
+	private static final Logger logger = LoggerFactory.getLogger(HttpToken.class);
 
-	// public static final String X_Token = "x-token";
 	public static final String X_Authorization = "authorization";
 	public static final String X_Person = "x-person";
 	public static final String X_DISTINGUISHEDNAME = "x-distinguishedName";
-	public static final String X_REQUESTBODY = "验证码x-requestBody";
+	public static final String X_REQUESTBODY = "x-requestBody";
 	public static final String X_Client = "x-client";
 	public static final String X_Debugger = "x-debugger";
 	public static final String COOKIE_ANONYMOUS_VALUE = "anonymous";
@@ -48,7 +47,7 @@ public class HttpToken {
 		// 加入调试标记
 		Object debugger = request.getHeader(HttpToken.X_Debugger);
 		effectivePerson.setDebugger((null != debugger) && BooleanUtils.toBoolean(Objects.toString(debugger)));
-		//this.setAttribute(request, effectivePerson);
+		// this.setAttribute(request, effectivePerson);
 		setToken(request, response, effectivePerson);
 		return effectivePerson;
 	}
@@ -80,6 +79,17 @@ public class HttpToken {
 			if (TokenType.user.equals(tokenType) || TokenType.manager.equals(tokenType)
 					|| TokenType.systemManager.equals(tokenType) || TokenType.auditManager.equals(tokenType)
 					|| TokenType.securityManager.equals(tokenType)) {
+				// 启用安全删除
+				if (BooleanUtils.isTrue(Config.person().getEnableSafeLogout())) {
+					String user = URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name());
+					Date threshold = Config.resource_node_tokenThresholds().get(user);
+					if ((null != threshold) && threshold.after(date)) {
+						logger.warn("token expired by safe logout, user:{}, token:{}, remote address:{}.", user, plain,
+								address);
+						return EffectivePerson.anonymous();
+					}
+				}
+
 				if (diff > (60000L * Config.person().getTokenExpiredMinutes())) {
 					// 不报错,跳过错误,将用户设置为anonymous
 					logger.warn("token expired, user:{}, token:{}, remote address:{}.",
