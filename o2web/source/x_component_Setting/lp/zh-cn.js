@@ -168,6 +168,9 @@ MWF.xApplication.Setting.LP = {
     "mobile_module_simple_mode": "移动端简易模式",
     "mobile_module_simple_mode_infor": "移动端开启简易模式后只显示首页和设置页面",
 
+    "mobile_module_system_message_switch": "显示系统通知",
+    "mobile_module_system_message_switch_infor": "移动App消息列表中是否显示系统通知",
+
     "mobile_module_contact_permission_view": "移动App通讯录权限视图",
     "mobile_module_contact_permission_view_infor": "需要安装应用市场【通讯录】应用，应用内包含通讯录的权限配置视图",
     "mobile_module_contact_permission_view_action": "修改视图名称",
@@ -269,6 +272,7 @@ MWF.xApplication.Setting.LP = {
     "mobile_apppack_status_order_inline": "排队中......",
     "mobile_apppack_status_packing": "打包中......",
     "mobile_apppack_status_pack_end": "打包完成",
+    "mobile_apppack_status_pack_error": "打包出错",
     "mobile_apppack_message_appname_not_empty": "App名称不能为空！",
     "mobile_apppack_message_appname_len_max_6": "App名称不能超过6个字！",
     "mobile_apppack_message_app_logo_not_empty": "Logo图片不能为空！",
