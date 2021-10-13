@@ -49,6 +49,13 @@
                 <input type="radio" name="isSelectSecond" value="false" text{(!$.isSelectSecond)?'checked':''}/>{{$.lp.no}}
             </td>
         </tr>
+        <tr>
+            <td class="editTableTitle">{{$.lp.timeSelectType}}:</td>
+            <td class="editTableValue">
+                <input type="radio" name="timeSelectType" value="slider" text{$.timeSelectType=='select'||!$.timeSelectType ?'checked':''}/>{{$.lp.timeSelectType_slider}}
+                <input type="radio" name="timeSelectType" value="select" text{$.timeSelectType=='slider' ?'checked':''}/>{{$.lp.timeSelectType_select}}
+            </td>
+        </tr>
 		  <tr>
 		    <td class="editTableTitle">{{$.lp.format}}:</td>
 		    <td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
@@ -60,9 +67,9 @@
 		    	<!--<input type="radio" name="range" value="range" text{($.range=='range')?'checked':''}/>时间范围-->
 		    <!--</td>-->
 		  <!--</tr>-->
-		  
+
 		</table>
-		
+
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
         <div class="MWFMaplist" name="inputStyles" title="{{$.lp.inputStyle}}"></div>
 		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
@@ -81,7 +88,7 @@
 
         <div class="MWFValidation" name="validationConfig"></div>
         <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
-		
+
 	</div>
     <div title="{{$.lp.section}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
