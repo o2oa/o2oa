@@ -1,9 +1,11 @@
 package com.x.server.console;
 
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,6 +16,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.naming.NamingException;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
@@ -22,7 +26,6 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.eclipse.jetty.plus.jndi.Resource;
-import org.eclipse.jetty.util.RolloverFileOutputStream;
 
 import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
 import com.google.gson.JsonElement;
@@ -37,7 +40,6 @@ import com.x.base.core.project.config.ExternalDataSource;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ClassLoaderTools;
-import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.JarTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PathTools;
@@ -49,7 +51,9 @@ import io.github.classgraph.ScanResult;
 
 public class ResourceFactory {
 
-	private static Logger logger = LoggerFactory.getLogger(ResourceFactory.class);
+	private static final Logger logger = LoggerFactory.getLogger(ResourceFactory.class);
+
+	private static final int TOKENTHRESHOLDSMAXSIZE = 2000;
 
 	private ResourceFactory() {
 		// nothing
@@ -63,15 +67,16 @@ public class ResourceFactory {
 			containerEntityNames(cl, sr);
 			stroageContainerEntityNames(cl, sr);
 		}
-		if (BooleanUtils.isTrue(Config.logLevel().audit().enable())) {
-			auditLog();
-		}
+//		if (BooleanUtils.isTrue(Config.logLevel().audit().enable())) {
+//			auditLog();
+//		}
 		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();
 		} else {
 			internal();
 		}
 		processPlatformExecutors();
+		tokenThresholds();
 	}
 
 	private static Path[] unzipCustomWar() throws Exception {
@@ -98,14 +103,10 @@ public class ResourceFactory {
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUE, eventQueue);
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUEEXECUTOR, eventQueueExecutor);
 		new Resource(Config.RESOURCE_NODE_APPLICATIONS, new ConcurrentHashMap<String, Object>());
-		// new Resource(Config.RESOURCE_NODE_APPLICATIONSTIMESTAMP, null);
 		Entry<String, CenterServer> entry = Config.nodes().centerServers().first();
 		Config.resource_node_centersPirmaryNode(entry.getKey());
 		Config.resource_node_centersPirmaryPort(entry.getValue().getPort());
 		Config.resource_node_centersPirmarySslEnable(entry.getValue().getSslEnable());
-//		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYNODE, entry.getKey());
-//		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYPORT, entry.getValue().getPort());
-//		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, entry.getValue().getSslEnable());
 	}
 
 	private static void containerEntityNames(ClassLoader classLoader, ScanResult sr) throws Exception {
@@ -203,13 +204,13 @@ public class ResourceFactory {
 		}
 	}
 
-	private static void auditLog() throws Exception {
-		RolloverFileOutputStream rolloverFileOutputStream = new RolloverFileOutputStream(
-				Config.dir_logs(true).getAbsolutePath() + "/yyyy_mm_dd.audit.log", true,
-				Config.logLevel().audit().logSize());
-		new Resource(Config.RESOURCE_AUDITLOGPRINTSTREAM,
-				new PrintStream(rolloverFileOutputStream, true, DefaultCharset.name_iso_utf_8));
-	}
+//	private static void auditLog() throws Exception {
+//		RolloverFileOutputStream rolloverFileOutputStream = new RolloverFileOutputStream(
+//				Config.dir_logs(true).getAbsolutePath() + "/yyyy_mm_dd.audit.log", true,
+//				Config.logLevel().audit().logSize());
+//		new Resource(Config.RESOURCE_AUDITLOGPRINTSTREAM,
+//				new PrintStream(rolloverFileOutputStream, true, DefaultCharset.name_iso_utf_8));
+//	}
 
 	private static void processPlatformExecutors() throws Exception {
 		ExecutorService[] services = new ExecutorService[Config.processPlatform().getExecutorCount()];
@@ -219,6 +220,18 @@ public class ResourceFactory {
 		}
 
 		new Resource(Config.RESOURCE_NODE_PROCESSPLATFORMEXECUTORS, services);
+	}
+
+	private static void tokenThresholds() throws NamingException {
+		Map<String, Date> linkedHashMap = new LinkedHashMap<>() {
+			private static final long serialVersionUID = 2324816564609476854L;
+
+			@Override
+			protected boolean removeEldestEntry(Entry<String, Date> entry) {
+				return size() > TOKENTHRESHOLDSMAXSIZE;
+			}
+		};
+		new Resource(Config.RESOURCE_NODE_TOKENTHRESHOLDS, Collections.synchronizedMap(linkedHashMap));
 	}
 
 }

@@ -3,6 +3,7 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.x.base.core.project.tools.LdapTools;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -81,9 +82,15 @@ class ActionCaptchaLogin extends BaseAction {
 					for (int i = 0; i < arrPerson.length; i++) {
 						personId = arrPerson[i];
 						o = emc.find(personId, Person.class);
-						if (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
-								|| StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
-							break;
+						if(BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())){
+							if (LdapTools.auth(o.getUnique(), password)) {
+								break;
+							}
+						}else{
+							if (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
+									|| StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
+								break;
+							}
 						}
 					}
 				} else {
@@ -97,8 +104,14 @@ class ActionCaptchaLogin extends BaseAction {
 					if (this.failureLocked(o)) {
 						throw new ExceptionFailureLocked(o.getName(), Config.person().getFailureInterval());
 					} else {
-						if (!StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
-								&& !StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
+						boolean isAuth = false;
+						if(BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())){
+							isAuth = LdapTools.auth(o.getUnique(), password);
+						}else{
+							isAuth = (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
+									|| StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword()));
+						}
+						if (!isAuth) {
 							emc.beginTransaction(Person.class);
 							this.failure(o);
 							emc.commit();
