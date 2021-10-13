@@ -720,11 +720,13 @@ MWF.xApplication.AuditLog.Main.LogForm = new Class({
                 "option": {"value": value, "mode" : "json" }
             });
             this.scriptEditor.load(function(){
-                debugger;
                 this.scriptEditor.setValue(value);
                 this.scriptEditor.editor.setReadOnly(true);
                 this.addEvent("afterResize", function () {
                     this.resizeScript();
+                }.bind(this))
+                this.addEvent("queryClose", function () {
+                    this.scriptEditor.destroy();
                 }.bind(this))
                 this.resizeScript();
             }.bind(this));
