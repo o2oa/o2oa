@@ -521,6 +521,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "yearOnly": "仅年度",
         "timeOnly": "仅时间",
         "selectSecond": "是否选择秒",
+        "timeSelectType": "时间选择方式",
+        "timeSelectType_slider" : "滑块",
+        "timeSelectType_select" : "下拉",
         "format": "格式化",
 
         "selectStyle": "Select样式",

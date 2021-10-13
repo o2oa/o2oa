@@ -364,6 +364,9 @@ o2.LP.widget = {
 	"year": ", ",
 	"month": " ",
 	"date": " ",
+	"hour": "hour",
+	"minute": "minute",
+	"second": "second",
 	"week": "week",
 	"dateGreaterThanCurrentNotice" : "The selected date must be greater than the current date",
 

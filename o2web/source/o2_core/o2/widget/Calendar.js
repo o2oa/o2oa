@@ -9,6 +9,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		"defaultView": "day", //day, month, year
 		"baseDate": new Date(),
 		"secondEnable" : false,
+		"timeSelectType" : "slider",
 		"isTime": false,
 		"isMulti": false,
 		"before": null,
@@ -417,7 +418,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			if(((page.x < elementCoords.left || page.x > (elementCoords.left + elementCoords.width)) ||
 				(page.y < elementCoords.top || page.y > (elementCoords.top + elementCoords.height))) &&
 				((page.x < targetCoords.left || page.x > (targetCoords.left + targetCoords.width)) ||
-				(page.y < targetCoords.top || page.y > (targetCoords.top + targetCoords.height))) ) this.hide();
+					(page.y < targetCoords.top || page.y > (targetCoords.top + targetCoords.height))) ) this.hide();
 		}
 	},
 
@@ -943,7 +944,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			//	calendar.showHNode.set("text", this.options[this.selectedIndex].get("value"));
 			//});
 			//this.showHNode.set("text", sel.options[sel.selectedIndex].get("value"));
-            //
+			//
 			//this.itmeMNode.empty();
 			//this.itmeMNode.removeClass("calendarTimeSlider");
 			//this.itmeMNode.setStyles(this.css.calendarTimeSliderNoStyle);
@@ -961,35 +962,88 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			//});
 			//this.showMNode.set("text", sel.options[sel.selectedIndex].get("value"));
 		}else{
-			var hSlider = new Slider(this.itmeHNode, this.itmeHNode.getFirst(), {
-				range: [0, 23],
-				initialStep: h.toInt(),
-				onChange: function(value){
-					var tmp = (value.toInt().toString());
-					if (tmp.length<2){
-						tmp = "0"+tmp
-					}
-					this.showHNode.set("text", tmp);
-					this.itmeHNode.getFirst().set("text", tmp);
-				}.bind(this)
-			});
-			this.itmeHNode.getFirst().set("text", h);
 
-			var mSlider = new Slider(this.itmeMNode, this.itmeMNode.getFirst(), {
-				range: [0, 59],
-				initialStep: m.toInt(),
-				onChange: function(value){
-					var tmp = (value.toInt().toString());
-					if (tmp.length<2){
-						tmp = "0"+tmp
-					}
-					this.showMNode.set("text", tmp);
-					this.itmeMNode.getFirst().set("text", tmp);
-				}.bind(this)
-			});
-			this.itmeMNode.getFirst().set("text", m);
+			if(this.options.timeSelectType === "select"){
 
-			if( this.options.secondEnable && this.itmeSNode ){
+				this.itmeHNode = this.contentTimeTable.getElement(".MWF_calendar_time_h").empty();
+				this.itmeMNode = this.contentTimeTable.getElement(".MWF_calendar_time_m").empty();
+				this.itmeSNode = this.contentTimeTable.getElement(".MWF_calendar_time_s").empty();
+
+				new Element("span",{"text": o2.LP.widget.hour + "："}).inject(this.itmeHNode);
+				this.itmeSelectHNode = new Element("select").inject(this.itmeHNode);
+				for( var i=0; i<24; i++ ){
+					new Element("option",{
+						"text" : this.addZero(i, 2 ),
+						"value" : this.addZero(i, 2 ),
+						"styles" : this.css.calendarTimeSelectItem_mobile
+					}).inject( this.itmeSelectHNode );
+				}
+				this.itmeSelectHNode.set("value",this.addZero( h.toInt(), 2));
+				this.itmeSelectHNode.addEvent("change",function(){
+					this.showHNode.set("text", this.itmeSelectHNode.get("value") );
+				}.bind(this));
+
+				new Element("span",{"text":o2.LP.widget.minute + "："}).inject(this.itmeMNode);
+				this.itmeSelectMNode = new Element("select").inject(this.itmeMNode);
+				for( var i=0; i<60; i++ ){
+					new Element("option",{
+						"text" : this.addZero(i, 2 ),
+						"value" : this.addZero(i, 2 ),
+						"styles" : this.css.calendarTimeSelectItem_mobile
+					}).inject( this.itmeSelectMNode );
+				}
+				this.itmeSelectMNode.set("value",this.addZero( m.toInt(), 2));
+				this.itmeSelectMNode.addEvent("change",function(){
+					this.showMNode.set("text", this.itmeSelectMNode.get("value") );
+				}.bind(this));
+
+				if( this.options.secondEnable && this.itmeSNode ){
+					new Element("span",{"text":o2.LP.widget.second + "："}).inject(this.itmeSNode);
+					this.itmeSelectSNode = new Element("select").inject(this.itmeSNode);
+					for( var i=0; i<60; i++ ){
+						new Element("option",{
+							"text" : this.addZero(i, 2 ),
+							"value" : this.addZero(i, 2 ),
+							"styles" : this.css.calendarTimeSelectItem_mobile
+						}).inject( this.itmeSelectSNode );
+					}
+					this.itmeSelectSNode.set("value",this.addZero( s.toInt(), 2));
+					this.itmeSelectSNode.addEvent("change",function(){
+						this.showSNode.set("text", this.itmeSelectSNode.get("value") );
+					}.bind(this));
+				}
+
+
+			}else {
+				var hSlider = new Slider(this.itmeHNode, this.itmeHNode.getFirst(), {
+					range: [0, 23],
+					initialStep: h.toInt(),
+					onChange: function(value){
+						var tmp = (value.toInt().toString());
+						if (tmp.length<2){
+							tmp = "0"+tmp
+						}
+						this.showHNode.set("text", tmp);
+						this.itmeHNode.getFirst().set("text", tmp);
+					}.bind(this)
+				});
+				this.itmeHNode.getFirst().set("text", h);
+
+				var mSlider = new Slider(this.itmeMNode, this.itmeMNode.getFirst(), {
+					range: [0, 59],
+					initialStep: m.toInt(),
+					onChange: function(value){
+						var tmp = (value.toInt().toString());
+						if (tmp.length<2){
+							tmp = "0"+tmp
+						}
+						this.showMNode.set("text", tmp);
+						this.itmeMNode.getFirst().set("text", tmp);
+					}.bind(this)
+				});
+				this.itmeMNode.getFirst().set("text", m);
+
+				if( this.options.secondEnable && this.itmeSNode ){
 					var sSlider = new Slider(this.itmeSNode, this.itmeSNode.getFirst(), {
 						range: [0, 59],
 						initialStep: parseInt(s),
@@ -1001,9 +1055,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 							this.showSNode.set("text", tmp);
 							this.itmeSNode.getFirst().set("text", tmp);
 						}.bind(this)
-				});
-				this.itmeSNode.getFirst().set("text", s);
+					});
+					this.itmeSNode.getFirst().set("text", s);
+				}
 			}
+
 		}
 		this.showHNode.set("text", this.addZero( h.toInt(), 2) );
 		this.showMNode.set("text", this.addZero( m.toInt(), 2));
@@ -1136,7 +1192,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		});
 		request.send();
 
-		//this.containerNode = div.getElement(".MWF_calendar_container"); 
+		//this.containerNode = div.getElement(".MWF_calendar_container");
 		this.titleNode = div.getElement(".MWF_calendar_title");
 		this.prevNode = div.getElement(".MWF_calendar_prev");
 		this.currentNode = div.getElement(".MWF_calendar_current");
