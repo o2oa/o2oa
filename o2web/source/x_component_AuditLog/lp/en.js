@@ -1,4 +1,4 @@
-MWF.xApplication.TernaryLog.LP = {
+MWF.xApplication.AuditLog.LP = {
 	"title": "Three-Member Management Log",
 
 	"person": "User",
@@ -14,12 +14,15 @@ MWF.xApplication.TernaryLog.LP = {
 	"createTime": "Start Time",
 	"updateTime": "End Time",
 	"spendTime": "Execution duration (milliseconds)",
+	"spendTime1 ":" Execution duration",
+	"millisecond ": "milliseconds",
 	"firstPage": "First Page",
 	"lastPage": "Last Page",
 	"query": "Search",
 	"reset": "Reset",
 	"noItem": "No data can be queried under current conditions",
 	"all": "All Logs",
+	"sendData": "Request Data",
 
 	"cancel": "Cancel",
 	"close": "Close",
@@ -27,6 +30,9 @@ MWF.xApplication.TernaryLog.LP = {
 	"edit": "Edit",
 	"remove": "Remove",
 	"action": "Action",
+	"view": "View",
+	"viewDetail": "View Detail",
+	"logDetail": "Log Detail",
 
 	"yesterday": "Yesterday",
 	"twoDaysAgo": "The day before yesterday",
