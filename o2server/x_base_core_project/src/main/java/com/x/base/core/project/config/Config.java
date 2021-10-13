@@ -176,6 +176,7 @@ public class Config {
 	public static final String RESOURCE_NODE_CENTERSPRIMARYSSLENABLE = RESOURCE_NODE_PREFIX + "centersPrimarySslEnable";
 	public static final String RESOURCE_NODE_PROCESSPLATFORMEXECUTORS = RESOURCE_NODE_PREFIX
 			+ "processPlatformExecutors";
+	public static final String RESOURCE_NODE_TOKENTHRESHOLDS = RESOURCE_NODE_PREFIX + "tokenThresholds";
 
 	private static final String DEFAULT_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWcVZIS57VeOUzi8c01WKvwJK9uRe6hrGTUYmF6J/pI6/UvCbdBWCoErbzsBZOElOH8Sqal3vsNMVLjPYClfoDyYDaUlakP3ldfnXJzAFJVVubF53KadG+fwnh9ZMvxdh7VXVqRL3IQBDwGgzX4rmSK+qkUJjc3OkrNJPB7LLD8QIDAQAB";
 	private static final String DEFAULT_PRIVATE_KEY = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAJZxVkhLntV45TOLxzTVYq/Akr25F7qGsZNRiYXon+kjr9S8Jt0FYKgStvOwFk4SU4fxKpqXe+w0xUuM9gKV+gPJgNpSVqQ/eV1+dcnMAUlVW5sXncpp0b5/CeH1ky/F2HtVdWpEvchAEPAaDNfiuZIr6qRQmNzc6Ss0k8HsssPxAgMBAAECgYAWtRy05NUgm5Lc6Og0jVDL/mEnydxPBy2ectwzHh2k7wIHNi8XhUxFki2TMqzrM9Dv3/LySpMl4AE3mhs34LNPy6F+MwyF5X7j+2Y6MflJyeb9HNyT++viysQneoOEiOk3ghxF2/GPjpiEF79wSp+1YKTxRAyq7ypV3t35fGOOEQJBANLDPWl8b5c3lrcz/dTamMjHbVamEyX43yzQOphzkhYsz4pruATzTxU+z8/zPdEqHcWWV39CP3xu3EYNcAhxJW8CQQC2u7PF5Xb1xYRCsmIPssFxil64vvdUadSxl7GLAgjQ9ULyYWB24KObCEzLnPcT8Pf2Q0YQOixxa/78FuzmgbyfAkA7ZFFV/H7lugB6t+f7p24OhkRFep9CwBMD6dnZRBgSr6X8d8ZvfrD2Z7DgBMeSva+OEoOtlNmXExZ3lynO9zN5AkAVczEmIMp3DSl6XtAuAZC9kD2QODJ2QToLYsAfjiyUwsWKCC43piTuVOoW2KUUPSwOR1VZIEsJQWEcHGDQqhgHAkAeZ7a6dVRZFdBwKA0ADjYCufAW2cIYiVDQBJpgB+kiLQflusNOCBK0FT3lg8BdUSy2D253Ih6l3lbaM/4M7DFQ";
@@ -1399,6 +1400,15 @@ public class Config {
 	public static synchronized void resource_node_processPlatformExecutors(ExecutorService[] executorServices)
 			throws Exception {
 		initialContext().rebind(RESOURCE_NODE_PROCESSPLATFORMEXECUTORS, executorServices);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static synchronized Map<String, Date> resource_node_tokenThresholds() throws Exception {
+		Object o = initialContext().lookup(RESOURCE_NODE_TOKENTHRESHOLDS);
+		if (null != o) {
+			return (Map<String, Date>) o;
+		}
+		return null;
 	}
 
 	public static boolean isWindowsJava8() throws Exception {

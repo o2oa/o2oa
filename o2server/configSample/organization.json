@@ -2,7 +2,9 @@
   "unitLevelOrderNumberDigits": 10.0,
   "pickPersonWithName": true,
   "pickIdentityWithName": false,
+  "executorCount": 3.0,
   "###unitLevelOrderNumberDigits": "unit中unitLevelOrderNumber扩充位数,\u003c\u003d0不扩充.###",
   "###pickPersonWithName": "zhangsan@123@P人员识别过程中过程为先查找 distinguishedName 再查找中间的 unique 如果还是没有查找到是否要通过名称进行查找.###",
-  "###pickIdentityWithName": "zhangsan@456@I身份识别过程中过程为先查找 distinguishedName 再查找中间的 unique 如果还是没有查找到是否要通过名称进行查找.###"
+  "###pickIdentityWithName": "zhangsan@456@I身份识别过程中过程为先查找 distinguishedName 再查找中间的 unique 如果还是没有查找到是否要通过名称进行查找.###",
+  "###executorCount": "执行器数量###"
 }

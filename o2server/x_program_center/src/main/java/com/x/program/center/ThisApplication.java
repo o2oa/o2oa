@@ -53,6 +53,7 @@ public class ThisApplication {
 			CacheManager.init(context.clazz().getSimpleName());
 			context().startQueue(centerQueue);
 			context().startQueue(logQueue);
+
 			/* 政务钉钉拉入同步 */
 			if (BooleanUtils.isTrue(Config.zhengwuDingding().getEnable())) {
 				/* 启动同步任务 */
