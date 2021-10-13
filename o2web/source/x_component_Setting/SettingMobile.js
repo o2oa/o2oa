@@ -100,6 +100,15 @@ MWF.xApplication.Setting.MobileModuleDocument = new Class({
             "value": this.explorer.nativeData.contactPermissionView || "addressPowerView" // 默认视图名 addressPowerView
         });
 
+        //显示系统通知
+        var systemMessageSwitchTitle = this.lp.mobile_module_system_message_switch;
+        var systemMessageSwitchInfor = this.lp.mobile_module_system_message_switch_infor;
+        new MWF.xApplication.Setting.Document.Check(this.explorer, this.node, {
+            "lp": { "title": systemMessageSwitchTitle, "infor": systemMessageSwitchInfor },
+            "data": { "key": "nativeData", "valueKey": "systemMessageSwitch", "notEmpty": false },
+            "value": this.explorer.nativeData.systemMessageSwitch
+        });
+
         this.explorer.nativeData.nativeAppList.each(function (app, i) {
             var title = this.lp.mobile_module.replace("{name}", app.name);
             var infor = this.lp.mobile_module_infor.replace("{name}", app.name);
@@ -261,10 +270,24 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
                         this.reSubmitPack();
                     }.bind(this)
                 })
+            } else {
+                status = this.lp.mobile_apppack_status_pack_error
+                this.apppackStatusRefreshNode.setStyles({
+                    "display": "none"
+                });
+                this.apppackReInputBtnNode.setStyles({
+                    "display": ""
+                });
+                this.apppackReInputBtnNode.addEvents({
+                    "click": function(e) {
+                        this.reInput();
+                    }.bind(this)
+                })
+                this.apppackRePackBtnNode.setStyles({"display": "none"})
             }
             this.apppackStatusShowNode.set("text", status);
             
-            if (this.packInfo.apkPath) {
+            if (this.packInfo.apkPath && this.packInfo.packStatus === "2") {
                 this.apppackDownloadLinkNode.set("href", this.packServerUrl + this.packInfo.apkPath + "?token=" + this.token);
                 this.apppackDownloadShowNode.setStyles({
                     "display": ""
