@@ -141,6 +141,7 @@ var MDomItem = new Class({
 
         this.valSeparator = /,|;|\^\^|\|/; //如果是多值对象，作为用户选择的多个值的分隔符
         this.mElement = this.container;	//容器
+        this.node = this.container;
         this.items = [];
 
         this.setOptionList( options );
