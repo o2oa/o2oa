@@ -127,6 +127,27 @@ MWF.xApplication.Setting.BaseLoginDocument = new Class({
             "options": getOptions
         });
 
+        if (!this.explorer.tokenData.ldapAuth) this.explorer.tokenData.ldapAuth = {
+            "enable": false,
+            "ldapUrl": "",
+            "baseDn": "",
+            "userDn": ""
+        };
+        // var ldapEnableText = this.explorer.tokenData.ldapAuth.enable ? this.lp.base_ldap_enable : this.lp.base_ldap_unenable;
+        this.baseLdapInput = new MWF.xApplication.Setting.Document.List(this.explorer, this.node, {
+            "lp": {"title": this.lp.base_ldap, "infor": this.lp.base_ldap_infor, "action": this.lp.base_ldap_action},
+            "data": {"key": "tokenData", "valueKey": "ldapAuth", "notEmpty": true},
+            "value": this.explorer.tokenData.ldapAuth,
+            "itemTitle": "ldapUrl: {ldapUrl}",
+            "addItem": {
+                "enable": false,
+                "ldapUrl": "",
+                "baseDn": "",
+                "userDn": ""
+            },
+            "icon": "ldap.png"
+        });
+
         this.baseTemaryInput = new MWF.xApplication.Setting.Document.Check(this.explorer, this.node, {
             "lp": {"title": this.lp.base_temary, "infor": this.lp.base_temary_info, "action": this.lp.base_temary_action},
             "data": {"key": "ternaryData", "valueKey": "enable", "notEmpty": false },
