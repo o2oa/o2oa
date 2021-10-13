@@ -196,6 +196,9 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 			map.put("publicKey", publicKey);
 		}
 
+		// 是否启用安全注销
+		map.put("enableSafeLogout", Config.person().getEnableSafeLogout());
+
 		for (Entry<String, JsonElement> en : Config.web().entrySet()) {
 			map.put(en.getKey(), en.getValue());
 		}

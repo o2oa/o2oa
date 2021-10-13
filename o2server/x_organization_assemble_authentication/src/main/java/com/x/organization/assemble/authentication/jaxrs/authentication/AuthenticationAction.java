@@ -468,4 +468,22 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "安全注销用户,该用户所有session全部过期.", action = ActionSafeLogout.class)
+	@GET
+	@Path("safe/logout")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void safeLogout(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response) {
+		ActionResult<ActionSafeLogout.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSafeLogout().execute(request, response, effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
