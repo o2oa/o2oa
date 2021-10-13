@@ -153,6 +153,9 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         this.fireEvent("postEdit");
     },
     _open: function () {
+        this.fireEvent("queryLoad");
+        if(this._queryLoad)this._queryLoad();
+
         if( this.options.hasMask ){
             this.formMaskNode = new Element("div.formMaskNode", {
                 "styles": this.css.formMaskNode,
@@ -251,9 +254,13 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
                         this.oldCoordinate.height = size.height;
                     }
                     this.fireEvent("resizeCompleted");
+                    this.fireEvent("afterResize");
                 }.bind(this)
             });
         }
+
+        if(this._postLoad)this._postLoad();
+        this.fireEvent("postLoad");
 
     },
     createFormNode: function () {
@@ -574,6 +581,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         this.formTopRestoreActionNode.setStyle("display","");
         this.isMax = true;
         this.fireEvent("max");
+        this.fireEvent("afterResize");
     },
     restoreSize : function(){
         if( this.oldCoordinate){
@@ -589,6 +597,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         this.formTopRestoreActionNode.setStyle("display","none");
         this.isMax = false;
         this.fireEvent("restore");
+        this.fireEvent("afterResize");
     },
     setFormNodeSize: function (width, height, top, left, bottom, right) {
 
