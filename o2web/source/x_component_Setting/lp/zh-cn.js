@@ -102,6 +102,13 @@ MWF.xApplication.Setting.LP = {
     "base_temary_info": "三员管理（系统管理员、安全保密管理员、安全审计员）。本功能开启后请重启服务器以启动日志。",
     "base_temary_action": "",
 
+    "base_ldap": "启用Ldap认证",
+    "base_ldap_infor": "启用后，用户登录认证使用Ldap认证，不再使用本系统的密码登录。",
+    "base_ldap_action": "编辑Ldap认证配置",
+    "base_ldap_enable": "已启用",
+    "base_ldap_unenable": "未启用",
+
+
     "base_ssoSetting": "配置与其它系统的鉴权和单点登录设置",
     "base_ssos": "鉴权配置",
     "base_sso_infor": "您可以为多个系统创建鉴权，用于SSO登录和服务调用",
@@ -384,7 +391,11 @@ MWF.xApplication.Setting.LP = {
         "infoType": "info信息格式（json或form）",
         "infoCredentialField": "info信息中用于标识个人的字段",
 
-        "infoProxyHost" : "域名不需要包含http"
+        "infoProxyHost" : "域名不需要包含http",
+
+        "ldapUrl": "ldapUrl(LDAP地址,如 ldap://111.111.111.111:5389/)",
+        "baseDn": "baseDn(LDAP查询的根名称,如：dc=zone,DC=COM)",
+        "userDn": "userDn(认证用户的DN,如：uid=*,ou=users,dc=zone,DC=COM，其中uid=*中的*表示用户的唯一编码，此唯一编码与O2用户的唯一编码对应)"
     },
 
     "module": {

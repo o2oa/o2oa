@@ -369,7 +369,7 @@
     },
 
     "explorerContentListEditTitleNode": {
-        "height": "26px",
+        "min-height": "26px",
         "line-height": "26px",
         "margin-top": "10px",
         "font-size": "14px",
