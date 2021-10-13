@@ -66,18 +66,24 @@ class ActionListWithGroup extends BaseAction {
 		}
 		List<String> personIds = new ArrayList<>();
 		List<String> unitIds = new ArrayList<>();
+		List<String> identities = new ArrayList<>();
 		for (Group o : list) {
 			personIds.addAll(o.getPersonList());
 			if (ListTools.isNotEmpty(o.getUnitList())) {
 				unitIds.addAll(o.getUnitList());
 			}
+			identities.addAll(o.getIdentityList());
 		}
-		personIds = ListTools.trim(personIds, true, true);
 		if (ListTools.isNotEmpty(unitIds)) {
 			unitIds = ListTools.trim(unitIds, true, true);
 			personIds.addAll(business.expendUnitToPersonId(unitIds));
-			personIds = ListTools.trim(personIds, true, true);
 		}
+		if (ListTools.isNotEmpty(identities)) {
+			identities = ListTools.trim(identities, true, true);
+			personIds.addAll(business.identity().listPerson(identities));
+		}
+		personIds = ListTools.trim(personIds, true, true);
+
 		List<String> values = business.person().listPersonDistinguishedNameSorted(personIds);
 
 		Wo wo = new Wo();
