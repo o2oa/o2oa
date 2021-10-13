@@ -19,9 +19,17 @@ public class Organization extends ConfigObject {
 	public static final Boolean DEFAULT_PICKPERSONWITHNAME = true;
 	/* 默认改为false,避免自动补发待办 */
 	public static final Boolean DEFAULT_PICKIDENTITYWITHNAME = false;
+	public static final Integer DEFAULT_EXECUTORCOUNT = 3;
 
 	public static Organization defaultInstance() {
 		return new Organization();
+	}
+
+	public Organization() {
+		this.unitLevelOrderNumberDigits = DEFAULT_UNITLEVELORDERNUMBERDIGITS;
+		this.pickPersonWithName = DEFAULT_PICKPERSONWITHNAME;
+		this.pickIdentityWithName = DEFAULT_PICKIDENTITYWITHNAME;
+		this.executorCount = DEFAULT_EXECUTORCOUNT;
 	}
 
 	@FieldDescribe("unit中unitLevelOrderNumber扩充位数,<=0不扩充.")
@@ -32,6 +40,9 @@ public class Organization extends ConfigObject {
 
 	@FieldDescribe("zhangsan@456@I身份识别过程中过程为先查找 distinguishedName 再查找中间的 unique 如果还是没有查找到是否要通过名称进行查找.")
 	private Boolean pickIdentityWithName = DEFAULT_PICKIDENTITYWITHNAME;
+
+	@FieldDescribe("执行器数量")
+	private Integer executorCount;
 
 	public Integer getUnitLevelOrderNumberDigits() {
 		return NumberTools.nullOrLessThan(this.unitLevelOrderNumberDigits, 1) ? DEFAULT_UNITLEVELORDERNUMBERDIGITS
@@ -44,6 +55,10 @@ public class Organization extends ConfigObject {
 
 	public Boolean getPickIdentityWithName() {
 		return BooleanUtils.isTrue(this.pickIdentityWithName);
+	}
+
+	public Integer getExecutorCount() {
+		return executorCount;
 	}
 
 	public void save() throws Exception {
