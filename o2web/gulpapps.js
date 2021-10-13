@@ -6,6 +6,7 @@ var apps = [
     { "folder": "x_component_AppMarketV2", "tasks": ["move", "min"] },
     { "folder": "x_component_AppMarketV2_Application", "tasks": ["move", "min"] },
     { "folder": "x_component_Attendance", "tasks": ["move", "min"] },
+    { "folder": "x_component_AuditLog", "tasks": ["move", "min"] },
     { "folder": "x_component_BAM", "tasks": ["move", "min"] },
     { "folder": "x_component_Calendar", "tasks": ["move", "min"] },
     { "folder": "x_component_cms_Column", "tasks": ["move", "min"] },
@@ -80,11 +81,9 @@ var apps = [
     { "folder": "x_component_service_ServiceManager", "tasks": ["move", "min"] },
     { "folder": "x_component_Setting", "tasks": ["move", "min"] },
     { "folder": "x_component_Template", "tasks": ["move", "min"] },
-    { "folder": "x_component_TernaryLog", "tasks": ["move", "min"] },
     { "folder": "x_desktop", "tasks": ["move", "min"] },
     { "folder": "x_component_IMV2", "tasks": ["move", "min"] },
-    { "folder": "x_component_ConfigDesigner", "tasks": ["move", "min"] },
-    { "folder": "x_component_TernaryLog", "tasks": ["move", "min"] }
+    { "folder": "x_component_ConfigDesigner", "tasks": ["move", "min"] }
 ];
 
 module.exports = apps;
