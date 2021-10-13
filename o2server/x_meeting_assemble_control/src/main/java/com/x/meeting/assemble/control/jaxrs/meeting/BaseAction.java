@@ -86,10 +86,21 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected List<String> convertToPerson(Business business, List<String> list) throws Exception {
 		List<String> os = new ArrayList<>();
 		DistinguishedNameCategory category = OrganizationDefinition.distinguishedNameCategory(list);
-		os.addAll(business.organization().person().list(category.getPersonList()));
-		os.addAll(business.organization().person().listWithIdentity(category.getIdentityList()));
-		os.addAll(business.organization().person().listWithUnitSubDirect(category.getUnitList()));
-		os.addAll(business.organization().person().list( category.getUnknownList()) );
+		if(ListTools.isNotEmpty(category.getPersonList())) {
+			os.addAll(business.organization().person().list(category.getPersonList()));
+		}
+		if(ListTools.isNotEmpty(category.getIdentityList())) {
+			os.addAll(business.organization().person().listWithIdentity(category.getIdentityList()));
+		}
+		if(ListTools.isNotEmpty(category.getUnitList())) {
+			os.addAll(business.organization().person().listWithUnitSubDirect(category.getUnitList()));
+		}
+		if(ListTools.isNotEmpty(category.getGroupList())) {
+			os.addAll(business.organization().person().listWithGroup(category.getGroupList()));
+		}
+		if(ListTools.isNotEmpty(category.getUnknownList())) {
+			os.addAll(business.organization().person().list(category.getUnknownList()));
+		}
 		os = ListTools.trim(os, true, true);
 		return os;
 	}
