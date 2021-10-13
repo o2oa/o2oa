@@ -1,41 +1,41 @@
-MWF.xApplication.TernaryLog = MWF.xApplication.TernaryLog || {};
+MWF.xApplication.AuditLog = MWF.xApplication.AuditLog || {};
 MWF.require("MWF.widget.O2Identity", null, false);
-//MWF.xDesktop.requireApp("TernaryLog", "Access", null, false);
-//MWF.xDesktop.requireApp("TernaryLog", "Actions.RestActions", null, false);
+//MWF.xDesktop.requireApp("AuditLog", "Access", null, false);
+//MWF.xDesktop.requireApp("AuditLog", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("Template", "Explorer", null, false);
 MWF.xDesktop.requireApp("Template", "MForm", null, false);
 
-MWF.xApplication.TernaryLog.options = {
+MWF.xApplication.AuditLog.options = {
     multitask: false,
     executable: true
 };
-MWF.xApplication.TernaryLog.Main = new Class({
+MWF.xApplication.AuditLog.Main = new Class({
     Extends: MWF.xApplication.Common.Main,
     Implements: [Options, Events],
     options: {
         "style": "default",
-        "name": "TernaryLog",
+        "name": "AuditLog",
         "icon": "icon.png",
         "width": "1220",
         "height": "700",
         "isResize": true,
         "isMax": true,
         "viewPageNum": 1,
-        "title": MWF.xApplication.TernaryLog.LP.title
+        "title": MWF.xApplication.AuditLog.LP.title
     },
     onQueryLoad: function () {
-        this.lp = MWF.xApplication.TernaryLog.LP;
+        this.lp = MWF.xApplication.AuditLog.LP;
     },
     loadApplication: function (callback) {
         this.userName = layout.desktop.session.user.distinguishedName;
 
-        this.path = "../x_component_TernaryLog/$Main/" + this.options.style + "/";
+        this.path = "../x_component_AuditLog/$Main/" + this.options.style + "/";
         this.createNode();
         this.loadApplicationContent();
     },
     loadController: function (callback) {
 
-        //this.access = new MWF.xApplication.TernaryLog.Access( this.restActions, this.lp );
+        //this.access = new MWF.xApplication.AuditLog.Access( this.restActions, this.lp );
 
         if (callback) callback();
     },
@@ -83,7 +83,7 @@ MWF.xApplication.TernaryLog.Main = new Class({
             naviOpt.module = this.options.module || "all";
             naviOpt.operation = this.options.operation;
         }
-        this.navi = new MWF.xApplication.TernaryLog.Main.Navi(this, this.naviNode, naviOpt);
+        this.navi = new MWF.xApplication.AuditLog.Main.Navi(this, this.naviNode, naviOpt);
     },
     createTopNode: function () {
         this.topContainerNode = new Element("div.topContainerNode", {
@@ -163,7 +163,7 @@ MWF.xApplication.TernaryLog.Main = new Class({
             "styles": this.css.viewContainerNode
         }).inject(this.contentNode);
 
-        this.view = new MWF.xApplication.TernaryLog.Main.View(viewContainerNode, this, this, {
+        this.view = new MWF.xApplication.AuditLog.Main.View(viewContainerNode, this, this, {
             templateUrl: this.path + "listItem.json",
             "pagingEnable": true,
             "wrapView": true,
@@ -213,7 +213,7 @@ MWF.xApplication.TernaryLog.Main = new Class({
         }
     },
     loadFilter: function () {
-        var lp = MWF.xApplication.TernaryLog.LP;
+        var lp = MWF.xApplication.AuditLog.LP;
         this.fileterNode = new Element("div.fileterNode", {
             "styles": this.css.fileterNode
         }).inject(this.topContentNode);
@@ -318,7 +318,7 @@ MWF.xApplication.TernaryLog.Main = new Class({
     }
 });
 
-MWF.xApplication.TernaryLog.Main.Navi = new Class({
+MWF.xApplication.AuditLog.Main.Navi = new Class({
     Implements: [Options, Events],
     options: {
         "module": "all"
@@ -543,10 +543,10 @@ MWF.xApplication.TernaryLog.Main.Navi = new Class({
     }
 });
 
-MWF.xApplication.TernaryLog.Main.View = new Class({
+MWF.xApplication.AuditLog.Main.View = new Class({
     Extends: MWF.xApplication.Template.Explorer.ComplexView,
     _createDocument: function (data, index) {
-        return new MWF.xApplication.TernaryLog.Main.Document(this.viewNode, data, this.explorer, this, null, index);
+        return new MWF.xApplication.AuditLog.Main.Document(this.viewNode, data, this.explorer, this, null, index);
     },
     _getCurrentPageData: function (callback, count, pageNum) {
         this.clearBody();
@@ -575,7 +575,8 @@ MWF.xApplication.TernaryLog.Main.View = new Class({
 
     },
     _openDocument: function (documentData) {
-
+        var form = new MWF.xApplication.AuditLog.Main.LogForm({app: this.app}, documentData );
+        form.open();
     },
     _queryCreateViewNode: function () {
 
@@ -592,7 +593,7 @@ MWF.xApplication.TernaryLog.Main.View = new Class({
 
 });
 
-MWF.xApplication.TernaryLog.Main.Document = new Class({
+MWF.xApplication.AuditLog.Main.Document = new Class({
     Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
     mouseoverDocument: function (itemNode, ev) {
         var removeNode = itemNode.getElements("[styles='removeNode']")[0];
@@ -611,10 +612,134 @@ MWF.xApplication.TernaryLog.Main.Document = new Class({
         //} )
     },
     open: function () {
-
+        this.view._openDocument(this.data);
     }
 });
 
+MWF.xApplication.AuditLog.Main.LogForm = new Class({
+    Extends: MPopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "attendanceV2",
+        "width": "800",
+        "height": "700",
+        "hasTop": true,
+        "hasIcon": false,
+        "hasTopIcon" : false,
+        "hasTopContent" : false,
+        "draggable": true,
+        "maxAction" : true,
+        "resizeable" : true,
+        "closeAction": true,
+        "title": MWF.xApplication.AuditLog.LP.logDetail,
+        "hideBottomWhenReading": true,
+        "closeByClickMaskWhenReading": true,
+    },
+    _postLoad: function(){
+        o2.Actions.load("x_auditlog_assemble_control").AuditLogAction.get(this.data.id, function (json) {
+            this.data = json.data;
+            this._createTableContent_();
+        }.bind(this))
+    },
+    _createTableContent: function(){},
+    _createTableContent_: function () {
+        var data = this.data;
+        data.spendTime1 = data.spendTime+this.lp.millisecond;
+        data.person1 = data.person.split("@")[0];
+
+        this.formTableArea.set("html", this.getHtml());
+        this.formTableContainer.setStyle("width","90%");
+
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.form = new MForm(this.formTableArea, data, {
+                isEdited: this.isEdited || this.isNew,
+                style : "attendance",
+                hasColon : true,
+                itemTemplate: {
+                    person1: { text : this.lp.person, type : "innertext" },
+                    node: { text : this.lp.node, type : "innertext" },
+                    clientIp: { text : this.lp.clientIp, type : "innertext" },
+                    httpType: { text : this.lp.httpType, type : "innertext" },
+                    module: { text : this.lp.module, type : "innertext" },
+                    operation: { text : this.lp.operation, type : "innertext" },
+                    httpStatus: { text : this.lp.httpStatus, type : "innertext" },
+                    spendTime1: { text : this.lp.spendTime1, type : "innertext" },
+                    createTime: { text : this.lp.createTime, type : "innertext" },
+                    updateTime: { text : this.lp.updateTime, type : "innertext" },
+                    httpUrl: { text : this.lp.httpUrl, type : "innertext" },
+                    sendData1: { text : this.lp.sendData, type : "innertext" },
+                }
+            }, this.app);
+            this.form.load();
+            this.loadScriptEditor();
+        }.bind(this), true);
+    },
+    getHtml : function(){
+        return  "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='table-layout:fixed;'>" +
+            "<tr><td styles='formTableTitle' lable='person1' width='70' ></td>" +
+            "    <td styles='formTableValue' item='person1' width='200'></td>" +
+            "    <td styles='formTableTitle' lable='node' width='100'></td>" +
+            "    <td styles='formTableValue' item='node' width='200'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='clientIp'></td>" +
+            "    <td styles='formTableValue' item='clientIp'></td>" +
+            "    <td styles='formTableTitle' lable='httpType'></td>" +
+            "    <td styles='formTableValue' item='httpType'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='module'></td>" +
+            "    <td styles='formTableValue' item='module'></td>" +
+            "    <td styles='formTableTitle' lable='operation'></td>" +
+            "    <td styles='formTableValue' item='operation'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='httpStatus'></td>" +
+            "    <td styles='formTableValue' item='httpStatus'></td>" +
+            "    <td styles='formTableTitle' lable='spendTime1'></td>" +
+            "    <td styles='formTableValue' item='spendTime1'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='createTime'></td>" +
+            "    <td styles='formTableValue' item='createTime'></td>" +
+            "    <td styles='formTableTitle' lable='updateTime'></td>" +
+            "    <td styles='formTableValue' item='updateTime'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='httpUrl'></td>" +
+            "    <td styles='formTableValue' item='httpUrl' colspan='3'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='sendData1'></td>" +
+            "    <td styles='formTableValue' item='sendData1' colspan='3'></td></tr>" +
+            "</table>"+
+            "<div item='sendData'></div>"
+    },
+    loadScriptEditor:function(){
+        if( !this.data.sendData )return;
+        MWF.require("MWF.widget.JavascriptEditor", null, false);
+        var value;
+        try{
+            debugger;
+            var json = JSON.parse(this.data.sendData);
+            value = JSON.stringify(json, null, "\t");
+        }catch (e) {}
+
+        var sendDataNode = this.formTableContainer.getElement('[item="sendData"]');
+        if( value ){
+            this.scriptEditor = new MWF.widget.JavascriptEditor(sendDataNode, {
+                "forceType": "ace",
+                "option": {"value": value, "mode" : "json" }
+            });
+            this.scriptEditor.load(function(){
+                debugger;
+                this.scriptEditor.setValue(value);
+                this.scriptEditor.editor.setReadOnly(true);
+                this.addEvent("afterResize", function () {
+                    this.resizeScript();
+                }.bind(this))
+                this.resizeScript();
+            }.bind(this));
+        }else{
+            this.form.getItem("sendData1").container.set("text", this.data.sendData);
+            sendDataNode.hide();
+        }
+    },
+    resizeScript: function () {
+        var size = this.formTableContainer.getSize();
+        var tableSize = this.formTableContainer.getElement('table').getSize();
+        this.formTableContainer.getElement('[item="sendData"]').setStyle("height", size.y - tableSize.y);
+        if(this.scriptEditor && this.scriptEditor.editor)this.scriptEditor.editor.resize();
+    }
+});
 
 var getDateDiff = function (publishTime) {
     if (!publishTime) return "";
@@ -640,9 +765,9 @@ var getDateDiff = function (publishTime) {
     var hourC = diffValue / hour;
     var minC = diffValue / minute;
     if (yesterday.getFullYear() == dateTimeStamp.getFullYear() && yesterday.getMonth() == dateTimeStamp.getMonth() && yesterday.getDate() == dateTimeStamp.getDate()) {
-        result = MWF.xApplication.TernaryLog.LP.yesterday + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
+        result = MWF.xApplication.AuditLog.LP.yesterday + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
     } else if (beforYesterday.getFullYear() == dateTimeStamp.getFullYear() && beforYesterday.getMonth() == dateTimeStamp.getMonth() && beforYesterday.getDate() == dateTimeStamp.getDate()) {
-        result = MWF.xApplication.TernaryLog.LP.twoDaysAgo + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
+        result = MWF.xApplication.AuditLog.LP.twoDaysAgo + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
     } else if (yearC > 1) {
         result = dateTimeStamp.getFullYear() + "-" + (dateTimeStamp.getMonth() + 1) + "-" + dateTimeStamp.getDate();
     } else if (monthC >= 1) {
@@ -650,15 +775,15 @@ var getDateDiff = function (publishTime) {
         // s.getFullYear()+"年";
         result = dateTimeStamp.getFullYear() + "-" + (dateTimeStamp.getMonth() + 1) + "-" + dateTimeStamp.getDate();
     } else if (weekC >= 1) {
-        result = parseInt(weekC) + MWF.xApplication.TernaryLog.LP.weekAgo;
+        result = parseInt(weekC) + MWF.xApplication.AuditLog.LP.weekAgo;
     } else if (dayC >= 1) {
-        result = parseInt(dayC) + MWF.xApplication.TernaryLog.LP.dayAgo;
+        result = parseInt(dayC) + MWF.xApplication.AuditLog.LP.dayAgo;
     } else if (hourC >= 1) {
-        result = parseInt(hourC) + MWF.xApplication.TernaryLog.LP.hourAgo;
+        result = parseInt(hourC) + MWF.xApplication.AuditLog.LP.hourAgo;
     } else if (minC >= 1) {
-        result = parseInt(minC) + MWF.xApplication.TernaryLog.LP.minuteAgo;
+        result = parseInt(minC) + MWF.xApplication.AuditLog.LP.minuteAgo;
     } else
-        result = MWF.xApplication.TernaryLog.LP.publishJustNow;
+        result = MWF.xApplication.AuditLog.LP.publishJustNow;
     return result;
 };
 
