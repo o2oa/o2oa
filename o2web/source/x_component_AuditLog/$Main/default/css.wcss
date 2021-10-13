@@ -29,7 +29,7 @@
     "width": "40px",
     "height": "50px",
     "float": "left",
-    "background": "url(../x_component_TernaryLog/$Main/default/icon/topIcon.png) no-repeat center center"
+    "background": "url(../x_component_AuditLog/$Main/default/icon/topIcon.png) no-repeat center center"
   },
   "topTextNode" : {
     "color" : "#333",
@@ -144,7 +144,8 @@
     "height": "39px",
     "text-align":"center",
     "overflow" : "hidden",
-    "border-bottom": "1px solid #E6E6E6"
+    "border-bottom": "1px solid #E6E6E6",
+    "cursor": "pointer"
   },
 
   "sortIconNode" : {
@@ -187,12 +188,16 @@
     "min-height": "29px",
     "color": "#666666",
     "font-family": "Microsoft YaHei",
-    "font-size": "14px"
+    "font-size": "14px",
+    "cursor": "pointer"
   },
   "documentNode_noread": {
     "background-color": "#fcfcfc"
   },
   "documentNode_over": {
+    "background-color": "#F7F7F7"
+  },
+  "documentNode_down": {
     "background-color": "#F7F7F7"
   },
   "documentNode_remove": {
@@ -214,6 +219,23 @@
   "documentActionNode_over":{
   },
   "actionDenyNode_down":{
+  },
+  "openAction": {
+    "height": "20px",
+    "border-radius": "3px",
+    "width": "20px",
+    "line-height": "20px",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_AuditLog/$Main/default/icon/open.png)"
+  },
+  "openAction_over": {
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_AuditLog/$Main/default/icon/open_blue.png)"
   },
 
 
@@ -241,7 +263,7 @@
     "overflow" : "hidden",
     "text-overflow" : "ellipsis",
     "white-space":"nowrap",
-    "background": "url(../x_component_TernaryLog/$Main/default/icon/topIcon.png) no-repeat center center"
+    "background": "url(../x_component_AuditLog/$Main/default/icon/topIcon.png) no-repeat center center"
   },
   "naviAllNode": {
     "display" : "block",
@@ -253,7 +275,7 @@
     "color" : "#333",
     "padding-left" : "38px",
     "cursor": "pointer",
-    "background": "url(../x_component_TernaryLog/$Main/default/icon/all.png) no-repeat 13px center"
+    "background": "url(../x_component_AuditLog/$Main/default/icon/all.png) no-repeat 13px center"
   },
   "naviAllNode_current" : {
     "background-color" : "#F2F5F7",
@@ -276,11 +298,11 @@
     "font-size": "14px",
     "color" : "#333",
     "padding-left" : "8px",
-//    "background": "url(../x_component_TernaryLog/$Main/default/icon/triangle_down.png) no-repeat 15px center",
+//    "background": "url(../x_component_AuditLog/$Main/default/icon/triangle_down.png) no-repeat 15px center",
     "cursor": "pointer"
   },
 //  "naviMenuNode_collapse": {
-//    "background": "url(../x_component_TernaryLog/$Main/default/icon/triangle_right.png) no-repeat 15px center"
+//    "background": "url(../x_component_AuditLog/$Main/default/icon/triangle_right.png) no-repeat 15px center"
 //  },
   "naviMenuNode_normal": {
     "background-color" : "#fff",
@@ -298,13 +320,13 @@
     "width": "30px",
     "height": "40px",
     "float": "left",
-    "background": "url(../x_component_TernaryLog/$Main/default/icon/triangle_right.png) no-repeat 5px center"
+    "background": "url(../x_component_AuditLog/$Main/default/icon/triangle_right.png) no-repeat 5px center"
   },
   "naviMenuIconNode_expand": {
     "width": "30px",
     "height": "40px",
     "float": "left",
-    "background": "url(../x_component_TernaryLog/$Main/default/icon/triangle_down.png) no-repeat 5px center"
+    "background": "url(../x_component_AuditLog/$Main/default/icon/triangle_down.png) no-repeat 5px center"
   },
   "naviMenuTextNode": {
     "margin-left": "25px",

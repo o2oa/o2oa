@@ -1,4 +1,4 @@
-MWF.xApplication.TernaryLog.LP = {
+MWF.xApplication.AuditLog.LP = {
 	"title": "三元管理日志",
 
 	"person" : "用户",
@@ -14,12 +14,15 @@ MWF.xApplication.TernaryLog.LP = {
 	"createTime": "开始时间",
 	"updateTime": "结束时间",
 	"spendTime": "执行持续时间(毫秒)",
+	"spendTime1": "执行持续时间",
+	"millisecond": "毫秒",
 	"firstPage": "第一页",
 	"lastPage": "最后一页",
 	"query": "搜索",
 	"reset": "重置",
 	"noItem": "当前条件下没有查询到数据",
 	"all": "所有日志",
+	"sendData": "请求数据",
 
 	"cancel" : "取消",
 	"close" : "关闭",
@@ -27,6 +30,9 @@ MWF.xApplication.TernaryLog.LP = {
 	"edit" : "编辑",
 	"remove" : "删除",
 	"action" : "操作",
+	"view": "查看",
+	"viewDetail": "查看详情",
+	"logDetail": "日志详情",
 
 	"yesterday": "昨天",
 	"twoDaysAgo" : "前天",
