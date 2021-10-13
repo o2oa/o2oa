@@ -6,6 +6,8 @@ import com.x.base.core.project.message.MessageConnector;
 import com.x.organization.assemble.authentication.jaxrs.authentication.QueueLoginRecord;
 import com.x.organization.assemble.authentication.schedule.CleanupBind;
 import com.x.organization.assemble.authentication.schedule.CleanupOauthCode;
+import com.x.organization.assemble.authentication.schedule.CleanupTokenThreshold;
+import com.x.organization.assemble.authentication.schedule.UpdateTokenThresholds;
 
 public class ThisApplication {
 
@@ -27,6 +29,8 @@ public class ThisApplication {
 			context.startQueue(queueLoginRecord);
 			context.schedule(CleanupBind.class, "0 */15 * * * ?");
 			context.schedule(CleanupOauthCode.class, "0 */15 * * * ?");
+			context.schedule(CleanupTokenThreshold.class, "50 50 6,12,18 * * ?");
+			context.scheduleLocal(UpdateTokenThresholds.class, 300, 15);
 			MessageConnector.start(context());
 		} catch (Exception e) {
 			e.printStackTrace();
