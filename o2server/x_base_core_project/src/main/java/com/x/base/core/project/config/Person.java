@@ -4,13 +4,13 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.x.base.core.project.tools.BaseTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.NumberTools;
 import com.x.base.core.project.tools.StringTools;
@@ -49,6 +49,8 @@ public class Person extends ConfigObject {
 	public static final String DEFAULT_CAPTCHAFONT = "";
 	public static final String DEFAULT_TOKENNAME = "x-token";
 
+	public static final Boolean DEFAULT_ENABLESAFELOGOUT = false;
+
 	public Person() {
 		this.captchaLogin = DEFAULT_CAPTCHALOGIN;
 		this.codeLogin = DEFAULT_CODELOGIN;
@@ -65,6 +67,7 @@ public class Person extends ConfigObject {
 		this.language = DEFAULT_LANGUAGE;
 		this.captchaFont = DEFAULT_CAPTCHAFONT;
 		this.tokenName = DEFAULT_TOKENNAME;
+		this.enableSafeLogout = DEFAULT_ENABLESAFELOGOUT;
 	}
 
 	public static Person defaultInstance() {
@@ -132,6 +135,13 @@ public class Person extends ConfigObject {
 
 	@FieldDescribe("验证码字体,默认为空,代表使用系统自带字体.")
 	private String captchaFont;
+
+	@FieldDescribe("是否启用安全注销.")
+	private Boolean enableSafeLogout;
+
+	public Boolean getEnableSafeLogout() {
+		return BooleanUtils.isTrue(this.enableSafeLogout);
+	}
 
 	public Boolean getTokenCookieHttpOnly() {
 		return BooleanUtils.isTrue(this.tokenCookieHttpOnly);

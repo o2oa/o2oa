@@ -15,6 +15,7 @@
   "personUnitOrderByAsc": true,
   "language": "zh-CN",
   "captchaFont": "",
+  "enableSafeLogout": false,
   "###captchaLogin": "是否启用验证码登录,默认值:true###",
   "###codeLogin": "是否启用验证码登录,默认值:true###",
   "###bindLogin": "是否启用扫描二维码登录,默认值:false###",
@@ -42,5 +43,6 @@
   "###tokenName": "使用识别用户的token名称,可自定义,默认为:x-token.###",
   "###personUnitOrderByAsc": "人员组织排序是否为升序，true为升序(默认)，false为降序###",
   "###language": "平台语言：zh-CN(中文，默认)、en(英语)###",
-  "###captchaFont": "验证码字体,默认为空,代表使用系统自带字体.###"
+  "###captchaFont": "验证码字体,默认为空,代表使用系统自带字体.###",
+  "###enableSafeLogout": "是否启用安全注销.###"
 }

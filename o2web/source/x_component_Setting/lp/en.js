@@ -103,6 +103,12 @@ MWF.xApplication.Setting.LP = {
     "base_temary_info": "Three-member management (system manager, security manager, and security auditor). After this function is enabled, please restart the server to start the log.",
     "base_temary_action": "",
 
+    "base_ldap": "Enable Ldap authentication",
+    "base_ldap_infor": "After enabling, the user login authentication uses Ldap authentication, and no longer uses the system password to log in.",
+    "base_ldap_action": "Edit Ldap authentication configuration",
+    "base_ldap_enable": "Enabled",
+    "base_ldap_unenable": "Not enabled",
+
     "base_ssoSetting": "Configure authentication and single sign-on settings with other systems",
     "base_ssos": "Authentication configuration",
     "base_sso_infor": "You can create authentication for multiple systems for SSO login and service invocation",

@@ -4,7 +4,7 @@ public class Instrument {
 
 	private CodeFactory code;
 
-	public CodeFactory code() throws Exception {
+	public CodeFactory code() {
 		if (null == this.code) {
 			this.code = new CodeFactory();
 		}
@@ -13,7 +13,7 @@ public class Instrument {
 
 	private CaptchaFactory captcha;
 
-	public CaptchaFactory captcha() throws Exception {
+	public CaptchaFactory captcha() {
 		if (null == this.captcha) {
 			this.captcha = new CaptchaFactory();
 		}
@@ -22,7 +22,7 @@ public class Instrument {
 
 	private CollectFactory collect;
 
-	public CollectFactory collect() throws Exception {
+	public CollectFactory collect() {
 		if (null == this.collect) {
 			this.collect = new CollectFactory();
 		}
