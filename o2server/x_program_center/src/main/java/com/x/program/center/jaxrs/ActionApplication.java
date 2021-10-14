@@ -33,6 +33,7 @@ import com.x.program.center.jaxrs.pms.PmsAction;
 import com.x.program.center.jaxrs.prompterrorlog.PromptErrorLogAction;
 import com.x.program.center.jaxrs.qiyeweixin.QiyeweixinAction;
 import com.x.program.center.jaxrs.schedule.ScheduleAction;
+import com.x.program.center.jaxrs.tokenthreshold.TokenThresholdAction;
 import com.x.program.center.jaxrs.unexpectederrorlog.UnexpectedErrorLogAction;
 import com.x.program.center.jaxrs.validation.ValidationAction;
 import com.x.program.center.jaxrs.warnlog.WarnLogAction;
@@ -76,6 +77,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(DesignerAction.class);
 		classes.add(MPWeixinAction.class);
 		classes.add(AppPackAction.class);
+		classes.add(TokenThresholdAction.class);
 		return classes;
 	}
 }

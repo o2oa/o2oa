@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
@@ -129,32 +128,35 @@ class ActionInstallOrUpdate extends BaseAction {
 		FileTools.forceMkdir(dist);
 		JarTools.unjar(zipFile, new ArrayList<>(), dist, true);
 		// 过滤必要的文件
-		File[] files = dist.listFiles(new FileFilter() {
-			public boolean accept(File pathname) {
-				return true;
-			}
-		});
-		for (File file : files) {
-			if (!file.isDirectory()) {
-				if (file.getName().toLowerCase().endsWith(".xapp")) {
-					String json = FileUtils.readFileToString(file, DefaultCharset.charset);
-					Gson gson = new Gson();
-					JsonElement jsonElement = gson.fromJson(json, JsonElement.class);
-					WrapModule module = this.convertToWrapIn(jsonElement, WrapModule.class);
-					this.installModule(module);
-					installData.setWrapModule(module);
-				} else if (file.getName().toLowerCase().endsWith(".app.zip")) {
-					logger.print("开始安装自定义应用：{}", file.getName());
-					this.installCustomApp(file.getName(), FileUtils.readFileToByteArray(file));
-					installData.setCustomApp(file.getName());
-					logger.print("完成自定义应用安装：{}", file.getName());
-				} else if (file.getName().toLowerCase().endsWith(".zip")) {
-					logger.print("开始安装静态资源");
-					try {
-						Business.dispatch(false, file.getName(), "", FileUtils.readFileToByteArray(file));
-						installData.setStaticResource(file.getName());
-					} catch (Exception e) {
-						logger.print("模块安装成功但静态资源安装失败:{}", e.getMessage());
+//		File[] files = dist.listFiles(new FileFilter() {
+//			public boolean accept(File pathname) {
+//				return true;
+//			}
+//		});
+		File[] files = dist.listFiles(path -> true);
+		if (null != files) {
+			for (File file : files) {
+				if (!file.isDirectory()) {
+					if (file.getName().toLowerCase().endsWith(".xapp")) {
+						String json = FileUtils.readFileToString(file, DefaultCharset.charset);
+						Gson gson = new Gson();
+						JsonElement jsonElement = gson.fromJson(json, JsonElement.class);
+						WrapModule module = this.convertToWrapIn(jsonElement, WrapModule.class);
+						this.installModule(module);
+						installData.setWrapModule(module);
+					} else if (file.getName().toLowerCase().endsWith(".app.zip")) {
+						logger.print("开始安装自定义应用：{}", file.getName());
+						this.installCustomApp(file.getName(), FileUtils.readFileToByteArray(file));
+						installData.setCustomApp(file.getName());
+						logger.print("完成自定义应用安装：{}", file.getName());
+					} else if (file.getName().toLowerCase().endsWith(".zip")) {
+						logger.print("开始安装静态资源");
+						try {
+							Business.dispatch(false, file.getName(), "", FileUtils.readFileToByteArray(file));
+							installData.setStaticResource(file.getName());
+						} catch (Exception e) {
+							logger.print("模块安装成功但静态资源安装失败:{}", e.getMessage());
+						}
 					}
 				}
 			}

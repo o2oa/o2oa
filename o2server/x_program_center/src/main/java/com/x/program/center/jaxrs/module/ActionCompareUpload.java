@@ -3,25 +3,23 @@ package com.x.program.center.jaxrs.module;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.connection.CipherConnectionAction;
-import com.x.program.center.core.entity.Structure;
-import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_cms_assemble_control;
 import com.x.base.core.project.x_portal_assemble_designer;
 import com.x.base.core.project.x_processplatform_assemble_designer;
 import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -34,6 +32,8 @@ import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.WrapModule;
+import com.x.program.center.core.entity.Structure;
+import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import com.x.query.core.entity.wrap.WrapQuery;
 
 class ActionCompareUpload extends BaseAction {

@@ -2,6 +2,7 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,7 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
@@ -33,9 +36,10 @@ class ActionSafeLogout extends BaseAction {
 
 		TokenThreshold tokenThreshold = new TokenThreshold(effectivePerson.getDistinguishedName(), new Date());
 
-		Config.resource_node_tokenThresholds().put(tokenThreshold.getPerson(), tokenThreshold.getThreshold());
-
+		// Config.resource_node_tokenThresholds().put(tokenThreshold.getPerson(),
+		// tokenThreshold.getThreshold());
 		update(tokenThreshold);
+		broadcast(tokenThreshold);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		HttpToken httpToken = new HttpToken();
@@ -67,6 +71,13 @@ class ActionSafeLogout extends BaseAction {
 				}
 			}
 			emc.commit();
+		}
+	}
+
+	private void broadcast(TokenThreshold tokenThreshold) throws Exception {
+		for (Entry<String, CenterServer> entry : Config.nodes().centerServers().orderedEntry()) {
+			CipherConnectionAction.post(false, 4000, 8000,
+					Config.url_x_program_center_jaxrs(entry, "tokenthreshold", "update"), tokenThreshold);
 		}
 	}
 

@@ -168,25 +168,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Class<?>> listAssemble() throws Exception {
+	private synchronized List<Class<?>> listAssemble() throws Exception {
 		if (null == assembles) {
-			synchronized (BaseAction.class) {
-				if (null == assembles) {
-					try (ScanResult scanResult = new ClassGraph()
-							.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false, false, false))
-							.enableAnnotationInfo().scan()) {
-						assembles = new CopyOnWriteArrayList<Class<?>>();
-						List<ClassInfo> list = new ArrayList<>();
-						list.addAll(scanResult.getClassesWithAnnotation(Module.class.getName()));
-						list = list.stream().sorted(Comparator.comparing(ClassInfo::getName))
-								.collect(Collectors.toList());
-						for (ClassInfo info : list) {
-							Class<?> cls = Class.forName(info.getName());
-							Module module = cls.getAnnotation(Module.class);
-							if (Objects.equal(module.type(), ModuleType.ASSEMBLE)) {
-								assembles.add(cls);
-							}
-						}
+			try (ScanResult scanResult = new ClassGraph()
+					.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false, false, false))
+					.enableAnnotationInfo().scan()) {
+				assembles = new CopyOnWriteArrayList<Class<?>>();
+				List<ClassInfo> list = new ArrayList<>();
+				list.addAll(scanResult.getClassesWithAnnotation(Module.class.getName()));
+				list = list.stream().sorted(Comparator.comparing(ClassInfo::getName)).collect(Collectors.toList());
+				for (ClassInfo info : list) {
+					Class<?> cls = Class.forName(info.getName());
+					Module module = cls.getAnnotation(Module.class);
+					if (Objects.equal(module.type(), ModuleType.ASSEMBLE)) {
+						assembles.add(cls);
 					}
 				}
 			}
