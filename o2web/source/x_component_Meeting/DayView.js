@@ -24,7 +24,7 @@ MWF.xApplication.Meeting.DayView = new Class({
     },
     recordStatus : function(){
         return {
-            date : (this.days.length > 0 ? this.days[0].date.clone() : this.date)
+            date : (this.days.length > 0 ? this.days[0].date.clone() : this.date).format("db")
         };
     },
     load: function(){
