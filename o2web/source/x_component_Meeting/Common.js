@@ -815,7 +815,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                     },
                     invitePersonList: { type: "org", isEdited : this.isNew, orgType: ["identity","person"], count : 0, orgWidgetOptions : {
                         "onLoadedInfor": function(item){
-                            this.loadAcceptAndReject( item );
+                            // this.loadAcceptAndReject( item );
                         }.bind(this)
                     }},
                     inviteMemberList: { type: "org", isEdited : isEditing, orgType: ["identity","person","group","unit"], count : 0, orgWidgetOptions : {
@@ -981,6 +981,14 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             (( !this.isNew && this.data.myWaitAccept ) ?
                     "<tr><td></td><td styles='formTableValue'><div item='acceptAction'></div><div item='rejectAction'></div></td></tr>" : ""
             ) +
+
+            "<tr style='display:"+((this.data.acceptPersonList && this.data.acceptPersonList.length)?'':'none')+"'>" +
+            "   <td styles='formTableTitle'>"+this.lp.acceptPerson+":</td>" +
+            "   <td styles='formTableValue'><div item='acceptPersonList'></div></td></tr>"+
+
+            "<tr style='display:"+((this.data.rejectPersonList && this.data.rejectPersonList.length)?'':'none')+"'>" +
+            "   <td styles='formTableTitle'>"+this.lp.rejectPerson+":</td>" +
+            "   <td styles='formTableValue'><div item='rejectPersonList'></div></td></tr>"+
 
             "<tr style='display:"+(this.isShowInviteDelPersonList()?'':'none')+"' class='inviteDelPersonListTr'>" +
             "   <td styles='formTableTitle'>"+this.lp.deleteInvitePerson2+":</td>" +
@@ -1682,14 +1690,8 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         }else{
             inviteList = this.data.invitePersonList || [];
         }
-        // inviteList.each(function( person ){
-        //     var O2person = new MWF.widget.O2Person({name : person, displayName:person.split("@")[0]}, area, {"style": "room", "onLoadedInfor": function(item){
-        //             this.loadAcceptAndReject( item );
-        //         }.bind(this) });
-        //     this.O2PersonList.push( O2person );
-        // }.bind(this));
         this.loadOrgWidget(inviteList, area, {"onLoadedInfor": function(item){
-            this.loadAcceptAndReject( item );
+            // this.loadAcceptAndReject( item );
         }.bind(this)})
     },
     loadOrgWidget: function(value, node, opt){
