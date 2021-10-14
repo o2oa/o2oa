@@ -3,8 +3,6 @@ package com.x.program.center.jaxrs.module;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.BooleanUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -15,31 +13,17 @@ import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.program.center.Business;
 import com.x.program.center.WrapModule;
 
 class ActionList extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			if (null == wi) {
 				wi = new Wi();
 			}
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			// if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
-			// throw new ExceptionDisable();
-			// }
-			// if (!business.collectAccountNotEmpty()) {
-			// throw new ExceptionCollectAccountEmpty();
-			// }
-			// if (BooleanUtils.isNotTrue(business.connectCollect())) {
-			// throw new ExceptionConnectError();
-			// }
-			// if (BooleanUtils.isNotTrue(business.validateCollect())) {
-			// throw new ExceptionValidateError();
-			// }
 			Req req = new Req();
 			req.setName(Config.collect().getName());
 			req.setPassword(Config.collect().getPassword());
