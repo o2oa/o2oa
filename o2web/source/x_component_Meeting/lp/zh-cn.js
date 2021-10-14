@@ -35,7 +35,7 @@ MWF.xApplication.Meeting.LP = {
     "selectRoom": "会议室",
     "invitePerson": "邀请参会人员",
     "invitePerson1": "邀请人",
-    "invitePerson2": "参会人员",
+    "invitePerson2": "参会人",
     "addInvitePerson1": "增加邀请人",
     "addedInvitePerson1": "已增加邀请人",
 
@@ -43,6 +43,9 @@ MWF.xApplication.Meeting.LP = {
     "deleteInvitePerson1": "取消邀请人",
     "deleteInvitePerson2": "已取消",
     "userDeleteInvitePerson": "您的会议邀请已被取消",
+
+    "acceptPerson": "已接受",
+    "rejectPerson": "已拒绝",
 
     "waitAccept": "邀请您参加",
     "waitConfirm": "需要您审批",
