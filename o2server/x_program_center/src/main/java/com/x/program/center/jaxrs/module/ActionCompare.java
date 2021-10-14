@@ -3,10 +3,6 @@ package com.x.program.center.jaxrs.module;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.connection.CipherConnectionAction;
-import com.x.program.center.core.entity.wrap.WrapServiceModule;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -18,8 +14,10 @@ import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -29,30 +27,17 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.cms.core.entity.element.wrap.WrapCms;
 import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
-import com.x.program.center.Business;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.WrapModule;
+import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import com.x.query.core.entity.wrap.WrapQuery;
 
 class ActionCompare extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
-//			if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
-//				throw new ExceptionDisable();
-//			}
-//			if (!business.collectAccountNotEmpty()) {
-//				throw new ExceptionCollectAccountEmpty();
-//			}
-//			if (BooleanUtils.isNotTrue(business.connectCollect())) {
-//				throw new ExceptionConnectError();
-//			}
-//			if (BooleanUtils.isNotTrue(business.validateCollect())) {
-//				throw new ExceptionValidateError();
-//			}
 			Req req = new Req();
 			req.setName(Config.collect().getName());
 			req.setPassword(Config.collect().getPassword());
