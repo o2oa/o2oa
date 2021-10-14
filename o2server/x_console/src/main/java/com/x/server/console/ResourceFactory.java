@@ -1,5 +1,6 @@
 package com.x.server.console;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -67,9 +68,6 @@ public class ResourceFactory {
 			containerEntityNames(cl, sr);
 			stroageContainerEntityNames(cl, sr);
 		}
-//		if (BooleanUtils.isTrue(Config.logLevel().audit().enable())) {
-//			auditLog();
-//		}
 		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();
 		} else {
@@ -82,8 +80,11 @@ public class ResourceFactory {
 	private static Path[] unzipCustomWar() throws Exception {
 		FileUtils.cleanDirectory(Config.dir_local_temp_custom(true));
 		List<String> list = new ArrayList<>();
-		for (String str : Config.dir_custom(true).list(new WildcardFileFilter("*" + PathTools.DOT_WAR))) {
-			list.add(FilenameUtils.getBaseName(str));
+		File dir = Config.dir_custom(true);
+		if (null != dir) {
+			for (String str : dir.list(new WildcardFileFilter("*" + PathTools.DOT_WAR))) {
+				list.add(FilenameUtils.getBaseName(str));
+			}
 		}
 		list = ListTools.includesExcludesWildcard(list, Config.currentNode().getApplication().getIncludes(),
 				Config.currentNode().getApplication().getExcludes());
@@ -223,7 +224,8 @@ public class ResourceFactory {
 	}
 
 	private static void tokenThresholds() throws NamingException {
-		Map<String, Date> linkedHashMap = new LinkedHashMap<>() {
+		// java8中无法将 <> 与匿名内部类一起使用,所以这里需要进行类型的申明
+		Map<String, Date> linkedHashMap = new LinkedHashMap<String, Date>() {
 			private static final long serialVersionUID = 2324816564609476854L;
 
 			@Override
