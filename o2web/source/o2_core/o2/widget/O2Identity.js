@@ -136,7 +136,7 @@ o2.widget.O2Identity = new Class({
                     woPerson = json.data;
                 }.bind(this)});
             }else{
-                this.action.invoke({"name": "getIdentity", "async": false, "parameter": {"id": this.data.id || this.data.name}, "success": function(json){
+                this.action.invoke({"name": "getIdentity", "async": false, "parameter": {"id": this.data.distinguishedName || this.data.id || this.data.name}, "success": function(json){
                     this.data = json.data;
                     woPerson = json.data.woPerson;
                 }.bind(this)});
@@ -245,7 +245,7 @@ o2.widget.O2Person = new Class({
     getPersonData: function(){
         if (!this.data.distinguishedName || !this.data.dutys ){
             this.action.actions = {"getPerson": {"uri": "/jaxrs/person/{id}"}};
-            this.action.invoke({"name": "getPerson", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
+            this.action.invoke({"name": "getPerson", "async": false, "parameter": {"id": (this.data.distinguishedName || this.data.id || this.data.name)}, "success": function(json){
                 this.data = json.data;
                 var dutyList = [];
                 if( this.data.woIdentityList && this.data.woIdentityList.length ){
