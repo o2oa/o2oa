@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -31,12 +32,14 @@ class ActionUpdateNextTaskIdentity extends BaseAction {
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<TaskCompleted> os = emc.fetchIn(TaskCompleted.class, ListTools.toList(TaskCompleted.job_FIELDNAME),
-					TaskCompleted.id_FIELDNAME, bag.wi.getTaskCompletedList());
+					JpaObject.id_FIELDNAME, bag.wi.getTaskCompletedList());
 			if (os.isEmpty()) {
 				Wo wo = new Wo();
-				ActionResult<Wo> result = new ActionResult<Wo>();
+				ActionResult<Wo> result = new ActionResult<>();
 				result.setData(wo);
 				return result;
+			} else {
+				bag.job = os.get(0).getJob();
 			}
 		}
 
@@ -44,7 +47,7 @@ class ActionUpdateNextTaskIdentity extends BaseAction {
 			public ActionResult<Wo> call() throws Exception {
 				Wo wo = new Wo();
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					List<TaskCompleted> os = emc.listIn(TaskCompleted.class, TaskCompleted.id_FIELDNAME,
+					List<TaskCompleted> os = emc.listIn(TaskCompleted.class, JpaObject.id_FIELDNAME,
 							bag.wi.getTaskCompletedList());
 					emc.beginTransaction(TaskCompleted.class);
 					for (TaskCompleted o : os) {
