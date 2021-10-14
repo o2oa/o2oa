@@ -638,6 +638,11 @@ MWF.xApplication.AuditLog.Main.LogForm = new Class({
     _postLoad: function(){
         o2.Actions.load("x_auditlog_assemble_control").AuditLogAction.get(this.data.id, function (json) {
             this.data = json.data;
+            if( this.data.sendData ){
+                this.setSize( null, 700 );
+            }else{
+                this.setSize( null, 400 );
+            }
             this._createTableContent_();
         }.bind(this))
     },
