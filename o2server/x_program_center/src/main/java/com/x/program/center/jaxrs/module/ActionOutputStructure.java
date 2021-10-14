@@ -1,6 +1,10 @@
 package com.x.program.center.jaxrs.module;
 
-import com.x.base.core.project.*;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_cms_assemble_control;
+import com.x.base.core.project.x_portal_assemble_designer;
+import com.x.base.core.project.x_processplatform_assemble_designer;
+import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.http.ActionResult;
