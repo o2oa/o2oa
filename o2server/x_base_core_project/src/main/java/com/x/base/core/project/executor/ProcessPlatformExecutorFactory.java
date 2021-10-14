@@ -14,7 +14,7 @@ public class ProcessPlatformExecutorFactory {
 
 	private static ExecutorService[] executors;
 
-	public static synchronized ExecutorService get(String seed) throws Exception {
+	public static synchronized ExecutorService get(final String seed) throws Exception {
 		if (null == executors) {
 			executors = Config.resource_node_processPlatformExecutors();
 		}
