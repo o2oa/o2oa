@@ -38,9 +38,11 @@ class ActionUpdatePrevTaskIdentity extends BaseAction {
 					bag.wi.getTaskList());
 			if (os.isEmpty()) {
 				Wo wo = new Wo();
-				ActionResult<Wo> result = new ActionResult<Wo>();
+				ActionResult<Wo> result = new ActionResult<>();
 				result.setData(wo);
 				return result;
+			} else {
+				bag.job = os.get(0).getJob();
 			}
 		}
 
