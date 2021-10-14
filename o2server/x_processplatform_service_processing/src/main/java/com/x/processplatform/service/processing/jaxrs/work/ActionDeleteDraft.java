@@ -20,6 +20,7 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.Business;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -60,7 +61,7 @@ class ActionDeleteDraft extends BaseAction {
 							workId = work.getId();
 							workTitle = work.getTitle();
 							workSequence = work.getSequence();
-							if (work.getWorkThroughManual() == false) {
+							if (BooleanUtils.isFalse(work.getWorkThroughManual())) {
 								if (StringUtils.equals(work.getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)) {
 									if (emc.countEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
 											work.getJob()) == 0) {
@@ -83,14 +84,9 @@ class ActionDeleteDraft extends BaseAction {
 				} catch (Exception e) {
 					logger.error(e);
 				}
-				// if (delete && (null != work)) {
-				// ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
-				// Applications.joinQueryUri("work", work.getId()),
-				// work.getJob()).getData(WoId.class);
-				// logger.print("删除长期处于草稿状态的工作, id:{}, title:{}, sequence:{}", workId,
-				// workTitle, workSequence);
-				// }
-				wo.setId(work.getId());
+				if (null != work) {
+					wo.setId(work.getId());
+				}
 				result.setData(wo);
 				return result;
 			}
