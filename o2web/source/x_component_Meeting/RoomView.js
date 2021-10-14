@@ -395,7 +395,7 @@ MWF.xApplication.Meeting.RoomView = new Class({
         if( this.currentBuliding )id = this.currentBuliding.retrieve("data").id;
         return {
             buildingId : id,
-            date : this.selectedDate ? this.date.toString() : null,
+            date : this.selectedDate ? this.date.format("db") : null,
             hours : this.hours,
             minutes : this.minutes
         };
