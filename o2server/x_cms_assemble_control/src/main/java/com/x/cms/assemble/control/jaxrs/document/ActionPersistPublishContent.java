@@ -232,7 +232,7 @@ public class ActionPersistPublishContent extends BaseAction {
 				if( wi.getPublishTime() == null ) { wi.setPublishTime(new Date()); }
 				document =  wi.copier.copy(wi);
 				document.setId( wi.getId() );
-				document = documentPersistService.save( document, wi.getDocData() );
+				document = documentPersistService.save( document, wi.getDocData(), categoryInfo.getProjection());
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");

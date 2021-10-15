@@ -6,13 +6,7 @@ import java.util.concurrent.ConcurrentMap;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.message.MessageConnector;
-import com.x.cms.assemble.control.queue.DataImportStatus;
-import com.x.cms.assemble.control.queue.QueueBatchOperation;
-import com.x.cms.assemble.control.queue.QueueDataRowImport;
-import com.x.cms.assemble.control.queue.QueueDocumentDelete;
-import com.x.cms.assemble.control.queue.QueueDocumentUpdate;
-import com.x.cms.assemble.control.queue.QueueDocumentViewCountUpdate;
-import com.x.cms.assemble.control.queue.QueueSendDocumentNotify;
+import com.x.cms.assemble.control.queue.*;
 import com.x.cms.assemble.control.timertask.Timertask_BatchOperationTask;
 import com.x.cms.assemble.control.timertask.Timertask_InitOperationRunning;
 import com.x.cms.assemble.control.timertask.Timertask_LogRecordCheckTask;
@@ -40,6 +34,9 @@ public class ThisApplication {
 	public static final QueueBatchOperation queueBatchOperation = new QueueBatchOperation();
 	// Document发布时，向所有阅读者推送通知
 	public static QueueSendDocumentNotify queueSendDocumentNotify = new QueueSendDocumentNotify();
+	// 执行文档的数据映射
+	public static final ProjectionExecuteQueue projectionExecuteQueue = new ProjectionExecuteQueue();
+
 	private static final ConcurrentHashMap<String, DataImportStatus> importStatus = new ConcurrentHashMap<>();
 
 	public static Context context() {
@@ -55,7 +52,7 @@ public class ThisApplication {
 		context().startQueue(queueDocumentUpdate);
 		context().startQueue(queueDocumentViewCountUpdate);
 		context().startQueue(queueSendDocumentNotify);
-
+		context().startQueue(projectionExecuteQueue);
 		// 每天凌晨2点执行一次
 		context.schedule(Timertask_LogRecordCheckTask.class, "0 0 2 * * ?");
 		context.schedule(Timertask_BatchOperationTask.class, "0 */5 * * * ?");

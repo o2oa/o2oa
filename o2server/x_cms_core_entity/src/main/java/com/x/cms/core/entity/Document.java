@@ -32,7 +32,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
  * 文档基础信息类
- * 
+ *
  * @author O2LEE
  *
  */
@@ -451,6 +451,43 @@ public class Document extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + stringValue03_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue03;
+
+	public static final String stringValue04_FIELDNAME = "stringValue04";
+	@FieldDescribe("业务数据String值04.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue04_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue04_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue04;
+
+	public static final String longValue01_FIELDNAME = "longValue01";
+	@FieldDescribe("业务数据Long值01.")
+	@Column(name = ColumnNamePrefix + longValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + longValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Long longValue01;
+
+	public static final String longValue02_FIELDNAME = "longValue02";
+	@FieldDescribe("业务数据Long值02.")
+	@Column(name = ColumnNamePrefix + longValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + longValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Long longValue02;
+
+	public static final String dateTimeValue01_FIELDNAME = "dateTimeValue01";
+	@Temporal(TemporalType.TIMESTAMP)
+	@FieldDescribe("业务数据DateTime值01.")
+	@Column(name = ColumnNamePrefix + dateTimeValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dateTimeValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date dateTimeValue01;
+
+	public static final String dateTimeValue02_FIELDNAME = "dateTimeValue02";
+	@Temporal(TemporalType.TIMESTAMP)
+	@FieldDescribe("业务数据DateTime值02.")
+	@Column(name = ColumnNamePrefix + dateTimeValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dateTimeValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date dateTimeValue02;
 
 	public Date getModifyTime() {
 		return modifyTime;

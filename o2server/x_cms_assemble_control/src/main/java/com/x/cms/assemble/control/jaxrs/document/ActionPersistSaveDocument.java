@@ -266,7 +266,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		if (check) {
 			try {
-				document = documentPersistService.save( document, wi.getDocData() );
+				document = documentPersistService.save(document, wi.getDocData(), categoryInfo.getProjection());
 				CacheManager.notify(Document.class);
 
 				Wo wo = new Wo();
