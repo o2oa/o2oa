@@ -169,4 +169,10 @@ public class IdentityFactory extends AbstractFactory {
 		return count;
 	}
 
+	public List<String> listPerson(List<String> identityIds) throws Exception {
+		List<Identity> list = this.entityManagerContainer().fetch(identityIds, Identity.class, ListTools.toList(Identity.id_FIELDNAME, Identity.person_FIELDNAME));
+		List<String> values = ListTools.extractProperty(list, Identity.person_FIELDNAME, String.class, true, true);
+		return values;
+	}
+
 }
