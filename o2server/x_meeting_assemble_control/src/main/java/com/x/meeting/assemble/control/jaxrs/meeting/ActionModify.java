@@ -42,7 +42,7 @@ class ActionModify extends BaseAction {
 			if (null == room) {
 				throw new ExceptionRoomNotExist(wi.getRoom());
 			}
-			
+
 			//判断开始时间或者结束时间有没有修改过
 			boolean modifyTime = false;
 			Date StartTime = wi.getStartTime();
@@ -53,25 +53,27 @@ class ActionModify extends BaseAction {
 			if(CompletedTime.getTime() != meeting.getCompletedTime().getTime()) {
 				modifyTime = true;
 			}
-			
+
 			emc.beginTransaction(Meeting.class);
-			
+
 			Wi.copier.copy(wi, meeting);
-			
-			List<String> personList = this.convertToPerson(business, ListTools.trim(wi.getInvitePersonList(), true, true));
+
+			List<String> personList = this.convertToPerson(business, ListTools.trim(wi.getInviteMemberList(), true, true));
 			meeting.setInvitePersonList(personList);
 
 			List<String> modifyInvitePersonList = ListUtils.subtract(personList,meeting.getInvitePersonList());
-			
+			List<String> inviteDelPersonList = ListUtils.subtract(meeting.getInvitePersonList(), personList);
+			meeting.setInviteDelPersonList(inviteDelPersonList);
+
 			if (!business.room().checkIdle(meeting.getRoom(), meeting.getStartTime(), meeting.getCompletedTime(),
 					meeting.getId())) {
 				throw new ExceptionRoomNotAvailable(room.getName());
 			}
-			
+
 			emc.persist(meeting, CheckPersistType.all);
 			emc.commit();
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
-				
+
 				if(modifyTime) { //开始时间或者结束时间有修改过
 					for (String _s : wi.getInvitePersonList()) {
 						MessageFactory.meeting_invite(_s, meeting, room);
@@ -81,7 +83,11 @@ class ActionModify extends BaseAction {
 						MessageFactory.meeting_invite(_s, meeting, room);
 					}
 				}
-				
+
+				for (String _s : inviteDelPersonList) {
+					MessageFactory.meeting_deleteInvitePerson(_s, meeting);
+				}
+
 				this.notifyMeetingInviteMessage(business, meeting);
 			}
 			Wo wo = new Wo();
