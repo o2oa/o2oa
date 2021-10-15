@@ -131,8 +131,20 @@ public class Meeting extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Date completedTime;
 
+	public static final String inviteMemberList_FIELDNAME = "inviteMemberList";
+	@FieldDescribe("邀请人员,身份,组织，群组.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ inviteMemberList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + inviteMemberList_FIELDNAME
+			+ JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + inviteMemberList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + inviteMemberList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> inviteMemberList;
+
 	public static final String invitePersonList_FIELDNAME = "invitePersonList";
-	@FieldDescribe("邀请人员,身份,组织.")
+	@FieldDescribe("邀请人员.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ invitePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + invitePersonList_FIELDNAME
@@ -142,8 +154,8 @@ public class Meeting extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + invitePersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> invitePersonList;
-	
-	
+
+
 	public static final String inviteDelPersonList_FIELDNAME = "inviteDelPersonList";
 	@FieldDescribe("邀请人员,身份,组织已删列表.")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -416,7 +428,7 @@ public class Meeting extends SliceJpaObject {
 
 	/**
 	 * 添加一个签到人员
-	 * 
+	 *
 	 * @param distinguishedName
 	 */
 	public void addCheckinPerson(String distinguishedName) {
@@ -425,7 +437,7 @@ public class Meeting extends SliceJpaObject {
 
 	/**
 	 * 删除一个签到人员
-	 * 
+	 *
 	 * @param distinguishedName
 	 */
 	public void removeCheckinPerson(String distinguishedName) {
@@ -439,7 +451,12 @@ public class Meeting extends SliceJpaObject {
 	public void setInviteDelPersonList(List<String> inviteDelPersonList) {
 		this.inviteDelPersonList = inviteDelPersonList;
 	}
-	
-	
 
+	public List<String> getInviteMemberList() {
+		return inviteMemberList;
+	}
+
+	public void setInviteMemberList(List<String> inviteMemberList) {
+		this.inviteMemberList = inviteMemberList;
+	}
 }

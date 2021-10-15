@@ -1,5 +1,7 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -21,6 +23,8 @@ import com.x.meeting.core.entity.Meeting;
 import com.x.meeting.core.entity.Room;
 
 class ActionCreate extends BaseAction {
+
+	private final static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -51,15 +55,15 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionPersonNotExist(applicant);
 			}
 			meeting.setApplicant(applicant);
-			if( ListTools.isNotEmpty( meeting.getInvitePersonList() )) {
-				for( String str : meeting.getInvitePersonList() ) {
-					System.out.println(">>>>>>>> before convert invitePersonList:" + str );
+			if( ListTools.isNotEmpty( meeting.getInviteMemberList() )) {
+				for( String str : meeting.getInviteMemberList() ) {
+					logger.debug(">>>>>>>> before convert invitePersonList:" + str );
 				}
 			}
-			meeting.setInvitePersonList(this.convertToPerson(business, meeting.getInvitePersonList()));
+			meeting.setInvitePersonList(this.convertToPerson(business, meeting.getInviteMemberList()));
 			if( ListTools.isNotEmpty( meeting.getInvitePersonList() )) {
 				for( String str : meeting.getInvitePersonList() ) {
-					System.out.println(">>>>>>>> after convert invitePersonList:" + str );
+					logger.debug(">>>>>>>> after convert invitePersonList:" + str );
 				}
 			}
 			meeting.setAcceptPersonList(this.convertToPerson(business, meeting.getAcceptPersonList()));
