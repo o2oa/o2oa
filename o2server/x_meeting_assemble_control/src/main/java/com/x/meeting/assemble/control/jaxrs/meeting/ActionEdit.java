@@ -42,7 +42,7 @@ class ActionEdit extends BaseAction {
 			if (null == room) {
 				throw new ExceptionRoomNotExist(wi.getRoom());
 			}
-			
+
 			//判断开始时间或者结束时间有没有修改过
 			boolean modifyTime = false;
 			Date StartTime = wi.getStartTime();
@@ -53,15 +53,17 @@ class ActionEdit extends BaseAction {
 			if(CompletedTime.getTime() != meeting.getCompletedTime().getTime()) {
 				modifyTime = true;
 			}
-			
+
 			emc.beginTransaction(Meeting.class);
-			List<String> modifyInvitePersonList = ListUtils.subtract(
-					this.convertToPerson(business, ListTools.trim(wi.getInvitePersonList(), true, true)),
-					meeting.getInvitePersonList());
-			List<String> invitePersonList = new ArrayList<>(meeting.getInvitePersonList());
-			invitePersonList.addAll(modifyInvitePersonList);
+
 			Wi.copier.copy(wi, meeting);
+
+			List<String> invitePersonList = this.convertToPerson(business, ListTools.trim(wi.getInviteMemberList(), true, true));
+			List<String> modifyInvitePersonList = ListUtils.subtract(invitePersonList, meeting.getInvitePersonList());
+			List<String> inviteDelPersonList = ListUtils.subtract(meeting.getInvitePersonList(), invitePersonList);
 			meeting.setInvitePersonList(invitePersonList);
+			meeting.setInviteDelPersonList(inviteDelPersonList);
+
 			if (!business.room().checkIdle(meeting.getRoom(), meeting.getStartTime(), meeting.getCompletedTime(),
 					meeting.getId())) {
 				throw new ExceptionRoomNotAvailable(room.getName());
@@ -69,7 +71,7 @@ class ActionEdit extends BaseAction {
 			emc.persist(meeting, CheckPersistType.all);
 			emc.commit();
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
-				
+
 				if(modifyTime) { //开始时间或者结束时间有修改过
 					for (String _s : wi.getInvitePersonList()) {
 						MessageFactory.meeting_invite(_s, meeting, room);
@@ -79,7 +81,10 @@ class ActionEdit extends BaseAction {
 						MessageFactory.meeting_invite(_s, meeting, room);
 					}
 				}
-				
+				for (String _s : inviteDelPersonList) {
+					MessageFactory.meeting_deleteInvitePerson(_s, meeting);
+				}
+
 				this.notifyMeetingInviteMessage(business, meeting);
 			}
 			Wo wo = new Wo();
