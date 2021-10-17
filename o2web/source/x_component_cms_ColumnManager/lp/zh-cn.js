@@ -167,6 +167,10 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "appType" : "栏目类型",
         "ignoreTitle" : "忽略标题",
         "latest" : "检查草稿",
+        "defaultEditForm": "默认编辑表单",
+        "defaultReadForm": "默认阅读表单",
+        "editformNote": "注：创建分类时的默认编辑表单",
+        "readformNote": "注：创建分类时的默认阅读表单，如果不选则和编辑表单一致",
         viewerSetting : {
             title : "可见范围",
             set: "设置可见范围",

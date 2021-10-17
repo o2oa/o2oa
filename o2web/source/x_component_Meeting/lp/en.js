@@ -44,6 +44,9 @@ MWF.xApplication.Meeting.LP = {
     "deleteInvitePerson2": "Cancelled",
     "userDeleteInvitePerson": "Your meeting invitation has been cancelled.",
 
+    "acceptPerson": "Accepted",
+    "rejectPerson": "Rejected",
+
     "waitAccept": "Invite you to participate",
     "waitConfirm": "Need your approval",
     "isAccept": "Please attend the meeting on time",
