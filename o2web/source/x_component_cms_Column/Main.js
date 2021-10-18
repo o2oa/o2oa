@@ -799,6 +799,8 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
         var inputStyle = "width: 96%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; height: 26px";
         var titleStyle = "font-size:16px; height: 40px; line-height: 40px;  text-align: left";
         var contentStyle = "text-align: left;"
+        var clearStyle = "position:absolute;cursor:pointer;width:26px;height:26px;right:10px;top:1px;background:url(../x_component_Template/$MPopupForm/report/icon/icon_off.png) center center no-repeat"
+        var inputFormStyle = "width: calc( 96% - 20px);  border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; height: 26px; padding-right:20px;";
         var html = "<table width='100%' height='90%' border='0' cellPadding='0' cellSpacing='0'>" +
             "<tr>" +
             "   <td style='font-size:16px; height: 40px; line-height: 40px; text-align: left; min-width: 80px; width:26%'>" + this.lp.nameLabel + "：</td>" +
@@ -834,7 +836,7 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
             "   <td style='"+titleStyle+"'>" + this.lp.editform + "：</td>" +
             "   <td style='"+contentStyle+"'>" +
             ( this.isNew ?
-             "       <input type='text' readonly id='formEditform' style='"+inputStyle+"' value='" + editform + "'/>" :
+             "       <div style='position: relative;'><input type='text' readonly id='formEditform' style='"+inputFormStyle+"' value='" + editform + "'/><div id='formClearEditform' style='"+clearStyle+"'></div></div>" :
              "       <select id='formEditform' style='"+inputStyle+"'></select>"
             ) +
             "       <div style='text-align: left;padding-left: 2.5%;font-size: 14px;color:#999;margin-bottom: 5px;'>"+this.lp.editformNote +"</div>"+
@@ -844,7 +846,7 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
             "   <td style='"+titleStyle+"'>" + this.lp.readform + "：</td>" +
             "   <td style='"+contentStyle+"'>" +
                 ( this.isNew ?
-            "       <input type='text' readonly id='formReadform' style='"+inputStyle+"' value='" + readform + "'/>" :
+            "       <div style='position: relative;'><input type='text' readonly id='formReadform' style='"+inputFormStyle+"' value='" + readform + "'/><div id='formClearReadform' style='"+clearStyle+"'></div></div>" :
             "       <select id='formReadform' style='"+inputStyle+"'></select>"
                 ) +
             "       <div style='text-align: left;padding-left: 2.5%;font-size: 14px;color:#999;margin-bottom: 5px;'>"+this.lp.readformNote +"</div>"+
@@ -920,7 +922,7 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
     setDefaultFormContent: function(){
         this.formEditformInput = this.formTableArea.getElement("#formEditform");
         if( this.isNew ){
-        this.formEditformInput.addEvent("click", function(){
+            this.formEditformInput.addEvent("click", function(){
                this.selectDefaultForm(function (object) {
                     this.editformTemplate = object;
                     this.formEditformInput.set("value", object.title);
@@ -940,15 +942,42 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
         }else{
             this.createFormSelect(this.formReadformInput, "read");
         }
-        // if( this.data.defaultReadForm || this.data.defaultEditForm){
-        //     if( this.data.defaultEditForm )this.getFormName(this.data.defaultEditForm, function (name) {
-        //         this.formEditformInput.set("value", name);
-        //     }.bind(this))
-        //
-        //     if( this.data.defaultReadForm )this.getFormName(this.data.defaultReadForm, function (name) {
-        //         this.formReadformInput.set("value", name);
-        //     }.bind(this))
-        // }
+        if(this.isNew){
+            this.listFormTemplate(function () {
+                this.formTemplateList.each(function(form){
+                    if(form.defaultEditForm){
+                        this.editformTemplate = {"template": form.name, "title": form.title, "type":"default"};
+                        this.formEditformInput.set("value", form.title);
+                    }
+                    if(form.defaultReadForm){
+                        this.readformTemplate = {"template": form.name, "title": form.title, "type":"default"};
+                        this.formReadformInput.set("value", form.title);
+                    }
+                }.bind(this))
+            }.bind(this))
+            this.formTableArea.getElement("#formClearEditform").addEvent("click", function(){
+                this.editformTemplate = null;
+                this.formEditformInput.set("value", "");
+            }.bind(this))
+            this.formTableArea.getElement("#formClearReadform").addEvent("click", function(){
+                this.readformTemplate = null;
+                this.formReadformInput.set("value", "");
+            }.bind(this))
+        }
+    },
+    listFormTemplate: function(callback){
+        if (this.formTemplateList){
+            if (callback) callback();
+        }else{
+            if( !MWF.xApplication.cms.ColumnManager || !MWF.xApplication.cms.ColumnManager.LP ){
+                MWF.requireApp("cms.ColumnManager", "lp."+o2.language, null, false);
+            }
+            var url = "../x_component_cms_FormDesigner/Module/Form/template/templates.json";
+            MWF.getJSON(url, function(json){
+                this.formTemplateList = json;
+                if (callback) callback();
+            }.bind(this));
+        }
     },
     createFormSelect: function(selectNode, type){
         this.listForm(function () {

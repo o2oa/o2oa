@@ -1,3 +1,4 @@
+MWF.xApplication.cms.ColumnManager = MWF.xApplication.cms.ColumnManager || {};
 MWF.xApplication.cms.ColumnManager.LP = {
     "title": "Content Management Column Settings",
     "categoryTitle": "Category Management",
