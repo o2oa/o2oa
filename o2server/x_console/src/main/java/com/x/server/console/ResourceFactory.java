@@ -89,9 +89,8 @@ public class ResourceFactory {
 	}
 
 	/**
-	 * 需要将custom模块中的entity加入到扫描目录中, <br/>
-	 * 所以需要对custom中的web-inf/classes目录下的实体类进行扫描<br/>
-	 * 先把war解压到临时目录然后读取classes目录下的类
+	 * 需要将custom模块中的entity加入到扫描目录中,
+	 * 所以需要对custom中的web-inf/classes目录下的实体类进行扫描,先把war解压到临时目录然后读取classes目录下的类
 	 * 
 	 * @return
 	 * @throws Exception
@@ -245,7 +244,7 @@ public class ResourceFactory {
 		ExecutorService[] services = new ExecutorService[Config.processPlatform().getExecutorCount()];
 		for (int i = 0; i < Config.processPlatform().getExecutorCount(); i++) {
 			// 等价于 Executors.newFixedThreadPool
-			services[i] = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
+			services[i] = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(),
 					new BasicThreadFactory.Builder().namingPattern("ProcessPlatformExecutor-" + i).daemon(true)
 							.build());
 		}
