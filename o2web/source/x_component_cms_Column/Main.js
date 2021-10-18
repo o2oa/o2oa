@@ -762,7 +762,7 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
     options: {
         "style": "blue",
         "width": "650",
-        "height": "500",
+        "height": "630",
         "hasTop": true,
         "hasIcon": false,
         "hasTopContent" : true,
@@ -772,18 +772,8 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
         "closeAction": true
     },
     _createTableContent: function () {
-
-        if (!this.isNew) {
-            var columnName = this.data.appName;
-            var alias = this.data.appAlias || "";
-            var memo = this.data.description;
-            var order = this.data.appInfoSeq;
-            var creator = this.data.creatorUid;
-            var createTime = this.data.createTime;
-            var type = this.data.appType || "";
-            //var icon = this.data.appIcon;
-            //if( !icon || icon == "")icon = this.app.defaultColumnIcon;
-        } else {
+        MWF.xDesktop.requireApp("Template", "MDomItem", null, false);
+        if (this.isNew) {
             var columnName = "";
             var alias = "";
             var memo = "";
@@ -792,40 +782,89 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
             var icon = "";
             var createTime = "";
             var type = "";
+            var editform = "";
+            var readform = "";
+        } else {
+            var columnName = this.data.appName;
+            var alias = this.data.appAlias || "";
+            var memo = this.data.description;
+            var order = this.data.appInfoSeq;
+            var creator = this.data.creatorUid;
+            var createTime = this.data.createTime;
+            var type = this.data.appType || "";
+            var editform = this.data.defaultEditForm || "";
+            var readform = this.data.defaultReadForm || "";
         }
 
-
-        var html = "<table width=\"100%\" height=\"90%\" border=\"0\" cellPadding=\"0\" cellSpacing=\"0\">" +
-            "<tr><td style=\"font-size:16px; height: 40px; line-height: 40px; text-align: left; min-width: 60px; width:20%\">" +
-            this.lp.nameLabel + "：</td>" +
-            "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnName\" " +
-            "style=\"width: 95%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            "height: 26px;\" value=\"" + columnName + "\"/></td></tr>" +
-            "<tr><td style=\"font-size:16px; height: 40px; line-height: 40px;  text-align: left\">" + this.lp.aliasLabel + "：</td>" +
-            "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnAlias\" " +
-            "style=\"width: 95%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            "height: 26px;\" value=\"" + alias + "\"/></td></tr>" +
-            "<tr><td style=\"font-size:16px; height: 40px; line-height: 40px;  text-align: left\">" + this.lp.descriptionLabel + "：</td>" +
-            "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnDescription\" " +
-            "style=\"width: 95%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            "height: 26px;\" value=\"" + memo + "\"/></td></tr>" +
-            "<tr><td style=\"font-size:16px; height: 40px; line-height: 40px;  text-align: left\">" + this.lp.sortLabel + "：</td>" +
-            "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnSort\" " +
-            "style=\"width: 95%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            "height: 26px;\" value=\"" + order + "\"/></td></tr>" +
-            "<tr><td style=\"font-size:16px; height: 40px; line-height: 40px;  text-align: left\">" + this.lp.typeLabel + "：</td>" +
-            "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnType\" " +
-            "style=\"width: 95%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            "height: 26px;\" value=\"" + type + "\"/></td></tr>" +
-            "<tr><td style=\"font-size:16px; height: 40px; line-height: 40px;  text-align: left\">" + this.lp.iconLabel + "：</td>" +
-            "<td style=\"; text-align: right;\"><div id='formIconPreview'></div><div id='formChangeIconAction'></div></td></tr>" +
-
+        var inputStyle = "width: 96%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; height: 26px";
+        var titleStyle = "font-size:16px; height: 40px; line-height: 40px;  text-align: left";
+        var contentStyle = "text-align: left;"
+        var clearStyle = "position:absolute;cursor:pointer;width:26px;height:26px;right:10px;top:1px;background:url(../x_component_Template/$MPopupForm/report/icon/icon_off.png) center center no-repeat"
+        var inputFormStyle = "width: calc( 96% - 20px);  border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; height: 26px; padding-right:20px;";
+        var html = "<table width='100%' height='90%' border='0' cellPadding='0' cellSpacing='0'>" +
+            "<tr>" +
+            "   <td style='font-size:16px; height: 40px; line-height: 40px; text-align: left; min-width: 80px; width:26%'>" + this.lp.nameLabel + "：</td>" +
+            "   <td style='"+contentStyle+"'>" +
+            "       <input type='text' id='createColumnName' style='"+inputStyle+"' value='" + columnName + "'/>" +
+            "   </td>" +
+            "</tr>" +
+            "<tr>" +
+            "   <td style='"+titleStyle+"'>" + this.lp.aliasLabel + "：</td>" +
+            "   <td style='"+contentStyle+"'>" +
+            "       <input type='text' id='createColumnAlias' style='"+inputStyle+"' value='" + alias + "'/>" +
+            "   </td>" +
+            "</tr>" +
+            "<tr>" +
+            "   <td style='"+titleStyle+"'>" + this.lp.descriptionLabel + "：</td>" +
+            "   <td style='"+contentStyle+"'>" +
+            "       <input type='text' id='createColumnDescription' style='"+inputStyle+"' value='" + memo + "'/>" +
+            "   </td>" +
+            "</tr>" +
+            "<tr>" +
+            "   <td style='"+titleStyle+"'>" + this.lp.sortLabel + "：</td>" +
+            "   <td style='"+contentStyle+"'>" +
+            "       <input type='text' id='createColumnSort' style='"+inputStyle+"' value='" + order + "'/>" +
+            "   </td>" +
+            "</tr>" +
+            "<tr>" +
+            "   <td style='"+titleStyle+"'>" + this.lp.typeLabel + "：</td>" +
+            "   <td style='"+contentStyle+"'>" +
+            "       <input type='text' id='createColumnType' style='"+inputStyle+"' value='" + type + "'/>" +
+            "   </td>" +
+            "</tr>" +
+            "<tr>" +
+            "   <td style='"+titleStyle+"'>" + this.lp.editform + "：</td>" +
+            "   <td style='"+contentStyle+"'>" +
+            ( this.isNew ?
+             "       <div style='position: relative;'><input type='text' readonly id='formEditform' style='"+inputFormStyle+"' value='" + editform + "'/><div id='formClearEditform' style='"+clearStyle+"'></div></div>" :
+             "       <select id='formEditform' style='"+inputStyle+"'></select>"
+            ) +
+            "       <div style='text-align: left;padding-left: 2.5%;font-size: 14px;color:#999;margin-bottom: 5px;'>"+this.lp.editformNote +"</div>"+
+            "   </td>" +
+            "</tr>" +
+            "<tr>" +
+            "   <td style='"+titleStyle+"'>" + this.lp.readform + "：</td>" +
+            "   <td style='"+contentStyle+"'>" +
+                ( this.isNew ?
+            "       <div style='position: relative;'><input type='text' readonly id='formReadform' style='"+inputFormStyle+"' value='" + readform + "'/><div id='formClearReadform' style='"+clearStyle+"'></div></div>" :
+            "       <select id='formReadform' style='"+inputStyle+"'></select>"
+                ) +
+            "       <div style='text-align: left;padding-left: 2.5%;font-size: 14px;color:#999;margin-bottom: 5px;'>"+this.lp.readformNote +"</div>"+
+            "   </td>" +
+            "</tr>" +
+            "<tr>" +
+            "   <td style='"+titleStyle+"'>" + this.lp.iconLabel + "：</td>" +
+            "   <td style='"+contentStyle+"'>" +
+            "       <div id='formIconPreview'></div>" +
+            "       <div id='formChangeIconAction'></div>" +
+            "   </td>" +
+            "</tr>" +
             "</table>";
         this.formTableArea.set("html", html);
 
         this.setContent();
         this.setIconContent();
-
+        this.setDefaultFormContent();
     },
     _setCustom: function(){
         this.formTableContainer.setStyles({
@@ -880,6 +919,120 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
             this.changeIcon();
         }.bind(this));
     },
+    setDefaultFormContent: function(){
+        this.formEditformInput = this.formTableArea.getElement("#formEditform");
+        if( this.isNew ){
+            this.formEditformInput.addEvent("click", function(){
+               this.selectDefaultForm(function (object) {
+                    this.editformTemplate = object;
+                    this.formEditformInput.set("value", object.title);
+               }.bind(this))
+            }.bind(this))
+        }else{
+            this.createFormSelect(this.formEditformInput, "edit")
+        }
+        this.formReadformInput = this.formTableArea.getElement("#formReadform");
+        if( this.isNew ) {
+            this.formReadformInput.addEvent("click", function () {
+                this.selectDefaultForm(function (object) {
+                    this.readformTemplate = object;
+                    this.formReadformInput.set("value", object.title);
+                }.bind(this))
+            }.bind(this))
+        }else{
+            this.createFormSelect(this.formReadformInput, "read");
+        }
+        if(this.isNew){
+            this.listFormTemplate(function () {
+                this.formTemplateList.each(function(form){
+                    if(form.defaultEditForm){
+                        this.editformTemplate = {"template": form.name, "title": form.title, "type":"default"};
+                        this.formEditformInput.set("value", form.title);
+                    }
+                    if(form.defaultReadForm){
+                        this.readformTemplate = {"template": form.name, "title": form.title, "type":"default"};
+                        this.formReadformInput.set("value", form.title);
+                    }
+                }.bind(this))
+            }.bind(this))
+            this.formTableArea.getElement("#formClearEditform").addEvent("click", function(){
+                this.editformTemplate = null;
+                this.formEditformInput.set("value", "");
+            }.bind(this))
+            this.formTableArea.getElement("#formClearReadform").addEvent("click", function(){
+                this.readformTemplate = null;
+                this.formReadformInput.set("value", "");
+            }.bind(this))
+        }
+    },
+    listFormTemplate: function(callback){
+        if (this.formTemplateList){
+            if (callback) callback();
+        }else{
+            if( !MWF.xApplication.cms.ColumnManager || !MWF.xApplication.cms.ColumnManager.LP ){
+                MWF.requireApp("cms.ColumnManager", "lp."+o2.language, null, false);
+            }
+            var url = "../x_component_cms_FormDesigner/Module/Form/template/templates.json";
+            MWF.getJSON(url, function(json){
+                this.formTemplateList = json;
+                if (callback) callback();
+            }.bind(this));
+        }
+    },
+    createFormSelect: function(selectNode, type){
+        this.listForm(function () {
+            new Element("option", {
+                "text": "",
+                "value": "",
+            }).inject(selectNode)
+            this.formList.each(function (form) {
+                var selected = false;
+                if( type === "edit" ){
+                    if( this.data.defaultEditForm === form.id )selected = true;
+                }else{
+                    if( this.data.defaultReadForm === form.id )selected = true;
+                }
+                new Element("option", {
+                    "text": form.name,
+                    "value": form.id,
+                    "selected": selected
+                }).inject(selectNode)
+            }.bind(this))
+        }.bind(this))
+        this.addEvent("queryClose", function () {
+            selectNode.destroy();
+        }.bind(this))
+    },
+    getFormName: function(id, callback){
+        this.listForm(function(){
+            for( var i=0; i<this.formList.length; i++ ){
+                if( this.formList[i].id === id )callback(this.formList[i].appName);
+            }
+            callback("")
+        }.bind(this))
+    },
+    listForm: function( callback ){
+        if( this.formList ){
+            callback( this.formList );
+            return;
+        }
+        this.app.restActions.listForm(this.data.id, function(json){
+            this.formList = json.data;
+            callback( this.formList );
+        }.bind(this));
+    },
+    selectDefaultForm: function(callback){
+        var _self = this;
+        MWF.requireApp("cms.ColumnManager", "widget.CMSFormTemplateSelector", null, false);
+        new MWF.xApplication.cms.ColumnManager.CMSFormTemplateSelector(this.app, {
+            onSelectDefaultForm: function (template, title) {
+                if(callback)callback({"template": template, "title": title, "type":"default"})
+            },
+            onSelectForm: function (template, title) {
+                if(callback)callback({"template": template, "title": title})
+            }
+        }).load();
+    },
 
     cancel: function (e) {
         this.fireEvent("queryCancel");
@@ -916,6 +1069,14 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
             "appInfoSeq": this.sortInput.get("value"),
             "appType" : this.typeInput.get("value")
         };
+        if( !this.isNew ){
+            this.formEditformInput.getElements("option").each(function (option) {
+                if(option.selected)data.defaultEditForm = option.value;
+            })
+            this.formReadformInput.getElements("option").each(function (option) {
+                if(option.selected)data.defaultReadForm = option.value;
+            })
+        }
         if( this.data && this.data.appIcon )data.appIcon = this.data.appIcon;
         if (!data.appName) {
             this.app.notice( this.lp.inputName );
@@ -954,14 +1115,17 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
             }.bind(this);
 
             this.app.restActions.saveColumn(data, function (json) {
+                if(!data)data.id = json.data.id;
                 if (json.type == "error") {
                     this.app.notice(json.message, "error");
                 } else {
-                    if (this.formData) {
-                        this.saveIcon(json.data.id, callback);
-                    } else {
-                        callback( json.data.id );
-                    }
+                    this.saveForm(data, function () {
+                        if (this.formData) {
+                            this.saveIcon(json.data.id, callback);
+                        } else {
+                            callback( json.data.id );
+                        }
+                    }.bind(this))
                 }
                 //    this.app.processConfig();
             }.bind(this), function( errorObj ){
@@ -1018,6 +1182,118 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
             this.formData = null;
             if (callback)callback( id );
         }.bind(this), null, this.formData, this.file);
+    },
+    saveForm: function ( columnData, callback ) {
+        var editDone, readDone;
+        var editFormId, readFormId;
+        var saveColumn = function () {
+            if( editFormId || readFormId ){
+                columnData.defaultEditForm = editFormId;
+                columnData.defaultReadForm = readFormId;
+                this.app.restActions.saveColumn(columnData, function (json) {
+                    callback()
+                }.bind(this), function( errorObj ){
+                    var error = JSON.parse( errorObj.responseText );
+                    this.app.notice( error.message || json.userMessage, "error" );
+                }.bind(this));
+            }else{
+                callback()
+            }
+        }.bind(this)
+        var saveEditDone = function (formId) {
+            editFormId = formId;
+            editDone = true;
+            if( editDone && readDone )saveColumn(editFormId, readFormId);
+        }.bind(this)
+
+        var saveReadDone = function (formId) {
+            readFormId = formId;
+            readDone = true;
+            if( editDone && readDone )saveColumn(editFormId, readFormId);
+        }.bind(this)
+
+        if( this.editformTemplate ){
+            if( this.editformTemplate.type === "default" ){
+                this.saveNewFormData( columnData, this.editformTemplate.template, saveEditDone )
+            }else{
+                this.saveNewFormDataFormTemplate( columnData, this.editformTemplate.template, saveEditDone )
+            }
+        }else{
+            saveEditDone();
+        }
+        if( this.readformTemplate ){
+            if( this.readformTemplate.type === "default" ){
+                this.saveNewFormData( columnData, this.readformTemplate.template, saveReadDone )
+            }else{
+                this.saveNewFormDataFormTemplate( columnData, this.readformTemplate.template, saveReadDone )
+            }
+        }else{
+            saveReadDone();
+        }
+    },
+    saveNewFormData: function(columnData, templateId, callback){
+        var url = "../x_component_cms_FormDesigner/Module/Form/template/"+templateId;
+        //MWF.getJSON("../x_component_process_FormDesigner/Module/Form/template.json", {
+        MWF.getJSON(url, {
+            "onSuccess": function(obj){
+                if (obj) this.saveFormAsNew(columnData, obj, callback)
+            }.bind(this),
+            "onerror": function(text){
+                this.notice(text, "error");
+            }.bind(this),
+            "onRequestFailure": function(xhr){
+                this.notice(xhr.responseText, "error");
+            }.bind(this)
+        });
+    },
+    saveNewFormDataFormTemplate: function(columnData, templateId, callback){
+        this.actions.getFormTemplate(templateId, function(form){
+            if (form) this.saveFormAsNew(columnData, form, callback)
+        }.bind(this));
+    },
+    saveFormAsNew: function(columnData, form, success, failure) {
+        debugger;
+
+        var id = columnData.id;
+        var name = columnData.appName;
+
+        var pcdata, mobiledata;
+        if (form.data) {
+            if (form.data.data) pcdata = JSON.decode(MWF.decodeJsonString(form.data.data));
+            if (form.data.mobileData) mobiledata = JSON.decode(MWF.decodeJsonString(form.data.mobileData));
+        } else {
+            pcdata = form.pcData;
+            mobiledata = form.mobileData;
+        }
+
+        if (pcdata){
+            pcdata.id = "";
+            pcdata.isNewForm = true;
+            pcdata.json.id = "";
+            pcdata.json.application = id;
+            pcdata.json.applicationName = name;
+            pcdata.json.appId = id;
+            pcdata.json.appName = name;
+            // pcdata.json.alias = "";
+            pcdata.json.name = pcdata.json.name.replace("模板", "")
+        }
+
+        if(mobiledata){
+            mobiledata.json.id = "";
+            mobiledata.json.application = id;
+            mobiledata.json.applicationName = name;
+            mobiledata.applicationName = name;
+            mobiledata.json.appId = id;
+            mobiledata.json.appName = name;
+            // mobiledata.json.alias = "";
+            mobiledata.json.name = pcdata.json.name
+        }
+
+        this.app.restActions.saveForm(pcdata, mobiledata, form.fieldList, function(json){
+            if (success) success(json.data.id);
+        }.bind(this), function(){
+            if (failure) failure();
+        }.bind(this));
     }
 
 });

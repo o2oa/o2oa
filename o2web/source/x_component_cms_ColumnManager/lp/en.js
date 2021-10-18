@@ -1,3 +1,4 @@
+MWF.xApplication.cms.ColumnManager = MWF.xApplication.cms.ColumnManager || {};
 MWF.xApplication.cms.ColumnManager.LP = {
     "title": "Content Management Column Settings",
     "categoryTitle": "Category Management",
@@ -166,6 +167,10 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "appType": "AppInfo Type",
         "ignoreTitle": "Ignore Title",
         "latest": "Check Draft",
+        "defaultEditForm": "Default Edit Form",
+        "defaultReadForm": "Default Read Form",
+        "editformNote": "Note: The default edit form when creating a category",
+        "readformNote": "Note: The default reading form when creating a category, if not selected, it will be the same as the editing form",
         viewerSetting: {
             title: "Visible Range",
             set: "Set visible range",

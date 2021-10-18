@@ -19,7 +19,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
     options: {
         /**
          * 视图参数（options）已经准备好，还未加载视图时执行。可以通过this.event得到视图参数，并可修改this.event修改视图的加载。
-         * @event MWF.xApplication.process.Xform.View#beforeLoadView
+         * @event MWF.xApplication.process.Xform.Statement#beforeLoadView
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
