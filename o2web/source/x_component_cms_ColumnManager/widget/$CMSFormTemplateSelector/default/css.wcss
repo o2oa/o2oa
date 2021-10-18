@@ -1,0 +1,134 @@
+{
+	"createTemplateMaskNode": {
+		"width": "100%",
+		"height": "100%",
+		"background-color": "#666",
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"opacity": 0.4,
+		"z-index":100
+	},
+	"createTemplateAreaNode": {
+		"width": "688px",
+		"height": "226",
+		"border": "3px solid #999",
+		"border-radius": "12px",
+		"box-shadow": "0px 0px 10px #999",
+		"position": "absolute",
+		"top": "20%",
+		"left": "10%",
+		"z-index": "30000",
+		"background-color": "#FFF",
+		"opacity": 0
+	},
+	"createFormTemplateAreaNode": {
+		"width": "90%",
+		"height": "90%",
+		"border": "3px solid #999",
+		"border-radius": "12px",
+		"box-shadow": "0px 0px 10px #999",
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"z-index": "200",
+		"background-color": "#F7F7F7",
+		"opacity": 0
+	},
+	"createTemplateFormTitleNode": {
+		"height": "50px",
+		"line-height": "50px",
+		"padding": "0px 30px",
+		"color": "#666666",
+		"font-size": "28px",
+		"margin-top": "10px",
+		"font-weight": "bold"
+	},
+	"createTemplateFormCategoryNode": {
+		"margin-top": "10px",
+		"padding": "0px 30px",
+		"overflow": "hidden"
+	},
+	"createTemplateFormCategoryTitleNode": {
+		"float": "left",
+		"height": "24px",
+		"line-height": "24px",
+		"font-size": "16px",
+		"color": "#666",
+		"font-weight": "bold",
+		"margin-right": "10px"
+	},
+	"createTemplateFormCategoryItemNode":{
+		"float": "left",
+		"height": "24px",
+		"line-height": "24px",
+		"font-size": "16px",
+		"color": "#666",
+		"font-weight": "bold",
+		"margin-right": "10px",
+		"cursor": "pointer"
+	},
+	"createTemplateFormCategoryItemNode_current": {
+		"color": "#0000FF"
+	},
+	"createTemplateFormContentNode": {
+		"overflow": "auto"
+	},
+	"formTemplateNode": {
+		"margin-top": "30px",
+		"margin-left": "30px",
+		"float": "left",
+		"width": "160px",
+		"height": "180px",
+		"cursor": "pointer",
+		"border": "2px solid #F7F7F7",
+		//"border-radius": "10px",
+		"box-shadow": "0px 0px 0px #999",
+		"background-color": "#F7F7F7"
+	},
+	"formTemplateNode_over": {
+		"border": "2px solid #bbb",
+		"box-shadow": "0px 0px 5px #999",
+		"background-color": "#bbb"
+	},
+	"formTemplateNode_down": {
+		"border-top": "2px solid #bbb",
+		"border-left": "2px solid #bbb",
+		"border-bottom": "2px solid #F7F7F7",
+		"border-right": "2px solid #F7F7F7",
+		"box-shadow": "0px 0px 0px #999"
+	},
+	"formTemplateIconNode": {
+		"height": "135px",
+		"width": "150px",
+		"margin": "5px auto 0px auto"
+	},
+	"formTemplatePreviewNode": {
+		"height": "135px",
+		"width": "150px",
+		"margin": "5px auto 0px auto",
+		"position": "relative",
+		"overflow": "hidden"
+	},
+	"formTemplateActionNode":{
+		"width": "16px",
+		"height": "16px",
+		"position": "absolute",
+		"top": "0px",
+		"right": "0px",
+		"background": "url("+"../x_component_process_ProcessManager/$Explorer/default/formIcon/delete.png) no-repeat center center",
+		"display": "none"
+	},
+
+	"formTemplateTitleNode": {
+		"height": "30px",
+		"line-height": "30px",
+		"text-align": "center",
+		"font-size": "14px"
+	},
+	"formTemplateIconImgNode": {
+		"width": "100%",
+		"height": "100%"
+		//"border-radius": "10px"
+	}
+}
