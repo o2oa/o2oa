@@ -117,7 +117,7 @@ public class Main {
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
 		Log4j2Configuration.reconfigure();
-		ResourceFactory.bind();
+		ResourceFactory.init();
 		CommandFactory.printStartHelp();
 		// 初始化hadoop环境
 		Hadoop.init();
@@ -433,7 +433,9 @@ public class Main {
 
 	private static void exit() {
 		stopAll();
+		ResourceFactory.destory();
 		System.exit(0);
+
 	}
 
 	private static void restart() {
