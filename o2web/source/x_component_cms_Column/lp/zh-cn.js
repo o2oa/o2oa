@@ -29,6 +29,10 @@ MWF.xApplication.cms.Column.LP = {
 		"sortLabel" : "栏目排序",
 		"iconLabel" : "栏目图标",
 		"typeLabel" : "栏目类型",
+		"editform": "默认编辑表单",
+		"editformNote": "注：创建分类时的默认编辑表单",
+		"readform": "默认阅读表单",
+		"readformNote": "注：创建分类时的默认阅读表单，如果不选则和编辑表单一致",
 		"cancel" : "取消",
 		"ok" : "确定",
 		"inputName":"请输入栏目名称",
@@ -45,7 +49,18 @@ MWF.xApplication.cms.Column.LP = {
 		"category" : "分类",
 		"form" : "表单",
 		"export" : "导出栏目",
-		"changeIcon" : "更改图标"
+		"changeIcon" : "更改图标",
+	},
+
+	"createSelectTemplate": "选择表单模板",
+	"templateCategory": "模板分类：",
+	"all": "全部",
+
+	"formType": {
+		"empty": "空白表单",
+		"publishEdit": "发布类编辑表单",
+		"publishRead": "发布类阅读表单",
+		"dataInput": "数据录入类表单"
 	},
 
 	"category" : {
