@@ -286,5 +286,28 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "checkDraftSelectText": ["新建界面检查草稿","新建界面不检查草稿"],
     "showAllDocumentSelectText": ["显示所有文档视图","隐藏所有文档视图"],
 
-    "selectRelateFormNotice": "请选择需粘贴视图的关联表单"
+    "selectRelateFormNotice": "请选择需粘贴视图的关联表单",
+
+    "projectionTitle": "映射业务数据",
+    "projectionActionNode_add": "添加映射条目",
+    "projectionActionNode_modify": "修改映射条目",
+    "projectionDataName": "数据名称",
+    "projectionPath": "数据路径",
+    "projectionType":"数据类型",
+    "projectionInputError": "请输入数据名称和数据路径",
+    "projectionTypeCountError": "{type}类型的数据映射条目，最多允许{count}条。",
+    "projectionSameNameError": "相同的数据名称已存在",
+    "projectionDeleteItemTitle": "删除数据映射条目确认",
+    "projectionDeleteItem": "您确定要删除名为“{name}”，路径为“{path}”的数据映射条目吗？",
+    "projectionRunActionNode": "立即运行数据映射",
+    "projectionRunTitle": "立即执行确认",
+    "projectionRunText": "请确认立即执行数据映射",
+    "projectionRunSuccess": "数据映射已开始执行",
+    "projectionRunError": "不需要执行数据映射",
+
+    "mapping": "映射",
+    "mappingData": "映射业务数据",
+    "dataName": "数据名称",
+    "dataPath": "数据路径",
+    "dataType": "数据类型"
 };
