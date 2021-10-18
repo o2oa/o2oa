@@ -196,8 +196,13 @@ public class ResourceFactory {
 		return list;
 	}
 
+	/**
+	 * internal 使用的是H2 server,在执行close dataserver已经完成了数据库关闭,dataSource无法destory.
+	 * 
+	 * @throws Exception
+	 */
 	private static void internal() throws Exception {
-		dataSources.addAll(internalDriudC3p0());
+		internalDriudC3p0();
 	}
 
 	/**
