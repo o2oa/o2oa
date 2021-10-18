@@ -14,8 +14,9 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.NamingException;
 
@@ -50,23 +51,33 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 
+/**
+ * 
+ * @author ray
+ *
+ */
 public class ResourceFactory {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceFactory.class);
 
 	private static final int TOKENTHRESHOLDSMAXSIZE = 2000;
 
+	/**
+	 * 用于销毁时的对象
+	 */
+	private static List<DruidDataSourceC3P0Adapter> dataSources = new ArrayList<>();
+
 	private ResourceFactory() {
 		// nothing
 	}
 
-	public static void bind() throws Exception {
+	public static void init() throws Exception {
 		ClassLoader cl = ClassLoaderTools.urlClassLoader(true, false, true, true, true, unzipCustomWar());
 		try (ScanResult sr = new ClassGraph().addClassLoader(cl).enableAnnotationInfo().scan()) {
-			node(cl, sr);
+			node();
 			containerEntities(cl, sr);
-			containerEntityNames(cl, sr);
-			stroageContainerEntityNames(cl, sr);
+			containerEntityNames(sr);
+			stroageContainerEntityNames(sr);
 		}
 		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();
@@ -77,12 +88,21 @@ public class ResourceFactory {
 		tokenThresholds();
 	}
 
+	/**
+	 * 需要将custom模块中的entity加入到扫描目录中, <br/>
+	 * 所以需要对custom中的web-inf/classes目录下的实体类进行扫描<br/>
+	 * 先把war解压到临时目录然后读取classes目录下的类
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	private static Path[] unzipCustomWar() throws Exception {
 		FileUtils.cleanDirectory(Config.dir_local_temp_custom(true));
 		List<String> list = new ArrayList<>();
 		File dir = Config.dir_custom(true);
-		if (null != dir) {
-			for (String str : dir.list(new WildcardFileFilter("*" + PathTools.DOT_WAR))) {
+		String[] wars = dir.list(new WildcardFileFilter("*" + PathTools.DOT_WAR));
+		if (null != wars) {
+			for (String str : wars) {
 				list.add(FilenameUtils.getBaseName(str));
 			}
 		}
@@ -97,20 +117,20 @@ public class ResourceFactory {
 		return paths.toArray(new Path[paths.size()]);
 	}
 
-	private static void node(ClassLoader classLoader, ScanResult sr) throws Exception {
+	private static void node() throws Exception {
 		LinkedBlockingQueue<JsonElement> eventQueue = new LinkedBlockingQueue<>();
 		EventQueueExecutor eventQueueExecutor = new EventQueueExecutor(eventQueue);
 		eventQueueExecutor.start();
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUE, eventQueue);
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUEEXECUTOR, eventQueueExecutor);
-		new Resource(Config.RESOURCE_NODE_APPLICATIONS, new ConcurrentHashMap<String, Object>());
+		new Resource(Config.RESOURCE_NODE_APPLICATIONS, new ConcurrentHashMap<String, Object>(10));
 		Entry<String, CenterServer> entry = Config.nodes().centerServers().first();
 		Config.resource_node_centersPirmaryNode(entry.getKey());
 		Config.resource_node_centersPirmaryPort(entry.getValue().getPort());
 		Config.resource_node_centersPirmarySslEnable(entry.getValue().getSslEnable());
 	}
 
-	private static void containerEntityNames(ClassLoader classLoader, ScanResult sr) throws Exception {
+	private static void containerEntityNames(ScanResult sr) throws NamingException {
 		List<String> list = new ArrayList<>();
 		for (ClassInfo info : sr.getClassesWithAnnotation(ContainerEntity.class.getName())) {
 			list.add(info.getName());
@@ -119,7 +139,7 @@ public class ResourceFactory {
 		new Resource(Config.RESOURCE_CONTAINERENTITYNAMES, ListUtils.unmodifiableList(list));
 	}
 
-	private static void stroageContainerEntityNames(ClassLoader classLoader, ScanResult sr) throws Exception {
+	private static void stroageContainerEntityNames(ScanResult sr) throws NamingException {
 		List<String> list = new ArrayList<>();
 		for (ClassInfo info : sr.getClassesWithAnnotation(Storage.class.getName())) {
 			list.add(info.getName());
@@ -128,7 +148,8 @@ public class ResourceFactory {
 		new Resource(Config.RESOURCE_STORAGECONTAINERENTITYNAMES, ListUtils.unmodifiableList(list));
 	}
 
-	private static void containerEntities(ClassLoader classLoader, ScanResult sr) throws Exception {
+	private static void containerEntities(ClassLoader classLoader, ScanResult sr)
+			throws NamingException, ClassNotFoundException {
 		Map<String, List<String>> map = new TreeMap<>();
 		for (ClassInfo info : sr.getClassesWithAnnotation(Module.class.getName())) {
 			Class<?> cls = classLoader.loadClass(info.getName());
@@ -139,10 +160,11 @@ public class ResourceFactory {
 	}
 
 	private static void external() throws Exception {
-		external_druid_c3p0();
+		dataSources.addAll(externalDruidC3p0());
 	}
 
-	private static void external_druid_c3p0() throws Exception {
+	private static List<DruidDataSourceC3P0Adapter> externalDruidC3p0() throws Exception {
+		List<DruidDataSourceC3P0Adapter> list = new ArrayList<>();
 		for (ExternalDataSource ds : Config.externalDataSources()) {
 			if (BooleanUtils.isNotTrue(ds.getEnable())) {
 				continue;
@@ -170,14 +192,26 @@ public class ResourceFactory {
 			dataSource.setAutoCommitOnClose(ds.getAutoCommit());
 			String name = Config.externalDataSources().name(ds);
 			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
+			list.add(dataSource);
 		}
+		return list;
 	}
 
 	private static void internal() throws Exception {
-		internal_driud_c3p0();
+		dataSources.addAll(internalDriudC3p0());
 	}
 
-	private static void internal_driud_c3p0() throws Exception {
+	/**
+	 * @author ray Druid DataSource 是需要close的.
+	 */
+	public static void destory() {
+		for (DruidDataSourceC3P0Adapter dataSource : dataSources) {
+			dataSource.close();
+		}
+	}
+
+	private static List<DruidDataSourceC3P0Adapter> internalDriudC3p0() throws Exception {
+		List<DruidDataSourceC3P0Adapter> list = new ArrayList<>();
 		for (Entry<String, DataServer> entry : Config.nodes().dataServers().entrySet()) {
 			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
 			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort()
@@ -202,22 +236,18 @@ public class ResourceFactory {
 			dataSource.setAutoCommitOnClose(false);
 			String name = Config.nodes().dataServers().name(entry.getValue());
 			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
+			list.add(dataSource);
 		}
+		return list;
 	}
-
-//	private static void auditLog() throws Exception {
-//		RolloverFileOutputStream rolloverFileOutputStream = new RolloverFileOutputStream(
-//				Config.dir_logs(true).getAbsolutePath() + "/yyyy_mm_dd.audit.log", true,
-//				Config.logLevel().audit().logSize());
-//		new Resource(Config.RESOURCE_AUDITLOGPRINTSTREAM,
-//				new PrintStream(rolloverFileOutputStream, true, DefaultCharset.name_iso_utf_8));
-//	}
 
 	private static void processPlatformExecutors() throws Exception {
 		ExecutorService[] services = new ExecutorService[Config.processPlatform().getExecutorCount()];
 		for (int i = 0; i < Config.processPlatform().getExecutorCount(); i++) {
-			services[i] = Executors.newFixedThreadPool(1, new BasicThreadFactory.Builder()
-					.namingPattern("ProcessPlatformExecutor-" + i).daemon(true).build());
+			// 等价于 Executors.newFixedThreadPool
+			services[i] = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
+					new BasicThreadFactory.Builder().namingPattern("ProcessPlatformExecutor-" + i).daemon(true)
+							.build());
 		}
 
 		new Resource(Config.RESOURCE_NODE_PROCESSPLATFORMEXECUTORS, services);
