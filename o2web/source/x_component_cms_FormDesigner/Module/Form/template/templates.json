@@ -7,12 +7,14 @@
   {
     "name": "form_publish_edit.json",
     "title": MWF.xApplication.cms.ColumnManager ? MWF.xApplication.cms.ColumnManager.LP.formType.publishEdit : MWF.xApplication.cms.FormDesigner.LP.formType.publishEdit,
-    "icon": "form_publish_edit.png"
+    "icon": "form_publish_edit.png",
+    "defaultEditForm": true
   },
   {
     "name": "form_publish_read.json",
     "title":MWF.xApplication.cms.ColumnManager ? MWF.xApplication.cms.ColumnManager.LP.formType.publishRead : MWF.xApplication.cms.FormDesigner.LP.formType.publishRead,
-    "icon": "form_publish_read.png"
+    "icon": "form_publish_read.png",
+    "defaultReadForm": true
   },
   {
     "name": "form_input.json",

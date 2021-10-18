@@ -1,3 +1,4 @@
+MWF.xApplication.cms.ColumnManager = MWF.xApplication.cms.ColumnManager || {};
 MWF.xApplication.cms.ColumnManager.LP = {
 	"title": "内容管理栏目设置",
 	"categoryTitle": "分类管理",
