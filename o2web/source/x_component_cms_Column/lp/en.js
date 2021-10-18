@@ -29,6 +29,10 @@ MWF.xApplication.cms.Column.LP = {
         "sortLabel": "Order",
         "iconLabel": "Icon",
         "typeLabel": "Type",
+        "editform": "Default edit form",
+        "editformNote": "The default edit form when creating a category",
+        "readform": "Default reading form",
+        "readformNote": "Note: The default reading form when creating a category, if not selected, it will be the same as the editing form",
         "cancel": "Cancel",
         "ok": "OK",
         "inputName":"Please enter the AppInfo name",
@@ -46,6 +50,17 @@ MWF.xApplication.cms.Column.LP = {
         "form": "Form",
         "export": "Export AppInfo",
         "changeIcon": "Change Icon"
+    },
+
+    "createSelectTemplate": "Select Form Template",
+    "templateCategory": "Template Category:",
+    "all": "All",
+
+    "formType": {
+        "empty": "Empty form",
+        "publishEdit": "Publish Edit Form",
+        "publishRead": "Publish Reading Form",
+        "dataInput": "Data input form"
     },
 
     "category": {
