@@ -1016,6 +1016,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         html += "<tr><td class='formTitle'>"+this.app.lp.application.showAllDocumentViews+"</td><td id='showAllDocumentViews' class='formValue'>"+(flag ? lp.showAllDocumentSelectText[0] : lp.showAllDocumentSelectText[1] )+"</td></tr>";
         // html += "<tr><td class='formTitle'>"+this.app.lp.application.type+"</td><td id='formApplicationType'></td></tr>";
         //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.defaultEditForm+"</td><td class='formValue'><div id='formDefaultEditForm'></div><span style='color: #aaaaaa;'>"+this.app.lp.application.editformNote+"</span></td></tr>";
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.defaultReadForm+"</td><td class='formValue'><div id='formDefaultReadForm'></div><span style='color: #aaaaaa;'>"+this.app.lp.application.readformNote+"</span></td></tr>";
         html += "</table>";
         this.propertyContentNode.set("html", html);
         this.propertyContentNode.getElements("td.formTitle").setStyles(this.app.css.propertyBaseContentTdTitle);
@@ -1063,6 +1065,33 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             selectText : lp.showAllDocumentSelectText
         });
 
+        this.app.restActions.listForm(this.data.id, function(json){
+            var textList = [""];
+            var valueList = [""];
+            debugger;
+            json.data.each(function (form) {
+                textList.push(form.name);
+                valueList.push(form.id);
+            }.bind(this));
+
+            this.defaultEditForm = new MDomItem( this.propertyContentNode.getElement("#formDefaultEditForm"), {
+                type : "select",
+                value : this.data.defaultEditForm || "",
+                selectValue : valueList,
+                selectText : textList
+            });
+            this.defaultEditForm.readMode();
+
+            this.defaultReadForm = new MDomItem( this.propertyContentNode.getElement("#formDefaultReadForm"), {
+                type : "select",
+                value : this.data.defaultReadForm || "",
+                selectValue : valueList,
+                selectText : textList
+            });
+            this.defaultReadForm.readMode()
+        }.bind(this));
+
+
         //this.typeInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationType"), this.data.applicationCategory, this.app.css.formInput);
     },
 
@@ -1106,6 +1135,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.latestSelect.editMode();
         this.ignoreTitleSelect.editMode();
         this.allDocumentViewSelect.editMode();
+        this.defaultEditForm.editMode();
+        this.defaultReadForm.editMode();
         //this.typeInput.editMode();
         this.isEdit = true;
     },
@@ -1119,6 +1150,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.latestSelect.readMode();
         this.ignoreTitleSelect.readMode();
         this.allDocumentViewSelect.readMode();
+        this.defaultEditForm.readMode();
+        this.defaultReadForm.readMode();
         //this.typeInput.readMode();
         this.isEdit = false;
     },
@@ -1173,6 +1206,10 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.data.documentType = this.typeSelect.getValue();
         this.data.showAllDocuments = this.allDocumentViewSelect.getValue() !== "false";
 
+        debugger;
+        this.data.defaultEditForm = this.defaultEditForm.getValue();
+        this.data.defaultReadForm = this.defaultReadForm.getValue();
+
         this.config.ignoreTitle = this.ignoreTitleSelect.getValue() !== "false";
         this.config.latest = this.latestSelect.getValue() !== "false";
 
@@ -1192,6 +1229,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             this.latestSelect.save();
             this.ignoreTitleSelect.save();
             this.allDocumentViewSelect.save();
+            this.defaultEditForm.save();
+            this.defaultReadForm.save();
             //this.typeInput.save();
             this.app.notice( this.app.lp.application.saveSuccess, "success");
 
