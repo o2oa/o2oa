@@ -483,7 +483,7 @@ Describe.createSample= function(m) {
 		});
 	}
 	
-	var strSample="";
+	var strSample= "var data = {};" + "\n";
 	if (m.contentType.indexOf('application/json') > -1) {
 			if (m.ins && m.ins.length > 0) {
 				strSample =  "var data = {};" + "\n";
