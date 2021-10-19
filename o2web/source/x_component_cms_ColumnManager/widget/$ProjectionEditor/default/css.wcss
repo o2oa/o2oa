@@ -7,7 +7,21 @@
         "font-size": "16px",
         "line-height": "40px",
         "clear": "both",
-        "border-bottom": "1px solid #ccc"
+        "border-bottom": "1px solid #ccc",
+        "position": "relative"
+    },
+    "runAction": {
+        "position": "absolute",
+        "border": "1px solid #ccc",
+        "padding": "0px 14px",
+        "top": "7px",
+        "right": "0px",
+        "color": "#888",
+        "height": "24px",
+        "line-height": "24px",
+        "border-radius": "3px",
+        "font-size": "12px",
+        "cursor": "pointer"
     },
     "projectionTable": {
         "width": "100%",
