@@ -146,7 +146,7 @@ o2.LP.desktop = {
     "logout": "注销",
     "safeLogout": "安全注销",
     "safeLogoutTitle": "安全注销确认",
-    "safeLogoutMessage": "安全注销将会退出您在所有设备的登陆状态，包括移动端和其他浏览器，\n\n是否确定安全注销?",
+    "safeLogoutMessage": "安全注销将会退出您在所有设备的登陆状态，包括移动端和其他浏览器，是否确定安全注销?",
     "userConfig": "个人设置",
     "userLanguage": "语言设置",
     "application": "组件",
