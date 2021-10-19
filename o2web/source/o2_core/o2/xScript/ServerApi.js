@@ -21,14 +21,32 @@
  * @o2syntax
  * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前流程实例数据，如下：
  * var context = this.workContext;
- * @borrows module:workContext.getWork as getWork
  * @borrows module:workContext.getActivity as getActivity
- * @borrows module:workContext.getTask as getTask
  * @borrows module:workContext.getControl as getControl
  * @borrows module:workContext.getWorkLogList as getWorkLogList
  * @borrows module:workContext.getRecordList as getRecordList
  * @borrows module:workContext.getAttachmentList as getAttachmentList
  * @borrows module:workContext.getRouteList as getRouteList
+ */
+/**
+ * 获取当前流程实例对象：work对象或workCompleted对象。
+ * @method getWork
+ * @static
+ * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象。
+ * @o2ActionOut x_processplatform_assemble_surface.WorkAction.manageGet|example=Work|ignoreNoDescr=true|ignoreProps=[properties]|Work对象:
+ * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompleted|ignoreProps=[properties]|WorkCompleted对象:
+ * @o2syntax
+ * var work = this.workContext.getWork();
+ */
+/**
+ * 当前流程实例正在流转中，并且当前用户有待办，则返回当前用户的待办对象，否则返回null。
+ * @summary 获取当前流程与当前用户相关的待办对象：task对象。
+ * @o2ActionOut x_processplatform_assemble_surface.TaskAction.get|example=Task|Task对象:
+ * @method getTask
+ * @static
+ * @return {(Task|Null)} 当前用户的待办任务对象：task。当前用户没有对此流程实例的待办时，或流程实例已经流转结束，返回null。
+ * @o2syntax
+ * var task = this.workContext.getTask();
  */
 /**
  * 获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。

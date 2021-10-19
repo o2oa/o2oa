@@ -237,6 +237,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "setSendNotifySuccess": "Set Send Messsage successfully",
     "setEditFormSuccess": "Set Edit Form Success",
     "setReadFormSuccess": "Set Read Form Success",
+    "setProjectionSuccess": "Set data mapping success",
     "inputCategoryNotice": "Please enter the category name",
     "noCategoryNotice": "Please create or select a category first",
     "saveCategoryNotice":"Please save the category first",

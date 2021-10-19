@@ -798,6 +798,13 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
             this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setReadFormSuccess );
         }.bind(this))
     },
+    saveProjection : function( projection ){
+        var d = this.data;
+        d.projection = projection;
+        this.app.restActions.saveCategory(  d, function( json ){
+            this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setProjectionSuccess );
+        }.bind(this))
+    },
     saveCategory : function(){
         var d = this.data || {};
         if( this.options.isNew ){
@@ -2748,7 +2755,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         MWF.xDesktop.requireApp("cms.ColumnManager", "widget.ProjectionEditor", function(){
             var projection = new MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor(this.projectionContentNode, this.category.data.projection, {
                 "onChange": function(){
-                    alert(JSON.encode(projection.getData()));
+                    this.category.saveProjection(JSON.encode(projection.getData()));
                 }.bind(this),
                 "category": this.category.data.id
             });

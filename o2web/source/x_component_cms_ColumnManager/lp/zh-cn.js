@@ -238,6 +238,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "setSendNotifySuccess": "设置是否发送消息成功",
     "setEditFormSuccess": "设置编辑表单成功",
     "setReadFormSuccess": "设置阅读表单成功",
+    "setProjectionSuccess": "设置数据映射成功",
     "inputCategoryNotice": "请输入分类名称",
     "noCategoryNotice": "请先新建或者选择分类",
     "saveCategoryNotice":"请先保存分类",

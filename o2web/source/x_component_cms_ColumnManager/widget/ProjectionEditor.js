@@ -241,6 +241,9 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor.Item = new Class({
         tds[2].set("text", this.data.type);
     },
     destroy: function(){
+        if( this.editor.currentItem === this ){
+           this.unSelected();
+        }
         this.tr.destroy();
         this.editor.data.erase(this.data);
         this.editor.fireEvent("change");
