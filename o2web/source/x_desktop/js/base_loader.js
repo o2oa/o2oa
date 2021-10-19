@@ -230,26 +230,83 @@ if (!layout.isReady) {
         var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js";
 
         if (o2.session.isDebugger && (o2.session.isMobile || layout.mobile)) o2.load("../o2_lib/eruda/eruda.js");
-        var loadModuls = function () {
+        var loadAllModules = function(error){
             _loadProgressBar();
             lpLoaded = true;
 
             var modules = ["o2.xDesktop.$all"];
             o2.require(modules, {
                 "onSuccess": function () {
-                    commonLoaded = true;
-                    if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () {
-                        _load();
+                    if (o2.xDesktop.getServiceAddress){
+                        commonLoaded = true;
+                        if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () {
+                            _load();
+                        });
+                    }else{
+                        if (error) error();
+                    }
+                },
+                "onFailure": function(){ if (error) error();},
+                "onEvery": function () {
+                    _loadProgressBar();
+                }
+            });
+        }
+        var loadO2Modules = function(){
+            _loadProgressBar();
+            lpLoaded = true;
+
+            var o2modules = ['o2.widget.Common',
+                'o2.widget.Dialog',
+                'o2.widget.UUID',
+                'o2.xDesktop.Common',
+                'o2.xDesktop.Actions.RestActions',
+                'o2.xAction.RestActions',
+                'o2.xDesktop.Access',
+                'o2.xDesktop.Dialog',
+                'o2.xDesktop.Menu',
+                'o2.xDesktop.UserData',
+                'o2.xDesktop.Authentication',
+                'o2.xDesktop.Dialog',
+                'o2.xDesktop.Window'];
+            o2.require(o2modules, {
+                "onSuccess": function () {
+                    var appmodules = [['Template', 'MPopupForm'], ['Common', 'Main']];
+                    o2.requireApp(appmodules, "", {
+                        "onSuccess": function(){
+                            if (o2.xDesktop.getServiceAddress){
+                                commonLoaded = true;
+                                if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () {
+                                    _load();
+                                });
+                            }
+                        },
+                        "onEvery": function () {
+                            _loadProgressBar();
+                        }
                     });
                 },
                 "onEvery": function () {
                     _loadProgressBar();
                 }
             });
+        }
+
+
+        var loadModuls = function () {
+            loadAllModules(loadO2Modules);
         };
 
+        debugger;
         if (!o2.LP) {
-            o2.load(lp, loadModuls);
+            o2.load(lp, function(m){
+                if (!m.length){
+                    var lp = "../o2_core/o2/lp/" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js";
+                    o2.load(lp,loadModuls);
+                }else{
+                    loadModuls();
+                }
+            });
         } else {
             loadModuls();
         }
