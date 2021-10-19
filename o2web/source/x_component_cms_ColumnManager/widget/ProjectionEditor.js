@@ -33,6 +33,18 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
         });
 
         this.titleNode = this.node.getFirst("div").setStyles(this.css.titleNode).set("text", MWF.xApplication.cms.ColumnManager.LP.projectionTitle);
+        this.runAction = new Element("div", {"styles": this.css.runAction, "text": MWF.xApplication.cms.ColumnManager.LP.projectionRunActionNode}).inject(this.titleNode);
+        this.runAction.addEvent("click", function(e){
+            var _self = this;
+            MWF.xDesktop.confirm("infor", e, MWF.xApplication.cms.ColumnManager.LP.projectionRunTitle, MWF.xApplication.cms.ColumnManager.LP.projectionRunText, 300, 120, function(){
+                _self.runProjection();
+                this.close();
+            }, function(){
+                this.close();
+            }, null, null, "o2");
+
+        }.bind(this));
+
         // this.titleNode = new Element("div", {"styles": this.css.titleNode}).inject(this.node);
         // this.titleNode.set("text", MWF.xApplication.cms.ColumnManager.LP.projectionTitle);
         this.contentNode = this.titleNode.getNext();
@@ -61,17 +73,6 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
         this.loadProjectionList();
         this.actionNode.addEvent("click", this.changeProjectionItem.bind(this));
 
-        // this.runAction = new Element("div", {"styles": this.css.actionNode, "text": MWF.xApplication.cms.ColumnManager.LP.projectionRunActionNode}).inject(this.node);
-        // this.runAction.addEvent("click", function(e){
-        //     var _self = this;
-        //     MWF.xDesktop.confirm("infor", e, MWF.xApplication.cms.ColumnManager.LP.projectionRunTitle, MWF.xApplication.cms.ColumnManager.LP.projectionRunText, 300, 120, function(){
-        //         _self.runProjection();
-        //         this.close();
-        //     }, function(){
-        //         this.close();
-        //     }, null, null, "o2");
-        //
-        // }.bind(this));
     },
     getHtml: function(){
         var html =
