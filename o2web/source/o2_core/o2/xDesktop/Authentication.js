@@ -80,15 +80,25 @@ MWF.xDesktop.Authentication = new Class({
             this.fireEvent("openLogin");
         }
     },
+    safeLogout: function(){
+        o2.Actions.get("x_organization_assemble_authentication").safeLogout(function () {
+            if (this.socket) {
+                this.socket.close();
+                this.socket = null;
+            }
+            if (layout.session && layout.session.user) layout.session.user.token = "";
+            if (sessionStorage) sessionStorage.removeItem("o2LayoutSessionToken");
+            window.location.reload();
+        }.bind(this));
+    },
     logout: function ( callback ) {
         MWF.Actions.get("x_organization_assemble_authentication").logout(function () {
             if (this.socket) {
                 this.socket.close();
                 this.socket = null;
             }
-            //Cookie.dispose("x-token");
             if (layout.session && layout.session.user) layout.session.user.token = "";
-            if (layout.config && layout.config.sessionStorageEnable) sessionStorage.removeItem("o2LayoutSessionToken");
+            if (sessionStorage) sessionStorage.removeItem("o2LayoutSessionToken");
             if( callback ){
                 callback();
             }else{
