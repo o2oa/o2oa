@@ -798,6 +798,13 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
             this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setReadFormSuccess );
         }.bind(this))
     },
+    saveProjection : function( projection ){
+        var d = this.data;
+        d.projection = projection;
+        this.app.restActions.saveCategory(  d, function( json ){
+            this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setProjectionSuccess );
+        }.bind(this))
+    },
     saveCategory : function(){
         var d = this.data || {};
         if( this.options.isNew ){
@@ -2415,6 +2422,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         this.contentNode =  new Element("div", {
             "styles": this.app.css.propertyContentNode
         }).inject(this.node);
+        this.contentNode.setStyle("overflow","auto");
         this.contentAreaNode =  new Element("div", {
             "styles": this.app.css.propertyContentAreaNode
         }).inject(this.contentNode);
@@ -2422,9 +2430,9 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         this.setContentHeight();
         this.setContentHeightFun = this.setContentHeight.bind(this);
         this.app.addEvent("resize", this.setContentHeightFun);
-        MWF.require("MWF.widget.ScrollBar", function(){
-            new MWF.widget.ScrollBar(this.contentNode, {"indent": false});
-        }.bind(this));
+        // MWF.require("MWF.widget.ScrollBar", function(){
+        //     new MWF.widget.ScrollBar(this.contentNode, {"indent": false});
+        // }.bind(this));
     },
     reload: function( category ){
         if(category)this.category = category;
@@ -2488,6 +2496,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         );
         this.viewerSetting.category = this.category;
         this.viewerSetting.load();
+
+        this.createProjectionContentNode();
     },
 
     saveProcessApp : function( appId, appName ){
@@ -2645,7 +2655,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
 
     createPropertyContentNode: function(){
 
-        this.propertyContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
+        this.propertyContentNode = new Element("div", {"styles": {"overflow": "hidden", "max-width":"900px"}}).inject(this.contentAreaNode);
 
         var html = "<table cellspacing='0' cellpadding='0' border='0' width='95%' align='center'>";
         html += "<tr><td class='formTitle'>"+this.app.lp.category.idLabel +"</td><td id='formCategoryId' class='formValue'>"+this.category.data.id+"</td></tr>";
@@ -2670,6 +2680,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         var lp = this.app.lp;
         this.typeSelect = new MDomItem( this.propertyContentNode.getElement("#formCategoryType"), {
             type : "select",
+            style: this.app.css.processSelect,
             value : this.category.data.documentType || lp.documentTypeSelectValue[0],
             selectValue : lp.documentTypeSelectValue,
             selectText: lp.documentTypeSelectText,
@@ -2684,6 +2695,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         var sendNotifyValue = o2.typeOf(this.category.data.sendNotify) === "boolean" ? this.category.data.sendNotify : true;
         this.sendNotify = new MDomItem( this.propertyContentNode.getElement("#formCategorySendNotify"), {
             type : "select",
+            style: this.app.css.processSelect,
             value : sendNotifyValue.toString(),
             selectValue : lp.sendNotifySelectValue,
             selectText: lp.sendNotifySelectText,
@@ -2735,6 +2747,20 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         //this.sortInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationSort"), this.data.appInfoSeq, this.app.css.formInput);
 
         //this.typeInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationType"), this.data.applicationCategory, this.app.css.formInput);
+    },
+
+    createProjectionContentNode: function(){
+        this.projectionContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
+        this.projectionContentNode.set("html", "<div></div><div></div>");
+        MWF.xDesktop.requireApp("cms.ColumnManager", "widget.ProjectionEditor", function(){
+            var projection = new MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor(this.projectionContentNode, this.category.data.projection, {
+                "onChange": function(){
+                    this.category.saveProjection(JSON.encode(projection.getData()));
+                }.bind(this),
+                "category": this.category.data.id
+            });
+            projection.load();
+        }.bind(this));
     }
 
 });
