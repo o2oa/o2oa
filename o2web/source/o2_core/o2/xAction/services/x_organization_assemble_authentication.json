@@ -15,6 +15,10 @@
     "uri": "/jaxrs/authentication",
     "method": "DELETE"
   },
+  "safeLogout": {
+    "uri": "/jaxrs/authentication/safe/logout",
+    "method": "GET"
+  },
   "getLoginMode": {
     "uri": "/jaxrs/authentication/mode"
   }, //图片验证码默认可用，mode获取扫描二维码和手机验证码是否可用
