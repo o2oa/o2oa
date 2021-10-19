@@ -202,7 +202,7 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象。
          * <div><br/>
-         * 下面的Work对象和WorkCompleted对象为后台返回的数据，脚本中我们对这两个对象进行了修改和补充，如下：
+         * 下面的Work对象和WorkCompleted对象为后台返回的数据，在前端脚本中我们对这两个对象进行了修改和补充，如下：
          * </div>
          * <pre><code class='language-js'>{
          *      "creatorPersonDn": "张三@zhangsan@P",		//创建人，可能为空，如果由系统创建.
