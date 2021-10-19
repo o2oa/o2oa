@@ -35,7 +35,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 
 	@Override
 	protected void execute(String id) throws Exception {
-		logger.print("开始执行分类文档数据映射category：{}", id);
+		logger.info("开始执行分类文档数据映射category：{}", id);
 		CategoryInfo categoryInfo = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			categoryInfo = emc.find(id, CategoryInfo.class);
@@ -58,7 +58,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 			logger.error(e);
 		}
 
-		logger.print("开始执行分类文档数据映射category：{}", id);
+		logger.info("完成执行分类文档数据映射category：{}", id);
 	}
 
 	private void doProjection(CategoryInfo categoryInfo, final List<Projection> projections) throws Exception {
@@ -68,8 +68,9 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 			docIdList = business.getDocumentFactory().listByCategoryId(categoryInfo.getId(), null);
 		}
 		if(ListTools.isNotEmpty(docIdList)){
-			logger.print("需要执行文档数据映射个数：{}",docIdList.size());
-			for (List<String> partJobs : ListTools.batch(docIdList, 10)){
+			logger.info("需要执行文档数据映射个数：{}",docIdList.size());
+			int limit = 10;
+			for (List<String> partJobs : ListTools.batch(docIdList, limit)){
 				List<CompletableFuture<Void>> futures = new TreeList<>();
 				for (String docId : partJobs){
 					CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
