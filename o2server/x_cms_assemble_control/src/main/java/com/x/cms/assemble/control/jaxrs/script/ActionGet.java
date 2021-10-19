@@ -79,7 +79,7 @@ class ActionGet extends BaseAction {
 
 		private Date lastUpdateTime;
 
-		public static WrapCopier<Script, Wo> copier = WrapCopierFactory.wo(Script.class, Wo.class, null,
+		public static final WrapCopier<Script, Wo> copier = WrapCopierFactory.wo(Script.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
 		public Date getCreateTime() {

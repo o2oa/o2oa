@@ -33,7 +33,7 @@ public class ThisApplication {
 	// 执行数据库中的批处理操作
 	public static final QueueBatchOperation queueBatchOperation = new QueueBatchOperation();
 	// Document发布时，向所有阅读者推送通知
-	public static QueueSendDocumentNotify queueSendDocumentNotify = new QueueSendDocumentNotify();
+	public static final QueueSendDocumentNotify queueSendDocumentNotify = new QueueSendDocumentNotify();
 	// 执行文档的数据映射
 	public static final ProjectionExecuteQueue projectionExecuteQueue = new ProjectionExecuteQueue();
 

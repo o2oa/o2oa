@@ -7,9 +7,9 @@ import com.x.base.core.entity.JpaObject;
 import com.x.cms.core.entity.AppInfo;
 
 public class WrapOutAppInfo extends AppInfo {
-	
+
 	private static final long serialVersionUID = -7648824521711153693L;
-	
-	public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+
+	public static List<String> excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
 }

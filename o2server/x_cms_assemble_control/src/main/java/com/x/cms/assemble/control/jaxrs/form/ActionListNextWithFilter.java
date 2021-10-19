@@ -33,7 +33,7 @@ public class ActionListNextWithFilter extends BaseAction {
 		LikeTerms likes = new LikeTerms();
 		Wi wrapIn = null;
 		Boolean check = true;
-		WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null, Wo.Excludes);
+		WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null, Wo.excludes);
 
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
@@ -76,9 +76,9 @@ public class ActionListNextWithFilter extends BaseAction {
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static List<String> Excludes = new ArrayList<String>();
+		public static List<String> excludes = new ArrayList<String>();
 
-		public static WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null,
+		public static final WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
 	}
@@ -131,7 +131,7 @@ public class ActionListNextWithFilter extends BaseAction {
 		public void setStatusList(List<String> statusList) {
 			this.statusList = statusList;
 		}
-		
+
 		public String getKey() {
 			return key;
 		}

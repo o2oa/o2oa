@@ -935,6 +935,38 @@ public class Document extends SliceJpaObject {
 		this.stringValue03 = stringValue03;
 	}
 
+	public String getStringValue04() {
+		return stringValue04;
+	}
+
+	public void setStringValue04(String stringValue04) {
+		this.stringValue04 = stringValue04;
+	}
+
+	public Long getLongValue02() {
+		return longValue02;
+	}
+
+	public void setLongValue02(Long longValue02) {
+		this.longValue02 = longValue02;
+	}
+
+	public Date getDateTimeValue01() {
+		return dateTimeValue01;
+	}
+
+	public void setDateTimeValue01(Date dateTimeValue01) {
+		this.dateTimeValue01 = dateTimeValue01;
+	}
+
+	public Date getDateTimeValue02() {
+		return dateTimeValue02;
+	}
+
+	public void setDateTimeValue02(Date dateTimeValue02) {
+		this.dateTimeValue02 = dateTimeValue02;
+	}
+
 	// -------------------Reader-------------------------
 	// -------------------2020-06-12 改为只存储DistinguishedName后两段，第一段可能会在运行过程中修改
 	public void addToReadPersonList(String readPerson) {
