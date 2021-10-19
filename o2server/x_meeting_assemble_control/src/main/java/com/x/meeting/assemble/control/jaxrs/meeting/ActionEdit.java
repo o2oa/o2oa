@@ -57,7 +57,9 @@ class ActionEdit extends BaseAction {
 			emc.beginTransaction(Meeting.class);
 
 			Wi.copier.copy(wi, meeting);
-
+			if(meeting.getInviteMemberList()==null){
+				meeting.setInviteMemberList(meeting.getInvitePersonList());
+			}
 			List<String> invitePersonList = this.convertToPerson(business, ListTools.trim(wi.getInviteMemberList(), true, true));
 			List<String> modifyInvitePersonList = ListUtils.subtract(invitePersonList, meeting.getInvitePersonList());
 			List<String> inviteDelPersonList = ListUtils.subtract(meeting.getInvitePersonList(), invitePersonList);
