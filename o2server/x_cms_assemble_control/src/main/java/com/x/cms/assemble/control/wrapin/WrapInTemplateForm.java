@@ -9,6 +9,6 @@ import com.x.processplatform.core.entity.element.TemplateForm;
 public class WrapInTemplateForm extends TemplateForm {
 
 	private static final long serialVersionUID = 2091352200751493447L;
-	public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsUnmodify);
+	public static List<String> excludes = new ArrayList<>(JpaObject.FieldsUnmodify);
 
 }

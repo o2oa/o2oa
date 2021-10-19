@@ -51,7 +51,7 @@ class ActionListPrev extends BaseAction {
 		private String lastUpdatePerson;
 
 		private Date lastUpdateTime;
-		
+
 		private Long rank;
 
 		public Long getRank() {
@@ -60,9 +60,9 @@ class ActionListPrev extends BaseAction {
 
 		public void setRank(Long rank) {
 			this.rank = rank;
-		} 
+		}
 
-		public static WrapCopier<Script, Wo> copier = WrapCopierFactory.wo(Script.class, Wo.class, null,
+		public static final WrapCopier<Script, Wo> copier = WrapCopierFactory.wo(Script.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
 		public Date getCreateTime() {

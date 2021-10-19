@@ -81,14 +81,14 @@ public class BaseAction extends StandardJaxrsAction {
 			if( ListTools.isEmpty( viewableAppInfoIds )) {
 				viewableAppInfoIds.add("NO_APPINFO");
 			}
-			
+
 			//根据人员的发布权限获取可以发布文档的分类信息ID列表
-			viewableCategoryIds = permissionQueryService.listViewableCategoryIdByPerson( personName, isAnonymous, unitNames, groupNames, viewableAppInfoIds, 
+			viewableCategoryIds = permissionQueryService.listViewableCategoryIdByPerson( personName, isAnonymous, unitNames, groupNames, viewableAppInfoIds,
 					null, null, documentType, appType, maxCount, false );
 		}
 		return composeCategoriesIntoAppInfo( viewableAppInfoIds, viewableCategoryIds, appType );
 	}
-	
+
 	/**
 	 * 当前登录者文档发布栏目分类列表查询<br/>
 	  * 1、根据人员的发布权限获取可以发布文档的栏目信息ID列表<br/>
@@ -156,7 +156,7 @@ public class BaseAction extends StandardJaxrsAction {
 				}
 			}
 		}
-		
+
 		//循环category_map，将category装配到app_map里相应的app里
 		Set<String> category_set = category_map.keySet();
 		Iterator<String> category_iterator = category_set.iterator();
@@ -180,7 +180,7 @@ public class BaseAction extends StandardJaxrsAction {
 			}
 			wo_app.getWrapOutCategoryList().add( woCategory );
 			app_map.put( wo_app.getId(), wo_app );
-			
+
 		}
 		//将app_map转移到List里返回
 		if( wraps == null  ) {
@@ -217,7 +217,7 @@ public class BaseAction extends StandardJaxrsAction {
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static List<String> Excludes = new ArrayList<String>();
+		public static List<String> excludes = new ArrayList<String>();
 
 		@FieldDescribe("栏目下的分类信息列表")
 		private List<WoCategory> wrapOutCategoryList = null;

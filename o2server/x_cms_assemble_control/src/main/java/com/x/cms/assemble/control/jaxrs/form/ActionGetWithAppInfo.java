@@ -22,11 +22,11 @@ import com.x.cms.core.entity.element.Form;
 import net.sf.ehcache.Element;
 
 public class ActionGetWithAppInfo extends BaseAction {
-	
+
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String appFlag, String formFlag ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = null;
-		
+
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), formFlag, appFlag );
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
@@ -55,13 +55,13 @@ public class ActionGetWithAppInfo extends BaseAction {
 		}
 		return result;
 	}
-	
-	public static class Wo extends Form {
-		
-		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
 
-		public static WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null, JpaObject.FieldsInvisible);
+	public static class Wo extends Form {
+
+		private static final long serialVersionUID = -5076990764713538973L;
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null, JpaObject.FieldsInvisible);
 	}
 }

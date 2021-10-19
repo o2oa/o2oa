@@ -59,7 +59,7 @@ class ActionList extends BaseAction {
 
 	public static WrapCopier<File, WrapFile> fileCopier = WrapCopierFactory.wo(File.class, WrapFile.class,
 			JpaObject.singularAttributeField(File.class, true, true), null);
-	
+
 	public static WrapCopier<CategoryInfo, WrapCategoryInfo> categoryInfoCopier = WrapCopierFactory.wo(
 			CategoryInfo.class, WrapCategoryInfo.class,
 			JpaObject.singularAttributeField(CategoryInfo.class, true, true), null);
@@ -75,7 +75,7 @@ class ActionList extends BaseAction {
 
 	public static class Wo extends WrapCms {
 		private static final long serialVersionUID = 474265667658465123L;
-		public static WrapCopier<AppInfo, Wo> copier = WrapCopierFactory.wo(AppInfo.class, Wo.class,
+		public static final WrapCopier<AppInfo, Wo> copier = WrapCopierFactory.wo(AppInfo.class, Wo.class,
 				JpaObject.singularAttributeField(AppInfo.class, true, true), null);
 	}
 }

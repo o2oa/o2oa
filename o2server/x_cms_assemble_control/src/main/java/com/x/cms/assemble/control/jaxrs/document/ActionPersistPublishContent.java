@@ -491,7 +491,7 @@ public class ActionPersistPublishContent extends BaseAction {
 
 	public static class Wi {
 
-		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, null);
+		public static final WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, null);
 
 		private String id = null;
 
