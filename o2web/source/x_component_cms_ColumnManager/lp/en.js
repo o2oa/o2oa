@@ -237,6 +237,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "setSendNotifySuccess": "Set Send Messsage successfully",
     "setEditFormSuccess": "Set Edit Form Success",
     "setReadFormSuccess": "Set Read Form Success",
+    "setProjectionSuccess": "Set data mapping success",
     "inputCategoryNotice": "Please enter the category name",
     "noCategoryNotice": "Please create or select a category first",
     "saveCategoryNotice":"Please save the category first",
@@ -286,5 +287,28 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "checkDraftSelectText": ["New interface check draft","New interface does not check draft"],
     "showAllDocumentSelectText": ["Show all document views","Hide all document views"],
 
-    "selectRelateFormNotice": "Please select the related form of the view to be pasted"
+    "selectRelateFormNotice": "Please select the related form of the view to be pasted",
+
+    "projectionTitle": "Mapping business data",
+    "projectionActionNode_add": "Add mapping entry",
+    "projectionActionNode_modify": "Modify the mapping entry",
+    "projectionDataName": "Name",
+    "projectionPath": "Path",
+    "projectionType":"Type",
+    "projectionInputError": "Please enter the data name and data path",
+    "projectionTypeCountError": "{type} type data mapping entries, up to {count} allowed.",
+    "projectionSameNameError": "Same data name already exists",
+    "projectionDeleteItemTitle": "Delete mapping confirmation",
+    "projectionDeleteItem": "Are you sure you want to delete the data mapping entry named \"{name}\" and path \"{path}\"?",
+    "projectionRunActionNode": "Run data mapping immediately",
+    "projectionRunTitle": "Execute confirmation immediately",
+    "projectionRunText": "Execute mapping confirmation",
+    "projectionRunSuccess": "Data mapping has been executed",
+    "projectionRunError": "No need to perform data mapping",
+
+    "mapping": "Mapping",
+    "mappingData": "Mapping Data",
+    "dataName": "Name",
+    "dataPath": "Path",
+    "dataType": "Type"
 };

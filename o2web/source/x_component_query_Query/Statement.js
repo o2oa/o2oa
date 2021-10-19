@@ -524,7 +524,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
         // var excelName = this.statementJson.name + "(" + start + "-" + end + ").xlsx";
 
-        var excelName = this.statementJson.name + ".xlsx";
+        var excelName = this.statementJson.name;
 
         var p = this.currentPage;
         var d = {
