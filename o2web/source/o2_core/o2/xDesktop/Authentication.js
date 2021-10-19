@@ -86,14 +86,9 @@ MWF.xDesktop.Authentication = new Class({
                 this.socket.close();
                 this.socket = null;
             }
-            //Cookie.dispose("x-token");
             if (layout.session && layout.session.user) layout.session.user.token = "";
             if (sessionStorage) sessionStorage.removeItem("o2LayoutSessionToken");
-            if( callback ){
-                callback();
-            }else{
-                window.location.reload();
-            }
+            window.location.reload();
         }.bind(this));
     },
     logout: function ( callback ) {
@@ -102,7 +97,6 @@ MWF.xDesktop.Authentication = new Class({
                 this.socket.close();
                 this.socket = null;
             }
-            //Cookie.dispose("x-token");
             if (layout.session && layout.session.user) layout.session.user.token = "";
             if (sessionStorage) sessionStorage.removeItem("o2LayoutSessionToken");
             if( callback ){

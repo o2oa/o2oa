@@ -562,7 +562,7 @@ o2.xDesktop.Default = new Class({
         img = this.path+this.options.style+"/icons/logout.png";
         this.userMenu.addMenuItem(o2.LP.desktop.logout, "click", function(){this.logout();}.bind(this), img);
 
-        this.userMenu.addMenuItem(o2.LP.desktop.safeLogout, "click", function(){this.safeLogout();}.bind(this), img);
+        if (layout.config.enableSafeLogout) this.userMenu.addMenuItem(o2.LP.desktop.safeLogout, "click", function(e){this.safeLogout(e);}.bind(this), img);
     },
     userConfig: function(e){
         layout.openApplication(e, "Profile");
@@ -577,9 +577,9 @@ o2.xDesktop.Default = new Class({
             (layout.authentication ||  new o2.xDesktop.Authentication()).logout();
         }
     },
-    safeLogout: function(){
+    safeLogout: function(e){
         var _self = this;
-        o2.xDesktop.confirm("warn", null, o2.LP.desktop.safeLogoutTitle, o2.LP.desktop.safeLogoutMessage, 300, 120, function(){
+        o2.xDesktop.confirm("warn", e, o2.LP.desktop.safeLogoutTitle, {"html": o2.LP.desktop.safeLogoutMessage}, 460, 100, function(){
             _self.isLogout = true;
             if (!_self.notRecordStatus){
                 _self.recordDesktopStatus(function(){
