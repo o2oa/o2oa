@@ -1712,6 +1712,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		if( !this.datatable.multiEditMode ){
 			if (this.datatable.json.validationCompleteLine && this.datatable.json.validationCompleteLine.code){
 				flag = this.form.Macro.exec(this.datatable.json.validationCompleteLine.code, this);
+				if (!flag) flag = MWF.xApplication.process.Xform.LP.lineNotValidation;
 			}
 		}
 		if (flag.toString()!=="true"){
