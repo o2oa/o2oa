@@ -10,7 +10,7 @@ import com.x.processplatform.core.entity.element.TemplateForm;
 public class WrapOutTemplateForm extends TemplateForm {
 
 	private static final long serialVersionUID = 1551592776065130757L;
-	public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+	public static List<String> excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
 	private Control control;
 

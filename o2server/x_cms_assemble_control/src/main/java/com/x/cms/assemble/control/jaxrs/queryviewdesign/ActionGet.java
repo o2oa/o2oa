@@ -21,14 +21,14 @@ class ActionGet extends BaseAction {
 			return result;
 		}
 	}
-	
+
 	public static class Wo extends QueryView {
 
 		private static final long serialVersionUID = 2886873983211744188L;
-		
-		
-		public static WrapCopier<QueryView, Wo> copier = WrapCopierFactory.wo(QueryView.class, Wo.class, null, JpaObject.FieldsInvisible);
-		
+
+
+		public static final WrapCopier<QueryView, Wo> copier = WrapCopierFactory.wo(QueryView.class, Wo.class, null, JpaObject.FieldsInvisible);
+
 		private Long rank;
 
 		public Long getRank() {

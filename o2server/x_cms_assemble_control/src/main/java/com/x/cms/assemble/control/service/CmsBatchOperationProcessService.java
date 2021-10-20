@@ -24,12 +24,12 @@ import com.x.cms.core.entity.Review;
  */
 public class CmsBatchOperationProcessService {
 
-	public static String OPT_OBJ_DOCUMENT = "DOCUMENT";
-	public static String OPT_OBJ_CATEGORY = "CATEGORY";
-	public static String OPT_OBJ_APPINFO = "APPINFO";
-	public static String OPT_TYPE_PERMISSION = "PERMISSION";
-	public static String OPT_TYPE_UPDATENAME = "UPDATENAME";
-	public static String OPT_TYPE_DELETE = "DELETE";
+	public static final String OPT_OBJ_DOCUMENT = "DOCUMENT";
+	public static final String OPT_OBJ_CATEGORY = "CATEGORY";
+	public static final String OPT_OBJ_APPINFO = "APPINFO";
+	public static final String OPT_TYPE_PERMISSION = "PERMISSION";
+	public static final String OPT_TYPE_UPDATENAME = "UPDATENAME";
+	public static final String OPT_TYPE_DELETE = "DELETE";
 
 	private static  Logger logger = LoggerFactory.getLogger( CmsBatchOperationProcessService.class );
 	private DocumentInfoService documentInfoService = new DocumentInfoService();

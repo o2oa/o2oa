@@ -289,6 +289,14 @@ public class CategoryInfo extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + sendNotify_FIELDNAME)
 	private Boolean sendNotify = true;
 
+	public static final String projection_FIELDNAME = "projection";
+	@FieldDescribe("字段映射配置.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_2K, name = ColumnNamePrefix + projection_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String projection;
+
 	public static final String viewablePersonList_FIELDNAME = "viewablePersonList";
 	@FieldDescribe("发布可见人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -985,4 +993,11 @@ public class CategoryInfo extends SliceJpaObject {
 		this.sendNotify = sendNotify;
 	}
 
+	public String getProjection() {
+		return projection;
+	}
+
+	public void setProjection(String projection) {
+		this.projection = projection;
+	}
 }

@@ -86,7 +86,7 @@ public class ActionListByDocId extends BaseAction {
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static List<String> Excludes = new ArrayList<String>();
+		public static List<String> excludes = new ArrayList<String>();
 
 		private WoControl control = new WoControl();
 
@@ -98,7 +98,7 @@ public class ActionListByDocId extends BaseAction {
 			this.control = control;
 		}
 
-		public static WrapCopier<FileInfo, Wo> copier = WrapCopierFactory.wo( FileInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
+		public static final WrapCopier<FileInfo, Wo> copier = WrapCopierFactory.wo( FileInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
 	}
 
 	public static class WoControl extends GsonPropertyObject {

@@ -232,7 +232,7 @@ public class ActionPersistPublishContent extends BaseAction {
 				if( wi.getPublishTime() == null ) { wi.setPublishTime(new Date()); }
 				document =  wi.copier.copy(wi);
 				document.setId( wi.getId() );
-				document = documentPersistService.save( document, wi.getDocData() );
+				document = documentPersistService.save( document, wi.getDocData(), categoryInfo.getProjection());
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");
@@ -491,7 +491,7 @@ public class ActionPersistPublishContent extends BaseAction {
 
 	public static class Wi {
 
-		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, null);
+		public static final WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, null);
 
 		private String id = null;
 

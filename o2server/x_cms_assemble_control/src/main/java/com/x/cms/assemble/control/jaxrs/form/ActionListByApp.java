@@ -23,12 +23,12 @@ import com.x.cms.core.entity.element.Form;
 import net.sf.ehcache.Element;
 
 public class ActionListByApp extends BaseAction {
-	
+
 	@SuppressWarnings("unchecked")
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String appId ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = null;
-		
+
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), appId );
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
@@ -53,22 +53,22 @@ public class ActionListByApp extends BaseAction {
 				result.error(th);
 			}
 		}
-		
+
 		return result;
 	}
-	
-	public static class Wo extends Form {
-		
-		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
 
-		public static WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null, JpaObject.FieldsInvisible);
-		
+	public static class Wo extends Form {
+
+		private static final long serialVersionUID = -5076990764713538973L;
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null, JpaObject.FieldsInvisible);
+
 		static {
-			Excludes.add("data");
-			Excludes.add("mobileData");
+			excludes.add("data");
+			excludes.add("mobileData");
 		}
-		
+
 	}
 }
