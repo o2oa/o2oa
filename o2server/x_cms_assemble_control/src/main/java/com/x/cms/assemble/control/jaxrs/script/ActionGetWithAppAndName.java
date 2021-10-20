@@ -23,7 +23,7 @@ import com.x.cms.core.entity.element.Script;
 import net.sf.ehcache.Element;
 
 class ActionGetWithAppAndName extends BaseAction {
-	
+
 	ActionResult<Wo> execute( EffectivePerson effectivePerson, String appFlag, String name ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = null;
@@ -61,41 +61,41 @@ class ActionGetWithAppAndName extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends GsonPropertyObject {
 
 		private Date createTime;
-		
+
 		private Date updateTime;
-		
+
 		private String id;
-		
+
 		private String name;
-		
+
 		private String alias;
-		
+
 		private String description;
-		
+
 		private Boolean validated;
-		
+
 		private String appId;
 
 		private String appName;
 
 		private String appAlias;
-		
+
 		private String text;
-		
+
 		private List<String> dependScriptList;
-		
+
 		private String creatorPerson;
-		
+
 		private String lastUpdatePerson;
-		
+
 		private Date lastUpdateTime;
 
-		public static WrapCopier<Script, Wo> copier = WrapCopierFactory.wo( Script.class, Wo.class,null,JpaObject.FieldsInvisible );
-		
+		public static final WrapCopier<Script, Wo> copier = WrapCopierFactory.wo( Script.class, Wo.class,null,JpaObject.FieldsInvisible );
+
 		public Date getCreateTime() {
 			return createTime;
 		}

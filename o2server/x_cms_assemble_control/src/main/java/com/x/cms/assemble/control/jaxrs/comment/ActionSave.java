@@ -32,7 +32,7 @@ public class ActionSave extends BaseAction {
 			documentCommentInfo.setId( wi.getId());;
 			documentCommentInfo.setCreatorName( effectivePerson.getDistinguishedName() );
 			documentCommentInfo.setAuditorName( "" );
-			documentCommentInfo.setCommentAuditStatus( "通过" );			
+			documentCommentInfo.setCommentAuditStatus( "通过" );
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionCommentPersist(e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
@@ -62,11 +62,11 @@ public class ActionSave extends BaseAction {
 		if (check) {
 			try {
 				documentCommentInfo = documentCommentInfoPersistService.save( documentCommentInfo, wi.getContent(),  effectivePerson );
-				
+
 				// 更新缓存
 				CacheManager.notify( Document.class );
 				CacheManager.notify( DocumentCommentInfo.class );
-				
+
 				Wo wo = new Wo();
 				wo.setId( documentCommentInfo.getId() );
 				result.setData( wo );
@@ -78,13 +78,13 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		return result;
-	}	
+	}
 
 	public static class Wi {
-		
+
 		@FieldDescribe("评论ID")
 		private String id = "";
-		
+
 		@FieldDescribe("文档ID")
 		private String documentId = "";
 
@@ -99,9 +99,9 @@ public class ActionSave extends BaseAction {
 
 		@FieldDescribe("是否私信评论")
 		private Boolean isPrivate = false;
-		
-		public static WrapCopier<Wi, DocumentCommentInfo> copier = WrapCopierFactory.wi( Wi.class, DocumentCommentInfo.class, null, null );		
-		
+
+		public static final WrapCopier<Wi, DocumentCommentInfo> copier = WrapCopierFactory.wi( Wi.class, DocumentCommentInfo.class, null, null );
+
 		public String getId() {
 			return id;
 		}
@@ -153,5 +153,5 @@ public class ActionSave extends BaseAction {
 
 	public static class Wo extends WoId {
 	}
-	
+
 }

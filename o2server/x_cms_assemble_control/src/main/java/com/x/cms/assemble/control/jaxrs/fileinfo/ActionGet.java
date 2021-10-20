@@ -22,7 +22,7 @@ import com.x.cms.core.entity.FileInfo;
 import net.sf.ehcache.Element;
 
 public class ActionGet extends BaseAction {
-	
+
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id, String documentId ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = null;
@@ -41,7 +41,7 @@ public class ActionGet extends BaseAction {
 				if (null == document) {
 					throw new Exception("document{id:" + documentId + "} not existed.");
 				}
-				attachmentIds = fileInfoServiceAdv.listIdsWithDocId(documentId);				
+				attachmentIds = fileInfoServiceAdv.listIdsWithDocId(documentId);
 				if ( attachmentIds == null || !attachmentIds.contains(id)) {
 					throw new Exception("document{id" + documentId + "} not contian attachment{id:" + id + "}.");
 				}
@@ -57,16 +57,16 @@ public class ActionGet extends BaseAction {
 				th.printStackTrace();
 				result.error(th);
 			}
-		}		
+		}
 		return result;
 	}
 
 	public static class Wo extends FileInfo {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier<FileInfo, Wo> copier = WrapCopierFactory.wo( FileInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<FileInfo, Wo> copier = WrapCopierFactory.wo( FileInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
 	}
 }

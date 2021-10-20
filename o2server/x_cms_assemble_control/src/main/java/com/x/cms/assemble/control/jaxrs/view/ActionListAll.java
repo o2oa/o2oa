@@ -24,7 +24,7 @@ import com.x.cms.assemble.control.factory.ViewFactory;
 import com.x.cms.core.entity.element.View;
 
 public class ActionListAll extends BaseAction {
-	
+
 	@SuppressWarnings("unchecked")
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
@@ -37,21 +37,21 @@ public class ActionListAll extends BaseAction {
 			wraps = (List<Wo>) optional.get();
 			result.setData(wraps);
 		} else {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
-				Business business = new Business(emc);			
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
 				//如判断用户是否有查看所有视图的权限，如果没权限不允许继续操作
 				if (!business.viewEditAvailable( effectivePerson )) {
 					throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} 用户没有查询全部视图配置的权限！");
-				}			
+				}
 				//如果有权限，继续操作
 				ViewFactory viewFactory  = business.getViewFactory();
 				List<String> ids = viewFactory.listAll();//获取所有视图列表
 				List<View> viewList = emc.list( View.class, ids );//查询ID IN ids 的所有视图信息列表
-				
+
 				if( viewList != null && !viewList.isEmpty() ){
 					wraps = Wo.copier.copy( viewList );//将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
 					SortTools.desc( wraps, "sequence" );
-					
+
 					for( Wo wo :  wraps ){
 						//根据FormId补充FormName
 						if(StringUtils.isNotEmpty( wo.getFormId() )) {
@@ -68,17 +68,17 @@ public class ActionListAll extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends View {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		@FieldDescribe("绑定的表单名称.")
 		private String formName = null;
-		
-		public static List<String> Excludes = new ArrayList<String>();
 
-		public static WrapCopier<View, Wo> copier = WrapCopierFactory.wo( View.class, Wo.class, null, JpaObject.FieldsInvisible);
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<View, Wo> copier = WrapCopierFactory.wo( View.class, Wo.class, null, JpaObject.FieldsInvisible);
 
 		public String getFormName() {
 			return formName;
@@ -86,6 +86,6 @@ public class ActionListAll extends BaseAction {
 
 		public void setFormName(String formName) {
 			this.formName = formName;
-		}		
+		}
 	}
 }

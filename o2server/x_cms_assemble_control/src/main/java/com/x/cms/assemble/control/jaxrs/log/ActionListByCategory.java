@@ -18,7 +18,7 @@ import com.x.cms.assemble.control.factory.LogFactory;
 import com.x.cms.core.entity.Log;
 
 public class ActionListByCategory extends BaseAction {
-	
+
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String categoryId ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = null;
@@ -38,13 +38,13 @@ public class ActionListByCategory extends BaseAction {
 		}
 		return result;
 	}
-	
-	public static class Wo extends Log{
-		
-		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
 
-		public static WrapCopier<Log, Wo> copier = WrapCopierFactory.wo( Log.class, Wo.class, null,JpaObject.FieldsInvisible);
+	public static class Wo extends Log{
+
+		private static final long serialVersionUID = -5076990764713538973L;
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<Log, Wo> copier = WrapCopierFactory.wo( Log.class, Wo.class, null,JpaObject.FieldsInvisible);
 	}
 }

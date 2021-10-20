@@ -214,7 +214,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				if(wi.getPublishTime()==null) {
 					wi.setPublishTime(new Date());
 				}
-				document = documentPersistService.save(wi, wi.getDocData());
+				document = documentPersistService.save(wi, wi.getDocData(), categoryInfo.getProjection());
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");

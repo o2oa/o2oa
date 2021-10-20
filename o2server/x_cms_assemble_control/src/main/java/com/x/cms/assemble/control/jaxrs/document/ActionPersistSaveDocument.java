@@ -266,7 +266,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		if (check) {
 			try {
-				document = documentPersistService.save( document, wi.getDocData() );
+				document = documentPersistService.save(document, wi.getDocData(), categoryInfo.getProjection());
 				CacheManager.notify(Document.class);
 
 				Wo wo = new Wo();
@@ -434,7 +434,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 		@FieldDescribe("业务数据String值03.")
 		private String stringValue03;
 
-		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodifyExcludeId);
+		public static final WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodifyExcludeId);
 
 		public String getId() {
 			return id;

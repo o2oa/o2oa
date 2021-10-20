@@ -26,9 +26,9 @@ import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
 public class ActionSave extends BaseAction {
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( ActionSave.class );
-	
+
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		ViewFieldConfig viewFieldConfig = null;
@@ -36,7 +36,7 @@ public class ActionSave extends BaseAction {
 		Wi wi = null;
 		Wo wrap = null;
 		Boolean check = true;
-		
+
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
 			if( id != null && !id.isEmpty() ){
@@ -48,7 +48,7 @@ public class ActionSave extends BaseAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		
+
 		if( check ){
 			if( StringUtils.isEmpty(wi.getViewId()) ){
 				check = false;
@@ -56,11 +56,11 @@ public class ActionSave extends BaseAction {
 				result.error( exception );
 			}
 		}
-		
+
 		if( check ){
 			//先看看视图信息是否存在，如果不存在
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);				
+				Business business = new Business(emc);
 				//看看用户是否有权限进行应用信息新增操作
 				if (!business.viewEditAvailable( effectivePerson )) {
 					check = false;
@@ -74,18 +74,18 @@ public class ActionSave extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ){
 			//先看看视图信息是否存在，如果不存在
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-				Business business = new Business(emc);				
+				Business business = new Business(emc);
 				view = business.getViewFactory().get( wi.getViewId() );
 				if( view == null ){
 					check = false;
 					Exception exception = new ExceptionViewNotExists( wi.getViewId() );
 					result.error( exception );
 				}
-				
+
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionViewQueryByIdEmpty( e, wi.getViewId() );
@@ -93,14 +93,14 @@ public class ActionSave extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ){
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				//获取到当前用户信息		
-				Business business = new Business(emc);				
+				//获取到当前用户信息
+				Business business = new Business(emc);
 				view = business.getViewFactory().get( wi.getId() );
 				viewFieldConfig = business.getViewFieldConfigFactory().get( wi.getId() );
-				
+
 				if( viewFieldConfig == null ){//新增
 					viewFieldConfig = Wi.copier.copy( wi );
 					//如果JSON给过来的ID不为空，那么使用用户传入的ID
@@ -110,21 +110,21 @@ public class ActionSave extends BaseAction {
 					emc.beginTransaction( ViewFieldConfig.class );
 					emc.beginTransaction( View.class);
 					emc.persist( viewFieldConfig, CheckPersistType.all );
-					
+
 					addFieldConfigIdToFieldConfigList( view, viewFieldConfig.getId() );
-					
+
 					emc.commit();
 					logService.log( emc,  effectivePerson.getDistinguishedName(), viewFieldConfig.getFieldName(), "", "", "", viewFieldConfig.getId(), "VIEWFIELDCONFIG", "新增" );
 				}else{
 					//更新
 					wi.copyTo( viewFieldConfig, JpaObject.FieldsUnmodify  );
-					
+
 					emc.beginTransaction( ViewFieldConfig.class );
 					emc.beginTransaction( View.class);
 					emc.check( viewFieldConfig, CheckPersistType.all );
 					addFieldConfigIdToFieldConfigList( view, viewFieldConfig.getId() );
 					emc.commit();
-					
+
 					logService.log( emc,  effectivePerson.getDistinguishedName(), viewFieldConfig.getFieldName(), "", "", "", viewFieldConfig.getId(), "VIEWFIELDCONFIG", "更新" );
 				}
 				wrap = new Wo();
@@ -139,7 +139,7 @@ public class ActionSave extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	private void addFieldConfigIdToFieldConfigList( View view, String viewFieldConfigId){
 		if( view != null ){
 			if( view.getFieldConfigList() == null ){
@@ -152,17 +152,17 @@ public class ActionSave extends BaseAction {
 			}
 		}
 	}
-	
+
 	public static class Wi extends ViewFieldConfig{
-		
+
 	  private static final long serialVersionUID = -5076990764713538973L;
-	  
-	  public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
-	  
-	  public static WrapCopier<Wi, ViewFieldConfig> copier = WrapCopierFactory.wi( Wi.class, ViewFieldConfig.class, null, JpaObject.FieldsUnmodify );
-	  
+
+	  public static List<String> excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
+
+	  public static final WrapCopier<Wi, ViewFieldConfig> copier = WrapCopierFactory.wi( Wi.class, ViewFieldConfig.class, null, JpaObject.FieldsUnmodify );
+
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}
