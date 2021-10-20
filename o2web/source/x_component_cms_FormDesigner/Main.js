@@ -127,8 +127,10 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
                         this.copyModule();
-                        module.destroy();
-                        module.form.selected();
+                        var _form = module.form;
+                        module.destroy();_form.currentSelectedModule = null;
+                        _form.selected();
+                        _form = null;
                     }
                 }
                 //           }
@@ -138,7 +140,6 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     pasteModule: function(){
         if (this.shortcut) {
             if (this.form) {
-                //    if (this.form.isFocus){
                 if (MWF.clipboard.data) {
                     if (MWF.clipboard.data.type == "form") {
                         var html = MWF.clipboard.data.data.html;
@@ -147,27 +148,14 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                             "styles": {"display": "none"},
                             "html": html
                         }).inject(this.content);
-
-                        //var pid = "";
                         Object.each(json, function (moduleJson) {
                             var oid = moduleJson.id;
                             var id = moduleJson.id;
-                            //    if (!pid){
                             var idx = 1;
                             while (this.form.json.moduleList[id]) {
                                 id = oid + "_" + idx;
                                 idx++;
                             }
-                            //        pid = id;
-                            //    }else{
-                            //        idx = 1;
-                            //        var id = pid+"_"+moduleJson.moduleName;
-                            //        var prefix = pid+"_"+moduleJson.moduleName;
-                            //        while (this.form.json.moduleList[id]){
-                            //            id = prefix+"_"+idx;
-                            //            idx++;
-                            //        }
-                            //    }
 
                             if (oid != id) {
                                 moduleJson.id = id;
@@ -176,7 +164,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                             }
                             this.form.json.moduleList[moduleJson.id] = moduleJson;
                         }.bind(this));
-                        delete json;
+                        json = null;
 
                         var injectNode = this.form.node;
                         var where = "bottom";
@@ -198,15 +186,13 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                             module = this.form.loadModule(copyModuleJson, copyModuleNode, parent);
                             module._setEditStyle_custom("id");
                             module.selected();
-                            //loadModule: function(json, dom, parent)
 
                             copyModuleNode = tmpNode.getFirst();
                         }
                         tmpNode.destroy();
-                        delete tmpNode;
+                        tmpNode = null;
                     }
                 }
-                //      }
             }
         }
     },
@@ -222,9 +208,10 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         this.loadToolbar();
         this.loadFormNode();
         this.loadProperty();
-        this.loadTools();
-        this.resizeNode();
-        this.addEvent("resize", this.resizeNode.bind(this));
+        this.loadTools(function(){
+            this.resizeNode();
+            this.addEvent("resize", this.resizeNode.bind(this));
+        }.bind(this));
         this.loadForm();
 
         if (this.toolbarContentNode){
@@ -247,6 +234,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         this.toolsData = null;
         this.toolbarMode = "all";
         this.tools = [];
+        this.toolGroups = [];
         this.toolbarDecrease = 0;
 
         this.designNode = null;
@@ -283,16 +271,41 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             }
         }).inject(this.toolbarNode);
 
-        this.toolbarContentNode = new Element("div", {
-            "styles": this.css.toolbarContentNode,
-            "events": {
-                "selectstart": function(e){
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            }
+        this.toolbarTitleCategoryActionNode = new Element("div", {
+            "styles": this.css.toolbarTitleCategoryActionNode
         }).inject(this.toolbarNode);
+
+        this.categoryActionMenu = new o2.xDesktop.Menu(this.toolbarTitleCategoryActionNode, {
+            "event": "click", "style": "flatUser", "offsetX": 0, "offsetY": 0, "container": this.node,
+            "onQueryShow": this.showCategoryMenu.bind(this)
+        });
+        this.categoryActionMenu.load();
+
+        this.toolbarGroupContentNode = new Element("div", {"styles": this.css.toolbarGroupContentNode}).inject(this.toolbarNode);
+        this.toolbarGroupContentNode.addEvent("selectstart", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+        });
     },
+
+    showCategoryMenu: function(){
+        this.categoryActionMenu.items.each(function(item){
+            debugger;
+            if (this.currentToolGroup && this.currentToolGroup.data.text==item.options.text){
+                item.setDisable(true);
+                var imgDiv = item.item.getFirst();
+                var img = imgDiv.getElement("img");
+                if (!img) img = new Element("img", {"styles": item.menu.css.menuItemImg}).inject(imgDiv);
+                img.set("src", this.path+this.options.style+"/check.png");
+            }else{
+                item.setDisable(false);
+                var imgDiv = item.item.getFirst();
+                var img = imgDiv.getElement("img");
+                if (img) img.destroy();
+            }
+        }.bind(this));
+    },
+
     switchToolbarMode: function(){
         if (this.toolbarMode=="all"){
             var size = this.toolbarNode.getSize();
@@ -312,6 +325,8 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 
             this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNodeRight);
 
+			this.toolbarGroupContentNode.getElements(".o2formModuleTools").hide();
+
             this.toolbarMode="simple";
         }else{
             sizeX = 60 + this.toolbarDecrease;
@@ -328,6 +343,9 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             this.toolbarTitleNode.set("text", MWF.APPFD.LP.tools);
 
             this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNode);
+
+            this.toolbarGroupContentNode.getElements(".o2formModuleTools").show();
+
             this.toolbarMode="all";
         }
 
@@ -952,86 +970,26 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     },
 
     //loadTools------------------------------
-    loadTools: function(){
-        var designer = this;
-        this.getTools(function(){
-            Object.each(this.toolsData, function(value, key){
-                var toolNode = new Element("div", {
-                    "styles": this.css.toolbarToolNode,
-                    "title": value.text,
-                    "events": {
-                        "mouseover": function(e){
-                            try {
-                                this.setStyles(designer.css.toolbarToolNodeOver);
-                            }catch(e){
-                                this.setStyles(designer.css.toolbarToolNodeOverCSS2);
-                            };
-                        },
-                        "mouseout": function(e){
-                            try {
-                                this.setStyles(designer.css.toolbarToolNode);
-                            }catch(e){};
-                        },
-                        "mousedown": function(e){
-                            try {
-                                this.setStyles(designer.css.toolbarToolNodeDown);
-                            }catch(e){
-                                this.setStyles(designer.css.toolbarToolNodeDownCSS2);
-                            };
-                        },
-                        "mouseup": function(e){
-                            try {
-                                this.setStyles(designer.css.toolbarToolNodeUp);
-                            }catch(e){
-                                this.setStyles(designer.css.toolbarToolNodeUpCSS2);
-                            };
-                        }
-                    }
-                }).inject(this.toolbarContentNode);
-                toolNode.store("toolClass", value.className);
+    loadTools: function(callback){
+        o2.loadCss("../o2_lib/vue/element/index.css");
+        this.getGroups(function(){
+            this.toolsGroupData.forEach(function(o){
+                //var o = this.toolsGroupData[key];
+                this.toolGroups.push(new MWF.xApplication.cms.FormDesigner.ToolsGroup(o, this));
+            }, this);
 
-                var iconNode = new Element("div", {
-                    "styles": this.css.toolbarToolIconNode
-                }).inject(toolNode);
-                iconNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/"+value.icon+")");
-
-                var textNode = new Element("div", {
-                    "styles": this.css.toolbarToolTextNode,
-                    "text": value.text
-                });
-                textNode.inject(toolNode);
-
-//				var designer = this;
-                toolNode.addEvent("mousedown", function(e){
-                    var className = this.retrieve("toolClass");
-                    designer.form.createModule(className, e);
-                });
-
-                this.tools.push(toolNode);
-            }.bind(this));
+            if (callback) callback();
         }.bind(this));
     },
-    getTools: function(callback){
-
-        if (this.toolsData){
+    getGroups: function(callback){
+        if (this.toolsGroupData){
             if (callback) callback();
         }else{
-            var toolsDataUrl = this.path+this.options.style+"/tools.json";
-            var r = new Request.JSON({
-                url: toolsDataUrl,
-                secure: false,
-                async: false,
-                method: "get",
-                noCache: true,
-                onSuccess: function(responseJSON, responseText){
-                    this.toolsData = responseJSON;
-                    if (callback) callback();
-                }.bind(this),
-                onError: function(text, error){
-                    this.notice("request tools data error: "+error, "error");
-                }.bind(this)
-            });
-            r.send();
+            var toolsGroupDataUrl = this.path+this.options.style+"/toolsGroup.json";
+            o2.JSON.get(toolsGroupDataUrl, function(responseJSON){
+                this.toolsGroupData = responseJSON;
+                if (callback) callback();
+            }.bind(this));
         }
     },
 
@@ -1072,7 +1030,17 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 
         y = titleSize.y+titleMarginTop+titleMarginBottom+titlePaddingTop+titlePaddingBottom;
         y = nodeSize.y-y;
-        this.toolbarContentNode.setStyle("height", ""+y+"px");
+        //this.toolbarContentNode.setStyle("height", ""+y+"px");
+        this.toolbarGroupContentNode.setStyle("height", ""+y+"px");
+        var groupHeight = 0;
+        // this.toolGroups.each(function(g){
+        //     groupHeight += g.toolbarGroupTitleNode.getSize().y;
+        // });
+        var contentHeight = y-groupHeight-5;
+        this.toolGroups.each(function(g){
+            g.setContentHeight(contentHeight);
+            //g.toolbarContentNode.setStyle("height", ""+contentHeight+"px");
+        });
 
 
         titleSize = this.propertyTitleNode.getSize();
@@ -1125,7 +1093,16 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 
         y = titleSize.y+titleMarginTop+titleMarginBottom+titlePaddingTop+titlePaddingBottom;
         y = nodeSize.y-y;
-        this.toolbarContentNode.setStyle("height", ""+y+"px");
+        //this.toolbarContentNode.setStyle("height", ""+y+"px");
+        this.toolbarGroupContentNode.setStyle("height", ""+y+"px");
+        var groupHeight = 0;
+        // this.toolGroups.each(function(g){
+        //     groupHeight += g.toolbarGroupTitleNode.getSize().y;
+        // });
+        var contentHeight = y-groupHeight-5;
+        this.toolGroups.each(function(g){
+            g.setContentHeight(contentHeight);
+        });
 
 
 
@@ -1671,6 +1648,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             var module = this.form.currentSelectedModule;
             if (module && module.json.type!=="Form"){
                 this.form.brushStyle = module.json.styles;
+                if (module.json.inputStyles) this.form.brushInputStyle = Object.clone(module.json.inputStyles);
                 this.brushCursor = new Element("div", {"styles": {
                     "position": "absolute",
                     "width": "16px",
@@ -1679,6 +1657,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                     "background": "url("+this.path+this.options.style+"/pageToolbar/wand.png)"
                 }}).inject(this.content);
                 this.brushCursorMoveFun = this.brushCursorMove.bind(this);
+                this.contentPosition = this.content.getPosition();
                 this.content.addEvent("mousemove", this.brushCursorMoveFun);
 
                 //this.designNode.setStyle("cursor", "url(/"+this.path+this.options.style+"/pageToolbar/brush.png)");
@@ -1687,6 +1666,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             }
         }else{
             this.form.brushStyle = null;
+            this.form.brushInputStyle = null;
             if (this.brushCursorMoveFun) this.content.removeEvent("mousemove", this.brushCursorMoveFun);
             if (this.brushCursor){
                 this.brushCursor.destroy();
@@ -1696,12 +1676,200 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     },
     brushCursorMove: function(e){
         if (this.brushCursor){
-            var x = e.event.layerX+10;
-            var y = e.event.layerY+10;
+            var x = e.page.x-this.contentPosition.x+10;
+            var y = e.page.y-this.contentPosition.y+10;
             this.brushCursor.setStyles({
                 "left": ""+x+"px",
                 "top": ""+y+"px"
             });
         }
     }
+});
+
+MWF.xApplication.cms.FormDesigner.ToolsGroup = new Class({
+    Implements: [Events],
+
+    initialize: function(data, app){
+        this.data = data;
+        this.app = app;
+        this.css = this.app.css;
+        this.tools = [];
+        this.load();
+    },
+    load: function(){
+        this.toolbarGroupNode = new Element("div", {
+            "styles": this.css.toolbarGroupNode,
+        }).inject(this.app.toolbarGroupContentNode);
+
+        // this.toolbarGroupTitleNode = new Element("div", {
+        //     "class": "mainColor_bg",
+        //     "styles": this.css.toolbarGroupTitleNode,
+        //     "text": this.data.text,
+        //     "events": {
+        //         "click": this.show.bind(this)
+        //     }
+        // }).inject(this.toolbarGroupNode);
+
+        this.toolbarContentNode = new Element("div", {
+            "styles": this.css.toolbarContentNode,
+        }).inject(this.toolbarGroupNode);
+
+        this.loadTools();
+
+        if (this.toolbarContentNode){
+            this.app.setScrollBar(this.toolbarContentNode, null, {
+                "V": {"x": 0, "y": 0},
+                "H": {"x": 0, "y": 0}
+            }, function(scrollBar){
+                this.scrollBar = scrollBar;
+            }.bind(this));
+        }
+
+        this.toolbarContentNode.setStyle("height", "0px");
+        this.toolbarContentNode.hide();
+
+
+
+
+        var memuItem = this.app.categoryActionMenu.addMenuItem(this.data.text, "click", function(){this.show();}.bind(this));
+        //memuItem.styleName = style.style;
+        // var imgDiv = memuItem.item.getFirst();
+        // var imgNode = new Element("div", {"styles": memuItem.menu.css.menuItemImg}).inject(imgDiv);
+        // imgNode.setStyle("background-color", color);
+    },
+    setContentHeight: function(height){
+        this.height = height;
+        if (this.isShow){
+            this.toolbarContentNode.setStyle("height", ""+this.height+"px");
+        }
+    },
+    show: function(){
+        if (this.app.currentToolGroup != this){
+            if (this.app.currentToolGroup) this.app.currentToolGroup.hide();
+            // if (!this.morph){
+            //     this.morph = new Fx.Morph(this.toolbarContentNode, {
+            //         "duration": "100",
+            //         transition: Fx.Transitions.Sine.easeOut
+            //     });
+            // }
+            // this.toolbarContentNode.show();
+            // this.morph.start({"height": [0, this.height]}).chain(function(){
+            //     if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.show();
+            //     this.app.currentToolGroup = this;
+            //     this.isShow = true;
+            // }.bind(this));
+            this.toolbarContentNode.show();
+            this.toolbarContentNode.setStyle("height", this.height);
+            if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.show();
+            this.app.currentToolGroup = this;
+            this.isShow = true;
+
+            if (this.app.toolbarMode=="all") this.app.toolbarTitleNode.set("text", this.data.text);
+        }
+    },
+    hide: function(){
+        if (this.app.currentToolGroup==this) this.app.currentToolGroup = null;
+        // if (!this.morph){
+        //     this.morph = new Fx.Morph(this.toolbarContentNode, {
+        //         "duration": "100",
+        //         transition: Fx.Transitions.Sine.easeOut
+        //     });
+        // }
+        // this.isShow = false;
+        // if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.hide();
+        // this.morph.start({
+        //     "height": [this.height, 0]
+        // }).chain(function(){
+        //     this.toolbarContentNode.hide();
+        // }.bind(this));
+
+        this.toolbarContentNode.hide();
+        if (this.scrollBar && this.scrollBar.scrollVAreaNode) this.scrollBar.scrollVAreaNode.hide();
+        this.isShow = false;
+    },
+
+    loadTools: function(){
+        var designer = this.app;
+        var group = this;
+        this.getTools(function(){
+            Object.each(this.toolsData, function(value, key){
+                var toolNode = new Element("div", {
+                    "styles": this.css.toolbarToolNode,
+                    "title": value.text,
+                    "events": {
+                        "mouseover": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeOver);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeOverCSS2);
+                            };
+                        },
+                        "mouseout": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNode);
+                            }catch(e){};
+                        },
+                        "mousedown": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeDown);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeDownCSS2);
+                            };
+                        },
+                        "mouseup": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeUp);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeUpCSS2);
+                            };
+                        }
+                    }
+                }).inject(this.toolbarContentNode);
+                toolNode.store("toolClass", value.className);
+
+                var iconNode = new Element("div", {
+                    "styles": this.css.toolbarToolIconNode
+                }).inject(toolNode);
+                if (value.icon) iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+value.icon+")");
+                if (value.fontIcon){
+                    iconNode.addClass("mainColor_color");
+                    iconNode.set("html", "<i class=\""+value.fontIcon+"\"></i>");
+                }
+
+                var textNode = new Element("div.o2formModuleTools", {
+                    "styles": this.css.toolbarToolTextNode,
+                    "text": value.text
+                });
+                textNode.inject(toolNode);
+
+                toolNode.addEvent("mousedown", function(e){
+                    var className = this.retrieve("toolClass");
+                    designer.form.createModule(className, e, group.data.name);
+                });
+
+                this.tools.push(toolNode);
+            }.bind(this));
+
+            if (this.data.name==="default") this.show();
+        }.bind(this));
+    },
+
+    getTools: function(callback){
+        if (this.toolsData){
+            if (callback) callback();
+        }else{
+            var toolsDataUrl = this.app.path+this.app.options.style+"/"+this.data.json;
+            o2.JSON.get(toolsDataUrl, function(responseJSON){
+                this.toolsData = responseJSON;
+
+                if (!this.app.toolsData){
+                    this.app.toolsData = this.toolsData;
+                }else{
+                    this.app.toolsData = Object.merge(this.app.toolsData, this.toolsData)
+                }
+
+                if (callback) callback();
+            }.bind(this));
+        }
+    },
 });

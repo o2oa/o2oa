@@ -120,6 +120,61 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
                 this.loadStatementSelectorScript(v); break;
             case "Importer":
                 this.loadImporterScript(v); break;
+            case "IWebOffice":
+                this.addScriptItem(v.readScript, "code", v, "readScript");
+                this.loadEventsScript(v);
+                break;
+            case "WpsOffice":
+                this.addScriptItem(v.readScript, "code", v, "readScript");
+                this.loadEventsScript(v);
+                break;
+            case "YozoOffice":
+                this.addScriptItem(v.readScript, "code", v, "readScript");
+                this.loadEventsScript(v);
+                break;
+
+            case "Elautocomplete":
+                this.loadVueElementScript(v, true);
+                this.addScriptItem(v.itemScript, "code", v, "itemScript");
+                break;
+            case "Elbutton":
+                this.loadVueElementScript(v); break;
+            case "Elcheckbox":
+            case "Elradio":
+                this.loadVueElementScript(v, true);
+                this.addScriptItem(v.itemScript, "code", v, "itemScript");
+                break;
+            case "Elcommon":
+                this.addScriptItem(v.vueTemplate, "code", v, "vueTemplate");
+                this.addScriptItem(v.vueApp, "code", v, "vueApp");
+                this.addScriptItem(v.vueCss, "code", v, "vueCss");
+                this.loadEventsScript(v);
+                break;
+            case "Elcontainer":
+            case "Elcontainer$Main":
+            case "Elcontainer$Aside":
+            case "Elcontainer$Footer":
+            case "Elcontainer$Header":
+            case "Elicon":
+                this.loadEventsScript(v); break;
+            case "Elinput":
+            case "Elnumber":
+                this.loadVueElementScript(v, true); break;
+            case "Elselect":
+                this.loadVueElementScript(v);
+                this.addScriptItem(v.itemScript, "code", v, "itemScript");
+                this.addScriptItem(v.itemGroupScript, "code", v, "itemGroupScript");
+                this.addScriptItem(v.filterMethod, "code", v, "filterMethod");
+                this.addScriptItem(v.remoteMethod, "code", v, "remoteMethod");
+                break;
+
+            case "Elslider":
+                this.loadVueElementScript(v, true);
+                this.addScriptItem(v.marksScript, "code", v, "marksScript");
+                this.addScriptItem(v.formatTooltip, "code", v, "formatTooltip");
+                break;
+            case "Elswitch":
+                this.loadVueElementScript(v, true); break;
         }
         this.bindDataId(v);
     },
