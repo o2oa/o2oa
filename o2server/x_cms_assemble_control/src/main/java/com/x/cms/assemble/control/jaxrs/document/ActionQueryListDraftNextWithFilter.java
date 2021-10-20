@@ -92,7 +92,7 @@ public class ActionQueryListDraftNextWithFilter extends BaseAction {
 
 		@FieldDescribe("作为过滤条件的CMS分类ID列表, 可多个, String数组.")
 		private List<String> categoryIdList;
-		
+
 		@FieldDescribe( "文档类型：全部 | 信息 | 数据" )
 		private String documentType = "信息";
 
@@ -117,9 +117,9 @@ public class ActionQueryListDraftNextWithFilter extends BaseAction {
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static List<String> Excludes = new ArrayList<String>();
+		public static List<String> excludes = new ArrayList<String>();
 
-		public static WrapCopier<Document, Wo> copier = WrapCopierFactory.wo(Document.class, Wo.class, null,
+		public static final WrapCopier<Document, Wo> copier = WrapCopierFactory.wo(Document.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
 		/**

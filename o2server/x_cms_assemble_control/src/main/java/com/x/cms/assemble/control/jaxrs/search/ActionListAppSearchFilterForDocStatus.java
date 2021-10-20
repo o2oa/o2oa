@@ -14,12 +14,12 @@ import com.x.cms.assemble.control.service.SearchServiceAdv;
 import com.x.cms.assemble.control.service.UserManagerService;
 
 class ActionListAppSearchFilterForDocStatus extends BaseAction {
-	
+
 	private static  Logger logger = LoggerFactory.getLogger(SearchFilterAction.class);
 	private AppInfoServiceAdv appInfoServiceAdv = new AppInfoServiceAdv();
 	private SearchServiceAdv searchServiceAdv = new SearchServiceAdv();
 	private UserManagerService userManagerService = new UserManagerService();
-	
+
 	public ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String docStatus, String categoryId ) {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = new Wo();
@@ -39,7 +39,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 				isXAdmin = userManagerService.isManager( effectivePerson);
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionSearchProcess(e, 
+				Exception exception = new ExceptionSearchProcess(e,
 						"系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
@@ -63,7 +63,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 							personName, isAnonymous, unitNames, groupNames, null, null, documentType, null,1000 );
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ExceptionSearchProcess( e, 
+					Exception exception = new ExceptionSearchProcess( e,
 							"系统在根据用户权限查询所有可见的栏目信息时发生异常。Name:" + personName );
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
@@ -77,7 +77,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 				appFilterList = searchServiceAdv.listAppInfoSearchFilter(app_ids, docStatus, categoryId );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionSearchProcess(e, 
+				Exception exception = new ExceptionSearchProcess(e,
 						"系统在根据可访问栏目ID列表，文档状态以及可访问分类ID统计涉及到的所有栏目名称列表时发生异常。"
 						+ "AppIds:" + app_ids
 						+ ", DocStatus:" + docStatus
@@ -93,7 +93,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 				categoryFilterList = searchServiceAdv.listCategorySearchFilter(app_ids, docStatus, categoryId);
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionSearchProcess(e, 
+				Exception exception = new ExceptionSearchProcess(e,
 						"系统在根据可访问栏目ID列表，文档状态以及可访问分类ID统计涉及到的所有分类名称列表时发生异常。"
 						+ "AppIds:" + app_ids
 						+ ", DocStatus:" + docStatus
@@ -108,7 +108,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 				topUnitFilterList = searchServiceAdv.listTopUnitSearchFilter(app_ids, docStatus, categoryId);
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionSearchProcess(e, 
+				Exception exception = new ExceptionSearchProcess(e,
 						"系统在根据可访问栏目ID列表，文档状态以及可访问分类ID统计涉及到的所有顶层组织名称列表时发生异常。"
 						+ "AppIds:" + app_ids
 						+ ", DocStatus:" + docStatus
@@ -123,7 +123,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 				unitFilterList = searchServiceAdv.listUnitNameSearchFilter(app_ids, docStatus, categoryId);
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionSearchProcess(e, 
+				Exception exception = new ExceptionSearchProcess(e,
 						"系统在根据可访问栏目ID列表，文档状态以及可访问分类ID统计涉及到的所有组织名称列表时发生异常。"
 						+ "AppIds:" + app_ids
 						+ ", DocStatus:" + docStatus
@@ -142,19 +142,19 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo {
-		
-		public static List<String> Excludes = new ArrayList<String>();
+
+		public static List<String> excludes = new ArrayList<String>();
 
 		private List<AppFilter> appfileter_list = null;
-		
+
 		private List<CategoryFilter> categoryfileter_list = null;
-		
+
 		private List<TopUnitNameFilter> topUnitfileter_list = null;
-		
+
 		private List<UnitNameFilter> unitfileter_list = null;
-		
+
 		public List<UnitNameFilter> getUnitNamefileter_list() {
 			return unitfileter_list;
 		}
@@ -186,6 +186,6 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 		public void setCategoryfileter_list(List<CategoryFilter> categoryfileter_list) {
 			this.categoryfileter_list = categoryfileter_list;
 		}
-		
+
 	}
 }

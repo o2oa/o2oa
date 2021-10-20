@@ -118,9 +118,9 @@ public class QueueSendDocumentNotify extends AbstractQueue<String> {
 
 	public static class MessageWo{
 
-		public static List<String> Excludes = new ArrayList<String>();
+		public static List<String> excludes = new ArrayList<String>();
 
-		public static WrapCopier<Document, MessageWo> copier = WrapCopierFactory.wo(Document.class, MessageWo.class, null, JpaObject.FieldsInvisible);
+		public static final WrapCopier<Document, MessageWo> copier = WrapCopierFactory.wo(Document.class, MessageWo.class, null, JpaObject.FieldsInvisible);
 
 		@FieldDescribe("数据库主键,自动生成.")
 		private String id;

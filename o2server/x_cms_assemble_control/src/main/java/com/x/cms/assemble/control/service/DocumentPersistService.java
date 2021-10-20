@@ -1,22 +1,25 @@
 package com.x.cms.assemble.control.service;
 
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.DocumentDataHelper;
+import com.x.cms.assemble.control.factory.ProjectionFactory;
 import com.x.cms.assemble.control.jaxrs.document.ActionPersistBatchModifyData.WiDataChange;
 import com.x.cms.assemble.control.jaxrs.document.ActionPersistBatchModifyData.Wo;
 import com.x.cms.assemble.control.jaxrs.permission.element.PermissionInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Document_;
+import com.x.cms.core.entity.Projection;
 import com.x.cms.core.entity.content.Data;
 import com.x.query.core.entity.Item;
 import org.apache.commons.collections4.list.TreeList;
@@ -43,8 +46,8 @@ public class DocumentPersistService {
 	private static ReentrantLock lock = new ReentrantLock();
 	private DocumentInfoService documentInfoService = new DocumentInfoService();
 	private PermissionOperateService permissionService = new PermissionOperateService();
-	
-	public Document save( Document document, JsonElement jsonElement ) throws Exception {
+
+	public Document save( Document document, JsonElement jsonElement, String projection) throws Exception {
 		if( document == null ){
 			throw new Exception("document is null!");
 		}
@@ -52,7 +55,7 @@ public class DocumentPersistService {
 			document.setHasIndexPic(true);
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			document.setModifyTime( new Date());	
+			document.setModifyTime( new Date());
 			document.setSequenceAppAlias( document.getAppAlias() + document.getId() );
 			document.setSequenceCategoryAlias( document.getCategoryAlias() + document.getId() );
 			if( document.getTitle().length() > 30 ) {
@@ -69,11 +72,11 @@ public class DocumentPersistService {
 				document.setSequenceCreatorUnitName( document.getCreatorUnitName().substring(0, 50) + document.getId() );
 			}else {
 				document.setSequenceCreatorUnitName( document.getCreatorUnitName() + document.getId() );
-			}			
-			
+			}
+
 			document =  documentInfoService.save( emc, document );
 			//如果有数据信息，则保存数据信息
-			
+
 			DocumentDataHelper documentDataHelper = new DocumentDataHelper( emc, document );
 			if( jsonElement != null ) {
 				documentDataHelper.update( jsonElement );
@@ -81,16 +84,26 @@ public class DocumentPersistService {
 			emc.commit();
 
 			Data data = documentDataHelper.get();
+			this.doProjection(emc, projection, data, document);
 			data.setDocument( document );
 			documentDataHelper.update( data );
-			
+
 			emc.commit();
 			return document;
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
-	
+
+	public void doProjection(EntityManagerContainer emc, String projection, Data data, Document document) throws Exception {
+		if(StringUtils.isNotBlank(projection) && XGsonBuilder.isJsonArray(projection)){
+			emc.beginTransaction( Document.class );
+			List<Projection> projections = XGsonBuilder.instance().fromJson(projection,
+					new TypeToken<List<Projection>>(){}.getType());
+			ProjectionFactory.projectionDocument(projections, data, document);
+		}
+	}
+
 	/**
 	 * 根据文档信息更新数据内容中的文档信息内容
 	 * @param document
@@ -121,8 +134,8 @@ public class DocumentPersistService {
 		o.setBundle(document.getId());
 		o.setItemCategory(ItemCategory.cms);
 	}
-	
-	
+
+
 
 	/**
 	 * 变更一个文档的分类信息
@@ -133,7 +146,7 @@ public class DocumentPersistService {
 	public Boolean changeCategory( Document document, CategoryInfo categoryInfo) throws Exception {
 		if( document == null ){
 			throw new Exception("document is empty!");
-		}		
+		}
 		if( categoryInfo == null ){
 			throw new Exception("categoryInfo is empty!");
 		}
@@ -142,9 +155,9 @@ public class DocumentPersistService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			emc.beginTransaction( Document.class );
 			emc.beginTransaction(  Item.class );
-			
+
 			document = emc.find( document.getId(), Document.class );
-			
+
 			//更新document分类相关信息
 			document.setAppId( categoryInfo.getAppId() );
 			document.setAppName( categoryInfo.getAppName() );
@@ -154,7 +167,7 @@ public class DocumentPersistService {
 			document.setForm( categoryInfo.getReadFormId() );
 			document.setFormName( categoryInfo.getReadFormName() );
 			document.setModifyTime( new Date());
-			
+
 			document.setSequenceAppAlias( document.getAppAlias() + document.getId() );
 			document.setSequenceCategoryAlias( document.getCategoryAlias() + document.getId() );
 			if( document.getTitle().length() > 30 ) {
@@ -172,9 +185,9 @@ public class DocumentPersistService {
 			}else {
 				document.setSequenceCreatorUnitName( document.getCreatorUnitName() + document.getId() );
 			}
-			
+
 			emc.check( document, CheckPersistType.all );
-			
+
 			//更新数据里的document对象信息
 			documentDataHelper = new DocumentDataHelper( emc, document );
 			data = documentDataHelper.get();
@@ -187,7 +200,7 @@ public class DocumentPersistService {
 			throw e;
 		}
 	}
-	
+
 	public Wo changeData(List<String> docIds, List<WiDataChange> dataChanges) throws Exception {
 		if( ListTools.isEmpty( docIds )){
 			throw new Exception("docIds is empty!");
@@ -201,13 +214,13 @@ public class DocumentPersistService {
 		DocumentDataHelper documentDataHelper = null;
 		for( String docId : docIds ) {
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-				
+
 				emc.beginTransaction( Document.class );
 				emc.beginTransaction( Item.class );
-				
+
 				document_entity = emc.find( docId, Document.class );
 				document_entity.setModifyTime( new Date());
-				
+
 				documentDataHelper = new DocumentDataHelper( emc, document_entity );
 				data = documentDataHelper.get();
 				for( WiDataChange dataChange : dataChanges ) {
@@ -256,21 +269,21 @@ public class DocumentPersistService {
 			if( document != null ) {
 //				emc.beginTransaction( Item.class );
 				emc.beginTransaction( Document.class );
-				document.setIsTop( true );			
-				
+				document.setIsTop( true );
+
 				DocumentDataHelper documentDataHelper = new DocumentDataHelper( emc, document );
 				Data data = documentDataHelper.get();
 				data.setDocument( document );
 				documentDataHelper.update( data );
-				
+
 				emc.commit();
 			}
-			
+
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
-	
+
 	public void unTopDocument(String id) throws Exception {
 		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is empty!");
@@ -286,12 +299,12 @@ public class DocumentPersistService {
 				documentDataHelper.update( data );
 				emc.commit();
 			}
-			
+
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 删除指定ID的文档
 	 * @param docId
@@ -320,9 +333,9 @@ public class DocumentPersistService {
 			throw new Exception("docId is empty!");
 		}
 		Document document = permissionService.refreshDocumentPermission( docId, readerList, authorList);
-		
-		new CmsBatchOperationPersistService().addOperation( 
-				CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+
+		new CmsBatchOperationPersistService().addOperation(
+				CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
 				CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  docId,  docId, "刷新文档权限：ID=" +  docId );
 
 		return document;

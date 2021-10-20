@@ -9,6 +9,6 @@ import com.x.cms.core.entity.element.View;
 public class WrapInView extends View {
 
 	private static final long serialVersionUID = -5237741099036357033L;
-	public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsUnmodify);
+	public static List<String> excludes = new ArrayList<>(JpaObject.FieldsUnmodify);
 
 }

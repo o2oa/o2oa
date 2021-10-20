@@ -25,7 +25,7 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 	private static  Logger logger = LoggerFactory.getLogger(ActionQueryListNextWithFilter.class);
 
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, String id, Integer count, JsonElement jsonElement, EffectivePerson effectivePerson ) {
-		ActionResult<List<Wo>> result = new ActionResult<>();		
+		ActionResult<List<Wo>> result = new ActionResult<>();
 		Long total = 0L;
 		Wi wi = null;
 		List<Wo> wos = new ArrayList<>();
@@ -36,10 +36,10 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 		Boolean isManager = false;
 		String personName = effectivePerson.getDistinguishedName();
 		QueryFilter queryFilter = null;
-		
+
 		if ( count == 0 ) { count = 20; }
 		if ( StringUtils.isEmpty( id ) || "(0)".equals( id ) ) { id = null; }
-		
+
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
 		} catch (Exception e ) {
@@ -49,25 +49,25 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 			logger.error( e, effectivePerson, request, null);
 		}
 		if ( wi == null ) { wi = new Wi(); }
-		
+
 		if( StringUtils.isEmpty( wi.getDocumentType() )) {
 			wi.setDocumentType( "信息" );
 		}
-		
+
 		if( StringUtils.isEmpty( wi.getOrderField() )) {
 			wi.setOrderField( "createTime" );
 		}
-		
+
 		if( StringUtils.isEmpty( wi.getOrderType() )) {
 			wi.setOrderType( "DESC" );
 		}
-		
+
 		if( ListTools.isEmpty( wi.getStatusList() )) {
 			List<String> status = new ArrayList<>();
 			status.add( "published" );
 			wi.setStatusList( status );
 		}
-		
+
 		if (check) {
 			try {
 				queryFilter = wi.getQueryFilter();
@@ -78,7 +78,7 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ) {
 			try {
 				if( effectivePerson.isManager() || userManagerService.isHasPlatformRole( effectivePerson.getDistinguishedName(), "CMSManager" )) {
@@ -91,7 +91,7 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ) {
 			//查询是否已读，需要使用相应的ID进行IN操作，效率有一些低
 			List<String> readDocIds = null;
@@ -133,7 +133,7 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 				}
 			}
 		}
-		
+
 		if (check) { // 从Review表中查询符合条件的对象总数
 			try {
 				if( isManager ) { //直接从Document忽略权限查询
@@ -148,7 +148,7 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check) {
 			//document和Review除了sequence还有5个排序列支持title, appAlias, categoryAlias, categoryName, creatorUnitName的分页查询
 			//除了sequence和title, appAlias, categoryAlias, categoryName, creatorUnitName之外，其他的列排序全部在内存进行分页
@@ -204,7 +204,7 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check) {
 			if ( searchResultList != null ) {
 				Wo wo = null;
@@ -239,11 +239,11 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 		result.setCount(total);
 		result.setData(wos);
 		return result;
-	}	
+	}
 
 	public class DocumentCacheForFilter {
 
-		private Long total = 0L;		
+		private Long total = 0L;
 		private List<Wo> documentList = null;
 
 		public Long getTotal() {
@@ -260,18 +260,18 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 
 		public void setDocumentList(List<Wo> documentList) {
 			this.documentList = documentList;
-		}	
+		}
 	}
-	
+
 	public static class Wi extends WrapInDocumentFilter{
-		
+
 	}
-	
+
 	public static class Wo extends WrapOutDocumentList {
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier<Document, Wo> copier = WrapCopierFactory.wo( Document.class, Wo.class, null,JpaObject.FieldsInvisible);
-		
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<Document, Wo> copier = WrapCopierFactory.wo( Document.class, Wo.class, null,JpaObject.FieldsInvisible);
+
 	}
 }

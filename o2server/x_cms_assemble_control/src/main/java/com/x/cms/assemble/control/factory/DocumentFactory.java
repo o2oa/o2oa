@@ -91,7 +91,11 @@ public class DocumentFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( Document_.documentType), documentType));
 		}
-		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
+		if (maxCount!=null && maxCount > 0) {
+			return em.createQuery(cq).setMaxResults(maxCount).getResultList();
+		}else{
+			return em.createQuery(cq).getResultList();
+		}
 	}
 
 	public List<String> listByCategoryId( String categoryId, Integer maxCount ) throws Exception {
@@ -101,7 +105,11 @@ public class DocumentFactory extends AbstractFactory {
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
 		cq.select(root.get( Document_.id)).where(p);
-		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
+		if (maxCount!=null && maxCount > 0) {
+			return em.createQuery(cq).setMaxResults(maxCount).getResultList();
+		}else{
+			return em.createQuery(cq).getResultList();
+		}
 	}
 
 	/**

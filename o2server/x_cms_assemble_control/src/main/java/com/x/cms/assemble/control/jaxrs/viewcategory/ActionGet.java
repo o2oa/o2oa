@@ -57,9 +57,9 @@ public class ActionGet extends BaseAction {
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static List<String> Excludes = new ArrayList<String>();
+		public static List<String> excludes = new ArrayList<String>();
 
-		public static WrapCopier<ViewCategory, Wo> copier = WrapCopierFactory.wo(ViewCategory.class, Wo.class, null,
+		public static final WrapCopier<ViewCategory, Wo> copier = WrapCopierFactory.wo(ViewCategory.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 	}
 

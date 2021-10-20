@@ -48,18 +48,18 @@ public class ActionGet extends BaseAction {
 				result.error(th);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public static class Wo extends ViewFieldConfig {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier<ViewFieldConfig, Wo> copier = WrapCopierFactory.wo( ViewFieldConfig.class, Wo.class, null,JpaObject.FieldsInvisible);
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<ViewFieldConfig, Wo> copier = WrapCopierFactory.wo( ViewFieldConfig.class, Wo.class, null,JpaObject.FieldsInvisible);
 
 	}
-	
+
 }
