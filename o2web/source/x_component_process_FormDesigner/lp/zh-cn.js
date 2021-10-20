@@ -448,6 +448,7 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         "defaultValue": "默认值",
         "verificationScript": "校验脚本",
+        "verificationLineScript": "单行编辑完成后校验脚本",
         "section": "区段",
         "enableSection": "启用区段",
         "sectionBy": "区段依据",
