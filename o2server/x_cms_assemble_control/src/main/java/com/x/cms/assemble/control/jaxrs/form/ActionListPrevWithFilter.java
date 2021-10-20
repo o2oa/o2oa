@@ -33,7 +33,7 @@ public class ActionListPrevWithFilter extends BaseAction {
 		LikeTerms likes = new LikeTerms();
 		Wi wrapIn = null;
 		Boolean check = true;
-		WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null, Wo.Excludes);
+		WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null, Wo.excludes);
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
 		} catch (Exception e) {
@@ -80,13 +80,13 @@ public class ActionListPrevWithFilter extends BaseAction {
 
 		public void setRank(Long rank) {
 			this.rank = rank;
-		} 
-		
+		}
+
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static List<String> Excludes = new ArrayList<String>();
+		public static List<String> excludes = new ArrayList<String>();
 
-		public static WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null,
+		public static final WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
 	}
@@ -107,7 +107,7 @@ public class ActionListPrevWithFilter extends BaseAction {
 
 		@FieldDescribe("用于标题搜索的关键字.")
 		private String key;
-		
+
 		public List<String> getAppIdList() {
 			return appIdList;
 		}

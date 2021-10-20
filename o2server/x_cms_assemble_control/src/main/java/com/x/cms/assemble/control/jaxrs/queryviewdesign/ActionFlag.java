@@ -24,7 +24,7 @@ class ActionFlag extends BaseAction {
 
 		private static final long serialVersionUID = 2886873983211744188L;
 
-		public static WrapCopier<QueryView, Wo> copier = WrapCopierFactory.wo(QueryView.class, Wo.class, null,
+		public static final WrapCopier<QueryView, Wo> copier = WrapCopierFactory.wo(QueryView.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
 		private Long rank;

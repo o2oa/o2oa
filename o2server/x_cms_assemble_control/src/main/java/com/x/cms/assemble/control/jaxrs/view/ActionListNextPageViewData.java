@@ -538,7 +538,7 @@ public class ActionListNextPageViewData extends BaseAction {
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static WrapCopier<Document, WoDocument> copier = WrapCopierFactory.wo( Document.class, WoDocument.class, null, JpaObject.FieldsInvisible);
+		public static final WrapCopier<Document, WoDocument> copier = WrapCopierFactory.wo( Document.class, WoDocument.class, null, JpaObject.FieldsInvisible);
 
 		@FieldDescribe("创建者姓名（简称）")
 		private String creatorPersonShort = null;

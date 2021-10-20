@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * 栏目信息
- * 
+ *
  * @author O2LEE
  *
  */
@@ -192,6 +192,16 @@ public class AppInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Boolean showAllDocuments = true;
 
+	public static final String defaultEditForm_FIELDNAME = "defaultEditForm";
+	@FieldDescribe("默认编辑表单")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + defaultEditForm_FIELDNAME)
+	private String defaultEditForm;
+
+	public static final String defaultReadForm_FIELDNAME = "defaultReadForm";
+	@FieldDescribe("默认阅读表单")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + defaultReadForm_FIELDNAME)
+	private String defaultReadForm;
+
 	public static final String categoryList_FIELDNAME = "categoryList";
 	@FieldDescribe("分类列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -331,7 +341,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 获取栏目名称
-	 * 
+	 *
 	 * @return
 	 */
 	public String getAppName() {
@@ -340,7 +350,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 设置栏目名称
-	 * 
+	 *
 	 * @return
 	 */
 	public void setAppName(String appName) {
@@ -349,7 +359,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 获取栏目别名
-	 * 
+	 *
 	 * @return
 	 */
 	public String getAppAlias() {
@@ -358,7 +368,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 设置栏目别名
-	 * 
+	 *
 	 * @return
 	 */
 	public void setAppAlias(String appAlias) {
@@ -367,7 +377,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 获取栏目排序号
-	 * 
+	 *
 	 * @return
 	 */
 	public String getAppInfoSeq() {
@@ -376,7 +386,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 设置栏目排序号
-	 * 
+	 *
 	 * @return
 	 */
 	public void setAppInfoSeq(String appInfoSeq) {
@@ -393,7 +403,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 获取栏目说明
-	 * 
+	 *
 	 * @return
 	 */
 	public String getDescription() {
@@ -402,7 +412,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 设置栏目说明
-	 * 
+	 *
 	 * @return
 	 */
 	public void setDescription(String description) {
@@ -411,7 +421,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 获取栏目图标访问路径
-	 * 
+	 *
 	 * @return
 	 */
 	public String getAppIcon() {
@@ -420,7 +430,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 设置栏目图标访问路径
-	 * 
+	 *
 	 * @return
 	 */
 	public void setAppIcon(String appIcon) {
@@ -429,7 +439,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 获取栏目信息备注
-	 * 
+	 *
 	 * @return
 	 */
 	public String getAppMemo() {
@@ -438,7 +448,7 @@ public class AppInfo extends SliceJpaObject {
 
 	/**
 	 * 设置栏目信息备注
-	 * 
+	 *
 	 * @return
 	 */
 	public void setAppMemo(String appMemo) {
@@ -772,4 +782,20 @@ public class AppInfo extends SliceJpaObject {
 	public Boolean getShowAllDocuments() { return this.showAllDocuments == null? true : this.showAllDocuments; }
 
 	public void setShowAllDocuments(final Boolean showAllDocuments) { this.showAllDocuments = showAllDocuments; }
+
+	public String getDefaultEditForm() {
+		return defaultEditForm;
+	}
+
+	public void setDefaultEditForm(String defaultEditForm) {
+		this.defaultEditForm = defaultEditForm;
+	}
+
+	public String getDefaultReadForm() {
+		return defaultReadForm;
+	}
+
+	public void setDefaultReadForm(String defaultReadForm) {
+		this.defaultReadForm = defaultReadForm;
+	}
 }

@@ -155,9 +155,9 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 
 	public static class Wo extends WrapOutDocumentList {
 
-		public static List<String> Excludes = new ArrayList<String>();
+		public static List<String> excludes = new ArrayList<String>();
 
-		public static WrapCopier<Document, Wo> copier = WrapCopierFactory.wo( Document.class, Wo.class, null,JpaObject.FieldsInvisible);
+		public static final WrapCopier<Document, Wo> copier = WrapCopierFactory.wo( Document.class, Wo.class, null,JpaObject.FieldsInvisible);
 
 	}
 }
