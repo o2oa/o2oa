@@ -29,10 +29,10 @@ public class ActionList extends BaseAction {
 	public ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson) throws Exception {
 		List<String> identities = null;
 		List<String> unitNames = null;
-		
+
 		identities = userManagerService.listIdentitiesWithPerson( effectivePerson.getDistinguishedName() );
 		unitNames = userManagerService.listUnitNamesWithPerson( effectivePerson.getDistinguishedName() );
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -72,9 +72,9 @@ public class ActionList extends BaseAction {
 	public static class Wo extends QueryView {
 
 		private static final long serialVersionUID = 2886873983211744188L;
-		
-		public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
-		public static WrapCopier<QueryView, Wo> copier = WrapCopierFactory.wo( QueryView.class, Wo.class, null, JpaObject.FieldsInvisible);
+		public static List<String> excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+
+		public static final WrapCopier<QueryView, Wo> copier = WrapCopierFactory.wo( QueryView.class, Wo.class, null, JpaObject.FieldsInvisible);
 	}
 }

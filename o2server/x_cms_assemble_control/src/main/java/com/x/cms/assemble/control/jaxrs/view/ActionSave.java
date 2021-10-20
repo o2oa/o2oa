@@ -85,7 +85,7 @@ public class ActionSave extends BaseAction {
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
+		public static List<String> excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
 
 		public static WrapCopier<Wi, View> copier = WrapCopierFactory.wi(Wi.class, View.class, null,
 				JpaObject.FieldsUnmodify);

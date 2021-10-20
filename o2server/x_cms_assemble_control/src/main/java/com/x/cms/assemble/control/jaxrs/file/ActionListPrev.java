@@ -25,7 +25,7 @@ class ActionListPrev extends BaseAction {
 
 		private static final long serialVersionUID = -7495725325510376323L;
 
-		public static WrapCopier<File, Wo> copier = WrapCopierFactory.wo(File.class, Wo.class, null,
+		public static final WrapCopier<File, Wo> copier = WrapCopierFactory.wo(File.class, Wo.class, null,
 				ListTools.toList(JpaObject.FieldsInvisible, File.data_FIELDNAME));
 
 		@FieldDescribe("排序号")

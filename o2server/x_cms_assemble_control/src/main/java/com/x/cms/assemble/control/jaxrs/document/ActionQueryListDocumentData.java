@@ -39,7 +39,7 @@ public class ActionQueryListDocumentData extends BaseAction {
 			wos = getDocumentQueryResult(business, wi.getDocIds(), effectivePerson);
 		}
 		result.setData(wos);
-		return result;			
+		return result;
 	}
 
 	private List<Wo> getDocumentQueryResult(Business business, List<String> ids, EffectivePerson effectivePerson) throws Exception {
@@ -66,7 +66,7 @@ public class ActionQueryListDocumentData extends BaseAction {
 				wos.add(wo);
 			//}
 		}
-		
+
 		return wos;
 	}
 
@@ -103,16 +103,16 @@ public class ActionQueryListDocumentData extends BaseAction {
 		public void setData(Data data) {
 			this.data = data;
 		}
-		
+
 	}
-	
+
 	public static class WoDocument extends Document {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier<Document, WoDocument> copier = WrapCopierFactory.wo( Document.class, WoDocument.class, null,JpaObject.FieldsInvisible);
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<Document, WoDocument> copier = WrapCopierFactory.wo( Document.class, WoDocument.class, null,JpaObject.FieldsInvisible);
 
 	}
 

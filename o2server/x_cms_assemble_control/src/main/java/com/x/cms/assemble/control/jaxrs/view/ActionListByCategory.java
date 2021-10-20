@@ -26,12 +26,12 @@ import com.x.cms.core.entity.element.View;
 import net.sf.ehcache.Element;
 
 public class ActionListByCategory extends BaseAction {
-	
+
 	@SuppressWarnings("unchecked")
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String categoryId ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = null;
-		
+
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), categoryId );
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
@@ -39,8 +39,8 @@ public class ActionListByCategory extends BaseAction {
 			wraps = (List<Wo>) optional.get();
 			result.setData( wraps );
 		} else {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
-				Business business = new Business(emc);			
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
 				//如判断用户是否有查看所有视图的权限，如果没权限不允许继续操作
 				if (!business.viewEditAvailable( effectivePerson )) {
 					throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} 用户没有查询全部视图的权限！");
@@ -53,7 +53,7 @@ public class ActionListByCategory extends BaseAction {
 				if( viewList != null && !viewList.isEmpty() ){
 					wraps = Wo.copier.copy( viewList );//将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
 					SortTools.desc( wraps, "sequence" );
-					
+
 					for( Wo wo :  wraps ){
 						//根据FormId补充FormName
 						if(StringUtils.isNotEmpty( wo.getFormId() )) {
@@ -69,20 +69,20 @@ public class ActionListByCategory extends BaseAction {
 				result.error(th);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public static class Wo extends View {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
+
+		public static List<String> excludes = new ArrayList<String>();
+
 		@FieldDescribe("绑定的表单名称.")
 		private String formName = null;
 
-		public static WrapCopier<View, Wo> copier = WrapCopierFactory.wo( View.class, Wo.class, null, JpaObject.FieldsInvisible);
+		public static final WrapCopier<View, Wo> copier = WrapCopierFactory.wo( View.class, Wo.class, null, JpaObject.FieldsInvisible);
 
 		public String getFormName() {
 			return formName;

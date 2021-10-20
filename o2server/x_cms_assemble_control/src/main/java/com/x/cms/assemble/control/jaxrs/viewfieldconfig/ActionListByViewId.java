@@ -34,17 +34,17 @@ public class ActionListByViewId extends BaseAction {
 			wraps = (List<Wo>) optional.get();
 			result.setData(wraps);
 		} else {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
-				Business business = new Business(emc);			
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
 				//如判断用户是否有查看所有展示列配置信息的权限，如果没权限不允许继续操作
 				if (!business.viewEditAvailable( effectivePerson )) {
 					throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} 用户没有查询全部展示列配置信息的权限！");
-				}			
+				}
 				//如果有权限，继续操作
 				ViewFieldConfigFactory viewFieldConfigFactory = business.getViewFieldConfigFactory();
 				List<String> ids = viewFieldConfigFactory.listByViewId( viewId );//获取指定应用的所有展示列配置信息列表
 				List<ViewFieldConfig> viewFieldConfigList = emc.list( ViewFieldConfig.class, ids );//查询ID IN ids 的所有展示列配置信息信息列表
-				
+
 				wraps = Wo.copier.copy( viewFieldConfigList );//将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
 
 				CacheManager.put(cacheCategory, cacheKey, wraps );
@@ -54,17 +54,17 @@ public class ActionListByViewId extends BaseAction {
 				result.error(th);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public static class Wo extends ViewFieldConfig {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier<ViewFieldConfig, Wo> copier = WrapCopierFactory.wo( ViewFieldConfig.class, Wo.class, null, JpaObject.FieldsInvisible);
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<ViewFieldConfig, Wo> copier = WrapCopierFactory.wo( ViewFieldConfig.class, Wo.class, null, JpaObject.FieldsInvisible);
 
 	}
 }
