@@ -55,7 +55,7 @@ public class ActionListAll extends BaseAction {
 					}
 				}
 				SortTools.asc( wraps, true, "appName" );
-			}			
+			}
 			result.setData(wraps);
 			return result;
 		}
@@ -91,28 +91,28 @@ public class ActionListAll extends BaseAction {
 	public static class Wo extends AppInfo {
 
 		private static final long serialVersionUID = 2886873983211744188L;
-		
-		public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+
+		public static List<String> excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
 		public static WrapCopier<AppInfo, Wo> copier = WrapCopierFactory.wo( AppInfo.class, Wo.class, null, JpaObject.FieldsInvisible );
-		
+
 		private List<WoQueryView> queryViews = null;
 
 		public List<WoQueryView> getQueryViews() {
 			return queryViews;
 		}
-		
+
 		public void setQueryViews(List<WoQueryView> queryViews) {
 			this.queryViews = queryViews;
-		}		
+		}
 	}
-	
+
 	public static class WoQueryView extends QueryView {
 
 		private static final long serialVersionUID = 2886873983211744188L;
-		
-		public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
-		public static WrapCopier<QueryView, WoQueryView> copier = WrapCopierFactory.wo( QueryView.class, WoQueryView.class, null, JpaObject.FieldsInvisible);
+		public static List<String> excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+
+		public static final WrapCopier<QueryView, WoQueryView> copier = WrapCopierFactory.wo( QueryView.class, WoQueryView.class, null, JpaObject.FieldsInvisible);
 	}
 }

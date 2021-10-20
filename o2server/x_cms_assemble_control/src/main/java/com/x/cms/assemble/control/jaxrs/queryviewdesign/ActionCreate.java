@@ -80,28 +80,28 @@ class ActionCreate extends BaseAction {
 
 	public static class Wi extends QueryView {
 		private static final long serialVersionUID = -5237741099036357033L;
-		public static List<String> CreateExcludes = new ArrayList<>();
-		public static List<String> UpdateExcludes = new ArrayList<>();
-		public static WrapCopier<Wi, QueryView> copier = WrapCopierFactory.wi(Wi.class, QueryView.class, null,
-				Wi.CreateExcludes);
-	
+		public static List<String> createExcludes = new ArrayList<>();
+		public static List<String> updateExcludes = new ArrayList<>();
+		public static final WrapCopier<Wi, QueryView> copier = WrapCopierFactory.wi(Wi.class, QueryView.class, null,
+				Wi.createExcludes);
+
 		static {
-			CreateExcludes.add(JpaObject.distributeFactor_FIELDNAME);
-			CreateExcludes.add("updateTime");
-			CreateExcludes.add("createTime");
-			CreateExcludes.add("sequence");
-			CreateExcludes.add("lastUpdatePerson");
-			CreateExcludes.add("lastUpdateTime");
+			createExcludes.add(JpaObject.distributeFactor_FIELDNAME);
+			createExcludes.add("updateTime");
+			createExcludes.add("createTime");
+			createExcludes.add("sequence");
+			createExcludes.add("lastUpdatePerson");
+			createExcludes.add("lastUpdateTime");
 		}
 
 		static {
-			UpdateExcludes.add(JpaObject.distributeFactor_FIELDNAME);
-			UpdateExcludes.add(JpaObject.id_FIELDNAME);
-			UpdateExcludes.add("updateTime");
-			UpdateExcludes.add("createTime");
-			UpdateExcludes.add("sequence");
-			UpdateExcludes.add("lastUpdatePerson");
-			UpdateExcludes.add("lastUpdateTime");
+			updateExcludes.add(JpaObject.distributeFactor_FIELDNAME);
+			updateExcludes.add(JpaObject.id_FIELDNAME);
+			updateExcludes.add("updateTime");
+			updateExcludes.add("createTime");
+			updateExcludes.add("sequence");
+			updateExcludes.add("lastUpdatePerson");
+			updateExcludes.add("lastUpdateTime");
 		}
 	}
 

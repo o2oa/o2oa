@@ -18,7 +18,7 @@ import com.x.cms.core.entity.element.View;
 import java.util.Optional;
 
 public class ActionGet extends BaseAction {
-	
+
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String flag ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = null;
@@ -50,15 +50,15 @@ public class ActionGet extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends View {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		@FieldDescribe("绑定的表单名称.")
 		private String formName = null;
-		
-		public static WrapCopier<View, Wo> copier = WrapCopierFactory.wo( View.class, Wo.class, null,JpaObject.FieldsInvisible);
+
+		public static final WrapCopier<View, Wo> copier = WrapCopierFactory.wo( View.class, Wo.class, null,JpaObject.FieldsInvisible);
 
 		public String getFormName() {
 			return formName;

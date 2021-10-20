@@ -9,6 +9,6 @@ import com.x.cms.core.entity.element.Form;
 public class WrapOutFormField extends Form {
 
 	private static final long serialVersionUID = -3041412588191150480L;
-	public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+	public static List<String> excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
 }

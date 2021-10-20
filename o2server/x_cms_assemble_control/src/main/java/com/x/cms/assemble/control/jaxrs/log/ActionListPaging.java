@@ -126,6 +126,6 @@ class ActionListPaging extends BaseAction {
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static WrapCopier<Log, Wo> copier = WrapCopierFactory.wo(Log.class, Wo.class, null, JpaObject.FieldsInvisible);
+		public static final WrapCopier<Log, Wo> copier = WrapCopierFactory.wo(Log.class, Wo.class, null, JpaObject.FieldsInvisible);
 	}
 }

@@ -9,46 +9,46 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.cms.core.entity.Document;
 
 public class WrapOutDocumentList extends GsonPropertyObject {
-	
+
 	@FieldDescribe( "sequence." )
 	private String sequence;
-	
+
 	@FieldDescribe( "文档ID." )
 	private String id = Document.createId();
 
 	@FieldDescribe( "创建时间" )
 	private Date createTime;
-	
+
 	@FieldDescribe("文档发布时间")
 	private Date publishTime;
 
 	@FieldDescribe( "最近修改时间" )
 	private Date updateTime;
-	
+
 	@FieldDescribe("文档摘要")
 	private String summary;
-	
+
 	@FieldDescribe("文档标题")
 	private String title;
-	
+
 	@FieldDescribe("文件导入的批次号：一般是分类ID+时间缀")
 	private String importBatchName;
-	
+
 	@FieldDescribe("说明备注，可以填写说明信息，如导入信息检验失败原因等")
 	private String description = null;
-	
+
 	@FieldDescribe( "分类唯一标识" )
 	private String categoryAlias;
-	
+
 	@FieldDescribe( "分类名称" )
 	private String categoryName;
-	
+
 	@FieldDescribe( "栏目ID" )
 	private String appId;
-	
+
 	@FieldDescribe( "分类ID" )
 	private String categoryId;
-	
+
 	@FieldDescribe("创建人，可能为空，如果由系统创建。")
 	private String creatorPerson;
 
@@ -60,41 +60,65 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 
 	@FieldDescribe("文档状态: published | draft")
 	private String docStatus = "draft";
-	
+
 	@FieldDescribe("文档被查看次数")
 	private Long viewCount = 0L;
-	
+
 	@FieldDescribe("文档被评论次数")
 	private Long commentCount = 0L;
-	
+
 	@FieldDescribe("文档被点赞次数")
-	private Long commendCount = 0L;		
-	
+	private Long commendCount = 0L;
+
 	@FieldDescribe("是否含有首页图片")
 	private Boolean hasIndexPic = false;
 
 	@FieldDescribe("首页图片列表")
-	private List<String> pictureList;		
-	
+	private List<String> pictureList;
+
 	@FieldDescribe("文档所有数据信息.")
 	private Map<?, ?> data;
-	
+
 	@FieldDescribe( "是否置顶." )
 	private Boolean isTop;
 
 	@FieldDescribe( "是否全员可读." )
 	private Boolean isAllRead;
-	
+
+	@FieldDescribe("业务数据String值01.")
+	private String stringValue01;
+
+	@FieldDescribe("业务数据String值02.")
+	private String stringValue02;
+
+	@FieldDescribe("业务数据String值03.")
+	private String stringValue03;
+
+	@FieldDescribe("业务数据String值04.")
+	private String stringValue04;
+
+	@FieldDescribe("业务数据Long值01.")
+	private Long longValue01;
+
+	@FieldDescribe("业务数据Long值02.")
+	private Long longValue02;
+
+	@FieldDescribe("业务数据DateTime值01.")
+	private Date dateTimeValue01;
+
+	@FieldDescribe("业务数据DateTime值02.")
+	private Date dateTimeValue02;
+
 	/**
 	 * 只作显示用
 	 */
 	private String creatorPersonShort = null;
-	
+
 	private String creatorUnitNameShort = null;
-	
+
 	private String creatorTopUnitNameShort = null;
 
-	
+
 	public String getImportBatchName() {
 		return importBatchName;
 	}
@@ -166,7 +190,7 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	public String getCreatorPerson() {
 		return creatorPerson;
 	}
-	
+
 	public String getDocStatus() {
 		return docStatus;
 	}
@@ -317,5 +341,69 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 
 	public void setIsAllRead(Boolean isAllRead) {
 		this.isAllRead = isAllRead;
+	}
+
+	public String getStringValue01() {
+		return stringValue01;
+	}
+
+	public void setStringValue01(String stringValue01) {
+		this.stringValue01 = stringValue01;
+	}
+
+	public String getStringValue02() {
+		return stringValue02;
+	}
+
+	public void setStringValue02(String stringValue02) {
+		this.stringValue02 = stringValue02;
+	}
+
+	public String getStringValue03() {
+		return stringValue03;
+	}
+
+	public void setStringValue03(String stringValue03) {
+		this.stringValue03 = stringValue03;
+	}
+
+	public String getStringValue04() {
+		return stringValue04;
+	}
+
+	public void setStringValue04(String stringValue04) {
+		this.stringValue04 = stringValue04;
+	}
+
+	public Long getLongValue01() {
+		return longValue01;
+	}
+
+	public void setLongValue01(Long longValue01) {
+		this.longValue01 = longValue01;
+	}
+
+	public Long getLongValue02() {
+		return longValue02;
+	}
+
+	public void setLongValue02(Long longValue02) {
+		this.longValue02 = longValue02;
+	}
+
+	public Date getDateTimeValue01() {
+		return dateTimeValue01;
+	}
+
+	public void setDateTimeValue01(Date dateTimeValue01) {
+		this.dateTimeValue01 = dateTimeValue01;
+	}
+
+	public Date getDateTimeValue02() {
+		return dateTimeValue02;
+	}
+
+	public void setDateTimeValue02(Date dateTimeValue02) {
+		this.dateTimeValue02 = dateTimeValue02;
 	}
 }

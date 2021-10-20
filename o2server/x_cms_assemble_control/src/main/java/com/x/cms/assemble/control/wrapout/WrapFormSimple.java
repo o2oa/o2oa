@@ -12,11 +12,11 @@ public class WrapFormSimple extends WrapForm {
 
 	private Long rank;
 
-	public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+	public static List<String> excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
 	static {
-		Excludes.add("data");
-		Excludes.add("mobileData");
+		excludes.add("data");
+		excludes.add("mobileData");
 	}
 
 	public Long getRank() {

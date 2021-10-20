@@ -60,6 +60,9 @@ class ActionCreate extends BaseAction {
 					logger.debug(">>>>>>>> before convert invitePersonList:" + str );
 				}
 			}
+			if(meeting.getInviteMemberList()==null){
+				meeting.setInviteMemberList(meeting.getInvitePersonList());
+			}
 			meeting.setInvitePersonList(this.convertToPerson(business, meeting.getInviteMemberList()));
 			if( ListTools.isNotEmpty( meeting.getInvitePersonList() )) {
 				for( String str : meeting.getInvitePersonList() ) {
