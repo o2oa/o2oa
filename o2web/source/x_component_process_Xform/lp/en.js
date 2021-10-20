@@ -94,6 +94,7 @@ MWF.xApplication.process.Xform.LP = {
     "replaceAttachment": "Are you sure you want to replace the attachment you selected?",
     "uploadMore": "You can only upload {n} attachments",
     "notValidation": "Data validation failed",
+    "lineNotValidation": "Line data validation failed",
     "notValidation_number": "Only allow numbers",
 
     "retractTitle": "Retract Confirmation",
