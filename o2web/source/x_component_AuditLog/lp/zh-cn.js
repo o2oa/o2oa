@@ -1,5 +1,5 @@
 MWF.xApplication.AuditLog.LP = {
-	"title": "三元管理日志",
+	"title": "三员管理日志",
 
 	"person" : "用户",
 	"node": "节点",
