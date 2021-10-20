@@ -450,6 +450,7 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         "defaultValue": "DefaultValue",
         "verificationScript": "Verification Script",
+        "verificationLineScript": "Verification Single Line Script",
         "section": "Section",
         "enableSection": "Enable Section",
         "sectionBy": "SectionBy",
