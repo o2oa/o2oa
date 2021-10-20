@@ -17,9 +17,15 @@
                 <td class="editTableTitle">{{$.lp.datatableEditMode}}:</td>
                 <td class="editTableValue">
                     <input type="radio" name="editMode" value="single" text{($.editMode!=='multi')?'checked':''}
-                           onclick="if (this.checked){ $('text{$.pid}defaultCountEditTr').setStyle('display', 'none')}" />{{$.lp.datatableEditModeValue[0]}}
+                           onclick="if (this.checked){
+                               $('text{$.pid}defaultCountEditTr').setStyle('display', 'none');
+                               $('text{$.pid}validationCompleteLineDiv').setStyle('display', '');
+                           }" />{{$.lp.datatableEditModeValue[0]}}
                     <input type="radio" name="editMode" value="multi" text{($.editMode==='multi')?'checked':''}
-                           onclick="if (this.checked){ $('text{$.pid}defaultCountEditTr').setStyle('display', '')}" />{{$.lp.datatableEditModeValue[1]}}
+                           onclick="if (this.checked){
+                               $('text{$.pid}defaultCountEditTr').setStyle('display', '');
+                               $('text{$.pid}validationCompleteLineDiv').setStyle('display', 'none');
+                           }" />{{$.lp.datatableEditModeValue[1]}}
                 </td>
             </tr>
         </table>
@@ -124,6 +130,9 @@
 
         <div class="MWFValidation" name="validationConfig"></div>
         <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
+        <div id="text{$.pid}validationCompleteLineDiv" style="display: text{($.editMode==='multi')?'none':''};">
+            <div class="MWFScriptArea" name="validationCompleteLine" title="{{$.lp.verificationLineScript}} (S)"></div>
+        </div>
     </div>
     <div title="{{$.lp.style}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

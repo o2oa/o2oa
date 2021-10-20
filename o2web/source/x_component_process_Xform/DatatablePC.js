@@ -710,6 +710,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		_cancelLineEdit: function(){
 			var line = this.currentEditedLine;
 			if( !line )return true;
+			line.validationMode();
 			if( line.isNewAdd ){
 				// var saveFlag = line.deleteAttachment();
 				this._delLine( line );
@@ -1094,6 +1095,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					this.errNode = null;
 				}
 			}
+			this.lineList.each(function(line){
+				line.validationMode();
+			})
 		},
 
 		validationConfigItem: function(routeName, data){
@@ -1198,7 +1202,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var flag = this.form.Macro.exec(this.json.validation.code, this);
 			this.currentRouteName = "";
 
-			if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
+			if (!flag) flag = MWF.xApplication.process.Xform.LP.lineNotValidation;
 			if (flag.toString()!=="true"){
 				this.notValidationMode(flag);
 				return false;
@@ -1689,6 +1693,10 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	},
 	validation: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
+		return this.validationFields() && this.validationCompleteLine();
+	},
+	validationFields: function(){
+		if( !this.options.isEdited || !this.options.isEditable )return true;
 		var flag = true;
 		this.fields.each(function(field, key){
 			if (field.json.type!="sequence" && field.validationMode ){
@@ -1698,6 +1706,119 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}.bind(this));
 		return flag;
 	},
+	validationCompleteLine: function(){
+		if( !this.options.isEdited || !this.options.isEditable )return true;
+		var flag = true;
+		if( !this.datatable.multiEditMode ){
+			if (this.datatable.json.validationCompleteLine && this.datatable.json.validationCompleteLine.code){
+				flag = this.form.Macro.exec(this.datatable.json.validationCompleteLine.code, this);
+			}
+		}
+		if (flag.toString()!=="true"){
+			this.notValidationMode(flag);
+			return false;
+		}
+		return true;
+	},
+	createErrorNode: function(text){
+		var node;
+		if( this.form.json.errorStyle ){
+			if( this.form.json.errorStyle.type === "notice" ){
+				if( !this.form.errorNoticing ){ //如果是弹出
+					this.form.errorNoticing = true;
+					this.form.notice(text, "error", this.node, null, null, {
+						onClose : function () {
+							this.form.errorNoticing = false;
+						}.bind(this)
+					});
+				}
+			}else{
+				node = new Element("div",{
+					"styles" : this.form.json.errorStyle.node,
+					"text": text
+				});
+				if( this.form.json.errorStyle.close ){
+					var closeNode = new Element("div",{
+						"styles" : this.form.json.errorStyle.close ,
+						"events": {
+							"click" : function(){ this.destroy(); }.bind(node)
+						}
+					}).inject(node);
+				}
+			}
+		}else{
+			node = new Element("div");
+			var iconNode = new Element("div", {
+				"styles": {
+					"width": "20px",
+					"height": "20px",
+					"float": "left",
+					"background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+				}
+			}).inject(node);
+			var textNode = new Element("div", {
+				"styles": {
+					"height": "20px",
+					"line-height": "20px",
+					"margin-left": "20px",
+					"color": "red",
+					"word-break": "keep-all"
+				},
+				"text": text
+			}).inject(node);
+		}
+		return node;
+	},
+	notValidationMode: function(text){
+		if (!this.isNotValidationMode){
+			this.isNotValidationMode = true;
+			this.node.store("borderStyle", this.node.getStyles("border-left", "border-right", "border-top", "border-bottom"));
+			this.node.setStyle("border-color", "red");
+
+			this.errNode = this.createErrorNode(text);
+			//if (this.iconNode){
+			//    this.errNode.inject(this.iconNode, "after");
+			//}else{
+			this.errNode.inject(this.node, "after");
+			//}
+			this.showNotValidationMode(this.node);
+
+			var parentNode = this.node;
+			while( parentNode.offsetParent === null ){
+				parentNode = parentNode.getParent();
+			}
+
+			if (!parentNode.isIntoView()) parentNode.scrollIntoView();
+		}
+	},
+	showNotValidationMode: function(node){
+		var p = node.getParent("div");
+		if (p){
+			var mwftype = p.get("MWFtype") || p.get("mwftype");
+			if (mwftype == "tab$Content"){
+				if (p.getParent("div").getStyle("display")=="none"){
+					var contentAreaNode = p.getParent("div").getParent("div");
+					var tabAreaNode = contentAreaNode.getPrevious("div");
+					var idx = contentAreaNode.getChildren().indexOf(p.getParent("div"));
+					var tabNode = tabAreaNode.getLast().getFirst().getChildren()[idx];
+					tabNode.click();
+					p = tabAreaNode.getParent("div");
+				}
+			}
+			this.showNotValidationMode(p);
+		}
+	},
+	validationMode: function(){
+		if (this.isNotValidationMode){
+			this.isNotValidationMode = false;
+			this.node.setStyles(this.node.retrieve("borderStyle"));
+			if (this.errNode){
+				this.errNode.destroy();
+				this.errNode = null;
+			}
+		}
+	},
+
 	resetDataWithOriginalData: function () {
 		var data = this.originalData;
 		var attachmentList = this.form.businessData.attachmentList;
