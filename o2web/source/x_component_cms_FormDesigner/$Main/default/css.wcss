@@ -8,15 +8,15 @@
 	//	"background-color": "#cfebaa"
 	},
 	"propertyNode": {
-		"width": "360px",
+		"width": "400px",
 		"overflow": "hidden",
 		"float": "right",
 		"-webkit-user-select": "text",
 		"-moz-user-select": "text" 
 	},
 	"formNode": {
-		"margin-left": "141px",
-		"margin-right": "361px",
+		"margin-left": "150px",
+		"margin-right": "401px",
 		"border-right": "1px solid #505050",
 		"border-left": "1px solid #505050",
 		"background-color": "#FFF",
@@ -38,7 +38,7 @@
 		"width": "22px",
 		"height": "22px",
 		"margin-top": "-26px",
-		"background": "url("+"../x_component_process_FormDesigner/$Main/default/left.png) no-repeat center center",
+		"background": "url(../x_component_process_FormDesigner/$Main/default/left.png) no-repeat center center",
 		"float": "right",
 		"cursor": "pointer"
 	},
@@ -46,21 +46,47 @@
 		"width": "22px",
 		"height": "22px",
 		"margin-top": "-26px",
-		"background": "url("+"../x_component_process_FormDesigner/$Main/default/right.png) no-repeat center center",
+		"background": "url(../x_component_process_FormDesigner/$Main/default/right.png) no-repeat center center",
 		"float": "right",
 		"cursor": "pointer"
 	},
+	"toolbarTitleCategoryActionNode": {
+		"width": "22px",
+		"height": "22px",
+		"margin-top": "-26px",
+		"margin-right": "22px",
+		"background": "url(../x_component_process_FormDesigner/$Main/default/category.png) no-repeat center center",
+		"float": "right",
+		"cursor": "pointer"
+	},
+
+	"toolbarGroupContentNode": {
+		"overflow": "hidden"
+	},
 	"toolbarContentNode": {
-		"background-color": "#DDD",
+		"background-color": "#FFFFFF",
 		"border-radius": "0px",
 		"margin": "2px",
 		"padding-right": "4px",
 		"overflow": "hidden"
 	},
+	"toolbarGroupNode": {
+		"overflow": "hidden"
+	},
+	"toolbarGroupTitleNode": {
+		"height": "28px",
+		"overflow": "hidden",
+		"line-height": "28px",
+		"font-size": "12px",
+		"padding": "0 10px",
+		"font-weight": "bold",
+		"border-bottom": "1px solid #FFFFFF",
+		"cursor": "pointer"
+	},
 	"toolbarToolNode": {
 		"margin-top": "3px",
-		"background": "#DDD",
-		"border": "2px solid #DDD",
+		"background": "#FFFFFF",
+		"border": "2px solid #FFFFFF",
 		"height": "42px",
 		"color": "#000",
 		"cursor": "move",
@@ -125,7 +151,10 @@
 		"height": "42px",
 		"background-position": "center center",
 		"background-repeat": "no-repeat",
-		"float": "left"
+		"float": "left",
+		"font-size": "24px",
+		"line-height": "40px",
+		"text-align": "center"
 	},
 	"toolbarToolTextNode": {
 		"margin-left": "46px",
@@ -171,10 +200,8 @@
 	    "margin": "15px",
 		"width": "660px",
 		"height": "680px",
-//	    "width": "360px",
-//	    "height": "580px",
         "box-shadow": "0px 0px 20px #606060",
-        "background": "url("+"../x_component_process_FormDesigner/$Main/default/designerBg.png)",
+        "background": "url(../x_component_process_FormDesigner/$Main/default/designerBg.png)",
         "font-siez": "12px",
         "-webkit-user-select": "none",
         "overflow": "auto",

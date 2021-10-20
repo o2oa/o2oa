@@ -81,7 +81,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
 
         this.fireEvent("beforeOpen");
 
-        if (this.json.isReadonly){
+        if (this.readonly || this.json.isReadonly){
             this.mode  = "view";
         }else{
             if (this.json.readScript && this.json.readScript.code){
