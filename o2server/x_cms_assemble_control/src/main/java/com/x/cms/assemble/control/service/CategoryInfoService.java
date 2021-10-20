@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.x.cms.core.entity.element.Form;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -30,7 +31,7 @@ public class CategoryInfoService {
 		}
 		return emc.find(id, CategoryInfo.class );
 	}
-	
+
 	public CategoryInfo getWithFlag( EntityManagerContainer emc, String flag ) throws Exception {
 		if( StringUtils.isEmpty( flag ) ){
 			return null;
@@ -45,7 +46,7 @@ public class CategoryInfoService {
 		Business business = new Business( emc );
 		return business.getCategoryInfoFactory().listByAppId( appId );
 	}
-	
+
 	public List<String> listByAppId( String appId ) throws Exception {
 		if( StringUtils.isEmpty(appId ) ){
 			return null;
@@ -70,17 +71,17 @@ public class CategoryInfoService {
 		return business.getCategoryInfoFactory().listByAppIds( appIds, documentType, maxCount );
 	}
 
-	public List<String> listAppPeopleViewableCategoryInfoIds( EntityManagerContainer emc, List<String> inAppInfoIds, List<String> inCategoryIds, 
+	public List<String> listAppPeopleViewableCategoryInfoIds( EntityManagerContainer emc, List<String> inAppInfoIds, List<String> inCategoryIds,
 			List<String> excludCategoryIds, String documentType, Integer maxCount ) throws Exception {
 		Business business = new Business( emc );
-		return business.getCategoryInfoFactory().listAllPeopleViewableCategoryInfoIds(inAppInfoIds, inCategoryIds, excludCategoryIds, 
+		return business.getCategoryInfoFactory().listAllPeopleViewableCategoryInfoIds(inAppInfoIds, inCategoryIds, excludCategoryIds,
 				documentType, maxCount);
 	}
 
-	public List<String> listAppPeoplePublishableCategoryInfoIds(EntityManagerContainer emc, List<String> inAppInfoIds, List<String> inCategoryIds, 
+	public List<String> listAppPeoplePublishableCategoryInfoIds(EntityManagerContainer emc, List<String> inAppInfoIds, List<String> inCategoryIds,
 			List<String> excludCategoryIds, String documentType, Integer maxCount ) throws Exception {
-		Business business = new Business( emc );	
-		return business.getCategoryInfoFactory().listAllPeoplePublishableCategoryInfoIds(inAppInfoIds, inCategoryIds, excludCategoryIds, 
+		Business business = new Business( emc );
+		return business.getCategoryInfoFactory().listAllPeoplePublishableCategoryInfoIds(inAppInfoIds, inCategoryIds, excludCategoryIds,
 				documentType, maxCount);
 	}
 
@@ -88,12 +89,12 @@ public class CategoryInfoService {
 		Business business = new Business( emc );
 		return business.getCategoryInfoFactory().listAll();
 	}
-	
+
 	public List<String> listAllIds(EntityManagerContainer emc) throws Exception {
 		Business business = new Business( emc );
 		return business.getCategoryInfoFactory().listAllIds();
 	}
-	
+
 	public CategoryInfo saveBaseInfo( EntityManagerContainer emc, CategoryInfo categoryInfo ) throws Exception {
 		AppInfo appInfo = null;
 		CategoryInfo categoryInfo_tmp = null;
@@ -129,21 +130,21 @@ public class CategoryInfoService {
 		emc.commit();
 		return categoryInfo;
 	}
-	
+
 	public CategoryInfo save( EntityManagerContainer emc, CategoryInfo object, String extContent ) throws Exception {
 		CategoryInfo categoryInfo = null;
 		CategoryExt categoryExt = null;
 		AppInfo appInfo = null;
-		
+
 		if( object.getId() == null ){
 			object.setId( CategoryInfo.createId() );
 		}
 		categoryInfo = emc.find( object.getId(), CategoryInfo.class );
 		categoryExt = emc.find( object.getId(), CategoryExt.class );
 		appInfo = emc.find( object.getAppId(), AppInfo.class );
-		
+
 		if( appInfo == null ){ throw new Exception("应用栏目信息不存在！"); }
-		
+
 		//补全默认列表名称
 		if ( StringUtils.isNotEmpty( object.getDefaultViewId() ) ) {
 			View queryView = emc.find( object.getDefaultViewId(), View.class );
@@ -153,10 +154,24 @@ public class CategoryInfoService {
 				throw new Exception("category default view not exits. view id:" + object.getDefaultViewId() );
 			}
 		}
-		
+
 		if( categoryInfo == null ){
 			categoryInfo = new CategoryInfo();
 			object.copyTo( categoryInfo );
+			if(StringUtils.isBlank(categoryInfo.getReadFormId()) && StringUtils.isNotBlank(appInfo.getDefaultReadForm())){
+				Form form = emc.find( appInfo.getDefaultReadForm(), Form.class );
+				if(form != null){
+					categoryInfo.setReadFormId(form.getId());
+					categoryInfo.setReadFormName(form.getName());
+				}
+			}
+			if(StringUtils.isBlank(categoryInfo.getFormId()) && StringUtils.isNotBlank(appInfo.getDefaultEditForm())){
+				Form form = emc.find( appInfo.getDefaultEditForm(), Form.class );
+				if(form != null){
+					categoryInfo.setFormId(form.getId());
+					categoryInfo.setFormName(form.getName());
+				}
+			}
 			categoryInfo.setAppName( appInfo.getAppName() );
 			if( StringUtils.isEmpty( categoryInfo.getCategoryAlias() )) {
 				categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
@@ -178,7 +193,7 @@ public class CategoryInfoService {
 			categoryInfo.setAppName( appInfo.getAppName() );
 			if( StringUtils.isEmpty( categoryInfo.getCategoryAlias() )) {
 				categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
-			}		
+			}
 			if( categoryInfo.getCreateTime() == null ) {
 				categoryInfo.setCreateTime(new Date());
 			}
@@ -188,12 +203,12 @@ public class CategoryInfoService {
 			if( !"信息".equals(categoryInfo.getDocumentType()) && !"数据".equals( categoryInfo.getDocumentType() )) {
 				categoryInfo.setDocumentType( "信息" );
 			}
-			
+
 			emc.beginTransaction( CategoryInfo.class );
 			emc.check( categoryInfo, CheckPersistType.all );
 			emc.commit();
 		}
-		
+
 		if( categoryExt == null ){
 			categoryExt = new CategoryExt();
 			categoryExt.setId(categoryInfo.getId());
@@ -212,8 +227,8 @@ public class CategoryInfoService {
 			emc.beginTransaction( CategoryExt.class );
 			emc.check( categoryExt, CheckPersistType.all );
 			emc.commit();
-		}		
-		
+		}
+
 		if ( appInfo.getCategoryList() == null ){
 			appInfo.setCategoryList( new ArrayList<String>());
 		}
@@ -225,7 +240,7 @@ public class CategoryInfoService {
 		emc.commit();
 		return categoryInfo;
 	}
-	
+
 //	public CategoryInfo save( EntityManagerContainer emc, CategoryInfo temp_categoryInfo, String extContent ) throws Exception {
 //		CategoryInfo categoryInfo = null;
 //		CategoryExt categoryExt = null;
@@ -237,18 +252,18 @@ public class CategoryInfoService {
 //		Integer totalWhileCount = 0;
 //		Integer currenteWhileCount = 0;
 //		Integer queryMaxCount = 1000;
-//		
+//
 //		if( temp_categoryInfo.getId() == null ){
 //			temp_categoryInfo.setId( CategoryInfo.createId() );
 //		}
 //		categoryInfo = emc.find( temp_categoryInfo.getId(), CategoryInfo.class );
 //		categoryExt = emc.find( temp_categoryInfo.getId(), CategoryExt.class );
 //		appInfo = emc.find( temp_categoryInfo.getAppId(), AppInfo.class );
-//		
+//
 //		if( appInfo == null ){
 //			throw new Exception("应用栏目信息不存在！");
 //		}
-//		
+//
 //		if( categoryInfo == null ){
 //			categoryInfo = new CategoryInfo();
 //			temp_categoryInfo.copyTo( categoryInfo );
@@ -271,7 +286,7 @@ public class CategoryInfoService {
 //			temp_categoryInfo.copyTo( categoryInfo, JpaObject.FieldsUnmodify  );
 //			categoryInfo.setAppName( appInfo.getAppName() );
 //			categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
-//			
+//
 //			if( categoryInfo.getCreateTime() == null ) {
 //				categoryInfo.setCreateTime(new Date());
 //			}
@@ -280,8 +295,8 @@ public class CategoryInfoService {
 //			}
 //			if( !"信息".equals(categoryInfo.getDocumentType()) && !"数据".equals( categoryInfo.getDocumentType() )) {
 //				categoryInfo.setDocumentType( "信息" );
-//			}			
-//			
+//			}
+//
 //			//查询是否修改了名称，如果修改了名称，那么所有的文档相应的名称也都需要修改过来
 //			if( !oldCategoryName.equals( categoryInfo.getCategoryName() )){
 //				//对该目录下所有的文档的栏目名称和分类别名进行调整
@@ -291,8 +306,8 @@ public class CategoryInfoService {
 //					if( totalWhileCount > 0 ) {
 //						while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {
 //							//查询1000个文档进行操作
-//							document_ids = business.getDocumentFactory().listByCategoryId( categoryInfo.getId(), queryMaxCount );							
-//							changeDocumentInfoWithCategory( emc, document_ids, categoryInfo );							
+//							document_ids = business.getDocumentFactory().listByCategoryId( categoryInfo.getId(), queryMaxCount );
+//							changeDocumentInfoWithCategory( emc, document_ids, categoryInfo );
 //							//当前循环次数+1
 //							currenteWhileCount ++;
 //							//重新查询剩余的文档数量
@@ -301,12 +316,12 @@ public class CategoryInfoService {
 //					}
 //				}
 //			}
-//			
+//
 //			emc.beginTransaction( CategoryInfo.class );
 //			emc.check( categoryInfo, CheckPersistType.all );
 //			emc.commit();
 //		}
-//		
+//
 //		if( categoryExt == null ){
 //			categoryExt = new CategoryExt();
 //			categoryExt.setId(categoryInfo.getId());
@@ -325,8 +340,8 @@ public class CategoryInfoService {
 //			emc.beginTransaction( CategoryExt.class );
 //			emc.check( categoryExt, CheckPersistType.all );
 //			emc.commit();
-//		}		
-//		
+//		}
+//
 //		if ( appInfo.getCategoryList() == null ){
 //			appInfo.setCategoryList( new ArrayList<String>());
 //		}
@@ -338,7 +353,7 @@ public class CategoryInfoService {
 //		emc.commit();
 //		return categoryInfo;
 //	}
-	
+
 //	private void changeDocumentInfoWithCategory( EntityManagerContainer emc, List<String> document_ids, CategoryInfo categoryInfo ) throws Exception {
 //		if( ListTools.isNotEmpty( document_ids ) ){
 //			emc.beginTransaction( Document.class );
@@ -359,14 +374,14 @@ public class CategoryInfoService {
 //			emc.commit();
 //		}
 //	}
-	
+
 	public CategoryExt saveExtContent( EntityManagerContainer emc, String categoryId, String extContent ) throws Exception {
 		CategoryExt categoryExt = null;
-	
+
 		categoryExt = emc.find( categoryId, CategoryExt.class );
 
 		emc.beginTransaction( CategoryExt.class );
-		
+
 		if( categoryExt == null ){
 			categoryExt = new CategoryExt();
 			categoryExt.setId(categoryId);
@@ -398,7 +413,7 @@ public class CategoryInfoService {
 		Integer totalWhileCount = 0;
 		Integer currenteWhileCount = 0;
 		Integer queryMaxCount = 1000;
-		
+
 		Business business = new Business( emc );
 		emc.beginTransaction( AppInfo.class );
 		emc.beginTransaction( CategoryInfo.class );
@@ -406,10 +421,10 @@ public class CategoryInfoService {
 		emc.beginTransaction( ViewCategory.class );
 		emc.beginTransaction( Document.class );
 		emc.beginTransaction( Item.class );
-		
-		categoryInfo = emc.find( id, CategoryInfo.class );			
-		categoryExt = emc.find( id, CategoryExt.class );	
-		
+
+		categoryInfo = emc.find( id, CategoryInfo.class );
+		categoryExt = emc.find( id, CategoryExt.class );
+
 		ids = business.getViewCategoryFactory().listByCategoryId(id);
 		if( ids != null && !ids.isEmpty()  ){
 			for( String del_id : ids ){
@@ -417,7 +432,7 @@ public class CategoryInfoService {
 				emc.remove( viewCategory );
 			}
 		}
-		
+
 		if( categoryInfo != null ){
 			appInfo = emc.find( categoryInfo.getFormId(), AppInfo.class );
 			if( appInfo != null ){
@@ -427,7 +442,7 @@ public class CategoryInfoService {
 				emc.check( appInfo, CheckPersistType.all );
 			}
 		}
-		
+
 		//还有文档以及文档权限需要删除
 		docCount = business.getDocumentFactory().countByCategoryId( id );
 		if( docCount > 0 ) {
@@ -452,7 +467,7 @@ public class CategoryInfoService {
 								}catch( Exception e ) {
 									e.printStackTrace();
 								}
-								
+
 								//检查是否需要删除热点图片
 								try {
 									ThisApplication.queueDocumentDelete.send( document.getId() );
@@ -470,15 +485,15 @@ public class CategoryInfoService {
 				}
 			}
 		}
-		
+
 		if( categoryExt != null ) {
 			emc.remove( categoryExt, CheckRemoveType.all );
 		}
-		
+
 		if( categoryInfo != null ) {
 			emc.remove( categoryInfo, CheckRemoveType.all );
 		}
-		
+
 		emc.commit();
 	}
 
@@ -491,7 +506,7 @@ public class CategoryInfoService {
 		cataggoryAliases.add(cataggoryAlias);
 		return business.getCategoryInfoFactory().listByAlias( cataggoryAliases );
 	}
-	
+
 	public List<CategoryInfo> listByAliases(EntityManagerContainer emc, List<String> cataggoryAliases) throws Exception {
 		if( ListTools.isEmpty( cataggoryAliases ) ){
 			return null;
@@ -515,7 +530,7 @@ public class CategoryInfoService {
 	 * @param inCategoryIds
 	 * @param excludCategoryIds
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listAllPeoplePublishableCategoryInfoIds( EntityManagerContainer emc, List<String> inAppInfoIds, List<String> inCategoryIds,
 			List<String> excludCategoryIds, String documentType, Integer maxCount ) throws Exception {
@@ -523,7 +538,7 @@ public class CategoryInfoService {
 		return business.getCategoryInfoFactory().listAllPeoplePublishableCategoryInfoIds( inAppInfoIds, inCategoryIds, excludCategoryIds,
 				documentType, maxCount);
 	}
-	
+
 	/**
 	 * 查询所有用户都可以查看的分类ID列表
 	 * @param emc
@@ -531,7 +546,7 @@ public class CategoryInfoService {
 	 * @param inCategoryIds
 	 * @param excludCategoryIds
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listAllPeopleViewableCategoryInfoIds( EntityManagerContainer emc, List<String> inAppInfoIds, List<String> inCategoryIds,
 			List<String> excludCategoryIds, String documentType, Integer maxCount ) throws Exception {
@@ -539,7 +554,7 @@ public class CategoryInfoService {
 		return business.getCategoryInfoFactory().listAllPeopleViewableCategoryInfoIds( inAppInfoIds, inCategoryIds, excludCategoryIds,
 				documentType, maxCount );
 	}
-	
+
 	/**
 	 * 根据权限查询用户可以发布文档的分类ID列表(根据权限，不包含未配置发布权限的全员可发布的分类)
 	 * @param emc
@@ -550,7 +565,7 @@ public class CategoryInfoService {
 	 * @param inCategoryIds
 	 * @param excludCategoryIds
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listPublishableCategoryInfoIdsWithPermission(EntityManagerContainer emc, String personName,
 			List<String> unitNames, List<String> groupNames, List<String> inAppInfoIds, List<String> inCategoryIds,
@@ -571,7 +586,7 @@ public class CategoryInfoService {
 	 * @param inCategoryIds
 	 * @param excludCategoryIds
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listViewableCategoryInfoIdsWithPermission(EntityManagerContainer emc, String personName,
 			List<String> unitNames, List<String> groupNames, List<String> inAppInfoIds, List<String> inCategoryIds,
@@ -592,7 +607,7 @@ public class CategoryInfoService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listManageableCategoryIds(EntityManagerContainer emc, String personName, List<String> unitNames, 
+	public List<String> listManageableCategoryIds(EntityManagerContainer emc, String personName, List<String> unitNames,
 			List<String> groupNames, List<String> inAppInfoIds, String documentType, Integer maxCount ) throws Exception {
 		if (StringUtils.isEmpty( personName )) {
 			throw new Exception("personName is null!");

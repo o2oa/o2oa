@@ -19,13 +19,13 @@ import com.x.cms.core.entity.DocumentViewRecord;
 public class ActionQueryListViewRecordByPerson extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger( ActionQueryListViewRecordByPerson.class );
-	
+
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String name ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = null;
 		List<String> ids = null;
 		List<DocumentViewRecord> documentViewRecordList = null;
-		Boolean check = true;		
+		Boolean check = true;
 
 		if( check ){
 			if( StringUtils.isEmpty(name) ){
@@ -34,7 +34,7 @@ public class ActionQueryListViewRecordByPerson extends BaseAction {
 				result.error( exception );
 			}
 		}
-		
+
 		if( check ){
 			try {
 				ids = documentViewRecordServiceAdv.listByPerson( name, 100 );
@@ -45,7 +45,7 @@ public class ActionQueryListViewRecordByPerson extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ){
 			if( ids != null && !ids.isEmpty() ){
 				try {
@@ -75,13 +75,13 @@ public class ActionQueryListViewRecordByPerson extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends DocumentViewRecord{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier<DocumentViewRecord, Wo> copier = WrapCopierFactory.wo( DocumentViewRecord.class, Wo.class, null, JpaObject.FieldsInvisible);
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<DocumentViewRecord, Wo> copier = WrapCopierFactory.wo( DocumentViewRecord.class, Wo.class, null, JpaObject.FieldsInvisible);
 	}
 }

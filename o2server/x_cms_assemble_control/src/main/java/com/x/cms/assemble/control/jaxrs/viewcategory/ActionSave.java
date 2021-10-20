@@ -26,15 +26,15 @@ import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
 
 public class ActionSave extends BaseAction {
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( ActionSave.class );
-	
+
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		ViewCategory viewCategory = null;
 		Wi wrapIn = null;
 		Boolean check = true;
-		
+
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, Wi.class );
 		} catch (Exception e ) {
@@ -43,17 +43,17 @@ public class ActionSave extends BaseAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		
+
 		if(check) {
 			if( StringUtils.isNotEmpty( effectivePerson.getDistinguishedName() )) {
 				wrapIn.setEditor( effectivePerson.getDistinguishedName() );
 			}else {
 				wrapIn.setEditor( effectivePerson.getName() );
-			}			
+			}
 		}
-		
+
 		if(check ){
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {	
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				//看看用户是否有权限进行应用信息新增操作
 				if (!business.viewEditAvailable( effectivePerson )) {
@@ -83,17 +83,17 @@ public class ActionSave extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wi extends ViewCategory{
-		
+
 	  private static final long serialVersionUID = -5076990764713538973L;
-	  
-	  public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
-	  
-	  public static WrapCopier<Wi, ViewCategory> copier = WrapCopierFactory.wi( Wi.class, ViewCategory.class, null, JpaObject.FieldsUnmodify );
-	  
+
+	  public static List<String> excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
+
+	  public static final WrapCopier<Wi, ViewCategory> copier = WrapCopierFactory.wi( Wi.class, ViewCategory.class, null, JpaObject.FieldsUnmodify );
+
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}

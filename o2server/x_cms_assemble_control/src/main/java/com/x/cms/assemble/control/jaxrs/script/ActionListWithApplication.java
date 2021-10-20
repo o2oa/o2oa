@@ -22,7 +22,7 @@ import com.x.cms.core.entity.element.Script;
 import net.sf.ehcache.Element;
 
 class ActionListWithApplication extends BaseAction {
-	
+
 	@SuppressWarnings("unchecked")
 	ActionResult<List<Wo>> execute( EffectivePerson effectivePerson, String appFlag ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
@@ -58,37 +58,37 @@ class ActionListWithApplication extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends GsonPropertyObject {
 
 		private Date createTime;
-		
+
 		private Date updateTime;
-		
+
 		private String id;
-		
+
 		private String name;
-		
+
 		private String alias;
-		
+
 		private String description;
-		
+
 		private Boolean validated;
-		
+
 		private String appId;
-		
+
 		private String text;
-		
+
 		private List<String> dependScriptList;
-		
+
 		private String creatorPerson;
-		
+
 		private String lastUpdatePerson;
-		
+
 		private Date lastUpdateTime;
 
-		public static WrapCopier<Script, Wo> copier = WrapCopierFactory.wo( Script.class, Wo.class ,null,JpaObject.FieldsInvisible);
-		
+		public static final WrapCopier<Script, Wo> copier = WrapCopierFactory.wo( Script.class, Wo.class ,null,JpaObject.FieldsInvisible);
+
 		public Date getCreateTime() {
 			return createTime;
 		}

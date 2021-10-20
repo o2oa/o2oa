@@ -133,12 +133,12 @@ public class ActionListPrevWithFilter extends BaseAction {
 
 		public void setRank(Long rank) {
 			this.rank = rank;
-		} 
-		
+		}
+
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static List<String> Excludes = new ArrayList<String>();
+		public static List<String> excludes = new ArrayList<String>();
 
-		public static WrapCopier<Log, Wo> copier = WrapCopierFactory.wo(Log.class, Wo.class, null, Wo.Excludes);
+		public static final WrapCopier<Log, Wo> copier = WrapCopierFactory.wo(Log.class, Wo.class, null, Wo.excludes);
 	}
 }

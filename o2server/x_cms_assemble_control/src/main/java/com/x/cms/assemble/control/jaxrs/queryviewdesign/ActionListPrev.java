@@ -21,10 +21,10 @@ class ActionListPrev extends BaseAction {
 
 		private static final long serialVersionUID = 2886873983211744188L;
 
-		public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+		public static List<String> excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
-		public static WrapCopier<QueryView, Wo> copier = WrapCopierFactory.wo(QueryView.class, Wo.class, null,
-				Wo.Excludes);
+		public static final WrapCopier<QueryView, Wo> copier = WrapCopierFactory.wo(QueryView.class, Wo.class, null,
+				Wo.excludes);
 
 		private Long rank;
 
