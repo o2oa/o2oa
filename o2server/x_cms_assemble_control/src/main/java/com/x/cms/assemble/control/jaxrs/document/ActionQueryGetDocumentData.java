@@ -27,7 +27,7 @@ public class ActionQueryGetDocumentData extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = getDocumentQueryResult(id);
 		result.setData(wo);
-		return result;			
+		return result;
 	}
 
 	private Wo getDocumentQueryResult(String id) throws Exception {
@@ -86,14 +86,14 @@ public class ActionQueryGetDocumentData extends BaseAction {
 		}
 
 	}
-	
+
 	public static class WoDocument extends Document {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier<Document, WoDocument> copier = WrapCopierFactory.wo( Document.class, WoDocument.class, null,JpaObject.FieldsInvisible);
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<Document, WoDocument> copier = WrapCopierFactory.wo( Document.class, WoDocument.class, null,JpaObject.FieldsInvisible);
 
 	}
 

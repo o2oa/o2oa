@@ -41,7 +41,7 @@ public class ActionAppInfoExport extends BaseAction {
 		Wo wo = null;
 		AppInfo appInfo = null;
 		Boolean check = true;
-		
+
 		if( StringUtils.isEmpty(appInfoId) ){
 			check = false;
 			Exception exception = new ExceptionAppInfoIdEmpty();
@@ -138,9 +138,9 @@ public class ActionAppInfoExport extends BaseAction {
 
         private static final long serialVersionUID = -5076990764713538973L;
 
-        public static List<String> Excludes = new ArrayList<>();
+        public static List<String> excludes = new ArrayList<>();
 
-        public static WrapCopier<AppInfo, Wo> copier = WrapCopierFactory.wo( AppInfo.class, Wo.class, null, Wo.Excludes );
+        public static final WrapCopier<AppInfo, Wo> copier = WrapCopierFactory.wo( AppInfo.class, Wo.class, null, Wo.excludes );
 
         @FieldDescribe("栏目内所有的分类信息列表")
         private List<WoCategory> categories = null;
@@ -216,9 +216,9 @@ public class ActionAppInfoExport extends BaseAction {
 
         private static final long serialVersionUID = -5076990764713538973L;
 
-        public static List<String> Excludes = new ArrayList<>();
+        public static List<String> excludes = new ArrayList<>();
 
-        public static WrapCopier<CategoryInfo, WoCategory> copier = WrapCopierFactory.wo( CategoryInfo.class, WoCategory.class, null, WoCategory.Excludes );
+        public static final WrapCopier<CategoryInfo, WoCategory> copier = WrapCopierFactory.wo( CategoryInfo.class, WoCategory.class, null, WoCategory.excludes );
 
     }
 
@@ -229,9 +229,9 @@ public class ActionAppInfoExport extends BaseAction {
 
         private static final long serialVersionUID = -5076990764713538973L;
 
-        public static List<String> Excludes = new ArrayList<>();
+        public static List<String> excludes = new ArrayList<>();
 
-        public static WrapCopier<Form, WoForm> copier = WrapCopierFactory.wo( Form.class, WoForm.class, null, WoForm.Excludes );
+        public static final WrapCopier<Form, WoForm> copier = WrapCopierFactory.wo( Form.class, WoForm.class, null, WoForm.excludes );
 
     }
 
@@ -242,9 +242,9 @@ public class ActionAppInfoExport extends BaseAction {
 
         private static final long serialVersionUID = -5076990764713538973L;
 
-        public static List<String> Excludes = new ArrayList<>();
+        public static List<String> excludes = new ArrayList<>();
 
-        public static WrapCopier< View, WoView > copier = WrapCopierFactory.wo( View.class, WoView.class, null, WoView.Excludes );
+        public static final WrapCopier< View, WoView > copier = WrapCopierFactory.wo( View.class, WoView.class, null, WoView.excludes );
 
         @FieldDescribe("列表视图内所有的列表列信息")
         private List<ViewFieldConfig> fields = null;
@@ -276,9 +276,9 @@ public class ActionAppInfoExport extends BaseAction {
 
         private static final long serialVersionUID = -5076990764713538973L;
 
-        public static List<String> Excludes = new ArrayList<>();
+        public static List<String> excludes = new ArrayList<>();
 
-        public static WrapCopier<View, WoQueryView> copier = WrapCopierFactory.wo( View.class, WoQueryView.class, null, WoQueryView.Excludes );
+        public static final WrapCopier<View, WoQueryView> copier = WrapCopierFactory.wo( View.class, WoQueryView.class, null, WoQueryView.excludes );
 
     }
 
@@ -289,9 +289,9 @@ public class ActionAppInfoExport extends BaseAction {
 
         private static final long serialVersionUID = -5076990764713538973L;
 
-        public static List<String> Excludes = new ArrayList<>();
+        public static List<String> excludes = new ArrayList<>();
 
-        public static WrapCopier<Script, WoScript> copier = WrapCopierFactory.wo( Script.class, WoScript.class, null, WoScript.Excludes );
+        public static final WrapCopier<Script, WoScript> copier = WrapCopierFactory.wo( Script.class, WoScript.class, null, WoScript.excludes );
 
     }
 
@@ -302,9 +302,9 @@ public class ActionAppInfoExport extends BaseAction {
 
         private static final long serialVersionUID = -5076990764713538973L;
 
-        public static List<String> Excludes = new ArrayList<>();
+        public static List<String> excludes = new ArrayList<>();
 
-        public static WrapCopier<Script, WoScript> copier = WrapCopierFactory.wo( Script.class, WoScript.class, null, WoScript.Excludes );
+        public static final WrapCopier<Script, WoScript> copier = WrapCopierFactory.wo( Script.class, WoScript.class, null, WoScript.excludes );
 
         @FieldDescribe("数据字典中所有的对象列表")
         private List<WoAppDictItem> items = null;
@@ -317,9 +317,9 @@ public class ActionAppInfoExport extends BaseAction {
 
         private static final long serialVersionUID = -5076990764713538973L;
 
-        public static List<String> Excludes = new ArrayList<>();
+        public static List<String> excludes = new ArrayList<>();
 
-        public static WrapCopier<AppDictItem, WoAppDictItem> copier = WrapCopierFactory.wo( AppDictItem.class, WoAppDictItem.class, null, WoAppDictItem.Excludes );
-        
+        public static final WrapCopier<AppDictItem, WoAppDictItem> copier = WrapCopierFactory.wo( AppDictItem.class, WoAppDictItem.class, null, WoAppDictItem.excludes );
+
     }
 }

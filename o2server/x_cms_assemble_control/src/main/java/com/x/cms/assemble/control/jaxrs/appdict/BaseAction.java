@@ -20,7 +20,7 @@ import com.x.cms.core.entity.element.AppDictItem;
 abstract class BaseAction extends StandardJaxrsAction {
 
 	static WrapCopier<AppDict, WrapOutAppDict> copier = WrapCopierFactory.wo(AppDict.class,
-			WrapOutAppDict.class, null, WrapOutAppDict.Excludes);
+			WrapOutAppDict.class, null, WrapOutAppDict.excludes);
 
 	JsonElement get(Business business, AppDict appDict, String... paths) throws Exception {
 		List<AppDictItem> list = business.getAppDictItemFactory().listWithAppDictWithPath(appDict.getId(), paths);

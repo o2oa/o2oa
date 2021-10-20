@@ -116,9 +116,9 @@ public class ActionSave extends BaseAction {
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
+		public static List<String> excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
 
-		public static WrapCopier<Wi, Form> copier = WrapCopierFactory.wi(Wi.class, Form.class, null,
+		public static final WrapCopier<Wi, Form> copier = WrapCopierFactory.wi(Wi.class, Form.class, null,
 				JpaObject.FieldsUnmodify);
 
 		@FieldDescribe("关联表单")

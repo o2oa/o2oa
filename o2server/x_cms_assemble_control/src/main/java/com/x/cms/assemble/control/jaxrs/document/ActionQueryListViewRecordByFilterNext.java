@@ -19,13 +19,13 @@ import com.x.cms.core.entity.DocumentViewRecord;
 public class ActionQueryListViewRecordByFilterNext extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger( ActionQueryListViewRecordByFilterNext.class );
-	
+
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String docId, String id, Integer count ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = null;
 		List<DocumentViewRecord> documentViewRecordList = null;
 		Long total = null;
-		Boolean check = true;		
+		Boolean check = true;
 
 		if( check ){
 			if( StringUtils.isEmpty(docId) ){
@@ -34,7 +34,7 @@ public class ActionQueryListViewRecordByFilterNext extends BaseAction {
 				result.error( exception );
 			}
 		}
-		
+
 		if( check ){
 			try {
 				total = documentViewRecordServiceAdv.countWithDocIds(docId);
@@ -76,13 +76,13 @@ public class ActionQueryListViewRecordByFilterNext extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends DocumentViewRecord{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier<DocumentViewRecord, Wo> copier = WrapCopierFactory.wo( DocumentViewRecord.class, Wo.class, null, JpaObject.FieldsInvisible);
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<DocumentViewRecord, Wo> copier = WrapCopierFactory.wo( DocumentViewRecord.class, Wo.class, null, JpaObject.FieldsInvisible);
 	}
 }

@@ -24,7 +24,7 @@ import com.x.cms.core.entity.FileInfo;
 import net.sf.ehcache.Element;
 
 public class ActionListAll extends BaseAction {
-	
+
 	@SuppressWarnings("unchecked")
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
@@ -37,12 +37,12 @@ public class ActionListAll extends BaseAction {
 			wraps = ( List<Wo> ) optional.get();
 			result.setData(wraps);
 		} else {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
-				Business business = new Business(emc);			
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
 				//如判断用户是否有查看所有文件或者附件的权限，如果没权限不允许继续操作
 				if (!business.fileInfoEditAvailable( effectivePerson )) {
 					throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} 用户没有查询全部文件或者附件的权限！");
-				}			
+				}
 				//如果有权限，继续操作
 				FileInfoFactory fileInfoFactory  = business.getFileInfoFactory();
 				List<String> ids = fileInfoFactory.listAll();//获取所有文件或者附件列表
@@ -56,16 +56,16 @@ public class ActionListAll extends BaseAction {
 				result.error(th);
 			}
 		}
-		
+
 		return result;
 	}
 
 	public static class Wo extends FileInfo {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier<FileInfo, Wo> copier = WrapCopierFactory.wo( FileInfo.class, Wo.class, null,JpaObject.FieldsInvisible);
+
+		public static List<String> excludes = new ArrayList<String>();
+
+		public static final WrapCopier<FileInfo, Wo> copier = WrapCopierFactory.wo( FileInfo.class, Wo.class, null,JpaObject.FieldsInvisible);
 	}
 }
