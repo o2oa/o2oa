@@ -94,6 +94,7 @@ MWF.xApplication.process.Xform.LP = {
     "replaceAttachment": "是否确定要替换您选中的附件？",
     "uploadMore": "您最多只允许上传 {n} 个附件",
     "notValidation": "数据校验未通过",
+    "lineNotValidation": "行数据校验未通过",
     "notValidation_number": "必须输入数字",
 
     "retractTitle": "撤回确认",
