@@ -218,6 +218,8 @@ MWF.xApplication.process.Xform.LP = {
     "empowerDlgText": "The following personnel have empowered the work, the file will be sent to the empowered person after selection, and the file will be sent to the task person after deselecting",
     "empowerTo": "Empower to",
     "empowerToHtml": "<font style='color:#ff5400;'>{person}</font>({department}) empowered to <font style='color:#ff5400;'>{empowerTo}</font> Processing. ({time})</font>",
+    "autoFlowHtml": "The system automatically submitted at: {time}",
+    "systemSubmit": "System Automatic Processing",
     "selectAll": "Select All",
     "computePage": "Calculating page breaks, please wait...",
     "keyLockTitle": "File editing is locked",
