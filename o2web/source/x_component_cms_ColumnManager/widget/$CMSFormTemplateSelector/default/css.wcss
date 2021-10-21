@@ -56,7 +56,17 @@
 		"font-size": "16px",
 		"color": "#666",
 		"font-weight": "bold",
-		"margin-right": "10px"
+		"margin-right": "10px",
+		"position": "relative"
+	},
+	"createTemplateCategoryCloseNode": {
+		"cursor": "pointer",
+		"position": "absolute",
+		"right": "20px",
+		"top": "20px",
+		"width": "26px",
+		"height": "26px",
+		"background": "url(../x_component_cms_ColumnManager/widget/$CMSFormTemplateSelector/default/icon/close.png) no-repeat center center"
 	},
 	"createTemplateFormCategoryItemNode":{
 		"float": "left",
@@ -116,7 +126,7 @@
 		"position": "absolute",
 		"top": "0px",
 		"right": "0px",
-		"background": "url("+"../x_component_process_ProcessManager/$Explorer/default/formIcon/delete.png) no-repeat center center",
+		"background": "url(../x_component_process_ProcessManager/$Explorer/default/formIcon/delete.png) no-repeat center center",
 		"display": "none"
 	},
 
