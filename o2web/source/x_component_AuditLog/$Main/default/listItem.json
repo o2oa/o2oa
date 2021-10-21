@@ -93,25 +93,14 @@
       }
     },
     {
-      "name": "createTime",
+      "name": "requestTime",
       "head": {
-        "html": "<th styles='normalThNode' lable='createTime'></th>",
+        "html": "<th styles='normalThNode' lable='requestTime'></th>",
         "width": "8%"
       },
       "content": {
-        "html": "<td styles='normalTdNode' item='createTime'></td>",
-        "items": { "createTime" : {} }
-      }
-    },
-    {
-      "name": "updateTime",
-      "head": {
-        "html": "<th styles='normalThNode' lable='updateTime'></th>",
-        "width": "8%"
-      },
-      "content": {
-        "html": "<td styles='normalTdNode' item='updateTime'></td>",
-        "items": { "updateTime" : {} }
+        "html": "<td styles='normalTdNode' item='requestTime'></td>",
+        "items": { "requestTime" : {} }
       }
     },
     {
