@@ -146,7 +146,7 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                 }
                 // var height = this.node.getSize().y;
 
-                editorConfig.base64Encode = (this.json.base64Encode === "y");
+                editorConfig.base64Encode = !layout.mobile && (this.json.base64Encode === "y");
                 editorConfig.enablePreview = (this.json.enablePreview !== "n");
                 var options = this.getImageUploadOption();
                 for(var key in options){
