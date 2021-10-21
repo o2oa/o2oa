@@ -18,6 +18,9 @@ class ActionResetPassword extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
+		if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
+			throw new ExceptionModifyConfig();
+		}
 		String name = wi.getName();
 		String password = wi.getPassword();
 		String mobile = wi.getMobile();
