@@ -640,7 +640,7 @@
 									//var fileNode = document.getElementById("fckLocalFileUpload");
 									//fileNode.click();
 									var base64enable = CKEDITOR.currentImageDialog.getContentElement("info", "base64enable");
-									if( base64enable && base64enable.getValue() ){
+									if( !layout.mobile && base64enable && base64enable.getValue() ){
 										var fileNode = document.getElementById("fckLocalFileUpload");
 										if( !fileNode ){
 											fileNode = new Element("input", {
@@ -672,39 +672,75 @@
 											fileNode.click();
 										}
 									}else{
-										MWF.require("MWF.widget.Upload", function(){
-											var action =  new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
-											var dialogElement = CKEDITOR.currentImageDialog._.element.$;
-											var contentElement = dialogElement.getElement(".cke_dialog_body").getParent();
-											var upload = new MWF.widget.Upload(contentElement, {
-												"data": null,
-												"parameter": {"reference" : editor.config.reference, "referencetype": editor.config.referenceType, "scale" : editor.config.localImageMaxWidth || 2000 },
-												"action": action,
-												"method": "uploadImageByScale",
-												"accept": "image/*",
-												"onEvery": function(json, index, count, file){
+										var uploadCallback = function(json, index, count, file){
+											var txtAltElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtAlt");
+											if(file && file.name)txtAltElement.setValue(file.name);
 
-													var txtAltElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtAlt");
-													if(file.name)txtAltElement.setValue(file.name);
+											var id = json.data ? json.data.id : json.id;
+											var orgid = json.data ? json.data.origId : json.origId;
+											var src = MWF.xDesktop.getImageSrc( id );
+											MWF.xDesktop.uploadedImageId = id;
+											MWF.xDesktop.uploadedImageOrgid = orgid;
+											var txtUrlElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtUrl");
+											txtUrlElement.setValue( src );
+										};
 
-													var id = json.data ? json.data.id : json.id;
-													var orgid = json.data ? json.data.origId : json.origId;
-													var src = MWF.xDesktop.getImageSrc( id );
-													MWF.xDesktop.uploadedImageId = id;
-													MWF.xDesktop.uploadedImageOrgid = orgid;
-													var txtUrlElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtUrl");
-													txtUrlElement.setValue( src );
-												}.bind(this)
+										var o2androidEnable = layout.mobile && window.o2android && window.o2android.uploadImage2FileStorage;
+										var o2iosEnable = layout.mobile && window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadImage2FileStorage;
+										if( o2androidEnable || o2iosEnable ){
+											o2.ckeditorUploadCallback = function( str ){
+												var data = JSON.parse( str );
+												data.id = data.fileId;
+												data.origId = data.fileId;
+												uploadCallback(data);
+												o2.ckeditorUploadCallback = null;
+											}.bind(this);
+											var jsonString = JSON.stringify({
+												// "mwfId" : this.json.id,
+												"callback" : "o2.ckeditorUploadCallback",
+												"referencetype": editor.config.referenceType,
+												"reference": editor.config.reference
 											});
-											upload.load();
-										}.bind(this));
+											if( o2androidEnable ){
+												window.o2android.uploadImage2FileStorage(jsonString)
+											}else{
+												window.webkit.messageHandlers.uploadImage2FileStorage.postMessage(jsonString);
+											}
+										}else{
+											MWF.require("MWF.widget.Upload", function(){
+												var action =  new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
+												var dialogElement = CKEDITOR.currentImageDialog._.element.$;
+												var contentElement = dialogElement.getElement(".cke_dialog_body").getParent();
+												var upload = new MWF.widget.Upload(contentElement, {
+													"data": null,
+													"parameter": {"reference" : editor.config.reference, "referencetype": editor.config.referenceType, "scale" : editor.config.localImageMaxWidth || 2000 },
+													"action": action,
+													"method": "uploadImageByScale",
+													"accept": "image/*",
+													"onEvery": function(json, index, count, file){
+														uploadCallback(json, index, count, file);
+														// var txtAltElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtAlt");
+														// if(file.name)txtAltElement.setValue(file.name);
+														//
+														// var id = json.data ? json.data.id : json.id;
+														// var orgid = json.data ? json.data.origId : json.origId;
+														// var src = MWF.xDesktop.getImageSrc( id );
+														// MWF.xDesktop.uploadedImageId = id;
+														// MWF.xDesktop.uploadedImageOrgid = orgid;
+														// var txtUrlElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtUrl");
+														// txtUrlElement.setValue( src );
+													}.bind(this)
+												});
+												upload.load();
+											}.bind(this));
+										}
 									}
 								},
 								onLoad: function () {
 								}
 							},{
 								type: "html",
-								html: editor.isO2uploadimageLoaded ? ("<div style='color:#999'>"+editor.lang.o2image.uploadimageNote+"</div>") : "",
+								html: ( !layout.mobile && editor.isO2uploadimageLoaded ) ? ("<div style='color:#999'>"+editor.lang.o2image.uploadimageNote+"</div>") : "",
 							},{
 								type: "button",
 								id: "browseFiles",
