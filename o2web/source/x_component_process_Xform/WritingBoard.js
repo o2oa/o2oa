@@ -219,12 +219,18 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
                     "onSave": function (base64code, base64Image, imageFile) {
                         this.handwritingNode.hide();
 
-                        this.upload(function (json) {
-                            var data = json.data;
-                            this.setData(data ? data.id : "");
+                        if( this.tablet.isBlank() ){
+                            this.setData("");
                             this.validation();
                             this.fireEvent("change");
-                        }.bind(this));
+                        }else{
+                            this.upload(function (json) {
+                                var data = json.data;
+                                this.setData(data ? data.id : "");
+                                this.validation();
+                                this.fireEvent("change");
+                            }.bind(this));
+                        }
 
 
                     }.bind(this),
