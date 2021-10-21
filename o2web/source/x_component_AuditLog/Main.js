@@ -669,6 +669,7 @@ MWF.xApplication.AuditLog.Main.LogForm = new Class({
                     operation: { text : this.lp.operation, type : "innertext" },
                     httpStatus: { text : this.lp.httpStatus, type : "innertext" },
                     spendTime1: { text : this.lp.spendTime1, type : "innertext" },
+                    requestTime: { text : this.lp.requestTime, type : "innertext" },
                     createTime: { text : this.lp.createTime, type : "innertext" },
                     updateTime: { text : this.lp.updateTime, type : "innertext" },
                     httpUrl: { text : this.lp.httpUrl, type : "innertext" },
@@ -693,14 +694,18 @@ MWF.xApplication.AuditLog.Main.LogForm = new Class({
             "    <td styles='formTableValue' item='module'></td>" +
             "    <td styles='formTableTitle' lable='operation'></td>" +
             "    <td styles='formTableValue' item='operation'></td></tr>" +
-            "<tr><td styles='formTableTitle' lable='httpStatus'></td>" +
-            "    <td styles='formTableValue' item='httpStatus'></td>" +
+            "<tr><td styles='formTableTitle' lable='requestTime'></td>" +
+            "    <td styles='formTableValue' item='requestTime'></td>" +
             "    <td styles='formTableTitle' lable='spendTime1'></td>" +
             "    <td styles='formTableValue' item='spendTime1'></td></tr>" +
-            "<tr><td styles='formTableTitle' lable='createTime'></td>" +
-            "    <td styles='formTableValue' item='createTime'></td>" +
-            "    <td styles='formTableTitle' lable='updateTime'></td>" +
-            "    <td styles='formTableValue' item='updateTime'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='httpStatus'></td>" +
+            "    <td styles='formTableValue' item='httpStatus'></td>" +
+            "    <td styles='formTableTitle'></td>" +
+            "    <td styles='formTableValue'></td></tr>" +
+            // "<tr><td styles='formTableTitle' lable='createTime'></td>" +
+            // "    <td styles='formTableValue' item='createTime'></td>" +
+            // "    <td styles='formTableTitle' lable='updateTime'></td>" +
+            // "    <td styles='formTableValue' item='updateTime'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='httpUrl'></td>" +
             "    <td styles='formTableValue' item='httpUrl' colspan='3'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='sendData1'></td>" +
