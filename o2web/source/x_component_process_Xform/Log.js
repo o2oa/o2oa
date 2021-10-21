@@ -49,6 +49,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         if (this.form.businessData){
             if (this.json.logType!=="record"){
                 if (this.form.businessData.workLogList){
+                    if( this.form.businessData.work.completedTime && !this.form.isCheckWorkLogEndActivity ){
+                        this.checkWorkLogEndActivity();
+                    }
                     this.workLog = Array.clone(this.form.businessData.workLogList);
                     this.fireEvent("postLoadData");
                     this.loadWorkLog();
@@ -710,7 +713,40 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
     },
 
     //worklog -----------------------------------------------------------------------------
-
+    checkWorkLogEndActivity: function(){
+        //判断流程已经结束，但是taskCompletedList为空，则补上系统自动流转
+	    var workLogList = this.form.businessData.workLogList;
+	    for( var i=workLogList.length-1; i>-1; i++ ){
+	        var log = workLogList[i];
+            if( log.arrivedActivityType === "end" ){
+                if( !log.taskCompletedList )log.taskCompletedList = [];
+                if( log.taskCompletedList.length === 0 ){
+                    log.taskCompletedList.push({
+                        "id": log.id,
+                        "startTime": log.fromTime,
+                        "completedTime": log.arrivedTime,
+                        "person": MWF.xApplication.process.Xform.LP.systemSubmit+"@System@P",
+                        "identity": MWF.xApplication.process.Xform.LP.systemSubmit+"@System@I",
+                        "unit": "",
+                        "activityName": log.arrivedActivityName,
+                        "activityToken": "",
+                        "routeName": log.routeName,
+                        "opinion": "",
+                        "processingType": "autoflow",
+                        "properties": {
+                            "prevTaskIdentityList": [],
+                            "nextTaskIdentityList": [],
+                            "prevTaskList": [],
+                            "prevTask": {},
+                            "opinion": ""
+                        }
+                    })
+                }
+                this.form.isCheckWorkLogEndActivity = true;
+                return;
+            }
+        }
+    },
     loadWorkLog: function(){
         if( !this.json.category || this.json.category === "none" ){
             if (this.json.mode==="table"){
@@ -1685,6 +1721,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                 this.form.Macro.environment.list = null;
                 html = this.form.Macro.exec(this.json.textStyleScript.code, this);
             }
+
+            //如果是自动流转，强制使用默认格式
+            if (task.processingType==="autoflow") html = MWF.xApplication.process.Xform.LP.autoFlowHtml;
 
             var person = task.person.substring(0, task.person.indexOf("@"));
             if( task.processingType !== "empower" && task.empowerFromIdentity){
