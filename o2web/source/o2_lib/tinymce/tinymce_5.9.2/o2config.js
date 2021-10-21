@@ -47,82 +47,54 @@ o2.TinyMCEConfig =  function ( mobile ) {
                     var referenceType = this.getParam('referenceType');
                     if( !reference || !referenceType )return;
 
-                    var uploadCallback = function(json, index, count, file){
-                        var id = json.data ? json.data.id : json.id;
-                        var src = MWF.xDesktop.getImageSrc( id );
-                        new Element("img", {
-                            src : src,
-                            events : {
-                                load : function (ev) {
-                                    var width = ev.target.naturalWidth;
-                                    var height = ev.target.naturalHeight;
+                    MWF.require("MWF.widget.Upload", function () {
+                        var action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
+                        var upload = new MWF.widget.Upload($(document.body), {
+                            "data": null,
+                            "parameter": {
+                                "reference": reference,
+                                "referencetype": referenceType,
+                                "scale": localImageMaxWidth || 2000
+                            },
+                            "action": action,
+                            "method": "uploadImageByScale",
+                            "accept": "image/*",
+                            "onEvery": function (json, index, count, file) {
+                                var id = json.data ? json.data.id : json.id;
+                                var src = MWF.xDesktop.getImageSrc( id );
+                                new Element("img", {
+                                    src : src,
+                                    events : {
+                                        load : function (ev) {
+                                            var width = ev.target.naturalWidth;
+                                            var height = ev.target.naturalHeight;
 
-                                    //按最大宽度比率缩小
-                                    if( localImageMaxWidth && localImageMaxWidth < width ){
-                                        height = parseInt( height * (localImageMaxWidth / width) );
+                                            //按最大宽度比率缩小
+                                            if( localImageMaxWidth && localImageMaxWidth < width ){
+                                                height = parseInt( height * (localImageMaxWidth / width) );
+                                            }
+                                            width = Math.min(width, localImageMaxWidth);
+
+                                            var attributes = {
+                                                "data-id": id,
+                                                "data-orgid": json.data ? json.data.origId : json.origId,
+                                                "height": ''+height,
+                                                "width": ''+width,
+                                                "data-height": ''+height,
+                                                "data-width": ''+width,
+                                                "style": 'max-width:100%; width:' + width + 'px',
+                                                "onerror": 'MWF.xDesktop.setImageSrc()',
+                                                "alt": file ? ( file.name||"" ) : '',
+                                                "data-prv": 'true' //enablePreview ? 'true' : 'false'
+                                            };
+                                            callback( src, attributes )
+                                        }
                                     }
-                                    width = Math.min(width, localImageMaxWidth);
-
-                                    var attributes = {
-                                        "data-id": id,
-                                        "data-orgid": json.data ? json.data.origId : json.origId,
-                                        "height": ''+height,
-                                        "width": ''+width,
-                                        "data-height": ''+height,
-                                        "data-width": ''+width,
-                                        "style": 'max-width:100%; width:' + width + 'px',
-                                        "onerror": 'MWF.xDesktop.setImageSrc()',
-                                        "alt": file ? ( file.name||"" ) : '',
-                                        "data-prv": 'true' //enablePreview ? 'true' : 'false'
-                                    };
-                                    callback( src, attributes )
-                                }
-                            }
+                                });
+                            }.bind(this)
                         });
-                    };
-
-                    var o2androidEnable = layout.mobile && window.o2android && window.o2android.uploadImage2FileStorage;
-                    var o2iosEnable = layout.mobile && window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadImage2FileStorage;
-                    if( o2androidEnable || o2iosEnable ){
-                        o2.tinyMCEUploadCallback = function( str ){
-                            var data = JSON.parse( str );
-                            data.id = data.fileId;
-                            data.origId = data.fileId;
-                            uploadCallback(data);
-                            o2.tinyMCEUploadCallback = null;
-                        }.bind(this);
-                        var jsonString = JSON.stringify({
-                            // "mwfId" : this.json.id,
-                            "callback" : "o2.tinyMCEUploadCallback",
-                            "referencetype": referenceType,
-                            "reference": reference
-                        });
-                        if( o2androidEnable ){
-                            window.o2android.uploadImage2FileStorage(jsonString)
-                        }else{
-                            window.webkit.messageHandlers.uploadImage2FileStorage.postMessage(jsonString);
-                        }
-                    }else {
-                        MWF.require("MWF.widget.Upload", function () {
-                            var action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
-
-                            var upload = new MWF.widget.Upload($(document.body), {
-                                "data": null,
-                                "parameter": {
-                                    "reference": reference,
-                                    "referencetype": referenceType,
-                                    "scale": localImageMaxWidth || 2000
-                                },
-                                "action": action,
-                                "method": "uploadImageByScale",
-                                "accept": "image/*",
-                                "onEvery": function (json, index, count, file) {
-                                    uploadCallback(json, index, count, file)
-                                }.bind(this)
-                            });
-                            upload.load();
-                        }.bind(this));
-                    }
+                        upload.load();
+                    }.bind(this));
                 }
             }
         },
