@@ -219,6 +219,8 @@ MWF.xApplication.process.Xform.LP = {
     "empowerDlgText" : "下列人员对工作进行了授权，选择后文件将发送给被授权人，取消选择后文件将发送给授权者本人",
     "empowerTo" : "授权给",
     "empowerToHtml" : "<font style='color:#ff5400;'>{person}</font>（{department}）授权给<font style='color:#ff5400;'>{empowerTo}</font>处理。（{time}）</font>",
+    "autoFlowHtml" : "系统自动提交于：{time}",
+    "systemSubmit": "系统自动处理",
     "selectAll" : "全选",
     "computePage": "正在计算分页，请稍候……",
     "keyLockTitle": "文件编辑已锁定",
