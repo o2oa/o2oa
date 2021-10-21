@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * 三元管理配置
+ * @author sword
  */
 public class TernaryManagement extends ConfigObject {
 
@@ -49,10 +50,13 @@ public class TernaryManagement extends ConfigObject {
         this.enable = false;
         this.systemManager = INIT_SYSTEM_MANAGER;
         this.systemManagerDistinguishedName = INIT_SYSTEM_MANAGER_DISTINGUISHED_NAME;
+        this.systemManagerPassword = "";
         this.securityManager = INIT_SECURITY_MANAGER;
         this.securityManagerDistinguishedName = INIT_SECURITY_MANAGER_DISTINGUISHED_NAME;
+        this.securityManagerPassword = "";
         this.auditManager = INIT_AUDIT_MANAGER;
         this.auditManagerDistinguishedName = INIT_AUDIT_MANAGER_DISTINGUISHED_NAME;
+        this.auditManagerPassword = "";
     }
 
     public boolean isTernaryManagement(String name) {
@@ -173,7 +177,6 @@ public class TernaryManagement extends ConfigObject {
         private String mobile;
         private String pinyin;
         private String pinyinInitial;
-        // private String icon;
         private List<String> roleList;
 
         public String getName() {
