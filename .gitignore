@@ -9,6 +9,8 @@
 /o2server/store/jars/*.jar
 /o2server/store/*.war
 /o2server/config/
+/o2server/custom/
+/o2server/dynamic/
 /o2server/commons/
 /o2server/jvm/
 /o2server/local/
