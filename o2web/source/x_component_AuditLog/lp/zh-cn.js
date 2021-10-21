@@ -13,6 +13,7 @@ MWF.xApplication.AuditLog.LP = {
 	"endTime": "结束",
 	"createTime": "开始时间",
 	"updateTime": "结束时间",
+	"requestTime": "请求时间",
 	"spendTime": "执行持续时间(毫秒)",
 	"spendTime1": "执行持续时间",
 	"millisecond": "毫秒",
