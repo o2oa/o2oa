@@ -488,6 +488,17 @@ o2.widget.Tablet = o2.Tablet = new Class({
             return false;
         }
     },
+    isBlank: function(){
+        var canvas = this.canvas;
+        var blank = new Element("canvas", {
+            width : canvas.width,
+            height : canvas.height
+        });
+        // var blank = document.createElement('canvas');//系统获取一个空canvas对象
+        // blank.width = canvas.width;
+        // blank.height = canvas.height;
+        return canvas.toDataURL() == blank.toDataURL(); //比较值相等则为空
+    },
     save : function(){
         var base64code = this.getBase64Code();
         var imageFile = this.getImage( base64code );
@@ -501,6 +512,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             var canvas = this.canvas;
             this.ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
         }
+        this.fireEvent("reset");
     },
     undo : function( itemNode ){
         if(this.preDrawAry.length>0){
