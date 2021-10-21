@@ -134,7 +134,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                 }
             }
 
-            editorConfig.base64Encode = (this.json.base64Encode === "y");
+            editorConfig.base64Encode = !layout.mobile && (this.json.base64Encode === "y");
             editorConfig.enablePreview = (this.json.enablePreview !== "n");
             editorConfig.localImageMaxWidth = 2000;
             editorConfig.reference = this.form.businessData.work.job;
