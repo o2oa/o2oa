@@ -86,6 +86,8 @@ public class AuthenticationAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
+		//擦除密码
+		erasePassword(jsonElement);
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
@@ -155,6 +157,8 @@ public class AuthenticationAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
+		//擦除密码
+		erasePassword(jsonElement);
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
@@ -484,6 +488,15 @@ public class AuthenticationAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	/**
+	 * 由于有日志记录功能,需要将jsonElement中的password进行擦除.
+	 * 
+	 * @param jsonElement
+	 */
+	private void erasePassword(JsonElement jsonElement) {
+		jsonElement.getAsJsonObject().addProperty("password", "******");
 	}
 
 }
