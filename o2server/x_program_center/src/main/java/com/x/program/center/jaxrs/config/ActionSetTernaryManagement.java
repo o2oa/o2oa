@@ -26,6 +26,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 三元管理启停
+ * @author sword
+ */
 public class ActionSetTernaryManagement extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
@@ -37,11 +41,6 @@ public class ActionSetTernaryManagement extends BaseAction {
 		Config.ternaryManagement().setEnable(wi.getEnable());
 		Config.ternaryManagement().save();
 		this.configFlush(effectivePerson);
-		/*if(BooleanUtils.isTrue(Config.ternaryManagement().getEnable())){
-			this.saveDefaultRole();
-		}else{
-			this.deleteDefaultRole();
-		}*/
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);
