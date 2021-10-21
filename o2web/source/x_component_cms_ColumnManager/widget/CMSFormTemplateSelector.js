@@ -28,6 +28,9 @@ MWF.xApplication.cms.ColumnManager.CMSFormTemplateSelector = new Class({
         this.createTemplateAreaNode.fade("in");
 
         this.createTemplateTitleNode = new Element("div", {"styles": this.css.createTemplateFormTitleNode, "text": this.app.lp.createSelectTemplate}).inject(this.createTemplateAreaNode);
+
+        this.createTemplateCategoryCloseNode = new Element("div.createTemplateCategoryCloseNode", {"styles": this.css.createTemplateCategoryCloseNode }).inject(this.createTemplateTitleNode);
+
         this.createTemplateCategoryNode = new Element("div", {"styles": this.css.createTemplateFormCategoryNode}).inject(this.createTemplateAreaNode);
         this.createTemplateCategoryTitleNode = new Element("div", {"styles": this.css.createTemplateFormCategoryTitleNode, "text": this.app.lp.templateCategory}).inject(this.createTemplateCategoryNode);
 
@@ -59,6 +62,12 @@ MWF.xApplication.cms.ColumnManager.CMSFormTemplateSelector = new Class({
         this.app.addEvent("resize", this.resizeFun);
 
         this.loadAllTemplates();
+
+        this.createTemplateCategoryCloseNode.addEvent("click", function(){
+            this.app.removeEvent("resize", this.resizeFun);
+            this.createTemplateAreaNode.destroy();
+            this.createTemplateMaskNode.destroy();
+        }.bind(this));
 
         this.createTemplateMaskNode.addEvent("click", function(){
             this.app.removeEvent("resize", this.resizeFun);
