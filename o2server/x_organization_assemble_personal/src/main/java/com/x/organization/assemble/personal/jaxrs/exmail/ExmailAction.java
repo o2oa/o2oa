@@ -24,6 +24,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+/**
+ * 
+ * @author ray
+ *
+ */
 @Path("exmail")
 @JaxrsDescribe("腾讯企业邮")
 public class ExmailAction extends StandardJaxrsAction {
@@ -114,15 +119,25 @@ public class ExmailAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "接收腾讯企业邮回调Post方法.", action = ActionPost.class)
+	/**
+	 * 接收腾讯企业邮回调Post方法 单独申明了fitler避免权限过滤
+	 * 
+	 * @param asyncResponse
+	 * @param request
+	 * @param msg_signature
+	 * @param timestamp
+	 * @param nonce
+	 * @param body
+	 */
+	@JaxrsMethodDescribe(value = "接收腾讯企业邮回调Post方法.", action = ActionCallback.class)
 	@POST
-	public void post(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void callback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@QueryParam("msg_signature") String msg_signature, @QueryParam("timestamp") String timestamp,
 			@QueryParam("nonce") String nonce, String body) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<ActionPost.Wo> result = new ActionResult<>();
+		ActionResult<ActionCallback.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionPost().execute(effectivePerson, msg_signature, timestamp, nonce, body);
+			result = new ActionCallback().execute(effectivePerson, msg_signature, timestamp, nonce, body);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

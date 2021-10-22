@@ -32,6 +32,11 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.PersonAttribute;
 
+/**
+ * 
+ * @author ray
+ *
+ */
 public class QueueUpdateExmail extends AbstractQueue<String> {
 
 	private static final String MSGTYPE_UNREAD = "UnRead";
