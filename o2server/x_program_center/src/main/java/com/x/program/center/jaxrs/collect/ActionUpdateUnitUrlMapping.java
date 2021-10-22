@@ -14,9 +14,6 @@ class ActionUpdateUnitUrlMapping extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Boolean rFlag = false;
 		String urlMapping = wrapIn.getUrlMapping();
-		/*if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
-			throw new ExceptionModifyConfig();
-		}*/
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			String unitName = business.getUnitName();
