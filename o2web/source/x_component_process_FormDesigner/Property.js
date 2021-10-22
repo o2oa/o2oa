@@ -1091,6 +1091,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 Object.each(layout.serviceAddressList, function(v, key){
                     var option = new Element("option", {"value": key, "text": v.name, "selected": (value.root==key)}).inject(rootSelect);
                 }.bind(this));
+                var option = new Element("option", {"value": "x_program_center", "text": MWF.APPFD.LP.propertyTemplate.centerServer, "selected": (value.root=="x_program_center")}).inject(rootSelect);
+
                 resetRootSelects()
                 resetActionSelects();
                 resetMethodSelects();

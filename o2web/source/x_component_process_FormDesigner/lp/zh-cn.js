@@ -1148,6 +1148,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "emptyValue": "空值",
         "showZero": "显示零",
         "showNullString": "显示空字符串",
+        "centerServer": "中心服务",
         "wps" : {
             "config":"配置",
             "options" : "通用选项",
