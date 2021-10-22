@@ -10,19 +10,23 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.personal.ThisApplication;
 
-class ActionPost extends BaseAction {
+/**
+ * 
+ * @author ray
+ *
+ */
+class ActionCallback extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionPost.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionCallback.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String msgSignature, String timestamp, String nonce,
 			String body) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		if (BooleanUtils.isNotTrue(Config.exmail().getEnable())) {
-			throw new ExceptionExmailDisable();
-		}
-		String msg = decrypt(msgSignature, timestamp, nonce, body);
 
-		ThisApplication.queueUpdateExmail.send(msg);
+		if (BooleanUtils.isTrue(Config.exmail().getEnable())) {
+			String msg = decrypt(msgSignature, timestamp, nonce, body);
+			ThisApplication.queueUpdateExmail.send(msg);
+		}
 
 		Wo wo = new Wo();
 		wo.setValue(true);

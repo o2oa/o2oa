@@ -14,6 +14,8 @@
 package com.x.organization.assemble.personal.jaxrs.exmail;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -22,24 +24,26 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 
 /**
- * 提供接收和推送给公众平台消息的加解密接口(UTF8编码的字符串).
- * <ol>
- * <li>第三方回复加密消息给公众平台</li>
- * <li>第三方收到公众平台发送的消息，验证消息的安全性，并对消息进行解密。</li>
- * </ol>
- * 说明：异常java.security.InvalidKeyException:illegal Key Size的解决方案
- * <ol>
- * <li>在官方网站下载JCE无限制权限策略文件（JDK7的下载地址：
- * http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html</li>
- * <li>下载后解压，可以看到local_policy.jar和US_export_policy.jar以及readme.txt</li>
- * <li>如果安装了JRE，将两个jar文件放到%JRE_HOME%\lib\security目录下覆盖原来的文件</li>
- * <li>如果安装了JDK，将两个jar文件放到%JDK_HOME%\jre\lib\security目录下覆盖原来文件</li>
- * </ol>
+ * @author ray 提供接收和推送给公众平台消息的加解密接口(UTF8编码的字符串).
+ *         <ol>
+ *         <li>第三方回复加密消息给公众平台</li>
+ *         <li>第三方收到公众平台发送的消息，验证消息的安全性，并对消息进行解密。</li>
+ *         </ol>
+ *         说明：异常java.security.InvalidKeyException:illegal Key Size的解决方案
+ *         <ol>
+ *         <li>在官方网站下载JCE无限制权限策略文件（JDK7的下载地址：
+ *         http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html</li>
+ *         <li>下载后解压，可以看到local_policy.jar和US_export_policy.jar以及readme.txt</li>
+ *         <li>如果安装了JRE，将两个jar文件放到%JRE_HOME%\lib\security目录下覆盖原来的文件</li>
+ *         <li>如果安装了JDK，将两个jar文件放到%JDK_HOME%\jre\lib\security目录下覆盖原来文件</li>
+ *         </ol>
  */
 public class WXBizMsgCrypt {
-	static Charset CHARSET = Charset.forName("utf-8");
+	static final Charset CHARSET = StandardCharsets.UTF_8;
+	static final Random random = new SecureRandom();
 	Base64 base64 = new Base64();
 	byte[] aesKey;
 	String token;
@@ -63,8 +67,7 @@ public class WXBizMsgCrypt {
 		this.corpId = corpId;
 		// aesKey = Base64.decodeBase64(encodingAesKey + "=");
 		/**
-		 * 默认的方法 aesKey = Base64.decodeBase64(encodingAesKey + "=");
-		 * 实际运行有报错
+		 * 默认的方法 aesKey = Base64.decodeBase64(encodingAesKey + "="); 实际运行有报错
 		 */
 		java.util.Base64.Decoder decoder = java.util.Base64.getDecoder();
 		aesKey = decoder.decode(encodingAesKey);
@@ -93,8 +96,8 @@ public class WXBizMsgCrypt {
 	// 随机生成16位字符串
 	String getRandomStr() {
 		String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		Random random = new Random();
-		StringBuffer sb = new StringBuffer();
+//		Random random = new Random();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < 16; i++) {
 			int number = random.nextInt(base.length());
 			sb.append(base.charAt(number));
@@ -220,7 +223,7 @@ public class WXBizMsgCrypt {
 		String encrypt = encrypt(getRandomStr(), replyMsg);
 
 		// 生成安全签名
-		if (timeStamp == "") {
+		if (StringUtils.isEmpty(timeStamp)) {
 			timeStamp = Long.toString(System.currentTimeMillis());
 		}
 
