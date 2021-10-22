@@ -8,7 +8,7 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
         "maxTypeCount": {
             "string": 4,
             "long": 2,
-            "dateTime": 5
+            "dateTime": 2
         }
 	},
 	initialize: function(node, text, options){
