@@ -1139,6 +1139,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "emptyValue": "Empty Value",
         "showZero": "Show Zero",
         "showNullString": "Show an empty string",
+        "centerServer": "Center service",
         "wps" : {
             "config":"Config",
             "options" : "options",
