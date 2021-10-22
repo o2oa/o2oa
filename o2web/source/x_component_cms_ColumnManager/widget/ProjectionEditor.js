@@ -92,7 +92,7 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
             '           <td class="editTableValue"><select>'+
             '               <option value="string">string</option>'+
             '               <option value="long">long</option>'+
-            '               <option value="datetime">dateTime</option>'+
+            '               <option value="dateTime">dateTime</option>'+
             '           </select></td>'+
             '       </tr>'+
             '   </table>'+
