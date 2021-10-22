@@ -361,4 +361,27 @@ public class Person extends ConfigObject {
 		this.language = language;
 	}
 
+	public void setPasswordRegex(String passwordRegex) {
+		this.passwordRegex = passwordRegex;
+	}
+
+	public void setPasswordRegexHint(String passwordRegexHint) {
+		this.passwordRegexHint = passwordRegexHint;
+	}
+
+	public void setTokenCookieHttpOnly(Boolean tokenCookieHttpOnly) {
+		this.tokenCookieHttpOnly = tokenCookieHttpOnly;
+	}
+
+	public void setTokenName(String tokenName) {
+		this.tokenName = tokenName;
+	}
+
+	public void setCaptchaFont(String captchaFont) {
+		this.captchaFont = captchaFont;
+	}
+
+	public void setEnableSafeLogout(Boolean enableSafeLogout) {
+		this.enableSafeLogout = enableSafeLogout;
+	}
 }
