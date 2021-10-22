@@ -13,19 +13,29 @@ import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.PersonAttribute;
 
+/**
+ * 
+ * @author ray
+ *
+ */
 class ActionListTitlePassive extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
-		if (!Config.exmail().getEnable()) {
-			throw new ExceptionExmailDisable();
+
+		checkEnable();
+
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		List<Wo> wos = new ArrayList<>();
+
+		if ((!effectivePerson.isAnonymous()) && (!effectivePerson.isCipher())) {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				wos = this.list(business, effectivePerson);
+			}
 		}
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			Business business = new Business(emc);
-			List<Wo> wos = this.list(business, effectivePerson);
-			result.setData(wos);
-			return result;
-		}
+
+		result.setData(wos);
+		return result;
 	}
 
 	private List<Wo> list(Business business, EffectivePerson effectivePerson) throws Exception {
@@ -45,6 +55,9 @@ class ActionListTitlePassive extends BaseAction {
 	}
 
 	public static class Wo extends WrapString {
+
+		private static final long serialVersionUID = 1L;
+
 	}
 
 }

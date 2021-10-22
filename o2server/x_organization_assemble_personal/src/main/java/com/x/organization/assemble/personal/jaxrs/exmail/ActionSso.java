@@ -10,19 +10,29 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Person;
 
+/**
+ * 
+ * @author ray
+ *
+ */
 class ActionSso extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
-		if (!Config.exmail().getEnable()) {
-			throw new ExceptionExmailDisable();
+
+		checkEnable();
+
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wo = new Wo();
+
+		if ((!effectivePerson.isAnonymous()) && (!effectivePerson.isCipher())) {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				wo = this.get(business, effectivePerson);
+			}
 		}
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			Wo wo = this.get(business, effectivePerson);
-			result.setData(wo);
-			return result;
-		}
+
+		result.setData(wo);
+		return result;
 	}
 
 	private Wo get(Business business, EffectivePerson effectivePerson) throws Exception {

@@ -2,6 +2,11 @@ package com.x.organization.assemble.personal.jaxrs.exmail;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author ray
+ *
+ */
 class ByteGroup {
 	ArrayList<Byte> byteContainer = new ArrayList<Byte>();
 
