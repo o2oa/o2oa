@@ -12,6 +12,7 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 
 /**
+ * @author ray
  * SHA1 class
  *
  * 计算公众平台的消息签名接口.
