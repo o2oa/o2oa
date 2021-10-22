@@ -50,14 +50,17 @@ public class Document extends SliceJpaObject {
 	public static final int STRING_VALUE_MAX_LENGTH = JpaObject.length_255B;
 
 	/* 以上为 JpaObject 默认字段 */
+	@Override
 	public void onPersist() throws Exception {
 
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -941,6 +944,14 @@ public class Document extends SliceJpaObject {
 
 	public void setStringValue04(String stringValue04) {
 		this.stringValue04 = stringValue04;
+	}
+
+	public Long getLongValue01() {
+		return longValue01;
+	}
+
+	public void setLongValue01(Long longValue01) {
+		this.longValue01 = longValue01;
 	}
 
 	public Long getLongValue02() {
