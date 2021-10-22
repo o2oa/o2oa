@@ -1,5 +1,10 @@
 package com.x.organization.assemble.personal.jaxrs.exmail;
 
+/**
+ * 
+ * @author ray
+ *
+ */
 public class AesException extends Exception {
 	public final static int OK = 0;
 	public final static int ValidateSignatureError = -40001;
