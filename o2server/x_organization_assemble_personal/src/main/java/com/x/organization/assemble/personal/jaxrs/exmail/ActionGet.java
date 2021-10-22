@@ -8,10 +8,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 /**
- * 专门用于腾讯企业邮第一次开通API接口时用于认证.
- * 开通的认证端口必须是80,443或者8080,腾讯不会访问其他端口.
+ * 专门用于腾讯企业邮第一次开通API接口时用于认证. 开通的认证端口必须是80,443或者8080,腾讯不会访问其他端口.
  * 
- * @author zhour
+ * @author ray
  *
  */
 class ActionGet extends BaseAction {
@@ -20,11 +19,10 @@ class ActionGet extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String msg_signature, String timestamp, String nonce,
 			String echostr) throws Exception {
+
 		logger.debug("腾讯企业邮收到,msg_signature:{}, timestamp:{}, nonce:{}, echostr:{}.", msg_signature, timestamp, nonce,
 				echostr);
-		if (!Config.exmail().getEnable()) {
-			throw new ExceptionExmailDisable();
-		}
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		WXBizMsgCrypt crypt = new WXBizMsgCrypt(Config.exmail().getToken(), Config.exmail().getEncodingAesKey(),
