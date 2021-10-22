@@ -19,9 +19,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
- * XMLParse class
+ * @author ray XMLParse class
  *
- * 提供提取消息格式中的密文及生成回复消息格式的接口.
+ *         提供提取消息格式中的密文及生成回复消息格式的接口.
  */
 class XMLParse {
 
