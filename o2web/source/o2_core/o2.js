@@ -1141,6 +1141,19 @@ if (!window.o2) {
         String.prototype.bindJson = function (json) {
             return _parseHtml(this, json);
         };
+
+        o2.component = function(name, res){
+            o2.xApplication = o2.xApplication || {};
+            var names = name.split(".");
+            var o = o2.xApplication;
+            names.forEach(function(n){
+                o = o[n] = {};
+            });
+            o.loading = new Promise(function(resolve){
+                o2.loadAll(res, function(){ resolve(); });
+            });
+        }
+
     })();
 
 
