@@ -1,0 +1,37 @@
+{
+  "view": {
+    "icon": "view.png",
+    "text": MWF.APPPOD.LP.modules.view,
+    "className": "View"
+  },
+  "stat": {
+    "icon": "stat.png",
+    "text": MWF.APPPOD.LP.modules.stat,
+    "className": "Stat"
+  },
+  "widget": {
+    "icon": "subpage.png",
+    "text": MWF.APPPOD.LP.modules.widget,
+    "className": "Widget"
+  },
+  "widgetmodules": {
+    "icon": "subpage.png",
+    "text": MWF.APPPOD.LP.modules.widgetmodules,
+    "className": "Widgetmodules"
+  },
+  "statement": {
+    "icon": "statement.png",
+    "text": MWF.APPPOD.LP.modules.statement,
+    "className": "Statement"
+  },
+  "importer": {
+    "icon": "importer.png",
+    "text": MWF.APPPOD.LP.modules.importer,
+    "className": "Importer"
+  },
+  "SmartBI": { 
+    "icon": "smartbi.png",
+    "text": MWF.APPPOD.LP.modules.SmartBI,
+    "className": "SmartBI"
+  }
+}
