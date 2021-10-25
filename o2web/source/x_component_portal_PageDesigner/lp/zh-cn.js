@@ -274,7 +274,7 @@ MWF.APPPOD.LP = {
         "group_data": "数据组件",
         "group_filetext": "文件编辑组件",
         "group_function": "功能组件",
-        "group_element": "Element组件",
+        "group_element": "Element组件"
     },
     "filedConfigurator": {
         "sequence": "序号",

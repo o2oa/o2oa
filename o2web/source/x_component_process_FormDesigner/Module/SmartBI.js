@@ -85,9 +85,9 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
 		this.node.addEvent("selectstart", function(){
 			return false;
 		});
-
-        this.setNodeContainer();
-
+	},
+	_resetModuleDomNode: function(){
+		this.setNodeContainer();
 	},
 	setNodeContainer:function(){
 		this.node.empty();
@@ -98,7 +98,7 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
 
 		if(!layout.serviceAddressList["x_custom_smartbi_assemble_control"]){
             new Element("div",{styles:this.css.nodeTxt,text:MWF.APPFD.LP.smartbi.nosetup}).inject(this.nodeContainer);
-		}else{ debugger
+		}else{
             var t = new Element("div",{styles:this.css.nodeTxt,text:MWF.APPFD.LP.smartbi.txt}).inject(this.nodeContainer);
             t.setStyles({"color":"#409EFF"});
         }

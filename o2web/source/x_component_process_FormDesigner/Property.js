@@ -2556,15 +2556,15 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 			}
 		}.bind(this));
 	},
-    loadSmartBISelect: function(){ 
-        var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
+    loadSmartBISelect: function(){
         var SmartBINodes = this.propertyContent.getElements(".MWFSmartBISelect");
         var SmartBIToolbarNodes = this.propertyContent.getElements(".MWFSmartBIToolbar");
         
-        if (SmartBINodes.length){ 
+        if (SmartBINodes.length){
+            var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
             var node = SmartBINodes[0];
             var select = new Element("select").inject(node);
-            this.setSmartBIOptions(select);
+            if (SmartBIAction) this.setSmartBIOptions(select);
             select.addEvent("change", function(e){
                 var value = e.target.options[e.target.selectedIndex].value;
                 this.setValue(e.target.getParent("div").get("name"), value, select);

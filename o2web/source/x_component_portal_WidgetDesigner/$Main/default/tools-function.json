@@ -1,0 +1,27 @@
+{
+  "view": {
+    "icon": "view.png",
+    "text": MWF.APPPOD.LP.modules.view,
+    "className": "View"
+  },
+  "stat": {
+    "icon": "stat.png",
+    "text": MWF.APPPOD.LP.modules.stat,
+    "className": "Stat"
+  },
+  "statement": {
+    "icon": "statement.png",
+    "text": MWF.APPPOD.LP.modules.statement,
+    "className": "Statement"
+  },
+  "importer": {
+    "icon": "importer.png",
+    "text": MWF.APPPOD.LP.modules.importer,
+    "className": "Importer"
+  },
+  "SmartBI": { 
+    "icon": "smartbi.png",
+    "text": MWF.APPPOD.LP.modules.SmartBI,
+    "className": "SmartBI"
+  }
+}
