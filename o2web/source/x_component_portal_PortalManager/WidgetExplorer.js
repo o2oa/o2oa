@@ -226,7 +226,6 @@ MWF.xApplication.portal.PortalManager.WidgetExplorer = new Class({
 
 MWF.xApplication.portal.PortalManager.WidgetExplorer.Widget= new Class({
 	Extends: MWF.xApplication.process.ProcessManager.Explorer.Item,
-	
 	_open: function(e){
         var _self = this;
         var options = {
@@ -267,5 +266,50 @@ MWF.xApplication.portal.PortalManager.WidgetExplorer.Widget= new Class({
 			this.node.destroy();
 			if (callback) callback();
 		}.bind(this));
-	}
+	},
+    saveas: function(){
+        MWF.xDesktop.requireApp("Selector", "package", function(){
+            var selector = new MWF.O2Selector(this.explorer.app.content, {
+                "title": this.explorer.app.lp.copyto,
+                "type": "Portal",
+                "values": [this.explorer.app.options.application],
+                "onComplete": function(items){
+                    items.each(function(item){
+                        this.saveItemAs(item.data);
+                    }.bind(this));
+                }.bind(this),
+            });
+        }.bind(this));
+    },
+    saveItemAs: function(item){
+        var id = item.id;
+        var name = item.name;
+        this.explorer.app.restActions.getWidget(this.data.id, function(json){
+            var pcdata = JSON.decode(MWF.decodeJsonString(json.data.data));
+            var mobiledata = JSON.decode(MWF.decodeJsonString(json.data.mobileData));
+            pcdata.json.alias = "";
+            mobiledata.json.alias = "";
+            var oldName = pcdata.json.name;
+            this.explorer.app.restActions.listWidget(id, function(formsJson){
+                var i=1;
+                while (formsJson.data.some(function(d){ return d.name==pcdata.json.name })){
+                    pcdata.json.name = oldName+"_copy"+i;
+                    mobiledata.json.name = oldName+"_copy"+i;
+                    i++;
+                }
+                pcdata.id = "";
+                pcdata.isNewPage = true;
+                pcdata.json.id = "";
+                pcdata.json.application = id;
+                pcdata.json.applicationName = name;
+                mobiledata.json.id = "";
+                mobiledata.json.application = id;
+                mobiledata.applicationName = name;
+
+                this.explorer.app.restActions.saveWidget(pcdata, mobiledata, null, function(){
+                    if (id == this.explorer.app.options.application.id) this.explorer.reload();
+                }.bind(this));
+            }.bind(this));
+        }.bind(this));
+    }
 });
