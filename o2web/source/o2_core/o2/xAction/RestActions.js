@@ -23,25 +23,27 @@ MWF.xAction.RestActions = MWF.Actions = {
         //var url = this.getHost(root)+"/"+root+"/describe/describe.json";
         var url = this.getHost(root)+"/"+root+"/describe/api.json";
         //var url = "../o2_core/o2/xAction/temp.json";
-        MWF.getJSON(url, function(json){jaxrs = json.jaxrs;}.bind(this), false, false, false);
-        if (jaxrs){
-            var actionObj = {};
-            jaxrs.each(function(o){
-                if (o.methods && o.methods.length){
-                    var actions = {};
-                    o.methods.each(function(m){
-                        var o = {"uri": "/"+m.uri};
-                        if (m.method) o.method = m.method;
-                        if (m.enctype) o.enctype = m.enctype;
-                        actions[m.name] = o;
-                    }.bind(this));
-                    actionObj[o.name] = new MWF.xAction.RestActions.Action(root, actions);
-                    //actionObj[o.name] = new MWF.xAction.RestActions.Action(root, o.methods);
-                }
-            }.bind(this));
-            this.loadedActions[root] = actionObj;
-            return actionObj;
-        }
+        try{
+            MWF.getJSON(url, function(json){jaxrs = json.jaxrs;}.bind(this), false, false, false);
+            if (jaxrs){
+                var actionObj = {};
+                jaxrs.each(function(o){
+                    if (o.methods && o.methods.length){
+                        var actions = {};
+                        o.methods.each(function(m){
+                            var o = {"uri": "/"+m.uri};
+                            if (m.method) o.method = m.method;
+                            if (m.enctype) o.enctype = m.enctype;
+                            actions[m.name] = o;
+                        }.bind(this));
+                        actionObj[o.name] = new MWF.xAction.RestActions.Action(root, actions);
+                        //actionObj[o.name] = new MWF.xAction.RestActions.Action(root, o.methods);
+                    }
+                }.bind(this));
+                this.loadedActions[root] = actionObj;
+                return actionObj;
+            }
+        }catch{}
         return null;
     },
     //actions: [{"action": "", "subAction": "TaskAction", "name": "list", "par": [], "body": "",  "urlEncode"： false, "cache": false}]
