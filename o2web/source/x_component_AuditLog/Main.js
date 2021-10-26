@@ -353,7 +353,7 @@ MWF.xApplication.AuditLog.Main.Navi = new Class({
     },
     createAllNode: function () {
         var _self = this;
-        this.naviAllNode = new Element("div.naviTopNode", {
+        this.naviAllNode = new Element("div.naviAllNode", {
             "styles": this.css.naviAllNode,
             "text": this.app.lp.all
         }).inject(this.areaNode);
