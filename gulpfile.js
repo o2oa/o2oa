@@ -363,6 +363,39 @@ function clear_jvm_git(cb){
     cb();
 }
 
+var moduleFolder = [];
+async function build_web_module() {
+    var dest = 'target/o2server/servers/webServer/';
+    var srcPath = 'o2web/source';
+    const fp = fs.promises;
+
+    return fp.readdir(srcPath).then((files)=>{
+        let statP = [];
+        files.forEach((file) => {
+            let p = path.resolve(srcPath, file)
+            statP.push(fp.stat(p).then((s)=>{
+                if (s.isDirectory()){
+                    var pkgPath = path.resolve(srcPath, p, 'package.json');
+                    if (fs.existsSync(pkgPath)){
+                        var pkg = require(pkgPath);
+                        if (pkg.scripts['o2-deploy']){
+                            moduleFolder.push(file);
+                        }
+                    }
+                }
+            }));
+        });
+        const shelljs = require('shelljs');
+        return Promise.all(statP).then(()=>{
+            // var tasks = [];
+            moduleFolder.forEach((f)=>{
+                shelljs.config.verbose = true;
+                shelljs.exec('npm run o2-deploy -- --dest ../../../'+dest+f, {cwd: path.resolve(srcPath, f)});
+            });
+        });
+    });
+}
+
 function build_web_minimize(cb) {
     console.log(`---------------------------------------------------------------------
   . Start compiling the web ...
@@ -370,6 +403,9 @@ function build_web_minimize(cb) {
 
     var dest = 'target/o2server/servers/webServer/';
     var src_min = ['o2web/source/**/*.js', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
+    moduleFolder.forEach((f)=>{
+        src_min.push('!'+f+'/**/*');
+    })
 
     var entries = fg.sync(src_min, { dot: false});
     var size = entries.length;
@@ -393,6 +429,9 @@ function build_web_minimize(cb) {
 function build_web_move() {
     var dest = 'target/o2server/servers/webServer/';
     var src_move = ['o2web/source/**/*', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**'];
+    moduleFolder.forEach((f)=>{
+        src_move.push('!'+f+'/**/*');
+    })
 
     var entries = fg.sync(src_move, { dot: false});
     var size = entries.length;
@@ -1186,6 +1225,7 @@ function chmod_servers(){
     return (shell.task('chmod 777 -R target/o2server/servers'))();
 }
 exports.build_web = gulp.series(
+    build_web_module,
     build_web_minimize,
     build_web_move,
     gulp.parallel(
@@ -1209,3 +1249,5 @@ if (os.platform().indexOf("win")==-1){
 }else{
     exports.deploy = gulp.series(deploy_server);
 }
+
+// /exports.build_module = build_web_module;
