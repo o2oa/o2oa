@@ -29,9 +29,11 @@
   "devDependencies": {
     "gulp": "^4.0.0",
     "gulp-changed": "^3.2.0",
+    "gulp-cli": "^2.3.0",
     "gulp-concat": "^2.6.1",
     "gulp-deleted": "^1.0.0",
     "gulp-ftp": "^1.1.0",
+    "gulp-git": "^2.10.1",
     "gulp-if": "^2.0.2",
     "gulp-rename": "^1.4.0",
     "gulp-sftp-up4": "^0.1.8",
@@ -39,6 +41,7 @@
     "gulp-tm-uglify": "3.0.1",
     "gulp-uglify-es": "^2.0.0",
     "jasmine-core": "^3.6.0",
+    "jsdoc": "^3.6.6",
     "karma": "^5.2.3",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^2.0.3",
@@ -47,14 +50,7 @@
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0",
     "readline-sync": "^1.4.10",
-    "gulp-cli": "^2.3.0",
-    "jsdoc": "^3.6.6",
     "tidy-jsdoc-o2": "latest",
-    "gulp-git": "^2.10.1"
-  },
-  "dependencies": {
-    "gulp-cli": "^2.3.0",
-    "jsdoc": "^3.6.6",
-    "tidy-jsdoc-o2": "latest"
+    "gulp-shell": "^0.8.0"
   }
 }
