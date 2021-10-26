@@ -61,9 +61,22 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         this.field = true;
         this.fieldModuleLoaded = false;
     },
+    load: function(){
+        this._loadModuleEvents();
+        if (this.fireEvent("queryLoad")){
+            this._queryLoaded();
+            this._loadUserInterface();
+            this._loadStyles();
+            this._loadDomEvents();
+            //this._loadEvents();
 
+            this._afterLoaded();
+            this.fireEvent("afterLoad");
+            // this.fireEvent("load");
+        }
+    },
     _loadUserInterface: function(){
-        this.fireEvent("queryLoad");
+        // this.fireEvent("queryLoad");
 
         this.editModules = [];
         this.node.setStyle("overflow-x", "hidden");
