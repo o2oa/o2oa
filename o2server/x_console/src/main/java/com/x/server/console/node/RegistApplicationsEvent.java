@@ -9,6 +9,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.JsonElement;
+import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.jaxrs.WrapBoolean;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
@@ -67,13 +70,21 @@ public class RegistApplicationsEvent implements Event {
 				req.setValue(gson.toJson(list));
 
 				for (Entry<String, CenterServer> entry : Config.nodes().centerServers().orderedEntry()) {
-					CipherConnectionAction.put(false, 4000, 8000,
-							Config.url_x_program_center_jaxrs(entry, "center", "regist", "applications"), req);
+					toCenter(entry, req);
 				}
 
 			}
 		} catch (Exception e) {
 			logger.error(e);
+		}
+	}
+
+	private void toCenter(Entry<String, CenterServer> entry, Req req){
+		try {
+			CipherConnectionAction.put(false, 2000, 4000,
+					Config.url_x_program_center_jaxrs(entry, "center", "regist", "applications"), req).getData(WrapBoolean.class);
+		} catch (Exception e) {
+			logger.warn("registerToCenter error:{}", e.getMessage());
 		}
 	}
 
