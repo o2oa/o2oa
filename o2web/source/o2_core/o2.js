@@ -1147,7 +1147,7 @@ if (!window.o2) {
             var names = name.split(".");
             var o = o2.xApplication;
             names.forEach(function(n){
-                o = o[n] = {};
+                o = o[n] = o[n] || {};
             });
             o.loading = new Promise(function(resolve){
                 o2.loadAll(res, function(){ resolve(); });
