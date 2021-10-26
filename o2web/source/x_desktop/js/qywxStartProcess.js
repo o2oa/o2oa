@@ -100,7 +100,15 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 layout.desktop.apps[appId].setCurrent();
             } else {
                 if (options) options.appId = appId;
-                _createNewApplication(e, appNamespace, appName, (options || { "appId": appId }), statusObj, inBrowser, taskitem, notCurrent);
+                if (appNamespace.loading && appNamespace.loading.then){
+                    appNamespace.loading.then(function(){
+                        _createNewApplication(e, appNamespace, appName, (options || { "appId": appId }), statusObj, inBrowser, taskitem, notCurrent);
+                    });
+                }else{
+                    _createNewApplication(e, appNamespace, appName, (options || { "appId": appId }), statusObj, inBrowser, taskitem, notCurrent);
+                }
+
+
             }
         }.bind(this));
     };

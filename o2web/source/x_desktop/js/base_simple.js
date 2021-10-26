@@ -431,7 +431,14 @@ o2.addReady(function () {
             var appName = appPath[appPath.length - 1];
 
             _requireApp(appNames, function (appNamespace) {
-                _createNewApplication(e, appNamespace, appName, options, statusObj);
+                if (appNamespace.loading && appNamespace.loading.then){
+                    appNamespace.loading.then(function(){
+                        _createNewApplication(e, appNamespace, appName, options, statusObj);
+                    });
+                }else{
+                    _createNewApplication(e, appNamespace, appName, options, statusObj);
+                }
+
             }.bind(this));
         }
     };

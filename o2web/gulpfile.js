@@ -30,7 +30,7 @@ try{
 }catch(e){
     ftpconfig = {
         "dev": {
-            'upload': 'local',
+            'upload': '',
             'location': 'E:/o2server/servers/webServer/',
             'host': '',
             'user': '',
