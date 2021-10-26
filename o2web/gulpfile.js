@@ -11,17 +11,36 @@ var gulp = require('gulp'),
     sftp = require('gulp-sftp-up4'),
     JSFtp = require('jsftp'),
     gutil = require('gulp-util'),
-    fs = require("fs");
-concat = require('gulp-concat');
+    fs = require("fs"),
+    concat = require('gulp-concat'),
+    shell = require('gulp-shell');
 //let uglify = require('gulp-uglify-es').default;
 var through2 = require('through2');
 var path = require('path');
+var nodePath = path;
 //var sourceMap = require('gulp-sourcemaps');
 var git = require('gulp-git');
 
 var assetRev = require('gulp-tm-asset-rev');
 var apps = require('./gulpapps.js');
-var ftpconfig = require('./gulpconfig.js');
+
+var ftpconfig;
+try{
+    ftpconfig = require('./gulpconfig.js');
+}catch(e){
+    ftpconfig = {
+        "dev": {
+            'upload': 'local',
+            'location': 'E:/o2server/servers/webServer/',
+            'host': '',
+            'user': '',
+            'pass': '',
+            "port": 22,
+            "remotePath": "/data/o2server/servers/webServer/",
+            "dest": "dest"
+        }
+    };
+}
 
 var supportedLanguage = ["zh-cn", "en"];
 
@@ -60,6 +79,34 @@ setOptions(o_options, getEvOptions(o_options.ev));
 var appTasks = [];
 
 function createDefaultTask(path, isMin, thisOptions) {
+    var pkgPath = nodePath.resolve('source', path, 'package.json');
+    if (fs.existsSync(pkgPath)){
+        var pkg = require(pkgPath);
+        if (pkg.scripts['o2-deploy']){
+            gulp.task(path, gulp.series(shell.task('npm run o2-deploy -- --dest ../../dest/'+path, {cwd: nodePath.resolve('source', path), verbose:true}), function(cb){
+                var option = thisOptions || options;
+                var dest = ['dest/' + path + '/**/*'];
+                return gulp.src(dest)
+                    .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+                    .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                        host: option.host,
+                        user: option.user || 'anonymous',
+                        pass: option.pass || '@anonymous',
+                        port: option.port || 21,
+                        remotePath: (option.remotePath || '/') + path
+                    })))
+                    .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                        host: option.host,
+                        user: option.user || 'anonymous',
+                        pass: option.pass || null,
+                        port: option.port || 22,
+                        remotePath: (option.remotePath || '/') + path
+                    })))
+                    .pipe(gutil.noop());
+            }));
+            return '';
+        }
+    }
     gulp.task(path, function (cb) {
         //var srcFile = 'source/' + path + '/**/*';
         var option = thisOptions || options;
@@ -116,8 +163,6 @@ function createDefaultTask(path, isMin, thisOptions) {
                 })))
                 .pipe(gulp.dest(dest))
                 .pipe(gutil.noop());
-
-
         }else{
             src = ['source/' + path + '/**/*', '!**/*.spec.js', '!**/test/**'];
             gutil.log("Move", ":", gutil.colors.green(gutil.colors.blue(path), gutil.colors.white('->'), dest));
@@ -1136,7 +1181,7 @@ function getAppTask(path, isMin, thisOptions) {
         supportedLanguage.forEach(function(lp){
             createBaseWorkConcatLanguageTask(path, thisOptions, lp);
             lpTasks.push(path+".base_lp : "+lp);
-        })
+        });
 
         createBaseWorkConcatTask(path, isMin, thisOptions);
         createBasePortalConcatTask(path, isMin, thisOptions);
