@@ -45,7 +45,7 @@ MWF.xAction.RestActions.Action["x_faceset_control"].RestActions = new Class({
     Extends: MWF.xDesktop.Actions.RestActions,
     getAddress: function(success, failure){
         //this.address = "http://dev.o2oa.net:8888/"+this.serviceName;
-        this.address = "https://git.o2oa.net:8888/"+this.serviceName;
+        this.address = "https://git.o2oa.net:8886/"+this.serviceName;
         //this.address = "http://127.0.0.1:8888/"+this.serviceName;
         if (success) success.apply();
     }
