@@ -26,10 +26,11 @@
   },
   "topIconNode" : {
     "margin-left": "10px",
-    "width": "40px",
-    "height": "50px",
+    "width": "24px",
+    "height": "24px",
     "float": "left",
-    "background": "url(../x_component_AuditLog/$Main/default/icon/topIcon.png) no-repeat center center"
+    "background": "url(../x_component_AuditLog/$Main/default/icon/topIcon.png) no-repeat 0px center",
+    "background-size": "24px 24px"
   },
   "topTextNode" : {
     "color" : "#333",
@@ -254,8 +255,9 @@
     "background-color" : "#fff"
   },
   "naviTopNode" : {
-    "margin-top": "15px",
-    "margin-left": "40px",
+    "line-height": "50px",
+    "margin-left": "20px",
+    "padding-left": "32px",
     "height": "50px",
     "color" : "#333",
     "font-size": "16px",
@@ -263,7 +265,8 @@
     "overflow" : "hidden",
     "text-overflow" : "ellipsis",
     "white-space":"nowrap",
-    "background": "url(../x_component_AuditLog/$Main/default/icon/topIcon.png) no-repeat center center"
+    "background": "url(../x_component_AuditLog/$Main/default/icon/topIcon.png) no-repeat 0px center",
+    "background-size": "24px 24px"
   },
   "naviAllNode": {
     "display" : "block",
