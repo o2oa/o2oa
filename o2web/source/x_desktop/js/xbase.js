@@ -222,7 +222,14 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
             var appPath = appNames.split(".");
             var appName = appPath[appPath.length - 1];
             _requireApp(appNames, function (appNamespace) {
-                _createNewApplication(e, appNamespace, appName, (options || {}), statusObj, inBrowser);
+                if (appNamespace.loading && appNamespace.loading.then){
+                    appNamespace.loading.then(function(){
+                        _createNewApplication(e, appNamespace, appName, (options || {}), statusObj, inBrowser);
+                    });
+                }else{
+                    _createNewApplication(e, appNamespace, appName, (options || {}), statusObj, inBrowser);
+                }
+
             }.bind(this));
         }
     };
