@@ -824,7 +824,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         this.app.restActions.saveCategory(  d, function( json ){
             this.list.loadCategoryById( json.data.id, this.node, "before", function( category ){
                 this.list.setCurrentCategory( category );
-                this.list.adjustSeq(false);
+                if(this.options.isNew)this.list.adjustSeq(false);
                 this.list.destroyCategory( this );
             }.bind(this));
         }.bind(this));
