@@ -43,7 +43,7 @@ MWF.xAction.RestActions = MWF.Actions = {
                 this.loadedActions[root] = actionObj;
                 return actionObj;
             }
-        }catch{}
+        }catch(e){}
         return null;
     },
     //actions: [{"action": "", "subAction": "TaskAction", "name": "list", "par": [], "body": "",  "urlEncode"： false, "cache": false}]
