@@ -1173,6 +1173,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         this.fieldModuleLoaded = false;
     },
     _loadUserInterface: function () {
+        debugger;
         this.node.empty();
         if (this.form.businessData.work.startTime){
             this.loadAttachmentController();
@@ -1288,7 +1289,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     getData: function () {
         return (this.attachmentController) ? this.attachmentController.getAttachmentNames() : null;
     },
-    createUploadFileNode: function () {
+    createUploadFileNode: function (files) {
         debugger;
         var accept = "*";
         if (!this.json.attachmentExtType || (this.json.attachmentExtType.indexOf("other") != -1 && !this.json.attachmentExtOtherType)) {
@@ -1366,7 +1367,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 var message = this.attachmentController.messageItemList[o.messageId];
                 if( message && message.node )message.node.destroy();
             }
-        }.bind(this));
+        }.bind(this), files);
 
 
         // this.uploadFileAreaNode = new Element("div");
@@ -1408,14 +1409,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         //     }
         // }.bind(this));
     },
-    uploadAttachment: function (e, node) {
+    uploadAttachment: function (e, node, files) {
         if (window.o2android && window.o2android.uploadAttachment) {
             window.o2android.uploadAttachment((this.json.site || this.json.id));
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadAttachment) {
             window.webkit.messageHandlers.uploadAttachment.postMessage({ "site": (this.json.site || this.json.id) });
         } else {
             // if (!this.uploadFileAreaNode){
-            this.createUploadFileNode();
+            this.createUploadFileNode(files);
             // }
             // this.fileUploadNode.click();
         }
