@@ -1,3 +1,17 @@
+<p align="center">
+	<a target="_blank" href="https://github.com/o2oa/o2oa/blob/develop/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/o2oa/o2oa"></a>
+	<a target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">
+		<img src="https://img.shields.io/badge/JDK-11-green" />
+	</a>
+	<a target="_blank" href="https://gitee.com/o2oa/O2OA/stargazers">
+		<img src="https://gitee.com/o2oa/O2OA/badge/star.svg?theme=dark" alt='gitee star'/>
+	</a>
+	<a target="_blank" href="https://github.com/o2oa/o2oa/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/o2oa/o2oa?style=social"></a>
+</p>
+
+----------------------------------------------------------------------------
+
+
 # O2OA : Java企业信息化系统,开源OA openSource OA Platform
 
 ​        O2OA企业应用开发平台是兰德纵横网络技术股份有限公司发布和维护的开源产品，是使用JavaEE技术栈，分布式架构设计的一款真正全代码开源的企业应用定制化开发平台。适用于企业OA、协同办公类信息化系统的建设和开发。
