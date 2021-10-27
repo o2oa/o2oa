@@ -16,6 +16,9 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
     {
 	Implements: [Events],
 	Extends: MWF.APP$Module,
+    options: {
+        "moduleEvents": ["change", "load", "queryLoad", "postLoad"]
+    },
     initialize: function(node, json, form, options){
         this.node = $(node);
         this.node.store("module", this);
@@ -66,7 +69,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
             if (layout.mobile){
                 o2.imageClipperCallback = function( str ){
                     var data = JSON.parse( str );
-                    this.setData( data ? data.fileId : "" );
+                    this.setData( data ? data.fileId : "", true );
                     this.validation();
                     o2.imageClipperCallback = null;
                 }.bind(this);
@@ -87,13 +90,13 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
                     window.webkit.messageHandlers.uploadImage2FileStorage.postMessage(jsonString);
                 }else {
                     this.selectImage( d, function(data){
-                        this.setData( data ? data.id : "" );
+                        this.setData( data ? data.id : "", true );
                         this.validation();
                     }.bind(this));
                 }
             }else{
                 this.selectImage( d, function(data){
-                    this.setData( data ? data.id : "" );
+                    this.setData( data ? data.id : "", true );
                     this.validation();
                 }.bind(this));
             }
@@ -125,11 +128,15 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
     getData: function( data ){
         return this._getBusinessData() || "";
     },
-    setData: function( data ){
+    setData: function( data, fireChange ){
+        var old = this.getData();
         this._setBusinessData(data);
         var img = this.node.getElements("img");
         if( img && img.length )img.destroy();
-        if( !data )return;
+        if( !data ){
+            if (fireChange && old!==data) this.fireEvent("change");
+            return;
+        }
         var img = new Element("img",{
             src : MWF.xDesktop.getImageSrc( data )
         }).inject( this.node, "top" );
@@ -148,6 +155,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
             }
         }
         if(this.json.imageStyles)img.setStyles(this.json.imageStyles);
+        if (fireChange && old!==data) this.fireEvent("change");
     },
 
     selectImage: function(d, callback){
