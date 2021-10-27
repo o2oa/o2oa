@@ -249,12 +249,34 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     },
 
     setEvent: function(){
-        if (this.contentScrollNode) this.contentScrollNode.addEvents({
-            "mousedown": this.unSelectedAttachments.bind(this)
-        });
-        if (this.minContent) this.minContent.addEvents({
-            "mousedown": this.unSelectedAttachments.bind(this)
-        });
+        if (this.contentScrollNode && !this.isContentSetEvent){
+            this.contentScrollNode.addEventListener("dragover", function( e ) {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+            this.contentScrollNode.addEventListener("drop", function( e ) {
+                this.uploadAttachment(e, null, e.dataTransfer.files);
+                event.preventDefault();
+            }.bind(this), false);
+            this.contentScrollNode.addEvents({
+                "mousedown": this.unSelectedAttachments.bind(this)
+            });
+            this.isContentSetEvent = true;
+        }
+        if (this.minContent && !this.isMinContentSetEvent){
+            this.minContent.addEventListener("dragover", function( e ) {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+            this.minContent.addEventListener("drop", function( e ) {
+                this.uploadAttachment(e, null, e.dataTransfer.files);
+                event.preventDefault();
+            }.bind(this), false);
+            this.minContent.addEvents({
+                "mousedown": this.unSelectedAttachments.bind(this)
+            });
+            this.isMinContentSetEvent = true;
+        }
     },
     resetToolbarGroupHidden : function( hiddenGroup ){
         this.options.toolbarGroupHidden = hiddenGroup;
@@ -273,7 +295,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         }
     },
     createContentNode: function(){
-        this.contentScrollNode = new Element("div.contentScrollNode", {"styles": this.css.contentScrollNode}).inject(this.node);
+        this.contentScrollNode = new Element("div.contentScrollNode", {"draggable": true, "styles": this.css.contentScrollNode}).inject(this.node);
         this.content = new Element("div.content", {"styles": this.css.contentNode}).inject(this.contentScrollNode);
 
         o2.require("o2.widget.ScrollBar", function(){
@@ -741,14 +763,14 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         }
     },
 
-    uploadAttachment: function(e, node){
-        if (this.module) this.module.uploadAttachment(e, node);
+    uploadAttachment: function(e, node, files){
+        if (this.module) this.module.uploadAttachment(e, node, files);
     },
-    doUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery){
+    doUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery, files){
         if (FormData.expiredIE){
             this.doInputUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery);
         }else{
-            this.doFormDataUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery);
+            this.doFormDataUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery, files);
         }
     },
     addUploadMessage: function(fileName){
@@ -900,187 +922,193 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             }.bind(this));
         }.bind(this));
     },
-    doFormDataUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery){
+    doFormDataUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery, files){
+        var uploadChange = function(uploadfiles){
+            var files = uploadfiles || this.fileUploadNode.files;
+            if (files.length){
+                var count = files.length;
+                var current = 0;
+                var hasFailUpload = false;
+
+                var restActions = action;
+                if (typeOf(action)=="string"){
+                    restActions = o2.Actions.get(action).action;
+                }
+                //var url = restActions.action.actions[invokeUri];
+
+                var callback = function(){
+                    if (current == count){
+                        if(finish) finish( hasFailUpload );
+                    }
+                };
+
+                var isContinue = true;
+                if (beforeUpload) isContinue = beforeUpload(files);
+                debugger;
+                if (isContinue){
+                    var accepts = (accept) ? accept.split(o2.splitStr) : null;
+
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files.item(i);
+                        var ext = file.name.substr(file.name.lastIndexOf("."), file.name.length);
+                        ext = ext.toLowerCase();
+                        if (accepts && (accepts.indexOf(ext)===-1 && accepts.indexOf("*")===-1 && accepts.indexOf("*/*")===-1)){
+                            var msg = {
+                                "subject": o2.LP.widget.refuseUpload,
+                                "content": o2.LP.widget.refuseUploadHTML.replace("{filename}", file.name)
+                            };
+                            if (layout.desktop.message) layout.desktop.message.addTooltip(msg);
+                            if (layout.desktop.message) layout.desktop.message.addMessage(msg);
+                            var text = o2.LP.widget.refuseUploadNotice.replace("{filename}", file.name);
+                            if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("info", {"x": "right", "y": "top"}, text, this.node);
+                        }else if (size && file.size> size*1024*1024){
+                            var msg = {
+                                "subject": o2.LP.widget.refuseUpload,
+                                "content": o2.LP.widget.refuseUploadHTML_size.replace("{filename}", file.name).replace("{size}", size)
+                            };
+                            if (layout.desktop.message) layout.desktop.message.addTooltip(msg);
+                            if (layout.desktop.message) layout.desktop.message.addMessage(msg);
+                            var text = o2.LP.widget.refuseUploadNotice_size.replace("{filename}", file.name).replace("{size}", size);
+                            if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("info", {"x": "right", "y": "top"}, text, this.node);
+                        }else{
+                            var formData = new FormData();
+                            Object.each(obj, function(v, k){
+                                formData.append(k, v)
+                            });
+                            formData.append('file', file);
+                            if(parameter.fileMd5){
+                                o2.load("../o2_lib/CryptoJS/components/spark-md5-min.js", function(){
+
+                                    var fileReader = new FileReader(), box = document.getElementById('box');
+                                    var blobSlice = File.prototype.mozSlice || File.prototype.webkitSlice || File.prototype.slice;
+                                    var chunkSize = 20971520;
+                                    // read in chunks of 20MB
+                                    var chunks = Math.ceil(file.size / chunkSize), currentChunk = 0, spark = new SparkMD5();
+
+                                    fileReader.onload = function(e) {
+                                        console.log("read chunk nr", currentChunk + 1, "of", chunks);
+                                        spark.appendBinary(e.target.result);
+                                        currentChunk++;
+
+                                        if (currentChunk < chunks) {
+                                            loadNext();
+                                        } else {
+                                            console.log("finished loading");
+                                            var fileMd5 = spark.end();
+
+                                            restActions.invoke({
+                                                "name": "checkFileExist",
+                                                "async": true,
+                                                "parameter": {"fileMd5":fileMd5},
+                                                "success": function(json){
+                                                    if(json.data.value){
+                                                        var formData2 = new FormData();
+                                                        formData2.append("fileMd5",fileMd5);
+                                                        formData2.append("fileName",file.name);
+                                                        restActions.invoke({
+                                                            "name": "addAttachmentMd5",
+                                                            "async": true,
+                                                            "data": formData2,
+                                                            "parameter": parameter,
+                                                            "success": function(json){
+                                                                current++;
+                                                                if (every) every(json, current, count);
+                                                                callback();
+                                                            },
+                                                            "failure": function (xhr) {
+                                                                var json = JSON.decode(xhr.responseText);
+                                                                if( json && json.message )o2.xDesktop.notice("error", {x: "right", y:"top"}, json.message);
+                                                                current++;
+                                                                hasFailUpload = true;
+                                                                if (failureEvery) failureEvery(xhr, current, count);
+                                                                callback();
+                                                            }
+                                                        });
+                                                    }else{
+                                                        restActions.invoke({
+                                                            "name": invokeUrl,
+                                                            "async": true,
+                                                            "data": formData,
+                                                            "file": file,
+                                                            "parameter": parameter,
+                                                            "success": function(json){
+                                                                current++;
+                                                                if (every) every(json, current, count);
+                                                                callback();
+                                                            },
+                                                            "failure": function (xhr) {
+                                                                var json = JSON.decode(xhr.responseText);
+                                                                if( json && json.message )o2.xDesktop.notice("error", {x: "right", y:"top"}, json.message);
+                                                                current++;
+                                                                hasFailUpload = true;
+                                                                if (failureEvery) failureEvery(xhr, current, count);
+                                                                callback();
+                                                            }
+                                                        });
+                                                    }
+
+                                                }
+                                            });
+                                            // compute hash
+                                        }
+                                    };
+
+                                    function loadNext() {
+                                        var start = currentChunk * chunkSize, end = start + chunkSize >= file.size ? file.size : start + chunkSize;
+
+                                        fileReader.readAsBinaryString(blobSlice.call(file, start, end));
+                                    }
+
+                                    loadNext();
+                                }.bind(this),null,false);
+
+                            }else{
+                                restActions.targetModule = {"module": this, "file": file};
+                                restActions.invoke({
+                                    "name": invokeUrl,
+                                    "async": true,
+                                    "data": formData,
+                                    "file": file,
+                                    "parameter": parameter,
+                                    "success": function(json){
+                                        current++;
+                                        if (every) every(json, current, count);
+                                        callback();
+                                    },
+                                    "failure": function (xhr) {
+                                        var json = JSON.decode(xhr.responseText);
+                                        if( json && json.message )o2.xDesktop.notice("error", {x: "right", y:"top"}, json.message);
+                                        current++;
+                                        hasFailUpload = true;
+                                        if (failureEvery) failureEvery(xhr, current, count);
+                                        callback();
+                                    }
+                                });
+                            }
+
+                        }
+                    }
+                }
+                this.uploadFileAreaNode.destroy();
+                this.uploadFileAreaNode = null;
+            }
+        }.bind(this);
         if (!this.uploadFileAreaNode){
             this.uploadFileAreaNode = new Element("div");
             var html = "<input name=\"file\" multiple type=\"file\" accept=\"*/*\"/>";
             this.uploadFileAreaNode.set("html", html);
 
             this.fileUploadNode = this.uploadFileAreaNode.getFirst();
-            this.fileUploadNode.addEvent("change", function(){
-                var files = this.fileUploadNode.files;
-                if (files.length){
-                    var count = files.length;
-                    var current = 0;
-                    var hasFailUpload = false;
-
-                    var restActions = action;
-                    if (typeOf(action)=="string"){
-                        restActions = o2.Actions.get(action).action;
-                    }
-                    //var url = restActions.action.actions[invokeUri];
-
-                    var callback = function(){
-                        if (current == count){
-                            if(finish) finish( hasFailUpload );
-                        }
-                    };
-
-                    var isContinue = true;
-                    if (beforeUpload) isContinue = beforeUpload(files);
-                    debugger;
-                    if (isContinue){
-                        var accepts = (accept) ? accept.split(o2.splitStr) : null;
-
-                        for (var i = 0; i < files.length; i++) {
-                            var file = files.item(i);
-                            var ext = file.name.substr(file.name.lastIndexOf("."), file.name.length);
-                            ext = ext.toLowerCase();
-                            if (accepts && (accepts.indexOf(ext)===-1 && accepts.indexOf("*")===-1 && accepts.indexOf("*/*")===-1)){
-                                var msg = {
-                                    "subject": o2.LP.widget.refuseUpload,
-                                    "content": o2.LP.widget.refuseUploadHTML.replace("{filename}", file.name)
-                                };
-                                if (layout.desktop.message) layout.desktop.message.addTooltip(msg);
-                                if (layout.desktop.message) layout.desktop.message.addMessage(msg);
-                                var text = o2.LP.widget.refuseUploadNotice.replace("{filename}", file.name);
-                                if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("info", {"x": "right", "y": "top"}, text, this.node);
-                            }else if (size && file.size> size*1024*1024){
-                                var msg = {
-                                    "subject": o2.LP.widget.refuseUpload,
-                                    "content": o2.LP.widget.refuseUploadHTML_size.replace("{filename}", file.name).replace("{size}", size)
-                                };
-                                if (layout.desktop.message) layout.desktop.message.addTooltip(msg);
-                                if (layout.desktop.message) layout.desktop.message.addMessage(msg);
-                                var text = o2.LP.widget.refuseUploadNotice_size.replace("{filename}", file.name).replace("{size}", size);
-                                if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("info", {"x": "right", "y": "top"}, text, this.node);
-                            }else{
-                                var formData = new FormData();
-                                Object.each(obj, function(v, k){
-                                    formData.append(k, v)
-                                });
-                                formData.append('file', file);
-                                if(parameter.fileMd5){
-                                    o2.load("../o2_lib/CryptoJS/components/spark-md5-min.js", function(){
-
-                                        var fileReader = new FileReader(), box = document.getElementById('box');
-                                        var blobSlice = File.prototype.mozSlice || File.prototype.webkitSlice || File.prototype.slice;
-                                        var chunkSize = 20971520;
-                                        // read in chunks of 20MB
-                                        var chunks = Math.ceil(file.size / chunkSize), currentChunk = 0, spark = new SparkMD5();
-
-                                        fileReader.onload = function(e) {
-                                            console.log("read chunk nr", currentChunk + 1, "of", chunks);
-                                            spark.appendBinary(e.target.result);
-                                            currentChunk++;
-
-                                            if (currentChunk < chunks) {
-                                                loadNext();
-                                            } else {
-                                                console.log("finished loading");
-                                                var fileMd5 = spark.end();
-
-                                                restActions.invoke({
-                                                    "name": "checkFileExist",
-                                                    "async": true,
-                                                    "parameter": {"fileMd5":fileMd5},
-                                                    "success": function(json){
-                                                        if(json.data.value){
-                                                            var formData2 = new FormData();
-                                                            formData2.append("fileMd5",fileMd5);
-                                                            formData2.append("fileName",file.name);
-                                                            restActions.invoke({
-                                                                "name": "addAttachmentMd5",
-                                                                "async": true,
-                                                                "data": formData2,
-                                                                "parameter": parameter,
-                                                                "success": function(json){
-                                                                    current++;
-                                                                    if (every) every(json, current, count);
-                                                                    callback();
-                                                                },
-                                                                "failure": function (xhr) {
-                                                                    var json = JSON.decode(xhr.responseText);
-                                                                    if( json && json.message )o2.xDesktop.notice("error", {x: "right", y:"top"}, json.message);
-                                                                    current++;
-                                                                    hasFailUpload = true;
-                                                                    if (failureEvery) failureEvery(xhr, current, count);
-                                                                    callback();
-                                                                }
-                                                            });
-                                                        }else{
-                                                            restActions.invoke({
-                                                                "name": invokeUrl,
-                                                                "async": true,
-                                                                "data": formData,
-                                                                "file": file,
-                                                                "parameter": parameter,
-                                                                "success": function(json){
-                                                                    current++;
-                                                                    if (every) every(json, current, count);
-                                                                    callback();
-                                                                },
-                                                                "failure": function (xhr) {
-                                                                    var json = JSON.decode(xhr.responseText);
-                                                                    if( json && json.message )o2.xDesktop.notice("error", {x: "right", y:"top"}, json.message);
-                                                                    current++;
-                                                                    hasFailUpload = true;
-                                                                    if (failureEvery) failureEvery(xhr, current, count);
-                                                                    callback();
-                                                                }
-                                                            });
-                                                        }
-
-                                                    }
-                                                });
-                                                // compute hash
-                                            }
-                                        };
-
-                                        function loadNext() {
-                                            var start = currentChunk * chunkSize, end = start + chunkSize >= file.size ? file.size : start + chunkSize;
-
-                                            fileReader.readAsBinaryString(blobSlice.call(file, start, end));
-                                        }
-
-                                        loadNext();
-                                    }.bind(this),null,false);
-
-                                }else{
-                                    restActions.targetModule = {"module": this, "file": file};
-                                    restActions.invoke({
-                                        "name": invokeUrl,
-                                        "async": true,
-                                        "data": formData,
-                                        "file": file,
-                                        "parameter": parameter,
-                                        "success": function(json){
-                                            current++;
-                                            if (every) every(json, current, count);
-                                            callback();
-                                        },
-                                        "failure": function (xhr) {
-                                            var json = JSON.decode(xhr.responseText);
-                                            if( json && json.message )o2.xDesktop.notice("error", {x: "right", y:"top"}, json.message);
-                                            current++;
-                                            hasFailUpload = true;
-                                            if (failureEvery) failureEvery(xhr, current, count);
-                                            callback();
-                                        }
-                                    });
-                                }
-
-                            }
-                        }
-                    }
-                    this.uploadFileAreaNode.destroy();
-                    this.uploadFileAreaNode = null;
-                }
-            }.bind(this));
+            this.fileUploadNode.addEvent("change", uploadChange);
         }
         this.fileUploadNode.set("accept", accept || "*/*");
         this.fileUploadNode.set("multiple", (multiple!==false));
-        this.fileUploadNode.click();
+        if (!files || !files.length){
+            this.fileUploadNode.click();
+        }else{
+            uploadChange(files)
+        }
+
     },
 
     addFormDataMessage: function(file){
