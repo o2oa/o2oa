@@ -118,7 +118,7 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
 	        this.addProjectionItem();
         }
 	},
-    checkItemData: function(name, path, type){
+    checkItemData: function(name, path, type, operation){
         if (!name || !path){
             o2.xDesktop.notice("error", {x: "right", y:"top"}, MWF.xApplication.cms.ColumnManager.LP.projectionInputError, this.node);
             return false;
@@ -126,7 +126,14 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
         var count = 0;
         for (var i=0; i<this.data.length; i++){
             if (this.data[i].type===type) count++;
-            if (count>=this.options.maxTypeCount[type]){
+            var flag = false;
+            if( operation === "add" && count>=this.options.maxTypeCount[type]  ){
+                flag = true;
+            }
+            if( operation === "modify" && count>this.options.maxTypeCount[type]  ){
+                flag = true;
+            }
+            if (flag){
                 var txt = MWF.xApplication.cms.ColumnManager.LP.projectionTypeCountError;
                 txt = txt.replace(/{type}/g, type);
                 txt = txt.replace(/{count}/g, this.options.maxTypeCount[type]);
@@ -146,7 +153,7 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
         var path = this.pathInput.get("value");
         var type = this.typeSelect.options[this.typeSelect.selectedIndex].value;
 
-        if (this.checkItemData(name, path, type)){
+        if (this.checkItemData(name, path, type, "modify")){
             this.currentItem.data.name = name;
             this.currentItem.data.path = path;
             this.currentItem.data.type = type;
@@ -161,7 +168,7 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
         var path = this.pathInput.get("value");
         var type = this.typeSelect.options[this.typeSelect.selectedIndex].value;
 
-        if (this.checkItemData(name, path, type)){
+        if (this.checkItemData(name, path, type, "add")){
             var o = { "name": name, "path": path, "type": type };
             this.data.push(o);
             new MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor.Item(o, this);
