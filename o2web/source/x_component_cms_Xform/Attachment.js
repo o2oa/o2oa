@@ -200,7 +200,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             }.bind(this))
         }
     },
-    createUploadFileNode: function () {
+    createUploadFileNode: function (files) {
         var accept = "*";
         if (!this.json.attachmentExtType || (this.json.attachmentExtType.indexOf("other") != -1 && !this.json.attachmentExtOtherType)) {
         } else {
@@ -276,7 +276,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                 var message = this.attachmentController.messageItemList[o.messageId];
                 if( message && message.node )message.node.destroy();
             }
-        }.bind(this));
+        }.bind(this), files);
 
         // this.uploadFileAreaNode = new Element("div");
         // var html = "<input name=\"file\" type=\"file\" multiple/>";
