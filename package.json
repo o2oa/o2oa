@@ -78,6 +78,7 @@
                 "shelljs": "^0.8.4",
                 "single-line-log": "^1.1.2",
                 "targz": "^1.0.1",
-                "tidy-jsdoc-o2": "latest"
+                "tidy-jsdoc-o2": "latest",
+                "ora": "^5.4.1"
         }
 }
