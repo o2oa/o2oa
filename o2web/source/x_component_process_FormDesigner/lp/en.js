@@ -1220,7 +1220,10 @@ MWF.xApplication.process.FormDesigner.LP = {
             "select":"select",
             "displayToolbar":"toolbar",
             "toolbarShow":"show",
-            "toolbarHide":"hide"
+            "toolbarHide":"hide",
+            "displayLeftTree":"leftTree",
+            "leftTreeShow":"show",
+            "leftTreeHide":"hide"
         },
         "tabletWidth": "Tablet Width",
         "tabletHeight": "Tablet Height",
