@@ -35,20 +35,28 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
 		}).inject(this.form.container);
 	},
     _setEditStyle: function(name){ 
-		var options = {
-			"showtoolbar":this.json.smartbidisplaytoolbar||false  //showtoolbar对应SmartBI系统中的参数名
-		};
+		this.BIOptions = {
+			"showtoolbar":this.json.smartbidisplaytoolbar||false,  //showtoolbar对应SmartBI系统中的参数名
+			"showLeftTree":this.json.smartbidisplaylefttree||false //即席查询是否显示左侧树形
+		}
+
+
         if (name=="smartbiresource"){ 
             var value = this.json.smartbiresource||"none"; 
 			if(value =="" || value == "none"){
 				this.setNodeContainer()
 			}else{
-				this.createIframeNode(value,options)
+				this.createIframeNode(value,this.BIOptions)
 			}
         }
 		if(name=="smartbidisplaytoolbar"){
 			if (this.json.smartbiresource && this.json.smartbiresource!=="none"){
-				this.createIframeNode(this.json.smartbiresource,options)
+				this.createIframeNode(this.json.smartbiresource,this.BIOptions)
+			}
+		}
+		if(name=="smartbidisplaylefttree"){
+			if (this.json.smartbiresource && this.json.smartbiresource!=="none"){
+				this.createIframeNode(this.json.smartbiresource,this.BIOptions)
 			}
 		}
     },
@@ -90,6 +98,7 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
 		this.setNodeContainer();
 	},
 	setNodeContainer:function(){
+		
 		this.node.empty();
 		this.nodeContainer = new Element("div",{styles:this.css.nodeContainer}).inject(this.node);
 		this.nodeIcon = new Element("div", {
@@ -101,6 +110,7 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
 		}else{
             var t = new Element("div",{styles:this.css.nodeTxt,text:MWF.APPFD.LP.smartbi.txt}).inject(this.nodeContainer);
             t.setStyles({"color":"#409EFF"});
+
         }
 	}
 });
