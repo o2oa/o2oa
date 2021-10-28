@@ -101,6 +101,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              */
             "afterProcess",
             /**
+             * 加载弹出的提交界面以后执行，this.event指向弹出界面对象。
+             * @event MWF.xApplication.process.Xform.Form#afterLoadProcessor
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterLoadProcessor",
+            /**
              * 重置处理人前触发。
              * @event MWF.xApplication.process.Xform.Form#beforeReset
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -2530,6 +2536,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "tabletHeight": this.json.tabletHeight || 0,
                 "onPostLoad": function () {
                     if (postLoadFun) postLoadFun(this);
+                    _self.fireEvent("afterLoadProcessor", [this]);
                 },
                 "onResize": function () {
                     if (resizeFun) resizeFun();
