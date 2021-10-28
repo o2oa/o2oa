@@ -77,13 +77,13 @@ public class ActionSave extends BaseAction {
 				topUnitName = "xadmin";
 			}
 		}
-		
+
 		if( check ) {
 			if ( StringUtils.isEmpty( identityName ) ) {
 				identityName = wi.getCreatorIdentity();
 			}
 		}
-		
+
 		if( check ) {
 			if ( StringUtils.isEmpty( wi.getAppId() ) ) {
 				check = false;
@@ -91,7 +91,7 @@ public class ActionSave extends BaseAction {
 				result.error(exception);
 			}
 		}
-		
+
 		if ( check && !"xadmin".equals( identityName ) ) {
 			try {
 				unitName = userManagerService.getUnitNameByIdentity(identityName);
@@ -102,7 +102,7 @@ public class ActionSave extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check && !"xadmin".equals( identityName )) {
 			try {
 				topUnitName = userManagerService.getTopUnitNameByIdentity(identityName);
@@ -142,13 +142,13 @@ public class ActionSave extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check) {
 			wi.setCreatorIdentity( identityName );
 			wi.setCreatorPerson( effectivePerson.getDistinguishedName() );
 			wi.setCreatorUnitName(unitName);
 			wi.setCreatorTopUnitName(topUnitName);
-			
+
 			if( StringUtils.equals( "信息", wi.getDocumentType() ) ) {
 				if( wi.getSendNotify() == null ) {
 					if( appInfo.getSendNotify() == null) {
@@ -166,24 +166,25 @@ public class ActionSave extends BaseAction {
 			}
 
 			try {
+				CacheManager.notify(CategoryInfo.class);
 				categoryInfo = categoryInfoServiceAdv.save( wi, wi.getExtContent(), effectivePerson );
 
 				Wo wo = new Wo();
 				wo.setId(categoryInfo.getId());
 				result.setData(wo);
-				
+
 				if( old_categoryInfo != null ) {
-					if( !old_categoryInfo.getCategoryName().equalsIgnoreCase( categoryInfo.getCategoryName() ) || 
+					if( !old_categoryInfo.getCategoryName().equalsIgnoreCase( categoryInfo.getCategoryName() ) ||
 							 !old_categoryInfo.getCategoryAlias().equalsIgnoreCase( categoryInfo.getCategoryAlias() )	) {
 						//修改了分类名称，增加删除栏目批量操作（对分类和文档）的信息
-						new CmsBatchOperationPersistService().addOperation( 
-								CmsBatchOperationProcessService.OPT_OBJ_CATEGORY, 
+						new CmsBatchOperationPersistService().addOperation(
+								CmsBatchOperationProcessService.OPT_OBJ_CATEGORY,
 								CmsBatchOperationProcessService.OPT_TYPE_UPDATENAME,  categoryInfo.getId(), old_categoryInfo.getCategoryName(), "更新分类名称：ID=" + categoryInfo.getId() );
 					}
 					if(  permissionQueryService.hasDiffrentViewPermissionInCategory( old_categoryInfo, categoryInfo )) {
 						//修改了栏目名称或者别名，增加删除栏目批量操作（对分类和文档）的信息
-						new CmsBatchOperationPersistService().addOperation( 
-								CmsBatchOperationProcessService.OPT_OBJ_CATEGORY, 
+						new CmsBatchOperationPersistService().addOperation(
+								CmsBatchOperationProcessService.OPT_OBJ_CATEGORY,
 								CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  categoryInfo.getId(), categoryInfo.getCategoryName(), "变更分类可见权限：ID=" + categoryInfo.getId() );
 					}
 					new LogService().log(null, effectivePerson.getDistinguishedName(), categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName(), categoryInfo.getId(), "", "", "", "CATEGORY", "更新");
@@ -216,7 +217,7 @@ public class ActionSave extends BaseAction {
 
 		@FieldDescribe("用户保存的身份")
 		private String identity = null;
-		
+
 		@FieldDescribe("扩展信息JSON内容")
 		private String extContent = null;
 
