@@ -31,6 +31,15 @@
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.smartbi.displayLeftTree}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFSmartBIDisplayLeftTree" name="smartbidisplaylefttree">
+                        <input type="radio" class="MWFSmartBILeftTree" name="MWFSmartBILeftTree" value="true" text{($.smartbidisplaylefttree)?'checked':''} /> {{$.lp.smartbi.leftTreeShow}}
+                        <input type="radio" class="MWFSmartBILeftTree" name="MWFSmartBILeftTree" value="false" text{(!$.smartbidisplaylefttree)?'checked':''} /> {{$.lp.smartbi.leftTreeHide}}
+                    </div>
+                </td>
+            </tr>
         </table>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
