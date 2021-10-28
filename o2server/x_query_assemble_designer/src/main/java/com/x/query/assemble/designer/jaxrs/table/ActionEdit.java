@@ -62,6 +62,8 @@ class ActionEdit extends BaseAction {
 				table.setData(table.getDraftData());
 			}else{
 				table.setData("");
+				table.setAlias(wi.getAlias());
+				table.setName(wi.getName());
 			}
 			emc.check(table, CheckPersistType.all);
 			emc.commit();
