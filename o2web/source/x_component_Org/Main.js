@@ -181,6 +181,7 @@ MWF.xApplication.Org.Main = new Class({
 	},
     loadPersonImport: function(){
     	var action = o2.Actions.get("x_organization_assemble_control");
+		MWF.require("MWF.widget.MaskNode", null, false);
         var url = o2.filterUrl(action.action.address + action.action.actions.getImportPersonTemplate.uri);
         var infor = this.lp.importPersonInfor.replace("{url}", url);
 
@@ -197,15 +198,26 @@ MWF.xApplication.Org.Main = new Class({
                     "method": "importPerson",
                     "multiple": false,
                     "onCompleted": function(json){
+						if (!this.maskNode){
+							this.maskNode = new MWF.widget.MaskNode(this.importConfiguratorContentNode, {"style": "bam"});
+							this.maskNode.load();
+						}
+
                         var url = o2.filterUrl(action.action.address + action.action.actions.getImportPersonResault.uri);
                         url = url.replace("{flag}", json.data.flag);
                         var result = this.lp.importPersonResult.replace("{url}", url);
                         this.importPersonResultNode.set("html", result);
                         this.importPersonResultNode.show();
+						if (this.maskNode) this.maskNode.hide(function(){
+							MWF.release(this.maskNode);
+							this.maskNode = null;
+						}.bind(this));
+
                     }.bind(this)
                 }).load();
 			}.bind(this));
 		}.bind(this));
+
 
 		var exporturl = o2.filterUrl(o2.Actions.getHost("x_cms_assemble_control") + "/x_organization_assemble_control/jaxrs/export/export/all");
 		this.exportPersonNode.set("text", this.lp.exportPersonText);
