@@ -246,7 +246,7 @@ function download_commons_and_jvm(cb){
     var downloader = new Promise((resolve, reject) => {
         var commonLoaded = false;
         var jvmLoaded = false;
-        downloadFile(commonUrl, "commons_git.tar.gz", (length)=>{
+        downloadFile_progress(commonUrl, "commons_git.tar.gz", (length)=>{
             commonsLength = +length;
             initProgress();
         }, (progress)=>{
@@ -259,7 +259,7 @@ function download_commons_and_jvm(cb){
         // var jvmName = jvmUrl.substr(jvmUrl.lastIndexOf("/"+1, jvmUrl.length));
         // console.log(jvmName);
         // console.log(jvmUrl);
-        downloadFile(jvmUrl, "jvm_git.tar.gz", (length)=>{
+        downloadFile_progress(jvmUrl, "jvm_git.tar.gz", (length)=>{
             jvmLenght = +length;
             initProgress();
         }, (progress)=>{
