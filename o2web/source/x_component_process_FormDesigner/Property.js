@@ -2559,6 +2559,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadSmartBISelect: function(){
         var SmartBINodes = this.propertyContent.getElements(".MWFSmartBISelect");
         var SmartBIToolbarNodes = this.propertyContent.getElements(".MWFSmartBIToolbar");
+        var SmartBILeftTreeNodes = this.propertyContent.getElements(".MWFSmartBILeftTree");
         
         if (SmartBINodes.length){
             var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
@@ -2579,6 +2580,14 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }
         if(SmartBIToolbarNodes.length){
             SmartBIToolbarNodes.addEvent("change",function(e){
+                var value = e.target.get("value");
+                if (value=="false") value = false;
+                if (value=="true") value = true;
+                this.setValue(e.target.getParent("div").get("name"), value);
+            }.bind(this));
+        }
+        if(SmartBILeftTreeNodes.length){
+            SmartBILeftTreeNodes.addEvent("change",function(e){
                 var value = e.target.get("value");
                 if (value=="false") value = false;
                 if (value=="true") value = true;
