@@ -14,6 +14,7 @@ var gulp = require('gulp'),
     changed = require('gulp-changed'),
     gulpif = require('gulp-if'),
     http = require('http');
+    const ora = require('ora');
 concat = require('gulp-concat');
 var fg = require('fast-glob');
 var logger = require('gulp-logger');
@@ -113,12 +114,6 @@ function ProgressBar(description, bar_length){
 function downloadFile_progress(path, filename, headcb, progresscb, cb){
     var dest = `o2server/${filename}`;
 
-    // fs.exists(dest, function(exists) {
-    //     if (exists){
-    //         headcb(1);
-    //         progresscb({transferred:1});
-    //         cb();
-    //     }else{
     let stream = fs.createWriteStream(dest);
     var options = { url:protocol+"://"+downloadHost+path };
     var fileHost = downloadHost;
@@ -130,7 +125,6 @@ function downloadFile_progress(path, filename, headcb, progresscb, cb){
     stream.on('error', (err) => {
         gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), err);
     });
-
     var req = http.request({
         host:fileHost,
         path:filePath,
@@ -155,11 +149,13 @@ function downloadFile_progress(path, filename, headcb, progresscb, cb){
             });
             request.get(options).pipe(str).pipe(stream);
         } else {
-            gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+res.statusCode);
+            downloadFile(path, filename, headcb, progresscb, cb)
+            //gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+res.statusCode);
         }
     })
     req.on('error', (e) => {
-        gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), e);
+        downloadFile(path, filename, headcb, progresscb, cb)
+        //gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), e);
     });
     req.end();
     //    }
@@ -168,57 +164,29 @@ function downloadFile_progress(path, filename, headcb, progresscb, cb){
 function downloadFile(path, filename, headcb, progresscb, cb){
     var dest = `o2server/${filename}`;
 
-    // fs.exists(dest, function(exists) {
-    //     if (exists){
-    //         headcb(1);
-    //         progresscb({transferred:1});
-    //         cb();
-    //     }else{
+    const spinner = ora({
+        'prefixText': 'Downloading '+filename+' ...',
+        'spinner': {
+            interval: 80, // Optional
+            frames: ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏']
+        }
+    }).start();
+
     let stream = fs.createWriteStream(dest);
     var options = { url:protocol+"://"+downloadHost+path };
     var fileHost = downloadHost;
     var filePath =  path;
     stream.on('finish', () => {
         //gutil.log("download", ":", gutil.colors.green(filename), " completed!");
+        spinner.stop();
+        spinner.succeed(filename + ' Downloaded!');
         cb();
     });
     stream.on('error', (err) => {
         gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), err);
     });
 
-    // var req = http.request({
-    //     host:fileHost,
-    //     path:filePath,
-    //     method:'HEAD'
-    // },function (res){
-    //     if (res.statusCode == 200) {
-    //         res.setEncoding(null);
-    //         var time = 0;
-    //         var l = res.headers['content-length'];
-    //         var str = progress({
-    //             length: l,
-    //             time: 100 /* ms */
-    //         });
-    //         headcb(l);
-    //
-    //         str.on('progress', function(progress) {
-    //             if (pb){
-    //                 progresscb(progress);
-    //                 pb.render({ completed: currentLength, total: totalLength, time: time+=100 });
-    //             }
-    //
-    //         });
     request.get(options).pipe(stream);
-    //     } else {
-    //         gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+res.statusCode);
-    //     }
-    // })
-    // req.on('error', (e) => {
-    //     gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), e);
-    // });
-    // req.end();
-    //    }
-    //});
 }
 
 var commonsLength = 0;
