@@ -122,7 +122,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
         if (this.noDataTextNode) this.noDataTextNode.destroy();
         this.loadCurrentPageData(function (json) {
-            if (this.count) {
+            if (this.count || (json.data && json.data.length )) {
                 this.fireEvent("postLoad"); //用户配置的事件
                 this.lookuping = false;
                 if (callback) callback(this);
@@ -174,6 +174,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                     value = "{d '" + value + "'}"
                 } else if (d.formatType === "timeValue") {
                     value = "{t '" + value + "'}"
+                } else if (d.formatType === "numberValue"){
+                    value = parseFloat(value);
                 }
                 this.parameter[parameterName] = value;
             }
