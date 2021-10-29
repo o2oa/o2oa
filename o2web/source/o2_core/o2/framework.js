@@ -1,5 +1,5 @@
 layout.addReady(function(){
-    if (layout.desktop.type!=="layout") layout.app = true;
+    if (layout.desktop.type!=="layout" && layout.desktop.type!=="app") layout.app = true;
     if (!o2.env){
         MWF.require("MWF.xScript.Macro", null, false);
 
@@ -60,5 +60,6 @@ layout.addReady(function(){
             "event": null
         };
         o2.env = new MWF.xScript.PageEnvironment(environment);
+        o2.page = o2.env;
     }
 });
