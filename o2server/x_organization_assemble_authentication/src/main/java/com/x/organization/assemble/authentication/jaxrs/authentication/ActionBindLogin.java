@@ -36,7 +36,7 @@ class ActionBindLogin extends BaseAction {
 				emc.remove(bind);
 				emc.commit();
 				if (Config.token().isInitialManager(bind.getName())) {
-					wo = this.manager(request, response, business, bind.getName(), Wo.class);
+					wo = this.manager(request, response, bind.getName(), Wo.class);
 				} else {
 					String personId = business.person().getWithCredential(bind.getName());
 					if (StringUtils.isNotEmpty(personId)) {
