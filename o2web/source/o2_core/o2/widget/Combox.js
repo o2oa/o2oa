@@ -382,8 +382,17 @@ o2.widget.Combox.Value = new Class({
         if(this.combox.input)this.combox.input.hide();
         this.input.searchItems();
     },
+    isChanged: function(oldValues){
+        var values = (this.combox.values||[]).map(function(v){ return v.data || v.value});
+        if( o2.typeOf(values) !== o2.typeOf(oldValues) )return true;
+        if( values.length !== oldValues.length )return true;
+        for( var i=0; i<values.length; i++ ){
+            if( values[i] !== oldValues[i] )return true;
+        }
+        return false;
+    },
     commitInput: function(data){
-        var oldValues = this.combox.values.map(function(v){ return v.data || v.value});
+        var oldValues = (this.combox.values||[]).map(function(v){ return v.data || v.value});
         var valueStr = this.input.node.get("value");
         if (valueStr){
             var values = valueStr.split(this.combox.splitRegExp);
@@ -420,13 +429,13 @@ o2.widget.Combox.Value = new Class({
                     this.input.hide();
                     this.combox.editItem = null;
                     this.combox.fireEvent("commitInput", [this]);
-                    this.combox.fireEvent("change", [this, oldValues]);
+                    if( !this.isChanged || this.isChanged(oldValues) ) this.combox.fireEvent("change", [this, oldValues]);
                 }else{
                     this.combox.editItem = null;
                     var combox = this.combox;
                     this.input.hideOptionList();
                     this.combox.deleteItem(this);
-                    combox.fireEvent("change", [this, oldValues]);
+                    if( !this.isChanged || this.isChanged(oldValues) )combox.fireEvent("change", [this, oldValues]);
                 }
             }
 
@@ -435,7 +444,7 @@ o2.widget.Combox.Value = new Class({
             var combox = this.combox;
             this.input.hideOptionList();
             this.combox.deleteItem(this);
-            combox.fireEvent("change", [this]);
+            if( !this.isChanged || this.isChanged(oldValues) )combox.fireEvent("change", [this]);
         }
         window.setTimeout(function(){
             // if (this.combox.input){
