@@ -1115,6 +1115,8 @@ function createBaseConcatTask(path, isMin, thisOptions){
         var option = thisOptions || options;
         var src = [
             'source/' + path + '/js/base.js',
+            'source/o2_core/o2/xScript/PageEnvironment.js',
+            'source/o2_core/o2/framework.js',
             'source/' + path + '/js/base_loader.js'
         ];
         var dest = option.dest+'/' + path + '/';
