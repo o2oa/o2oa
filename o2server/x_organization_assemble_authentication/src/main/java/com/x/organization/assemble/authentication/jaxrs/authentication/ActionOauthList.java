@@ -2,6 +2,7 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -33,14 +34,15 @@ class ActionOauthList extends BaseAction {
 					wo.setAuthMethod(o.getAuthMethod());
 					wo.setDisplayName(o.getDisplayName());
 					wo.setBindingEnable(o.getBindingEnable());
-					String authParameter = this.fillAuthParameter(o.getAuthParameter(), o);
+					Map<String, Object> param = oauthCreateParam(o, "", "");
+					String authParameter = this.fillParameter(o.getAuthParameter(), param);
 					logger.debug("auth parameter:{}.", authParameter);
 					wo.setAuthParameter(authParameter);
 					wos.add(wo);
 				}
 			}
 		}
-		//企业微信扫码登录
+		// 企业微信扫码登录
 		if (Config.qiyeweixin().getScanLoginEnable()) {
 			Wo wo = new Wo();
 			wo.setName("企业微信");
@@ -48,7 +50,7 @@ class ActionOauthList extends BaseAction {
 			wo.setIcon(Qiyeweixin.qywxLogo);
 			wos.add(wo);
 		}
-		//钉钉扫码登录
+		// 钉钉扫码登录
 		if (Config.dingding().getScanLoginEnable()) {
 			Wo wo = new Wo();
 			wo.setName("钉钉");
