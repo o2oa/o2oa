@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.project.config.TernaryManagement;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -48,11 +47,11 @@ class ActionWho extends BaseAction {
 			case manager:
 				InitialManager o = Config.token().initialManagerInstance();
 				if (StringUtils.equals(effectivePerson.getDistinguishedName(), o.getName())) {
-					wo = this.manager(null, null, business, o.getName(), Wo.class);
+					wo = this.manager(null, null, o.getName(), Wo.class);
 				} else {
 					Person person = this.getPerson(business, effectivePerson);
 					wo = this.user(null, null, business, person, Wo.class);
-					this.record(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_Client));
+					this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_Client));
 				}
 				wo.setTokenType(TokenType.manager);
 				wo.setToken(effectivePerson.getToken());
@@ -61,11 +60,11 @@ class ActionWho extends BaseAction {
 			case securityManager:
 			case auditManager:
 				if (Config.ternaryManagement().isTernaryManagement(effectivePerson.getName())) {
-					wo = this.manager(null, null, business, effectivePerson.getName(), Wo.class);
+					wo = this.manager(null, null, effectivePerson.getName(), Wo.class);
 				} else {
 					Person person = this.getPerson(business, effectivePerson);
 					wo = this.user(null, null, business, person, Wo.class);
-					this.record(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_Client));
+					this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_Client));
 				}
 				wo.setTokenType(effectivePerson.getTokenType());
 				wo.setToken(effectivePerson.getToken());
@@ -73,7 +72,7 @@ class ActionWho extends BaseAction {
 			case user:
 				Person person = this.getPerson(business, effectivePerson);
 				wo = this.user(null, null, business, person, Wo.class);
-				this.record(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_Client));
+				this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_Client));
 				break;
 			default:
 				break;
@@ -91,7 +90,7 @@ class ActionWho extends BaseAction {
 		return person;
 	}
 
-	private void record(String name, String address, String client) throws Exception {
+	private void recordLogin(String name, String address, String client) throws Exception {
 		WrapInLoginRecord o = new WrapInLoginRecord();
 		o.setAddress(Objects.toString(address, ""));
 		o.setClient(Objects.toString(client, ""));
