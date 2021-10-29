@@ -919,8 +919,10 @@ if (!window.o2) {
             eventList.forEach(function (ev) {
                 var evs = ev.split(/\s*:\s*/);
                 if (evs.length > 1) {
-                    node.addEventListener(evs[0], function (e) {
-                        if (m[evs[1]]) m[evs[1]].apply(m, [e, data]);
+                    var event = evs.shift();
+                    var method = evs.shift();
+                    node.addEventListener(event, function (e) {
+                        if (m[method]) m[method].apply(m, evs.concat([e, data]));
                     }, false);
                 }
             });
