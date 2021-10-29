@@ -41,7 +41,7 @@ class ActionCodeLogin extends BaseAction {
 				if (!Config.token().verifyPassword(credential, codeAnswer)) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
-				wo = this.manager(request, response, business, credential, Wo.class);
+				wo = this.manager(request, response, credential, Wo.class);
 			} else {
 				/* 普通用户登录,也有可能拥有管理员角色 */
 				String id = business.person().getWithCredential(credential);
