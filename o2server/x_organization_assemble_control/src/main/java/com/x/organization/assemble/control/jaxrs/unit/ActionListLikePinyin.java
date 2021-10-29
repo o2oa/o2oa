@@ -140,6 +140,9 @@ class ActionListLikePinyin extends BaseAction {
 		/** 去掉指定范围本身,仅包含下级 */
 		unitIds.removeAll(ListTools.extractProperty(business.unit().pick(wi.getUnitList()), JpaObject.id_FIELDNAME,
 				String.class, true, true));
+		if(unitIds.isEmpty()){
+			return wos;
+		}
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Unit.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
