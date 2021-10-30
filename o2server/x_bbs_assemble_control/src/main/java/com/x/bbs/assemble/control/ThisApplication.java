@@ -53,8 +53,6 @@ public class ThisApplication {
 			context().startQueue(queueNewSubjectNotify);
 			context.schedule(SubjectTotalStatisticTask.class, "0 0 1 * * ?"); // 每天凌晨一点执行
 			context.schedule(UserCountTodaySetZeroTask.class, "0 1 0 * * ?"); // 每天凌晨执行
-			context.schedule(MarketSubjectTypeTask.class, "0 0 1 * * ?"); // 每天凌晨一点执行
-			// context.schedule(MarketSubjectTypeTask.class, "* 0/05 * * * ? "); // 每天凌晨一点执行
 			context.schedule(SubjectReplyTotalStatisticTask.class, "0 40 * * * ?");
 			context.schedule(UserSubjectReplyPermissionStatisticTask.class, "0 0/30 * * * ?");
 		} catch (Exception e) {
