@@ -55,6 +55,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected static final String OAUTH_ACCESSTOKEN = "access_token";
 	protected static final String OAUTH_CLIENTID = "clientId";
+	protected static final String OAUTH_CLIENTSECRET = "clientSecret";
 	protected static final String OAUTH_CODE = "code";
 	protected static final String OAUTH_REDIRECTURI = "redirectUri";
 
@@ -224,6 +225,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		param.put(OAUTH_CLIENTID, oauthClient.getClientId());
 		param.put(OAUTH_CODE, code);
 		param.put(OAUTH_REDIRECTURI, redirectUri);
+		param.put(OAUTH_CLIENTSECRET, oauthClient.getClientSecret());
 		return param;
 	}
 
