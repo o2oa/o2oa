@@ -1071,8 +1071,8 @@ bind.Table = function(name){
     this.listRowSelectWhere = function(where, success, error, async){
         this.action.listRowSelectWhere(this.name, where, success, error, async);
     };
-    this.listRowCountWhere = function(where, success, error, async){
-        this.action.listRowCountWhere(this.name, where, success, error, async);
+    this.rowCountWhere = function(where, success, error, async){
+        this.action.rowCountWhere(this.name, where, success, error, async);
     };
     this.deleteRow = function(id, success, error, async){
         this.action.rowDelete(this.name, id, success, error, async);
