@@ -35,7 +35,7 @@ class ActionOauthBind extends BaseAction {
 		oauthToken(oauthClient, param);
 		oauthCheckAccessToken(param);
 		oauthInfo(oauthClient, param);
-		String credential = Objects.toString(param.get(oauthClient.getInfoCredentialField()));
+		String credential = Objects.toString(param.get(oauthClient.getInfoCredentialField()), "");
 		oauthCheckCredential(credential);
 		logger.debug("credential:{}", credential);
 		Wo wo = new Wo();
