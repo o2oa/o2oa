@@ -54,6 +54,7 @@ var jvmUrls = {
     "arm_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/arm_java11",
     "macos_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/macos_java11",
     "risc_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/risc_java11",
+    "mips_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/mips_java11",
     "raspi_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/raspi_java11",
     "windows_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/windows_java11"
 };
@@ -65,6 +66,7 @@ var scripts = {
     "arm": ["o2server/*arm*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "macos": ["o2server/*macos*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "risc": ["o2server/*risc*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
+    "mips": ["o2server/*mips*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "raspi": ["o2server/*raspi*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "windows": ["o2server/*windows*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"]
 };
@@ -214,7 +216,7 @@ function download_commons_and_jvm(cb){
     var downloader = new Promise((resolve, reject) => {
         var commonLoaded = false;
         var jvmLoaded = false;
-        downloadFile(commonUrl, "commons_git.tar.gz", (length)=>{
+        downloadFile_progress(commonUrl, "commons_git.tar.gz", (length)=>{
             commonsLength = +length;
             initProgress();
         }, (progress)=>{
@@ -227,7 +229,7 @@ function download_commons_and_jvm(cb){
         // var jvmName = jvmUrl.substr(jvmUrl.lastIndexOf("/"+1, jvmUrl.length));
         // console.log(jvmName);
         // console.log(jvmUrl);
-        downloadFile(jvmUrl, "jvm_git.tar.gz", (length)=>{
+        downloadFile_progress(jvmUrl, "jvm_git.tar.gz", (length)=>{
             jvmLenght = +length;
             initProgress();
         }, (progress)=>{
@@ -439,6 +441,8 @@ function build_concat_o2(){
 function build_concat_base(){
     var src = [
         'o2web/source/x_desktop/js/base.js',
+        'o2web/source/o2_core/o2/xScript/PageEnvironment.js',
+        'o2web/source/o2_core/o2/framework.js',
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
