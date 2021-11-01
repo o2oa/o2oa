@@ -1562,42 +1562,70 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     _switchReadOrEditInline: function(){
         if (this.editMode){
             this._readFiletext();
-            if (this.allowEdit){
-                if (!layout.mobile) {
-                    var button = this.sideToolbar.childrenButton[0];
-                    button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
-                    button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
-                    //this.getFullWidthFlagNode().dispose();
-                }
-                button = this.toolbar.childrenButton[0];
-                button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
-                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
-                //this.getFullWidthFlagNode().dispose();
-
-
-                // if (!layout.mobile)this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
-                // this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
-            }
+            // if (this.allowEdit){
+            //     if (!layout.mobile) {
+            //         var button = this.sideToolbar.childrenButton[0];
+            //         button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
+            //         button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
+            //         //this.getFullWidthFlagNode().dispose();
+            //     }
+            //     button = this.toolbar.childrenButton[0];
+            //     button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
+            //     button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
+            //     //this.getFullWidthFlagNode().dispose();
+            //
+            //
+            //     // if (!layout.mobile)this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
+            //     // this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
+            // }
             this.editMode = false;
             //this.form.saveFormData();
         }else{
             this._editFiletext("inline");
             if (this.loadFileTextEditFun) this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
-            if (this.allowEdit){
-                if (!layout.mobile) {
-                    var button = this.sideToolbar.childrenButton[0];
-                    button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted);
-                    button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
-                    //this.toolbar.node.inject(this.getFullWidthFlagNode());
-                }
-                button = this.toolbar.childrenButton[0];
-                button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted);
-                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
-                //this.toolbar.node.inject(this.getFullWidthFlagNode());
-                // if (!layout.mobile) this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
-                // this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
-            }
+            // if (this.allowEdit){
+            //     if (!layout.mobile) {
+            //         var button = this.sideToolbar.childrenButton[0];
+            //         button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted);
+            //         button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
+            //         //this.toolbar.node.inject(this.getFullWidthFlagNode());
+            //     }
+            //     button = this.toolbar.childrenButton[0];
+            //     button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted);
+            //     button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
+            //     //this.toolbar.node.inject(this.getFullWidthFlagNode());
+            //     // if (!layout.mobile) this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
+            //     // this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
+            // }
             this.editMode = true;
+        }
+        this._switchButtonText();
+    },
+    _switchButtonText: function(){
+        var text = (layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc;
+        var img = "editdoc.png";
+        if (this.editMode){
+            text = (layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted;
+            img = "editdoc_completed.png";
+        }
+
+        if (!layout.mobile && this.sideToolbar && this.sideToolbar.childrenButton[0]) {
+            var button = this.sideToolbar.childrenButton[0];
+            button.setText(text);
+            button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/"+img);
+        }
+        if (this.toolbar && this.toolbar.childrenButton[0]){
+            button = this.toolbar.childrenButton[0];
+            button.setText(text);
+            button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/"+img);
+        }
+    },
+    editFiletext: function(){
+        if (!this.editMode && this.allowEdit){
+            this._editFiletext("inline");
+            if (this.loadFileTextEditFun) this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
+            this.editMode = true;
+            //this._switchButtonText();
         }
     },
     // getFullWidthFlagNode: function(){
