@@ -38,7 +38,7 @@ class ActionOauthGet extends BaseAction {
 		wo.setAuthMethod(oauthClient.getAuthMethod());
 		wo.setIcon(oauthClient.getIcon());
 		Map<String, Object> param = oauthCreateParam(oauthClient, "", "");
-		String authParameter =  fillParameter(oauthClient.getAuthParameter(), param);
+		String authParameter = fillParameter(oauthClient.getAuthParameter(), param);
 		logger.debug("auth parameter:{}.", authParameter);
 		wo.setAuthParameter(authParameter);
 		result.setData(wo);

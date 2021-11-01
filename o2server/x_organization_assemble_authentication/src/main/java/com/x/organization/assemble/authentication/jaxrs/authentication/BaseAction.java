@@ -336,7 +336,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Pattern pattern = Pattern.compile("\\{\\$(.+?)\\}");
 		Matcher matcher = pattern.matcher(txt);
 		while (matcher.find()) {
-			txt = StringUtils.replace(txt, matcher.group(), Objects.toString(param.get(matcher.group(1))));
+			Object value = param.get(matcher.group(1));
+			if (null != value) {
+				txt = StringUtils.replace(txt, matcher.group(), Objects.toString(value));
+			}
 		}
 		return txt;
 	}
