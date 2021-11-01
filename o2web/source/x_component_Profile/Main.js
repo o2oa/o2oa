@@ -725,7 +725,7 @@ MWF.xApplication.Profile.Main = new Class({
                 var node = new Element("a", {
                     "class":"mainColor_color",
                     "styles": {"font-size": "14px", "display": "block", "margin-bottom": "10px"},
-                    "text": d.displayName,
+                    "text": d.displayName || d.name,
                     "target": "_blank",
                     "href": "../x_desktop/oauth.html?oauth="+encodeURIComponent(d.name)+"&redirect="+"&method=oauthBind"
                 }).inject(this.ssoConfigAreaNode)
