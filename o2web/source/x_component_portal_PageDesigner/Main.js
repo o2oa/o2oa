@@ -23,7 +23,6 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         "processData": null
 	},
 	onQueryLoad: function(){
-	    debugger;
         this.shortcut = true;
 		if (this.status){
 			this.options.id = this.status.id;
@@ -217,12 +216,12 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 				"V": {"x": 0, "y": 0},
 				"H": {"x": 0, "y": 0}
 			});
-            MWF.require("MWF.widget.ScrollBar", function(){
-                new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
-                    "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
-                });
-            }.bind(this));
 		}
+        MWF.require("MWF.widget.ScrollBar", function(){
+            new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
+                "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
+            });
+        }.bind(this));
 	},
 	initOptions: function(){
 		this.toolsData = null;
