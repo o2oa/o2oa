@@ -41,31 +41,31 @@ public class ExternalDataSource extends ConfigObject {
 
 	@FieldDescribe("是否启用,可以使用切片方式启用多个数据以提高性能,如果启用多个数据库,那么必须是相同类型的,不能混用,且用户名密码必须一致.")
 	private Boolean enable;
-	@FieldDescribe("jdbc连接地址")
+	@FieldDescribe("jdbc连接地址.")
 	private String url;
-	@FieldDescribe("数据库jdbc连接用户名")
+	@FieldDescribe("数据库jdbc连接用户名.")
 	private String username;
-	@FieldDescribe("数据库jdbc连接密码")
+	@FieldDescribe("数据库jdbc连接密码.")
 	private String password;
-	@FieldDescribe("数据库驱动类名")
+	@FieldDescribe("数据库驱动类名.")
 	private String driverClassName;
-	@FieldDescribe("方言")
+	@FieldDescribe("方言类.")
 	private String dictionary;
-	@FieldDescribe("最大使用连接数")
+	@FieldDescribe("最大使用连接数.")
 	private Integer maxTotal;
-	@FieldDescribe("最大空闲连接数")
+	@FieldDescribe("最大空闲连接数.")
 	private Integer maxIdle;
-	@FieldDescribe("启用统计,默认启用")
+	@FieldDescribe("启用统计,默认启用.")
 	private Boolean statEnable;
-	@FieldDescribe("统计方式配置,默认mergeStat")
+	@FieldDescribe("统计方式配置,默认mergeStat.")
 	private String statFilter;
 	@FieldDescribe("执行缓慢sql毫秒数,默认2000毫秒,执行缓慢的sql将被单独记录.")
 	private Integer slowSqlMillis;
-	@FieldDescribe("设置此数据库存储的类,默认情况下存储所有类型,如果需要对每个类进行单独的控制以达到高性能,可以将不同的类存储到不同的节点上提高性能.可以使用通配符*")
+	@FieldDescribe("设置此数据库存储的类,默认情况下存储所有类型,如果需要对每个类进行单独的控制以达到高性能,可以将不同的类存储到不同的节点上提高性能.可以使用通配符*.")
 	private List<String> includes;
-	@FieldDescribe("在此节点上不存储的类,和includes一起设置实际存储的类,可以使用通配符*")
+	@FieldDescribe("在此节点上不存储的类,和includes一起设置实际存储的类,可以使用通配符*.")
 	private List<String> excludes;
-	@FieldDescribe("默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完整的配置为DefaultLevel=WARN, Tool=TRACE, Enhance=TRACE, METADATA=TRACE, Runtime=TRACE, Query=TRACE, DataCache=TRACE, JDBC=TRACE, SQL=TRACE")
+	@FieldDescribe("默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完整的配置为DefaultLevel=WARN, Tool=TRACE, Enhance=TRACE, METADATA=TRACE, Runtime=TRACE, Query=TRACE, DataCache=TRACE, JDBC=TRACE, SQL=TRACE.")
 	private String logLevel = DEFAULT_LOGLEVEL;
 	@FieldDescribe("事务隔离级别:default,none,read-uncommitted,read-committed,repeatable-read,serializable.默认使用default(数据库设置的事务级别).")
 	private String transactionIsolation;
