@@ -121,7 +121,11 @@
                             r = r + "?oauth=" + oauth;
                             if (method) r = r + "&method=" + method;
                             if (redirect) r = r + "&redirect=" + redirect;
-                            p = (p) ? p + "&redirect_uri=" + encodeURIComponent(r) : "&redirect_uri=" + encodeURIComponent(r);
+                            if (p.indexOf("{$redirect_uri}")!==-1){
+                                p = p.replace("{$redirect_uri}", encodeURIComponent(r));
+                            }else{
+                                p = (p) ? p + "&redirect_uri=" + encodeURIComponent(r) : "&redirect_uri=" + encodeURIComponent(r);
+                            }
                             url = (url.indexOf("?" === -1)) ? url + "?" + p : url + "&" + p;
                             window.location = url;
                         }.bind(this));
