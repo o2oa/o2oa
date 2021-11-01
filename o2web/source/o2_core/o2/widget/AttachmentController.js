@@ -764,6 +764,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     },
 
     uploadAttachment: function(e, node, files){
+        debugger;
         if (this.module) this.module.uploadAttachment(e, node, files);
     },
     doUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery, files){
@@ -1099,7 +1100,9 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             this.uploadFileAreaNode.set("html", html);
 
             this.fileUploadNode = this.uploadFileAreaNode.getFirst();
-            this.fileUploadNode.addEvent("change", uploadChange);
+            this.fileUploadNode.addEvent("change", function(){
+                uploadChange();
+            });
         }
         this.fileUploadNode.set("accept", accept || "*/*");
         this.fileUploadNode.set("multiple", (multiple!==false));
