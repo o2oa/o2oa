@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" charset="UTF-8" />
+        <link rel="stylesheet" href="css/mBoxNotice.css" charset="UTF-8" />
+        <link rel="stylesheet" href="css/mBoxTooltip.css" charset="UTF-8" />
+        <title></title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body style="overflow: auto; margin:0px; height: 100%;">
+        <div id="appContent" class="appContent" style="overflow: auto; height:100%; background-color:#EEE">
+            <div id="loaddingArea" style="overflow: hidden;width:0px; height:2px; background-color:#4e82bd; position: absolute; top: 0; z-index: 100"></div>
+        </div>
+
+        <script src="../o2_core/o2.min.js"></script>
+        <script src="../o2_lib/Decimal.js"></script>
+        <script src="js/base.min.js"></script>
+        <script>
+            layout.addReady(function(){
+                var uri = new URI(window.location.href);
+                var url = uri.getData("url");
+
+                var _load = function(){
+                    if (url) {
+                        new URI(url).go();
+                    }
+                };
+
+                if (layout.session && layout.session.user){
+                    _load();
+                }else{
+                    if (layout.sessionPromise){
+                        layout.sessionPromise.then(function(){
+                            _load();
+                        },function(){});
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
