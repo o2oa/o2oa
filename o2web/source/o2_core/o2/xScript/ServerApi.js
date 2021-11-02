@@ -1465,7 +1465,7 @@
  * @param {String} tableName 数据表的id、名称或别名。
  * @return {Object} table对象
  * @o2syntax
- * //您可以在页面、表单、流程各个嵌入脚本中，通过this.Table()来返回Table的对象，如下：
+ * //您可以在脚本中，通过this.Table()来返回Table的对象，如下：
  * var table = new this.Table( tableName )
  */
 

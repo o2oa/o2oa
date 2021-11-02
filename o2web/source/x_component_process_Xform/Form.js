@@ -2339,10 +2339,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.submitFormModule = new MWF["APPSubmitform"](submitFormContainer, this.json, this);
             this.submitFormModule.addEvent("afterModulesLoad", function () {
                 this.submitFormModule.show();
+                this.fireEvent("afterLoadProcessor", [this.submitFormModule]);
             }.bind(this))
             this.submitFormModule.load();
         } else {
             this.submitFormModule.show();
+            this.fireEvent("afterLoadProcessor", [this.submitFormModule]);
         }
     },
     processWork_pc: function () {
