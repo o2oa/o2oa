@@ -77,7 +77,7 @@
 
                         }.bind(this), function(){
                             document.write("<div style='text-align: center; font-size: 24px; margin: 40px auto;'>无法获取用户凭证, 您可能未绑定“"+oauth+"”账号。</div>");
-                            document.write("<div style='text-align: center; font-size: 18px; margin: 40px auto;'>请<a href='/x_desktop/redirect.html?url="+encodeURIComponent("../x_desktop/oauth.html?oauth="+oauth+"&redirect=&method=oauthBind")+"'>点击此处登陆</a>后，重新扫码绑定账号。</div>")
+                            document.write("<div style='text-align: center; font-size: 18px; margin: 40px auto;'>请<a href='/x_desktop/redirect.html?url="+encodeURIComponent("../x_desktop/oauth.html?oauth="+oauth+"&redirect=/&method=oauthBind")+"'>点击此处登陆</a>后，重新扫码绑定账号。</div>")
                         });
                     }
 
