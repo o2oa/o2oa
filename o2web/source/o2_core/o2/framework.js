@@ -49,17 +49,50 @@ layout.addReady(function(){
             },
             addEvent: function(){}
         };
-        var environment = {
-            "form": page,
-            "forms": page.forms,
-            "all": page.all,
-            "data": page.businessData.data,
-            "status": page.businessData.status,
-            "pageInfor": page.businessData.pageInfor,
-            "target": null,
-            "event": null
-        };
-        o2.env = new MWF.xScript.PageEnvironment(environment);
-        o2.page = o2.env;
+
+        function createEnvironment(page){
+            var environment = {
+                "form": page,
+                "forms": page.forms,
+                "all": page.all,
+                "data": page.businessData.data,
+                "status": page.businessData.status,
+                "pageInfor": page.businessData.pageInfor,
+                "target": null,
+                "event": null
+            };
+            return new MWF.xScript.PageEnvironment(environment);
+        }
+        o2.env = createEnvironment(page);
+        o2.apis = {};
+
+        o2.defineProperties(o2, {
+            "api": {"get": function(){
+                var app = layout.desktop.currentApp || layout.app;
+                if (app){
+                    if (app.options && app.options.appId && o2.apis[app.options.appId]) return o2.apis[app.options.appId];
+                    var tmpApp = page.app;
+                    page.app = app;
+                    page.app.toPortal = tmpApp.toPortal;
+                    var api = createEnvironment(page);
+                    o2.apis[app.options.appId] = api;
+                    return api;
+                }
+                return o2.env;
+            }}
+        });
+
+        o2.getApi = function(app){
+            if (app){
+                if (app.options && app.options.appId && o2.apis[app.options.appId]) return o2.apis[app.options.appId];
+                var tmpApp = page.app;
+                page.app = app;
+                page.app.toPortal = tmpApp.toPortal;
+                var api = createEnvironment(page);
+                o2.apis[app.options.appId] = api;
+                return api;
+            }
+            return o2.env;
+        }
     }
 });
