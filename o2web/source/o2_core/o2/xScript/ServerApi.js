@@ -1868,3 +1868,28 @@
  *
  * return "SELECT o FROM com.x.processplatform.core.entity.content.Task o WHERE "+sql
  */
+
+/**
+ * this.print是一个方法，在服务器控制台输出信息。<br/>
+ * @module print()
+ * @o2category server
+ * @o2ordernumber 145
+ *
+ * @param {(String)} text 要输出的文本信息。</b>
+ * @param {(type)} type 要输出的文本信息的类型，会添加到输出信息的前面，默认为“PRINT”。</b>
+ * @example
+ * this.print("这是我要输出的信息");
+ * this.print("这是一个错误信息信息", "ERROR");
+ */
+/**
+ * this.print是一个方法，在服务器控制台输出信息。<br/>
+ * @module print()
+ * @o2category server
+ * @o2ordernumber 145
+ *
+ * @param {(String)} text 要输出的文本信息。</b>
+ * @param {(type)} type 要输出的文本信息的类型，会添加到输出信息的前面，默认为“PRINT”。</b>
+ * @example
+ * this.print("这是我要输出的信息");
+ * this.print("这是一个错误信息信息", "ERROR");
+ */
