@@ -377,7 +377,7 @@
     },
     "explorerContentListEditInputNode": {
         "height": "22px",
-        "width": "99%",
+        "width": "95%",
         "line-height": "22px",
         "border": "1px solid #666666",
         "margin-top": "0px",
@@ -386,7 +386,7 @@
     },
     "explorerContentListEditMapNode": {
         "height": "140px",
-        "width": "99%",
+        "width": "95%",
         "margin-top": "0px",
         "border": "0px solid #666666"
     },
