@@ -4408,6 +4408,36 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     layout.app.$openWithSelf = true;
                 }
             }
+            if (!app || !process){
+                var cmpt = this.getApp();
+                o2.requireApp([["process.TaskCenter", "lp."+o2.language], ["process.TaskCenter", ""]],"", ()=>{
+                    var obj = {
+                        "lp": o2.xApplication.process.TaskCenter.LP,
+                        "content": cmpt.content,
+                        "addEvent": function(type, fun){
+                            cmpt.addEvent(type, fun);
+                        },
+                        "getAction": function (callback) {
+                            if (!this.action) {
+                                this.action = o2.Actions.get("x_processplatform_assemble_surface");
+                                if (callback) callback();
+                            } else {
+                                if (callback) callback();
+                            }
+                        },
+                        "desktop": layout.desktop,
+                        "refreshAll": function(){},
+                        "notice": cmpt.notice,
+                    }
+                    o2.JSON.get("../x_component_process_TaskCenter/$Main/default/css.wcss", function(data){
+                        obj.css = data;
+                    }, false);
+
+                    if (!cmpt.processStarter) cmpt.processStarter = new o2.xApplication.process.TaskCenter.Starter(obj);
+                    cmpt.processStarter.load();
+                }, true, true);
+                return "";
+            }
             var action = MWF.Actions.get("x_processplatform_assemble_surface").getProcessByName(process, app, function (json) {
                 if (json.data) {
                     MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function () {
