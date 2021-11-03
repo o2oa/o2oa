@@ -78,6 +78,8 @@ public class ResourceFactory {
 			containerEntities(cl, sr);
 			containerEntityNames(sr);
 			stroageContainerEntityNames(sr);
+			disableDruidMysqlUsePingMethod();
+
 		}
 		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();
@@ -86,6 +88,18 @@ public class ResourceFactory {
 		}
 		processPlatformExecutors();
 		tokenThresholds();
+	}
+
+	/**
+	 * 使用mysql连接服务器端提醒WARN,是由于druid是使用了mysql ping 检测连接导致的 druid 1.2.2版本以上有这个问题.
+	 * 2021-11-03 15:51:23.398 [com.x.program.center.LogQueue] WARN
+	 * com.alibaba.druid.pool.DruidAbstractDataSource - discard long time none
+	 * received connection. , jdbcUrl :
+	 * jdbc:mysql://127.0.0.1:3306/X?autoReconnect=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8,
+	 * version : 1.2.5, lastPacketReceivedIdleMillis : 119991
+	 */
+	private static void disableDruidMysqlUsePingMethod() {
+		System.setProperty("druid.mysql.usePingMethod", "false");
 	}
 
 	/**
