@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.x.base.core.project.logger.Audit;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -59,6 +60,7 @@ public class V2Reset extends BaseAction {
 	private EffectivePerson effectivePerson;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		Audit audit = logger.audit(effectivePerson);
 		ActionResult<Wo> result = new ActionResult<>();
 		this.wi = this.convertToWrapIn(jsonElement, Wi.class);
 		this.effectivePerson = effectivePerson;
@@ -131,6 +133,7 @@ public class V2Reset extends BaseAction {
 		}
 
 		this.updateTask();
+		audit.log(null, "重置处理人");
 		Wo wo = Wo.copier.copy(record);
 		result.setData(wo);
 		return result;

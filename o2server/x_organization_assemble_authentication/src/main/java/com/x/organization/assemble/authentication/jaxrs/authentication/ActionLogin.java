@@ -3,6 +3,7 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.tools.LdapTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,7 @@ class ActionLogin extends BaseAction {
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -72,6 +74,7 @@ class ActionLogin extends BaseAction {
 					}
 				}
 				wo = this.user(request, response, business, o, Wo.class);
+				audit.log(o.getDistinguishedName(), "登录");
 			}
 			result.setData(wo);
 			return result;

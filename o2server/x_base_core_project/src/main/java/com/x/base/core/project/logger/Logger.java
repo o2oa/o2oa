@@ -297,4 +297,10 @@ public class Logger {
 		return result;
 	}
 
+	public Audit audit(EffectivePerson effectivePerson) {
+		Audit o = new Audit(effectivePerson.getDistinguishedName(), effectivePerson.getRemoteAddress(),
+				effectivePerson.getUri(), effectivePerson.getUserAgent(), this.name);
+		return o;
+	}
+
 }

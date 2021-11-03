@@ -7,6 +7,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.http.TokenType;
+import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
@@ -16,6 +17,7 @@ class ActionLogout extends BaseAction {
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson)
 			throws Exception {
+		Audit audit = logger.audit(effectivePerson);
 		ActionResult<Wo> result = new ActionResult<>();
 		HttpToken httpToken = new HttpToken();
 		httpToken.deleteToken(request, response);
@@ -23,6 +25,7 @@ class ActionLogout extends BaseAction {
 		wo.setTokenType(TokenType.anonymous);
 		wo.setName(EffectivePerson.ANONYMOUS);
 		result.setData(wo);
+		audit.log(null, "注销");
 		return result;
 	}
 

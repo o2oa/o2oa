@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.x.base.core.project.logger.Audit;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +57,7 @@ class V2Reroute extends BaseAction {
 	private Wi wi;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		Audit audit = logger.audit(effectivePerson);
 		this.effectivePerson = effectivePerson;
 		wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
@@ -86,6 +88,7 @@ class V2Reroute extends BaseAction {
 		reroute();
 		processing();
 		record();
+		audit.log(null, "工作调度");
 		Wo wo = Wo.copier.copy(record);
 		result.setData(wo);
 		return result;
