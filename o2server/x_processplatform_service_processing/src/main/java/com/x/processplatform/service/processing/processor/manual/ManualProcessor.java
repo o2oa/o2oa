@@ -378,7 +378,8 @@ public class ManualProcessor extends AbstractManualProcessor {
 //			// 进行默认的策略,选择占比多的
 //			result = maxCountOrLatest(list);
 //		}
-		//已经开始选择路由,如果选择了soleDirect那么就直接返回了,如果没有选择这个路由在进行sole的判断,顺序是 soleDirct -> sole -> max.
+		// 已经开始选择路由,如果选择了soleDirect那么就直接返回了,如果没有选择这个路由在进行sole的判断,顺序是 soleDirct -> sole
+		// -> max.
 		Route soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSoleDirect())).findFirst().orElse(null);
 		if ((null != soleRoute) && names.contains(soleRoute.getName())) {
 			result = soleRoute.getName();
@@ -401,7 +402,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 	private String maxCountOrLatest(List<TaskCompleted> list) {
 		Map<String, List<TaskCompleted>> map = list.stream()
 				.collect(Collectors.groupingBy(TaskCompleted::getRouteName));
-		Optional<Entry<String, List<TaskCompleted>>> optional = map.entrySet().stream().sorted((o1, o2) -> {
+		Optional<Entry<String, List<TaskCompleted>>> optional = map.entrySet().stream().min((o1, o2) -> {
 			int c = o2.getValue().size() - o1.getValue().size();
 			if (c == 0) {
 				Date d1 = o1.getValue().stream().sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed())
@@ -412,7 +413,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			} else {
 				return c;
 			}
-		}).findFirst();
+		});
 		return optional.isPresent() ? optional.get().getKey() : null;
 	}
 
