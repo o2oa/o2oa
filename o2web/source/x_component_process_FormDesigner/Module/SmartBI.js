@@ -24,7 +24,7 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
     	
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
-			"MWFType": "div",
+			"MWFType": "SmartBI",
 			"id": this.json.id,
 			"styles": this.css.moduleNodeMove,
 			"events": {
