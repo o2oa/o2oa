@@ -126,18 +126,21 @@
         <div class="MWFStatementFilter">
             <div class="inputAreaNode_vf">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable restrictViewFilterTable_vf" style="table-layout: fixed;">
-                    <tr id="text{$.id}pathInputSelectTr">
+                    <tr class="parameterInputTr" style="display: none">
+                        <td class="editTableTitle">{{$.lp.parameter}}:</td>
+                        <td class="editTableValue">
+                            <input type="text" class="editTableInput parameterInput_vf"/>
+                            <div style="line-height: 20px;color:#999;">{{$.lp.parameterNote}}</div>
+                        </td>
+                    </tr>
+                    <tr class="filterListInputTr" id="text{$.id}pathInputSelectTr">
 						<td class="editTableTitle">{{$.lp.select}}:</td>
 						<td class="editTableValue">
 							<select class="pathInputSelect_vf"></select>
 							<!--                            <div style="line-height: 20px;color:#999;">注：选择路径后，需在选择的值前面加上"表别名."，如：o.</div>-->
 						</td>
 					</tr>
-                    <tr style="display:none">
-                        <td class="editTableTitle">{{$.lp.subject}}:</td>
-                        <td class="editTableValue"><input type="text" class="editTableInput titleInput_vf"/></td>
-                    </tr>
-                    <tr>
+                    <tr class="filterListInputTr">
                         <td class="editTableTitle">{{$.lp.path}}:</td>
                         <td class="editTableValue">
                             <input type="text" class="editTableInput pathInput_vf"/>
@@ -153,24 +156,7 @@
                             <option value="booleanValue">{{$.lp.boolean}}</option>
                         </select></td>
                     </tr>
-                    <tr style="display:none">
-                        <td class="editTableTitle"></td>
-                        <td class="editTableValue">
-                            <input type="radio" class="restrictFilterInput_vf" value="restrict" name="text{$.id}viewFilterType" checked/>{{$.lp.asDefaultFilter}}<br>
-                            <input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType"/>{{$.lp.asCustomFilter}}
-                        </td>
-                    </tr>
-                </table>
-                <table id="text{$.pid}viewFilterRestrict" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                    <tr style="display:none;">
-                        <td class="editTableTitle">{{$.lp.logic}}:</td>
-                        <td class="editTableValue"><select class="logicInput_vf">
-                            <option selected value="and">{{$.lp.and}}</option>
-                            <option value="or">{{$.lp.or}}</option>
-                        </select></td>
-                    </tr>
-
-                    <tr>
+                    <tr class="filterListInputTr">
                         <td class="editTableTitle">{{$.lp.compare}}:</td>
                         <td class="editTableValue"><select class="comparisonInput_vf">
                             <option value="equals" selected>{{$.lp.equals}}(==)</option>
@@ -182,6 +168,17 @@
                             <option value="like">{{$.lp.like}}(like)</option>
                             <option value="notLike">{{$.lp.notLike}}(not-like)</option>
                             <option value="range">{{$.lp.range}}(range)</option>
+                        </select></td>
+                    </tr>
+					<tr style="display:none">
+                        <td class="editTableTitle">{{$.lp.subject}}:</td>
+                        <td class="editTableValue"><input type="text" class="editTableInput titleInput_vf"/></td>
+                    </tr>
+                    <tr style="display:none;">
+                        <td class="editTableTitle">{{$.lp.logic}}:</td>
+                        <td class="editTableValue"><select class="logicInput_vf">
+                            <option selected value="and">{{$.lp.and}}</option>
+                            <option value="or">{{$.lp.or}}</option>
                         </select></td>
                     </tr>
                     <tr style="display:none">
@@ -199,13 +196,28 @@
                         </td>
                     </tr>
                 </table>
+                <table id="text{$.pid}viewFilterRestrict" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <td class="editTableTitle"></td>
+                    <td class="editTableValue">
+                        <input type="radio" class="restrictFilterInput_vf" value="restrict" name="text{$.id}viewFilterType" checked onclick="if (this.checked){
+                                debugger;
+                                this.getParent('.inputAreaNode_vf').getElements('tr.parameterInputTr').hide();
+                                this.getParent('.inputAreaNode_vf').getElements('tr.filterListInputTr').setStyle('display','');
+                            }"/>通过路径添加默认条件<br>
+                        <input type="radio" class="restrictParameterInput_form_vf" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){
+                                debugger;
+                                this.getParent('.inputAreaNode_vf').getElements('tr.parameterInputTr').setStyle('display','');
+                                this.getParent('.inputAreaNode_vf').getElements('tr.filterListInputTr').hide();
+                            }"/>通过参数添加默认条件
+                    </td>
+                </table>
                 <div title="{{$.lp.value}}" class="MWFFilterFormulaArea"></div>
             </div>
             <div class="actionAreaNode_vf"></div>
-            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">{{$.lp.defaultFilter}}</div>
+            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">路径默认条件</div>
             <div class="filterListAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
-<!--            <div style="display:none; height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">自定义过滤数据</div>-->
-<!--            <div class="fieldListAreaNode_vf" style="display:none; min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>-->
+            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">参数默认条件</div>
+            <div class="parameterListAreaNode_form_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
         </div>
     </div>
 

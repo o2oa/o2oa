@@ -555,6 +555,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "onChange": function(ids){
                         var data = this.getData();
                         _slef.changeJsonDate(["filterList"], data.filterData);
+                        _slef.changeJsonDate(["parameterList"], data.parameterData);
                         //_slef.changeJsonDate(["data", "customFilterEntryList"], data.customData);
                     }
                 });
