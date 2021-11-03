@@ -23,22 +23,9 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              * @example
              * //触发该事件的时候可以获取到流程数据workLog
-             * var workLog = this.target.workLog;
-             * //可以修改workLog达到定制化流程记录的效果
+             * var readLog = this.target.readLog;
+             * //可以修改readLog达到定制化流程记录的效果
              * do something
-             */
-            /**
-             * 加载每行流程信息以后触发，可以通过this.event获得下列信息：
-             * <pre><code>
-             {
-            "data" : {}, //当前行流程信息
-            "node" : logTaskNode, //当前节点
-            "log" : object, //指向流程记录
-            "type" : "task"  //"task"表示待办，"taskCompleted"表示已办
-        }
-             </code></pre>
-             * @event MWF.xApplication.process.Xform.Log#postLoadLine
-             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
             "moduleEvents": ["load", "queryLoad", "postLoad", "postLoadData", "postLoadLine"]
         },
@@ -91,7 +78,7 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
         },
         loadReadLogByScript: function(){
             if (this.json.displayScript && this.json.displayScript.code){
-                var code = this.json.displayScript.code
+                var code = this.json.displayScript.code;
                 this.readLog.each(function(log){
                     this.form.Macro.environment.log = log;
                     this.form.Macro.environment.list = null;
@@ -115,7 +102,7 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
                     var div = new Element("div", {styles: this.form.css[this.lineClass]}).inject(this.node);
                     var leftDiv = new Element("div", {styles: this.form.css.logTaskIconNode_record}).inject(div);
                     var rightDiv = new Element("div", {styles: this.form.css.logTaskTextNode}).inject(div);
-                    var html = text.replace(/{person}/g, o2.name.cn(log.person))
+                    var html = text.replace(/{person}/g, o2.name.cn(log.person || ""))
                         .replace(/{datetime}/g, log.completedTime)
                         .replace(/{date}/g, log.completedTime.substring(0.10))
                         .replace(/{startDatetime}/g, log.startTime)
@@ -125,8 +112,8 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
                         .replace(/{department}/g, o2.name.cn(log.unit))
                         .replace(/{identity}/g, o2.name.cn(log.identity))
                         .replace(/{activity}/g, o2.name.cn(log.activityName))
-                        .replace(/{title}/g, log.title)
-                        .replace(/{opinion}/g, log.opinion);
+                        .replace(/{title}/g, log.title || "")
+                        .replace(/{opinion}/g, log.opinion || "");
                     rightDiv.appendHTML(html);
 
                     if (this.lineClass === "logTaskNode"){
