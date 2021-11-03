@@ -40,7 +40,6 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
 			"showLeftTree":this.json.smartbidisplaylefttree||false //即席查询是否显示左侧树形
 		}
 
-
         if (name=="smartbiresource"){ 
             var value = this.json.smartbiresource||"none"; 
 			if(value =="" || value == "none"){
