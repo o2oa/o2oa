@@ -154,6 +154,7 @@ o2.widget.ScriptArea = new Class({
 
     },
     bind: function(content){
+        if( o2.typeOf(content) !== "object" )return;
         this.value = content.code;
         this.html = content.code;
         if (content.editors){
