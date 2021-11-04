@@ -54,13 +54,13 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">高度</td>
+                    <td class="editTableTitle">{{$.lp.height}}</td>
                     <td class="editTableValue">
                         <input type="text" name="DialogHeight" value="text{$.DialogHeight}" class="editTableInput"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">宽度</td>
+                    <td class="editTableTitle">{{$.lp.width}}</td>
                     <td class="editTableValue">
                         <input type="text" name="DialogWidth" value="text{$.DialogWidth}" class="editTableInput"/>
                     </td>
@@ -214,9 +214,9 @@
                 <div title="{{$.lp.value}}" class="MWFFilterFormulaArea"></div>
             </div>
             <div class="actionAreaNode_vf"></div>
-            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">路径默认条件</div>
+            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">{{$.lp.pathConditions}}</div>
             <div class="filterListAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
-            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">参数默认条件</div>
+            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">{{$.lp.parameterConditions}}}</div>
             <div class="parameterListAreaNode_form_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
         </div>
     </div>

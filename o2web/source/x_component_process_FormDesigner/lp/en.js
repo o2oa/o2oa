@@ -1141,6 +1141,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showZero": "Show Zero",
         "showNullString": "Show an empty string",
         "centerServer": "Center service",
+        "pathConditions": "Path default conditions",
+        "parameterConditions": "Parameter default conditions",
+        "addDefaultConditionByPath": "Add default condition by path",
+        "addDefaultConditionByParameter": "Add default condition by parameter",
         "wps" : {
             "config":"Config",
             "options" : "options",

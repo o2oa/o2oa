@@ -50,14 +50,18 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }
     },
     loadData: function () {
-        if (this.filtrData.parameterData && this.filtrData.parameterData.length && this.parameterListAreaNode) {
+        if (this.filtrData.parameterData && this.filtrData.parameterData.length ) {
             this.filtrData.parameterData.each(function (data) {
                 if( this.options.withForm ){
-                    data.type = "parameter_form";
-                    this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameterForm(this, data));
+                    if( this.parameterListAreaNode_form ){
+                        data.type = "parameter_form";
+                        this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameterForm(this, data));
+                    }
                 }else{
-                    data.type = "parameter";
-                    this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameter(this, data));
+                    if( this.parameterListAreaNode ){
+                        data.type = "parameter";
+                        this.items.push(new MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameter(this, data));
+                    }
                 }
             }.bind(this));
         }
@@ -83,6 +87,9 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         MWF.require("MWF.widget.ScriptArea", function () {
             this.scriptArea = new MWF.widget.ScriptArea(node, {
                 "title": title,
+                "isload": true,
+                "isbind": false,
+                "forceType": "ace",
                 "maxObj": this.app.formContentNode || this.app.pageContentNode,
                 "onChange": function () {
                     this.scriptData = this.scriptArea.toJson();
@@ -104,6 +111,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 "title": title,
                 "isload": true,
                 "isbind": false,
+                "forceType": "ace",
                 "maxObj": this.app.formContentNode || this.app.pageContentNode,
                 "onChange": function () {
                     this.parameterValueScriptData = this.parameterValueScriptArea.toJson();
@@ -125,6 +133,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 "title": title,
                 "isload": true,
                 "isbind": false,
+                "forceType": "ace",
                 "maxObj": this.app.formContentNode || this.app.pageContentNode,
                 "onChange": function () {
                     this.customFilterValueScriptData = this.customFilterValueScriptArea.toJson();
