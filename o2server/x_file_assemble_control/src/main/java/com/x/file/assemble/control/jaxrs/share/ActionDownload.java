@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -25,6 +26,8 @@ import com.x.file.core.entity.personal.Share;
 
 class ActionDownload extends BaseAction {
 
+	private static final int CACHE_SIZE = 1024 * 1024 * 10;
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String shareId, String fileId, String password) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
@@ -37,16 +40,16 @@ class ActionDownload extends BaseAction {
 			}
 			/* 判断当前用户是否有权限访问该文件 */
 			if(!effectivePerson.isManager() && !StringUtils.equals(effectivePerson.getDistinguishedName(), share.getPerson())) {
-				if (!"password".equals(share.getShareType())) {
+				if (!Share.SHARE_TYPE_PASSWORD.equals(share.getShareType())) {
 					if (!hasPermission(business, effectivePerson, share)) {
 						throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 					}
 				} else {
 					if (StringUtils.isEmpty(password)) {
-						throw new Exception("password can not be empty.");
+						throw new ExceptionFieldEmpty(Share.password_FIELDNAME);
 					}
 					if (!password.equalsIgnoreCase(share.getPassword())) {
-						throw new Exception("invalid password.");
+						throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 					}
 				}
 			}
@@ -81,7 +84,7 @@ class ActionDownload extends BaseAction {
 						/**
 						 * 对10M以下的文件进行缓存
 						 */
-						if (bs.length < (1024 * 1024 * 10)) {
+						if (bs.length < CACHE_SIZE) {
 							CacheManager.put(cacheCategory, cacheKey, wo);
 						}
 					}
