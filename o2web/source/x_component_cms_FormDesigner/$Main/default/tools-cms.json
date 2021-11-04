@@ -1,0 +1,37 @@
+{
+  "reader": {
+    "icon": "readerfield.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.reader,
+    "className": "Reader"
+  },
+  "author": {
+    "icon": "authorfield.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.author,
+    "className": "Author"
+  },
+  "Actionbar": {
+    "icon": "actionbar.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.Actionbar,
+    "className": "Actionbar"
+  },
+  "attachment": {
+    "icon": "attachment.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.attachment,
+    "className": "Attachment"
+  },
+  "subform": {
+    "icon": "subform.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.subform,
+    "className": "Subform"
+  },
+  "log": {
+    "icon": "log.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.log,
+    "className": "Log"
+  },
+  "comment": {
+    "icon": "comment.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.comment,
+    "className": "Comment"
+  }
+}
