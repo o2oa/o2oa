@@ -979,8 +979,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         var flag = true;
         //flag = this.validation();
         Object.each(this.forms, function (field, key) {
-            field.validationMode();
-            if (!field.validation(status)) {
+            if (field.validationMode)field.validationMode();
+            if (field.validation && !field.validation(status)) {
                 flag = false;
             }
         }.bind(this));
