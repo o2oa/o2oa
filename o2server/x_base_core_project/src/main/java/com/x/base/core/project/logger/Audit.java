@@ -98,9 +98,11 @@ public class Audit {
 				String system = Objects.toString(Config.logLevel().audit().getSystem(), "OA");
 				String systemName = Objects.toString(Config.logLevel().audit().getSystemName(), "OA系统");
 				String extend1 = Objects.toString(Config.logLevel().audit().getExtend1(), "");
+				PrintStream stream = (PrintStream) Config.resource(Config.RESOURCE_AUDITLOGPRINTSTREAM);
 				String auditLog = String.format("%tF %tT|2.0||1||%s|%s|%s|%s|%s||%s|true|%s|%d|%d|true|%s|%s|%s|%s|%s||", end, end, this.userId,
 						this.userId, systemName, system, this.uri, op, this.getParameter(op, system, extend1), end.getTime(), elapsed, hostAddress, hostName,
 						getTerminal(), this.remoteAddress, this.userAgent);
+				stream.println(auditLog);
 
 				HashMap<String, String> map = new HashMap<>();
 				map.put("auditLog", auditLog);

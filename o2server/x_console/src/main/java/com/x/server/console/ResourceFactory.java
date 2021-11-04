@@ -1,6 +1,7 @@
 package com.x.server.console;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.naming.NamingException;
 
+import com.x.base.core.project.tools.*;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
@@ -40,15 +42,12 @@ import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.ExternalDataSource;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ClassLoaderTools;
-import com.x.base.core.project.tools.JarTools;
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.PathTools;
 import com.x.server.console.node.EventQueueExecutor;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
+import org.eclipse.jetty.util.RolloverFileOutputStream;
 
 public class ResourceFactory {
 
@@ -67,6 +66,9 @@ public class ResourceFactory {
 			containerEntities(cl, sr);
 			containerEntityNames(cl, sr);
 			stroageContainerEntityNames(cl, sr);
+		}
+		if (BooleanUtils.isTrue(Config.logLevel().audit().enable())) {
+			auditLog();
 		}
 		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();
@@ -205,13 +207,13 @@ public class ResourceFactory {
 		}
 	}
 
-//	private static void auditLog() throws Exception {
-//		RolloverFileOutputStream rolloverFileOutputStream = new RolloverFileOutputStream(
-//				Config.dir_logs(true).getAbsolutePath() + "/yyyy_mm_dd.audit.log", true,
-//				Config.logLevel().audit().logSize());
-//		new Resource(Config.RESOURCE_AUDITLOGPRINTSTREAM,
-//				new PrintStream(rolloverFileOutputStream, true, DefaultCharset.name_iso_utf_8));
-//	}
+	private static void auditLog() throws Exception {
+		RolloverFileOutputStream rolloverFileOutputStream = new RolloverFileOutputStream(
+				Config.dir_logs(true).getAbsolutePath() + "/yyyy_mm_dd.audit.log", true,
+				Config.logLevel().audit().logSize());
+		new Resource(Config.RESOURCE_AUDITLOGPRINTSTREAM,
+				new PrintStream(rolloverFileOutputStream, true, DefaultCharset.name_iso_utf_8));
+	}
 
 	private static void processPlatformExecutors() throws Exception {
 		ExecutorService[] services = new ExecutorService[Config.processPlatform().getExecutorCount()];
