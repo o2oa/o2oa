@@ -61,7 +61,7 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class({
         }.bind(this));
     },
     getEditor: function (callback) {
-        if (this.json.isReadonly){
+        if (this.readonly || this.json.isReadonly){
             this.mode  = "read";
         }else{
             if (this.json.readScript && this.json.readScript.code){

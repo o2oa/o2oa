@@ -13,6 +13,13 @@
 				<td class="editTableTitle">{{$.lp.description}}:</td>
 				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.readonly}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
 <!--			<tr>-->
 <!--				<td class="editTableTitle">{{$.lp.autoCorrect}}:</td>-->
 <!--				<td class="editTableValue">-->

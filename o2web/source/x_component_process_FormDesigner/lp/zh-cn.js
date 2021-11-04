@@ -933,6 +933,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "selectBoxTitle": "选择框标题",
         "query": "查询",
         "pathInfo": "注：路径的写法是\"表别名.字段名\"，如：o.title",
+        "parameterNote":"注：参数对应查询语句和总数语句中形如\":field\"的where条件，填写\"field\"。",
 
         "source": "数据源",
         "method": "方法",
@@ -1149,6 +1150,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showZero": "显示零",
         "showNullString": "显示空字符串",
         "centerServer": "中心服务",
+        "pathConditions": "路径默认条件",
+        "parameterConditions": "参数默认条件",
+        "addDefaultConditionByPath": "通过路径添加默认条件",
+        "addDefaultConditionByParameter": "通过参数添加默认条件",
         "wps" : {
             "config":"配置",
             "options" : "通用选项",

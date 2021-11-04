@@ -116,7 +116,7 @@ MWF.xApplication.process.Xform.IWebOffice = MWF.APPIWebOffice =  new Class({
         if (!layout.desktop.offices) layout.desktop.offices = {};
         layout.desktop.offices[this.getOfficeObjectId()] = this;
 
-        if (this.json.isReadonly){
+        if (this.readonly || this.json.isReadonly){
             this.readonly  = true;
         }else if (this.json.readScript && this.json.readScript.code){
             var flag = this.form.Macro.exec(this.json.readScript.code, this);

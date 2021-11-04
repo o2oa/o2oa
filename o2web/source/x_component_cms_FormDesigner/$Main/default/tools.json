@@ -196,11 +196,6 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.tinymceEditor,
     "className": "TinyMCEEditor"
   },
-  "log": {
-    "icon": "log.png",
-    "text": MWF.xApplication.cms.FormDesigner.LP.modules.log,
-    "className": "Log"
-  },
   "documenteditor": {
     "icon": "documenteditor.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.documenteditor,
@@ -210,6 +205,31 @@
     "icon": "office.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.office,
     "className": "Office"
+  },
+  "iWebOffice": {
+    "icon": "iWebOffice.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.iWebOffice,
+    "className": "IWebOffice"
+  },
+  "yozoOffice": {
+    "icon": "yozoOffice.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.yozoOffice,
+    "className": "YozoOffice"
+  },
+  "onlyOffice": {
+    "icon": "onlyOffice.png",
+    "text": "onlyOffice",
+    "className": "OnlyOffice"
+  },
+  "wpsOffice": {
+    "icon": "wpsOffice.png",
+    "text": "wpsOffice",
+    "className": "WpsOffice"
+  },
+  "log": {
+    "icon": "log.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.log,
+    "className": "Log"
   },
   "comment": {
     "icon": "comment.png",
