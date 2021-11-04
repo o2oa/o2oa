@@ -30,6 +30,8 @@ MWF.xApplication.cms.Index.Newer = new Class({
         "documentData" : null,
         "identity" : null,
 
+        "searchEnable": true,
+
         //autoSave : "",
         //saveOnClose : "",
 
@@ -315,6 +317,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
     },
     setCurrentCategory: function( category ){
         debugger;
+
         if( this.currentCategory && this.currentCategory != category ){
             this.currentCategory.node.setStyles( this.css.categoryItemNode );
             this.currentCategory.options.isCurrent = false;
@@ -349,7 +352,10 @@ MWF.xApplication.cms.Index.Newer = new Class({
                     this.checkSubject();
                     this.categoryTextNode.set("text", this.categoryData.categoryName);
                     this.startTitleNode.set("text", this.lp.start + " - " + this.categoryData.categoryName);
-                    this.sel.closeArea();
+
+                    if(this.sel){
+                        this.sel.closeArea();
+                    }
                     if (this.isIgnoreTitle() && this.identityList.length == 1) {
                         this.okStart();
                     }
@@ -754,14 +760,37 @@ MWF.xApplication.cms.Index.Newer.CategorySel = new Class({
     load: function(){
         if (!this.areaNode){
             this.createArea();
+        }else{
+            if(this.searchNode)this.searchNode.show();
         }
         this.areaNode.fade("1");
     },
     closeArea: function(){
+        if (this.searchNode){
+            this.searchNode.hide();
+        }
         if (this.areaNode) this.areaNode.fade("out");
     },
 
     createArea: function(){
+        if( this.newer.options.searchEnable ){
+            this.searchNode = new Element("div").inject( this.newer.formTopContentNode );
+            this.searchInputNode = new Element("input", {
+                "styles": this.css.formTopSearchInputNode,
+                "placeholder": this.lp.searchPlacholder,
+                "events": {
+                    "keydown": function(e){ if (e.code===13) this.searchCategory(); }.bind(this)
+                }
+            }).inject( this.searchNode );
+            this.searchActionNode = new Element("div", {
+                "styles": this.css.formTopSearchActionNode,
+                "events": {
+                    "click": function(e){ this.searchCategory(); }.bind(this)
+                }
+            }).inject( this.searchNode );
+        }
+
+
         this.areaNode = new Element("div.categorySelAreaNode", {"styles": this.css.categorySelAreaNode}).inject(this.node );
         this.areaNode.addEvent("click", function(e){
             //this.closeArea();
@@ -788,6 +817,22 @@ MWF.xApplication.cms.Index.Newer.CategorySel = new Class({
             this.listColumns();
         }
 
+    },
+    searchCategory: function(){
+        var value = this.searchInputNode.get("value");
+        if( value ){
+            this.newer.categoryList.each(function(category){
+                if (category.data.categoryName.indexOf(value)!==-1){
+                    category.node.show();
+                }else{
+                    category.node.hide();
+                }
+            })
+        }else{
+            this.newer.categoryList.each(function(category){
+                category.node.show();
+            })
+        }
     },
     listColumns: function(){
         var c = { wrapOutCategoryList : [] };
@@ -884,14 +929,16 @@ MWF.xApplication.cms.Index.Newer.CategorySel.Column = new Class({
     },
     loadCategory: function(){
         this.categoryContainer.empty();
+        this.newer.categoryList = [];
         if( this.options.needGetCategorys ){
             this.action.listCategoryByPublisher(this.data.id,function(json){
                 if (json.data.length){
                     var isSetCurrentImmediately = ( json.data.length == 1 && ( this.options.restrictToColumn || this.options.isAll  ) );
                     json.data.each(function(category){
-                        new MWF.xApplication.cms.Index.Newer.CategorySel.Category(category, this, this.categoryContainer, {
+                        var category = new MWF.xApplication.cms.Index.Newer.CategorySel.Category(category, this, this.categoryContainer, {
                             isCurrent : ( this.options.currentCategory == category.id ) || isSetCurrentImmediately
                         });
+                        this.newer.categoryList.push(category);
                     }.bind(this));
                 }else{
                     this.node.setStyle("display", "none");
@@ -901,9 +948,10 @@ MWF.xApplication.cms.Index.Newer.CategorySel.Column = new Class({
             if( this.data.wrapOutCategoryList && this.data.wrapOutCategoryList.length ){
                 var isSetCurrentImmediately = ( this.data.wrapOutCategoryList.length == 1 && ( this.options.restrictToColumn || this.options.isAll  ) );
                 this.data.wrapOutCategoryList.each(function(category){
-                    new MWF.xApplication.cms.Index.Newer.CategorySel.Category(category, this, this.categoryContainer,{
+                    var category = new MWF.xApplication.cms.Index.Newer.CategorySel.Category(category, this, this.categoryContainer,{
                         isCurrent : ( this.options.currentCategory == category.id ) || isSetCurrentImmediately
                     });
+                    this.newer.categoryList.push(category);
                 }.bind(this));
             }else{
                 this.node.setStyle("display", "none");
