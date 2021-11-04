@@ -58,11 +58,6 @@
 	"background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_close_square_pre.png) no-repeat center center",
 	"cursor": "pointer"
   },
-  "formTopContentNode" : {
-	"float" : "right",
-	"padding-right" : "10px",
-	"text-align" : "right"
-  },
   "formTopContentSepNode" : {
 	"float" : "right",
 	"width" : "1px",
@@ -75,11 +70,38 @@
   	"border" : "1px solid #3c75b7"
   },
   "formTopContentNode" : {
-	"overflow" : "hidden",
-	"float" : "right",
-	"padding-right" : "10px",
-	"text-align" : "right"
+	  "overflow":"hidden",
+	  "float" : "right",
+	  "padding-right" : "10px",
+	  "text-align" : "right",
+	  "margin-right": "10px",
+	  "margin-top": "16px",
+	  "height": "26px",
+	  "border-radius": "10px"
   },
+	"formTopSearchInputNode": {
+		"padding-left": "10px",
+		"float": "left",
+		"height": "24px",
+		"line-height": "24px",
+		"width": "220px",
+		"border": "0px",
+		"color": "rgb(153, 153, 153)",
+		"background-color": "rgb(245, 245, 245)",
+		"border-top-left-radius":"10px",
+		"border-bottom-left-radius": "10px"
+	},
+	"formTopSearchActionNode": {
+		"padding-right": "10px",
+		"float": "left",
+		"height": "26px",
+		"line-height": "26px",
+		"background": "url('../x_component_Forum/$Main/default/icon/search-20.png') center center no-repeat rgb(245, 245, 245)",
+		"width": "26px",
+		"cursor": "pointer",
+		"border-top-right-radius":"10px",
+		"border-bottom-right-radius": "10px"
+	},
   "formTopContentCustomNode" : {
 	"float" : "right",
 	"margin-top" : "20px",

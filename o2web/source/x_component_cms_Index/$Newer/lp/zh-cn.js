@@ -32,5 +32,7 @@ MWF.xApplication.cms.Index.Newer.lp = {
     "all" : "全部",
 
     "documentTypeInfor" : "信息",
-    "untitled" : "无标题"
+    "untitled" : "无标题",
+
+    "searchPlacholder": "输入关键字搜索分类"
 };
