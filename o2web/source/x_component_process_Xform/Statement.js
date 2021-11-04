@@ -76,6 +76,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
     },
     loadView: function(){
         if (!this.json.queryStatement) return "";
+
         var filter = null;
         if (this.json.filterList && this.json.filterList.length){
             filter = [];
@@ -83,6 +84,14 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
                 entry.value = this.form.Macro.exec(entry.code.code, this);
                 //delete entry.code;
                 filter.push(entry);
+            }.bind(this));
+        }
+
+        var parameter = null;
+        if( this.json.parameterList && this.json.parameterList.length ){
+            parameter = {};
+            this.json.parameterList.each(function(entry){
+                parameter[entry.parameter] = this.parseParameter(entry);
             }.bind(this));
         }
 
@@ -100,6 +109,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
             "isExpand": this.json.isExpand || "no",
             "showActionbar" : this.json.actionbar === "show",
             "filter": filter,
+            "parameter": parameter,
             "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null,
             "selectedAbleScript" : this.json.selectedAbleScript ? this.json.selectedAbleScript.code : null
         };
@@ -150,5 +160,69 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
         }else{
             return [];
         }
+    },
+    parseParameter: function (f) {
+        var value = f.value;
+        if( f.valueType === "script" ){
+            value = this.form.Macro.exec(f.valueScript ? f.valueScript.code : "", this);
+        }
+        if (typeOf(value) === "date") {
+            value = value.format("db");
+        }
+        var user = layout.user;
+        switch (value) {
+            case "@person":
+                value = user.distinguishedName;
+                break;
+            case "@identityList":
+                value = user.identityList.map(function (d) {
+                    return d.distinguishedName;
+                });
+                break;
+            case "@unitList":
+                o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({"personList": [user.distinguishedName]}, function (json) {
+                    value = json.unitList;
+                }, null, false);
+                break;
+            case "@unitAllList":
+                o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({"personList": [user.distinguishedName]}, function (json) {
+                    value = json.unitList;
+                }, null, false);
+                break;
+            case "@year":
+                value = (new Date().getFullYear()).toString();
+                break;
+            case "@season":
+                var m = new Date().format("%m");
+                if (["01", "02", "03"].contains(m)) {
+                    value = "1"
+                } else if (["04", "05", "06"].contains(m)) {
+                    value = "2"
+                } else if (["07", "08", "09"].contains(m)) {
+                    value = "3"
+                } else {
+                    value = "4"
+                }
+                break;
+            case "@month":
+                value = new Date().format("%Y-%m");
+                break;
+            case "@time":
+                value = new Date().format("db");
+                break;
+            case "@date":
+                value = new Date().format("%Y-%m-%d");
+                break;
+            default:
+        }
+
+        if (f.formatType === "dateTimeValue" || f.formatType === "datetimeValue") {
+            value = "{ts '" + value + "'}"
+        } else if (f.formatType === "dateValue") {
+            value = "{d '" + value + "'}"
+        } else if (f.formatType === "timeValue") {
+            value = "{t '" + value + "'}"
+        }
+        return value;
     }
 });
