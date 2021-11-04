@@ -853,7 +853,7 @@ MWF.xApplication.process.TaskCenter.Application = new Class({
             app.unselected();
         });
         if (this.starter.searchProcessSearchchildNode) this.starter.searchProcessSearchchildNode.destroy();
-        if (this.starter.startProcessSearchInputNode) this.starter.startProcessSearchInputNode.set("value", this.app.lp.searchProcess);
+        if (this.starter.startProcessSearchInputNode) this.starter.startProcessSearchInputNode.set("placeholder", this.app.lp.searchProcess);
         this.childNode.setStyle("display", "block");
         this.node.setStyles(this.css.applicationNode_selected);
         if (!this.isLoaded){
@@ -1235,15 +1235,16 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
         this.startProcessSearchIconNode = new Element("div", {"styles": this.css.startProcessSearchIconNode}).inject(this.startProcessSearchNode);
         this.startProcessSearchAreaNode = new Element("div", {"styles": this.css.startProcessSearchAreaNode}).inject(this.startProcessSearchNode);
         this.startProcessSearchInputNode = new Element("input", {"styles": this.css.startProcessSearchInputNode}).inject(this.startProcessSearchAreaNode);
-        this.startProcessSearchInputNode.set("value", this.lp.searchProcess);
+        this.startProcessSearchInputNode.set("placeholder", this.lp.searchProcess);
         this.startProcessSearchInputNode.addEvents({
             "focus": function(){ if (this.startProcessSearchInputNode.get("value")===this.lp.searchProcess) this.startProcessSearchInputNode.set("value", ""); }.bind(this),
-            "blur": function(){if (!this.startProcessSearchInputNode.get("value")) this.startProcessSearchInputNode.set("value", this.lp.searchProcess);}.bind(this),
+            "blur": function(){if (!this.startProcessSearchInputNode.get("value")) this.startProcessSearchInputNode.set("placeholder", this.lp.searchProcess);}.bind(this),
             "keydown": function(e){ if (e.code===13) this.searchStartProcess(); }.bind(this)
         });
         this.startProcessSearchIconNode.addEvent("click", function(){ this.searchStartProcess(); }.bind(this));
     },
     searchStartProcess: function(){
+        debugger;
         var key = this.startProcessSearchInputNode.get("value");
         if (key && key!==this.lp.searchProcess){
             if (this.appStartableData){
@@ -1265,6 +1266,13 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                         }
                     }.bind(this));
                 }.bind(this));
+            }
+        }else{
+            ( this.startApplications || [] ).each(function(app){ app.unselected(); });
+            if (this.searchProcessSearchchildNode) this.searchProcessSearchchildNode.destroy();
+            if(this.allApplicationStarter){
+                this.startProcessSearchNode.setStyle("display", "block");
+                this.allApplicationStarter.selected();
             }
         }
     },
