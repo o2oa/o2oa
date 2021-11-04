@@ -35,7 +35,7 @@
                 "build:aix": "npm run clear &&  npm run build_parallel && npm run deploy:aix  && npm run typeInfor",
                 "build:arm": "npm run clear &&  npm run build_parallel && npm run deploy:arm  && npm run typeInfor",
                 "build:macos": "npm run clear  && npm run build_parallel && npm run deploy:macos  && npm run typeInfor",
-                "build:mips": "npm run clear &&  npm run build_parallel && npm run deploy:risc  && npm run typeInfor",
+                "build:mips": "npm run clear &&  npm run build_parallel && npm run deploy:mips  && npm run typeInfor",
                 "build:rpi": "npm run clear &&  npm run build_parallel && npm run deploy:rpi && npm run typeInfor",
                 "build_ci": "npm run clear && npm run preperation && npm run build_parallel && npm run deploy && npm run typeInfor",
                 "build_ci:win": "npm run clear && npm run preperation:win && npm run build_parallel && npm run deploy:win  && npm run typeInfor",
@@ -43,7 +43,7 @@
                 "build_ci:aix": "npm run clear && npm run preperation:aix && npm run build_parallel && npm run deploy:aix && npm run typeInfor",
                 "build_ci:arm": "npm run clear && npm run preperation:arm && npm run build_parallel && npm run deploy:arm && npm run typeInfor",
                 "build_ci:macos": "npm run clear && npm run preperation:macos && npm run build_parallel && npm run deploy:macos && npm run typeInfor",
-                "build_ci:mips": "npm run clear && npm run preperation:risc && npm run build_parallel && npm run deploy:risc && npm run typeInfor",
+                "build_ci:mips": "npm run clear && npm run preperation:mips && npm run build_parallel && npm run deploy:mips && npm run typeInfor",
                 "build_ci:rpi": "npm run clear && npm run preperation:rpi && npm run build_parallel && npm run deploy:rpi && npm run typeInfor",
                 "test": "type welcome"
         },

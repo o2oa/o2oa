@@ -745,8 +745,8 @@ if (!window.o2) {
                         if (rulesStr.substr(0, 1) == "@" || rulesStr.indexOf("%") != -1) {
                             // var begin = 0;
                             // var end = 0;
-
-
+                        }else if (rulesStr.trim()==='from' || rulesStr.trim()==='to'){
+                            //nothing
                         } else {
                             if (rulesStr.indexOf(",") != -1) {
                                 var rules = rulesStr.split(/\s*,\s*/g);
@@ -1144,6 +1144,14 @@ if (!window.o2) {
             return _parseHtml(this, json);
         };
 
+        var _createComponent = function(o, res){
+            o.multitask = false;
+        };
+        var _loadComponent = function(o, res){
+            o.loading = new Promise(function(resolve){
+                o2.loadAll(res, {evalScripts:true}, function(){ resolve(); });
+            });
+        };
         o2.component = function(name, res){
             o2.xApplication = o2.xApplication || {};
             var names = name.split(".");
@@ -1151,9 +1159,11 @@ if (!window.o2) {
             names.forEach(function(n){
                 o = o[n] = o[n] || {};
             });
-            o.loading = new Promise(function(resolve){
-                o2.loadAll(res, function(){ resolve(); });
-            });
+            if (o2.typeOf(res)==="object"){
+                _loadComponent(o, res)
+            }else{
+                _createComponent(o, res);
+            }
         }
 
     })();
