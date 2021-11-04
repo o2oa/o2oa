@@ -1,0 +1,102 @@
+{
+  "label": {
+    "icon": "label.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.label,
+    "className": "Label"
+  },
+  "textfield": {
+    "icon": "textfield.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.textfield,
+    "className": "Textfield"
+  },
+  "number": {
+    "icon": "number.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.number,
+    "className": "Number"
+  },
+  "org": {
+    "icon": "personfield.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.org,
+    "className": "Org"
+  },
+  "reader": {
+    "icon": "readerfield.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.reader,
+    "className": "Reader"
+  },
+  "author": {
+    "icon": "authorfield.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.author,
+    "className": "Author"
+  },
+  "calendar": {
+    "icon": "calendar.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.calendar,
+    "className": "Calendar"
+  },
+  "textarea": {
+    "icon": "textarea.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.textarea,
+    "className": "Textarea"
+  },
+  "select": {
+    "icon": "select.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.select,
+    "className": "Select"
+  },
+  "radio": {
+    "icon": "radio.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.radio,
+    "className": "Radio"
+  },
+  "checkbox": {
+    "icon": "checkbox.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.checkbox,
+    "className": "Checkbox"
+  },
+  "combox": {
+    "icon": "combox.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.combox,
+    "className": "Combox"
+  },
+  "button": {
+    "icon": "button.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.button,
+    "className": "Button"
+  },
+  "Address": {
+    "icon": "address.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.Address,
+    "className": "Address"
+  },
+  "attachment": {
+    "icon": "attachment.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.attachment,
+    "className": "Attachment"
+  },
+  "datatable": {
+    "icon": "datagrid.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.datatable,
+    "className": "Datatable"
+  },
+  "datatemplate": {
+    "icon": "datatemplate.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.datatemplate,
+    "className": "Datatemplate"
+  },
+  "documenteditor": {
+    "icon": "documenteditor.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.documenteditor,
+    "className": "Documenteditor"
+  },
+  "htmledit": {
+    "icon": "htmleditor.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.htmledit,
+    "className": "Htmleditor"
+  },
+  "tinymceEditor": {
+    "icon": "tinymceeditor.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.tinymceEditor,
+    "className": "TinyMCEEditor"
+  }
+}
