@@ -24,7 +24,7 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
     	
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
-			"MWFType": "div",
+			"MWFType": "SmartBI",
 			"id": this.json.id,
 			"styles": this.css.moduleNodeMove,
 			"events": {
@@ -39,7 +39,6 @@ MWF.xApplication.process.FormDesigner.Module.SmartBI = MWF.FCSmartBI = new Class
 			"showtoolbar":this.json.smartbidisplaytoolbar||false,  //showtoolbar对应SmartBI系统中的参数名
 			"showLeftTree":this.json.smartbidisplaylefttree||false //即席查询是否显示左侧树形
 		}
-
 
         if (name=="smartbiresource"){ 
             var value = this.json.smartbiresource||"none"; 
