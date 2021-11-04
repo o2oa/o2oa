@@ -106,7 +106,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         // this.getLookupAction(function(){
         //     if (this.json.application){
 
-        var d = data || {};
+        var d = Object.clone( data || {} );
         // d.count = this.json.count;
         // this.lookupAction.bundleView(this.json.id, d, function(json){
         //     this.bundleItems = json.data.valueList;
