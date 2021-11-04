@@ -71,11 +71,8 @@ public class WebServerTools extends JettySeverTools {
 		WebAppContext context = new WebAppContext();
 		context.setContextPath("/");
 		context.setBaseResource(Resource.newResource(new File(Config.base(), "servers/webServer")));
-		// context.setResourceBase(".");
 		context.setParentLoaderPriority(true);
 		context.setExtractWAR(false);
-		// context.setDefaultsDescriptor(new File(Config.base(),
-		// "commons/webdefault_w.xml").getAbsolutePath());
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "" + webServer.getDirAllowed());
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 		if (webServer.getCacheControlMaxAge() > 0) {
@@ -89,7 +86,7 @@ public class WebServerTools extends JettySeverTools {
 		context.setParentLoaderPriority(true);
 		context.getMimeTypes().addMimeMapping("wcss", "application/json");
 		/* stat */
-		if (webServer.getStatEnable()) {
+		if (BooleanUtils.isTrue(webServer.getStatEnable())) {
 			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
 			statFilterHolder.setInitParameter("exclusions", webServer.getStatExclusions());
 			context.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
@@ -175,11 +172,6 @@ public class WebServerTools extends JettySeverTools {
 		}
 	}
 
-//	private static void updateWeb() throws Exception {
-//		Path path = Config.path_servers_webServer_x_desktop_res_config(true);
-//		Files.write(path.resolve("web.json"), XGsonBuilder.toJson(Config.web()).getBytes(StandardCharsets.UTF_8));
-//	}
-
 	private static void updateFavicon() throws Exception {
 
 		File file = new File(Config.dir_config(), "favicon.ico");
@@ -191,37 +183,31 @@ public class WebServerTools extends JettySeverTools {
 	}
 
 	private static void createIndexPage() throws Exception {
-		if (null != Config.nodes().webServers()) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("<!DOCTYPE html>");
-			sb.append("<html>");
-			sb.append("<head>");
-			sb.append("<meta charset=\"UTF-8\">");
-			sb.append("<title>o2 index</title>");
-			sb.append("</head>");
-			sb.append("<body>");
-			for (Entry<String, WebServer> en : Config.nodes().webServers().entrySet()) {
-				WebServer o = en.getValue();
-				if (BooleanUtils.isTrue(o.getEnable())) {
-					String url = BooleanUtils.isTrue(o.getSslEnable()) ? "https://" : "http://";
-					url += en.getKey();
-					if (BooleanUtils.isTrue(o.getSslEnable())) {
-						if (o.getPort() != 443) {
-							url += ":" + o.getPort();
-						}
-					} else {
-						if (o.getPort() != 80) {
-							url += ":" + o.getPort();
-						}
-					}
-					sb.append("<a href=\"" + url + "\">" + url + "</a><br/>");
-				}
+		if (null == Config.nodes().webServers()) {
+			return;
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("<!DOCTYPE html>").append("<html>").append("<head>").append("<meta charset=\"UTF-8\">")
+				.append("<title>o2 index</title>").append("</head>").append("<body>");
+		for (Entry<String, WebServer> en : Config.nodes().webServers().entrySet()) {
+			createIndexPagePerWebServer(sb, en);
+		}
+		sb.append("</body>").append("</html>");
+		File file = new File(Config.base(), "index.html");
+		FileUtils.write(file, sb.toString(), DefaultCharset.name);
+	}
 
+	private static void createIndexPagePerWebServer(StringBuilder sb, Entry<String, WebServer> en) {
+		WebServer o = en.getValue();
+		if (BooleanUtils.isTrue(o.getEnable())) {
+			String url = BooleanUtils.isTrue(o.getSslEnable()) ? "https://" : "http://";
+			url += en.getKey();
+			if (BooleanUtils.isTrue(o.getSslEnable())) {
+				url += o.getPort() != 443 ? (":" + o.getPort()) : "";
+			} else {
+				url += o.getPort() != 80 ? (":" + o.getPort()) : "";
 			}
-			sb.append("</body>");
-			sb.append("</html>");
-			File file = new File(Config.base(), "index.html");
-			FileUtils.write(file, sb.toString(), DefaultCharset.name);
+			sb.append("<a href=\"" + url + "\">" + url + "</a><br/>");
 		}
 	}
 
