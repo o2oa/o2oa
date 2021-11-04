@@ -821,7 +821,7 @@ MWF.xApplication.cms.Index.Newer.CategorySel = new Class({
     searchCategory: function(){
         var value = this.searchInputNode.get("value");
         if( value ){
-            this.newer.categoryList.each(function(category){
+            ( this.newer.categoryList || [] ).each(function(category){
                 if (category.data.categoryName.indexOf(value)!==-1){
                     category.node.show();
                 }else{
@@ -829,7 +829,7 @@ MWF.xApplication.cms.Index.Newer.CategorySel = new Class({
                 }
             })
         }else{
-            this.newer.categoryList.each(function(category){
+            ( this.newer.categoryList || [] ).each(function(category){
                 category.node.show();
             })
         }
