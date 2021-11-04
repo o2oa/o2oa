@@ -924,6 +924,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "querySelectBox": "Query Select Box",
         "selectBoxTitle": "Select Box Title",
         "query": "Query",
+        "parameterNote":"Note: The parameter corresponds to the where condition in the query statement and the total number statement like \":field\", fill in \"field\".",
         "pathInfo": "Note: The path is written as \"table alias. field name\", such as: o.title",
 
         "source": "Source",
@@ -1140,6 +1141,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showZero": "Show Zero",
         "showNullString": "Show an empty string",
         "centerServer": "Center service",
+        "pathConditions": "Path default conditions",
+        "parameterConditions": "Parameter default conditions",
+        "addDefaultConditionByPath": "Add default condition by path",
+        "addDefaultConditionByParameter": "Add default condition by parameter",
         "wps" : {
             "config":"Config",
             "options" : "options",
