@@ -1150,6 +1150,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showZero": "显示零",
         "showNullString": "显示空字符串",
         "centerServer": "中心服务",
+        "pathConditions": "路径默认条件",
+        "parameterConditions": "参数默认条件",
+        "addDefaultConditionByPath": "通过路径添加默认条件",
+        "addDefaultConditionByParameter": "通过参数添加默认条件",
         "wps" : {
             "config":"配置",
             "options" : "通用选项",
