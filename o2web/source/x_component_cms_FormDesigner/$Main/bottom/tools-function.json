@@ -1,0 +1,47 @@
+{
+  "ViewSelector": {
+    "icon": "viewSelector.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.ViewSelector,
+    "className": "ViewSelector"
+  },
+  "view": {
+    "icon": "view.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.view,
+    "className": "View"
+  },
+  "stat": {
+    "icon": "stat.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.stat,
+    "className": "Stat"
+  },
+  "documenteditor": {
+    "icon": "documenteditor.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.documenteditor,
+    "className": "Documenteditor"
+  },
+  "statementSelector": {
+    "icon": "statementSelector.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.statementSelector,
+    "className": "StatementSelector"
+  },
+  "statement": {
+    "icon": "statement.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.statement,
+    "className": "Statement"
+  },
+  "importer": {
+    "icon": "importer.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.importer,
+    "className": "Importer"
+  },
+  "SmartBI": {
+    "icon": "smartbi.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.SmartBI,
+    "className": "SmartBI"
+  },
+  "comment": {
+    "icon": "comment.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.comment,
+    "className": "Comment"
+  }
+}
