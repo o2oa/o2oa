@@ -18,7 +18,30 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
         if (!this.json.smartbiresource || this.json.smartbiresource==="none") this.node.destroy();
         else{
             var _iframe = this.node.getElement("iframe");
-            var url = _iframe.get("src");
+            var url;
+            if(_iframe){
+                url = _iframe.get("src");
+            }else{
+                var value = this.json.smartbiresource;
+                var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
+                var address = SmartBIAction.ResourceAction.action.getAddress();
+                var uri = SmartBIAction.ResourceAction.action.actions.open.uri;
+                var url = uri.replace("{id}", encodeURIComponent(value));
+
+                if(this.json.smartbidisplaytoolbar){
+                    url = url +"?showtoolbar=true"
+                }else{
+                    url = url +"?showtoolbar=false"
+                }
+
+                if(this.json.smartbidisplaylefttree){
+                    url = url +"&showLeftTree=true"
+                }else{
+                    url = url +"&showLeftTree=false"
+                }
+                
+                url = o2.filterUrl(address+url);
+            }
             
             this.iframe = new Element("iframe",{
                 src:url,
@@ -26,15 +49,17 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
                 scrolling:"auto"
             }).inject(this.node,"after");
             
-            var _recoveryStyles = this.json.recoveryStyles || {};
+            var _properties = this.json.properties||{};
             this.node.destroy();
             this.node = this.iframe.setStyles({
                 "width":"100%",
                 "height":"100%",
-                "min-height":"500px",
-                "min-width":"500px"
+                "min-height":"300px",
+                "min-width":"300px"
             });
-            this.node.setStyles(_recoveryStyles)
+
+			this.node.set(_properties)
+			
         }
         
 	}
