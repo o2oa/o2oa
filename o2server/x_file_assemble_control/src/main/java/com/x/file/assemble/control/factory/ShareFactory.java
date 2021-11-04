@@ -80,6 +80,19 @@ public class ShareFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
+	public List<String> listWithShareGroup(String group, String fileType) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Share.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Share> root = cq.from(Share.class);
+		Predicate p = cb.isMember(group, root.get(Share_.shareGroupList));
+		if(StringUtils.isNotBlank(fileType)){
+			p = cb.and(p, cb.equal(root.get(Share_.fileType), fileType));
+		}
+		cq.select(root.get(Share_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 	public Share getShareByFileId(String fileId, String person) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Share.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

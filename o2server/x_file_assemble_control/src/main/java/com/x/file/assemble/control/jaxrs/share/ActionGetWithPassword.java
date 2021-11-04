@@ -3,6 +3,7 @@ package com.x.file.assemble.control.jaxrs.share;
 import java.util.Arrays;
 import java.util.List;
 
+import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,12 +25,12 @@ class ActionGetWithPassword extends BaseAction {
 			if (null == share) {
 				throw new ExceptionAttachmentNotExist(id);
 			}
-			if("password".equals(share.getShareType())){
-				if(StringUtils.isEmpty(password)){
-					throw new Exception("password can not be empty.");
+			if(Share.SHARE_TYPE_PASSWORD.equals(share.getShareType())){
+				if (StringUtils.isEmpty(password)) {
+					throw new ExceptionFieldEmpty(Share.password_FIELDNAME);
 				}
 				if(!password.equalsIgnoreCase(share.getPassword())){
-					throw new Exception("invalid password.");
+					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
 			}else{
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
@@ -49,7 +50,7 @@ class ActionGetWithPassword extends BaseAction {
 				Arrays.asList(distributeFactor_FIELDNAME, sequence_FIELDNAME, scratchString_FIELDNAME,
 						scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME));
 
-		static WrapCopier<Share, Wo> copier = WrapCopierFactory.wo(Share.class, Wo.class, null,
+		static final WrapCopier<Share, Wo> copier = WrapCopierFactory.wo(Share.class, Wo.class, null,
 				FieldsInvisible2);
 
 		@FieldDescribe("文件类型")
