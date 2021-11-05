@@ -77,6 +77,7 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
         this.data = data;
     },
     _loopSub: function(dom, i){
+        var _self = this;
         var moduleNodes = this.form._getModuleNodes(dom);
         moduleNodes.each(function(node){
             var json = this.form._getDomjson(node);
@@ -84,11 +85,14 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
             subJson.id = subJson.id+"_"+i;
             node.set("id", subJson.id);
 
-            var module = this.form._loadModule(subJson, node);
+            var module = this.form._loadModule(subJson, node, function(){
+                if( _self.widget )this.widget = _self.widget;
+            });
             //this.modules.push(module);
         }.bind(this));
     },
     _loopData: function(){
+        var _self = this;
         this.data.each(function(d, i){
             var node = this.loopNode.clone(true, true);
             node.inject(this.node);
@@ -101,6 +105,7 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
             });
 
             var module = this.form._loadModule(json, node, function(){
+                if( _self.widget )this.widget = _self.widget;
                 this.data = d;
                 this.position = i;
             });
@@ -141,7 +146,10 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
                     this._loopData();
                     this.fireEvent("loadData");
                 }else{
-                    this.form._loadModules(this.node);
+                    var _self = this;
+                    this.form._loadModules(this.node, function () {
+                        if( _self.widget )this.widget = _self.widget;
+                    });
                 }
 
                 //this.tmpDiv = new Element("div");
