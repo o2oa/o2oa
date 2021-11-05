@@ -1124,6 +1124,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					if (this.form.forms[id])this.form.forms[id] = null;
 
 					var module = this.form._loadModule(json, node, function () {
+						if( _self.widget )this.widget = _self.widget;
 						this.parentLine = _self;
 						this.parentDatatemplate = _self.template;
 					});
