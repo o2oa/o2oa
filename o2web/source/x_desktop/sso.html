@@ -9,6 +9,15 @@
     <script>
         o2.addReady(function(){
             o2.JSON.get("res/config/config.json", function(config){
+                if (config.proxyCenterEnable){
+                    if (o2.typeOf(config.center)==="array"){
+                        config.center.forEach(function(c){
+                            c.port = window.location.port;
+                        })
+                    }else{
+                        config.port = window.location.port;
+                    }
+                }
                 if (!window.layout) window.layout = {};
                 window.layout.config = config;
                 getServiceAddress(config, function(address){

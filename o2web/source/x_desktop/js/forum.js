@@ -272,6 +272,15 @@ o2.addReady(function(){
                 };
 
                 MWF.getJSON("res/config/config.json", function(config){
+                    if (config.proxyCenterEnable){
+                        if (o2.typeOf(config.center)==="array"){
+                            config.center.forEach(function(c){
+                                c.port = window.location.port;
+                            });
+                        }else{
+                            config.port = window.location.port;
+                        }
+                    }
                     layout.config = config;
 
                     MWF.xDesktop.getServiceAddress(layout.config, function(service, center){
