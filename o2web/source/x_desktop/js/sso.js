@@ -68,7 +68,14 @@ function getServiceAddressConfigObject(callback, center){
     uri = uri.replace(/{source}/g, currenthost);
     //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
     return MWF.restful("get", uri, null, function(json){
-        window.layout.serviceAddressList = json.data;
+
+        var serviceAddressList = json.data;
+        if (layout.config.proxyApplicationEnable){
+            Object.keys(serviceAddressList).forEach(function(k){
+                serviceAddressList[k].port = window.location.port;
+            });
+        }
+        window.layout.serviceAddressList = serviceAddressList;
         window.layout.centerServer = center;
 
         // var serviceAddressList = json.data;
