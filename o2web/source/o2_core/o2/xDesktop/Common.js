@@ -7,6 +7,15 @@ o2.xApplication = o2.xApplication || {};
 
 MWF.xDesktop.loadConfig = function(callback){
     o2.JSON.get("res/config/config.json", function(config) {
+        if (config.proxyCenterEnable){
+            if (o2.typeOf(config.center)==="array"){
+                config.center.forEach(function(c){
+                    c.port = window.location.port;
+                });
+            }else{
+                config.port = window.location.port;
+            }
+        }
         layout.config = config;
         if (layout.config.app_protocol === "auto") {
             layout.config.app_protocol = window.location.protocol;
@@ -538,7 +547,13 @@ MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){
             "onSuccess": function(json){
                 //this.serviceAddressList = json.data;
                 //this.centerServer = center;
-                if (callback) callback(json.data, center);
+                var serviceAddressList = json.data;
+                if (layout.config.proxyApplicationEnable){
+                    Object.keys(serviceAddressList).forEach(function(k){
+                        serviceAddressList[k].port = window.location.port;
+                    })
+                }
+                if (callback) callback(serviceAddressList, center);
             }.bind(this),
             "onRequestFailure": function(xhr){
                 if (error) error(xhr);
