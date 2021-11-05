@@ -30,6 +30,15 @@ COMMON.DOM.addReady(function(){
         COMMON.AjaxModule.load("../o2_lib/mootools/plugin/mBox.Tooltip.js", function(){
             COMMON.AjaxModule.load("mwf", function(){
                 MWF.getJSON("res/config/config.json", function(config){
+                    if (config.proxyCenterEnable){
+                        if (o2.typeOf(config.center)==="array"){
+                            config.center.forEach(function(c){
+                                c.port = window.location.port;
+                            });
+                        }else{
+                            config.port = window.location.port;
+                        }
+                    }
                     layout.config = config;
                     document.title = layout.config.systemTitle || layout.config.systemName;
 
