@@ -16,6 +16,15 @@
         layout.addReady(function(){
             (function(layout){
                 MWF.getJSON("res/config/config.json", function(config){
+                    if (config.proxyCenterEnable){
+                        if (o2.typeOf(config.center)==="array"){
+                            config.center.forEach(function(c){
+                                c.port = window.location.port;
+                            })
+                        }else{
+                            config.port = window.location.port;
+                        }
+                    }
                     layout.config = config;
                     if (layout.config.app_protocol=="auto"){
                         layout.config.app_protocol = window.location.protocol;
