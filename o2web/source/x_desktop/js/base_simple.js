@@ -76,8 +76,17 @@ o2.addReady(function () {
     // });
     o2.getJSON("../x_desktop/res/config/config.json", function (config) {
         _loadProgressBar();
+        if (config.proxyCenterEnable){
+            if (o2.typeOf(config.center)==="array"){
+                config.center.forEach(function(c){
+                    c.port = window.location.port;
+                });
+            }else{
+                config.port = window.location.port;
+            }
+        }
         layout.config = config;
-        configLoaded = true
+        configLoaded = true;
         if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
     });
 
