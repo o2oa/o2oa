@@ -1196,7 +1196,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return moduleNodes;
     },
 
-    _loadModules: function (dom) {
+    _loadModules: function (dom, beforeLoadModule) {
         //var subDom = this.node.getFirst();
         //while (subDom){
         //    if (subDom.get("MWFtype")){
@@ -1213,7 +1213,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var json = this._getDomjson(node);
             //if( json.type === "Subform" || json.moduleName === "subform" )this.subformCount++;
             //if( json.type === "Subpage" || json.moduleName === "subpage" )this.subpageCount++;
-            var module = this._loadModule(json, node);
+            var module = this._loadModule(json, node, beforeLoadModule);
             this.modules.push(module);
         }.bind(this));
     },
