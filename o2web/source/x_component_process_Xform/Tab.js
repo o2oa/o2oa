@@ -76,6 +76,7 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
             var json = this.form._getDomjson(node);
             var tab = this;
             var module = this.form._loadModule(json, node, function(){
+                if( tab.widget )this.widget = tab.widget;
                 this.tab = tab;
             });
             this.elements.push(module);
@@ -103,9 +104,10 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
     showContentModule: function(_self){
         var node = this.contentNode;
         node.isLoadModule = true;
-        json = _self.form._getDomjson(node);
-        tab = _self;
-        module = _self.form._loadModule(json, node, function(){
+        var json = _self.form._getDomjson(node);
+        var tab = _self;
+        var module = _self.form._loadModule(json, node, function(){
+            if( _self.widget )this.widget = _self.widget;
             this.tab = tab;
         });
         _self.containers.push(module);
@@ -129,6 +131,9 @@ MWF.xApplication.process.Xform.tab$Page = MWF.APPTab$Page =  new Class({
 MWF.xApplication.process.Xform.tab$Content = MWF.APPTab$Content =  new Class({
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
-        this.form._loadModules(this.node);
+        var _self = this;
+        this.form._loadModules(this.node, function () {
+            if( _self.widget )this.widget = _self.widget;
+        });
     }
 });
