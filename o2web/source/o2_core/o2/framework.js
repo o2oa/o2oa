@@ -70,12 +70,13 @@ layout.addReady(function(){
             "api": {"get": function(){
                 var app = layout.desktop.currentApp || layout.app;
                 if (app){
-                    if (app.options && app.options.appId && o2.apis[app.options.appId]) return o2.apis[app.options.appId];
+                    if (app.unique && o2.apis[app.unique]) return o2.apis[app.unique];
                     var tmpApp = page.app;
                     page.app = app;
                     page.app.toPortal = tmpApp.toPortal;
                     var api = createEnvironment(page);
-                    o2.apis[app.options.appId] = api;
+                    if (!app.unique) app.unique = (new Date()).getTime().toString();
+                    o2.apis[app.unique] = api;
                     return api;
                 }
                 return o2.env;
@@ -84,12 +85,13 @@ layout.addReady(function(){
 
         o2.getApi = function(app){
             if (app){
-                if (app.options && app.options.appId && o2.apis[app.options.appId]) return o2.apis[app.options.appId];
+                if (app.unique && o2.apis[app.unique]) return o2.apis[app.unique];
                 var tmpApp = page.app;
                 page.app = app;
                 page.app.toPortal = tmpApp.toPortal;
                 var api = createEnvironment(page);
-                o2.apis[app.options.appId] = api;
+                if (!app.unique) app.unique = (new Date()).getTime().toString();
+                o2.apis[app.unique] = api;
                 return api;
             }
             return o2.env;
