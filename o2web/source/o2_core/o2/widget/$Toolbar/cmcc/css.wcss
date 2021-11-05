@@ -62,7 +62,8 @@
 		"padding-left": "2px",
 		"padding-right": "2px",
 		"line-height": "34px",
-		"cursor": "pointer"
+		"cursor": "pointer",
+		"color": "inherit"
 	},
 
 	"buttonDisable": {
