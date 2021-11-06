@@ -2295,7 +2295,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return null;
     },
 
-    processWork: function () {
+    processWork: function ( defaultRoute ) {
         var _self = this;
 
         if (!this.businessData.work.startTime) {
@@ -2307,10 +2307,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         } else {
             if (this.json.mode == "Mobile") {
                 setTimeout(function () {
-                    this.processWork_mobile();
+                    this.processWork_mobile( defaultRoute );
                 }.bind(this), 100);
             } else {
-                this.processWork_pc();
+                this.processWork_pc( defaultRoute );
             }
         }
     },
@@ -2347,7 +2347,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.fireEvent("afterLoadProcessor", [this.submitFormModule]);
         }
     },
-    processWork_pc: function () {
+    processWork_pc: function ( defaultRoute ) {
         var _self = this;
         this.fireEvent("beforeProcessWork");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
@@ -2429,9 +2429,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         }.bind(this), function () {
             if (this.processDlg) setSize.call(this.processDlg, true)
-        }.bind(this));
+        }.bind(this), defaultRoute);
     },
-    processWork_mobile: function () {
+    processWork_mobile: function ( defaultRoute ) {
         if (this.app.inBrowser) {
             this.app.content.setStyle("height", document.body.getSize().y);
         }
@@ -2474,7 +2474,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var processNode = this.createProcessNode();
 
         //this.setProcessNode(processNode);
-        this.setProcessNode(processNode);
+        this.setProcessNode(processNode, null, null, null, defaultRoute);
 
         this.showProcessNode(processNode);
         processNode.setStyle("overflow", "auto");
@@ -2520,7 +2520,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
         return { "opinion": opinion.trim(), "medias": medias };
     },
-    setProcessNode: function (processNode, style, postLoadFun, resizeFun) {
+    setProcessNode: function (processNode, style, postLoadFun, resizeFun, defaultRoute) {
         var _self = this;
         MWF.xDesktop.requireApp("process.Work", "Processor", function () {
             var op = this.getOpinion();
@@ -2536,6 +2536,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "opinion": op.opinion,
                 "tabletWidth": this.json.tabletWidth || 0,
                 "tabletHeight": this.json.tabletHeight || 0,
+                "defaultRoute": defaultRoute,
                 "onPostLoad": function () {
                     if (postLoadFun) postLoadFun(this);
                     _self.fireEvent("afterLoadProcessor", [this]);
