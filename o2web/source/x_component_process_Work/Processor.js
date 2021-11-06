@@ -9,6 +9,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         "style": "default",
         "mediaNode": null,
         "opinion": "",
+        "defaultRoute": "",
         "tabletWidth": 0,
         "tabletHeight": 0,
         "orgHeight": 276,
@@ -336,6 +337,8 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.routeSelectorArea.empty();
         this.selectedRoute = null;
 
+        var isSelectedDefault = false;
+
         //this.task.routeNameList = ["送审核", "送办理", "送公司领导阅"];
         if (!routeList) routeList = this.getRouteDataList();
         routeList.each(function (route, i) {
@@ -359,7 +362,10 @@ MWF.xApplication.process.Work.Processor = new Class({
                 }
             });
 
-            if (routeList.length == 1 || route.sole) {
+            if( route.id === this.options.defaultRoute || route.name === this.options.defaultRoute ){
+                this.selectRoute_noform(routeNode);
+                isSelectedDefault = true;
+            }else if ( !isSelectedDefault && (routeList.length == 1 || route.sole)) {
                 this.selectRoute_noform(routeNode);
             }
 
@@ -378,6 +384,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         if (!routeList) routeList = this.getRouteDataList();
         //this.task.routeNameList.each(function(route, i){
         var isSelected = false;
+        var isSelectedDefault = false;
         routeList.each(function (route, i) {
             if (route.hiddenScriptText && this.form && this.form.Macro) {
                 if (this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true") return;
@@ -407,7 +414,11 @@ MWF.xApplication.process.Work.Processor = new Class({
                 }
             });
 
-            if (routeList.length == 1 || route.sole) { //sole表示优先路由
+            if( route.id === this.options.defaultRoute || route.name === this.options.defaultRoute) {
+                this.selectRoute(routeNode);
+                isSelected = true;
+                isSelectedDefault = true;
+            }else if ( !isSelectedDefault && (routeList.length == 1 || route.sole )) { //sole表示优先路由
                 this.selectRoute(routeNode);
                 isSelected = true;
             }
