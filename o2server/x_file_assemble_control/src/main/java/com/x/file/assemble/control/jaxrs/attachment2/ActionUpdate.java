@@ -51,7 +51,7 @@ class ActionUpdate extends BaseAction {
 		private static final long serialVersionUID = -5317431633607552753L;
 
 		static WrapCopier<Wi, Attachment2> copier = WrapCopierFactory.wi(Wi.class, Attachment2.class,
-				ListTools.toList("folder", "name"), null);
+				ListTools.toList( "folder", "name","description"), null);
 
 	}
 
