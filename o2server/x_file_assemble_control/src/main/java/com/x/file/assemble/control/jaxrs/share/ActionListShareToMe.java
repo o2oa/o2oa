@@ -2,6 +2,7 @@ package com.x.file.assemble.control.jaxrs.share;
 
 import java.util.List;
 
+import com.x.file.core.entity.personal.Attachment2;
 import org.apache.commons.collections4.ListUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -47,6 +48,10 @@ class ActionListShareToMe extends BaseAction {
 			shareIds = ListUtils.subtract(shareIds, shieldIds);
 			List<Wo> wos = Wo.copier.copy(emc.list(Share.class, shareIds));
 			for (Wo o : wos) {
+				Attachment2 sourcefile = emc.find(o.getFileId(), Attachment2.class);
+				if(sourcefile != null){
+					o.setDescription(sourcefile.getDescription());
+				}
 				o.setContentType(this.contentType(false, o.getName()));
 			}
 			SortTools.desc(wos, false, "createTime");
@@ -65,12 +70,23 @@ class ActionListShareToMe extends BaseAction {
 		@FieldDescribe("文件类型")
 		private String contentType;
 
+		@FieldDescribe("文件描述")
+		private String description;
+
 		public String getContentType() {
 			return contentType;
 		}
 
 		public void setContentType(String contentType) {
 			this.contentType = contentType;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		public void setDescription(String description) {
+			this.description = description;
 		}
 
 	}
