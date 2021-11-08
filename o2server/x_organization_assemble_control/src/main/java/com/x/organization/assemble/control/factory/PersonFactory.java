@@ -199,31 +199,13 @@ public class PersonFactory extends AbstractFactory {
 		}
 	}
 
-//	public Person getWi1thDingdingIdObject(String dingdingId) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get(Person.class);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-//		Root<Person> root = cq.from(Person.class);
-//		Predicate p = cb.equal(root.get(Person_.dingdingId), dingdingId);
-//		List<Person> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
-//		if (os.isEmpty()) {
-//			return null;
-//		} else {
-//			return os.get(0);
-//		}
-//	}
-//
-//	public Person getWithQiyeweixinIdObject(String dingdingId) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get(Person.class);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-//		Root<Person> root = cq.from(Person.class);
-//		Predicate p = cb.equal(root.get(Person_.qiyeweixinId), dingdingId);
-//		List<Person> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
-//		if (os.isEmpty()) {
-//			return null;
-//		} else {
-//			return os.get(0);
-//		}
-//	}
+	public Long countWithNameOrMobile(String name, String mobile) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Person.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Person> root = cq.from(Person.class);
+		cq.select(cb.count(root)).where(cb.or(cb.equal(root.get(Person.name_FIELDNAME), name),
+				cb.equal(root.get(Person.mobile_FIELDNAME), mobile)));
+		return em.createQuery(cq).getSingleResult();
+	}
 }
