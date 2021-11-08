@@ -4410,7 +4410,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
             }
             if (!app || !process){
                 var cmpt = this.getApp();
-                o2.requireApp([["process.TaskCenter", "lp."+o2.language], ["process.TaskCenter", ""]],"", ()=>{
+                o2.requireApp([["process.TaskCenter", "lp."+o2.language], ["process.TaskCenter", ""]],"", function(){
                     var obj = {
                         "lp": o2.xApplication.process.TaskCenter.LP,
                         "content": cmpt.content,
