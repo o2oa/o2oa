@@ -168,3 +168,4 @@ typings/
 *.versionsBackup
 *netbean
 **/nbproject/
+*.lock
