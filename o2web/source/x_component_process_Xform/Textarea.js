@@ -164,11 +164,11 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
     _resetNodeEdit: function(){
         var input = new Element("textarea", {"styles": {
                 "background": "transparent",
-                "width": "100%",
+                "width": (this.json.inputStyles && this.json.inputStyles.width) ? this.json.inputStyles.width : "100%",
                 "border": "0px"
             }});
         var node = new Element("div", {"styles": {
-                "ovwrflow": "hidden",
+                // "ovwrflow": "hidden",
                 "position": "relative",
                 "padding-right": "2px"
             }}).inject(this.node, "after");

@@ -138,7 +138,7 @@ MWF.xApplication.process.FormDesigner.Module.$Input = MWF.FC$Input = new Class({
             }
         }).inject(this.node);
         this.node.setStyles({
-            "overflow": "hidden",
+            // "overflow": "hidden",
             "position": "relative",
             "margin-right": "20px",
             "padding-right": "4px"

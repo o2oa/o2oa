@@ -24,7 +24,7 @@ MWF.xApplication.process.FormDesigner.Module.Textarea = MWF.FCTextarea = new Cla
 			}
 		}).inject(this.node);
 		this.node.setStyles({
-			"ovwrflow": "hidden",
+			// "ovwrflow": "hidden",
 			"position": "relative",
 			"padding-right": "2px"
 		});
