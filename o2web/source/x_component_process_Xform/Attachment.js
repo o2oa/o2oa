@@ -1368,46 +1368,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 if( message && message.node )message.node.destroy();
             }
         }.bind(this), files);
-
-
-        // this.uploadFileAreaNode = new Element("div");
-        // var html = "<input name=\"file\" type=\"file\" multiple/>";
-        // this.uploadFileAreaNode.set("html", html);
-        //
-        // this.fileUploadNode = this.uploadFileAreaNode.getFirst();
-        // this.fileUploadNode.addEvent("change", function(){
-        //
-        //     var files = this.fileUploadNode.files;
-        //     if (files.length){
-        //         if ((files.length+this.attachmentController.attachments.length > this.attachmentController.options.attachmentCount) && this.attachmentController.options.attachmentCount>0){
-        //             var content = MWF.xApplication.process.Xform.LP.uploadMore;
-        //             content = content.replace("{n}", this.attachmentController.options.attachmentCount);
-        //             this.form.notice(content, "error");
-        //         }else{
-        //             for (var i = 0; i < files.length; i++) {
-        //                 var file = files.item(i);
-        //
-        //                 var formData = new FormData();
-        //                 formData.append('site', this.json.id);
-        //                 formData.append('file', file);
-        //
-        //                 //formData.append('folder', folderId);
-        //
-        //                 this.form.workAction.uploadAttachment(this.form.businessData.work.id ,function(o, text){
-        //                     if (o.id){
-        //                         this.form.workAction.getAttachment(o.id, this.form.businessData.work.id, function(json){
-        //                             if (json.data) this.attachmentController.addAttachment(json.data);
-        //                             this.attachmentController.checkActions();
-        //
-        //                             this.fireEvent("upload", [json.data]);
-        //                         }.bind(this))
-        //                     }
-        //                     this.attachmentController.checkActions();
-        //                 }.bind(this), null, formData, file);
-        //             }
-        //         }
-        //     }
-        // }.bind(this));
     },
     uploadAttachment: function (e, node, files) {
         if (window.o2android && window.o2android.uploadAttachment) {
