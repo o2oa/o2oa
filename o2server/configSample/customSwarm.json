@@ -1,0 +1,10 @@
+{
+  "image": "o2oa/o2server-swarm",
+  "tag": "6.4.1",
+  "portStart": 10000.0,
+  "###image": "镜像名称:o2oa/o2server-swarm.###",
+  "###tag": "镜像标签:6.4.1.###",
+  "###initCmdTemplate": "initCmd模板:6.4.1.###",
+  "###runCmdTemplate": "runCmd模板:6.4.1.###",
+  "###portStart": "镜像标签:6.4.1.###"
+}
