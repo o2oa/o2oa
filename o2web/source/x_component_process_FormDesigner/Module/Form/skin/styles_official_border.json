@@ -494,8 +494,7 @@
       "height": "auto",
       "line-height": "30px",
       "font-size": "18px",
-      "border": "0px solid #cccccc",
-      "overflow": "visible"
+      "border": "0px solid #cccccc"
     },
     "inputStyles": {
       "border": "1px solid #cccccc",
@@ -512,8 +511,7 @@
       "height": "auto",
       "line-height": "30px",
       "font-size": "18px",
-      "border": "0px solid #cccccc",
-      "overflow": "visible"
+      "border": "0px solid #cccccc"
     },
     "inputStyles": {
       "border": "1px solid #cccccc",
@@ -530,8 +528,7 @@
       "height": "auto",
       "line-height": "30px",
       "font-size": "18px",
-      "border": "0px solid #cccccc",
-      "overflow": "visible"
+      "border": "0px solid #cccccc"
     },
     "inputStyles": {
       "border": "1px solid #cccccc",
