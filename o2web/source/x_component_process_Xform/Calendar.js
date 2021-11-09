@@ -134,7 +134,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                     "yearOnly" : (this.json.selectType === "year"),
                     "defaultView" : defaultView,
                     //"target": this.form.node,
-                    "target": layout.mobile ? $(document.body) : this.form.app.content,
+                    "target": o2.session.isMobile ? $(document.body) : this.form.app.content,
                     "format": this.json.format,
                     "onComplate": function(formateDate, date){
                         this.validationMode();
@@ -161,7 +161,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                     "onShow": function(){
                         if (_self.descriptionNode) _self.descriptionNode.setStyle("display", "none");
 
-                        if( layout.mobile ){
+                        if( o2.session.isMobile ){
                             this.container.position({
                                 relativeTo: $(document.body),
                                 position: 'leftCenter',
