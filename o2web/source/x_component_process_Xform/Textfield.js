@@ -115,7 +115,7 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
         });
 
         var node = new Element("div", {"styles": {
-                // "overflow": "hidden",
+                "overflow": (this.json.styles && this.json.styles.overflow) ? this.json.styles.overflow : "hidden",
                 "position": "relative",
                 "margin-right": "20px",
                 "padding-right": "4px"
