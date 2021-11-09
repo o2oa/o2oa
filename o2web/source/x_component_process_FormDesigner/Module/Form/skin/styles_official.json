@@ -400,14 +400,14 @@
   },
   "textfield": {
     "styles": {
-      "border-bottom": "0px",
-      "border": "0px solid #999999",
+      "border-bottom": "1px solid #999999",
       "height": "auto",
       "font-size": "18px",
-      "line-height": "30px"
+      "line-height": "30px",
+      "overflow": "visible"
     },
     "inputStyles": {
-      "border": "1px solid #999999",
+      "border": "0px",
       "height": "30px",
       "line-height": "30px",
       "font-size": "18px",
@@ -417,14 +417,14 @@
   },
   "calendar": {
     "styles": {
-      "border-bottom": "0px",
-      "border": "0px solid #999999",
+      "border-bottom": "1px solid #999999",
       "height": "auto",
       "font-size": "18px",
-      "line-height": "30px"
+      "line-height": "30px",
+      "overflow": "visible"
     },
     "inputStyles": {
-      "border": "1px solid #999999",
+      "border": "0px",
       "height": "30px",
       "line-height": "30px",
       "font-size": "18px",
@@ -434,14 +434,14 @@
   },
   "number": {
     "styles": {
-      "border-bottom": "0px",
-      "border": "0px solid #999999",
+      "border-bottom": "1px solid #999999",
       "height": "auto",
       "font-size": "18px",
-      "line-height": "30px"
+      "line-height": "30px",
+      "overflow": "visible"
     },
     "inputStyles": {
-      "border": "1px solid #999999",
+      "border": "0px",
       "height": "30px",
       "line-height": "30px",
       "font-size": "18px",
@@ -451,14 +451,14 @@
   },
   "address": {
     "styles": {
-      "border-bottom": "0px",
+      "border-bottom": "1px solid #999999",
       "height": "auto",
       "line-height": "30px",
       "font-size": "18px",
-      "border": "0px solid #999999"
+      "overflow": "visible"
     },
     "inputStyles": {
-      "border": "1px solid #999999",
+      "border": "0px",
       "height": "30px",
       "line-height": "30px",
       "color": "#666",
@@ -468,14 +468,14 @@
   },
   "combox": {
     "styles": {
-      "border-bottom": "0px",
+      "border-bottom": "1px solid #999999",
       "height": "auto",
       "line-height": "30px",
       "font-size": "18px",
-      "border": "0px solid #999999"
+      "overflow": "visible"
     },
     "inputStyles": {
-      "border": "1px solid #999999",
+      "border": "0px",
       "height": "30px",
       "line-height": "30px",
       "color": "#666",
@@ -492,7 +492,8 @@
       "border": "0px solid #999999"
     },
     "inputStyles": {
-      "border": "1px solid #999999",
+      "border": "0px",
+      "border-bottom": "1px solid #999999",
       "height": "30px",
       "line-height": "30px",
       "color": "#666",
@@ -509,7 +510,8 @@
       "border": "0px solid #999999"
     },
     "inputStyles": {
-      "border": "1px solid #999999",
+      "border": "0px",
+      "border-bottom": "1px solid #999999",
       "height": "30px",
       "line-height": "30px",
       "color": "#666",
@@ -523,10 +525,11 @@
       "height": "auto",
       "line-height": "30px",
       "font-size": "18px",
-      "border": "0px solid #999999"
+      "border": "0px"
     },
     "inputStyles": {
-      "border": "1px solid #999999",
+      "border": "0px",
+      "border-bottom": "1px solid #999999",
       "height": "30px",
       "line-height": "30px",
       "color": "#666",
@@ -553,11 +556,12 @@
   },
   "textarea": {
     "styles": {
-      "border": "0px solid #999999",
-      "font-size": "18px"
+      "border-bottom": "1px solid #999999",
+      "font-size": "18px",
+      "overflow": "visable"
     },
     "inputStyles": {
-      "border": "1px solid #999999",
+      "border": "0px",
       "color": "#666",
       "font-size": "18px",
       "font-family": "宋体"
@@ -565,11 +569,12 @@
   },
   "opinion": {
     "styles": {
-      "border": "0px solid #999999",
-      "font-size": "18px"
+      "border-bottom": "1px solid #999999",
+      "font-size": "18px",
+      "overflow": "visable"
     },
     "inputStyles": {
-      "border": "1px solid #999999",
+      "border": "0px",
       "color": "#666",
       "font-size": "18px",
       "font-family": "宋体"
