@@ -168,7 +168,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
                 "border": "0px"
             }});
         var node = new Element("div", {"styles": {
-                // "ovwrflow": "hidden",
+                // "ovwrflow": (this.json.styles && this.json.styles.overflow) ? this.json.styles.overflow : "hidden",
                 "position": "relative",
                 "padding-right": "2px"
             }}).inject(this.node, "after");
