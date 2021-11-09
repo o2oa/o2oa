@@ -34,6 +34,13 @@
       "pc"
     ]
   },
+  "official-border": {
+    "name": "公文样式_边框",
+    "file": "styles_official_border.json",
+    "mode": [
+      "pc"
+    ]
+  },
   "defaultMobile": {
     "name": "手机样式",
     "file": "styles_defaultMobile.json",

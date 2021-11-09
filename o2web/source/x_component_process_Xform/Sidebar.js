@@ -365,6 +365,11 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
     },
     processWork: function(route){
         var opinion = this.form.getOpinion();
+
+        this.form.Macro.environment.form.currentRouteName = route;
+        this.form.Macro.environment.form.opinion = opinion.opinion;
+        this.form.Macro.environment.form.medias = opinion.medias;
+
         if (!this.form.formCustomValidation()){
             this.form.app.content.unmask();
             //    if (callback) callback();
