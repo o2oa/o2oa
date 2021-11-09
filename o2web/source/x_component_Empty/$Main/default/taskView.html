@@ -1,0 +1,23 @@
+<h3>{{$.lp.taskListTitle}}</h3>
+<br>
+<table align="center" class="taskListTable" border="1">
+    <tr>
+        <th>{{$.lp.taskTitle}}</th>
+        <th>{{$.lp.taskProcess}}</th>
+        <th>{{$.lp.taskTime}}</th>
+    </tr>
+
+    {{each $.data}}
+    <tr>
+        <td><a href="#" data-o2-events="click:openTask:{{$.work}}">{{$.title}}</a></td>
+        <td>{{$.processName}}</td>
+        <td>{{$.startTime}}</td>
+    </tr>
+    {{end each}}
+</table>
+<br>
+<button data-o2-events="click:openCalendar">{{$.lp.openCalendar}}</button>
+<button data-o2-events="click:openOrganization">{{$.lp.openOrganization}}</button>
+<button data-o2-events="click:startProcess">{{$.lp.startProcess}}</button>
+<br>
+<button data-o2-events="click:openInBrowser">{{$.lp.openInBrowser}}</button>
