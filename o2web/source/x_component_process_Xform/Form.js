@@ -368,6 +368,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     load: function (callback) {
         this.loadMacro(function () {
+            debugger
             this.loadLanguage(function(flag){
                 if (flag && this.formDataText){
                     var data = o2.bindJson(this.formDataText,  {"lp": MWF.xApplication.process.Xform.LP.form});
@@ -431,6 +432,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     loadLanguage: function(callback){
         //formDataText
+        debugger;
         if (this.json.languageType!=="script" && this.json.languageType!=="default"){
             if (callback) callback();
             return true;
@@ -448,7 +450,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             if (this.options.macro==="PageContext"){
                 var portal = this.app.portal.id;
-                languageJson = this.workAction.getScriptByNameV2(portal, name, function(d){
+                // languageJson = this.workAction.getScriptByNameV2(portal, name, function(d){
+                //     return this.Macro.exec(d.data.text, this);
+                // }.bind(this), function(){});
+
+                languageJson = this.workAction.getScriptByNameV2(portal, name).then(function(d){
                     return this.Macro.exec(d.data.text, this);
                 }.bind(this), function(){});
             }else{
