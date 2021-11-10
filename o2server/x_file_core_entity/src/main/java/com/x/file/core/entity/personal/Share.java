@@ -33,10 +33,17 @@ public class Share extends SliceJpaObject {
 
 	private static final String TABLE = PersistenceProperties.Personal.Share.table;
 
+	public static final String SHARE_TYPE_PASSWORD = "password";
+
+	public static final String FILE_TYPE_FOLDER = "folder";
+	public static final String FILE_TYPE_ATTACHMENT = "attachment";
+
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -48,6 +55,7 @@ public class Share extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		this.lastUpdateTime = new Date();
 		/* 如果扩展名为空去掉null */
@@ -188,6 +196,17 @@ public class Share extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> shareOrgList;
 
+	public static final String shareGroupList_FIELDNAME = "shareGroupList";
+	@FieldDescribe("共享群组")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + shareGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + shareGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + shareGroupList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + shareGroupList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> shareGroupList;
+
 	public static final String shieldUserList_FIELDNAME = "shieldUserList";
 	@FieldDescribe("屏蔽人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -301,5 +320,13 @@ public class Share extends SliceJpaObject {
 
 	public void setShieldUserList(List<String> shieldUserList) {
 		this.shieldUserList = shieldUserList;
+	}
+
+	public List<String> getShareGroupList() {
+		return shareGroupList;
+	}
+
+	public void setShareGroupList(List<String> shareGroupList) {
+		this.shareGroupList = shareGroupList;
 	}
 }
