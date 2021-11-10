@@ -23,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import com.x.base.core.project.tools.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
@@ -42,10 +43,6 @@ import com.x.base.core.project.config.WebServers;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Crypto;
-import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.FileTools;
-import com.x.base.core.project.tools.ZipTools;
 import com.x.server.console.action.ActionCreateEncryptKey;
 import com.x.server.console.server.Servers;
 
@@ -313,7 +310,7 @@ public class NodeAgent extends Thread {
 					while ((tmp = randomFile.readLine()) != null) {
 						byte[] bytes = tmp.getBytes(StandardCharsets.ISO_8859_1.name());
 						curReadSize = curReadSize + bytes.length + 1;
-						String lineStr = new String(bytes);
+						String lineStr = new String(bytes, DefaultCharset.name);
 						String time = curTime;
 						String logLevel = "";
 						if (lineStr.length() > 0) {
@@ -350,7 +347,7 @@ public class NodeAgent extends Thread {
 						}
 					}
 					if (curReadSize > 0) {
-						lastTimeFileSize = lastTimeFileSize + curReadSize - 1;
+						lastTimeFileSize = lastTimeFileSize + curReadSize;
 					}
 				}
 				dos.writeUTF(XGsonBuilder.toJson(list));
