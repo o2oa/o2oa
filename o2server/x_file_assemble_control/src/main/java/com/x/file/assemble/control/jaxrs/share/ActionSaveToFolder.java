@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -44,20 +45,20 @@ class ActionSaveToFolder extends BaseAction {
 				folderId = Business.TOP_FOLD;
 			}
 			/* 判断文件的分享用户是否包含当前用户 */
-			if(!"password".equals(share.getShareType())) {
+			if(!Share.SHARE_TYPE_PASSWORD.equals(share.getShareType())) {
 				if(!hasPermission(business,effectivePerson,share)){
 					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
 			}else{
 				if(StringUtils.isEmpty(password)){
-					throw new Exception("password can not be empty.");
+					throw new ExceptionFieldEmpty(Share.password_FIELDNAME);
 				}
 				if(!password.equalsIgnoreCase(share.getPassword())){
-					throw new Exception("invalid password.");
+					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
 			}
 			if(StringUtils.isEmpty(fileId)){
-				throw new Exception("fileId can not be empty.");
+				throw new ExceptionFieldEmpty(Share.fileId_FIELDNAME);
 			}
 
 			/* 转存文件或目录到指定的目录下 */
@@ -74,7 +75,7 @@ class ActionSaveToFolder extends BaseAction {
 		EntityManagerContainer emc = business.entityManagerContainer();
 
 		this.usedSize = business.attachment2().getUseCapacity(effectivePerson.getDistinguishedName());
-		if("attachment".equals(share.getFileType())){
+		if(Share.FILE_TYPE_ATTACHMENT.equals(share.getFileType())){
 			Attachment2 att = emc.find(fileId, Attachment2.class);
 			if(att!=null) {
 				usedSize = usedSize + att.getLength();

@@ -3,6 +3,7 @@ package com.x.file.assemble.control.jaxrs.share;
 import java.util.Arrays;
 import java.util.List;
 
+import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,16 +29,16 @@ class ActionGet extends BaseAction {
 			}
 			/* 判断当前用户是否有权限访问该文件 */
 			if(!effectivePerson.isManager() && !StringUtils.equals(effectivePerson.getDistinguishedName(), share.getPerson())) {
-				if (!"password".equals(share.getShareType())) {
+				if (!Share.SHARE_TYPE_PASSWORD.equals(share.getShareType())) {
 					if (!hasPermission(business, effectivePerson, share)) {
 						throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 					}
 				} else {
 					if (StringUtils.isEmpty(password)) {
-						throw new Exception("password can not be empty.");
+						throw new ExceptionFieldEmpty(Share.password_FIELDNAME);
 					}
 					if (!password.equalsIgnoreCase(share.getPassword())) {
-						throw new Exception("invalid password.");
+						throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 					}
 				}
 			}
