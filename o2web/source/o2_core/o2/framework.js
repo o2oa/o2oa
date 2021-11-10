@@ -1,5 +1,5 @@
 layout.addReady(function(){
-    if (layout.desktop.type!=="layout") layout.app = true;
+    if (layout.desktop.type!=="layout" && layout.desktop.type!=="app") layout.app = true;
     if (!o2.env){
         MWF.require("MWF.xScript.Macro", null, false);
 
@@ -49,16 +49,52 @@ layout.addReady(function(){
             },
             addEvent: function(){}
         };
-        var environment = {
-            "form": page,
-            "forms": page.forms,
-            "all": page.all,
-            "data": page.businessData.data,
-            "status": page.businessData.status,
-            "pageInfor": page.businessData.pageInfor,
-            "target": null,
-            "event": null
-        };
-        o2.env = new MWF.xScript.PageEnvironment(environment);
+
+        function createEnvironment(page){
+            var environment = {
+                "form": page,
+                "forms": page.forms,
+                "all": page.all,
+                "data": page.businessData.data,
+                "status": page.businessData.status,
+                "pageInfor": page.businessData.pageInfor,
+                "target": null,
+                "event": null
+            };
+            return new MWF.xScript.PageEnvironment(environment);
+        }
+        o2.env = createEnvironment(page);
+        o2.apis = {};
+
+        o2.defineProperties(o2, {
+            "api": {"get": function(){
+                var app = layout.desktop.currentApp || layout.app;
+                if (app){
+                    if (app.unique && o2.apis[app.unique]) return o2.apis[app.unique];
+                    var tmpApp = page.app;
+                    page.app = app;
+                    page.app.toPortal = tmpApp.toPortal;
+                    var api = createEnvironment(page);
+                    if (!app.unique) app.unique = (new Date()).getTime().toString();
+                    o2.apis[app.unique] = api;
+                    return api;
+                }
+                return o2.env;
+            }}
+        });
+
+        o2.getApi = function(app){
+            if (app){
+                if (app.unique && o2.apis[app.unique]) return o2.apis[app.unique];
+                var tmpApp = page.app;
+                page.app = app;
+                page.app.toPortal = tmpApp.toPortal;
+                var api = createEnvironment(page);
+                if (!app.unique) app.unique = (new Date()).getTime().toString();
+                o2.apis[app.unique] = api;
+                return api;
+            }
+            return o2.env;
+        }
     }
 });

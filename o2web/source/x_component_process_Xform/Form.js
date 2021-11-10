@@ -368,6 +368,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     load: function (callback) {
         this.loadMacro(function () {
+            debugger
             this.loadLanguage(function(flag){
                 if (flag && this.formDataText){
                     var data = o2.bindJson(this.formDataText,  {"lp": MWF.xApplication.process.Xform.LP.form});
@@ -431,6 +432,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     loadLanguage: function(callback){
         //formDataText
+        debugger;
         if (this.json.languageType!=="script" && this.json.languageType!=="default"){
             if (callback) callback();
             return true;
@@ -448,7 +450,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             if (this.options.macro==="PageContext"){
                 var portal = this.app.portal.id;
-                languageJson = this.workAction.getScriptByNameV2(portal, name, function(d){
+                // languageJson = this.workAction.getScriptByNameV2(portal, name, function(d){
+                //     return this.Macro.exec(d.data.text, this);
+                // }.bind(this), function(){});
+
+                languageJson = this.workAction.getScriptByNameV2(portal, name).then(function(d){
                     return this.Macro.exec(d.data.text, this);
                 }.bind(this), function(){});
             }else{
@@ -1196,7 +1202,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return moduleNodes;
     },
 
-    _loadModules: function (dom) {
+    _loadModules: function (dom, beforeLoadModule) {
         //var subDom = this.node.getFirst();
         //while (subDom){
         //    if (subDom.get("MWFtype")){
@@ -1213,7 +1219,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var json = this._getDomjson(node);
             //if( json.type === "Subform" || json.moduleName === "subform" )this.subformCount++;
             //if( json.type === "Subpage" || json.moduleName === "subpage" )this.subpageCount++;
-            var module = this._loadModule(json, node);
+            var module = this._loadModule(json, node, beforeLoadModule);
             this.modules.push(module);
         }.bind(this));
     },
@@ -2295,7 +2301,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return null;
     },
 
-    processWork: function () {
+    processWork: function ( defaultRoute ) {
         var _self = this;
 
         if (!this.businessData.work.startTime) {
@@ -2307,10 +2313,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         } else {
             if (this.json.mode == "Mobile") {
                 setTimeout(function () {
-                    this.processWork_mobile();
+                    this.processWork_mobile( defaultRoute );
                 }.bind(this), 100);
             } else {
-                this.processWork_pc();
+                this.processWork_pc( defaultRoute );
             }
         }
     },
@@ -2339,13 +2345,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.submitFormModule = new MWF["APPSubmitform"](submitFormContainer, this.json, this);
             this.submitFormModule.addEvent("afterModulesLoad", function () {
                 this.submitFormModule.show();
+                this.fireEvent("afterLoadProcessor", [this.submitFormModule]);
             }.bind(this))
             this.submitFormModule.load();
         } else {
             this.submitFormModule.show();
+            this.fireEvent("afterLoadProcessor", [this.submitFormModule]);
         }
     },
-    processWork_pc: function () {
+    processWork_pc: function ( defaultRoute ) {
         var _self = this;
         this.fireEvent("beforeProcessWork");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
@@ -2427,9 +2435,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         }.bind(this), function () {
             if (this.processDlg) setSize.call(this.processDlg, true)
-        }.bind(this));
+        }.bind(this), defaultRoute);
     },
-    processWork_mobile: function () {
+    processWork_mobile: function ( defaultRoute ) {
         if (this.app.inBrowser) {
             this.app.content.setStyle("height", document.body.getSize().y);
         }
@@ -2472,7 +2480,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var processNode = this.createProcessNode();
 
         //this.setProcessNode(processNode);
-        this.setProcessNode(processNode);
+        this.setProcessNode(processNode, null, null, null, defaultRoute);
 
         this.showProcessNode(processNode);
         processNode.setStyle("overflow", "auto");
@@ -2518,7 +2526,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
         return { "opinion": opinion.trim(), "medias": medias };
     },
-    setProcessNode: function (processNode, style, postLoadFun, resizeFun) {
+    setProcessNode: function (processNode, style, postLoadFun, resizeFun, defaultRoute) {
         var _self = this;
         MWF.xDesktop.requireApp("process.Work", "Processor", function () {
             var op = this.getOpinion();
@@ -2534,6 +2542,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "opinion": op.opinion,
                 "tabletWidth": this.json.tabletWidth || 0,
                 "tabletHeight": this.json.tabletHeight || 0,
+                "defaultRoute": defaultRoute,
                 "onPostLoad": function () {
                     if (postLoadFun) postLoadFun(this);
                     _self.fireEvent("afterLoadProcessor", [this]);

@@ -1,5 +1,7 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
+import java.util.Map;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,7 +37,8 @@ class ActionOauthGet extends BaseAction {
 		wo.setAuthAddress(oauthClient.getAuthAddress());
 		wo.setAuthMethod(oauthClient.getAuthMethod());
 		wo.setIcon(oauthClient.getIcon());
-		String authParameter = this.fillAuthParameter(oauthClient.getAuthParameter(), oauthClient);
+		Map<String, Object> param = oauthCreateParam(oauthClient, "", "");
+		String authParameter = fillParameter(oauthClient.getAuthParameter(), param);
 		logger.debug("auth parameter:{}.", authParameter);
 		wo.setAuthParameter(authParameter);
 		result.setData(wo);

@@ -3212,6 +3212,36 @@ MWF.xScript.Environment = function(ev){
                     layout.app.$openWithSelf = true;
                 }
             }
+            if (!app || !process){
+                var cmpt = this.getApp();
+                o2.requireApp([["process.TaskCenter", "lp."+o2.language], ["process.TaskCenter", ""]],"", function(){
+                    var obj = {
+                        "lp": o2.xApplication.process.TaskCenter.LP,
+                        "content": cmpt.content,
+                        "addEvent": function(type, fun){
+                            cmpt.addEvent(type, fun);
+                        },
+                        "getAction": function (callback) {
+                            if (!this.action) {
+                                this.action = o2.Actions.get("x_processplatform_assemble_surface");
+                                if (callback) callback();
+                            } else {
+                                if (callback) callback();
+                            }
+                        },
+                        "desktop": layout.desktop,
+                        "refreshAll": function(){},
+                        "notice": cmpt.notice,
+                    }
+                    o2.JSON.get("../x_component_process_TaskCenter/$Main/default/css.wcss", function(data){
+                        obj.css = data;
+                    }, false);
+
+                    if (!cmpt.processStarter) cmpt.processStarter = new o2.xApplication.process.TaskCenter.Starter(obj);
+                    cmpt.processStarter.load();
+                }, true, true);
+                return "";
+            }
             var action = MWF.Actions.get("x_processplatform_assemble_surface").getProcessByName(process, app, function(json){
                 if (json.data){
                     MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
@@ -3314,7 +3344,7 @@ MWF.xScript.Environment = function(ev){
 MWF.xScript.createTable = function(){
     return function(name){
         this.name = name;
-        this.action = o2.Actions.get("x_query_assemble_surface");
+        this.action = o2.Actions.load("x_query_assemble_surface").TableAction;
 
         this.listRowNext = function(id, count, success, error, async){
             this.action.listRowNext(this.name, id, count, success, error, async);
@@ -3322,29 +3352,29 @@ MWF.xScript.createTable = function(){
         this.listRowPrev = function(id, count, success, error, async){
             this.action.listRowPrev(this.name, id, count, success, error, async);
         };
-        this.listRowPrev = function(id, count, success, error, async){
-            this.action.listRowPrev(this.name, id, count, success, error, async);
+        this.listRowSelect = function(where, orderBy, size, success, error, async){
+            this.action.listRowSelect(this.name, {"where": where, "orderBy": orderBy, "size": size || ""}, success, error, async);
         };
         this.listRowSelectWhere = function(where, success, error, async){
             this.action.listRowSelectWhere(this.name, where, success, error, async);
         };
-        this.listRowCountWhere = function(where, success, error, async){
-            this.action.listRowCountWhere(this.name, where, success, error, async);
+        this.rowCountWhere = function(where, success, error, async){
+            this.action.rowCountWhere(this.name, where, success, error, async);
         };
         this.deleteRow = function(id, success, error, async){
-            this.action.deleteRow(this.name, id, success, error, async);
+            this.action.rowDelete(this.name, id, success, error, async);
         };
         this.deleteAllRow = function(success, error, async){
-            this.action.deleteAllRow(this.name, success, error, async);
+            this.action.rowDeleteAll(this.name, success, error, async);
         };
         this.getRow = function(id, success, error, async){
-            this.action.getRow(this.name, id, success, error, async);
+            this.action.rowGet(this.name, id, success, error, async);
         };
         this.insertRow = function(data, success, error, async){
-            this.action.insertRow(this.name, data, success, error, async);
+            this.action.rowInsert(this.name, data, success, error, async);
         };
         this.updateRow = function(id, data, success, error, async){
-            this.action.updateRow(this.name, id, data, success, error, async);
+            this.action.rowUpdate(this.name, id, data, success, error, async);
         };
     }
 };

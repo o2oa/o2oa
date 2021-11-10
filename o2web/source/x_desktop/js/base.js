@@ -5,6 +5,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
     layout.apps = [];
     var locate = window.location;
     layout.protocol = locate.protocol;
+    layout.port = locate.port;
     layout.inBrowser = true;
     layout.session = layout.session || {};
     layout.debugger = (locate.href.toString().indexOf("debugger") !== -1);

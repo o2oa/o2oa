@@ -1456,6 +1456,308 @@
  * );
  */
 
+
+/**
+ * this.Table是一个工具类，您可以使用这个类对数据中心的数据表进行增删改查操作。
+ * @module server.Table
+ * @o2category server
+ * @o2ordernumber 135
+ * @param {String} tableName 数据表的id、名称或别名。
+ * @return {Object} table对象
+ * @o2syntax
+ * //您可以在脚本中，通过this.Table()来返回Table的对象，如下：
+ * var table = new this.Table( tableName )
+ */
+
+/**
+ * 列示表中的行对象,下一页。
+ * @method listRowNext
+ * @methodOf module:server.Table
+ * @instance
+ * @param {String} id  当前页最后一条数据的Id，如果是第一页使用"(0)"。
+ * @param {String|Number} count 下一页的行数
+ * @param {Function} [success] 调用成功时的回调函数。
+ * @param {Function} [failure] 调用错误时的回调函数。
+ * @o2syntax
+ * table.listRowNext( id, count, success, failure )
+ * @example
+ * var table = new this.Table("table1");
+ *
+ * table.listRowNext( "0", 20, function(data){
+ *    //data 形如
+ *    //{
+ *    //    "type": "success",
+ *    //    "data":[
+ *    //       {
+ *    //        "id": "5584e6d1-8088-4694-a948-8968ac8d4923", //数据的id
+ *    //        "createTime": "2021-11-01 16:23:41", //数据创建时间
+ *    //        "updateTime": "2021-11-01 16:23:41", //数据更新时间
+ *    //         ... //定义的字段（列）和值
+ *    //        }
+ *   //     ],
+ *   //       "message": "",
+ *   //     "date": "2021-11-01 18:34:19",
+ *   //     "spent": 13,
+ *   //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ */
+
+/**
+ * 列示表中的行对象,上一页。
+ * @method listRowPrev
+ * @methodOf module:server.Table
+ * @instance
+ * @param {String} id  当前页第一条数据的Id，如果是最后一页使用"(0)"。
+ * @param {String|Number} count 上一页的行数
+ * @param {Function} [success] 调用成功时的回调函数。
+ * @param {Function} [failure] 调用错误时的回调函数。
+ * @o2syntax
+ * table.listRowNext( id, count, success, failure )
+ * @example
+ * var table = new this.Table("table1");
+ *
+ * table.listRowNext( "0", 20, function(data){
+ *    //data 形如
+ *    //{
+ *    //    "type": "success",
+ *    //    "data":[
+ *    //       {
+ *    //        "id": "5584e6d1-8088-4694-a948-8968ac8d4923", //数据的id
+ *    //        "createTime": "2021-11-01 16:23:41", //数据创建时间
+ *    //        "updateTime": "2021-11-01 16:23:41", //数据更新时间
+ *    //         ... //定义的字段（列）和值
+ *    //        }
+ *   //     ],
+ *   //       "message": "",
+ *   //     "date": "2021-11-01 18:34:19",
+ *   //     "spent": 13,
+ *   //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ */
+
+/**
+ * 根据条件获取表中的数据。
+ * @method listRowSelect
+ * @methodOf module:server.Table
+ * @instance
+ * @param {String} [where] 查询条件，格式为jpql语法,o.name='zhangsan'，允许为空。
+ * @param {String} [orderBy] 排序条件，格式为：o.updateTime desc，允许为空
+ * @param {String|Number} [size] 返回结果集数量,允许为空。
+ * @param {Function} [success] 调用成功时的回调函数。
+ * @param {Function} [failure] 调用错误时的回调函数。
+ * @o2syntax
+ * table.listRowSelect( where, orderBy, size, success, failure )
+ * @example
+ * var table = new this.Table("table1");
+ *
+ * //查询字段name等于zhangsan的数据，结果按updateTime倒序
+ * table.listRowSelect( "o.name='zhangsan", "o.updateTime desc", 20, function(data){
+ *    //data 形如
+ *    //{
+ *    //    "type": "success",
+ *    //    "data":[
+ *    //       {
+ *    //        "id": "5584e6d1-8088-4694-a948-8968ac8d4923", //数据的id
+ *    //        "createTime": "2021-11-01 16:23:41", //数据创建时间
+ *    //        "updateTime": "2021-11-01 16:23:41", //数据更新时间
+ *    //         ... //定义的字段（列）和值
+ *    //        }
+ *   //     ],
+ *   //       "message": "",
+ *   //     "date": "2021-11-01 18:34:19",
+ *   //     "spent": 13,
+ *   //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ */
+
+/**
+ * 通过where 统计数量。
+ * @method rowCountWhere
+ * @methodOf module:server.Table
+ * @instance
+ * @param {String} where 查询条件，格式为jpql语法,o.name='zhangsan'，允许为空。
+ * @param {Function} [success] 调用成功时的回调函数。
+ * @param {Function} [failure] 调用错误时的回调函数。
+ * @o2syntax
+ * table.rowCountWhere( where, success, failure )
+ * @example
+ * var table = new this.Table("table1");
+ *
+ * //查询字段name等于zhangsan的数据，结果按updateTime倒序
+ * table.rowCountWhere( "o.name='zhangsan", function(data){
+ *    //data 形如
+ *    //{
+ *    //   "type": "success",
+ *    //  "data": {
+ *    //      "value": 5 //符合条件数据的总条数
+ *    //  },
+ *    //  "message": "",
+ *    //  "date": "2021-11-01 18:32:27"
+ *    //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ */
+
+/**
+ * 删除数据表中指定id的记录。
+ * @method deleteRow
+ * @methodOf module:server.Table
+ * @instance
+ * @param {id} 需要删除记录的id。
+ * @param {Function} [success] 调用成功时的回调函数。
+ * @param {Function} [failure] 调用错误时的回调函数。
+ * @o2syntax
+ * table.deleteRow( id, success, failure )
+ * @example
+ * var table = new this.Table("table1");
+ *
+ * table.deleteRow( "e1f89185-d8b0-4b66-9e34-aed3323d0d79", function(data){
+ *    //data 形如
+ *    //{
+ *    //   "type": "success",
+ *    //  "data": {
+ *    //      "value": true //true表示删除成功，false表示无此数据
+ *    //  },
+ *    //  "message": "",
+ *    //  "date": "2021-11-01 18:32:27"
+ *    //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ */
+
+/**
+ * 更新指定表中所有行的数据。
+ * @method deleteAllRow
+ * @methodOf module:server.Table
+ * @instance
+ * @param {Function} [success] 调用成功时的回调函数。
+ * @param {Function} [failure] 调用错误时的回调函数。
+ * @o2syntax
+ * table.deleteAllRow( success, failure, async )
+ * @example
+ * var table = new this.Table("table1");
+ *
+ * table.deleteAllRow( function(data){
+ *    //data 形如
+ *    //{
+ *    //   "type": "success",
+ *    //  "data": {
+ *    //      "value": 1 //表示删除的条数，0表示无数据
+ *    //  },
+ *    //  "message": "",
+ *    //  "date": "2021-11-01 18:32:27"
+ *    //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ */
+
+/**
+ * 获取数据表中指定id的记录。
+ * @method getRow
+ * @methodOf module:server.Table
+ * @instance
+ * @param {id} 需要获取记录的id。
+ * @param {Function} [success] 调用成功时的回调函数。
+ * @param {Function} [failure] 调用错误时的回调函数。
+ * @o2syntax
+ * table.getRow( id, success, failure )
+ * @example
+ * var table = new this.Table("table1");
+ *
+ * table.getRow( "e1f89185-d8b0-4b66-9e34-aed3323d0d79", function(data){
+ *    //data 形如
+ *    //{
+ *    //    "type": "success",
+ *    //    "data":{
+ *    //        "id": "5584e6d1-8088-4694-a948-8968ac8d4923", //数据的id
+ *    //        "createTime": "2021-11-01 16:23:41", //数据创建时间
+ *    //        "updateTime": "2021-11-01 16:23:41", //数据更新时间
+ *    //         ... //定义的字段（列）和值
+ *    //     },
+ *   //     "message": "",
+ *   //     "date": "2021-11-01 18:34:19",
+ *   //     "spent": 13,
+ *   //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ */
+
+/**
+ * 往数据表中批量插入数据。
+ * @method insertRow
+ * @methodOf module:server.Table
+ * @instance
+ * @param {Object[]} data 需要插入的数据。
+ * @param {Function} [success] 调用成功时的回调函数。
+ * @param {Function} [failure] 调用错误时的回调函数。
+ * @o2syntax
+ * table.insertRow( data, success, failure )
+ * @example
+ * var table = new this.Table("table1");
+ * var data = [
+ *  {
+ *    "subject": "标题一",
+ *    ... //其他字段
+ *  },
+ *  ...
+ * ];
+ * table.insertRow( data, function(data){
+ *    //data 形如
+ *    //{
+ *    //   "type": "success",
+ *    //  "data": {
+ *    //      "value": true //true表示插入成功
+ *    //  },
+ *    //  "message": "",
+ *    //  "date": "2021-11-01 18:32:27"
+ *    //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ */
+
+/**
+ * 往数据表中修改单条数据。
+ * @method updateRow
+ * @methodOf module:server.Table
+ * @instance
+ * @param {String} id 需要修改的数据id。
+ * @param {Function} [success] 调用成功时的回调函数。
+ * @param {Function} [failure] 调用错误时的回调函数。
+ * @o2syntax
+ * table.updateRow( id, data, success, failure )
+ * @example
+ * var table = new this.Table("table1");
+ * var data = {
+ *    "id" : "2cf3a20d-b166-490b-8d29-05544db3d79b",
+ *    "subject": "标题一",
+ *    ... //其他字段
+ *  };
+ * table.updateRow( "2cf3a20d-b166-490b-8d29-05544db3d79b", data, function(data){
+ *    //data 形如
+ *    //{
+ *    //   "type": "success",
+ *    //  "data": {
+ *    //      "value": true //true表示修改成功
+ *    //  },
+ *    //  "message": "",
+ *    //  "date": "2021-11-01 18:32:27"
+ *    //}
+ * }, function(xhr){
+ *    //xhr 为 xmlHttpRequest
+ * });
+ */
+
 /**
  * this.include是一个方法，当您在流程、门户或者内容管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
  * @module include()
@@ -1565,4 +1867,17 @@
  * var sql = this.getFileSQL();
  *
  * return "SELECT o FROM com.x.processplatform.core.entity.content.Task o WHERE "+sql
+ */
+
+/**
+ * this.print是一个方法，在服务器控制台输出信息。<br/>
+ * @module print()
+ * @o2category server
+ * @o2ordernumber 145
+ *
+ * @param {(String)} text 要输出的文本信息。</b>
+ * @param {(String)} type 要输出的文本信息的类型，会添加到输出信息的前面，默认为“PRINT”。</b>
+ * @example
+ * this.print("这是我要输出的信息");
+ * this.print("这是一个错误信息信息", "ERROR");
  */

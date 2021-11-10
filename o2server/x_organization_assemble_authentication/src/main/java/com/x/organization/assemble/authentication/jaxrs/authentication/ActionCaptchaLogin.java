@@ -67,7 +67,7 @@ class ActionCaptchaLogin extends BaseAction {
 				if (!Config.token().verifyPassword(credential, password)) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
-				wo = this.manager(request, response, business, credential, Wo.class);
+				wo = this.manager(request, response, credential, Wo.class);
 			} else {
 				/* 普通用户登录,也有可能拥有管理员角色.增加同中文的认证 */
 				String personId = business.person().getWithCredential(credential);
@@ -82,11 +82,11 @@ class ActionCaptchaLogin extends BaseAction {
 					for (int i = 0; i < arrPerson.length; i++) {
 						personId = arrPerson[i];
 						o = emc.find(personId, Person.class);
-						if(BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())){
+						if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())) {
 							if (LdapTools.auth(o.getUnique(), password)) {
 								break;
 							}
-						}else{
+						} else {
 							if (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
 									|| StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
 								break;
@@ -105,10 +105,11 @@ class ActionCaptchaLogin extends BaseAction {
 						throw new ExceptionFailureLocked(o.getName(), Config.person().getFailureInterval());
 					} else {
 						boolean isAuth = false;
-						if(BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())){
+						if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())) {
 							isAuth = LdapTools.auth(o.getUnique(), password);
-						}else{
-							isAuth = (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
+						} else {
+							isAuth = (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()),
+									o.getPassword())
 									|| StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword()));
 						}
 						if (!isAuth) {

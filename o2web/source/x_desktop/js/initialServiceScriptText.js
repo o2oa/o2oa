@@ -3301,6 +3301,42 @@ var _org = {
     }
 };
 
+bind.Table = function(name){
+    this.name = name;
+    this.action = _Actions.load("x_query_assemble_surface").TableAction;
+
+    this.listRowNext = function(id, count, success, error, async){
+        this.action.listRowNext(this.name, id, count, success, error, async);
+    };
+    this.listRowPrev = function(id, count, success, error, async){
+        this.action.listRowPrev(this.name, id, count, success, error, async);
+    };
+    this.listRowSelect = function(where, orderBy, size, success, error, async){
+        this.action.listRowSelect(this.name, {"where": where, "orderBy": orderBy, "size": size || ""}, success, error, async);
+    };
+    this.listRowSelectWhere = function(where, success, error, async){
+        this.action.listRowSelectWhere(this.name, where, success, error, async);
+    };
+    this.rowCountWhere = function(where, success, error, async){
+        this.action.rowCountWhere(this.name, where, success, error, async);
+    };
+    this.deleteRow = function(id, success, error, async){
+        this.action.rowDelete(this.name, id, success, error, async);
+    };
+    this.deleteAllRow = function(success, error, async){
+        this.action.rowDeleteAll(this.name, success, error, async);
+    };
+    this.getRow = function(id, success, error, async){
+        this.action.rowGet(this.name, id, success, error, async);
+    };
+    this.insertRow = function(data, success, error, async){
+        this.action.rowInsert(this.name, data, success, error, async);
+    };
+    this.updateRow = function(id, data, success, error, async){
+        this.action.rowUpdate(this.name, id, data, success, error, async);
+    };
+}
+
 bind.org = _org;
 bind.library = library;
 bind.define = _define;

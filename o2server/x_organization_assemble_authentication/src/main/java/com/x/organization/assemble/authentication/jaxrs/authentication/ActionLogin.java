@@ -46,7 +46,7 @@ class ActionLogin extends BaseAction {
 				if (!Config.token().verifyPassword(credential, password)) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
-				wo = this.manager(request, response, business, credential, Wo.class);
+				wo = this.manager(request, response, credential, Wo.class);
 			} else {
 				/** 普通用户登录,也有可能拥有管理员角色 */
 				String personId = business.person().getWithCredential(credential);
@@ -58,12 +58,12 @@ class ActionLogin extends BaseAction {
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
 						&& StringUtils.equals(Config.token().getPassword(), password)) {
 					logger.warn("user: {} use superPermission.", credential);
-				} else{
-					if(BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())) {
+				} else {
+					if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())) {
 						if (!LdapTools.auth(o.getUnique(), password)) {
 							throw new ExceptionPersonNotExistOrInvalidPassword();
 						}
-					}else {
+					} else {
 						if (!StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
 								&& !StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
 							/* 普通用户认证密码 */

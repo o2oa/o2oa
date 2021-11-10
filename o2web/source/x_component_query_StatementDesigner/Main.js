@@ -100,7 +100,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             this.addEvent("resize", this.resizeNode.bind(this));
             this.loadStatement(function(){
                 if (callback) callback();
-            });
+            }.bind(this));
 
             this.setScrollBar(this.designerStatementArea, null, {
                 "V": {"x": 0, "y": 0},
@@ -388,7 +388,8 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
     setDesignerStatementResize: function(){
         var size = this.designerContentNode.getSize();
         var contentHeight;
-        if( this.statement && this.statement.selectMode.contains("view") ){
+        debugger;
+        if( this.statement && this.statement.selectMode && this.statement.selectMode.contains("view") ){
             this.designerContentResizeNode.show();
             this.designerStatementArea.show();
 
@@ -479,7 +480,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
 
 	
 	//loadStatement------------------------------------------
-    loadStatement: function(){
+    loadStatement: function(callback){
 	    debugger;
 		this.getStatementData(this.options.id, function(vdata){
             this.setTitle(this.options.appTitle + "-"+vdata.name);
@@ -487,6 +488,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             this.options.appTitle = this.options.appTitle + "-"+vdata.name;
             this.statement = new MWF.xApplication.query.StatementDesigner.Statement(this, vdata);
 			this.statement.load();
+			if(callback)callback()
 		}.bind(this));
 	},
     getStatementData: function(id, callback){
