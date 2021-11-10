@@ -1,5 +1,6 @@
 package com.x.file.assemble.control.jaxrs.share;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.project.organization.Group;
@@ -32,7 +33,8 @@ class ActionListShareToMe extends BaseAction {
 			if (EMPTY_SYMBOL.equals(fileType)) {
 				fileType = null;
 			}
-			List<String> shareIds = business.share().listWithShareUser1(effectivePerson.getDistinguishedName(), fileType);
+			List<String> shareIds = new ArrayList<>();
+			shareIds.addAll(business.share().listWithShareUser1(effectivePerson.getDistinguishedName(), fileType));
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			for (String str : identities) {
 				List<String> units = business.organization().unit().listWithIdentitySupNested(str);
