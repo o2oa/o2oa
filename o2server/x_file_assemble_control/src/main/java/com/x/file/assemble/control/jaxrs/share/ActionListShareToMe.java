@@ -3,7 +3,6 @@ package com.x.file.assemble.control.jaxrs.share;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.x.base.core.project.organization.Group;
 import org.apache.commons.collections4.ListUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -16,10 +15,12 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Group;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Share;
 
 class ActionListShareToMe extends BaseAction {
