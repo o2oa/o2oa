@@ -84,7 +84,7 @@ MWF.xApplication.process.Xform.YozoOffice = MWF.APPYozoOffice =  new Class({
     loadOfficeContorl: function(file){
         if (this.node.getSize().y<800) this.node.setStyle("height", "800px");
 
-        if (this.json.isReadonly){
+        if (this.readonly || this.json.isReadonly){
             this.mode  = "read";
         }else{
             if (this.json.readScript && this.json.readScript.code){

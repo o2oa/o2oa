@@ -1430,6 +1430,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				var hasData = this.data.hasOwnProperty(templateJsonId);
 
 				var module = this.form._loadModule(json, node, function () {
+					if( _self.widget )this.widget = _self.widget;
 					this.parentLine = _self;
 					this.parentDatatable = _self.datatable;
 				});

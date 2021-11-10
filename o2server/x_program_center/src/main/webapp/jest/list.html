@@ -108,6 +108,7 @@
 
 		function getCenterJson(){
 		   var centerJson = "";
+		   var druidTable = "<tr><td colspan='3'><center id='title' style='font-size:32px; font-weight:bold;'>Druid url</center></td></tr>";
 			$.ajax({
 				type : 'get',
 				dataType : 'json',
@@ -134,9 +135,20 @@
 				centerJson += '</td>';
 				centerJson += '</tr>';
 				
+				druidTable += '<tr>';
+				druidTable += '<td>' + 'Druid Monitor' + '</td>';
+				druidTable += '<td>' + '' + '</td>';
+				druidTable += '<td>';
+				$.each(json.data.urlList, function(i, url) {
+					url = url.replace(/(127.0.0.1)/g, window.location.hostname);
+					url = url.replace(/jest/g, 'druid');
+					druidTable += '<a href="'+url+'" target="_blank">' + url + '</a><br/>';
+				});
+				druidTable += '</td>';
+				druidTable += '</tr>';
 			})
 			
-			return centerJson;
+			return centerJson + druidTable;
 		}
 		
 		$(function() {

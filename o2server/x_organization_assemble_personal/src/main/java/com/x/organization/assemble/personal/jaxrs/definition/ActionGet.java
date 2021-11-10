@@ -17,6 +17,8 @@ class ActionGet extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
 
+	private static final String DEFINITION_MEETING_CONFIG = "meetingConfig";
+
 	ActionResult<String> execute(EffectivePerson effectivePerson, String name) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -31,8 +33,8 @@ class ActionGet extends BaseAction {
 				if (null != o) {
 					 wo = o.getData();
 					CacheManager.put(business.cache(), cacheKey, wo);
-				}else {
-					 wo ="{\"process\":null,\"weekBegin\":\"0\",\"meetingViewer\":[],\"mobileCreateEnable\":\"true\",\"disableViewList\":[],\"toMyMeetingViewName\":\"\",\"toMonthViewName\":\"\",\"toWeekViewName\":\"\",\"toDayViewName\":\"\",\"toListViewName\":\"\",\"toRoomViewName\":\"\"}"; 
+				}else if(DEFINITION_MEETING_CONFIG.equalsIgnoreCase(name)){
+					 wo ="{\"process\":null,\"weekBegin\":\"0\",\"meetingViewer\":[],\"mobileCreateEnable\":\"true\",\"disableViewList\":[],\"toMyMeetingViewName\":\"\",\"toMonthViewName\":\"\",\"toWeekViewName\":\"\",\"toDayViewName\":\"\",\"toListViewName\":\"\",\"toRoomViewName\":\"\"}";
 				}
 			}
 			result.setData(wo);

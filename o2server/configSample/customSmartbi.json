@@ -1,0 +1,22 @@
+{
+  "baseUrl": "http://smartbi.o2oa.net/smartbi",
+  "openresourceUri": "vision/openresource.jsp",
+  "rmiServletUri": "vision/RMIServlet",
+  "manager": "admin",
+  "managerPassword": "0000000000",
+  "openresourceVisitor": "o2oa",
+  "tokenTimeout": 30000.0,
+  "resourceTypes": [
+    "SMARTBIX_PAGE",
+    "INSIGHT",
+    "COMBINED_QUERY"
+  ],
+  "###baseUrl": "SmartBI应用访问路径,形如:http://smartbi.o2oa.net/smartbi.###",
+  "###openresourceUri": "SmartBI资源访问页面,默认为:vision/openresource.jsp.###",
+  "###rmiServletUri": "SmartBI应用访问接口,默认为:vision/RMIServlet.###",
+  "###manager": "SmartBI应用管理员.###",
+  "###managerPassword": "SmartBI应用管理员密码.###",
+  "###openresourceVisitor": "o2oa访问SmartBI对接单点的用户，需在SmartBI中新建.###",
+  "###tokenTimeout": "访问token失效时长,建议为Smartbi中sso设置的一半.###",
+  "###resourceTypes": "SmartBI应用中哪些资源可访问，(透视分析)INSIGHT、(数据模型)AUGMENTED_DATASET、(自助数据集)SMARTBIX_DATASET、(自助ETL)SMARTBI_DATAPROCESS、(数据挖掘)SMARTBI_MINING、(即席查询)COMBINED_QUERY.###"
+}

@@ -9,63 +9,68 @@ MWF.xApplication.Empty.Main = new Class({
 		"name": "Empty",
 		"mvcStyle": "style.css",
 		"icon": "icon.png",
-		"width": "400",
-		"height": "700",
-		"isResize": false,
-		"isMax": false,
 		"title": MWF.xApplication.Empty.LP.title
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.Empty.LP;
 	},
 	loadApplication: function(callback){
-		//1var url = "../x_component_Empty/$Main/default/view.html";
 		var url = this.path+this.options.style+"/view.html";
-		var url2 = this.path+this.options.style+"/view2.html";
-		o2.Actions.load("x_processplatform_assemble_surface").TaskAction.listMyPaging(1,20, function(json){
-
-			this.content.loadHtml(url, {"bind": {"lp": this.lp, "data": json}, "module": this}, function(){
+		this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
+			this.loadTaskView();
+		}.bind(this));
+	},
+	loadTaskView: function(){
+		o2.Actions.load("x_processplatform_assemble_surface").TaskAction.listMyPaging(1,5, function(json){
+			debugger;
+			this.taskListView.loadHtml(this.path+this.options.style+"/taskView.html", {"bind": {"lp": this.lp, "data": json.data}, "module": this}, function(){
 				this.doSomething();
 			}.bind(this));
-
-			// this.content.loadHtml(url, {"bind": {"lp": this.lp, "data": json}, "module": this}, function(){
-			// 	this.doSomething();
-			// }.bind(this));
-			//
-			// o2.load(["js1", "js2"], {}, function(){});	//js
-			//
-			// o2.loadCss	//css
-			// o2.loadHtml("", {"dom": this.content})
-			// o2.loadAll	//js,css,html
-			//
-			// o2.loadAll({
-			// 	"css": [],
-			// 	"js":[],
-			// 	"html": []
-			// },
-			// 	)
-			//
-
-
-
 		}.bind(this));
-
 	},
 	doSomething: function(){
 
 	},
-	loadTask: function(){
-		alert("loadTask");
+	openTask: function(e, data, id){
+		layout.openApplication(null, "process.Work", {"workid": id});
 	},
-	tabover: function(){
-		//alert("tabover");
-		this.myNode.addClass("mainColor_bg");
+	openCalendar: function(){
+		layout.openApplication(null, "Calendar");
 	},
-	tabout: function(){
-		//alert("tabout")
-		this.myNode.removeClass("mainColor_bg");
+	openOrganization: function(){
+		layout.openApplication(null, "Org");
 	},
-	clickNode: function(e, data){
-		alert(data.title);
+	openInBrowser: function() {
+		this.openInNewBrowser(true);
+	},
+	startProcess: function(){
+		o2.api.page.startProcess();
+		// const cmpt = this;
+		// o2.requireApp([["process.TaskCenter", "lp."+o2.language], ["process.TaskCenter", ""]],"", ()=>{
+		// 	var obj = {
+		// 		"lp": o2.xApplication.process.TaskCenter.LP,
+		// 		"content": cmpt.content,
+		// 		"addEvent": function(type, fun){
+		// 			cmpt.addEvent(type, fun);
+		// 		},
+		// 		"getAction": function (callback) {
+		// 			if (!this.action) {
+		// 				this.action = o2.Actions.get("x_processplatform_assemble_surface");
+		// 				if (callback) callback();
+		// 			} else {
+		// 				if (callback) callback();
+		// 			}
+		// 		},
+		// 		"desktop": layout.desktop,
+		// 		"refreshAll": function(){},
+		// 		"notice": cmpt.notice,
+		// 	}
+		// 	o2.JSON.get("../x_component_process_TaskCenter/$Main/default/css.wcss", function(data){
+		// 		obj.css = data;
+		// 	}, false);
+		//
+		// 	if (!cmpt.processStarter) cmpt.processStarter = new o2.xApplication.process.TaskCenter.Starter(obj);
+		// 	cmpt.processStarter.load();
+		// }, true, true);
 	}
 });

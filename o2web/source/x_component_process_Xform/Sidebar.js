@@ -312,6 +312,14 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
         }
         return this.routeDataList;
     },
+    getRouteId: function( routeName ){
+        var routeList = this.getRouteDataList();
+        for( var i=0; i<routeList.length; i++ ){
+            if( routeList[i].name === routeName ){
+                return routeList[i].id;
+            }
+        }
+    },
     getRouteData : function( routeId ){
         var routeList = this.getRouteDataList();
         for( var i=0; i<routeList.length; i++ ){
@@ -319,6 +327,31 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
                 return routeList[i];
             }
         }
+    },
+    getOrgData: function (routeId) {
+        var routeList = this.getRouteDataList();
+        for (var i = 0; i < routeList.length; i++) {
+            if (routeList[i].id === routeId) {
+                return routeList[i].selectConfigList;
+            }
+        }
+    },
+    getVisableOrgData: function (routeId) {
+        var selectConfigList = this.getOrgData(routeId);
+        var list = [];
+        (selectConfigList || []).each(function (config) {
+            if (!this.isOrgHidden(config)) {
+                list.push(config);
+            }
+        }.bind(this));
+        return list;
+    },
+    isOrgHidden: function (d) {
+        if (d.hiddenScript && d.hiddenScript.code) { //如果隐藏路由，返回
+            var hidden = this.form.Macro.exec(d.hiddenScript.code, this);
+            if (hidden && hidden.toString() === "true") return true;
+        }
+        return false;
     },
     runCustomAction: function(bt){
         var script = bt.node.retrieve("script");
@@ -331,13 +364,24 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
         this.form.closeWork();
     },
     processWork: function(route){
-        opinion = this.form.getOpinion();
+        var opinion = this.form.getOpinion();
+
+        this.form.Macro.environment.form.currentRouteName = route;
+        this.form.Macro.environment.form.opinion = opinion.opinion;
+        this.form.Macro.environment.form.medias = opinion.medias;
+
         if (!this.form.formCustomValidation()){
             this.form.app.content.unmask();
             //    if (callback) callback();
             return false;
         }
-        this.form.submitWork(route, opinion.opinion, opinion.medias)
+
+        var routeId = this.getRouteId( route );
+        if( this.getVisableOrgData( routeId ).length > 0 ){
+            this.form.processWork( routeId );
+        }else{
+            this.form.submitWork(route, opinion.opinion, opinion.medias)
+        }
 
         // var opinionField = this.json.opinion || "opinion";
         // var data = this.form.getData();

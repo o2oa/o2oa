@@ -167,6 +167,13 @@ public class Attachment2 extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String lastUpdatePerson;
 
+	public static final String description_FIELDNAME = "description";
+	@FieldDescribe("文件描述.")
+	@Column(length = length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + description_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String description;
+
 	public String getPerson() {
 		return person;
 	}
@@ -245,5 +252,13 @@ public class Attachment2 extends SliceJpaObject {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

@@ -36,6 +36,7 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
                 if (json){
                     var table = this;
                     var module = this.form._loadModule(json, td, function(){
+                        if( table.widget )this.widget = table.widget;
                         this.table = table;
                     });
                 }

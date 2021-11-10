@@ -32,5 +32,7 @@ MWF.xApplication.cms.Index.Newer.lp = {
     "all": "All",
 
     "documentTypeInfor": "Information",
-    "untitled": "Untitled"
+    "untitled": "Untitled",
+
+    "searchPlacholder": "Enter keywords to search for categories"
 };

@@ -39,7 +39,7 @@ MWF.xDesktop.Menu = new Class({
 				if (this.pauseCount<=0){
 					this.setItemWidth();
 					
-					var i = MWF.xDesktop.zIndexPool.zIndex;
+					var i = MWF.xDesktop.zIndexPool ? MWF.xDesktop.zIndexPool.zIndex : 0;
 					
 					this.borderNode.setStyles({
 						"display": "block",
