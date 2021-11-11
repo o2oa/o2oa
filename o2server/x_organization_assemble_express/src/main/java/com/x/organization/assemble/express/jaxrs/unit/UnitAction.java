@@ -280,6 +280,24 @@ public class UnitAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "批量查询指定组织层级名称的组织对象.", action = ActionListWithLevelNameObject.class)
+	@POST
+	@Path("list/level/name/object")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithLevelNameObject(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									JsonElement jsonElement) {
+		ActionResult<List<ActionListWithLevelNameObject.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithLevelNameObject().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@JaxrsMethodDescribe(value = "批量查询个人所在的组织.", action = ActionListWithPerson.class)
 	@POST
 	@Path("list/person")
