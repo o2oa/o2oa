@@ -1238,8 +1238,8 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			var indexText = this.options.indexText;
 			if(this.form.getModuleType(module) === "label"){
 				module.node.set("text", indexText );
-			}else{
-				module.set( indexText );
+			}else if(module.setData){
+				module.setData( indexText );
 			}
 		}
 
