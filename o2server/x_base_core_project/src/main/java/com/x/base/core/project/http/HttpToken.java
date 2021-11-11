@@ -117,6 +117,7 @@ public class HttpToken {
 					+ this.domain(request)
 					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? "; HttpOnly" : "");
 			response.setHeader(SET_COOKIE, cookie);
+			response.setHeader(Config.person().getTokenName(), COOKIE_ANONYMOUS_VALUE);
 		} catch (Exception e) {
 			throw new Exception("delete Token cookie error.", e);
 		}
@@ -127,6 +128,7 @@ public class HttpToken {
 		this.setAttribute(request, effectivePerson);
 		switch (effectivePerson.getTokenType()) {
 		case anonymous:
+			deleteToken(request, response);
 			break;
 		case user:
 			this.setResponseToken(request, response, effectivePerson);
