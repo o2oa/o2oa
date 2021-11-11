@@ -1,14 +1,11 @@
-<div class="o2_empty_content deepColor_bg" data-o2-element="contentNode">
-    <div class="o2_empty_div1" data-o2-element="myNode" data-o2-events="click:loadTask;mouseover:tabover;mouseout:tabout">
-        <div class="o2_empty_div2">{{$.lp.title}}</div>
-        <div class="o2_empty_div2">{{$.data.type}}</div>
-    </div>
+<div class="hello">
+    <img class="logo" alt="O2OA logo" src="../x_component_Empty/$Main/default/icons/o2logo.png">
+    <h1>{{ $.lp.welcome }}</h1>
+    <p>
+        For more O2OA development document,<br>
+        check out the
+        <a href="https://www.o2oa.net/develop.html" target="_blank" rel="noopener">O2OA develop documentation</a>.
+    </p>
 
-    <div data-o2-element="eachNode">
-    {{each ($.data.data)}}
-    <div data-o2-events="click:clickNode">{{$.title}}</div>
-    {{end each}}
-    </div>
-
-
+    <div class="task" data-o2-element="taskListView"></div>
 </div>

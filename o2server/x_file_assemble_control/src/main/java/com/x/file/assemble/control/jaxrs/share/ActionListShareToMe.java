@@ -1,8 +1,8 @@
 package com.x.file.assemble.control.jaxrs.share;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.x.file.core.entity.personal.Attachment2;
 import org.apache.commons.collections4.ListUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -15,14 +15,18 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Group;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Share;
 
 class ActionListShareToMe extends BaseAction {
+
 	private static Logger logger = LoggerFactory.getLogger(ActionListShareToMe.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String fileType) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -30,19 +34,27 @@ class ActionListShareToMe extends BaseAction {
 			if (EMPTY_SYMBOL.equals(fileType)) {
 				fileType = null;
 			}
-			List<String> shareIds = business.share().listWithShareUser1(effectivePerson.getDistinguishedName(), fileType);
+			List<String> shareIds = new ArrayList<>();
+			shareIds.addAll(business.share().listWithShareUser1(effectivePerson.getDistinguishedName(), fileType));
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			for (String str : identities) {
 				List<String> units = business.organization().unit().listWithIdentitySupNested(str);
 				for(String unitName : units){
 					Unit unit = business.organization().unit().getObject( unitName );
 					if(unit!=null){
-						List<String> ids = business.share().listWithShareOrg1(unit.getUnique(), fileType);
-						logger.debug("{}根据组织{}查询分享结果：{}",effectivePerson.getDistinguishedName(),unit.getUnique(),ids+""+ids.size());
-						shareIds = ListTools.add(shareIds,true,true,ids);
+						shareIds.addAll(business.share().listWithShareOrg1(unit.getUnique(), fileType));
 					}
 				}
 			}
+			List<String> groupIds = business.organization().group().listWithPersonReference(
+					ListTools.toList(effectivePerson.getDistinguishedName()),true,true, false);
+			if(ListTools.isNotEmpty(groupIds)) {
+				List<Group> groupList = business.organization().group().listObject(groupIds);
+				for(Group group : groupList) {
+					shareIds.addAll(business.share().listWithShareGroup(group.getUnique(), fileType));
+				}
+			}
+			shareIds = ListTools.trim(shareIds, true, true);
 			//去除设置屏蔽的共享文件
 			List<String> shieldIds = business.share().listWithShieldUser1(effectivePerson.getDistinguishedName());
 			shareIds = ListUtils.subtract(shareIds, shieldIds);
@@ -54,7 +66,7 @@ class ActionListShareToMe extends BaseAction {
 				}
 				o.setContentType(this.contentType(false, o.getName()));
 			}
-			SortTools.desc(wos, false, "createTime");
+			SortTools.desc(wos, false, Share.createTime_FIELDNAME);
 			result.setData(wos);
 			return result;
 		}
@@ -64,7 +76,7 @@ class ActionListShareToMe extends BaseAction {
 
 		private static final long serialVersionUID = -531053101150157872L;
 
-		static WrapCopier<Share, Wo> copier = WrapCopierFactory.wo(Share.class, Wo.class, null,
+		static final WrapCopier<Share, Wo> copier = WrapCopierFactory.wo(Share.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
 		@FieldDescribe("文件类型")
