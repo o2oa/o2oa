@@ -95,17 +95,17 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 编辑条目时触发（同时编辑多行不触发此事件）。通过this.event.line可以获取对应的条目对象。
+			 * 编辑条目时触发（同时编辑多行不触发此事件）。通过this.event可以获取对应的条目对象。
 			 * @event MWF.xApplication.process.Xform.DatatablePC#editLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 完成编辑条目时触发（点击每行前面的√执行。同时编辑多行不触发此事件）。通过this.event.line可以获取对应的条目对象。
+			 * 完成编辑条目时触发（点击当前编辑行前面的√执行。同时编辑多行不触发此事件）。通过this.event可以获取对应的条目对象。
 			 * @event MWF.xApplication.process.Xform.DatatablePC#completeLineEdit
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 取消编辑条目时触发（点击每行前面的-执行。同时编辑多行不触发此事件）。通过this.event.line可以获取对应的条目对象。
+			 * 取消编辑条目时触发（点击当前编辑行前面的 — 执行。同时编辑多行不触发此事件）。通过this.event可以获取对应的条目对象。
 			 * @event MWF.xApplication.process.Xform.DatatablePC#cancelLineEdit
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
