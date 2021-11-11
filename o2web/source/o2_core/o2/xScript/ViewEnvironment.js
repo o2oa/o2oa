@@ -4336,7 +4336,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:queryView
          * @see module:form.createDocument
          */
-        "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle) {
+        "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle, restrictToColumn) {
             var column = columnOrOptions;
             var onAfterPublish, onPostPublish;
             if (typeOf(columnOrOptions) == "object") {
@@ -4349,6 +4349,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 latest = columnOrOptions.latest;
                 selectColumnEnable = columnOrOptions.selectColumnEnable;
                 ignoreTitle = columnOrOptions.ignoreTitle;
+                restrictToColumn = columnOrOptions.restrictToColumn;
                 onAfterPublish = columnOrOptions.onAfterPublish;
                 onPostPublish = columnOrOptions.onPostPublish;
             }
@@ -4367,7 +4368,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     "ignoreTitle": ignoreTitle === true,
                     "ignoreDrafted": latest === false,
                     "selectColumnEnable": !category || selectColumnEnable === true,
-                    "restrictToColumn": !!category && selectColumnEnable !== true,
+                    "restrictToColumn": restrictToColumn === true || (!!category && selectColumnEnable !== true),
 
                     "categoryFlag": category, //category id or name
                     "columnFlag": column, //column id or name,
