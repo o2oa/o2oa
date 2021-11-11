@@ -1,17 +1,5 @@
 package com.x.organization.assemble.express.jaxrs.unit;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -33,20 +21,34 @@ import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.Unit_;
 
-class ActionListObject extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionListObject.class);
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+class ActionListWithLevelNameObject extends BaseAction {
+	private static Logger logger = LoggerFactory.getLogger(ActionListWithLevelNameObject.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		logger.debug(effectivePerson.getDistinguishedName());
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<List<Wo>> result = new ActionResult<>();
+		if(ListTools.isEmpty(wi.getUnitList())){
+			return result;
+		}
 		CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList());
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {
 			result.setData((List<Wo>) optional.get());
 		} else {
 			List<Wo> wos = this.list(wi);
-			CacheManager.put(cacheCategory, cacheKey, wos);
+			if(ListTools.isNotEmpty(wos)) {
+				CacheManager.put(cacheCategory, cacheKey, wos);
+			}
 			result.setData(wos);
 		}
 		return result;
@@ -54,8 +56,9 @@ class ActionListObject extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
-		private static final long serialVersionUID = 9140053706113645992L;
-		@FieldDescribe("组织")
+		private static final long serialVersionUID = -803168445784010894L;
+
+		@FieldDescribe("组织层级名称")
 		private List<String> unitList = new ArrayList<>();
 
 		public List<String> getUnitList() {
@@ -70,7 +73,7 @@ class ActionListObject extends BaseAction {
 
 	public static class Wo extends Unit {
 
-		private static final long serialVersionUID = -7913547275132005308L;
+		private static final long serialVersionUID = -8274071194830711313L;
 
 		@FieldDescribe("匹配字段")
 		private String matchKey;
@@ -111,20 +114,15 @@ class ActionListObject extends BaseAction {
 	}
 
 	private List<Wo> list(Wi wi) throws Exception {
-		List<Wo> wos = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			for (String str : wi.getUnitList()) {
-				Unit o = business.unit().pick(str);
-				if (o != null) {
-					Wo wo = Wo.copier.copy(o);
-					wo.setMatchKey(str);
-					if (StringUtils.isNotEmpty(wo.getSuperior())) {
-						Unit superior = business.unit().pick(wo.getSuperior());
-						if (null != superior) {
-							wo.setSuperior(superior.getDistinguishedName());
-						}
-					}
+			List<Unit> unitList = emc.listIn(Unit.class, Unit.levelName_FIELDNAME, wi.getUnitList());
+			unitList = business.unit().sort(unitList);
+			List<Wo> wos = new ArrayList<>();
+			if(ListTools.isNotEmpty(unitList)){
+				for(Unit unit : unitList){
+					Wo wo = Wo.copier.copy(unit);
+					wo.setMatchKey(wo.getLevelName());
 					wo.setSubDirectIdentityCount(this.countSubDirectIdentity(business, wo));
 					wo.setSubDirectUnitCount(this.countSubDirectUnit(business, wo));
 					wos.add(wo);
