@@ -28,11 +28,11 @@
     "name": "filetext",
     "json": "tools-filetext.json",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.group_filetext,
+  },
+  {
+    "name": "element",
+    "json": "tools-element.json",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.group_element,
+    "className": "Textfield"
   }
-//  {
-//    "name": "element",
-//    "json": "tools-element.json",
-//    "text": MWF.xApplication.cms.FormDesigner.LP.modules.group_element,
-//    "className": "Textfield"
-//  }
 ]
