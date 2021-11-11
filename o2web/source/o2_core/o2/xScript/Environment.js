@@ -3101,6 +3101,7 @@ MWF.xScript.Environment = function(ev){
          *   "latest" : latest, //（boolean）可选，为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
          *   "selectColumnEnable" : selectColumnEnable, //（boolean）可选，是否可以选择应用和分类进行创建文档。有category参数时为默认false,否则默认为true。
          *   "ignoreTitle" : ignoreTitle //（boolean）可选，值为false时，创建的时候需要强制填写标题，默认为false。
+         *   "restrictToColumn" : restrictToColumn //（boolean）可选，值为true时，会限制在传入的栏目中选择分类，默认为false。
          * }</code></pre>
          * @param {String} [category] - 要创建的文档所属的分类的名称、别名或ID
          * @param {Object} [data] - 创建文档时默认的业务数据
@@ -3108,8 +3109,9 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [callback] - 文档创建后的回调函数
          * @param {Boolean} [target] - 为true时，在当前页面打开创建的文档；否则打开新窗口。默认false
          * @param {Boolean} [latest] - 为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
-         * @param {Boolean} [selectColumnEnable] - 为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
+         * @param {Boolean} [selectColumnEnable] - 是否可以选择应用和分类进行创建文档。有category参数时为默认false,否则默认为true。
          * @param {Boolean} [ignoreTitle] - 值为false时，创建的时候需要强制填写标题，默认为false。
+         * @param {Boolean} [restrictToColumn] - 值为true时，会限制在传入的栏目中选择分类，默认为false。
          * @example
          //启动一个通知公告
          this.form.createDocument("", "通知公告");
@@ -3128,7 +3130,7 @@ MWF.xScript.Environment = function(ev){
             }.bind(this)
          });
          */
-        "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle) {
+        "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle, restrictToColumn) {
             var column = columnOrOptions;
             var onAfterPublish, onPostPublish;
             if (typeOf(columnOrOptions) == "object") {
@@ -3141,6 +3143,7 @@ MWF.xScript.Environment = function(ev){
                 latest = columnOrOptions.latest;
                 selectColumnEnable = columnOrOptions.selectColumnEnable;
                 ignoreTitle = columnOrOptions.ignoreTitle;
+                restrictToColumn = columnOrOptions.restrictToColumn;
                 onAfterPublish = columnOrOptions.onAfterPublish;
                 onPostPublish = columnOrOptions.onPostPublish;
             }
@@ -3159,7 +3162,7 @@ MWF.xScript.Environment = function(ev){
                     "ignoreTitle": ignoreTitle === true,
                     "ignoreDrafted": latest === false,
                     "selectColumnEnable": !category || selectColumnEnable === true,
-                    "restrictToColumn": !!category && selectColumnEnable !== true,
+                    "restrictToColumn": restrictToColumn === true || (!!category && selectColumnEnable !== true),
 
                     "categoryFlag": category, //category id or name
                     "columnFlag": column, //column id or name,
