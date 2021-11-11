@@ -1968,7 +1968,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
              * @static
              * @see module:form.createDocument
              */
-            "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle) {
+            "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle, restrictToColumn) {
                 var column = columnOrOptions;
                 var onAfterPublish, onPostPublish;
                 if (typeOf(columnOrOptions) == "object") {
@@ -1981,6 +1981,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                     latest = columnOrOptions.latest;
                     selectColumnEnable = columnOrOptions.selectColumnEnable;
                     ignoreTitle = columnOrOptions.ignoreTitle;
+                    restrictToColumn = columnOrOptions.restrictToColumn;
                     onAfterPublish = columnOrOptions.onAfterPublish;
                     onPostPublish = columnOrOptions.onPostPublish;
                 }
@@ -1999,7 +2000,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                         "ignoreTitle": ignoreTitle === true,
                         "ignoreDrafted": latest === false,
                         "selectColumnEnable": !category || selectColumnEnable === true,
-                        "restrictToColumn": !!category && selectColumnEnable !== true,
+                        "restrictToColumn": restrictToColumn === true || (!!category && selectColumnEnable !== true),
 
                         "categoryFlag": category, //category id or name
                         "columnFlag": column, //column id or name,

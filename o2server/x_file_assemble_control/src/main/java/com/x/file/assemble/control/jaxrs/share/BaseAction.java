@@ -8,6 +8,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.organization.Group;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -67,15 +69,22 @@ abstract class BaseAction extends StandardJaxrsAction {
                     Unit unit = business.organization().unit().getObject(unitName);
                     if (unit != null) {
                         if (share.getShareOrgList().contains(unit.getUnique())) {
-                            flag = true;
-                            break;
+                            return true;
                         }
                     }
                 }
-                if (flag) {
-                    break;
+            }
+            List<String> groupIds = business.organization().group().listWithPersonReference(
+                    ListTools.toList(effectivePerson.getDistinguishedName()),true,true, false);
+            if(ListTools.isNotEmpty(groupIds)) {
+                List<Group> groupList = business.organization().group().listObject(groupIds);
+                for(Group group : groupList) {
+                    if (share.getShareGroupList().contains(group.getUnique())) {
+                        return true;
+                    }
                 }
             }
+
         }
         return flag;
     }
