@@ -241,7 +241,7 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             }
         }
         // o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({
-        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithLevelObject({
+        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithLevelNameObject({
             unitList: unitArray
         }, function (json) {
             this.allUnitObjectWithDuty = {};
