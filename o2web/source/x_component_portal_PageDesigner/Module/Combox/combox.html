@@ -33,6 +33,13 @@
                 <td class="editTableValue"><input title="0 表示不限制数量" type="text" name="count" value="text{$.count}" class="editTableInput"/></td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.showOptions}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="showOptions" value="input" text{($.showOptions)!="focus"?'checked':''}/>{{$.lp.onInput}}
+                    <input type="radio" name="showOptions" value="focus" text{($.showOptions)=="focus"?'checked':''}/>{{$.lp.onFocus}}
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.options}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemValues').setStyle('display', 'block'); $('text{$.pid}selectEditItemScript').setStyle('display', 'none'); $('text{$.pid}selectEditItemDynamic').setStyle('display', 'none')}" name="itemType" text{($.itemType=='values')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
@@ -47,6 +54,7 @@
         <div id="text{$.pid}selectEditItemDynamic" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFScriptArea" name="itemDynamic" title="{{$.lp.optionDynamicScript}} (S)"></div>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+        <div class="MWFMaplist" name="inputStyles" title="{{$.lp.inputStyle}}"></div>
         <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
