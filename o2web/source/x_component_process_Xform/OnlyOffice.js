@@ -178,7 +178,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         if(layout.mobile){
             this.document.editor.type = "mobile";
         }
-        this.officeNode = new Element("div#officeNode", {
+        this.officeNode = new Element("div#_" + this.documentId, {
             "styles": this.form.css.officeAreaNode
         }).inject(this.node);
         if (this.node.getSize().y<800) this.node.setStyle("height", "800px");
@@ -230,7 +230,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             "unit": this.json.unit,
             "zoom": this.json.zoom
         }
-        docEditor = new DocsAPI.DocEditor("officeNode", this.document.editor);
+        docEditor = new DocsAPI.DocEditor("_" + this.documentId, this.document.editor);
         this.onlyOffice = docEditor;
     },
     hide: function(){
