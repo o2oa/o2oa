@@ -377,7 +377,8 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		if (this.dataTemplate[className]){
 			if (callback) callback(this.dataTemplate[className]);
 		}else{
-			var templateUrl = (MWF["PC"+className].templateJsonPath || "../x_component_portal_PageDesigner/Module/")+className+"/template.json";
+			var modulePath = ( MWF["PC"+className] && MWF["PC"+className].templateJsonPath ) || "../x_component_portal_PageDesigner/Module/";
+			var templateUrl = modulePath + className+"/template.json";
 			MWF.getJSON(templateUrl, function(responseJSON, responseText){
 				this.dataTemplate[className] = responseJSON;
 				if (callback) callback(responseJSON);
