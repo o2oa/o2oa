@@ -435,6 +435,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 
             var code = this.crypDES();
             var json = { "client": "face", "token": code };
+            var _self = this;
             var res = new Request.JSON({
                 "method": "POST",
                 "url": url + "/jaxrs/sso",
@@ -447,14 +448,16 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                     "Content-Type": "application/json; charset=utf-8"
                 },
                 onSuccess: function (responseJSON) {
-                    this._close();
-                    this.closeCamera();
-                    if (this.formMaskNode) this.formMaskNode.destroy();
-                    this.formAreaNode.destroy();
-                    if (this.explorer && this.explorer.view) this.explorer.view.reload();
-                    if (this.app) this.app.notice(this.lp.loginSuccess, "success");
-                    this.fireEvent("postOk", responseJSON);
-                }.bind(this),
+                    _self._close();
+                    _self.closeCamera();
+                    if (_self.formMaskNode) _self.formMaskNode.destroy();
+                    _self.formAreaNode.destroy();
+                    var xToken = this.getHeader(o2.tokenName);
+                    if (layout.config && layout.config.sessionStorageEnable) sessionStorage.setItem("o2LayoutSessionToken", xToken);
+                    if (_self.explorer && _self.explorer.view) _self.explorer.view.reload();
+                    if (_self.app) _self.app.notice(_self.lp.loginSuccess, "success");
+                    _self.fireEvent("postOk", responseJSON);
+                },
                 onError: function () {
                     this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login.camera_loginError2);
                 }.bind(this)
