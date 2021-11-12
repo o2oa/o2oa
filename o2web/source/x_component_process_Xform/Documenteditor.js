@@ -2797,8 +2797,9 @@ debugger;
                 }
                 this[(editorName || "filetextEditor")] = editor;
 
-
                 editor.on("instanceReady", function(e){
+                    var　v = e.editor.editable().$.get("text");
+                    if (!v || v=="　　") e.editor.setData(this.json.defaultValue.filetext);
                     if (callback) callback(e);
                 }.bind(this));
 
@@ -2806,15 +2807,22 @@ debugger;
                     window.setTimeout(function(){
                         // this.reLocationFiletextToolbar(editorName);
                         this.locationFiletextToolbar(editorName);
-
                     }.bind(this), 10);
+                    var　v = e.editor.editable().$.get("text");
+                    if (!v || v==this.json.defaultValue.filetext){
+                        e.editor.setData("　　");
+                        e.editor.focus();
+                        var range = e.editor.createRange();
+                        range.moveToElementEditEnd(e.editor.editable());
+                        range.select();
+                    }
                 }.bind(this) );
 
-                if (!!editorName){
-                    editor.on( 'blur', function( e ) {
-                        this.getAttachmentTextData();
-                    }.bind(this) );
-                }
+                editor.on( 'blur', function( e ) {
+                    if (!!editorName) this.getAttachmentTextData();
+                    var　v = e.editor.editable().$.get("text");
+                    if (!v || v=="　　") e.editor.setData(this.json.defaultValue.filetext);
+                }.bind(this) );
 
                 editor.on( 'loaded', function( e ) {
                     editor.element.$.store("module", this);
