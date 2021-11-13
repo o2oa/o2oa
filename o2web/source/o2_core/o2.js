@@ -1403,6 +1403,9 @@ if (!window.o2) {
         _json.get = function (url, callback, async, nocache) {
             var loadAsync = (async !== false);
             var noJsonCache = (nocache === true);
+            if (url.indexOf("config.json")){
+                noJsonCache = true;
+            }
 
             url = (url.indexOf("?") !== -1) ? url + "&v=" + o2.version.v : url + "?v=" + o2.version.v;
 
