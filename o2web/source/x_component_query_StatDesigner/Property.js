@@ -11,6 +11,7 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
 	initialize: function(module, propertyNode, designer, options){
 		this.setOptions(options);
 		this.module = module;
+        this.moduleId = module.json.id;
 		this.view = module.view;
 		this.data = module.json;
 		this.htmlPath = this.options.path;
@@ -264,10 +265,11 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
 		}
 	},
 	setCheckboxValue: function(name, input){
+	    debugger;
         var i = name.indexOf("*");
         var names = (i==-1) ? name.split(".") : name.substr(i+1, name.length).split(".");
 
-        var id = this.module.json.id;
+        var id = this.moduleId || this.module.json.id;
         var checkboxList = $$("input[name='"+id+name+"']");
 		var values = [];
 		checkboxList.each(function(checkbox){
