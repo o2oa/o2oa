@@ -13,13 +13,25 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		this.module = module;
 		this.form = module.form;
 		this.data = module.json;
-		this.data.pid = this.form.options.mode+this.form.json.id+this.data.id;
+		// this.data.pid = this.form.options.mode+this.form.json.id+this.data.id;
+        this.data.pid = this.getPid();
 		this.htmlPath = this.options.path;
 		this.designer = designer;
 		this.maplists = {};
 		this.propertyNode = propertyNode;
 	},
-
+    getPid: function(){
+	    if( !this.form.pidList )this.form.pidList = [];
+	    var id = this.form.options.mode + this.data.id;
+	    var idx = 0;
+        while ( this.form.pidList.contains( id ) ){
+            idx++;
+            id = id+"_"+idx;
+        }
+        this.form.pidList.push( id );
+        var suffix = idx ? ( "_"+idx ) : "";
+        return this.form.options.mode + this.form.json.id + this.data.id + suffix;
+    },
 	load: function(){
 		if (this.fireEvent("queryLoad")){
 			MWF.getRequestText(this.htmlPath, function(responseText, responseXML){
