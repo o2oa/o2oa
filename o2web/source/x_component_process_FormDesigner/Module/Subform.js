@@ -151,6 +151,9 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
             this.refreshSubform();
         }.bind(this));
 
+        this.node.addEvent("dblclick", function(e){
+            this.openSubform(e);
+        }.bind(this));
 
 	},
     postGetFormData: function(node){
