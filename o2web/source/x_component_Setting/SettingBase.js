@@ -189,21 +189,25 @@ MWF.xApplication.Setting.BaseSSODocument = new Class({
             "addItem": {
                 "enable": false,
                 "name": "",
+                "displayName": "",
                 "icon": "",
                 "clientId": "",
                 "clientSecret": "",
                 "authAddress": "",
-                "authParameter": "client_id={$client_id}&client_secret={$client_secret}",
+                "authParameter": "client_id\u003d{$client_id}\u0026redirect_uri\u003d{$redirect_uri}",
                 "authMethod": "GET",
                 "tokenAddress": "",
-                "tokenParameter": "code={$code}&grant_type=authorization_code&client_id={$client_id}",
+                "tokenParameter": "client_id\u003d{$client_id}\u0026client_secret\u003d{$client_secret}\u0026redirect_uri\u003d{$redirect_uri}\u0026grant_type\u003dauthorization_code\u0026code\u003d{$code}",
                 "tokenMethod": "POST",
                 "tokenType": "json",
                 "infoAddress": "",
-                "infoParameter": "access_token={$access_token}&client_id={$client_id}",
+                "infoParameter": "access_token\u003d{$access_token}",
                 "infoMethod": "GET",
                 "infoType": "json",
-                "infoCredentialField": "username"
+                "infoCredentialField": "openId",
+                "infoScriptText": "",
+                "bindingEnable": false,
+                "bindingField": ""
             },
             "icon": "sso.png"
         });
