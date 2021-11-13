@@ -135,6 +135,9 @@ MWF.xApplication.portal.PageDesigner.Module.Widget = MWF.PCWidget = new Class({
             this.refreshWidget();
         }.bind(this));
 
+        this.node.addEvent("dblclick", function(e){
+            this.openWidget(e);
+        }.bind(this));
 
 	},
     postGetPageData: function(node){
