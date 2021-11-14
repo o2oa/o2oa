@@ -9,48 +9,16 @@
 	<a target="_blank" href="https://github.com/o2oa/o2oa/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/o2oa/o2oa?style=social"></a>
 </p>
 
+
 ----------------------------------------------------------------------------
 
-
-# O2OA : Java企业信息化系统,开源OA openSource OA Platform
+# O2OA企业应用开发平台 OpenSource OA Platform
 
 ​        O2OA企业应用开发平台是兰德纵横网络技术股份有限公司发布和维护的开源产品，是使用JavaEE技术栈，分布式架构设计的一款真正全代码开源的企业应用定制化开发平台。适用于企业OA、协同办公类信息化系统的建设和开发。
 
 ​        平台拥有流程管理、门户管理、信息管理、数据管理和服务管理五大核心能力。用户可以直接使用平台已有功能进行信息信息化建设，平台提供了完整的用户管理，权限管理，流程和信息管理体系，并且提供了大量的开发组件和开箱即用的应用，可以大幅度减化企业信息化建设成本和业务应用开发难度。
 
 ![o2oa](https://static.oschina.net/uploads/space/2018/0918/200301_N9TG_3931542.png)
-
-
-
-# **2021年免费培训报名开启**
-
-### **课程名称：** O2OA企业级协同业务实战课程
-
-### **课程内容：** 平台基础使用以及高级业务定制
-
-①平台使用（组织管理，流程管理，门户搭建，内容管理，移动办公，数据中心，服务管理，应用介绍）；
-②业务实战（信创环境，高可用性，单点认证，钉钉微信集成，国标公文系统，office在线协作，数据可视化，协同办公）。
-
-#### 近60小时企业级业务实战课程，干货满满，欢迎大家报名参加！
-
-![o2oa](https://www.o2oa.net/imagex/1024.png)
-
-
-
-
-# 产品特点:
-
-1. 代码全部开源，开发者可以下载源码进行任意，编译成自己的信息化平台。
-
-2. 平台全功能免费，无任何功能和人数限制。
-
-3. 支持私有化部署，下载软件安装包后可以安装在自己的服务器上，数据更安全。
-
-4. 随时随地办公，平台支持兼容HTML5的浏览器，并且提供了原生的IOS/Android应用，并且支持钉钉和企业微信集成。
-
-5. 高可扩展性，用户通过简单的学习后，可以自定义配置门户、流程应用、内容管理应用
-
-   更多的产品介绍、使用说明、下载、在线体验、API及讨论请移步官网：[http://www.o2oa.net/](http://www.o2oa.net/)
 
 
 
@@ -74,39 +42,74 @@ O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开�
 
 
 
-
-
-## 支持操作系统：
+# 支持操作系统：
 
 ```shell
-Windows 64Bit, Linux 64Bit[CentOS, RedHat, Ubuntu等], MacOS, AIX, Raspberrypi(树莓派),
-
-ARM_Linux,
-
-MIPS_Linux,
-
-UOS,麒麟等国产操作系统
+Windows 64Bit, Linux 64Bit[CentOS, RedHat, Ubuntu等], MacOS, AIX, Raspberrypi(树莓派), ARM_Linux, MIPS_Linux, UOS,麒麟等国产操作系统
 ```
 
 
 
-## 支持数据库：
+# 支持数据库：
 
-```shell
-自带H2数据库.
+O2OA通过openjpa默认支持以下数据库:
 
-第三方数据库: Apache Derby, Borland Interbase, Borland JDataStore, DB2, Empress, Firebird, H2 Database Engine, 
-              Hypersonic Database Engine, Informix Dynamic Server, Ingres Database, InterSystems Cache,
-              Microsoft Access, Microsoft SQL Server, Microsoft Visual FoxPro, MySQL, Oracle, Pointbase,
-              PostgreSQL, IBM solidDB, Sybase Adaptive Server Enterprise, 达梦DM7+, 人大金仓, 南大通用, 神通数据库
-```
+| Database Name                     | Database Version            | JDBC Driver Name                  | JDBC Driver Version |
+| --------------------------------- | --------------------------- | --------------------------------- | ------------------- |
+| Apache Derby                      | 10.1.2.1                    | Apache Derby Embedded JDBC Driver | 10.1.2.1            |
+| Borland Interbase                 | 7.1.0.202                   | Interclient                       | 4.5.1               |
+| Borland JDataStore                | 6.0                         | Borland JDataStore                | 6.0                 |
+| DB2                               | 8.1                         | IBM DB2 JDBC Universal Driver     | 1.0.581             |
+| Empress                           | 8.62                        | Empress Category 2 JDBC Driver    | 8.62                |
+| Firebird                          | 1.5                         | JayBird JCA/JDBC driver           | 1.0.1               |
+| H2 Database Engine                | 1.0                         | H2                                | 1.0                 |
+| Hypersonic Database Engine        | 1.8.0                       | Hypersonic                        | 1.8.0               |
+| Informix Dynamic Server           | 9.30.UC10                   | Informix JDBC driver              | 2.21.JC2            |
+| InterSystems Cache                | 5.0                         | Cache JDBC Driver                 | 5.0                 |
+| Microsoft Access                  | 9.0 (a.k.a. "2000")         | DataDirect SequeLink              | 5.4.0038            |
+| Microsoft SQL Server              | 9.00.1399 (SQL Server 2005) | SQLServer                         | 1.0.809.102         |
+| Microsoft Visual FoxPro           | 7.0                         | DataDirect SequeLink              | 5.4.0038            |
+| MySQL                             | 3.23.43-log                 | MySQL Driver                      | 3.0.14              |
+| MySQL                             | 5.0.26                      | MySQL Driver                      | 3.0.14              |
+| Oracle                            | 8.1,9.2,10.1                | Oracle JDBC driver                | 10.2.0.1.0          |
+| Pointbase                         | 4.4                         | Pointbase JDBC driver             | 4.4 (4.4)           |
+| PostgreSQL                        | 7.2.1                       | PostgreSQL Native Driver          | 8.1                 |
+| PostgreSQL                        | 8.1.5                       | PostgreSQL Native Driver          | 8.1                 |
+| Sybase Adaptive Server Enterprise | 12.5                        | jConnect                          | 5.5 (5.5)           |
+
+主流数据库都包含在内.
 
 
 
-# 官方网盘下载:
+# 国产数据库支持
 
-百度云盘：https://pan.baidu.com/s/1oBQ1atXGyXdLaYE5uAqF1w   提取码: pnk9
+对与国产数据库的支持是对不同的数据库编写不同的适配方言来实现的，也就是通过定制DBDictionary来实现对接。
 
+目前我们已经成功适配的国产数据库如下：
+
+| 数据库                 | 方言                                                   |
+| ---------------------- | ------------------------------------------------------ |
+| 达梦                   | com.x.base.core.openjpa.jdbc.sql.DMDictionary          |
+| 南大通用8s             | com.x.base.core.openjpa.jdbc.sql.GBaseDictionary       |
+| 南大通用华库(mysql5)   | com.x.base.core.openjpa.jdbc.sql.GBaseMySQL5Dictionary |
+| 南大通用华库(mysql8)   | com.x.base.core.openjpa.jdbc.sql.GBaseMySQLDictionary  |
+| 人大金仓V7             | com.x.base.core.openjpa.jdbc.sql.KingbaseDictionary    |
+| 人大金仓V8             | com.x.base.core.openjpa.jdbc.sql.Kingbase8Dictionary   |
+| 人大金仓V8R6           | com.x.base.core.openjpa.jdbc.sql.Kingbase8R6Dictionary |
+| 神通数据库             | com.x.base.core.openjpa.jdbc.sql.OscarDictionary       |
+| 各种PostgreSQL改造版本 | org.apache.openjpa.jdbc.sql.PostgresDictionary         |
+
+
+
+# 平台使用手册：
+
+https://www.o2oa.net/course/
+
+
+
+# 源码编译教程:
+
+http://www.o2oa.net/course/ng5iqb.html
 
 
 
@@ -118,173 +121,49 @@ Linux环境：https://www.o2oa.net/course/yto8af.html
 
 
 
-## 平台使用手册：
+# How to Start
 
-https://www.o2oa.net/course/
+## windows
 
+1.下载o2server. yyyyMMddHHmmss_ windows.zip程序包。
 
+2.解压下载后的压缩包到任意目录。
 
-# 源码编译使用教程:
+3.确认开通服务器的80、20020、20030端口。
 
-http://www.o2oa.net/course/ng5iqb.html
+4.打开o2server文件夹,选择start_ windows.bat双击打开。
 
+5.启动服务,等待相关服务自动完成。
 
+6.自动完成后打开浏览器访问http://127.0.0.1。
 
+7.输入用户名xadmin密码o2登陆系统。
 
+## linux
 
-# 最新版本 v6.3.x:
+1.下载o2server. yyyyMMddHHmmss_linux.zip程序包。
 
-功能新增
+2.确认开通服务器的80、20020、20030端口。
 
-[通用]HTML编辑器CKEditor升级到4161，增加了阅读状态的图片延迟加载功能、浏览原图功能。涉及的应用有流程表单、内容管理表单和论坛帖子
+3."unzip o2server. syyyMMddHHmmss linux.zip" 解压程序包。
 
-[数据中心]新增了查询视图中导出Excel的功能
+4."cd o2server. yyyMMddHHmmss_ linux" 进入解压目录。
 
-[内容管理]新增了内容管理文档的操作条中置顶的功能，并为内容管理列表增加置顶标记
+5."cd o2server"进入程序目录。
 
-[服务管理]新增了服务管理的代理和接口开发界面调试的功能
+6."./start. linux.sh" 回车启动服务器控制台。
 
-[流程管理]新增了表单设计界面增加数据模板的时候带入默认相关组件，数据模板导出字段配置自动获取的功能
+7.启动服务,等待相关服务自动完成。
 
-[流程管理]新增了onlyoffice控件
+8.自动完成后打开浏览器访问http://127.0.0.1。
 
-[流程管理]新增了wps控件
+9.输入用户名xadmin密码o2登陆系统。
 
-[流程管理]新增了金格控件
 
-[流程管理]新增了永中控件
 
-[流程管理]新增了LibreOffice预览
+#### 若开发者学习研究O2OA，企业在O2OA应用开发平台上建设内部使用的办公系统，不闭源分发版本，不参与商业项目的使用行为不会构成侵权风险。
 
-[移动办公]新增了微信公众号，关注回复的消息的功能
-
-[移动办公]新增了企业微信考勤数据导入查询功能
-
-[移动办公]新增了移动端App支持tokenName修改的功能
-
-[移动办公]新增了移动端App支持通讯录权限控制的功能
-
-[移动办公]新增了移动端App个人信息页面的个人属性展现的功能
-
-[数据库]新增了南大通用GBASE华库数据库支持
-
-[日志]新增了服务器http request access log
-
-[流程平台]新增了流程起草权限增加群组设置的功能
-
-[内容管理]新增了根据条件查找附件的接口
-
-[流程平台]新增了流程起草增加权限校验
-
-[人员组织]新增了人员组织管理模块接口mockput和mockdelete
-
-[流程平台]新增了待办、待阅根据title查询
-
-[平台架构]新增了平台审计日志自定义程序分析功能
-
-[流程平台]增加了公文编辑器转换Word后加密的功能
-
-[流程平台]增加了公文编辑器加盖图片章的功能
-
-[流程平台]新增了公文编辑器增加标题字体定义的功能
-
-[流程平台]新增了公文编辑器保证版记在偶数页的功能
-
-[流程平台]新增了公文编辑器增加附件内容编辑的功能
-
-[流程平台]新增了公文编辑器增加编辑器属性配置的功能
-
-[平台架构]新增了主菜单排序设置功能，管理员可设置默认和强制方式
-
-[平台架构]新增了一组ElementUI组件
-
-功能优化
-
-[考勤管理]优化了考勤管理界面
-
-[脚本API]优化了脚本API（增加了后台脚本API,增加了发送待阅、添加参阅）
-
-[内容管理]优化了内容管理表单事件，增加postSave、 postPublish
-
-[内容管理]整理了内容管理操作条的图标
-
-[移动办公]优化了主题切换功能
-
-[移动办公]优化了移动端已阅意见功能支持
-
-[移动办公]O2云连接配置UI修改，以及一些页面功能调整优化
-
-[移动办公]优化了移动端App分享功能
-
-[移动办公]优化了移动端App拍照功能
-
-[服务器]集群增加健康检查
-
-[服务器]优化了线程池
-
-[服务器]优化了缓存机制
-
-[认证]验证码改为全匹配,并更新验证码实现
-
-[内容管理]优化了文档发布消息发送条件，未配置消息类型不往消息处理器发送消息
-
-[人员组织]优化了人员身份唯一编码，使其根据组织编码和人员唯一编码生成
-
-[内容管理]优化了文档权限刷新，增加多线程处理，增加根据文档类型刷新权限
-
-[内容管理]优化了分页查询的查询速度
-
-[内容管理]优化了review表索引，减少不必要索引，增加联合索引
-
-[流程平台]优化了公文编辑器格式展现
-
-[流程平台]公文编辑器粘贴表格时，控制合适的宽度
-
-[流程平台]公文编辑器只有一个附件时不显示序号
-
-[平台架构]修复this.data绑定的Array数据类型问题
-
-[平台优化]基于Authorization请求头的系统认证
-
-问题修复
-
-[流程管理]修复了重置处理人未剔除待办人的问题
-
-[流程管理]修复了人员选择保存范围刷新后变回精简的问题
-
-[内容管理]修复了内容管理设计端语言包上的一些问题
-
-[流程管理]修复了表单Tab组件设置宽度无效的问题
-
-[流程管理]修复了表单中TextArea组件只读时setData的问题
-
-[流程管理]修复了数据表格移动端条目为0时无添加按钮的问题
-
-[移动办公]修复了钉钉、企业微信考勤数据展现的bug
-
-[流程引擎]修复了定时节点无法清空已选值的bug
-
-[内容管理]修复了文档阅读记录出现cipher用户的问题
-
-[内容管理]修复了根据创建时间查询文档错误的问题
-
-[流程平台]修复了根据状态分页查找work的bug
-
-[内容管理]修复了文档保存时未保存置顶信息的问题
-
-[流程平台]修复了执行this.data.save脚本时，在表单未载入完全时，可能造成数据丢失的问题
-
-[平台架构]修复了loadCss方法会多次载入的问题
-
-[流程平台]去除流程启动前和流程结束前两个事件
-
-[平台架构]修复Promise的uncatch错误
-
-
-
-### 若开发者学习研究O2OA，企业在O2OA应用开发平台上建设内部使用的办公系统，不闭源分发版本，不参与商业项目的使用行为不会构成侵权风险。
-
-### 如果需要进行转售，闭源分发或者在商业项目中作为项目的一部分使用，请主动联系兰德网络公司购买商用许可。
+#### 如果需要进行转售，闭源分发或者在商业项目中作为项目的一部分使用，请主动联系兰德网络公司购买商用许可。
 
 商用许可说明：https://www.o2oa.net/license.html
 
@@ -301,6 +180,16 @@ http://www.o2oa.net/course/ng5iqb.html
 # 关于
 
 [![img](https://www.o2oa.net/imagex/logo_all@1.5x.png)](./assets/O2OA-logo.jpg)
+
+浙江兰德纵横网络技术股份有限 公司成立于1999年，经全国中小企业股份转让系统批准，公司于2015年11月在新三板正式挂牌上市(股票代码834505)。
+
+兰德网络是信息技术应用与服务提供商，为客户的计算机信息系统、企业级通信系统的建设提供解决方案和专业化服务。 业务包括：项目咨询、方案设计、应用系统开发、企业信息系统等服务。
+
+兰德网络是浙江省高新技术企业、浙江省信息产业厅认定的软件企业、浙江省信息产业重点企业、浙江省软件业五强企业， 总部拥有5300多平方米的办公场所，员工总数超过600人，在北京、上海、深圳、天津、南京、合肥、郑州、重庆、沈阳、长春、哈尔滨、呼和浩特、济南、南昌等省会城市设立办事处， 服务网络覆盖中国及东南亚部分国家和地区。公司已通过ISO9001：2008国际质量体系认证，并取得了国家系统集成三级资质认证和CMI三级认证的证书。
+
+兰德网络在电信运营企业中拥有良好的品牌形象，我们的通信软件系列产品已广泛应用于中国电信、中国移动、中国联通和中国网通等广大电信运营商的通信系统。 兰德网络已成为中国无线信息服务产业中优秀的商业机构及系统提供商代表，并将成为信息产业、互联网和数据通信服务产业中杰出的系统与服务提供商代表。
+
+面向未来，兰德网络的愿景是“致力于更加美好的协作”。我们相信人类的协作一定会有更加美好的图景，等待我们去探索和描绘！
 
 
 
