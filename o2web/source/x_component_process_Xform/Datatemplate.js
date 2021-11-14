@@ -729,9 +729,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * //获取数据模板“dt1”的第一个条目。
 		 * var line = this.form.get("dt1").getLine(0);
 		 * //获取第一个条目subject字段的值
-		 * var data = line.getModule("subject").getData();
+		 * var data = line.get("subject").getData();
 		 * //设置subject字段的值
-		 * line.getModule("subject").setData("test1");
+		 * line.get("subject").setData("test1");
 		 */
 		getLine: function(index){
 			var line = this.lineList[index];
@@ -775,7 +775,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			// }
 		},
 		/**
-		 * 获取对应表单组件。
+		 * 获取对应表单组件，作用等同于get。
 		 * @param {Number} index 条目序号，从零开始
 		 * @param {String} id 组件标识
 		 * @return {FormComponent} 对应表单组件
@@ -792,6 +792,19 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			if( !line )return null;
 			return line.getModule(id);
 		},
+		/**
+		 * 获取对应表单组件，作用等同于getModule。
+		 * @param {Number} index 条目序号，从零开始
+		 * @param {String} id 组件标识
+		 * @return {FormComponent} 对应表单组件
+		 * @example
+		 * //获取数据模板“dt1”的第一个条目的subject字段。
+		 * var module = this.form.get("dt1").get(0, "subject");
+		 * //获取subject字段的值
+		 * var data = module.getData();
+		 * //设置subject字段的值
+		 * module.setData("test1");
+		 */
 		get: function(index, id){
 			return this.getModule(index, id);
 		},
