@@ -118,6 +118,20 @@ MWF.xApplication.portal.PageDesigner.Module.Widget = MWF.PCWidget = new Class({
 			}
 		}).inject(this.page.container);
 	},
+    _getDroppableNodes: function(){
+        var nodes = [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
+        this.form.moduleList.each( function(module){
+            //部件不能往数据模板里拖
+            if( module.moduleName === "datatemplate" ){
+                var subDoms = this.form.getModuleNodes(module.node);
+                nodes.erase( module.node );
+                subDoms.each(function (dom) {
+                    nodes.erase( dom );
+                })
+            }
+        }.bind(this));
+        return nodes;
+    },
 	_createNode: function(){
 		this.node = this.moveNode.clone(true, true);
 		this.node.setStyles(this.css.moduleNode);
@@ -135,6 +149,7 @@ MWF.xApplication.portal.PageDesigner.Module.Widget = MWF.PCWidget = new Class({
             this.refreshWidget();
         }.bind(this));
 
+        debugger;
         this.node.addEvent("dblclick", function(e){
             this.openWidget(e);
         }.bind(this));
