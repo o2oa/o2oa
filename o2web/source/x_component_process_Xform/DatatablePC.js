@@ -963,7 +963,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			// }
 		},
 		/**
-		 * 获取对应表单组件，作用等同于getModule。
+		 * 获取对应表单组件，作用等同于get。
 		 * @param {Number} index 条目序号，从零开始
 		 * @param {String} id 组件标识
 		 * @return {FormComponent} 对应表单组件
