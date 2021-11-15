@@ -126,7 +126,7 @@ MWF.xApplication.process.FormDesigner.Module.OnlyOffice = MWF.FCOnlyOffice = new
 
         this.setIcon();
         if(!layout.serviceAddressList["x_onlyofficefile_assemble_control"]){
-            this.tipNode = new Element("div").inject(this.node);
+            this.tipNode = new Element("div",{"style":"text-align:center"}).inject(this.node);
             this.tipNode.set("html","<h3><font color=red>" + MWF.APPFD.LP.onlyoffice.nosetup + "</font></h3>");
         }
         this.setIcon();

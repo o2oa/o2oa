@@ -1184,7 +1184,6 @@ MWF.xApplication.process.FormDesigner.LP = {
             "ReadSetting" :"ReadSetting"
         },
         "onlyoffice" : {
-            "nosetup" : "Install onlyOffice",
             "config":"Config",
             "moduleConfig":"moduleConfig",
             "autosave":"autosave",
@@ -1239,6 +1238,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     "smartbi":{
         "nosetup":"please install SmartBI APP first",
         "txt":"SmartBI"
+    },
+    "onlyoffice":{
+        "nosetup":"please install onlyOffice APP first",
     },
     "actionBar": {
         "close":"Close",
