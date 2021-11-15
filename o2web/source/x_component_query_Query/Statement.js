@@ -543,6 +543,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         var titleArray = [];
         var colWidthArr = [];
         var dateIndexArray = [];
+        var numberIndexArray = [];
         var idx = 0;
         Object.each(this.entries, function (c, k) {
             if (this.hideColumns.indexOf(k) === -1) {
@@ -550,6 +551,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
                 colWidthArr.push(c.exportWidth || 200);
                 if( c.isTime )dateIndexArray.push(idx);
+                if( c.isNumber )numberIndexArray.push(idx);
                 idx++;
             }
         }.bind(this));
@@ -564,6 +566,9 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                     Object.each(this.entries, function (c, k) {
                         if (this.hideColumns.indexOf(k) === -1) {
                             var text = this.getExportText(c, k, d);
+                            // if( c.isNumber && typeOf(text) === "string" && (parseFloat(text).toString() !== "NaN") ){
+                            //     text = parseFloat(text);
+                            // }
                             dataArray.push( text );
                         }
                     }.bind(this));
@@ -590,7 +595,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                     arg.data || exportArray,
                     arg.title || excelName,
                     arg.colWidthArray || colWidthArr,
-                    dateIndexArray  //日期格式列下标
+                    dateIndexArray,  //日期格式列下标
+                    numberIndexArray  //数字格式列下标
                 );
 
             }.bind(this));
@@ -1090,7 +1096,7 @@ MWF.xApplication.query.Query.Statement.ExcelUtils = new Class({
         var fileNode = uploadFileAreaNode.getFirst();
         fileNode.click();
     },
-    exportToExcel : function(array, fileName, colWidthArr, dateIndexArray){
+    exportToExcel : function(array, fileName, colWidthArr, dateIndexArray, numberIndexArray){
         // var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
         // array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
         // array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
@@ -1133,6 +1139,14 @@ MWF.xApplication.query.Query.Statement.ExcelUtils = new Class({
                 }.bind(this))
             }
 
+            if( numberIndexArray && numberIndexArray.length ){
+                numberIndexArray.each( function( value, index ){
+                    numberIndexArray[ index ] = this.index2ColName(value);
+                }.bind(this))
+            }
+
+            var typeFlag = ( dateIndexArray && dateIndexArray.length ) || ( numberIndexArray && numberIndexArray.length );
+
             for( var key in dataInfo ){
                 //设置所有样式，wrapText=true 后 /n会被换行
                 if( key.substr(0, 1) !== "!" ){
@@ -1141,13 +1155,22 @@ MWF.xApplication.query.Query.Statement.ExcelUtils = new Class({
                     if( !di.s.alignment )di.s.alignment = {};
                     di.s.alignment.wrapText = true;
 
-                    if( dateIndexArray && dateIndexArray.length ){
+                    if( typeFlag ){
+
                         var colName = key.replace(/\d+/g,''); //清除数字
                         var rowNum = key.replace( colName, '');
-                        if( rowNum > 1 && dateIndexArray.contains( colName ) ){
-                            //di.s.numFmt = "yyyy-mm-dd HH:MM:SS"; //日期列 两种方式都可以
-                            di.z = 'yyyy-mm-dd HH:MM:SS'; //日期列
+
+                        if( rowNum > 1 ){
+                            if( dateIndexArray && dateIndexArray.length && dateIndexArray.contains( colName ) ){
+                                //di.s.numFmt = "yyyy-mm-dd HH:MM:SS"; //日期列 两种方式都可以
+                                di.z = 'yyyy-mm-dd HH:MM:SS'; //日期列
+                            }
+                            if( numberIndexArray && numberIndexArray.length && numberIndexArray.contains( colName ) ){
+                                di.s.alignment.wrapText = false;
+                                di.t = 'n'; //数字类型
+                            }
                         }
+
                     }
                 }
 
