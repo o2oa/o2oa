@@ -1193,6 +1193,7 @@ MWF.xApplication.process.FormDesigner.LP = {
             "ReadSetting" :"文字-状态栏-阅读设置"
         },
         "onlyoffice" : {
+            "nosetup" : "请先安装onlyoffice应用",
             "config":"配置",
             "moduleConfig":"功能设置",
             "autosave":"自动保存",
@@ -1248,6 +1249,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "nosetup":"请先安装SmartBI应用",
         "txt":"SmartBI报表"
     },
+
     "actionBar": {
         "close":"关闭",
         "closeTitle": "关闭文档",
