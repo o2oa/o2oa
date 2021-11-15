@@ -714,7 +714,8 @@ MWF.xApplication.cms.Module.Main = new Class({
 			}
 		}.bind(this), function(){
 			//if (failure) failure();
-			this.saveItemAsNew(data, success, failure, false, newCategory)
+			this.saveItemAsNew(data, success, failure, false, newCategory);
+			return true;
 		}.bind(this));
 	},
 	saveItemAsUpdate: function(someItem, data, success, failure){
