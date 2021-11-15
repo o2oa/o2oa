@@ -256,6 +256,12 @@ MWF.xApplication.cms.ColumnManager.FileExplorer.File = new Class({
             this.node.destroy();
             if (callback) callback();
         }.bind(this));
+    },
+    selected: function(){
+        if (this.deleteMode) this.deleteItem();
+        this.isSelected = true;
+        this.node.setStyles(this.explorer.css.itemNode_selected);
+        this.explorer.selectMarkItems.push(this);
     }
 });
 
