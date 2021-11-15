@@ -79,7 +79,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
 
         "export": "Export",
         "exportWidth": "Width",
-        "isTime": "Time Type"
-
+        "isTime": "Time Type",
+        "isNumber": "Number Type"
     }
 });
