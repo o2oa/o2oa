@@ -1184,6 +1184,7 @@ MWF.xApplication.process.FormDesigner.LP = {
             "ReadSetting" :"ReadSetting"
         },
         "onlyoffice" : {
+            "nosetup" : "Install onlyOffice",
             "config":"Config",
             "moduleConfig":"moduleConfig",
             "autosave":"autosave",
