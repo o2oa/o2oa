@@ -282,6 +282,12 @@ MWF.xApplication.process.ProcessManager.FileExplorer.File = new Class({
                 }.bind(this));
             }
         }
+    },
+    selected: function(){
+        if (this.deleteMode) this.deleteItem();
+        this.isSelected = true;
+        this.node.setStyles(this.css.itemNode_selected);
+        this.explorer.selectMarkItems.push(this);
     }
 
 });
