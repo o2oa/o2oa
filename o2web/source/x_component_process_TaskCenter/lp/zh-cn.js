@@ -69,7 +69,7 @@ MWF.xApplication.process.TaskCenter.LP = {
 
     "unit": "组织",
     "duty": "职务",
-    "searchProcess": "输入关键字，搜素可启动流程",
+    "searchProcess": "输入关键字，搜索可启动流程",
     "searchProcessResault": "”{key}“ 的搜索结果",
     "datch": "批量处理",
 
