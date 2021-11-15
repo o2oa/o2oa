@@ -1461,62 +1461,81 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             //    if (callback) callback.apply(this);
             //    return;
             //}
-            var scriptAction;
-            switch (type) {
-                case "portal" :
-                    if (this.scriptActionPortal) {
-                        scriptAction = this.scriptActionPortal;
-                    } else {
-                        MWF.require("MWF.xScript.Actions.PortalScriptActions", null, false);
-                        scriptAction = this.scriptActionPortal = new MWF.xScript.Actions.PortalScriptActions();
-                    }
-                    break;
-                case "process" :
-                    if (this.scriptActionProcess) {
-                        scriptAction = this.scriptActionProcess;
-                    } else {
-                        MWF.require("MWF.xScript.Actions.ScriptActions", null, false);
-                        scriptAction = this.scriptActionProcess = new MWF.xScript.Actions.ScriptActions();
-                    }
-                    break;
-                case "cms" :
-                    if (this.scriptActionCMS) {
-                        scriptAction = this.scriptActionCMS;
-                    } else {
-                        MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
-                        scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
-                    }
-                    break;
-            }
-            scriptAction.getScriptByName(application, name, includedScripts, function (json) {
-                if (json.data) {
-                    includedScripts.push(key);
-
-                    //名称、别名、id
-                    json.data.importedList.each(function (flag) {
-                        if (type === "portal") {
-                            includedScripts.push(type + "-" + json.data.portal + "-" + flag);
-                            if (json.data.portalName) includedScripts.push(type + "-" + json.data.portalName + "-" + flag);
-                            if (json.data.portalAlias) includedScripts.push(type + "-" + json.data.portalAlias + "-" + flag);
-                        } else if (type === "cms") {
+            if (options.enableAnonymous && type === "cms") {
+                o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName(application, name, function (json) {
+                    if (json.data) {
+                        includedScripts.push(key);
+                        //名称、别名、id
+                        (json.data.importedList || []).each(function (flag) {
                             includedScripts.push(type + "-" + json.data.appId + "-" + flag);
                             if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
                             if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
-                        } else if (type === "process") {
-                            includedScripts.push(type + "-" + json.data.application + "-" + flag);
-                            if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
-                            if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+                        });
+                        includedScripts = includedScripts.concat(json.data.importedList || []);
+                        MWF.CMSMacro.exec(json.data.text, this);
+                        if (callback) callback.apply(this);
+                    } else {
+                        if (callback) callback.apply(this);
+                    }
+                }.bind(this), null, false);
+            } else {
+                var scriptAction;
+                switch (type) {
+                    case "portal" :
+                        if (this.scriptActionPortal) {
+                            scriptAction = this.scriptActionPortal;
+                        } else {
+                            MWF.require("MWF.xScript.Actions.PortalScriptActions", null, false);
+                            scriptAction = this.scriptActionPortal = new MWF.xScript.Actions.PortalScriptActions();
                         }
-                    });
-
-                    includedScripts = includedScripts.concat(json.data.importedList);
-                    MWF.Macro.exec(json.data.text, this);
-                    if (callback) callback.apply(this);
-                } else {
-                    if (callback) callback.apply(this);
+                        break;
+                    case "process" :
+                        if (this.scriptActionProcess) {
+                            scriptAction = this.scriptActionProcess;
+                        } else {
+                            MWF.require("MWF.xScript.Actions.ScriptActions", null, false);
+                            scriptAction = this.scriptActionProcess = new MWF.xScript.Actions.ScriptActions();
+                        }
+                        break;
+                    case "cms" :
+                        if (this.scriptActionCMS) {
+                            scriptAction = this.scriptActionCMS;
+                        } else {
+                            MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
+                            scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
+                        }
+                        break;
                 }
-            }.bind(this), null, !!async);
-        }
+                scriptAction.getScriptByName(application, name, includedScripts, function (json) {
+                    if (json.data) {
+                        includedScripts.push(key);
+
+                        //名称、别名、id
+                        json.data.importedList.each(function (flag) {
+                            if (type === "portal") {
+                                includedScripts.push(type + "-" + json.data.portal + "-" + flag);
+                                if (json.data.portalName) includedScripts.push(type + "-" + json.data.portalName + "-" + flag);
+                                if (json.data.portalAlias) includedScripts.push(type + "-" + json.data.portalAlias + "-" + flag);
+                            } else if (type === "cms") {
+                                includedScripts.push(type + "-" + json.data.appId + "-" + flag);
+                                if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
+                                if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+                            } else if (type === "process") {
+                                includedScripts.push(type + "-" + json.data.application + "-" + flag);
+                                if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
+                                if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+                            }
+                        });
+
+                        includedScripts = includedScripts.concat(json.data.importedList);
+                        MWF.Macro.exec(json.data.text, this);
+                        if (callback) callback.apply(this);
+                    } else {
+                        if (callback) callback.apply(this);
+                    }
+                }.bind(this), null, !!async);
+            }
+        };
         this.include = function (optionsOrName, callback, async) {
             if (o2.typeOf(optionsOrName) == "array") {
                 if (!!async) {
@@ -1526,15 +1545,14 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                         _includeSingle.apply(this, [option, function () {
                             loaded++;
                             if (loaded >= count) if (callback) callback.apply(this);
-                            ;
                         }.bind(this), true]);
                     }.bind(this));
 
                 } else {
                     optionsOrName.each(function (option) {
                         _includeSingle.apply(this, [option]);
-                        if (callback) callback.apply(this);
                     }.bind(this));
+                    if (callback) callback.apply(this);
                 }
             } else {
                 _includeSingle.apply(this, [optionsOrName, callback, async])
