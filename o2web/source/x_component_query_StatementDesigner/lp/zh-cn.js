@@ -94,7 +94,8 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
 
         "export": "导出",
         "exportWidth": "宽度",
-        "isTime": "时间类型"
+        "isTime": "时间类型",
+        "isNumber": "数字类型"
 
     }
 });
