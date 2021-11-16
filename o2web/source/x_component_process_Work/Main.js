@@ -516,6 +516,10 @@ MWF.xApplication.process.Work.Main = new Class({
 
 
         this.control = controlData;
+        if( !this.currentTask && this.control.allowReset ){
+            this.control.allowReset = false;
+        }
+
         if (formData){
             if (formData.form){
                 this.formDataText = (formData.form.data) ? MWF.decodeJsonString(formData.form.data) : "";
