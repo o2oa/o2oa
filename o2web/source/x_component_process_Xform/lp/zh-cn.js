@@ -355,7 +355,8 @@ MWF.xApplication.process.Xform.LP = {
         "readIdentity": "待阅人",
         "sendReadNotify": "发送待阅通知",
 
-        "reviewIdentity": "阅读人"
+        "reviewIdentity": "阅读人",
+        "noTaskToReset": "当前工作没有您的待办，不能执行该操作"
     },
 
     "sendRead": "发送待阅",

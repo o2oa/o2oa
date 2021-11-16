@@ -3409,6 +3409,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
             return false;
         }
+        if( !this.businessData.task ){
+            MWF.xDesktop.notice("error", { x: "right", y: "top" }, MWF.xApplication.process.Xform.LP.form.noTaskToReset);
+            return false;
+        }
         MWF.require("MWF.xDesktop.Dialog", function () {
             var width = 680;
             var height = 300;

@@ -356,7 +356,8 @@ MWF.xApplication.process.Xform.LP = {
         "readIdentity": "Identity",
         "sendReadNotify": "Send a pending notification",
 
-        "reviewIdentity": "Identity"
+        "reviewIdentity": "Identity",
+        "noTaskToReset": "The current job does not have your task, and the operation cannot be performed"
     },
     "sendRead": "Send Read",
     "sendReadOk": "Sent Read:",
