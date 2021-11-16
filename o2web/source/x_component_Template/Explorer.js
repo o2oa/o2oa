@@ -627,6 +627,9 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
                 }else{
                     this.loadPagingElementList( this.options.pagingPar.countPerPage, arg1, arg2 );
                 }
+                if(this.checkboxElement){
+                    this.checkboxElement.set("checked", false);
+                }
             }.bind(this)
         });
         if( pageNum )par.currentPage = pageNum;
