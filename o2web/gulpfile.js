@@ -370,7 +370,7 @@ function createCMSXFormConcatTask(path, isMin, thisOptions) {
             'source/' + path + '/Elslider.js',
             'source/' + path + '/Elswitch.js',
             'source/' + path + '/Elautocomplete.js',
-            'source/' + path + '/Elbutton.js',
+            'source/' + path + '/Elbutton.js'
 
             //'source/' + path + '/Personfield.js',
             //'source/' + path + '/Readerfield.js',
