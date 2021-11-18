@@ -39,7 +39,8 @@ class ActionListWithUnitSubDirectObject extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList());
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList(),
+					wi.getCountSubDirectIdentity(), wi.getCountSubDirectUnit());
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
