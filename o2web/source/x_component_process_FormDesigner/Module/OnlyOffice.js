@@ -54,11 +54,6 @@ MWF.xApplication.process.FormDesigner.Module.OnlyOffice = MWF.FCOnlyOffice = new
             return false;
         });
 
-        if(!layout.serviceAddressList["x_onlyofficefile_assemble_control"]){
-            this.tipNode = new Element("div").inject(this.node);
-            this.tipNode.set("html","<h3><font color=red>请先安装onlyoffice应用</font></h3>");
-        }
-
         this.iconNode = new Element("div", {
             "styles": this.css.iconNode
         }).inject(this.node);
@@ -111,5 +106,30 @@ MWF.xApplication.process.FormDesigner.Module.OnlyOffice = MWF.FCOnlyOffice = new
         if (name=="officeType"){
             this.setIcon();
         }
+    },
+    _resetModuleDomNode: function(){
+        this.setNodeContainer();
+    },
+    setNodeContainer:function(){
+
+        this.node.empty();
+        this.iconNode = new Element("div", {
+            "styles": this.css.iconNode
+        }).inject(this.node);
+        var icon = new Element("div", {
+            "styles": this.css.iconNodeIcon
+        }).inject(this.iconNode);
+        var text = new Element("div", {
+            "styles": this.css.iconNodeText,
+            "text": "OnlyOffice"
+        }).inject(this.iconNode);
+
+        this.setIcon();
+        if(!layout.serviceAddressList["x_onlyofficefile_assemble_control"]){
+            this.tipNode = new Element("div",{"style":"text-align:center"}).inject(this.node);
+            this.tipNode.set("html","<h3><font color=red>" + MWF.APPFD.LP.onlyoffice.nosetup + "</font></h3>");
+        }
+        this.setIcon();
+
     }
 });

@@ -52,9 +52,12 @@ class ActionGetLogin extends BaseAction {
 
 			String userId = jsonElement.getAsJsonObject().get("UserId").getAsString();
 			Business business = new Business(emc);
-			String personId = business.person().getWithCredential(userId);
+			String personId = business.person().getPersonIdWithQywxid(userId);
 			if (StringUtils.isEmpty(personId)) {
 				throw new ExceptionPersonNotExist(userId);
+			}
+			if (personId.indexOf(",") > 0) {
+				throw new ExceptionQywexinRepeated(userId);
 			}
 			Person person = emc.find(personId, Person.class);
 			Wo wo = Wo.copier.copy(person);
