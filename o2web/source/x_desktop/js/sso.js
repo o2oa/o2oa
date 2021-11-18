@@ -72,7 +72,7 @@ function getServiceAddressConfigObject(callback, center){
         var serviceAddressList = json.data;
         if (layout.config.proxyApplicationEnable){
             Object.keys(serviceAddressList).forEach(function(k){
-                serviceAddressList[k].port = window.location.port;
+                if (k!=="x_message_assemble_communicate") serviceAddressList[k].port = window.location.port;
             });
         }
         window.layout.serviceAddressList = serviceAddressList;
