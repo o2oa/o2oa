@@ -1239,6 +1239,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "nosetup":"please install SmartBI APP first",
         "txt":"SmartBI"
     },
+    "onlyoffice":{
+        "nosetup":"please install onlyOffice APP first",
+    },
     "actionBar": {
         "close":"Close",
         "closeTitle": "Close Document",
