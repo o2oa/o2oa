@@ -81,10 +81,12 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 			String messageRedirectPortal = Config.dingding().getMessageRedirectPortal();
 			if (messageRedirectPortal != null && !"".equals(messageRedirectPortal)) {
 				String portal = "portalmobile.html?id="+messageRedirectPortal;
-				portal = URLEncoder.encode(portal, DefaultCharset.name);
+				// 2021-11-1 钉钉那边无法使用了 不能进行encode 否则签名不通过
+//				portal = URLEncoder.encode(portal, DefaultCharset.name);
 				workUrl += "&redirectlink=" + portal;
 			}
-			workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
+			// 2021-11-1 钉钉那边无法使用了 不能进行encode 否则签名不通过
+//			workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
 			logger.info("o2oa workUrl："+workUrl);
 			o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + workUrl;
 			logger.info("o2oa 地址："+o2oaUrl);
