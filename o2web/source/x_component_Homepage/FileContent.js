@@ -26,6 +26,7 @@ MWF.xApplication.Homepage.FileContent  = new Class({
             });
         }, function(){
             layout.openApplication(e, "File");
+            return true;
         })
     },
     setContentSize: function(){
