@@ -118,7 +118,7 @@ public class LanguageTools {
             }
             message = resourceBundle.getString(key);
         } catch (Exception e) {
-            logger.print("LanguageTools resourceBundle2 error:"+e.getMessage());
+            logger.debug("LanguageTools resourceBundle2 error:"+e.getMessage());
         }
 
         return message;
