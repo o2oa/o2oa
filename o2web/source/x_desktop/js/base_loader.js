@@ -317,7 +317,7 @@ if (!layout.isReady) {
                 if (o2.typeOf(config.center)==="array"){
                     config.center.forEach(function(c){
                         c.port = window.location.port;
-                    })
+                    });
                 }else{
                     config.port = window.location.port;
                 }
