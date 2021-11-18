@@ -107,6 +107,8 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
                     this.toolbarNode.setStyle("display", "none");
                 }
             }.bind(this));
+        }else{
+            this.node.setStyle("display", "none");
         }
     },
     loadPosition: function(){
