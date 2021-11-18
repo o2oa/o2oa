@@ -1243,6 +1243,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "nosetup":"请先安装SmartBI应用",
         "txt":"SmartBI报表"
     },
+    "onlyoffice":{
+        "nosetup":"请先安装OnlyOffice应用",
+    },
     "actionBar": {
         "close":"关闭",
         "closeTitle": "关闭文档",
