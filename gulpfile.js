@@ -348,7 +348,7 @@ async function build_web_module() {
                     var pkgPath = path.resolve(srcPath, p, 'package.json');
                     if (fs.existsSync(pkgPath)){
                         var pkg = require(pkgPath);
-                        if (pkg.scripts['o2-deploy']){
+                        if (pkg.scripts['o2-build']){
                             moduleFolder.push(file);
                         }
                     }
@@ -360,7 +360,7 @@ async function build_web_module() {
             // var tasks = [];
             moduleFolder.forEach((f)=>{
                 shelljs.config.verbose = true;
-                shelljs.exec('npm run o2-deploy -- --dest ../../../'+dest+f, {cwd: path.resolve(srcPath, f)});
+                shelljs.exec('npm run o2-build', {cwd: path.resolve(srcPath, f)});
             });
         });
     });
