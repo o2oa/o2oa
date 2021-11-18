@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -17,7 +16,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
-import com.x.base.core.project.tools.DefaultCharset;
 
 class ActionGetEncrypt extends BaseAction {
 
@@ -40,8 +38,9 @@ class ActionGetEncrypt extends BaseAction {
 			throw new ExceptionClientNotExist(client);
 		}
 		String str = credential + TOKEN_SPLIT + new Date().getTime();
-		byte[] bs = Crypto.encrypt(str.getBytes(DefaultCharset.charset), key.getBytes());
-		String token = new String(Base64.encodeBase64(bs), DefaultCharset.charset);
+		String token = Crypto.encrypt(str, key);
+//		byte[] bs = Crypto.encrypt(str.getBytes(DefaultCharset.charset), key.getBytes());
+//		String token = new String(Base64.encodeBase64(bs), DefaultCharset.charset);
 		Wo wo = new Wo();
 		wo.setToken(token);
 		result.setData(wo);
