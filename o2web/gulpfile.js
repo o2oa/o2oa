@@ -83,7 +83,7 @@ function createDefaultTask(path, isMin, thisOptions) {
     if (fs.existsSync(pkgPath)){
         var pkg = require(pkgPath);
         if (pkg.scripts['o2-deploy']){
-            gulp.task(path, gulp.series(shell.task('npm run o2-deploy -- --dest ../../dest/'+path, {cwd: nodePath.resolve('source', path), verbose:true}), function(cb){
+            gulp.task(path, gulp.series(shell.task('npm run o2-deploy', {cwd: nodePath.resolve('source', path), verbose:true}), function(cb){
                 var option = thisOptions || options;
                 var dest = ['dest/' + path + '/**/*'];
                 return gulp.src(dest)
