@@ -135,4 +135,30 @@ public class PersonFactory extends AbstractFactory {
 			return null;
 		}
 	}
+
+
+	public String getPersonIdWithQywxid(String credential) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Person.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Person> root = cq.from(Person.class);
+		Predicate p = cb.equal(root.get(Person_.qiyeweixinId), credential);
+		cq.select(root.get(Person_.id)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
+		if (list.size() == 1) {
+			return list.get(0);
+		}else if(list.size() > 1){
+			String temp = "";
+			for (int i = 0; i < list.size(); i++) {
+				if(temp.equalsIgnoreCase("")) {
+					temp = list.get(i);
+				}else{
+					temp = temp + "," + list.get(i);
+				}
+			}
+			return temp;
+		}else {
+			return null;
+		}
+	}
 }
