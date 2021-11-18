@@ -2,6 +2,8 @@ package com.x.base.core.project.tools;
 import org.apache.commons.lang3.StringUtils;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -53,6 +55,41 @@ public class MD5Tool {
         // TODO Auto-generated method stub
         String test = MD5Tool.getMD5("1qaz2wsx".getBytes());
         System.out.println(test);
+
+
+
+
+
+
+        /*String str="this is （Tom） and \"Eric\"， this is \"Bruce lee\", he is a chinese, name is \"李小龙\"。";
+        Pattern p= Pattern.compile("\"(.*?)\"");
+        Matcher m=p.matcher(str);
+        while(m.find()){
+            System.out.println(m.group());
+        }*/
+
+
+        String str="this is [Tom] and , he is a [李小花], name [is]。";
+        Matcher mat = Pattern.compile("(?<=\\[)(\\S+)(?=\\])").matcher(str);
+        while(mat.find()){
+            System.out.println(mat.group());
+        }
+
+
+        String filetext = "//[张小名] 25分//[李小花] 43分//[王力] 100分";
+        Pattern p = Pattern.compile("\\[(.*?)\\]");//正则表达式，取=和|之间的字符串，不包括=和|
+        Matcher m = p.matcher(filetext);
+        while(m.find()) {
+            System.out.println(m.group(1));//m.group(1)不包括这两个字符
+        }
+
+        String url = "http://ip:20020/x_meeting_assemble_control/jaxrs/meeting/adf3c245-dbef-41ef-b323-dfb5fae4afb7/checkin";
+        Pattern purl = Pattern.compile("x_meeting_assemble_control\\/jaxrs\\/meeting\\/(.*?)\\/checkin");//正则表达式
+        Matcher murl = purl.matcher(url);
+        if(murl.find()) {
+            System.out.println(murl.group(1));//m.group(1)不包括这两个字符
+        }
+
     }
 
 }
