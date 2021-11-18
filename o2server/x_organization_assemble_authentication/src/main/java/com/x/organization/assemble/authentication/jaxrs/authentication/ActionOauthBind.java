@@ -32,9 +32,12 @@ class ActionOauthBind extends BaseAction {
 		// 获取oauthClient对象
 		OauthClient oauthClient = oauthClient(name);
 		Map<String, Object> param = oauthCreateParam(oauthClient, code, redirectUri);
+		logger.debug("oauth create param:{}", param);
 		oauthToken(oauthClient, param);
+		logger.debug("oauth token param:{}", param);
 		oauthCheckAccessToken(param);
 		oauthInfo(oauthClient, param);
+		logger.debug("oauth info param:{}", param);
 		String credential = Objects.toString(param.get(oauthClient.getInfoCredentialField()), "");
 		oauthCheckCredential(credential);
 		logger.debug("credential:{}", credential);

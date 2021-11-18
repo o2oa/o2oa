@@ -24,7 +24,7 @@ class ActionPostEncrypt extends BaseAction {
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			JsonElement jsonElement) throws Exception {
-		logger.debug(effectivePerson, "receive:{}", jsonElement);
+		logger.debug("receive:{}", jsonElement::toString);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		if (StringUtils.isEmpty(wi.getClient())) {
