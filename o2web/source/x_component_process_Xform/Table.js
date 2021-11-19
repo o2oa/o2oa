@@ -75,6 +75,7 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
             if( this.json.styles["table-layout"] ){
                 this.table.setStyle("table-layout",this.json.styles["table-layout"]);
             }
+            if (!this.json.styles["border-collapse"]) this.table.setStyle("border-collapse","separate");
             this.table.set("cellspacing", "0");
             this.table.setStyles({
                 "border-top": this.json.styles.border,
@@ -88,7 +89,7 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
             var tds = this.table.getElements("td");
             tds.setStyles({
                 "border-bottom": this.json.styles.border,
-                "border-right": this.json.styles.border,
+                "border-right": this.json.styles.border
                 //"background": "transparent"
             });
         }
@@ -100,7 +101,8 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
                 this.node.setStyle(key, value);
             }
         }.bind(this));
-        if (this.form.json["$version"]!=="5.2") this._loadBorderStyle();
+        //if (this.form.json["$version"]!=="5.2")
+            this._loadBorderStyle();
     }
 });
 /** @class Table$Td 单元格组件。
