@@ -136,12 +136,15 @@ class ActionListLikePinyin extends BaseAction {
 		if (StringUtils.isEmpty(wi.getKey())) {
 			return wos;
 		}
-		List<String> unitIds = business.expendUnitToUnit(ListTools.trim(wi.getUnitList(), true, true));
-		/** 去掉指定范围本身,仅包含下级 */
-		unitIds.removeAll(ListTools.extractProperty(business.unit().pick(wi.getUnitList()), JpaObject.id_FIELDNAME,
-				String.class, true, true));
-		if(unitIds.isEmpty()){
-			return wos;
+		List<String> unitIds = new ArrayList<>();
+		if(ListTools.isNotEmpty(wi.getUnitList())) {
+			unitIds = business.expendUnitToUnit(ListTools.trim(wi.getUnitList(), true, true));
+			/** 去掉指定范围本身,仅包含下级 */
+			unitIds.removeAll(ListTools.extractProperty(business.unit().pick(wi.getUnitList()), JpaObject.id_FIELDNAME,
+					String.class, true, true));
+			if(unitIds.isEmpty()){
+				return wos;
+			}
 		}
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Unit.class);
