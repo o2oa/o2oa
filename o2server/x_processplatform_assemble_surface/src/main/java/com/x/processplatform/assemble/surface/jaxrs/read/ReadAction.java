@@ -540,7 +540,7 @@ public class ReadAction extends StandardJaxrsAction {
 	@Path("{id}/reset/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageRead(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void manageResetRead(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("待阅标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionManageReset.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -558,7 +558,7 @@ public class ReadAction extends StandardJaxrsAction {
 	@Path("{id}/reset/manage/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageReadMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+	public void manageResetReadMockPutToPost(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("待阅标识") @PathParam("id") String id,
 			JsonElement jsonElement) {
 		ActionResult<ActionManageReset.Wo> result = new ActionResult<>();
