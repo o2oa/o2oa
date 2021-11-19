@@ -1580,6 +1580,7 @@ o2.xDesktop.Default.StartMenu = new Class({
     },
 
     checkMenuItem: function(value, currentNames){
+        if( value.path === "AuditLog" && ["securityManager","auditManager"].isIntersect(currentNames) )return true;
         if (value.visible===false) return false;
         var isAllow = true;
         if (value.allowList) isAllow = (value.allowList.length) ? (value.allowList.isIntersect(currentNames)) : true;
@@ -2710,6 +2711,9 @@ o2.xDesktop.Default.TaskItem = new Class({
 
         //img = this.path+this.options.style+"/icons/logout.png";
         if (this.app.options.appId!==this.desktop.options.index){
+            img = this.desktop.path+this.desktop.options.style+"/icons/menu_openInWindow.png";
+            this.taskitemMenu.addMenuItem(o2.LP.desktop.openInBrowser, "click", function(e){this.app.openInNewBrowser();}.bind(this), img);
+
             img = this.desktop.path+this.desktop.options.style+"/icons/menu_close.png";
             this.taskitemMenu.addMenuItem(o2.LP.desktop.close, "click", function(){
                 if (!this.app.window){
