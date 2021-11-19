@@ -2,6 +2,8 @@ package com.x.program.center.jaxrs.config;
 
 import java.util.Map.Entry;
 
+import com.x.program.center.ThisApplication;
+import com.x.program.center.schedule.CollectPerson;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
@@ -35,11 +37,11 @@ class ActionSetProxy extends BaseAction {
 
 			}
 		}
-		
+
 		for (Application o : wi.getApplicationList()) {
 			 Node node = null;
 			if(o.getNode().equalsIgnoreCase("")) {
-				node = Config.nodes().get("127.0.0.1");	
+				node = Config.nodes().get("127.0.0.1");
 			}else {
 			    node = Config.nodes().get(o.getNode());
 			}
@@ -48,10 +50,11 @@ class ActionSetProxy extends BaseAction {
 				node.getApplication().setProxyPort(o.getProxyPort());
 			}
 		}
-		
-		
+
 		Config.nodes().save();
 		this.configFlush(effectivePerson);
+
+		ThisApplication.context().scheduleLocal(CollectPerson.class);
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);
