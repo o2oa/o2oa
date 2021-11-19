@@ -1667,8 +1667,15 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
              * @static
              * @see module:form.get
              */
-            "get": function (name) {
-                return (_form.all) ? _form.all[name] : null;
+            "get": function(name,subformName ){
+                if( !_form.all )return null;
+                if( subformName ){
+                    if( _form.all[subformName +"_"+ name] )return _form.all[subformName +"_"+ name];
+                    return _form.all[name];
+                }else{
+                    return _form.all[name];
+                }
+                // return (_form.all) ? _form.all[name] : null;
             },
 
             /**获取指定部件元素对象。<br/>
