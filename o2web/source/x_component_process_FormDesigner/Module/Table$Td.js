@@ -222,21 +222,22 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 			}.bind(this));
 		}
 
-		if (this.table){
-			if (!(this.json.styles && this.json.styles.border) && this.table.json.styles && this.table.json.styles.border){
-				this.node.setStyle("border", this.table.json.styles.border);
-			}
-		}
+		// if (this.table){
+		// 	if (!(this.json.styles && this.json.styles.border) && this.table.json.styles && this.table.json.styles.border){
+		// 		this.node.setStyle("border", this.table.json.styles.border);
+		// 	}
+		// }
+
 		this.json.preprocessing = "y";
 	},
 	_recoveryModuleData: function(){
 		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
 		this.json.recoveryStyles = null;
-		if (this.table){
-			if (!(this.json.styles && this.json.styles.border) && this.table.json.styles && this.table.json.styles.border){
-				this.node.setStyle("border", "");
-			}
-		}
+		// if (this.table){
+		// 	if (!(this.json.styles && this.json.styles.border) && this.table.json.styles && this.table.json.styles.border){
+		// 		this.node.setStyle("border", "");
+		// 	}
+		// }
 	},
 
     setCustomStyles: function(){
