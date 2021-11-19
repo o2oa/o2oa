@@ -3020,6 +3020,7 @@ MWF.xScript.Environment = function(ev){
             var op = options || {};
             op.documentId = id;
             op.docTitle = title;
+            op.appId = (op.appId) || ("cms.Document"+id);
             return layout.desktop.openApplication(this.event, "cms.Document", op);
         },
 

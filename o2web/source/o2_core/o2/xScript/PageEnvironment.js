@@ -1916,6 +1916,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 var op = options || {};
                 op.documentId = id;
                 op.docTitle = title || "";
+                op.appId = (op.appId) || ("cms.Document"+id);
                 return layout.desktop.openApplication(this.event, "cms.Document", op);
             },
             /**打开一个门户页面
