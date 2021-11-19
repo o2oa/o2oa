@@ -18,6 +18,7 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -1141,11 +1142,12 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadWorkInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("*Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
-			@JaxrsParameterDescribe("*通过uploadWorkInfo上传返回的附件id") @PathParam("flag") String flag) {
+			@JaxrsParameterDescribe("*通过uploadWorkInfo上传返回的附件id") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("是否直接下载(true|false)") @QueryParam("stream") Boolean stream) {
 		ActionResult<ActionDownloadWorkInfo.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadWorkInfo().execute(effectivePerson, workId, flag);
+			result = new ActionDownloadWorkInfo().execute(effectivePerson, workId, flag, BooleanUtils.isTrue(stream));
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1238,11 +1240,12 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Path("download/transfer/flag/{flag}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadTransfer(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("*转换后附件id") @PathParam("flag") String flag) {
+			@JaxrsParameterDescribe("*转换后附件id") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("是否直接下载(true|false)") @QueryParam("stream") Boolean stream) {
 		ActionResult<ActionDownloadTransfer.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadTransfer().execute(effectivePerson, flag);
+			result = new ActionDownloadTransfer().execute(effectivePerson, flag, BooleanUtils.isTrue(stream));
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
