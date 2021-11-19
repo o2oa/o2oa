@@ -41,18 +41,18 @@ class ActionManageReset extends BaseAction {
 			if (BooleanUtils.isNotTrue(control.getAllowReadReset())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			List<String> identites = business.organization().identity().list(wi.getIdentityList());
-			if (identites.isEmpty()) {
+			List<String> identities = business.organization().identity().list(wi.getIdentityList());
+			if (identities.isEmpty()) {
 				throw new ExceptionEmptyIdentity();
 			}
-			wi.setIdentityList(identites);
+			wi.setIdentityList(identities);
 			emc.beginTransaction(Read.class);
 			if (!StringUtils.isEmpty(wi.getOpinion())) {
 				read.setOpinion(wi.getOpinion());
 			}
 			emc.commit();
 		}
-		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+		ThisApplication.context().applications().postQuery(x_processplatform_service_processing.class,
 				Applications.joinQueryUri("read", read.getId(), "reset"), wi, read.getJob());
 		wo.setId(read.getId());
 		result.setData(wo);
