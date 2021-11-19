@@ -1013,7 +1013,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             flag = flag && (!hideFlag);
         }
         if (tool.id == "action_processWork") {
-            if (!this.businessData.task || !this.businessData.work.startTime) {
+            if (!this.businessData.task || !this.businessData.work || !this.businessData.work.startTime) {
                 flag = false;
             }
         }
