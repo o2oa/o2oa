@@ -161,6 +161,7 @@ o2.LP.desktop = {
     "close": "关闭",
     "closeAll": "全部关闭",
     "closeOther": "关闭其他",
+    "openInBrowser": "新窗口打开",
 
     "lnkAppTitle": "常用应用",
     "deleteLnk": "删除常用应用快捷方式",
