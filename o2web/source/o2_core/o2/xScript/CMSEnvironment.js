@@ -1624,7 +1624,16 @@ MWF.xScript.CMSEnvironment = function(ev){
         "app": _form.app,
         "node": function(){return _form.node;},
         "readonly": _form.options.readonly,
-        "get": function(name){return (_form.all) ? _form.all[name] : null;},
+        "get": function(name,subformName ){
+            if( !_form.all )return null;
+            if( subformName ){
+                if( _form.all[subformName +"_"+ name] )return _form.all[subformName +"_"+ name];
+                return _form.all[name];
+            }else{
+                return _form.all[name];
+            }
+            // return (_form.all) ? _form.all[name] : null;
+        },
         "getField": function(name){return _forms[name];},
         "getAction": function(){return _form.documentAction},
         "getData": function(){return new MWF.xScript.CMSJSONData(_form.getData());},
