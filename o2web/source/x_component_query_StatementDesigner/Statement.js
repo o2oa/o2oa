@@ -1174,6 +1174,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         this.statement = statement;
         this.designer = designer;
         this.data = data;
+        this.data.id = this.statement.data.id + "_view";
 
         // if (!this.data.data) this.data.data = {};
         this.parseData();
