@@ -15,7 +15,7 @@ class ActionDownloadTransfer extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionDownloadTransfer.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, boolean stream) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;
@@ -24,8 +24,8 @@ class ActionDownloadTransfer extends BaseAction {
 			if(generalFile!=null){
 				StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
 						generalFile.getStorage());
-				wo = new Wo(generalFile.readContent(gfMapping), this.contentType(false, generalFile.getName()),
-						this.contentDisposition(false, generalFile.getName()));
+				wo = new Wo(generalFile.readContent(gfMapping), this.contentType(stream, generalFile.getName()),
+						this.contentDisposition(stream, generalFile.getName()));
 			}
 			result.setData(wo);
 			return result;

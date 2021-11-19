@@ -37,7 +37,7 @@ Describe.doPost = function(address, m, data) {
 			},
 			data : ((m.contentType.indexOf('application/json') > -1) && (!m.useStringParameter) ? JSON.stringify(data) : data)
 		}).always(function(resultJson) {
-			$('#result').text(JSON.stringify(resultJson, null, 4));
+			$('#result').html(JSON.stringify(resultJson, null, 4));
 			Describe.writeOut(m.outs, resultJson);
 		});
 	} else {
@@ -72,7 +72,7 @@ Describe.doPut = function(address, m, data) {
 			},
 			data : ((m.contentType.indexOf('application/json') > -1) && (!m.useStringParameter) ? JSON.stringify(data) : data)
 		}).always(function(resultJson) {
-			$('#result').text(JSON.stringify(resultJson, null, 4));
+			$('#result').html(JSON.stringify(resultJson, null, 4));
 			Describe.writeOut(m.outs, resultJson);
 		});
 	} else {
@@ -107,7 +107,7 @@ Describe.doGet = function(address, m) {
 			},
 			crossDomain : true
 		}).always(function(resultJson) {
-			$('#result').text(JSON.stringify(resultJson, null, 4));
+			$('#result').html(JSON.stringify(resultJson, null, 4));
 			Describe.writeOut(m.outs, resultJson);
 		});
 	} else {
@@ -130,7 +130,7 @@ Describe.doDelete = function(address, m) {
 			},
 			crossDomain : true
 		}).always(function(resultJson) {
-			$('#result').text(JSON.stringify(resultJson, null, 4));
+			$('#result').html(JSON.stringify(resultJson, null, 4));
 			Describe.writeOut(m.outs, resultJson);
 		});
 	} else {
@@ -152,7 +152,7 @@ Describe.doDelete = function(address, m) {
 Describe.writeOut = function(outs, json) {
 	if (outs && (outs.length) && json && json.data) {
 		$.each(Object.keys(json.data), function(i, k) {
-			$('#out_' + k + '_out', '#outs').text(json.data[k]);
+			$('#out_' + k + '_out', '#outs').html(json.data[k]);
 		});
 	}
 }
@@ -387,48 +387,50 @@ Describe.createSampleO2= function(m) {
 	
 	var strSample="";
 	if (m.contentType.indexOf('application/json') > -1) {
-		  strSample =  "var data = {};" + "\n";
 			if (m.ins && m.ins.length > 0) {
+				 strSample =  "var data = {" + "\n";
 				$.each(m.ins, function(ii, i) {
 						switch (i.type) {
 						default:
 							if (i.isBaseType) {
 								if (i.isCollection) {
-									  strSample += '       data["'+i.name+'"] = ["参数1"];' + "\n";
+									  strSample += '       "'+i.name+'" : ["参数1"],' + "\n";
 								} else {
-									  strSample += '       data["'+i.name+'"] = "参数";' + "\n";
+									  strSample += '       "'+i.name+'" : "参数",' + "\n";
 								}
 							} else {
 									if(i.isCollection){
 										if(i.fieldValue){
 										  if(i.fieldType =='enum'){
-											   strSample += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";	
+											   strSample += '       "'+i.name+'" : ["'+ i.fieldValue +'"],'+"\n";	
 										  }else{
-											   strSample += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";	
+											   strSample += '       "'+i.name+'" : ['+ i.fieldValue +'],'+"\n";	
 										  }
 										  
 										}else{
-										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
+										  strSample += '       "'+i.name+'" : [{"参数1":"value1","参数2":"value2"}],'+"\n";
 										}
 									}else{
 										if(i.fieldType =='enum'){
-											 
-											strSample += '       data["'+i.name+'"] = "'+i.fieldValue+'"\n';
+											strSample += '       "'+i.name+'" : "'+i.fieldValue+'"\n';
 										}else{
-											strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+											strSample += '       "'+i.name+'" : {"参数1":"value1","参数2":"value2"},'+"\n";
 										}
 									
 									}
 							}
 						}
 				});
+				
+				 strSample = strSample.substring(0,strSample.lastIndexOf(","));
+			     strSample = strSample +"\n"+ "}"+"\n";
+				 
 			} else if (m.useJsonElementParameter) {
 				strSample += 'data = {"参数1":"value1","参数2":"value2"};' +"\n";
 			} else if (m.useStringParameter) {
 				strSample += 'data = "参数";'+"\n";
 			}
-			
-			
+		
 			if(m.type=="POST"){
 			   strSample += " \n var string = JSON.stringify(data);" + "\n";
                strSample += " var apps = this.applications;"+ "\n";
@@ -455,14 +457,13 @@ Describe.createSampleO2= function(m) {
                  strSample += " var path = \"" + address + "\";"+ "\n"; ;
                strSample += " var resp = apps.deleteQuery( serviceRoot, path);"+ "\n";
 			}
-			
                strSample += " var json = JSON.parse( resp.toString() );"+ "\n";
 			
-	} else {
-		
-	}
+	} 
 	return  strSample;
   }
+  
+  
 Describe.createSample= function(m) {
 	var address = window.location.href;
 	address = address.substring(0,address.indexOf("/jest/"));
@@ -483,37 +484,37 @@ Describe.createSample= function(m) {
 		});
 	}
 	
-	var strSample= "var data = {};" + "\n";
+	var strSample="";
 	if (m.contentType.indexOf('application/json') > -1) {
 			if (m.ins && m.ins.length > 0) {
-				strSample =  "var data = {};" + "\n";
+				strSample =  "var data = {" + "\n";
 				$.each(m.ins, function(ii, i) {
 						switch (i.type) {
 						default:
 							if (i.isBaseType) {
 								if (i.isCollection) {
-									  strSample += '       data["'+i.name+'"] = ["参数1"];' + "\n";
+									  strSample += '       "'+i.name+'" : ["参数1"],' + "\n";
 								} else {
-									  strSample += '       data["'+i.name+'"] = "参数";' + "\n";
+									  strSample += '       "'+i.name+'" : "参数",' + "\n";
 								}
 							} else {
 									if(i.isCollection){
 										if(i.fieldValue){
 										  if(i.fieldType =='enum'){
-											   strSample += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";	
+											   strSample += '       "'+i.name+'" : ["'+ i.fieldValue +'"],'+"\n";	
 										  }else{
-											   strSample += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";	
+											   strSample += '       "'+i.name+'" : ['+ i.fieldValue +'],'+"\n";	
 										  }
 										  
 										}else{
-										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
+										  strSample += '       "'+i.name+'" : [{"参数1":"value1","参数2":"value2"}],'+"\n";
 										}
 									}else{
 										if(i.fieldType =='enum'){
 											 
-											strSample += '       data["'+i.name+'"] = "'+i.fieldValue+'"\n';
+											strSample += '       "'+i.name+'" : "'+i.fieldValue+'"\n';
 										}else{
-											strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+											strSample += '       "'+i.name+'" : {"参数1":"value1","参数2":"value2"},'+"\n";
 										}
 										
 										
@@ -521,12 +522,19 @@ Describe.createSample= function(m) {
 							}
 						}
 				});
+				
+				 strSample = strSample.substring(0,strSample.lastIndexOf(","));
+			     strSample = strSample +"\n"+ "}"+"\n";
 			} else if (m.useJsonElementParameter) {
 				strSample += '    data = {"参数1":"value1","参数2":"value2"};' +"\n";
 			} else if (m.useStringParameter) {
 				strSample += '    data = "参数";'+"\n";
 			}
 			
+			var dataBlank = true;
+			if(strSample != ""){
+				dataBlank = false;
+			}
 			strSample += "\n$.ajax({" + "\n";
 			strSample += "        type : '"+ m.type + "',\n";
 			strSample += "        dataType : 'json'" + ",\n";
@@ -536,12 +544,17 @@ Describe.createSample= function(m) {
 			strSample += "        xhrFields : {'withCredentials' : true}" + ",\n";
 			strSample += "        crossDomain : true"+ ",\n";
 			
-		   if((m.contentType.indexOf('application/json') > -1) && (!m.useStringParameter)){
-			 strSample += "       data : JSON.stringify(data),\n";
-			}else{
-			  strSample += "      data : data"+"\n";
+			if(dataBlank == false){
+			   if((m.contentType.indexOf('application/json') > -1) && (!m.useStringParameter)){
+				 strSample += "       data : JSON.stringify(data),\n";
+				}else{
+				  strSample += "      data : data,"+"\n";
+				}
 			}
 			
+		   strSample = strSample.substring(0,strSample.lastIndexOf(","));
+		   strSample = strSample +"\n";
+					 
 			strSample += "}).always(function(resultJson) {"+"\n";
 			strSample += "        alert(JSON.stringify(resultJson, null, 4))" +"\n";
 			strSample += "});";
@@ -574,7 +587,7 @@ Describe.createSample= function(m) {
 	return  strSample;
    }
 Describe.createSampleCommon= function(m,className) {
-	 debugger;
+
 	var address = window.location.href;
 		address = address.substring(0,address.indexOf("/jest/"));
 	var root = address.substring(address.lastIndexOf("/")+1,address.length);
@@ -590,7 +603,7 @@ Describe.createSampleCommon= function(m,className) {
 			});
 		}
 	var query = "";
-		if (m.queryParameters && m.queryParameters.length > 0) {
+	if (m.queryParameters && m.queryParameters.length > 0) {
 			$.each(m.queryParameters, function(pi, p) {
 				if (query == "") {
 					 query = "&" + p.name + '=' + '替换参数'+pi;
@@ -603,42 +616,47 @@ Describe.createSampleCommon= function(m,className) {
 	var body = "";
 	if (m.contentType.indexOf('application/json') > -1) {
 				if (m.ins && m.ins.length > 0) {
-					 body =  "var data = {};" + "\n";
+					 body =  "var data = {" + "\n";
 					$.each(m.ins, function(ii, i) {
 						switch (i.type) {
 						default:
 							if (i.isBaseType) {
 								if (i.isCollection) {
-									  body += '       data["'+i.name+'"] = ["参数1"];' + "\n";
+									  body += '       "'+i.name+'" : ["参数1"],' + "\n";
 								} else {
-									  body += '       data["'+i.name+'"] = "参数";' + "\n";
+									  body += '       "'+i.name+'" : "参数",' + "\n";
 								}
 							} else {
 									if(i.isCollection){
 										if(i.fieldValue){
 										  if(i.fieldType =='enum'){
-											   body += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";	
+											   body += '       "'+i.name+'" : ["'+ i.fieldValue +'"],'+"\n";	
 											   body +=(i.fieldSample ? "  "+'<span style="color:red">//注解：'+i.fieldSample +'</span>\n':"");
 										  }else{
-											   body += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";	
+											   body += '       "'+i.name+'" : ['+ i.fieldValue +'],'+"\n";	
 											   body +=(i.fieldSample ? "  "+'<span style="color:red">//注解：'+i.fieldSample +'</span>\n':"");
 										  }
 										  
 										}else{
-										  body += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
+										  body += '       "'+i.name+'" : [{"参数1":"value1","参数2":"value2"}],'+"\n";
 										}
 									}else{
 										 if(i.fieldType =='enum'){
-											 body += '       data["'+i.name+'"] = "'+ i.fieldValue +'";'+"\n";	
+											 body += '       "'+i.name+'" : "'+ i.fieldValue +'",'+"\n";	
 											 body +=(i.fieldSample ? "  "+'<span style="color:red">//注解：'+i.fieldSample +'</span>\n':"");
 								
 										 }else{
-										   body += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+										   body += '       "'+i.name+'" : {"参数1":"value1","参数2":"value2"},'+"\n";
 										 }
 									}
 							}
 						}
 					});
+					
+					debugger;
+					 body = body.substring(0,body.lastIndexOf(","));
+					 body = body +"\n"+ "}"+"\n";
+					 
 				} else if (m.useJsonElementParameter) {
 					body += '       data = {"参数1":"value1","参数2":"value2"};' +"\n";
 				} else if (m.useStringParameter) {
@@ -723,7 +741,7 @@ Describe.prototype = {
 				$.each(j.methods, function(mi, m) {
 					$('#' + j.name + '_' + m.name).click(
 							function() {
-								$('#result').text('');
+								$('#result').html('');
 								var sample = "";
 								var txt = '<fieldset id="method"><legend>Method</legend>';
 								txt += '<table>';
@@ -1103,7 +1121,7 @@ Describe.prototype = {
 				$.each(j.methods, function(mi, m) {
 					$('#' + j.name + '_' + m.name).click(
 							function() {
-								$('#result').text('');
+								$('#result').html('');
 								var sample = "";
 								var txt = '<fieldset id="method"><legend>Method</legend>';
 								txt += '<table>';

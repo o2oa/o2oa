@@ -408,31 +408,12 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 	}
 
 	@JaxrsMethodDescribe(value = "管理修改意见.", action = ActionManageOpinion.class)
-	@PUT
+	@POST
 	@Path("{id}/opinion/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void manageUpdate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("已阅标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<ActionManageOpinion.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionManageOpinion().execute(effectivePerson, id, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionManageOpinion.class)
-	@POST
-	@Path("{id}/opinion/manage/mockputtopost")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageDeleteMockPutToPost(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("已阅标识") @PathParam("id") String id,
-			JsonElement jsonElement) {
 		ActionResult<ActionManageOpinion.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
