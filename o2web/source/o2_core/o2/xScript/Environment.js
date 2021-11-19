@@ -2323,12 +2323,28 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @return {FormComponent} 请查看本文档的Classes导航下的FormComponents。
          * @param {String} name 字段标识
+         * @param {String} [subformName] 子表单/部件标识。当开发人员在插入子表单的时候，系统会检查输入类型(会在后台存值)的组件是否重名，如果重名则不允许插入。
+         * 但是布局组件（如div）重名会被允许。系统在展现表单的时候会判断子表单中组件的标识是否被使用，如果是会自动在组件前加上"子表单标识_"，如：主表单有一个"div_1"，则子表单"subform1"的"div_1"组件标识则变为"subform1_div_1"。
+         * 本参数就是用在这种情况下，可以正确返回子表单中的组件。
          * @o2syntax
          * var field = this.form.get(name);
+         * @o2syntax
+         * var field = this.form.get(name, subformName);
          * @example
          * var field = this.form.get("subject");
+         * @example
+         * var field = this.form.get("div", "subform1"); //获取子表单“subform1”中的div，如果子表单无此组件，而主表单有，则返回主表单的组件。
          */
-        "get": function(name){return (_form.all) ? _form.all[name] : null;},
+        "get": function(name,subformName ){
+            if( !_form.all )return null;
+            if( subformName ){
+                if( _form.all[subformName +"_"+ name] )return _form.all[subformName +"_"+ name];
+                return _form.all[name];
+            }else{
+                return _form.all[name];
+            }
+            // return (_form.all) ? _form.all[name] : null;
+         },
 
         /**
          * 获取表单中可输入的字段元素对象。<br/>
