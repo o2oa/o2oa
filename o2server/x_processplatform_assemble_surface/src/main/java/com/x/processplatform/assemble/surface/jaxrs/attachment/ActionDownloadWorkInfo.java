@@ -19,7 +19,7 @@ class ActionDownloadWorkInfo extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionDownloadWorkInfo.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String flag) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String flag, boolean stream) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -44,8 +44,8 @@ class ActionDownloadWorkInfo extends BaseAction {
 			if(generalFile!=null){
 				StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
 						generalFile.getStorage());
-				wo = new Wo(generalFile.readContent(gfMapping), this.contentType(false, generalFile.getName()),
-						this.contentDisposition(false, generalFile.getName()));
+				wo = new Wo(generalFile.readContent(gfMapping), this.contentType(stream, generalFile.getName()),
+						this.contentDisposition(stream, generalFile.getName()));
 
 				generalFile.deleteContent(gfMapping);
 				emc.beginTransaction(GeneralFile.class);
