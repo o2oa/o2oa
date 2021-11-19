@@ -336,7 +336,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return flagData;
     },
     checkLock: function () {
-        if (this.businessData.control.allowProcessing && this.businessData.activity.manualMode == "grab") {
+        if (this.businessData.control.allowProcessing && this.businessData.activity && this.businessData.activity.manualMode == "grab") {
             this.app.addEvent("queryClose", function () {
                 if (this.keyLockTimeoutId) window.clearTimeout(this.keyLockTimeoutId);
             }.bind(this));
