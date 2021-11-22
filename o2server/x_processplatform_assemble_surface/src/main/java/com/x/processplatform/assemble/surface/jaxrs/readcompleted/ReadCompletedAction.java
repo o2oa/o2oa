@@ -294,7 +294,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "获取用户对ReadCompleted的过滤信息,下一页.", action = ActionListNextFilter.class)
@@ -313,7 +313,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "获取用户对ReadCompleted的过滤信息,上一页.", action = ActionListPrevFilter.class)
@@ -332,7 +332,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定已办后续的所有Work和WorkCompleted.", action = ActionReference.class)
@@ -422,7 +422,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionManageOpinion.class)
@@ -479,7 +479,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "按条件对已阅分页显示.", action = ActionManageListFilterPaging.class)
@@ -498,7 +498,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "列示当前用户创建的工作的已阅,分页.", action = V2ListCreatePaging.class)
@@ -517,7 +517,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "列示当前用户创建的工作的已阅,下一页.", action = V2ListCreateNext.class)
@@ -536,7 +536,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "列示当前用户创建的工作的已阅,上一页.", action = V2ListCreatePrev.class)
@@ -555,7 +555,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "列示当前用户的已阅,分页.", action = V2ListPaging.class)
@@ -574,7 +574,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "列示当前用户的已阅,下一页.", action = V2ListNext.class)
@@ -593,7 +593,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "列示当前用户的已阅,上一页.", action = V2ListPrev.class)
@@ -612,7 +612,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "列示已阅.", action = V2List.class)
@@ -630,7 +630,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "统计已阅数量.", action = V2Count.class)
@@ -648,7 +648,7 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "按创建时间查询指定时间段内当前所有已阅.", action = ActionManageListWithDate.class)
