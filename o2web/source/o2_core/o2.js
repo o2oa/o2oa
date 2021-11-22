@@ -1612,8 +1612,8 @@ if (!window.o2) {
                                 if (layout.config && layout.config.sessionStorageEnable) sessionStorage.setItem("o2LayoutSessionToken", xToken);
                             }
                             var r = o2.runCallback(callback, "success", [responseJSON], null);
-                            //resolve(r || responseJSON);
-                            resolve(responseJSON);
+                            resolve(r || responseJSON);
+                            //resolve(responseJSON);
                             //return o2.runCallback(callback, "success", [responseJSON],null, resolve);
                         },
                         onFailure: function (xhr) {
