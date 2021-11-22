@@ -116,7 +116,7 @@ public class CreateConfigSample {
 		String name = StringUtils.lowerCase(cls.getSimpleName().substring(0, 1)) + cls.getSimpleName().substring(1)
 				+ ".json";
 		File file = new File(dir.toFile(), name);
-		logger.print("create file:{}.", file.getAbsoluteFile());
+		// logger.print("create file:{}.", file.getAbsoluteFile());
 		FileUtils.write(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
 	}
 
