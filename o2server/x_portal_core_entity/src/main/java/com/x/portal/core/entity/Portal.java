@@ -31,6 +31,10 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+/**
+ * 门户平台应用
+ * @author sword
+ */
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Portal.table, uniqueConstraints = {
@@ -43,10 +47,12 @@ public class Portal extends SliceJpaObject {
 	private static final long serialVersionUID = -7520516033901189347L;
 	private static final String TABLE = PersistenceProperties.Portal.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -58,6 +64,7 @@ public class Portal extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		this.portalCategory = StringUtils.trimToEmpty(this.portalCategory);
 		this.firstPage = StringUtils.trimToEmpty(this.firstPage);
@@ -70,9 +77,8 @@ public class Portal extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME, unique = true)
 	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
-	/* 检查不重名 */
 	@CitationNotExist(type = Portal.class, fields = { JpaObject.id_FIELDNAME, "name", "alias" }))
 	private String name;
 
@@ -82,7 +88,6 @@ public class Portal extends SliceJpaObject {
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
-	/* 检查不重名 */
 	@CitationNotExist(type = Portal.class, fields = { "id", "name", "alias" }))
 	private String alias;
 
