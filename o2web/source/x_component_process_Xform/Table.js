@@ -158,6 +158,7 @@ MWF.xApplication.process.Xform.Table$Td = MWF.APPTable$Td =  new Class({
 
         }.bind(this));
 
+
         Object.each(this.json.styles, function(value, key){
             if ((value.indexOf("x_processplatform_assemble_surface")!==-1 || value.indexOf("x_portal_assemble_surface")!==-1)){
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
@@ -175,6 +176,13 @@ MWF.xApplication.process.Xform.Table$Td = MWF.APPTable$Td =  new Class({
                 value = o2.filterUrl(value);
             }
             this.node.setStyle(key, value);
+        }.bind(this));
+
+        //table的 _loadBorderStyle 会忽略当前单元格的边框
+        Object.each(this.json.recoveryStyles || {}, function(value, key){
+            if( key.indexOf("border") === 0 ){
+                this.node.setStyle(key, value);
+            }
         }.bind(this));
 
         if (this.json.cellType=="content"){
