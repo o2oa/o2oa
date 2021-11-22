@@ -12,6 +12,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.MappedByteBuffer;
@@ -111,7 +113,7 @@ public class Main {
 	}, "consoleCommandThread");
 
 	private static void init() throws Exception {
-		String base = getBasePath();
+		String base = getBasePath().toString();
 		pid(base);
 		scanWar(base);
 		cleanTempDir(base);
@@ -675,26 +677,45 @@ public class Main {
 		method.invoke(urlClassLoader, new Object[] { local_temp_classes_dir.toURI().toURL() });
 	}
 
-	private static String getBasePath() throws Exception {
-		String path = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-		File file = new File(path);
-		if (!file.isDirectory()) {
-			file = file.getParentFile();
-		}
-		while (null != file) {
-			File versionFile = new File(file, "version.o2");
-			if (versionFile.exists()) {
-				return file.getAbsolutePath();
+	/**
+	 * 从Main.class所在的目录开始递归向上,找到version.o2所在目录,就是程序根目录.
+	 * 
+	 * @return
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
+	private static Path getBasePath() throws IOException, URISyntaxException {
+		Path path = Paths
+				.get(new URI("file://" + Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()));
+		while (Files.exists(path)) {
+			Path versionFile = path.resolve("version.o2");
+			if (Files.exists(versionFile) && Files.isRegularFile(versionFile)) {
+				return path.toAbsolutePath();
 			}
-			file = file.getParentFile();
+			path = path.getParent();
 		}
-		throw new Exception("can not define o2server base directory.");
+		throw new IOException("can not define o2server base directory.");
 	}
+	// private static String getBasePath() throws Exception {
+//		String path = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+//		File file = new File(path);
+//		if (!file.isDirectory()) {
+//			file = file.getParentFile();
+//		}
+//		while (null != file) {
+//			File versionFile = new File(file, "version.o2");
+//			if (versionFile.exists()) {
+//				return file.getAbsolutePath();
+//			}
+//			file = file.getParentFile();
+//		}
+//		throw new Exception("can not define o2server base directory.");
+//	}
 
 	private static void cleanTempDir(String base) throws Exception {
-		File local_temp_dir = new File(base, "local/temp");
-		FileUtils.forceMkdir(local_temp_dir);
-		FileUtils.cleanDirectory(local_temp_dir);
+		File temp = new File(base, "local/temp");
+		FileUtils.forceMkdir(temp);
+		FileUtils.cleanDirectory(temp);
 	}
 
 	private static List<String> readManifest(File file) throws Exception {
