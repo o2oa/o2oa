@@ -95,82 +95,6 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-//	@JaxrsMethodDescribe(value = "获取复合的WorkCompleted.", action = ActionComplex.class)
-//	@GET
-//	@Path("{id}/complex")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void getComplex(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-//			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
-//		ActionResult<ActionComplex.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new ActionComplex().execute(id, effectivePerson);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
-
-//	@JaxrsMethodDescribe(value = "获取复合的WorkCompleted.", action = ActionComplexMobile.class)
-//	@GET
-//	@Path("{id}/complex/mobile")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void getComplexMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-//			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
-//		ActionResult<ActionComplexMobile.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new ActionComplexMobile().execute(id, effectivePerson);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
-
- 
-
-//	@JaxrsMethodDescribe(value = "根据WorkCompleted Id获取组装的WorkCompleted内容同时返回指定的Form.", action = ActionComplexAppointForm.class)
-//	@GET
-//	@Path("{id}/complex/appoint/form/{formFlag}")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void getComplexAppointForm(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-//			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
-//			@JaxrsParameterDescribe("表单标识") @PathParam("formFlag") String formFlag) {
-//		ActionResult<ActionComplexAppointForm.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new ActionComplexAppointForm().execute(effectivePerson, id, formFlag);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
-
-//	@JaxrsMethodDescribe(value = "根据WorkCompleted Id获取组装的WorkCompleted内容.", action = ActionComplexAppointFormMobile.class)
-//	@GET
-//	@Path("{id}/complex/appoint/form/{formFlag}/mobile")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void getComplexAppointFormMobile(@Suspended final AsyncResponse asyncResponse,
-//			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("id") String id,
-//			@JaxrsParameterDescribe("表单标识") @PathParam("formFlag") String formFlag) {
-//		ActionResult<ActionComplexAppointFormMobile.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new ActionComplexAppointFormMobile().execute(effectivePerson, id, formFlag);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
-
 	@JaxrsMethodDescribe(value = "统计当前用户创建的WorkCompleted，按应用分类.", action = ActionListCountWithApplication.class)
 	@GET
 	@Path("list/count/application")
@@ -247,7 +171,7 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据过滤属性列示WorkCompleted,上一页.", action = ActionListPrevWithFilter.class)
@@ -268,7 +192,7 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "获取工作内容.", action = ActionManageGet.class)
@@ -439,7 +363,7 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "列示根据过滤条件的WorkCompleted,上一页.", action = ActionManageListPrevFilter.class)
@@ -460,7 +384,7 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -478,7 +402,7 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "完成工作重新回滚.", action = ActionRollback.class)
@@ -496,7 +420,7 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionRollback.class)
@@ -514,7 +438,7 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "按条件对WorkCompleted分页显示.", action = ActionManageListFilterPaging.class)
@@ -533,7 +457,7 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 }
