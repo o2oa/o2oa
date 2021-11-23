@@ -194,7 +194,7 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
             "title": "table help",
             "content": content,
             "width": 500,
-            "height": 300,
+            "height": 320,
             "buttonList": [
                 {
                     "text": "ok",

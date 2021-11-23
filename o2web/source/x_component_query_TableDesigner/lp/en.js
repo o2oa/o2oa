@@ -76,8 +76,8 @@ MWF.xApplication.query.TableDesigner.LP = {
     "exportExcelFileName": "Export Data",
 
 
-    "buildAllViewInfor": "All data tables will be compiled, including all data tables in data applications. After compilation, you may need to restart the server to use this data table. Are you sure you want to perform this operation?",
-    "buildAllView_success": "All data tables have been compiled, and the new changes will take effect after you restart the server",
+    "buildAllViewInfor": "All data tables will be compiled, including data tables in all data applications. <span style='color: #FF0000;'>After compiling, please restart the server immediately, otherwise it will cause the JVM to crash</span>. Are you sure you want to perform this operation?",
+    "buildAllView_success": "All data tables have been compiled, please restart the server immediately!",
     "tableHelp": "Data tables can automatically create real tables in the system database and generate java entity objects. You can use JPQL to manipulate data tables. Creating a data table requires the following steps: <br><br>1, create a data table, And create each column; <br>2, click the toolbar button to publish the data table to the compiled state; <br>3, click the toolbar button to execute the \"compile all data tables\" operation<br>4, restart the server, data The table is ready to use.",
     "propertyTemplate": {
         "base": "Basic",
