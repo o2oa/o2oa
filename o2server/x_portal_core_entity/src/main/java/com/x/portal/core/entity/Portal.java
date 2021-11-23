@@ -77,7 +77,7 @@ public class Portal extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME, unique = true)
+	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
 	@CitationNotExist(type = Portal.class, fields = { JpaObject.id_FIELDNAME, "name", "alias" }))
 	private String name;

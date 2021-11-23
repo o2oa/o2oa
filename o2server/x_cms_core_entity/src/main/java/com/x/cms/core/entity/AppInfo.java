@@ -59,7 +59,7 @@ public class AppInfo extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("栏目名称")
 	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + appName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + appName_FIELDNAME, unique = true)
+	@Index(name = TABLE + IndexNameMiddle + appName_FIELDNAME)
 	@CheckPersist(citationNotExists = {
 			@CitationNotExist(fields = "appName", type = AppInfo.class) }, allowEmpty = false)
 	private String appName;
