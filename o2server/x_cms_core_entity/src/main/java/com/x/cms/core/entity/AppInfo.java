@@ -36,10 +36,12 @@ public class AppInfo extends SliceJpaObject {
 	private static final long serialVersionUID = 3856138316794473794L;
 	private static final String TABLE = PersistenceProperties.AppInfo.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -50,32 +52,16 @@ public class AppInfo extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
+	@Override
 	public void onPersist() throws Exception {
 	}
-	/*
-	 * =========================================================================
-	 * ========= 以上为 JpaObject 默认字段
-	 * =========================================================================
-	 * =========
-	 */
-
-	/*
-	 * =========================================================================
-	 * ========= 以下为具体不同的业务及数据表字段要求
-	 * =========================================================================
-	 * =========
-	 */
-
-	/* 更新运行方法 */
-	// public static String[] FLA GS = new String[] { "id", "appAlias", "appName" };
 	public static final String appName_FIELDNAME = "appName";
 	@Flag
 	@FieldDescribe("栏目名称")
 	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + appName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + appName_FIELDNAME)
 	@CheckPersist(citationNotExists = {
-			/* 验证不可重名 */
-			@CitationNotExist(fields = "appName", type = AppInfo.class) }, allowEmpty = true)
+			@CitationNotExist(fields = "appName", type = AppInfo.class) }, allowEmpty = false)
 	private String appName;
 
 	public static final String appAlias_FIELDNAME = "appAlias";

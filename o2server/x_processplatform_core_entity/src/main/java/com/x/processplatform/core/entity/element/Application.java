@@ -32,6 +32,10 @@ import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+/**
+ * 流程平台应用
+ * @author sword
+ */
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.Application.table, uniqueConstraints = {
@@ -44,10 +48,12 @@ public class Application extends SliceJpaObject {
 	private static final long serialVersionUID = -7520516033901189347L;
 	private static final String TABLE = PersistenceProperties.Element.Application.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -59,6 +65,7 @@ public class Application extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		this.applicationCategory = StringUtils.trimToEmpty(this.applicationCategory);
 	}
@@ -72,8 +79,8 @@ public class Application extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
-	/* 检查不重名 */
 	@CitationNotExist(type = Application.class, fields = { "id", "name", "alias" }))
 	private String name;
 
@@ -82,7 +89,6 @@ public class Application extends SliceJpaObject {
 	@FieldDescribe("应用别名,如果有必须唯一.")
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
-	/* 检查不重名 */
 	@CitationNotExist(type = Application.class, fields = { "id", "name", "alias" }))
 	private String alias;
 
