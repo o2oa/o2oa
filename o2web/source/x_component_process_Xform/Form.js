@@ -431,8 +431,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
     },
     loadLanguage: function(callback){
-        //formDataText
-        debugger;
         if (this.json.languageType!=="script" && this.json.languageType!=="default"){
             if (callback) callback();
             return true;
@@ -461,13 +459,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 var application = (this.businessData.work || this.businessData.workCompleted).application;
                 var p1 = this.workAction.getDictRoot(name, application, function(d){
                     return d.data;
-                }, function(){});
+                }, function(){
+                    return true;
+                });
                 var p2 = new Promise(function(resolve, reject){
                     this.workAction.getScriptByNameV2(name, application, function(d){
                         if (d.data.text) {
                             resolve(this.Macro.exec(d.data.text, this));
-                        }else{
-                            reject("");
                         }
                     }.bind(this), function(){reject("");});
                 }.bind(this));
@@ -478,6 +476,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (languageJson){
             if (languageJson.then && o2.typeOf(languageJson.then)=="function"){
                 languageJson.then(function(json) {
+                    if (!json.data){
+                        var o = Object.clone(json);
+                        json.data = o;
+                    }
                     MWF.xApplication.process.Xform.LP.form = Object.merge(MWF.xApplication.process.Xform.LP.form, json);
                     if (callback) callback(true);
                 }, function(){
