@@ -481,8 +481,12 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         this.documentEditor.zoom(1);
         this.documentEditor._checkScale();
 
+        this.documentEditor.historyMode = false;
+
         this.documentEditor.resetData();
         this.toolbarNode.hide();
+
+
     },
     active: function(callback){
         this.getHistroyDocumentList(function(){

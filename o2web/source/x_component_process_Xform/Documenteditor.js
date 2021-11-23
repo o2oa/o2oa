@@ -727,7 +727,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.layout_seals[p].show();
                 this.layout_seals[p].setStyles({
                     "border": "0",
-                    "border-radius": "0"
+                    "border-radius": "0",
+                    "z-index": -1
                 });
             }
             this.getSealData();
@@ -955,6 +956,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 if (!this.layout_copyto2ContentTr) this.layout_copyto2ContentTr = this.layout_copyto2Content.getParent("tr");
                 if (!this.layout_copyto2ContentTrP) this.layout_copyto2ContentTrP = this.layout_copyto2ContentTr.getParent();
             }
+            if (!this.copyToOrder){
+                this.copyToOrder = "unknow"
+                if (this.layout_copytoContentTr && this.layout_copyto2ContentTr){   //需要知道顺序
+                    if (this.layout_copytoContentTrP && this.layout_copyto2ContentTrP && this.layout_copytoContentTrP==this.layout_copyto2ContentTrP){
+                        var n = this.layout_copytoContentTrP.getFirst();
+                        while (n && n!=this.layout_copytoContentTr && n!=this.layout_copyto2ContentTr){
+                            n = n.getNext();
+                        }
+                        if (n==this.layout_copytoContentTr){
+                            this.copyToOrder = "copyto";
+                        }
+                        if (n==this.layout_copyto2ContentTr){
+                            this.copyToOrder = "copyto2";
+                        }
+                    }
+                }
+            }
+
             if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content) ){
                 if (this.layout_edition){
                     if (this.layout_copytoContentTr) this.layout_copytoContentTr.dispose();
@@ -966,7 +985,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
             }else if (!control.copyto || !this.layout_copytoContent){
                 if (this.layout_copytoContentTr) this.layout_copytoContentTr.dispose();
-                if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                if (this.layout_copyto2ContentTr){
+                    try{
+                        this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                    }catch (e){
+                        this.layout_copyto2ContentTrP.appendHTML(this.layout_copyto2ContentTr.outerHTML, "top");
+                    }
+                }
                 //if (this.layout_copyto2Content) this.layout_edition.getElement("tr").destroy();
                 // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
                 //     "border-top": "solid windowtext 1.5pt",
@@ -974,15 +999,55 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 // });
             }else if (!control.copyto2 || !this.layout_copyto2Content) {
                 if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.dispose();
-                if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                // if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                if (this.layout_copytoContentTr){
+                    try{
+                        this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                    }catch (e){
+                        this.layout_copytoContentTrP.appendHTML(this.layout_copytoContentTr.outerHTML, "top");
+                    }
+                }
                 // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
                 //     "border-bottom": "solid windowtext 0.75pt",
                 //     "mso-border-bottom-alt": "solid windowtext 0.75pt"
                 // });
             }else{
-                if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
-                if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                if (this.copyToOrder == "copyto2"){
+                    // if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                    // if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                    if (this.layout_copytoContentTr){
+                        try{
+                            this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                        }catch (e){
+                            this.layout_copytoContentTrP.appendHTML(this.layout_copytoContentTr.outerHTML, "top");
+                        }
+                    }
+                    if (this.layout_copyto2ContentTr){
+                        try{
+                            this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                        }catch (e){
+                            this.layout_copyto2ContentTrP.appendHTML(this.layout_copyto2ContentTr.outerHTML, "top");
+                        }
+                    }
 
+                }else{
+                    // if (this.layout_copyto2ContentTr) this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                    // if (this.layout_copytoContentTr) this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                    if (this.layout_copyto2ContentTr){
+                        try{
+                            this.layout_copyto2ContentTr.inject(this.layout_copyto2ContentTrP, "top");
+                        }catch (e){
+                            this.layout_copyto2ContentTrP.appendHTML(this.layout_copyto2ContentTr.outerHTML, "top");
+                        }
+                    }
+                    if (this.layout_copytoContentTr){
+                        try{
+                            this.layout_copytoContentTr.inject(this.layout_copytoContentTrP, "top");
+                        }catch (e){
+                            this.layout_copytoContentTrP.appendHTML(this.layout_copytoContentTr.outerHTML, "top");
+                        }
+                    }
+                }
             }
 
             if ((!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
@@ -1141,11 +1206,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
         }
         if (this.layout_filetext){
-            if (this.allowEdit) {
-                if (!this.loadFileTextEditFun) this.loadFileTextEditFun = this._switchReadOrEditInline.bind(this);
-                this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
-                this.layout_filetext.addEvent("click", this.loadFileTextEditFun);
-            }
+            // if (this.allowEdit) {
+            //     if (!this.loadFileTextEditFun) this.loadFileTextEditFun = this._switchReadOrEditInline.bind(this);
+            //     this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
+            //     this.layout_filetext.addEvent("click", this.loadFileTextEditFun);
+            // }
         }
         if (this.layout_attachmentText){
             if (control.attachmentText) {
@@ -1243,7 +1308,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     this.form.toWordSubmitList.push(this);
                 }
             }
-            if (!layout.mobile) this.loadSideToolbar();
+            //if (!layout.mobile) this.loadSideToolbar();
 
             o2.load("../o2_lib/diff-match-patch/diff_match_patch.js");
 
@@ -1325,6 +1390,18 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return p;
     },
 
+    resetToolbarEvent: function(node){
+        if (Browser.ie11){
+            if (!this.waitLocation){
+                this.waitLocation = window.setTimeout(function(){
+                    this.resizeToolbar(node);
+                    this.waitLocation = false;
+                }.bind(this), 300);
+            }
+        }else{
+            this.resizeToolbar(node);
+        }
+    },
     resizeToolbar: function(node){
         if (this.toolbarNode){
             var p = this.toolNode.getPosition(node || this.scrollNode);
@@ -1474,64 +1551,61 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     _switchReadOrEdit: function(){
         if (this.editMode){
             this._readFiletext();
-            if (this.allowEdit) {
-                var button = this.toolbar.childrenButton[0];
-                button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
-                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
-                //this.getFullWidthFlagNode().dispose();
-            }
+            // if (this.allowEdit) {
+            //     var button = this.toolbar.childrenButton[0];
+            //     button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
+            //     button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
+            //     //this.getFullWidthFlagNode().dispose();
+            // }
             this.editMode = false;
         }else{
             this._editFiletext();
-            if (this.allowEdit) {
-                var button = this.toolbar.childrenButton[0];
-                button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted);
-                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
-                //this.toolbar.node.inject(this.getFullWidthFlagNode());
-
-            }
+            // if (this.allowEdit) {
+            //     var button = this.toolbar.childrenButton[0];
+            //     button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted);
+            //     button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
+            //     //this.toolbar.node.inject(this.getFullWidthFlagNode());
+            //
+            // }
             this.editMode = true;
         }
     },
     _switchReadOrEditInline: function(){
         if (this.editMode){
             this._readFiletext();
-            if (this.allowEdit){
-                if (!layout.mobile) {
-                    var button = this.sideToolbar.childrenButton[0];
-                    button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
-                    button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
-                    //this.getFullWidthFlagNode().dispose();
-                }
-                button = this.toolbar.childrenButton[0];
-                button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
-                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
-                //this.getFullWidthFlagNode().dispose();
-
-
-                // if (!layout.mobile)this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
-                // this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
-            }
             this.editMode = false;
-            //this.form.saveFormData();
         }else{
             this._editFiletext("inline");
-            if (this.loadFileTextEditFun) this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
-            if (this.allowEdit){
-                if (!layout.mobile) {
-                    var button = this.sideToolbar.childrenButton[0];
-                    button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted);
-                    button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
-                    //this.toolbar.node.inject(this.getFullWidthFlagNode());
-                }
-                button = this.toolbar.childrenButton[0];
-                button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted);
-                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
-                //this.toolbar.node.inject(this.getFullWidthFlagNode());
-                // if (!layout.mobile) this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
-                // this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
-            }
+            //if (this.loadFileTextEditFun) this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
             this.editMode = true;
+        }
+        //this._switchButtonText();
+    },
+    // _switchButtonText: function(){
+    //     var text = (layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc;
+    //     var img = "editdoc.png";
+    //     if (this.editMode){
+    //         text = (layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted;
+    //         img = "editdoc_completed.png";
+    //     }
+    //
+    //     if (!layout.mobile && this.sideToolbar && this.sideToolbar.childrenButton[0]) {
+    //         var button = this.sideToolbar.childrenButton[0];
+    //         button.setText(text);
+    //         button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/"+img);
+    //     }
+    //     if (this.toolbar && this.toolbar.childrenButton[0]){
+    //         button = this.toolbar.childrenButton[0];
+    //         button.setText(text);
+    //         button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/"+img);
+    //     }
+    // },
+    editFiletext: function(){
+        if (!this.editMode && this.allowEdit){
+            this._editFiletext("inline");
+            //if (this.loadFileTextEditFun) this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
+            this.editMode = true;
+            //this._switchButtonText();
         }
     },
     // getFullWidthFlagNode: function(){
@@ -1565,9 +1639,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }.bind(this), "", null, true);
     },
     _historyDoc: function(){
+        debugger;
+        this._readFiletext();
+        this.editMode = false;
+
         this.getHistory(function(){
             //this.history.play();
         }.bind(this));
+        this.historyMode = true;
     },
     getHistory: function(callback){
         if (this.history){
@@ -1600,6 +1679,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.filetextEditor) this.filetextEditor.destroy();
         if (this.filetextScrollNode){
             if (this.reLocationFiletextToolbarFun){
+                debugger;
                 this.filetextScrollNode.removeEvent("scroll", this.reLocationFiletextToolbarFun);
                 //this.form.app.removeEvent("resize", this.reLocationFiletextToolbarFun);
                 this.reLocationFiletextToolbarFun = null;
@@ -1620,59 +1700,70 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.scaleTo(scale);
     },
     _editFiletext: function(inline){
-        this._returnScale();
-        this.zoom(1);
-        this._singlePage();
-        this.pages = [];
-        this.contentNode.empty();
-        this._createPage(function(control){
-            this._loadPageLayout(control);
+        debugger;
+        // this._returnScale();
+        // this.zoom(1);
+        // this._singlePage();
+        //this.pages = [];
+        //this.contentNode.empty();
+        //this._createPage(function(control){
+            //this._loadPageLayout(control);
 
             // var docData = this._getBusinessData();
             // if (!docData) docData = this._getDefaultData();
             if (this.data.filetext == this.json.defaultValue.filetext) this.data.filetext = "　　";
             this.setData(this.data);
 
-            this._checkScale();
+            //this._checkScale();
             this.node.setStyles({
                 "height":"auto"
             });
 
-            this._createEditor(inline);
-        }.bind(this));
+        // o2.load("../o2_lib/htmleditor/ckeditor4161/ckeditor.js", function() {
+        //     CKEDITOR.disableAutoInline = true;
+        //     this.layout_filetext.setAttribute('contenteditable', true);
+        //     editor = CKEDITOR.inline(this.layout_filetext);
+        //     editor.on("instanceReady", function(e){
+        //         e.editor.focus();
+        //     }.bind(this));
+        // }.bind(this));
+
+        this._createEditor(inline);
+        // alert("ok")
+        //}.bind(this));
     },
     _createEditor: function(inline, node, data, editorName, callback){
         if (this.allowEdit){
             this.loadCkeditorFiletext(function(e){
-                e.editor.focus();
-                var text = (data || this.data.filetext).replace(/\u3000*/g, "");
-                if (!text){
-                    var range = e.editor.createRange();
-                    range.moveToElementEditEnd(e.editor.editable());
-
-                    range.select();
-                    range.scrollIntoView();
-                }else{
-                    e.editor.getSelection().scrollIntoView();
-                }
+                //e.editor.focus();
+                // var text = (data || this.data.filetext).replace(/\u3000*/g, "");
+                // if (!text){
+                //     var range = e.editor.createRange();
+                //     range.moveToElementEditEnd(e.editor.editable());
+                //
+                //     range.select();
+                //     range.scrollIntoView();
+                // }else{
+                //     e.editor.getSelection().scrollIntoView();
+                // }
                 //e.editor.getSelection().scrollIntoView();
 
-                var text = (data || this.data.filetext).replace(/\u3000*/g, "");
-                if (!text){
-                    var range = e.editor.createRange();
-                    range.moveToElementEditEnd(e.editor.editable());
-
-                    range.select();
-                    range.scrollIntoView();
-                }else{
-                    e.editor.getSelection().scrollIntoView();
-                }
+                // var text = (data || this.data.filetext).replace(/\u3000*/g, "");
+                // if (!text){
+                //     var range = e.editor.createRange();
+                //     range.moveToElementEditEnd(e.editor.editable());
+                //
+                //     range.select();
+                //     range.scrollIntoView();
+                // }else{
+                //     e.editor.getSelection().scrollIntoView();
+                // }
                 // e.editor.getSelection().scrollIntoView();
                 //
                 //this.getFiletextToolber();
                 //this.filetextToolbarNode.inject(this.layout_filetext.getOffsetParent());
 
-                this.locationFiletextToolbar(editorName);
+                //this.locationFiletextToolbar(editorName);
 
                 if (callback) callback();
             }.bind(this), inline, node, editorName);
@@ -1707,18 +1798,51 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
 
     },
+
+
+    reLocationFiletextToolbarEvent: function(editorName){
+        if (Browser.ie11){
+            if (!this.waitLocationFiletext){
+                this.waitLocationFiletext = window.setTimeout(function(){
+                    this.reLocationFiletextToolbar(editorName);
+                    this.waitLocationFiletext = false;
+                }.bind(this), 300);
+            }
+        }else{
+            this.reLocationFiletextToolbar(editorName)
+        }
+    },
+
     reLocationFiletextToolbar: function(editorName){
         this.getFiletextToolber(editorName);
         var toolbarNode = (editorName) ? this[editorName+"ToolbarNode"] : this.filetextToolbarNode;
         var editor = (editorName) ? this[editorName] : this.filetextEditor;
         var node = (editorName) ? this.layout_attachmentText : this.layout_filetext;
 
+        debugger;
         //if (editorName)
 
         if (toolbarNode){
             if (!this.filetextScrollNode){
                 var scrollNode = this.contentNode;
-                while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("4-y")!=="auto"))){
+                while (scrollNode){
+                    if (scrollNode.getStyle("overflow")=="auto" || scrollNode.getStyle("overflow-y")=="auto"){
+                        var transform;
+                        if (window.getComputedStyle){
+                            transform = window.getComputedStyle(this.contentNode).transform;
+                        }else{
+                            transform = currentStyle.transform
+                        }
+                        transform = transform.substring(transform.indexOf("(")+1);
+                        transform = transform.substring(0, transform.indexOf(")"));
+                        var scaleList = transform.split(/,\s*/g);
+                        var scaleY = scaleList[3];
+                        var scale = (scaleY || 1).toFloat();
+
+                        if ((scrollNode.getScrollSize().y*scale-1)>scrollNode.getSize().y){
+                            break;
+                        }
+                    }
                     scrollNode = scrollNode.getParent();
                 }
                 this.filetextScrollNode = scrollNode;
@@ -1752,24 +1876,52 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     locationFiletextToolbar: function(editorName){
+        // this.getFiletextToolber(editorName);
+        // var toolbarNode = (editorName) ? this[editorName+"ToolbarNode"] : this.filetextToolbarNode;
+        //
+        // toolbarNode.inject(this.scrollNode, "bottom");
+        // toolbarNode.setStyles({
+        //     "position": "absolute",
+        //     "top": "40px"
+        // });
+
         this.reLocationFiletextToolbar(editorName);
 
         var toolbarNode = (editorName) ? this[editorName+"ToolbarNode"] : this.filetextToolbarNode;
 
         if (toolbarNode) {
             var scrollNode = this.contentNode;
-            while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("overflow-y")!=="auto"))){
+            while (scrollNode){
+                if (scrollNode.getStyle("overflow")=="auto" || scrollNode.getStyle("overflow-y")=="auto"){
+                    var transform;
+                    if (window.getComputedStyle){
+                        transform = window.getComputedStyle(this.contentNode).transform;
+                    }else{
+                        transform = currentStyle.transform
+                    }
+                    transform = transform.substring(transform.indexOf("(")+1);
+                    transform = transform.substring(0, transform.indexOf(")"));
+                    var scaleList = transform.split(/,\s*/g);
+                    var scaleY = scaleList[3];
+                    var scale = (scaleY || 1).toFloat();
+
+                    if ((scrollNode.getScrollSize().y*scale-1)>scrollNode.getSize().y){
+                        break;
+                    }
+                }
                 scrollNode = scrollNode.getParent();
             }
             if (scrollNode){
                 this.filetextScrollNode = scrollNode
                 if (editorName){
+                    if (this.reLocationAttachmentTextToolbarFun) this.filetextScrollNode.removeEvent("scroll", this.reLocationAttachmentTextToolbarFun);
                     if (!this.reLocationAttachmentTextToolbarFun) this.reLocationAttachmentTextToolbarFun = function(){
-                        this.reLocationFiletextToolbar(editorName);
+                        this.reLocationFiletextToolbarEvent(editorName);
                     }.bind(this);
                     this.filetextScrollNode.addEvent("scroll", this.reLocationAttachmentTextToolbarFun);
                 }else{
-                    if (!this.reLocationFiletextToolbarFun) this.reLocationFiletextToolbarFun = this.reLocationFiletextToolbar.bind(this);
+                    if (this.reLocationFiletextToolbarFun) this.filetextScrollNode.removeEvent("scroll", this.reLocationFiletextToolbarFun);
+                    if (!this.reLocationFiletextToolbarFun) this.reLocationFiletextToolbarFun = this.reLocationFiletextToolbarEvent.bind(this);
                     this.filetextScrollNode.addEvent("scroll", this.reLocationFiletextToolbarFun);
                 }
             }
@@ -1845,11 +1997,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             printdoc = MWF.xApplication.process.Xform.LP.printdoc;
             history = MWF.xApplication.process.Xform.LP.history;
         }
-        if (this.allowEdit){
-            //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEdit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
-            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+editdoc+"\" MWFButtonAction=\"_switchReadOrEditInline\" MWFButtonText=\""+editdoc+"\"></span>";
-            //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/headerdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\" MWFButtonAction=\"_redheaderDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\"></span>";
-        }
+        // if (this.allowEdit){
+        //     //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEdit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
+        //     html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+editdoc+"\" MWFButtonAction=\"_switchReadOrEditInline\" MWFButtonText=\""+editdoc+"\"></span>";
+        //     //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/headerdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\" MWFButtonAction=\"_redheaderDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\"></span>";
+        // }
         if (this.allowPrint){
             html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/print.png\" title=\""+printdoc+"\" MWFButtonAction=\"_printDoc\" MWFButtonText=\""+printdoc+"\"></span>";
         }
@@ -1875,7 +2027,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.scrollNode = this.toolbarNode.getParentSrcollNode();
             if (this.scrollNode){
                 this.scrollNode.addEvent("scroll", function(){
-                    this.resizeToolbar();
+                    this.resetToolbarEvent();
                 }.bind(this));
             }
         }
@@ -2251,6 +2403,22 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             this.resizeSidebar();
             this.clearWaitSplitPage();
+
+            this.pages.forEach(function(page, i){
+                var s = i+1;
+                var pageNumberNode = new Element("div", {
+                    "html": "<span>—</span><span> "+s+" </span><span>—</span>",
+                    "styles": {
+                        "right": "0",
+                        "bottom": "-60px",
+                        "margin-top": "10px",
+                        "position": "absolute"
+                    }
+                }).inject(page.getFirst());
+
+
+            }.bind(this));
+
         }.bind(this), 1000);
     },
     _getDefaultData: function(){
@@ -2283,6 +2451,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 // if (this.json.allowEditSigner) this.loadCkeditorSigner();
                 // if (this.json.allowEditAttachment) this.loadCkeditorAttachment();
             }
+
+            if (!this.editMode && this.allowEdit && !this.historyMode){
+                this._editFiletext("inline");
+                //if (this.loadFileTextEditFun) this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
+                this.editMode = true;
+            }
+
 
             if (callback) callback();
         }.bind(this));
@@ -2433,7 +2608,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         // editorConfig.extraPlugins = ['ecnet','mathjax'];
         // editorConfig.removePlugins = ['magicline'];
         // editorConfig.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML';
-
+debugger;
         if (this.json.ckeditConfigOptions && this.json.ckeditConfigOptions.code){
             var o = this.form.Macro.exec(this.json.ckeditConfigOptions.code, this);
             if (o) editorConfig = Object.merge(editorConfig, o);
@@ -2621,21 +2796,33 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
                 this[(editorName || "filetextEditor")] = editor;
 
-
+debugger;
                 editor.on("instanceReady", function(e){
+                    var　v = e.editor.editable().$.get("text");
+                    if (!v || v=="　　") e.editor.setData(this.json.defaultValue.filetext);
                     if (callback) callback(e);
                 }.bind(this));
+
                 editor.on( 'focus', function( e ) {
                     window.setTimeout(function(){
-                        this.reLocationFiletextToolbar(editorName);
+                        // this.reLocationFiletextToolbar(editorName);
+                        this.locationFiletextToolbar(editorName);
                     }.bind(this), 10);
+                    var　v = e.editor.editable().$.get("text");
+                    if (!v || v==this.json.defaultValue.filetext){
+                        e.editor.setData("　　");
+                        e.editor.focus();
+                        var range = e.editor.createRange();
+                        range.moveToElementEditEnd(e.editor.editable());
+                        range.select();
+                    }
                 }.bind(this) );
 
-                if (!!editorName){
-                    editor.on( 'blur', function( e ) {
-                        this.getAttachmentTextData();
-                    }.bind(this) );
-                }
+                editor.on( 'blur', function( e ) {
+                    if (!!editorName) this.getAttachmentTextData();
+                    var　v = e.editor.editable().$.get("text");
+                    if (!v || v=="　　") e.editor.setData(this.json.defaultValue.filetext);
+                }.bind(this) );
 
                 editor.on( 'loaded', function( e ) {
                     editor.element.$.store("module", this);
@@ -2648,7 +2835,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 editor.on( 'afterPasteFromWord', function( e ) {
 
                 }.bind(this));
-
 
                 editor.on( 'paste', function( e ) {
                     var html = e.data.dataValue;
@@ -2769,6 +2955,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }.bind(this) );
 
                 if (this.json.textIndent!=="n"){
+                    debugger;
                     (node || this.layout_filetext).addEvent("keyup", function(ev){
                         if (ev.code==13) editor.insertText("　　");
                     }.bind(this));
@@ -3081,7 +3268,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this.pages = [];
         this.contentNode.empty();
-        if (this.allowEdit) this.toolbar.childrenButton[0].setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
+        // if (this.allowEdit) this.toolbar.childrenButton[0].setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
         this.editMode = false;
 
         this._createPage(function(control){
@@ -3091,6 +3278,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             //this._checkSplitPage(this.pages[0]);
 
             this._repage();
+
+            if (!this.editMode && this.allowEdit && !this.historyMode) {
+                this._editFiletext("inline");
+                //if (this.loadFileTextEditFun) this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
+                this.editMode = true;
+            }
         }.bind(this));
     },
     /**
@@ -3354,7 +3547,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             this.layout_seals[i].show();
                             this.layout_seals[i].setStyles({
                                 "border": "0",
-                                "border-radius": "0"
+                                "border-radius": "0",
+                                "z-index": -1
                             });
                         }
                     }.bind(this));
@@ -3709,7 +3903,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * })
     */
     toWord: function(callback, name, cb, notSave){
-
         var docNmae = name || "";
         if (!docNmae){
             try{
@@ -3750,26 +3943,28 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     "site": this.json.toWordSite || "$doc",
                     "content": content
                 };
-                o2.Actions.get("x_processplatform_assemble_surface").docToWord(this.form.businessData.work.id, body, function(json){
-                    if (this.form.businessData.workCompleted){
-                        o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
-                            if (callback) callback(attjson.data);
-                            this.showToWord(attjson.data);
-                        }.bind(this));
-                    }else{
-                        o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
-                            if (callback) callback(attjson.data);
-                            this.showToWord(attjson.data);
-                        }.bind(this));
-                    }
-                }.bind(this));
-                if (cb) cb();
+                this.toWordServiceService(body, callback, cb);
+                // o2.Actions.get("x_processplatform_assemble_surface").docToWord(this.form.businessData.work.id, body, function(json){
+                //     if (this.form.businessData.workCompleted){
+                //         o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
+                //             if (callback) callback(attjson.data);
+                //             this.showToWord(attjson.data);
+                //         }.bind(this));
+                //     }else{
+                //         o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
+                //             if (callback) callback(attjson.data);
+                //             this.showToWord(attjson.data);
+                //         }.bind(this));
+                //     }
+                //     if (cb) cb();
+                // }.bind(this));
             }else{
                 if (n==-1) fileName = fileName+".docx";
                 var content = this.getDocumentHtml();
                 o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
                     (new o2.OOXML.WML({
-                        "protection": (this.json.wordConversionEncryption===true)
+                        "protection": (this.json.wordConversionEncryption===true),
+                        "firstPageNumber": (this.json.firstPageNumber!==false)
                     })).load(content).then(function(oo_content){
 
                         if (!notSave) {
@@ -3779,20 +3974,22 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             formData.append("fileName", fileName);
                             formData.append('file', oo_content);
 
-                            o2.Actions.get("x_processplatform_assemble_surface").V2UploadWorkOrWorkCompleted(this.form.businessData.work.id, formData, oo_content, function (json) {
-                                if (this.form.businessData.workCompleted) {
-                                    o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id, function (attjson) {
-                                        if (callback) callback(attjson.data);
-                                        this.showToWord(attjson.data);
-                                    }.bind(this));
-                                } else {
-                                    o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id, function (attjson) {
-                                        if (callback) callback(attjson.data);
-                                        this.showToWord(attjson.data);
-                                    }.bind(this));
-                                }
-                                if (cb) cb();
-                            }.bind(this));
+
+                            this.toWordOOXMLService(formData, oo_content, callback, cb);
+                            // o2.Actions.get("x_processplatform_assemble_surface").V2UploadWorkOrWorkCompleted(this.form.businessData.work.id, formData, oo_content, function (json) {
+                            //     if (this.form.businessData.workCompleted) {
+                            //         o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id, function (attjson) {
+                            //             if (callback) callback(attjson.data);
+                            //             this.showToWord(attjson.data);
+                            //         }.bind(this));
+                            //     } else {
+                            //         o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id, function (attjson) {
+                            //             if (callback) callback(attjson.data);
+                            //             this.showToWord(attjson.data);
+                            //         }.bind(this));
+                            //     }
+                            //     if (cb) cb();
+                            // }.bind(this));
                         }else{
                             if (callback) callback(oo_content, fileName);
                             if (cb) cb();
@@ -3806,6 +4003,84 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this._readFiletext();
             }else{
                 this._createEditor("inline");
+            }
+        }.bind(this));
+    },
+    toWordServiceService: function(body, callback, cb){
+        if (this.toWordServiceServiceProcessing){
+            if (!this.toWordServiceServiceProcessList) this.toWordServiceServiceProcessList = [];
+            this.toWordServiceServiceProcessList.push({
+                body: body,
+                callback: callback,
+                cb: cb
+            });
+            return false;
+        }
+
+        this.toWordServiceServiceProcessing = true;
+
+        o2.Actions.get("x_processplatform_assemble_surface").docToWord(this.form.businessData.work.id, body, function(json){
+            if (this.form.businessData.workCompleted){
+                o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
+                    if (callback) callback(attjson.data);
+                    this.showToWord(attjson.data);
+                }.bind(this));
+            }else{
+                o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
+                    if (callback) callback(attjson.data);
+                    this.showToWord(attjson.data);
+                }.bind(this));
+            }
+            if (cb) cb();
+            this.toWordServiceServiceProcessing = false;
+            if (this.toWordServiceServiceProcessList &&  this.toWordServiceServiceProcessList.length){
+                var o = this.toWordServiceServiceProcessList.shift();
+                this.toWordServiceService(o.body, o.callback, o.cb);
+            }
+        }.bind(this), function(){
+            this.toWordServiceServiceProcessing = false;
+            if (this.toWordServiceServiceProcessList &&  this.toWordServiceServiceProcessList.length){
+                var o = this.toWordServiceServiceProcessList.shift();
+                this.toWordServiceService(o.body, o.callback, o.cb);
+            }
+        });
+    },
+    toWordOOXMLService: function(formData, oo_content, callback, cb){
+        if (this.toWordOOXMLServiceProcessing){
+            if (!this.toWordOOXMLServiceProcessList) this.toWordOOXMLServiceProcessList = [];
+            this.toWordOOXMLServiceProcessList.push({
+                formData: formData,
+                oo_content: oo_content,
+                callback: callback,
+                cb: cb
+            });
+            return false;
+        }
+
+        this.toWordOOXMLServiceProcessing = true;
+        o2.Actions.get("x_processplatform_assemble_surface").V2UploadWorkOrWorkCompleted(this.form.businessData.work.id, formData, oo_content, function (json) {
+            if (this.form.businessData.workCompleted) {
+                o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id, function (attjson) {
+                    if (callback) callback(attjson.data);
+                    this.showToWord(attjson.data);
+                }.bind(this));
+            } else {
+                o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id, function (attjson) {
+                    if (callback) callback(attjson.data);
+                    this.showToWord(attjson.data);
+                }.bind(this));
+            }
+            if (cb) cb();
+            this.toWordOOXMLServiceProcessing = false;
+            if (this.toWordOOXMLServiceProcessList &&  this.toWordOOXMLServiceProcessList.length){
+                var o = this.toWordOOXMLServiceProcessList.shift();
+                this.toWordOOXMLService(o.formData, o.oo_content, o.callback, o.cb);
+            }
+        }.bind(this), function(){
+            this.toWordOOXMLServiceProcessing = false;
+            if (this.toWordOOXMLServiceProcessList &&  this.toWordOOXMLServiceProcessList.length){
+                var o = this.toWordOOXMLServiceProcessList.shift();
+                this.toWordOOXMLService(o.formData, o.oo_content, o.callback, o.cb);
             }
         }.bind(this));
     },
