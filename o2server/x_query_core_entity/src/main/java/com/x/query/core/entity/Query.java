@@ -32,6 +32,10 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+/**
+ * 数据中心应用
+ * @author sword
+ */
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Query.table, uniqueConstraints = {
@@ -44,10 +48,12 @@ public class Query extends SliceJpaObject {
 	private static final long serialVersionUID = -7520516033901189347L;
 	private static final String TABLE = PersistenceProperties.Query.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -66,6 +72,7 @@ public class Query extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		this.name = StringUtils.trimToEmpty(this.name);
 		this.alias = StringUtils.trimToEmpty(this.alias);
@@ -81,9 +88,9 @@ public class Query extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME, unique = true)
 	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
-	/* 检查不重名 */
-	@CitationNotExist(type = Query.class, fields = { "id", "name", "alias" }))
+	@CitationNotExist(type = Query.class, fields = { "name", "alias" }))
 	private String name;
 
 	public static final String alias_FIELDNAME = "alias";
@@ -91,8 +98,7 @@ public class Query extends SliceJpaObject {
 	@FieldDescribe("应用别名,如果有必须唯一.")
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
-	/* 检查不重名 */
-	@CitationNotExist(type = Query.class, fields = { "id", "name", "alias" }))
+	@CitationNotExist(type = Query.class, fields = { "name", "alias" }))
 	private String alias;
 
 	public static final String description_FIELDNAME = "description";
