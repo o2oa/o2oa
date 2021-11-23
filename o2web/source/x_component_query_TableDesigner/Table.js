@@ -507,23 +507,27 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             this.close();
         }, null);
     },
-    buildAllView: function(e){
-        var _self = this;
-        if (!e) e = this.node;
-        this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildAllViewTitle, MWF.APPDTBD.LP.buildAllViewInfor, 480, 120, function(){
-            _self.designer.actions.buildAllTable(function(json){
-                this.designer.notice(this.designer.lp.buildAllView_success, "success", this.node, {"x": "left", "y": "bottom"});
-            }.bind(_self));
-            this.close();
-        }, function(){
-            this.close();
-        }, null);
-    },
+    // buildAllView: function(e){
+    //     var _self = this;
+    //     if (!e) e = this.node;
+    //     this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildAllViewTitle, {
+    //         "html": MWF.APPDTBD.LP.buildAllViewInfor
+    //     }, 480, 120, function(){
+    //         _self.designer.actions.buildAllTable(function(json){
+    //             this.designer.notice(this.designer.lp.buildAllView_success, "success", this.node, {"x": "left", "y": "bottom"});
+    //         }.bind(_self));
+    //         this.close();
+    //     }, function(){
+    //         this.close();
+    //     }, null);
+    // },
 
     buildAllView: function(e){
         var _self = this;
         if (!e) e = this.node;
-        this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildAllViewTitle, MWF.APPDTBD.LP.buildAllViewInfor, 480, 120, function(){
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildAllViewTitle, {
+            "html": MWF.APPDTBD.LP.buildAllViewInfor
+        }, 480, 120, function(){
             _self.designer.actions.buildAllTable(function(json){
                 this.designer.notice(this.designer.lp.buildAllView_success, "success", this.node, {"x": "left", "y": "bottom"});
             }.bind(_self));
