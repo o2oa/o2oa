@@ -2836,8 +2836,6 @@ debugger;
 
                 }.bind(this));
 
-                return "";
-
                 editor.on( 'paste', function( e ) {
                     var html = e.data.dataValue;
                     //if (this.json.fullWidth=="y") html = html.replace(/\x20/g, "　");
