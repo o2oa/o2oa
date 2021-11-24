@@ -620,5 +620,28 @@
     "color": "#ffffff",
     "font-size": "16px",
     "cursor": "pointer"
+  },
+  "selectIdeaNode": {
+    "height": "129px",
+    "width": "145px",
+    "float": "right",
+    "background-color": "#FFF",
+    "overflow": "hidden"
+  },
+  "selectIdeaScrollNode": {
+    "height": "129px",
+    "margin-right": "6px",
+    "overflow": "hidden"
+  },
+  "selectIdeaItemNode": {
+    "height": "20px",
+    "line-height": "20px",
+    "font-size": "12px",
+    "cursor": "pointer",
+    "background-color": "#FFF",
+    "overflow": "hidden"
+  },
+  "selectIdeaItemNode_over": {
+    "background-color": "#e6ecf8"
   }
 }

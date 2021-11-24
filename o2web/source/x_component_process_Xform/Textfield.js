@@ -45,7 +45,7 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
             if (this.json.description){
                 var size = this.node.getFirst().getSize();
                 var w = size.x-3;
-                if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ){
+                if( this.hasIcon() ){
                     if (COMMON.Browser.safari) w = w-20;
                 }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
@@ -114,10 +114,16 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
             }
         });
 
+        var overflow;
+        if(this.json.styles && this.json.styles.overflow){
+            overflow = this.json.styles.overflow;
+        }else{
+            overflow = this.hasIcon() ? "hidden" : "visible";
+        }
         var node = new Element("div", {"styles": {
-                "overflow": (this.json.styles && this.json.styles.overflow) ? this.json.styles.overflow : "hidden",
+                "overflow": overflow,
                 "position": "relative",
-                "margin-right": "20px",
+                "margin-right": this.hasIcon() ? "20px" : "0px",
                 "padding-right": "4px"
             }}).inject(this.node, "after");
         input.inject(node);

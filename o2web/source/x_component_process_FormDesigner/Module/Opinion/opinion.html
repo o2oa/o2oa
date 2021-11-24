@@ -54,6 +54,13 @@
                     <input type="radio" name="isHandwritingPreview" value="no" text{($.isHandwritingPreview=='no')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.commonIdea}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="isSelectIdea" value="yes" text{($.isSelectIdea=='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="isSelectIdea" value="no" text{($.isSelectIdea!='yes')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
         </table>
 		
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>

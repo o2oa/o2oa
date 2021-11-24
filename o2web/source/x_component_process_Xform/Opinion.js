@@ -117,6 +117,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 }
             });
             input.set(this.json.properties);
+            this.textarea = input;
 
             var node = new Element("div", {
                 "styles": {
@@ -130,7 +131,11 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             this.node = node;
         },
         _loadNodeEdit: function () {
-            if (!this.json.preprocessing) this._resetNodeEdit();
+            if (!this.json.preprocessing) {
+                this._resetNodeEdit();
+            }else{
+                this.textarea = this.node.getElement("textarea");
+            }
             var input = this.node.getFirst();
             input.set(this.json.properties);
 
@@ -140,6 +145,11 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 "MWFType": this.json.type
             });
             this.input = input;
+
+            if( this.json.isSelectIdea ){
+                this.selectIdeaNode = new Element("div", {"styles": this.form.css.selectIdeaNode}).inject(this.node);
+                this.loadSelectIdea()
+            }
 
             this.mediaActionArea = new Element("div", {"styles": this.form.css.inputOpinionMediaActionArea}).inject(this.node);
 
@@ -155,6 +165,14 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 this.handwritingAction.addEvent("click", function () {
                     this.handwriting();
                 }.bind(this));
+
+                if( this.textarea ){
+                    var handWritingSize = this.handwritingAction.getSize();
+                    this.textarea.setStyles({
+                        "width": "calc( 100% - "+ handWritingSize.y +"px )",
+                        "padding-right": handWritingSize.y+"px"
+                    });
+                }
             }
 
             if (this.json.isAudio !== "no") {
@@ -235,6 +253,64 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 this.startSearchOpinion();
             }.bind(this));
 
+        },
+        loadSelectIdea: function(){
+            this.selectIdeaScrollNode = new Element("div", {"styles": this.form.css.selectIdeaScrollNode}).inject(this.selectIdeaNode);
+            this.selectIdeaAreaNode = new Element("div", {
+                "styles": {
+                    "overflow": "hidden"
+                }
+            }).inject(this.selectIdeaScrollNode);
+            MWF.require("MWF.widget.ScrollBar", function () {
+                new MWF.widget.ScrollBar(this.selectIdeaScrollNode, {
+                    "style": "small",
+                    "where": "before",
+                    "distance": 30,
+                    "friction": 4,
+                    "indent": false,
+                    "axis": {"x": false, "y": true}
+                });
+            }.bind(this));
+            MWF.UD.getDataJson("idea", function (json) {
+                if (json) {
+                    if (json.ideas) {
+                        this.setIdeaList(json.ideas);
+                    }
+                } else {
+                    MWF.UD.getPublicData("idea", function (pjson) {
+                        if (pjson) {
+                            if (pjson.ideas) {
+                                this.setIdeaList(pjson.ideas);
+                            }
+                        }
+                    }.bind(this));
+                }
+            }.bind(this));
+        },
+        setIdeaList: function (ideas) {
+            var _self = this;
+            ideas.each(function (idea) {
+                if (!idea) return;
+                new Element("div", {
+                    "styles": this.form.css.selectIdeaItemNode,
+                    "text": idea,
+                    "events": {
+                        "click": function () {
+                            if ( !_self.textarea.get("value") ) {
+                                _self.textarea.set("value", this.get("text"));
+                            } else {
+                                _self.textarea.set("value", _self.textarea.get("value") + ", " + this.get("text"));
+                            }
+                        },
+                        "mouseover": function () {
+                            this.setStyles(_self.form.css.selectIdeaItemNode_over);
+                        },
+                        "mouseout": function () {
+                            this.setStyles(_self.form.css.selectIdeaItemNode);
+                        }
+                    }
+                }).inject(this.selectIdeaAreaNode);
+            }.bind(this));
         },
 
         audioRecord: function () {
