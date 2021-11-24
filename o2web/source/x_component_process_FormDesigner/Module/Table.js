@@ -506,7 +506,17 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 //        this.form.getTemplateData("Table$Td", function(data){
         tds.each(function(td, idx){
             var newContainerJson = Object.clone(this.containers[idx].json);
-            newContainerJson.id = this.containers[idx]._getNewId(pid);
+
+			var oid = this.containers[idx]._getNewId(pid);
+			var id = oid;
+			var index = 1;
+			while (this.form.json.moduleList[id]) {
+				id = oid + "_" + index;
+				index++;
+			}
+			newContainerJson.id = id;
+
+            // newContainerJson.id = this.containers[idx]._getNewId(pid);
             this.form.json.moduleList[newContainerJson.id] = newContainerJson;
             td.set("id", newContainerJson.id);
         }.bind(this));
