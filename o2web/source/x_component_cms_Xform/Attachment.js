@@ -270,6 +270,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     return false;
                 }
             }
+            this.fireEvent("beforeUpload", [files]);
             return true;
         }.bind(this), true, accept, size, function (o) { //错误的回调
             if (o.messageId && this.attachmentController.messageItemList) {

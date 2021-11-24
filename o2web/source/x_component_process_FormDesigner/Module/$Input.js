@@ -122,6 +122,9 @@ MWF.xApplication.process.FormDesigner.Module.$Input = MWF.FC$Input = new Class({
             this.node.getLast().set("text", this.json.id);
         }
     },
+    hasIcon: function(){
+      return this.json.showIcon!='no' && (!this.form.json || !this.form.json.hideModuleIcon);
+    },
     _preprocessingModuleData: function(){
         debugger;
         this.node.clearStyles();
@@ -138,9 +141,9 @@ MWF.xApplication.process.FormDesigner.Module.$Input = MWF.FC$Input = new Class({
             }
         }).inject(this.node);
         this.node.setStyles({
-            "overflow": "hidden",
+            "overflow": this.hasIcon() ? "hidden" : "visible",
             "position": "relative",
-            "margin-right": "20px",
+            "margin-right": this.hasIcon() ? "20px" : "0px",
             "padding-right": "4px"
         });
 
