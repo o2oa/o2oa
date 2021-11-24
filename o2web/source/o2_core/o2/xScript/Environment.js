@@ -212,7 +212,7 @@ MWF.xScript.Environment = function(ev){
          *      "creatorUnitDn": "开发部@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //创建人组织全称,如果由系统创建。
          *      "creatorUnit": "开发部",  //创建人组织名称
          *      "creatorDepartment": "开发部",  //创建人组织名称，同creatorUnit
-         *      "creatorCompany": "xx公司"  //创建人组织公司名称，creatorUnitLevel的第一段
+         *      "creatorCompany": "xx公司"  //创建人组织公司名称，creatorUnitLevelName的第一段
          * }</code></pre>
          * @o2ActionOut x_processplatform_assemble_surface.WorkAction.manageGet|example=Work|ignoreNoDescr=true|ignoreProps=[properties]|Work对象:
          * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompleted|ignoreProps=[properties]|WorkCompleted对象:
@@ -591,8 +591,8 @@ MWF.xScript.Environment = function(ev){
                 //     }
                 // },
                 "creatorCompany": {"get": function(){
-                    if (this.creatorUnitLevel){
-                        var level = this.creatorUnitLevel.split("/");
+                    if (this.creatorUnitLevel || this.creatorUnitLevelName){
+                        var level = (this.creatorUnitLevel || this.creatorUnitLevelName).split("/");
                         return level[0];
                     }else{
                         return this.creatorUnitDn.substring(0, this.creatorUnitDn.indexOf("@"));
