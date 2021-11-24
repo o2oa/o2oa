@@ -200,7 +200,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				}.bind(this));
 				this.form.multimoduleActionsArea.setStyle("width", 18*this.options.multiActions.length);
 			}
-		}else{
+		}else if(this.form.multimoduleActionsArea){
 			this.form.multimoduleActionsArea.setStyle("display", "none");
 		}
 	},

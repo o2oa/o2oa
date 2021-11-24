@@ -234,12 +234,13 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			}.bind(this), async);
 		}
 	},
-	showProperty: function(){
+	showProperty: function(callback){
 		if (!this.property){
 			this.property = new MWF.xApplication.cms.FormDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
 				"path": this.options.propertyPath,
 				"onPostLoad": function(){
 					this.property.show();
+					if (callback) callback();
 				}.bind(this)
 			});
 			this.property.load();
