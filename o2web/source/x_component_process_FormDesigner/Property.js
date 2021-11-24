@@ -59,8 +59,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 if (this.htmlString){
                     var lp;
                     if( this.options.appType === "cms" ) {
+                        this.appType = "cms";
                         lp = MWF.xApplication.cms.FormDesigner.LP.propertyTemplate;
                     }else if( this.designer && this.designer.options && this.designer.options.name && this.designer.options.name.indexOf("cms") === 0 ){
+                        this.appType = "cms";
                         lp = MWF.xApplication.cms.FormDesigner.LP.propertyTemplate;
                     }else{
                         lp = MWF.xApplication.process.FormDesigner.LP.propertyTemplate;
@@ -2211,6 +2213,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 	//},
     loadPropertyTab: function(){
         var tabNodes = this.propertyContent.getElements(".MWFTab");
+        if( this.appType === "cms" ){
+            tabNodes = tabNodes.filter(function(node){
+                return node.get("title") !== MWF.xApplication.process.FormDesigner.LP.propertyTemplate.section;
+            })
+        }
         var groupObject = {};  //data-group 属性可以表示不同的分组
         if (tabNodes.length){
             tabNodes.each( function(node){
