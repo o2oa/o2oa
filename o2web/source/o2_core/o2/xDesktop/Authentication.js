@@ -778,7 +778,8 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 "   <div styles='bindTipTextArea'>" +
                 "       " + this.lp.userAppCameraHtml +
                 "       <div>"+this.lp.loginToPage +"</div>" +
-                "</div>";
+                "</div>" +
+                "<div styles='bindErrorArea'></div>";
 
             this.bindLoginContainer.set("html", html2);
 
@@ -804,6 +805,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                     window.open(this.lp.o2downloadLink, "_blank");
                 }
             }.bind(this));
+            this.bindErrorArea = this.bindLoginContainer.getElement("[styles='bindErrorArea']");
 
             MWF.xDesktop.requireApp("Template", "MForm", function () {
                 this.bindform = new MForm(this.bindLoginContainer, {}, {
@@ -1068,8 +1070,12 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                     }
                 }
             }.bind(this), function (errorObj) {
-                //var error = JSON.parse( errorObj.responseText );
-                //this.setWarning( error.message );
+                var error = JSON.parse( errorObj.responseText );
+                if (this.app) {
+                    this.app.notice(error.message, "error");
+                }else{
+                    this.setBindWarning( error.message );
+                }
             }.bind(this))
         }.bind(this), 3000);
 
@@ -1131,6 +1137,15 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             "text": text,
             "styles": this.css.warningMessageNode
         }).inject(this.errorArea);
+    },
+    setBindWarning: function (text) {
+        if( this.bindErrorArea ){
+            this.bindErrorArea.empty();
+            new Element("div", {
+                "text": text,
+                "styles": this.css.warningMessageNode
+            }).inject(this.bindErrorArea);
+        }
     },
     _ok: function (data, callback) {
         var d = null;
