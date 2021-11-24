@@ -324,7 +324,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
 
             } else {
                 this.handwritingNode.position({
-                    "relativeTo": this.node,
+                    "relativeTo": this.form.app.content || this.form.container,
                     "position": "center",
                     "edge": "center"
                 });
