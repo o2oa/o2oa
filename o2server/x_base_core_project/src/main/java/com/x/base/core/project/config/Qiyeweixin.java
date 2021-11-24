@@ -116,13 +116,21 @@ public class Qiyeweixin extends ConfigObject {
 	public Boolean getMessageEnable() {
 		return BooleanUtils.isTrue(this.messageEnable);
 	}
-
+//
+//	public String getSyncCron() {
+//		return StringUtils.isEmpty(this.syncCron) ? default_syncCron : this.syncCron;
+//	}
+	// 清空表达式 不执行同步操作
 	public String getSyncCron() {
-		return StringUtils.isEmpty(this.syncCron) ? default_syncCron : this.syncCron;
+		return this.syncCron;
 	}
 
+//	public String getForceSyncCron() {
+//		return StringUtils.isEmpty(this.forceSyncCron) ? default_forceSyncCron : this.forceSyncCron;
+//	}
+
 	public String getForceSyncCron() {
-		return StringUtils.isEmpty(this.forceSyncCron) ? default_forceSyncCron : this.forceSyncCron;
+		return this.forceSyncCron;
 	}
 
 	public String getCorpId() {
