@@ -24,9 +24,9 @@ MWF.xApplication.process.FormDesigner.Module.Personfield = MWF.FCPersonfield = n
 			}
 		}).inject(this.node);
 		this.node.setStyles({
-			"overflow": "hidden",
+			"overflow": this.hasIcon() ? "hidden" : "visible",
 			"position": "relative",
-			"margin-right": "20px",
+			"margin-right": this.hasIcon() ? "20px" : "0px",
 			"min-height": "24px"
 		});
 

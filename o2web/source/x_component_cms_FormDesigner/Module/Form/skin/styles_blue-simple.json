@@ -411,7 +411,7 @@
 
   "org": {
     "styles": {
-      "border-bottom": "1px solid #ccc",
+      "border-bottom": "0px solid #ccc",
       "border-top": "0px",
       "border-left": "0px",
       "border-right": "0px",
@@ -426,7 +426,7 @@
   },
   "reader": {
     "styles": {
-      "border-bottom": "1px solid #ccc",
+      "border-bottom": "0px solid #ccc",
       "border-top": "0px",
       "border-left": "0px",
       "border-right": "0px",
@@ -441,7 +441,7 @@
   },
   "author": {
     "styles": {
-      "border-bottom": "1px solid #ccc",
+      "border-bottom": "0px solid #ccc",
       "border-top": "0px",
       "border-left": "0px",
       "border-right": "0px",
