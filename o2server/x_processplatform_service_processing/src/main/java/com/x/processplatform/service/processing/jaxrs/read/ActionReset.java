@@ -112,6 +112,7 @@ class ActionReset extends BaseAction {
 				resetRead.setCreatorUnit(read.getUnit());
 				resetRead.setStartTime(date);
 				resetRead.setViewed(false);
+				resetRead.setOpinion(null);
 				readList.add(resetRead);
 			}
 		}

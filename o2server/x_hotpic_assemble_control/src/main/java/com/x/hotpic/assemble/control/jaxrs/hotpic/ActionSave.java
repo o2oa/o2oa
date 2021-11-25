@@ -1,32 +1,34 @@
 package com.x.hotpic.assemble.control.jaxrs.hotpic;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
-import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.WrapOutId;
-import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
+import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.hotpic.assemble.control.service.HotPictureInfoService;
 import com.x.hotpic.entity.HotPictureInfo;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
+import org.apache.commons.lang3.StringUtils;
 
+/**
+ * 热点图片保存
+ * @author sword
+ */
 public class ActionSave extends BaseAction {
+	private static Logger logger = LoggerFactory.getLogger(ActionSave.class);
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+		logger.debug(effectivePerson.getDistinguishedName());
 		ActionResult<Wo> result = new ActionResult<>();
-		HotPictureInfoServiceAdv hotPictureInfoService = new HotPictureInfoServiceAdv();
+		HotPictureInfoService hotPictureInfoService = new HotPictureInfoService();
 
-		Wi wi = null;
-		HotPictureInfo hotPictureInfo = null;
-		try {
-			wi = this.convertToWrapIn(jsonElement, Wi.class);
-		} catch (Exception e) {
-			throw new WrapInConvertException(e, jsonElement);
-		}
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
 		if (wi.getTitle() == null || wi.getTitle().isEmpty()) {
 			throw new InfoTitleEmptyException();
@@ -36,60 +38,49 @@ public class ActionSave extends BaseAction {
 			throw new InfoUrlEmptyException();
 		}
 
-		try {
-			hotPictureInfo = new HotPictureInfo();
-			hotPictureInfo.setInfoId(wi.getInfoId());
-			hotPictureInfo.setApplication(wi.getApplication());
-			hotPictureInfo.setCreator(wi.getCreator());
-			hotPictureInfo.setPicId(wi.getPicId());
-			hotPictureInfo.setSummary(wi.getSummary());
-			hotPictureInfo.setTitle(wi.getTitle());
-			hotPictureInfo.setUrl(wi.getUrl());
-		} catch (Exception e) {
-			throw new InfoWrapInException(e);
-		}
-
-		try {
-			hotPictureInfo = hotPictureInfoService.save(hotPictureInfo);
-			Wo wo = new Wo(hotPictureInfo.getId());
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			HotPictureInfo hotPictureInfo = null;
+			if(StringUtils.isNotBlank(wi.getId())){
+				hotPictureInfo = emc.find(wi.getId(), HotPictureInfo.class);
+				if(hotPictureInfo == null){
+					hotPictureInfo = hotPictureInfoService.getByApplicationInfoId(emc, wi.getApplication(), wi.getInfoId());
+				}
+			}
+			emc.beginTransaction(HotPictureInfo.class);
+			if (hotPictureInfo!=null){
+				hotPictureInfo.setPicId(wi.getPicId());
+				hotPictureInfo.setSummary(wi.getSummary());
+				hotPictureInfo.setTitle(wi.getTitle());
+				hotPictureInfo.setUrl(wi.getUrl());
+				emc.check(hotPictureInfo, CheckPersistType.all);
+			}else{
+				hotPictureInfo = new HotPictureInfo();
+				hotPictureInfo.setInfoId(wi.getInfoId());
+				hotPictureInfo.setApplication(wi.getApplication());
+				hotPictureInfo.setCreator(wi.getCreator());
+				hotPictureInfo.setPicId(wi.getPicId());
+				hotPictureInfo.setSummary(wi.getSummary());
+				hotPictureInfo.setTitle(wi.getTitle());
+				hotPictureInfo.setUrl(wi.getUrl());
+				emc.persist(hotPictureInfo, CheckPersistType.all);
+			}
+			emc.commit();
+			Wo wo = new Wo();
+			wo.setId(hotPictureInfo.getId());
 			result.setData(wo);
-		} catch (Exception e) {
-			throw new InfoSaveException(e);
-
-		}
-
-		try {
 			CacheManager.notify(HotPictureInfo.class);
-		} catch (Exception e) {
-			throw e;
 		}
-
 		return result;
 	}
 
 	public static class Wi extends HotPictureInfo {
 
-		public static WrapCopier<HotPictureInfo, Wi> copier = WrapCopierFactory.wo(HotPictureInfo.class, Wi.class, null,
+		public static final WrapCopier<HotPictureInfo, Wi> copier = WrapCopierFactory.wo(HotPictureInfo.class, Wi.class, null,
 				JpaObject.FieldsInvisible);
 
 	}
 
-	public static class Wo extends GsonPropertyObject {
+	public static class Wo extends WoId {
 
-		public Wo() {
-		}
-
-		public Wo(String id) throws Exception {
-			this.id = id;
-		}
-
-		private String id;
-
-		public String getId() {
-			return id;
-		}
-
-		public static Type collectionType = new TypeToken<ArrayList<WrapOutId>>() {
-		}.getType();
 	}
 }

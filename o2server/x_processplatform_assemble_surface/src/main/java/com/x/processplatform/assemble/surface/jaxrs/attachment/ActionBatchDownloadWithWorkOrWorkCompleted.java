@@ -30,6 +30,10 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 
+	private static final String SITE_SEPARATOR = "~";
+
+	private static final String FILE_SEPARATOR = ",";
+
 	private static Logger logger = LoggerFactory.getLogger(ActionBatchDownloadWithWorkOrWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String site, String fileName, String flag)
@@ -39,9 +43,9 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 			Business business = new Business(emc);
 			String title = "";
 			String job = "";
-			Work work = emc.find(workId, Work.class);
+			Work work = emc.fetch(workId, Work.class);
 			if (work == null) {
-				WorkCompleted workCompleted = emc.find(workId, WorkCompleted.class);
+				WorkCompleted workCompleted = emc.fetch(workId, WorkCompleted.class);
 				if (null == workCompleted) {
 					throw new Exception("workId: " + workId + " not exist in work or workCompleted");
 				}
@@ -61,12 +65,12 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 			List<Attachment> attachmentList;
 			if (StringUtils.isBlank(site) || EMPTY_SYMBOL.equals(site)) {
 				attachmentList = business.attachment().listWithJobObject(job);
-			} else if (site.indexOf("~") == -1) {
+			} else if (site.indexOf(SITE_SEPARATOR) == -1) {
 				attachmentList = emc.listEqualAndEqual(Attachment.class, Attachment.job_FIELDNAME, job,
 						Attachment.site_FIELDNAME, site);
 			} else {
 				attachmentList = emc.listEqualAndIn(Attachment.class, Attachment.job_FIELDNAME, job,
-						Attachment.site_FIELDNAME, Arrays.asList(site.split("~")));
+						Attachment.site_FIELDNAME, Arrays.asList(site.split(SITE_SEPARATOR)));
 			}
 
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
@@ -90,19 +94,8 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 			}
 
 			Map<String, byte[]> map = new HashMap<>();
-			if (StringUtils.isNotEmpty(flag)) {
-				GeneralFile generalFile = emc.find(flag, GeneralFile.class);
-				if(generalFile!=null){
-					StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
-							generalFile.getStorage());
-					map.put(generalFile.getName(), generalFile.readContent(gfMapping));
+			this.assembleFile(business, map, flag);
 
-					generalFile.deleteContent(gfMapping);
-					emc.beginTransaction(GeneralFile.class);
-					emc.delete(GeneralFile.class, generalFile.getId());
-					emc.commit();
-				}
-			}
 			fileName = StringUtils.replaceEach(fileName,
 					new String[] { "/",":","*","?","<<",">>","|","<",">","\\" }, new String[] { "","","","","","","","","","" });
 			logger.info("batchDown to {}，att size {}, from work {}", fileName, attachmentList.size(), workId);
@@ -114,6 +107,28 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 			}
 
 			return result;
+		}
+	}
+
+	private void assembleFile(Business business, Map<String, byte[]> map, String files) throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+		if (StringUtils.isNotEmpty(files)) {
+			String[] flagList = files.split(FILE_SEPARATOR);
+			for (String flag : flagList) {
+				if(StringUtils.isNotBlank(flag)) {
+					GeneralFile generalFile = emc.find(flag.trim(), GeneralFile.class);
+					if (generalFile != null) {
+						StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
+								generalFile.getStorage());
+						map.put(generalFile.getName(), generalFile.readContent(gfMapping));
+
+						generalFile.deleteContent(gfMapping);
+						emc.beginTransaction(GeneralFile.class);
+						emc.delete(GeneralFile.class, generalFile.getId());
+						emc.commit();
+					}
+				}
+			}
 		}
 	}
 

@@ -655,6 +655,33 @@
         "cursor": "pointer",
         "background": "url("+"../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
     },
+  "selectIdeaNode": {
+    "height": "130px",
+    "width": "210px",
+    "float": "right",
+    "background-color": "#FFF",
+    "overflow": "hidden",
+    "border-top" : "1px solid #ccc",
+    "border-right" : "1px solid #ccc"
+  },
+  "selectIdeaScrollNode": {
+    "height": "130px",
+    "margin-right": "6px",
+    "overflow": "hidden"
+  },
+  "selectIdeaItemNode": {
+    "line-height": "18px",
+    "font-size": "14px",
+    "cursor": "pointer",
+    "background-color": "#FFF",
+    "margin-top": "2px",
+    "padding": "2px 2px 2px 12px",
+    "background": "url("+"../x_component_process_Work/$Processor/process/point.png) no-repeat 3px center",
+    "overflow": "hidden"
+  },
+  "selectIdeaItemNode_over": {
+    "background-color": "#e6ecf8"
+  },
 
     "modelNode": {
         "border-radius": "3px",
