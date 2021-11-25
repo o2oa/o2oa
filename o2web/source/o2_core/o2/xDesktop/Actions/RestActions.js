@@ -33,7 +33,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
             var port = layout.desktop.centerServer.port;
 
             //var mapping = layout.getCenterUrlMapping(layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center");
-            this.address = layout.config.app_protocol+"//"+host+(!port || port=="80" ? "" : ":"+port)+"/x_program_center";
+            this.address = layout.config.app_protocol+"//"+host+((!port || port=="80") ? "" : ":"+port)+"/x_program_center";
         }
 
         //this.address = "http://hbxa01.bf.ctc.com/"+this.serviceName;
