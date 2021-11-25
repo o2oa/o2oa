@@ -107,7 +107,6 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             }
             return true;
         },
-
         _resetNodeEdit: function () {
             var input = new Element("textarea", {
                 "styles": {
@@ -146,8 +145,12 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             });
             this.input = input;
 
-            if( this.json.isSelectIdea ){
+            if( this.json.isSelectIdea === "yes" ){
                 this.selectIdeaNode = new Element("div", {"styles": this.form.css.selectIdeaNode}).inject(this.node);
+                this.underLineNode = new Element("div", {"styles": {
+                        "border-top": "1px solid #ccc",
+                        "clear": "both"
+                 }}).inject(this.node);
                 this.loadSelectIdea()
             }
 
@@ -165,14 +168,6 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 this.handwritingAction.addEvent("click", function () {
                     this.handwriting();
                 }.bind(this));
-
-                if( this.textarea ){
-                    var handWritingSize = this.handwritingAction.getSize();
-                    this.textarea.setStyles({
-                        "width": "calc( 100% - "+ handWritingSize.y +"px )",
-                        "padding-right": handWritingSize.y+"px"
-                    });
-                }
             }
 
             if (this.json.isAudio !== "no") {
@@ -253,6 +248,37 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 this.startSearchOpinion();
             }.bind(this));
 
+            this.setNodeSize();
+        },
+        setNodeSize: function(){
+            if( this.textarea ){
+                var x = 0;
+                if( this.selectIdeaNode ){
+                    var size = this.selectIdeaNode.getSize();
+                    x += size.x + 5;
+                    this.textarea.setStyles({
+                        "height": ( size.y - 6 ) + "px",
+                        "resize":"none",
+                        "border-bottom": "0px",
+                        "padding-right": "0px"
+                    });
+                    this.node.setStyles({
+                        "min-height": size.y + "px",
+                        "height": "auto",
+                        "overflow":"hidden",
+                        "width": "100%"
+                    });
+                }
+                if( this.handwritingAction ){
+                    if( x ){
+                        this.mediaActionArea.setStyle("right", x+"px");
+                    }
+                    var handWritingSize = this.handwritingAction.getSize();
+                    this.textarea.setStyles({
+                        "width": "calc( 100% - "+ x +"px )"
+                    });
+                }
+            }
         },
         loadSelectIdea: function(){
             this.selectIdeaScrollNode = new Element("div", {"styles": this.form.css.selectIdeaScrollNode}).inject(this.selectIdeaNode);
