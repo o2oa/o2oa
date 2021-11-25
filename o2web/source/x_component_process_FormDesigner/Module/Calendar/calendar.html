@@ -49,13 +49,13 @@
                 <input type="radio" name="isSelectSecond" value="false" text{(!$.isSelectSecond)?'checked':''}/>{{$.lp.no}}
             </td>
         </tr>
-        <tr>
-            <td class="editTableTitle">{{$.lp.timeSelectType}}:</td>
-            <td class="editTableValue">
-                <input type="radio" name="timeSelectType" value="slider" text{$.timeSelectType=='select'||!$.timeSelectType ?'checked':''}/>{{$.lp.timeSelectType_slider}}
-                <input type="radio" name="timeSelectType" value="select" text{$.timeSelectType=='slider' ?'checked':''}/>{{$.lp.timeSelectType_select}}
-            </td>
-        </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.timeSelectType}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="timeSelectType" value="slider" text{$.timeSelectType=='slider'||!$.timeSelectType ?'checked':''}/>{{$.lp.timeSelectType_slider}}
+                    <input type="radio" name="timeSelectType" value="select" text{$.timeSelectType=='select' ?'checked':''}/>{{$.lp.timeSelectType_select}}
+                </td>
+            </tr>
 		  <tr>
 		    <td class="editTableTitle">{{$.lp.format}}:</td>
 		    <td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
