@@ -1060,7 +1060,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("*Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
 			@JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
 			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName,
-			@JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id") @QueryParam("flag") String flag) {
+			@JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id，多值逗号隔开") @QueryParam("flag") String flag) {
 		ActionResult<ActionBatchDownloadWithWorkOrWorkCompletedStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1082,7 +1082,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("*Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
 			@JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
 			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName,
-			@JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id") @QueryParam("flag") String flag) {
+			@JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id，多值逗号隔开") @QueryParam("flag") String flag) {
 		ActionResult<ActionBatchDownloadWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
