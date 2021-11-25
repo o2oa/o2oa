@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +31,8 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 
 	private static final String SITE_SEPARATOR = "~";
+
+	private static final String FILE_SEPARATOR = ",";
 
 	private static Logger logger = LoggerFactory.getLogger(ActionBatchDownloadWithWorkOrWorkCompleted.class);
 
@@ -112,7 +113,7 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 	private void assembleFile(Business business, Map<String, byte[]> map, String files) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		if (StringUtils.isNotEmpty(files)) {
-			String[] flagList = files.split(",");
+			String[] flagList = files.split(FILE_SEPARATOR);
 			for (String flag : flagList) {
 				if(StringUtils.isNotBlank(flag)) {
 					GeneralFile generalFile = emc.find(flag.trim(), GeneralFile.class);
