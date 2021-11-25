@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,8 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
+
+	private static final String SITE_SEPARATOR = "~";
 
 	private static Logger logger = LoggerFactory.getLogger(ActionBatchDownloadWithWorkOrWorkCompletedStream.class);
 
@@ -62,12 +65,12 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 			List<Attachment> attachmentList;
 			if (StringUtils.isBlank(site) || EMPTY_SYMBOL.equals(site)) {
 				attachmentList = business.attachment().listWithJobObject(job);
-			} else if (site.indexOf("~") == -1) {
+			} else if (site.indexOf(SITE_SEPARATOR) == -1) {
 				attachmentList = emc.listEqualAndEqual(Attachment.class, Attachment.job_FIELDNAME, job,
 						Attachment.site_FIELDNAME, site);
 			} else {
 				attachmentList = emc.listEqualAndIn(Attachment.class, Attachment.job_FIELDNAME, job,
-						Attachment.site_FIELDNAME, Arrays.asList(site.split("~")));
+						Attachment.site_FIELDNAME, Arrays.asList(site.split(SITE_SEPARATOR)));
 			}
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
@@ -90,19 +93,7 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 			}
 
 			Map<String, byte[]> map = new HashMap<>();
-			if (StringUtils.isNotEmpty(flag)) {
-				GeneralFile generalFile = emc.find(flag, GeneralFile.class);
-				if(generalFile!=null){
-					StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
-							generalFile.getStorage());
-					map.put(generalFile.getName(), generalFile.readContent(gfMapping));
-
-					generalFile.deleteContent(gfMapping);
-					emc.beginTransaction(GeneralFile.class);
-					emc.delete(GeneralFile.class, generalFile.getId());
-					emc.commit();
-				}
-			}
+			this.assembleFile(business, map, flag);
 
 			fileName = StringUtils.replaceEach(fileName,
 					new String[] { "/",":","*","?","<<",">>","|","<",">","\\" }, new String[] { "","","","","","","","","","" });
@@ -116,6 +107,28 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 			}
 
 			return result;
+		}
+	}
+
+	private void assembleFile(Business business, Map<String, byte[]> map, String files) throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+		if (StringUtils.isNotEmpty(files)) {
+			String[] flagList = files.split(",");
+			for (String flag : flagList) {
+				if(StringUtils.isNotBlank(flag)) {
+					GeneralFile generalFile = emc.find(flag.trim(), GeneralFile.class);
+					if (generalFile != null) {
+						StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
+								generalFile.getStorage());
+						map.put(generalFile.getName(), generalFile.readContent(gfMapping));
+
+						generalFile.deleteContent(gfMapping);
+						emc.beginTransaction(GeneralFile.class);
+						emc.delete(GeneralFile.class, generalFile.getId());
+						emc.commit();
+					}
+				}
+			}
 		}
 	}
 
