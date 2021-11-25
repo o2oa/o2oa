@@ -486,41 +486,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 //			}
 			this.container.setStyle("display", "block");
 
-			if (this.container.position && (!layout || !layout.userLayout || !layout.userLayout.scale || !layout.userLayout.scale===1) ){
-				this.container.position({
-					relativeTo: this.node,
-					position: 'bottomLeft',
-					edge: 'upperLeft'
-				});
-				//               var offsetPNode = this.node.getOffsetParent();
-
-				var cp = this.container.getPosition(this.options.target || null);
-				var cSize = this.container.getSize();
-				//var fp = (this.options.target) ? this.options.target.getPosition() : $(document.body).getPosition()
-				var fsize = (this.options.target) ? this.options.target.getSize() : $(document.body).getSize();
-
-				//if (cp.y+cSize.y>fsize.y+fp.y){
-				if (cp.y+cSize.y>fsize.y){
-					this.container.position({
-						relativeTo: this.node,
-						position: 'upperLeft',
-						edge: 'bottomLeft'
-					});
-				}
-			}else{
-				var p = this.node.getPosition(this.options.target || null);
-				var size = this.node.getSize();
-				var containerSize = this.container.getSize();
-				var bodySize = $(document.body).getSize();
-
-				var left = p.x;
-				if ((left + containerSize.x) > bodySize.x){
-					left = bodySize.x - containerSize.x;
-				}
-
-				this.container.setStyle("top", p.y+size.y+2);
-				this.container.setStyle("left", left);
-			}
+			this.setPosition();
 			// var p = this.container.getPosition();
 			// var s = this.container.getSize();
 			// var zidx = this.container.getStyle("z-index");
@@ -552,6 +518,74 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			this.visible = true;
 //			}.bind(this));
 			this.fireEvent("show");
+		}
+	},
+	setPosition: function(){
+		if (this.container.position && (!layout || !layout.userLayout || !layout.userLayout.scale || !layout.userLayout.scale===1) ){
+			var postY = "bottom";
+			var postX = "left";
+			this.container.position({
+				relativeTo: this.node,
+				position: 'bottomLeft',
+				edge: 'upperLeft'
+			});
+			//               var offsetPNode = this.node.getOffsetParent();
+
+			var cp = this.container.getPosition(this.options.target || null);
+			var cSize = this.container.getSize();
+			//var fp = (this.options.target) ? this.options.target.getPosition() : $(document.body).getPosition()
+			var fsize = (this.options.target) ? this.options.target.getSize() : $(document.body).getSize();
+
+			//if (cp.y+cSize.y>fsize.y+fp.y){
+			if (cp.y+cSize.y>fsize.y){
+				// this.container.position({
+				// 	relativeTo: this.node,
+				// 	position: 'upperLeft',
+				// 	edge: 'bottomLeft'
+				// });
+				postY = "upper";
+			}
+
+			if( cp.x+cSize.x>fsize.x ){
+				postX = "right";
+			}
+
+			if( postY === "upper" && postX === "left" ){
+				this.container.position({
+					relativeTo: this.node,
+					position: 'upperLeft',
+					edge: 'bottomLeft'
+				});
+			}else if( postX === "right" ){
+				if( postY === "bottom" ){
+					this.container.position({
+						relativeTo: this.node,
+						position: 'bottomRight',
+						edge: 'upperRight'
+					});
+				}else{
+					this.container.position({
+						relativeTo: this.node,
+						position: 'upperRight',
+						edge: 'bottomRight'
+					});
+				}
+			}
+			this.postY = postY;
+			this.postX = postX;
+		}else{
+			var p = this.node.getPosition(this.options.target || null);
+			var size = this.node.getSize();
+			var containerSize = this.container.getSize();
+			var bodySize = $(document.body).getSize();
+
+			var left = p.x;
+			if ((left + containerSize.x) > bodySize.x){
+				left = bodySize.x - containerSize.x;
+			}
+
+			this.container.setStyle("top", p.y+size.y+2);
+			this.container.setStyle("left", left);
 		}
 	},
 	showYear: function(year){
