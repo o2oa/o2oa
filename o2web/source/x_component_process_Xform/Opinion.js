@@ -107,7 +107,6 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             }
             return true;
         },
-
         _resetNodeEdit: function () {
             var input = new Element("textarea", {
                 "styles": {
@@ -117,6 +116,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 }
             });
             input.set(this.json.properties);
+            this.textarea = input;
 
             var node = new Element("div", {
                 "styles": {
@@ -130,7 +130,11 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             this.node = node;
         },
         _loadNodeEdit: function () {
-            if (!this.json.preprocessing) this._resetNodeEdit();
+            if (!this.json.preprocessing) {
+                this._resetNodeEdit();
+            }else{
+                this.textarea = this.node.getElement("textarea");
+            }
             var input = this.node.getFirst();
             input.set(this.json.properties);
 
@@ -140,6 +144,15 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 "MWFType": this.json.type
             });
             this.input = input;
+
+            if( this.json.isSelectIdea === "yes" ){
+                this.selectIdeaNode = new Element("div", {"styles": this.form.css.selectIdeaNode}).inject(this.node);
+                this.underLineNode = new Element("div", {"styles": {
+                        "border-top": "1px solid #ccc",
+                        "clear": "both"
+                 }}).inject(this.node);
+                this.loadSelectIdea()
+            }
 
             this.mediaActionArea = new Element("div", {"styles": this.form.css.inputOpinionMediaActionArea}).inject(this.node);
 
@@ -234,7 +247,94 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             this.node.getFirst().addEvent("focus", function () {
                 this.startSearchOpinion();
             }.bind(this));
-
+        },
+        _afterLoaded: function(){
+            if (!this.readonly && !this.json.isReadonly ){
+                this.setNodeSize();
+                this.loadDescription();
+            }
+        },
+        setNodeSize: function(){
+            if( this.textarea ){
+                var x = 0;
+                if( this.selectIdeaNode ){
+                    var size = this.selectIdeaNode.getSize();
+                    x = size.x + 5;
+                    this.textarea.setStyles({
+                        "height": ( size.y - 6 ) + "px",
+                        "resize":"none",
+                        "border-bottom": "0px",
+                        "padding-right": "0px",
+                        "width": "calc( 100% - "+ x +"px )"
+                    });
+                    this.node.setStyles({
+                        "min-height": size.y + "px",
+                        "height": "auto",
+                        "overflow":"hidden",
+                        "width": "100%"
+                    });
+                    this.mediaActionArea.setStyle("right", x+"px");
+                }
+            }
+        },
+        loadSelectIdea: function(){
+            this.selectIdeaScrollNode = new Element("div", {"styles": this.form.css.selectIdeaScrollNode}).inject(this.selectIdeaNode);
+            this.selectIdeaAreaNode = new Element("div", {
+                "styles": {
+                    "overflow": "hidden"
+                }
+            }).inject(this.selectIdeaScrollNode);
+            MWF.require("MWF.widget.ScrollBar", function () {
+                new MWF.widget.ScrollBar(this.selectIdeaScrollNode, {
+                    "style": "small",
+                    "where": "before",
+                    "distance": 30,
+                    "friction": 4,
+                    "indent": false,
+                    "axis": {"x": false, "y": true}
+                });
+            }.bind(this));
+            MWF.UD.getDataJson("idea", function (json) {
+                if (json) {
+                    if (json.ideas) {
+                        this.setIdeaList(json.ideas);
+                    }
+                } else {
+                    MWF.UD.getPublicData("idea", function (pjson) {
+                        if (pjson) {
+                            if (pjson.ideas) {
+                                this.setIdeaList(pjson.ideas);
+                            }
+                        }
+                    }.bind(this));
+                }
+            }.bind(this));
+        },
+        setIdeaList: function (ideas) {
+            var _self = this;
+            ideas.each(function (idea) {
+                if (!idea) return;
+                new Element("div", {
+                    "styles": this.form.css.selectIdeaItemNode,
+                    "text": idea,
+                    "events": {
+                        "click": function () {
+                            if(_self.descriptionNode)_self.descriptionNode.setStyle("display", "none");
+                            if ( !_self.textarea.get("value") ) {
+                                _self.textarea.set("value", this.get("text"));
+                            } else {
+                                _self.textarea.set("value", _self.textarea.get("value") + ", " + this.get("text"));
+                            }
+                        },
+                        "mouseover": function () {
+                            this.setStyles(_self.form.css.selectIdeaItemNode_over);
+                        },
+                        "mouseout": function () {
+                            this.setStyles(_self.form.css.selectIdeaItemNode);
+                        }
+                    }
+                }).inject(this.selectIdeaAreaNode);
+            }.bind(this));
         },
 
         audioRecord: function () {
@@ -551,11 +651,6 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             this._setBusinessData(this.getInputData());
         },
 
-        _afterLoaded: function () {
-            if (!this.readonly) {
-                this.loadDescription();
-            }
-        },
         loadDescription: function () {
             if (this.readonly || this.json.isReadonly) return;
             var v = this._getBusinessData();
@@ -565,6 +660,12 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                     var w = size.x - 3
                     if (this.json.showIcon != 'no' && !this.form.json.hideModuleIcon) {
                         w = size.x - 23;
+                    }
+                    if( this.handwritingAction ){
+                        w = w - this.handwritingAction.getSize().x
+                    }
+                    if( this.audioRecordAction ){
+                        w = w - this.audioRecordAction.getSize().x
                     }
                     this.descriptionNode = new Element("div", {
                         "styles": this.form.css.descriptionNode,

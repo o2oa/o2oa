@@ -1132,6 +1132,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
+         * 附件上传前触发。本事件中可以通过this.event获取上传的文件数组
+         * @event MWF.xApplication.process.Xform.Attachment#beforeUpload
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
          * 附件上传后触发。本事件中可以通过this.event获取上传附件的数据
          * @event MWF.xApplication.process.Xform.Attachment#upload
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -1161,7 +1166,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @event MWF.xApplication.process.Xform.Attachment#open
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["upload", "delete", "afterDelete", "load", "afterLoad", "change","download","open", "queryLoad", "queryLoadController", "loadController", "postLoadController"]
+        "moduleEvents": ["beforeUpload", "upload", "delete", "afterDelete", "load", "afterLoad", "change","download","open", "queryLoad", "queryLoadController", "loadController", "postLoadController"]
     },
 
     initialize: function (node, json, form, options) {
@@ -1361,6 +1366,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     return false;
                 }
             }
+            this.fireEvent("beforeUpload", [files]);
             return true;
         }.bind(this), true, accept, size, function (o) { //错误的回调
             if (o.messageId && this.attachmentController.messageItemList) {

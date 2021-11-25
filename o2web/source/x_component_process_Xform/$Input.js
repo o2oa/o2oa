@@ -89,7 +89,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             if (this.json.description){
                 var size = this.node.getFirst().getSize();
                 var w = size.x-3;
-                if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ){
+                if( this.hasIcon() ){
                     if (COMMON.Browser.safari) w = w-20;
                 }
 
@@ -142,16 +142,25 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             "readonly": true
         });
 
+        var overflow;
+        if(this.json.styles && this.json.styles.overflow){
+            overflow = this.json.styles.overflow;
+        }else{
+            overflow = this.hasIcon() ? "hidden" : "visible";
+        }
         var node = new Element("div", {"styles": {
-                "overflow": "hidden",
+                "overflow": overflow,
                 "position": "relative",
-                "margin-right": "20px",
+                "margin-right": this.hasIcon() ? "20px" : "0px",
                 "padding-right": "4px"
             }}).inject(this.node, "after");
         input.inject(node);
 
         this.node.destroy();
         this.node = node;
+    },
+    hasIcon: function(){
+	    return this.json.showIcon!='no' && ( !this.form.json || !this.form.json.hideModuleIcon );
     },
     _loadNodeEdit: function(){
 	    if (!this.json.preprocessing) this._resetNodeEdit();
@@ -165,7 +174,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 				"click": this.clickSelect.bind(this)
 			}
 		});
-        if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon ){
+        if ( this.hasIcon() ){
             this.iconNode = new Element("div", {
                 "styles": this.form.css[this.iconStyle],
                 "events": {
