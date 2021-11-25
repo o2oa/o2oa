@@ -247,20 +247,25 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             this.node.getFirst().addEvent("focus", function () {
                 this.startSearchOpinion();
             }.bind(this));
-
-            this.setNodeSize();
+        },
+        _afterLoaded: function(){
+            if (!this.readonly && !this.json.isReadonly ){
+                this.setNodeSize();
+                this.loadDescription();
+            }
         },
         setNodeSize: function(){
             if( this.textarea ){
                 var x = 0;
                 if( this.selectIdeaNode ){
                     var size = this.selectIdeaNode.getSize();
-                    x += size.x + 5;
+                    x = size.x + 5;
                     this.textarea.setStyles({
                         "height": ( size.y - 6 ) + "px",
                         "resize":"none",
                         "border-bottom": "0px",
-                        "padding-right": "0px"
+                        "padding-right": "0px",
+                        "width": "calc( 100% - "+ x +"px )"
                     });
                     this.node.setStyles({
                         "min-height": size.y + "px",
@@ -268,15 +273,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                         "overflow":"hidden",
                         "width": "100%"
                     });
-                }
-                if( this.handwritingAction ){
-                    if( x ){
-                        this.mediaActionArea.setStyle("right", x+"px");
-                    }
-                    var handWritingSize = this.handwritingAction.getSize();
-                    this.textarea.setStyles({
-                        "width": "calc( 100% - "+ x +"px )"
-                    });
+                    this.mediaActionArea.setStyle("right", x+"px");
                 }
             }
         },
@@ -322,6 +319,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                     "text": idea,
                     "events": {
                         "click": function () {
+                            if(_self.descriptionNode)_self.descriptionNode.setStyle("display", "none");
                             if ( !_self.textarea.get("value") ) {
                                 _self.textarea.set("value", this.get("text"));
                             } else {
@@ -653,11 +651,6 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             this._setBusinessData(this.getInputData());
         },
 
-        _afterLoaded: function () {
-            if (!this.readonly) {
-                this.loadDescription();
-            }
-        },
         loadDescription: function () {
             if (this.readonly || this.json.isReadonly) return;
             var v = this._getBusinessData();
@@ -667,6 +660,12 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                     var w = size.x - 3
                     if (this.json.showIcon != 'no' && !this.form.json.hideModuleIcon) {
                         w = size.x - 23;
+                    }
+                    if( this.handwritingAction ){
+                        w = w - this.handwritingAction.getSize().x
+                    }
+                    if( this.audioRecordAction ){
+                        w = w - this.audioRecordAction.getSize().x
                     }
                     this.descriptionNode = new Element("div", {
                         "styles": this.form.css.descriptionNode,
