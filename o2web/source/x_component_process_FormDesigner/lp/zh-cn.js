@@ -544,6 +544,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "height": "高度",
         "recording": "录音",
         "writingPreview": "手写预览",
+        "commonIdea": "常用意见",
 
         "addressStyle": "Address样式",
 

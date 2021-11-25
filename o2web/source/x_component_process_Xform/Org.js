@@ -841,11 +841,17 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
     },
 
     _resetNodeInputEdit: function(){
+        var overflow;
+        if(this.json.styles && this.json.styles.overflow){
+            overflow = this.json.styles.overflow;
+        }else{
+            overflow = this.hasIcon() ? "hidden" : "visible";
+        }
         var node = new Element("div", {
             "styles": {
-                "overflow": "hidden",
+                "overflow": overflow,
                 //"position": "relative",
-                "margin-right": "20px"
+                "margin-right": this.hasIcon() ? "20px" : "0px"
             }
         }).inject(this.node, "after");
         this.node.destroy();
@@ -917,10 +923,17 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                 "min-height": "24px"
             }
         });
+
+        var overflow;
+        if(this.json.styles && this.json.styles.overflow){
+            overflow = this.json.styles.overflow;
+        }else{
+            overflow = this.hasIcon() ? "hidden" : "visible";
+        }
         var node = new Element("div", {"styles": {
-                "overflow": "hidden",
+                "overflow": overflow,
                 "position": "relative",
-                "margin-right": "20px",
+                "margin-right": this.hasIcon() ? "20px" : "0px",
                 "min-height": "24px"
             }}).inject(this.node, "after");
         input.inject(node);
