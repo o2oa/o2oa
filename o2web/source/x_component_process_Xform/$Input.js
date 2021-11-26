@@ -142,14 +142,8 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             "readonly": true
         });
 
-        var overflow;
-        if(this.json.styles && this.json.styles.overflow){
-            overflow = this.json.styles.overflow;
-        }else{
-            overflow = this.hasIcon() ? "hidden" : "visible";
-        }
         var node = new Element("div", {"styles": {
-                "overflow": overflow,
+                "overflow": (this.json.styles && this.json.styles.overflow) ? this.json.styles.overflow : "hidden",
                 "position": "relative",
                 "margin-right": this.hasIcon() ? "20px" : "0px",
                 "padding-right": "4px"

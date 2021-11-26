@@ -114,14 +114,8 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
             }
         });
 
-        var overflow;
-        if(this.json.styles && this.json.styles.overflow){
-            overflow = this.json.styles.overflow;
-        }else{
-            overflow = this.hasIcon() ? "hidden" : "visible";
-        }
         var node = new Element("div", {"styles": {
-                "overflow": overflow,
+                "overflow": (this.json.styles && this.json.styles.overflow) ? this.json.styles.overflow : "hidden",
                 "position": "relative",
                 "margin-right": this.hasIcon() ? "20px" : "0px",
                 "padding-right": "4px"
