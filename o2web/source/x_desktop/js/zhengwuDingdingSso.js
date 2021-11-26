@@ -265,10 +265,10 @@ o2.addReady(function(){
                     if (config.proxyCenterEnable){
                         if (o2.typeOf(config.center)==="array"){
                             config.center.forEach(function(c){
-                                c.port = window.location.port;
+                                c.port = window.location.port || 80;
                             });
                         }else{
-                            config.port = window.location.port;
+                            config.port = window.location.port || 80;
                         }
                     }
                     layout.config = config;
