@@ -25,9 +25,9 @@ class ActionBuildTableDispatch extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionBuildTableDispatch.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String queryId) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wo = new Wo();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Wo wo = new Wo();
 			Business business = new Business(emc);
 			if (!business.controllable(effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson);
@@ -36,24 +36,24 @@ class ActionBuildTableDispatch extends BaseAction {
 			if (null == query) {
 				throw new ExceptionEntityNotExist(queryId, Query.class);
 			}
-			List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_designer.class);
-			if (ListTools.isNotEmpty(apps)) {
-				apps.stream().forEach(o -> {
-					String url = o.getUrlJaxrsRoot() + "table/"+ queryId +"/build?tt="+System.currentTimeMillis();
-					logger.info("{} do dispatch build query {} table request to : {}", effectivePerson.getDistinguishedName(), queryId, url);
-					try {
-						CipherConnectionAction.get(effectivePerson.getDebugger(), url);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
-			}
-			wo.setValue(true);
-
-			result.setData(wo);
-
-			return result;
 		}
+		List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_designer.class);
+		if (ListTools.isNotEmpty(apps)) {
+			apps.stream().forEach(o -> {
+				String url = o.getUrlJaxrsRoot() + "table/"+ queryId +"/build?tt="+System.currentTimeMillis();
+				logger.info("{} do dispatch build query {} table request to : {}", effectivePerson.getDistinguishedName(), queryId, url);
+				try {
+					CipherConnectionAction.get(effectivePerson.getDebugger(), url);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
+		wo.setValue(true);
+
+		result.setData(wo);
+
+		return result;
 	}
 
 	public static class Wo extends WrapBoolean {

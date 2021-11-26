@@ -40,6 +40,7 @@ class ActionBuildTable extends BaseAction {
 				for(Query query : queryList){
 					business.buildAllTable(query.getId());
 				}
+				jar.delete();
 				wo.setValue(true);
 			}else {
 				wo.setValue(business.buildAllTable(queryId));
