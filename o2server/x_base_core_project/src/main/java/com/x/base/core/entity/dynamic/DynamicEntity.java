@@ -16,6 +16,7 @@ public class DynamicEntity extends GsonPropertyObject {
 	public static final String CLASS_PACKAGE = "com.x.query.dynamic.entity";
 	public static final String FIELDNAME_SUFFIX = "_FIELDNAME";
 	public static final String JAR_NAME = "x_query_dynamic_entity";
+	public static final String JAR_PREFIX = "dynamic_";
 
 //	public static final String TYPE_string = "string";
 //	public static final String TYPE_integer = "integer";
