@@ -159,20 +159,19 @@ public class BaseTools {
 		FileUtils.writeStringToFile(file, StringUtils.trim(value), DefaultCharset.charset);
 	}
 
-	public static byte[] readBytes(String path) throws Exception {
+	public static byte[] readBytes(String path) throws IOException, URISyntaxException {
 		String base = BaseTools.getBasePath();
 		File file = new File(base, path);
 		if ((!file.exists()) || file.isDirectory()) {
-			throw new Exception("can not get file with path:" + file.getAbsolutePath());
+			throw new IOException("can not get file with path:" + file.getAbsolutePath());
 		}
 		return FileUtils.readFileToByteArray(file);
 	}
 
-	public static String readString(String path) throws Exception {
+	public static String readString(String path) throws IOException, URISyntaxException {
 		String base = BaseTools.getBasePath();
 		File file = new File(base, path);
 		if ((!file.exists()) || file.isDirectory()) {
-			// throw new Exception("can not get file with path:" + file.getAbsolutePath());
 			return null;
 		}
 		return FileUtils.readFileToString(file, DefaultCharset.charset);
