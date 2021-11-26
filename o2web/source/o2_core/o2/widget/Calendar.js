@@ -521,7 +521,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	setPosition: function(){
-		if (this.container.position && (!layout || !layout.userLayout || !layout.userLayout.scale || !layout.userLayout.scale===1) ){
+		if (this.container.position && (!layout || !layout.userLayout || !layout.userLayout.scale || layout.userLayout.scale===1) ){
 			var postY = "bottom";
 			var postX = "left";
 			this.container.position({
@@ -577,15 +577,21 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			var p = this.node.getPosition(this.options.target || null);
 			var size = this.node.getSize();
 			var containerSize = this.container.getSize();
-			var bodySize = $(document.body).getSize();
+			var bodySize = (this.options.target) ? this.options.target.getSize() : $(document.body).getSize(); //$(document.body).getSize();
 
 			var left = p.x;
-			if ((left + containerSize.x) > bodySize.x){
-				left = bodySize.x - containerSize.x;
+			if ((left + containerSize.x + 40) > bodySize.x){
+				left = bodySize.x - containerSize.x - 40;
 			}
 
-			this.container.setStyle("top", p.y+size.y+2);
+			var top = p.y+size.y+2;
+			if( top + containerSize.y > bodySize.y ){
+				top = bodySize.y - containerSize.y ;
+			}
+
+			this.container.setStyle("top", top);
 			this.container.setStyle("left", left);
+
 		}
 	},
 	showYear: function(year){
