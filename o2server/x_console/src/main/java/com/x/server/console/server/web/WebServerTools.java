@@ -142,7 +142,7 @@ public class WebServerTools extends JettySeverTools {
 	private static void proxyCenter(WebAppContext context, final Integer timeout) throws Exception {
 		ServletHolder proxyHolder = new ServletHolder(Proxy.class);
 		proxyHolder.setInitParameter("port", Config.currentNode().getCenter().getPort() + "");
-		proxyHolder.setInitParameter("idleTimeout", "60000");
+		proxyHolder.setInitParameter("idleTimeout", timeout + "000");
 		proxyHolder.setInitParameter("timeout", timeout + "000");
 		context.addServlet(proxyHolder, "/" + x_program_center.class.getSimpleName() + "/*");
 	}
@@ -155,7 +155,7 @@ public class WebServerTools extends JettySeverTools {
 						try {
 							ServletHolder proxyHolder = new ServletHolder(Proxy.class);
 							proxyHolder.setInitParameter("port", Config.currentNode().getApplication().getPort() + "");
-							proxyHolder.setInitParameter("idleTimeout", "60000");
+							proxyHolder.setInitParameter("idleTimeout", timeout + "000");
 							proxyHolder.setInitParameter("timeout", timeout + "000");
 							context.addServlet(proxyHolder, "/" + o + "/*");
 						} catch (Exception e) {
