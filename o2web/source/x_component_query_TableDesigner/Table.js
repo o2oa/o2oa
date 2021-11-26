@@ -284,6 +284,11 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             this.designer.notice(this.designer.lp.errorName, "error");
             return false;
         }
+        var keywords = ["string","int","integer","long","float","double","boolean"];
+        if( keywords.contains((name||"").toLowerCase()) ){
+            this.designer.notice(this.designer.lp.nameUseKeywork.replace("{key}", keywords.join(",")), "error");
+            return false;
+        }
         return true;
     },
     checkAddColumn: function(){
@@ -530,6 +535,20 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         }, 480, 120, function(){
             _self.designer.actions.buildAllTable(function(json){
                 this.designer.notice(this.designer.lp.buildAllView_success, "success", this.node, {"x": "left", "y": "bottom"});
+            }.bind(_self));
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
+    bulidCurrentApp: function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildCurrentAppTitle, {
+            "html": MWF.APPDTBD.LP.buildCurrentAppInfor
+        }, 480, 120, function(){
+            o2.Actions.load("x_query_assemble_designer").TableAction.buildDispatch( _self.data.application , function(json){
+                this.designer.notice(this.designer.lp.buildCurrentApp_success, "success", this.node, {"x": "left", "y": "bottom"});
             }.bind(_self));
             this.close();
         }, function(){
