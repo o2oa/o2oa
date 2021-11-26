@@ -1,5 +1,5 @@
 /**
- * data对象是流程平台中，流程实例的业务数据；以及内容管理平台中，文档实例的业务数据。<br/>
+ * 在流程事件、流程路由事件、流程活动事件中通过this.data获取流程实例的业务数据。（内容管理无后台脚本）。<br/>
  * 这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本进行创建和增删改查操作。<br/>
  * data对象基本上是一个JSON对象，您可以用访问JSON对象的方法访问data对象的所有数据。
  * @module server.data
@@ -872,25 +872,18 @@
  * @module server.Dict
  * @o2category server
  * @o2ordernumber 120
- * @param {(String|Object)} optionsOrName 数据字典标识字符串或者是对象。
- * <div>如果对本应用的数据字典操作，将optionsOrName设置为string。</div>
- * <pre><code class='language-js'>var dict = new this.Dict("bulletinDictionary"); //数据字典的名称、别名或id
- * </code></pre>
- * <div>如果需要对其他应用的数据字典进行操作，将options设置为JsonObject</div>
- * <pre><code class='language-js'>var dict = new this.Dict({
+ * @o2syntax
+ * //您可以通过this.Dict()对本应用或其他应用的数据字典中的数据进行增删改查，如下：
+ * var dict = new this.Dict( options )
+ * @example
+ * var dict = new this.Dict({
  *     //type: 应用类型。可以为process  cms。
  *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
  *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
  *    type : "cms",
  *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
  *    name : "bulletinDictionary", // 数据字典的名称、别名、id
- *    enableAnonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为process的时候此参数无效，默认为false
  * });
- * </code></pre>
- * @return {Object} Dict对象
- * @o2syntax
- * //您可以通过this.Dict()对本应用或其他应用的数据字典中的数据进行增删改查，如下：
- * var dict = new this.Dict( options )
  */
 /**
  * 根据路径获取数据字典中的数据。
@@ -905,14 +898,6 @@
  * @o2syntax
  * var data = dict.get( path, success, failure )
  * @example
- * var dict = new this.Dict("bulletinDictionary");
- *
- * //没有参数的时候，表示同步获取获取所有数据
- *  var data = dict.get()
- *
- *  //获取category下key为subCategory的数据
- *  var data = dict.get("category.subCategory");
- * @example
  * <caption>
  *     已经配置好了如下图所示的数据字典
  * <img src='img/module/Dict/dict.png' />
@@ -924,7 +909,6 @@
  *    type : "cms",
  *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
  *    name : "bulletinDictionary", // 数据字典的名称、别名、id
- *    enableAnonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为process的时候此参数无效，默认为false
  * });
  *
  * var data = dict.get();
@@ -987,7 +971,14 @@
  * @o2syntax
  * dict.add( path, data, success, failure )
  * @example
- * var dict = new this.Dict("bulletinDictionary");
+ * var dict = new this.Dict({
+ *     //type: 应用类型。可以为process  cms。
+ *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+ *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+ *    type : "cms",
+ *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+ *    name : "bulletinDictionary", // 数据字典的名称、别名、id
+ * });
  *
  * dict.add( "category", { text : "系统公告", value : "system" }, function(data){
  *    //data 形如
@@ -1001,7 +992,14 @@
  * <caption>
  *     对get方法样例的数据字典进行赋值，如下：
  * </caption>
- * var dict = new this.Dict("bulletinDictionary");
+ * var dict = new this.Dict({
+ *     //type: 应用类型。可以为process  cms。
+ *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+ *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+ *    type : "cms",
+ *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+ *    name : "bulletinDictionary", // 数据字典的名称、别名、id
+ * });
  *
  * dict.add( "category", { text : "系统公告", value : "system" }, function(data){
  *    //data 形如
@@ -1107,7 +1105,14 @@
  * @o2syntax
  * dict.set( path, data, success, failure )
  * @example
- * var dict = new this.Dict("bulletinDictionary");
+ * var dict = new this.Dict({
+ *     //type: 应用类型。可以为process  cms。
+ *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+ *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+ *    type : "cms",
+ *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+ *    name : "bulletinDictionary", // 数据字典的名称、别名、id
+ * });
  *
  * dict.set( "category", { text : "系统公告", value : "system" }, function(data){
  *    //data 形如
@@ -1121,7 +1126,14 @@
  * <caption>
  *     对Example add的数据字典进行赋值，如下：
  * </caption>
- * var dict = new this.Dict("bulletinDictionary");
+ * var dict = new this.Dict({
+ *     //type: 应用类型。可以为process  cms。
+ *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+ *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+ *    type : "cms",
+ *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+ *    name : "bulletinDictionary", // 数据字典的名称、别名、id
+ * });
  *
  * dict.set( "archiveOptions", [ { text : "是" }, { text : "否" } ]);
  *      //数据字典的值变为
@@ -1224,7 +1236,14 @@
  * @o2syntax
  * dict.delete( path, success, failure )
  * @example
- * var dict = new this.Dict("bulletinDictionary");
+ * var dict = new this.Dict({
+ *     //type: 应用类型。可以为process  cms。
+ *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+ *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+ *    type : "cms",
+ *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+ *    name : "bulletinDictionary", // 数据字典的名称、别名、id
+ * });
  *
  * dict.delete( "category", function(){
  * }, function(xhr){
