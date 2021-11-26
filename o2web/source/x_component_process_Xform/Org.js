@@ -841,15 +841,9 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
     },
 
     _resetNodeInputEdit: function(){
-        var overflow;
-        if(this.json.styles && this.json.styles.overflow){
-            overflow = this.json.styles.overflow;
-        }else{
-            overflow = this.hasIcon() ? "hidden" : "visible";
-        }
         var node = new Element("div", {
             "styles": {
-                "overflow": overflow,
+                "overflow": (this.json.styles && this.json.styles.overflow) ? this.json.styles.overflow : "hidden",
                 //"position": "relative",
                 "margin-right": this.hasIcon() ? "20px" : "0px"
             }
@@ -924,14 +918,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             }
         });
 
-        var overflow;
-        if(this.json.styles && this.json.styles.overflow){
-            overflow = this.json.styles.overflow;
-        }else{
-            overflow = this.hasIcon() ? "hidden" : "visible";
-        }
         var node = new Element("div", {"styles": {
-                "overflow": overflow,
+                "overflow": (this.json.styles && this.json.styles.overflow) ? this.json.styles.overflow : "hidden",
                 "position": "relative",
                 "margin-right": this.hasIcon() ? "20px" : "0px",
                 "min-height": "24px"
