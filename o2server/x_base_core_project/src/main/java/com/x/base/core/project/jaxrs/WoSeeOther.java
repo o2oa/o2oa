@@ -8,7 +8,7 @@ public class WoSeeOther extends GsonPropertyObject {
 	public WoSeeOther() {
 	}
 
-	public WoSeeOther(String url) throws Exception {
+	public WoSeeOther(String url) {
 		this.url = url;
 	}
 
