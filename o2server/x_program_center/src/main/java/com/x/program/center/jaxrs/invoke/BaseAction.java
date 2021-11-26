@@ -2,13 +2,16 @@ package com.x.program.center.jaxrs.invoke;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
+import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -26,7 +29,8 @@ import com.x.base.core.project.jaxrs.WoTemporaryRedirect;
 import com.x.base.core.project.jaxrs.WoText;
 import com.x.base.core.project.jaxrs.WoValue;
 import com.x.base.core.project.script.AbstractResources;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.program.center.ThisApplication;
@@ -35,51 +39,35 @@ import com.x.program.center.core.entity.Invoke;
 abstract class BaseAction extends StandardJaxrsAction {
 
 	protected static final String SPLIT = "#";
+	private static final String SEEOTHER = "seeOther";
+	private static final String TEMPORARYREDIRECT = "temporaryRedirect";
 
 	protected ActionResult<Object> executeInvoke(HttpServletRequest request, EffectivePerson effectivePerson,
-			JsonElement jsonElement, CacheCategory cacheCategory, Invoke invoke)
-			throws Exception, ExceptionExecuteError {
+			JsonElement jsonElement, CacheCategory cacheCategory, Invoke invoke) throws Exception {
 		ActionResult<Object> result = new ActionResult<>();
 		CompiledScript compiledScript = this.getCompiledScript(cacheCategory, invoke);
-		ScriptContext scriptContext = new SimpleScriptContext();
-		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-		Resources resources = new Resources();
-		resources.setContext(ThisApplication.context());
-		resources.setOrganization(new Organization(ThisApplication.context()));
-		resources.setWebservicesClient(new WebservicesClient());
-		resources.setApplications(ThisApplication.context().applications());
-		bindings.put(ScriptFactory.BINDING_NAME_RESOURCES, resources);
-		bindings.put("requestText", gson.toJson(jsonElement));
-		bindings.put("request", request);
-		bindings.put("effectivePerson", effectivePerson);
-		bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
+		ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 		CustomResponse customResponse = new CustomResponse();
-		bindings.put("customResponse", customResponse);
+		binding(request, effectivePerson, jsonElement, scriptContext, customResponse);
 		Wo wo = new Wo();
 		try {
-			ScriptFactory.initialServiceScriptText().eval(scriptContext);
-			Object o = compiledScript.eval(scriptContext);
-			if (StringUtils.equals("seeOther", customResponse.type)) {
-				WoSeeOther woSeeOther = new WoSeeOther(Objects.toString(customResponse.value, ""));
-				result.setData(woSeeOther);
-			} else if (StringUtils.equals("temporaryRedirect", customResponse.type)) {
-				WoTemporaryRedirect woTemporaryRedirect = new WoTemporaryRedirect(
-						Objects.toString(customResponse.value, ""));
-				result.setData(woTemporaryRedirect);
-			} else {
-				if (null != customResponse.value) {
-					if (StringUtils.isNotEmpty(customResponse.contentType)) {
-						result.setData(new WoContentType(customResponse.value, customResponse.contentType));
-					} else if (customResponse.value instanceof WoText) {
-						result.setData(customResponse.value);
-					} else {
-						wo.setValue(customResponse.value);
-						result.setData(wo);
-					}
+			JsonElement element = JsonScriptingExecutor.jsonElement(compiledScript, scriptContext);
+			if (StringUtils.equals(SEEOTHER, customResponse.type)) {
+				seeOther(result, customResponse);
+			} else if (StringUtils.equals(TEMPORARYREDIRECT, customResponse.type)) {
+				temporayRedirect(result, customResponse);
+			} else if (null != customResponse.value) {
+				if (StringUtils.isNotEmpty(customResponse.contentType)) {
+					result.setData(new WoContentType(customResponse.value, customResponse.contentType));
+				} else if (customResponse.value instanceof WoText) {
+					result.setData(customResponse.value);
 				} else {
-					wo.setValue(o);
+					wo.setValue(customResponse.value);
 					result.setData(wo);
 				}
+			} else {
+				wo.setValue(element.toString());
+				result.setData(wo);
 			}
 		} catch (Exception e) {
 			throw new ExceptionExecuteError(invoke.getName(), e);
@@ -87,14 +75,41 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return result;
 	}
 
-	protected CompiledScript getCompiledScript(CacheCategory cacheCategory, Invoke invoke) throws Exception {
-		CacheKey cacheKey = new CacheKey(ActionExecuteToken.class, "CompiledScript", invoke.getId());
+	private void temporayRedirect(ActionResult<Object> result, CustomResponse customResponse) {
+		WoTemporaryRedirect woTemporaryRedirect = new WoTemporaryRedirect(Objects.toString(customResponse.value, ""));
+		result.setData(woTemporaryRedirect);
+	}
+
+	private void seeOther(ActionResult<Object> result, CustomResponse customResponse) {
+		WoSeeOther woSeeOther = new WoSeeOther(Objects.toString(customResponse.value, ""));
+		result.setData(woSeeOther);
+	}
+
+	private void binding(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement,
+			ScriptContext scriptContext, CustomResponse customResponse) throws Exception {
+		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+		Resources resources = new Resources();
+		resources.setContext(ThisApplication.context());
+		resources.setOrganization(new Organization(ThisApplication.context()));
+		resources.setWebservicesClient(new WebservicesClient());
+		resources.setApplications(ThisApplication.context().applications());
+		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
+		bindings.put(ScriptingFactory.BINDING_NAME_REQUESTTEXT, gson.toJson(jsonElement));
+		bindings.put(ScriptingFactory.BINDING_NAME_REQUEST, request);
+		bindings.put(ScriptingFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
+		bindings.put(ScriptingFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
+		bindings.put(ScriptingFactory.BINDING_NAME_CUSTOMRESPONSE, customResponse);
+	}
+
+	protected CompiledScript getCompiledScript(CacheCategory cacheCategory, Invoke invoke) throws ScriptException {
+		CacheKey cacheKey = new CacheKey(ActionExecuteToken.class, CompiledScript.class.getSimpleName(),
+				invoke.getId());
 		CompiledScript compiledScript = null;
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {
 			compiledScript = (CompiledScript) optional.get();
 		} else {
-			compiledScript = ScriptFactory.compile(invoke.getText());
+			compiledScript = ScriptingFactory.functionalizationCompile(invoke.getText());
 			CacheManager.put(cacheCategory, cacheKey, compiledScript);
 		}
 		return compiledScript;
@@ -122,12 +137,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 		protected String contentType;
 
 		public void seeOther(String url) {
-			this.type = "seeOther";
+			this.type = SEEOTHER;
 			this.value = url;
 		}
 
 		public void temporaryRedirect(String url) {
-			this.type = "temporaryRedirect";
+			this.type = TEMPORARYREDIRECT;
 			this.value = url;
 		}
 
@@ -161,4 +176,30 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
+	protected void checkEnable(Invoke invoke) throws ExceptionNotEnable {
+		if (!BooleanUtils.isTrue(invoke.getEnable())) {
+			throw new ExceptionNotEnable(invoke.getName());
+		}
+	}
+
+	protected void checkRemoteAddrRegex(HttpServletRequest request, Invoke invoke) throws ExceptionInvalidRemoteAddr {
+		if (StringUtils.isNotEmpty(invoke.getRemoteAddrRegex())) {
+			Matcher matcher = Pattern.compile(invoke.getRemoteAddrRegex()).matcher(request.getRemoteAddr());
+			if (!matcher.find()) {
+				throw new ExceptionInvalidRemoteAddr(request.getRemoteAddr(), invoke.getName());
+			}
+		}
+	}
+
+	protected void checkToken(String token) throws ExceptionTokenEmpty {
+		if (StringUtils.isEmpty(token)) {
+			throw new ExceptionTokenEmpty();
+		}
+	}
+
+	protected void checkClient(String client) throws ExceptionClientEmpty {
+		if (StringUtils.isEmpty(client)) {
+			throw new ExceptionClientEmpty();
+		}
+	}
 }

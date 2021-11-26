@@ -223,6 +223,7 @@ public class Business {
 	}
 
 	public boolean buildAllTable() throws Exception {
+		logger.warn("query designer execute build all table command, The server must be restarted immediately.");
 		boolean result = false;
 		File dir = new File(Config.dir_local_temp_dynamic(true), StringTools.uniqueToken());
 		FileUtils.forceMkdir(dir);
