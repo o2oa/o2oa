@@ -8,7 +8,7 @@ public class WoTemporaryRedirect extends GsonPropertyObject {
 	public WoTemporaryRedirect() {
 	}
 
-	public WoTemporaryRedirect(String url) throws Exception {
+	public WoTemporaryRedirect(String url) {
 		this.url = url;
 	}
 
