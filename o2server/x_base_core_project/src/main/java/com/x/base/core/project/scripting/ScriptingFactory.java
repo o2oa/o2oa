@@ -1,12 +1,16 @@
 package com.x.base.core.project.scripting;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Objects;
 
 import javax.script.Compilable;
 import javax.script.CompiledScript;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.script.SimpleScriptContext;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
@@ -14,7 +18,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 public class ScriptingFactory {
 
-	private static Logger logger = LoggerFactory.getLogger(ScriptingFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScriptingFactory.class);
 
 	private ScriptingFactory() {
 
@@ -55,11 +59,16 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_SERIAL = "serial";
 	public static final String BINDING_NAME_PROCESS = "process";
 
+	public static final String BINDING_NAME_REQUESTTEXT = "requestText";
+	public static final String BINDING_NAME_REQUEST = "request";
+	public static final String BINDING_NAME_CUSTOMRESPONSE = "customResponse";
+
 	public static ScriptEngine newScriptEngine() {
 		return (new ScriptEngineManager()).getEngineByName(Config.SCRIPTING_ENGINE_NAME);
 	}
 
-	public static synchronized CompiledScript initialServiceScriptText() throws Exception {
+	public static synchronized CompiledScript initialServiceScript()
+			throws IOException, ScriptException, URISyntaxException {
 		if (compiledScriptInitialServiceScriptText == null) {
 			String text = Config.initialServiceScriptText();
 			compiledScriptInitialServiceScriptText = ((Compilable) scriptEngine).compile(text);
@@ -67,7 +76,7 @@ public class ScriptingFactory {
 		return compiledScriptInitialServiceScriptText;
 	}
 
-	public static synchronized CompiledScript initialScriptText() throws Exception {
+	public static synchronized CompiledScript initialScript() throws IOException, ScriptException, URISyntaxException {
 		if (compiledScriptInitialScriptText == null) {
 			String text = Config.initialScriptText();
 			compiledScriptInitialScriptText = ((Compilable) scriptEngine).compile(text);
@@ -83,12 +92,32 @@ public class ScriptingFactory {
 		StringBuilder sb = new StringBuilder();
 		sb.append("JSON.stringify((function(){").append(System.lineSeparator());
 		sb.append(Objects.toString(text, "")).append(System.lineSeparator());
-		sb.append("})());");
+		sb.append("}).apply(this));");
 		return sb.toString();
 	}
 
 	public static CompiledScript functionalizationCompile(String text) throws ScriptException {
 		return ((Compilable) scriptEngine).compile(functionalization(text));
+	}
+
+	public static ScriptContext scriptContextEvalInitialServiceScript() {
+		ScriptContext scriptContext = new SimpleScriptContext();
+		try {
+			ScriptingFactory.initialServiceScript().eval(scriptContext);
+		} catch (ScriptException | URISyntaxException | IOException e) {
+			LOGGER.error(e);
+		}
+		return scriptContext;
+	}
+
+	public static ScriptContext scriptContextEvalInitialScript() {
+		ScriptContext scriptContext = new SimpleScriptContext();
+		try {
+			ScriptingFactory.initialScript().eval(scriptContext);
+		} catch (ScriptException | URISyntaxException | IOException e) {
+			LOGGER.error(e);
+		}
+		return scriptContext;
 	}
 
 }
