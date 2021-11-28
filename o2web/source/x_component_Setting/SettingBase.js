@@ -203,7 +203,11 @@ MWF.xApplication.Setting.BaseSSODocument = new Class({
                 "infoParameter": "access_token={$access_token}&client_id={$client_id}",
                 "infoMethod": "GET",
                 "infoType": "json",
-                "infoCredentialField": "username"
+                "infoCredentialField": "username",
+                "infoScriptText": "",
+                "bindingEnable": false,
+                "bindingField": ""
+
             },
             "icon": "sso.png"
         });
