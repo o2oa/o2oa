@@ -51,11 +51,14 @@ import com.x.query.core.entity.schema.Enhance;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 
+/**
+ * @author sword
+ */
 public class Business {
 
 	private static Logger logger = LoggerFactory.getLogger(Business.class);
 
-	private static final String DOT_JAR = ".jar";
+	public static final String DOT_JAR = ".jar";
 
 	private EntityManagerContainer emc;
 
@@ -223,8 +226,23 @@ public class Business {
 	}
 
 	public boolean buildAllTable() throws Exception {
-		logger.warn("query designer execute build all table command, The server must be restarted immediately.");
+		File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_NAME + DOT_JAR);
+		List<Query> queryList = emc.fetchAll(Query.class);
+		for(Query query : queryList){
+			this.buildAllTable(query.getId());
+		}
+		if(jar.exists()){
+			jar.delete();
+		}
+		return true;
+	}
+
+	public boolean buildAllTable(String query) throws Exception {
 		boolean result = false;
+		List<Table> tables = emc.listEqualAndEqual(Table.class, Table.status_FIELDNAME, Table.STATUS_build, Table.query_FIELDNAME, query);
+		if(ListTools.isEmpty(tables)){
+			return true;
+		}
 		File dir = new File(Config.dir_local_temp_dynamic(true), StringTools.uniqueToken());
 		FileUtils.forceMkdir(dir);
 		File src = new File(dir, "src");
@@ -233,8 +251,6 @@ public class Business {
 		FileUtils.forceMkdir(target);
 		File resources = new File(dir, "resources");
 		FileUtils.forceMkdir(resources);
-		List<Table> tables = emc.listEqual(Table.class, Table.status_FIELDNAME, Table.STATUS_build);
-		/* 产生用于创建persistence.xml */
 		List<String> classNames = new ArrayList<>();
 		for (Table t : tables) {
 			try {
@@ -252,9 +268,7 @@ public class Business {
 				logger.error(e);
 			}
 		}
-
 		if (!classNames.isEmpty()) {
-
 			PersistenceXmlHelper.directWrite(new File(resources, "META-INF/persistence.xml").getAbsolutePath(),
 					classNames);
 
@@ -276,7 +290,6 @@ public class Business {
 					EnumSet.of(JavaFileObject.Kind.SOURCE), true);
 
 			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-
 			StringWriter out = new StringWriter();
 
 			if (!compiler.getTask(out, fileManager, diagnostics, null, null, res).call()) {
@@ -287,15 +300,14 @@ public class Business {
 			}
 
 			result = true;
-
 			fileManager.close();
-
 			this.enhance(target, resources);
 
-			File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_NAME + DOT_JAR);
-
+			File jar = new File(dir, DynamicEntity.JAR_PREFIX + query + DOT_JAR);
 			JarTools.jar(target, jar);
+			FileUtils.copyFileToDirectory(jar, Config.dir_dynamic_jars(true));
 		}
+		FileUtils.cleanDirectory(dir);
 		return result;
 	}
 
