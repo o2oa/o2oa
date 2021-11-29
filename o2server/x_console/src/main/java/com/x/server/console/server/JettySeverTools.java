@@ -93,9 +93,9 @@ public abstract class JettySeverTools {
 				jars.add(file.getAbsolutePath());
 			}
 		}
-		if (module.dynamicJars()!=null && module.dynamicJars().length > 0) {
+		if (module.dynamicJars() != null && module.dynamicJars().length > 0) {
 			IOFileFilter filter = new WildcardFileFilter(DynamicEntity.JAR_PREFIX + "*.jar");
-			for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(), filter, null)) {
+			for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(true), filter, null)) {
 				jars.add(o.getAbsolutePath());
 			}
 		}
