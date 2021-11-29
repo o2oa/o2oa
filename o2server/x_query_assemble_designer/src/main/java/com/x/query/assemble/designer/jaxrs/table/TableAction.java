@@ -53,7 +53,7 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "编译表对象生成实体类进行数据库建表,执行后需要重新启动，支持集群环境.", action = ActionBuildAll.class)
+	@JaxrsMethodDescribe(value = "编译表（会编译平台所有自建表）,执行后需要立即重新启动，支持集群环境.", action = ActionBuildAll.class)
 	@GET
 	@Path("build/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -70,7 +70,7 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "编译表对象生成实体类进行数据库建表,执行后需要重新启动，仅对当前服务器.", action = ActionBuild.class)
+	@JaxrsMethodDescribe(value = "编译表（会编译平台所有自建表）,执行后需要立即重新启动，仅对当前服务器.", action = ActionBuild.class)
 	@GET
 	@Path("build")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -80,6 +80,42 @@ public class TableAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionBuild().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "编译指定应用所有表,执行后需要立即重新启动，支持集群环境.", action = ActionBuildTableDispatch.class)
+	@GET
+	@Path("{query}/build/dispatch")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public synchronized void buildDispatch(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+										   @JaxrsParameterDescribe("应用标识") @PathParam("query") String query) {
+		ActionResult<ActionBuildTableDispatch.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionBuildTableDispatch().execute(effectivePerson, query);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "编译指定应用所有表,执行后需要立即重新启动，仅对当前服务器.", action = ActionBuildTable.class)
+	@GET
+	@Path("{query}/build")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void buildTable(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						   @JaxrsParameterDescribe("应用标识") @PathParam("query") String query) {
+		ActionResult<ActionBuildTable.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionBuildTable().execute(effectivePerson, query);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
