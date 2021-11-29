@@ -374,7 +374,7 @@ function build_web_minimize(cb) {
     var dest = 'target/o2server/servers/webServer/';
     var src_min = ['o2web/source/**/*.js', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
     moduleFolder.forEach((f)=>{
-        src_min.push('!'+f+'/**/*');
+        src_min.push('!o2web/source/'+f+'/**/*');
     })
 
     var entries = fg.sync(src_min, { dot: false});
@@ -400,7 +400,7 @@ function build_web_move() {
     var dest = 'target/o2server/servers/webServer/';
     var src_move = ['o2web/source/**/*', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**'];
     moduleFolder.forEach((f)=>{
-        src_move.push('!'+f+'/**/*');
+        src_move.push('!o2web/source/'+f+'/**/*');
     })
 
     var entries = fg.sync(src_move, { dot: false});
