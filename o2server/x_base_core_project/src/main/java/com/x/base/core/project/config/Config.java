@@ -772,6 +772,17 @@ public class Config {
 		return instance().initialServiceScriptText;
 	}
 
+	@Deprecated
+	public String mooToolsScriptText;
+
+	@Deprecated
+	public static synchronized String mooToolsScriptText() throws Exception {
+		if (null == instance().mooToolsScriptText) {
+			instance().mooToolsScriptText = BaseTools.readString(PATH_COMMONS_MOOTOOLSSCRIPTTEXT);
+		}
+		return instance().mooToolsScriptText;
+	}
+
 	private MimeTypes mimeTypes;
 
 	public static synchronized MimeTypes mimeTypes() throws Exception {
