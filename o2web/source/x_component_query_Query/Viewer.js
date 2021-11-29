@@ -15,7 +15,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         "perPageCount" : 50,
         "isload": "true",
         "export": false,
-        "lazy": true,
+        "lazy": false,
         "moduleEvents": ["queryLoad", "postLoad", "postLoadPageData", "postLoadPage", "selectRow", "unselectRow",
             "queryLoadItemRow", "postLoadItemRow", "queryLoadCategoryRow", "postLoadCategoryRow"]
 
