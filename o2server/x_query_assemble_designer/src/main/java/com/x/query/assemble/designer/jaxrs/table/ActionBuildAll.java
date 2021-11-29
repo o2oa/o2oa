@@ -33,7 +33,7 @@ class ActionBuildAll extends BaseAction {
 			List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_designer.class);
 			if (ListTools.isNotEmpty(apps)) {
 				apps.stream().forEach(o -> {
-					String url = o.getUrlJaxrsRoot() + "table/build?tt="+new Date().getTime();
+					String url = o.getUrlJaxrsRoot() + "table/build?tt="+System.currentTimeMillis();
 					logger.print("{} do dispatch build table request to : {}", effectivePerson.getDistinguishedName(), url);
 					try {
 						CipherConnectionAction.get(effectivePerson.getDebugger(), url);
