@@ -176,12 +176,39 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                                 if(  overflow === "auto" || overflow === "scroll" || overflowY === "auto" || overflowY === "scroll" ){
                                     _self.scrollFun = function( e ){
                                         if (this.container.position ) {
-                                            this.container.position({
-                                                relativeTo: this.node,
-                                                position: 'bottomLeft',
-                                                edge: 'upperLeft',
-                                                allowNegative : true
-                                            });
+                                            if( this.postX === "right" ){
+                                                if( this.postY === "bottom" ){
+                                                    this.container.position({
+                                                        relativeTo: this.node,
+                                                        position: 'bottomRight',
+                                                        edge: 'upperRight',
+                                                        allowNegative : true
+                                                    });
+                                                }else{
+                                                    this.container.position({
+                                                        relativeTo: this.node,
+                                                        position: 'upperRight',
+                                                        edge: 'bottomRight',
+                                                        allowNegative : true
+                                                    });
+                                                }
+                                            }else{
+                                                if( this.postY === "bottom" ) {
+                                                    this.container.position({
+                                                        relativeTo: this.node,
+                                                        position: 'bottomLeft',
+                                                        edge: 'upperLeft',
+                                                        allowNegative: true
+                                                    });
+                                                }else{
+                                                    this.container.position({
+                                                        relativeTo: this.node,
+                                                        position: 'upperLeft',
+                                                        edge: 'bottomLeft',
+                                                        allowNegative: true
+                                                    });
+                                                }
+                                            }
                                         }
                                     }.bind(this);
                                     _self.scrollParentNode = parent;

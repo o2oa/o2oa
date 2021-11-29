@@ -192,6 +192,42 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "删除指定附件.", action = ActionDelete.class)
+	@DELETE
+	@Path("{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							   @JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDelete().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "删除指定附件Mock Get To Delete.", action = ActionDelete.class)
+	@GET
+	@Path("{id}/mockdeletetoget")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+											  @Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDelete().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "删除指定work下的附件.", action = ActionDeleteWithWork.class)
 	@DELETE
 	@Path("{id}/work/{workId}")
@@ -1060,7 +1096,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("*Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
 			@JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
 			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName,
-			@JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id") @QueryParam("flag") String flag) {
+			@JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id，多值逗号隔开") @QueryParam("flag") String flag) {
 		ActionResult<ActionBatchDownloadWithWorkOrWorkCompletedStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1082,7 +1118,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("*Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
 			@JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
 			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName,
-			@JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id") @QueryParam("flag") String flag) {
+			@JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id，多值逗号隔开") @QueryParam("flag") String flag) {
 		ActionResult<ActionBatchDownloadWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1115,7 +1151,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionUploadWorkInfo.class)
+	@JaxrsMethodDescribe(value = "Mock put To post.", action = ActionUploadWorkInfo.class)
 	@POST
 	@Path("upload/work/{workId}/save/as/{flag}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

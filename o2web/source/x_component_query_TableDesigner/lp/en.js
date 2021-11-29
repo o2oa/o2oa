@@ -42,6 +42,7 @@ MWF.xApplication.query.TableDesigner.LP = {
         "add": "Add"
     },
     "errorName": "Column names only allow the use of alphanumeric and underscore combinations, and cannot start with a number.",
+    "nameUseKeywork": "{key} is not allowed for column names",
     "errorFieldList": "Please create a data column first.",
     "duplicateName": "A column with the same name already exists",
     "inputName": "Please enter the column name",
@@ -64,6 +65,10 @@ MWF.xApplication.query.TableDesigner.LP = {
     "tableExplodeTitle": "Export Data",
     "tableExplodeInfo": "By default, up to 2000 rows can be exported. Are you sure you want to export?",
     "tableExplode_success": "Export successful",
+
+    "buildCurrentAppTitle": "Compile the current application data table",
+    "buildCurrentAppInfor": "All data tables of the current application are about to be compiled, <span style='color: #FF0000;'>After compiling, please restart the server immediately, otherwise it may cause the JVM to crash</span>. Are you sure you want to perform this operation ?",
+    "buildCurrentApp_success": "All data tables of the current application have been compiled, please restart the server immediately!",
 
     "tableImplodeTitle": "Import Data",
     "tableImplodeInfo": "The imported data will be overwritten. Are you sure to import?",

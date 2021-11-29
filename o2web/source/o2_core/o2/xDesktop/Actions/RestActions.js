@@ -24,17 +24,16 @@ MWF.xDesktop.Actions.RestActions = new Class({
 //		MWF.getJSON(url, callback);
 
         //this.address = "http://xa02.zoneland.net:8080/"+this.serviceName;
-
         var addressObj = layout.serviceAddressList[this.serviceName];
         if (addressObj){
             //var mapping = layout.getAppUrlMapping(layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context);
-            this.address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+            this.address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+((!addressObj.port || addressObj.port==80) ? "" : ":"+addressObj.port)+addressObj.context;
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
             var port = layout.desktop.centerServer.port;
 
             //var mapping = layout.getCenterUrlMapping(layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center");
-            this.address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
+            this.address = layout.config.app_protocol+"//"+host+((!port || port=="80") ? "" : ":"+port)+"/x_program_center";
         }
 
         //this.address = "http://hbxa01.bf.ctc.com/"+this.serviceName;

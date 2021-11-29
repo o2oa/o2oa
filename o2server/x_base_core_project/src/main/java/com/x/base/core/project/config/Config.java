@@ -2,6 +2,8 @@ package com.x.base.core.project.config;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -518,7 +520,7 @@ public class Config {
 		INSTANCE = null;
 	}
 
-	private static synchronized Config instance() throws Exception {
+	private static synchronized Config instance() {
 		if (null == INSTANCE) {
 			INSTANCE = new Config();
 		}
@@ -752,26 +754,28 @@ public class Config {
 		return instance().dumpRestoreData;
 	}
 
-	public String initialScriptText;
+	private String initialScriptText;
 
-	public static synchronized String initialScriptText() throws Exception {
+	public static synchronized String initialScriptText() throws IOException, URISyntaxException {
 		if (null == instance().initialScriptText) {
 			instance().initialScriptText = BaseTools.readString(PATH_COMMONS_INITIALSCRIPTTEXT);
 		}
 		return instance().initialScriptText;
 	}
 
-	public String initialServiceScriptText;
+	private String initialServiceScriptText;
 
-	public static synchronized String initialServiceScriptText() throws Exception {
+	public static synchronized String initialServiceScriptText() throws IOException, URISyntaxException {
 		if (null == instance().initialServiceScriptText) {
 			instance().initialServiceScriptText = BaseTools.readString(PATH_COMMONS_INITIALSERVICESCRIPTTEXT);
 		}
 		return instance().initialServiceScriptText;
 	}
 
+	@Deprecated
 	public String mooToolsScriptText;
 
+	@Deprecated
 	public static synchronized String mooToolsScriptText() throws Exception {
 		if (null == instance().mooToolsScriptText) {
 			instance().mooToolsScriptText = BaseTools.readString(PATH_COMMONS_MOOTOOLSSCRIPTTEXT);
