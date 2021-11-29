@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.x.base.core.entity.dynamic.DynamicBaseEntity;
+import com.x.base.core.entity.dynamic.DynamicEntity;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
@@ -90,10 +93,10 @@ public abstract class JettySeverTools {
 				jars.add(file.getAbsolutePath());
 			}
 		}
-		for (String str : module.dynamicJars()) {
-			File file = new File(Config.dir_dynamic_jars(), str + ".jar");
-			if (file.exists()) {
-				jars.add(file.getAbsolutePath());
+		if (module.dynamicJars()!=null && module.dynamicJars().length > 0) {
+			IOFileFilter filter = new WildcardFileFilter(DynamicEntity.JAR_PREFIX + "*.jar");
+			for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(), filter, null)) {
+				jars.add(o.getAbsolutePath());
 			}
 		}
 		for (Path path : paths) {
