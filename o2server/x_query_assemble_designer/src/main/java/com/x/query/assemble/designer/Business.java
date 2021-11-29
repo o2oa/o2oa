@@ -226,7 +226,18 @@ public class Business {
 	}
 
 	public boolean buildAllTable() throws Exception {
-		logger.warn("query designer execute build all table command, The server must be restarted immediately.");
+		File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_NAME + DOT_JAR);
+		List<Query> queryList = emc.fetchAll(Query.class);
+		for(Query query : queryList){
+			this.buildAllTable(query.getId());
+		}
+		if(jar.exists()){
+			jar.delete();
+		}
+		return true;
+	}
+
+	public boolean buildAllTable(String query) throws Exception {
 		boolean result = false;
 		List<Table> tables = emc.listEqualAndEqual(Table.class, Table.status_FIELDNAME, Table.STATUS_build, Table.query_FIELDNAME, query);
 		if(ListTools.isEmpty(tables)){
