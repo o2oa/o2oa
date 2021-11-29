@@ -172,6 +172,9 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
     buildAllView: function(){
         this.view.buildAllView();
     },
+    bulidCurrentApp: function(){
+        this.view.bulidCurrentApp();
+    },
     tableExplode: function(){
         this.view.tableExplode();
     },
