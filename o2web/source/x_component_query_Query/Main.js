@@ -328,7 +328,6 @@ MWF.xApplication.query.Query.Main = new Class({
                         return (a.orderNumber || 999999999) - (b.orderNumber || 999999999 );
                     });
                     json.data.each(function (statement) {
-                        debugger;
                         if (statement.display !== false ) {
                             var item = this.createStatementNaviItem(statement);
                             this.statementItems.push(item);
@@ -361,7 +360,6 @@ MWF.xApplication.query.Query.Main = new Class({
                         return (a.orderNumber || 999999999) - (b.orderNumber || 999999999 );
                     });
                     json.data.each(function (importer) {
-                        debugger;
                         if (importer.display !== false ) {
                             var item = this.createImporterNaviItem(importer);
                             this.importerItems.push(item);
@@ -445,7 +443,6 @@ MWF.xApplication.query.Query.ViewItem = new Class({
         this.isSelected = false;
     },
     loadView: function(){
-        debugger;
         MWF.xDesktop.requireApp("query.Query", "Viewer",function(){
             this.viewContent.empty();
             var data = JSON.parse(this.view.data);
@@ -511,7 +508,6 @@ MWF.xApplication.query.Query.StatementItem = new Class({
     loadView: function(){
         MWF.xDesktop.requireApp("query.Query", "Statement",function(){
             this.viewContent.empty();
-            debugger;
             this.viewer = new MWF.QStatement( this.viewContent, {
                 "application": this.view.query,
                 "statementName": this.view.name,
@@ -540,7 +536,6 @@ MWF.xApplication.query.Query.ImporterItem = new Class({
     },
     loadView: function(){
         MWF.xDesktop.requireApp("query.Query", "ImporterRecord", function(){
-            debugger;
             this.viewContent.empty();
             this.viewer = new MWF.xApplication.query.Query.ImporterRecord( this.viewContent, this.app, {
                 "application": this.view.query,
