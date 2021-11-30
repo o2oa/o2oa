@@ -4,6 +4,7 @@ MWF.xDesktop.requireApp("query.Query", "Viewer", null, false);
 MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     Extends: MWF.QViewer,
     options: {
+        "lazy": false,
         "moduleEvents": ["queryLoad", "postLoad", "postLoadPageData", "postLoadPage", "selectRow", "unselectRow",
             "queryLoadItemRow", "postLoadItemRow", "queryLoadCategoryRow", "postLoadCategoryRow", "export", "exportRow"]
     },
@@ -24,7 +25,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
         this.container = $(container);
 
-        debugger;
         this.json = json || {};
 
         this.parentMacro = parentMacro;
@@ -274,6 +274,12 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         if (this.pageloading) return;
         this.pageloading = true;
 
+        if( this.io ){
+            this.items.each(function(item){
+                this.io.unobserve(item.node);
+            }.bind(this))
+        }
+
         this.items = [];
 
         var p = this.currentPage;
@@ -285,6 +291,12 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         while (this.viewTable.rows.length > 1) {
             this.viewTable.deleteRow(-1);
         }
+        if( this.viewTable.rows.length>0 && !this.viewTable.rows[0].hasClass("viewTitleLine") ){
+            this.viewTable.deleteRow(0);
+        }
+
+        this.contentAreaNode.scrollTo(0, 0);
+
         //this.createLoadding();
 
         this.loadViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
@@ -352,7 +364,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         if (this.gridJson.length) {
             // if( !this.options.paging ){
             this.gridJson.each(function (line, i) {
-                this.items.push(new MWF.xApplication.query.Query.Statement.Item(this, line, null, i));
+                this.items.push(new MWF.xApplication.query.Query.Statement.Item(this, line, null, i, null, this.options.lazy));
             }.bind(this));
             // }else{
             //     this.loadPaging();
@@ -368,7 +380,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             var to = Math.min((this.pageNumber + 1) * this.options.perPageCount + 1, this.gridJson.length);
             this.isItemsLoading = true;
             for (var i = from; i < to; i++) {
-                this.items.push(new MWF.xApplication.query.Query.Statement.Item(this, this.gridJson[i], null, i));
+                this.items.push(new MWF.xApplication.query.Query.Statement.Item(this, this.gridJson[i], null, i, null, this.options.lazy));
             }
             this.isItemsLoading = false;
             this.pageNumber++;
@@ -664,7 +676,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
 MWF.xApplication.query.Query.Statement.Item = new Class({
     Extends: MWF.xApplication.query.Query.Viewer.Item,
-    initialize: function (view, data, prev, i, category) {
+    initialize: function (view, data, prev, i, category, lazy) {
         this.view = view;
         this.data = data;
         this.dataString = JSON.stringify(data);
@@ -674,23 +686,18 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
         this.prev = prev;
         this.idx = i;
         this.clazzType = "item";
-
+        this.lazy = lazy;
         this.load();
     },
-    load: function () {
-        this.view.fireEvent("queryLoadItemRow", [null, this]);
+    _load: function () {
+        this.loading = true;
+
+        if(!this.node)this.view.fireEvent("queryLoadItemRow", [null, this]);
 
         var viewStyles = this.view.viewJson.viewStyles;
         var viewContentTdNode = (viewStyles && viewStyles["contentTd"]) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
 
-        this.node = new Element("tr", {
-            "styles": (viewStyles && viewStyles["contentTr"]) ? viewStyles["contentTr"] : this.css.viewContentTrNode
-        });
-        if (this.prev) {
-            this.node.inject(this.prev.node, "after");
-        } else {
-            this.node.inject(this.view.viewTable);
-        }
+        if(!this.node)this.loadNode();
 
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
         this.selectTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
@@ -778,6 +785,11 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
             //}
         }.bind(this));
 
+        if(this.placeholderTd){
+            this.placeholderTd.destroy();
+            this.placeholderTd = null;
+        }
+
         //默认选中
         var selectedFlag;
 
@@ -815,6 +827,9 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
         this.setEvent();
 
         this.view.fireEvent("postLoadItemRow", [null, this]);
+
+        this.loading = false;
+        this.loaded = true;
     },
     selected: function( from ){
         for(var i=0; i<this.view.selectedItems.length; i++){
