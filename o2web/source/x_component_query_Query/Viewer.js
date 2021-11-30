@@ -15,6 +15,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         "perPageCount" : 50,
         "isload": "true",
         "export": false,
+        "lazy": false,
         "moduleEvents": ["queryLoad", "postLoad", "postLoadPageData", "postLoadPage", "selectRow", "unselectRow",
             "queryLoadItemRow", "postLoadItemRow", "queryLoadCategoryRow", "postLoadCategoryRow"]
 
@@ -85,7 +86,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     load: function(){
-        this.loadMacro( function () {
+        this.loadResource( function () {
             this._loadModuleEvents();
             if (this.fireEvent("queryLoad")){
                 this._loadUserInterface();
@@ -116,6 +117,21 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.node);
 
         this.fireEvent("loadLayout");
+    },
+    loadResource: function( callback ){
+        if( this.options.lazy ){
+            var loadedIOResource = false;
+            var callback2 = function(){
+                if( this.Macro && loadedIOResource )callback();
+            }.bind(this)
+            this.loadMacro( callback2 );
+            this.loadIOResource( function(){
+                loadedIOResource = true;
+                callback2();
+            }.bind(this));
+        }else{
+            this.loadMacro( callback );
+        }
     },
     loadMacro: function (callback) {
         MWF.require("MWF.xScript.Macro", function () {
@@ -290,6 +306,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 (viewStyles && viewStyles["container"]) ? viewStyles["container"] : this.css.contentAreaNode
         }).inject(this.viewAreaNode);
 
+        this.loadObserver();
+
         this.viewTable = new Element("table", {
             "styles": this.css.viewTitleTableNode,
             "border": "0px",
@@ -305,7 +323,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
         var viewTitleCellNode = (viewStyles && viewStyles["titleTd"]) ? viewStyles["titleTd"] : this.css.viewTitleCellNode;
         if (this.json.isTitle!=="no"){
-            this.viewTitleLine = new Element("tr", {
+            this.viewTitleLine = new Element("tr.viewTitleLine", {
                 "styles": (viewStyles && viewStyles["titleTr"]) ? viewStyles["titleTr"] : this.css.viewTitleLineNode
             }).inject(this.viewTable);
 
@@ -577,6 +595,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         if( this.pageloading )return;
         this.pageloading = true;
 
+        if( this.io ){
+            this.items.each(function(item){
+                this.io.unobserve(item.node);
+            }.bind(this))
+        }
+
         this.items = [];
 
         var p = this.currentPage;
@@ -585,10 +609,15 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         d.bundleList = valueList;
         d.key = this.bundleKey;
 
-
         while (this.viewTable.rows.length>1){
             this.viewTable.deleteRow(-1);
         }
+        if( this.viewTable.rows.length>0 && !this.viewTable.rows[0].hasClass("viewTitleLine") ){
+            this.viewTable.deleteRow(0);
+        }
+
+        this.contentAreaNode.scrollTo(0, 0);
+
         //this.createLoadding();
 
         this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
@@ -692,7 +721,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         if (this.gridJson.length){
             // if( !this.options.paging ){
             this.gridJson.each(function(line, i){
-                this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, line, null, i));
+                this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, line, null, i, null, this.options.lazy));
             }.bind(this));
             // }else{
             //     this.loadPaging();
@@ -732,7 +761,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             var to = Math.min( ( this.pageNumber + 1 ) * this.options.perPageCount + 1 , this.gridJson.length);
             this.isItemsLoading = true;
             for( var i = from; i<to; i++ ){
-                this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, this.gridJson[i], null, i));
+                this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, this.gridJson[i], null, i, null, this.options.lazy));
             }
             this.isItemsLoading = false;
             this.pageNumber ++;
@@ -1649,12 +1678,53 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     notice: function (content, type, target, where, offset, option) {
         this.app.notice(content, type, target, where, offset, option)
-    }
+    },
     //api 使用 结束
+
+    loadObserver: function(){
+        debugger;
+        if( this.io ){
+            this.io.disconnect();
+            this.io = null;
+        }
+        if( !this.options.lazy )return;
+        if (typeof window !== 'undefined' && window.IntersectionObserver) {
+            this.io = new IntersectionObserver( function (entries, observer) {
+                entries.forEach(function (entry) {
+                    if (entry.intersectionRatio > 0 || entry.isIntersecting) {
+                        var item = entry.target.retrieve("item");
+                        if( item && !item.loading && !item.loaded){ //已经加载完成
+                            item.active();
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                })
+            }, {
+                root: this.contentAreaNode,
+                rootMargin: "10px 0px 0px 0px"
+            });
+        }
+    },
+    loadIOResource: function (callback) {
+        if( !this.options.lazy ){
+            callback();
+            return;
+        }
+        var observerPath = "../o2_lib/IntersectionObserver/intersection-observer.min.js";
+        var observerPath_ie11 = "../o2_lib/IntersectionObserver/polyfill_ie11.min.js";
+        if( window.IntersectionObserver && window.MutationObserver) {
+            if(callback)callback();
+        }else if( !!window.MSInputMethodContext && !!document.documentMode ){ //ie11
+            o2.load(observerPath_ie11, function () { callback(); }.bind(this));
+        }else{
+            o2.load([observerPath, observerPath_ie11], function () { callback(); }.bind(this));
+        }
+    }
+
 });
 
 MWF.xApplication.query.Query.Viewer.Item = new Class({
-    initialize: function(view, data, prev, i, category){
+    initialize: function(view, data, prev, i, category, lazy){
         this.view = view;
         this.data = data;
         this.css = this.view.css;
@@ -1663,23 +1733,52 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.prev = prev;
         this.idx = i;
         this.clazzType = "item";
-
+        this.lazy = lazy;
         this.load();
     },
     load: function(){
-        this.view.fireEvent("queryLoadItemRow", [null, this]);
-
+        if( this.lazy && this.view.io ){
+            this.view.fireEvent("queryLoadItemRow", [null, this]);
+            this.loadNode();
+            this.view.io.observe( this.node );
+        }else{
+            this._load();
+        }
+    },
+    active: function(){
+        if( !this.loaded && !this.loading ){
+            this._load();
+        }
+    },
+    loadNode: function(){
         var viewStyles = this.view.viewJson.viewStyles;
-        var viewContentTdNode = ( viewStyles && viewStyles["contentTd"] ) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
+        var trStyle = ( viewStyles && viewStyles["contentTr"] ) ? viewStyles["contentTr"] : this.css.viewContentTrNode;
 
         this.node = new Element("tr", {
-            "styles": ( viewStyles && viewStyles["contentTr"] ) ? viewStyles["contentTr"] : this.css.viewContentTrNode
+            "styles": trStyle
         });
         if (this.prev){
             this.node.inject(this.prev.node, "after");
         }else{
             this.node.inject(this.view.viewTable);
         }
+        this.node.store("item", this);
+        if( this.lazy && this.view.io ) {
+            var viewContentTdNode = ( viewStyles && viewStyles["contentTd"] ) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
+            this.placeholderTd = new Element("td", {
+                "styles": viewContentTdNode
+            }).inject(this.node)
+        }
+    },
+    _load: function(){
+        this.loading = true;
+
+        if(!this.node)this.view.fireEvent("queryLoadItemRow", [null, this]);
+
+        var viewStyles = this.view.viewJson.viewStyles;
+        var viewContentTdNode = ( viewStyles && viewStyles["contentTd"] ) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
+
+        if(!this.node)this.loadNode();
 
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
         this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
@@ -1715,8 +1814,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             var s= 1+this.view.json.pageSize*(this.view.currentPage-1)+this.idx;
             this.sequenceTd.set("text", s);
         }
-
-        debugger;
 
         Object.each(this.view.entries, function(c, k){
             var cell = this.data.data[k];
@@ -1765,6 +1862,10 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             //}
         }.bind(this));
 
+        if(this.placeholderTd){
+            this.placeholderTd.destroy();
+            this.placeholderTd = null;
+        }
 
         //默认选中
         var selectedFlag;
@@ -1815,6 +1916,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.setEvent();
 
         this.view.fireEvent("postLoadItemRow", [null, this]);
+
+        this.loading = false;
+        this.loaded = true;
     },
     setOpenWork: function(td, column){
         td.setStyle("cursor", "pointer");
@@ -2207,7 +2311,6 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.expanded = false;
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
 
-        debugger;
         if( this.groupColumn ){
             if( typeOf(this.groupColumn.contentStyles) === "object" )this.categoryTd.setStyles(this.groupColumn.contentStyles);
             if( typeOf(this.groupColumn.contentProperties) === "object" )this.categoryTd.setProperties(this.groupColumn.contentProperties);
@@ -2361,7 +2464,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
             //window.setTimeout(function(){
             this.data.list.each(function(line, i){
                 var s = this.idx+i;
-                this.lastItem = new MWF.xApplication.query.Query.Viewer.Item(this.view, line, (this.lastItem || this), s, this);
+                this.lastItem = new MWF.xApplication.query.Query.Viewer.Item(this.view, line, (this.lastItem || this), s, this, this.view.options.lazy);
                 this.items.push(this.lastItem);
             }.bind(this));
             this.loadChild = true;
