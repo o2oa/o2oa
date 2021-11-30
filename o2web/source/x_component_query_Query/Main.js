@@ -105,6 +105,7 @@ MWF.xApplication.query.Query.Main = new Class({
         var data = this.interfaceData;
 
         var object = [];
+        this.naviArray = object;
         if( data.viewShow !== "false" && data.viewShow !== false ) {
             this.naviViewTitleNode = new Element("div", {"styles": this.css.naviCategoryNode });
             // this.naviViewTitleNode = new Element("div", {"styles": this.css.naviViewTitleNode, "text": data.viewName});
@@ -209,10 +210,46 @@ MWF.xApplication.query.Query.Main = new Class({
         var y = size.y-titleSize.y;
         this.naviContentNode.setStyle("height", ""+y+"px");
     },
-
     createNavi: function(){
-        var data = this.interfaceData;
+	    debugger;
+	    var viewLoaded,statLoaded, statementLoaded,importerLoaded;
+	    var callback = function () {
+	        if( this.viewItemSelected || this.statItemSelected || this.statementItemSelected || this.importerItemSelected )return;
+            if(viewLoaded && statLoaded && statementLoaded && importerLoaded){
+                for( var i=0; i<this.naviArray.length; i++ ){
+                    var items = this[this.naviArray[i].type+'Items'];
+                    if( items && items.length ){
+                        items[0].selected();
+                        return;
+                    }
+                }
+            }
+        }.bind(this);
 
+        this.createViewNavi(function () {
+            viewLoaded = true;
+            callback();
+        }.bind(this));
+
+        this.createStatNavi(function () {
+            statLoaded = true;
+            callback();
+        }.bind(this));
+
+        this.createStatementNavi(function () {
+            statementLoaded = true;
+            callback();
+        }.bind(this));
+
+        this.createImporterNavi(function () {
+            importerLoaded = true;
+            callback();
+        }.bind(this));
+    },
+    createViewNavi: function( callback ){
+        var data = this.interfaceData;
+        this.viewItems = [];
+        this.viewItemSelected = false;
         if( data.viewShow !== "flase" && data.viewShow !== false ) {
             this.action.listView(this.options.id, function (json) {
                 if (json.data) {
@@ -226,15 +263,24 @@ MWF.xApplication.query.Query.Main = new Class({
                     json.data.each(function (view) {
                         if (view.display) {
                             var item = this.createViewNaviItem(view);
+                            this.viewItems.push(item);
                             if (view.id === this.options.viewId) {
-                                item.selected()
+                                item.selected();
+                                this.viewItemSelected = true;
                             }
                         }
                     }.bind(this));
                 }
+                callback();
             }.bind(this));
+        }else{
+            callback();
         }
-
+    },
+    createStatNavi: function(callback){
+        var data = this.interfaceData;
+        this.statItems = [];
+        this.statItemSelected = false;
         if( data.statShow !== "flase" && data.statShow !== false ) {
             MWF.Actions.get("x_query_assemble_surface").listStat(this.options.id, function (json) {
                 //this.action.listStat(this.options.id, function(json){
@@ -249,15 +295,24 @@ MWF.xApplication.query.Query.Main = new Class({
                     json.data.each(function (stat) {
                         if (stat.display !== false ) {
                             var item = this.createStatNaviItem(stat);
+                            this.statItems.push(item);
                             if (stat.id === this.options.statId) {
-                                item.selected()
+                                item.selected();
+                                this.statItemSelected = true;
                             }
                         }
                     }.bind(this));
                 }
+                callback();
             }.bind(this));
+        }else{
+            callback();
         }
-
+    },
+    createStatementNavi: function(callback){
+        var data = this.interfaceData;
+        this.statementItems = [];
+        this.statementItemSelected = false;
         if( data.statementShow !== "flase" && data.statementShow !== false ) {
             MWF.Actions.load("x_query_assemble_surface").StatementAction.listWithQuery(this.options.id, {
                 "justSelect": true,
@@ -276,15 +331,24 @@ MWF.xApplication.query.Query.Main = new Class({
                         debugger;
                         if (statement.display !== false ) {
                             var item = this.createStatementNaviItem(statement);
+                            this.statementItems.push(item);
                             if (statement.id === this.options.statementId) {
-                                item.selected()
+                                item.selected();
+                                this.statementItemSelected = true;
                             }
                         }
                     }.bind(this));
                 }
+                callback();
             }.bind(this));
+        }else{
+            callback();
         }
-
+    },
+    createImporterNavi: function(callback){
+        var data = this.interfaceData;
+        this.importerItems = [];
+        this.importerItemSelected = false;
         if( data.importerShow !== "flase" && data.importerShow !== false ) {
             MWF.Actions.load("x_query_assemble_surface").ImportModelAction.listWithQuery(this.options.id, function (json) {
                 //this.action.listStat(this.options.id, function(json){
@@ -300,15 +364,19 @@ MWF.xApplication.query.Query.Main = new Class({
                         debugger;
                         if (importer.display !== false ) {
                             var item = this.createImporterNaviItem(importer);
+                            this.importerItems.push(item);
                             if (importer.id === this.options.importerId) {
-                                item.selected()
+                                item.selected();
+                                this.importerItemSelected = true;
                             }
                         }
                     }.bind(this));
                 }
+                callback();
             }.bind(this));
+        }else{
+            callback();
         }
-
     },
     createViewNaviItem: function(view){
         var item = new MWF.xApplication.query.Query.ViewItem(view, this);
