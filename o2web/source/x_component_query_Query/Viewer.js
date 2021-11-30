@@ -1815,8 +1815,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             this.sequenceTd.set("text", s);
         }
 
-        debugger;
-
         Object.each(this.view.entries, function(c, k){
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
@@ -2313,7 +2311,6 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.expanded = false;
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
 
-        debugger;
         if( this.groupColumn ){
             if( typeOf(this.groupColumn.contentStyles) === "object" )this.categoryTd.setStyles(this.groupColumn.contentStyles);
             if( typeOf(this.groupColumn.contentProperties) === "object" )this.categoryTd.setProperties(this.groupColumn.contentProperties);

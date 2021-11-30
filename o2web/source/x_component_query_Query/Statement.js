@@ -25,7 +25,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
         this.container = $(container);
 
-        debugger;
         this.json = json || {};
 
         this.parentMacro = parentMacro;
