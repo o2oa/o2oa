@@ -51,8 +51,9 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         this.addEvent("copy", function(){
             this.copyModule();
         }.bind(this));
-        this.addEvent("paste", function(){
+        this.addEvent("paste", function(e){
             this.pasteModule();
+            e.preventDefault();
         }.bind(this));
         this.addEvent("cut", function(){
             this.cutModule();
