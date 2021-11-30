@@ -172,7 +172,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 				});
 			},
 			errorCaptured: function(err, vm, info){
-				alert("errorCaptured:"+info);
+				//alert("errorCaptured:"+info);
 				return false;
 			}
 		};
@@ -192,7 +192,6 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		}
 	},
 	_afterMounted: function(el, callback){
-		debugger;
 		this.node = el;
 		this.node.store("module", this);
 		this._loadVueCss();
@@ -238,6 +237,13 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 
 	},
 	_preprocessingModuleData: function(){
+		if (this.node.nodeType===Node.COMMENT_NODE){
+			var tmp = this.node;
+			this._createVueAppNode();
+			this.node.inject(tmp, "after");
+			this.node.store("module", this);
+			tmp.destroy();
+		}
 		try{
 			this.node.empty();
 			this.node.clearStyles();

@@ -1397,7 +1397,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.waitLocation = window.setTimeout(function(){
                     this.resizeToolbar(node);
                     this.waitLocation = false;
-                }.bind(this), 300);
+                }.bind(this), 1000);
             }
         }else{
             this.resizeToolbar(node);
@@ -1807,7 +1807,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.waitLocationFiletext = window.setTimeout(function(){
                     this.reLocationFiletextToolbar(editorName);
                     this.waitLocationFiletext = false;
-                }.bind(this), 300);
+                }.bind(this), 1000);
             }
         }else{
             this.reLocationFiletextToolbar(editorName)
