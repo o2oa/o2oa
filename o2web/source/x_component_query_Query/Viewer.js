@@ -1028,7 +1028,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         if (this.viewJson.customFilterList) {
             var key = this.viewSearchInputNode.get("value");
             if (key && key !== this.lp.searchKeywork) {
-                var filterData = this.json.filter ? this.json.filter.clone() : [];
+                var filterData = [];
                 this.filterItems = [];
                 this.viewJson.customFilterList.each(function (entry) {
                     if (entry.formatType === "textValue") {
@@ -1057,6 +1057,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                         }
                     }
                 }.bind(this));
+
+                if( this.json.filter ){
+                    this.json.filter.clone().each(function(f){
+                        filterData.push(f);
+                    })
+                }
 
                 this.createViewNode({"filterList": filterData});
             }else{
