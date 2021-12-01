@@ -128,15 +128,24 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 
 		var select = this.node.getFirst();
 		this.areaNode = this.node;
+		this.areaNode.set({
+			"id": this.json.id,
+			"MWFType": this.json.type
+		});
 		this.node = select;
 
 		this.node.set({
-			"id": this.json.id,
-			"MWFType": this.json.type,
 			"styles": {
 				"margin-right": "12px"
 			}
 		});
+		// this.node.set({
+		// 	"id": this.json.id,
+		// 	"MWFType": this.json.type,
+		// 	"styles": {
+		// 		"margin-right": "12px"
+		// 	}
+		// });
 		
 		this.setOptions();
         this.node.addEvent("change", function(){
