@@ -187,7 +187,7 @@ public class HttpToken {
 				}
 			}
 		}
-		if (StringUtils.isEmpty(token)) {
+		if (StringUtils.isEmpty(token) || COOKIE_ANONYMOUS_VALUE.equals(token)) {
 			token = request.getHeader(Config.person().getTokenName());
 		}
 		if (StringUtils.isEmpty(token)) {
