@@ -1818,7 +1818,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
                 }.bind(this)
             }, false);
         }else{
-            this.textNode.set("text", this.data.title);
+            this.textNode.set("text", this.data.title || this.data.name);
         }
     },
     setEvent: function(){
