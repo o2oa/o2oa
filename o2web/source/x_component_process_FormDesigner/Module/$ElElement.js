@@ -94,20 +94,8 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		return "";
 	},
 	_filterHtml: function(html){
-		var reg = /(?:@|v-on)\S*(?:\=)\S*(?:\"|\'|\s)/g;
+		var reg = /(?:@|v-on|v-model|:data)\S*(?:\=)\S*(?:\"|\'|\s)/g;
 		var v = html.replace(reg, "");
-
-		// var tmp = new Element("div", {"html": v});
-		// var nodes = tmp.querySelectorAll("*[v-model]");
-		// this.tmpVueData = {};
-		// nodes.forEach(function(node){
-		// 	var model = node.get("v-model");
-		// 	if (!model) model = o2.uuid();
-		// 	node.set("v-model", model);
-		// 	this.tmpVueData[model] = "";
-		// }.bind(this));
-		// var v = tmp.get("html");
-		// tmp.destroy();
 		return v;
 	},
 	_checkVueHtml: function(){
