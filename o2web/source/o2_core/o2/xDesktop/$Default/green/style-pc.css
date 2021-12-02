@@ -856,3 +856,12 @@
     z-index: 40000;
     display: none;
 }
+.layout_menu_scale_zoomReturn {
+    width: 20px;
+    height: 20px;
+    float: right;
+    background: url(../o2_core/o2/xDesktop/$Default/blue/icons/icon_refresh.png) center center no-repeat;
+    cursor: pointer;
+    margin-top: -12px;
+    margin-right: 15px;
+}
