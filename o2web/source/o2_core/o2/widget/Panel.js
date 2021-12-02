@@ -258,11 +258,12 @@ o2.widget.Panel = new Class({
 	},
 	returnPanel: function(){
 		if (!this.options.status.expand) this.setExpand();
-		
+
+		var pos = this.returnMaxContainerPosition;
 		this.container.setStyles({
 			"position": "absolute",
-			"top": this.options.top,
-			"left": this.options.left,
+			"top": (pos && pos.y) ? pos.y : this.options.top,
+			"left": (pos && pos.x) ? pos.x : this.options.left,
 			"width": this.returnMaxContainerSize.x,
 			"height": this.returnMaxContainerSize.y
 		});
@@ -275,6 +276,16 @@ o2.widget.Panel = new Class({
 		if (!this.options.status.expand) this.setExpand();
 		
 		this.returnMaxContainerSize = this.container.getSize();
+
+		this.returnMaxContainerPosition = {};
+		var top = this.container.getStyle("top") || "";
+		var left = this.container.getStyle("left") || "";
+		if ( parseFloat(top).toString() !== "NaN" ){
+			this.returnMaxContainerPosition.y = parseFloat(top);
+		}
+		if ( parseFloat(left).toString() !== "NaN" ){
+			this.returnMaxContainerPosition.x = parseFloat(left);
+		}
 		
 		var size = this.container.getOffsetParent().getSize();
 		this.container.setStyles({
@@ -315,11 +326,22 @@ o2.widget.Panel = new Class({
 	},
 	
 	collapse: function(){
+		debugger;
 		this.returnTopSize = this.titleNode.getComputedSize();
 		this.returnBottomSize = this.bottomNode.getComputedSize();
 		this.returnContainerSize = this.container.getComputedSize();
         this.returnContentSize = this.content.getComputedSize();
-        this.returnContainerPosition = this.container.getPosition(this.options.target);
+		this.returnContainerPosition = this.container.getPosition(this.options.target);
+
+        var top = this.container.getStyle("top") || "";
+        var left = this.container.getStyle("left") || "";
+        if ( parseFloat(top).toString() !== "NaN" ){
+			this.returnContainerPosition.y = parseFloat(top);
+        }
+		if ( parseFloat(left).toString() !== "NaN" ){
+			this.returnContainerPosition.x = parseFloat(left);
+		}
+
 
         if (!this.containerTween){
             this.containerTween = new Fx.Morph(this.container, {
