@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.apppack;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -113,5 +114,64 @@ public class AppPackAction extends BaseAction  {
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
+
+
+    @JaxrsMethodDescribe(value = "下载app包", action = ActionPackFileDownload.class)
+    @GET
+    @Path("pack/info/file/download/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void download(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                         @JaxrsParameterDescribe("app下载标识") @PathParam("id") String id) {
+        ActionResult<ActionPackFileDownload.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionPackFileDownload().execute(effectivePerson, id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+
+    @JaxrsMethodDescribe(value = "查询最新发布的app下载包.", action = ActionLastPackFileInfo.class)
+    @GET
+    @Path("pack/info/file/last")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void androidPackReStart(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+        ActionResult<ActionLastPackFileInfo.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLastPackFileInfo().execute();
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+    // 清除所有发布的包
+
+    // 发布app到本地服务器
+    @JaxrsMethodDescribe(value = "发布apk文件到本地服务器.", action = ActionPublishAPK2Local.class)
+    @POST
+    @Path("pack/info/file/publish")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void listPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,  JsonElement jsonElement) {
+        ActionResult<ActionPublishAPK2Local.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionPublishAPK2Local().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+    }
+
 
 }

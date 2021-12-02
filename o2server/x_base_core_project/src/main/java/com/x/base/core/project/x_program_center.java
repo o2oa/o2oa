@@ -18,7 +18,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.organization.core.entity.Person", "com.x.organization.core.entity.Identity",
 		"com.x.organization.core.entity.PersonAttribute", "com.x.organization.core.entity.Unit",
 		"com.x.organization.core.entity.UnitAttribute", "com.x.organization.core.entity.UnitDuty",
-		"com.x.general.core.entity.area.District", }, storageTypes = { StorageType.structure }, storeJars = {
+		"com.x.general.core.entity.area.District", "com.x.program.center.core.entity.AppPackApkFile" }, storageTypes = { StorageType.structure }, storeJars = {
 				"x_organization_core_express", "x_program_center_core_entity", "x_attendance_core_entity",
 				"x_cms_core_entity", "x_message_core_entity", "x_component_core_entity", "x_file_core_entity",
 				"x_meeting_core_entity", "x_okr_core_entity", "x_organization_core_entity",
