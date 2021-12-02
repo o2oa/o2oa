@@ -387,6 +387,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     "title": title,
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.editContentNode,
+                    "type": node.dataset["type"],
                     "onChange": function () {
 
                         var scriptObj = this.data;

@@ -89,15 +89,18 @@ o2.widget.JavascriptEditor = new Class({
     },
     setMonacoLayout: function(){
 	    if (this.editor && this.node){
-
+	        if (this.focusEditor) {
                 var size = this.node.getSize();
                 var osize = this.node.retrieve("nodeSize");
-                if (!osize || (osize && (osize.x!==size.x || osize.y!==size.y))){
+                if (!osize || (osize && (osize.x !== size.x || osize.y !== size.y))) {
                     this.node.store("nodeSize", size);
-                    this.editor.layout();
+                    try {
+                        this.editor.layout();
+                    } catch (e) {
+                    }
                 }
                 //if (!osize) this.node.store("nodeSize", size);
-
+            }
                 window.setTimeout(this.setMonacoLayout.bind(this), 500);
         }
 
@@ -164,14 +167,16 @@ o2.widget.JavascriptEditor = new Class({
 
                 this.editor.onDidFocusEditorText(function(e){
                     o2.shortcut.keyboard.deactivate();
+                    this.focusEditor = true;
                 }.bind(this));
                 this.editor.onDidBlurEditorText(function(e){
                     o2.shortcut.keyboard.activate();
+                    this.focusEditor = false;
                     this.fireEvent("blur");
                 }.bind(this));
                 this.editor.onDidChangeModelContent(function(e){
                     this.fireEvent("change");
-                }.bind(this))
+                }.bind(this));
 
                 //o2.widget.JavascriptEditor.getCompletionEnvironment(this.options.runtime, function(){
                     this.monacoModel = this.editor.getModel();
