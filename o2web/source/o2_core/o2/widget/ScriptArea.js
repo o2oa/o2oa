@@ -14,7 +14,8 @@ o2.widget.ScriptArea = new Class({
         "mode": "javascript",
         "runtime": "all",
         "key": "code",
-        "forceType": null
+        "forceType": null,
+        "type": "web"   //"service" or "web"
     },
     initialize: function(node, options){
         this.setOptions(options);
@@ -131,13 +132,18 @@ o2.widget.ScriptArea = new Class({
         return (this.editor) ? {"code": this.editor.getValue(), "html": this.editor.getValue()} : this.contentCode;
     },
     createContent: function(content){
+        var codeIcon = (this.options.type!=="service") ? "web_code.png" : "code.png";
+        var codeEmptyIcon = (this.options.type!=="service") ? "web_code_empty.png" : "code_empty.png";
+
         this.contentNode = new Element("div", {
             "styles": this.css.contentNode
         }).inject(this.container);
 
         this.resizeContentNodeSize();
         if (!content || !content.code){
-            this.referenceNode.setStyle("background", "url("+o2.session.path+"/widget/$ScriptArea/"+this.options.style+"/icon/reference_empty.png) center center no-repeat")
+            this.referenceNode.setStyle("background", "url("+o2.session.path+"/widget/$ScriptArea/"+this.options.style+"/icon/"+codeEmptyIcon+") center center no-repeat");
+        }else{
+            this.referenceNode.setStyle("background", "url("+o2.session.path+"/widget/$ScriptArea/"+this.options.style+"/icon/"+codeIcon+") center center no-repeat");
         }
         this.contentCode = content;
 
@@ -238,7 +244,8 @@ o2.widget.ScriptArea = new Class({
         //         this.showReferenceMenu();
         //     }
         // }.bind(this));
-        this.referenceNode.setStyle("background", "url("+o2.session.path+"/widget/$ScriptArea/"+this.options.style+"/icon/reference.png) center center no-repeat")
+        var codeIcon = (this.options.type!=="service") ? "web_code.png" : "code.png";
+        this.referenceNode.setStyle("background", "url("+o2.session.path+"/widget/$ScriptArea/"+this.options.style+"/icon/"+codeIcon+") center center no-repeat")
     },
 
     createScriptReferenceMenu: function(callback){
