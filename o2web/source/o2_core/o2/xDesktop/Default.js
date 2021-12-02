@@ -49,11 +49,14 @@ o2.xDesktop.Default = new Class({
     },
     returnZoom: function(){
         this.zoom(1);
+        if (this.zoomSlider){
+            this.zoomSlider.set(100);
+        }
     },
     zoomMenuShow: function(){
         this.sliderNode.show();
         this.sliderNode.set('tween', {duration: 100});
-        this.sliderNode.tween('width', '140');
+        this.sliderNode.tween('width', '160');
 
         if (!this.zoomSlider){
             if (!layout.userLayout.scale) layout.userLayout.scale = 1;
