@@ -164,19 +164,34 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
         }
     },
 	_dragIn: function(module){
-		if (this.treeNode.firstChild || this.json.cellType == "sequence"){
+		if (this.json.cellType == "sequence"){ //this.treeNode.firstChild ||
 			this.parentContainer._dragIn(module);
 		}else{
 			if (this.options.allowModules.indexOf(module.moduleName)!=-1){
+
+				this.parentContainer._dragOut(module);
+
+				// if (!this.Component) module.inContainer = this;
+				// module.parentContainer = this;
+				// module.nextModule = null;
+				// this.node.setStyles({"border": "1px solid #ffa200"});
+				// var copyNode = module._getCopyNode();
+				// copyNode.inject(this.node);
+
+				module.onDragModule = this;
 				if (!this.Component) module.inContainer = this;
 				module.parentContainer = this;
 				module.nextModule = null;
+
 				this.node.setStyles({"border": "1px solid #ffa200"});
 
-				//this._showInjectAction( module );
-
-				var copyNode = module._getCopyNode();
-				copyNode.inject(this.node);
+				if (module.controlMode){
+					if (module.copyNode) module.copyNode.hide();
+				}else{
+					var copyNode = module._getCopyNode(this);
+					copyNode.show();
+					copyNode.inject(this.node);
+				}
 			}else{
 				this.parentContainer._dragIn(module);
 			}
