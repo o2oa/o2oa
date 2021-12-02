@@ -6269,7 +6269,7 @@ var Request = this.Request = new Class({
 		url: '',
 		data: '',
 		headers: {
-			'X-Requested-With': 'XMLHttpRequest',
+			//'X-Requested-With': 'XMLHttpRequest',
 			'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'
 		},
 		async: true,

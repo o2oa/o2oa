@@ -29,7 +29,7 @@
 	"actionReferenceNode": {
         "width": "20px",
         "height": "20px",
-        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptText/default/icon/reference.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptText/default/icon/code.png) no-repeat center center",
         "float": "left",
         "cursor": "pointer"
     },
