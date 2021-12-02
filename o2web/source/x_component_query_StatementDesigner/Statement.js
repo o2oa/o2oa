@@ -432,6 +432,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     "isbind": false,
                     "maxObj": this.designer.designNode,
                     "title": this.designer.lp.scriptTitle,
+                    "type": "service",
                     "onChange": function () {
                         this.json.scriptText = this.scriptEditor.toJson().code;
                     }.bind(this)

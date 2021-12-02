@@ -256,7 +256,8 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     "maxObj": this.process.designer.paperNode,
                     "onChange": function(code){
                         _self.data[node.get("name")] = code;
-                    }
+                    },
+                    "type": node.dataset["type"]
                 });
                 this.scriptTexts.push(script);
                 //this.setScriptItems(script, node);
