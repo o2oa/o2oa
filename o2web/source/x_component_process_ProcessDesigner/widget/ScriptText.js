@@ -6,7 +6,8 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         "style": "default",
         "maskNode": $(document.body),
         "height": null,
-        "maxObj": null
+        "maxObj": null,
+        "type": "service"   //web or service
     },
     initialize: function(node, code, app, options){
         this.setOptions(options);
@@ -22,13 +23,19 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
     },
 
     createEditor: function(){
+        var codeIcon = (this.options.type!=="web") ? "code.png" : "web_code.png";
+        var codeEmptyIcon = (this.options.type!=="web") ? "code_empty.png" : "web_code_empty.png";
         this.areaNode = new Element("div", {"styles": this.css.areaNode}).inject(this.node);
         if (this.options.height) this.areaNode.setStyle("height", ""+this.options.height+"px");
 
         this.titleNode = new Element("div", {"styles": this.css.titleNode}).inject(this.areaNode);
 
         this.referenceNode = new Element("div", {"styles": this.css.actionReferenceNode}).inject(this.titleNode);
-        if (!this.code) this.referenceNode.setStyle("background", "url("+"../x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/icon/reference_empty.png) no-repeat center center")
+        if (!this.code){
+            this.referenceNode.setStyle("background", "url("+"../x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/icon/"+codeEmptyIcon+") no-repeat center center");
+        }else{
+            this.referenceNode.setStyle("background", "url("+"../x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/icon/"+codeIcon+") no-repeat center center")
+        }
         this.maxNode = new Element("div", {"styles": this.css.actionMaxNode}).inject(this.titleNode);
 
         this.returnNode = new Element("div", {"styles": this.css.actionReturnNode}).inject(this.titleNode);
@@ -55,7 +62,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         MWF.require("MWF.widget.JavascriptEditor", function(){
             this.editor = new MWF.widget.JavascriptEditor(this.editorNode, {
                 "runtime": "server",
-                "option": {"value": this.code},
+                "option": {"value": this.code, "lineNumbers": false},
                 "onSave": function(){
                     var value = this.editor.getValue();
                     this.fireEvent("change", [value]);
@@ -147,12 +154,15 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
 
         this.maxNode.setStyle("display", "none");
         this.returnNode.setStyle("display", "block");
+
+        if (this.editor) this.editor.showLineNumbers();
     },
     resizeEditor: function(){
         var size = this.areaNode.getSize();
         var y = size.y-20;
         this.editorNode.setStyle("height", ""+y+"px");
         if (this.editor) this.editor.resize();
+        if (this.editor) this.editor.hideLineNumbers();
     },
 
     returnSize: function(){
