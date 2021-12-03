@@ -1,12 +1,9 @@
 package com.x.base.core.entity;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
@@ -16,21 +13,17 @@ import javax.persistence.Transient;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.vfs2.CacheStrategy;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.FileSystemOptions;
+import org.apache.commons.vfs2.*;
 import org.apache.commons.vfs2.cache.NullFilesCache;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.ftp.FtpFileType;
 import org.apache.commons.vfs2.provider.ftps.FtpsFileSystemConfigBuilder;
-import org.apache.commons.vfs2.provider.webdav.WebdavFileSystemConfigBuilder;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.tools.DefaultCharset;
+import org.apache.commons.vfs2.provider.webdav4.Webdav4FileSystemConfigBuilder;
 
 @MappedSuperclass
 public abstract class StorageObject extends SliceJpaObject {
@@ -223,7 +216,7 @@ public abstract class StorageObject extends SliceJpaObject {
 					+ mapping.getPort();
 			break;
 		case webdav:
-			prefix = "webdav://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+			prefix = "webdav4://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
 					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
 					+ mapping.getPort();
 			break;
@@ -251,8 +244,8 @@ public abstract class StorageObject extends SliceJpaObject {
 			// 强制不校验IP
 			sftpBuilder.setRemoteVerification(opts, false);
 			sftpBuilder.setFileType(opts, FtpFileType.BINARY);
-			sftpBuilder.setConnectTimeout(opts, 10000);
-			sftpBuilder.setSoTimeout(opts, 10000);
+			sftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
+			sftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
 			sftpBuilder.setControlEncoding(opts, DefaultCharset.name);
 			// By default, the path is relative to the user's home directory. This can be
 			// changed with:
@@ -276,8 +269,8 @@ public abstract class StorageObject extends SliceJpaObject {
 			ftpBuilder.setRemoteVerification(opts, false);
 			// FtpFileType.BINARY is the default
 			ftpBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpBuilder.setConnectTimeout(opts, 10000);
-			ftpBuilder.setSoTimeout(opts, 10000);
+			ftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
+			ftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
 			ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
 			break;
 		case ftps:
@@ -287,17 +280,16 @@ public abstract class StorageObject extends SliceJpaObject {
 			ftpsBuilder.setRemoteVerification(opts, false);
 			// FtpFileType.BINARY is the default
 			ftpsBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpsBuilder.setConnectTimeout(opts, 10000);
-			ftpsBuilder.setSoTimeout(opts, 10000);
+			ftpsBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
+			ftpsBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
 			ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
 			break;
 		case cifs:
 			break;
 		case webdav:
-			WebdavFileSystemConfigBuilder webdavBuilder = (WebdavFileSystemConfigBuilder) WebdavFileSystemConfigBuilder
-					.getInstance();
-			webdavBuilder.setConnectionTimeout(opts, 10000);
-			webdavBuilder.setSoTimeout(opts, 10000);
+			Webdav4FileSystemConfigBuilder webdavBuilder =  Webdav4FileSystemConfigBuilder.getInstance();
+			webdavBuilder.setConnectionTimeout(opts, Duration.ofSeconds(10));
+			webdavBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
 			webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
 			webdavBuilder.setMaxConnectionsPerHost(opts, 200);
 			webdavBuilder.setMaxTotalConnections(opts, 200);
