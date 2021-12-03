@@ -23,6 +23,9 @@ import com.x.organization.assemble.express.Business;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 
+/**
+ * @author sword
+ */
 public class UnitDutyFactory extends AbstractFactory {
 
 	private CacheCategory cacheCategory = new CacheCategory(UnitDuty.class);
@@ -36,7 +39,7 @@ public class UnitDutyFactory extends AbstractFactory {
 			return null;
 		}
 		UnitDuty o = null;
-		CacheKey cacheKey = new CacheKey(flag);
+		CacheKey cacheKey = new CacheKey(UnitDuty.class.getSimpleName(), flag);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {
 			o = (UnitDuty) optional.get();
@@ -83,7 +86,7 @@ public class UnitDutyFactory extends AbstractFactory {
 	public List<UnitDuty> pick(List<String> flags) throws Exception {
 		List<UnitDuty> list = new ArrayList<>();
 		for (String str : flags) {
-			CacheKey cacheKey = new CacheKey(str);
+			CacheKey cacheKey = new CacheKey(UnitDuty.class.getSimpleName(), str);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				list.add((UnitDuty) optional.get());

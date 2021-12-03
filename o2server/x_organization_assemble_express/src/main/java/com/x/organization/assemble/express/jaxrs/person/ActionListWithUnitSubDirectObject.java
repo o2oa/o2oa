@@ -68,13 +68,7 @@ class ActionListWithUnitSubDirectObject extends BaseAction {
 	private List<Wo> list(Business business, Wi wi) throws Exception {
 		List<Wo> wos = new ArrayList<>();
 		List<Unit> os = business.unit().pick(wi.getUnitList());
-		List<String> unitIds = new ArrayList<>();
-		for (Unit o : os) {
-			if(!unitIds.contains(o.getId())) {
-				unitIds.add(o.getId());
-			}
-		}
-		unitIds = ListTools.trim(unitIds, true, true);
+		List<String> unitIds = ListTools.extractField(os, Unit.id_FIELDNAME, String.class, true, true);
 		List<Identity> list = new ArrayList<>();
 		if(ListTools.isNotEmpty(unitIds)) {
 			list = business.entityManagerContainer().fetchIn(Identity.class,
