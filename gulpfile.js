@@ -46,7 +46,7 @@ var supportedLanguage = ["zh-cn", "en"];
 
 var downloadHost = "git.o2oa.net";
 var protocol = "https";
-var commonUrl = "/o2oa/evn-o2server-commons/-/archive/6.4/evn-o2server-commons-6.4.tar.gz?path=commons";
+var commonUrl = "/o2oa/evn-o2server-commons/-/archive/7.0/evn-o2server-commons-7.0.tar.gz?path=commons";
 var jvmUrls = {
     "all": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm",
     "linux_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/linux_java11",
@@ -301,7 +301,7 @@ function move_commons(){
     console.log(`---------------------------------------------------------------------
   . move commons files to o2server/commons ...
 ---------------------------------------------------------------------`);
-    return gulp.src("o2server/evn-o2server-commons-6.4-commons/commons/**/*")
+    return gulp.src("o2server/evn-o2server-commons-7.0-commons/commons/**/*")
         .pipe(gulp.dest("o2server/commons/"));
 }
 function move_jvm(){
@@ -318,7 +318,7 @@ function move_jvm(){
         .pipe(gulp.dest("o2server/jvm/"));
 }
 function clear_commons_git(cb){
-    var dest = ['o2server/evn-o2server-commons-6.4-commons/', 'o2server/commons_git.tar.gz'];
+    var dest = ['o2server/evn-o2server-commons-7.0-commons/', 'o2server/commons_git.tar.gz'];
     del(dest, { force: true });
     cb();
 }
