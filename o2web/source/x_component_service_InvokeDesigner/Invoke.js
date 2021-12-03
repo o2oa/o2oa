@@ -114,7 +114,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 var lp = this.designer.lp.comment;
 
                 var defaultText = "/********************\n";
-                defaultText += "this.entityManager; //"+lp.entityManager+"\n";
+                // defaultText += "this.entityManager; //"+lp.entityManager+"\n";
                 defaultText += "this.applications; //"+lp.applications+"\n";
                 defaultText += "this.requestText//"+lp.requestText+"\n";
                 defaultText += "this.request//"+lp.request+"\n";
