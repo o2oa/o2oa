@@ -913,7 +913,9 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
 
     selectIcon: function(node){
         if (!node.iconMenu){
-            var iconSelectMenu = new MWF.widget.Menu(node, {"event": "click", "style": "processIcon"});
+            var tr = node.getParent("tr");
+            var p = tr.getPosition(this.process.designer.paperInNode.getNext());
+            var iconSelectMenu = new MWF.widget.Menu(node, {"left": p.x-330, "top": p.y, "event": "click", "style": "processIcon"});
             iconSelectMenu.load();
             node.iconMenu = iconSelectMenu;
             var _self = this;
