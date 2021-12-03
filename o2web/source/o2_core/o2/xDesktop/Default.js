@@ -580,13 +580,6 @@ o2.xDesktop.Default = new Class({
     },
     logout: function(){
         this.isLogout = true;
-        if (this.apps["Note"]){
-            if (this.apps["Note"].notes){
-                this.apps["Note"].notes.each(function(note){
-                    note.save();
-                });
-            }
-        }
         if (!this.notRecordStatus){
             this.recordDesktopStatus(function(){
                 (layout.authentication ||  new o2.xDesktop.Authentication()).logout();
