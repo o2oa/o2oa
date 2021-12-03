@@ -2126,6 +2126,13 @@ if (!window.o2) {
         o2.promiseAll = _promiseAll;
 
     })();
+    o2.defer = function(fn, timer, bind, pars){
+        if (fn.timerId) clearTimeout(fn.timerId);
+        fn.timerId = setTimeout(function(){
+            fn.timerId = null;
+            fn.apply((bind || this), pars);
+        }, timer);
+    }
     o2.core = true;
 
 
