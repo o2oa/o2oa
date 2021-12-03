@@ -38,7 +38,7 @@ public class PersonFactory extends AbstractFactory {
 			return null;
 		}
 		Person o = null;
-		CacheKey cacheKey = new CacheKey(flag);
+		CacheKey cacheKey = new CacheKey(Person.class.getName(), flag);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {
 			o = (Person) optional.get();
@@ -88,7 +88,7 @@ public class PersonFactory extends AbstractFactory {
 	public List<Person> pick(List<String> flags) throws Exception {
 		List<Person> list = new ArrayList<>();
 		for (String str : ListTools.trim(flags, true, false)) {
-			CacheKey cacheKey = new CacheKey(str);
+			CacheKey cacheKey = new CacheKey(Person.class.getName(), str);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				list.add((Person) optional.get());

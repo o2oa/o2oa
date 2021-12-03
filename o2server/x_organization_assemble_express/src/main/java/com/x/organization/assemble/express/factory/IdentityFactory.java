@@ -42,7 +42,7 @@ public class IdentityFactory extends AbstractFactory {
 			return null;
 		}
 		Identity o = null;
-		CacheKey cacheKey = new CacheKey(flag);
+		CacheKey cacheKey = new CacheKey(Identity.class.getName(), flag);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {
 			o = (Identity) optional.get();
@@ -89,7 +89,7 @@ public class IdentityFactory extends AbstractFactory {
 	public List<Identity> pick(List<String> flags) throws Exception {
 		List<Identity> list = new ArrayList<>();
 		for (String str : flags) {
-			CacheKey cacheKey = new CacheKey(str);
+			CacheKey cacheKey = new CacheKey(Identity.class.getName(), str);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				list.add((Identity) optional.get());
