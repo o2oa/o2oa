@@ -97,7 +97,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		bindings.put(ScriptingFactory.BINDING_NAME_REQUESTTEXT, gson.toJson(jsonElement));
 		bindings.put(ScriptingFactory.BINDING_NAME_REQUEST, request);
 		bindings.put(ScriptingFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
-		bindings.put(ScriptingFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
 		bindings.put(ScriptingFactory.BINDING_NAME_CUSTOMRESPONSE, customResponse);
 	}
 
