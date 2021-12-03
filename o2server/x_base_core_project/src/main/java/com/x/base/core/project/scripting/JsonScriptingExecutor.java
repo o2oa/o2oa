@@ -47,7 +47,7 @@ public class JsonScriptingExecutor {
 		JsonElement jsonElement = JsonNull.INSTANCE;
 		try {
 			Object o = cs.eval(scriptContext);
-			jsonElement = XGsonBuilder.instance().toJsonTree(o);
+			jsonElement = XGsonBuilder.instance().fromJson(Objects.toString(o, ""), JsonElement.class);
 		} catch (ScriptException e) {
 			LOGGER.error(e);
 		}
@@ -85,7 +85,7 @@ public class JsonScriptingExecutor {
 	public static String evalString(CompiledScript cs, ScriptContext scriptContext) {
 		JsonElement jsonElement = jsonElement(cs, scriptContext);
 		if (jsonElement.isJsonPrimitive()) {
-			return jsonElement.getAsString();
+			return jsonElement.getAsJsonPrimitive().getAsString();
 		}
 		return null;
 	}

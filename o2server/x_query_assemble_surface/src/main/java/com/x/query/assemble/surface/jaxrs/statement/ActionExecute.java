@@ -8,7 +8,7 @@ import javax.persistence.Query;
 import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
+import javax.script.ScriptException;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,7 +25,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.script.AbstractResources;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.query.assemble.surface.Business;
@@ -36,7 +37,7 @@ import com.x.query.core.express.statement.Runtime;
 
 class ActionExecute extends BaseAction {
 
-	private final static String[] pageKeys = { "GROUP BY", " COUNT(" };
+	private static final String[] pageKeys = { "GROUP BY", " COUNT(" };
 
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
@@ -61,7 +62,7 @@ class ActionExecute extends BaseAction {
 		if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_SCRIPT)) {
 			data = this.script(effectivePerson, statement, runtime);
 		} else {
-			data = this.jpql(effectivePerson, statement, runtime);
+			data = this.jpql(statement, runtime);
 		}
 		result.setData(data);
 		return result;
@@ -84,14 +85,14 @@ class ActionExecute extends BaseAction {
 		return statement;
 	}
 
-	private CompiledScript getCompiledScriptOfScriptText(Statement statement) throws Exception {
+	private CompiledScript getCompiledScriptOfScriptText(Statement statement) throws ScriptException {
 		CompiledScript compiledScript = null;
 		CacheKey cacheKey = new CacheKey(this.getClass(), statement.getId(), Statement.scriptText_FIELDNAME);
 		Optional<?> optional = CacheManager.get(cache, cacheKey);
 		if (optional.isPresent()) {
 			compiledScript = (CompiledScript) optional.get();
 		} else {
-			compiledScript = ScriptFactory.compile(ScriptFactory.functionalization(statement.getScriptText()));
+			compiledScript = ScriptingFactory.functionalizationCompile(statement.getScriptText());
 			CacheManager.put(cache, cacheKey, compiledScript);
 		}
 		return compiledScript;
@@ -101,11 +102,9 @@ class ActionExecute extends BaseAction {
 		Object data = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			ScriptContext scriptContext = this.scriptContext(effectivePerson, business, runtime);
-			ScriptFactory.initialServiceScriptText().eval(scriptContext);
+			ScriptContext scriptContext = this.scriptContext(effectivePerson, runtime);
 			CompiledScript compiledScript = this.getCompiledScriptOfScriptText(statement);
-			Object o = compiledScript.eval(scriptContext);
-			String text = ScriptFactory.asString(o);
+			String text = JsonScriptingExecutor.evalString(compiledScript, scriptContext);
 			Class<? extends JpaObject> cls = this.clazz(business, statement);
 			EntityManager em;
 			if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
@@ -121,7 +120,7 @@ class ActionExecute extends BaseAction {
 				}
 			}
 			if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-				if(isPageSql(text)) {
+				if (isPageSql(text)) {
 					query.setFirstResult((runtime.page - 1) * runtime.size);
 					query.setMaxResults(runtime.size);
 				}
@@ -135,7 +134,7 @@ class ActionExecute extends BaseAction {
 		return data;
 	}
 
-	private Object jpql(EffectivePerson effectivePerson, Statement statement, Runtime runtime) throws Exception {
+	private Object jpql(Statement statement, Runtime runtime) throws Exception {
 		Object data = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -155,7 +154,7 @@ class ActionExecute extends BaseAction {
 				}
 			}
 			if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-				if(isPageSql(statement.getData())) {
+				if (isPageSql(statement.getData())) {
 					query.setFirstResult((runtime.page - 1) * runtime.size);
 					query.setMaxResults(runtime.size);
 				}
@@ -169,7 +168,7 @@ class ActionExecute extends BaseAction {
 		return data;
 	}
 
-	private boolean isPageSql(String sql){
+	private boolean isPageSql(String sql) {
 		sql = sql.toUpperCase().replaceAll("\\s{1,}", " ");
 		for (String key : pageKeys) {
 			if (sql.indexOf(key) > -1) {
@@ -196,19 +195,17 @@ class ActionExecute extends BaseAction {
 		return cls;
 	}
 
-	private ScriptContext scriptContext(EffectivePerson effectivePerson, Business business, Runtime runtime)
-			throws Exception {
-		ScriptContext scriptContext = new SimpleScriptContext();
+	private ScriptContext scriptContext(EffectivePerson effectivePerson, Runtime runtime) throws Exception {
+		ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 		Resources resources = new Resources();
-		resources.setEntityManagerContainer(business.entityManagerContainer());
 		resources.setContext(ThisApplication.context());
 		resources.setApplications(ThisApplication.context().applications());
 		resources.setWebservicesClient(new WebservicesClient());
 		resources.setOrganization(new Organization(ThisApplication.context()));
 		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-		bindings.put(ScriptFactory.BINDING_NAME_RESOURCES, resources);
-		bindings.put(ScriptFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
-		bindings.put(ScriptFactory.BINDING_NAME_PARAMETERS, gson.toJson(runtime.getParameters()));
+		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
+		bindings.put(ScriptingFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
+		bindings.put(ScriptingFactory.BINDING_NAME_PARAMETERS, gson.toJson(runtime.getParameters()));
 		return scriptContext;
 	}
 
