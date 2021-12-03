@@ -7,7 +7,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -21,7 +20,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
@@ -31,7 +30,7 @@ import com.x.program.center.core.entity.Agent;
 
 class ActionExecute extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecute.class);
 
 	private static final CopyOnWriteArrayList<String> LOCK = new CopyOnWriteArrayList<>();
 
@@ -39,7 +38,7 @@ class ActionExecute extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			/* 判断当前用户是否有权限访问 */
-			if(!business.serviceControlAble(effectivePerson)) {
+			if (!business.serviceControlAble(effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			ActionResult<Wo> result = new ActionResult<>();
@@ -56,30 +55,27 @@ class ActionExecute extends BaseAction {
 					emc.beginTransaction(Agent.class);
 					agent.setLastStartTime(new Date());
 					emc.commit();
-					ScriptContext scriptContext = new SimpleScriptContext();
+					ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 					Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 					Resources resources = new Resources();
-					resources.setEntityManagerContainer(emc);
 					resources.setContext(ThisApplication.context());
 					resources.setOrganization(new Organization(ThisApplication.context()));
 					resources.setApplications(ThisApplication.context().applications());
 					resources.setWebservicesClient(new WebservicesClient());
-					bindings.put(ScriptFactory.BINDING_NAME_RESOURCES, resources);
-					bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
+					bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
 
 					CacheCategory cacheCategory = new CacheCategory(Agent.class);
 					CacheKey cacheKey = new CacheKey(ActionExecute.class, agent.getId());
 					CompiledScript compiledScript = null;
 					Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 					if (optional.isPresent()) {
-						compiledScript = (CompiledScript)optional.get();
-					}else {
-						compiledScript = ScriptFactory.compile(ScriptFactory.functionalization(agent.getText()));
+						compiledScript = (CompiledScript) optional.get();
+					} else {
+						compiledScript = ScriptingFactory.functionalizationCompile(agent.getText());
 						CacheManager.put(cacheCategory, cacheKey, compiledScript);
 					}
 
 					try {
-						ScriptFactory.initialServiceScriptText().eval(scriptContext);
 						compiledScript.eval(scriptContext);
 					} catch (Exception e) {
 						throw new ExceptionAgentEval(e, e.getMessage(), agent.getId(), agent.getName(),

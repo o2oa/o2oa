@@ -30,8 +30,7 @@ public class ScriptingFactory {
 	private static CompiledScript compiledScriptInitialServiceScriptText;
 	private static CompiledScript compiledScriptInitialScriptText;
 
-	public static final String BINDING_NAME_RESOURCES = "resources";
-	public static final String BINDING_NAME_EFFECTIVEPERSON = "effectivePerson";
+
 	public static final String BINDING_NAME_WORKCONTEXT = "workContext";
 	public static final String BINDING_NAME_GSON = "gson";
 	public static final String BINDING_NAME_DATA = "data";
@@ -40,13 +39,11 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_DICTIONARY = "dictionary";
 	public static final String BINDING_NAME_ROUTES = "routes";
 	public static final String BINDING_NAME_ROUTE = "routes";
-	public static final String BINDING_NAME_APPLICATIONS = "applications";
 
 	public static final String BINDING_NAME_ASSIGNDATA = "assignData";
 
 	public static final String BINDING_NAME_IDENTITY = "identity";
 
-	public static final String BINDING_NAME_PARAMETERS = "parameters";
 	public static final String BINDING_NAME_JAXRSRESPONSE = "jaxrsResponse";
 	public static final String BINDING_NAME_JAXWSRESPONSE = "jaxwsResponse";
 
@@ -59,9 +56,14 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_SERIAL = "serial";
 	public static final String BINDING_NAME_PROCESS = "process";
 
-	public static final String BINDING_NAME_REQUESTTEXT = "requestText";
-	public static final String BINDING_NAME_REQUEST = "request";
-	public static final String BINDING_NAME_CUSTOMRESPONSE = "customResponse";
+
+	
+	public static final String BINDING_NAME_RESOURCES = "java_resources";
+	public static final String BINDING_NAME_EFFECTIVEPERSON = "java_effectivePerson";
+	public static final String BINDING_NAME_CUSTOMRESPONSE = "java_customResponse";
+	public static final String BINDING_NAME_REQUESTTEXT = "java_requestText";
+	public static final String BINDING_NAME_REQUEST = "java_request";
+	public static final String BINDING_NAME_PARAMETERS = "java_parameters";
 
 	public static ScriptEngine newScriptEngine() {
 		return (new ScriptEngineManager()).getEngineByName(Config.SCRIPTING_ENGINE_NAME);
