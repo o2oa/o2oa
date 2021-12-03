@@ -1,13 +1,11 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
-import java.util.Objects;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Parameter;
 import javax.persistence.Query;
 import javax.script.Bindings;
+import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,7 +20,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.script.AbstractResources;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.query.assemble.designer.Business;
@@ -33,7 +32,7 @@ import com.x.query.core.express.statement.Runtime;
 
 class ActionExecute extends BaseAction {
 
-	private final static String[] pageKeys = { "GROUP BY", " COUNT(" };
+	private static final String[] pageKeys = { "GROUP BY", " COUNT(" };
 
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
@@ -53,14 +52,12 @@ class ActionExecute extends BaseAction {
 
 			Object data = null;
 
-			switch (Objects.toString(statement.getFormat(), "")) {
-				case Statement.FORMAT_SCRIPT:
-					data = this.script(effectivePerson, business, statement, runtime);
-					break;
-				default:
-					data = this.jpql(effectivePerson, business, statement, runtime);
-					break;
+			if (StringUtils.equalsIgnoreCase(statement.getFormat(), Statement.FORMAT_SCRIPT)) {
+				data = this.script(effectivePerson, business, statement, runtime);
+			} else {
+				data = this.jpql(business, statement, runtime);
 			}
+
 			result.setData(data);
 			return result;
 		}
@@ -69,17 +66,18 @@ class ActionExecute extends BaseAction {
 	private Object script(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
 			throws Exception {
 		Object data = null;
-		ScriptContext scriptContext = this.scriptContext(effectivePerson, business, runtime);
-		ScriptFactory.initialServiceScriptText().eval(scriptContext);
-		Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(statement.getScriptText()),
-				scriptContext);
-		String text = ScriptFactory.asString(o);
+		ScriptContext scriptContext = this.scriptContext(effectivePerson, runtime);
+		CompiledScript cs = ScriptingFactory.functionalizationCompile(statement.getScriptText());
+		String text = JsonScriptingExecutor.evalString(cs, scriptContext);
+//		Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(statement.getScriptText()),
+//				scriptContext);
+//		String text = ScriptFactory.asString(o);
 		Class<? extends JpaObject> cls = this.clazz(business, statement);
 		EntityManager em;
-		if(StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
-				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)){
+		if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
+				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
 			em = business.entityManagerContainer().get(DynamicBaseEntity.class);
-		}else{
+		} else {
 			em = business.entityManagerContainer().get(cls);
 		}
 		Query query = em.createQuery(text);
@@ -89,7 +87,7 @@ class ActionExecute extends BaseAction {
 			}
 		}
 		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-			if(isPageSql(text)) {
+			if (isPageSql(text)) {
 				query.setFirstResult((runtime.page - 1) * runtime.size);
 				query.setMaxResults(runtime.size);
 			}
@@ -102,15 +100,14 @@ class ActionExecute extends BaseAction {
 		return data;
 	}
 
-	private Object jpql(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
-			throws Exception {
+	private Object jpql(Business business, Statement statement, Runtime runtime) throws Exception {
 		Object data = null;
 		Class<? extends JpaObject> cls = this.clazz(business, statement);
 		EntityManager em;
-		if(StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
-				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)){
+		if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
+				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
 			em = business.entityManagerContainer().get(DynamicBaseEntity.class);
-		}else{
+		} else {
 			em = business.entityManagerContainer().get(cls);
 		}
 		Query query = em.createQuery(statement.getData());
@@ -120,7 +117,7 @@ class ActionExecute extends BaseAction {
 			}
 		}
 		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-			if(isPageSql(statement.getData())) {
+			if (isPageSql(statement.getData())) {
 				query.setFirstResult((runtime.page - 1) * runtime.size);
 				query.setMaxResults(runtime.size);
 			}
@@ -133,7 +130,7 @@ class ActionExecute extends BaseAction {
 		return data;
 	}
 
-	private boolean isPageSql(String sql){
+	private boolean isPageSql(String sql) {
 		sql = sql.toUpperCase().replaceAll("\\s{1,}", " ");
 		for (String key : pageKeys) {
 			if (sql.indexOf(key) > -1) {
@@ -159,19 +156,17 @@ class ActionExecute extends BaseAction {
 		return cls;
 	}
 
-	private ScriptContext scriptContext(EffectivePerson effectivePerson, Business business, Runtime runtime)
-			throws Exception {
-		ScriptContext scriptContext = new SimpleScriptContext();
+	private ScriptContext scriptContext(EffectivePerson effectivePerson, Runtime runtime) throws Exception {
+		ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 		Resources resources = new Resources();
-		resources.setEntityManagerContainer(business.entityManagerContainer());
 		resources.setContext(ThisApplication.context());
 		resources.setApplications(ThisApplication.context().applications());
 		resources.setWebservicesClient(new WebservicesClient());
 		resources.setOrganization(new Organization(ThisApplication.context()));
 		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-		bindings.put(ScriptFactory.BINDING_NAME_RESOURCES, resources);
-		bindings.put(ScriptFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
-		bindings.put(ScriptFactory.BINDING_NAME_PARAMETERS, gson.toJson(runtime.getParameters()));
+		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
+		bindings.put(ScriptingFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
+		bindings.put(ScriptingFactory.BINDING_NAME_PARAMETERS, gson.toJson(runtime.getParameters()));
 		return scriptContext;
 	}
 
