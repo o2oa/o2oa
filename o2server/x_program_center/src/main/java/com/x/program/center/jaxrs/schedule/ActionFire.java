@@ -1,6 +1,7 @@
 package com.x.program.center.jaxrs.schedule;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,27 +24,26 @@ import com.x.program.center.ThisApplication;
 
 class ActionFire extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionFire.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionFire.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
+			Wo wo = new Wo();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			if (effectivePerson.isNotManager()) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Application application = ThisApplication.context().applications().get(wi.getApplication(), wi.getNode());
-			ScheduleRequest request = null;
+			Optional<ScheduleRequest> optional = application.getScheduleRequestList().stream()
+					.filter(o -> StringUtils.equalsIgnoreCase(wi.getClassName(), o.getClassName())).findFirst();
 
-			for (ScheduleRequest o : application.getScheduleRequestList()) {
-				if (StringUtils.equalsIgnoreCase(wi.getClassName(), o.getClassName())) {
-					request = o;
-					break;
-				}
+			if (optional.isPresent()) {
+				this.fire(effectivePerson, application, optional.get());
+				wo.setValue(true);
+			} else {
+				wo.setValue(false);
 			}
-			this.fire(effectivePerson, application, request);
-			Wo wo = new Wo();
-			wo.setValue(true);
 			result.setData(wo);
 			return result;
 		}
@@ -56,7 +56,7 @@ class ActionFire extends BaseAction {
 					+ Applications.joinQueryUri("fireschedule", "classname", request.getClassName());
 			CipherConnectionAction.get(effectivePerson.getDebugger(), url);
 			request.setLastStartTime(new Date());
-			logger.info("fire schedule className: {}, application: {}, node: {}.", request.getClassName(),
+			LOGGER.info("fire schedule className: {}, application: {}, node: {}.", request.getClassName(),
 					application.getClassName(), application.getNode());
 		} catch (Exception e) {
 			throw new ExceptionFire(e, request.getClassName(), application.getClassName(), application.getNode());

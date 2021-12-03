@@ -1,5 +1,19 @@
 package com.x.query.assemble.surface.jaxrs.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
+import javax.persistence.Query;
+import javax.script.Bindings;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+
+import org.apache.commons.collections4.list.TreeList;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,7 +30,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
@@ -27,26 +42,14 @@ import com.x.query.core.entity.schema.Table;
 import com.x.query.core.express.plan.Comparison;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.statement.Runtime;
-import org.apache.commons.collections4.list.TreeList;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Parameter;
-import javax.persistence.Query;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 class ActionExecuteV2 extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionExecuteV2.class);
-	private final static String[] keys = { "group by", "GROUP BY", "order by", "ORDER BY", "limit", "LIMIT" };
-	private final static String[] pageKeys = { "GROUP BY", " COUNT(" };
-	private final static String JOIN_KEY = " JOIN ";
-	private final static String JOIN_ON_KEY = " ON ";
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecuteV2.class);
+	private static final String[] keys = { "group by", "GROUP BY", "order by", "ORDER BY", "limit", "LIMIT" };
+	private static final String[] pageKeys = { "GROUP BY", " COUNT(" };
+	private static final String JOIN_KEY = " JOIN ";
+	private static final String JOIN_ON_KEY = " ON ";
 
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
@@ -74,7 +77,7 @@ class ActionExecuteV2 extends BaseAction {
 				data = this.script(effectivePerson, statement, runtime, mode, wi);
 				break;
 			default:
-				data = this.jpql(effectivePerson, statement, runtime, mode, wi);
+				data = this.jpql(statement, runtime, mode, wi);
 				break;
 			}
 			result.setData(data);
@@ -85,7 +88,7 @@ class ActionExecuteV2 extends BaseAction {
 				count = this.script(effectivePerson, statement, runtime, mode, wi);
 				break;
 			default:
-				count = this.jpql(effectivePerson, statement, runtime, mode, wi);
+				count = this.jpql(statement, runtime, mode, wi);
 				break;
 			}
 			result.setData(count);
@@ -98,8 +101,8 @@ class ActionExecuteV2 extends BaseAction {
 				count = this.script(effectivePerson, statement, runtime, Statement.MODE_COUNT, wi);
 				break;
 			default:
-				data = this.jpql(effectivePerson, statement, runtime, Statement.MODE_DATA, wi);
-				count = this.jpql(effectivePerson, statement, runtime, Statement.MODE_COUNT, wi);
+				data = this.jpql(statement, runtime, Statement.MODE_DATA, wi);
+				count = this.jpql(statement, runtime, Statement.MODE_COUNT, wi);
 				break;
 			}
 			result.setData(data);
@@ -114,13 +117,14 @@ class ActionExecuteV2 extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ScriptContext scriptContext = this.scriptContext(effectivePerson, business, runtime);
-			ScriptFactory.initialServiceScriptText().eval(scriptContext);
 			String scriptText = statement.getScriptText();
 			if (Statement.MODE_COUNT.equals(mode)) {
 				scriptText = statement.getCountScriptText();
 			}
-			Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(scriptText), scriptContext);
-			String jpql = ScriptFactory.asString(o);
+			CompiledScript cs = ScriptingFactory.functionalizationCompile(scriptText);
+			String jpql = JsonScriptingExecutor.evalString(cs, scriptContext);
+//			Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(), scriptContext);
+//			String jpql = ScriptFactory.asString(o);
 			Class<? extends JpaObject> cls = this.clazz(business, statement);
 			EntityManager em;
 			if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
@@ -130,7 +134,7 @@ class ActionExecuteV2 extends BaseAction {
 				em = business.entityManagerContainer().get(cls);
 			}
 			jpql = joinSql(jpql, wi, business);
-			logger.info("执行的sql：{}", jpql);
+			LOGGER.info("执行的sql：{}", jpql::toString);
 			Query query;
 			String upJpql = jpql.toUpperCase();
 			if (upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1) {
@@ -147,7 +151,7 @@ class ActionExecuteV2 extends BaseAction {
 				if (Statement.MODE_COUNT.equals(mode)) {
 					data = query.getSingleResult();
 				} else {
-					if(isPageSql(jpql)) {
+					if (isPageSql(jpql)) {
 						query.setFirstResult((runtime.page - 1) * runtime.size);
 						query.setMaxResults(runtime.size);
 					}
@@ -162,8 +166,7 @@ class ActionExecuteV2 extends BaseAction {
 		return data;
 	}
 
-	private Object jpql(EffectivePerson effectivePerson, Statement statement, Runtime runtime, String mode, Wi wi)
-			throws Exception {
+	private Object jpql(Statement statement, Runtime runtime, String mode, Wi wi) throws Exception {
 		Object data = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -180,7 +183,7 @@ class ActionExecuteV2 extends BaseAction {
 				jpql = statement.getCountData();
 			}
 			jpql = joinSql(jpql, wi, business);
-			logger.info("执行的sql：{}", jpql);
+			LOGGER.info("执行的sql：{}", jpql::toString);
 			Query query;
 			String upJpql = jpql.toUpperCase();
 			if (upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1) {
@@ -197,7 +200,7 @@ class ActionExecuteV2 extends BaseAction {
 				if (Statement.MODE_COUNT.equals(mode)) {
 					data = query.getSingleResult();
 				} else {
-					if(isPageSql(jpql)) {
+					if (isPageSql(jpql)) {
 						query.setFirstResult((runtime.page - 1) * runtime.size);
 						query.setMaxResults(runtime.size);
 					}
@@ -212,7 +215,7 @@ class ActionExecuteV2 extends BaseAction {
 		return data;
 	}
 
-	private boolean isPageSql(String sql){
+	private boolean isPageSql(String sql) {
 		sql = sql.toUpperCase().replaceAll("\\s{1,}", " ");
 		for (String key : pageKeys) {
 			if (sql.indexOf(key) > -1) {
@@ -240,17 +243,16 @@ class ActionExecuteV2 extends BaseAction {
 
 	private ScriptContext scriptContext(EffectivePerson effectivePerson, Business business, Runtime runtime)
 			throws Exception {
-		ScriptContext scriptContext = new SimpleScriptContext();
+		ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 		Resources resources = new Resources();
-		resources.setEntityManagerContainer(business.entityManagerContainer());
 		resources.setContext(ThisApplication.context());
 		resources.setApplications(ThisApplication.context().applications());
 		resources.setWebservicesClient(new WebservicesClient());
 		resources.setOrganization(new Organization(ThisApplication.context()));
 		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-		bindings.put(ScriptFactory.BINDING_NAME_RESOURCES, resources);
-		bindings.put(ScriptFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
-		bindings.put(ScriptFactory.BINDING_NAME_PARAMETERS, gson.toJson(runtime.getParameters()));
+		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
+		bindings.put(ScriptingFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
+		bindings.put(ScriptingFactory.BINDING_NAME_PARAMETERS, gson.toJson(runtime.getParameters()));
 		return scriptContext;
 	}
 
