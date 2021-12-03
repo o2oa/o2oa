@@ -1802,12 +1802,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     reLocationFiletextToolbarEvent: function(editorName){
         if (Browser.ie11){
-            if (!this.waitLocationFiletext){
-                this.waitLocationFiletext = window.setTimeout(function(){
-                    this.reLocationFiletextToolbar(editorName);
-                    this.waitLocationFiletext = false;
-                }.bind(this), 300);
-            }
+            o2.defer(this.reLocationFiletextToolbar, 500, this, [editorName]);
+            // if (!this.waitLocationFiletext){
+            //     this.waitLocationFiletext = window.setTimeout(function(){
+            //         this.reLocationFiletextToolbar(editorName);
+            //         this.waitLocationFiletext = false;
+            //     }.bind(this), 300);
+            // }
         }else{
             this.reLocationFiletextToolbar(editorName)
         }
@@ -2917,20 +2918,19 @@ debugger;
                 }.bind(this) );
 
                 editor.on( 'change', function( e ) {
-                    //editor.on( 'change', function( e ) {
-                        var h = document.documentElement.scrollTop;
-                        var scrollNode = this.contentNode;
-                        while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("4-y")!=="auto"))){
-                            scrollNode = scrollNode.getParent();
-                        }
-                        if (scrollNode){
-                            var top = scrollNode.scrollTop.toFloat();
-                            scrollNode.scrollTop = h+top;
-                        }
-                        document.documentElement.scrollTop = 0;
+                    var h = document.documentElement.scrollTop;
+                    var scrollNode = this.contentNode;
+                    while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("4-y")!=="auto"))){
+                        scrollNode = scrollNode.getParent();
+                    }
+                    if (scrollNode){
+                        var top = scrollNode.scrollTop.toFloat();
+                        scrollNode.scrollTop = h+top;
+                    }
+                    document.documentElement.scrollTop = 0;
 
                     if (!!editorName) this.getAttachmentTextData();
-                    //}.bind(this) );
+                    o2.defer(this.resetNodeSize, 500, this);
                 }.bind(this) );
 
 
