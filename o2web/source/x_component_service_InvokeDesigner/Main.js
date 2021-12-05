@@ -877,7 +877,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                 //"dependInvokeList": [],
                 "isNewInvoke": true,
                 "text": "",
-                "enableToken" : true,
+                "enableToken" : false,
                 "enable" : true,
                 "remoteAddrRegex" : "",
                 "lastStartTime" : "",
