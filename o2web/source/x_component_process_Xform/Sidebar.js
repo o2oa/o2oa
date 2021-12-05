@@ -314,6 +314,14 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
         }
         return this.routeDataList;
     },
+    isOpinionRequired: function( routeName ){
+        var routeList = this.getRouteDataList();
+        for( var i=0; i<routeList.length; i++ ){
+            if( routeList[i].name === routeName ){
+                return routeList[i].opinionRequired;
+            }
+        }
+    },
     getRouteId: function( routeName ){
         var routeList = this.getRouteDataList();
         for( var i=0; i<routeList.length; i++ ){
@@ -367,6 +375,11 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
     },
     processWork: function(route){
         var opinion = this.form.getOpinion();
+
+        if( !opinion.opinion && !opinion.medias.length && this.isOpinionRequired(route)){
+            this.form.notice(MWF.xApplication.process.Work.LP.opinionRequired, "error");
+            return;
+        }
 
         this.form.Macro.environment.form.currentRouteName = route;
         this.form.Macro.environment.form.opinion = opinion.opinion;
