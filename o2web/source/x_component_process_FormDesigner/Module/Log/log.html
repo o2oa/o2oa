@@ -189,7 +189,7 @@
 						<input class="editTableRadio" name="sortTypeInCategory" text{(!$.sortTypeInCategory || $.sortTypeInCategory=='default')?'checked':''} type="radio" value="default" onclick="if (this.checked){
 							//$('text{$.pid}sortInCategoryScript').setStyle('display', 'none');
 						}" />{{$.lp.sortByActivity}}
-						<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory && $.sortTypeInCategory=='completedTimeAsc') } type="radio" value="completedTimeAsc" onclick="if (this.checked){
+						<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory && $.sortTypeInCategory=='completedTimeAsc')?'checked':'' } type="radio" value="completedTimeAsc" onclick="if (this.checked){
 							//$('text{$.pid}sortInCategoryScript').setStyle('display', 'none');
 						}" />{{$.lp.sortByTimeAsc}}
 						<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory && $.sortTypeInCategory=='completedTimeDesc')?'checked':''} type="radio" value="completedTimeDesc" onclick="if (this.checked){
