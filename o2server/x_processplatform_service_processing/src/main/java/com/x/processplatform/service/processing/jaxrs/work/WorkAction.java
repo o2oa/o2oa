@@ -359,4 +359,23 @@ public class WorkAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "创建工作序列号.", action = ActionCreateSerial.class)
+	@POST
+	@Path("process/{processId}/name/{name}/serial")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void createWorkSerial(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					@JaxrsParameterDescribe("流程标识") @PathParam("processId") String processId,
+					@JaxrsParameterDescribe("编号名称") @PathParam("name") String name) {
+		ActionResult<ActionCreateSerial.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCreateSerial().execute(processId, name);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
