@@ -1347,7 +1347,7 @@
  * @borrows module:Actions.getHost as getHost
  */
 /**
- * 平台预置了Actions对象用于调用平台提供的服务，您可以使用this.Actions.load来获取这些方法。
+ * 平台预置了Actions对象用于调用平台提供的服务，您可以使用this.Actions.load来获取这些方法。由于是运行在服务器端，服务都是同步调用。
  * @method load
  * @methodOf module:server.Actions
  * @instance
@@ -1367,7 +1367,9 @@
  *     通过this.Actions.load(root)方法得到action对象，就可以访问此服务下的方法了。<br/>
  *     访问方法的规则如下：
  *  </caption>
- *  this.Actions.load( root )[actionName][methodName]( arguements );
+ *  var requestString = this.Actions.load( root )[actionName][methodName]( arguements );
+ *
+ *  requestString : 服务返回的响应数据，字符串格式，可以通过 requestObjest = JSON.parse(requestString);解析成对象
  *
  *  root : 平台服务根名称，如果 x_processplatform_assemble_surface
  *
@@ -1393,12 +1395,11 @@
  *          xhr XmlHttpRequest对象，服务器请求失败时有值
  *       }
  *      此参数可以省略，如果省略，系统会自动弹出错误信息。
- *
- *      async : 方法同步或者异步执行，默认为true。
  *  @o2syntax
  *  <caption>
- *  处理返回的数据：<br/>
- *  通过success方法作为第一个参数来处理结果
+ *  处理返回的数据有两种方式，二选一即可：<br/>
+ *  1、该方法返回的结果是响应数据字符串，通过JSON.parse(responseString)获取对象。<br/>
+ *  2、通过success方法作为第一个参数来处理结果
  *  </caption>
  *  //success：arguements中的第一个function对象
  *  function(json){
@@ -1421,7 +1422,7 @@
  * </caption>
  * var processAction = this.Actions.load("x_processplatform_assemble_surface"); //获取action
  * var method = processAction.TaskAction.V2ListPaging; //获取列式方法
- * //执行方法
+ * //执行方法1
  * method(
  *  1,  //uri 第1个参数，如果无uri参数，可以省略
  *  20, //uri 第2个参数，如果无uri参数，可以省略，如果还有其他uri参数，可以用逗号, 分隔
@@ -1437,9 +1438,12 @@
  *      //responseJSON见下面的说明
  *
  *      var message = responseJSON.message; //message为错误提示文本
- *  },
- *  true //可选，true为异步调用，false为同步调用，默认为true
+ *  }
  * );
+ *
+ * //执行方法2
+ * var responseString = method( 1, 20, {processList : [xxx]} )
+ * var responseObject = JSON.parse(responseObject);
  * @example
  * <caption>出错信息responseJSON的格式</caption>
  * {
