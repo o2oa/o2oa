@@ -1,12 +1,9 @@
 package com.x.base.core.entity;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
@@ -16,21 +13,17 @@ import javax.persistence.Transient;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.vfs2.CacheStrategy;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.FileSystemOptions;
+import org.apache.commons.vfs2.*;
 import org.apache.commons.vfs2.cache.NullFilesCache;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.ftp.FtpFileType;
 import org.apache.commons.vfs2.provider.ftps.FtpsFileSystemConfigBuilder;
-import org.apache.commons.vfs2.provider.webdav.WebdavFileSystemConfigBuilder;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.tools.DefaultCharset;
+import org.apache.commons.vfs2.provider.webdav4.Webdav4FileSystemConfigBuilder;
 
 @MappedSuperclass
 public abstract class StorageObject extends SliceJpaObject {
@@ -202,39 +195,39 @@ public abstract class StorageObject extends SliceJpaObject {
 			throw new IllegalStateException("storage protocol is null.");
 		}
 		switch (mapping.getProtocol()) {
-		case ftp:
-			prefix = "ftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-					+ mapping.getPort();
-			break;
-		case ftps:
-			prefix = "ftps://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-					+ mapping.getPort();
-			break;
-		case sftp:
-			prefix = "sftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-					+ mapping.getPort();
-			break;
-		case cifs:
-			prefix = "smb://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-					+ mapping.getPort();
-			break;
-		case webdav:
-			prefix = "webdav://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-					+ mapping.getPort();
-			break;
-		case file:
-			prefix = "file://";
-			break;
-		case hdfs:
-			// 路径不采用带用户名的homeDirctory,直接返回
-			return StringUtils.isEmpty(mapping.getPrefix()) ? "/" : ("/" + mapping.getPrefix());
-		default:
-			break;
+			case ftp:
+				prefix = "ftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+						+ mapping.getPort();
+				break;
+			case ftps:
+				prefix = "ftps://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+						+ mapping.getPort();
+				break;
+			case sftp:
+				prefix = "sftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+						+ mapping.getPort();
+				break;
+			case cifs:
+				prefix = "smb://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+						+ mapping.getPort();
+				break;
+			case webdav:
+				prefix = "webdav4://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+						+ mapping.getPort();
+				break;
+			case file:
+				prefix = "file://";
+				break;
+			case hdfs:
+				// 路径不采用带用户名的homeDirctory,直接返回
+				return StringUtils.isEmpty(mapping.getPrefix()) ? "/" : ("/" + mapping.getPrefix());
+			default:
+				break;
 		}
 		return prefix + (StringUtils.isEmpty(mapping.getPrefix()) ? "" : ("/" + mapping.getPrefix()));
 	}
@@ -245,68 +238,67 @@ public abstract class StorageObject extends SliceJpaObject {
 			throw new IllegalStateException("storage protocol is null.");
 		}
 		switch (mapping.getProtocol()) {
-		case sftp:
-			FtpFileSystemConfigBuilder sftpBuilder = FtpFileSystemConfigBuilder.getInstance();
-			sftpBuilder.setPassiveMode(opts, Config.vfs().getSftp().getPassive());
-			// 强制不校验IP
-			sftpBuilder.setRemoteVerification(opts, false);
-			sftpBuilder.setFileType(opts, FtpFileType.BINARY);
-			sftpBuilder.setConnectTimeout(opts, 10000);
-			sftpBuilder.setSoTimeout(opts, 10000);
-			sftpBuilder.setControlEncoding(opts, DefaultCharset.name);
-			// By default, the path is relative to the user's home directory. This can be
-			// changed with:
-			sftpBuilder.setUserDirIsRoot(opts, false);
-			break;
-		case ftp:
-			FtpFileSystemConfigBuilder ftpBuilder = FtpFileSystemConfigBuilder.getInstance();
-			/*
-			 * 如果使用被动模式在阿里云centos7下会经常性出现无法连接 Caused by: java.net.ConnectException:
-			 * Connection timed out (Connection timed out) at
-			 * java.net.PlainSocketImpl.socketConnect(Native Method) at
-			 * java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
-			 * at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.
-			 * java:206) at
-			 * java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) at
-			 * java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) at
-			 * java.net.Socket.connect(Socket.java:589)
-			 */
-			ftpBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
-			// 强制不校验IP
-			ftpBuilder.setRemoteVerification(opts, false);
-			// FtpFileType.BINARY is the default
-			ftpBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpBuilder.setConnectTimeout(opts, 10000);
-			ftpBuilder.setSoTimeout(opts, 10000);
-			ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
-			break;
-		case ftps:
-			FtpsFileSystemConfigBuilder ftpsBuilder = FtpsFileSystemConfigBuilder.getInstance();
-			ftpsBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
-			// 强制不校验IP
-			ftpsBuilder.setRemoteVerification(opts, false);
-			// FtpFileType.BINARY is the default
-			ftpsBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpsBuilder.setConnectTimeout(opts, 10000);
-			ftpsBuilder.setSoTimeout(opts, 10000);
-			ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
-			break;
-		case cifs:
-			break;
-		case webdav:
-			WebdavFileSystemConfigBuilder webdavBuilder = (WebdavFileSystemConfigBuilder) WebdavFileSystemConfigBuilder
-					.getInstance();
-			webdavBuilder.setConnectionTimeout(opts, 10000);
-			webdavBuilder.setSoTimeout(opts, 10000);
-			webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
-			webdavBuilder.setMaxConnectionsPerHost(opts, 200);
-			webdavBuilder.setMaxTotalConnections(opts, 200);
-			webdavBuilder.setFollowRedirect(opts, true);
-			break;
-		case file:
-			break;
-		default:
-			break;
+			case sftp:
+				FtpFileSystemConfigBuilder sftpBuilder = FtpFileSystemConfigBuilder.getInstance();
+				sftpBuilder.setPassiveMode(opts, Config.vfs().getSftp().getPassive());
+				// 强制不校验IP
+				sftpBuilder.setRemoteVerification(opts, false);
+				sftpBuilder.setFileType(opts, FtpFileType.BINARY);
+				sftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
+				sftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+				sftpBuilder.setControlEncoding(opts, DefaultCharset.name);
+				// By default, the path is relative to the user's home directory. This can be
+				// changed with:
+				sftpBuilder.setUserDirIsRoot(opts, false);
+				break;
+			case ftp:
+				FtpFileSystemConfigBuilder ftpBuilder = FtpFileSystemConfigBuilder.getInstance();
+				/*
+				 * 如果使用被动模式在阿里云centos7下会经常性出现无法连接 Caused by: java.net.ConnectException:
+				 * Connection timed out (Connection timed out) at
+				 * java.net.PlainSocketImpl.socketConnect(Native Method) at
+				 * java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+				 * at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.
+				 * java:206) at
+				 * java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) at
+				 * java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) at
+				 * java.net.Socket.connect(Socket.java:589)
+				 */
+				ftpBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
+				// 强制不校验IP
+				ftpBuilder.setRemoteVerification(opts, false);
+				// FtpFileType.BINARY is the default
+				ftpBuilder.setFileType(opts, FtpFileType.BINARY);
+				ftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
+				ftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+				ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
+				break;
+			case ftps:
+				FtpsFileSystemConfigBuilder ftpsBuilder = FtpsFileSystemConfigBuilder.getInstance();
+				ftpsBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
+				// 强制不校验IP
+				ftpsBuilder.setRemoteVerification(opts, false);
+				// FtpFileType.BINARY is the default
+				ftpsBuilder.setFileType(opts, FtpFileType.BINARY);
+				ftpsBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
+				ftpsBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+				ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
+				break;
+			case cifs:
+				break;
+			case webdav:
+				Webdav4FileSystemConfigBuilder webdavBuilder =  Webdav4FileSystemConfigBuilder.getInstance();
+				webdavBuilder.setConnectionTimeout(opts, Duration.ofSeconds(10));
+				webdavBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+				webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
+				webdavBuilder.setMaxConnectionsPerHost(opts, 200);
+				webdavBuilder.setMaxTotalConnections(opts, 200);
+				webdavBuilder.setFollowRedirect(opts, true);
+				break;
+			case file:
+				break;
+			default:
+				break;
 		}
 		return opts;
 	}
@@ -328,7 +320,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		 */
 		for (int i = 0; i < 2; i++) {
 			try (FileObject fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
-					OutputStream output = fo.getContent().getOutputStream()) {
+				 OutputStream output = fo.getContent().getOutputStream()) {
 				length = IOUtils.copyLarge(new ByteArrayInputStream(bytes), output);
 				this.setLength(length);
 				if ((!Objects.equals(StorageProtocol.webdav, mapping.getProtocol()))
