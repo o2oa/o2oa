@@ -2143,6 +2143,48 @@ MWF.xScript.ViewEnvironment = function (ev) {
             // orgActions.listGroupWithPerson(data, function(json){v = json.data;}, null, false);
             // return v;
         },
+        //身份所在群组（嵌套）--返回群组的对象数组
+        /**
+         * 根据身份标识获取所有的群组对象数组。如果群组具有群组（group）成员，且群组成员中包含该身份，那么该群组也被返回。
+         * @method listGroupWithIdentity
+         * @o2membercategory group
+         * @methodOf module:org
+         * @static
+         * @param {IdentityFlag|IdentityFlag[]} identity - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|GroupData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回群组对象数组。
+         * @o2ActionOut x_organization_assemble_express.GroupAction.listWithPersonObject|example=Group
+         * @o2syntax
+         * //同步执行，返回群组数组。
+         * var groupList = this.org.listGroupWithIdentity( identity );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listGroupWithIdentity( identity, true);
+         * promise.then(function(groupList){
+         *     //groupList 为返回的群组数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取群组
+         * this.org.listGroupWithPerson( identity, function(groupList){
+         *     //groupList 为返回的群组数组。
+         * })
+         */
+        listGroupWithIdentity:function(identity, async){
+            getOrgActions();
+            var data = {"identityList": getNameFlag(identity)};
+
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listGroupWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
 
         //角色***************
         //获取角色--返回角色的对象数组

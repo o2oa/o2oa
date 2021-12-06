@@ -95,9 +95,16 @@
       "张三@zhangsan@P",
       "李四@lisi@P"
     ],
+    "identityList": [
+      "王五@kfb_wangwu@I",
+      "赵六@kfb_zhaoliu@I"
+    ],
     "groupList": [
       "所有部门领导@AllDepartLeader@G",
       "所有部门汇报管理员@AllDepartReportManager@G"
+    ],
+    "unitList": [
+      "开发部@kfb@U"
     ]
   }
 }

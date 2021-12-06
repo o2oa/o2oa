@@ -9,6 +9,7 @@
 
   //data: {"personList":[]}
   "listGroupWithPerson": {"uri": "/jaxrs/group/list/person/object", "method": "POST"}, //人员所在群组（嵌套）
+  "listGroupWithIdentity": {"uri": "/jaxrs/group/list/identity/object", "method": "POST"}, //人员所在群组（嵌套）
 
   //data: {"group":"","roleList":[""]}
   "groupHasRole": {"uri": "/jaxrs/group/has/role", "method": "POST"}, //群组是否拥有角色
