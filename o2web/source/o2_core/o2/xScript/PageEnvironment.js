@@ -1607,7 +1607,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
              * @param {Boolean} [nohis] - 页面跳转的时候，不往History里增加历史状态，默认为false
              * @o2syntax
              * //跳转到当前门户的指定页面。
-             * this.page.toPage( name, par );
+             * this.page.toPage( name, par, nohis );
              * @example
              * this.page.toPage("列表页面", {"key": "发文列表"});//打开“列表页面”，并传入一个json数据。
              *
