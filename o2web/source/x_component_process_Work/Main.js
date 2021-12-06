@@ -498,7 +498,14 @@ MWF.xApplication.process.Work.Main = new Class({
         //        if( !task.routeDecisionOpinionList )task.routeDecisionOpinionList = task.properties.routeDecisionOpinionList;
         //    }
         //});
-
+        if (workData.activity.properties && workData.activity.properties.customData){
+            try{
+                var customData = JSON.parse(workData.activity.properties.customData);
+                workData.activity.customData = customData;
+            }catch(e){
+                console.error(e);
+            }
+        }
         this.activity = workData.activity;
         this.data = workData.data;
         this.taskList = workData.taskList;
