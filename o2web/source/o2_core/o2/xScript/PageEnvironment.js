@@ -1604,10 +1604,10 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
              * @static
              * @param {String} name - 要跳转的页面名称
              * @param {Object} [par] - 要传入被打开页面的数据。在被打开的页面可以用this.page.parameters获取
-             * @param {Boolean} [par] - 页面跳转的时候，不往History里增加历史状态，默认为false
+             * @param {Boolean} [nohis] - 页面跳转的时候，不往History里增加历史状态，默认为false
              * @o2syntax
              * //跳转到当前门户的指定页面。
-             * this.page.toPage( name, par );
+             * this.page.toPage( name, par, nohis );
              * @example
              * this.page.toPage("列表页面", {"key": "发文列表"});//打开“列表页面”，并传入一个json数据。
              *
