@@ -2954,6 +2954,11 @@ var _org = {
         var v = this.oGroup.listWithPerson(getNameFlag(name));
         return this.getObject(this.oGroup, v);
     },
+    //身份所在群组（嵌套）--返回群组的对象数组
+    listGroupWithIdentity:function(name){
+        var v = this.oGroup.listWithIdentity(getNameFlag(name));
+        return this.getObject(this.oGroup, v);
+    },
     //群组是否拥有角色--返回true, false
     groupHasRole: function(name, role){
         nameFlag = (library.typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;

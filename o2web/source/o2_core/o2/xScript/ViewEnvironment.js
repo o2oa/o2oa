@@ -2155,7 +2155,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|GroupData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回群组对象数组。
-         * @o2ActionOut x_organization_assemble_express.GroupAction.listGroupWithIdentity|example=Group
+         * @o2ActionOut x_organization_assemble_express.GroupAction.listWithPersonObject|example=Group
          * @o2syntax
          * //同步执行，返回群组数组。
          * var groupList = this.org.listGroupWithIdentity( identity );
