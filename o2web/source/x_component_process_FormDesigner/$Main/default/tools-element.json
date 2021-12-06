@@ -49,6 +49,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_slider,
     "className": "Elslider"
   },
+  "eldatetime": {
+    "fontIcon": "el-icon-date",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_date,
+    "className": "Eldatetime"
+  },
   "elbutton": {
     "fontIcon": "el-icon-thumb",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_button,
