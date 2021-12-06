@@ -50,6 +50,9 @@ class ActionExecuteV2 extends BaseAction {
 	private static final String[] pageKeys = { "GROUP BY", " COUNT(" };
 	private static final String JOIN_KEY = " JOIN ";
 	private static final String JOIN_ON_KEY = " ON ";
+	private static final String SQL_WHERE = "WHERE";
+	private static final String SQL_AND = "AND";
+	private static final String SQL_OR = "OR";
 
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
@@ -123,8 +126,6 @@ class ActionExecuteV2 extends BaseAction {
 			}
 			CompiledScript cs = ScriptingFactory.functionalizationCompile(scriptText);
 			String jpql = JsonScriptingExecutor.evalString(cs, scriptContext);
-//			Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(), scriptContext);
-//			String jpql = ScriptFactory.asString(o);
 			Class<? extends JpaObject> cls = this.clazz(business, statement);
 			EntityManager em;
 			if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
@@ -263,13 +264,13 @@ class ActionExecuteV2 extends BaseAction {
 			String rightSql = "";
 			String leftSql = "";
 			boolean hasWhere = false;
-			if (sql.indexOf("where") > -1) {
-				whereSql = StringUtils.substringAfter(sql, "where");
-				leftSql = StringUtils.substringBefore(sql, "where");
+			if (sql.indexOf(SQL_WHERE.toLowerCase()) > -1) {
+				whereSql = StringUtils.substringAfter(sql, SQL_WHERE.toLowerCase());
+				leftSql = StringUtils.substringBefore(sql, SQL_WHERE.toLowerCase());
 				hasWhere = true;
-			} else if (sql.indexOf("WHERE") > -1) {
-				whereSql = StringUtils.substringAfter(sql, "WHERE");
-				leftSql = StringUtils.substringBefore(sql, "WHERE");
+			} else if (sql.indexOf(SQL_WHERE) > -1) {
+				whereSql = StringUtils.substringAfter(sql, SQL_WHERE);
+				leftSql = StringUtils.substringBefore(sql, SQL_WHERE);
 				hasWhere = true;
 			}
 			String matchKey = "";
@@ -281,34 +282,39 @@ class ActionExecuteV2 extends BaseAction {
 					break;
 				}
 			}
-			List<String> filterList = new ArrayList<>();
-			for (FilterEntry filterEntry : wi.getFilterList()) {
-				if (StringUtils.isNotBlank(filterEntry.path) && StringUtils.isNotBlank(filterEntry.value)) {
-					StringBuilder sb = new StringBuilder();
-					sb.append(filterEntry.path);
-					sb.append(" ");
-					sb.append(Comparison.getMatchCom(filterEntry.comparison));
-					sb.append(" ");
-					sb.append(":" + filterEntry.value);
-					filterList.add(sb.toString());
-				}
-			}
 			if (hasWhere) {
 				list.add(leftSql);
-				list.add("WHERE");
+				list.add(SQL_WHERE);
 			} else {
 				list.add(whereSql);
-				if (!filterList.isEmpty()) {
-					list.add("WHERE");
+				if (!wi.getFilterList().isEmpty()) {
+					list.add(SQL_WHERE);
 				}
 			}
-			if (!filterList.isEmpty()) {
-				list.add("(");
-				list.add(StringUtils.join(filterList, " AND "));
-				list.add(")");
+			int size = wi.getFilterList().size();
+			if (size > 0) {
+				if (size > 1) {
+					list.add("(");
+				}
+				for(int i=0; i < size; i++){
+					FilterEntry filterEntry = wi.getFilterList().get(i);
+					if(i > 0){
+						String joinTag = filterEntry.logic;
+						if(StringUtils.isEmpty(joinTag) || !joinTag.equalsIgnoreCase(SQL_OR)){
+							joinTag = SQL_AND;
+						}
+						list.add(joinTag.toUpperCase());
+					}
+					list.add(filterEntry.path);
+					list.add(Comparison.getMatchCom(filterEntry.comparison));
+					list.add(":" + filterEntry.value);
+				}
+				if (size > 1) {
+					list.add(")");
+				}
 			}
 			if (hasWhere) {
-				list.add("AND");
+				list.add(SQL_AND);
 				list.add("(");
 				list.add(whereSql);
 				list.add(")");
