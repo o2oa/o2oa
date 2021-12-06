@@ -6,20 +6,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.jaxrs.WrapInteger;
+import com.x.base.core.project.x_processplatform_service_processing;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -28,15 +25,19 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
-import com.x.processplatform.core.entity.content.SerialNumber;
-import com.x.processplatform.core.entity.content.SerialNumber_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
+/**
+ * 创建流程序列号
+ * @author sword
+ */
 public class SerialBuilder {
 
 	private static Logger logger = LoggerFactory.getLogger(SerialBuilder.class);
+
+	private static final String EMPTY_SYMBOL = "(0)";
 
 	private Context context;
 
@@ -190,30 +191,13 @@ public class SerialBuilder {
 		}
 
 		private Integer nextNumber(String name) throws Exception {
-			Integer serial = 0;
-			EntityManager em = emc.beginTransaction(SerialNumber.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<SerialNumber> cq = cb.createQuery(SerialNumber.class);
-			Root<SerialNumber> root = cq.from(SerialNumber.class);
-			Predicate p = cb.equal(root.get(SerialNumber_.application), process.getApplication());
-			p = cb.and(p, cb.equal(root.get(SerialNumber_.name), name));
-			cq.select(root).where(p);
-			List<SerialNumber> list = em.createQuery(cq).setMaxResults(1).getResultList();
-			SerialNumber serialNumber = null;
-			if (list.isEmpty()) {
-				serialNumber = new SerialNumber();
-				serialNumber.setProcess(process.getId());
-				serialNumber.setApplication(process.getApplication());
-				serialNumber.setName(name);
-				serialNumber.setSerial(1);
-				emc.persist(serialNumber, CheckPersistType.all);
-				serial = 1;
-			} else {
-				serialNumber = list.get(0);
-				serialNumber.setSerial(serialNumber.getSerial() + 1);
-				serial = serialNumber.getSerial();
+			if(StringUtils.isBlank(name)){
+				name = EMPTY_SYMBOL;
 			}
-			return serial;
+			WrapInteger wrapInteger = ThisApplication.context().applications().postQuery(x_processplatform_service_processing.class,
+					Applications.joinQueryUri("work", "process", process.getId(), "name", name, "serial"), null, process.getApplication())
+					.getData(WrapInteger.class);
+			return wrapInteger.getValue();
 		}
 	}
 
