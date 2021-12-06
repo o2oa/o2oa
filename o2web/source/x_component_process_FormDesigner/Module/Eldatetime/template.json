@@ -4,6 +4,8 @@
 	"type": "Eldatetime",
 	"description": "",
 	"isReadonly" : false,
+	"selectType": "dateTime",
+	"format": "yyyy-MM-dd HH:mm:ss",
 	"vueData": {},
 	"vueMethods": {},
 	"vueCss": {},
