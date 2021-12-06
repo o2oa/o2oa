@@ -66,7 +66,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					result.setData(wo);
 				}
 			} else {
-				wo.setValue(element.toString());
+				wo.setValue(element);
 				result.setData(wo);
 			}
 		} catch (Exception e) {
