@@ -6,12 +6,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.processplatform.core.entity.content.Task_;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.DateTools;
 import com.x.query.core.entity.Item;
@@ -93,31 +91,14 @@ public class FilterEntry extends GsonPropertyObject {
 					return true;
 				}
 			case FORMAT_DATETIMEVALUE:
-				if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
-						|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
-						|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
-						|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
-						|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
-					return true;
-				} else {
-					return false;
-				}
 			case FORMAT_DATEVALUE:
-				if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
-						|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
-						|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
-						|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
-						|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
-					return true;
-				} else {
-					return false;
-				}
 			case FORMAT_TIMEVALUE:
-				if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
+				boolean flag = DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
 						|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
 						|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
 						|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
-						|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
+						|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value);
+				if (flag) {
 					return true;
 				} else {
 					return false;
