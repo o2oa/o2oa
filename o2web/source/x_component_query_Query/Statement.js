@@ -181,6 +181,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             }
             d.value = parameterName;
 
+            if( !d.logic )d.logic = "and";
+
             this.filterList.push(d);
         }.bind(this))
     },
@@ -392,6 +394,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         if (this.searchStatus === "custom") {
             if (this.filterItems.length) {
                 this.filterItems.each(function (filter) {
+                    if( !filter.data.logic )filter.data.logic = "and";
                     filterData.push(filter.data);
                 }.bind(this));
             }
