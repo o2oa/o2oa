@@ -626,6 +626,21 @@
      * var groupList = this.org.listGroupWithPerson( name );
      */
 
+    //身份所在群组（嵌套）--返回群组的对象数组
+    /**
+     * 根据身份标识获取所有的群组对象数组。如果群组具有群组（group）成员，且群组成员中包含该身份，那么该群组也被返回。
+     * @method listGroupWithIdentity
+     * @o2membercategory group
+     * @methodOf module:server.org
+     * @static
+     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
+     * @return {GroupData[]} 返回群组对象数组。
+     * @o2ActionOut x_organization_assemble_express.GroupAction.listWithPersonObject|example=Group
+     * @o2syntax
+     * //返回群组数组。
+     * var groupList = this.org.listGroupWithIdentity( name );
+     */
+
 
     //角色***************
     //获取角色--返回角色的对象数组
