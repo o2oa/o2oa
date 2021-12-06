@@ -36,13 +36,15 @@ public class UnitDutyFactory extends AbstractFactory {
 			return null;
 		}
 		UnitDuty o = null;
-		CacheKey cacheKey = new CacheKey(flag);
+		CacheKey cacheKey = new CacheKey(UnitDuty.class.getName(), flag);
 		Optional<?> optional = CacheManager.get(cache, cacheKey);
 		if (optional.isPresent()) {
 			o = (UnitDuty) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			CacheManager.put(cache, cacheKey, o);
+			if (null != o) {
+				CacheManager.put(cache, cacheKey, o);
+			}
 		}
 		return o;
 	}
@@ -81,14 +83,14 @@ public class UnitDutyFactory extends AbstractFactory {
 	public List<UnitDuty> pick(List<String> flags) throws Exception {
 		List<UnitDuty> list = new ArrayList<>();
 		for (String str : flags) {
-			CacheKey cacheKey = new CacheKey(str);
+			CacheKey cacheKey = new CacheKey(UnitDuty.class.getName(), str);
 			Optional<?> optional = CacheManager.get(cache, cacheKey);
 			if (optional.isPresent()) {
 				list.add((UnitDuty) optional.get());
 			} else {
 				UnitDuty o = this.pickObject(str);
-				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
+					CacheManager.put(cache, cacheKey, o);
 					list.add(o);
 				}
 			}
