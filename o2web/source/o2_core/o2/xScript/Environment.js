@@ -767,6 +767,21 @@ MWF.xScript.Environment = function(ev){
             // orgActions.listGroupWithPerson(data, function(json){v = json.data;}, null, false);
             // return v;
         },
+        //身份所在群组（嵌套）--返回群组的对象数组
+        listGroupWithIdentity:function(identity, async){
+            getOrgActions();
+            var data = {"identityList": getNameFlag(identity)};
+
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+
+            var promise = orgActions.listGroupWithIdentity(data, cb, null, !!async);
+            return (!!async) ? promise : v;
+        },
         //群组是否拥有角色--返回true, false
         groupHasRole: function(name, role, async){
             getOrgActions();
