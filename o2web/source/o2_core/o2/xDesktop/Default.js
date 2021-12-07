@@ -263,7 +263,6 @@ o2.xDesktop.Default = new Class({
 
         this.node.loadAll({ "css": [css], "html": [html]}, {"bind": {"user": this.session.user}, "module": this},function(){
             var oReq = new XMLHttpRequest();
-            debugger;
             oReq.addEventListener("load", function(){
                 var reader  = new FileReader();
                 reader.addEventListener("load", function () {
@@ -287,6 +286,8 @@ o2.xDesktop.Default = new Class({
             // });
             // res.setHeader("authorization", layout.session.user.token);
             // res.send();
+debugger;
+            this.sliderNode.getLast().set("title", o2.LP.desktop.returnZoom);
 
             this.node.loadCss(skinCss);
             if (callback) callback();
