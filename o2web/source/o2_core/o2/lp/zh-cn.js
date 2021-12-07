@@ -156,6 +156,7 @@ o2.LP.desktop = {
     "searchUser": "搜索：用户名",
     "say": "说",
     "clearMessage": "清除消息",
+    "returnZoom": "恢复100%比例",
 
     "refresh": "刷新",
     "close": "关闭",
