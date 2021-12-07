@@ -561,9 +561,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         var numberIndexArray = [];
         var idx = 0;
         Object.each(this.entries, function (c, k) {
-            if (this.hideColumns.indexOf(k) === -1) {
+            if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
                 titleArray.push(c.displayName);
-
                 colWidthArr.push(c.exportWidth || 200);
                 if( c.isTime )dateIndexArray.push(idx);
                 if( c.isNumber )numberIndexArray.push(idx);
@@ -579,7 +578,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                 json.data.each(function (d, i) {
                     var dataArray = [];
                     Object.each(this.entries, function (c, k) {
-                        if (this.hideColumns.indexOf(k) === -1) {
+                        if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
                             var text = this.getExportText(c, k, d);
                             // if( c.isNumber && typeOf(text) === "string" && (parseFloat(text).toString() !== "NaN") ){
                             //     text = parseFloat(text);
