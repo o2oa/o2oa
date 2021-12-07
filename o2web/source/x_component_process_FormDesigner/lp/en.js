@@ -347,8 +347,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_cascader": "Cascader",
         "el_number": "Number",
         "el_switch": "Switch",
-        "el_slider": "Slider",
-        "el_date": "Datetime",
+        "el_time": "Time",
+        "el_date": "Date",
+        "el_datetime": "Datetime",
         "el_common": "Common",
 
         "importer": "DataImporter",
@@ -1243,7 +1244,20 @@ MWF.xApplication.process.FormDesigner.LP = {
         "tabletWidth": "Tablet Width",
         "tabletHeight": "Tablet Height",
         "tabletSizeNote": "Valid only on the PC terminal, full screen horizontally on the mobile terminal",
-        "tabletToolbarNote": "Only valid on PC, not displayed on mobile"
+        "tabletToolbarNote": "Only valid on PC, not displayed on mobile",
+
+        "editable": "Editable",
+        "firstDayOfWeek": "FirstDayOfWeek",
+        "disabledDate": "Disable selection",
+        "disabledDateNote": "this.event is the incoming date, return true to indicate that selection is prohibited",
+        "placeholder": "Placeholder text",
+        "rangeSeparator": "Separated Text",
+        "startPlaceholder": "Start Placeholder Text",
+        "endPlaceholder": "End Placeholder Text",
+        "arrowControl": "Use arrows to select time",
+        "timeSelectType2": "Time Select Type",
+        "fixedTimePoint": "Fixed Time",
+        "anyTimePoint": "Any Time"
     },
     "smartbi":{
         "nosetup":"please install SmartBI APP first",

@@ -347,7 +347,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_number": "计数器",
         "el_switch": "开关",
         "el_slider": "滑块",
+        "el_time": "时间",
         "el_date": "日期",
+        "el_datetime": "日期时间",
         "el_common": "通用",
 
         "importer": "数据导入",
@@ -1252,7 +1254,25 @@ MWF.xApplication.process.FormDesigner.LP = {
         "tabletWidth": "手写板宽度",
         "tabletHeight": "手写板高度",
         "tabletSizeNote": "仅PC端有效，移动端横向满屏",
-        "tabletToolbarNote": "仅PC端有效，移动端不显示"
+        "tabletToolbarNote": "仅PC端有效，移动端不显示",
+
+        "editable": "可编辑",
+        "firstDayOfWeek": "周开始日",
+        "disabledDate": "禁止选择",
+        "disabledDateNote": "this.event为传入日期，返回true表示禁止选择",
+        "placeholder": "占位文本",
+        "rangeSeparator": "分隔文本",
+        "startPlaceholder": "起始占位文本",
+        "endPlaceholder": "结束占位文本",
+        "arrowControl": "使用箭头选择时间",
+        "timeSelectType2": "时间选择类型",
+        "fixedTimePoint": "固定时间",
+        "anyTimePoint": "任意时间",
+        "to": "至",
+        "startTime": "开始时间",
+        "endTime": "结束时间",
+        "startDate": "开始日期",
+        "endDate": "结束日期"
     },
     "smartbi":{
         "nosetup":"请先安装SmartBI应用",
