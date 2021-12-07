@@ -347,6 +347,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_number": "计数器",
         "el_switch": "开关",
         "el_slider": "滑块",
+        "el_date": "日期",
         "el_common": "通用",
 
         "importer": "数据导入",
@@ -521,6 +522,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "monthOnly": "仅月份",
         "yearOnly": "仅年度",
         "timeOnly": "仅时间",
+        "weekOnly": "第几周",
+        "multidate": "多个日期",
+        "datetimerange": "日期时间范围",
+        "daterange": "日期范围",
+        "timerange": "时间范围",
         "selectSecond": "是否选择秒",
         "timeSelectType": "时间选择方式",
         "timeSelectType_slider" : "滑块",
@@ -1239,6 +1245,9 @@ MWF.xApplication.process.FormDesigner.LP = {
             "displayLeftTree":"显示左侧树",
             "leftTreeShow":"显示",
             "leftTreeHide":"隐藏"
+        },
+        "weeks": {
+            "arr": ["周一","周二","周三","周四","周五","周六","周日"]
         },
         "tabletWidth": "手写板宽度",
         "tabletHeight": "手写板高度",
