@@ -67,4 +67,5 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elswitch", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elslider", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elselect", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcascader", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Eldatetime", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.SmartBI", null, false);

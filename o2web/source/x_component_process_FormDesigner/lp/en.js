@@ -348,6 +348,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_number": "Number",
         "el_switch": "Switch",
         "el_slider": "Slider",
+        "el_date": "Datetime",
         "el_common": "Common",
 
         "importer": "DataImporter",
@@ -523,6 +524,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "monthOnly": "MonthOnly",
         "yearOnly": "YearOnly",
         "timeOnly": "TimeOnly",
+        "weekOnly": "WeekOnly",
+        "multidate": "Dates",
+        "datetimerange": "DatetimeRange",
+        "daterange": "DateRange",
+        "timerange": "TimeRange",
         "selectSecond": "Select Second",
         "timeSelectType": "Time Select Type",
         "format": "Format",
@@ -1230,6 +1236,9 @@ MWF.xApplication.process.FormDesigner.LP = {
             "displayLeftTree":"leftTree",
             "leftTreeShow":"show",
             "leftTreeHide":"hide"
+        },
+        "weeks": {
+            "arr": ["Sun","Mon","Tues","Wed","Thur","Fri","Sat"]
         },
         "tabletWidth": "Tablet Width",
         "tabletHeight": "Tablet Height",
