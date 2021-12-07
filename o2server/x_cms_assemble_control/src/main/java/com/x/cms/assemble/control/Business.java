@@ -15,6 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 通用业务类
+ * @author sword
+ */
 public class Business {
 
 	private EntityManagerContainer emc;
@@ -318,7 +322,7 @@ public class Business {
 			return true;
 		}
 		// 其他情况暂时全部不允许操作
-		return true;
+		return false;
 	}
 
 	/**
@@ -333,7 +337,7 @@ public class Business {
 			return true;
 		}
 		// 其他情况暂时全部不允许操作
-		return true;
+		return false;
 	}
 
 	/**
@@ -348,11 +352,10 @@ public class Business {
 			return true;
 		}
 		// 其他情况暂时全部不允许操作
-		return true;
+		return false;
 	}
 
 	public boolean editable( EffectivePerson effectivePerson, AppInfo appInfo ) throws Exception {
-		boolean result = false;
 		if ((StringUtils.equals(appInfo.getCreatorPerson(), effectivePerson.getDistinguishedName()))
 				|| effectivePerson.isManager() || organization().person().hasRole(effectivePerson,
 						OrganizationDefinition.CMSManager)) {
@@ -386,6 +389,6 @@ public class Business {
 				return true;
 			}
 		}
-		return result;
+		return false;
 	}
 }
