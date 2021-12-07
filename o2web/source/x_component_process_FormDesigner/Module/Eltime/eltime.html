@@ -9,10 +9,6 @@
 		    <td class="editTableTitle">{{$.lp.name}}:</td>
 		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
 		  </tr>
-		  <tr>
-		    <td class="editTableTitle">{{$.lp.description}}:</td>
-		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
-		  </tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.readonly}}:</td>
 				<td class="editTableValue">
@@ -26,40 +22,19 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.selectType}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="selectType" text{($.selectType=='datetime')?'checked':''} value="datetime"
-						   onclick="if (this.checked){ $('text{$.pid}timeSelectTable').setStyle('display', '')}"/>{{$.lp.dateTime}}
-					<input type="radio" name="selectType"  text{($.selectType=='date')?'checked':''} value="date"
-						   onclick="if (this.checked){ $('text{$.pid}timeSelectTable').setStyle('display', 'none')}"/>{{$.lp.dateOnly}}
-					<input type="radio" name="selectType"  text{($.selectType=='dates')?'checked':''} value="dates"
-						   onclick="if (this.checked){ $('text{$.pid}timeSelectTable').setStyle('display', 'none')}"/>{{$.lp.multidateOnly}}
+
 					<input type="radio" name="selectType" text{($.selectType=='time')?'checked':''} value="time"
 						   onclick="if (this.checked){ $('text{$.pid}timeSelectTable').setStyle('display', '')}"/>{{$.lp.timeOnly}}
-					<br/>
-					<input type="radio" name="selectType"  text{($.selectType=='month')?'checked':''} value="month"
-						   onclick="if (this.checked){ $('text{$.pid}timeSelectTable').setStyle('display', 'none')}"/>{{$.lp.monthOnly}}
-					<input type="radio" name="selectType"  text{($.selectType=='year')?'checked':''} value="year"
-						   onclick="if (this.checked){ $('text{$.pid}timeSelectTable').setStyle('display', 'none')}"/>{{$.lp.yearOnly}}
-					<input type="radio" name="selectType"  text{($.selectType=='week')?'checked':''} value="week"
-						   onclick="if (this.checked){ $('text{$.pid}timeSelectTable').setStyle('display', 'none')}"/>{{$.lp.weekOnly}}
-					<br/>
-					<input type="radio" name="selectType" text{($.selectType=='datetimerange')?'checked':''} value="datetimerange"
-						   onclick="if (this.checked){ $('text{$.pid}timeSelectTable').setStyle('display', '')}"/>{{$.lp.datetimerange}}
-					<input type="radio" name="selectType" text{($.selectType=='daterange')?'checked':''} value="daterange"
-						   onclick="if (this.checked){ $('text{$.pid}timeSelectTable').setStyle('display', '')}"/>{{$.lp.daterange}}
 					<input type="radio" name="selectType" text{($.selectType=='timerange')?'checked':''} value="timerange"
 						   onclick="if (this.checked){ $('text{$.pid}timeSelectTable').setStyle('display', '')}"/>{{$.lp.timerange}}
 				</td>
 			</tr>
-			<tr id="text{$.pid}timeSelectTypeTr" style="text{['time','timerange'].contains($.selectType)?'':'none'}">
+			<tr>
 				<td class="editTableTitle">{{$.lp.timeSelectType2}}:</td>
 				<td class="editTableValue">
 					<input type="radio" name="timeSelectType" value="picker" text{($.timeSelectType!=='select')?'checked':''}/>{{$.lp.anyTimePoint}}
 					<input type="radio" name="timeSelectType" value="select" text{($.timeSelectType==='select')?'checked':''}/>{{$.lp.fixedTimePoint}}
 				</td>
-			</tr>
-			<tr id="text{$.pid}formatTr" style="(text{['time','timerange'].contains($.selectType) && $.timeSelectType!=='select') ? 'none':''}">
-				<td class="editTableTitle">{{$.lp.format}}:</td>
-				<td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.disabled}}:</td>
@@ -92,41 +67,38 @@
 				</td>
 			</tr>
 		</table>
-		<table id="text{$.pid}timeSelectTable" style="(text{!['time','timerange'].contains($.selectType) || $.timeSelectType!=='select') ? 'none':''}">
+		<table id="text{$.pid}timeSelectTable" style="text{$.timeSelectType!=='select') ? 'none':''}">
 			<tr>
 				<td class="editTableTitle">{{$.lp.step}}:</td>
-				<td class="editTableValue"><input type="number" name="step" value="text{$.step || '1'}" class="editTableInput"/></td>
+				<td class="editTableValue"><input type="text" name="step" value="text{$.step || '00:30'}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.startTime}}:</td>
+				<td class="editTableValue"><input type="text" name="start" value="text{$.start || '00:30'}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.endTime}}:</td>
+				<td class="editTableValue"><input type="text" name="end" value="text{$.end || '00:30'}" class="editTableInput"/></td>
 			</tr>
 		</table>
-		<table id="text{$.pid}timePickTable" style="
-				( text{['datetime','datetimerange'].contains($.selectType) || (text{['time','timerange'].contains($.selectType) && $.timeSelectType!=='select') ) ? '':'none'}">
+		<table id="text{$.pid}timePickTable" style="text{$.timeSelectType==='select') ? 'none':''}">
+			<tr>
+				<td class="editTableTitle">{{$.lp.format}}:</td>
+				<td class="editTableValue"><input type="text" name="format" value="text{$.format || 'HH:mm:ss'}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.startTime}}:</td>
+				<td class="editTableValue"><input type="text" name="start_picker" value="text{$.start_picker || '00:00:00'}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.endTime}}:</td>
+				<td class="editTableValue"><input type="text" name="end_picker" value="text{$.end_picker || '23:59:59}" class="editTableInput"/></td>
+			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.arrowControl}}:</td>
 				<td class="editTableValue">
 					<input type="radio" name="arrowControl" value="true" text{($.arrowControl)?'checked':''}/>{{$.lp.yes}}
 					<input type="radio" name="arrowControl" value="false" text{(!$.arrowControl)?'checked':''}/>{{$.lp.no}}
-				</td>
-			</tr>
-		</table>
-		<table id="text{$.pid}datePickTable">
-			<tr>
-				<td colspan="2">
-					<div>{{$.lp.disabledDateNote}}</div>
-					<div class="MWFFormulaArea" name="disabledDate" title="{{$.lp.disabledDateScript}}"></div>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.firstDayOfWeek}}:</td>
-				<td class="editTableValue">
-					<select name="firstDayOfWeek" class="editTableInput">
-						<option value="1" text{($.firstDayOfWeek=="1") ? "selected" : ""}>{{$.lp.weeks.arr[0]}}</option>
-						<option value="2" text{($.firstDayOfWeek=="2") ? "selected" : ""}>{{$.lp.weeks.arr[1]}}</option>
-						<option value="3" text{($.firstDayOfWeek=="3") ? "selected" : ""}>{{$.lp.weeks.arr[2]}}</option>
-						<option value="4" text{($.firstDayOfWeek=="4") ? "selected" : ""}>{{$.lp.weeks.arr[3]}}</option>
-						<option value="5" text{($.firstDayOfWeek=="5") ? "selected" : ""}>{{$.lp.weeks.arr[4]}}</option>
-						<option value="6" text{($.firstDayOfWeek=="6") ? "selected" : ""}>{{$.lp.weeks.arr[5]}}</option>
-						<option value="7" text{(!$.firstDayOfWeek || $.firstDayOfWeek=="7") ? "selected" : ""}>{{$.lp.weeks.arr[6]}}</option>
-					</select>
 				</td>
 			</tr>
 		</table>
@@ -139,15 +111,15 @@
 		<table id="text{$.pid}rangeTable">
 			<tr>
 				<td class="editTableTitle">{{$.lp.rangeSeparator}}:</td>
-				<td class="editTableValue"><input type="text" name="rangeSeparator" value="text{$.rangeSeparator || '至'}" class="editTableInput"/></td>
+				<td class="editTableValue"><input type="text" name="rangeSeparator" value="text{$.rangeSeparator || $.lp.to}" class="editTableInput"/></td>
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.startPlaceholder}}:</td>
-				<td class="editTableValue"><input type="text" name="startPlaceholder" value="text{$.startPlaceholder || '开始'}" class="editTableInput"/></td>
+				<td class="editTableValue"><input type="text" name="startPlaceholder" value="text{$.startPlaceholder || $.lp.startTime}" class="editTableInput"/></td>
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.endPlaceholder}}:</td>
-				<td class="editTableValue"><input type="text" name="endPlaceholder" value="text{$.endPlaceholder || '结束'}" class="editTableInput"/></td>
+				<td class="editTableValue"><input type="text" name="endPlaceholder" value="text{$.endPlaceholder || $.lp.endTime}" class="editTableInput"/></td>
 			</tr>
 		</table>
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.prefixIcon}}</div>
