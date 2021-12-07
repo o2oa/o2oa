@@ -905,7 +905,9 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
     getText: function (c, k, td) {
         var path = c.path, code = c.code, obj = this.data;
         if (!path) {
-            return ""
+           var co = code && code.trim();
+           if( !co )return "";
+           obj = "";
         } else if (path === "$all") {
         } else {
             obj = this.getDataByPath(obj, path);
