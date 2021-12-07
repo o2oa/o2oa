@@ -152,6 +152,7 @@ o2.LP.desktop = {
 	"searchUser": "Search：Username",
 	"say": "Say",
 	"clearMessage": "Clear Message",
+	"returnZoom": "100% recovery",
 
 	"refresh": "Refresh",
 	"close": "Close",
