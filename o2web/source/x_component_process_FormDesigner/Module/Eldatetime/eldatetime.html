@@ -55,6 +55,13 @@
 				<td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
 			</tr>
 			<tr>
+				<td class="editTableTitle">{{$.lp.disabled}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="disabled" value="true" text{($.disabled)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="disabled" value="false" text{(!$.disabled)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
 				<td class="editTableTitle">{{$.lp.editable}}:</td>
 				<td class="editTableValue">
 					<input type="radio" name="editable" value="true" text{($.editable===true)?'checked':''}/>{{$.lp.yes}}
@@ -72,7 +79,7 @@
 				<td class="editTableTitle">{{$.lp.size}}:</td>
 				<td class="editTableValue">
 					<input type="radio" name="size" value="default" text{(!$.size || $.size==='default')?'checked':''}/>default
-					<input type="radio" name="size" value="medium" text{($.size==='medium')?'checked':''}/>medium
+					<input type="radio" name="size" value="large" text{($.size==='large')?'checked':''}/>large
 					<input type="radio" name="size" value="small" text{($.size==='small')?'checked':''}/>small
 					<input type="radio" name="size" value="mini" text{($.size==='mini')?'checked':''}/>mini
 				</td>
@@ -103,6 +110,11 @@
 						<option value="6" text{($.firstDayOfWeek=="6") ? "selected" : ""}>{{$.lp.weeks.arr[5]}}</option>
 						<option value="7" text{(!$.firstDayOfWeek || $.firstDayOfWeek=="7") ? "selected" : ""}>{{$.lp.weeks.arr[6]}}</option>
 					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="MWFFormulaArea" name="disabledDate" title="{{$.lp.disabledDateScript}}"></div>
 				</td>
 			</tr>
 		</table>
