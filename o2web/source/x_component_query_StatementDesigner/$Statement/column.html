@@ -97,6 +97,13 @@
             <div class="MWFDataData" id="text{$.pid}dataExportEditor">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="table-layout: fixed;">
                     <tr>
+                        <td class="editTableTitle">{{$.lp.exportEnable}}:</td>
+                        <td class="editTableValue">
+                            <input name="exportEnable" type="radio" value="true" text{($.exportEnable)!==false?'checked':''}/>{{$.lp.yes}}
+                            <input name="exportEnable" type="radio" value="false" text{($.exportEnable)===false?'checked':''}/>{{$.lp.no}}
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="editTableTitle">{{$.lp.exportWidth}}:</td>
                         <td class="editTableValue">
                             <input type="text" name="exportWidth" value="text{$.exportWidth || 200}" class="editTableInputNoWidth"/>px
