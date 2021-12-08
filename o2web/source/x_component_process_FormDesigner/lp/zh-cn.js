@@ -1266,6 +1266,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "endPlaceholder": "结束占位文本",
         "arrowControl": "使用箭头选择时间",
         "timeSelectType2": "时间选择类型",
+        "isRange": "范围",
         "fixedTimePoint": "固定时间",
         "anyTimePoint": "任意时间",
         "to": "至",

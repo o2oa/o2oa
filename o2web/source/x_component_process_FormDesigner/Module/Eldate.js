@@ -1,21 +1,21 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.$ElElement", null, false);
-MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
+MWF.xApplication.process.FormDesigner.Module.Eldate = MWF.FCEldate = new Class({
 	Extends: MWF.FC$ElElement,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "../x_component_process_FormDesigner/Module/Eltime/eltime.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Eldate/eldate.html"
 	},
 
 	_initModuleType: function(){
-		this.className = "Eltime";
+		this.className = "Eldate";
 		this.moduleType = "element";
-		this.moduleName = "eltime";
+		this.moduleName = "eldate";
 	},
 	_createElementHtml: function(){
 
-		var html = "<el-time-picker";
+		var html = "<el-date-picker";
 		html += " :placeholder=\"description\"";
 		html += " :type=\"inputType\"";
 		html += " :maxlength=\"maxlength\"";
@@ -37,7 +37,7 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 		html += " :style=\"elStyles\"";
 		html += " :value=\"id\">";
 		if (this.json.vueSlot) html += this.json.vueSlot;
-		html += "</el-time-picker>";
+		html += "</el-date-picker>";
 		return html;
 	},
 	_createCopyNode: function(){
