@@ -196,6 +196,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private void passwordExpired(AbstractWoAuthentication wo) throws Exception {
 		wo.setPasswordExpired(false);
 		Integer passwordPeriod = Config.person().getPasswordPeriod();
+		if(passwordPeriod!=null && passwordPeriod <0){
+			return;
+		}
 		if (null != wo.getPasswordExpiredTime()) {
 			if (wo.getPasswordExpiredTime().getTime() < (new Date()).getTime()) {
 				wo.setPasswordExpired(true);
