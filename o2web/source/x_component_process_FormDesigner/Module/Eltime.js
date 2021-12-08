@@ -13,18 +13,27 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 		this.moduleType = "element";
 		this.moduleName = "eltime";
 	},
-	_createElementHtml: function(){
-
-		var html = "<el-time-picker";
-		html += " :placeholder=\"description\"";
-		html += " :type=\"inputType\"";
-		html += " :maxlength=\"maxlength\"";
-		html += " :show-word-limit=\"showWordLimit\"";
+	_createElementHtml: function() {
+		debugger;
+		if (this.json.timeSelectType === "select"){
+			if (this.json.isRange ) {
+				return this.createSelectRangeElementHtml();
+			} else {
+				return this.createSelectElementHtml();
+			}
+		}else{
+			if (this.json.isRange) {
+				return this.createPickerRangeElementHtml();
+			} else {
+				return this.createPickerElementHtml();
+			}
+		}
+	},
+	getCommonHtml: function(){
+		var html = "";
+		html += " readonly";
 		html += " :clearable=\"clearable\"";
-		html += " :show-password=\"showPassword\"";
 		html += " :size=\"size\"";
-		html += " :rows=\"rows\"";
-		html += " :resize=\"resize\"";
 		html += " :prefix-icon=\"prefixIcon\"";
 		html += " :suffix-icon=\"suffixIcon\"";
 
@@ -34,9 +43,45 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 			}, this);
 		}
 
-		html += " :style=\"elStyles\"";
-		html += " :value=\"id\">";
+		html += " :style=\"elStyles\">";
 		if (this.json.vueSlot) html += this.json.vueSlot;
+		return html;
+	},
+	createSelectElementHtml: function(){
+		var html = "<el-time-select";
+		html += " :value=\"id\"";
+		html += this.getCommonHtml();
+		html += "</el-time-select>";
+		return html;
+	},
+	createSelectRangeElementHtml: function(){
+		var html = "<el-time-select";
+		html += " :value=\"id\"";
+		html += this.getCommonHtml();
+		html += "</el-time-select>";
+
+		html += "<span style='padding: 0px 5px;'>"+this.json.rangeSeparator+"</span>";
+
+		html += "<el-time-select";
+		html += " :value=\"id\"";
+		html += this.getCommonHtml();
+		html += "</el-time-select>";
+		return html;
+	},
+	createPickerElementHtml: function(){
+		var html = "<el-time-picker";
+		html += " placeholder="+this.json.id;
+		html += this.getCommonHtml();
+		html += "</el-time-picker>";
+		return html;
+	},
+	createPickerRangeElementHtml: function(){
+		var html = "<el-time-picker";
+		html += " is-range";
+		html += " :range-separator=\"rangeSeparator\"";
+		html += " start-placeholder="+this.json.id;
+		html += " end-placeholder="+this.json.id;
+		html += this.getCommonHtml();
 		html += "</el-time-picker>";
 		return html;
 	},
@@ -52,6 +97,19 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 		if (!this.copyNode) this._createCopyNode();
 		this.copyNode.setStyle("display", "inline-block");
 		return this.copyNode;
+	},
+	_setEditStyle_custom: function(name){
+		switch (name){
+			case "name": this.setPropertyName(); break;
+			case "id": this.setPropertyId(); break;
+			case "buttonRadio":
+			case "vueSlot":
+				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
+			case "isRange":
+			case "timeSelectType":
+				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
+			default: break;
+		}
 	},
 	setPropertyName: function(){
 		if (this.json.name){

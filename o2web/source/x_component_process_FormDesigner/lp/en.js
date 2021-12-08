@@ -1256,6 +1256,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "endPlaceholder": "End Placeholder Text",
         "arrowControl": "Use arrows to select time",
         "timeSelectType2": "Time Select Type",
+        "isRange": "Is Range",
         "fixedTimePoint": "Fixed Time",
         "anyTimePoint": "Any Time"
     },
