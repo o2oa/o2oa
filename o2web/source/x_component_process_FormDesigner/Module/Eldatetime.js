@@ -14,40 +14,16 @@ MWF.xApplication.process.FormDesigner.Module.Eldatetime = MWF.FCEldatetime = new
 		this.moduleName = "eldatetime";
 	},
 	_createElementHtml: function(){
-		//var html = "<el-input placeholder=\"请输入内容\"></el-input>";
-		var html = "<el-input";
-		// if (this.json.description) html += " placeholder=\""+this.json.description+"\"";
-		// html += " type=\""+(this.json.inputType || "text")+"\"";
-		// if (this.json.maxlength) html += " maxlength=\""+this.json.maxlength+"\"";
-		// if (this.json.showWordLimit) html += " show-word-limit";
-		// if (this.json.clearable) html += " clearable";
-		// if (this.json.showPassword) html += " show-password";
-		// if (this.json.size && this.json.size!=="default") html += " size=\""+this.json.size+"\"";
-		// html += " rows=\""+(this.json.textareaRows || "2")+"\"";
 
-		html += " :placeholder=\"description\"";
-		html += " :type=\"inputType\"";
-		html += " :maxlength=\"maxlength\"";
-		html += " :show-word-limit=\"showWordLimit\"";
-		html += " :clearable=\"clearable\"";
-		html += " :show-password=\"showPassword\"";
+		var html = "<el-date-picker";
+		html += " :type=\"selectType\"";
 		html += " :size=\"size\"";
-		html += " :rows=\"rows\"";
-		html += " :resize=\"resize\"";
 		html += " :prefix-icon=\"prefixIcon\"";
-		html += " :suffix-icon=\"suffixIcon\"";
-
-
-
-		// if (this.json.autosize){
-		// 	var o = {};
-		// 	if (this.json.minRows) o.minRows = this.json.minRows;
-		// 	if (this.json.maxRows) o.maxRows = this.json.maxRows;
-		// 	html += " autosize=\""+JSON.stringify(o)+"\"";
-		// }
-		// if (this.json.resize) html += " resize=\""+this.json.resize+"\"";
-		// if (this.json.prefixIcon) html += " prefix-icon=\""+this.json.prefixIcon+"\"";
-		// if (this.json.suffixIcon) html += " suffix-icon=\""+this.json.suffixIcon+"\"";
+		html += " :range-separator=\"rangeSeparator\"";
+		html += " readonly";
+		html += " placeholder="+this.json.id;
+		html += " start-placeholder="+this.json.id;
+		html += " end-placeholder="+this.json.id;
 
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){
@@ -56,18 +32,9 @@ MWF.xApplication.process.FormDesigner.Module.Eldatetime = MWF.FCEldatetime = new
 		}
 
 		html += " :style=\"elStyles\"";
-
-		// if (this.json.elStyles){
-		// 	var style = "";
-		// 	Object.keys(this.json.elStyles).forEach(function(k){
-		// 		if (this.json.elStyles[k]) style += k+":"+this.json.elStyles[k]+";";
-		// 	}, this);
-		// 	html += " style=\""+style+"\"";
-		// }
-
 		html += " :value=\"id\">";
 		if (this.json.vueSlot) html += this.json.vueSlot;
-		html += "</el-input>";
+		html += "</el-date-picker>";
 		return html;
 	},
 	_createCopyNode: function(){
