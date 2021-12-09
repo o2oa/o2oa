@@ -50,7 +50,7 @@
     "className": "Elslider"
   },
   "eltime": {
-    "fontIcon": "el-icon-timer",
+    "fontIcon": "el-icon-time",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_time,
     "className": "Eltime"
   },
