@@ -132,12 +132,13 @@
 }
 .listItemLine{
     width: 1px;
-    height: 36px;
+    height: 35px;
     background: #E6E6E6;
     border-radius: 6px;
+    margin-top: 17px;
 }
 .listItemTitle{
-    width: inherit;
+    width: 100%;
     height: 69px;
 }
 .listItemActivity{
