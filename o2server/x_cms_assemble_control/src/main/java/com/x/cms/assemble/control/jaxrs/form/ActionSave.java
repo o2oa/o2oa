@@ -5,18 +5,17 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
-import com.x.cms.assemble.control.ExceptionWrapInConvert;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
@@ -28,83 +27,71 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 保存表单
+ * @author sword
+ */
 public class ActionSave extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionSave.class);
 
-	@AuditLog(operation = "保存表单")
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id,
 			JsonElement jsonElement) throws Exception {
+		logger.debug(request.getMethod());
 		ActionResult<Wo> result = new ActionResult<>();
-		Wi wi = null;
-		Boolean check = true;
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-		try {
-			wi = this.convertToWrapIn(jsonElement, Wi.class);
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new ExceptionWrapInConvert(e, jsonElement);
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
+		if (id != null && !id.isEmpty()) {
+			wi.setId(id);
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+
+			if (!business.formEditAvailable( effectivePerson)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
+			Form form = emc.find(wi.getId(), Form.class);
+			if (null == form) {
+				form = Wi.copier.copy(wi);
+				if (wi.getId() != null && !wi.getId().isEmpty()) {
+					form.setId(wi.getId());
+				}
+				emc.beginTransaction(Form.class);
+				form.getProperties().setRelatedFormList(wi.getRelatedFormList());
+				form.getProperties().setMobileRelatedFormList(wi.getMobileRelatedFormList());
+				form.getProperties().setRelatedScriptMap(wi.getRelatedScriptMap());
+				form.getProperties().setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
+				emc.persist(form, CheckPersistType.all);
+				emc.commit();
+				logService.log(emc, effectivePerson.getDistinguishedName(), form.getName(), form.getAppId(), "", "",
+						form.getId(), "FORM", "新增");
+
+				Wo wo = new Wo();
+				wo.setId(form.getId());
+				result.setData(wo);
+			} else {
+				Wi.copier.copy(wi, form);
+				emc.beginTransaction(Form.class);
+				form.getProperties().setRelatedFormList(wi.getRelatedFormList());
+				form.getProperties().setMobileRelatedFormList(wi.getMobileRelatedFormList());
+				form.getProperties().setRelatedScriptMap(wi.getRelatedScriptMap());
+				form.getProperties().setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
+				emc.check(form, CheckPersistType.all);
+				emc.commit();
+
+				logService.log(emc, effectivePerson.getDistinguishedName(), form.getName(), form.getAppId(), "", "",
+						form.getId(), "FORM", "更新");
+
+				Wo wo = new Wo();
+				wo.setId(form.getId());
+				result.setData(wo);
+			}
+			CacheManager.notify(Form.class);
+			CacheManager.notify(View.class);
+			CacheManager.notify(ViewFieldConfig.class);
+			CacheManager.notify(ViewCategory.class);
 		}
 
-		if (check) {
-			if (id != null && !id.isEmpty()) {
-				wi.setId(id);
-			}
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-
-				// 看看用户是否有权限进行应用信息新增操作
-				if (!business.formEditAvailable( effectivePerson)) {
-					throw new Exception(
-							"person{name:" + effectivePerson.getDistinguishedName() + "} 用户没有内容管理表单模板信息操作的权限！");
-				}
-				Form form = emc.find(wi.getId(), Form.class);
-				if (null == form) {
-					form = Wi.copier.copy(wi);
-					if (wi.getId() != null && !wi.getId().isEmpty()) {
-						form.setId(wi.getId());
-					}
-					emc.beginTransaction(Form.class);
-					form.getProperties().setRelatedFormList(wi.getRelatedFormList());
-					form.getProperties().setMobileRelatedFormList(wi.getMobileRelatedFormList());
-					form.getProperties().setRelatedScriptMap(wi.getRelatedScriptMap());
-					form.getProperties().setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
-					emc.persist(form, CheckPersistType.all);
-					emc.commit();
-					logService.log(emc, effectivePerson.getDistinguishedName(), form.getName(), form.getAppId(), "", "",
-							form.getId(), "FORM", "新增");
-
-					Wo wo = new Wo();
-					wo.setId(form.getId());
-					result.setData(wo);
-				} else {
-					Wi.copier.copy(wi, form);
-					emc.beginTransaction(Form.class);
-					form.getProperties().setRelatedFormList(wi.getRelatedFormList());
-					form.getProperties().setMobileRelatedFormList(wi.getMobileRelatedFormList());
-					form.getProperties().setRelatedScriptMap(wi.getRelatedScriptMap());
-					form.getProperties().setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
-					emc.check(form, CheckPersistType.all);
-					emc.commit();
-
-					logService.log(emc, effectivePerson.getDistinguishedName(), form.getName(), form.getAppId(), "", "",
-							form.getId(), "FORM", "更新");
-
-					Wo wo = new Wo();
-					wo.setId(form.getId());
-					result.setData(wo);
-				}
-				CacheManager.notify(Form.class);
-				CacheManager.notify(View.class);
-				CacheManager.notify(ViewFieldConfig.class);
-				CacheManager.notify(ViewCategory.class);
-			} catch (Throwable th) {
-				th.printStackTrace();
-				result.error(th);
-			}
-		}
 		return result;
 	}
 
