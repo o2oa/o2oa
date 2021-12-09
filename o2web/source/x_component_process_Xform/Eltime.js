@@ -15,35 +15,31 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
     /** @lends o2.xApplication.process.Xform.Eltime# */
     {
     Implements: [Events],
-    Extends: MWF.APP$Eltime,
+    Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         "elEvents": ["focus", "blur", "change", "input", "clear"]
     },
     _appendVueData: function(){
-        if (!this.json.maxlength) this.json.maxlength = "";
-        if (!this.json.minlength) this.json.minlength = "";
-        if (!this.json.showWordLimit) this.json.showWordLimit = false;
-        if (!this.json.showPassword) this.json.showPassword = false;
+        if (!this.json.readonly) this.json.readonly = false;
         if (!this.json.disabled) this.json.disabled = false;
         if (!this.json.clearable) this.json.clearable = false;
+        if (!this.json.disabled) this.json.disabled = false;
+        if (!this.json.editable) this.json.editable = false;
         if (!this.json.size) this.json.size = "";
         if (!this.json.prefixIcon) this.json.prefixIcon = "";
         if (!this.json.suffixIcon) this.json.suffixIcon = "";
-        if (!this.json.rows) this.json.rows = 2;
-        if (!this.json.autosize) this.json.autosize = false;
-        if (!this.json.readonly) this.json.readonly = false;
-        if (!this.json.resize) this.json.resize = "none";
         if (!this.json.description) this.json.description = "";
+        if (!this.json.arrowControl) this.json.arrowControl = false;
     },
     _createElementHtml: function() {
         debugger;
         if (this.json.timeSelectType === "select"){
-            if (this.json.isRange) {
-                return this.createSelectRangeElementHtml();
-            } else {
+            // if (this.json.isRange) {
+            //     return this.createSelectRangeElementHtml();
+            // } else {
                 return this.createSelectElementHtml();
-            }
+            // }
         }else{
             if (this.json.isRange) {
                 return this.createPickerRangeElementHtml();
@@ -55,13 +51,13 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
     getCommonHtml: function(){
         var html = "";
         html += " v-model=\""+this.json.$id+"\"";
+        html += " :readonly=\"isReadonly\"";
         html += " :disabled=\"disabled\"";
+		html += " :editable=\"editable\"";
+		html += " :clearable=\"clearable\"";
         html += " :size=\"size\"";
         html += " :prefix-icon=\"prefixIcon\"";
         html += " :suffix-icon=\"suffixIcon\"";
-        html += " :readonly=\"isReadonly\"";
-        html += " :clearable=\"clearable\"";
-        html += " :placeholder=\"description\"";
 
         this.options.elEvents.forEach(function(k){
             html += " @"+k+"=\"$loadElEvent_"+k.camelCase()+"\"";
@@ -84,27 +80,41 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
     createSelectElementHtml: function(){
         var html = "<el-time-select";
         html += " :placeholder=\"description\"";
+        html += " :picker-options=\"{" +
+            "start: '"+this.json.start+"'," +
+            "step: '"+this.json.step+"'," +
+            "end: '"+this.json.end+"'"+
+            "}\"";
         html += this.getCommonHtml();
         html += "</el-time-select>";
         return html;
     },
-    createSelectRangeElementHtml: function(){
-        var html = "<el-time-select";
-        html += " :placeholder=\"startPlaceholder\"";
-        html += this.getCommonHtml();
-        html += "</el-time-select>";
+    // createSelectRangeElementHtml: function(){
+    //     var html = "<el-time-select";
+    //     html += " :placeholder=\"startPlaceholder\"";
+    //     html += this.getSelectOpt();
+    //     html += this.getCommonHtml();
+    //     html += "</el-time-select>";
+    //
+    //     html += "<span>"+this.json.rangeSeparator+"</span>";
+    //
+    //     html += "<el-time-select";
+    //     html += " :placeholder=\"endPlaceholder\"";
+    //     html += this.getSelectOpt();
+    //     html += this.getCommonHtml();
+    //     html += "</el-time-select>";
+    //     return html;
+    // },
 
-        html += "<span style='padding: 0px 5px;'>"+this.json.rangeSeparator+"</span>";
-
-        html += "<el-time-select";
-        html += " :placeholder=\"endPlaceholder\"";
-        html += this.getCommonHtml();
-        html += "</el-time-select>";
-        return html;
-    },
     createPickerElementHtml: function(){
         var html = "<el-time-picker";
-        html += " placeholder="+this.json.id;
+        html += " :placeholder=\"description\"";
+        html += " :arrow-control=\"arrowControl\"";
+        html += " :value-format=\"format\"";
+        html += " :picker-options=\"{" +
+            "selectableRange: '"+this.json.start_picker+" - "+this.json.end_picker+"'," +
+            "format: '"+this.json.format+"'"+
+            "}\"";
         html += this.getCommonHtml();
         html += "</el-time-picker>";
         return html;
@@ -115,6 +125,12 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
         html += " :range-separator=\"rangeSeparator\"";
         html += " :start-placeholder=\"startPlaceholder\"";
         html += " :end-placeholder=\"endPlaceholder\"";
+        html += " :arrow-control=\"arrowControl\"";
+        html += " :value-format=\"format\"";
+        html += " :picker-options=\"{" +
+            // "selectableRange: ['"+this.json.start_picker+" - "+this.json.end_picker+"', '"+this.json.start_endPicker+" - "+this.json.end_endPicker+"']," +
+            "format: '"+this.json.format+"'"+
+            "}\"";
         html += this.getCommonHtml();
         html += "</el-time-picker>";
         return html;

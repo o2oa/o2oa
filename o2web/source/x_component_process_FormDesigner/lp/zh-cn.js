@@ -1273,7 +1273,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "startTime": "开始时间",
         "endTime": "结束时间",
         "startDate": "开始日期",
-        "endDate": "结束日期"
+        "endDate": "结束日期",
+        "selectableRange": "可选范围",
+        "endSelectableRange": "结束可选范围"
     },
     "smartbi":{
         "nosetup":"请先安装SmartBI应用",

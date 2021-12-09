@@ -9,6 +9,10 @@
 		    <td class="editTableTitle">{{$.lp.name}}:</td>
 		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
 		  </tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
 		</table>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
@@ -19,15 +23,17 @@
 						   onclick="if (this.checked){
 						   	$('text{$.pid}timeSelectTable').setStyle('display', 'none');
 						   	$('text{$.pid}timePickTable').setStyle('display', '');
+						   	$('text{$.pid}isRangeTr').setStyle('display', '');
 						   }" />{{$.lp.anyTimePoint}}
 					<input type="radio" name="timeSelectType" value="select" text{($.timeSelectType==='select')?'checked':''}
 						   onclick="if (this.checked){
 							$('text{$.pid}timeSelectTable').setStyle('display', '');
 							$('text{$.pid}timePickTable').setStyle('display', 'none');
+						   	$('text{$.pid}isRangeTr').setStyle('display', 'none');
 						}" />{{$.lp.fixedTimePoint}}
 				</td>
 			</tr>
-			<tr>
+			<tr id="text{$.pid}isRangeTr" style="display: text{($.timeSelectType==='select') ? 'none':''};">
 				<td class="editTableTitle">{{$.lp.isRange}}:</td>
 				<td class="editTableValue">
 					<input type="radio" name="isRange" text{($.isRange)?'checked':''} value="true"
@@ -59,15 +65,15 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.editable}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="editable" value="true" text{($.editable!==false)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="editable" value="false" text{($.editable===false)?'checked':''}/>{{$.lp.no}}
+					<input type="radio" name="editable" value="true" text{($.editable)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="editable" value="false" text{(!$.editable)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.clearable}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="clearable" value="true" text{($.clearable===true)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="clearable" value="false" text{($.clearable!==true)?'checked':''}/>{{$.lp.no}}
+					<input type="radio" name="clearable" value="true" text{($.clearable)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="clearable" value="false" text{(!$.clearable)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
@@ -94,52 +100,57 @@
 				<td class="editTableValue"><input type="text" name="end" value="text{$.end}" class="editTableInput"/></td>
 			</tr>
 		</table>
-		<table id="text{$.pid}timePickTable" style="display: text{($.timeSelectType!=='select') ? '':'none'};">
-			<tr>
-				<td class="editTableTitle">{{$.lp.format}}:</td>
-				<td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.startTime}}:</td>
-				<td class="editTableValue"><input type="text" name="start_picker" value="text{$.start_picker}" class="editTableInput"/></td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.endTime}}:</td>
-				<td class="editTableValue"><input type="text" name="end_picker" value="text{$.end_picker}" class="editTableInput"/></td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.arrowControl}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="arrowControl" value="true" text{($.arrowControl)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="arrowControl" value="false" text{(!$.arrowControl)?'checked':''}/>{{$.lp.no}}
-				</td>
-			</tr>
-		</table>
-		<table id="text{$.pid}noRangeTable" style="display: text{(!$.isRange) ? '':'none'};">
-			<tr>
-				<td class="editTableTitle">{{$.lp.placeholder}}:</td>
-				<td class="editTableValue"><input type="text" name="description" value="text{$.placeholder}" class="editTableInput"/></td>
-			</tr>
-		</table>
-		<table id="text{$.pid}rangeTable" style="display: text{($.isRange) ? '':'none'};">
-			<tr>
-				<td class="editTableTitle">{{$.lp.rangeSeparator}}:</td>
-				<td class="editTableValue"><input type="text" name="rangeSeparator" value="text{$.rangeSeparator}" class="editTableInput"/></td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.startPlaceholder}}:</td>
-				<td class="editTableValue"><input type="text" name="startPlaceholder" value="text{$.startPlaceholder}" class="editTableInput"/></td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.endPlaceholder}}:</td>
-				<td class="editTableValue"><input type="text" name="endPlaceholder" value="text{$.endPlaceholder}" class="editTableInput"/></td>
-			</tr>
-		</table>
+
+		<div id="text{$.pid}timePickTable" style="display: text{($.timeSelectType!=='select') ? '':'none'};">
+			<table>
+				<tr>
+					<td class="editTableTitle">{{$.lp.format}}:</td>
+					<td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.arrowControl}}:</td>
+					<td class="editTableValue">
+						<input type="radio" name="arrowControl" value="true" text{($.arrowControl)?'checked':''}/>{{$.lp.yes}}
+						<input type="radio" name="arrowControl" value="false" text{(!$.arrowControl)?'checked':''}/>{{$.lp.no}}
+					</td>
+				</tr>
+			</table>
+			<table id="text{$.pid}noRangeTable" style="display: text{(!$.isRange) ? '':'none'};">
+				<tr>
+					<td class="editTableTitle">{{$.lp.selectableRange}}:</td>
+					<td class="editTableValue">
+						<input type="text" name="start_picker" value="text{$.start_picker}" class="editTableInputNoWidth"/> -
+						<input type="text" name="end_picker" value="text{$.end_picker}" class="editTableInputNoWidth"/>
+					</td>
+				</tr>
+			</table>
+			<table id="text{$.pid}rangeTable" style="display: text{($.isRange) ? '':'none'};">
+<!--				<tr>-->
+<!--					<td class="editTableTitle">{{$.lp.endSelectableRange}}:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input type="text" name="start_endPicker" value="text{$.start_endPicker}" class="editTableInputNoWidth"/> - -->
+<!--						<input type="text" name="end_endPicker" value="text{$.end_endPicker}" class="editTableInputNoWidth"/>-->
+<!--					</td>-->
+<!--				</tr>-->
+				<tr>
+					<td class="editTableTitle">{{$.lp.rangeSeparator}}:</td>
+					<td class="editTableValue"><input type="text" name="rangeSeparator" value="text{$.rangeSeparator}" class="editTableInput"/></td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.startPlaceholder}}:</td>
+					<td class="editTableValue"><input type="text" name="startPlaceholder" value="text{$.startPlaceholder}" class="editTableInput"/></td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.endPlaceholder}}:</td>
+					<td class="editTableValue"><input type="text" name="endPlaceholder" value="text{$.endPlaceholder}" class="editTableInput"/></td>
+				</tr>
+			</table>
+		</div>
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.prefixIcon}}</div>
 		<div style="display: text{($.prefixIcon)?'block':'none'}" class="MWFElIcon" name="prefixIcon"></div>
 
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.suffixIcon}}</div>
-		<div style="display: text{($.suffixIcon)?'block':'none'}" class="MWFElIcon" name="suffixIcon"></div>
+<!--		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.suffixIcon}}</div>-->
+<!--		<div style="display: text{($.suffixIcon)?'block':'none'}" class="MWFElIcon" name="suffixIcon"></div>-->
 
 		<div class="MWFMaplist" name="elStyles" title="{{$.lp.style}}"></div>
 		<div class="MWFMaplist" name="elProperties" title="{{$.lp.attribute}}"></div>

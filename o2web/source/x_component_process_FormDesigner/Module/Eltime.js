@@ -16,11 +16,11 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 	_createElementHtml: function() {
 		debugger;
 		if (this.json.timeSelectType === "select"){
-			if (this.json.isRange ) {
-				return this.createSelectRangeElementHtml();
-			} else {
+			// if (this.json.isRange ) {
+			// 	return this.createSelectRangeElementHtml();
+			// } else {
 				return this.createSelectElementHtml();
-			}
+			// }
 		}else{
 			if (this.json.isRange) {
 				return this.createPickerRangeElementHtml();
@@ -54,20 +54,21 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 		html += "</el-time-select>";
 		return html;
 	},
-	createSelectRangeElementHtml: function(){
-		var html = "<el-time-select";
-		html += " :value=\"id\"";
-		html += this.getCommonHtml();
-		html += "</el-time-select>";
+	// createSelectRangeElementHtml: function(){
+	// 	var html = "<el-time-select";
+	// 	html += " :value=\"id\"";
+	// 	html += this.getCommonHtml();
+	// 	html += "</el-time-select>";
+	//
+	// 	html += "<span style='padding: 0px 5px;'>"+this.json.rangeSeparator+"</span>";
+	//
+	// 	html += "<el-time-select";
+	// 	html += " :value=\"id\"";
+	// 	html += this.getCommonHtml();
+	// 	html += "</el-time-select>";
+	// 	return html;
+	// },
 
-		html += "<span style='padding: 0px 5px;'>"+this.json.rangeSeparator+"</span>";
-
-		html += "<el-time-select";
-		html += " :value=\"id\"";
-		html += this.getCommonHtml();
-		html += "</el-time-select>";
-		return html;
-	},
 	createPickerElementHtml: function(){
 		var html = "<el-time-picker";
 		html += " placeholder="+this.json.id;
