@@ -1,0 +1,233 @@
+.menuArea{
+    width: 300px;
+    height: 100%;
+    background: #FFFFFF;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+    float: left;
+
+}
+.contentArea {
+    margin-left: 300px;
+    height: 100%;
+    background: #F0F0F0;
+    display: flex;
+    flex-direction:column;
+}
+.content{
+    height: 100%;
+    margin: 10px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+.menu{
+    margin: 0;
+    user-select: none;
+}
+
+.menuTitle{
+    margin: 0 20px;
+    height: 40px;
+    font-size: 16px;
+    color: #333333;
+    line-height: 40px;
+    border-bottom: 1px solid #E6E6E6;
+}
+.menuTitleText{
+    float: left;
+}
+.menuTitleAction {
+    text-align: right;
+    width: 40px;
+    height: 40px;
+    float: right;
+    cursor: pointer;
+    color: #4A90E2;
+}
+.menuItem{
+    height: 40px;
+    cursor: pointer;
+}
+.menuItem_current{
+    background-color: #EBF1F7;
+}
+.menuItem_over{
+    background-color: #F7F7F7;
+}
+.menuItemIcon {
+    margin-left: 20px;
+    height: 16px;
+    width: 16px;
+    padding: 11px 10px 12px 0;
+    float: left;
+    color: #999999;
+}
+.menuItemCount{
+    margin-right: 20px;
+    float: right;
+    width: 60px;
+    font-size: 12px;
+    color: #999999;
+    line-height: 40px;
+    text-align: right;
+}
+.menuItemText{
+    margin: 0 80px 0 48px;
+    height: 40px;
+    line-height: 40px;
+    color: #666666;
+}
+
+.createProcessAction{
+    text-align: center;
+    margin-top: 30px;
+    margin-left: 20px;
+    width: 260px;
+    height: 30px;
+    line-height: 30px;
+    background: #4A90E2;
+    border-radius: 15px;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+.skeleton {
+    padding: 10px 30px;
+}
+.skeleton_item {
+    height: 16px;
+    border-radius: 15px;
+    margin-top: 20px;
+    background: #f2f2f2;
+}
+.contentTitle{
+    height: 60px;
+}
+.contentList{
+    height: inherit;
+    overflow: auto;
+    padding: 0 20px;
+}
+.contentBottom{
+    height: 80px;
+}
+
+/*list*/
+.listItem{
+    height: 69px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E6E6E6;
+    display: flex;
+    flex-direction: row;
+}
+.listItemFlag{
+    height: 69px;
+    width: 6px;
+    background: #FFFFFF;
+}
+.listItemApplication{
+    height: 69px;
+    width: 200px;
+}
+.listItemLine{
+    width: 1px;
+    height: 36px;
+    background: #E6E6E6;
+    border-radius: 6px;
+}
+.listItemTitle{
+    width: inherit;
+    height: 69px;
+}
+.listItemActivity{
+    width: 160px;
+    height: 69px;
+}
+.listItemDate{
+    height: 69px;
+    width: 250px;
+    text-align: center;
+}
+
+
+@font-face {
+    font-family: 'o2taskcenter';
+    src:
+            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.ttf?mcfdrb') format('truetype'),
+            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.woff?mcfdrb') format('woff'),
+            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.svg?mcfdrb#o2taskcenter') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^="o2icon-"], [class*=" o2icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'o2taskcenter' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.o2icon-bianji:before {
+    content: "\e900";
+}
+.o2icon-caogao:before {
+    content: "\e901";
+}
+.o2icon-circle:before {
+    content: "\e902";
+}
+.o2icon-clear:before {
+    content: "\e903";
+}
+.o2icon-daiban:before {
+    content: "\e904";
+}
+.o2icon-daiyue:before {
+    content: "\e905";
+}
+.o2icon-more_zd:before {
+    content: "\e906";
+}
+.o2icon-more_zk:before {
+    content: "\e907";
+}
+.o2icon-off:before {
+    content: "\e908";
+}
+.o2icon-point:before {
+    content: "\e909";
+}
+.o2icon-saixuan:before {
+    content: "\e90a";
+}
+.o2icon-sousuo:before {
+    content: "\e90b";
+}
+.o2icon-triangle_left:before {
+    content: "\e90c";
+}
+.o2icon-triangle_right:before {
+    content: "\e90d";
+}
+.o2icon-xuanzhong:before {
+    content: "\e90e";
+}
+.o2icon-yiban:before {
+    content: "\e90f";
+}
+.o2icon-yiyue:before {
+    content: "\e910";
+}
+.o2icon-zengjia:before {
+    content: "\e911";
+}

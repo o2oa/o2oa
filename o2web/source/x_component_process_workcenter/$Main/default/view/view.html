@@ -1,0 +1,64 @@
+<div class="menuArea">
+    <div class="menu">
+        <div class="menuTitle">
+            <div class="menuTitleText">{{$.lp.title}}</div>
+            <div class="menuTitleAction">
+                <icon class="o2icon-zengjia mainColor_color"></icon>
+            </div>
+        </div>
+        <div class="menuItem" data-o2-element="taskMenuNode" data-o2-events="click:loadList:task">
+            <div class="menuItemIcon"><icon class="o2icon-daiban"></icon></div>
+            <div class="menuItemCount" data-o2-element="taskCountNode"></div>
+            <div class="menuItemText">{{$.lp.task}}</div>
+        </div>
+
+        <div class="menuItem" data-o2-element="readMenuNode" data-o2-events="click:loadList:read">
+            <div class="menuItemIcon"><icon class="o2icon-daiyue"></icon></div>
+            <div class="menuItemCount" data-o2-element="readCountNode"></div>
+            <div class="menuItemText">{{$.lp.read}}</div>
+        </div>
+
+        <div class="menuItem" data-o2-element="taskCompletedMenuNode" data-o2-events="click:loadList:taskCompleted">
+            <div class="menuItemIcon"><icon class="o2icon-yiban"></icon></div>
+            <div class="menuItemCount" data-o2-element="taskCompletedCountNode"></div>
+            <div class="menuItemText">{{$.lp.taskCompleted}}</div>
+        </div>
+
+        <div class="menuItem" data-o2-element="readCompletedMenuNode" data-o2-events="click:loadList:readCompleted">
+            <div class="menuItemIcon"><icon class="o2icon-yiyue"></icon></div>
+            <div class="menuItemCount" data-o2-element="readCompletedCountNode"></div>
+            <div class="menuItemText">{{$.lp.readCompleted}}</div>
+        </div>
+
+        <div class="menuItem" data-o2-element="draftMenuNode" data-o2-events="click:loadList:draft">
+            <div class="menuItemIcon"><icon class="o2icon-caogao"></icon></div>
+            <div class="menuItemCount" data-o2-element="draftCountNode"></div>
+            <div class="menuItemText">{{$.lp.draft}}</div>
+        </div>
+
+        <div class="createProcessAction mainColor_bg">
+            <icon class="o2icon-zengjia"></icon>
+            <span>{{$.lp.createProcess}}</span>
+        </div>
+    </div>
+</div>
+<div class="contentArea">
+    <div class="content" data-o2-element="contentNode">
+        <div class="contentTitle" data-o2-element="listTitleNode"></div>
+        <div class="contentList" data-o2-element="listContentNode">
+            <div class="skeleton" data-o2-element="skeletonNode">
+                <div class="skeleton_item" style="width: 90%"></div>
+                <div class="skeleton_item" style="width: 60%"></div>
+                <div class="skeleton_item"></div>
+                <div class="skeleton_item" style="width: 70%"></div>
+                <div class="skeleton_item"></div>
+                <div class="skeleton_item" style="width: 60%"></div>
+                <div class="skeleton_item"></div>
+                <div class="skeleton_item" style="width: 80%"></div>
+            </div>
+        </div>
+        <div class="contentBottom" data-o2-element="listBottomNode"></div>
+    </div>
+
+</div>
+
