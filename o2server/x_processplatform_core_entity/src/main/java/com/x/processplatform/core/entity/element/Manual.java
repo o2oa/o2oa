@@ -63,13 +63,16 @@ public class Manual extends Activity {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		// nothing
 	}
 
 	@PostLoad
 	public void postLoad() {
-		// nothing
+		if (null != this.properties) {
+			this.customData = this.getProperties().getCustomData();
+		}
 	}
 
 	public Manual() {
