@@ -14,6 +14,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -65,8 +66,16 @@ public class Invoke extends Activity {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		// nothing
+	}
+
+	@PostLoad
+	public void postLoad() {
+		if (null != this.properties) {
+			this.customData = this.getProperties().getCustomData();
+		}
 	}
 
 	@Override
