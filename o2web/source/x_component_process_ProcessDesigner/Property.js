@@ -436,7 +436,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                         //this.data[name] = maplist.toJson();
                         //
                         //var oldData = this.data[name];
-                        this.setValue(name, JSON.stringify(maplist.toJson()));
+                        this.setValue(name, maplist.toJson());
                         // this.changeStyle(name, oldData);
                         // this.changeData(name);
                     }.bind(this),
