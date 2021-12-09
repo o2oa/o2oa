@@ -111,7 +111,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			workCompletedRecordFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		}
 
-		if (BooleanUtils.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
+		if (BooleanUtils
+				.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
 			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
 
@@ -234,6 +235,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 				Activity activity = business.getActivity(work);
 				if (null != activity) {
 					activity.copyTo(woActivity);
+					woActivity.setCustomData(activity.getCustomData());
 					wo.setActivity(woActivity);
 					if (Objects.equals(ActivityType.manual, activity.getActivityType())) {
 						wo.setRouteList(WoRoute.copier.copy(business.route().pick(((Manual) activity).getRouteList())));
@@ -599,6 +601,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 		private ManualMode manualMode;
 
+		private JsonElement customData;
+
 		public String getName() {
 			return name;
 		}
@@ -669,6 +673,14 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 		public void setManualMode(ManualMode manualMode) {
 			this.manualMode = manualMode;
+		}
+
+		public JsonElement getCustomData() {
+			return customData;
+		}
+
+		public void setCustomData(JsonElement customData) {
+			this.customData = customData;
 		}
 
 	}

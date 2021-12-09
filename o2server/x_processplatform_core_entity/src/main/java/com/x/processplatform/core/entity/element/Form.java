@@ -80,8 +80,6 @@ public class Form extends SliceJpaObject {
 			/* 检查不存在表单应用 */
 			@CitationNotExist(type = Merge.class, fields = Merge.form_FIELDNAME),
 			/* 检查不存在表单应用 */
-			@CitationNotExist(type = Message.class, fields = Message.form_FIELDNAME),
-			/* 检查不存在表单应用 */
 			@CitationNotExist(type = Parallel.class, fields = Parallel.form_FIELDNAME),
 			/* 检查不存在表单应用 */
 			@CitationNotExist(type = Service.class, fields = Service.form_FIELDNAME),
@@ -105,7 +103,7 @@ public class Form extends SliceJpaObject {
 		}
 		return this.properties;
 	}
-	
+
 	public void setProperties(FormProperties properties) {
 		this.properties = properties;
 	}
