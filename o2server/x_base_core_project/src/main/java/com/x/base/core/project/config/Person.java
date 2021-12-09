@@ -18,7 +18,7 @@ import com.x.base.core.project.tools.StringTools;
 public class Person extends ConfigObject {
 
 	private static final long serialVersionUID = 5190363566263723493L;
-	
+
 	public static final Boolean DEFAULT_CAPTCHALOGIN = true;
 	public static final Boolean DEFAULT_CODELOGIN = true;
 	public static final Boolean DEFAULT_BINDLOGIN = true;
@@ -92,7 +92,7 @@ public class Person extends ConfigObject {
 	@FieldDescribe("注册初始密码,使用()调用脚本生成初始密码,默认为:" + DEFAULT_PASSWORD)
 	private String password;
 
-	@FieldDescribe("密码过期时间(天),0表示不过期,默认值:0.")
+	@FieldDescribe("密码过期时间(天),0表示不过期(只对新用户有效),-1表示永不过期(对所有用户有效),默认值:0.")
 	private Integer passwordPeriod;
 
 	@FieldDescribe("密码校验正则表达式,默认6位以上,包含数字和字母.")
