@@ -1258,7 +1258,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "timeSelectType2": "Time Select Type",
         "isRange": "Is Range",
         "fixedTimePoint": "Fixed Time",
-        "anyTimePoint": "Any Time"
+        "anyTimePoint": "Any Time",
+        "selectableRange": "Selectable Range",
+        "endSelectableRange": "End selectable range"
     },
     "smartbi":{
         "nosetup":"please install SmartBI APP first",
