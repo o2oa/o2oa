@@ -17,7 +17,7 @@ public class WrapProcess extends Process {
 			WrapProcess.class, null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapProcess, Process> inCopier = WrapCopierFactory.wi(WrapProcess.class,
-			Process.class, null, ListTools.toList(FieldsUnmodifyExcludeId, creatorPerson_FIELDNAME,
+			Process.class, null, ListTools.toList(FieldsUnmodifyIncludePorpertiesExcludeId, creatorPerson_FIELDNAME,
 					lastUpdatePerson_FIELDNAME, lastUpdateTime_FIELDNAME),
 			false);
 

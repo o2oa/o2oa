@@ -110,7 +110,11 @@ public class Embed extends Activity {
 
 	@Override
 	public JsonElement getCustomData() {
-		return this.getProperties().getCustomData();
+		if (null != customData) {
+			return this.customData;
+		} else {
+			return this.getProperties().getCustomData();
+		}
 	}
 
 	@Override
