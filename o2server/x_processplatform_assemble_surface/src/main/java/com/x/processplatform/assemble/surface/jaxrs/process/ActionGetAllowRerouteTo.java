@@ -25,7 +25,6 @@ import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Service;
@@ -52,7 +51,6 @@ class ActionGetAllowRerouteTo extends BaseAction {
 			wo.setInvokeList(this.filterInvokes(business, process));
 			wo.setManualList(this.filterManuals(business, process));
 			wo.setMergeList(this.filterMerges(business, process));
-			wo.setMessageList(this.filterMessages(business, process));
 			wo.setParallelList(this.filterParallels(business, process));
 			wo.setServiceList(this.filterServices(business, process));
 			wo.setSplitList(this.filterSplits(business, process));
@@ -78,8 +76,6 @@ class ActionGetAllowRerouteTo extends BaseAction {
 		private List<WoInvoke> invokeList;
 		private List<WoManual> manualList;
 		private List<WoMerge> mergeList;
-		private List<WoMessage> messageList;
-		// private List<WoRoute> routeList;
 		private List<WoParallel> parallelList;
 		private List<WoService> serviceList;
 		private List<WoSplit> splitList;
@@ -162,14 +158,6 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		public void setMergeList(List<WoMerge> mergeList) {
 			this.mergeList = mergeList;
-		}
-
-		public List<WoMessage> getMessageList() {
-			return messageList;
-		}
-
-		public void setMessageList(List<WoMessage> messageList) {
-			this.messageList = messageList;
 		}
 
 		public List<WoParallel> getParallelList() {
@@ -266,13 +254,6 @@ class ActionGetAllowRerouteTo extends BaseAction {
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Merge, WoMerge> copier = WrapCopierFactory.wo(Merge.class, WoMerge.class,
 				ListTools.toList(Merge.name_FIELDNAME, Merge.id_FIELDNAME), JpaObject.FieldsInvisible);
-	}
-
-	public static class WoMessage extends Message {
-
-		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Message, WoMessage> copier = WrapCopierFactory.wo(Message.class, WoMessage.class,
-				ListTools.toList(Message.name_FIELDNAME, Message.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoParallel extends Parallel {
@@ -401,17 +382,6 @@ class ActionGetAllowRerouteTo extends BaseAction {
 			}
 		}
 		return WoMerge.copier.copy(list);
-	}
-
-	private List<WoMessage> filterMessages(Business business, Process process) throws Exception {
-		List<Message> os = business.message().listWithProcess(process);
-		List<Message> list = new ArrayList<>();
-		for (Message o : os) {
-			if (BooleanUtils.isTrue(o.getAllowRerouteTo())) {
-				list.add(o);
-			}
-		}
-		return WoMessage.copier.copy(list);
 	}
 
 	private List<WoParallel> filterParallels(Business business, Process process) throws Exception {

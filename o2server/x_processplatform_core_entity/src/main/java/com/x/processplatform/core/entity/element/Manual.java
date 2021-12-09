@@ -26,6 +26,7 @@ import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 import org.apache.openjpa.persistence.jdbc.Strategy;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -68,6 +69,7 @@ public class Manual extends Activity {
 
 	@PostLoad
 	public void postLoad() {
+		// nothing
 	}
 
 	public Manual() {
@@ -83,6 +85,11 @@ public class Manual extends Activity {
 
 	public void setProperties(ManualProperties properties) {
 		this.properties = properties;
+	}
+
+	@Override
+	public JsonElement getCustomData() {
+		return this.getProperties().getCustomData();
 	}
 
 	@FieldDescribe("分组.")
@@ -150,8 +157,9 @@ public class Manual extends Activity {
 
 	@FieldDescribe("待阅组织名称,存储unit,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + readUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME + ElementIndexNameSuffix)
@@ -160,8 +168,9 @@ public class Manual extends Activity {
 
 	@FieldDescribe("待阅群组名称,存储group,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + readGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ readGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readGroupList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readGroupList_FIELDNAME + ElementIndexNameSuffix)
@@ -212,8 +221,9 @@ public class Manual extends Activity {
 
 	@FieldDescribe("参与人组织名称,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + reviewUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + reviewUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ reviewUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + reviewUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewUnitList_FIELDNAME + ElementIndexNameSuffix)
@@ -222,8 +232,9 @@ public class Manual extends Activity {
 
 	@FieldDescribe("参与人群组名称,存储group,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + reviewGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + reviewGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ reviewGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + reviewGroupList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewGroupList_FIELDNAME + ElementIndexNameSuffix)
@@ -360,8 +371,9 @@ public class Manual extends Activity {
 	@IdReference(Route.class)
 	@FieldDescribe("出口路由,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + routeList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + routeList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ routeList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + routeList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + routeList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + routeList_FIELDNAME + ElementIndexNameSuffix)
@@ -383,8 +395,9 @@ public class Manual extends Activity {
 	public static final String taskUnitList_FIELDNAME = "taskUnitList";
 	@FieldDescribe("人工节点的待办部门名称,存储 Unit name,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + taskUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + taskUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ taskUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + taskUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + taskUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + taskUnitList_FIELDNAME + ElementIndexNameSuffix)
@@ -394,8 +407,9 @@ public class Manual extends Activity {
 	public static final String taskGroupList_FIELDNAME = "taskGroupList";
 	@FieldDescribe("待办人群组名称,存储group,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + taskGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + taskGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ taskGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + taskGroupList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + taskGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + taskGroupList_FIELDNAME + ElementIndexNameSuffix)
@@ -469,8 +483,9 @@ public class Manual extends Activity {
 	public static final String taskDataPathList_FIELDNAME = "taskDataPathList";
 	@FieldDescribe("活动待办人员data数据路径.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + IndexNameMiddle + taskDataPathList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + taskDataPathList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + IndexNameMiddle
+			+ taskDataPathList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + taskDataPathList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_255B, name = ColumnNamePrefix + taskDataPathList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + taskDataPathList_FIELDNAME + ElementIndexNameSuffix)

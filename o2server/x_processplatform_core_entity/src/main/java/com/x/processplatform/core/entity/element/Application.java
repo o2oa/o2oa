@@ -17,11 +17,13 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -34,6 +36,7 @@ import com.x.processplatform.core.entity.PersistenceProperties;
 
 /**
  * 流程平台应用
+ * 
  * @author sword
  */
 @Entity
@@ -70,9 +73,21 @@ public class Application extends SliceJpaObject {
 		this.applicationCategory = StringUtils.trimToEmpty(this.applicationCategory);
 	}
 
-	/* 更新运行方法 */
+	public ApplicationProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new ApplicationProperties();
+		}
+		return this.properties;
+	}
 
-	/* flag标志位 */
+	public void setProperties(ApplicationProperties properties) {
+		this.properties = properties;
+	}
+
+	public Application() {
+		this.properties = new ApplicationProperties();
+	}
+
 	/* Entity 默认字段结束 */
 
 	public static final String name_FIELDNAME = "name";
@@ -80,16 +95,16 @@ public class Application extends SliceJpaObject {
 	@FieldDescribe("名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
-	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
-	@CitationNotExist(type = Application.class, fields = { "id", "name", "alias" }))
+	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists = @CitationNotExist(type = Application.class, fields = {
+			"id", "name", "alias" }))
 	private String name;
 
 	public static final String alias_FIELDNAME = "alias";
 	@Flag
 	@FieldDescribe("应用别名,如果有必须唯一.")
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
-	@CitationNotExist(type = Application.class, fields = { "id", "name", "alias" }))
+	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists = @CitationNotExist(type = Application.class, fields = {
+			"id", "name", "alias" }))
 	private String alias;
 
 	public static final String description_FIELDNAME = "description";
@@ -146,8 +161,9 @@ public class Application extends SliceJpaObject {
 	@FieldDescribe("应用管理者.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + controllerList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + controllerList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ controllerList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + controllerList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + controllerList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + controllerList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -170,6 +186,14 @@ public class Application extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	@Column(length = length_255B, name = ColumnNamePrefix + lastUpdatePerson_FIELDNAME)
 	private String lastUpdatePerson;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private ApplicationProperties properties;
 
 	public String getApplicationCategory() {
 		return Objects.toString(this.applicationCategory, "");

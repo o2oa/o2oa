@@ -9,7 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,7 +38,6 @@ import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -60,7 +58,6 @@ import com.x.processplatform.core.entity.element.wrap.WrapFormField;
 import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
 import com.x.processplatform.core.entity.element.wrap.WrapManual;
 import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapMessage;
 import com.x.processplatform.core.entity.element.wrap.WrapParallel;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -273,17 +270,6 @@ class ActionPrepareCover extends BaseAction {
 				for (MatchElement<WrapMerge, Merge> _me : this.match(business, m.getW().getMergeList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getMergeList(), Merge.class),
 								business.merge().listWithProcessObject(m.getT().getId())))) {
-					if ((null != _me.getW()) && (null != _me.getT())) {
-						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-						} else {
-							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
-						}
-					}
-				}
-				for (MatchElement<WrapMessage, Message> _me : this.match(business, m.getW().getMessageList(),
-						ListUtils.union(this.listWithIds(business, m.getW().getMessageList(), Message.class),
-								business.message().listWithProcessObject(m.getT().getId())))) {
 					if ((null != _me.getW()) && (null != _me.getT())) {
 						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
 							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));

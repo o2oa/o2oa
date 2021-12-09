@@ -152,8 +152,7 @@ public class Route extends SliceJpaObject {
 
 	public static final String activity_FIELDNAME = "activity";
 	@IdReference({ Agent.class, Begin.class, Cancel.class, Choice.class, Choice.class, Delay.class, Embed.class,
-			End.class, Invoke.class, Manual.class, Merge.class, Message.class, Parallel.class, Service.class,
-			Split.class })
+			End.class, Invoke.class, Manual.class, Merge.class, Parallel.class, Service.class, Split.class })
 	@FieldDescribe("目标活动节点标识符.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + activity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + activity_FIELDNAME)

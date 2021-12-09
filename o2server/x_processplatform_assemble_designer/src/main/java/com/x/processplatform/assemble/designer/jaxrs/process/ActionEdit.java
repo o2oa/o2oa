@@ -1,10 +1,8 @@
 package com.x.processplatform.assemble.designer.jaxrs.process;
 
 import java.util.Date;
-import java.util.UUID;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -28,7 +26,6 @@ import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.ProcessVersion;
@@ -68,7 +65,6 @@ class ActionEdit extends BaseAction {
 			emc.beginTransaction(Invoke.class);
 			emc.beginTransaction(Manual.class);
 			emc.beginTransaction(Merge.class);
-			emc.beginTransaction(Message.class);
 			emc.beginTransaction(Parallel.class);
 			emc.beginTransaction(Route.class);
 			emc.beginTransaction(Service.class);
@@ -88,7 +84,6 @@ class ActionEdit extends BaseAction {
 			update_invoke(business, wrap.getInvokeList(), process);
 			update_manual(business, wrap.getManualList(), process);
 			update_merge(business, wrap.getMergeList(), process);
-			update_message(business, wrap.getMessageList(), process);
 			update_parallel(business, wrap.getParallelList(), process);
 			update_route(business, wrap.getRouteList(), process);
 			update_service(business, wrap.getServiceList(), process);

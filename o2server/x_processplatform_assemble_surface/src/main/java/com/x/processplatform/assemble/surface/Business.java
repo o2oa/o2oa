@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.PromptException;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
@@ -49,7 +48,6 @@ import com.x.processplatform.assemble.surface.factory.element.FormFactory;
 import com.x.processplatform.assemble.surface.factory.element.InvokeFactory;
 import com.x.processplatform.assemble.surface.factory.element.ManualFactory;
 import com.x.processplatform.assemble.surface.factory.element.MergeFactory;
-import com.x.processplatform.assemble.surface.factory.element.MessageFactory;
 import com.x.processplatform.assemble.surface.factory.element.ParallelFactory;
 import com.x.processplatform.assemble.surface.factory.element.ProcessFactory;
 import com.x.processplatform.assemble.surface.factory.element.RouteFactory;
@@ -329,15 +327,6 @@ public class Business {
 		return merge;
 	}
 
-	private MessageFactory message;
-
-	public MessageFactory message() throws Exception {
-		if (null == this.message) {
-			this.message = new MessageFactory(this);
-		}
-		return message;
-	}
-
 	private ParallelFactory parallel;
 
 	public ParallelFactory parallel() throws Exception {
@@ -456,9 +445,6 @@ public class Business {
 				break;
 			case merge:
 				o = merge().pick(id);
-				break;
-			case message:
-				o = message().pick(id);
 				break;
 			case parallel:
 				o = parallel().pick(id);
@@ -626,8 +612,10 @@ public class Business {
 		Long readCount = read().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
 		Application application = application().pick(work.getApplication());
 		Process process = process().pick(work.getProcess());
-		Long taskCompletedCount = taskCompleted().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
-		Long readCompletedCount = readCompleted().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
+		Long taskCompletedCount = taskCompleted().countWithPersonWithJob(effectivePerson.getDistinguishedName(),
+				work.getJob());
+		Long readCompletedCount = readCompleted().countWithPersonWithJob(effectivePerson.getDistinguishedName(),
+				work.getJob());
 		Long reviewCount = review().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
 		/* 工作是否可以打开(管理员 或 有task,taskCompleted,read,readCompleted,review的人) */
 		control.setAllowVisit(false);
@@ -1017,21 +1005,21 @@ public class Business {
 		if (effectivePerson.isPerson(work.getCreatorPerson())) {
 			return true;
 		}
-		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME,
-				effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, work.getJob()) == 0) {
+		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+				Review.job_FIELDNAME, work.getJob()) == 0) {
 			if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
 					effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, work.getJob()) == 0) {
 				if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
 						effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, work.getJob()) == 0) {
-					if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-							Task.job_FIELDNAME, work.getJob()) == 0) {
+					if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME,
+							effectivePerson.getDistinguishedName(), Task.job_FIELDNAME, work.getJob()) == 0) {
 						if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME,
 								effectivePerson.getDistinguishedName(), Read.job_FIELDNAME, work.getJob()) == 0) {
-								Application application = application().pick(work.getApplication());
-								Process process = process().pick(work.getProcess());
-								if (!canManageApplicationOrProcess(effectivePerson, application, process)) {
-									return false;
-								}
+							Application application = application().pick(work.getApplication());
+							Process process = process().pick(work.getProcess());
+							if (!canManageApplicationOrProcess(effectivePerson, application, process)) {
+								return false;
+							}
 						}
 					}
 				}
@@ -1042,7 +1030,7 @@ public class Business {
 
 	public boolean readableWithWorkOrWorkCompleted(EffectivePerson effectivePerson, String workOrWorkCompleted,
 			PromptException entityException) throws Exception {
-		if(effectivePerson.isManager()){
+		if (effectivePerson.isManager()) {
 			return true;
 		}
 		Work work = emc.fetch(workOrWorkCompleted, Work.class, ListTools.toList(Work.job_FIELDNAME,
@@ -1110,7 +1098,7 @@ public class Business {
 	}
 
 	public boolean readableWithJob(EffectivePerson effectivePerson, String job) throws Exception {
-		if(effectivePerson.isManager()){
+		if (effectivePerson.isManager()) {
 			return true;
 		}
 		String creatorPerson = null;
@@ -1139,14 +1127,14 @@ public class Business {
 		if (effectivePerson.isPerson(creatorPerson)) {
 			return true;
 		}
-		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME,
-				effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, job) == 0) {
+		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+				Review.job_FIELDNAME, job) == 0) {
 			if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
 					effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, job) == 0) {
 				if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
 						effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, job) == 0) {
-					if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-							Task.job_FIELDNAME, job) == 0) {
+					if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME,
+							effectivePerson.getDistinguishedName(), Task.job_FIELDNAME, job) == 0) {
 						if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME,
 								effectivePerson.getDistinguishedName(), Read.job_FIELDNAME, job) == 0) {
 							Application application = application().pick(applicationId);
@@ -1215,9 +1203,9 @@ public class Business {
 		/* 生成zip压缩文件内的目录结构 */
 		if (attachmentList != null) {
 			for (Attachment att : attachmentList) {
-				if(filePathMap.containsKey(att.getName())) {
-					filePathMap.put(att.getSite()+"-"+att.getName(), att);
-				}else{
+				if (filePathMap.containsKey(att.getName())) {
+					filePathMap.put(att.getSite() + "-" + att.getName(), att);
+				} else {
 					filePathMap.put(att.getName(), att);
 				}
 			}

@@ -48,7 +48,6 @@ import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.QueryStat;
@@ -105,7 +104,6 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(Invoke.class);
 			emc.beginTransaction(Manual.class);
 			emc.beginTransaction(Merge.class);
-			emc.beginTransaction(Message.class);
 			emc.beginTransaction(Parallel.class);
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
@@ -131,7 +129,6 @@ class ActionDelete extends BaseAction {
 				this.delete_invoke(business, process);
 				this.delete_manual(business, process);
 				this.delete_merge(business, process);
-				this.delete_message(business, process);
 				this.delete_parallel(business, process);
 				this.delete_service(business, process);
 				this.delete_split(business, process);
@@ -162,7 +159,6 @@ class ActionDelete extends BaseAction {
 			CacheManager.notify(Invoke.class);
 			CacheManager.notify(Manual.class);
 			CacheManager.notify(Merge.class);
-			CacheManager.notify(Message.class);
 			CacheManager.notify(Parallel.class);
 			CacheManager.notify(Service.class);
 			CacheManager.notify(Split.class);
@@ -253,13 +249,6 @@ class ActionDelete extends BaseAction {
 	private void delete_merge(Business business, Process process) throws Exception {
 		for (String str : business.merge().listWithProcess(process.getId())) {
 			Merge o = business.entityManagerContainer().find(str, Merge.class);
-			business.entityManagerContainer().remove(o);
-		}
-	}
-
-	private void delete_message(Business business, Process process) throws Exception {
-		for (String str : business.message().listWithProcess(process.getId())) {
-			Message o = business.entityManagerContainer().find(str, Message.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}

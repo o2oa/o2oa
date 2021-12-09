@@ -14,8 +14,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -27,6 +27,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.StoreForm;
 import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormProperties;
 
@@ -79,13 +80,7 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 				workCompleted = emc.flag(flag, WorkCompleted.class);
 			}
 			if (null != work) {
-				this.form = business.form().pick(work.getForm());
-				if (null == this.form) {
-					Activity activity = business.getActivity(work);
-					if (null != activity) {
-						this.form = business.form().pick(activity.getForm());
-					}
-				}
+				this.form = this.getFormWithWork(business, work);
 			} else if (null != workCompleted) {
 				this.form = business.form().pick(workCompleted.getForm());
 				if (null == this.form) {
@@ -94,6 +89,23 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 				}
 			}
 		}
+	}
+
+	private Form getFormWithWork(Business business, Work work) throws Exception {
+		Form o = business.form().pick(work.getForm());
+		if (null == o) {
+			Activity activity = business.getActivity(work);
+			if (null != activity) {
+				o = business.form().pick(activity.getForm());
+			}
+		}
+		if (null == o) {
+			Application application = business.application().pick(work.getApplication());
+			if ((null != application) && StringUtils.isNotEmpty(application.getProperties().getDefaultForm())) {
+				o = business.form().pick(application.getProperties().getDefaultForm());
+			}
+		}
+		return o;
 	}
 
 	private CompletableFuture<List<String>> relatedFormFuture(FormProperties properties) {

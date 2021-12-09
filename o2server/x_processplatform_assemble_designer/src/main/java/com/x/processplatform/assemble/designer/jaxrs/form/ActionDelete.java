@@ -24,7 +24,6 @@ import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Service;
 import com.x.processplatform.core.entity.element.Split;
@@ -57,7 +56,6 @@ class ActionDelete extends BaseAction {
 			this.checkUsedWithInvoke(business, form);
 			this.checkUsedWithManual(business, form);
 			this.checkUsedWithMerge(business, form);
-			this.checkUsedWithMessage(business, form);
 			this.checkUsedWithParallel(business, form);
 			this.checkUsedWithService(business, form);
 			this.checkUsedWithSplit(business, form);
@@ -80,21 +78,6 @@ class ActionDelete extends BaseAction {
 
 	public static class Wo extends WoId {
 	}
-
-	// emc.beginTransaction(Agent.class);
-	// emc.beginTransaction(Begin.class);
-	// emc.beginTransaction(Cancel.class);
-	// emc.beginTransaction(Choice.class);
-	// emc.beginTransaction(Delay.class);
-	// emc.beginTransaction(Embed.class);
-	// emc.beginTransaction(End.class);
-	// emc.beginTransaction(Invoke.class);
-	// emc.beginTransaction(Manual.class);
-	// emc.beginTransaction(Merge.class);
-	// emc.beginTransaction(Message.class);
-	// emc.beginTransaction(Parallel.class);
-	// emc.beginTransaction(Service.class);
-	// emc.beginTransaction(Split.class);
 
 	private void checkUsedWithAgent(Business business, Form form) throws Exception {
 		List<String> ids = business.agent().listWithForm(form.getId());
@@ -193,16 +176,6 @@ class ActionDelete extends BaseAction {
 					ListTools.toList(Merge.name_FIELDNAME));
 			throw new ExceptionUsedWithMerge(form.getName(), form.getId(),
 					ListTools.extractProperty(list, Merge.name_FIELDNAME, String.class, true, false));
-		}
-	}
-
-	private void checkUsedWithMessage(Business business, Form form) throws Exception {
-		List<String> ids = business.message().listWithForm(form.getId());
-		if (ListTools.isNotEmpty(ids)) {
-			List<Message> list = business.entityManagerContainer().fetch(ids, Message.class,
-					ListTools.toList(Message.name_FIELDNAME));
-			throw new ExceptionUsedWithMessage(form.getName(), form.getId(),
-					ListTools.extractProperty(list, Message.name_FIELDNAME, String.class, true, false));
 		}
 	}
 
