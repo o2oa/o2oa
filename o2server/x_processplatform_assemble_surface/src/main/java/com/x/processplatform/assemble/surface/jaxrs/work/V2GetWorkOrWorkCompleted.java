@@ -235,7 +235,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 				Activity activity = business.getActivity(work);
 				if (null != activity) {
 					activity.copyTo(woActivity);
-					woActivity.setCustomData(activity.getCustomData());
 					wo.setActivity(woActivity);
 					if (Objects.equals(ActivityType.manual, activity.getActivityType())) {
 						wo.setRouteList(WoRoute.copier.copy(business.route().pick(((Manual) activity).getRouteList())));

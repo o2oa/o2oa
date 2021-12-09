@@ -87,9 +87,19 @@ public class Manual extends Activity {
 		this.properties = properties;
 	}
 
+	public static final String CUSTOMDATA_FIELDNAME = "customData";
+	@Transient
+	private JsonElement customData;
+
 	@Override
 	public JsonElement getCustomData() {
 		return this.getProperties().getCustomData();
+	}
+
+	@Override
+	public void setCustomData(JsonElement customData) {
+		this.customData = customData;
+		this.properties.setCustomData(customData);
 	}
 
 	@FieldDescribe("分组.")
