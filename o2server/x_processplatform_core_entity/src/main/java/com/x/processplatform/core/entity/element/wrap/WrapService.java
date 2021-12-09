@@ -13,5 +13,5 @@ public class WrapService extends Service {
 			WrapService.class, null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapService, Service> inCopier = WrapCopierFactory.wi(WrapService.class,
-			Service.class, null, JpaObject.FieldsUnmodifyExcludeId, false);
+			Service.class, null, JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId, false);
 }

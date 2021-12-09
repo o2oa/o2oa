@@ -105,7 +105,11 @@ public class Application extends SliceJpaObject {
 	private String defaultForm;
 
 	public String getDefaultForm() {
-		return this.getProperties().getDefaultForm();
+		if (StringUtils.isNotBlank(this.defaultForm)) {
+			return this.defaultForm;
+		} else {
+			return this.getProperties().getDefaultForm();
+		}
 	}
 
 	public void setDefaultForm(String defaultForm) {
