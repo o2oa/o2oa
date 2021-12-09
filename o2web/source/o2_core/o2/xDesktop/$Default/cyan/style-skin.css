@@ -1,6 +1,9 @@
 .mainColor_bg {
-    background-color: #30BFBF !important;
+    background-color: #30bfbf !important;
     color: #ffffff !important;
+}
+.mainColor_bg_opacity{
+    background-color: rgba(48, 191, 191, 0.12) !important;
 }
 .mainColor_color {
     color: #30BFBF !important;
