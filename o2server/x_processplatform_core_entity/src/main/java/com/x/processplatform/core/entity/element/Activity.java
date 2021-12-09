@@ -122,6 +122,8 @@ public abstract class Activity extends SliceJpaObject {
 
 	public abstract JsonElement getCustomData();
 
+	public abstract void setCustomData(JsonElement customData);
+
 	public ActivityType getActivityType() throws Exception {
 		if (this instanceof Agent) {
 			return ActivityType.agent;

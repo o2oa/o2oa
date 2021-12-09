@@ -13,7 +13,9 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
@@ -73,6 +75,13 @@ public class Application extends SliceJpaObject {
 		this.applicationCategory = StringUtils.trimToEmpty(this.applicationCategory);
 	}
 
+	@PostLoad
+	public void postLoad() {
+		if (null != this.properties) {
+			this.defaultForm = this.getProperties().getDefaultForm();
+		}
+	}
+
 	public ApplicationProperties getProperties() {
 		if (null == this.properties) {
 			this.properties = new ApplicationProperties();
@@ -89,6 +98,20 @@ public class Application extends SliceJpaObject {
 	}
 
 	/* Entity 默认字段结束 */
+
+	public static final String DEFAULTFORM_FIELDNAME = "defaultForm";
+	@FieldDescribe("应用默认表单.")
+	@Transient
+	private String defaultForm;
+
+	public String getDefaultForm() {
+		return this.getProperties().getDefaultForm();
+	}
+
+	public void setDefaultForm(String defaultForm) {
+		this.defaultForm = defaultForm;
+		this.getProperties().setDefaultForm(defaultForm);
+	}
 
 	public static final String name_FIELDNAME = "name";
 	@Flag

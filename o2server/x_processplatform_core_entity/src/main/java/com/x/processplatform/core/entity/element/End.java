@@ -13,6 +13,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.Persistent;
@@ -83,9 +84,19 @@ public class End extends Activity {
 		this.properties = new EndProperties();
 	}
 
+	public static final String CUSTOMDATA_FIELDNAME = "customData";
+	@Transient
+	private JsonElement customData;
+
 	@Override
 	public JsonElement getCustomData() {
 		return this.getProperties().getCustomData();
+	}
+
+	@Override
+	public void setCustomData(JsonElement customData) {
+		this.customData = customData;
+		this.properties.setCustomData(customData);
 	}
 
 	@FieldDescribe("分组")
