@@ -1,12 +1,12 @@
 <div>
     {{each $.data}}
     <div class="listItem">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+        <div class="listItemFlag"></div>
+        <div class="listItemApplication">{{$.applicationName}}</div>
+        <div class="listItemLine"></div>
+        <div class="listItemTitle">{{$.title}}</div>
+        <div class="listItemActivity">{{$.activityName}}</div>
+        <div class="listItemDate">{{$.startTime}}</div>
     </div>
     {{end each}}
 </div>
