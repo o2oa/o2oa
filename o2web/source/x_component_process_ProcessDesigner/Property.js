@@ -425,7 +425,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             var name = node.get("name");
             var lName = name.toLowerCase();
             var collapse = node.get("collapse");
-            var mapObj = this.data[name] || "{}";
+            var mapObj = this.data[name] || {};
             //if (!mapObj) mapObj = {};
             MWF.require("MWF.widget.Maplist", function(){
                 node.empty();
@@ -442,7 +442,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     }.bind(this),
                     "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
                 });
-                maplist.load(JSON.parse(mapObj));
+                maplist.load(mapObj);
                 //this.maplists[name] = maplist;
             }.bind(this));
         }.bind(this));
