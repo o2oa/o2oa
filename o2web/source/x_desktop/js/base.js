@@ -158,7 +158,9 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
             var title = typeOf(options) === "object" ? (options.docTitle || options.title) : "";
             title = title || "";
             var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
-            if (window.o2android && window.o2android.openO2CmsDocument) {
+            if (window.o2android && window.o2android.openO2CmsDocumentV2) {
+                window.o2android.openO2CmsDocumentV2(options.documentId, title, JSON.stringify(options));
+            } else if (window.o2android && window.o2android.openO2CmsDocument) {
                 window.o2android.openO2CmsDocument(options.documentId, title);
             } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsDocument) {
                 window.webkit.messageHandlers.openO2CmsDocument.postMessage({
