@@ -16,17 +16,14 @@ MWF.xApplication.process.FormDesigner.Module.Eldate = MWF.FCEldate = new Class({
 	_createElementHtml: function(){
 
 		var html = "<el-date-picker";
-		html += " :placeholder=\"description\"";
-		html += " :type=\"inputType\"";
-		html += " :maxlength=\"maxlength\"";
-		html += " :show-word-limit=\"showWordLimit\"";
-		html += " :clearable=\"clearable\"";
-		html += " :show-password=\"showPassword\"";
+		html += " :type=\"selectType\"";
 		html += " :size=\"size\"";
-		html += " :rows=\"rows\"";
-		html += " :resize=\"resize\"";
 		html += " :prefix-icon=\"prefixIcon\"";
-		html += " :suffix-icon=\"suffixIcon\"";
+		html += " :range-separator=\"rangeSeparator\"";
+		html += " readonly";
+		html += " placeholder="+this.json.id;
+		html += " start-placeholder="+this.json.id;
+		html += " end-placeholder="+this.json.id;
 
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){

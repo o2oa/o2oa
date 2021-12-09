@@ -7,6 +7,7 @@
 	"selectType": "time",
 	"timeSelectType": "picker",
 	"format": "HH:mm:ss",
+	"isRange": false,
 	"disabled": false,
 	"editable": false,
 	"clearable": false,

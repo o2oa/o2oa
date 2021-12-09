@@ -35,7 +35,6 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 		html += " :clearable=\"clearable\"";
 		html += " :size=\"size\"";
 		html += " :prefix-icon=\"prefixIcon\"";
-		html += " :suffix-icon=\"suffixIcon\"";
 
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){
