@@ -124,7 +124,16 @@ var wrapWorkContext = {
 
     "getTask": function(){return JSON.parse(workContext.getTaskOrTaskCompleted());},
     "getWork": function(){return JSON.parse(workContext.getWork());},
-    "getActivity": function(){return JSON.parse(workContext.getActivity());},
+    "getActivity": function(){
+            var act = JSON.parse(workContext.getActivity());
+            if (act.properties && act.properties.customData){
+                try{
+                    var customData = JSON.parse(act.properties.customData);
+                    act.customData = customData;
+                }catch(e){}
+            }
+            return act;
+        },
     "getTaskList": function(){return JSON.parse(workContext.getTaskList());},
     "getTaskCompletedList": function(){return JSON.parse(workContext.getTaskCompletedList());},
     "getReadList": function(){return JSON.parse(workContext.getReadList());},
