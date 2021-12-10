@@ -17,7 +17,7 @@ public class WrapProcess extends Process {
 			WrapProcess.class, null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapProcess, Process> inCopier = WrapCopierFactory.wi(WrapProcess.class,
-			Process.class, null, ListTools.toList(FieldsUnmodifyExcludeId, creatorPerson_FIELDNAME,
+			Process.class, null, ListTools.toList(FieldsUnmodifyIncludePorpertiesExcludeId, creatorPerson_FIELDNAME,
 					lastUpdatePerson_FIELDNAME, lastUpdateTime_FIELDNAME),
 			false);
 
@@ -31,7 +31,6 @@ public class WrapProcess extends Process {
 	private List<WrapInvoke> invokeList = new ArrayList<>();
 	private List<WrapManual> manualList = new ArrayList<>();
 	private List<WrapMerge> mergeList = new ArrayList<>();
-	private List<WrapMessage> messageList = new ArrayList<>();
 	private List<WrapRoute> routeList = new ArrayList<>();
 	private List<WrapParallel> parallelList = new ArrayList<>();
 	private List<WrapService> serviceList = new ArrayList<>();
@@ -107,14 +106,6 @@ public class WrapProcess extends Process {
 
 	public void setMergeList(List<WrapMerge> mergeList) {
 		this.mergeList = mergeList;
-	}
-
-	public List<WrapMessage> getMessageList() {
-		return messageList;
-	}
-
-	public void setMessageList(List<WrapMessage> messageList) {
-		this.messageList = messageList;
 	}
 
 	public List<WrapRoute> getRouteList() {

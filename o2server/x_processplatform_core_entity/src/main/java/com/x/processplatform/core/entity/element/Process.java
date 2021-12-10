@@ -17,17 +17,27 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.x.base.core.entity.annotation.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
+import com.x.base.core.entity.annotation.CheckPersist;
+import com.x.base.core.entity.annotation.CitationExist;
+import com.x.base.core.entity.annotation.CitationNotExist;
+import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.entity.annotation.Equal;
+import com.x.base.core.entity.annotation.Flag;
+import com.x.base.core.entity.annotation.IdReference;
+import com.x.base.core.entity.annotation.NotEqual;
+import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
@@ -192,8 +202,9 @@ public class Process extends SliceJpaObject {
 	@FieldDescribe("流程管理者.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + controllerList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + controllerList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ controllerList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + controllerList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + controllerList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + controllerList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -206,22 +217,6 @@ public class Process extends SliceJpaObject {
 	@Column(length = JpaObject.length_128K, name = ColumnNamePrefix + icon_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String icon;
-
-//	public static final String beforeBeginScript_FIELDNAME = "beforeBeginScript";
-//	@IdReference(Script.class)
-//	@FieldDescribe("流程启动前事件脚本.")
-//	/** 脚本可能使用名称,所以长度为255 */
-//	@Column(length = length_255B, name = ColumnNamePrefix + beforeBeginScript_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String beforeBeginScript;
-//
-//	public static final String beforeBeginScriptText_FIELDNAME = "beforeBeginScriptText";
-//	@FieldDescribe("流程启动前事件脚本文本.")
-//	@Lob
-//	@Basic(fetch = FetchType.EAGER)
-//	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + beforeBeginScriptText_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String beforeBeginScriptText;
 
 	public static final String afterBeginScript_FIELDNAME = "afterBeginScript";
 	@IdReference(Script.class)
@@ -238,22 +233,6 @@ public class Process extends SliceJpaObject {
 	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + afterBeginScriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String afterBeginScriptText;
-
-//	public static final String beforeEndScript_FIELDNAME = "beforeEndScript";
-//	@IdReference(Script.class)
-//	/** 脚本可能使用名称,所以长度为255 */
-//	@FieldDescribe("流程结束后事件脚本.")
-//	@Column(length = length_255B, name = ColumnNamePrefix + beforeEndScript_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String beforeEndScript;
-//
-//	public static final String beforeEndScriptText_FIELDNAME = "beforeEndScriptText";
-//	@FieldDescribe("流程结束后事件脚本文本.")
-//	@Lob
-//	@Basic(fetch = FetchType.EAGER)
-//	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + beforeEndScriptText_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String beforeEndScriptText;
 
 	public static final String afterEndScript_FIELDNAME = "afterEndScript";
 	@IdReference(Script.class)
@@ -276,7 +255,7 @@ public class Process extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ startableIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-					+ startableIdentityList_FIELDNAME +  JoinIndexNameSuffix))
+					+ startableIdentityList_FIELDNAME + JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + startableIdentityList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + startableIdentityList_FIELDNAME + ElementIndexNameSuffix)
@@ -300,7 +279,7 @@ public class Process extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ startableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-			+ startableGroupList_FIELDNAME + JoinIndexNameSuffix))
+					+ startableGroupList_FIELDNAME + JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + startableGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + startableGroupList_FIELDNAME + ElementIndexNameSuffix)
@@ -317,8 +296,7 @@ public class Process extends SliceJpaObject {
 
 	public static final String serialActivity_FIELDNAME = "serialActivity";
 	@IdReference({ Agent.class, Begin.class, Cancel.class, Choice.class, Choice.class, Delay.class, Embed.class,
-			End.class, Invoke.class, Manual.class, Merge.class, Message.class, Parallel.class, Service.class,
-			Split.class })
+			End.class, Invoke.class, Manual.class, Merge.class, Parallel.class, Service.class, Split.class })
 	@FieldDescribe("编号活动ID.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + serialActivity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)

@@ -1,13 +1,23 @@
 package com.x.processplatform.assemble.designer;
 
-import com.x.processplatform.assemble.designer.content.factory.*;
-import com.x.processplatform.core.entity.content.Draft;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.organization.core.express.Organization;
+import com.x.processplatform.assemble.designer.content.factory.AttachmentFactory;
+import com.x.processplatform.assemble.designer.content.factory.DraftFactory;
+import com.x.processplatform.assemble.designer.content.factory.ItemFactory;
+import com.x.processplatform.assemble.designer.content.factory.ReadCompletedFactory;
+import com.x.processplatform.assemble.designer.content.factory.ReadFactory;
+import com.x.processplatform.assemble.designer.content.factory.ReviewFactory;
+import com.x.processplatform.assemble.designer.content.factory.SerialNumberFactory;
+import com.x.processplatform.assemble.designer.content.factory.TaskCompletedFactory;
+import com.x.processplatform.assemble.designer.content.factory.TaskFactory;
+import com.x.processplatform.assemble.designer.content.factory.WorkCompletedFactory;
+import com.x.processplatform.assemble.designer.content.factory.WorkFactory;
+import com.x.processplatform.assemble.designer.content.factory.WorkLogFactory;
 import com.x.processplatform.assemble.designer.element.factory.AgentFactory;
 import com.x.processplatform.assemble.designer.element.factory.ApplicationDictFactory;
 import com.x.processplatform.assemble.designer.element.factory.ApplicationDictItemFactory;
@@ -24,7 +34,6 @@ import com.x.processplatform.assemble.designer.element.factory.FormFieldFactory;
 import com.x.processplatform.assemble.designer.element.factory.InvokeFactory;
 import com.x.processplatform.assemble.designer.element.factory.ManualFactory;
 import com.x.processplatform.assemble.designer.element.factory.MergeFactory;
-import com.x.processplatform.assemble.designer.element.factory.MessageFactory;
 import com.x.processplatform.assemble.designer.element.factory.ParallelFactory;
 import com.x.processplatform.assemble.designer.element.factory.ProcessFactory;
 import com.x.processplatform.assemble.designer.element.factory.QueryStatFactory;
@@ -226,15 +235,6 @@ public class Business {
 			this.merge = new MergeFactory(this);
 		}
 		return merge;
-	}
-
-	private MessageFactory message;
-
-	public MessageFactory message() throws Exception {
-		if (null == this.message) {
-			this.message = new MessageFactory(this);
-		}
-		return message;
 	}
 
 	private ParallelFactory parallel;

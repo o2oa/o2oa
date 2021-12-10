@@ -13,5 +13,5 @@ public class WrapManual extends Manual {
 			null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapManual, Manual> inCopier = WrapCopierFactory.wi(WrapManual.class, Manual.class,
-			null, JpaObject.FieldsUnmodifyExcludeId, false);
+			null, JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId, false);
 }
