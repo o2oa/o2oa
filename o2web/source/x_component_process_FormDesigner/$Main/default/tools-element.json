@@ -60,7 +60,7 @@
     "className": "Eldate"
   },
   "eldatetime": {
-    "fontIcon": "el-icon-date",
+    "fontIcon": "el-icon-time",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_datetime,
     "className": "Eldatetime"
   },

@@ -31,15 +31,25 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
         if (!this.json.suffixIcon) this.json.suffixIcon = "";
         if (!this.json.description) this.json.description = "";
         if (!this.json.arrowControl) this.json.arrowControl = false;
+        if (this.json.timeSelectType === "select"){
+            this.json.pickerOptions = {
+                "start": this.json.start,
+                "step": this.json.step,
+                "end": this.json.end
+            };
+        }else{
+            this.json.pickerOptions = {
+                "format": this.json.format
+            };
+            if (!this.json.isRange && this.json.selectableRange && this.json.selectableRange.code){
+                this.json.pickerOptions.selectableRange = this.form.Macro.fire(this.json.selectableRange.code, this);
+            }
+        }
     },
     _createElementHtml: function() {
         debugger;
         if (this.json.timeSelectType === "select"){
-            // if (this.json.isRange) {
-            //     return this.createSelectRangeElementHtml();
-            // } else {
-                return this.createSelectElementHtml();
-            // }
+            return this.createSelectElementHtml();
         }else{
             if (this.json.isRange) {
                 return this.createPickerRangeElementHtml();
@@ -57,7 +67,6 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
 		html += " :clearable=\"clearable\"";
         html += " :size=\"size\"";
         html += " :prefix-icon=\"prefixIcon\"";
-        html += " :suffix-icon=\"suffixIcon\"";
 
         this.options.elEvents.forEach(function(k){
             html += " @"+k+"=\"$loadElEvent_"+k.camelCase()+"\"";
@@ -80,11 +89,7 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
     createSelectElementHtml: function(){
         var html = "<el-time-select";
         html += " :placeholder=\"description\"";
-        html += " :picker-options=\"{" +
-            "start: '"+this.json.start+"'," +
-            "step: '"+this.json.step+"'," +
-            "end: '"+this.json.end+"'"+
-            "}\"";
+        html += " :picker-options=\"pickerOptions\"";
         html += this.getCommonHtml();
         html += "</el-time-select>";
         return html;
@@ -111,10 +116,7 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
         html += " :placeholder=\"description\"";
         html += " :arrow-control=\"arrowControl\"";
         html += " :value-format=\"format\"";
-        html += " :picker-options=\"{" +
-            "selectableRange: '"+this.json.start_picker+" - "+this.json.end_picker+"'," +
-            "format: '"+this.json.format+"'"+
-            "}\"";
+        html += " :picker-options=\"pickerOptions\"";
         html += this.getCommonHtml();
         html += "</el-time-picker>";
         return html;
@@ -127,10 +129,7 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
         html += " :end-placeholder=\"endPlaceholder\"";
         html += " :arrow-control=\"arrowControl\"";
         html += " :value-format=\"format\"";
-        html += " :picker-options=\"{" +
-            // "selectableRange: ['"+this.json.start_picker+" - "+this.json.end_picker+"', '"+this.json.start_endPicker+" - "+this.json.end_endPicker+"']," +
-            "format: '"+this.json.format+"'"+
-            "}\"";
+        html += " :picker-options=\"pickerOptions\"";
         html += this.getCommonHtml();
         html += "</el-time-picker>";
         return html;
