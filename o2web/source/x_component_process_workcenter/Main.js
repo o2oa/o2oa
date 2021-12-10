@@ -132,6 +132,18 @@ MWF.xApplication.process.workcenter.List = new Class({
 
 		}.bind(this));
 	},
+
+	overTaskItem: function(e){
+		e.currentTarget.addClass("listItem_over");
+	},
+	outTaskItem: function(e){
+		e.currentTarget.removeClass("listItem_over");
+	},
+	openTask: function(id, title){
+		//o2.api.page.notice("<input />")
+		MWF.xDesktop.notice("error", {x: "right", y:"top"}, "aaa<input />ddd");
+		//o2.api.form.openWork(id, "", title);
+	}
 });
 MWF.xApplication.process.workcenter.TaskList = new Class({
 	Extends: MWF.xApplication.process.workcenter.List
