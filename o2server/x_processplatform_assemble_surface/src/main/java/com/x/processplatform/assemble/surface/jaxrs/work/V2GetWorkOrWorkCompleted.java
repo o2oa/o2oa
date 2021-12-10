@@ -111,7 +111,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			workCompletedRecordFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		}
 
-		if (BooleanUtils.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
+		if (BooleanUtils
+				.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
 			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
 
@@ -599,6 +600,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 		private ManualMode manualMode;
 
+		private JsonElement customData;
+
 		public String getName() {
 			return name;
 		}
@@ -669,6 +672,14 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 		public void setManualMode(ManualMode manualMode) {
 			this.manualMode = manualMode;
+		}
+
+		public JsonElement getCustomData() {
+			return customData;
+		}
+
+		public void setCustomData(JsonElement customData) {
+			this.customData = customData;
 		}
 
 	}

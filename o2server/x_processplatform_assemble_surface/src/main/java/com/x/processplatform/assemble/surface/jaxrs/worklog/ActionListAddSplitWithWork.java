@@ -62,8 +62,7 @@ class ActionListAddSplitWithWork extends BaseAction {
 			if (business.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess())) {
 				splitNodes.forEach(o -> {
 					o.upTo(ActivityType.manual, ActivityType.split, ActivityType.agent, ActivityType.choice,
-							ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.message)
-							.forEach(n -> {
+							ActivityType.delay, ActivityType.embed, ActivityType.invoke).forEach(n -> {
 								try {
 									os.add(o.getWorkLog());
 								} catch (Exception e) {
@@ -74,8 +73,7 @@ class ActionListAddSplitWithWork extends BaseAction {
 			} else {
 				splitNodes.forEach(o -> {
 					o.upTo(ActivityType.manual, ActivityType.split, ActivityType.agent, ActivityType.choice,
-							ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.message)
-							.forEach(n -> {
+							ActivityType.delay, ActivityType.embed, ActivityType.invoke).forEach(n -> {
 								try {
 									Long count = emc.countEqualAndEqual(TaskCompleted.class,
 											TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),

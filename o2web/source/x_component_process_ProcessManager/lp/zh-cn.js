@@ -165,6 +165,7 @@ MWF.xApplication.process.ProcessManager.LP = {
         "id": "应用标识",
         "controllerList": "管理者",
         "available": "可用范围",
+        "defaultForm": "默认表单",
 
         "changeIcon" : "更改图标",
         "setManager" : "设置管理者",

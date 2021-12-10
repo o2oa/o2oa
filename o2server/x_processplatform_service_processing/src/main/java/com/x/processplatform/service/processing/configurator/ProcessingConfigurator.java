@@ -42,8 +42,6 @@ public class ProcessingConfigurator extends GsonPropertyObject {
 			return this.getManual();
 		case merge:
 			return this.getMerge();
-		case message:
-			return this.getMessage();
 		case parallel:
 			return this.getParallel();
 		case service:
@@ -111,7 +109,6 @@ public class ProcessingConfigurator extends GsonPropertyObject {
 			PropertyUtils.setProperty(this.getInvoke(), name, value);
 			PropertyUtils.setProperty(this.getManual(), name, value);
 			PropertyUtils.setProperty(this.getMerge(), name, value);
-			PropertyUtils.setProperty(this.getMessage(), name, value);
 			PropertyUtils.setProperty(this.getParallel(), name, value);
 			PropertyUtils.setProperty(this.getService(), name, value);
 			PropertyUtils.setProperty(this.getSplit(), name, value);
@@ -130,7 +127,6 @@ public class ProcessingConfigurator extends GsonPropertyObject {
 	private InvokeProcessingConfigurator invoke = new InvokeProcessingConfigurator();
 	private ManualProcessingConfigurator manual = new ManualProcessingConfigurator();
 	private MergeProcessingConfigurator merge = new MergeProcessingConfigurator();
-	private MessageProcessingConfigurator message = new MessageProcessingConfigurator();
 	private ParallelProcessingConfigurator parallel = new ParallelProcessingConfigurator();
 	private ServiceProcessingConfigurator service = new ServiceProcessingConfigurator();
 	private SplitProcessingConfigurator split = new SplitProcessingConfigurator();
@@ -213,14 +209,6 @@ public class ProcessingConfigurator extends GsonPropertyObject {
 
 	public void setMerge(MergeProcessingConfigurator merge) {
 		this.merge = merge;
-	}
-
-	public MessageProcessingConfigurator getMessage() {
-		return message;
-	}
-
-	public void setMessage(MessageProcessingConfigurator message) {
-		this.message = message;
 	}
 
 	public ParallelProcessingConfigurator getParallel() {

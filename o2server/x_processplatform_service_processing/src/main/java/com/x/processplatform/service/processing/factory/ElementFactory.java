@@ -39,7 +39,6 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Mapping;
 import com.x.processplatform.core.entity.element.Mapping_;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -121,14 +120,11 @@ public class ElementFactory extends AbstractFactory {
 										if (null == activity) {
 											activity = this.get(id, ActivityType.merge);
 											if (null == activity) {
-												activity = this.get(id, ActivityType.message);
+												activity = this.get(id, ActivityType.parallel);
 												if (null == activity) {
-													activity = this.get(id, ActivityType.parallel);
+													activity = this.get(id, ActivityType.service);
 													if (null == activity) {
-														activity = this.get(id, ActivityType.service);
-														if (null == activity) {
-															activity = this.get(id, ActivityType.end);
-														}
+														activity = this.get(id, ActivityType.end);
 													}
 												}
 											}
@@ -166,8 +162,6 @@ public class ElementFactory extends AbstractFactory {
 			return this.get(id, Manual.class);
 		case merge:
 			return this.get(id, Merge.class);
-		case message:
-			return this.get(id, Message.class);
 		case parallel:
 			return this.get(id, Parallel.class);
 		case service:
@@ -356,10 +350,6 @@ public class ElementFactory extends AbstractFactory {
 			Merge merge = this.get(id, Merge.class);
 			list.add(this.get(merge.getRoute(), Route.class));
 			break;
-		case message:
-			Message message = this.get(id, Message.class);
-			list.add(this.get(message.getRoute(), Route.class));
-			break;
 		case parallel:
 			Parallel parallel = this.get(id, Parallel.class);
 			for (String str : parallel.getRouteList()) {
@@ -410,9 +400,6 @@ public class ElementFactory extends AbstractFactory {
 			ids.add(o.getForm());
 		});
 		this.listWithProcess(Merge.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Message.class, process).forEach(o -> {
 			ids.add(o.getForm());
 		});
 		this.listWithProcess(Parallel.class, process).forEach(o -> {
