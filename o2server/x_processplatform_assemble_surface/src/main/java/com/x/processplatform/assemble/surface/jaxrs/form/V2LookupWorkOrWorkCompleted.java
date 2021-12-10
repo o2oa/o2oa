@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.vfs2.util.DelegatingFileSystemOptionsBuilder;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -75,7 +76,7 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 			Business business = new Business(emc);
 			WorkCompleted workCompleted = null;
 			Work work = emc.fetch(flag, Work.class, ListTools.toList(JpaObject.id_FIELDNAME, Work.form_FIELDNAME,
-					Work.activity_FIELDNAME, Work.activityType_FIELDNAME));
+					Work.activity_FIELDNAME, Work.activityType_FIELDNAME, Work.application_FIELDNAME));
 			if (null == work) {
 				workCompleted = emc.flag(flag, WorkCompleted.class);
 			}
@@ -101,8 +102,8 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 		}
 		if (null == o) {
 			Application application = business.application().pick(work.getApplication());
-			if ((null != application) && StringUtils.isNotEmpty(application.getProperties().getDefaultForm())) {
-				o = business.form().pick(application.getProperties().getDefaultForm());
+			if ((null != application) && StringUtils.isNotEmpty(application.getDefaultForm())) {
+				o = business.form().pick(application.getDefaultForm());
 			}
 		}
 		return o;
