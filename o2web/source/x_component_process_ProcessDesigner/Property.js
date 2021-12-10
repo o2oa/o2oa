@@ -67,6 +67,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     this.loadIconSelect();
                     this.loadContextRoot();
                     this.loadProjection();
+                    this.loadMaplist();
 
                     this.hideAdvanced();
                 }.bind(this));
@@ -414,6 +415,35 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     "click": function(){ this.createCalendar(input) }.bind(this),
                     "focus": function(){ this.createCalendar(input) }.bind(this)
                 });
+            }.bind(this));
+        }.bind(this));
+    },
+    loadMaplist: function(){
+        var maplists = this.propertyContent.getElements(".MWFMaplist");
+        maplists.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var lName = name.toLowerCase();
+            var collapse = node.get("collapse");
+            var mapObj = this.data[name] || {};
+            //if (!mapObj) mapObj = {};
+            MWF.require("MWF.widget.Maplist", function(){
+                node.empty();
+                var maplist = new MWF.widget.Maplist(node, {
+                    "title": title,
+                    "collapse": (collapse) ? true : false,
+                    "onChange": function(){
+                        //this.data[name] = maplist.toJson();
+                        //
+                        //var oldData = this.data[name];
+                        this.setValue(name, maplist.toJson());
+                        // this.changeStyle(name, oldData);
+                        // this.changeData(name);
+                    }.bind(this),
+                    "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
+                });
+                maplist.load(mapObj);
+                //this.maplists[name] = maplist;
             }.bind(this));
         }.bind(this));
     },

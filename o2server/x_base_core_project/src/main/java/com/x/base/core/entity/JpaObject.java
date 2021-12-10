@@ -93,9 +93,19 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 			distributeFactor_FIELDNAME, createTime_FIELDNAME, updateTime_FIELDNAME, sequence_FIELDNAME,
 			scratchString_FIELDNAME, scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME));
 
+	public static final List<String> FieldsUnmodifyIncludePorperties = ListUtils
+			.unmodifiableList(Arrays.asList(id_FIELDNAME, distributeFactor_FIELDNAME, createTime_FIELDNAME,
+					updateTime_FIELDNAME, sequence_FIELDNAME, scratchString_FIELDNAME, scratchBoolean_FIELDNAME,
+					scratchDate_FIELDNAME, scratchInteger_FIELDNAME, properties_FIELDNAME));
+
 	public static final List<String> FieldsUnmodifyExcludeId = ListUtils.unmodifiableList(Arrays.asList(
 			distributeFactor_FIELDNAME, createTime_FIELDNAME, updateTime_FIELDNAME, sequence_FIELDNAME,
 			scratchString_FIELDNAME, scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME));
+
+	public static final List<String> FieldsUnmodifyIncludePorpertiesExcludeId = ListUtils
+			.unmodifiableList(Arrays.asList(distributeFactor_FIELDNAME, createTime_FIELDNAME, updateTime_FIELDNAME,
+					sequence_FIELDNAME, scratchString_FIELDNAME, scratchBoolean_FIELDNAME, scratchDate_FIELDNAME,
+					scratchInteger_FIELDNAME, properties_FIELDNAME));
 
 	public static final List<String> FieldsInvisible = ListUtils.unmodifiableList(
 			Arrays.asList(distributeFactor_FIELDNAME, sequence_FIELDNAME, password_FIELDNAME, scratchString_FIELDNAME,

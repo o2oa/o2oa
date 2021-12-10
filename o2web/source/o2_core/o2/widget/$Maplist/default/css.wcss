@@ -10,11 +10,13 @@
 		"line-height": "20px",
 		"background": "#EEE"
 	},
+
 	"titleTextNode": {
 		"line-height": "20px",
 		"font-size": "12px",
-		"padding-left": "5px",
-		"cursor": "pointer"
+		"padding": "0 5px",
+		"cursor": "pointer",
+		"font-weight": "bold"
 	},
 	"titleActionNode": {
 		"float": "right",

@@ -25,14 +25,12 @@ import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Service;
 import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
-import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseAction {
 
@@ -67,7 +65,6 @@ class ActionCreate extends BaseAction {
 			jpaObjects.addAll(create_invoke(wrapIn.getInvokeList(), process));
 			jpaObjects.addAll(create_manual(wrapIn.getManualList(), process));
 			jpaObjects.addAll(create_merge(wrapIn.getMergeList(), process));
-			jpaObjects.addAll(create_message(wrapIn.getMessageList(), process));
 			jpaObjects.addAll(create_parallel(wrapIn.getParallelList(), process));
 			jpaObjects.addAll(create_service(wrapIn.getServiceList(), process));
 			jpaObjects.addAll(create_split(wrapIn.getSplitList(), process));
@@ -83,7 +80,6 @@ class ActionCreate extends BaseAction {
 			emc.beginTransaction(Invoke.class);
 			emc.beginTransaction(Manual.class);
 			emc.beginTransaction(Merge.class);
-			emc.beginTransaction(Message.class);
 			emc.beginTransaction(Parallel.class);
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
