@@ -28,7 +28,6 @@ import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -44,7 +43,6 @@ import com.x.processplatform.core.entity.element.wrap.WrapEnd;
 import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
 import com.x.processplatform.core.entity.element.wrap.WrapManual;
 import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapMessage;
 import com.x.processplatform.core.entity.element.wrap.WrapParallel;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 import com.x.processplatform.core.entity.element.wrap.WrapRoute;
@@ -58,7 +56,7 @@ class ActionLeadOut extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug(effectivePerson, "id:{}.", id);
+			logger.debug("id:{}.", id);
 			Business business = new Business(emc);
 			Process process = emc.find(id, Process.class);
 			if (null == process) {
@@ -98,13 +96,11 @@ class ActionLeadOut extends BaseAction {
 		wrap.setInvokeList(WrapInvoke.outCopier.copy(this.list(business, process, Invoke.class)));
 		wrap.setManualList(WrapManual.outCopier.copy(this.list(business, process, Manual.class)));
 		wrap.setMergeList(WrapMerge.outCopier.copy(this.list(business, process, Merge.class)));
-		wrap.setMessageList(WrapMessage.outCopier.copy(this.list(business, process, Message.class)));
 		wrap.setParallelList(WrapParallel.outCopier.copy(this.list(business, process, Parallel.class)));
 		wrap.setServiceList(WrapService.outCopier.copy(this.list(business, process, Service.class)));
 		wrap.setSplitList(WrapSplit.outCopier.copy(this.list(business, process, Split.class)));
 		wrap.setRouteList(WrapRoute.outCopier.copy(this.list(business, process, Route.class)));
-		Wo wo = gson.fromJson(gson.toJson(wrap), Wo.class);
-		return wo;
+		return gson.fromJson(gson.toJson(wrap), Wo.class);
 	}
 
 	private <T extends JpaObject> List<T> list(Business business, Process process, Class<T> cls) throws Exception {

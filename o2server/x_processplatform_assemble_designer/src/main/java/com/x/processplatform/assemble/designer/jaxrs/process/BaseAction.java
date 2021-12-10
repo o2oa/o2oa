@@ -42,7 +42,6 @@ import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -58,7 +57,6 @@ import com.x.processplatform.core.entity.element.wrap.WrapEnd;
 import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
 import com.x.processplatform.core.entity.element.wrap.WrapManual;
 import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapMessage;
 import com.x.processplatform.core.entity.element.wrap.WrapParallel;
 import com.x.processplatform.core.entity.element.wrap.WrapRoute;
 import com.x.processplatform.core.entity.element.wrap.WrapService;
@@ -344,20 +342,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return list;
 	}
 
-	List<Message> create_message(List<WrapMessage> wraps, Process process) throws Exception {
-		List<Message> list = new ArrayList<>();
-		if (null != wraps) {
-			for (WrapMessage w : wraps) {
-				Message o = new Message();
-				WrapMessage.inCopier.copy(w, o);
-				o.setProcess(process.getId());
-				o.setDistributeFactor(process.getDistributeFactor());
-				list.add(o);
-			}
-		}
-		return list;
-	}
-
 	List<Parallel> create_parallel(List<WrapParallel> wraps, Process process) throws Exception {
 		List<Parallel> list = new ArrayList<>();
 		if (null != wraps) {
@@ -623,10 +607,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 					o = new Manual();
 					o.setProcess(process.getId());
 					WrapManual.inCopier.copy(w, o);
+					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
+					System.out.println(WrapManual.inCopier.getCopyFields());
+					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
 					o.setDistributeFactor(process.getDistributeFactor());
 					business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} else {
 					WrapManual.inCopier.copy(w, o);
+					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!22");
+					System.out.println(WrapManual.inCopier.getCopyFields());
+					System.out.println(w.getCustomData());
+					System.out.println(o.getCustomData());
+					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!22");
+					System.out.println(o.getProperties().getCustomData());
+					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!22");
 					business.entityManagerContainer().check(o, CheckPersistType.all);
 				}
 			}
@@ -652,31 +646,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} else {
 					WrapMerge.inCopier.copy(w, o);
-					business.entityManagerContainer().check(o, CheckPersistType.all);
-				}
-			}
-		}
-	}
-
-	void update_message(Business business, List<WrapMessage> wraps, Process process) throws Exception {
-		List<String> ids = business.message().listWithProcess(process.getId());
-		List<Message> os = business.entityManagerContainer().list(Message.class, ids);
-		for (Message o : os) {
-			if (null == jpaInWrapList(o, wraps)) {
-				business.entityManagerContainer().remove(o);
-			}
-		}
-		if (null != wraps) {
-			for (WrapMessage w : wraps) {
-				Message o = wrapInJpaList(w, os);
-				if (null == o) {
-					o = new Message();
-					o.setProcess(process.getId());
-					WrapMessage.inCopier.copy(w, o);
-					o.setDistributeFactor(process.getDistributeFactor());
-					business.entityManagerContainer().persist(o, CheckPersistType.all);
-				} else {
-					WrapMessage.inCopier.copy(w, o);
 					business.entityManagerContainer().check(o, CheckPersistType.all);
 				}
 			}
@@ -855,13 +824,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	void delete_message(Business business, Process process) throws Exception {
-		for (String str : business.message().listWithProcess(process.getId())) {
-			Message o = business.entityManagerContainer().find(str, Message.class);
-			business.entityManagerContainer().remove(o);
-		}
-	}
-
 	void delete_parallel(Business business, Process process) throws Exception {
 		for (String str : business.parallel().listWithProcess(process.getId())) {
 			Parallel o = business.entityManagerContainer().find(str, Parallel.class);
@@ -903,7 +865,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CacheManager.notify(Invoke.class);
 		CacheManager.notify(Manual.class);
 		CacheManager.notify(Merge.class);
-		CacheManager.notify(Message.class);
 		CacheManager.notify(Parallel.class);
 		CacheManager.notify(Route.class);
 		CacheManager.notify(Service.class);

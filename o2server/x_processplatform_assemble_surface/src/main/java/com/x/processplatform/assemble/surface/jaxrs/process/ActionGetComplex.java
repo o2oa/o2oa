@@ -21,7 +21,6 @@ import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -61,7 +60,6 @@ class ActionGetComplex extends BaseAction {
 		private List<WoInvoke> invokeList;
 		private List<WoManual> manualList;
 		private List<WoMerge> mergeList;
-		private List<WoMessage> messageList;
 		private List<WoRoute> routeList;
 		private List<WoParallel> parallelList;
 		private List<WoService> serviceList;
@@ -147,13 +145,7 @@ class ActionGetComplex extends BaseAction {
 			this.mergeList = mergeList;
 		}
 
-		public List<WoMessage> getMessageList() {
-			return messageList;
-		}
-
-		public void setMessageList(List<WoMessage> messageList) {
-			this.messageList = messageList;
-		}
+	 
 
 		public List<WoParallel> getParallelList() {
 			return parallelList;
@@ -259,12 +251,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
-	public static class WoMessage extends Message {
-
-		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Message, WoMessage> copier = WrapCopierFactory.wo(Message.class, WoMessage.class, null,
-				JpaObject.FieldsInvisible);
-	}
+	 
 
 	public static class WoParallel extends Parallel {
 
@@ -308,7 +295,6 @@ class ActionGetComplex extends BaseAction {
 		wo.setInvokeList(WoInvoke.copier.copy(business.invoke().listWithProcess(process)));
 		wo.setManualList(WoManual.copier.copy(business.manual().listWithProcess(process)));
 		wo.setMergeList(WoMerge.copier.copy(business.merge().listWithProcess(process)));
-		wo.setMessageList(WoMessage.copier.copy(business.message().listWithProcess(process)));
 		wo.setParallelList(WoParallel.copier.copy(business.parallel().listWithProcess(process)));
 		wo.setServiceList(WoService.copier.copy(business.service().listWithProcess(process)));
 		wo.setSplitList(WoSplit.copier.copy(business.split().listWithProcess(process)));

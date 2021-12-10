@@ -13,6 +13,6 @@ public class WrapMerge extends Merge {
 			null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapMerge, Merge> inCopier = WrapCopierFactory.wi(WrapMerge.class, Merge.class, null,
-			JpaObject.FieldsUnmodifyExcludeId, false);
+			JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId, false);
 
 }

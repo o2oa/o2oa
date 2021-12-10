@@ -13,6 +13,6 @@ public class WrapAgent extends Agent {
 			null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapAgent, Agent> inCopier = WrapCopierFactory.wi(WrapAgent.class, Agent.class, null,
-			JpaObject.FieldsUnmodifyExcludeId, false);
+			JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId, false);
 
 }
