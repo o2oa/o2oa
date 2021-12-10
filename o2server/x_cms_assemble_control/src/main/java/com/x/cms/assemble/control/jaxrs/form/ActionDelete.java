@@ -5,6 +5,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
@@ -26,6 +27,9 @@ public class ActionDelete extends BaseAction {
 		WrapOutId wrap = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business( emc );
+			if (!business.isManager( effectivePerson)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			// 先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			Form form = business.getFormFactory().get( id );
 			List<String> viewIds = business.getViewFactory().listByFormId(id);
@@ -34,12 +38,12 @@ public class ActionDelete extends BaseAction {
 			List<String> viewCategoryIds = null;
 			List<ViewCategory> viewCategorys = null;
 			View view = null;
-			
+
 			emc.beginTransaction( Form.class );
 			emc.beginTransaction( View.class );
 			emc.beginTransaction( ViewFieldConfig.class );
 			emc.beginTransaction( ViewCategory.class );
-			
+
 			if( viewIds != null && !viewIds.isEmpty() ){
 				for( String viewId : viewIds ){
 					view = business.getViewFactory().get( viewId );
@@ -70,14 +74,14 @@ public class ActionDelete extends BaseAction {
 				emc.remove( form, CheckRemoveType.all );
 				emc.commit();
 				logService.log( emc, effectivePerson.getDistinguishedName(), form.getName(), form.getAppId(), "", "", form.getId(), "FORM", "删除");
-			}			
+			}
 			wrap = new WrapOutId( form.getId() );
 
 			CacheManager.notify( Form.class );
 			CacheManager.notify( View.class );
 			CacheManager.notify( ViewFieldConfig.class );
 			CacheManager.notify( ViewCategory.class );
-			
+
 			result.setData(wrap);
 		} catch (Throwable th) {
 			th.printStackTrace();
@@ -85,7 +89,7 @@ public class ActionDelete extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}
