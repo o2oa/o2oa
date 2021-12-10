@@ -1,10 +1,14 @@
 <div>
     {{each $.data}}
-    <div class="listItem">
+    <div class="listItem" data-o2-events="mouseover:overTaskItem; mouseout:outTaskItem; click:openTask:{{$.work}}:{{$.title}}">
         <div class="listItemFlag"></div>
         <div class="listItemApplication">{{$.applicationName}}</div>
         <div class="listItemLine"></div>
-        <div class="listItemTitle">{{$.title}}</div>
+        <div class="listItemTitle">
+            <div class="listItemTitleProcess">【分类名称】</div>
+            <div class="listItemTitleSubject">{{$.title}}</div>
+
+        </div>
         <div class="listItemActivity">{{$.activityName}}</div>
         <div class="listItemDate">{{$.startTime}}</div>
     </div>
