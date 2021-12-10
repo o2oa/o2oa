@@ -161,6 +161,7 @@ MWF.xApplication.process.ProcessManager.LP = {
         "id": "Application ID",
         "controllerList": "Manager",
         "available": "Available range",
+        "defaultForm": "Default Form",
 
         "changeIcon": "Change Icon",
         "setManager": "Set Manager",

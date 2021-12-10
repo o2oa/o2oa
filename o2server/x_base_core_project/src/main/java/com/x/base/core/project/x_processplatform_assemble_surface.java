@@ -24,16 +24,15 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.element.File", "com.x.processplatform.core.entity.element.Form",
 		"com.x.processplatform.core.entity.element.FormField", "com.x.processplatform.core.entity.element.Invoke",
 		"com.x.processplatform.core.entity.element.Manual", "com.x.processplatform.core.entity.element.Merge",
-		"com.x.processplatform.core.entity.element.Message", "com.x.processplatform.core.entity.element.Parallel",
-		"com.x.processplatform.core.entity.element.Process", "com.x.processplatform.core.entity.element.Route",
-		"com.x.processplatform.core.entity.element.Script", "com.x.processplatform.core.entity.element.Service",
-		"com.x.processplatform.core.entity.element.Split", "com.x.processplatform.core.entity.element.QueryView",
-		"com.x.processplatform.core.entity.element.QueryStat", "com.x.processplatform.core.entity.element.Mapping",
-		"com.x.query.core.entity.Item", "com.x.cms.core.entity.element.Script",
-		"com.x.portal.core.entity.Script", "com.x.general.core.entity.GeneralFile" },
-		storageTypes = { StorageType.processPlatform, StorageType.general}, storeJars = {
-				"x_organization_core_entity", "x_organization_core_express", "x_processplatform_core_entity",
-				"x_processplatform_core_express", "x_query_core_entity", "x_cms_core_entity", "x_portal_core_entity",
-		"x_general_core_entity" })
+		"com.x.processplatform.core.entity.element.Parallel", "com.x.processplatform.core.entity.element.Process",
+		"com.x.processplatform.core.entity.element.Route", "com.x.processplatform.core.entity.element.Script",
+		"com.x.processplatform.core.entity.element.Service", "com.x.processplatform.core.entity.element.Split",
+		"com.x.processplatform.core.entity.element.QueryView", "com.x.processplatform.core.entity.element.QueryStat",
+		"com.x.processplatform.core.entity.element.Mapping", "com.x.query.core.entity.Item",
+		"com.x.cms.core.entity.element.Script", "com.x.portal.core.entity.Script",
+		"com.x.general.core.entity.GeneralFile" }, storageTypes = { StorageType.processPlatform,
+				StorageType.general }, storeJars = { "x_organization_core_entity", "x_organization_core_express",
+						"x_processplatform_core_entity", "x_processplatform_core_express", "x_query_core_entity",
+						"x_cms_core_entity", "x_portal_core_entity", "x_general_core_entity" })
 public class x_processplatform_assemble_surface extends Deployable {
 }

@@ -46,7 +46,6 @@ import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -67,7 +66,6 @@ import com.x.processplatform.core.entity.element.wrap.WrapFormField;
 import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
 import com.x.processplatform.core.entity.element.wrap.WrapManual;
 import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapMessage;
 import com.x.processplatform.core.entity.element.wrap.WrapParallel;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -104,7 +102,7 @@ class ActionCover extends BaseAction {
 			application.setName(this.idleApplicationName(business, application.getName(), application.getId()));
 			application.setAlias(this.idleApplicationAlias(business, application.getAlias(), application.getId()));
 			persistObjects.add(application);
-		}else{
+		} else {
 			WrapProcessPlatform.inCopier.copy(wi, application);
 			application.setName(this.idleApplicationName(business, application.getName(), application.getId()));
 			application.setAlias(this.idleApplicationAlias(business, application.getAlias(), application.getId()));
@@ -222,15 +220,16 @@ class ActionCover extends BaseAction {
 			process.setLastUpdateTime(new Date());
 			process.setApplication(application.getId());
 			if (StringUtils.isNotEmpty(process.getEdition())) {
-				if(BooleanUtils.isTrue(process.getEditionEnable())) {
-					for (Process p : business.entityManagerContainer().listEqualAndEqual(Process.class, Process.application_FIELDNAME,
-							process.getApplication(), Process.edition_FIELDNAME, process.getEdition())) {
+				if (BooleanUtils.isTrue(process.getEditionEnable())) {
+					for (Process p : business.entityManagerContainer().listEqualAndEqual(Process.class,
+							Process.application_FIELDNAME, process.getApplication(), Process.edition_FIELDNAME,
+							process.getEdition())) {
 						if (!process.getId().equals(p.getId()) && BooleanUtils.isTrue(p.getEditionEnable())) {
 							p.setEditionEnable(false);
 						}
 					}
 				}
-			}else{
+			} else {
 				process.setEdition(process.getId());
 				process.setEditionEnable(true);
 				process.setEditionNumber(1.0);
@@ -256,8 +255,6 @@ class ActionCover extends BaseAction {
 					wrapProcess.getManualList(), Manual.class));
 			persistObjects.addAll(this.coverProcessElement(business, process, WrapMerge.inCopier,
 					wrapProcess.getMergeList(), Merge.class));
-			persistObjects.addAll(this.coverProcessElement(business, process, WrapMessage.inCopier,
-					wrapProcess.getMessageList(), Message.class));
 			persistObjects.addAll(this.coverProcessElement(business, process, WrapParallel.inCopier,
 					wrapProcess.getParallelList(), Parallel.class));
 			persistObjects.addAll(this.coverProcessElement(business, process, WrapService.inCopier,
@@ -286,8 +283,6 @@ class ActionCover extends BaseAction {
 					this.orphanProcessElement(business, wrapProcess.getManualList(), Manual.class, process.getId()));
 			removeObjects.addAll(
 					this.orphanProcessElement(business, wrapProcess.getMergeList(), Merge.class, process.getId()));
-			removeObjects.addAll(
-					this.orphanProcessElement(business, wrapProcess.getMessageList(), Message.class, process.getId()));
 			removeObjects.addAll(this.orphanProcessElement(business, wrapProcess.getParallelList(), Parallel.class,
 					process.getId()));
 			removeObjects.addAll(
@@ -322,7 +317,6 @@ class ActionCover extends BaseAction {
 		business.entityManagerContainer().beginTransaction(Invoke.class);
 		business.entityManagerContainer().beginTransaction(Manual.class);
 		business.entityManagerContainer().beginTransaction(Merge.class);
-		business.entityManagerContainer().beginTransaction(Message.class);
 		business.entityManagerContainer().beginTransaction(Parallel.class);
 		business.entityManagerContainer().beginTransaction(Service.class);
 		business.entityManagerContainer().beginTransaction(Split.class);

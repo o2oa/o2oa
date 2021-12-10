@@ -11,7 +11,6 @@ import com.x.processplatform.service.processing.processor.end.EndProcessor;
 import com.x.processplatform.service.processing.processor.invoke.InvokeProcessor;
 import com.x.processplatform.service.processing.processor.manual.ManualProcessor;
 import com.x.processplatform.service.processing.processor.merge.MergeProcessor;
-import com.x.processplatform.service.processing.processor.message.MessageProcessor;
 import com.x.processplatform.service.processing.processor.parallel.ParallelProcessor;
 import com.x.processplatform.service.processing.processor.service.ServiceProcessor;
 import com.x.processplatform.service.processing.processor.split.SplitProcessor;
@@ -108,15 +107,6 @@ public abstract class BaseProcessing {
 			this.merge = new MergeProcessor(this.entityManagerContainer());
 		}
 		return merge;
-	}
-
-	private MessageProcessor message;
-
-	public MessageProcessor message() throws Exception {
-		if (null == this.message) {
-			this.message = new MessageProcessor(this.entityManagerContainer());
-		}
-		return message;
 	}
 
 	private ParallelProcessor parallel;

@@ -143,9 +143,6 @@ public class Processing extends BaseProcessing {
 			case merge:
 				id = this.merge().arrive(workId, processingConfigurator, processingAttributes);
 				break;
-			case message:
-				id = this.message().arrive(workId, processingConfigurator, processingAttributes);
-				break;
 			case parallel:
 				id = this.parallel().arrive(workId, processingConfigurator, processingAttributes);
 				break;
@@ -206,9 +203,6 @@ public class Processing extends BaseProcessing {
 			case merge:
 				executed.addAll(this.merge().execute(workId, processingConfigurator, processingAttributes));
 				break;
-			case message:
-				executed.addAll(this.message().execute(workId, processingConfigurator, processingAttributes));
-				break;
 			case parallel:
 				executed.addAll(this.parallel().execute(workId, processingConfigurator, processingAttributes));
 				break;
@@ -267,14 +261,8 @@ public class Processing extends BaseProcessing {
 			case merge:
 				inquired.addAll(this.merge().inquire(workId, processingConfigurator, processingAttributes));
 				break;
-			case message:
-				inquired.addAll(this.message().inquire(workId, processingConfigurator, processingAttributes));
-				break;
 			case parallel:
 				inquired.addAll(this.parallel().inquire(workId, processingConfigurator, processingAttributes));
-				break;
-			case service:
-				inquired.addAll(this.service().inquire(workId, processingConfigurator, processingAttributes));
 				break;
 			case split:
 				inquired.addAll(this.split().inquire(workId, processingConfigurator, processingAttributes));

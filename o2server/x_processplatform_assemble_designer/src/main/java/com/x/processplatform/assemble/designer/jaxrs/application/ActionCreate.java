@@ -58,8 +58,7 @@ class ActionCreate extends BaseAction {
 		private static final long serialVersionUID = 6624639107781167248L;
 
 		static WrapCopier<Wi, Application> copier = WrapCopierFactory.wi(Wi.class, Application.class, null,
-				Arrays.asList(JpaObject.createTime_FIELDNAME, JpaObject.updateTime_FIELDNAME,
-						JpaObject.sequence_FIELDNAME, JpaObject.distributeFactor_FIELDNAME));
+				FieldsUnmodifyIncludePorperties);
 
 	}
 

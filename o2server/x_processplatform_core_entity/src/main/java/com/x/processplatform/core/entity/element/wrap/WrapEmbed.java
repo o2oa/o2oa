@@ -13,5 +13,5 @@ public class WrapEmbed extends Embed {
 			null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapEmbed, Embed> inCopier = WrapCopierFactory.wi(WrapEmbed.class, Embed.class, null,
-			JpaObject.FieldsUnmodifyExcludeId, false);
+			JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId, false);
 }
