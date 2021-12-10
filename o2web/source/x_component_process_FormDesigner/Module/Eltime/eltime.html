@@ -117,12 +117,18 @@
 			</table>
 			<table id="text{$.pid}noRangeTable" style="display: text{(!$.isRange) ? '':'none'};">
 				<tr>
-					<td class="editTableTitle">{{$.lp.selectableRange}}:</td>
-					<td class="editTableValue">
-						<input type="text" name="start_picker" value="text{$.start_picker}" class="editTableInputNoWidth"/> -
-						<input type="text" name="end_picker" value="text{$.end_picker}" class="editTableInputNoWidth"/>
+					<td colspan="2">
+						<div>{{$.lp.selectableRangeNote}}</div>
+						<div class="MWFFormulaArea" name="selectableRange" title="{{$.lp.selectableRangeScript}}"></div>
 					</td>
 				</tr>
+<!--				<tr>-->
+<!--					<td class="editTableTitle">{{$.lp.selectableRange}}:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input type="text" name="start_picker" value="text{$.start_picker}" class="editTableInputNoWidth"/> - -->
+<!--						<input type="text" name="end_picker" value="text{$.end_picker}" class="editTableInputNoWidth"/>-->
+<!--					</td>-->
+<!--				</tr>-->
 			</table>
 			<table id="text{$.pid}rangeTable" style="display: text{($.isRange) ? '':'none'};">
 <!--				<tr>-->

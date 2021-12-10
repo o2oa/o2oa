@@ -1252,6 +1252,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "disabledDate": "Disable selection",
         "disabledDateNote": "this.event is the incoming date, return true means that the date is forbidden to select",
         "disabledDateScript": "Forbidden to select script",
+        "selectableRangeNote": "Return to optional time period, such as return '18:30:00-20:30:00' or return ['09:30:00-12:00:00', '14:30:00- 18:30:00']",
+        "selectableRangeScript": "Selectable Range Script",
         "placeholder": "Placeholder text",
         "rangeSeparator": "Separated Text",
         "startPlaceholder": "Start Placeholder Text",

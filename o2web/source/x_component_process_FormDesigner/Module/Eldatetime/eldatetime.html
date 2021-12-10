@@ -98,6 +98,14 @@
 				</td>
 			</tr>
 		</table>
+<!--		<table id="text{$.pid}noRangeTable" style="display: text{(['datetimerange'].contains($.selectType)) ? 'none':''};">-->
+<!--			<tr>-->
+<!--				<td colspan="2">-->
+<!--					<div>{{$.lp.selectableRangeNote}}</div>-->
+<!--					<div class="MWFFormulaArea" name="selectableRange" title="{{$.lp.selectableRangeScript}}"></div>-->
+<!--				</td>-->
+<!--			</tr>-->
+<!--		</table>-->
 		<table id="text{$.pid}rangeTable" style="display: text{(!['datetimerange'].contains($.selectType)) ? 'none':''};">
 			<tr>
 				<td class="editTableTitle">{{$.lp.rangeSeparator}}:</td>
