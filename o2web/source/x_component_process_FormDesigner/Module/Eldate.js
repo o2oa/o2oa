@@ -1,17 +1,17 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.$ElElement", null, false);
-MWF.xApplication.process.FormDesigner.Module.Eldatetime = MWF.FCEldatetime = new Class({
+MWF.xApplication.process.FormDesigner.Module.Eldate = MWF.FCEldate = new Class({
 	Extends: MWF.FC$ElElement,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "../x_component_process_FormDesigner/Module/Eldatetime/eldatetime.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Eldate/eldate.html"
 	},
 
 	_initModuleType: function(){
-		this.className = "Eldatetime";
+		this.className = "Eldate";
 		this.moduleType = "element";
-		this.moduleName = "eldatetime";
+		this.moduleName = "eldate";
 	},
 	_createElementHtml: function(){
 
