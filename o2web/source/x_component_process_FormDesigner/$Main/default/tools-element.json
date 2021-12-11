@@ -49,11 +49,21 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_slider,
     "className": "Elslider"
   },
-//  "eldatetime": {
-//    "fontIcon": "el-icon-date",
-//    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_date,
-//    "className": "Eldatetime"
-//  },
+  "eltime": {
+    "fontIcon": "el-icon-time",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_time,
+    "className": "Eltime"
+  },
+  "eldate": {
+    "fontIcon": "el-icon-date",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_date,
+    "className": "Eldate"
+  },
+  "eldatetime": {
+    "fontIcon": "el-icon-time",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_datetime,
+    "className": "Eldatetime"
+  },
   "elbutton": {
     "fontIcon": "el-icon-thumb",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_button,
