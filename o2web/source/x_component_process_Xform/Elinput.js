@@ -47,7 +47,6 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     //     }.bind(this);
     // },
     _createElementHtml: function(){
-        debugger;
         var html = "<el-input";
         html += " v-model=\""+this.json.$id+"\"";
         html += " :maxlength=\"maxlength\"";

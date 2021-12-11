@@ -98,7 +98,6 @@ MWF.xApplication.process.FormDesigner.Module.WritingBoard = MWF.FCWritingBoard =
 
 		}
 		if (name=="imageStyles"){
-			debugger;
 			this._recoveryModuleData();
 			var imageNode = this.node.getLast();
 			if(imageNode){
@@ -119,7 +118,6 @@ MWF.xApplication.process.FormDesigner.Module.WritingBoard = MWF.FCWritingBoard =
 	},
 
 	setCustomStyles: function(){
-		debugger;
 		var border = this.node.getStyle("border");
 		this._recoveryModuleData();
 		this.node.clearStyles();
