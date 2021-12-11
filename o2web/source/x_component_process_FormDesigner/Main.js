@@ -90,7 +90,6 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
 
-                        debugger;
 
                         this.form.fireEvent("queryGetFormData", [module.node]);
                         var html = module.getHtml();
@@ -295,7 +294,6 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
     showCategoryMenu: function(){
         this.categoryActionMenu.items.each(function(item){
-            debugger;
             if (this.currentToolGroup && this.currentToolGroup.data.text==item.options.text){
                 item.setDisable(true);
                 var imgDiv = item.item.getFirst();
@@ -977,13 +975,28 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 	//loadTools------------------------------
     loadTools: function(callback){
         o2.loadCss("../o2_lib/vue/element/index.css");
-	    this.getGroups(function(){
+	    this.getToolResource(function(){
             this.toolsGroupData.forEach(function(o){
                 //var o = this.toolsGroupData[key];
-                this.toolGroups.push(new MWF.xApplication.process.FormDesigner.ToolsGroup(o, this));
+                this.toolGroups.push(new MWF.xApplication.process.FormDesigner.ToolsGroup(o, this, o.name === this.currentUserDefaultTool));
             }, this);
 
 	        if (callback) callback();
+        }.bind(this));
+    },
+    getToolResource: function(callback){
+	    var check = function () {
+	        var list = this.toolsGroupData.filter(function(o){
+                return o.name === this.currentUserDefaultTool
+            }.bind(this));
+	        if( list.length < 1 )this.currentUserDefaultTool = "default";
+            callback();
+        }.bind(this);
+	    this.getGroups(function(){
+            if(this.toolsGroupData && this.currentUserDefaultTool )check();
+        }.bind(this));
+        this.getDefaultTool(function(){
+            if(this.toolsGroupData && this.currentUserDefaultTool )check();
         }.bind(this));
     },
     getGroups: function(callback){
@@ -996,6 +1009,25 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                 if (callback) callback();
             }.bind(this));
         }
+    },
+    getDefaultTool: function(callback){
+	    if( typeOf(this.currentUserDefaultTool) === "string" ){
+            if (callback) callback();
+        }else{
+            o2.UD.getDataJson("processTools", function (json) {
+                this.currentUserDefaultTool = (json && json.defaultTool) || "default";
+                if (callback) callback();
+            }.bind(this));
+        }
+    },
+    setDefaultTool: function(defaultTools, callback){
+        o2.UD.getDataJson("processTools", function (json) {
+            if(!json)json = {};
+            json.defaultTool = defaultTools;
+            o2.UD.putData("processTools", json, function () {
+                if (callback) callback();
+            }.bind(this));
+        }.bind(this));
     },
 	
 	//resizeNode------------------------------------------------
@@ -1803,11 +1835,12 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
     Implements: [Events],
 
-    initialize: function(data, app){
+    initialize: function(data, app, showing){
         this.data = data;
         this.app = app;
         this.css = this.app.css;
         this.tools = [];
+        this.showing = showing;
         this.load();
     },
     load: function(){
@@ -1857,7 +1890,7 @@ MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
             this.toolbarContentNode.setStyle("height", ""+this.height+"px");
         }
     },
-    show: function(){
+    show: function( notSetDefault ){
         if (this.app.currentToolGroup != this){
             if (this.app.currentToolGroup) this.app.currentToolGroup.hide();
             // if (!this.morph){
@@ -1879,6 +1912,7 @@ MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
             this.isShow = true;
 
             if (this.app.toolbarMode=="all") this.app.toolbarTitleNode.set("text", this.data.text);
+            if(!notSetDefault)this.app.setDefaultTool( this.data.name );
         }
     },
     hide: function(){
@@ -1964,7 +1998,8 @@ MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
                 this.tools.push(toolNode);
             }.bind(this));
 
-            if (this.data.name==="default") this.show();
+            // if (this.data.name==="default") this.show();
+            if( this.showing )this.show( true );
         }.bind(this));
     },
 
