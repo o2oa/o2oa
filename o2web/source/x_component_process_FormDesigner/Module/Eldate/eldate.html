@@ -19,16 +19,52 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.selectType}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="selectType"  text{(!$.selectType || $.selectType=='datetime')?'checked':''} value="datetime"
+					<input type="radio" name="selectType"  text{(!$.selectType || $.selectType=='date')?'checked':''} value="date"
 						   onclick="if (this.checked){
 						   	$('text{$.pid}rangeTable').setStyle('display', 'none')
-					}"/>{{$.lp.datetime}}
-					<input type="radio" name="selectType"  text{($.selectType=='dates')?'checked':''} value="datetimerange"
+					}"/>{{$.lp.date}}
+					<input type="radio" name="selectType"  text{($.selectType=='month')?'checked':''} value="month"
+						   onclick="if (this.checked){
+						   	$('text{$.pid}rangeTable').setStyle('display', 'none')
+					}"/>{{$.lp.monthOnly}}
+					<input type="radio" name="selectType"  text{($.selectType=='year')?'checked':''} value="year"
+						   onclick="if (this.checked){
+						   	$('text{$.pid}rangeTable').setStyle('display', 'none')
+					}"}"/>{{$.lp.yearOnly}}
+					<input type="radio" name="selectType"  text{($.selectType=='week')?'checked':''} value="week"
+						   onclick="if (this.checked){
+						   	$('text{$.pid}rangeTable').setStyle('display', 'none')
+					}"}"/>{{$.lp.weekOnly}}
+					<br/>
+					<input type="radio" name="selectType"  text{($.selectType=='dates')?'checked':''} value="dates"
+						   onclick="if (this.checked){
+						   	$('text{$.pid}rangeTable').setStyle('display', 'none')
+					}"}"/>{{$.lp.multidate}}
+					<input type="radio" name="selectType"  text{($.selectType=='dates')?'checked':''} value="daterange"
 						   onclick="if (this.checked){
 						   	$('text{$.pid}rangeTable').setStyle('display', '')
-					}"}"/>{{$.lp.datetimerange}}
+					}"}"/>{{$.lp.daterange}}
+					<input type="radio" name="selectType"  text{($.selectType=='dates')?'checked':''} value="monthrange"
+						   onclick="if (this.checked){
+						   	$('text{$.pid}rangeTable').setStyle('display', '')
+					}"}"/>{{$.lp.monthrange}}
 				</td>
 			</tr>
+<!--			<tr id="text{$.pid}isRangeTr" style="display: text{($.timeSelectType==='select') ? 'none':''};">-->
+<!--				<td class="editTableTitle">{{$.lp.isRange}}:</td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input type="radio" name="isRange" text{($.isRange)?'checked':''} value="true"-->
+<!--					onclick="if (this.checked){-->
+<!--					$('text{$.pid}noRangeTable').setStyle('display', 'none');-->
+<!--					$('text{$.pid}rangeTable').setStyle('display', '');-->
+<!--					}"/>{{$.lp.yes}}-->
+<!--					<input type="radio" name="isRange" text{(!$.isRange)?'checked':''} value="false"-->
+<!--					onclick="if (this.checked){-->
+<!--					$('text{$.pid}noRangeTable').setStyle('display', '');-->
+<!--					$('text{$.pid}rangeTable').setStyle('display', 'none');-->
+<!--					}"/>{{$.lp.no}}-->
+<!--				</td>-->
+<!--			</tr>-->
 			<tr id="text{$.pid}formatTr">
 				<td class="editTableTitle">{{$.lp.format}}:</td>
 				<td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
@@ -85,28 +121,41 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">{{$.lp.arrowControl}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="arrowControl" value="true" text{($.arrowControl)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="arrowControl" value="false" text{(!$.arrowControl)?'checked':''}/>{{$.lp.no}}
-				</td>
-			</tr>
-			<tr>
 				<td colspan="2">
 					<div>{{$.lp.disabledDateNote}}</div>
 					<div class="MWFFormulaArea" name="disabledDate" title="{{$.lp.disabledDateScript}}"></div>
 				</td>
 			</tr>
 		</table>
-<!--		<table id="text{$.pid}noRangeTable" style="display: text{(['datetimerange'].contains($.selectType)) ? 'none':''};">-->
+<!--		<table id="text{$.pid}datePickTable">-->
 <!--			<tr>-->
 <!--				<td colspan="2">-->
-<!--					<div>{{$.lp.selectableRangeNote}}</div>-->
-<!--					<div class="MWFFormulaArea" name="selectableRange" title="{{$.lp.selectableRangeScript}}"></div>-->
+<!--					<div>{{$.lp.disabledDateNote}}</div>-->
+<!--					<div class="MWFFormulaArea" name="disabledDate" title="{{$.lp.disabledDateScript}}"></div>-->
+<!--				</td>-->
+<!--			</tr>-->
+<!--			<tr>-->
+<!--				<td class="editTableTitle">{{$.lp.firstDayOfWeek}}:</td>-->
+<!--				<td class="editTableValue">-->
+<!--					<select name="firstDayOfWeek" class="editTableInput">-->
+<!--						<option value="1" text{($.firstDayOfWeek=="1") ? "selected" : ""}>{{$.lp.weeks.arr[0]}}</option>-->
+<!--						<option value="2" text{($.firstDayOfWeek=="2") ? "selected" : ""}>{{$.lp.weeks.arr[1]}}</option>-->
+<!--						<option value="3" text{($.firstDayOfWeek=="3") ? "selected" : ""}>{{$.lp.weeks.arr[2]}}</option>-->
+<!--						<option value="4" text{($.firstDayOfWeek=="4") ? "selected" : ""}>{{$.lp.weeks.arr[3]}}</option>-->
+<!--						<option value="5" text{($.firstDayOfWeek=="5") ? "selected" : ""}>{{$.lp.weeks.arr[4]}}</option>-->
+<!--						<option value="6" text{($.firstDayOfWeek=="6") ? "selected" : ""}>{{$.lp.weeks.arr[5]}}</option>-->
+<!--						<option value="7" text{(!$.firstDayOfWeek || $.firstDayOfWeek=="7") ? "selected" : ""}>{{$.lp.weeks.arr[6]}}</option>-->
+<!--					</select>-->
 <!--				</td>-->
 <!--			</tr>-->
 <!--		</table>-->
-		<table id="text{$.pid}rangeTable" style="display: text{(!['datetimerange'].contains($.selectType)) ? 'none':''};">
+<!--		<table id="text{$.pid}noRangeTable">-->
+<!--			<tr>-->
+<!--				<td class="editTableTitle">{{$.lp.placeholder}}:</td>-->
+<!--				<td class="editTableValue"><input type="text" name="placeholder" value="text{$.placeholder}" class="editTableInput"/></td>-->
+<!--			</tr>-->
+<!--		</table>-->
+		<table id="text{$.pid}rangeTable" style="display: text{(!['daterange','monthrange'].contains($.selectType)) ? 'none':''};">
 			<tr>
 				<td class="editTableTitle">{{$.lp.rangeSeparator}}:</td>
 				<td class="editTableValue"><input type="text" name="rangeSeparator" value="text{$.rangeSeparator}" class="editTableInput"/></td>
@@ -120,7 +169,6 @@
 				<td class="editTableValue"><input type="text" name="endPlaceholder" value="text{$.endPlaceholder}" class="editTableInput"/></td>
 			</tr>
 		</table>
-
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.prefixIcon}}</div>
 		<div style="display: text{($.prefixIcon)?'block':'none'}" class="MWFElIcon" name="prefixIcon"></div>
 
