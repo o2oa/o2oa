@@ -521,6 +521,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "excludeInfo": "Exclude the selection of unit, identity, person, and group by scripts",
 
         "dateTime": "DateTime",
+        "dateTime2": "DateTime",
         "dateOnly": "DateOnly",
         "monthOnly": "MonthOnly",
         "yearOnly": "YearOnly",
