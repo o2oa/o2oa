@@ -520,6 +520,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "excludeInfo": "通过编写脚本排除组织、身份、个人和群组的选择范围",
 
         "dateTime": "日期时间",
+        "dateTime2": "日期时间",
         "dateOnly": "仅日期",
         "monthOnly": "仅月份",
         "yearOnly": "仅年度",
