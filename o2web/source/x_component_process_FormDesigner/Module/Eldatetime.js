@@ -21,9 +21,9 @@ MWF.xApplication.process.FormDesigner.Module.Eldatetime = MWF.FCEldatetime = new
 		html += " :prefix-icon=\"prefixIcon\"";
 		html += " :range-separator=\"rangeSeparator\"";
 		html += " readonly";
-		html += " placeholder="+this.json.id;
-		html += " start-placeholder="+this.json.id;
-		html += " end-placeholder="+this.json.id;
+		html += " :placeholder=\"id\"";
+		html += " :start-placeholder=\"id\"";
+		html += " :end-placeholder=\"id\"";
 
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){
@@ -31,8 +31,7 @@ MWF.xApplication.process.FormDesigner.Module.Eldatetime = MWF.FCEldatetime = new
 			}, this);
 		}
 
-		html += " :style=\"elStyles\"";
-		html += " :value=\"id\">";
+		html += " :style=\"elStyles\">";
 		if (this.json.vueSlot) html += this.json.vueSlot;
 		html += "</el-date-picker>";
 		return html;
@@ -51,15 +50,15 @@ MWF.xApplication.process.FormDesigner.Module.Eldatetime = MWF.FCEldatetime = new
 		return this.copyNode;
 	},
 	setPropertyName: function(){
-		if (this.json.name){
-			var input = this.node.getElement("input");
-			if (input) input.set("value", this.json.name);
-		}
+		// if (this.json.name){
+		// 	var input = this.node.getElement("input");
+		// 	if (input) input.set("value", this.json.name);
+		// }
 	},
 	setPropertyId: function(){
-		if (!this.json.name){
-			var input = this.node.getElement("input");
-			if (input) input.set("value", this.json.id);
-		}
+		// if (!this.json.name){
+		// 	var input = this.node.getElement("input");
+		// 	if (input) input.set("value", this.json.id);
+		// }
 	}
 });

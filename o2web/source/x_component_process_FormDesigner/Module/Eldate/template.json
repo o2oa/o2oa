@@ -12,6 +12,7 @@
 	"clearable": false,
 	"size" : "default",
 	"firstDayOfWeek" : "7",
+	"prefixIcon": "",
 	"rangeSeparator": MWF.xApplication.process.FormDesigner.LP.propertyTemplate.to,
 	"startPlaceholder": MWF.xApplication.process.FormDesigner.LP.propertyTemplate.startDate,
 	"endPlaceholder": MWF.xApplication.process.FormDesigner.LP.propertyTemplate.endDate,

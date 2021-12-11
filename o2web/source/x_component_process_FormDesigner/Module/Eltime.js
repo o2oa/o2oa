@@ -48,7 +48,8 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 	},
 	createSelectElementHtml: function(){
 		var html = "<el-time-select";
-		html += " :value=\"id\"";
+		// html += " :value=\"id\"";
+		html += " :placeholder=\"id\"";
 		html += this.getCommonHtml();
 		html += "</el-time-select>";
 		return html;
@@ -70,7 +71,7 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 
 	createPickerElementHtml: function(){
 		var html = "<el-time-picker";
-		html += " placeholder="+this.json.id;
+		html += " :placeholder=\"id\"";
 		html += this.getCommonHtml();
 		html += "</el-time-picker>";
 		return html;
@@ -79,8 +80,8 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 		var html = "<el-time-picker";
 		html += " is-range";
 		html += " :range-separator=\"rangeSeparator\"";
-		html += " start-placeholder="+this.json.id;
-		html += " end-placeholder="+this.json.id;
+		html += " :start-placeholder=\"id\"";
+		html += " :end-placeholder=\"id\"";
 		html += this.getCommonHtml();
 		html += "</el-time-picker>";
 		return html;
@@ -112,15 +113,15 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 		}
 	},
 	setPropertyName: function(){
-		if (this.json.name){
-			var input = this.node.getElement("input");
-			if (input) input.set("value", this.json.name);
-		}
+		// if (this.json.name){
+		// 	var input = this.node.getElement("input");
+		// 	if (input) input.set("value", this.json.name);
+		// }
 	},
 	setPropertyId: function(){
-		if (!this.json.name){
-			var input = this.node.getElement("input");
-			if (input) input.set("value", this.json.id);
-		}
+		// if (!this.json.name){
+		// 	var input = this.node.getElement("input");
+		// 	if (input) input.set("value", this.json.id);
+		// }
 	}
 });

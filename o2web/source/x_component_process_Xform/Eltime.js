@@ -20,6 +20,14 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         "elEvents": ["focus", "blur", "change", "input", "clear"]
     },
+    _queryLoaded: function(){
+        var data = this._getBusinessData();
+        if( ["picker"].contains(this.json.timeSelectType) && this.json.isRange) {
+            if (typeOf(data) === "string") this._setBusinessData([data, ""]);
+        }else{
+            if( typeOf(data) === "array" )this._setBusinessData(data[0] || "");
+        }
+    },
     _appendVueData: function(){
         if (!this.json.readonly) this.json.readonly = false;
         if (!this.json.disabled) this.json.disabled = false;
@@ -47,7 +55,6 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
         }
     },
     _createElementHtml: function() {
-        debugger;
         if (this.json.timeSelectType === "select"){
             return this.createSelectElementHtml();
         }else{
