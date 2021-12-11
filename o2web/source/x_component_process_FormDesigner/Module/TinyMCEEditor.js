@@ -9,7 +9,6 @@ MWF.xApplication.process.FormDesigner.Module.TinyMCEEditor = MWF.FCTinyMCEEditor
 	},
 	
 	initialize: function(form, options){
-		debugger;
 		this.setOptions(options);
 		
 		this.path = "../x_component_process_FormDesigner/Module/TinyMCEEditor/";

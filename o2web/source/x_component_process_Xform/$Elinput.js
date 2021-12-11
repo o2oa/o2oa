@@ -9,7 +9,6 @@ Object.assign(o2.APP$Elinput.prototype, o2.APP$Input.prototype);
 
 Object.assign(o2.APP$Elinput.prototype, {
     __setValue: function(value){
-        debugger;
         this.moduleValueAG = null;
         this._setBusinessData(value);
         this.json[this.json.$id] = value;

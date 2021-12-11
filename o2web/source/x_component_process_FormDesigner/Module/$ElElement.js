@@ -111,6 +111,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		}.bind(this));
 	},
 	_resetVueModuleDomNode: function(callback){
+		debugger;
 		if (!this.vm){
 			if (!this.node.hasClass("o2_vue")) this.node.addClass("o2_vue");
 			var html = this._filterHtml(this._createElementHtml());
