@@ -19,6 +19,7 @@
 	"end_picker": "23:59:59",
 	"start_endPicker": "00:00:00",
 	"end_endPicker": "23:59:59",
+	"prefixIcon": "",
 	"rangeSeparator": MWF.xApplication.process.FormDesigner.LP.propertyTemplate.to,
 	"startPlaceholder": MWF.xApplication.process.FormDesigner.LP.propertyTemplate.startTime,
 	"endPlaceholder": MWF.xApplication.process.FormDesigner.LP.propertyTemplate.endTime,

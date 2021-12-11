@@ -20,6 +20,16 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         "elEvents": ["focus", "blur", "change", "input", "clear"]
     },
+    _queryLoaded: function(){
+        var data = this._getBusinessData();
+        if( ["monthrange","daterange"].contains(this.json.selectType) ) {
+            if (typeOf(data) === "string") this._setBusinessData([data, ""]);
+        }else if( ["dates"].contains(this.json.selectType) ){
+            if (typeOf(data) === "string") this._setBusinessData([data]);
+        }else{
+            if( typeOf(data) === "array" )this._setBusinessData(data[0] || "");
+        }
+    },
     _appendVueData: function(){
         if (!this.json.isReadonly) this.json.isReadonly = false;
         if (!this.json.disabled) this.json.disabled = false;
@@ -76,7 +86,6 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
         if (this.json.vueSlot) html += this.json.vueSlot;
 
         html += "</el-date-picker>";
-        debugger;
         return html;
     }
 }); 
