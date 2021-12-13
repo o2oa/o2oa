@@ -1,0 +1,95 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Elrate",
+	"description": "",
+	"isReadonly" : false,
+	"allowHalf": false,
+	"max" : 5,
+	"lowThreshold": 2,
+	"highThreshold": 4,
+	"lowColor": "#F7BA2A",
+	"mediumColor": "#F7BA2A",
+	"highColor": "#F7BA2A",
+	"voidColor": "#C6D1DE",
+	"disabledVoidColor": "#EFF2F7",
+	"showAfter": "none",
+	"textColor": "#1F2D3D",
+	"texts": MWF.xApplication.process.FormDesigner.LP.propertyTemplate.rateTexts,
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+	"vueSlot": "",
+	"elProperties": {},
+	"elStyles": {},
+	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
+		"change": {
+			"code": "",
+			"html": ""
+		},
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

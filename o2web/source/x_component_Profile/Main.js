@@ -122,7 +122,7 @@ MWF.xApplication.Profile.Main = new Class({
         this.officePhoneInputNode = inputs[2];
         this.weixinInputNode = inputs[3];
         this.qqInputNode = inputs[4];
-        this.ipAddressInputNode = inputs[5];
+        // this.ipAddressInputNode = inputs[5];
 
         this.signatureInputNode = this.tab.pages[0].contentNode.getElement("textarea");
         this.signatureInputNode.addEvent("focus",function(){
@@ -846,7 +846,7 @@ MWF.xApplication.Profile.Main = new Class({
         this.personData.mobile = this.mobileInputNode.get("value");
         this.personData.weixin = this.weixinInputNode.get("value");
         this.personData.qq = this.qqInputNode.get("value");
-        this.personData.ipAddress = this.ipAddressInputNode.get("value");
+        // this.personData.ipAddress = this.ipAddressInputNode.get("value");
         this.personData.signature = this.signatureInputNode.get("value");
         this.personData.language = this.languageSelectNode.options[this.languageSelectNode.selectedIndex].value;
 

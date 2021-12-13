@@ -74,6 +74,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_icon,
     "className": "Elicon"
   },
+  "elrate": {
+    "fontIcon": "el-icon-star-off",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_rate,
+    "className": "Elrate"
+  },
   "elcommon": {
     "fontIcon": "el-icon-full-screen",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_common,
