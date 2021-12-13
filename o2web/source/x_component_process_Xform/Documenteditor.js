@@ -3003,7 +3003,7 @@ debugger;
                 //if (this.data[name]){
                 if (this[dom]){
                             if (dom=="layout_redHeader" ||dom=="layout_issuanceUnit" || dom=="layout_meetingAttendContent" || dom=="layout_meetingLeaveContent" || dom=="layout_meetingSitContent" || dom=="layout_meetingRecordContent" || dom=="layout_signer") {
-                                this[dom].set("html", this.data[name] || "");
+                                this[dom].set("html", this.filterHtml(this.data[name] || ""));
                             }else if (dom=="layout_subject"){
                                 this[dom].set("html", (this.data[name] || ""));
                             }else if (dom=="layout_attachment"){
@@ -3446,6 +3446,15 @@ debugger;
         }
     },
 
+    filterHtml: function(html){
+        var content = html.replace(/(?:<script[\s\S]*?)(?:(?:<\/script>)|(?:\/>))/gmi, "");
+        // content = content.replace(/(?<=[\"\'])javascript\:(?=.*")/gmi, "");
+        content = content.replace(/(?<=\s)on\w*|src|href(?=\=[\"\'])/gmi, function(match){
+            return "data-"+match;
+        });
+        return content;
+    },
+
     /**设置公文编辑器数据
      * @param {Object} data
      * @example
@@ -3537,10 +3546,10 @@ debugger;
             if (this.layout_meetingLeaveTitle) this.layout_meetingLeaveTitle.set("text", data.meetingLeaveTitle || this.json.defaultValue.meetingLeaveTitle || " ");
             if (this.layout_meetingSitTitle) this.layout_meetingSitTitle.set("text", data.meetingSitTitle || this.json.defaultValue.meetingSitTitle || " ");
 
-            if (this.layout_meetingAttendContent) this.layout_meetingAttendContent.set("html", data.meetingAttend || " ");
-            if (this.layout_meetingLeaveContent) this.layout_meetingLeaveContent.set("html", data.meetingLeave || " ");
-            if (this.layout_meetingSitContent) this.layout_meetingSitContent.set("html", data.meetingSit || " ");
-            if (this.layout_meetingRecordContent) this.layout_meetingRecordContent.set("html", data.meetingRecord || " ");
+            if (this.layout_meetingAttendContent) this.layout_meetingAttendContent.set("html", this.filterHtml(data.meetingAttend || " "));
+            if (this.layout_meetingLeaveContent) this.layout_meetingLeaveContent.set("html", this.filterHtml(data.meetingLeave || " "));
+            if (this.layout_meetingSitContent) this.layout_meetingSitContent.set("html", this.filterHtml(data.meetingSit || " "));
+            if (this.layout_meetingRecordContent) this.layout_meetingRecordContent.set("html", this.filterHtml(data.meetingRecord || " "));
 
             if (this.layout_seals){
                 if (data.seals && data.seals.length){
