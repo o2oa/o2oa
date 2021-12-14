@@ -351,6 +351,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_date": "Date",
         "el_datetime": "Datetime",
         "el_rate": "Rate",
+        "el_colorpicker": "ColorPicker",
         "el_common": "Common",
 
         "importer": "DataImporter",
@@ -554,6 +555,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showScore": "Show Score",
         "textColor": "Text Color",
         "textContent": "Text Content",
+
+        "showAlpha": "Show Alpha",
+        "colorFormat": "Color Format",
+
         "selectStyle": "Select Style",
         "options": "Options",
         "optionScript": "Options Script",
