@@ -871,7 +871,11 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         }.bind(this));
 
         tdContents[12].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.ipAddressInputNode = new Element("input", {"styles": this.style.inputNode, "placeHolder": this.explorer.app.lp.ipAddressPlaceHolder, }).inject(tdContents[12]);
+        this.ipAddressInputNode = new Element("input", {
+            "styles": this.style.inputNode,
+            "placeHolder": this.explorer.app.lp.ipAddressPlaceHolder,
+            "autocomplete": "off"
+        }).inject(tdContents[12]);
         this.ipAddressInputNode.set("value", (this.data.ipAddress));
 
 
