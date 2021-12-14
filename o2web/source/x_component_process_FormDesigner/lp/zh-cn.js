@@ -351,6 +351,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_date": "日期",
         "el_datetime": "日期时间",
         "el_rate": "评分",
+        "el_colorpicker": "颜色选择",
         "el_common": "通用",
 
         "importer": "数据导入",
@@ -553,6 +554,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showScore": "显示分数",
         "textColor": "文本颜色",
         "textContent": "文本内容",
+
+        "showAlpha": "显示透明度",
+        "colorFormat": "颜色格式",
 
         "selectStyle": "Select样式",
         "options": "可选值",
