@@ -250,69 +250,10 @@ if (!window.o2) {
                 }
             }
             if (cb) return cb.apply(b, par);
-            //return null;
-
-            // if (cb){
-            //     if (promise_cb){
-            //         var r = cb.apply(b, par);
-            //
-            //         window.setTimeout(function(){
-            //             promise_cb(r);
-            //         },0)
-            //         //return promise_cb(r);
-            //     }else{
-            //         return cb.apply(b, par);
-            //     }
-            //     //return (promise_cb) ? promise_cb(cb.apply(b, par)) : cb.apply(b, par) ;
-            // }
-            // if (promise_cb){
-            //     window.setTimeout(function(){
-            //         promise_cb.apply(b, par);
-            //     },0)
-            //
-            //     //return promise_cb.apply(b, par);
-            // }
-
-            //return (promise_cb) ? promise_cb.apply(b, par) : null;
-
-            // if (key.toLowerCase()==="success" && (type==="function" || type==="o2_async_function")){
-            //     (promise_cb) ? promise_cb(callback.apply(b, par)) : callback.apply(b, par) ;
-            // }else{
-            //     if (type==="function" || type==="object" || type==="o2_async_function"){
-            //         var name = ("on-"+key).camelCase();
-            //         if (callback[name]){
-            //             (promise_cb) ? promise_cb(callback[name].apply(b, par)) : callback[name].apply(b, par);
-            //         }else{
-            //             if (callback[key]) (promise_cb) ? promise_cb(callback[key].apply(b, par)) : callback[key].apply(b, par);
-            //         }
-            //     }
-            // }
-
-
-            // if (typeOf(callback).toLowerCase() === 'function'){
-            //     if (key.toLowerCase()==="success"){
-            //         callback.apply(b, par);
-            //     }else{
-            //         if (callback[key]){
-            //             callback[key].apply(b, par);
-            //         }else{
-            //             var name = ("on-"+key).camelCase();
-            //             if (callback[name]) callback[name].apply(b, par);
-            //         }
-            //     }
-            // }else{
-            //     if (typeOf(callback).toLowerCase()==='object'){
-            //         if (callback[key]){
-            //             callback[key].apply(b, par);
-            //         }else{
-            //             var name = ("on-"+key).camelCase();
-            //             if (callback[name]) callback[name].apply(b, par);
-            //         }
-            //     }
-            // }
         };
         this.o2.runCallback = _runCallback;
 
+        if (window.CustomEvent) this.o2.customEventLoad = new CustomEvent("o2load");
 
         //load js, css, html adn all.
         var _getAllOptions = function (options) {
@@ -912,8 +853,8 @@ if (!window.o2) {
         };
 
         var _bindToEvents = function (m, node, events) {
-            var p = node.getParent("div[data-o2-$binddatadd]");
-            var data = (p) ? _parseDataCache[p.dataset["o2-$binddataid"]] : null;
+            var p = node.getParent("div[data-o2-binddataid]");
+            var data = (p) ? _parseDataCache[p.dataset["o2Binddataid"]] : null;
 
             var eventList = events.split(/\s*;\s*/);
             eventList.forEach(function (ev) {
@@ -921,9 +862,15 @@ if (!window.o2) {
                 if (evs.length > 1) {
                     var event = evs.shift();
                     var method = evs.shift();
-                    node.addEventListener(event, function (e) {
-                        if (m[method]) m[method].apply(m, evs.concat([e, data]));
-                    }, false);
+                    // if (event==="o2load"){
+                    //
+                    //     if (m[method]) m[method].apply(m, evs.concat([new PointerEvent("o2load"), data]));
+                    // }else{
+                        node.addEventListener(event, function (e) {
+                            if (m[method]) m[method].apply(m, evs.concat([e, data]));
+                        }, false);
+                    // }
+                    node.dispatchEvent(o2.customEventLoad);
                 }
             });
         }
@@ -1049,11 +996,11 @@ if (!window.o2) {
         var _parseDataCache = {};
         var _parseHtml = function (str, json, i) {
             var v = str;
-            if (i) {
+            if (i || i===0) {
                 var r = (Math.random() * 1000000).toInt().toString();
                 while (_parseDataCache[r]) r = (Math.random() * 1000000).toInt().toString();
                 _parseDataCache[r] = json;
-                v = (i) ? "<div data-o2-$binddataid='" + r + "'>" + str + "</div>" : str;
+                v = (i || i===0) ? "<div data-o2-binddataid='" + r + "'>" + str + "</div>" : str;
             }
             var rex = /(\{\{\s*)[\s\S]*?(\s*\}\})/gmi;
 

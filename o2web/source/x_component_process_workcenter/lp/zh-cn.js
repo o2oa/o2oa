@@ -5,5 +5,9 @@ MWF.xApplication.process.workcenter.LP = {
 	"taskCompleted": "已办",
 	"readCompleted": "已阅",
 	"draft": "草稿",
-	"createProcess": "新建流程"
+	"createProcess": "新建流程",
+
+	"expire1": "任务截至时间：{time}",
+	"expire2": "任务即将超时，截至时间：{time}",
+	"expire3": "任务已超时，截至时间：{time}",
 };

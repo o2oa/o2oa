@@ -1,15 +1,13 @@
 MWF.xApplication.process.workcenter.LP = {
 	"title": "Work Center",
-	"welcome": "Welcome to O2OA Component",
-	"taskListTitle": "Here are your top 5 task",
+	"task": "Task",
+	"read": "Read",
+	"taskCompleted": "TaskCompleted",
+	"readCompleted": "ReadCompleted",
+	"draft": "Draft",
+	"createProcess": "Create Process",
 
-	"taskTitle": "Title",
-	"taskProcess": "Process",
-	"taskTime": "Time",
-
-	"openCalendar": "Open Calendar",
-	"openOrganization": "Open Organization",
-	"startProcess": "Start Process",
-	"createDocument": "Create Document",
-	"openInBrowser": "Open In Browser"
+	"expire1": "Task deadline: {time}",
+	"expire2": "The task is about to time out. Deadline:{time}",
+	"expire3": "The task has timed out. Deadline:{time}",
 };
