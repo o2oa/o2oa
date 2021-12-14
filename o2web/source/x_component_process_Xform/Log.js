@@ -1459,7 +1459,6 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             this.form.Macro.environment.list = null;
             flag = this.form.Macro.exec(this.json.filterScript.code, this);
         }else{
-            debugger;
             var isExactMatch = function (property) {
                 return property && o2.typeOf(property)==="array" && property.length && property[0] === "yes";
             };

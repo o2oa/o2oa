@@ -57,6 +57,7 @@ MWF.xApplication.process.Xform.Elrate = MWF.APPElrate =  new Class(
     //     }.bind(this);
     // },
     _createElementHtml: function(){
+        debugger;
         var html = "<el-rate";
         html += " v-model=\""+this.json.$id+"\"";
         html += " :readonly=\"isReadonly\"";
