@@ -18,7 +18,7 @@ MWF.xApplication.process.Xform.Elcolorpicker = MWF.APPElcolorpicker =  new Class
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
-        "elEvents": ["change"]
+        "elEvents": ["change","active-change"]
     },
     _appendVueData: function(){
         if (!this.json.isReadonly) this.json.isReadonly = false;

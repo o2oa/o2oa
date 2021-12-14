@@ -84,6 +84,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_colorpicker,
     "className": "Elcolorpicker"
   },
+  "eltree": {
+    "fontIcon": "o2-icon-file-play",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_tree,
+    "className": "Eltree"
+  },
   "elcommon": {
     "fontIcon": "el-icon-full-screen",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_common,
