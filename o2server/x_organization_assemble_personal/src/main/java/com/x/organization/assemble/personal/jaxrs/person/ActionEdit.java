@@ -61,10 +61,17 @@ class ActionEdit extends BaseAction {
 
 		private static final long serialVersionUID = 1571810726944802231L;
 
+//		static WrapCopier<Wi, Person> copier = WrapCopierFactory.wi(Wi.class, Person.class, null,
+//				ListTools.toList(JpaObject.FieldsUnmodify, "icon", "iconMdpi", "iconLdpi", "pinyin", "pinyinInitial",
+//						"password", "passwordExpiredTime", "lastLoginTime", "lastLoginAddress", "lastLoginClient",
+//						"superior", "controllerList"));
+
 		static WrapCopier<Wi, Person> copier = WrapCopierFactory.wi(Wi.class, Person.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, "icon", "iconMdpi", "iconLdpi", "pinyin", "pinyinInitial",
-						"password", "passwordExpiredTime", "lastLoginTime", "lastLoginAddress", "lastLoginClient",
-						"superior", "controllerList"));
+				ListTools.toList(JpaObject.FieldsUnmodify, Person.icon_FIELDNAME, Person.iconMdpi_FIELDNAME,
+						Person.iconLdpi_FIELDNAME, Person.pinyin_FIELDNAME, Person.pinyinInitial_FIELDNAME,
+						Person.password_FIELDNAME, Person.passwordExpiredTime_FIELDNAME, Person.lastLoginTime_FIELDNAME,
+						Person.lastLoginAddress_FIELDNAME, Person.lastLoginClient_FIELDNAME, Person.superior_FIELDNAME,
+						Person.controllerList_FIELDNAME, Person.ipAddress_FIELDNAME));
 	}
 
 	public static class Wo extends WoId {

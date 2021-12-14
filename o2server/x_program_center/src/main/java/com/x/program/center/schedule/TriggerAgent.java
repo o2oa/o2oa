@@ -1,9 +1,12 @@
 package com.x.program.center.schedule;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.stream.Collectors;
 
@@ -17,31 +20,30 @@ import javax.persistence.criteria.Root;
 import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
-import com.google.gson.JsonElement;
-import com.x.base.core.project.config.CenterServer;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.connection.ActionResponse;
-import com.x.base.core.project.connection.CipherConnectionAction;
-import com.x.base.core.project.exception.RunningException;
-import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+
+import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.CenterServer;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.CronTools;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.program.center.Business;
@@ -51,6 +53,7 @@ import com.x.program.center.core.entity.Agent_;
 
 /**
  * 定时代理任务处理
+ * 
  * @author sword
  */
 public class TriggerAgent extends BaseAction {
@@ -59,7 +62,8 @@ public class TriggerAgent extends BaseAction {
 
 	private static final CopyOnWriteArrayList<String> LOCK = new CopyOnWriteArrayList<>();
 
-	private static final ExecutorService executorService = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
+	private static final ExecutorService executorService = new ScheduledThreadPoolExecutor(
+			Runtime.getRuntime().availableProcessors(),
 			new BasicThreadFactory.Builder().namingPattern("triggerAgent-pool-%d").daemon(true).build());
 
 	@Override
@@ -71,10 +75,8 @@ public class TriggerAgent extends BaseAction {
 					Business business = new Business(emc);
 					list = this.list(business);
 				}
-				if(list!=null) {
-					list.stream().forEach(p -> {
-						this.trigger(p);
-					});
+				if (list != null) {
+					list.stream().forEach(this::trigger);
 				}
 			}
 		} catch (Exception e) {
@@ -122,20 +124,18 @@ public class TriggerAgent extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Agent> root = cq.from(Agent.class);
-		Path<String> path_id = root.get(Agent_.id);
-		Path<String> path_name = root.get(Agent_.name);
-		Path<String> path_cron = root.get(Agent_.cron);
-		Path<Date> path_lastEndTime = root.get(Agent_.lastEndTime);
-		Path<Date> path_lastStartTime = root.get(Agent_.lastStartTime);
+		Path<String> pathId = root.get(Agent_.id);
+		Path<String> pathName = root.get(Agent_.name);
+		Path<String> pathCron = root.get(Agent_.cron);
+		Path<Date> pathLastEndTime = root.get(Agent_.lastEndTime);
+		Path<Date> pathLastStartTime = root.get(Agent_.lastStartTime);
 		Predicate p = cb.equal(root.get(Agent_.enable), true);
 		List<Tuple> list = em
-				.createQuery(
-						cq.multiselect(path_id, path_name, path_cron, path_lastEndTime, path_lastStartTime).where(p))
+				.createQuery(cq.multiselect(pathId, pathName, pathCron, pathLastEndTime, pathLastStartTime).where(p))
 				.getResultList();
-		List<Pair> pairs = list.stream().map(o -> {
-			return new Pair(o.get(path_id), o.get(path_name), o.get(path_cron), o.get(path_lastStartTime));
-		}).distinct().collect(Collectors.toList());
-		return pairs;
+		return list.stream()
+				.map(o -> new Pair(o.get(pathId), o.get(pathName), o.get(pathCron), o.get(pathLastStartTime)))
+				.distinct().collect(Collectors.toList());
 	}
 
 	class Pair {
@@ -202,62 +202,76 @@ public class TriggerAgent extends BaseAction {
 				try {
 					LOCK.add(agent.getId());
 					Map.Entry<String, CenterServer> centerServer = getCenterServer();
-					if(centerServer==null){
-						try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-							CacheCategory cacheCategory = new CacheCategory(Agent.class);
-							CacheKey cacheKey = new CacheKey(TriggerAgent.class, agent.getId());
-							CompiledScript compiledScript = null;
-							Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-							if (optional.isPresent()) {
-								compiledScript = (CompiledScript) optional.get();
-							} else {
-								compiledScript = ScriptFactory.compile(ScriptFactory.functionalization(agent.getText()));
-								CacheManager.put(cacheCategory, cacheKey, compiledScript);
-							}
-							ScriptContext scriptContext = new SimpleScriptContext();
-							Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-							Resources resources = new Resources();
-							resources.setEntityManagerContainer(emc);
-							resources.setContext(ThisApplication.context());
-							resources.setOrganization(new Organization(ThisApplication.context()));
-							resources.setApplications(ThisApplication.context().applications());
-							resources.setWebservicesClient(new WebservicesClient());
-							bindings.put(ScriptFactory.BINDING_NAME_RESOURCES, resources);
-							try {
-								ScriptFactory.initialServiceScriptText().eval(scriptContext);
-								compiledScript.eval(scriptContext);
-							} catch (Exception e) {
-								throw new ExceptionAgentEval(e, e.getMessage(), agent.getId(), agent.getName(),
-										agent.getAlias(), agent.getText());
-							}
-						} catch (Exception e) {
-							logger.error(e);
-						}
-
-						try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-							Agent o = emc.find(agent.getId(), Agent.class);
-							if (null != o) {
-								emc.beginTransaction(Agent.class);
-								o.setLastEndTime(new Date());
-								emc.commit();
-							}
-						} catch (Exception e) {
-							logger.error(e);
-						}
-					}else{
-						try {
-							CipherConnectionAction.get(false, Config.url_x_program_center_jaxrs(centerServer, "agent", agent.getId(), "execute") + "?tt=" + System.currentTimeMillis());
-						} catch (Exception e) {
-							logger.warn("trigger agent {} on center {} error:{}", agent.getName(), centerServer.getKey(), e.getMessage());
-						}
+					if (centerServer == null) {
+						evalLocal();
+					} else {
+						evalRemote(centerServer);
 					}
+				} catch (Exception e) {
+					logger.error(e);
 				} finally {
 					LOCK.remove(agent.getId());
 				}
 			}
 		}
 
-		private Map.Entry<String, CenterServer> getCenterServer(){
+		private void evalRemote(Map.Entry<String, CenterServer> centerServer) {
+			try {
+				CipherConnectionAction.get(false,
+						Config.url_x_program_center_jaxrs(centerServer, "agent", agent.getId(), "execute") + "?tt="
+								+ System.currentTimeMillis());
+			} catch (Exception e) {
+				logger.warn("trigger agent {} on center {} error:{}", agent.getName(), centerServer.getKey(),
+						e.getMessage());
+			}
+		}
+
+		private void evalLocal() throws Exception {
+			CacheCategory cacheCategory = new CacheCategory(Agent.class);
+			CacheKey cacheKey = new CacheKey(TriggerAgent.class, agent.getId());
+			CompiledScript compiledScript = null;
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				compiledScript = (CompiledScript) optional.get();
+			} else {
+				compiledScript = ScriptingFactory.functionalizationCompile(agent.getText());
+				CacheManager.put(cacheCategory, cacheKey, compiledScript);
+			}
+			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
+			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+			Resources resources = new Resources();
+			resources.setContext(ThisApplication.context());
+			resources.setOrganization(new Organization(ThisApplication.context()));
+			resources.setWebservicesClient(new WebservicesClient());
+			resources.setApplications(ThisApplication.context().applications());
+			bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+			eval(compiledScript, scriptContext);
+			updateLastEndTime();
+		}
+
+		private void updateLastEndTime() {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Agent o = emc.find(agent.getId(), Agent.class);
+				if (null != o) {
+					emc.beginTransaction(Agent.class);
+					o.setLastEndTime(new Date());
+					emc.commit();
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+
+		private void eval(CompiledScript compiledScript, ScriptContext scriptContext) throws ExceptionAgentEval {
+			try {
+				JsonScriptingExecutor.jsonElement(compiledScript, scriptContext);
+			} catch (Exception e) {
+				throw new ExceptionAgentEval(e, e.getMessage(), agent.getId(), agent.getName(), agent.getAlias(),
+						agent.getText());
+			}
+		}
+
+		private Map.Entry<String, CenterServer> getCenterServer() {
 			Map.Entry<String, CenterServer> centerServer = null;
 			try {
 				Map.Entry<String, CenterServer> entry;
