@@ -352,6 +352,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_datetime": "Datetime",
         "el_rate": "Rate",
         "el_colorpicker": "ColorPicker",
+        "el_tree": "tree",
+        "el-menu": "menu",
         "el_common": "Common",
 
         "importer": "DataImporter",

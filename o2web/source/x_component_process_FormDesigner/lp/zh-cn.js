@@ -352,6 +352,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_datetime": "日期时间",
         "el_rate": "评分",
         "el_colorpicker": "颜色选择",
+        "el_tree": "树",
+        "el-menu": "导航菜单",
         "el_common": "通用",
 
         "importer": "数据导入",
