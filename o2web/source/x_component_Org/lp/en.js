@@ -43,7 +43,7 @@ MWF.xApplication.Org.LP = {
     "name": "Name",
     "description": "Description",
     "ipAddress" : "IP Address",
-    "ipAddressPlaceHolder" : "Only the matching ip address can login to the account. Separate multiple values with \",\"",
+    "ipAddressPlaceHolder" : "Only the matching ip can login to the account. Separate multiple values with \",\"",
     "ipAddressIncorrectNotice" : "IP address format is incorrect:",
 
     "createSubCompany": "Create sub company",

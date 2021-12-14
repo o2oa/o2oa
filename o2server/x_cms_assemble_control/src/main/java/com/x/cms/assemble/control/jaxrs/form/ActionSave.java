@@ -47,7 +47,7 @@ public class ActionSave extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 
-			if (!business.formEditAvailable( effectivePerson)) {
+			if (!business.isManager( effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Form form = emc.find(wi.getId(), Form.class);

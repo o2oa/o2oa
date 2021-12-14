@@ -62,7 +62,7 @@ class ActionExecute extends BaseAction {
 					resources.setOrganization(new Organization(ThisApplication.context()));
 					resources.setApplications(ThisApplication.context().applications());
 					resources.setWebservicesClient(new WebservicesClient());
-					bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
+					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
 
 					CacheCategory cacheCategory = new CacheCategory(Agent.class);
 					CacheKey cacheKey = new CacheKey(ActionExecute.class, agent.getId());
