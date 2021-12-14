@@ -1,28 +1,23 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.$ElElement", null, false);
-MWF.xApplication.process.FormDesigner.Module.Elrate = MWF.FCElrate = new Class({
+MWF.xApplication.process.FormDesigner.Module.Elcolorpicker = MWF.FCElcolorpicker = new Class({
 	Extends: MWF.FC$ElElement,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "../x_component_process_FormDesigner/Module/Elrate/elrate.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Elcolorpicker/elcolorpicker.html"
 	},
 
 	_initModuleType: function(){
-		this.className = "Elrate";
+		this.className = "Elcolorpicker";
 		this.moduleType = "element";
-		this.moduleName = "elrate";
+		this.moduleName = "elcolorpicker";
 	},
 	_createElementHtml: function(){
-		var html = "<el-rate";
+		var html = "<el-color-picker";
 		html += " disabled";
 		html += " :readonly=\"isReadonly\"";
-		html += " :max=\"max\"";
-		html += " :allow-half=\"allowHalf\"";
-		html += " :low-threshold=\"lowThreshold\"";
-		html += " :high-threshold=\"highThreshold\"";
-		html += " :void-color=\"voidColor\"";
-		html += " disabled-void-color=\"#C6D1DE\"";
+		html += " :size=\"size\"";
 
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){
@@ -32,7 +27,7 @@ MWF.xApplication.process.FormDesigner.Module.Elrate = MWF.FCElrate = new Class({
 
 		html += " :style=\"elStyles\">";
 		if (this.json.vueSlot) html += this.json.vueSlot;
-		html += "</el-rate>";
+		html += "</el-color-picker>";
 		return html;
 	},
 	_createCopyNode: function(){
