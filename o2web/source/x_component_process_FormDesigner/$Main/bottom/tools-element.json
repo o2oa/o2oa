@@ -79,6 +79,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_rate,
     "className": "Elrate"
   },
+  "elcolorpicker": {
+    "fontIcon": "el-icon-help",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_colorpicker,
+    "className": "Elcolorpicker"
+  },
   "elcommon": {
     "fontIcon": "el-icon-full-screen",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_common,
