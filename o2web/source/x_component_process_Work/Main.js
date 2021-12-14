@@ -33,6 +33,7 @@ MWF.xApplication.process.Work.Main = new Class({
         });
 		this.lp = MWF.xApplication.process.Work.LP;
         if (!this.status) {
+            if( this.options.readonly === "true" )this.options.readonly=true;
         } else {
             this.options.workId = this.status.workId;
             this.options.workCompletedId = this.status.workCompletedId;
@@ -685,6 +686,8 @@ MWF.xApplication.process.Work.Main = new Class({
     // },
     openWork: function(){
         if (this.form){
+            if( this.options.readonly )this.readonly = true;
+
             //this.readonly = true;
             //if (this.currentTask) {
             //    this.readonly = false;
