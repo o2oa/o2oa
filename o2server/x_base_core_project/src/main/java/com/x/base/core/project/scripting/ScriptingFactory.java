@@ -32,7 +32,7 @@ public class ScriptingFactory {
 
 
 	public static final String BINDING_NAME_WORKCONTEXT = "workContext";
-	public static final String BINDING_NAME_GSON = "gson";
+	public static final String BINDING_NAME_GSON1 = "gson";
 	public static final String BINDING_NAME_DATA = "data";
 	public static final String BINDING_NAME_ORGANIZATION = "organization";
 	public static final String BINDING_NAME_WEBSERVICESCLIENT = "webservicesClient";
@@ -58,12 +58,12 @@ public class ScriptingFactory {
 
 
 	
-	public static final String BINDING_NAME_RESOURCES = "java_resources";
-	public static final String BINDING_NAME_EFFECTIVEPERSON = "java_effectivePerson";
-	public static final String BINDING_NAME_CUSTOMRESPONSE = "java_customResponse";
-	public static final String BINDING_NAME_REQUESTTEXT = "java_requestText";
-	public static final String BINDING_NAME_REQUEST = "java_request";
-	public static final String BINDING_NAME_PARAMETERS = "java_parameters";
+	public static final String BINDING_NAME_SERVICE_RESOURCES = "java_resources";
+	public static final String BINDING_NAME_SERVICE_EFFECTIVEPERSON = "java_effectivePerson";
+	public static final String BINDING_NAME_SERVICE_CUSTOMRESPONSE = "java_customResponse";
+	public static final String BINDING_NAME_SERVICE_REQUESTTEXT = "java_requestText";
+	public static final String BINDING_NAME_SERVICE_REQUEST = "java_request";
+	public static final String BINDING_NAME_SERVICE_PARAMETERS = "java_parameters";
 
 	public static ScriptEngine newScriptEngine() {
 		return (new ScriptEngineManager()).getEngineByName(Config.SCRIPTING_ENGINE_NAME);
