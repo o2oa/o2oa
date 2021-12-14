@@ -43,7 +43,7 @@ MWF.xApplication.Org.LP = {
     "name": "名称",
     "description": "描述",
     "ipAddress" : "登录IP",
-    "ipAddressPlaceHolder" : "如果不为空，匹配的ip地址才能登录该账号，用“,”分隔多值",
+    "ipAddressPlaceHolder" : "如果不为空，匹配的ip才能登录该账号，用“,”分隔多值",
     "ipAddressIncorrectNotice" : "IP地址格式不正确：",
 
     "createSubCompany": "创建子公司",
