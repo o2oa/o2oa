@@ -5,7 +5,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.cms.assemble.control.Business;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -30,6 +34,12 @@ public class ActionSave extends BaseAction {
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,
 			JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			if (!business.isManager( effectivePerson)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
+		}
 		Wi wi = null;
 		View view = null;
 		Boolean check = true;
