@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -54,24 +55,6 @@ public class ActionSave extends BaseAction {
 				check = false;
 				Exception exception = new ExceptionWrapInViewIdEmpty();
 				result.error( exception );
-			}
-		}
-
-		if( check ){
-			//先看看视图信息是否存在，如果不存在
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				//看看用户是否有权限进行应用信息新增操作
-				if (!business.viewEditAvailable( effectivePerson )) {
-					check = false;
-					Exception exception = new ExceptionNoPermission( effectivePerson.getDistinguishedName() );
-					result.error( exception );
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionViewQueryByIdEmpty( e, wi.getViewId() );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
 			}
 		}
 
