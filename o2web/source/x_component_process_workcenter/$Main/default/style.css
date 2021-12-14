@@ -1,5 +1,7 @@
 .menuArea{
-    width: 300px;
+    max-width: 300px;
+    min-width: 160px;
+    width: 15%;
     height: 100%;
     background: #FFFFFF;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
@@ -7,7 +9,6 @@
 
 }
 .contentArea {
-    margin-left: 300px;
     height: 100%;
     background: #F0F0F0;
     display: flex;
@@ -82,9 +83,7 @@
 
 .createProcessAction{
     text-align: center;
-    margin-top: 30px;
-    margin-left: 20px;
-    width: 260px;
+    margin: 30px 20px 0 20px;
     height: 30px;
     line-height: 30px;
     background: #4A90E2;
@@ -115,23 +114,21 @@
 
 /*list*/
 .listItem{
-    height: 69px;
+    height: 59px;
     background: #FFFFFF;
     border-bottom: 1px solid #E6E6E6;
-    display: flex;
-    flex-direction: row;
+    cursor: pointer;
+    overflow: hidden;
 }
 .listItem_over{
     background: #F7F7F7;
 }
-.listItemFlag{
-    height: 69px;
-    width: 6px;
-    background: #FDAD0A;
-}
 .listItemApplication{
-    height: 69px;
-    width: 200px;
+    height: 59px;
+    width: 230px;
+    float: left;
+    display: flex;
+    align-items: center;
 }
 .listItemLine{
     width: 1px;
@@ -139,24 +136,108 @@
     background: #E6E6E6;
     border-radius: 6px;
     margin-top: 17px;
+    float: left;
 }
 .listItemTitle{
-    width: 100%;
-    height: 69px;
-    line-height: 69px;
+    height: 59px;
 }
 .listItemActivity{
-    width: 160px;
-    height: 69px;
+    min-width: 40px;
+    width: 8%;
+    height: 59px;
+    float: right;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.listItemActivityText{
+    max-height: 38px;
+    overflow: hidden;
 }
 .listItemDate{
-    height: 69px;
-    width: 250px;
+    height: 59px;
+    min-width: 160px;
+    width: 13%;
     text-align: center;
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.listItemTitleProcess{
+.listItemFlag{
+    height: 59px;
+    width: 40px;
+    float: right;
+    background-position: top right;
+    background-repeat: no-repeat;
+    background-size: 40px 40px;
+}
+.listItemApplicationIcon{
+    width: 80px;
+    height: 59px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 40px 40px;
+}
+.listItemApplicationText{
+    max-height: 40px;
+    width: 170px;
+    overflow: hidden;
+    font-size: 16px;
+    color: #333333;
+    line-height: 20px;
+    padding-right: 10px;
 
 }
+
+.listItemTitleFlag{
+    float: left;
+    height: 20px;
+    color: #999999;
+}
+.listItemTitleProcess{
+    float: left;
+    padding: 0 20px 0 10px;
+    width: 140px;
+    height: 59px;
+    display: flex;
+    align-items: center;
+}
+.listItemTitleProcessText{
+    text-align: center;
+    float: left;
+    font-size: 14px;
+    color: #999999;
+    height: 20px;
+    overflow: hidden;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.listItemTitleSubject{
+    height: 59px;
+    display: flex;
+    align-items: center;
+}
+.listItemTitleSubject a{
+    max-height: 38px;
+    overflow: hidden;
+    color: #333333;
+}
+.listItemTitleSubject a:hover{
+    color: #0f81cc;
+    text-decoration: underline;
+}
+
+.listItemExpire{
+    height: 20px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    position: absolute;
+    width: 138px;
+}
+
 
 @font-face {
     font-family: 'o2taskcenter';
