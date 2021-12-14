@@ -311,21 +311,6 @@ public class Business {
 	}
 
 	/**
-	 * TODO (uncomplete)判断用户是否有权限进行：[文件或者附件管理]的操作
-	 *
-	 * @param person
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean fileInfoEditAvailable( EffectivePerson person) throws Exception {
-		if ( isManager( person)) {
-			return true;
-		}
-		// 其他情况暂时全部不允许操作
-		return false;
-	}
-
-	/**
 	 * TODO (uncomplete)判断用户是否有权限进行：[表单模板管理]操作
 	 *
 	 * @param person
@@ -337,7 +322,7 @@ public class Business {
 			return true;
 		}
 		// 其他情况暂时全部不允许操作
-		return false;
+		return true;
 	}
 
 	/**
@@ -352,7 +337,7 @@ public class Business {
 			return true;
 		}
 		// 其他情况暂时全部不允许操作
-		return false;
+		return true;
 	}
 
 	public boolean editable( EffectivePerson effectivePerson, AppInfo appInfo ) throws Exception {
