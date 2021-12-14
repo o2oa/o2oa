@@ -3,6 +3,8 @@ package com.x.cms.assemble.control.jaxrs.templateform;
 import java.util.Arrays;
 
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.cms.assemble.control.Business;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -23,6 +25,10 @@ class ActionCreate extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<Wo> result = new ActionResult<>();
+			Business business = new Business(emc);
+			if (!business.isManager( effectivePerson)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			if (!StringTools.isSimply(wi.getCategory())) {
 				throw new ExceptionInvalidCategory(wi.getCategory());
 			}
