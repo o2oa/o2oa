@@ -234,9 +234,9 @@ class ActionExecuteV2 extends BaseAction {
 		resources.setWebservicesClient(new WebservicesClient());
 		resources.setOrganization(new Organization(ThisApplication.context()));
 		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
-		bindings.put(ScriptingFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
-		bindings.put(ScriptingFactory.BINDING_NAME_PARAMETERS, gson.toJson(runtime.getParameters()));
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, effectivePerson);
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PARAMETERS, gson.toJson(runtime.getParameters()));
 		return scriptContext;
 	}
 
