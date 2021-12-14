@@ -933,6 +933,10 @@ var mBox = new Class({
                 this[where || 'content'].grab($(content) || $$('.' + content));
                 if($(content)) $(content).setStyle('display', '');
             } else if(content != null) {
+                content = content.replace(/(?:<script[\s\S]*?)(?:(?:<\/script>)|(?:\/>))/gmi, '')
+                content = content.replace(/<[^>]+/gmi, function(match){
+                    return match.replace(/ on\w+=[\"\'\S][^"]*[\"\'\S]/gmi, '').replace(/javascript/gmi, '');
+                });
                 this[where || 'content'].set('html', content);
             }
         }
