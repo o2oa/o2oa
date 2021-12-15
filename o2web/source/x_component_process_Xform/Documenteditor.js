@@ -3449,7 +3449,8 @@ debugger;
     filterHtml: function(html){
         var content = html.replace(/(?:<script[\s\S]*?)(?:(?:<\/script>)|(?:\/>))/gmi, "");
         // content = content.replace(/(?<=[\"\'])javascript\:(?=.*")/gmi, "");
-        content = content.replace(/(?<=\s)on\w*|src|href(?=\=[\"\'])/gmi, function(match){
+        //content = content.replace(/(?<=\s)on\w*|src|href(?=\=[\"\'])/gmi, function(match){
+        content = content.replace(/\son\w*|src|href(?=\=[\"\'])/gmi, function(match){
             return "data-"+match;
         });
         return content;
