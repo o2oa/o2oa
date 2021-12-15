@@ -9,20 +9,21 @@ import java.util.Objects;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 
-import com.x.base.core.project.Applications;
-import com.x.base.core.project.jaxrs.WrapInteger;
-import com.x.base.core.project.x_processplatform_service_processing;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.Context;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.jaxrs.WrapInteger;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.core.entity.content.Work;
@@ -31,6 +32,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 /**
  * 创建流程序列号
+ * 
  * @author sword
  */
 public class SerialBuilder {
@@ -73,20 +75,22 @@ public class SerialBuilder {
 	}.getType();
 
 	public String concrete(AeiObjects aeiObjects) throws Exception {
-		StringBuilder buffer = new StringBuilder("");
+		StringBuilder stringBuilder = new StringBuilder("");
 		String data = process.getSerialTexture();
 		if (StringUtils.isNotEmpty(data)) {
 			List<SerialTextureItem> list = XGsonBuilder.instance().fromJson(data, collectionType);
 			if (!list.isEmpty()) {
 				ScriptContext scriptContext = aeiObjects.scriptContext();
 				Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-				bindings.put(ScriptFactory.BINDING_NAME_SERIAL, this.serial);
-				bindings.put(ScriptFactory.BINDING_NAME_PROCESS, this.process);
+				bindings.put(ScriptingFactory.BINDING_NAME_SERIAL, this.serial);
+				bindings.put(ScriptingFactory.BINDING_NAME_PROCESS, this.process);
 				for (SerialTextureItem o : list) {
 					if ((!StringUtils.equalsIgnoreCase(o.getKey(), "number"))
 							&& StringUtils.isNotEmpty(o.getScript())) {
-						Object v = ScriptFactory.scriptEngine.eval(functionBind(o), scriptContext);
-						itemResults.add(v);
+						JsonScriptingExecutor.evalString(ScriptingFactory.functionalizationCompile(o.getScript()),
+								scriptContext, s -> itemResults.add(s));
+//						Object v = ScriptingFactory.scriptEngine
+//								.eval(ScriptingFactory.functionalizationCompile(o.getScript()), scriptContext);
 					} else {
 						itemResults.add("");
 					}
@@ -94,26 +98,29 @@ public class SerialBuilder {
 				for (int i = 0; i < list.size(); i++) {
 					SerialTextureItem o = list.get(i);
 					if ((StringUtils.equalsIgnoreCase(o.getKey(), "number")) && StringUtils.isNotEmpty(o.getScript())) {
-						Object v = ScriptFactory.scriptEngine.eval(functionBind(o), scriptContext);
-						itemResults.set(i, v);
+//						Object v = ScriptingFactory.scriptEngine.eval(ScriptingFactory.functionalization(o.getScript()),
+//								scriptContext);
+						itemResults.add(i, JsonScriptingExecutor
+								.evalString(ScriptingFactory.functionalizationCompile(o.getScript()), scriptContext));
+//						itemResults.set(i, v);
 					}
 				}
 				for (Object o : itemResults) {
-					buffer.append(Objects.toString(o, ""));
+					stringBuilder.append(Objects.toString(o, ""));
 				}
-				return buffer.toString();
+				return stringBuilder.toString();
 			}
 		}
-		return buffer.toString();
+		return stringBuilder.toString();
 	}
 
-	private String functionBind(SerialTextureItem o) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("(function(){").append(System.lineSeparator());
-		sb.append(o.getScript()).append(System.lineSeparator());
-		sb.append("}).apply(bind);");
-		return sb.toString();
-	}
+//	private String functionBind(SerialTextureItem o) {
+//		StringBuilder sb = new StringBuilder();
+//		sb.append("(function(){").append(System.lineSeparator());
+//		sb.append(o.getScript()).append(System.lineSeparator());
+//		sb.append("}).apply(bind);");
+//		return sb.toString();
+//	}
 
 	public class Serial {
 		public String text(String str) {
@@ -191,11 +198,13 @@ public class SerialBuilder {
 		}
 
 		private Integer nextNumber(String name) throws Exception {
-			if(StringUtils.isBlank(name)){
+			if (StringUtils.isBlank(name)) {
 				name = EMPTY_SYMBOL;
 			}
-			WrapInteger wrapInteger = ThisApplication.context().applications().postQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("work", "process", process.getId(), "name", name, "serial"), null, process.getApplication())
+			WrapInteger wrapInteger = ThisApplication.context().applications()
+					.postQuery(x_processplatform_service_processing.class,
+							Applications.joinQueryUri("work", "process", process.getId(), "name", name, "serial"), null,
+							process.getApplication())
 					.getData(WrapInteger.class);
 			return wrapInteger.getValue();
 		}
