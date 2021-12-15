@@ -30,17 +30,15 @@ public class ScriptingFactory {
 	private static CompiledScript compiledScriptInitialServiceScriptText;
 	private static CompiledScript compiledScriptInitialScriptText;
 
+	public static final String BINDING_NAME_RESOURCES = "java_resources";
+//	public static final String BINDING_NAME_ORGANIZATION = "organization";
+//	public static final String BINDING_NAME_WEBSERVICESCLIENT = "webservicesClient";
 
-	public static final String BINDING_NAME_WORKCONTEXT = "workContext";
-	public static final String BINDING_NAME_GSON1 = "gson";
-	public static final String BINDING_NAME_DATA = "data";
-	public static final String BINDING_NAME_ORGANIZATION = "organization";
-	public static final String BINDING_NAME_WEBSERVICESCLIENT = "webservicesClient";
-	public static final String BINDING_NAME_DICTIONARY = "dictionary";
-	public static final String BINDING_NAME_ROUTES = "routes";
-	public static final String BINDING_NAME_ROUTE = "routes";
-
+	public static final String BINDING_NAME_WORKCONTEXT = "java_workContext";
+	public static final String BINDING_NAME_DATA = "java_data";
 	public static final String BINDING_NAME_ASSIGNDATA = "assignData";
+//	public static final String BINDING_NAME_ROUTES = "routes";
+//	public static final String BINDING_NAME_ROUTE = "routes";
 
 	public static final String BINDING_NAME_IDENTITY = "identity";
 
@@ -56,8 +54,6 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_SERIAL = "serial";
 	public static final String BINDING_NAME_PROCESS = "process";
 
-
-	
 	public static final String BINDING_NAME_SERVICE_RESOURCES = "java_resources";
 	public static final String BINDING_NAME_SERVICE_EFFECTIVEPERSON = "java_effectivePerson";
 	public static final String BINDING_NAME_SERVICE_CUSTOMRESPONSE = "java_customResponse";

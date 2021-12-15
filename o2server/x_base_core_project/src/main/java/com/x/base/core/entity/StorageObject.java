@@ -1,9 +1,13 @@
 package com.x.base.core.entity;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
@@ -13,17 +17,21 @@ import javax.persistence.Transient;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.vfs2.*;
+import org.apache.commons.vfs2.CacheStrategy;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.cache.NullFilesCache;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.ftp.FtpFileType;
 import org.apache.commons.vfs2.provider.ftps.FtpsFileSystemConfigBuilder;
+import org.apache.commons.vfs2.provider.webdav4.Webdav4FileSystemConfigBuilder;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.tools.DefaultCharset;
-import org.apache.commons.vfs2.provider.webdav4.Webdav4FileSystemConfigBuilder;
 
 @MappedSuperclass
 public abstract class StorageObject extends SliceJpaObject {
@@ -48,7 +56,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	public static final String DELETE_OPERATE = "delete";
 
-	public abstract String path() throws Exception;
+	public abstract String path();
 
 	public abstract String getStorage();
 
@@ -74,7 +82,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	public abstract void setDeepPath(Boolean deepPath);
 
-	public String path(String operate) throws Exception {
+	public String path(String operate) {
 		return this.path();
 	}
 
@@ -244,8 +252,8 @@ public abstract class StorageObject extends SliceJpaObject {
 			// 强制不校验IP
 			sftpBuilder.setRemoteVerification(opts, false);
 			sftpBuilder.setFileType(opts, FtpFileType.BINARY);
-			sftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
-			sftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			sftpBuilder.setConnectTimeout(opts, 10 * 1000);
+			sftpBuilder.setSoTimeout(opts, 10 * 1000);
 			sftpBuilder.setControlEncoding(opts, DefaultCharset.name);
 			// By default, the path is relative to the user's home directory. This can be
 			// changed with:
@@ -269,8 +277,8 @@ public abstract class StorageObject extends SliceJpaObject {
 			ftpBuilder.setRemoteVerification(opts, false);
 			// FtpFileType.BINARY is the default
 			ftpBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
-			ftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			ftpBuilder.setConnectTimeout(opts, 10 * 1000);
+			ftpBuilder.setSoTimeout(opts, 10 * 1000);
 			ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
 			break;
 		case ftps:
@@ -280,16 +288,16 @@ public abstract class StorageObject extends SliceJpaObject {
 			ftpsBuilder.setRemoteVerification(opts, false);
 			// FtpFileType.BINARY is the default
 			ftpsBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpsBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
-			ftpsBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			ftpsBuilder.setConnectTimeout(opts, 10 * 1000);
+			ftpsBuilder.setSoTimeout(opts, 10 * 1000);
 			ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
 			break;
 		case cifs:
 			break;
 		case webdav:
-			Webdav4FileSystemConfigBuilder webdavBuilder =  Webdav4FileSystemConfigBuilder.getInstance();
-			webdavBuilder.setConnectionTimeout(opts, Duration.ofSeconds(10));
-			webdavBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			Webdav4FileSystemConfigBuilder webdavBuilder = Webdav4FileSystemConfigBuilder.getInstance();
+			webdavBuilder.setConnectionTimeout(opts, 10 * 1000);
+			webdavBuilder.setSoTimeout(opts, 10 * 1000);
 			webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
 			webdavBuilder.setMaxConnectionsPerHost(opts, 200);
 			webdavBuilder.setMaxTotalConnections(opts, 200);
@@ -399,7 +407,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	private long hdfsUpdateContent(StorageMapping mapping, byte[] bytes) throws Exception {
+	private long hdfsUpdateContent(StorageMapping mapping, byte[] bytes) throws IOException {
 		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
 				.get(hdfsConfiguration(mapping))) {
 			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
@@ -416,7 +424,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		return bytes.length;
 	}
 
-	private Long hdfsReadContent(StorageMapping mapping, OutputStream output) throws Exception {
+	private Long hdfsReadContent(StorageMapping mapping, OutputStream output) throws IOException {
 		long length = -1L;
 		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
 				.get(hdfsConfiguration(mapping))) {
@@ -432,7 +440,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		return length;
 	}
 
-	private boolean hdfsExistContent(StorageMapping mapping) throws Exception {
+	private boolean hdfsExistContent(StorageMapping mapping) throws IOException {
 		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
 				.get(hdfsConfiguration(mapping))) {
 			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
@@ -440,7 +448,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	private void hdfsDeleteContent(StorageMapping mapping) throws Exception {
+	private void hdfsDeleteContent(StorageMapping mapping) throws IOException {
 		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
 				.get(hdfsConfiguration(mapping))) {
 			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
