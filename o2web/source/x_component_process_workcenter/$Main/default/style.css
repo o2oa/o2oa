@@ -110,7 +110,54 @@
 }
 .contentBottom{
     height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+.contentPageArea{
+    height: 60px;
+}
+.firstPage, .lastPage, .pageItem, .prevPage, .nextPage{
+    height: 24px;
+    width: 80px;
+    border-radius: 12px;
+    background: #FFFFFF;
+    border: 1px solid #E6E6E6;
+    font-size: 12px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+}
+.firstPage{
+    float: left;
+}
+.lastPage {
+    float: right;
+    margin-left: 10px;
+}
+.prevPage{
+    float: left;
+    margin-left: 10px;
+    width: 24px;
+    font-size: 24px;
+    color: #999999;
+}
+.nextPage{
+    float: right;
+    margin-left: 10px;
+    width: 24px;
+    font-size: 24px;
+    color: #999999;
+}
+.pageNumberArea{
+    float: left;
+}
+.pageItem{
+    float: left;
+    width: 24px;
+    margin-left: 10px;
+}
+
 
 /*list*/
 .listItem{

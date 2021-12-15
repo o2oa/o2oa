@@ -10,4 +10,7 @@ MWF.xApplication.process.workcenter.LP = {
 	"expire1": "任务截至时间：{time}",
 	"expire2": "任务即将超时，截至时间：{time}",
 	"expire3": "任务已超时，截至时间：{time}",
+
+	"firstPage": "第一页",
+	"lastPage": "最后一页"
 };
