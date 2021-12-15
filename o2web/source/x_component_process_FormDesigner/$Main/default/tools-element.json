@@ -85,7 +85,7 @@
     "className": "Elcolorpicker"
   },
   "eltree": {
-    "fontIcon": "o2-icon-file-play",
+    "fontIcon": "o2-icon-tree",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_tree,
     "className": "Eltree"
   },
