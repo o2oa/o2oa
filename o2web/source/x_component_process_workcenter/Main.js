@@ -97,6 +97,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		if (!this.taskList) this.taskList = new MWF.xApplication.process.workcenter.TaskList(this, {
 			"onLoadData": this.hideSkeleton.bind(this)
 		});
+		this.taskList.init();
 		this.taskList.load();
 		this.currentList = this.taskList;
 	},
@@ -338,7 +339,30 @@ MWF.xApplication.process.workcenter.List = new Class({
 			expireNode.setStyle("background-image", "url(../"+this.app.path+this.app.options.style+"/icons/"+img+")");
 			expireNode.set("title", text);
 		}
-	}
+	},
+	editTask: function(e, data){
+		this.app.content.mask({
+			"destroyOnHide": true,
+			"id": "mask_"+data.id,
+			"class": "maskNode"
+		});
+
+		this.action.TaskAction.getReference(data.id).then(function(json){
+
+		}.bind(this));
+
+		this._getJobByTask(function(data){
+			this.nodeClone = this.mainContentNode.clone(false);
+			this.nodeClone.inject(this.mainContentNode, "after");
+			this.mainContentNode.setStyles(this.list.css.itemNode_edit_from);
+			this.mainContentNode.position({
+				relativeTo: this.nodeClone,
+				position: "topleft",
+				edge: "topleft"
+			});
+			this.showEditNode(data);
+		}.bind(this));
+	},
 });
 MWF.xApplication.process.workcenter.TaskList = new Class({
 	Extends: MWF.xApplication.process.workcenter.List

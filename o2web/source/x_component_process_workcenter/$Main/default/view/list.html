@@ -7,7 +7,11 @@
         </div>
         <div class="listItemLine"></div>
 
-        <div class="listItemFlag"></div>
+        <div class="listItemFlag">
+            {{if $.allowRapid}}
+            <div class="rapidEditor o2icon-bianji" data-o2-events="click:editTask"></div>
+            {{end if}}
+        </div>
         <div class="listItemDate">
             <div>
                 <div>{{$.startTime}}</div>

@@ -157,7 +157,16 @@
     width: 24px;
     margin-left: 10px;
 }
-
+.contentTitleArea {
+    margin: 15px 20px;
+    height: 44px;
+}
+.contentTitleActionArea{
+    float: right;
+}
+.contentTitleFilterArea{
+    height: 44px;
+}
 
 /*list*/
 .listItem{
@@ -214,11 +223,19 @@
 }
 .listItemFlag{
     height: 59px;
-    width: 40px;
+    width: 50px;
     float: right;
     background-position: top right;
     background-repeat: no-repeat;
-    background-size: 40px 40px;
+    background-size: 32px 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.rapidEditor{
+    font-size: 16px;
+    cursor: pointer;
+    color: #999999;
 }
 .listItemApplicationIcon{
     width: 80px;
@@ -284,7 +301,11 @@
     position: absolute;
     width: 138px;
 }
-
+.maskNode{
+    background-color: #999999;
+    opacity: 0.4;
+    overflow: hidden;
+}
 
 @font-face {
     font-family: 'o2taskcenter';
