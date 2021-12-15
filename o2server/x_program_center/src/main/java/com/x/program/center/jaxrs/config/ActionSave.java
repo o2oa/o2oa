@@ -27,6 +27,10 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DefaultCharset;
 
+/**
+ * 系统配置文件保存
+ * @author sword
+ */
 public class ActionSave extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionSave.class);
 
@@ -63,9 +67,7 @@ public class ActionSave extends BaseAction {
 		Nodes nodes = Config.nodes();
 		// 同步config文件
 		for (String node : nodes.keySet()) {
-			if (nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()) {
-				executeSyncFile(Config.DIR_CONFIG + "/" + fileName, node, nodes.get(node).nodeAgentPort(), bytes);
-			}
+			executeSyncFile(Config.DIR_CONFIG + "/" + fileName, node, nodes.get(node).nodeAgentPort(), bytes);
 		}
 
 		try {
@@ -82,6 +84,14 @@ public class ActionSave extends BaseAction {
 		return result;
 	}
 
+	/**
+	 * 文件同步
+	 * @param syncFilePath
+	 * @param nodeName
+	 * @param nodePort
+	 * @param byteArray
+	 * @return
+	 */
 	private boolean executeSyncFile(String syncFilePath, String nodeName, int nodePort, byte[] byteArray) {
 		boolean syncFileFlag = false;
 
@@ -100,18 +110,17 @@ public class ActionSave extends BaseAction {
 				dos.writeUTF(syncFilePath);
 				dos.flush();
 
-				logger.info("同步文件starting.......");
 				byte[] bytes = new byte[1024];
 				int length = 0;
 				while ((length = fileInputStream.read(bytes, 0, bytes.length)) != -1) {
 					dos.write(bytes, 0, length);
 					dos.flush();
 				}
-				logger.info("同步文件end.......");
+				logger.info("同步文件{}到节点{}完成.......", syncFilePath, nodeName);
 			}
 			syncFileFlag = true;
 		} catch (Exception ex) {
-			logger.error(ex);
+			logger.warn("同步文件{}到节点{}异常：{}", syncFilePath, nodeName, ex.getMessage());
 			syncFileFlag = false;
 		}
 		return syncFileFlag;
