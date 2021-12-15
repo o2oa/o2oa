@@ -57,7 +57,15 @@
                 <div class="skeleton_item" style="width: 80%"></div>
             </div>
         </div>
-        <div class="contentBottom" data-o2-element="listBottomNode"></div>
+        <div class="contentBottom" data-o2-element="listBottomNode">
+            <div class="contentPageArea">
+                <div class="firstPage" data-o2-events="click:firstPage">{{$.lp.firstPage}}</div>
+                <div class="prevPage o2icon-triangle_left" data-o2-events="click:prevPage"></div>
+                <div class="lastPage" data-o2-events="click:lastPage">{{$.lp.lastPage}}</div>
+                <div class="nextPage o2icon-triangle_right" data-o2-events="click:nextPage"></div>
+                <div class="pageNumberArea" data-o2-element="pageNumberAreaNode"></div>
+            </div>
+        </div>
     </div>
 
 </div>

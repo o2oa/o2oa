@@ -147,6 +147,18 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			return icon;
 		}
 	},
+	firstPage: function(){
+		if (this.currentList) this.currentList.firstPage();
+	},
+	lastPage: function(){
+		if (this.currentList) this.currentList.lastPage();
+	},
+	prevPage: function(){
+		if (this.currentList) this.currentList.prevPage();
+	},
+	nextPage: function(){
+		if (this.currentList) this.currentList.nextPage();
+	}
 });
 
 MWF.xApplication.process.workcenter.List = new Class({
@@ -158,7 +170,8 @@ MWF.xApplication.process.workcenter.List = new Class({
 		this.setOptions(options);
 		this.app = app;
 		this.content = app.listContentNode;
-		this.pageNode = app.listBottomNode;
+		this.bottomNode = app.listBottomNode;
+		this.pageNode = app.pageNumberAreaNode;
 		this.lp = this.app.lp;
 		this.action = o2.Actions.load("x_processplatform_assemble_surface");
 		this.init();
@@ -187,10 +200,59 @@ MWF.xApplication.process.workcenter.List = new Class({
 		var pages = totalCount/this.size;
 		var pageCount = pages.toInt();
 		if (pages !== pageCount) pageCount = pageCount+1;
+		this.pageCount = pageCount;
 
+		var size = this.bottomNode.getSize();
+		var maxPageSize = size.x*0.8;
+		maxPageSize = maxPageSize - 80*2-24*2-10*3;
+		var maxPageCount = (maxPageSize/34).toInt();
 
-
+		this.loadPageNode(pageCount, maxPageCount);
 	},
+	loadPageNode: function(pageCount, maxPageCount){
+		var pageStart = 1;
+		var pageEnd = pageCount;
+		if (pageCount>maxPageCount){
+			var halfCount = (maxPageCount/2).toInt();
+			pageStart = Math.max(this.page-halfCount, 1);
+			pageEnd = pageStart+maxPageCount-1;
+			pageEnd = Math.min(pageEnd, pageCount);
+			pageStart = pageEnd - maxPageCount+1;
+		}
+		this.pageNode.empty();
+		var _self = this;
+		for (var i=pageStart; i<=pageEnd; i++){
+			var node = new Element("div.pageItem", {
+				"text": i,
+				"events": { "click": function(){_self.gotoPage(this.get("text"));} }
+			}).inject(this.pageNode);
+			if (i==this.page) node.addClass("mainColor_bg");
+		}
+	},
+	nextPage: function(){
+		this.page++;
+		if (this.page>this.pageCount) this.page = this.pageCount;
+		this.gotoPage(this.page);
+	},
+	prevPage: function(){
+		this.page--;
+		if (this.page<1) this.page = 1;
+		this.gotoPage(this.page);
+	},
+	firstPage: function(){
+		this.gotoPage(1);
+	},
+	lastPage: function(){
+		this.gotoPage(this.pageCount);
+	},
+	gotoPage: function(page){
+		this.page = page;
+		this.hide();
+		this.app.showSkeleton();
+		this.load();
+		this.loadPage();
+	},
+
 	loadData: function(){
 		var _self = this;
 		return this.action.TaskAction.listMyPaging(this.page, this.size).then(function(json){
