@@ -109,4 +109,42 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据文档ID查询当前用户是否有阅读记录.", action = ActionQueryHasViewDocument.class)
+	@GET
+	@Path("document/{docId}/has/view")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void hasViewDocument( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+										  @JaxrsParameterDescribe("信息文档ID") @PathParam("docId") String docId) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionQueryHasViewDocument.Wo> result = null;
+		try {
+			result = new ActionQueryHasViewDocument().execute(effectivePerson, docId);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.error( e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "分页查询阅读记录.", action = ActionQueryListViewRecordPaging.class)
+	@POST
+	@Path("list/install/log/paging/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									 @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+									 @JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		ActionResult<List<ActionQueryListViewRecordPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionQueryListViewRecordPaging().execute(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 }
