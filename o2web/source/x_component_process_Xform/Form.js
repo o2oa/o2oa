@@ -4429,7 +4429,7 @@ debugger;
                 "fromLeft": p.x,
                 "width": width,
                 "height": height,
-                "url": this.app.path + "readed.html",
+                "url": this.app.path + ( layout.mobile ? "readedmobile.html" : "readed.html" ),
                 "lp": MWF.xApplication.process.Xform.LP.form,
                 "container": layout.mobile ? content : this.app.content,
                 "isClose": true,
