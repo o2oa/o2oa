@@ -70,6 +70,28 @@
 		"cursor": "pointer",
 		"border": "0px",
 		"margin": "0px"
+	},
+	"iconNode": {
+		"width": "104px",
+		"height": "16px",
+		"color": "#999",
+		"font-size": "12px",
+		"position": "static",
+		"margin": "0px",
+		"border-bottom": "1px solid #ccc",
+		"border-right": "1px solid #ccc"
+	},
+	"iconNodeIcon":{
+		"width": "19px",
+		"height": "16px",
+		"background": "url(../x_component_process_FormDesigner/Module/Eltree/default/icon/tree.png) 0px center no-repeat",
+		"float": "left"
+	},
+	"iconNodeText":{
+		"line-height": "16px",
+		"height": "16px",
+		"width": "80px",
+		"float": "right"
 	}
 	
 }

@@ -117,6 +117,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadElSelectIcon();
                     this.loadVueElementUI();
                     this.loadElCommonPreview();
+                    this.loadElTreeData();
 
                     this.loadSmartBISelect();
 
@@ -146,6 +147,30 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             this.propertyContent.destroy();
         }
         MWF.release(this);
+    },
+
+    loadElTreeData: function(){
+        var arrays = this.propertyContent.getElements(".MWFElTreeData");
+        arrays.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var json = this.data[name];
+            if (!json) json = [];
+            MWF.requireApp("process.FormDesigner", "widget.ElTreeEditor", function(){
+                var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElTreeEditor(node, {
+                    "title": title,
+                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "onChange": function(){
+                        this.data[name] = treeEditor.toJson();
+                        this.module.json[name] = this.data[name];
+
+                        this.module._refreshTree();
+                    }.bind(this)
+                });
+                treeEditor.load(json);
+            }.bind(this));
+            node.addEvent("keydown", function(e){e.stopPropagation();});
+        }.bind(this));
     },
 	
 	loadTreeData: function(){
