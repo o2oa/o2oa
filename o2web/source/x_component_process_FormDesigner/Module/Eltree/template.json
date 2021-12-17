@@ -15,11 +15,16 @@
 	"accordion": false,
 	"lazy": false,
 	"draggable": false,
-	"treeData": [{
+	"dataType": "json",
+	"dataJson": [{
 		"id": "1",
 		"label": "root",
 		"children": []
 	}],
+	"dataScript": {
+		"code": "",
+		"html": ""
+	},
 	"defaultProps": {
 		"children": "children",
 		"label": "label"
