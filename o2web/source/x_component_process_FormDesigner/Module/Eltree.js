@@ -49,9 +49,9 @@ MWF.xApplication.process.FormDesigner.Module.Eltree = MWF.FCEltree = new Class({
 		html += " :node-key=\"nodeKey\"";
 		html += " :data=\"data\"";
 		html += " :props=\"defaultProps\"";
-		html += " :render-after-expand=\"renderAfterExpand\"";
+		html += " :render-after-expand=\"tmpRenderAfterExpand\"";
+		html += " :default-expand-all=\"tmpDefaultExpandAll\"";
 		html += " :highlight-current=\"highlightCurrent\"";
-		html += " :default-expand-all=\"defaultExpandAll\"";
 		html += " :expand-on-click-node=\"expandOnClickNode\"";
 		html += " :check-on-click-node=\"checkOnClickNode\"";
 		html += " :show-checkbox=\"showCheckbox\"";
@@ -71,7 +71,7 @@ MWF.xApplication.process.FormDesigner.Module.Eltree = MWF.FCEltree = new Class({
 		return html;
 	},
 	_refreshTree: function(){
-
+		this.json.tmpDefaultExpandAll = true;
 	},
 	_createVueExtend: function(callback){
 		var _self = this;
@@ -84,9 +84,6 @@ MWF.xApplication.process.FormDesigner.Module.Eltree = MWF.FCEltree = new Class({
 				this.$nextTick(function(){
 					_self._afterMounted(this.$el, callback);
 				});
-			},
-			methods: {
-
 			}
 		};
 	},
@@ -94,8 +91,14 @@ MWF.xApplication.process.FormDesigner.Module.Eltree = MWF.FCEltree = new Class({
 		return function() {
 			var data = this.json;
 
-			if (data.treeData) {
-				data.data = data.treeData;
+			data.tmpRenderAfterExpand = false;
+			data.tmpDefaultExpandAll = !!data.defaultExpandAll;
+			if( !data.dataJson ) data.dataJson = {};
+
+			if( data.dataType === "json" ){
+				data.data = data.dataJson;
+			}else{
+				data.data = [];
 			}
 
 			Object.assign(data, this.tmpVueData || {});
@@ -103,29 +106,23 @@ MWF.xApplication.process.FormDesigner.Module.Eltree = MWF.FCEltree = new Class({
 			return data;
 		}.bind(this)
 	},
-	// _setEditStyle_custom: function(name){
-	//
-	// 	// switch (name){
-	// 	// 	case "name": this.setPropertyName(); break;
-	// 	// 	case "id": this.setPropertyId(); break;
-	// 	// 	case "range":
-	// 	// 	case "max":
-	// 	// 	case "vertical":
-	// 	// 	case "step":
-	// 	// 		var max = (!this.json.max || !this.json.max.toFloat()) ? 100 : this.json.max.toFloat();
-	// 	// 		var min = (!this.json.min || !this.json.min.toFloat()) ? 0 : this.json.min.toFloat();
-	// 	//
-	// 	// 		if (this.json.range){
-	// 	// 			var d1 = ((max-min)/3);
-	// 	// 			this.json.tmpValue = [d1+min, d1*2+min];
-	// 	// 		}else{
-	// 	// 			var d = (max-min)/2+min;
-	// 	// 			this.json.tmpValue = d;
-	// 	// 		}
-	// 	// 		break;
-	// 	// 	default: ;
-	// 	// }
-	// },
+	_setEditStyle_custom: function(name, obj, oldValue){
+		debugger;
+		switch (name){
+			// case "dataType": this.setPropertyName(); break;
+			// case "id": this.setPropertyId(); break;
+			// case "range":
+			// case "max":
+			// case "vertical":
+			case "dataType":
+				var data = this.json;
+				if( data.dataType !== oldValue ){
+					if (this.vm) this.resetElement();
+				}
+				break;
+			default:
+		}
+	},
 	setPropertyName: function(){},
 	setPropertyId: function(){}
 });

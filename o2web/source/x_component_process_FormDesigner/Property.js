@@ -161,9 +161,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "title": title,
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "onChange": function(){
-                        this.data[name] = treeEditor.toJson();
-                        this.module.json[name] = this.data[name];
-
+                        debugger;
+                        // this.data[name] = Object.assign(this.data[name], treeEditor.toJson());
+                        // this.data[name] = treeEditor.toJson();
+                        // this.module.json[name] = this.data[name];
+                        //
                         this.module._refreshTree();
                     }.bind(this)
                 });

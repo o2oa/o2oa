@@ -201,7 +201,37 @@
 		
 	</div>
 	<div title="{{$.lp.data}}"  class="MWFTab">
-		<div class="MWFElTreeData" name="treeData"></div>
+		<table>
+			<tr>
+				<td class="editTableTitle"></td>
+				<td class="editTableValue">
+					<input type="radio" name="dataType" value="json" text{($.dataType!=='script')?'checked':''}
+						onclick="if (this.checked){
+							$('text{$.pid}dataJson').setStyle('display', '');
+							$('text{$.pid}dataScript').setStyle('display', 'none');
+						}"
+					/>{{$.lp.data}}
+					<input type="radio" name="dataType" value="script" text{($.dataType==='script')?'checked':''}
+						   onclick="if (this.checked){
+							$('text{$.pid}dataJson').setStyle('display', 'none');
+							$('text{$.pid}dataScript').setStyle('display', '');
+						}"
+					/>{{$.lp.script}}
+				</td>
+			</tr>
+		</table>
+		<div id="text{$.pid}dataJson" class="MWFElTreeData" name="dataJson" style="display: text{($.dataType=='script')?'none':''}"></div>
+		<div id="text{$.pid}dataScript" style="display: text{($.dataType=='script')?'':'none'}">
+			<div style="padding: 5px;">{{$.lp.dataScriptNote}}：<br/>return [{ <br/>
+				&nbsp;&nbsp;"label" : "", // {{$.lp.labelDescription}} <br/>
+				&nbsp;&nbsp;"children" : [], // {{$.lp.childrenDescription}}<br/>
+				&nbsp;&nbsp;"disabled" : false, // {{$.lp.disabledDescription}}<br/>
+				&nbsp;&nbsp;"isLeaf" : false, // {{$.lp.isLeafDescription}}<br/>
+				&nbsp;&nbsp;"id"/{{$.lp.settedKey}} : "" // {{$.lp.idDescription}}<br/>
+				&nbsp;&nbsp;...  // {{$.lp.customDescription}}<br/>
+				}]; </div>
+			<div class="MWFScriptArea" name="dataScript"></div>
+		</div>
 	</div>
 
 	<div title="Vue"  class="MWFTab">
