@@ -48,63 +48,55 @@
 		  "code": "",
 		  "html": ""
 		},
-		"input": {
+		"nodeClick": {
 			"code": "",
 			"html": ""
 		},
-		"change": {
+		"nodeContextmenu": {
 			"code": "",
 			"html": ""
 		},
-		"clear": {
+		"checkChange": {
 			"code": "",
 			"html": ""
 		},
-		"click": {
+		"check": {
 			"code": "",
 			"html": ""
 		},
-		"dblclick": {
+		"currentChange": {
 			"code": "",
 			"html": ""
 		},
-		"keydown": {
+		"nodeExpand": {
 			"code": "",
 			"html": ""
 		},
-		"keypress": {
+		"nodeCollapse": {
 			"code": "",
 			"html": ""
 		},
-		"keyup": {
+		"nodeDragStart": {
 			"code": "",
 			"html": ""
 		},
-		"mousedown": {
+		"nodeDragEnter": {
 			"code": "",
 			"html": ""
 		},
-		"mousemove": {
+		"nodeDragLeave": {
 			"code": "",
 			"html": ""
 		},
-		"mouseout": {
+		"nodeDragOver": {
 			"code": "",
 			"html": ""
 		},
-		"mouseover": {
+		"nodeDragEnd": {
 			"code": "",
 			"html": ""
 		},
-		"mouseup": {
-			"code": "",
-			"html": ""
-		},
-		"focus": {
-			"code": "",
-			"html": ""
-		},
-		"blur": {
+		"nodeDrop": {
 			"code": "",
 			"html": ""
 		}
