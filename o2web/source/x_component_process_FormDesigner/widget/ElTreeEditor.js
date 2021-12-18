@@ -504,15 +504,15 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 			}
 		}).inject(this.actionNode);
 		
-		var scriptAction = new Element("div", {
-			"styles": this.tree.css.itemScriptActionNode,
-			"title": o2.LP.process.formAction["script"],
-			"events": {
-				"click": function(e){
-					this.editScriptItem(e);
-				}.bind(this)
-			}
-		}).inject(this.actionNode);
+		// var scriptAction = new Element("div", {
+		// 	"styles": this.tree.css.itemScriptActionNode,
+		// 	"title": o2.LP.process.formAction["script"],
+		// 	"events": {
+		// 		"click": function(e){
+		// 			this.editScriptItem(e);
+		// 		}.bind(this)
+		// 	}
+		// }).inject(this.actionNode);
 
 		var addAction = new Element("div", {
 			"styles": this.tree.css.itemAddActionNode,
