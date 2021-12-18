@@ -140,5 +140,5 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
         html += this.getCommonHtml();
         html += "</el-time-picker>";
         return html;
-    },
+    }
 }); 
