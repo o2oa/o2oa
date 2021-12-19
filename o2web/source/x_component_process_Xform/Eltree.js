@@ -18,7 +18,91 @@ MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
-        "elEvents": ["focus", "blur", "change", "input", "clear"]
+        /**
+         * 节点被点击时的回调。this.event[0]指向传递给 data 属性的数组中该节点所对应的对象；
+         * this.event[1]为节点对应的 Node；this.event[2]为节点组件本身
+         * @event MWF.xApplication.process.Xform.Eltree#node-click
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 当某一节点被鼠标右键点击时会触发该事件。this.event[0]指向Event；
+         * this.event[1]为传递给 data 属性的数组中该节点所对应的对象；this.event[2]为节点对应的 Node;
+         * this.event[3]为节点组件本身
+         * @event MWF.xApplication.process.Xform.Eltree#node-contextmenu
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 节点选中状态发生变化时的回调。this.event[0]为传递给 data 属性的数组中该节点所对应的对象；
+         * this.event[1]为节点本身是否被选中；this.event[2]为节点的子树中是否有被选中的节点
+         * @event MWF.xApplication.process.Xform.Eltree#check-change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 当复选框被点击的时候触发。this.event[0]为传递给 data 属性的数组中该节点所对应的对象；
+         * this.event[1]为树目前的选中状态对象，包含 checkedNodes、checkedKeys、halfCheckedNodes、halfCheckedKeys 四个属性
+         * @event MWF.xApplication.process.Xform.Eltree#check
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 当前选中节点变化时触发的事件。this.event[0]为当前节点的数据；
+         * this.event[1]为当前节点的 Node 对象
+         * * @event MWF.xApplication.process.Xform.Eltree#current-change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 节点被展开时触发的事件。this.event[0]为传递给 data 属性的数组中该节点所对应的对象；
+         * this.event[1]为节点对应的 Node；this.event[2]为节点组件本身
+         * * @event MWF.xApplication.process.Xform.Eltree#node-expand
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 节点被关闭时触发的事件。this.event[0]为传递给 data 属性的数组中该节点所对应的对象；
+         * this.event[1]为节点对应的 Node；this.event[2]为节点组件本身
+         * * @event MWF.xApplication.process.Xform.Eltree#node-collapse
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 节点开始拖拽时触发的事件。this.event[0]为被拖拽节点对应的 Node；
+         * this.event[1]为Event
+         * * @event MWF.xApplication.process.Xform.Eltree#node-drag-start
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 拖拽进入其他节点时触发的事件。this.event[0]为被拖拽节点对应的 Node；
+         * this.event[1]为所进入节点对应的 Node；this.event[2]为event
+         * * @event MWF.xApplication.process.Xform.Eltree#node-drag-enter
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 拖拽离开某个节点时触发的事件。this.event[0]为被拖拽节点对应的 Node；
+         * this.event[1]为所进入节点对应的 Node；this.event[2]为event
+         * * @event MWF.xApplication.process.Xform.Eltree#node-drag-leave
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 在拖拽节点时触发的事件（类似浏览器的 mouseover 事件）	。this.event[0]为被拖拽节点对应的 Node；
+         * this.event[1]为所进入节点对应的 Node；this.event[2]为event
+         * * @event MWF.xApplication.process.Xform.Eltree#node-drag-over
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 拖拽结束时（可能未成功）触发的事件。this.event[0]为被拖拽节点对应的 Node；
+         * this.event[1]为结束拖拽时最后进入的节点（可能为空）；
+         * this.event[2]为被拖拽节点的放置位置（before、after、inner）
+         * this.event[3]为event
+         * @event MWF.xApplication.process.Xform.Eltree#node-drag-end
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        /**
+         * 拖拽成功完成时触发的事件。this.event[0]为被拖拽节点对应的 Node；
+         * this.event[1]为结束拖拽时最后进入的节点；
+         * this.event[2]为被拖拽节点的放置位置（before、after、inner）
+         * this.event[3]为event
+         * @event MWF.xApplication.process.Xform.Eltree#node-drop
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|树组件的Events章节}
+         */
+        "elEvents": ["node-click", "node-contextmenu", "check-change", "check", "current-change","node-expand",
+            "node-collapse","node-drag-start","node-drag-enter","node-drag-leave","node-drag-over","node-drag-end","node-drop"]
     },
     // _queryLoaded: function(){
     //

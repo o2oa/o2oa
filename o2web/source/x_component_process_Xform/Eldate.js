@@ -1,5 +1,5 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
-/** @class Eldate 基于Element UI的输入框组件。
+/** @class Eldate 基于Element UI的日期选择组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -18,7 +18,22 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
-        "elEvents": ["focus", "blur", "change", "input", "clear"]
+        /**
+         * 当 input 失去焦点时触发。this.event[0]指向组件实例
+         * @event MWF.xApplication.process.Xform.Eldate#blur
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/date-picker|日期选择组件的Events章节}
+         */
+        /**
+         * 当 input 获得焦点时触发。this.event[0]指向组件实例
+         * @event MWF.xApplication.process.Xform.Eldate#focus
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/date-picker|日期选择组件的Events章节}
+         */
+        /**
+         * 用户确认选定的值时触发。this.event[0]为组件绑定值；格式与绑定值一致，可受 value-format 控制
+         * @event MWF.xApplication.process.Xform.Eldate#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/date-picker|日期选择组件的Events章节}
+         */
+        "elEvents": ["focus", "blur", "change"]
     },
     _queryLoaded: function(){
         var data = this._getBusinessData();
