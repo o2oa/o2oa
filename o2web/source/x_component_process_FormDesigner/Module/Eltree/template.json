@@ -48,15 +48,15 @@
 		  "code": "",
 		  "html": ""
 		},
-		"nodeClick": {
+		"node-click": {
 			"code": "",
 			"html": ""
 		},
-		"nodeContextmenu": {
+		"node-contextmenu": {
 			"code": "",
 			"html": ""
 		},
-		"checkChange": {
+		"check-change": {
 			"code": "",
 			"html": ""
 		},
@@ -64,39 +64,39 @@
 			"code": "",
 			"html": ""
 		},
-		"currentChange": {
+		"current-change": {
 			"code": "",
 			"html": ""
 		},
-		"nodeExpand": {
+		"node-expand": {
 			"code": "",
 			"html": ""
 		},
-		"nodeCollapse": {
+		"node-collapse": {
 			"code": "",
 			"html": ""
 		},
-		"nodeDragStart": {
+		"node-drag-start": {
 			"code": "",
 			"html": ""
 		},
-		"nodeDragEnter": {
+		"node-drag-enter": {
 			"code": "",
 			"html": ""
 		},
-		"nodeDragLeave": {
+		"node-drag-leave": {
 			"code": "",
 			"html": ""
 		},
-		"nodeDragOver": {
+		"node-drag-over": {
 			"code": "",
 			"html": ""
 		},
-		"nodeDragEnd": {
+		"node-drag-end": {
 			"code": "",
 			"html": ""
 		},
-		"nodeDrop": {
+		"node-drop": {
 			"code": "",
 			"html": ""
 		}

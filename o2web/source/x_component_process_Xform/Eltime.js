@@ -18,7 +18,22 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
-        "elEvents": ["focus", "blur", "change", "input", "clear"]
+        /**
+         * 当 input 失去焦点时触发。this.event[0]指向组件实例
+         * @event MWF.xApplication.process.Xform.Eltime#blur
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/time-picker|时间选择组件的Events章节}
+         */
+        /**
+         * 当 input 获得焦点时触发。this.event[0]指向组件实例
+         * @event MWF.xApplication.process.Xform.Eltime#focus
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/time-picker|时间选择组件的Events章节}
+         */
+        /**
+         * 用户确认选定的值时触发。this.event[0]为组件绑定值
+         * @event MWF.xApplication.process.Xform.Eltime#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/time-picker|时间选择组件的Events章节}
+         */
+        "elEvents": ["focus", "blur", "change"]
     },
     _queryLoaded: function(){
         var data = this._getBusinessData();
