@@ -3,7 +3,6 @@ package com.x.base.core.entity;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -56,7 +55,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	public static final String DELETE_OPERATE = "delete";
 
-	public abstract String path();
+	public abstract String path() throws Exception;
 
 	public abstract String getStorage();
 
@@ -82,7 +81,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	public abstract void setDeepPath(Boolean deepPath);
 
-	public String path(String operate) {
+	public String path(String operate) throws Exception {
 		return this.path();
 	}
 
@@ -407,7 +406,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	private long hdfsUpdateContent(StorageMapping mapping, byte[] bytes) throws IOException {
+	private long hdfsUpdateContent(StorageMapping mapping, byte[] bytes) throws Exception {
 		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
 				.get(hdfsConfiguration(mapping))) {
 			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
@@ -424,7 +423,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		return bytes.length;
 	}
 
-	private Long hdfsReadContent(StorageMapping mapping, OutputStream output) throws IOException {
+	private Long hdfsReadContent(StorageMapping mapping, OutputStream output) throws Exception {
 		long length = -1L;
 		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
 				.get(hdfsConfiguration(mapping))) {
@@ -440,7 +439,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		return length;
 	}
 
-	private boolean hdfsExistContent(StorageMapping mapping) throws IOException {
+	private boolean hdfsExistContent(StorageMapping mapping) throws Exception {
 		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
 				.get(hdfsConfiguration(mapping))) {
 			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
@@ -448,7 +447,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	private void hdfsDeleteContent(StorageMapping mapping) throws IOException {
+	private void hdfsDeleteContent(StorageMapping mapping) throws Exception {
 		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
 				.get(hdfsConfiguration(mapping))) {
 			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());

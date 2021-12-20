@@ -23,7 +23,8 @@ import com.x.base.core.project.exception.RunningException;
 import com.x.base.core.project.http.ActionResult.Type;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Invoke;
@@ -36,7 +37,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class InvokeProcessor extends AbstractInvokeProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(InvokeProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(InvokeProcessor.class);
 
 	public InvokeProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -92,7 +93,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		}
 	}
 
-	private boolean jaxwsInternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+	private boolean jaxwsInternal(AeiObjects aeiObjects, Invoke invoke) {
 		return true;
 	}
 
@@ -115,9 +116,9 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
 						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
 						Business.EVENT_INVOKEJAXWSRESPONSE);
-				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXWSRESPONSE,
+				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXWSRESPONSE,
 						response);
-				passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext));
+				passThrough = JsonScriptingExecutor.evalBoolean(cs, scriptContext);
 			} else {
 				passThrough = true;
 			}
@@ -132,9 +133,13 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXWSPARAMETER);
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXWSPARAMETERS,
 					parameters);
-			cs.eval(scriptContext);
+			JsonScriptingExecutor.jsonArray(cs, scriptContext, o -> {
+				if (o.size() > 0) {
+					parameters = gson.fromJson(o, parameters.getClass());
+				}
+			});
 		}
 		return parameters.toArray();
 	}
@@ -184,6 +189,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		if (!BooleanUtils.isTrue(invoke.getAsync())) {
 			WrapScriptObject jaxrsResponse = new WrapScriptObject();
 			if (null != resp) {
+				jaxrsResponse.type(resp.getType().toString());
 				jaxrsResponse.set(gson.toJson(resp.getData()));
 			}
 			if ((StringUtils.isNotEmpty(invoke.getJaxrsResponseScript()))
@@ -192,9 +198,10 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
 						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
 						Business.EVENT_INVOKEJAXRSRESPONSE);
-				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
+				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSRESPONSE,
 						jaxrsResponse);
-				passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext), true);
+				passThrough = JsonScriptingExecutor.evalBoolean(cs, scriptContext);
+				// passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext), true);
 			} else {
 				passThrough = true;
 			}
@@ -280,7 +287,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		String result = "";
 		String uri = this.jaxrsUrl(aeiObjects, invoke);
 		JaxrsObject jaxrsObject = new JaxrsObject();
-		jaxrsObject.setHead(this.jaxrsEvalHead(aeiObjects, invoke));
+		jaxrsObject.setHead(this.jaxrsEvalHeader(aeiObjects, invoke));
 		switch (StringUtils.upperCase(invoke.getJaxrsMethod())) {
 		case ConnectionAction.METHOD_POST:
 			result = jaxrsExternalPost(aeiObjects, invoke, uri, jaxrsObject);
@@ -312,6 +319,11 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		boolean passThrough = false;
 		if (!BooleanUtils.isTrue(invoke.getAsync())) {
 			WrapScriptObject jaxrsResponse = new WrapScriptObject();
+			if (null == result) {
+				jaxrsResponse.type(Type.connectFatal.toString());
+			} else {
+				jaxrsResponse.type(Type.success.toString());
+			}
 			jaxrsResponse.set(result);
 			if ((StringUtils.isNotEmpty(invoke.getJaxrsResponseScript()))
 					|| (StringUtils.isNotEmpty(invoke.getJaxrsResponseScriptText()))) {
@@ -319,9 +331,9 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
 						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
 						Business.EVENT_INVOKEJAXRSRESPONSE);
-				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
+				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSRESPONSE,
 						jaxrsResponse);
-				passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext), true);
+				passThrough = JsonScriptingExecutor.evalBoolean(cs, scriptContext);
 			} else {
 				passThrough = true;
 			}
@@ -404,9 +416,9 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSPARAMETER);
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSPARAMETERS,
 					parameters);
-			cs.eval(scriptContext);
+			JsonScriptingExecutor.eval(cs, scriptContext);
 		}
 		for (Entry<String, String> entry : parameters.entrySet()) {
 			url = StringUtils.replace(url, "{" + entry.getKey() + "}", entry.getValue());
@@ -421,21 +433,22 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSBODY);
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSBODY, jaxrsBody);
-			cs.eval(scriptContext);
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSBODY,
+					jaxrsBody);
+			JsonScriptingExecutor.eval(cs, scriptContext);
 		}
 		return jaxrsBody.get();
 	}
 
-	private Map<String, String> jaxrsEvalHead(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+	private Map<String, String> jaxrsEvalHeader(AeiObjects aeiObjects, Invoke invoke) throws Exception {
 		Map<String, String> map = new LinkedHashMap<>();
 		if ((StringUtils.isNotEmpty(invoke.getJaxrsHeadScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsHeadScriptText()))) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSHEAD);
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSHEAD, map);
-			cs.eval(scriptContext);
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSHEADERS, map);
+			JsonScriptingExecutor.eval(cs, scriptContext);
 		}
 		return map;
 	}

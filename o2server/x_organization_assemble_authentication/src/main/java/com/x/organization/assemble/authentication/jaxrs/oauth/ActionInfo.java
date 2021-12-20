@@ -30,14 +30,15 @@ import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.jaxrs.WoText;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.OauthCode;
 import com.x.organization.core.entity.Person;
 
 class ActionInfo extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionInfo.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionInfo.class);
 
 	public static final Pattern SCRIPT_PATTERN = Pattern.compile("^\\((.+?)\\)$");
 
@@ -94,7 +95,7 @@ class ActionInfo extends BaseAction {
 		if (optional.isPresent()) {
 			return (CompiledScript) optional.get();
 		} else {
-			CompiledScript compiledScript = ScriptFactory.compile(ScriptFactory.functionalization(text));
+			CompiledScript compiledScript = ScriptingFactory.functionalizationCompile(text);
 			CacheManager.put(cache, cacheKey, compiledScript);
 			return compiledScript;
 		}
@@ -105,8 +106,9 @@ class ActionInfo extends BaseAction {
 		if (Config.token().isInitialManager(oauthCode.getPerson())) {
 			InitialManager initialManager = Config.token().initialManagerInstance();
 
-			ScriptContext scriptContext = new SimpleScriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("person", initialManager);
+			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_SERVICE_PERSON,
+					initialManager);
 
 			for (String str : StringUtils.split(oauthCode.getScope(), ",")) {
 				String property = StringEscapeUtils.unescapeJson(oauth.getMapping().get(str));
@@ -115,7 +117,7 @@ class ActionInfo extends BaseAction {
 				String value = "";
 				if (matcher.matches()) {
 					CompiledScript compiledScript = this.compliedScript(oauthCode.getClientId(), str, matcher.group(1));
-					value = ScriptFactory.asString(compiledScript.eval(scriptContext));
+					value = JsonScriptingExecutor.evalString(compiledScript, scriptContext);
 				} else {
 					value = Objects.toString(PropertyUtils.getProperty(initialManager, property));
 				}
@@ -124,7 +126,8 @@ class ActionInfo extends BaseAction {
 		} else {
 			Person person = business.entityManagerContainer().find(oauthCode.getPerson(), Person.class);
 			ScriptContext scriptContext = new SimpleScriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("person", person);
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_SERVICE_PERSON,
+					person);
 			for (String str : StringUtils.split(oauthCode.getScope(), ",")) {
 				String property = oauth.getMapping().get(str);
 				Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
@@ -133,7 +136,7 @@ class ActionInfo extends BaseAction {
 				if (matcher.matches()) {
 					CompiledScript compiledScript = this.compliedScript(oauthCode.getClientId(), str,
 							StringEscapeUtils.unescapeJson(matcher.group(1)));
-					value = ScriptFactory.asString(compiledScript.eval(scriptContext));
+					value = JsonScriptingExecutor.evalString(compiledScript, scriptContext);
 				} else {
 					value = Objects.toString(PropertyUtils.getProperty(person, property));
 				}

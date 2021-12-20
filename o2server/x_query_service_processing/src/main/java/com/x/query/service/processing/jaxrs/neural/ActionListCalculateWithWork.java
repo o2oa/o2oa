@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.neuroph.core.NeuralNetwork;
@@ -20,6 +20,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -28,7 +30,8 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ByteTools;
 import com.x.base.core.project.tools.DoubleTools;
 import com.x.base.core.project.tools.MapTools;
@@ -42,9 +45,6 @@ import com.x.query.service.processing.Business;
 import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.helper.ExtractTextHelper;
 import com.x.query.service.processing.helper.LanguageProcessingHelper;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
-import java.util.Optional;
 
 class ActionListCalculateWithWork extends BaseAction {
 
@@ -157,9 +157,9 @@ class ActionListCalculateWithWork extends BaseAction {
 			break;
 		}
 		if (StringUtils.isNotBlank(model.getInValueScriptText())) {
-			ScriptContext scriptContext = new SimpleScriptContext();
+			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(PROPERTY_INVALUES, inValue);
-			ScriptFactory.scriptEngine.eval(model.getInValueScriptText(), scriptContext);
+			JsonScriptingExecutor.eval(null, scriptContext);
 		}
 		return inValue;
 	}
