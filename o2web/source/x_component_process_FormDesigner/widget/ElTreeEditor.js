@@ -308,6 +308,9 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 			"mouseout": function(){
 				if (!this.isEditScript) this.itemNode.setStyles(this.tree.css.treeItemNode);
 				this.hideItemAction();
+			}.bind(this),
+			"click": function () {
+				this.editItemProperties();
 			}.bind(this)
 		});
 	},
@@ -617,6 +620,93 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 			this.tree.currentEditNode = this;
 		}else{
 			this.completeScriptItem();
+		}
+	},
+
+	completeItemProperties: function(){
+		this.itemNode.setStyles(this.tree.css.treeItemNode);
+		this.isEditProperty = false;
+		this.tree.currentEditNode = null;
+		this.propertyArea.hide();
+	},
+	editItemProperties: function(){
+		if (this.tree.currentEditNode!=this){
+			if (this.tree.currentEditNode) this.tree.currentEditNode.completeItemProperties();
+
+			this.itemNode.setStyle("background", "#DDD");
+			if (!this.propertyArea){
+				this.propertyArea = new Element("div").inject(this.itemNode, "after");
+
+				this.propertyTable = new Element("table", {
+					"width": "100%",
+					"border": "0",
+					"cellpadding":"5",
+					"cellspacing":"0",
+					"class": "editTable"
+				}).inject(this.propertyArea);
+
+
+				var tr = new Element("tr").inject(this.propertyTable);
+				var td = new Element("td", { text: "文本" }).inject(tr);
+				td = new Element("td").inject(tr);
+				this.labelInput = new Element("input", {
+					value: this.data.label || "[none]",
+					events: {
+						blur: function () {
+							this.data.label = this.labelInput.get("value");
+						}.bind(this)
+					}
+				}).inject(td);
+
+				tr = new Element("tr").inject(this.propertyTable);
+				td = new Element("td", { text: "id/key" }).inject(tr);
+				td = new Element("td").inject(tr);
+				this.idInput = new Element("input", {
+					value: this.data.id || "",
+					events: {
+						blur: function () {
+							this.data.id = this.idInput.get("value");
+						}.bind(this)
+					}
+				}).inject(td);
+
+				tr = new Element("tr").inject(this.propertyTable);
+				td = new Element("td", { "colspan": "2" }).inject(tr);
+				MWF.require("MWF.widget.Maplist", function() {
+					var maplist = new MWF.widget.Maplist(td, {
+						"title": "其他属性",
+						"ignoreKeyList": ["id", "label", "children"],
+						"collapse": false,
+						"onChange": function () {
+							// var oldData = this.data[name];
+							var data = maplist.toJson();
+							for (var key in data) {
+								this.data[key] = data[key]
+							}
+						}.bind(this),
+						"onDelete": function (key) {
+							if (this.data[key]) {
+								delete this.data[key];
+							}
+						}.bind(this),
+						"isProperty": true
+					});
+					var data = {};
+					for (var key in this.data) {
+						if( !["id","label", "children"].contains(key) )data[key] = this.data[key]
+					}
+					maplist.load(data);
+				})
+			}
+
+			this.propertyArea.setStyle("display", "block");
+			this.propertyArea.scrollIntoView();
+			this.setActionPosition();
+
+			this.isEditProperty = true;
+			this.tree.currentEditNode = this;
+		}else{
+			this.completeItemProperties();
 		}
 	},
 	

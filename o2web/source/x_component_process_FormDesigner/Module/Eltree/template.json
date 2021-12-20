@@ -5,7 +5,7 @@
 	"indent": 16,
 	"emptyText": "",
 	"highlightCurrent": false,
-	"nodeKey": "",
+	"nodeKey": "id",
 	"renderAfterExpand": true,
 	"defaultExpandAll": false,
 	"expandOnClickNode": true,
