@@ -203,12 +203,12 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree = new Class({
 		return treeNode;
 	},
 	expandOrCollapseNode: function(treeNode){
-		if (treeNode.data.expand){
+		if (treeNode.options.expand){
 			this.collapse(treeNode);
-			treeNode.data.expand = false;
+			treeNode.options.expand = false;
 		}else{
 			this.expand(treeNode);
-			treeNode.data.expand = true;
+			treeNode.options.expand = true;
 		}
 		treeNode.setOperateIcon();
 		this.editor.fireEvent("change");
@@ -245,12 +245,12 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree = new Class({
 
 MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class({
 	Implements: [Options, Events],
-	// options: {
-	// 	"expand": true,
-	// 	"label": "",
-	// 	"default" : false,
-	// 	"icon": ""
-	// },
+	options: {
+		"expand": true
+		// "label": "",
+		// "default" : false,
+		// "icon": ""
+	},
 	srciptOption: {
 		"width": 300,
 		"height": 300,
@@ -266,10 +266,10 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 	initialize: function(tree, data){
 		debugger;
 		Object.each({
-			"expand": true,
-			"label": "",
-			"default" : false,
-			"icon": ""
+			// "expand": true,
+			"label": ""
+			// "default" : false,
+			// "icon": ""
 		}, function(value, key){
 			if( !data.hasOwnProperty(key) ){
 				data[key] = value;
@@ -296,22 +296,26 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 			"styles": this.tree.css.treeChildrenNode
 		}).inject(this.node);
 
-		if (!this.data.expand){
+		if (!this.options.expand){
 			this.childrenNode.setStyle("display", "none");
 		}
 		
 		this.itemNode.addEvents({
 			"mouseover": function(){
-				if (!this.isEditScript) this.itemNode.setStyles(this.tree.css.treeItemNodeOver);
-				this.showItemAction();
+				if (this.tree.currentEditNode!==this) {
+					this.itemNode.setStyles(this.tree.css.treeItemNodeOver);
+					this.showItemAction();
+				}
 			}.bind(this),
 			"mouseout": function(){
-				if (!this.isEditScript) this.itemNode.setStyles(this.tree.css.treeItemNode);
-				this.hideItemAction();
-			}.bind(this),
-			"click": function () {
-				this.editItemProperties();
+				if (this.tree.currentEditNode!==this) {
+					this.itemNode.setStyles(this.tree.css.treeItemNode);
+					this.hideItemAction();
+				}
 			}.bind(this)
+			// "click": function () {
+			// 	this.editItemProperties();
+			// }.bind(this)
 		});
 	},
 	load: function(){
@@ -379,9 +383,9 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 		}.bind(this));
 
 		textDivNode.inject(this.textNode);
-		if( this.data.default ){
-			textDivNode.click();
-		}
+		// if( this.data.default ){
+		// 	textDivNode.click();
+		// }
 	},
 	clickNode: function(e){
 		this.selectNode(e);
@@ -402,7 +406,7 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 		this.tree.fireEvent("afterSelect", [this]);
 	},
 	setOperateIcon: function(){
-		var imgStr = (this.data.expand) ? this.imgs.expand : this.imgs.collapse;
+		var imgStr = (this.options.expand) ? this.imgs.expand : this.imgs.collapse;
 		imgStr = this.tree.path+this.tree.options.style+"/"+imgStr;
 		if (!this.firstChild) imgStr = this.tree.path+this.tree.options.style+"/"+this.imgs.blank;
 
@@ -503,25 +507,29 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 			"events": {
 				"click": function(e){
 					this.deleteItem(e);
+					e.stopPropagation();
 				}.bind(this)
 			}
 		}).inject(this.actionNode);
 		
-		// var scriptAction = new Element("div", {
-		// 	"styles": this.tree.css.itemScriptActionNode,
-		// 	"title": o2.LP.process.formAction["script"],
-		// 	"events": {
-		// 		"click": function(e){
-		// 			this.editScriptItem(e);
-		// 		}.bind(this)
-		// 	}
-		// }).inject(this.actionNode);
+		var propertyAction = new Element("div", {
+			"styles": this.tree.css.itemPropertyActionNode,
+			"title": o2.LP.process.formAction["property"],
+			"events": {
+				"click": function(e){
+					this.editItemProperties(e);
+				}.bind(this)
+			}
+		}).inject(this.actionNode);
 
 		var addAction = new Element("div", {
 			"styles": this.tree.css.itemAddActionNode,
 			"title": o2.LP.process.formAction.add,
 			"events": {
-				"click": this.addChild.bind(this)
+				"click": function(ev){
+					this.addChild();
+					ev.stopPropagation();
+				}.bind(this)
 			}
 		}).inject(this.actionNode);
 	},
@@ -624,6 +632,7 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 	},
 
 	completeItemProperties: function(){
+		this.hideItemAction();
 		this.itemNode.setStyles(this.tree.css.treeItemNode);
 		this.isEditProperty = false;
 		this.tree.currentEditNode = null;
@@ -654,6 +663,7 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 					events: {
 						blur: function () {
 							this.data.label = this.labelInput.get("value");
+							this.textNode.getElement("div").set("text", this.data.label);
 						}.bind(this)
 					}
 				}).inject(td);
@@ -675,7 +685,6 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 				MWF.require("MWF.widget.Maplist", function() {
 					var maplist = new MWF.widget.Maplist(td, {
 						"title": "其他属性",
-						"ignoreKeyList": ["id", "label", "children"],
 						"collapse": false,
 						"onChange": function () {
 							// var oldData = this.data[name];
@@ -696,7 +705,7 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 						if( !["id","label", "children"].contains(key) )data[key] = this.data[key]
 					}
 					maplist.load(data);
-				})
+				}.bind(this))
 			}
 
 			this.propertyArea.setStyle("display", "block");
@@ -718,8 +727,11 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 		
 		var treeNode = this.appendChild(obj);
 		
-		if (!this.data.expand) this.tree.expandOrCollapseNode(this);
+		if (!this.options.expand) this.tree.expandOrCollapseNode(this);
 		treeNode.selectNode();
+		treeNode.showItemAction();
+
+		treeNode.editItemProperties();
 		
 		var textDivNode = treeNode.textNode.getElement("div");
 		treeNode.editItem(textDivNode);
@@ -798,6 +810,8 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 		this.isNewItem = false;
 
 		node.set("html", text);
+
+		if( this.labelInput )this.labelInput.set("value", text);
 
 		this.tree.editor.fireEvent("change");
 		
