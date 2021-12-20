@@ -271,7 +271,7 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {Function} [callback] 正确获取待办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待办数组出错时的回调。
-         * @return {(Task[])} 待办任务列表.
+         * @return {(Task[])} 待办任务列表.异步请求时返回请求的Promise对象.
          * @o2syntax
          * //本样例以同步执行
          * var taskList = this.workContext.getTaskList();
@@ -285,11 +285,11 @@ MWF.xScript.Environment = function(ev){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(ev.work.id, function(json){
+            var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(ev.work.id, function(json){
                 list = json.data;
                 if (cb) cb(list);
             }, ecb, !!cb);
-            return list;
+            return list || p;
         },
         /**
          * 根据当前工作的job获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
@@ -298,7 +298,7 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {Function} [callback] 正确获取待办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待办数组出错时的回调。
-         * @return {(Task[])} 待办任务列表.
+         * @return {(Task[])} 待办任务列表. 异步请求时返回请求的Promise对象.
          * @o2syntax
          * //本样例以同步执行
          * var taskList = this.workContext.getTaskListByJob();
@@ -312,11 +312,11 @@ MWF.xScript.Environment = function(ev){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listTaskByJob(ev.work.job, function(json){
+            var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskByJob(ev.work.job, function(json){
                 list = json.data;
                 if (cb) cb(list);
             }, ecb, !!cb);
-            return list;
+            return list || p;
         },
 
         /**
@@ -325,7 +325,7 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已办数组出错时的回调。
-         * @return {(TaskCompleted[])} 已办任务列表.
+         * @return {(TaskCompleted[])} 已办任务列表.  异步请求时返回请求的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithWork|example=Task
          * @o2syntax
          * //本样例以同步执行
@@ -340,11 +340,11 @@ MWF.xScript.Environment = function(ev){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByWork(ev.work.id, function(json){
+            var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskcompleted(ev.work.id, function(json){
                 list = json.data;
                 if (cb) cb(list);
             }, ecb, !!cb);
-            return list;
+            return list || p;
         },
 
         /**
@@ -353,7 +353,7 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已办数组出错时的回调。
-         * @return {(TaskCompleted[])} 已办任务列表.
+         * @return {(TaskCompleted[])} 已办任务列表. 异步请求时返回请求的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithJob|example=Task
          * @o2syntax
          * //本样例以同步执行
@@ -368,11 +368,11 @@ MWF.xScript.Environment = function(ev){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByJob(ev.work.job, function(json){
+            var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByJob(ev.work.job, function(json){
                 list = json.data;
                 if (cb) cb(list);
             }, ecb, !!cb);
-            return list;
+            return list || p;
         },
 
         /**
@@ -381,7 +381,7 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {Function} [callback] 正确获取待阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待阅数组出错时的回调。
-         * @return {(Read[])} 当前流程实例的所有待阅对象数组.
+         * @return {(Read[])} 当前流程实例的所有待阅对象数组. 异步请求时返回请求的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.ReadAction.get|example=Read
          * @o2syntax
          * //本样例以同步执行
@@ -396,11 +396,11 @@ MWF.xScript.Environment = function(ev){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listReadByWork(ev.work.id, function(json){
+            var p = o2.Actions.get("x_processplatform_assemble_surface").listRead(ev.work.id, function(json){
                 list = json.data;
                 if (cb) cb(list);
             }, ecb, !!cb);
-            return list;
+            return list || p;
         },
         /**
          * @summary 根据当前工作的job获取当前流程实例的所有待阅对象。如果流程实例无待阅，则返回一个空数组。
@@ -408,7 +408,7 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {Function} [callback] 正确获取待阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取待阅数组出错时的回调。
-         * @return {(Read[])} 当前流程实例的所有待阅对象数组.
+         * @return {(Read[])} 当前流程实例的所有待阅对象数组. 异步请求时返回请求的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.ReadAction.listWithJob|example=Read
          * @o2syntax
          * //本样例以同步执行
@@ -423,11 +423,11 @@ MWF.xScript.Environment = function(ev){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listReadByJob(ev.work.job, function(json){
+            var p = o2.Actions.get("x_processplatform_assemble_surface").listReadByJob(ev.work.job, function(json){
                 list = json.data;
                 if (cb) cb(list);
             }, ecb, !!cb);
-            return list;
+            return list || p;
         },
 
         /**
@@ -436,7 +436,7 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {Function} [callback] 正确获取已阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已阅数组出错时的回调。
-         * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
+         * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组. 异步请求时返回请求的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithWork|example=Read
          * @o2syntax
          * //本样例以同步执行
@@ -451,11 +451,11 @@ MWF.xScript.Environment = function(ev){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listReadCompletedByWork(ev.work.id, function(json){
+            var p = o2.Actions.get("x_processplatform_assemble_surface").listReadcompleted(ev.work.id, function(json){
                 list = json.data;
                 if (cb) cb(list);
             }, ecb, !!cb);
-            return list;
+            return list || p;
         },
         /**
          * @summary 根据当前工作的job获取当前流程实例的所有已阅对象。如果流程实例没有已阅，则返回一个空数组。
@@ -463,7 +463,7 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {Function} [callback] 正确获取已阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
          * @param {Function} [error] 获取已阅数组出错时的回调。
-         * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
+         * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组. 异步请求时返回请求的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithJob|example=Read
          * @o2syntax
          * //本样例以同步执行
@@ -478,16 +478,47 @@ MWF.xScript.Environment = function(ev){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listReadCompletedByJob(ev.work.job, function(json){
+            var p = o2.Actions.get("x_processplatform_assemble_surface").listReadCompletedByJob(ev.work.job, function(json){
                 list = json.data;
                 if (cb) cb(list);
             }, ecb, !!cb);
-            return list;
+            return list || p;
         },
+
+        /**
+         * @summary 获取当前流程实例的所有Review对象。如果流程实例没有Review，则返回一个空数组。
+         * @method getReviewList
+         * @static
+         * @param {Function} [callback] 正确获取Review数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function} [error] 获取Review数组出错时的回调。
+         * @return {(Review[])} 当前流程实例的所有Review对象数组. 异步请求时返回请求的Promise对象.
+         * @o2ActionOut x_processplatform_assemble_surface.ReviewAction.get|example=Review
+         * @o2syntax
+         * //本样例以同步执行
+         * var reviewList = this.workContext.getReviewList();
+         * @o2syntax
+         * //本样例以异步执行
+         * this.workContext.getReviewList( function(reviewList){
+         *     //reviewList review数组
+         * });
+         */
+        "getReviewList": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            var p = o2.Actions.load("x_processplatform_assemble_surface").ReviewAction.listWithJob(ev.work.job, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list || p;
+        },
+        "getReviewListByJob": this.getReviewList,
+
         "getJobTaskList": this.getTaskListByJob,
         "getJobReadList": this.getReadListByJob,
         "getJobTaskCompletedList": this.getTaskCompletedListByJob,
         "getJobReadCompletedList": this.getReadCompletedListByJob,
+        "getJobReviewList": this.getReviewList,
 
         /**
          * @summary 获取当前人对流程实例的权限。
@@ -535,12 +566,35 @@ MWF.xScript.Environment = function(ev){
          * @summary 获取当前流程实例的附件对象列表。
          * @method getAttachmentList
          * @static
+         * @param {Function|boolean} [callback] 如果传入Funcation, 则作为正确获取附件对象数组的异步调用的回调；如果传入true，则发起同步请求获取附件列表；如果不传入参数，则直接返回本地缓存中的attachmentList对象。
+         * @param {Function} [error] 获取附件对象数组出错时的回调。
+         * @return {(Review[])} 当前流程实例的所有附件对象数组，异步请求时返回请求的Promise对象.
          * @return {WorkAttachmentData[]} 附件数据.
          * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment
          * @o2syntax
+         * //获取附件列表
          * var attachmentList = this.workContext.getAttachmentList();
+         *
+         * //同步请求获取附件列表
+         * var attachmentList = this.workContext.getAttachmentList(true);
+         *
+         * //异步请求获取附件列表
+         * this.workContext.getAttachmentList( function(attachmentList){
+         *     //attachmentList 附件对象数组
+         * });
          */
-        "getAttachmentList": function(){return ev.attachmentList;},
+        "getAttachmentList": function(callback, error){
+            if (!callback) return ev.attachmentList;
+
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            var p = o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.listWithJob(ev.work.job, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list || p;
+        },
         /**
          * @summary 获取当前待办的可选路由。与task对象中的routeNameList取值相同。
          * @method getRouteList
