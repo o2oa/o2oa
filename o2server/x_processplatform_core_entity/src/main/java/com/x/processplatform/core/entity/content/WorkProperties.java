@@ -13,15 +13,9 @@ public class WorkProperties extends JsonProperties {
 	private static final long serialVersionUID = -62236689373222398L;
 
 	@FieldDescribe("强制待办处理人")
-	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
-	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
-	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
 	private List<String> manualForceTaskIdentityList = new ArrayList<String>();
 
 	@FieldDescribe("授权对象")
-	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
-	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
-	// properties的泛型在前后都必须申明类型!!!!LinkedHashMap<String, String>()这样的写法是对的.
 	private Map<String, String> manualEmpowerMap = new LinkedHashMap<String, String>();
 
 	@FieldDescribe("服务回调值")

@@ -28,7 +28,8 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.EmpowerLog;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
@@ -325,10 +326,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 		// Manual Work 还没有处理完 发生了停留,出发了停留事件
 		if ((ListTools.isEmpty(works)) && this.hasManualStayScript(manual)) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
-			CompiledScript cs = null;
-			cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 					aeiObjects.getActivity(), Business.EVENT_MANUALSTAY);
-			cs.eval(scriptContext);
+			JsonScriptingExecutor.eval(cs, scriptContext);
 		}
 	}
 
@@ -670,12 +670,12 @@ public class ManualProcessor extends AbstractManualProcessor {
 	private void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
 		ExpireScriptResult expire = new ExpireScriptResult();
 		ScriptContext scriptContext = aeiObjects.scriptContext();
-		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-		bindings.put(ScriptFactory.BINDING_NAME_TASK, task);
-		bindings.put(ScriptFactory.BINDING_NAME_EXPIRE, expire);
-		aeiObjects.business().element()
-				.getCompiledScript(aeiObjects.getWork().getApplication(), manual, Business.EVENT_MANUALTASKEXPIRE)
-				.eval(scriptContext);
+//		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+//		bindings.put(ScriptingFactory.BINDING_NAME_TASK, task);
+//		bindings.put(ScriptingFactory.BINDING_NAME_EXPIRE, expire);
+		CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+				manual, Business.EVENT_MANUALTASKEXPIRE);
+		JsonScriptingExecutor.eval(cs, scriptContext);
 		if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getWorkHour(), 0))) {
 			Integer m = 0;
 			m += expire.getWorkHour() * 60;

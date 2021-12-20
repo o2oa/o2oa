@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.surface.jaxrs.readcompleted;
+package com.x.processplatform.assemble.surface.jaxrs.read;
 
 import java.util.Comparator;
 import java.util.List;
@@ -16,6 +16,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
@@ -45,16 +46,15 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	}
 
 	private List<Wo> list(Business business, String job) throws Exception {
-		List<ReadCompleted> os = business.entityManagerContainer().listEqual(ReadCompleted.class,
-				ReadCompleted.job_FIELDNAME, job);
+		List<Read> os = business.entityManagerContainer().listEqual(Read.class, ReadCompleted.job_FIELDNAME, job);
 		return Wo.copier.copy(os);
 	}
 
-	public static class Wo extends ReadCompleted {
+	public static class Wo extends Read {
 
 		static final long serialVersionUID = 5610132069178497370L;
 
-		static WrapCopier<ReadCompleted, Wo> copier = WrapCopierFactory.wo(ReadCompleted.class, Wo.class, null,
+		static WrapCopier<Read, Wo> copier = WrapCopierFactory.wo(Read.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
 	}
