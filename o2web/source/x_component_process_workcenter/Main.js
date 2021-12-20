@@ -340,6 +340,22 @@ MWF.xApplication.process.workcenter.List = new Class({
 			expireNode.set("title", text);
 		}
 	},
+	getFormData: function(id){
+		var action = this.action;
+		return action.FormAction[((layout.mobile) ? "V2LookupWorkOrWorkCompletedMobile" : "V2LookupWorkOrWorkCompleted")](id).then(function(json){
+			var formId = json.data.id;
+			if (json.data.form){
+				return json.form;
+			}else{
+				return action.FormAction[((layout.mobile) ? "V2GetMobile": "V2Get")](formId).then(function(formJson){
+					return formJson.data.form;
+				});
+			}
+		}).then(function(form){
+			var formText = (form) ? MWF.decodeJsonString(form.data) : "";
+			return (formText) ? JSON.decode(formText): null;
+		});
+	},
 	editTask: function(e, data){
 		this.app.content.mask({
 			"destroyOnHide": true,
@@ -347,21 +363,38 @@ MWF.xApplication.process.workcenter.List = new Class({
 			"class": "maskNode"
 		});
 
-		this.action.TaskAction.getReference(data.id).then(function(json){
-
+		this.getFormData(data.work).then(function(form){
+			if (form.json.submitFormType === "select") {
+				this.processWork_custom();
+			} else if (form.json.submitFormType === "script") {
+				this.processWork_custom();
+			} else {
+				if (form.json.mode == "Mobile") {
+					setTimeout(function () {
+						this.processWork_mobile();
+					}.bind(this), 100);
+				} else {
+					this.processWork_pc();
+				}
+			}
 		}.bind(this));
 
-		this._getJobByTask(function(data){
-			this.nodeClone = this.mainContentNode.clone(false);
-			this.nodeClone.inject(this.mainContentNode, "after");
-			this.mainContentNode.setStyles(this.list.css.itemNode_edit_from);
-			this.mainContentNode.position({
-				relativeTo: this.nodeClone,
-				position: "topleft",
-				edge: "topleft"
-			});
-			this.showEditNode(data);
-		}.bind(this));
+
+		// this.action.TaskAction.getReference(data.id).then(function(json){
+		//
+		// }.bind(this));
+		//
+		// this._getJobByTask(function(data){
+		// 	this.nodeClone = this.mainContentNode.clone(false);
+		// 	this.nodeClone.inject(this.mainContentNode, "after");
+		// 	this.mainContentNode.setStyles(this.list.css.itemNode_edit_from);
+		// 	this.mainContentNode.position({
+		// 		relativeTo: this.nodeClone,
+		// 		position: "topleft",
+		// 		edge: "topleft"
+		// 	});
+		// 	this.showEditNode(data);
+		// }.bind(this));
 	},
 });
 MWF.xApplication.process.workcenter.TaskList = new Class({
