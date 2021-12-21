@@ -239,12 +239,18 @@ MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
         }
      },
      _parseData: function ( data, config ) {
-        Object.each(function (value, key) {
-            if( data[key] )data[value] = data[key];
-        });
-        var children = data[ config.children || "children" ];
-         if(children && o2.typeOf(children)==="array" )children.each(function(child){
-             this._parseData( child, config );
-         }.bind(this))
+         if( o2.typeOf(data) === "array" ){
+             data.each(function(d){ this._parse(d, config) }.bind(this))
+         }else{
+             this._parse(data, config);
+         }
+     },
+     _parse: function (data, config) {
+         Object.each(config, function (value, key) {
+             if( data[key] )data[value] = data[key];
+         });
+         var children = data[ config.children || "children" ];
+         if(children && o2.typeOf(children)==="array" )this._parseData( children, config );
      }
+
 }); 
