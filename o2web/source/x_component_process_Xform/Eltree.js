@@ -116,12 +116,6 @@ MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
         if (!this.json.accordion) this.json.accordion = false;
         if (!this.json.indent) this.json.indent = 16;
 
-        if (this.json.dataType === "script"){
-            this.json.data = this.form.Macro.exec(((this.json.dataScript) ? this.json.dataScript.code : ""), this);
-        }else{
-           this.json.data = this.json.dataJson;
-        }
-
         if (this.json.currentNodeKey && this.json.currentNodeKey.code){
             this.json.currentNodeKey = this.form.Macro.fire(this.json.currentNodeKey.code, this);
         }
@@ -152,6 +146,13 @@ MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
             }
         }
 
+        if (this.json.dataType === "script"){
+            this.json.data = this.form.Macro.exec(((this.json.dataScript) ? this.json.dataScript.code : ""), this);
+        }else{
+            this.json.data = this.json.dataJson;
+        }
+        this.parseData();
+        debugger;
     },
     _createElementHtml: function() {
         var html = "<el-tree";
@@ -219,5 +220,31 @@ MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
 
         html += "</el-tree>";
         return html;
-    }
+    },
+     parseData: function ( data ) {
+        if( !data )data = this.json.data;
+        var config = {};
+         //label和children转成defaultOptions的数组
+         if( this.json.defaultProps ){
+             var p = this.json.defaultProps;
+             if( p.children !== "children" && o2.typeOf(p.children)==="string") config.children = p.children;
+             if( p.label !== "label" && o2.typeOf(p.label)==="string" )config.label = p.label;
+             if( p.disabled !== "disabled" && o2.typeOf(p.disabled)==="string")config.disabled = p.disabled;
+             if( p.label !== "isLeaf" && o2.typeOf(p.isLeaf)==="string")config.isLeaf = p.isLeaf;
+         }
+        //把id转成成node-key,
+        if( this.json.nodeKey && this.json.nodeKey !== "id" )config.id = this.json.nodeKey;
+        if( Object.keys(config).length > 0 ){
+            this._parseData(data, config);
+        }
+     },
+     _parseData: function ( data, config ) {
+        Object.each(function (value, key) {
+            if( data[key] )data[value] = data[key];
+        });
+        var children = data[ config.children || "children" ];
+         if(children && o2.typeOf(children)==="array" )children.each(function(child){
+             this._parseData( child, config );
+         }.bind(this))
+     }
 }); 
