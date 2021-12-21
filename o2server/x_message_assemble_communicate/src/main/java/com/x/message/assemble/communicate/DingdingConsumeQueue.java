@@ -33,9 +33,15 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 				if (needTransferLink(message.getType())) {
 					String workUrl = getDingdingOpenWorkUrl(message.getBody());
 					if (StringUtils.isNotEmpty(workUrl)) {
+						logger.debug("工作url: "+workUrl);
+						// dingtalk://dingtalkclient/action/openapp?corpid=免登企业corpId&container_type=work_platform&app_id=0_{应用agentid}&redirect_type=jump&redirect_url=跳转url
+						String dingtalkUrl = "dingtalk://dingtalkclient/action/openapp?corpid=" + Config.dingding().getCorpId() +
+							"&container_type=work_platform&app_id=0_" + Config.dingding().getAgentId() +
+								"&redirect_type=jump&redirect_url="+ URLEncoder.encode(workUrl, DefaultCharset.name);
+						logger.debug("钉钉pc 打开消息 url："+dingtalkUrl);
 						m.getMsg().setMsgtype("markdown");
 						m.getMsg().getMarkdown().setTitle(message.getTitle());
-						m.getMsg().getMarkdown().setText("["+message.getTitle()+"]("+workUrl+")");
+						m.getMsg().getMarkdown().setText("["+message.getTitle()+"]("+dingtalkUrl+")");
 					}else {
 						m.getMsg().getText().setContent(message.getTitle());
 					}
