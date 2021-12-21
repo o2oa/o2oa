@@ -165,7 +165,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
             } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsDocument) {
                 window.webkit.messageHandlers.openO2CmsDocument.postMessage({
                     "docId": options.documentId,
-                    "docTitle": title
+                    "docTitle": title, "options": JSON.stringify(options)
                 });
             } else {
                 window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));

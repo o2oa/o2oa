@@ -291,7 +291,7 @@ o2.addReady(function () {
         } else if (window.o2android && window.o2android.openO2CmsDocument) {
             window.o2android.openO2CmsDocument(options.documentId, title);
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsDocument) {
-            window.webkit.messageHandlers.openO2CmsDocument.postMessage({ "docId": options.documentId, "docTitle": title });
+            window.webkit.messageHandlers.openO2CmsDocument.postMessage({ "docId": options.documentId, "docTitle": title, "options": JSON.stringify(options) });
         } else {
             window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
         }
