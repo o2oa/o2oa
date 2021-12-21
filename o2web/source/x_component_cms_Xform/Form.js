@@ -743,7 +743,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 return;
             }
             //移动端去掉操作栏
-            if (this.app.mobile && json.type === "Actionbar") {
+            if (layout.mobile && json.type === "Actionbar") {
                 return;
             }
             var module = this._loadModule(json, node);
@@ -1056,10 +1056,10 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             this.businessData.data.isNew = false;
             this.fireEvent("afterPublish", [this, json.data]);
             if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterPublish",[this, json.data]);
-            if (callback) callback();
-            if (this.app.mobile) {
+            // if (callback) callback(); // 传进来不是function
+            if (layout.mobile) {
                 this.app.content.unmask();
-                // console.log('这里是移动端');
+                this.closeWindowOnMobile();
             } else {
                 if (this.businessData.document.title) {
                     this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished + ": “" + this.businessData.document.title + "”", "success");
@@ -1067,20 +1067,22 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished, "success");
                 }
                 this.options.saveOnClose = false;
-            }
-            debugger;
-            if( layout.inBrowser ){
-                try{
-                    if( window.opener && window.opener.o2RefreshCMSView ){
-                        window.opener.o2RefreshCMSView();
-                    }
-                }catch (e) {}
-                window.setTimeout(function () {
+
+                debugger;
+                if( layout.inBrowser ){
+                    try{
+                        if( window.opener && window.opener.o2RefreshCMSView ){
+                            window.opener.o2RefreshCMSView();
+                        }
+                    }catch (e) {}
+                    window.setTimeout(function () {
+                        this.app.close();
+                    }.bind(this), 1500)
+                }else{
                     this.app.close();
-                }.bind(this), 1500)
-            }else{
-                this.app.close();
+                }
             }
+            
         }.bind(this));
 
         //}.bind(this))
@@ -1122,7 +1124,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
     //},
 
     deleteDocumentForMobile: function () {
-        if (this.app.mobile) {
+        if (layout.mobile) {
             this.app.content.mask({
                 "style": {
                     "background-color": "#999",
@@ -1140,7 +1142,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 this.options.autoSave = false;
                 this.options.saveOnClose = false;
                 this.fireEvent("postDelete");
-                this.app.close();
+                this.closeWindowOnMobile();
             }.bind(this));
         }
     },
@@ -1233,7 +1235,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
      * this.form.getApp().appForm.editDocumentForMobile();
      */
     editDocumentForMobile: function () {
-        if (this.app.mobile) {
+        if (layout.mobile) {
             this.app.options.readonly = false;
             this.app.loadDocument(this.app.options);
         }
@@ -1371,6 +1373,42 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         }, function () {
             this.close();
         });
+    },
+    /**
+     * 移动端处理关闭
+     */
+    closeWindowOnMobile: function () {
+        if (window.o2android && window.o2android.closeDocumentWindow) {
+            window.o2android.closeDocumentWindow("");
+        } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeDocumentWindow) {
+            window.webkit.messageHandlers.closeDocumentWindow.postMessage("");
+        } else if (window.wx && window.__wxjs_environment === 'miniprogram') { //微信小程序 关闭页面
+            wx.miniProgram.navigateBack({ delta: 1 });
+        } else if (window.uni && window.uni.navigateBack) { // uniapp 关闭页面
+            window.uni.navigateBack();
+        } else if (this.json.afterProcessAction === "redirect" && this.json.afterProcessRedirectScript && this.json.afterProcessRedirectScript.code) {
+            var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
+            (new URI(url)).go();
+        } else {
+            var uri = new URI(window.location.href);
+            var redirectlink = uri.getData("redirectlink");
+            if (redirectlink) {
+                history.replaceState(null, "work", redirectlink);
+                redirectlink.toURI().go();
+            } else {
+                this.app.close();
+            }
+            // var len = window.history.length;
+            // if (len > 1) {
+            //     history.back();
+            // } else {
+                
+            //         // window.location = o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter");
+            //         history.replaceState(null, "work", o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter"));
+            //         o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter").toURI().go();
+                
+            // }
+        }
     },
 
 
