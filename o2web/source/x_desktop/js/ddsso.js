@@ -63,18 +63,29 @@ o2.addReady(function () {
                                             action.invoke({
                                                 "name": "auth", "async": true, "parameter": { "code": info.code },
                                                 "success": function (json) {
-                                                    //document.all.testaaa.set("value", "auth");
-                                                    // "appMobile.html?app=process.TaskCenter".toURI().go();
-
+                                                    // var ua = navigator.userAgent.toLowerCase();
+                                                    // console.log(ua);
+                                                    // console.log(dd.pc);
+                                                    // console.log(dd.android);
+                                                    // console.log(dd.ios);
                                                     if (redirect) {
-                                                        history.replaceState(null, "page", redirect);
-                                                        redirect.toURI().go();
+                                                        var uri = redirect;
+                                                        if (dd.pc) { // 判断是否是PC端，目前测试这个参数可用
+                                                            uri = redirect.replace("workmobilewithaction.html", "work.html");
+                                                        }
+                                                        history.replaceState(null, "page", uri);
+                                                        uri.toURI().go();
                                                     } else {
-                                                        history.replaceState(null, "page", "../x_desktop/appMobile.html?app=process.TaskCenter");
-                                                        "appMobile.html?app=process.TaskCenter".toURI().go();
+                                                        var uri = "../x_desktop/appMobile.html?app=process.TaskCenter";
+                                                        if (dd.pc) { // 判断是否是PC端，目前测试这个参数可用
+                                                            uri = "../x_desktop/app.html?app=process.TaskCenter"
+                                                        }
+                                                        history.replaceState(null, "page", uri);
+                                                        uri.toURI().go();
                                                     }
 
                                                 }.bind(this), "failure": function (xhr, text, error) {
+                                                    console.log("单点失败。。。。");
                                                     history.replaceState(null, "page", "../x_desktop/appMobile.html?app=process.TaskCenter");
                                                     "appMobile.html?app=process.TaskCenter".toURI().go();
                                                 }.bind(this)
