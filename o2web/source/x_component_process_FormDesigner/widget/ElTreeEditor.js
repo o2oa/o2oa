@@ -312,10 +312,10 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 					this.itemNode.setStyles(this.tree.css.treeItemNode);
 					this.hideItemAction();
 				}
+			}.bind(this),
+			"click": function () {
+				this.editItemProperties();
 			}.bind(this)
-			// "click": function () {
-			// 	this.editItemProperties();
-			// }.bind(this)
 		});
 	},
 	load: function(){
@@ -478,6 +478,7 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 	doAction: function(e){
 		var textNode = e.target;
 		this.editItem(textNode);
+		e.stopPropagation();
 	},
 	hideItemAction: function(){
 		if (this.actionNode) this.actionNode.setStyle("display", "none");
@@ -512,15 +513,15 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 			}
 		}).inject(this.actionNode);
 		
-		var propertyAction = new Element("div", {
-			"styles": this.tree.css.itemPropertyActionNode,
-			"title": o2.LP.process.formAction["property"],
-			"events": {
-				"click": function(e){
-					this.editItemProperties(e);
-				}.bind(this)
-			}
-		}).inject(this.actionNode);
+		// var propertyAction = new Element("div", {
+		// 	"styles": this.tree.css.itemPropertyActionNode,
+		// 	"title": o2.LP.process.formAction["property"],
+		// 	"events": {
+		// 		"click": function(e){
+		// 			this.editItemProperties(e);
+		// 		}.bind(this)
+		// 	}
+		// }).inject(this.actionNode);
 
 		var addAction = new Element("div", {
 			"styles": this.tree.css.itemAddActionNode,
