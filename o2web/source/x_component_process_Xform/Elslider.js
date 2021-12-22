@@ -12,12 +12,22 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elnumber# */
+    /** @lends o2.xApplication.process.Xform.Elslider# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
+        /**
+         * 值改变时触发（使用鼠标拖曳时，只在松开鼠标后触发）。this.event[0]为改变后的值
+         * @event MWF.xApplication.process.Xform.Elslider#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/slider|Slider 滑块的 Events章节}
+         */
+        /**
+         * 数据改变时触发（使用鼠标拖曳时，活动过程实时触发）。this.event[0]为改变后的值
+         * @event MWF.xApplication.process.Xform.Elslider#input
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/slider|Slider 滑块的 Events章节}
+         */
         "elEvents": ["change", "input"]
     },
     /**
