@@ -127,28 +127,28 @@
 			</tr>
 		</table>
 
-		<div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.lazy}}</div>
-		<table>
-			<tr>
-				<td class="editTableTitle">{{$.lp.lazy}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="lazy" value="true" text{($.lazy)?'checked':''}
-						onclick="if (this.checked){ $('text{$.pid}lazyDetail').setStyle('display', '')}"
-					/>{{$.lp.yes}}
-					<input type="radio" name="lazy" value="false" text{(!$.lazy)?'checked':''}
-						onclick="if (this.checked){ $('text{$.pid}lazyDetail').setStyle('display', 'none')}"
-					/>{{$.lp.no}}
-				</td>
-			</tr>
-		</table>
-		<table id="text{$.pid}lazyDetail" style="display: text{($.lazy)?'':'none'};" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-			<tr>
-				<td colspan="2">
-					<div>{{$.lp.loadFunNote}}</div>
-					<div class="MWFFormulaArea" name="loadFun" title="{{$.lp.loadFun}}"></div>
-				</td>
-			</tr>
-		</table>
+<!--		<div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.lazy}}</div>-->
+<!--		<table>-->
+<!--			<tr>-->
+<!--				<td class="editTableTitle">{{$.lp.lazy}}:</td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input type="radio" name="lazy" value="true" text{($.lazy)?'checked':''}-->
+<!--						onclick="if (this.checked){ $('text{$.pid}lazyDetail').setStyle('display', '')}"-->
+<!--					/>{{$.lp.yes}}-->
+<!--					<input type="radio" name="lazy" value="false" text{(!$.lazy)?'checked':''}-->
+<!--						onclick="if (this.checked){ $('text{$.pid}lazyDetail').setStyle('display', 'none')}"-->
+<!--					/>{{$.lp.no}}-->
+<!--				</td>-->
+<!--			</tr>-->
+<!--		</table>-->
+<!--		<table id="text{$.pid}lazyDetail" style="display: text{($.lazy)?'':'none'};" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--			<tr>-->
+<!--				<td colspan="2">-->
+<!--					<div>{{$.lp.loadFunNote}}</div>-->
+<!--					<div class="MWFFormulaArea" name="loadFun" title="{{$.lp.loadFun}}"></div>-->
+<!--				</td>-->
+<!--			</tr>-->
+<!--		</table>-->
 
 		<div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.dragdrop}}</div>
 		<table>

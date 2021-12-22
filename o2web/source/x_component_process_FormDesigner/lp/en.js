@@ -587,7 +587,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowDragNote": "this.event is the incoming node,'return true' means dragging is allowed",
         "allowDropNote": "this.event can get data {draggingNode, dropNode, type }. There are three cases for the type parameter:'prev','inner' and'next', which respectively indicate to be placed in front of the target node, inserted into the target node and Placed after the target node.'return true' means inserting is allowed.",
         "loadFun": "Method of loading subtree data",
-        "loadFunNote": "this.event is the node that was clicked, and isLeaf can be added to the node data that needs to be dynamically loaded, so that no folding icon will appear",
+        "loadFunNote": "this.event.node is the clicked node, this.event.resolve(data) is the callback after the data is loaded, and the data parameter is the subtree data",
         "dataScriptNote": "Return and format of each node:",
         "labelDescription":"Node Text",
         "childrenDescription":"ChildrenDescription",
