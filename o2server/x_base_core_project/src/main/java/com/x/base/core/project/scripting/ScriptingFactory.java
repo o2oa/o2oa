@@ -34,7 +34,7 @@ public class ScriptingFactory {
 
 	public static final String BINDING_NAME_WORKCONTEXT = "java_workContext";
 	public static final String BINDING_NAME_ASSIGNDATA = "java_assignData";
-//	public static final String BINDING_NAME_JAXWSPARAMETERS = "java_jaxwsParameters";
+	public static final String BINDING_NAME_JAXWSPARAMETERS = "java_jaxwsParameters";
 	public static final String BINDING_NAME_JAXWSRESPONSE = "java_jaxwsResponse";
 	public static final String BINDING_NAME_JAXRSPARAMETERS = "java_jaxrsParameters";
 	public static final String BINDING_NAME_JAXRSRESPONSE = "java_jaxrsResponse";
