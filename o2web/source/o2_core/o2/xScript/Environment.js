@@ -185,6 +185,17 @@ MWF.xScript.Environment = function(ev){
 
     //workContext
 
+    var _getWorkContextList = function(method, id, callback, error){
+        var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+        var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+        var list;
+        var p = o2.Actions.get("x_processplatform_assemble_surface")[method](id, function(json){
+            list = json.data;
+            if (cb) cb(list);
+            return list;
+        }, ecb, !!callback);
+        return (!!callback) ? p : list;
+    };
     /**
      * 您可以通过workContext获取和流程相关的流程实例对象数据。
      * @module workContext
@@ -220,6 +231,7 @@ MWF.xScript.Environment = function(ev){
          * var work = this.workContext.getWork();
          */
         "getWork": function(){return ev.work || ev.workCompleted;},
+
         /**
          * 获取当前流程实例所在的活动节点对象：activity对象。
          * @method getActivity
@@ -269,9 +281,9 @@ MWF.xScript.Environment = function(ev){
          * @method getTaskList
          * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithWork|example=Task
          * @static
-         * @param {Function} [callback] 正确获取待办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function|Boolean} [callback] 正确获取待办数组的回调，或者一个布尔值，如果此参数判断为true，则本方法以异步执行，并返回Promise，否则同步执行
          * @param {Function} [error] 获取待办数组出错时的回调。
-         * @return {(Task[])} 待办任务列表.异步请求时返回请求的Promise对象.
+         * @return {(Task[]|Promise)} 待办任务列表，或resolve了待办对象列表的Promise对象.
          * @o2syntax
          * //本样例以同步执行
          * var taskList = this.workContext.getTaskList();
@@ -280,25 +292,32 @@ MWF.xScript.Environment = function(ev){
          * this.workContext.getTaskList( function(taskList){
          *     //taskList 为待办数组
          * });
+         * @o2syntax
+         * //本样例使用Promise
+         * this.workContext.getTaskList(true).then(function(taskList){
+         *     //taskList 为待办数组
+         * });
          */
         "getTaskList": function(callback, error){
-            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
-            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
-            var list;
-            var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(ev.work.id, function(json){
-                list = json.data;
-                if (cb) cb(list);
-            }, ecb, !!cb);
-            return list || p;
+            return _getWorkContextList("listTaskByWork", ev.work.id, callback, error);
+            // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            // var list;
+            // var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(ev.work.id, function(json){
+            //     list = json.data;
+            //     if (cb) cb(list);
+            //     return list;
+            // }, ecb, !!callback);
+            // return (!!callback) ? p : list;
         },
         /**
          * 根据当前工作的job获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
          * @method getTaskListByJob
          * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithJob|example=Task
          * @static
-         * @param {Function} [callback] 正确获取待办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function|Boolean} [callback] 正确获取待办数组的回调，或者一个布尔值，如果此参数判断为true，则本方法以异步执行，并返回Promise，否则同步执行
          * @param {Function} [error] 获取待办数组出错时的回调。
-         * @return {(Task[])} 待办任务列表. 异步请求时返回请求的Promise对象.
+         * @return {(Task[]|Promise)} 待办任务列表，或resolve了待办对象列表的Promise对象.
          * @o2syntax
          * //本样例以同步执行
          * var taskList = this.workContext.getTaskListByJob();
@@ -307,53 +326,66 @@ MWF.xScript.Environment = function(ev){
          * this.workContext.getTaskListByJob( function(taskList){
          *     //taskList 为待办数组
          * });
+         * @o2syntax
+         * //本样例使用Promise
+         * this.workContext.getTaskListByJob(true).then(function(taskList){
+         *     //taskList 为待办数组
+         * });
          */
         "getTaskListByJob": function(callback, error){
-            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
-            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
-            var list;
-            var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskByJob(ev.work.job, function(json){
-                list = json.data;
-                if (cb) cb(list);
-            }, ecb, !!cb);
-            return list || p;
+            return _getWorkContextList("listTaskByJob", ev.work.job, callback, error);
+            // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            // var list;
+            // var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskByJob(ev.work.job, function(json){
+            //     list = json.data;
+            //     if (cb) cb(list);
+            //     return list;
+            // }, ecb, !!callback);
+            // return (!!callback) ? p : list;
         },
 
         /**
          * 获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
          * @method getTaskCompletedList
          * @static
-         * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function|Boolean} [callback] 正确获取已办数组的回调，或者一个布尔值，如果此参数判断为true，则本方法以异步执行，并返回Promise，否则同步执行
          * @param {Function} [error] 获取已办数组出错时的回调。
-         * @return {(TaskCompleted[])} 已办任务列表.  异步请求时返回请求的Promise对象.
+         * @return {(TaskCompleted[]|Promise)} 已办任务列表，或resolve了已办对象列表的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithWork|example=Task
          * @o2syntax
          * //本样例以同步执行
          * var taskCompletedList = this.workContext.getTaskCompletedList();
          * @o2syntax
          * //本样例以异步执行
-         * this.workContext.getTaskCompletedList( function(taskCompletedList){
+         * this.workContext.getTaskCompletedList(function(taskCompletedList){
+         *     //taskCompletedList 为已办数组
+         * });
+         * @o2syntax
+         * //本样例使用Promise
+         * this.workContext.getTaskCompletedList(true).then(function(taskCompletedList){
          *     //taskCompletedList 为已办数组
          * });
          */
         "getTaskCompletedList": function(callback, error){
-            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
-            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
-            var list;
-            var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskcompleted(ev.work.id, function(json){
-                list = json.data;
-                if (cb) cb(list);
-            }, ecb, !!cb);
-            return list || p;
+            return _getWorkContextList("listTaskCompletedByWork", ev.work.id, callback, error);
+            // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            // var list;
+            // var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByWork(ev.work.id, function(json){
+            //     list = json.data;
+            //     if (cb) cb(list);
+            // }, ecb, !!callback);
+            // return (!!callback) ? p : list;
         },
 
         /**
          * 根据当前工作的job获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
          * @method getTaskCompletedListByJob
          * @static
-         * @param {Function} [callback] 正确获取已办数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function|Boolean} [callback] 正确获取已办数组的回调，或者一个布尔值，如果此参数判断为true，则本方法以异步执行，并返回Promise，否则同步执行
          * @param {Function} [error] 获取已办数组出错时的回调。
-         * @return {(TaskCompleted[])} 已办任务列表. 异步请求时返回请求的Promise对象.
+         * @return {(TaskCompleted[]|Promise)} 已办任务列表，或resolve了已办对象列表的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithJob|example=Task
          * @o2syntax
          * //本样例以同步执行
@@ -363,25 +395,31 @@ MWF.xScript.Environment = function(ev){
          * this.workContext.getTaskCompletedListByJob( function(taskCompletedList){
          *     //taskCompletedList 为已办数组
          * });
+         * @o2syntax
+         * //本样例使用Promise
+         * this.workContext.getTaskCompletedListByJob(true).then(function(taskCompletedList){
+         *     //taskCompletedList 为已办数组
+         * });
          */
         "getTaskCompletedListByJob": function(callback, error){
-            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
-            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
-            var list;
-            var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByJob(ev.work.job, function(json){
-                list = json.data;
-                if (cb) cb(list);
-            }, ecb, !!cb);
-            return list || p;
+            return _getWorkContextList("listTaskCompletedByJob", ev.work.job, callback, error);
+            // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            // var list;
+            // var p = o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByJob(ev.work.job, function(json){
+            //     list = json.data;
+            //     if (cb) cb(list);
+            // }, ecb, !!callback);
+            // return (!!callback) ? p : list;
         },
 
         /**
          * @summary 获取当前流程实例的所有待阅对象数组。如果流程实例无待阅，则返回一个空数组。
          * @method getReadList
          * @static
-         * @param {Function} [callback] 正确获取待阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function|Boolean} [callback] 正确获取待阅数组的回调，或者一个布尔值，如果此参数判断为true，则本方法以异步执行，并返回Promise，否则同步执行
          * @param {Function} [error] 获取待阅数组出错时的回调。
-         * @return {(Read[])} 当前流程实例的所有待阅对象数组. 异步请求时返回请求的Promise对象.
+         * @return {(Read[]|Promise)} 当前流程实例的所有待阅对象数组, 或resolve了待阅对象列表的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.ReadAction.get|example=Read
          * @o2syntax
          * //本样例以同步执行
@@ -391,24 +429,31 @@ MWF.xScript.Environment = function(ev){
          * this.workContext.getReadList( function(readList){
          *     //readList 为待阅数组
          * });
+         * @o2syntax
+         * //本样例使用Promise
+         * this.workContext.getReadList(true).then(function(readList){
+         *     //readList 为待阅数组
+         * });
          */
         "getReadList": function(callback, error){
-            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
-            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
-            var list;
-            var p = o2.Actions.get("x_processplatform_assemble_surface").listRead(ev.work.id, function(json){
-                list = json.data;
-                if (cb) cb(list);
-            }, ecb, !!cb);
-            return list || p;
+            return _getWorkContextList("listReadByWork", ev.work.id, callback, error);
+            // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            // var list;
+            // o2.Actions.get("x_processplatform_assemble_surface").listReadByWork(ev.work.id, function(json){
+            //     list = json.data;
+            //     if (cb) cb(list);
+            // }, ecb, !!cb);
+            // return list;
         },
+
         /**
          * @summary 根据当前工作的job获取当前流程实例的所有待阅对象。如果流程实例无待阅，则返回一个空数组。
          * @method getReadListByJob
          * @static
-         * @param {Function} [callback] 正确获取待阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function|Boolean} [callback] 正确获取待阅数组的回调，或者一个布尔值，如果此参数判断为true，则本方法以异步执行，并返回Promise，否则同步执行
          * @param {Function} [error] 获取待阅数组出错时的回调。
-         * @return {(Read[])} 当前流程实例的所有待阅对象数组. 异步请求时返回请求的Promise对象.
+         * @return {(Read[]|Promise)} 当前流程实例的所有待阅对象数组, 或resolve了待阅对象列表的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.ReadAction.listWithJob|example=Read
          * @o2syntax
          * //本样例以同步执行
@@ -418,25 +463,31 @@ MWF.xScript.Environment = function(ev){
          * this.workContext.getReadListByJob( function(readList){
          *     //readList 为待阅数组
          * });
+         * @o2syntax
+         * //本样例使用Promise
+         * this.workContext.getReadListByJob(true).then(function(readList){
+         *     //readList 为待阅数组
+         * });
          */
         "getReadListByJob": function(callback, error){
-            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
-            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
-            var list;
-            var p = o2.Actions.get("x_processplatform_assemble_surface").listReadByJob(ev.work.job, function(json){
-                list = json.data;
-                if (cb) cb(list);
-            }, ecb, !!cb);
-            return list || p;
+            return _getWorkContextList("listReadByJob", ev.work.job, callback, error);
+            // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            // var list;
+            // o2.Actions.get("x_processplatform_assemble_surface").listReadByJob(ev.work.job, function(json){
+            //     list = json.data;
+            //     if (cb) cb(list);
+            // }, ecb, !!cb);
+            // return list;
         },
 
         /**
          * @summary 获取当前流程实例的所有已阅对象。如果流程实例没有已阅，则返回一个空数组。
          * @method getReadCompletedList
          * @static
-         * @param {Function} [callback] 正确获取已阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function|Boolean} [callback] 正确获取已阅数组的回调，或者一个布尔值，如果此参数判断为true，则本方法以异步执行，并返回Promise，否则同步执行
          * @param {Function} [error] 获取已阅数组出错时的回调。
-         * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组. 异步请求时返回请求的Promise对象.
+         * @return {(ReadCompleted[]|Promise)} 当前流程实例的所有已阅对象数组, 或resolve了已阅对象列表的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithWork|example=Read
          * @o2syntax
          * //本样例以同步执行
@@ -446,24 +497,31 @@ MWF.xScript.Environment = function(ev){
          * this.workContext.getReadCompletedList( function(readCompletedList){
          *     //readCompletedList 为已阅数组
          * });
+         * @o2syntax
+         * //本样例使用Promise
+         * this.workContext.getReadCompletedList(true).then(function(readCompletedList){
+         *     //readCompletedList 为已阅数组
+         * });
          */
         "getReadCompletedList": function(callback, error){
-            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
-            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
-            var list;
-            var p = o2.Actions.get("x_processplatform_assemble_surface").listReadcompleted(ev.work.id, function(json){
-                list = json.data;
-                if (cb) cb(list);
-            }, ecb, !!cb);
-            return list || p;
+            return _getWorkContextList("listReadCompletedByWork", ev.work.id, callback, error);
+            // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            // var list;
+            // o2.Actions.get("x_processplatform_assemble_surface").listReadCompletedByWork(ev.work.id, function(json){
+            //     list = json.data;
+            //     if (cb) cb(list);
+            // }, ecb, !!cb);
+            // return list;
         },
+
         /**
          * @summary 根据当前工作的job获取当前流程实例的所有已阅对象。如果流程实例没有已阅，则返回一个空数组。
          * @method getReadCompletedListByJob
          * @static
-         * @param {Function} [callback] 正确获取已阅数组的回调，如果有此参数，本方法以异步执行，否则同步执行
+         * @param {Function|Boolean} [callback] 正确获取已阅数组的回调，或者一个布尔值，如果此参数判断为true，则本方法以异步执行，并返回Promise，否则同步执行
          * @param {Function} [error] 获取已阅数组出错时的回调。
-         * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组. 异步请求时返回请求的Promise对象.
+         * @return {(ReadCompleted[]|Promise)} 当前流程实例的所有已阅对象数组, 或resolve了已阅对象列表的Promise对象.
          * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithJob|example=Read
          * @o2syntax
          * //本样例以同步执行
@@ -473,51 +531,98 @@ MWF.xScript.Environment = function(ev){
          * this.workContext.getReadCompletedListByJob( function(readCompletedList){
          *     //readCompletedList 为已阅数组
          * });
+         * @o2syntax
+         * //本样例使用Promise
+         * this.workContext.getReadCompletedListByJob(true).then(function(readCompletedList){
+         *     //readCompletedList 为已阅数组
+         * });
          */
         "getReadCompletedListByJob": function(callback, error){
-            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
-            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
-            var list;
-            var p = o2.Actions.get("x_processplatform_assemble_surface").listReadCompletedByJob(ev.work.job, function(json){
-                list = json.data;
-                if (cb) cb(list);
-            }, ecb, !!cb);
-            return list || p;
+            return _getWorkContextList("listReadCompletedByJob", ev.work.job, callback, error);
+            // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            // var list;
+            // o2.Actions.get("x_processplatform_assemble_surface").listReadCompletedByJob(ev.work.job, function(json){
+            //     list = json.data;
+            //     if (cb) cb(list);
+            // }, ecb, !!cb);
+            // return list;
         },
 
         /**
-         * @summary 获取当前流程实例的所有Review对象。如果流程实例没有Review，则返回一个空数组。
+         * @summary 根据当前工作的job获取当前流程实例的所有review对象。如果流程实例没有review，则返回一个空数组。
          * @method getReviewList
          * @static
-         * @param {Function} [callback] 正确获取Review数组的回调，如果有此参数，本方法以异步执行，否则同步执行
-         * @param {Function} [error] 获取Review数组出错时的回调。
-         * @return {(Review[])} 当前流程实例的所有Review对象数组. 异步请求时返回请求的Promise对象.
-         * @o2ActionOut x_processplatform_assemble_surface.ReviewAction.get|example=Review
+         * @param {Function|Boolean} [callback] 正确获取review数组的回调，或者一个布尔值，如果此参数判断为true，则本方法以异步执行，并返回Promise，否则同步执行
+         * @param {Function} [error] 获取已阅数组出错时的回调。
+         * @return {(Review[]|Promise)} 当前流程实例的所有review对象数组, 或resolve了review对象列表的Promise对象.
+         * @o2ActionOut x_processplatform_assemble_surface.ReviewAction.listWithJob|example=Review
          * @o2syntax
          * //本样例以同步执行
          * var reviewList = this.workContext.getReviewList();
          * @o2syntax
          * //本样例以异步执行
          * this.workContext.getReviewList( function(reviewList){
-         *     //reviewList review数组
+         *     //reviewList 为review对象数组
+         * });
+         * @o2syntax
+         * //本样例使用Promise
+         * this.workContext.getReviewList(true).then(function(reviewList){
+         *     //reviewList 为review对象数组
          * });
          */
         "getReviewList": function(callback, error){
-            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
-            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
-            var list;
-            var p = o2.Actions.load("x_processplatform_assemble_surface").ReviewAction.listWithJob(ev.work.job, function(json){
-                list = json.data;
-                if (cb) cb(list);
-            }, ecb, !!cb);
-            return list || p;
+            return _getWorkContextList("listReviewByJob", ev.work.job, callback, error);
+            // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            // var list;
+            // o2.Actions.get("x_processplatform_assemble_surface").listReadCompletedByJob(ev.work.job, function(json){
+            //     list = json.data;
+            //     if (cb) cb(list);
+            // }, ecb, !!cb);
+            // return list;
         },
+        /**
+         * @summary 与getReviewList方法相同。
+         * @method getReviewListByJob
+         * @static
+         * @see module:workContext.getReviewList
+         */
         "getReviewListByJob": this.getReviewList,
-
+        /**
+         * @summary getTaskListByJob方法的别名。
+         * @method getJobTaskList
+         * @static
+         * @see module:workContext.getTaskListByJob
+         */
         "getJobTaskList": this.getTaskListByJob,
+        /**
+         * @summary getReadListByJob方法的别名。
+         * @method getJobReadList
+         * @static
+         * @see module:workContext.getReadListByJob
+         */
         "getJobReadList": this.getReadListByJob,
+        /**
+         * @summary getTaskCompletedListByJob方法的别名。
+         * @method getJobTaskCompletedList
+         * @static
+         * @see module:workContext.getTaskCompletedListByJob
+         */
         "getJobTaskCompletedList": this.getTaskCompletedListByJob,
+        /**
+         * @summary getReadCompletedListByJob方法的别名。
+         * @method getJobReadCompletedList
+         * @static
+         * @see module:workContext.getReadCompletedListByJob
+         */
         "getJobReadCompletedList": this.getReadCompletedListByJob,
+        /**
+         * @summary 与getReviewList方法相同。
+         * @method getJobReviewList
+         * @static
+         * @see module:workContext.getReviewList
+         */
         "getJobReviewList": this.getReviewList,
 
         /**
@@ -646,13 +751,13 @@ MWF.xScript.Environment = function(ev){
                 //     }
                 // },
                 "creatorCompany": {"get": function(){
-                    if (this.creatorUnitLevel || this.creatorUnitLevelName){
-                        var level = (this.creatorUnitLevel || this.creatorUnitLevelName).split("/");
-                        return level[0];
-                    }else{
-                        return this.creatorUnitDn.substring(0, this.creatorUnitDn.indexOf("@"));
-                    }
-                }}
+                        if (this.creatorUnitLevel || this.creatorUnitLevelName){
+                            var level = (this.creatorUnitLevel || this.creatorUnitLevelName).split("/");
+                            return level[0];
+                        }else{
+                            return this.creatorUnitDn.substring(0, this.creatorUnitDn.indexOf("@"));
+                        }
+                    }}
             };
             MWF.defineProperties(work, o);
         }
@@ -1687,12 +1792,12 @@ MWF.xScript.Environment = function(ev){
         "lookupV1": function(view, callback){
             getLookupAction(function(){
                 lookupAction.invoke({"name": "lookup","async": true, "parameter": {"view": view.view, "application": view.application},"success": function(json){
-                    var data = {
-                        "grid": json.data.grid,
-                        "groupGrid": json.data.groupGrid
-                    };
-                    if (callback) callback(data);
-                }.bind(this)});
+                        var data = {
+                            "grid": json.data.grid,
+                            "groupGrid": json.data.groupGrid
+                        };
+                        if (callback) callback(data);
+                    }.bind(this)});
             }.bind(this));
         },
         "select": function(view, callback, options){
@@ -2329,28 +2434,28 @@ MWF.xScript.Environment = function(ev){
          * var app = this.form.getApp();
          * @example
          * var app = this.form.getApp();
-        //所有component对象都有以下方法。
-        app.openInNewWindow();  //在新窗口中打开当前应用
-        app.setCurrent();   //将当前应用设置为激活状态
-        app.minSize();      //应用窗口最小化
-        app.maxSize();      //应用窗口最大化
-        app.restoreSize();  //应用窗口还原
-        app.refresh();      //刷新应用
-        app.close();        //关闭应用
-        app.setTitle(str);  //设置应用标题
-        app.dialog(option); //弹出一个对话框（详见MWF.widget.Dialog）
+         //所有component对象都有以下方法。
+         app.openInNewWindow();  //在新窗口中打开当前应用
+         app.setCurrent();   //将当前应用设置为激活状态
+         app.minSize();      //应用窗口最小化
+         app.maxSize();      //应用窗口最大化
+         app.restoreSize();  //应用窗口还原
+         app.refresh();      //刷新应用
+         app.close();        //关闭应用
+         app.setTitle(str);  //设置应用标题
+         app.dialog(option); //弹出一个对话框（详见MWF.widget.Dialog）
 
-        //显示一个通知消息
-        app.notice(content, type, target, where, offset);
+         //显示一个通知消息
+         app.notice(content, type, target, where, offset);
 
-        //显示一个确认框
-        app.confirm(type, e, title, text, width, height, ok, cancel);
+         //显示一个确认框
+         app.confirm(type, e, title, text, width, height, ok, cancel);
 
-        //弹出一个信息框
-        app.alert(type, e, title, text, width, height);
+         //弹出一个信息框
+         app.alert(type, e, title, text, width, height);
 
-        //为应用绑定一个事件
-        app.addEvent(type, fun);
+         //为应用绑定一个事件
+         app.addEvent(type, fun);
          */
         "getApp": function(){return _form.app;},
 
@@ -2414,7 +2519,7 @@ MWF.xScript.Environment = function(ev){
                 return _form.all[name];
             }
             // return (_form.all) ? _form.all[name] : null;
-         },
+        },
 
         /**
          * 获取表单中可输入的字段元素对象。<br/>
@@ -2508,33 +2613,33 @@ MWF.xScript.Environment = function(ev){
 
 
 
-    /**对当前表单打开的流程实例进行流转。<b>（仅流程表单中可用）</b><br/>
-     * 可以通过this.workContext.getControl().allowProcessing来判断当前用户是否有权限进行流转。<br/>
-     * this.form.process()会触发 beforeSave、afterSave、beforeProcess、afterProcess事件，因此在上述事件中不允许使用本方法。
-     * @method process
-     * @static
-     * @param {Object} [option] - 流程的相关数据，如果不带此参数，则弹出路由选择和意见填写框<br/>
-     * 格式如下：
-     <pre><code class="language-js">
-     {
+        /**对当前表单打开的流程实例进行流转。<b>（仅流程表单中可用）</b><br/>
+         * 可以通过this.workContext.getControl().allowProcessing来判断当前用户是否有权限进行流转。<br/>
+         * this.form.process()会触发 beforeSave、afterSave、beforeProcess、afterProcess事件，因此在上述事件中不允许使用本方法。
+         * @method process
+         * @static
+         * @param {Object} [option] - 流程的相关数据，如果不带此参数，则弹出路由选择和意见填写框<br/>
+         * 格式如下：
+         <pre><code class="language-js">
+         {
             "routeName": "", //流转到下一步要选择的路由名称
             "opinion": "", //流转意见
             "callback": function(){} //流转完成后的回调方法
       }
-     </code></pre>
-     * @example
-     //不带参数，弹出路由选择和意见填写框
-     this.form.process();
-     * @example
-     //带参数，流转
-     this.form.process({
+         </code></pre>
+         * @example
+         //不带参数，弹出路由选择和意见填写框
+         this.form.process();
+         * @example
+         //带参数，流转
+         this.form.process({
             "routeName": "送审批",
             "opinion": "同意",
             "callback": function(json){
                 this.form.notice("process success", "success");
             }.bind(this)
       });
-     */
+         */
         "process": function(option){
             var op = _form.getOpinion();
             var mds = op.medias;
@@ -3596,80 +3701,80 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
                 }},
 
             "add": {"value": function(newKey, newValue, overwrite, noreset){
-                if (arguments.length<2 || newKey.indexOf("..")===-1){
-                    var flag = true;
-                    var type = typeOf(data);
-                    if (type==="array"){
-                        if (arguments.length<2){
-                            data.push(newKey);
-                            newValue = newKey;
-                            newKey = data.length-1;
-                        }else{
-                            if (!newKey && newKey!==0){
-                                data.push(newValue);
+                    if (arguments.length<2 || newKey.indexOf("..")===-1){
+                        var flag = true;
+                        var type = typeOf(data);
+                        if (type==="array"){
+                            if (arguments.length<2){
+                                data.push(newKey);
+                                newValue = newKey;
                                 newKey = data.length-1;
                             }else{
-                                if (newKey>=data.length){
+                                if (!newKey && newKey!==0){
                                     data.push(newValue);
                                     newKey = data.length-1;
                                 }else{
-                                    if (overwrite) data[newKey] = newValue;
-                                    newValue = data[newKey];
-                                    flag = false;
+                                    if (newKey>=data.length){
+                                        data.push(newValue);
+                                        newKey = data.length-1;
+                                    }else{
+                                        if (overwrite) data[newKey] = newValue;
+                                        newValue = data[newKey];
+                                        flag = false;
+                                    }
                                 }
                             }
-                        }
-                        if (flag){
-                            var o = {};
-                            o[newKey] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, newKey, this]),"set": setter.apply(this, [data, callback, newKey, this])};
-                            MWF.defineProperties(this, o);
-                        }
-                        if (!noreset) this[newKey] = newValue;
-                    }else if (type==="object"){
-                        if (!this.hasOwnProperty(newKey)){
-                            if (!data[newKey] || overwrite){
-                                data[newKey] = newValue;
-                            }
-                            newValue = data[newKey];
-
                             if (flag){
                                 var o = {};
                                 o[newKey] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, newKey, this]),"set": setter.apply(this, [data, callback, newKey, this])};
                                 MWF.defineProperties(this, o);
                             }
                             if (!noreset) this[newKey] = newValue;
-                        }else{
-                            if (!Object.getOwnPropertyDescriptor(this, newKey).get){
-                                var o = {};
-                                o[newKey] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, newKey, this]),"set": setter.apply(this, [data, callback, newKey, this])};
-                                MWF.defineProperties(this, o);
-                            }
-                            if (overwrite){
-                                data[newKey] = newValue;
-                                if (!noreset)  this[newKey] = newValue;
+                        }else if (type==="object"){
+                            if (!this.hasOwnProperty(newKey)){
+                                if (!data[newKey] || overwrite){
+                                    data[newKey] = newValue;
+                                }
+                                newValue = data[newKey];
+
+                                if (flag){
+                                    var o = {};
+                                    o[newKey] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, newKey, this]),"set": setter.apply(this, [data, callback, newKey, this])};
+                                    MWF.defineProperties(this, o);
+                                }
+                                if (!noreset) this[newKey] = newValue;
+                            }else{
+                                if (!Object.getOwnPropertyDescriptor(this, newKey).get){
+                                    var o = {};
+                                    o[newKey] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, newKey, this]),"set": setter.apply(this, [data, callback, newKey, this])};
+                                    MWF.defineProperties(this, o);
+                                }
+                                if (overwrite){
+                                    data[newKey] = newValue;
+                                    if (!noreset)  this[newKey] = newValue;
+                                }
                             }
                         }
+                        return this[newKey];
+                    }else{
+                        var keys = newKey.split("..");
+                        var kk = keys.shift();
+                        var d = this.add(kk, {}, false, true);
+                        if (keys.length) return d.add(keys.join(".."), newValue, overwrite, noreset);
+                        return d;
                     }
-                    return this[newKey];
-                }else{
-                    var keys = newKey.split("..");
-                    var kk = keys.shift();
-                    var d = this.add(kk, {}, false, true);
-                    if (keys.length) return d.add(keys.join(".."), newValue, overwrite, noreset);
-                    return d;
-                }
-            }},
+                }},
             "check": {"value": function(kk, v){
-                this.add(kk, v||"", false, true);
-            }},
+                    this.add(kk, v||"", false, true);
+                }},
             "del": {"value": function(delKey){
-                if (!this.hasOwnProperty(delKey)) return null;
-                // delete data[delKey];
-                // delete this[delKey];
+                    if (!this.hasOwnProperty(delKey)) return null;
+                    // delete data[delKey];
+                    // delete this[delKey];
                     data[delKey] = "";
                     this[delKey] = "";
-                return this;
-            }}
+                    return this;
+                }}
         };
         MWF.defineProperties(this, methods);
 
@@ -4110,4 +4215,3 @@ MWF.xScript.createDict = function(application){
         this.destory = this["delete"];
     }
 };
-

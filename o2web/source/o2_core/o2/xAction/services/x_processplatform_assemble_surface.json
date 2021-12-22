@@ -195,6 +195,7 @@
   "listReviewFilterCountFilter": {"uri": "/jaxrs/review/filter/attribute/filter", "method": "POST"},
   "listReviewMyFilterPaging": {"uri": "/jaxrs/review/list/my/filter/{page}/size/{size}", "method": "POST"},
   "listReviewMyPaging": {"uri": "/jaxrs/review/list/my/paging/{page}/size/{size}"},
+  "listReviewByJob": {"uri": "/jaxrs/review/list/job/{job}"},
 
   "manageDeleteReview": {"uri": "/jaxrs/review/{id}/application/{applicationFlag}/manage", "method": "DELETE"},
   "addWorkCompletedReview": {"uri": "/jaxrs/review/create/workcompleted", "method": "POST"},
