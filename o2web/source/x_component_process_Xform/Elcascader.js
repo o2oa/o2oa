@@ -18,6 +18,41 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
+        /**
+         * 当获得焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elcascader#focus
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/cascader|级联选择框的Cascader Events章节}
+         */
+        /**
+         * 当失去焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elcascader#blur
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/cascader|级联选择框的Cascader Events章节}
+         */
+        /**
+         * 当选中节点变化时触发。this.event[0]为选中节点的值
+         * @event MWF.xApplication.process.Xform.Elcascader#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/cascader|级联选择框的Cascader Events章节}
+         */
+        /**
+         * 下拉框出现/隐藏时触发。this.event[0]的值：出现则为 true，隐藏则为 false
+         * @event MWF.xApplication.process.Xform.Elcascader#visible-change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/cascader|级联选择框的Cascader Events章节}
+         */
+        /**
+         * 在多选模式下，移除Tag时触发。this.event[0]为移除的Tag对应的节点的值
+         * @event MWF.xApplication.process.Xform.Elcascader#remove-tag
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/cascader|级联选择框的Cascader Events章节}
+         */
+        /**
+         * 当展开节点发生变化时触发。this.event[0]指向各父级选项值组成的数组
+         * @event MWF.xApplication.process.Xform.Elcascader#expand-change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/cascader|级联选择框的Cascader Events章节}
+         */
+        /**
+         * 过滤函数调用之前的钩子函数。this.event[0]指向value参数：如果该函数的返回值是 false 或者是一个被拒绝的Promise，那么接下来的过滤便不会执行。
+         * @event MWF.xApplication.process.Xform.Elcascader#before-filter
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/cascader|级联选择框的Cascader Events章节}
+         */
         "elEvents": ["focus", "blur", "change", "visible-change", "remove-tag", "expand-change", "before-filter"]
     },
     _loadNode: function(){

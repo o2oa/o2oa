@@ -18,6 +18,21 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
+        /**
+         * 当 input 获得焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elnumber#focus
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/input-number|计数器的Events章节}
+         */
+        /**
+         * 当 input 失去焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elnumber#blur
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/input-number|计数器的Events章节}
+         */
+        /**
+         * 绑定值被改变时触发。this.event[0]为组件的currentValue，this.event[1]为组件的oldValue
+         * @event MWF.xApplication.process.Xform.Elnumber#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/input-number|计数器的Events章节}
+         */
         "elEvents": ["focus", "blur", "change"]
     },
     /**

@@ -1,5 +1,5 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
-/** @class Elinput 基于Element UI的输入框组件。
+/** @class Elinput 基于Element UI的颜色选择组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -18,7 +18,19 @@ MWF.xApplication.process.Xform.Elcolorpicker = MWF.APPElcolorpicker =  new Class
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
-        "elEvents": ["change"]
+
+        /**
+         * 	当绑定值变化时触发。this.event[0]为当前值
+         * @event MWF.xApplication.process.Xform.Elcolorpicker#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/color-picker|颜色选择组件的Events章节}
+         */
+
+        /**
+         * 面板中当前显示的颜色发生改变时触发。this.event[0]当前显示的颜色值
+         * @event MWF.xApplication.process.Xform.Elcolorpicker#active-change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/color-picker|颜色选择组件的Events章节}
+         */
+        "elEvents": ["change","active-change"]
     },
     _appendVueData: function(){
         if (!this.json.isReadonly) this.json.isReadonly = false;
