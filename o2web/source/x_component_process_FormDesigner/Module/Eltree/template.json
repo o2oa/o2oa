@@ -1,0 +1,108 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Eltree",
+	"indent": 16,
+	"emptyText": "",
+	"highlightCurrent": false,
+	"nodeKey": "id",
+	"renderAfterExpand": true,
+	"defaultExpandAll": false,
+	"expandOnClickNode": true,
+	"checkOnClickNode": false,
+	"showCheckbox": false,
+	"checkStrictly": false,
+	"accordion": false,
+//	"lazy": false,
+	"draggable": false,
+	"dataType": "json",
+	"dataJson": [{
+		"id": "1",
+		"label": "root",
+		"children": []
+	}],
+	"dataScript": {
+		"code": "",
+		"html": ""
+	},
+	"defaultProps": {
+		"children": "children",
+		"label": "label"
+	},
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+	"vueSlot": "",
+	"elProperties": {},
+	"elStyles": {},
+	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
+		"node-click": {
+			"code": "",
+			"html": ""
+		},
+		"node-contextmenu": {
+			"code": "",
+			"html": ""
+		},
+		"check-change": {
+			"code": "",
+			"html": ""
+		},
+		"check": {
+			"code": "",
+			"html": ""
+		},
+		"current-change": {
+			"code": "",
+			"html": ""
+		},
+		"node-expand": {
+			"code": "",
+			"html": ""
+		},
+		"node-collapse": {
+			"code": "",
+			"html": ""
+		},
+		"node-drag-start": {
+			"code": "",
+			"html": ""
+		},
+		"node-drag-enter": {
+			"code": "",
+			"html": ""
+		},
+		"node-drag-leave": {
+			"code": "",
+			"html": ""
+		},
+		"node-drag-over": {
+			"code": "",
+			"html": ""
+		},
+		"node-drag-end": {
+			"code": "",
+			"html": ""
+		},
+		"node-drop": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}
