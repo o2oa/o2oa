@@ -1,0 +1,55 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Eldropdown",
+	"description": "",
+	"isReadonly" : false,
+	"selectType": "date",
+	"format": "yyyy-MM-dd",
+	"isRange": false,
+	"disabled": false,
+	"editable": false,
+	"clearable": false,
+	"size" : "default",
+	"firstDayOfWeek" : "7",
+	"prefixIcon": "",
+	"rangeSeparator": MWF.xApplication.process.FormDesigner.LP.propertyTemplate.to,
+	"startPlaceholder": MWF.xApplication.process.FormDesigner.LP.propertyTemplate.startDate,
+	"endPlaceholder": MWF.xApplication.process.FormDesigner.LP.propertyTemplate.endDate,
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+	"vueSlot": "",
+	"elProperties": {},
+	"elStyles": {},
+	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
+		"change": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}
