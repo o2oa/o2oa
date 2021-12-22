@@ -290,6 +290,7 @@
   "listAttachments": {"uri": "/jaxrs/attachment/list/workorworkcompleted/{workOrWorkCompleted}"},
   "listTaskcompleted": {"uri": "/jaxrs/taskcompleted/list/workorworkcompleted/{workOrWorkCompleted}"},
   "listReadcompleted": {"uri": "/jaxrs/readcompleted/list/workorworkcompleted/{workOrWorkCompleted}"},
+  "listRead": {"uri": "/jaxrs/read/list/workorworkcompleted/{workOrWorkCompleted}"},
   "getWorkControl": {"uri": "/jaxrs/control/workorworkcompleted/{workOrWorkCompleted}"},
   "getWorkForm": {"uri": "/jaxrs/form/workorworkcompleted/{workOrWorkCompleted}"},
   "getWorkFormMobile": {"uri": "/jaxrs/form/workorworkcompleted/{workOrWorkCompleted}/mobile"},
