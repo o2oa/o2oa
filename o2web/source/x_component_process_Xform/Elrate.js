@@ -1,5 +1,5 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
-/** @class Elinput 基于Element UI的输入框组件。
+/** @class Elinput 基于Element UI的评分组件。
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -18,6 +18,11 @@ MWF.xApplication.process.Xform.Elrate = MWF.APPElrate =  new Class(
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
+        /**
+         * 分值改变时触发	。this.event[0]为改变后的分值
+         * @event MWF.xApplication.process.Xform.Elrate#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/rate|评分组件的Events章节}
+         */
         "elEvents": ["change"]
     },
     _appendVueData: function(){

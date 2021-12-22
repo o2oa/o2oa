@@ -1672,7 +1672,7 @@
  */
 
 /**
- * 更新指定表中所有行的数据。
+ * 删除指定表中所有行的数据。
  * @method deleteAllRow
  * @methodOf module:server.Table
  * @instance

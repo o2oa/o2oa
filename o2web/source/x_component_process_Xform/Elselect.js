@@ -18,6 +18,36 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
+        /**
+         * 当 input 获得焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elselect#focus
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
+        /**
+         * 当 input 失去焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elselect#blur
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
+        /**
+         * 选中值发生变化时触发。this.event[0]为组件目前的选中值
+         * @event MWF.xApplication.process.Xform.Elselect#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
+        /**
+         * 下拉框出现/隐藏时触发。this.event[0]的值出现则为 true，隐藏则为 false
+         * @event MWF.xApplication.process.Xform.Elselect#visible-change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
+        /**
+         * 多选模式下移除tag时触发。this.event[0]为移除的tag值
+         * @event MWF.xApplication.process.Xform.Elselect#remove-tag
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
+        /**
+         * 可清空的单选模式下用户点击清空按钮时触发。
+         * @event MWF.xApplication.process.Xform.Elselect#clear
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
         "elEvents": ["focus", "blur", "change", "visible-change", "remove-tag", "clear"]
     },
     _loadNode: function(){
