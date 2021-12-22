@@ -592,8 +592,9 @@ MWF.xScript.Environment = function(ev){
             var p = o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.listWithJob(ev.work.job, function(json){
                 list = json.data;
                 if (cb) cb(list);
-            }, ecb, !!cb);
-            return list || p;
+                return list;
+            }, ecb, !!callback);
+            return (callback) ? p : list;
         },
         /**
          * @summary 获取当前待办的可选路由。与task对象中的routeNameList取值相同。
