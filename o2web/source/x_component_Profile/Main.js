@@ -707,7 +707,7 @@ MWF.xApplication.Profile.Main = new Class({
         this.passwordInputNode.addEvents({
             "blur": function(){this.removeClass("o2_profile_inforContentInput_focus mainColor_border mainColor_color");},
             "focus": function(){this.addClass("o2_profile_inforContentInput_focus mainColor_border mainColor_color");},
-            "keyup" : function(){ this.checkPassowrdStrength( encodeURIComponent(this.passwordInputNode.get("value")) ) }.bind(this)
+            "keyup" : function(){ this.checkPassowrdStrength( this.passwordInputNode.get("value")) }.bind(this)
         });
         this.morePasswordInputNode.addEvents({
             "blur": function(){this.removeClass("o2_profile_inforContentInput_focus mainColor_border mainColor_color");},
