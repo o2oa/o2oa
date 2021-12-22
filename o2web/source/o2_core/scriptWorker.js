@@ -232,11 +232,11 @@ layout.addReady(function(){
     };
     _worker.getServiceCompletionEnvironment = function() {
         var runtime = "service";
-        return _worker.createEnvironment(runtime, "../x_desktop/js/initalServiceScriptSubstitute.js");
+        return _worker.createEnvironment(runtime, "../x_desktop/js/initalServiceScriptText.js");
     };
     _worker.getServerCompletionEnvironment = function() {
         var runtime = "server";
-        return _worker.createEnvironment(runtime, "../x_desktop/js/initalScriptSubstitute.js");
+        return _worker.createEnvironment(runtime, "../x_desktop/js/initalScriptText.js");
     };
     _worker.getDefaultCompletionEnvironment = function(){
         var runtime = "web";
