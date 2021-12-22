@@ -125,14 +125,14 @@ MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
         if( this.json.showCheckbox && this.json.defaultCheckedKeys && this.json.defaultCheckedKeys.code ){
             this.json.defaultCheckedKeys = this.form.Macro.fire(this.json.defaultCheckedKeys.code, this);
         }
-        if( this.json.lazy && this.json.loadFun && this.json.loadFun.code  ){
-            this.json.lazyLoadFun = function(node, resolve){
-                return this.form.Macro.fire(this.json.loadFun.code, this, {
-                    node: node,
-                    resolve: resolve
-                });
-            }.bind(this)
-        }
+        // if( this.json.lazy && this.json.loadFun && this.json.loadFun.code  ){
+        //     this.json.lazyLoadFun = function(node, resolve){
+        //         return this.form.Macro.fire(this.json.loadFun.code, this, {
+        //             node: node,
+        //             resolve: resolve
+        //         });
+        //     }.bind(this)
+        // }
         if( this.json.draggable ){
             if( this.json.allowDrag && this.json.allowDrag.code ){
                 this.json.allowDragFun = function(node){
@@ -185,12 +185,12 @@ MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
                 html += " :default-checked-keys=\"defaultCheckedKeys\"";
             }
         }
-        if( this.json.lazy ){
-            html += " :lazy=\"lazy\"";
-            if( this.json.loadFun && this.json.loadFun.code ){
-                html += " :load=\"lazyLoadFun\"";
-            }
-        }
+        // if( this.json.lazy ){
+        //     html += " :lazy=\"lazy\"";
+        //     if( this.json.loadFun && this.json.loadFun.code ){
+        //         html += " :load=\"lazyLoadFun\"";
+        //     }
+        // }
         if( this.json.draggable ){
             html += " :draggable=\"draggable\"";
             if( this.json.allowDrag && this.json.allowDrag.code ){

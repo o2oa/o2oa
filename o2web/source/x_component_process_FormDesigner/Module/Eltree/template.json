@@ -13,7 +13,7 @@
 	"showCheckbox": false,
 	"checkStrictly": false,
 	"accordion": false,
-	"lazy": false,
+//	"lazy": false,
 	"draggable": false,
 	"dataType": "json",
 	"dataJson": [{
