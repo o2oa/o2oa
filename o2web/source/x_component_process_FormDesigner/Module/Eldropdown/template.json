@@ -11,6 +11,18 @@
 	"buttonType": "",
 	"show-timeout": 250,
 	"hide-timeout": 150,
+	"dataType": "json",
+	"dataJson": [{
+		"label": "[none]",
+		"command": "",
+		"disabled": false,
+		"divided": false,
+		"icon":""
+	}],
+	"dataScript": {
+		"code": "",
+		"html": ""
+	},
 	"vueData": {},
 	"vueMethods": {},
 	"vueCss": {},

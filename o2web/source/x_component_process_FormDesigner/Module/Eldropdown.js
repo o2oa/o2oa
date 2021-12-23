@@ -38,6 +38,10 @@ MWF.xApplication.process.FormDesigner.Module.Eldropdown = MWF.FCEldropdown = new
 		}else{
 			html += this.getButtonHtml();
 		}
+		html += "<el-dropdown-menu slot=\"dropdown\">";
+		html += "	<el-dropdown-item></el-dropdown-item>";
+		html += "</el-dropdown-menu>"
+
 		html += "</el-dropdown>";
 		return html;
 	},

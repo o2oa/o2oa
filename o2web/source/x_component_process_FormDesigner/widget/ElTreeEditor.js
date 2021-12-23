@@ -83,8 +83,13 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor = new Class({
 			var obj = Object.clone(this.tree.nodejson);
 			this.data.push(obj);
 			var treeNode = this.tree.appendChild(obj);
+
+			//if (!this.options.expand) this.tree.expandOrCollapseNode(this);
 			treeNode.selectNode();
-			
+			treeNode.showItemAction();
+
+			treeNode.editItemProperties();
+
 			var textDivNode = treeNode.textNode.getElement("div");
 			treeNode.editItem(textDivNode);
 		} 
@@ -215,13 +220,13 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree = new Class({
 	},
 	expand: function(treeNode){
 		if (this.fireEvent("queryExpand", [treeNode])){
-			treeNode.childrenNode.setStyle("display", "block");
+			if(treeNode.childrenNode)treeNode.childrenNode.setStyle("display", "block");
 		}
 		this.fireEvent("postExpand", [treeNode]);
 	},
 	collapse: function(treeNode){
 		if (this.fireEvent("queryCollapse", [treeNode])){
-            treeNode.childrenNode.setStyle("display", "none");
+			if(treeNode.childrenNode)treeNode.childrenNode.setStyle("display", "none");
         }
 		this.fireEvent("postCollapse", [treeNode]);
 	},
