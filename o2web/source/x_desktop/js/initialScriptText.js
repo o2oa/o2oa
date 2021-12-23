@@ -91,7 +91,7 @@ var library = {
                 return -1;
             }
         }};
-    library.defineProperties(Array.prototype, o);
+    Object.defineProperties(Array.prototype, o);
 })();
 bind.library = library;
 
@@ -236,7 +236,7 @@ bind.define = function(name, fun, overwrite){
     if (overwrite===false) over = false;
     var o = {};
     o[name] = {"value": fun, "configurable": over};
-    library.defineProperties(bind, o);
+    Object.defineProperties(bind, o);
 }
 
 //restful服务Action
@@ -1548,15 +1548,15 @@ bind.org = {
         return o;
     }
 };
-library.defineProperties(bind.org, {
-    "oGroup": { "get": function(){return bind.java_resources.getOrganization().group()} },
-    "oIdentity": { "get": function(){return bind.java_resources.getOrganization().identity()} },
-    "oPerson": { "get": function(){return bind.java_resources.getOrganization().person()} },
-    "oPersonAttribute": { "get": function(){return bind.java_resources.getOrganization().personAttribute()} },
-    "oRole": { "get": function(){return bind.java_resources.getOrganization().role()} },
-    "oUnit": { "get": function(){return bind.java_resources.getOrganization().unit()} },
-    "oUnitAttribute": { "get": function(){return bind.java_resources.getOrganization().unitAttribute()} },
-    "oUnitDuty": { "get": function(){return bind.java_resources.getOrganization().unitDuty()} }
+Object.defineProperties(bind.org, {
+    "oGroup": { "configurable": true, "get": function(){return bind.java_resources.getOrganization().group()} },
+    "oIdentity": { "configurable": true, "get": function(){return bind.java_resources.getOrganization().identity()} },
+    "oPerson": { "configurable": true, "get": function(){return bind.java_resources.getOrganization().person()} },
+    "oPersonAttribute": { "configurable": true, "get": function(){return bind.java_resources.getOrganization().personAttribute()} },
+    "oRole": { "configurable": true, "get": function(){return bind.java_resources.getOrganization().role()} },
+    "oUnit": { "configurable": true, "get": function(){return bind.java_resources.getOrganization().unit()} },
+    "oUnitAttribute": { "configurable": true, "get": function(){return bind.java_resources.getOrganization().unitAttribute()} },
+    "oUnitDuty": { "configurable": true, "get": function(){return bind.java_resources.getOrganization().unitDuty()} }
 });
 
 //定义所需的服务
@@ -3047,7 +3047,7 @@ bind.workContext = {
     "getControl": function(){return null;},
     "getInquiredRouteList": function(){return null;}
 };
-
+bind.workContent = bind.workContext;
 //person, 直接注入，oauth配置和默认生成口令脚本中
 /**
  * 在流程事件、流程路由事件、流程活动事件中通过this.data获取流程实例的业务数据。（内容管理无后台脚本）。<br/>
@@ -3133,7 +3133,8 @@ bind.assginData = {     //java_assginData 应用调用活动的创建的流程�
         bind.java_assginData.set(JSON.stringify(data || this.data));
     }
 };
-library.defineProperties(bind.assginData, {"data": {
+Object.defineProperties(bind.assginData, {"data": {
+        "configurable": true,
         "get": function(){
             if (this_data) return this._data;
             return JSON.parse(bind.java_assginData.get());
@@ -3491,8 +3492,9 @@ bind.request = {
  * @o2syntax
  * var req = this.request.value;
  */
-library.defineProperties(bind, {
+Object.defineProperties(bind, {
     "requestData": {
+        "configurable": true,
         "get": function(){return bind.request.getBody();}
     }
 });
@@ -3578,12 +3580,12 @@ bind.expire = {
 };
 
 var o= {
-    "context": { "get": function(){return ((bind.java_resources) ? bind.java_resources.getContext() : null)} },
-    "applications": { "get": function(){return ((bind.java_resources) ? bind.java_resources.getApplications() : null)} },
-    "organization": { "get": function(){return ((bind.java_resources) ? bind.java_resources.getOrganization() : null)} },
-    "service": { "get": function(){return ((bind.java_resources) ? bind.java_resources.getWebservicesClient() : null)} },
-    "currentPerson": { "get": function(){return (bind.java_effectivePerson || null)} },
-    "effectivePerson": { "get": function(){return (bind.java_effectivePerson || null)} },
-    "resources": { "get": function(){return (bind.java_resources || null)} },
+    "context": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getContext() : null)} },
+    "applications": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getApplications() : null)} },
+    "organization": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getOrganization() : null)} },
+    "service": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getWebservicesClient() : null)} },
+    "currentPerson": { "configurable": true, "get": function(){return (bind.java_effectivePerson || null)} },
+    "effectivePerson": { "configurable": true, "get": function(){return (bind.java_effectivePerson || null)} },
+    "resources": { "configurable": true, "get": function(){return (bind.java_resources || null)} },
 }
-library.defineProperties(bind, o);
+Object.defineProperties(bind, o);

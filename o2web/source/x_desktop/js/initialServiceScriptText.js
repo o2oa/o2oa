@@ -697,14 +697,14 @@ bind.org = {
     }
 };
 library.defineProperties(bind.org, {
-    "oGroup": { "get": function(){return bind.organization.group()} },
-    "oIdentity": { "get": function(){return bind.organization.identity()} },
-    "oPerson": { "get": function(){return bind.organization.person()} },
-    "oPersonAttribute": { "get": function(){return bind.organization.personAttribute()} },
-    "oRole": { "get": function(){return bind.organization.role()} },
-    "oUnit": { "get": function(){return bind.organization.unit()} },
-    "oUnitAttribute": { "get": function(){return bind.organization.unitAttribute()} },
-    "oUnitDuty": { "get": function(){return bind.organization.unitDuty()} }
+    "oGroup": { "configurable": true, "get": function(){return bind.organization.group()} },
+    "oIdentity": { "configurable": true, "get": function(){return bind.organization.identity()} },
+    "oPerson": { "configurable": true, "get": function(){return bind.organization.person()} },
+    "oPersonAttribute": { "configurable": true, "get": function(){return bind.organization.personAttribute()} },
+    "oRole": { "configurable": true, "get": function(){return bind.organization.role()} },
+    "oUnit": { "configurable": true, "get": function(){return bind.organization.unit()} },
+    "oUnitAttribute": { "configurable": true, "get": function(){return bind.organization.unitAttribute()} },
+    "oUnitDuty": { "configurable": true, "get": function(){return bind.organization.unitDuty()} }
 });
 
 //定义所需的服务
@@ -1060,17 +1060,18 @@ var response = {
 }
 library.defineProperties(response, {
     "customResponse": {
+        "configurable": true,
         "get": function(){ return bind.java_customResponse || null }
     }
 });
 
 
 var o= {
-    "entityManager": { "get": function(){return null;} },
-    "context": { "get": function(){return ((bind.java_resources) ? bind.java_resources.getContext() : null)} },
-    "applications": { "get": function(){return ((bind.java_resources) ? bind.java_resources.getApplications() : null)} },
-    "organization": { "get": function(){return ((bind.java_resources) ? bind.java_resources.getOrganization() : null)} },
-    "service": { "get": function(){return ((bind.java_resources) ? bind.java_resources.getWebservicesClient() : null)} },
+    "entityManager": { "configurable": true, "get": function(){return null;} },
+    "context": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getContext() : null)} },
+    "applications": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getApplications() : null)} },
+    "organization": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getOrganization() : null)} },
+    "service": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getWebservicesClient() : null)} },
     /**
      * 用于服务管理的接口和代理脚本，获取当前用户的全称。<br>
      * @o2range 服务管理-接口
@@ -1080,8 +1081,8 @@ var o= {
      * @o2syntax
      * var user = this.currentPerson;
      */
-    "currentPerson": { "get": function(){return (bind.java_effectivePerson || null)} },
-    "effectivePerson": { "get": function(){return (bind.java_effectivePerson || null)} },
+    "currentPerson": { "configurable": true, "get": function(){return (bind.java_effectivePerson || null)} },
+    "effectivePerson": { "configurable": true, "get": function(){return (bind.java_effectivePerson || null)} },
 
     /**
      * 用于数据中心查询语句的脚本中，可获取语句参数。json对象，在调用此语句的时候传入<br>
@@ -1116,11 +1117,11 @@ var o= {
      * var startTime = (new Date(this.parameters.startTime)).format("db");  //格式化为yyyy-mm-dd hh:mm:ss
      * return "SELECT o FROM Task o WHERE o.person='"+user+"' AND o.startTime>{ts '"+startTime+"'}"
      */
-    "parameters": { "get": function(){return ((bind.java_parameters) ? JSON.parse(bind.java_parameters) : null)} },
-    "requestText": { "get": function(){return bind.java_requestText || null; } },
-    "request": { "get": function(){return bind.java_request || null; } },
-    "resources": { "get": function(){return (bind.java_resources || null)} },
-    "customResponse": { "get": function(){return (bind.java_customResponse || null)} }
+    "parameters": { "configurable": true, "get": function(){return ((bind.java_parameters) ? JSON.parse(bind.java_parameters) : null)} },
+    "requestText": { "configurable": true, "get": function(){return bind.java_requestText || null; } },
+    "request": { "configurable": true, "get": function(){return bind.java_request || null; } },
+    "resources": { "configurable": true, "get": function(){return (bind.java_resources || null)} },
+    "customResponse": { "configurable": true, "get": function(){return (bind.java_customResponse || null)} }
 
 }
 library.defineProperties(bind, o);
