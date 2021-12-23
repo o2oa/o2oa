@@ -1234,6 +1234,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideTimeout": "折叠延时",
         "splitButton": "呈现按钮",
         "splitButtonType": "按钮类型",
+        "menuItem": "菜单项",
 
         "wps" : {
             "config":"配置",

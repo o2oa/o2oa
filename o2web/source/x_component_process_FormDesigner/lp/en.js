@@ -1226,6 +1226,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideTimeout": "Folding Delay",
         "splitButton": "Present Button",
         "splitButtonType": "Button Type",
+        "menuItem": "Menu Item",
 
         "wps" : {
             "config":"Config",
