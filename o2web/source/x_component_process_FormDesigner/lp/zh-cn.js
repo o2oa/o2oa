@@ -353,6 +353,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_rate": "评分",
         "el_colorpicker": "颜色选择",
         "el_tree": "树",
+        "el_dropdown": "下拉菜单",
         "el-menu": "导航菜单",
         "el_common": "通用",
 
@@ -1224,6 +1225,16 @@ MWF.xApplication.process.FormDesigner.LP = {
         "parameterConditions": "参数默认条件",
         "addDefaultConditionByPath": "通过路径添加默认条件",
         "addDefaultConditionByParameter": "通过参数添加默认条件",
+
+        "placementValue": ["上中","上左","上右","下中","下左","下右"],
+        "trigger": "触发下拉",
+        "triggerValue": ["鼠标经过","鼠标点击"],
+        "hideOnClick": "点击隐藏菜单",
+        "showTimeout": "展开延时",
+        "hideTimeout": "折叠延时",
+        "splitButton": "呈现按钮",
+        "splitButtonType": "按钮类型",
+
         "wps" : {
             "config":"配置",
             "options" : "通用选项",
