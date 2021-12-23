@@ -127,7 +127,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 	}
 
 	private Object[] jaxwsEvalParameters(AeiObjects aeiObjects, Invoke invoke) throws Exception {
-		List<?> parameters = new ArrayList<>();
+		List<Object> parameters = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(invoke.getJaxwsParameterScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxwsParameterScriptText()))) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
@@ -135,11 +135,12 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXWSPARAMETER);
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXWSPARAMETERS,
 					parameters);
-			JsonScriptingExecutor.jsonArray(cs, scriptContext, o -> {
-				if (o.size() > 0) {
-					parameters = gson.fromJson(o, parameters.getClass());
-				}
-			});
+			JsonScriptingExecutor.eval(cs, scriptContext);
+//			JsonScriptingExecutor.jsonArray(cs, scriptContext, o -> {
+//				if (o.size() > 0) {
+//					parameters.addAll(gson.fromJson(o, parameters.getClass()));
+//				}
+//			});
 		}
 		return parameters.toArray();
 	}
