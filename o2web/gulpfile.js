@@ -1418,6 +1418,7 @@ gulp.task("o2:new-v:o2", function () {
 
     return getGitV().then(function(arr){
         var v = arr[0]+"-"+arr[1];
+
         return gulp.src(src)
             .pipe(assetRev({"verConnecter": arr[0], "md5": arr[1], "replace": true}))
             .pipe(gulpif((options.upload == 'local' && options.location != ''), gulp.dest(options.location + path + '/')))
