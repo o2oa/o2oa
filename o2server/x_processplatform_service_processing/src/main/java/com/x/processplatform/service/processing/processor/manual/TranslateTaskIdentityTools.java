@@ -1,5 +1,6 @@
 package com.x.processplatform.service.processing.processor.manual;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -7,17 +8,19 @@ import java.util.Objects;
 
 import javax.script.CompiledScript;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.core.entity.content.Data;
@@ -32,6 +35,10 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
  *
  */
 public class TranslateTaskIdentityTools {
+
+	private TranslateTaskIdentityTools() {
+		// nothing
+	}
 
 	private static Logger logger = LoggerFactory.getLogger(TranslateTaskIdentityTools.class);
 
@@ -67,13 +74,6 @@ public class TranslateTaskIdentityTools {
 		}
 		List<String> identities = aeiObjects.business().organization().identity().list(taskIdentities.identities());
 		return new TaskIdentities(identities);
-		/*Iterator<TaskIdentity> iterator = taskIdentities.iterator();
-		while (iterator.hasNext()) {
-			if (!identities.contains(iterator.next().getIdentity())) {
-				iterator.remove();
-			}
-		}
-		return taskIdentities;*/
 	}
 
 	/* 取到指定职务的identity */
@@ -88,8 +88,8 @@ public class TranslateTaskIdentityTools {
 				String code = o.get("code").getAsString();
 				CompiledScript compiledScript = aeiObjects.business().element()
 						.getCompiledScript(aeiObjects.getActivity(), Business.EVENT_TASKDUTY, name, code);
-				Object objectValue = compiledScript.eval(aeiObjects.scriptContext());
-				List<String> ds = ScriptFactory.asDistinguishedNameList(objectValue);
+				List<String> ds = JsonScriptingExecutor.evalDistinguishedNames(compiledScript,
+						aeiObjects.scriptContext());
 				if (ListTools.isNotEmpty(ds)) {
 					for (String str : ds) {
 						List<String> os = aeiObjects.business().organization().unitDuty()
@@ -115,47 +115,6 @@ public class TranslateTaskIdentityTools {
 			if (null != o) {
 				addObjectToTaskIdentities(taskIdentities, units, groups, o);
 			}
-//			if (null != o) {
-//				if (o instanceof CharSequence) {
-//					taskIdentities.addIdentity(o.toString());
-//				} else if (o instanceof JsonObject) {
-//					JsonObject jsonObject = (JsonObject) o;
-//					addJsonObjectToTaskIdentities(taskIdentities, units, groups, jsonObject);
-//				} else if (o instanceof JsonArray) {
-//					for (JsonElement jsonElement : (JsonArray) o) {
-//						if (jsonElement.isJsonObject()) {
-//							JsonObject jsonObject = jsonElement.getAsJsonObject();
-//							addJsonObjectToTaskIdentities(taskIdentities, units, groups, jsonObject);
-//						}
-//					}
-//				} else if (o instanceof Iterable) {
-//					for (Object obj : (Iterable<?>) o) {
-//						if (null != obj) {
-//							if (obj instanceof CharSequence) {
-//								taskIdentities.addIdentity(Objects.toString(obj, ""));
-//							} else {
-//								addObjectToTaskIdentities(taskIdentities, units, groups, obj);
-//							}
-//						}
-//					}
-//				} else if (o instanceof ScriptObjectMirror) {
-//					ScriptObjectMirror som = (ScriptObjectMirror) o;
-//					if (som.isArray()) {
-//						Object[] objs = (som.to(Object[].class));
-//						for (Object obj : objs) {
-//							if (null != obj) {
-//								if (obj instanceof CharSequence) {
-//									taskIdentities.addIdentity(Objects.toString(obj, ""));
-//								} else {
-//									addObjectToTaskIdentities(taskIdentities, units, groups, obj);
-//								}
-//							}
-//						}
-//					} else {
-//						addObjectToTaskIdentities(taskIdentities, units, groups, som);
-//					}
-//				}
-//			}
 		}
 		return list;
 	}
@@ -169,49 +128,13 @@ public class TranslateTaskIdentityTools {
 				if (null != o) {
 					addObjectToTaskIdentities(taskIdentities, units, groups, o);
 				}
-//				if (null != o) {
-//					if (o instanceof CharSequence) {
-//						if (OrganizationDefinition.isUnitDistinguishedName(str)) {
-//							units.add(str);
-//						} else if (OrganizationDefinition.isGroupDistinguishedName(str)) {
-//							groups.add(str);
-//						} else {
-//							taskIdentities.addIdentity(o.toString());
-//						}
-//					} else if (o instanceof Iterable) {
-//						for (Object v : (Iterable<?>) o) {
-//							System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!v class:" + v.getClass());
-//							System.out.println(XGsonBuilder.toJson(v));
-//							if (null != v) {
-//								if (v instanceof CharSequence) {
-//									String vs = v.toString();
-//									if (OrganizationDefinition.isUnitDistinguishedName(vs)) {
-//										units.add(vs);
-//									} else if (OrganizationDefinition.isGroupDistinguishedName(vs)) {
-//										groups.add(vs);
-//									} else {
-//										taskIdentities.addIdentity(vs);
-//									}
-//									// } else if (v instanceof Entry) {
-//								} else {
-//									addObjectToTaskIdentities(taskIdentities, units, groups, v);
-//								}
-//							}
-//						}
-//					} else {
-//						addObjectToTaskIdentities(taskIdentities, units, groups, o);
-//					}
-//				}
 			}
 		}
-
 	}
 
 	private static void addObjectToTaskIdentities(TaskIdentities taskIdentities, List<String> units,
 			List<String> groups, Object o) throws Exception {
-		// String d = PropertyTools.getOrElse(o, JpaObject.DISTINGUISHEDNAME,
-		// String.class, "");
-		for (String d : ScriptFactory.asDistinguishedNameList(o)) {
+		for (String d : asDistinguishedNames(o)) {
 			if (OrganizationDefinition.isIdentityDistinguishedName(d)) {
 				Boolean ignore = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(Objects.toString(
 						PropertyTools.getOrElse(o, TaskIdentity.IGNOREEMPOWER, Boolean.class, Boolean.FALSE),
@@ -224,6 +147,34 @@ public class TranslateTaskIdentityTools {
 				units.add(d);
 			} else if (OrganizationDefinition.isGroupDistinguishedName(d)) {
 				groups.add(d);
+			}
+		}
+	}
+
+	public static List<String> asDistinguishedNames(Object o) throws Exception {
+		List<String> list = new ArrayList<>();
+		if (null != o) {
+			if (o instanceof CharSequence) {
+				list.add(Objects.toString(o));
+			} else if (o instanceof Iterable) {
+				asIterable(o, list);
+			}
+		}
+		return list;
+	}
+
+	private static void asIterable(Object o, List<String> list)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		for (Object obj : (Iterable<?>) o) {
+			if (null != obj) {
+				if (obj instanceof CharSequence) {
+					list.add(Objects.toString(obj));
+				} else {
+					Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
+					if (null != d) {
+						list.add(Objects.toString(d));
+					}
+				}
 			}
 		}
 	}

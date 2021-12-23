@@ -3,14 +3,14 @@ package com.x.processplatform.service.processing.processor.choice;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.script.ScriptContext;
+import javax.script.CompiledScript;
 
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Choice;
 import com.x.processplatform.core.entity.element.Route;
@@ -20,7 +20,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class ChoiceProcessor extends AbstractChoiceProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(ChoiceProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ChoiceProcessor.class);
 
 	public ChoiceProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -61,12 +61,9 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 		List<Route> results = new ArrayList<>();
 		// 多条路由进行判断
 		for (Route o : aeiObjects.getRoutes()) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_ROUTE, o);
-			Object objectValue = aeiObjects.business().element()
-					.getCompiledScript(aeiObjects.getWork().getApplication(), o, Business.EVENT_ROUTE)
-					.eval(scriptContext);
-			if (BooleanUtils.isTrue(ScriptFactory.asBoolean(objectValue))) {
+			CompiledScript compiledScript = aeiObjects.business().element()
+					.getCompiledScript(aeiObjects.getWork().getApplication(), o, Business.EVENT_ROUTE);
+			if (BooleanUtils.isTrue(JsonScriptingExecutor.evalBoolean(compiledScript, aeiObjects.scriptContext()))) {
 				results.add(o);
 				break;
 			}

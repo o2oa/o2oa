@@ -14,6 +14,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -32,6 +33,7 @@ public class WorkContext {
 	private AeiObjects aeiObjects = null;
 	private Task task;
 	private TaskCompleted taskCompleted;
+	private Route route;
 
 	public void bindTask(Task task) {
 		this.task = task;
@@ -39,6 +41,10 @@ public class WorkContext {
 
 	public void bindTaskCompleted(TaskCompleted taskCompleted) {
 		this.taskCompleted = taskCompleted;
+	}
+
+	public void bindRoute(Route route) {
+		this.route = route;
 	}
 
 	public WorkContext(AeiObjects aeiObjects) throws Exception {
@@ -53,21 +59,10 @@ public class WorkContext {
 		this.task = task;
 	}
 
-//	public WorkContext(Business business, Work work, Activity activity, Task task) {
-//		this.business = business;
-//		this.work = work;
-//		this.activity = activity;
-//		this.gson = XGsonBuilder.instance();
-//		this.task = task;
-//	}
-//
-//	public WorkContext(Business business, Work work, Activity activity, TaskCompleted taskCompleted) {
-//		this.business = business;
-//		this.work = work;
-//		this.activity = activity;
-//		this.gson = XGsonBuilder.instance();
-//		this.taskCompleted = taskCompleted;
-//	}
+	public WorkContext(AeiObjects aeiObjects, TaskCompleted taskCompleted) throws Exception {
+		this(aeiObjects);
+		this.taskCompleted = taskCompleted;
+	}
 
 	public String getWork() {
 		return gson.toJson(work);
@@ -92,6 +87,21 @@ public class WorkContext {
 		}
 	}
 
+	public String getRecordList() throws Exception {
+		try {
+			List<Record> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getRecords());
+				list.addAll(aeiObjects.getCreateRecords());
+			}
+			return gson.toJson(
+					list.stream().filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
+							.collect(Collectors.toList()));
+		} catch (Exception e) {
+			throw new IllegalStateException("getRecordList error.", e);
+		}
+	}
+
 	public String getRouteList() {
 		try {
 			List<Route> list = new ArrayList<>();
@@ -102,6 +112,18 @@ public class WorkContext {
 		} catch (Exception e) {
 			throw new IllegalStateException("getRouteList error.", e);
 		}
+	}
+
+	/**
+	 * 
+	 * @return 当前注入的路由
+	 * @throws Exception
+	 */
+	public String getRoute() {
+		if (null != route) {
+			return gson.toJson(route);
+		}
+		return "";
 	}
 
 	public void setTitle(String title) throws Exception {

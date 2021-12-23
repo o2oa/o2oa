@@ -28,7 +28,7 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.assemble.communicate.ThisApplication;
@@ -38,7 +38,7 @@ import com.x.message.core.entity.Message;
 class ActionCreate extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
-	private static ConcurrentMap<String,CompiledScript> scriptMap = new ConcurrentHashMap<>();
+	private static ConcurrentMap<String, CompiledScript> scriptMap = new ConcurrentHashMap<>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		List<Message> messages = new ArrayList<>();
@@ -47,10 +47,10 @@ class ActionCreate extends BaseAction {
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			List<String> consumers = Config.messages().getConsumers(wi.getType());
-			Map<String,String> consumersV2 = Config.messages().getConsumersV2(wi.getType());
-			for(String consumer: consumers){
-				if(!consumersV2.containsKey(consumer)){
-					consumersV2.put(consumer,"");
+			Map<String, String> consumersV2 = Config.messages().getConsumersV2(wi.getType());
+			for (String consumer : consumers) {
+				if (!consumersV2.containsKey(consumer)) {
+					consumersV2.put(consumer, "");
 				}
 			}
 			Instant instant = this.instant(effectivePerson, business, wi, new ArrayList<>(consumersV2.keySet()));
@@ -59,19 +59,18 @@ class ActionCreate extends BaseAction {
 					Wi cpwi = wi;
 					String func = consumersV2.get(consumer);
 					try {
-						if(StringUtils.isNoneBlank(func)){
-							cpwi = (Wi)BeanUtils.cloneBean(wi);
+						if (StringUtils.isNoneBlank(func)) {
+							cpwi = (Wi) BeanUtils.cloneBean(wi);
 							JsonObject body = cpwi.getBody().deepCopy().getAsJsonObject();
 							CompiledScript compiledScript = scriptMap.get(func);
-							if(compiledScript == null) {
+							if (compiledScript == null) {
 								String eval = Config.messageSendRuleScript();
-								if(StringUtils.isNotEmpty(eval)) {
-									eval = "function" + StringUtils.substringAfter(eval, "function") + " " + func + "();";
-									compiledScript = ScriptFactory.compile(eval);
+								if (StringUtils.isNotEmpty(eval)) {
+									compiledScript = ScriptingFactory.functionalizationCompile(eval);
 									scriptMap.put(func, compiledScript);
 								}
 							}
-							if(compiledScript != null) {
+							if (compiledScript != null) {
 								ScriptContext scriptContext = new SimpleScriptContext();
 								Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 								bindings.put("body", body);
@@ -81,7 +80,8 @@ class ActionCreate extends BaseAction {
 								if (o != null) {
 									if (o instanceof Boolean) {
 										if (!((Boolean) o).booleanValue()) {
-											logger.info("消息类型{}.{}的消息[{}]不满足发送条件，跳过...", wi.getType(), consumer, wi.getTitle());
+											logger.info("消息类型{}.{}的消息[{}]不满足发送条件，跳过...", wi.getType(), consumer,
+													wi.getTitle());
 											continue;
 										}
 									}
@@ -190,7 +190,8 @@ class ActionCreate extends BaseAction {
 				}
 				break;
 			case MessageConnector.CONSUME_MPWEIXIN:
-				if (BooleanUtils.isTrue(Config.mPweixin().getEnable()) && BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
+				if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
+						&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
 					ThisApplication.mpWeixinConsumeQueue.send(message);
 				}
 				break;
