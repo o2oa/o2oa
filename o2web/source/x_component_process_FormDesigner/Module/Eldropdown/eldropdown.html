@@ -13,35 +13,10 @@
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">{{$.lp.placement}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="placement" value="top" text{($.placement==='top')?'checked':''}/>{{$.lp.top}}
-					<input type="radio" name="placement" value="top-start" text{($.placement==='top-start')?'checked':''}/>{{$.lp.topStart}}
-					<input type="radio" name="placement" value="top-end" text{($.placement==='top-end')?'checked':''}/>{{$.lp.no}}
-					<input type="radio" name="placement" value="bottom" text{($.placement==='bottom')?'checked':''}/>{{$.lp.no}}
-					<input type="radio" name="placement" value="bottom-start" text{($.placement==='bottom-start')?'checked':''}/>{{$.lp.no}}
-					<input type="radio" name="placement" value="bottom-end" text{(!$.placement || $.placement==='bottom-end')?'checked':''}/>{{$.lp.yes}}
-				</td>
-			</tr>
-			<tr>
 				<td class="editTableTitle">{{$.lp.disabled}}:</td>
 				<td class="editTableValue">
 					<input type="radio" name="disabled" value="true" text{($.disabled)?'checked':''}/>{{$.lp.yes}}
 					<input type="radio" name="disabled" value="false" text{(!$.disabled)?'checked':''}/>{{$.lp.no}}
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.editable}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="editable" value="true" text{($.editable)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="editable" value="false" text{(!$.editable)?'checked':''}/>{{$.lp.no}}
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.clearable}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="clearable" value="true" text{($.clearable)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="clearable" value="false" text{(!$.clearable)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
@@ -54,66 +29,67 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">{{$.lp.firstDayOfWeek}}:</td>
+				<td class="editTableTitle">{{$.lp.el_placement}}:</td>
 				<td class="editTableValue">
-					<select name="firstDayOfWeek" class="editTableInput">
-						<option value="1" text{($.firstDayOfWeek=="1") ? "selected" : ""}>{{$.lp.weeks.arr[0]}}</option>
-						<option value="2" text{($.firstDayOfWeek=="2") ? "selected" : ""}>{{$.lp.weeks.arr[1]}}</option>
-						<option value="3" text{($.firstDayOfWeek=="3") ? "selected" : ""}>{{$.lp.weeks.arr[2]}}</option>
-						<option value="4" text{($.firstDayOfWeek=="4") ? "selected" : ""}>{{$.lp.weeks.arr[3]}}</option>
-						<option value="5" text{($.firstDayOfWeek=="5") ? "selected" : ""}>{{$.lp.weeks.arr[4]}}</option>
-						<option value="6" text{($.firstDayOfWeek=="6") ? "selected" : ""}>{{$.lp.weeks.arr[5]}}</option>
-						<option value="7" text{(!$.firstDayOfWeek || $.firstDayOfWeek=="7") ? "selected" : ""}>{{$.lp.weeks.arr[6]}}</option>
-					</select>
+					<input type="radio" name="placement" value="top" text{($.placement==='top')?'checked':''}/>{{$.lp.placementValue[0]}}
+					<input type="radio" name="placement" value="top-start" text{($.placement==='top-start')?'checked':''}/>{{$.lp.placementValue[1]}}
+					<input type="radio" name="placement" value="top-end" text{($.placement==='top-end')?'checked':''}/>{{$.lp.placementValue[2]}}
+					<input type="radio" name="placement" value="bottom" text{($.placement==='bottom')?'checked':''}/>{{$.lp.placementValue[3]}}
+					<input type="radio" name="placement" value="bottom-start" text{($.placement==='bottom-start')?'checked':''}/>{{$.lp.placementValue[4]}}
+					<input type="radio" name="placement" value="bottom-end" text{(!$.placement || $.placement==='bottom-end')?'checked':''}/>{{$.lp.placementValue[5]}}
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">
-					<div>{{$.lp.disabledDateNote}}</div>
-					<div class="MWFFormulaArea" name="disabledDate" title="{{$.lp.disabledDateScript}}"></div>
+				<td class="editTableTitle">{{$.lp.trigger}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="trigger" value="hover" text{(!$.trigger || $.trigger==='hover')?'checked':''}
+						onclick="if (this.checked){ $('text{$.pid}hoverTable').setStyle('display', '');}"
+					/>{{$.lp.triggerValue[0]}}
+					<input type="radio" name="trigger" value="click" text{($.trigger==='top')?'checked':''}
+						   onclick="if (this.checked){ $('text{$.pid}hoverTable').setStyle('display', 'none');}"
+					/>{{$.lp.triggerValue[1]}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.hideOnClick}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="hideOnClick" value="true" text{($.hideOnClick)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="hideOnClick" value="false" text{(!$.hideOnClick)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.splitButton}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="splitButton" value="true" text{($.splitButton)?'checked':''}
+						   onclick="if (this.checked){ $('text{$.pid}splitButtonTable').setStyle('display', '');}"
+					/>{{$.lp.yes}}
+					<input type="radio" name="splitButton" value="false" text{(!$.splitButton)?'checked':''}
+						   onclick="if (this.checked){ $('text{$.pid}splitButtonTable').setStyle('display', 'none');}"
+					/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
-<!--		<table id="text{$.pid}datePickTable">-->
-<!--			<tr>-->
-<!--				<td colspan="2">-->
-<!--					<div>{{$.lp.disabledDateNote}}</div>-->
-<!--					<div class="MWFFormulaArea" name="disabledDate" title="{{$.lp.disabledDateScript}}"></div>-->
-<!--				</td>-->
-<!--			</tr>-->
-<!--			<tr>-->
-<!--				<td class="editTableTitle">{{$.lp.firstDayOfWeek}}:</td>-->
-<!--				<td class="editTableValue">-->
-<!--					<select name="firstDayOfWeek" class="editTableInput">-->
-<!--						<option value="1" text{($.firstDayOfWeek=="1") ? "selected" : ""}>{{$.lp.weeks.arr[0]}}</option>-->
-<!--						<option value="2" text{($.firstDayOfWeek=="2") ? "selected" : ""}>{{$.lp.weeks.arr[1]}}</option>-->
-<!--						<option value="3" text{($.firstDayOfWeek=="3") ? "selected" : ""}>{{$.lp.weeks.arr[2]}}</option>-->
-<!--						<option value="4" text{($.firstDayOfWeek=="4") ? "selected" : ""}>{{$.lp.weeks.arr[3]}}</option>-->
-<!--						<option value="5" text{($.firstDayOfWeek=="5") ? "selected" : ""}>{{$.lp.weeks.arr[4]}}</option>-->
-<!--						<option value="6" text{($.firstDayOfWeek=="6") ? "selected" : ""}>{{$.lp.weeks.arr[5]}}</option>-->
-<!--						<option value="7" text{(!$.firstDayOfWeek || $.firstDayOfWeek=="7") ? "selected" : ""}>{{$.lp.weeks.arr[6]}}</option>-->
-<!--					</select>-->
-<!--				</td>-->
-<!--			</tr>-->
-<!--		</table>-->
-<!--		<table id="text{$.pid}noRangeTable">-->
-<!--			<tr>-->
-<!--				<td class="editTableTitle">{{$.lp.placeholder}}:</td>-->
-<!--				<td class="editTableValue"><input type="text" name="placeholder" value="text{$.placeholder}" class="editTableInput"/></td>-->
-<!--			</tr>-->
-<!--		</table>-->
-		<table id="text{$.pid}rangeTable" style="display: text{(!['daterange','monthrange'].contains($.selectType)) ? 'none':''};">
+		<table id="text{$.pid}hoverTable" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.trigger==='click')?'none':''};">
 			<tr>
-				<td class="editTableTitle">{{$.lp.rangeSeparator}}:</td>
-				<td class="editTableValue"><input type="text" name="rangeSeparator" value="text{$.rangeSeparator}" class="editTableInput"/></td>
+				<td class="editTableTitle">{{$.lp.showTimeout}}:</td>
+				<td class="editTableValue"><input type="number" name="showTimeout" value="text{$.showTimeout}" class="editTableInput"/></td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">{{$.lp.startPlaceholder}}:</td>
-				<td class="editTableValue"><input type="text" name="startPlaceholder" value="text{$.startPlaceholder}" class="editTableInput"/></td>
+				<td class="editTableTitle">{{$.lp.hideTimeout}}:</td>
+				<td class="editTableValue"><input type="number" name="hideTimeout" value="text{$.hideTimeout}" class="editTableInput"/></td>
 			</tr>
+		</table>
+		<table id="text{$.pid}splitButtonTable" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.splitButton)?'':'none'};">
 			<tr>
-				<td class="editTableTitle">{{$.lp.endPlaceholder}}:</td>
-				<td class="editTableValue"><input type="text" name="endPlaceholder" value="text{$.endPlaceholder}" class="editTableInput"/></td>
+				<td class="editTableTitle">{{$.lp.splitButtonType}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="buttonType" value="primary" text{(!$.buttonType || $.buttonType==='primary')?'checked':''}/>primary
+					<input type="radio" name="buttonType" value="success" text{($.buttonType==='success')?'checked':''}/>success
+					<input type="radio" name="buttonType" value="warning" text{($.buttonType==='warning')?'checked':''}/>warning
+					<input type="radio" name="buttonType" value="danger" text{($.buttonType==='danger')?'checked':''}/>danger
+					<input type="radio" name="buttonType" value="info" text{($.buttonType==='info')?'checked':''}/>info
+					<input type="radio" name="buttonType" value="text" text{($.buttonType==='text')?'checked':''}/>text
+				</td>
 			</tr>
 		</table>
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.prefixIcon}}</div>

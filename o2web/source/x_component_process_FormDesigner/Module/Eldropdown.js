@@ -16,14 +16,14 @@ MWF.xApplication.process.FormDesigner.Module.Eldropdown = MWF.FCEldropdown = new
 	_createElementHtml: function(){
 
 		var html = "<el-dropdown";
-		html += " :type=\"selectType\"";
+		html += " :type=\"buttonType\"";
 		html += " :size=\"size\"";
-		html += " :prefix-icon=\"prefixIcon\"";
-		html += " :range-separator=\"rangeSeparator\"";
+		html += " :split-button=\"splitButton\"";
+		html += " :placement=\"placement\"";
+		html += " :disabled=\"disabled\"";
 		html += " readonly";
-		html += " :placeholder=\"id\"";
-		html += " :start-placeholder=\"id\"";
-		html += " :end-placeholder=\"id\"";
+		html += " :trigger=\"trigger\"";
+		html += " :hide-on-click=\"hideOnClick\"";
 
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){
@@ -32,6 +32,11 @@ MWF.xApplication.process.FormDesigner.Module.Eldropdown = MWF.FCEldropdown = new
 		}
 
 		html += " :style=\"elStyles\">";
+
+		// <span class="el-dropdown-link">
+		// 	下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
+		// </span>
+
 		if (this.json.vueSlot) html += this.json.vueSlot;
 		html += "</el-dropdown>";
 		return html;
