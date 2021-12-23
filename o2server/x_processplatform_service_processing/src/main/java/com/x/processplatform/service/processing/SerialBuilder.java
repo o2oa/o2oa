@@ -81,9 +81,9 @@ public class SerialBuilder {
 			List<SerialTextureItem> list = XGsonBuilder.instance().fromJson(data, collectionType);
 			if (!list.isEmpty()) {
 				ScriptContext scriptContext = aeiObjects.scriptContext();
-				Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-				bindings.put(ScriptingFactory.BINDING_NAME_SERIAL, this.serial);
-				bindings.put(ScriptingFactory.BINDING_NAME_PROCESS, this.process);
+//				Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+//				bindings.put(ScriptingFactory.BINDING_NAME_SERIAL, this.serial);
+//				bindings.put(ScriptingFactory.BINDING_NAME_PROCESS, this.process);
 				for (SerialTextureItem o : list) {
 					if ((!StringUtils.equalsIgnoreCase(o.getKey(), "number"))
 							&& StringUtils.isNotEmpty(o.getScript())) {

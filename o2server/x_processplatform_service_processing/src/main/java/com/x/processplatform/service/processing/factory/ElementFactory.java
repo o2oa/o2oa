@@ -98,47 +98,58 @@ public class ElementFactory extends AbstractFactory {
 		return t;
 	}
 
-//	public Activity getActivity(String id) throws Exception {
-//		Activity activity = null;
-//		activity = this.get(id, ActivityType.manual);
-//		if (null == activity) {
-//			activity = this.get(id, ActivityType.begin);
-//			if (null == activity) {
-//				activity = this.get(id, ActivityType.cancel);
-//				if (null == activity) {
-//					activity = this.get(id, ActivityType.choice);
-//					if (null == activity) {
-//						activity = this.get(id, ActivityType.delay);
-//						if (null == activity) {
-//							activity = this.get(id, ActivityType.embed);
-//							if (null == activity) {
-//								activity = this.get(id, ActivityType.split);
-//								if (null == activity) {
-//									activity = this.get(id, ActivityType.invoke);
-//									if (null == activity) {
-//										activity = this.get(id, ActivityType.agent);
-//										if (null == activity) {
-//											activity = this.get(id, ActivityType.merge);
-//											if (null == activity) {
-//												activity = this.get(id, ActivityType.parallel);
-//												if (null == activity) {
-//													activity = this.get(id, ActivityType.service);
-//													if (null == activity) {
-//														activity = this.get(id, ActivityType.end);
-//													}
-//												}
-//											}
-//										}
-//									}
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
-//		return activity;
-//	}
+	public Activity getActivity(String id) throws Exception {
+		Activity activity = null;
+		activity = this.get(id, ActivityType.manual);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.begin);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.cancel);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.choice);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.delay);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.embed);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.split);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.invoke);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.agent);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.merge);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.parallel);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.service);
+		if (null != activity) {
+			return activity;
+		}
+		return this.get(id, ActivityType.end);
+	}
 
 	public Activity get(String id, ActivityType activityType) throws Exception {
 		switch (activityType) {
@@ -407,10 +418,9 @@ public class ElementFactory extends AbstractFactory {
 			p = cb.and(p, cb.or(cb.equal(root.get(Mapping_.process), process), cb.equal(root.get(Mapping_.process), ""),
 					cb.isNull(root.get(Mapping_.process))));
 			List<Mapping> os = em.createQuery(cq.where(p)).getResultList();
-			os.stream().collect(Collectors.groupingBy(o -> {
-				return o.getApplication() + o.getTableName();
-			})).forEach((k, v) -> list
-					.add(v.stream().filter(i -> StringUtils.isNotEmpty(i.getProcess())).findFirst().orElse(v.get(0))));
+			os.stream().collect(Collectors.groupingBy(o -> o.getApplication() + o.getTableName()))
+					.forEach((k, v) -> list.add(v.stream().filter(i -> StringUtils.isNotEmpty(i.getProcess()))
+							.findFirst().orElse(v.get(0))));
 			CacheManager.put(cacheCategory, cacheKey, list);
 		}
 		return list;
@@ -651,10 +661,10 @@ public class ElementFactory extends AbstractFactory {
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScript_FIELDNAME));
 				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScriptText_FIELDNAME));
 				break;
-			case Business.EVENT_PROCESSEXPIRE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.expireScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.expireScriptText_FIELDNAME));
-				break;
+//			case Business.EVENT_PROCESSEXPIRE:
+//				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.expireScript_FIELDNAME));
+//				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.expireScriptText_FIELDNAME));
+//				break;
 			default:
 				break;
 			}

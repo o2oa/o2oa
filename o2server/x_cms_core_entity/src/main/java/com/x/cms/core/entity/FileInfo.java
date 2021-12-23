@@ -120,18 +120,18 @@ public class FileInfo extends StorageObject {
 	}
 
 	@Override
-	public String path() throws Exception {
+	public String path() {
 		if (StringUtils.isEmpty(this.appId)) {
-			throw new Exception("appId can not be null.");
+			throw new IllegalStateException("appId can not be null.");
 		}
 		if (StringUtils.isEmpty(this.categoryId)) {
-			throw new Exception("categoryId can not be null.");
+			throw new IllegalStateException("categoryId can not be null.");
 		}
 		if (StringUtils.isEmpty(documentId)) {
-			throw new Exception("documentId can not be null.");
+			throw new IllegalStateException("documentId can not be null.");
 		}
 		if (StringUtils.isEmpty(id)) {
-			throw new Exception("id can not be empty.");
+			throw new IllegalStateException("id can not be empty.");
 		}
 		String str = DateTools.format(this.getCreateTime(), DateTools.formatCompact_yyyyMMdd);
 		str += PATHSEPARATOR;
@@ -281,8 +281,9 @@ public class FileInfo extends StorageObject {
 	public static final String readUnitList_FIELDNAME = "readUnitList";
 	@FieldDescribe("可以访问的组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + readUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME + ElementIndexNameSuffix)
@@ -304,8 +305,9 @@ public class FileInfo extends StorageObject {
 	public static final String editUnitList_FIELDNAME = "editUnitList";
 	@FieldDescribe("可以修改的组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + editUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + editUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ editUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + editUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + editUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + editUnitList_FIELDNAME + ElementIndexNameSuffix)
