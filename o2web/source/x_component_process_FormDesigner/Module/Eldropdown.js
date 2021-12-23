@@ -20,7 +20,7 @@ MWF.xApplication.process.FormDesigner.Module.Eldropdown = MWF.FCEldropdown = new
 		html += " :size=\"size\"";
 		html += " :split-button=\"splitButton\"";
 		html += " :placement=\"placement\"";
-		html += " :disabled=\"disabled\"";
+		// html += " :disabled=\"disabled\"";
 		html += " readonly";
 		html += " :trigger=\"trigger\"";
 		html += " :hide-on-click=\"hideOnClick\"";
@@ -33,11 +33,11 @@ MWF.xApplication.process.FormDesigner.Module.Eldropdown = MWF.FCEldropdown = new
 
 		html += " :style=\"elStyles\">";
 
-		// <span class="el-dropdown-link">
-		// 	下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
-		// </span>
-
-		if (this.json.vueSlot) html += this.json.vueSlot;
+		if (this.json.vueSlot){
+			html += this.json.vueSlot;
+		}else{
+			html += this.getButtonHtml();
+		}
 		html += "</el-dropdown>";
 		return html;
 	},
@@ -53,6 +53,29 @@ MWF.xApplication.process.FormDesigner.Module.Eldropdown = MWF.FCEldropdown = new
 		if (!this.copyNode) this._createCopyNode();
 		this.copyNode.setStyle("display", "inline-block");
 		return this.copyNode;
+	},
+	getButtonHtml: function(){
+		if( this.json.splitButton ) {
+			return this.json.id;
+			// return "<el-button :type=\"buttonType\">"+ this.json.id +
+			// 		"<i class=\"el-icon-arrow-down el-icon--right\"></i>"+
+			// 	"</el-button>";
+		}else{
+			return "<span class=\"el-dropdown-link\">"+ this.json.id +
+						"<i class=\"el-icon-arrow-down el-icon--right\"></i>"+
+				"</span>";
+		}
+	},
+	_setEditStyle_custom: function(name){
+		switch (name){
+			case "name": this.setPropertyName(); break;
+			case "id":
+			case "vueSlot":
+				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
+			case "splitButton":
+				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
+			default: break;
+		}
 	},
 	setPropertyName: function(){
 		// if (this.json.name){

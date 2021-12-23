@@ -7,7 +7,7 @@
 	"placement": "bottom-end",
 	"trigger": "hover",
 	"hideOnClick": true,
-	"splitButton": false,
+	"splitButton": true,
 	"buttonType": "",
 	"show-timeout": 250,
 	"hide-timeout": 150,
@@ -30,15 +30,15 @@
 		  "code": "",
 		  "html": ""
 		},
-		"change": {
+		"click": {
 			"code": "",
 			"html": ""
 		},
-		"focus": {
+		"command": {
 			"code": "",
 			"html": ""
 		},
-		"blur": {
+		"visible-change": {
 			"code": "",
 			"html": ""
 		}
