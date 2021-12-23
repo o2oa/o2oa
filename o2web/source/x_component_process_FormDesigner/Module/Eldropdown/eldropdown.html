@@ -142,9 +142,10 @@
 				</td>
 			</tr>
 		</table>
-		<div id="text{$.pid}dataJson" class="MWFElTreeData" name="dataJson" style="display: text{($.dataType=='script')?'none':''}"></div>
+		<div id="text{$.pid}dataJson" class="MWFElTDropdownData" name="dataJson" style="display: text{($.dataType=='script')?'none':''}"></div>
 		<div id="text{$.pid}dataScript" style="display: text{($.dataType=='script')?'':'none'}">
 			<div style="padding: 5px;">脚本返回选项数组，格式如下：<br/>return [{ <br/>
+				  "label" : "", //显示的文本, string<br/>
 				&nbsp;&nbsp;"command" : "", //指令,菜单项的点击事件（command）可以接收到,string/number/object <br/>
 				&nbsp;&nbsp;"disabled" : false, //是否禁用, boolean<br/>
 				&nbsp;&nbsp;"divided" : false, //是否显示分割线，boolean<br/>

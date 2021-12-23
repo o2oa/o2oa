@@ -1,7 +1,8 @@
 // o2.widget = o2.widget || {};
 o2.require("o2.widget.Common", null, false);
 // o2.require("o2.widget.Tree", null, false);
-MWF.xApplication.process.FormDesigner.widget.ElTreeEditor = new Class({
+o2.requireApp("process.FormDesigner", "widget.ElTreeEditor", null, false);
+MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor = new Class({
 	Extends: MWF.xApplication.process.FormDesigner.widget.ElTreeEditor,
 	createContent: function(content){
 		this.contentNode = new Element("div", {
@@ -12,23 +13,24 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor = new Class({
 		
 		this.resizeContentNodeSize();
 		
-		this.tree = new MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree(this, this.contentNode, {"style": "editor"});
+		this.tree = new MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree(this, this.contentNode, {"style": "editor"});
 		this.tree.data = this.data;
 		this.tree.load();
 		
 	}
 });
 
-MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree = new Class({
+MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree = new Class({
 	Extends: MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree,
-	Implements: [Options, Events],
 	nodejson: {
-		"id": "",
 		"label": "[none]",
-		"children": []
+		"command": "",
+		"disabled": false,
+		"divided": false,
+		"icon":""
 	},
 	appendChild: function(obj){
-		var treeNode = new MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node(this, obj);
+		var treeNode = new MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node(this, obj);
 		
 		if (this.children.length){
 			treeNode.previousSibling = this.children[this.children.length-1];
@@ -45,8 +47,8 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree = new Class({
 	}
 });
 
-MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class({
-	Implements: [Options, Events],
+MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node = new Class({
+	Extends: MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node,
 	options: {
 		"expand": true
 	},
@@ -66,20 +68,15 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 			}
 		}).inject(this.actionNode);
 	},
-	completeItemProperties: function(){
-		this.hideItemAction();
-		this.itemNode.setStyles(this.tree.css.treeItemNode);
-		this.isEditProperty = false;
-		this.tree.currentEditNode = null;
-		this.propertyArea.hide();
-	},
 	editItemProperties: function(){
 		if (this.tree.currentEditNode!=this){
 			if (this.tree.currentEditNode) this.tree.currentEditNode.completeItemProperties();
 
 			this.itemNode.setStyle("background", "#DDD");
 			if (!this.propertyArea){
-				this.propertyArea = new Element("div").inject(this.itemNode, "after");
+				this.propertyArea = new Element("div", {
+					style : "border-bottom:1px solid #666"
+				}).inject(this.itemNode, "after");
 
 				this.propertyTable = new Element("table", {
 					"width": "100%",
@@ -104,43 +101,83 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 				}).inject(td);
 
 				tr = new Element("tr").inject(this.propertyTable);
-				td = new Element("td", { text: "id/key" }).inject(tr);
+				td = new Element("td", { text: "指令" }).inject(tr);
 				td = new Element("td").inject(tr);
-				this.idInput = new Element("input", {
-					value: this.data.id || "",
+				this.idCommand = new Element("input", {
+					value: this.data.command || "",
 					events: {
 						blur: function () {
-							this.data.id = this.idInput.get("value");
+							this.data.command = this.idCommand.get("value");
 						}.bind(this)
 					}
 				}).inject(td);
 
 				tr = new Element("tr").inject(this.propertyTable);
-				td = new Element("td", { "colspan": "2" }).inject(tr);
-				MWF.require("MWF.widget.Maplist", function() {
-					var maplist = new MWF.widget.Maplist(td, {
-						"title": "其他属性",
-						"collapse": false,
-						"onChange": function () {
-							// var oldData = this.data[name];
-							var data = maplist.toJson();
-							for (var key in data) {
-								this.data[key] = data[key]
-							}
-						}.bind(this),
-						"onDelete": function (key) {
-							if (this.data[key]) {
-								delete this.data[key];
-							}
-						}.bind(this),
-						"isProperty": true
-					});
-					var data = {};
-					for (var key in this.data) {
-						if( !["id","label", "children"].contains(key) )data[key] = this.data[key]
+				td = new Element("td", { text: "禁用" }).inject(tr);
+				td = new Element("td").inject(tr);
+				var div = new Element( "div").inject(td);
+				var radio_disabled_1 = new Element( "input", {
+					"type" : "radio",
+					"checked" : !!this.data.disabled,
+					"events" : {
+						"click": function () {
+							this.data.disabled = true;
+							radio_disabled_2.checked = false;
+						}.bind(this)
 					}
-					maplist.load(data);
-				}.bind(this))
+				}).inject( div );
+				new Element( "span", { "text" : "是" }).inject(div);
+				var radio_disabled_2 = new Element( "input", {
+					"type" : "radio",
+					"checked" : !this.data.disabled,
+					"events" : {
+						"click": function () {
+							this.data.disabled = false;
+							radio_disabled_1.checked = false;
+						}.bind(this)
+					}
+				}).inject( div );
+				new Element( "span", { "text" : "否" }).inject(div);
+
+				tr = new Element("tr").inject(this.propertyTable);
+				td = new Element("td", { text: "显示分割线" }).inject(tr);
+				td = new Element("td").inject(tr);
+				div = new Element( "div").inject(td);
+				var radio_divided_1 = new Element( "input", {
+					"type" : "radio",
+					"checked" : !!this.data.divided,
+					"events" : {
+						"click": function(){
+							this.data.divided = true;
+							radio_divided_2.checked = false;
+						}.bind(this)
+					}
+				}).inject( div );
+				new Element( "span", { "text" : "是" }).inject(div);
+				var radio_divided_2 = new Element( "input", {
+					"type" : "radio",
+					"checked" : !this.data.divided,
+					"events" : {
+						"click": function () {
+							this.data.divided = false;
+							radio_divided_1.checked = false;
+						}.bind(this)
+					}
+				}).inject( div );
+				new Element( "span", { "text" : "否" }).inject(div);
+
+				tr = new Element("tr").inject(this.propertyTable);
+				td = new Element("td", { text: "图标" }).inject(tr);
+				td = new Element("td").inject(tr);
+				this.xxx = new Element("input", {
+					value: this.data.id || "",
+					events: {
+						blur: function () {
+							this.xxx.command = this.xxx.get("value");
+						}.bind(this)
+					}
+				}).inject(td);
+
 			}
 
 			this.propertyArea.setStyle("display", "block");
