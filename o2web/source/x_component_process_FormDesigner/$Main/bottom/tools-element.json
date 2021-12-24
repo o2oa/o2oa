@@ -89,6 +89,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_tree,
     "className": "Eltree"
   },
+  "eldropdown": {
+    "fontIcon": "el-icon-caret-bottom",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_dropdown,
+    "className": "Eldropdown"
+  },
   "elcommon": {
     "fontIcon": "el-icon-full-screen",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_common,

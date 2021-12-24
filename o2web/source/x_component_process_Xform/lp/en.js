@@ -302,6 +302,8 @@ MWF.xApplication.process.Xform.LP = {
     "importTooManyNotice ":" you import {n1} data, allowed to import {n2} data maximum ",
     "importTooFewNotice ": "you import {n1} data, need to keep at least {n2} data ",
 
+    "pleaseSelect": "Please Choose",
+
     "form": {
         "close":"Close",
         "closeTitle": "Close Document",
