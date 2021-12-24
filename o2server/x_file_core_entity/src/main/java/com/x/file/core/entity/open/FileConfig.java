@@ -21,6 +21,10 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.file.core.entity.PersistenceProperties;
 
+/**
+ * 云文件系统配置
+ * @author sword
+ */
 @ContainerEntity(dumpSize = 100, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Open.FileConfig.table, uniqueConstraints = {
@@ -32,11 +36,14 @@ public class FileConfig extends SliceJpaObject {
 
 	private static final long serialVersionUID = -2266232193925155825L;
 	private static final String TABLE = PersistenceProperties.Open.FileConfig.table;
+	public static final Integer DEFAULT_RECYCLE_DAYS = 30;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -48,6 +55,7 @@ public class FileConfig extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		if (this.properties == null) {
 			this.properties = new FileConfigProperties();
@@ -79,6 +87,11 @@ public class FileConfig extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Integer capacity;
 
+	public static final String recycleDays_FIELDNAME = "recycleDays";
+	@FieldDescribe("回收站数据保留天数")
+	@Column(name = ColumnNamePrefix + recycleDays_FIELDNAME)
+	private Integer recycleDays;
+
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent(fetch = FetchType.EAGER)
@@ -109,6 +122,14 @@ public class FileConfig extends SliceJpaObject {
 
 	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
+	}
+
+	public Integer getRecycleDays() {
+		return recycleDays;
+	}
+
+	public void setRecycleDays(Integer recycleDays) {
+		this.recycleDays = recycleDays;
 	}
 
 	public FileConfigProperties getProperties() {
