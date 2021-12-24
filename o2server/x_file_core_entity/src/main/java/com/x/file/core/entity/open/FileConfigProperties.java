@@ -6,6 +6,10 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 云文件系统扩展配置
+ * @author sword
+ */
 public class FileConfigProperties extends JsonProperties {
 
 	private static final long serialVersionUID = -1259157593040432239L;
@@ -31,4 +35,5 @@ public class FileConfigProperties extends JsonProperties {
 	public void setFileTypeExcludes(List<String> fileTypeExcludes) {
 		this.fileTypeExcludes = fileTypeExcludes;
 	}
+
 }
