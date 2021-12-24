@@ -16,22 +16,13 @@
 		</table>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-			<tr>
-				<td class="editTableTitle">{{$.lp.disabled}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="disabled" value="true" text{($.disabled)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="disabled" value="false" text{(!$.disabled)?'checked':''}/>{{$.lp.no}}
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.size}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="size" value="default" text{(!$.size || $.size==='default')?'checked':''}/>default
-					<input type="radio" name="size" value="large" text{($.size==='large')?'checked':''}/>large
-					<input type="radio" name="size" value="small" text{($.size==='small')?'checked':''}/>small
-					<input type="radio" name="size" value="mini" text{($.size==='mini')?'checked':''}/>mini
-				</td>
-			</tr>
+<!--			<tr>-->
+<!--				<td class="editTableTitle">{{$.lp.disabled}}:</td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input type="radio" name="disabled" value="true" text{($.disabled)?'checked':''}/>{{$.lp.yes}}-->
+<!--					<input type="radio" name="disabled" value="false" text{(!$.disabled)?'checked':''}/>{{$.lp.no}}-->
+<!--				</td>-->
+<!--			</tr>-->
 			<tr>
 				<td class="editTableTitle">{{$.lp.el_placement}}:</td>
 				<td class="editTableValue">
@@ -49,7 +40,7 @@
 					<input type="radio" name="trigger" value="hover" text{(!$.trigger || $.trigger==='hover')?'checked':''}
 						onclick="if (this.checked){ $('text{$.pid}hoverTable').setStyle('display', '');}"
 					/>{{$.lp.triggerValue[0]}}
-					<input type="radio" name="trigger" value="click" text{($.trigger==='top')?'checked':''}
+					<input type="radio" name="trigger" value="click" text{($.trigger==='click')?'checked':''}
 						   onclick="if (this.checked){ $('text{$.pid}hoverTable').setStyle('display', 'none');}"
 					/>{{$.lp.triggerValue[1]}}
 				</td>
@@ -62,13 +53,22 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">{{$.lp.splitButton}}:</td>
+				<td class="editTableTitle">{{$.lp.size}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="splitButton" value="true" text{($.splitButton)?'checked':''}
-						   onclick="if (this.checked){ $('text{$.pid}splitButtonTable').setStyle('display', '');}"
+					<input type="radio" name="size" value="default" text{(!$.size || $.size==='default')?'checked':''}/>default
+					<input type="radio" name="size" value="large" text{($.size==='large')?'checked':''}/>large
+					<input type="radio" name="size" value="small" text{($.size==='small')?'checked':''}/>small
+					<input type="radio" name="size" value="mini" text{($.size==='mini')?'checked':''}/>mini
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.showButton}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="showButton" value="true" text{($.showButton)?'checked':''}
+						   onclick="if (this.checked){ $('text{$.pid}showButtonTable').setStyle('display', '');}"
 					/>{{$.lp.yes}}
-					<input type="radio" name="splitButton" value="false" text{(!$.splitButton)?'checked':''}
-						   onclick="if (this.checked){ $('text{$.pid}splitButtonTable').setStyle('display', 'none');}"
+					<input type="radio" name="showButton" value="false" text{(!$.showButton)?'checked':''}
+						   onclick="if (this.checked){ $('text{$.pid}showButtonTable').setStyle('display', 'none');}"
 					/>{{$.lp.no}}
 				</td>
 			</tr>
@@ -83,7 +83,14 @@
 				<td class="editTableValue"><input type="number" name="hideTimeout" value="text{$.hideTimeout}" class="editTableInput"/></td>
 			</tr>
 		</table>
-		<table id="text{$.pid}splitButtonTable" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.splitButton)?'':'none'};">
+		<table id="text{$.pid}showButtonTable" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.showButton)?'':'none'};">
+			<tr>
+				<td class="editTableTitle">{{$.lp.splitButton}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="splitButton" value="true" text{($.splitButton)?'checked':''} />{{$.lp.yes}}
+					<input type="radio" name="splitButton" value="false" text{(!$.splitButton)?'checked':''} />{{$.lp.no}}
+				</td>
+			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.splitButtonType}}:</td>
 				<td class="editTableValue">
@@ -96,8 +103,8 @@
 				</td>
 			</tr>
 		</table>
-		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.prefixIcon}}</div>
-		<div style="display: text{($.prefixIcon)?'block':'none'}" class="MWFElIcon" name="prefixIcon"></div>
+<!--		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.prefixIcon}}</div>-->
+<!--		<div style="display: text{($.prefixIcon)?'block':'none'}" class="MWFElIcon" name="prefixIcon"></div>-->
 
 <!--		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.suffixIcon}}</div>-->
 <!--		<div style="display: text{($.suffixIcon)?'block':'none'}" class="MWFElIcon" name="suffixIcon"></div>-->

@@ -1224,9 +1224,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideOnClick": "Click to hide the menu",
         "showTimeout": "Expand Delay",
         "hideTimeout": "Folding Delay",
-        "splitButton": "Present Button",
+        "splitButton": "Enable button click",
         "splitButtonType": "Button Type",
         "menuItem": "Menu Item",
+        "dropdownDefaultText": "Dropdown Menu",
+        "showButton": "Show Button",
 
         "wps" : {
             "config":"Config",

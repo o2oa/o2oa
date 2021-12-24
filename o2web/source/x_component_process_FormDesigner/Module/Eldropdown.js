@@ -16,14 +16,16 @@ MWF.xApplication.process.FormDesigner.Module.Eldropdown = MWF.FCEldropdown = new
 	_createElementHtml: function(){
 
 		var html = "<el-dropdown";
-		html += " :type=\"buttonType\"";
 		html += " :size=\"size\"";
-		html += " :split-button=\"splitButton\"";
 		html += " :placement=\"placement\"";
 		// html += " :disabled=\"disabled\"";
-		html += " readonly";
 		html += " :trigger=\"trigger\"";
 		html += " :hide-on-click=\"hideOnClick\"";
+
+		if( this.json.showButton && this.json.splitButton ){
+			html += " :split-button=\"splitButton\"";
+			html += " :type=\"buttonType\"";
+		}
 
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){
@@ -43,6 +45,7 @@ MWF.xApplication.process.FormDesigner.Module.Eldropdown = MWF.FCEldropdown = new
 		html += "</el-dropdown-menu>";
 
 		html += "</el-dropdown>";
+
 		return html;
 	},
 	_createCopyNode: function(){
@@ -59,14 +62,17 @@ MWF.xApplication.process.FormDesigner.Module.Eldropdown = MWF.FCEldropdown = new
 		return this.copyNode;
 	},
 	getButtonHtml: function(){
-		if( this.json.splitButton ) {
-			return this.json.id;
-			// return "<el-button :type=\"buttonType\">"+ this.json.id +
-			// 		"<i class=\"el-icon-arrow-down el-icon--right\"></i>"+
-			// 	"</el-button>";
+		if( this.json.showButton ){
+			if( this.json.splitButton ) {
+				return this.json.text || this.json.id;
+			}else{
+				return "<el-button type=\""+this.json.buttonType+"\" size=\""+this.json.size+"\">"+ ( this.json.text || this.json.id ) +
+					"<i class=\"el-icon-arrow-down el-icon--right\"></i>"+
+					"</el-button>";
+			}
 		}else{
-			return "<span class=\"el-dropdown-link\">"+ this.json.id +
-						"<i class=\"el-icon-arrow-down el-icon--right\"></i>"+
+			return " <span class=\"el-dropdown-link\">"+ ( this.json.text || this.json.id ) +
+				"<i class=\"el-icon-arrow-down el-icon--right\"></i>"+
 				"</span>";
 		}
 	},
@@ -74,8 +80,12 @@ MWF.xApplication.process.FormDesigner.Module.Eldropdown = MWF.FCEldropdown = new
 		switch (name){
 			case "name": this.setPropertyName(); break;
 			case "id":
+			case "text":
+			case "size":
+			case "buttonType":
 			case "vueSlot":
 				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
+			case "showButton":
 			case "splitButton":
 				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
 			default: break;

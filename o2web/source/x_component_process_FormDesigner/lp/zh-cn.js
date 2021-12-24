@@ -1232,9 +1232,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideOnClick": "点击隐藏菜单",
         "showTimeout": "展开延时",
         "hideTimeout": "折叠延时",
-        "splitButton": "呈现按钮",
+        "splitButton": "点击和下拉同时启用",
         "splitButtonType": "按钮类型",
         "menuItem": "菜单项",
+        "dropdownDefaultText": "下拉菜单",
+        "showButton": "显示按钮",
 
         "wps" : {
             "config":"配置",

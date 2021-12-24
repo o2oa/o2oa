@@ -10,6 +10,7 @@ MWF.xDesktop.requireApp("process.Xform", "Elradio", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/checkbox|Element UI Checkbox 多选框}
  */
 MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
     /** @lends MWF.xApplication.process.Xform.Elcheckbox# */
