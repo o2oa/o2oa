@@ -10,6 +10,7 @@ MWF.xDesktop.requireApp("process.Xform", "Radio", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/radio|Element UI Radio 单选框}
  */
 MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     /** @lends MWF.xApplication.process.Xform.Elradio# */

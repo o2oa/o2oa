@@ -10,6 +10,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/input-number|Element UI InputNumber 计数器}
  */
 MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
     /** @lends o2.xApplication.process.Xform.Elnumber# */

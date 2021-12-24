@@ -1,0 +1,64 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Eldropdown",
+	"disabled": false,
+	"size" : "",
+	"text": "",
+	"placement": "bottom-end",
+	"trigger": "hover",
+	"hideOnClick": true,
+	"showButton": true,
+	"splitButton": false,
+	"buttonType": "",
+	"showTimeout": 250,
+	"hideTimeout": 150,
+	"dataType": "json",
+	"dataJson": [{
+		"label": "[none]",
+		"command": "",
+		"disabled": false,
+		"divided": false,
+		"icon":""
+	}],
+	"dataScript": {
+		"code": "",
+		"html": ""
+	},
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+	"vueSlot": "",
+	"elProperties": {},
+	"elStyles": {},
+	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"command": {
+			"code": "",
+			"html": ""
+		},
+		"visible-change": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}
