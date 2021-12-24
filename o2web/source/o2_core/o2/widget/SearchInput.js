@@ -86,7 +86,7 @@ o2.widget.SearchInput = new Class({
             if (this.keys){
                 var idx = this.keys.indexOf(value);
                 if (idx===-1){
-                    if (this.keys.length>=50) json.shift();
+                    if (this.keys.length>=50) this.keys.shift();
                 }else{
                     this.keys.splice(idx, 1);
                 }

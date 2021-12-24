@@ -2399,6 +2399,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         //var node = new Element("div", {"styles": this.css.rollbackAreaNode});
         var processNode = new Element("div", { "styles": this.app.css.processNode_Area }).inject(this.node);
+        processNode.setStyle("opacity", 0);
         this.setProcessNode(processNode, "process", function (processor) {
             this.processDlg = o2.DL.open({
                 "title": this.app.lp.process,
@@ -2430,11 +2431,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                 ],
                 "onPostLoad": function () {
+                    processNode.setStyle("opacity", 1);
                     processor.options.mediaNode = this.content;
                     setSize.call(this)
                 }
-            });
-
+            })
         }.bind(this), function () {
             if (this.processDlg) setSize.call(this.processDlg, true)
         }.bind(this), defaultRoute);

@@ -152,7 +152,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 *  	 	"毕业日期" : "2019-9-2",
 			 *  	 	"errorTextList" : [
 			 *  	 	    "第5列：aa01-1-2不是正确的日期格式。"
-			 *  	 	] //校验出的错误信息，如果改行数据正确，则无该字段
+			 *  	 	] //校验出的错误信息，如果该行数据正确，则无该字段
 			 *  	 }
 			 *  	 ...
 			 *     ], //导入的数据
