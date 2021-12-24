@@ -73,4 +73,5 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Eldatetime", null, false
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elrate", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcolorpicker", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Eltree", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Eldropdown", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.SmartBI", null, false);

@@ -10,6 +10,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/color-picker|Element UI ColorPicker 颜色选择器}
  */
 MWF.xApplication.process.Xform.Elcolorpicker = MWF.APPElcolorpicker =  new Class(
     /** @lends o2.xApplication.process.Xform.Elcolorpicker# */
@@ -31,6 +32,10 @@ MWF.xApplication.process.Xform.Elcolorpicker = MWF.APPElcolorpicker =  new Class
          * @see {@link https://element.eleme.cn/#/zh-CN/component/color-picker|颜色选择组件的Events章节}
          */
         "elEvents": ["change","active-change"]
+    },
+    _loadNode: function(){
+        if (this.isReadonly()) this.json.disabled = true;
+        this._loadNodeEdit();
     },
     _appendVueData: function(){
         if (!this.json.isReadonly) this.json.isReadonly = false;

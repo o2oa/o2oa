@@ -10,6 +10,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/time-picker|Element UI TimePicker 时间选择器}
  */
 MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
     /** @lends o2.xApplication.process.Xform.Eltime# */
