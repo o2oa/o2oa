@@ -12,9 +12,28 @@
 
 ## API总览
 
+### Namespace
+
+* 平台中的全局命名空间
+
+#### web
+  <table>
+      <tr>
+          <td><a href="o2.html">平台全局 API - o2</a></td>
+      </tr>
+  </table>
+
+#### mobile
+   * 移动端H5页面除了可以使用web章节以及Class章节描述的API，还可以使用下列API：
+  <table>
+      <tr>
+          <td><a href="o2m.html">平台移动APP API - o2m</a></td>
+      </tr>
+  </table>
+
 ### Modules
 
-* 为脚本封装的对象、方法和类。
+* 为脚本封装的对象、方法和类。通过this[moduleName]调用。
 
  
 #### web
@@ -49,17 +68,9 @@
     <tr>
         <td><a href="module-wait.html">表单等待 - wait</a></td>
         <td><a href="module-importer.html">导入数据 - importer</a></td>
-        <td></td>
+        <td><a href="module-Table.html">数据表执行 - Table</a></td>
     </tr>
 </table>
-
-#### mobile
-   * 移动端H5页面除了可以使用Modules.web章节以及Class章节描述的API，还可以使用下列API：
-  <table>
-      <tr>
-          <td><a href="module-o2m.html">平台移动APP API - o2m</a></td>
-      </tr>
-  </table>
   
   
 #### server
@@ -77,7 +88,7 @@
      </tr>
      <tr>
          <td><a href="module-define_.html">方法定义 - define</a></td>
-         <td></td>
+         <td><a href="server.module-Table.html">数据表执行 - Table</a></td>
          <td></td>
      </tr>
  </table>
