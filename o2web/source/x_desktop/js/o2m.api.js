@@ -28,16 +28,17 @@
 
 
 /**
+ * @summary
  * <b>o2m</b> 是O2OA移动端APP提供的调用原生控件的能力，帮助开发者高效使用拍照、定位等手机系统的能力，同时可以直接使用扫一扫、打开原生应用、选择时间，人员，组织等业务的能力，带给门户接近原生代码的体验
  * <br/>
  * <b>o2m</b> 只有在O2OA移动端APP中才能提供能力
- * @module o2m
+ * @namespace o2m
  * @o2category mobile
  * @o2ordernumber 13
  * @o2range {流程表单|门户}
  * @o2syntax
  * // 可以在移动端 流程表单、门户 上使用
- * this.o2m
+ * window.o2m
  * 
  */
 (function () {
@@ -53,7 +54,8 @@
   };
 
   /** ***** BEGIN NOTIFICATION BLOCK *****
-    notification 模块   
+    @ignore
+    @summary notification 模块
       alert
       confirm
       prompt
@@ -115,6 +117,7 @@
   /**
    * 原生Alert提示弹出窗
    * @method alert
+   * @memberOf o2m
    * @o2membercategory notification
    * @static
    * @param {Object} obj 提示窗传入对象
@@ -176,6 +179,7 @@
   /**
    * 原生confirm提示弹出窗
    * @method confirm
+   * @memberOf o2m
    * @o2membercategory notification
    * @static
    * @param {Object} obj 提示窗传入对象
@@ -240,6 +244,7 @@
   /**
    * 原生prompt提示弹出窗
    * @method prompt
+   * @memberOf o2m
    * @o2membercategory notification
    * @static
    * @param {Object} obj prompt需要传入对象
@@ -298,6 +303,7 @@
   /**
    * 手机震动
    * @method vibrate
+   * @memberOf o2m
    * @o2membercategory notification
    * @static
    * @param {Object} obj 震动需要传入对象
@@ -347,6 +353,7 @@
   /**
    * toast提示
    * @method toast
+   * @memberOf o2m
    * @o2membercategory notification
    * @static
    * @param {Object} obj toast需要传入对象
@@ -401,6 +408,7 @@
   /**
    * 底部弹出菜单
    * @method actionSheet
+   * @memberOf o2m
    * @o2membercategory notification
    * @static
    * @param {Object} obj actionSheet需要传入对象
@@ -452,6 +460,7 @@
   /**
    * 显示Loading浮层，请和hideLoading配合使用
    * @method showLoading
+   * @memberOf o2m
    * @o2membercategory notification
    * @static
    * @param {Object} obj showLoading需要传入对象
@@ -496,6 +505,7 @@
   /**
    * 隐藏Loading浮层
    * @method hideLoading
+   * @memberOf o2m
    * @o2membercategory notification
    * @static
    * @param {Object} obj hideLoading需要传入对象
@@ -518,6 +528,8 @@
 
 
   /** ***** BEGIN UTIL BLOCK *****
+   * @ignore
+   * @summary
     util 模块   
       date
         o2m.util.date.datePicker
@@ -588,6 +600,7 @@
   /**
    * 日期选择器
    * @method datePicker
+   * @memberOf o2m
    * @o2membercategory util.date
    * @static
    * @param {Object} obj  datePicker需要传入对象
@@ -637,6 +650,7 @@
   /**
    * 时间选择器
    * @method timePicker
+   * @memberOf o2m
    * @o2membercategory util.date
    * @static
    * @param {Object} obj  timePicker需要传入对象
@@ -688,6 +702,7 @@
   /**
    * 日期时间选择器
    * @method dateTimePicker
+   * @memberOf o2m
    * @o2membercategory util.date
    * @static
    * @param {Object} obj  dateTimePicker需要传入对象
@@ -739,6 +754,7 @@
   /**
    * 月历日期选择器
    * @method chooseOneDay
+   * @memberOf o2m
    * @o2membercategory util.date
    * @static
    * @param {Object} obj  chooseOneDay需要传入对象
@@ -789,6 +805,7 @@
   /**
    * 月历日期时间选择器
    * @method chooseDateTime
+   * @memberOf o2m
    * @o2membercategory util.date
    * @static
    * @param {Object} obj  chooseDateTime需要传入对象
@@ -841,6 +858,7 @@
   /**
    * 月历日期区间选择器
    * @method chooseInterval
+   * @memberOf o2m
    * @o2membercategory util.date
    * @static
    * @param {Object} obj  chooseInterval需要传入对象
@@ -892,6 +910,7 @@
   /**
    * 获取手机基础信息
    * @method getPhoneInfo
+   * @memberOf o2m
    * @o2membercategory util.device
    * @static
    * @param {Object} obj  getPhoneInfo需要传入对象
@@ -940,6 +959,7 @@
   /**
    * 扫二维码
    * @method scan
+   * @memberOf o2m
    * @o2membercategory util.device
    * @static
    * @param {Object} obj  scan需要传入对象
@@ -980,6 +1000,7 @@
   /**
    * 单次定位
    * @method location
+   * @memberOf o2m
    * @o2membercategory util.device
    * @static
    * @param {Object} obj  location需要传入对象
@@ -1026,6 +1047,7 @@
   /**
    * 设置原生页面标题
    * @method setTitle
+   * @memberOf o2m
    * @o2membercategory util.navigation
    * @static
    * @param {Object} obj  setTitle需要传入对象
@@ -1066,6 +1088,7 @@
   /**
    * 关闭当前原生页面
    * @method close
+   * @memberOf o2m
    * @o2membercategory util.navigation
    * @static
    * @example
@@ -1095,6 +1118,7 @@
   /**
    * 返回上级原生页面
    * @method goBack
+   * @memberOf o2m
    * @o2membercategory util.navigation
    * @static
    * @example
@@ -1106,6 +1130,8 @@
 
 
   /** ***** BEGIN BIZ BLOCK *****
+   * @ignore
+   * @summary
    biz 模块
    contact
    o2m.biz.contact.PersonPicker
@@ -1150,6 +1176,7 @@
   /**
    * 关闭当前工作页面，<b>只能在工作表单中可以使用</b>
    * @method workClose
+   * @memberOf o2m
    * @o2membercategory biz
    * @static
    * @example
@@ -1189,6 +1216,7 @@
   /**
    * 通讯录选部门
    * @method departmentsPicker
+   * @memberOf o2m
    * @o2membercategory biz
    * @static
    * @param {Object} obj  departmentsPicker需要传入对象
@@ -1265,6 +1293,7 @@
   /**
    * 通讯录选身份
    * @method IdentityPicker
+   * @memberOf o2m
    * @o2membercategory biz
    * @static
    * @param {Object} obj  IdentityPicker需要传入对象
@@ -1342,6 +1371,7 @@
   /**
    * 群组选择
    * @method GroupPicker
+   * @memberOf o2m
    * @o2membercategory biz
    * @static
    * @param {Object} obj  GroupPicker需要传入对象
@@ -1406,6 +1436,7 @@
   /**
    * 人员选择
    * @method PersonPicker
+   * @memberOf o2m
    * @o2membercategory biz
    * @static
    * @param {Object} obj  PersonPicker需要传入对象
@@ -1491,6 +1522,7 @@
   /**
    * 复合选择器，可配置选择多种数据
    * @method ComplexPicker
+   * @memberOf o2m
    * @o2membercategory biz
    * @static
    * @param {Object} obj  ComplexPicker需要传入对象
