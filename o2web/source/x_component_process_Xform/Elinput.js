@@ -10,6 +10,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/input|Element UI Input 输入框}
  */
 MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     /** @lends o2.xApplication.process.Xform.Elinput# */
