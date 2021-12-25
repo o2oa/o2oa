@@ -118,6 +118,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadVueElementUI();
                     this.loadElCommonPreview();
                     this.loadElTreeData();
+                    this.loadElTDropDownData();
 
                     this.loadSmartBISelect();
 
@@ -167,6 +168,26 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         // this.module.json[name] = this.data[name];
                         //
                         this.module._refreshTree();
+                    }.bind(this)
+                });
+                treeEditor.load(json);
+            }.bind(this));
+            node.addEvent("keydown", function(e){e.stopPropagation();});
+        }.bind(this));
+    },
+
+    loadElTDropDownData: function(){
+        var arrays = this.propertyContent.getElements(".MWFElTDropdownData");
+        arrays.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var json = this.data[name];
+            if (!json) json = [];
+            MWF.requireApp("process.FormDesigner", "widget.ElDropdownItemEditor", function(){
+                var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor(node, {
+                    "title": title,
+                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "onChange": function(){
                     }.bind(this)
                 });
                 treeEditor.load(json);

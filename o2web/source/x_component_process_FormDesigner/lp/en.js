@@ -352,7 +352,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_datetime": "Datetime",
         "el_rate": "Rate",
         "el_colorpicker": "ColorPicker",
-        "el_tree": "tree",
+        "el_tree": "Tree",
+        "el_dropdown": "Dropdown",
         "el-menu": "menu",
         "el_common": "Common",
 
@@ -1216,6 +1217,19 @@ MWF.xApplication.process.FormDesigner.LP = {
         "parameterConditions": "Parameter default conditions",
         "addDefaultConditionByPath": "Add default condition by path",
         "addDefaultConditionByParameter": "Add default condition by parameter",
+
+        "placementValue": ["upper center", "upper left", "upper right", "lower center", "lower left", "lower right"],
+        "trigger": "Trigger drop down",
+        "triggerValue": ["Mouse over","Mouse click"],
+        "hideOnClick": "Click to hide the menu",
+        "showTimeout": "Expand Delay",
+        "hideTimeout": "Folding Delay",
+        "splitButton": "Enable button click",
+        "splitButtonType": "Button Type",
+        "menuItem": "Menu Item",
+        "dropdownDefaultText": "Dropdown Menu",
+        "showButton": "Show Button",
+
         "wps" : {
             "config":"Config",
             "options" : "options",

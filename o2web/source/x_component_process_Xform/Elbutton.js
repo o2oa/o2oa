@@ -10,6 +10,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/button|Element UI Button 按钮}
  */
 MWF.xApplication.process.Xform.Elbutton = MWF.APPElbutton =  new Class(
     /** @lends MWF.xApplication.process.Xform.Elbutton# */
