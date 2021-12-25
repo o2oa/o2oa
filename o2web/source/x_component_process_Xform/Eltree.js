@@ -10,6 +10,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|Element UI Tree 树形控件}
  */
 MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
     /** @lends o2.xApplication.process.Xform.Eltree# */
@@ -104,15 +105,16 @@ MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
         "elEvents": ["node-click", "node-contextmenu", "check-change", "check", "current-change","node-expand",
             "node-collapse","node-drag-start","node-drag-enter","node-drag-leave","node-drag-over","node-drag-end","node-drop"]
     },
-    // _queryLoaded: function(){
-    //
-    // },
+    _loadNode: function(){
+        // if (this.isReadonly()) this.json.disabled = true;
+        this._loadNodeEdit();
+    },
     _appendVueData: function(){
         if (!this.json.emptyText) this.json.emptyText = "";
-        if (!this.json.renderAfterExpand) this.json.renderAfterExpand = true;
+        // if (!this.json.renderAfterExpand) this.json.renderAfterExpand = true;
         if (!this.json.highlightCurrent) this.json.highlightCurrent = false;
         if (!this.json.defaultExpandAll) this.json.defaultExpandAll = false;
-        if (!this.json.expandOnClickNode) this.json.expandOnClickNode = true;
+        // if (!this.json.expandOnClickNode) this.json.expandOnClickNode = true;
         if (!this.json.accordion) this.json.accordion = false;
         if (!this.json.indent) this.json.indent = 16;
 

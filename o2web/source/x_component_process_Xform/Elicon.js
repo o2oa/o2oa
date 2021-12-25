@@ -10,6 +10,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/icon|Element UI Icon 图标}
  */
 MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
     /** @lends MWF.xApplication.process.Xform.Elicon# */

@@ -301,6 +301,8 @@ MWF.xApplication.process.Xform.LP = {
     "importTooManyNotice": "本次导入了{n1}条数据，最多允许导入{n2}条数据",
     "importTooFewNotice": "本次导入了{n1}条数据，最少需要保留{n2}条数据",
 
+    "pleaseSelect": "请选择",
+
     "form": {
         "close":"关闭",
         "closeTitle": "关闭文档",

@@ -10,6 +10,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/rate|Element UI Rate 评分}
  */
 MWF.xApplication.process.Xform.Elrate = MWF.APPElrate =  new Class(
     /** @lends o2.xApplication.process.Xform.Elrate# */
@@ -24,6 +25,10 @@ MWF.xApplication.process.Xform.Elrate = MWF.APPElrate =  new Class(
          * @see {@link https://element.eleme.cn/#/zh-CN/component/rate|评分组件的Events章节}
          */
         "elEvents": ["change"]
+    },
+    _loadNode: function(){
+        if (this.isReadonly()) this.json.disabled = true;
+        this._loadNodeEdit();
     },
     _appendVueData: function(){
         if (!this.json.max) this.json.max = "";
