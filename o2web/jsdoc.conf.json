@@ -49,7 +49,8 @@
     "o2" : {
         "actionOutPath" : "./o2server/{actionRoot}/src/main/webapp/describe/jsdoc/{actionName}.json",
         //"actionOutPath" : "./o2web/jsdoc/{actionRoot}/{actionName}.json",
-        "actionOutExamplePath" : "./o2web/jsdoc_static/actionOut_examples/{actionRoot}.json"
+        "actionOutExamplePath" : "./o2web/jsdoc_static/actionOut/examples/{actionRoot}.json",
+        "actionOutExtensionPath" : "./o2web/jsdoc_static/actionOut/extensions/{actionRoot}.json"
     },
     "search" : {
         "enable" : true,
