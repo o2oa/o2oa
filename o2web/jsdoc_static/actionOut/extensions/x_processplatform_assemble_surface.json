@@ -1,0 +1,69 @@
+{
+  "Work": [
+    {
+      "name": "creatorPersonDn",
+      "relative": "creatorPerson",
+      "type": "string",
+      "value": "张三@zhangsan@P",
+      "description": "创建人全称，如果由系统创建可能为空，脚本独有"
+    },
+    {
+      "name": "creatorIdentityDn",
+      "relative": "creatorIdentity",
+      "type": "string",
+      "value": "张三@kfb_zhangsan@I",
+      "description": "创建人Identity全称，如果由系统创建可能为空，脚本独有"
+    },
+    {
+      "name": "creatorUnitDn",
+      "relative": "creatorUnit",
+      "type": "string",
+      "value": "开发部@kfb@U",
+      "description": "创建人组织全称，如果由系统创建可能为空，脚本独有"
+    },
+    {
+      "name": "creatorDepartment",
+      "relative": "creatorUnit",
+      "type": "string",
+      "value": "开发部",
+      "description": "创建人组织名称，同creatorUnit，脚本独有"
+    },
+    {
+      "name": "creatorCompany",
+      "relative": "creatorUnit",
+      "type": "string",
+      "value": "浙江兰德纵横网络技术股份有限公司" ,
+      "description": "创建人组织公司名称，creatorUnitLevel的第一段，脚本独有"
+    }
+  ],
+  "Task": [
+    {
+      "name": "personDn",
+      "relative": "person",
+      "type": "string",
+      "value": "张三@zhangsan@P",
+      "description": "当前处理人全称，脚本独有"
+    },
+    {
+      "name": "identityDn",
+      "relative": "identity",
+      "type": "string",
+      "value": "张三@kfb_zhangsan@I",
+      "description": "当前处理人Identity全称，脚本独有"
+    },
+    {
+      "name": "unitDn",
+      "relative": "unit",
+      "type": "string",
+      "value": "开发部@kfb@U",
+      "description": "当前处理人组织全称，脚本独有"
+    },
+    {
+      "name": "department",
+      "relative": "unit",
+      "type": "string",
+      "value": "开发部",
+      "description": "当前处理人组织全称，同unit，脚本独有"
+    }
+  ]
+}

@@ -196,26 +196,27 @@ MWF.xScript.Environment = function(ev){
      * var context = this.workContext;
      */
     this.workContext = {
+    //  * <div><br/>
+    //  * 下面的Work对象和WorkCompleted对象为后台返回的数据，在前端脚本中我们对这两个对象进行了修改和补充，如下：
+    // * </div>
+    // * <pre><code class='language-js'>{
+    //     *      "creatorPersonDn": "张三@zhangsan@P",		//创建人，可能为空，如果由系统创建.
+    //     *      "creatorPerson": "张三",  //创建人姓名
+    //     *      "creatorIdentityDn": "张三@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",		//创建人Identity,可能为空,如果由系统创建.
+    //     *      "creatorIdentity": "张三" //创建人姓名
+    //     *      "creatorUnitDn": "开发部@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //创建人组织全称,如果由系统创建。
+    //     *      "creatorUnit": "开发部",  //创建人组织名称
+    //     *      "creatorDepartment": "开发部",  //创建人组织名称，同creatorUnit
+    //     *      "creatorCompany": "xx公司"  //创建人顶层组织名称，creatorUnitLevelName的第一段
+    //     * }</code></pre>
+
         /**
          * 获取当前流程实例对象：work对象或workCompleted对象。
          * @method getWork
          * @static
          * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象。
-         * <div><br/>
-         * 下面的Work对象和WorkCompleted对象为后台返回的数据，在前端脚本中我们对这两个对象进行了修改和补充，如下：
-         * </div>
-         * <pre><code class='language-js'>{
-         *      "creatorPersonDn": "张三@zhangsan@P",		//创建人，可能为空，如果由系统创建.
-         *      "creatorPerson": "张三",  //创建人姓名
-         *      "creatorIdentityDn": "张三@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",		//创建人Identity,可能为空,如果由系统创建.
-         *      "creatorIdentity": "张三" //创建人姓名
-         *      "creatorUnitDn": "开发部@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //创建人组织全称,如果由系统创建。
-         *      "creatorUnit": "开发部",  //创建人组织名称
-         *      "creatorDepartment": "开发部",  //创建人组织名称，同creatorUnit
-         *      "creatorCompany": "xx公司"  //创建人顶层组织名称，creatorUnitLevelName的第一段
-         * }</code></pre>
-         * @o2ActionOut x_processplatform_assemble_surface.WorkAction.manageGet|example=Work|ignoreNoDescr=true|ignoreProps=[properties]|Work对象:
-         * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompleted|ignoreProps=[properties]|WorkCompleted对象:
+         * @o2ActionOut x_processplatform_assemble_surface.WorkAction.manageGet|example=WorkParsed|extension=Work|ignoreNoDescr=true|ignoreProps=[properties]|Work对象:
+         * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompletedParsed|extension=Work||ignoreProps=[properties]|WorkCompleted对象:
          * @o2syntax
          * var work = this.workContext.getWork();
          */
@@ -240,25 +241,26 @@ MWF.xScript.Environment = function(ev){
          */
         "getActivity": function(){return ev.activity || null;},
 
+        // * <div><br/>
+        //     * 下面的Task对象为后台返回的数据，脚本中我们对这它进行了修改和补充，如下：
+        // * </div>
+        // * <pre><code class='language-js'>{
+        // *      "personDn": "张三@zhangsan@P",		//创建人，可能为空，如果由系统创建.
+        // *      "person": "张三",  //创建人姓名
+        // *      "identityDn": "张三@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",		//创建人Identity,可能为空,如果由系统创建.
+        // *      "identity": "张三" //创建人姓名
+        // *      "unitDn": "开发部@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //创建人组织全称,如果由系统创建。
+        // *      "unit": "开发部",  //创建人组织名称
+        // *      "department": "开发部",  //创建人组织名称，unit
+        // * }</code></pre>
+
         /**
          * 当前流程实例正在流转中，并且当前用户有待办，则返回当前用户的待办对象，否则返回null。
          * @summary 获取当前流程与当前用户相关的待办对象：task对象。
-         * @o2ActionOut x_processplatform_assemble_surface.TaskAction.get|example=Task|Task对象:
+         * @o2ActionOut x_processplatform_assemble_surface.TaskAction.get|example=TaskParsed|extension=Task|Task对象:
          * @method getTask
          * @static
          * @return {(Task|Null)} 当前用户的待办任务对象：task。当前用户没有对此流程实例的待办时，或流程实例已经流转结束，返回null。
-         * <div><br/>
-         * 下面的Task对象为后台返回的数据，脚本中我们对这它进行了修改和补充，如下：
-         * </div>
-         * <pre><code class='language-js'>{
-         *      "personDn": "张三@zhangsan@P",		//创建人，可能为空，如果由系统创建.
-         *      "person": "张三",  //创建人姓名
-         *      "identityDn": "张三@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",		//创建人Identity,可能为空,如果由系统创建.
-         *      "identity": "张三" //创建人姓名
-         *      "unitDn": "开发部@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //创建人组织全称,如果由系统创建。
-         *      "unit": "开发部",  //创建人组织名称
-         *      "department": "开发部",  //创建人组织名称，unit
-         * }</code></pre>
          * @o2syntax
          * var task = this.workContext.getTask();
          */
