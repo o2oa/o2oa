@@ -84,9 +84,14 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			wrap.set(gson.toJson(assginData));
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
-			aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), embed,
-					Business.EVENT_EMBEDTARGETASSIGNDATA).eval(scriptContext);
-			assginData = gson.fromJson(wrap.get(), AssginData.class);
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					embed, Business.EVENT_EMBEDTARGETASSIGNDATA);
+			AssginData returnData = JsonScriptingExecutor.eval(cs, scriptContext, AssginData.class);
+			if (null != returnData) {
+				assginData = returnData;
+			} else {
+				assginData = gson.fromJson(wrap.get(), AssginData.class);
+			}
 		}
 		logger.debug("embed:{}, process:{} try to embed application:{}, process:{}, assginData:{}", embed.getName(),
 				embed.getProcess(), embed.getTargetApplication(), embed.getTargetProcess(), gson.toJson(assginData));
