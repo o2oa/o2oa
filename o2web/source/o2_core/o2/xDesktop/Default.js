@@ -1808,7 +1808,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.badgeNode.set("title", o2.LP.desktop.addLnk).addClass("icon_add_red");
     },
     loadText: function(){
-        if (this.data.path){
+        if (this.data.path && this.data.path.indexOf("@url") !== 0 ){
             var appNames = this.data.path.split(".");
             var o = o2.xApplication;
             appNames.each(function(name){
