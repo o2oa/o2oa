@@ -1,0 +1,45 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Elcarousel",
+	"disabled": false,
+	"size" : "",
+	"text": "",
+	"placement": "bottom-end",
+	"trigger": "hover",
+	"hideOnClick": true,
+	"showButton": true,
+	"splitButton": false,
+	"buttonType": "",
+	"showTimeout": 250,
+	"hideTimeout": 150,
+	"dataType": "json",
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+	"vueSlot": "",
+	"elProperties": {},
+	"elStyles": {},
+	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
+		"change": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

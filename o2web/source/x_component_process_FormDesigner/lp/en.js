@@ -354,6 +354,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_colorpicker": "ColorPicker",
         "el_tree": "Tree",
         "el_dropdown": "Dropdown",
+        "el_carousel": "Carousel",
         "el-menu": "menu",
         "el_common": "Common",
 
