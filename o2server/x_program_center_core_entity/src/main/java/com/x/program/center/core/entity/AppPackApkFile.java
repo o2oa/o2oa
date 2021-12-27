@@ -116,12 +116,12 @@ public class AppPackApkFile extends StorageObject {
     private String packInfoId;
 
     public static final String appVersionName_FIELDNAME = "appVersionName";
-    @FieldDescribe("安装包版本号名称，暂时没有先预留.")
+    @FieldDescribe("安装包版本号名称.")
     @Column(length = length_64B, name = ColumnNamePrefix + appVersionName_FIELDNAME)
     private String appVersionName;
 
     public static final String appVersionNo_FIELDNAME = "appVersionNo";
-    @FieldDescribe("安装包版本号，可比较，暂时没有先预留.")
+    @FieldDescribe("安装包版本号，可比较.")
     @Column(length = length_64B, name = ColumnNamePrefix + appVersionNo_FIELDNAME)
     private String appVersionNo;
 
@@ -131,10 +131,23 @@ public class AppPackApkFile extends StorageObject {
     public static final Integer statusError = 2;
 
     public static final String status_FIELDNAME = "status";
-    @FieldDescribe("状态，异步下载文件所以需要这个状态，0开启，1下载完成， 2过程有异常")
+    @FieldDescribe("状态，异步下载文件所以需要这个状态，0开启，1下载完成， 2过程有异常.")
     @Column(name = ColumnNamePrefix + status_FIELDNAME)
     private Integer status;
 
+    public static final String isPackAppIdOuter_FIELDNAME = "isPackAppIdOuter";
+    @FieldDescribe("是否使用外部包名，2: 就是用 net.zoneland.x.bpm.mobile.v1.zoneXBPM.outer 作为apk的applicationId，默认使用老的applicationId，兼容老的版本")
+    @Column(length = length_64B, name = ColumnNamePrefix + isPackAppIdOuter_FIELDNAME)
+    private String isPackAppIdOuter;
+
+
+    public String getIsPackAppIdOuter() {
+        return isPackAppIdOuter;
+    }
+
+    public void setIsPackAppIdOuter(String isPackAppIdOuter) {
+        this.isPackAppIdOuter = isPackAppIdOuter;
+    }
 
     public Integer getStatus() {
         return status;
