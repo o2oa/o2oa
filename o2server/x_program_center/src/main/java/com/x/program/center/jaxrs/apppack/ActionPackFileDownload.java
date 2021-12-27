@@ -65,6 +65,7 @@ public class ActionPackFileDownload  extends BaseAction  {
                     throw e;
                 }
             }
+            result.setData(wo);
         }
 
         return result;

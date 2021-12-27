@@ -35,7 +35,7 @@ public class ActionAndroidPack extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionAndroidPack.class);
 
 	ActionResult<Wo> execute(String token, String appName, String o2ServerProtocol, String o2ServerHost,
-			String o2ServerPort, String o2ServerContext, String fileName, byte[] bytes,
+			String o2ServerPort, String o2ServerContext, String isPackAppIdOuter, String fileName, byte[] bytes,
 			FormDataContentDisposition disposition) throws Exception {
 		ActionResult<Wo> result = new ActionResult<Wo>();
 		if (StringUtils.isEmpty(token)) {
@@ -75,7 +75,7 @@ public class ActionAndroidPack extends BaseAction {
 		if (!fileName.toLowerCase().endsWith("png")) {
 			throw new ExceptionFileNotPng();
 		}
-		String s = postFormData(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, fileName,
+		String s = postFormData(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, isPackAppIdOuter, fileName,
 				bytes);
 		Type type = new TypeToken<AppPackResult<IdValue>>() {
 		}.getType();
@@ -106,9 +106,9 @@ public class ActionAndroidPack extends BaseAction {
 	 * @throws Exception
 	 */
 	private String postFormData(String token, String appName, String o2ServerProtocol, String o2ServerHost,
-			String o2ServerPort, String o2ServerContext, String fileName, byte[] bytes) throws Exception {
+			String o2ServerPort, String o2ServerContext, String isPackAppIdOuter, String fileName, byte[] bytes) throws Exception {
 		logger.info("发起打包请求，form : " + token + " ," + appName + " ," + o2ServerProtocol + " ," + o2ServerHost + " ,"
-				+ o2ServerPort + " ," + o2ServerContext + " ," + fileName);
+				+ o2ServerPort + " ," + o2ServerContext + " ," + isPackAppIdOuter + " ," + fileName);
 		String boundary = "abcdefghijk";
 		String end = "\r\n";
 		String twoHyphens = "--";
@@ -147,6 +147,7 @@ public class ActionAndroidPack extends BaseAction {
 			writeFormProperties("o2ServerHost", o2ServerHost, boundary, end, twoHyphens, ds);
 			writeFormProperties("o2ServerPort", o2ServerPort, boundary, end, twoHyphens, ds);
 			writeFormProperties("o2ServerContext", o2ServerContext, boundary, end, twoHyphens, ds);
+			writeFormProperties("isPackAppIdOuter", isPackAppIdOuter, boundary, end, twoHyphens, ds);
 			writeFormProperties("collectName", Config.collect().getName(), boundary, end, twoHyphens, ds);
 			// file
 			ds.writeBytes(twoHyphens + boundary + end);

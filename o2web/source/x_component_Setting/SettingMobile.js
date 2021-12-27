@@ -221,10 +221,15 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.apppackHostShowNode.set("text", this.packInfo.o2ServerHost);
             this.apppackPortShowNode.set("text", this.packInfo.o2ServerPort);
             this.apppackContextShowNode.set("text", this.packInfo.o2ServerContext);
+            var isPackAppIdOuter = this.lp.mobile_apppack_form_enable_outer_status_no;
+            if (this.packInfo.isPackAppIdOuter && this.packInfo.isPackAppIdOuter === "2") {
+                isPackAppIdOuter = this.lp.mobile_apppack_form_enable_outer_status_yes;
+            }
+            this.apppackIsPackAppIdOuterShowNode.set("text", isPackAppIdOuter);
             this.apppackLogoShowImgNode.set("src", this.packServerUrl + this.packInfo.appLogoPath + "?token=" + this.token);
             var status = ""
             if (this.packInfo.packStatus === "0") {
-                status = this.lp.mobile_apppack_status_order_inline
+                status = this.lp.mobile_apppack_status_order_inline;
                 this.apppackStatusRefreshNode.setStyles({
                     "display": ""
                 });
@@ -288,10 +293,44 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.apppackStatusShowNode.set("text", status);
             
             if (this.packInfo.apkPath && this.packInfo.packStatus === "2") {
-                this.apppackDownloadLinkNode.set("href", this.packServerUrl + this.packInfo.apkPath + "?token=" + this.token);
-                this.apppackDownloadShowNode.setStyles({
-                    "display": ""
-                });
+                // 显示发布区域
+                this.apppackPublishShowNode.setStyles({ "display": ""});
+                if (!this.packInfo.appFile) { // 还未发布到本地
+                    this.apppackPublishBtnNode.setStyles({ "display": ""}); //显示发布按钮
+                    this.apppackPublishBtnNode.addEvents({
+                        "click": function(e) {
+                            this.publishAPK2Local();
+                        }.bind(this)
+                    });
+                    this.apppackPublishStatusInfoNode.set("text", "");
+                    // 弹出发布提示
+                    this.confirm(this.lp.alert, this.lp.mobile_apppack_message_confirm_publish, function() {
+                        this.publishAPK2Local();
+                    }.bind(this));
+                } else if (this.packInfo.appFile.status === 0) { // 发布中
+                    this.apppackPublishBtnNode.setStyles({ "display": "none"}); //隐藏发布按钮
+
+                    this.apppackPublishStatusInfoNode.set("text", this.lp.mobile_apppack_publish_status_doing);
+                } else if (this.packInfo.appFile.status === 1) { // 发布完成
+                    this.apppackPublishBtnNode.setStyles({ "display": "none"}); //隐藏发布按钮
+
+                    this.apppackPublishStatusInfoNode.set("text",  this.lp.mobile_apppack_publish_status_completed);
+                     // 发布完成，显示下载按钮
+                    var url = o2.Actions.getHost("x_program_center") + "/x_program_center/jaxrs/apppack/pack/info/file/download/" + this.packInfo.appFile.id ;
+                    this.apppackDownloadLinkNode.set("href", url);
+                    this.apppackDownloadShowNode.setStyles({
+                        "display": ""
+                    });
+                } else if (this.packInfo.appFile.status === 2) { // 发布失败
+                    this.apppackPublishBtnNode.setStyles({ "display": ""}); //显示发布按钮
+
+                    this.apppackPublishStatusInfoNode.set("text", this.lp.mobile_apppack_publish_status_fail);
+                    this.apppackPublishBtnNode.addEvents({
+                        "click": function(e) {
+                            this.publishAPK2Local();
+                        }.bind(this)
+                    });
+                }
             } else {
                 this.apppackDownloadShowNode.setStyles({
                     "display": "none"
@@ -306,6 +345,37 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             
         }
     },
+    // 发布打包好的apk到本地
+    publishAPK2Local: function() {
+        if (this.packInfo) {
+            var url = o2.Actions.getHost("") 
+            var data = {
+                'token': this.token,
+                'apkPath': this.packInfo.apkPath,
+                'packInfoId': this.packInfo.id,
+                'appVersionName': this.packInfo.versionName,
+                'appVersionNo': this.packInfo.buildNo,
+                'isPackAppIdOuter': this.packInfo.isPackAppIdOuter,
+                'webUrl': url,
+            }
+            this.showLoading();
+            o2.Actions.load("x_program_center").AppPackAction.publishApk(data, function(json){
+                this.hiddenLoading();
+                if (json.data && json.data.value) {
+                    // 提交成功 获取最新打包对象信息
+                    this.loadAppPackInfo();
+                }else {
+                    this.app.notice(json.message, "error", this.contentAreaNode);
+                }
+            }.bind(this), function (error) {
+                this.hiddenLoading();
+                console.log(error);
+                this.app.notice(error, "error", this.contentAreaNode);
+            }.bind(this));
+        } else {
+            console.log("没有打包信息，不能发布");
+        }
+    },
     // 重新输入 提交表单
     reInput: function () {
         // 填充内容
@@ -315,6 +385,11 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.apppackPortInputNode.set("value", this.packInfo.o2ServerPort);
             this.apppackContextInputNode.set("value", this.packInfo.o2ServerContext);
             this.apppackAppNameInputNode.set("value", this.packInfo.appName);
+            var isPackAppIdOuter = false;
+            if (this.packInfo.isPackAppIdOuter && this.packInfo.isPackAppIdOuter === "2") {
+                isPackAppIdOuter = true;
+            }
+            this.apppackIsPackAppIdOuterInputNode.set("checked", isPackAppIdOuter);
         }
         this.showForm();
     },
@@ -415,6 +490,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.app.notice(this.lp.mobile_apppack_message_context_not_empty, "error", this.contentAreaNode);
             return;
         }
+        var isPackAppIdOuter = this.apppackIsPackAppIdOuterInputNode.checked ? "2" : "1";
         this.confirm(this.lp.alert, this.lp.mobile_apppack_message_alert_submit, function() {
             this.showLoading();
             var formData = new FormData();
@@ -425,6 +501,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             formData.append('o2ServerHost', host);
             formData.append('o2ServerPort', port);
             formData.append('o2ServerContext', context);
+            formData.append('isPackAppIdOuter', isPackAppIdOuter);
             formData.append('token', this.token);
             
             o2.Actions.load("x_program_center").AppPackAction.androidPackStart(formData, "{}",function (json) {

@@ -33,14 +33,14 @@ public class ActionLastPackFileInfo extends BaseAction  {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<AppPackApkFile> query = cb.createQuery(AppPackApkFile.class);
             Root<AppPackApkFile> root = query.from(AppPackApkFile.class);
-            query.orderBy(cb.desc(root.get(AppPackApkFile_.updateTime)));
+            query.orderBy(cb.desc(root.get(AppPackApkFile_.lastUpdateTime)));
             List<AppPackApkFile> list = em.createQuery(query).setMaxResults(1).getResultList();
             if (list != null && !list.isEmpty()) {
                 AppPackApkFile file = list.get(0);
                 Wo wo = Wo.copier.copy(file);
                 result.setData(wo);
             } else {
-                throw new ExceptionFileNotExist(null);
+//                throw new ExceptionFileNotExist(null);
             }
         }
         return result;

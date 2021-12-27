@@ -18,6 +18,7 @@ import com.x.program.center.core.entity.AppPackApkFile_;
 import org.apache.commons.lang3.StringUtils;
 
 
+import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -114,27 +115,39 @@ public class ActionPackInfo extends BaseAction  {
         private String appLogoPath; // logo图片地址 相对路径
         private String apkPath; // apk下载地址 相对路径
 
-        // 版本号 暂时还没有
-        private String appVersionName;
-        private String appVersionNo;
+        // 版本名称
+        private String versionName;
+        // 版本号 100
+        private String buildNo;
+        // 是否使用外部包名，2: 就是用 net.zoneland.x.bpm.mobile.v1.zoneXBPM.outer 作为apk的applicationId，默认使用老的applicationId，兼容老的版本
+        private String isPackAppIdOuter;
 
 
         private AppPackApkFile appFile; // 关联的下载文件
 
-        public String getAppVersionName() {
-            return appVersionName;
+
+        public String getVersionName() {
+            return versionName;
         }
 
-        public void setAppVersionName(String appVersionName) {
-            this.appVersionName = appVersionName;
+        public void setVersionName(String versionName) {
+            this.versionName = versionName;
         }
 
-        public String getAppVersionNo() {
-            return appVersionNo;
+        public String getBuildNo() {
+            return buildNo;
         }
 
-        public void setAppVersionNo(String appVersionNo) {
-            this.appVersionNo = appVersionNo;
+        public void setBuildNo(String buildNo) {
+            this.buildNo = buildNo;
+        }
+
+        public String getIsPackAppIdOuter() {
+            return isPackAppIdOuter;
+        }
+
+        public void setIsPackAppIdOuter(String isPackAppIdOuter) {
+            this.isPackAppIdOuter = isPackAppIdOuter;
         }
 
         public AppPackApkFile getAppFile() {
