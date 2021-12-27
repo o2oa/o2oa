@@ -14,6 +14,7 @@ import com.x.program.center.core.entity.AppPackApkFile_;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
@@ -33,13 +34,16 @@ public class ActionLastPackFileInfo extends BaseAction  {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<AppPackApkFile> query = cb.createQuery(AppPackApkFile.class);
             Root<AppPackApkFile> root = query.from(AppPackApkFile.class);
+            Predicate p = cb.equal(root.get(AppPackApkFile_.status), AppPackApkFile.statusCompleted);
             query.orderBy(cb.desc(root.get(AppPackApkFile_.lastUpdateTime)));
+            query.select(root).where(p);
             List<AppPackApkFile> list = em.createQuery(query).setMaxResults(1).getResultList();
             if (list != null && !list.isEmpty()) {
                 AppPackApkFile file = list.get(0);
                 Wo wo = Wo.copier.copy(file);
                 result.setData(wo);
             } else {
+                logger.info("没有找到最新的打包发布数据");
 //                throw new ExceptionFileNotExist(null);
             }
         }
