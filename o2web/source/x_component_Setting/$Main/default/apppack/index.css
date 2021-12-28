@@ -41,8 +41,11 @@
 .pack-form-tips {
   color: #9a9a9a;padding-top:4px;
 }
+.pack-form-top-30 {
+  margin-top:30px;
+}
 .pack-form-sb-btn {
-  margin-top:30px;display: inline-block;overflow: visible;margin-left: .5em;margin-right: .5em;min-width: 80px !important;padding: 0;height: 30px;line-height: 30px;vertical-align: middle;text-align: center;text-decoration: none;border-radius: 3px;font-size: 14px;border-width: 1px;border-style: solid;cursor: pointer;background-color: #07c160;background-image: linear-gradient(to bottom,#07c160 0,#07c160 100%);border-color: #07c160;color: #fff;
+  display: inline-block;overflow: visible;margin-left: .5em;margin-right: .5em;min-width: 80px !important;padding: 0;height: 30px;line-height: 30px;vertical-align: middle;text-align: center;text-decoration: none;border-radius: 3px;font-size: 14px;border-width: 1px;border-style: solid;cursor: pointer;background-color: #07c160;background-image: linear-gradient(to bottom,#07c160 0,#07c160 100%);border-color: #07c160;color: #fff;
 }
 .pack-form-sb-btn button {
   color: #fff; display: block;background-color: transparent;outline: 0;overflow: visible;cursor: pointer;border: 0;height: 100%;
