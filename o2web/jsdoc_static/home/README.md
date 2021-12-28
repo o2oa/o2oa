@@ -17,6 +17,8 @@
 * 平台中的全局命名空间
 
 #### web
+   {@o2IndexTable namespace|o2category=web}
+    
   <table>
       <tr>
           <td><a href="o2.html">平台全局 API - o2</a></td>
@@ -25,6 +27,9 @@
 
 #### mobile
    * 移动端H5页面除了可以使用web章节以及Class章节描述的API，还可以使用下列API：
+   
+   {@o2IndexTable namespace|o2category=mobile}
+   
   <table>
       <tr>
           <td><a href="o2m.html">平台移动APP API - o2m</a></td>
@@ -38,6 +43,8 @@
  
 #### web
   * 前台脚本（浏览器/移动端H5页面）可以使用的对象、方法和类。
+  
+  {@o2IndexTable module|o2category=web}
  
 <table>
     <tr>
@@ -75,6 +82,9 @@
   
 #### server
  * 后台脚本（服务端）可以使用的对象、方法和类。
+ 
+ {@o2IndexTable module|o2category=server}
+ 
  <table>
      <tr>
          <td><a href="server.module_data.html">业务数据 - data</a></td>
@@ -98,6 +108,8 @@
 * FormComponent为表单页面组件，在前台脚本中可以使用。可以通过`this.form.get("fieldId")`获取。
 
 #### Process 流程表单组件
+
+   {@o2IndexTable class|o2category=FormComponents|@o2range=Process}
 <table>
     <tr>
         <td><a href="MWF.xApplication.process.Xform.Form.html">表单 - Form</a></td>
@@ -179,6 +191,7 @@
 
 
 #### CMS 内容管理表单组件
+{@o2IndexTable class|o2category=FormComponents|@o2range=CMS}
 <table>
     <tr>
         <td><a href="CMSForm.html">内容管理表单 - CMSForm</a></td>
@@ -253,6 +266,7 @@
 </table>
 
 #### Portal 门户页面组件
+{@o2IndexTable class|o2category=FormComponents|@o2range=Portal}
 <table>
     <tr>
         <td><a href="PortalPage.html">页面 - PortalPage</a></td>
