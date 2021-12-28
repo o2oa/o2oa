@@ -6,6 +6,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
@@ -25,8 +26,8 @@ class ActionGet extends BaseAction {
 			if (null == application) {
 				throw new ExceptionApplicationNotExist(o.getApplication());
 			}
-			if (!business.application().allowControl(effectivePerson, application)) {
-				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(), application.getId());
+			if (!business.canManageApplication(effectivePerson, application)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Wo wo = Wo.copier.copy(o);
 			wo.setProcessName(business.process().pick(wo.getProcess()).getName());
