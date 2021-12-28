@@ -109,6 +109,13 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "CTE_MP_WEIXIN_MENU";
 	}
 
+	public static class AppPackApkFile {
+		private AppPackApkFile() {
+		}
+
+		public static final String table = "CTE_APP_PACK_APK_FILE";
+	}
+
 	public static class Validation {
 		private Validation() {
 		}

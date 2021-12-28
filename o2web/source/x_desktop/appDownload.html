@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+  <meta content="yes" name="apple-mobile-web-app-capable" />
+  <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+  <meta content="telephone=no" name="format-detection" />
+  <title>移动客户端</title>
+  <style>
+    html {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    @media screen and (max-width: 750px) {
+      .el-message-box {
+        width: 60% !important;
+      }
+    }
+    .app_box {
+      width: 100%;
+      background-size: cover;
+      background-position: center;
+      background-image: url("./img/pic_beijing.png");
+      padding-top: 62pt;
+      padding-bottom: 12pt;
+    }
+    .app_logo {
+      width: 50pt;
+      height: 50pt;
+      display: block;
+      margin: 0 auto;
+    }
+    .app_title {
+      color: #333333;
+      font-size: 24pt;
+      text-align: center;
+      margin: 5pt;
+    }
+    .app_line {
+      height: 1px;
+      background-color: #dedede;
+      width: 180pt;
+      margin: 36pt auto 30pt;
+    }
+    .app_footer {
+      height: 60px;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      position: fixed;
+      background: #fff;
+    }
+    .app_footer_name {
+      height: 20px;
+      font-size: 14px;
+      font-weight: 400;
+      color: #666666;
+      line-height: 20px;
+      text-align: center;
+    }
+    .app_footer_links {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+    .app_footer_link {
+      font-size: 12px;
+      color: #999999;
+      line-height: 16px;
+      text-decoration: underline;
+    }
+    .app_footer_link a:visited,a:link { 
+      color: #999999;
+      text-decoration: underline;
+    } 
+    .mask {
+      position: fixed;
+      left: 0px;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      background: rgba(0, 0, 0, 0.4);
+    }
+    .mask .mask_alert {
+      position: absolute;
+      right: 12pt;
+      left: 12pt;
+      top: 120pt;
+      text-align: center;
+      color: #fff;
+      font-size: 12pt;
+    }
+    .mask img {
+      display: block;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    .app_version {
+      color: #999999;
+      font-size: 12pt;
+      text-align: center;
+    }
+
+    .actions {
+      margin: 18pt auto 0;
+      text-align: center;
+    }
+
+    .actions a {
+      position: relative;
+      display: inline-block;
+      padding: 6pt 12pt;
+      min-width: 140pt;
+      border: 1px solid #fb4747;
+      border-radius: 40px;
+      font-size: 12pt;
+      background: #fb4747;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .actions a img {
+      width: 16pt;
+      height: 16pt;
+      vertical-align: middle;
+    }
+
+    .app_line {
+      height: 1px;
+      background-color: #dedede;
+      width: 180pt;
+      margin: 36pt auto 30pt;
+    }
+
+    .msg {
+      margin: 12px;
+    }
+
+    .msg .msg_header {
+      margin-top: 0;
+      color: #333333;
+      text-align: center;
+      font-size: 14pt;
+    }
+
+    .msg .msg_body {
+      width: 210pt;
+      margin: 0 auto;
+      text-align: left;
+      font-size: 14pt;
+      color: #999999;
+    }
+    </style>
+    <script src="../o2_core/o2.min.js"></script>
+    <script src="js/base_simple_anonymous.js"></script>
+  
+</head>
+<body>
+  <!-- 移动端app下载页面，用于自助打包发布的app下载 目前就只有android -->
+  <div id="app">
+    <div class="app_box">
+      <img
+        src="./img/icon_logo150.png"
+        class="app_logo"
+      />
+      <h3 class="app_title">O2OA</h3>
+      <div class="app_line"></div>
+
+      <!-- 下载页面内容 -->
+      <div id="android_box">
+        <div
+          id="android_version"
+          class="app_version"
+        >当前最新版本：{{android.versionName}}</div>
+        <div
+          id="actions_android"
+          class="actions type-android"
+        >
+          <a   id="android_download_link">
+            <img src="./img/action_android.png" />
+            下载安装
+          </a>
+        </div>
+      </div>
+      
+      <!-- 下载页面底部 -->
+      <!-- <div class="app_footer">
+        <div class="app_footer_name">浙江兰德纵横网络技术股份有限公司</div>
+        <div class="app_footer_links">
+          <div class="app_footer_link"><a href="https://www.o2oa.net/secret.html" target="_blank">隐私协议</a></div>
+          <div style="margin:10px;color: #999999;"> | </div>
+          <div class="app_footer_link" @click="clickPermission()">用户权限</div>
+        </div>
+      </div> -->
+ 
+      <div
+        class="mask"
+        id="mask"
+      >
+        <img
+          src="./img/menu_tap.png"
+          width="110"
+          height="140"
+        />
+        <p
+          class="mask_alert"
+          id="mask_alert"
+        >请点右上角菜单，在浏览器打开</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    layout.addReady(function(){
+        (function(layout){
+           
+          // 判断手机信息
+          var checkUserAgent = function() {
+              //判断平台
+              var ua = window.navigator.userAgent.toLowerCase();
+              console.log(ua);
+              var isiOS = /(iPhone|iPad|iPod|iOS)/i.test(ua);
+              var isAndroid = /(Android|Adr)/i.test(ua);
+              console.log("isiOS:"+isiOS);
+              console.log("isAndroid:"+isAndroid);
+              var isDingding = false;
+              var isWeixin = false;
+              if (ua.match(/DingTalk/i) == "dingtalk") {
+                //用钉钉打开
+                isDingding = true;
+              } else if (ua.match(/MicroMessenger/i) == "micromessenger") {
+                //用微信打开
+                isWeixin = true;
+              }
+
+              $("android_box").setStyles({
+                display:isAndroid ? "block" : "none"
+              })
+              $("mask").setStyles({
+                display:isDingding || isWeixin ? "block" : "none"
+              })
+          };
+            
+          // 获取最新版本apk数据
+          var _loadLastPublishAPK = function() {
+              o2.Actions.load("x_program_center").AppPackAnonymousAction.androidPackLastAPk(function(json) {
+                if (json && json.data && json.data.id) {
+                  $("android_version").set("text", "当前最新版本："+json.data.appVersionName);
+                  var downloadUrl = o2.Actions.getHost("x_program_center") + "/x_program_center/jaxrs/apppackanony/pack/info/file/download/" + json.data.id;
+                  $("android_download_link").set("href", downloadUrl);
+                } else {
+                  $("android_box").setStyles({ display: "none" });
+                }
+              }.bind(this));
+          };
+          checkUserAgent();
+          _loadLastPublishAPK();
+
+        })(layout);
+    });
+</script>
+</body>
+</html>

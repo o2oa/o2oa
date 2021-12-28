@@ -12,6 +12,10 @@ public class JpushConfig extends ConfigObject {
     private static final String O2_apns_path_default = "configSample/o2oa_apns.p12";
     private static final String O2_apns_password_default = "1209";
 
+    // 自助打包的outer包使用的key
+    private static final String O2_app_key_outer = "24a4af5965d2c325b33c243d";
+    private static final String O2_master_secret_outer = "a7b5689399307b29957e7dce";
+
 
     public static JpushConfig defaultInstance() {
         return new JpushConfig();
@@ -42,6 +46,19 @@ public class JpushConfig extends ConfigObject {
     private String apnsKeystorePath;
     @FieldDescribe("苹果推送证书的密码")
     private String apnsKeystorePassword;
+
+
+    /**
+     * 获取给自助打包生成的 外部包名 的app使用的config
+     * @return
+     */
+    public JpushConfig getOuterApplicationJpushConfig() {
+        JpushConfig config = new JpushConfig();
+        config.setAppKey(O2_app_key_outer);
+        config.setMasterSecret(O2_master_secret_outer);
+        config.setEnable(true);
+        return config;
+    }
 
 
     /**
@@ -94,7 +111,7 @@ public class JpushConfig extends ConfigObject {
     }
 
     public Boolean getHuaweiPushEnable() {
-        return huaweiPushEnable;
+        return huaweiPushEnable == null ? false : huaweiPushEnable;
     }
 
     public void setHuaweiPushEnable(Boolean huaweiPushEnable) {
