@@ -3,8 +3,6 @@ package com.x.file.assemble.control.jaxrs.recycle;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import com.x.base.core.project.config.StorageMapping;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.OriginFile;
@@ -32,14 +30,14 @@ class ActionDelete extends BaseAction {
 				throw new ExceptionAttachmentNotExist(id);
 			}
 			/* 判断当前用户是否有权限访问该文件 */
-			if(!effectivePerson.isManager() && !StringUtils.equals(effectivePerson.getDistinguishedName(), recycle.getPerson())) {
+			boolean flag = !business.controlAble(effectivePerson) && !StringUtils.equals(effectivePerson.getDistinguishedName(), recycle.getPerson());
+			if(flag) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
+
 			if(Share.FILE_TYPE_ATTACHMENT.equals(recycle.getFileType())){
 				Attachment2 att = emc.find(recycle.getFileId(), Attachment2.class);
-				if(att!=null){
-					this.deleteFile(business, att);
-				}
+				this.deleteFile(business, att);
 			}else{
 				Folder2 folder = emc.find(recycle.getFileId(), Folder2.class);
 				if(folder!=null) {
@@ -68,6 +66,9 @@ class ActionDelete extends BaseAction {
 	}
 
 	private void deleteFile(Business business, Attachment2 att) throws Exception{
+		if(att==null){
+			return;
+		}
 		EntityManagerContainer emc = business.entityManagerContainer();
 		Long count = emc.countEqual(Attachment2.class, Attachment2.originFile_FIELDNAME, att.getOriginFile());
 		if(count.equals(1L)){
@@ -84,6 +85,10 @@ class ActionDelete extends BaseAction {
 				emc.remove(originFile);
 				emc.commit();
 			}
+		}else{
+			emc.beginTransaction(Attachment2.class);
+			emc.remove(att);
+			emc.commit();
 		}
 	}
 
