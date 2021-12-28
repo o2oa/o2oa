@@ -67,6 +67,43 @@
           <p class="pack-form-tips">{{$.lp.mobile_apppack_form_context_tip}}</p>
         </div>
       </div>
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_appVersionName}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text" data-o2-element="apppackAppVersionNameInputNode"/>
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_appVersionName_tip}}</p>
+        </div>
+      </div>
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_appBuildNo}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text" data-o2-element="apppackAppBuildNoInputNode"/>
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_appBuildNo_tip}}</p>
+        </div>
+      </div>
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_enable_outer_package}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input type="checkbox" data-o2-element="apppackIsPackAppIdOuterInputNode"/>
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_enable_outer_tips}}</p>
+        </div>
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_urlMapping}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text" data-o2-element="apppackUrlMappingInputNode"/>
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_urlMapping_tip}}</p>
+        </div>
+      </div>
 
 
       <span class="pack-form-sb-btn"  data-o2-element="apppackBtnNode"><button >{{$.lp.mobile_apppack_form_button}}</button></span>
@@ -130,16 +167,53 @@
           </span>
         </div>
       </div>
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_appVersionName}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackAppVersionNameShowNode">
+          </span>
+        </div>
+      </div>
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_appBuildNo}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackAppBuildNoShowNode">
+          </span>
+        </div>
+      </div>
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_enable_outer_package}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackIsPackAppIdOuterShowNode">
+          </span>
+        </div>
+      </div>
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_urlMapping}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackUrlMappingShowNode">
+          </span>
+        </div>
+      </div>
 
       <div class="pack-form-group" style="display:none;" data-o2-element="apppackDownloadShowNode">
         <div class="pack-info-status-box" >
-           <a href="" target="_blank" data-o2-element="apppackDownloadLinkNode">下载APK文件</a>
+           <a href="" target="_blank" data-o2-element="apppackDownloadLinkNode">{{$.lp.mobile_apppack_form_download_apk_button}}</a>
+        </div>
+      </div>
+      <!-- 发布到本地情况展现 -->
+      <div class="pack-form-group" style="display:none;" data-o2-element="apppackPublishShowNode">
+        <div class="pack-info-status-box">
+          <span class="pack-form-sb-btn"  data-o2-element="apppackPublishBtnNode" style="display: none;"><button >{{$.lp.mobile_apppack_form_download_publish_btn}}</button></span>
+        </div>
+        <div class="pack-info-status-box">
+          <span data-o2-element="apppackPublishStatusInfoNode" style="color: #fb4747;"></span>
         </div>
       </div>
 
 
-      <span class="pack-form-sb-btn"  data-o2-element="apppackRePackBtnNode" style="display: none;"><button >{{$.lp.mobile_apppack_form_re_pack_button}}</button></span>
-      <span class="pack-form-sb-btn"  data-o2-element="apppackReInputBtnNode" style="display: none;"><button >{{$.lp.mobile_apppack_form_reinput_button}}</button></span>
+      <span class="pack-form-sb-btn pack-form-top-30"  data-o2-element="apppackRePackBtnNode" style="display: none;"><button >{{$.lp.mobile_apppack_form_re_pack_button}}</button></span>
+      <span class="pack-form-sb-btn pack-form-top-30"  data-o2-element="apppackReInputBtnNode" style="display: none;"><button >{{$.lp.mobile_apppack_form_reinput_button}}</button></span>
 
   </div>
 
