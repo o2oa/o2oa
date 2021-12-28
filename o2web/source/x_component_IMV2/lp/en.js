@@ -26,5 +26,6 @@ MWF.xApplication.IMV2.LP = {
 
 	"enterMessage": "Enter message content",
 	"send": "Send",
+	"sendKeyTips": "Ctrl + Enter Line feed",
 	"file": "[File]"
 };
