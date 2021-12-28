@@ -82,13 +82,16 @@ public class AppPackAction extends BaseAction  {
                                  @JaxrsParameterDescribe("o2ServerPort") @FormDataParam("o2ServerPort") String o2ServerPort,
                                  @JaxrsParameterDescribe("o2ServerContext") @FormDataParam("o2ServerContext") String o2ServerContext,
                                  @JaxrsParameterDescribe("isPackAppIdOuter") @FormDataParam("isPackAppIdOuter") String isPackAppIdOuter,
+                                 @JaxrsParameterDescribe("urlMapping") @FormDataParam("urlMapping") String urlMapping,
+                                 @JaxrsParameterDescribe("版本名称") @FormDataParam("appVersionName") String appVersionName,
+                                 @JaxrsParameterDescribe("版本编号") @FormDataParam("appBuildNo") String appBuildNo,
                            @JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
                            @JaxrsParameterDescribe("附件标识") @FormDataParam(FILE_FIELD) final byte[] bytes,
                            @JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition){
         ActionResult<ActionAndroidPack.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionAndroidPack().execute(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, isPackAppIdOuter, fileName, bytes, disposition);
+            result = new ActionAndroidPack().execute(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, isPackAppIdOuter, urlMapping, appVersionName, appBuildNo, fileName, bytes, disposition);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
