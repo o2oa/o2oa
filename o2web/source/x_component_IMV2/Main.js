@@ -50,6 +50,11 @@ MWF.xApplication.IMV2.Main = new Class({
 	},
 	// 加载应用
 	loadApplication: function (callback) {
+		// 判断xadmin 打开聊天功能
+		if (layout.session.user && layout.session.user.name == "xadmin") {
+			console.log("xadmin can not open IMV2");
+			return;
+		}
 		var url = this.path + this.options.style + "/im.html";
 		this.content.loadHtml(url, { "bind": { "lp": this.lp, "data": {} }, "module": this }, function () {
 			//设置content
@@ -151,6 +156,21 @@ MWF.xApplication.IMV2.Main = new Class({
 			this.loadMsgListByConvId(1, 20, conv.id);
 			var scrollFx = new Fx.Scroll(this.chatContentNode);
 			scrollFx.toBottom();
+			// 绑定事件
+			this.chatBottomAreaTextareaNode.addEvents({
+				"keyup": function (e) {
+					// debugger;
+					if (e.code === 13) {
+						if (e.control === true) {
+							var text = this.chatBottomAreaTextareaNode.value;
+							this.chatBottomAreaTextareaNode.value = text + "\n";
+						} else {
+							this.sendMsg();
+						}
+						e.stopPropagation();
+					}
+				}.bind(this)
+			});
 		}.bind(this));
 	},
 	//修改群名
@@ -389,7 +409,7 @@ MWF.xApplication.IMV2.Main = new Class({
 				console.log(error);
 			}.bind(this));
 		this.messageList.push(message);
-		this._buildSender(body, distinguishedName, false);
+		this._buildReceiver(body, distinguishedName, false);
 		this._refreshConvMessage(message);
 	},
 	//创建文本消息 并发送
@@ -416,7 +436,7 @@ MWF.xApplication.IMV2.Main = new Class({
 				console.log(error);
 			}.bind(this));
 		this.messageList.push(textMessage);
-		this._buildSender(body, distinguishedName, false);
+		this._buildReceiver(body, distinguishedName, false);
 		this._refreshConvMessage(textMessage);
 	},
 	//刷新会话Item里面的最后消息内容
@@ -497,9 +517,9 @@ MWF.xApplication.IMV2.Main = new Class({
 		var body = JSON.parse(jsonbody);//todo 目前只有一种text类型
 		var distinguishedName = layout.session.user.distinguishedName;
 		if (createPerson != distinguishedName) {
-			this._buildReceiver(body, createPerson, isTop);
-		} else {
 			this._buildSender(body, createPerson, isTop);
+		} else {
+			this._buildReceiver(body, createPerson, isTop);
 		}
 	},
 	/**
@@ -508,7 +528,7 @@ MWF.xApplication.IMV2.Main = new Class({
 	 * @param createPerson 消息人员
 	 * @param isTop 是否放在顶部
 	 */
-	_buildSender: function (msgBody, createPerson, isTop) {
+	 _buildSender: function (msgBody, createPerson, isTop) {
 		var receiverBodyNode = new Element("div", { "class": "chat-sender" }).inject(this.chatContentNode, isTop ? "top" : "bottom");
 		var avatarNode = new Element("div").inject(receiverBodyNode);
 		var avatarUrl = this._getIcon(createPerson);

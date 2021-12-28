@@ -26,5 +26,6 @@ MWF.xApplication.IMV2.LP = {
 
 	"enterMessage": "输入消息内容",
 	"send": "发送",
+	"sendKeyTips": "Ctrl + Enter 换行",
 	"file": "[文件]"
 };
