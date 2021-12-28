@@ -47,7 +47,10 @@ public class JsonScriptingExecutor {
 		JsonElement jsonElement = JsonNull.INSTANCE;
 		try {
 			Object o = cs.eval(scriptContext);
-			jsonElement = XGsonBuilder.instance().fromJson(Objects.toString(o, ""), JsonElement.class);
+			JsonElement value = XGsonBuilder.instance().fromJson(Objects.toString(o, ""), JsonElement.class);
+			if (null != value) {
+				jsonElement = value;
+			}
 		} catch (ScriptException e) {
 			LOGGER.error(e);
 		}

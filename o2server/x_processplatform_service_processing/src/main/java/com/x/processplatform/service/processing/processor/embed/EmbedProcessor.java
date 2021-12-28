@@ -30,7 +30,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class EmbedProcessor extends AbstractEmbedProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(EmbedProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EmbedProcessor.class);
 
 	public EmbedProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -86,6 +86,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					embed, Business.EVENT_EMBEDTARGETASSIGNDATA);
+
 			AssginData returnData = JsonScriptingExecutor.eval(cs, scriptContext, AssginData.class);
 			if (null != returnData) {
 				assginData = returnData;
@@ -93,8 +94,8 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 				assginData = gson.fromJson(wrap.get(), AssginData.class);
 			}
 		}
-		logger.debug("embed:{}, process:{} try to embed application:{}, process:{}, assginData:{}", embed.getName(),
-				embed.getProcess(), embed.getTargetApplication(), embed.getTargetProcess(), gson.toJson(assginData));
+		LOGGER.debug("embed:{}, process:{} try to embed application:{}, process:{}, assginData:{}.", embed::getName,
+				embed::getProcess, embed::getTargetApplication, embed::getTargetProcess, assginData::toString);
 		if (BooleanUtils.isTrue(embed.getAsync())) {
 			ThisApplication.syncEmbedQueue.send(assginData);
 		} else {
