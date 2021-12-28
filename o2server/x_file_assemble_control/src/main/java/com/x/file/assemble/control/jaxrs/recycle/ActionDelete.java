@@ -5,6 +5,10 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import com.x.base.core.project.config.StorageMapping;
+import com.x.file.assemble.control.ThisApplication;
+import com.x.file.core.entity.open.OriginFile;
+import com.x.file.core.entity.personal.Share;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -31,10 +35,11 @@ class ActionDelete extends BaseAction {
 			if(!effectivePerson.isManager() && !StringUtils.equals(effectivePerson.getDistinguishedName(), recycle.getPerson())) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
-			if("attachment".equals(recycle.getFileType())){
-				EntityManager aem = emc.beginTransaction(Attachment2.class);
-				emc.delete(Attachment2.class, recycle.getFileId());
-				aem.getTransaction().commit();
+			if(Share.FILE_TYPE_ATTACHMENT.equals(recycle.getFileType())){
+				Attachment2 att = emc.find(recycle.getFileId(), Attachment2.class);
+				if(att!=null){
+					this.deleteFile(business, att);
+				}
 			}else{
 				Folder2 folder = emc.find(recycle.getFileId(), Folder2.class);
 				if(folder!=null) {
@@ -44,23 +49,41 @@ class ActionDelete extends BaseAction {
 					for (int i = ids.size() - 1; i >= 0; i--) {
 						List<Attachment2> attachments = business.attachment2().listWithFolder2(ids.get(i),null);
 						for (Attachment2 att : attachments) {
-							EntityManager aem = emc.beginTransaction(Attachment2.class);
-							aem.remove(att);
-							aem.getTransaction().commit();
+							this.deleteFile(business, att);
 						}
-						EntityManager fem = emc.beginTransaction(Folder2.class);
+						emc.beginTransaction(Folder2.class);
 						emc.delete(Folder2.class, ids.get(i));
-						fem.getTransaction().commit();
+						emc.commit();
 					}
 				}
 			}
-			EntityManager em = emc.beginTransaction(Recycle.class);
+			emc.beginTransaction(Recycle.class);
 			emc.delete(Recycle.class, recycle.getId());
-			em.getTransaction().commit();
+			emc.commit();
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);
 			return result;
+		}
+	}
+
+	private void deleteFile(Business business, Attachment2 att) throws Exception{
+		EntityManagerContainer emc = business.entityManagerContainer();
+		Long count = emc.countEqual(Attachment2.class, Attachment2.originFile_FIELDNAME, att.getOriginFile());
+		if(count.equals(1L)){
+			OriginFile originFile = emc.find(att.getOriginFile(), OriginFile.class);
+			if(originFile!=null){
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(OriginFile.class,
+						originFile.getStorage());
+				if(mapping!=null){
+					originFile.deleteContent(mapping);
+				}
+				emc.beginTransaction(Attachment2.class);
+				emc.beginTransaction(OriginFile.class);
+				emc.remove(att);
+				emc.remove(originFile);
+				emc.commit();
+			}
 		}
 	}
 

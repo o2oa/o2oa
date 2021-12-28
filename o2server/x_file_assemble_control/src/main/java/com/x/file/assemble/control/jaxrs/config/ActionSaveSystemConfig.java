@@ -41,6 +41,11 @@ public class ActionSaveSystemConfig extends BaseAction {
 				}else{
 					fileConfig.setCapacity(wi.getCapacity());
 				}
+				if(wi.getRecycleDays()==null || wi.getRecycleDays() < 1){
+					fileConfig.setRecycleDays(FileConfig.DEFAULT_RECYCLE_DAYS);
+				}else{
+					fileConfig.setRecycleDays(wi.getRecycleDays());
+				}
 				fileConfig.getProperties().setFileTypeIncludes(wi.getFileTypeIncludes());
 				fileConfig.getProperties().setFileTypeExcludes(wi.getFileTypeExcludes());
 				emc.check(fileConfig, CheckPersistType.all);
@@ -48,6 +53,9 @@ public class ActionSaveSystemConfig extends BaseAction {
 				fileConfig = Wi.copier.copy(wi);
 				if(fileConfig.getCapacity()==null || fileConfig.getCapacity() < 1){
 					fileConfig.setCapacity(0);
+				}
+				if(wi.getRecycleDays()==null || wi.getRecycleDays() < 1){
+					fileConfig.setRecycleDays(FileConfig.DEFAULT_RECYCLE_DAYS);
 				}
 				fileConfig.setPerson(Business.SYSTEM_CONFIG);
 				fileConfig.getProperties().setFileTypeIncludes(wi.getFileTypeIncludes());
