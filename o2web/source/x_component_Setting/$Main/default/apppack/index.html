@@ -67,7 +67,24 @@
           <p class="pack-form-tips">{{$.lp.mobile_apppack_form_context_tip}}</p>
         </div>
       </div>
-
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_appVersionName}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text" data-o2-element="apppackAppVersionNameInputNode"/>
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_appVersionName_tip}}</p>
+        </div>
+      </div>
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_appBuildNo}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text" data-o2-element="apppackAppBuildNoInputNode"/>
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_appBuildNo_tip}}</p>
+        </div>
+      </div>
       <div class="pack-form-group">
         <label class="pack-form-label">{{$.lp.mobile_apppack_form_enable_outer_package}}</label>
         <div class="pack-form-controls">
@@ -75,6 +92,16 @@
             <input type="checkbox" data-o2-element="apppackIsPackAppIdOuterInputNode"/>
           </span>
           <p class="pack-form-tips">{{$.lp.mobile_apppack_form_enable_outer_tips}}</p>
+        </div>
+      </div>
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_urlMapping}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text" data-o2-element="apppackUrlMappingInputNode"/>
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_urlMapping_tip}}</p>
         </div>
       </div>
 
@@ -141,9 +168,30 @@
         </div>
       </div>
       <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_appVersionName}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackAppVersionNameShowNode">
+          </span>
+        </div>
+      </div>
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_appBuildNo}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackAppBuildNoShowNode">
+          </span>
+        </div>
+      </div>
+      <div class="pack-form-group">
         <label class="pack-form-label">{{$.lp.mobile_apppack_form_enable_outer_package}}</label>
         <div class="pack-form-controls">
           <span class="pack-form-box" data-o2-element="apppackIsPackAppIdOuterShowNode">
+          </span>
+        </div>
+      </div>
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_urlMapping}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackUrlMappingShowNode">
           </span>
         </div>
       </div>

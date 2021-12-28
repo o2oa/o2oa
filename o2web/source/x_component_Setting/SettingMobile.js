@@ -221,6 +221,9 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.apppackHostShowNode.set("text", this.packInfo.o2ServerHost);
             this.apppackPortShowNode.set("text", this.packInfo.o2ServerPort);
             this.apppackContextShowNode.set("text", this.packInfo.o2ServerContext);
+            this.apppackAppVersionNameShowNode.set("text", this.packInfo.versionName);
+            this.apppackAppBuildNoShowNode.set("text", this.packInfo.buildNo);
+            this.apppackUrlMappingShowNode.set("text", this.packInfo.urlMapping);
             var isPackAppIdOuter = this.lp.mobile_apppack_form_enable_outer_status_no;
             if (this.packInfo.isPackAppIdOuter && this.packInfo.isPackAppIdOuter === "2") {
                 isPackAppIdOuter = this.lp.mobile_apppack_form_enable_outer_status_yes;
@@ -385,6 +388,9 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.apppackPortInputNode.set("value", this.packInfo.o2ServerPort);
             this.apppackContextInputNode.set("value", this.packInfo.o2ServerContext);
             this.apppackAppNameInputNode.set("value", this.packInfo.appName);
+            this.apppackAppVersionNameInputNode.set("value", this.packInfo.versionName);
+            this.apppackAppBuildNoInputNode.set("value", this.packInfo.buildNo);
+            this.apppackUrlMappingInputNode.set("value", this.packInfo.urlMapping);
             var isPackAppIdOuter = false;
             if (this.packInfo.isPackAppIdOuter && this.packInfo.isPackAppIdOuter === "2") {
                 isPackAppIdOuter = true;
@@ -490,7 +496,10 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.app.notice(this.lp.mobile_apppack_message_context_not_empty, "error", this.contentAreaNode);
             return;
         }
+        var appVersionName = this.apppackAppVersionNameInputNode.get("value");
+        var appBuildNo = this.apppackAppBuildNoInputNode.get("value");
         var isPackAppIdOuter = this.apppackIsPackAppIdOuterInputNode.checked ? "2" : "1";
+        var urlMapping = this.apppackUrlMappingInputNode.get("value");
         this.confirm(this.lp.alert, this.lp.mobile_apppack_message_alert_submit, function() {
             this.showLoading();
             var formData = new FormData();
@@ -501,7 +510,10 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             formData.append('o2ServerHost', host);
             formData.append('o2ServerPort', port);
             formData.append('o2ServerContext', context);
+            formData.append('appVersionName', appVersionName);
+            formData.append('appBuildNo', appBuildNo);
             formData.append('isPackAppIdOuter', isPackAppIdOuter);
+            formData.append('urlMapping', urlMapping);
             formData.append('token', this.token);
             
             o2.Actions.load("x_program_center").AppPackAction.androidPackStart(formData, "{}",function (json) {

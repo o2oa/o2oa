@@ -122,9 +122,20 @@ public class ActionPackInfo extends BaseAction  {
         // 是否使用外部包名，2: 就是用 net.zoneland.x.bpm.mobile.v1.zoneXBPM.outer 作为apk的applicationId，默认使用老的applicationId，兼容老的版本
         private String isPackAppIdOuter;
 
+        // 代理地址
+        private String urlMapping;
+
 
         private AppPackApkFile appFile; // 关联的下载文件
 
+
+        public String getUrlMapping() {
+            return urlMapping;
+        }
+
+        public void setUrlMapping(String urlMapping) {
+            this.urlMapping = urlMapping;
+        }
 
         public String getVersionName() {
             return versionName;
