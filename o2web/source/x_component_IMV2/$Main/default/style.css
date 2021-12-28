@@ -296,6 +296,15 @@
     height: 46px;
   }
 
+  .chat-bottom-area-key-tips {
+    position: absolute;
+    right: 105px;
+    top: 3px;
+    height: 32px;
+    line-height: 32px;
+    color: #848484;
+  }
+
   .chat-bottom-area-send {
     position: absolute;
     right: 15px;
