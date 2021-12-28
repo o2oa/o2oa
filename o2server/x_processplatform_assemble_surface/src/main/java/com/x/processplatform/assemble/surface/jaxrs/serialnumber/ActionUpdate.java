@@ -7,6 +7,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -29,8 +30,8 @@ class ActionUpdate extends BaseAction {
 			if (null == application) {
 				throw new ExceptionApplicationNotExist(o.getApplication());
 			}
-			if (!business.application().allowControl(effectivePerson, application)) {
-				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(), application.getId());
+			if (!business.canManageApplication(effectivePerson, application)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			emc.beginTransaction(SerialNumber.class);
 			Wi.copier.copy(wi, o);

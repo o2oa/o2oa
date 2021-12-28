@@ -10,6 +10,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
@@ -29,9 +30,8 @@ class ActionList extends BaseAction {
 				throw new ExceptionApplicationNotExist(applicationFlag);
 			}
 			equals.put("application", application.getId());
-			if (!business.application().allowControl(effectivePerson, application)) {
-				throw new Exception(
-						"person{name:" + effectivePerson.getDistinguishedName() + "} has insufficient permissions.");
+			if (!business.canManageApplication(effectivePerson, application)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<String> ids = business.serialNumber().listWithApplication(application);
 			List<Wo> wos = Wo.copier.copy(emc.list(SerialNumber.class, ids));
