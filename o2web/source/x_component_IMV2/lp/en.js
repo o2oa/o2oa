@@ -27,5 +27,6 @@ MWF.xApplication.IMV2.LP = {
 	"enterMessage": "Enter message content",
 	"send": "Send",
 	"sendKeyTips": "Ctrl + Enter Line feed",
-	"file": "[File]"
+	"file": "[File]",
+	"messageXadminNotSupport": "The xadmin cannot use chat, please switch to normal user login!"
 };
