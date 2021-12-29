@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //COMMON.AjaxModule.load("JSONTemplate", null, false);
 /** @class SubSource 子数据源。
+ * @o2cn 子数据源
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

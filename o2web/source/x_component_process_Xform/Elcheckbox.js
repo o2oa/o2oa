@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "Elradio", null, false);
-/** @class Elradio 基于Element UI的按钮组件。
+/** @class Elradio 基于Element UI的多选组件。
+ * @o2cn 多选组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
