@@ -1584,6 +1584,11 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.isSelected = true;
         this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle+"_selected"]);
         //}
+
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("select", [this]);
+        }
+
         if (e) e.stopPropagation();
         this.controller.checkActions();
     },
@@ -1592,6 +1597,10 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.isSelected = false;
         this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle]);
         this.controller.selectedAttachments.erase(this);
+
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("unselect", [this]);
+        }
     },
 
     changeListStyle: function(style){
@@ -1964,6 +1973,10 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
             //this.node.setStyles(this.css["minAttachmentNode_list_selected"]);
         }
 
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("select", [this]);
+        }
+
         //}
         if (e) e.stopPropagation();
         this.controller.checkActions();
@@ -2002,6 +2015,10 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
             this.node.setStyles(this.css[cssKey]);
         }else{
             this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle]);
+        }
+
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("unselect", [this]);
         }
 
         this.controller.selectedAttachments.erase(this);
