@@ -21,7 +21,8 @@
             "./o2web/source/o2_core/o2/xScript",
             "./o2web/source/x_desktop/js/o2m.api.js",
             "./o2web/source/x_component_process_Xform",
-            "./o2web/source/x_component_cms_Xform"
+            "./o2web/source/x_component_cms_Xform",
+            "./o2web/source/o2_core/o2.js"
         ],
         "includePattern": ".+\\.js(doc|x)?$", //抽取的源文件名称正则表达式
         "excludePattern": "(^|\\/|\\\\)_" //排除的源文件正则表达式

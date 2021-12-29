@@ -1371,7 +1371,7 @@ gulp.task("cleanAll", getCleanTask('/'));
 function getGitV(){
     var tagPromise = new Promise(function(s){
         git.exec({args : 'describe --tag'}, function (err, stdout) {
-            var v = stdout.substring(0, stdout.indexOf("-"));
+            var v = stdout.substring(0, stdout.lastIndexOf("-"));
             s(v);
         });
     });
