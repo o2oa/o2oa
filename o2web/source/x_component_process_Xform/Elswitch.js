@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
-/** @class Elinput 基于Element UI的数字输入框组件。
+/** @class Elinput 基于Element UI的开关组件。
+ * @o2cn 开关组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

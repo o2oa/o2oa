@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class Elbutton 基于Element UI的按钮组件。
+ * @o2cn 按钮组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Button", null, false);
 /** @class ViewSelector 视图选择组件。
+ * @o2cn 视图选择
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

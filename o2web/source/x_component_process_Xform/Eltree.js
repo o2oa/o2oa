@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
-/** @class Eltree 基于Element UI的输入框组件。
+/** @class Eltree 基于Element UI的树形控件。
+ * @o2cn 树形控件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

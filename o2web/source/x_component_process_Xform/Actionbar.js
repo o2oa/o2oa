@@ -3,6 +3,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //MWF.require("MWF.widget.Toolbar", null, false);
 
 /** @class Actionbar 操作条组件。
+ * @o2cn 操作条
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
