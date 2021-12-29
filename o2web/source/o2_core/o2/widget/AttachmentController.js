@@ -1584,6 +1584,11 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.isSelected = true;
         this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle+"_selected"]);
         //}
+
+        if( this.controller.module && o2.typeOf(this.controller.module.selectAttachment) === "function" ){
+            this.controller.module.selectAttachment( this );
+        }
+
         if (e) e.stopPropagation();
         this.controller.checkActions();
     },
@@ -1592,6 +1597,10 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.isSelected = false;
         this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle]);
         this.controller.selectedAttachments.erase(this);
+
+        if( this.controller.module && o2.typeOf(this.controller.module.unselectAttachment) === "function" ){
+            this.controller.module.unselectAttachment( this );
+        }
     },
 
     changeListStyle: function(style){
