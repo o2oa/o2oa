@@ -1228,7 +1228,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "addDefaultConditionByParameter": "通过参数添加默认条件",
 
         "placementValue": ["上中","上左","上右","下中","下左","下右"],
-        "trigger": "触发下拉",
+        "trigger": "触发方式",
         "triggerValue": ["鼠标经过","鼠标点击"],
         "hideOnClick": "点击隐藏菜单",
         "showTimeout": "展开延时",
@@ -1354,7 +1354,19 @@ MWF.xApplication.process.FormDesigner.LP = {
         "startDate": "开始日期",
         "endDate": "结束日期",
         "selectableRange": "可选范围",
-        "endSelectableRange": "结束可选范围"
+        "endSelectableRange": "结束可选范围",
+
+        "initialIndex": "初始索引",
+        "autoplay": "自动切换",
+        "interval": "切换间隔",
+        "indicatorPosition": "指示器位置",
+        "indicatorPositionValue": ["内部","外部","无"],
+        "arrow": "箭头",
+        "arrowValue": ["一直显示","鼠标经过时显示","不显示"],
+        "carouselTypeValue": ["默认","卡片"],
+        "loop": "是否循环",
+        "direction": "展示方向",
+        "directionValue": ["水平","垂直"]
     },
     "smartbi":{
         "nosetup":"请先安装SmartBI应用",
