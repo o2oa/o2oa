@@ -102,8 +102,10 @@ if (!window.o2) {
         }
 
         /**
-         * 平台全局对象，在前端可用。<br/>
+         * @summary 平台全局对象，在前端(浏览器/移动端H5页面）可用。<br/>
          * @namespace o2
+         * @o2cn 平台全局对象
+         * @o2category web
          */
         this.o2 = window.o2 || {};
         /**
