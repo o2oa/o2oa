@@ -50,7 +50,7 @@
                 <td class="editTableTitle">{{$.lp.protocol}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" onclick="if (this.checked){$('text{$.id}webserviceInvokeModeJaxrs').setStyle('display', 'none'); $('text{$.id}webserviceInvokeModeJaxws').setStyle('display', 'block')}" name="invokeMode" text{($.invokeMode=='jaxws')?'checked':''} type="radio" value="jaxws"/>jaxws
-                    <input class="editTableRadio" checked onclick="if (this.checked){$('text{$.id}webserviceInvokeModeJaxrs').setStyle('display', 'block'); $('text{$.id}webserviceInvokeModeJaxws').setStyle('display', 'none')}" name="invokeMode" text{($.invokeMode=='jaxrs')?'checked':''} type="radio" value="jaxrs"/>jaxrs
+                    <input class="editTableRadio" onclick="if (this.checked){$('text{$.id}webserviceInvokeModeJaxrs').setStyle('display', 'block'); $('text{$.id}webserviceInvokeModeJaxws').setStyle('display', 'none')}" name="invokeMode" text{($.invokeMode=='jaxrs')?'checked':''} type="radio" value="jaxrs"/>jaxrs
                 </td>
             </tr>
         </table>
