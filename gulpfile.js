@@ -1057,7 +1057,7 @@ function getGitV(){
             if (err){
                 f(err);
             }
-            var v = stdout.substring(0, stdout.indexOf("-"));
+            var v = stdout.substring(0, stdout.lastIndexOf("-"));
             s(v);
         });
     });
