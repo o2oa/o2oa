@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 /** @class Select 下拉选择组件。
+ * @o2cn 下拉选择
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

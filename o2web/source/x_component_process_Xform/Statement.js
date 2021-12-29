@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //MWF.xDesktop.requireApp("process.Xform", "widget.View", null, false);
 /** @class Statement 查询视图组件。
+ * @o2cn 查询视图
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

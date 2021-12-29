@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class Documenteditor 公文编辑器。
+ * @o2cn 公文编辑器
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

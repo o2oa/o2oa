@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "Div", null, false);
 
 /** @class Source 数据源组件。
+ * @o2cn 数据源
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

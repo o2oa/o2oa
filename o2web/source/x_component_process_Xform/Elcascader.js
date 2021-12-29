@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
 /** @class Elcascader 基于Element UI的级联选择框组件。
+ * @o2cn 级联选择框
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

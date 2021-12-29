@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
-/** @class Eltime 基于Element UI的输入框组件。
+/** @class Eltime 基于Element UI的时间选择器。
+ * @o2cn 时间选择
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

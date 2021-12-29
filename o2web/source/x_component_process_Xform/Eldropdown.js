@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
 /** @class Eldropdown 基于Element UI的下拉菜单组件。本组件不往后台存数据。
+ * @o2cn 下拉菜单
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

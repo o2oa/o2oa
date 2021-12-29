@@ -222,6 +222,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。
      * @module Dict
+     * @o2cn 数据字典
      * @o2category web
      * @o2ordernumber 120
      * @param {(String|Object)} optionsOrName 数据字典标识字符串或者是对象。
@@ -711,6 +712,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 您可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。
      * @module org
+     * @o2cn 组织查询
      * @o2category web
      * @o2ordernumber 100
      * @o2syntax
@@ -2882,6 +2884,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 您可以通过view对象，获取视图数据或选择视图数据。<br/>
      * @module view
+     * @o2cn 视图执行
      * @o2category web
      * @o2ordernumber 70
      * @o2syntax
@@ -3125,6 +3128,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 您可以通过statement对象，获取执行查询语句或者对查询结果进行选择。<br/>
      * @module statement
+     * @o2cn 查询视图执行
      * @o2category web
      * @o2ordernumber 90
      * @o2syntax
@@ -3389,6 +3393,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 您可以通过importer对象，执行导入模型的Excel导入数据功能。<br/>
      * @module importer
+     * @o2cn 导入数据
      * @o2category web
      * @o2ordernumber 93
      * @o2syntax
@@ -3611,6 +3616,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 当查询设计中使用了select语句，并且配置了视图，可以在查询视图中使用本章API。<br/>
      * queryStatement对象在查询视图中可用。它的很多方法与queryView类似。<b>（仅前端脚本可用）</b><br/>
      * @module queryStatement
+     * @o2cn 查询视图
      * @o2category web
      * @o2range {QueryStatement}
      * @o2ordernumber 80
@@ -3768,6 +3774,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * queryView对象可在视图中可用。它的很多方法与form类似。<b>（仅前端脚本可用）</b><br/>
      * @module queryView
+     * @o2cn 视图
      * @o2category web
      * @o2range {QueryView}
      * @o2ordernumber 60
@@ -4577,6 +4584,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * 在前端脚本中，可以通过this.session.user来获取当前用户信息。<br/>
      * @module session
+     * @o2cn 当前用户
      * @o2category web
      * @o2ordernumber 110
      * @o2syntax
@@ -4648,6 +4656,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 本文档说明如何在前台脚本中使用Actions调用平台的RESTful服务。<br/>
      * 通过访问以下地址来查询服务列表：http://server:20030/x_program_center/jest/list.html
      * @module Actions
+     * @o2cn 服务调用
      * @o2category web
      * @o2ordernumber 130
      * @o2syntax
@@ -4903,6 +4912,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     /**
      * this.Table是一个工具类，您可以使用这个类对数据中心的数据表进行增删改查操作。
      * @module Table
+     * @o2cn 数据表执行
      * @o2category web
      * @o2ordernumber 135
      * @param {String} tableName 数据表的id、名称或别名。
