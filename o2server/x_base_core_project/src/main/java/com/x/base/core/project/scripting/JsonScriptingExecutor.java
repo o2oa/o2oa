@@ -11,6 +11,7 @@ import javax.script.ScriptContext;
 import javax.script.ScriptException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -158,13 +159,12 @@ public class JsonScriptingExecutor {
 	}
 
 	/**
-	 * 非boolean值或者null返回Boolean.FALSE
 	 * 
 	 * @param cs
 	 * @param scriptContext
 	 * @return
 	 */
-	public static Boolean evalBoolean(CompiledScript cs, ScriptContext scriptContext) {
+	public static Boolean evalBoolean(CompiledScript cs, ScriptContext scriptContext, Boolean defaultValue) {
 		JsonElement jsonElement = jsonElement(cs, scriptContext);
 		if (jsonElement.isJsonPrimitive()) {
 			JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
@@ -172,11 +172,23 @@ public class JsonScriptingExecutor {
 				return jsonPrimitive.getAsBoolean();
 			}
 		}
-		return Boolean.FALSE;
+		return defaultValue;
 	}
 
-	public static void evalBoolean(CompiledScript cs, ScriptContext scriptContext, Consumer<Boolean> consumer) {
-		consumer.accept(evalBoolean(cs, scriptContext));
+	/**
+	 * 非boolean值或者null返回Boolean.FALSE
+	 * 
+	 * @param cs
+	 * @param scriptContext
+	 * @return
+	 */
+	public static Boolean evalBoolean(CompiledScript cs, ScriptContext scriptContext) {
+		return evalBoolean(cs, scriptContext, Boolean.FALSE);
+	}
+
+	public static void evalBoolean(CompiledScript cs, ScriptContext scriptContext, Consumer<Boolean> consumer,
+			Boolean defaultValue) {
+		consumer.accept(evalBoolean(cs, scriptContext, defaultValue));
 	}
 
 	public static List<String> evalStrings(CompiledScript cs, ScriptContext scriptContext) {
@@ -238,6 +250,10 @@ public class JsonScriptingExecutor {
 
 	public static <T> T eval(CompiledScript cs, ScriptContext scriptContext, Class<T> clz) {
 		return XGsonBuilder.instance().fromJson(jsonElement(cs, scriptContext), clz);
+	}
+
+	public static <T> T eval(CompiledScript cs, ScriptContext scriptContext, Type type) {
+		return XGsonBuilder.instance().fromJson(jsonElement(cs, scriptContext), type);
 	}
 
 	public static <T> T eval(CompiledScript cs, ScriptContext scriptContext, Supplier<T> supplier) {

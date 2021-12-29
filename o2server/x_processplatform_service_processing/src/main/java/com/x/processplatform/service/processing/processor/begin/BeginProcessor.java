@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.script.CompiledScript;
+import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,8 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.NumberTools;
 import com.x.base.core.project.utils.time.WorkTime;
 import com.x.processplatform.core.entity.content.Review;
@@ -25,6 +28,7 @@ import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
+import com.x.processplatform.service.processing.processor.manual.ManualProcessor.ExpireScriptResult;
 
 public class BeginProcessor extends AbstractBeginProcessor {
 
@@ -48,7 +52,7 @@ public class BeginProcessor extends AbstractBeginProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Begin begin) throws Exception {
-
+		// nothing
 	}
 
 	@Override
@@ -88,6 +92,7 @@ public class BeginProcessor extends AbstractBeginProcessor {
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, Begin begin) throws Exception {
+		// nothing
 	}
 
 	private void calculateExpire(AeiObjects aeiObjects) throws Exception {
@@ -156,36 +161,40 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	}
 
 	private void expireScript(AeiObjects aeiObjects) throws Exception {
-		CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
-				aeiObjects.getWork().getApplication(), aeiObjects.getProcess(), Business.EVENT_PROCESSEXPIRE);
-		String str = Objects.toString(compiledScript.eval(aeiObjects.scriptContext()));
-		if (StringUtils.isNotEmpty(str)) {
-			ExpireScriptResult result = XGsonBuilder.instance().fromJson(str, ExpireScriptResult.class);
-			if (NumberTools.greaterThan(result.getWorkHour(), 0)) {
-				Integer m = 0;
-				m += result.getWorkHour() * 60;
-				if (m > 0) {
-					aeiObjects.getWork()
-							.setExpireTime(Config.workTime().forwardMinutes(aeiObjects.getWork().getCreateTime(), m));
-				} else {
-					aeiObjects.getWork().setExpireTime(null);
-				}
-			} else if (NumberTools.greaterThan(result.getHour(), 0)) {
-				Integer m = 0;
-				m += result.getHour() * 60;
-				if (m > 0) {
-					Calendar cl = Calendar.getInstance();
-					cl.setTime(aeiObjects.getWork().getCreateTime());
-					cl.add(Calendar.MINUTE, m);
-					aeiObjects.getWork().setExpireTime(cl.getTime());
-				} else {
-					aeiObjects.getWork().setExpireTime(null);
-				}
-			} else if (null != result.getDate()) {
-				aeiObjects.getWork().setExpireTime(result.getDate());
+		ExpireScriptResult expire = new ExpireScriptResult();
+		ScriptContext scriptContext = aeiObjects.scriptContext();
+		CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+				aeiObjects.getProcess(), Business.EVENT_PROCESSEXPIRE);
+		scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_EXPIRE, expire);
+		JsonScriptingExecutor.eval(cs, scriptContext, ExpireScriptResult.class, o -> {
+			if (null != o) {
+				expire.setDate(o.getDate());
+				expire.setHour(o.getHour());
+				expire.setWorkHour(o.getWorkHour());
+			}
+		});
+		if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getWorkHour(), 0))) {
+			Integer m = 0;
+			m += expire.getWorkHour() * 60;
+			if (m > 0) {
+				aeiObjects.getWork().setExpireTime(Config.workTime().forwardMinutes(new Date(), m));
 			} else {
 				aeiObjects.getWork().setExpireTime(null);
 			}
+		} else if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getHour(), 0))) {
+			Integer m = 0;
+			m += expire.getHour() * 60;
+			if (m > 0) {
+				Calendar cl = Calendar.getInstance();
+				cl.add(Calendar.MINUTE, m);
+				aeiObjects.getWork().setExpireTime(cl.getTime());
+			} else {
+				aeiObjects.getWork().setExpireTime(null);
+			}
+		} else if (null != expire.getDate()) {
+			aeiObjects.getWork().setExpireTime(expire.getDate());
+		} else {
+			aeiObjects.getWork().setExpireTime(null);
 		}
 	}
 

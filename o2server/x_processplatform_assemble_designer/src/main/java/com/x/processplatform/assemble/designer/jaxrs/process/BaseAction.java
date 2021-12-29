@@ -607,20 +607,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 					o = new Manual();
 					o.setProcess(process.getId());
 					WrapManual.inCopier.copy(w, o);
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
-					System.out.println(WrapManual.inCopier.getCopyFields());
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
 					o.setDistributeFactor(process.getDistributeFactor());
 					business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} else {
 					WrapManual.inCopier.copy(w, o);
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!22");
-					System.out.println(WrapManual.inCopier.getCopyFields());
-					System.out.println(w.getCustomData());
-					System.out.println(o.getCustomData());
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!22");
-					System.out.println(o.getProperties().getCustomData());
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!22");
 					business.entityManagerContainer().check(o, CheckPersistType.all);
 				}
 			}

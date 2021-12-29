@@ -63,7 +63,7 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 		for (Route o : aeiObjects.getRoutes()) {
 			CompiledScript compiledScript = aeiObjects.business().element()
 					.getCompiledScript(aeiObjects.getWork().getApplication(), o, Business.EVENT_ROUTE);
-			if (BooleanUtils.isTrue(JsonScriptingExecutor.evalBoolean(compiledScript, aeiObjects.scriptContext()))) {
+			if (BooleanUtils.isTrue(JsonScriptingExecutor.evalBoolean(compiledScript, aeiObjects.scriptContext(),Boolean.FALSE))) {
 				results.add(o);
 				break;
 			}

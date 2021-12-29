@@ -43,17 +43,6 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_REQUESTTEXT = "java_requestText";
 	public static final String BINDING_NAME_EXPIRE = "java_expire";
 	public static final String BINDING_NAME_EFFECTIVEPERSON = "java_effectivePerson";
-//	public static final String BINDING_NAME_PARAMETERS = "java_parameters";
-//	public static final String BINDING_NAME_ROUTES = "routes";
-//	public static final String BINDING_NAME_ROUTE = "routes";
-//	public static final String BINDING_NAME_ROUTE = "java_route";
-
-//	public static final String BINDING_NAME_IDENTITY = "identity";
-
-//	public static final String BINDING_NAME_SERVICEVALUE = "serviceValue";
-//	public static final String BINDING_NAME_TASK = "task";
-//	public static final String BINDING_NAME_SERIAL = "serial";
-//	public static final String BINDING_NAME_PROCESS = "process";
 
 	public static final String BINDING_NAME_DATA = "data";
 
