@@ -65,7 +65,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @extends MWF.xApplication.process.Xform.$Module
  * @o2category FormComponents
  * @since v6.2
- * @o2range {Process|CMS|Protal}
+ * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.DatatablePC = new Class(
