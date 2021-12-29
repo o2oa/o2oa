@@ -23,15 +23,15 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.type}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="carouselType" value="" text{(!$.carouselType)?'checked':''}/>{{$.lp.triggerValue[0]}}
-					<input type="radio" name="carouselType" value="card" text{($.trigger==='card')?'checked':''}/>{{$.lp.triggerValue[1]}}
+					<input type="radio" name="carouselType" value="" text{(!$.carouselType)?'checked':''}/>{{$.lp.carouselTypeValue[0]}}
+					<input type="radio" name="carouselType" value="card" text{($.trigger==='card')?'checked':''}/>{{$.lp.carouselTypeValue[1]}}
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">{{$.lp.trigger}}:</td>
+				<td class="editTableTitle">{{$.lp.trigger1}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="trigger" value="" text{(!$.trigger)?'checked':''}/>{{$.lp.triggerValue[0]}}
-					<input type="radio" name="trigger" value="click" text{($.trigger==='click')?'checked':''}/>{{$.lp.triggerValue[1]}}
+					<input type="radio" name="trigger" value="" text{(!$.trigger)?'checked':''}/>{{$.lp.triggerValue1[0]}}
+					<input type="radio" name="trigger" value="click" text{($.trigger==='click')?'checked':''}/>{{$.lp.triggerValue1[1]}}
 				</td>
 			</tr>
 			<tr>
@@ -56,9 +56,9 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.arrow}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="arrow" value="hover" text{(!$.arrow || $.arrow==='hover')?'checked':''}/>{{$.lp.indicatorPositionValue[0]}}
-					<input type="radio" name="arrow" value="always" text{($.arrow==='always')?'checked':''}/>{{$.lp.indicatorPositionValue[1]}}
-					<input type="radio" name="arrow" value="never" text{($.arrow==='never')?'checked':''}/>{{$.lp.indicatorPositionValue[2]}}
+					<input type="radio" name="arrow" value="hover" text{(!$.arrow || $.arrow==='hover')?'checked':''}/>{{$.lp.arrowValue[0]}}
+					<input type="radio" name="arrow" value="always" text{($.arrow==='always')?'checked':''}/>{{$.lp.arrowValue[1]}}
+					<input type="radio" name="arrow" value="never" text{($.arrow==='never')?'checked':''}/>{{$.lp.arrowValue[2]}}
 				</td>
 			</tr>
 			<tr>
@@ -71,8 +71,8 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.direction}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="direction" value="horizontal" text{(!$.direction || $.direction==='horizontal')?'checked':''}/>default
-					<input type="radio" name="direction" value="vertical" text{($.direction==='vertical')?'checked':''}/>large
+					<input type="radio" name="direction" value="horizontal" text{(!$.direction || $.direction==='horizontal')?'checked':''}/>{{$.lp.directionValue[0]}}
+					<input type="radio" name="direction" value="vertical" text{($.direction==='vertical')?'checked':''}/>{{$.lp.directionValue[1]}}
 				</td>
 			</tr>
 		</table>
