@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
 /** @class Elselect 基于Element UI的选择框组件。
+ * @o2cn 选择框
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

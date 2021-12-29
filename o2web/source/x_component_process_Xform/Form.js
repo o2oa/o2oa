@@ -6,6 +6,7 @@ MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
 //MWF.xDesktop.requireApp("process.Xform", "Package", null, false);
 
 /** @class Form 流程表单。
+ * @o2cn 流程表单
  * @o2category FormComponents
  * @o2range {Process}
  * @example
@@ -4966,6 +4967,7 @@ debugger;
 
 /**
  * @class PortalPage 门户页面。
+ * @o2cn 门户页面
  * @alias PortalPage
  * @o2category FormComponents
  * @o2range {Portal}

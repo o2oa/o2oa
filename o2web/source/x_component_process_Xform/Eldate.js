@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
 /** @class Eldate 基于Element UI的日期选择组件。
+ * @o2cn 日期选择
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

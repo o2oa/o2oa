@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class SourceText 数据文本组件。
+ * @o2cn 数据文本
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
