@@ -53,6 +53,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		// 判断xadmin 打开聊天功能
 		if (layout.session.user && layout.session.user.name == "xadmin") {
 			console.log("xadmin can not open IMV2");
+			this.app.notice(this.lp.messageXadminNotSupport, "error");
 			return;
 		}
 		var url = this.path + this.options.style + "/im.html";
