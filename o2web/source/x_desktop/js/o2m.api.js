@@ -938,6 +938,45 @@
   this.o2m.util.device.getPhoneInfo = _o2m_u_device_getPhoneInfo;
 
 
+  //o2m.util.device.rotate
+  this.o2m.util.device.rotateSuccess = function (result) {
+    console.log("util device rotate back, result:" + result);
+  };
+  var _o2m_u_device_rotate = function (c) {
+    var onSuccess = c && c.onSuccess ? c.onSuccess : null;
+    var onFail = c && c.onFail ? c.onFail : null;
+    if (onSuccess && typeof onSuccess === "function") {
+      o2m.util.device.rotateSuccess = onSuccess;
+    }
+    var body = {
+      type: "device.rotate",
+      callback: "o2m.util.device.rotateSuccess",
+      data: {
+      }
+    };
+    _util_post(body, onFail);
+  };
+  /**
+   * 旋转屏幕
+   * @method rotate
+   * @memberOf o2m
+   * @o2membercategory util.device
+   * @static
+   * @param {Object} obj  rotate
+   * <pre><code class='language-js'>{
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.util.device.rotate({
+   * onSuccess : function(result) {
+   * },
+   *  onFail : function(err) {}
+   *});
+   */
+  this.o2m.util.device.rotate = _o2m_u_device_rotate;
+
+
   //o2m.util.device.scan
   this.o2m.util.device.scanSuccess = function (result) {
     console.log("util device scan back, result:" + result);
