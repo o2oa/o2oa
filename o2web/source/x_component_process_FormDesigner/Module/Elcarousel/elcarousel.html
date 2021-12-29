@@ -14,7 +14,7 @@
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
 				<td class="editTableTitle">{{$.lp.height}}:</td>
-				<td class="editTableValue"><input type="number" name="height" value="text{$.height}" class="editTableInput"/></td>
+				<td class="editTableValue"><input type="string" name="height" value="text{$.height}" class="editTableInput"/></td>
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.initialIndex}}:</td>
@@ -28,10 +28,10 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="editTableTitle">{{$.lp.trigger1}}:</td>
+				<td class="editTableTitle">{{$.lp.trigger}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="trigger" value="" text{(!$.trigger)?'checked':''}/>{{$.lp.triggerValue1[0]}}
-					<input type="radio" name="trigger" value="click" text{($.trigger==='click')?'checked':''}/>{{$.lp.triggerValue1[1]}}
+					<input type="radio" name="trigger" value="" text{(!$.trigger)?'checked':''}/>{{$.lp.triggerValue[0]}}
+					<input type="radio" name="trigger" value="click" text{($.trigger==='click')?'checked':''}/>{{$.lp.triggerValue[1]}}
 				</td>
 			</tr>
 			<tr>
