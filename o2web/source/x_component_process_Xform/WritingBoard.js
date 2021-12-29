@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class WritingBoard 手写板组件。
+ * @o2cn 手写板
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

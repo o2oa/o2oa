@@ -55,6 +55,7 @@
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class DatatablePC 数据表格组件。表格形式的多行数据编辑组件。
+ * @o2cn 数据表格PC端
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
