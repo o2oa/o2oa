@@ -37,6 +37,7 @@
     "gulp-if": "^2.0.2",
     "gulp-rename": "^1.4.0",
     "gulp-sftp-up4": "^0.1.8",
+    "gulp-shell": "^0.8.0",
     "gulp-tm-asset-rev": "^0.0.18",
     "gulp-tm-uglify": "3.0.1",
     "gulp-uglify-es": "^2.0.0",
@@ -50,7 +51,6 @@
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0",
     "readline-sync": "^1.4.10",
-    "tidy-jsdoc-o2": "latest",
-    "gulp-shell": "^0.8.0"
+    "tidy-jsdoc-o2": "latest"
   }
 }

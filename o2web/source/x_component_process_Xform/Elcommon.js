@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class Elcommon 基于Element UI的通用组件。
+ * @o2cn 通用组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
