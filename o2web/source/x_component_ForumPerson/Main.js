@@ -258,22 +258,22 @@ MWF.xApplication.ForumPerson.Main = new Class({
 						}
 					}.bind(this))
 				}else{
-					var actionNode = new Element("input", {
-						"type" : "button",
-						"styles": this.css.personSettingAction,
-						"value" : this.lp.sendMessage
-					}).inject(personTopDiv);
-					actionNode.addEvent("click", function(e){
-						if (layout.desktop.widgets["IMIMWidget"]) {
-							var IM = layout.desktop.widgets["IMIMWidget"];
-							var name = this.options.personName;
-							IM.getOwner(function(){
-								this.openChat(e, {
-									from : name
-								});
-							}.bind(IM));
-						}
-					}.bind(this))
+					// var actionNode = new Element("input", {
+					// 	"type" : "button",
+					// 	"styles": this.css.personSettingAction,
+					// 	"value" : this.lp.sendMessage
+					// }).inject(personTopDiv);
+					// actionNode.addEvent("click", function(e){
+					// 	if (layout.desktop.widgets["IMIMWidget"]) {
+					// 		var IM = layout.desktop.widgets["IMIMWidget"];
+					// 		var name = this.options.personName;
+					// 		IM.getOwner(function(){
+					// 			this.openChat(e, {
+					// 				from : name
+					// 			});
+					// 		}.bind(IM));
+					// 	}
+					// }.bind(this))
 				}
 			}
 
