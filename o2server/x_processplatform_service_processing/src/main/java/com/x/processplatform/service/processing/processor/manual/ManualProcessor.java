@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
@@ -670,12 +669,16 @@ public class ManualProcessor extends AbstractManualProcessor {
 	private void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
 		ExpireScriptResult expire = new ExpireScriptResult();
 		ScriptContext scriptContext = aeiObjects.scriptContext();
-//		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-//		bindings.put(ScriptingFactory.BINDING_NAME_TASK, task);
-//		bindings.put(ScriptingFactory.BINDING_NAME_EXPIRE, expire);
 		CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 				manual, Business.EVENT_MANUALTASKEXPIRE);
-		JsonScriptingExecutor.eval(cs, scriptContext);
+		scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_EXPIRE, expire);
+		JsonScriptingExecutor.eval(cs, scriptContext, ExpireScriptResult.class, o -> {
+			if (null != o) {
+				expire.setDate(o.getDate());
+				expire.setHour(o.getHour());
+				expire.setWorkHour(o.getWorkHour());
+			}
+		});
 		if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getWorkHour(), 0))) {
 			Integer m = 0;
 			m += expire.getWorkHour() * 60;

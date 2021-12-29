@@ -57,7 +57,7 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 					gson.toJson(aeiObjects.getWork().getProperties().getServiceValue()));
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_SERVICE);
-			passThrough = JsonScriptingExecutor.evalBoolean(cs, scriptContext);
+			passThrough = JsonScriptingExecutor.evalBoolean(cs, scriptContext, Boolean.TRUE);
 		} else {
 			passThrough = true;
 		}
