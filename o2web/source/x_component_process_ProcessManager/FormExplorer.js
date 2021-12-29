@@ -222,6 +222,9 @@ MWF.xApplication.process.ProcessManager.FormExplorer = new Class({
         createTemplateAreaNode.fade("in");
 
         var createTemplateTitleNode = new Element("div", {"styles": this.css.createTemplateFormTitleNode, "text": this.app.lp.createSelectTemplate}).inject(createTemplateAreaNode);
+
+        var createTemplateCategoryCloseNode = new Element("div.createTemplateCategoryCloseNode", {"styles": this.css.createTemplateCategoryCloseNode }).inject(createTemplateTitleNode);
+
         var createTemplateCategoryNode = new Element("div", {"styles": this.css.createTemplateFormCategoryNode}).inject(createTemplateAreaNode);
         var createTemplateCategoryTitleNode = new Element("div", {"styles": this.css.createTemplateFormCategoryTitleNode, "text": this.app.lp.templateCategory}).inject(createTemplateCategoryNode);
 
@@ -231,6 +234,7 @@ MWF.xApplication.process.ProcessManager.FormExplorer = new Class({
         createTemplateCategoryAllNode.addEvent("click", function(){
             loadAllTemplates();
         });
+
         debugger;
         this.app.restActions.listFormTemplateCategory(function(json){
             json.data.each(function(d){
@@ -373,6 +377,12 @@ MWF.xApplication.process.ProcessManager.FormExplorer = new Class({
             loadTemplates();
         };
         loadAllTemplates();
+
+        createTemplateCategoryCloseNode.addEvent("click", function(){
+            this.app.removeEvent("resize", resize);
+            createTemplateAreaNode.destroy();
+            createTemplateMaskNode.destroy();
+        }.bind(this));
 
         createTemplateMaskNode.addEvent("click", function(){
             this.app.removeEvent("resize", resize);

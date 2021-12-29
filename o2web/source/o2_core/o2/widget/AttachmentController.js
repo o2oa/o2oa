@@ -1585,8 +1585,8 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle+"_selected"]);
         //}
 
-        if( this.controller.module && o2.typeOf(this.controller.module.selectAttachment) === "function" ){
-            this.controller.module.selectAttachment( this );
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("select", [this]);
         }
 
         if (e) e.stopPropagation();
@@ -1598,8 +1598,8 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle]);
         this.controller.selectedAttachments.erase(this);
 
-        if( this.controller.module && o2.typeOf(this.controller.module.unselectAttachment) === "function" ){
-            this.controller.module.unselectAttachment( this );
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("unselect", [this]);
         }
     },
 
@@ -1973,6 +1973,10 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
             //this.node.setStyles(this.css["minAttachmentNode_list_selected"]);
         }
 
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("select", [this]);
+        }
+
         //}
         if (e) e.stopPropagation();
         this.controller.checkActions();
@@ -2011,6 +2015,10 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
             this.node.setStyles(this.css[cssKey]);
         }else{
             this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle]);
+        }
+
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("unselect", [this]);
         }
 
         this.controller.selectedAttachments.erase(this);

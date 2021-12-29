@@ -307,10 +307,19 @@
         "margin-top": "10px",
         "font-weight": "bold"
     },
+    "createTemplateCategoryCloseNode": {
+      "cursor": "pointer",
+      "position": "absolute",
+      "right": "20px",
+      "top": "20px",
+      "width": "26px",
+      "height": "26px",
+      "background": "url(../x_component_cms_ColumnManager/widget/$CMSFormTemplateSelector/default/icon/close.png) no-repeat center center"
+    },
     "createTemplateFormCategoryNode": {
         "margin-top": "10px",
         "padding": "0px 30px",
-        "overflow": "hidden",
+        "overflow": "hidden"
     },
     "createTemplateFormCategoryTitleNode": {
         "float": "left",
