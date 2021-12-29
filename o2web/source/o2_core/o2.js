@@ -100,18 +100,48 @@ if (!window.o2) {
                 if (_kv[0].toLowerCase() === "lp") _lp = _kv[1];
             }
         }
+
+        /**
+         * 平台全局对象，在前端可用。<br/>
+         * @namespace o2
+         */
         this.o2 = window.o2 || {};
-        //this.o2.storageData = _storageData;
+        /**
+         * @summary 平台版本信息。
+         * @member {Object} version
+         * @memberOf o2
+         * @o2syntax
+         * //获取版本号
+         * var v = o2.version.v;
+         */
         this.o2.version = {
-            "v": "6.3",
-            "build": "2021.09.01",
+            "v": "6.5",
+            "build": "2021.12.23",
             "info": "O2OA 活力办公 创意无限. Copyright © 2021, o2oa.net O2 Team All rights reserved."
         };
+
+        /**
+         * @summary 平台运行环境。
+         * @member {Object} session
+         * @memberOf o2
+         * @property {Boolean}  isDebugger   是否是调试模式
+         * @property {Boolean}  isMobile   是否是移动端环境
+         * @o2syntax
+         * var debuggerMode = o2.session.isDebugger;
+         * var ismobile = o2.session.isMobile;
+         */
         if (!this.o2.session) this.o2.session = {
             "isDebugger": _debug,
             "path": "../o2_core/o2"
         };
 
+        /**
+         * @summary 语言环境名称。
+         * @member {String} language
+         * @memberOf o2
+         * @o2syntax
+         * var lp = o2.language;
+         */
         this.o2.languageName = _lp;
         _lp = _lp.toLocaleLowerCase();
         var supportedLanguages = ["zh-CN", "en"];
@@ -122,7 +152,7 @@ if (!window.o2) {
         this.wrdp = this.o2;
 
         var debug = function (reload) {
-            if (reload) {
+            if (!o2.session.isMobile) {
                 window.location.assign(_href + ((_href.indexOf("?") == -1) ? "?" : "&") + "debugger");
             } else {
                 if (!o2.session.isDebugger) {
@@ -131,6 +161,13 @@ if (!window.o2) {
                 }
             }
         };
+        /**
+         * @summary 使平台进入调试模式。
+         * @function debug
+         * @memberOf o2
+         * @o2syntax
+         * o2.debug();
+         */
         this.o2.debug = debug;
 
         var _attempt = function () {
@@ -156,6 +193,37 @@ if (!window.o2) {
             }
             return typeof item;
         };
+        /**
+         * @summary 判断一个任意参数的类型。
+         * @function typeOf
+         * @memberOf o2
+         * @param {Object} [obj] 要检查的对象
+         * @return {String} 对象的类型，返回值：
+         * <pre><code class="language-js">'element' - 如果obj是一个DOM Element对象.
+         * 'elements' - 如果obj是一个Elements实例.
+         * 'textnode' - 如果obj是一个DOM text节点.
+         * 'whitespace' - 如果obj是一个DOM whitespace 节点.
+         * 'arguments' - 如果obj是一个arguments对象.
+         * 'array' - 如果obj是一个array数组.
+         * 'object' - 如果obj是一个object对象.
+         * 'string' - 如果obj是一个string.
+         * 'number' - 如果obj是一个数字number.
+         * 'date' - 如果obj是一个日期date.
+         * 'boolean' - 如果obj是一个布尔值boolean.
+         * 'function' - 如果obj是一个function.
+         * 'regexp' - 如果obj是一个正则表达式.
+         * 'collection' - 如果obj是一个原生HTML elements collection, 如childNodes or getElementsByTagName获取的对象.
+         * 'window' - 如果obj是window对象.
+         * 'document' - 如果obj是document对象.
+         * 'domevent' - 如果obj是一个event.
+         * 'null' - 如果obj是undefined, null, NaN 或者 none.
+         * </code></pre>
+         * @o2syntax
+         * o2.typeOf(obj);
+         * @example
+         * var myString = 'hello';
+         * o2.typeOf(myString); // returns "string"
+         */
         this.o2.typeOf = _typeOf;
 
         var _addListener = function (dom, type, fn) {
@@ -232,6 +300,13 @@ if (!window.o2) {
                 + _getIntegerBits(_rand(8191), 0, 15);
             return tl + tm + thv + csar + csl + n;
         };
+        /**
+         * @summary 生成一个唯一的uuid。
+         * @function uuid
+         * @memberOf o2
+         * @o2syntax
+         * var id = o2.uuid();
+         */
         this.o2.uuid = _uuid;
 
 
@@ -250,66 +325,6 @@ if (!window.o2) {
                 }
             }
             if (cb) return cb.apply(b, par);
-            //return null;
-
-            // if (cb){
-            //     if (promise_cb){
-            //         var r = cb.apply(b, par);
-            //
-            //         window.setTimeout(function(){
-            //             promise_cb(r);
-            //         },0)
-            //         //return promise_cb(r);
-            //     }else{
-            //         return cb.apply(b, par);
-            //     }
-            //     //return (promise_cb) ? promise_cb(cb.apply(b, par)) : cb.apply(b, par) ;
-            // }
-            // if (promise_cb){
-            //     window.setTimeout(function(){
-            //         promise_cb.apply(b, par);
-            //     },0)
-            //
-            //     //return promise_cb.apply(b, par);
-            // }
-
-            //return (promise_cb) ? promise_cb.apply(b, par) : null;
-
-            // if (key.toLowerCase()==="success" && (type==="function" || type==="o2_async_function")){
-            //     (promise_cb) ? promise_cb(callback.apply(b, par)) : callback.apply(b, par) ;
-            // }else{
-            //     if (type==="function" || type==="object" || type==="o2_async_function"){
-            //         var name = ("on-"+key).camelCase();
-            //         if (callback[name]){
-            //             (promise_cb) ? promise_cb(callback[name].apply(b, par)) : callback[name].apply(b, par);
-            //         }else{
-            //             if (callback[key]) (promise_cb) ? promise_cb(callback[key].apply(b, par)) : callback[key].apply(b, par);
-            //         }
-            //     }
-            // }
-
-
-            // if (typeOf(callback).toLowerCase() === 'function'){
-            //     if (key.toLowerCase()==="success"){
-            //         callback.apply(b, par);
-            //     }else{
-            //         if (callback[key]){
-            //             callback[key].apply(b, par);
-            //         }else{
-            //             var name = ("on-"+key).camelCase();
-            //             if (callback[name]) callback[name].apply(b, par);
-            //         }
-            //     }
-            // }else{
-            //     if (typeOf(callback).toLowerCase()==='object'){
-            //         if (callback[key]){
-            //             callback[key].apply(b, par);
-            //         }else{
-            //             var name = ("on-"+key).camelCase();
-            //             if (callback[name]) callback[name].apply(b, par);
-            //         }
-            //     }
-            // }
         };
         this.o2.runCallback = _runCallback;
 
@@ -329,6 +344,8 @@ if (!window.o2) {
                 "module": (options && options.module) || null,
                 "noConflict": (options && options.noConflict) || false,
                 "bind": (options && options.bind) || null,
+                "evalScripts": (options && options.evalScripts) || false,
+                "baseUrl": (options && options.baseUrl) ? options.baseUrl : "",
                 "position": (options && options.position) || "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'debugger
             }
         };
@@ -369,7 +386,7 @@ if (!window.o2) {
                 "noConflict": (options && options.noConflict) || false,
                 "bind": (options && options.bind) || null,
                 "evalScripts": (options && options.evalScripts) || false,
-                "baseUrl": (options && options.baseUrl) || false,
+                "baseUrl": (options && options.baseUrl) ? options.baseUrl : "",
                 "position": (options && options.position) || "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
             }
         };
@@ -397,6 +414,28 @@ if (!window.o2) {
 
             return url;
         };
+        /**
+         * @summary 解析平台内的url，如果配置了反向代理的路径转发，平台内的url需要通过filterUrl解析后，才能得到正确的url。
+         * @see {@link https://www.o2oa.net/course/lskrtn.html?h=urlmapping|基于nginx快速集群部署-上下文分发}
+         * @function filterUrl
+         * @memberOf o2
+         * @param {String} [url] 要解析的url
+         * @return {String} 解析后的url
+         * @o2syntax
+         * var url = o2.filterUrl(url);
+         * @example
+         * <caption>
+         *    当我们配置了按路径转发后，在portal.json中配置了urlMapping如：
+         *    <pre><code class="language-js">"urlMapping": {
+         *      "qmx.o2oa.net:20020": "qmx.o2oa.net/dev/app",
+         *      "qmx.o2oa.net:20030": "qmx.o2oa.net/dev/center"
+         * },</code></pre>
+         *    在获取平台内部的url时，如附件的下载地址，需要通过filterUrl解析。
+         * </caption>
+         * var attachmentUrl = "http://qmx.o2oa.net:20020/x_processplatform_assemble_surface/jaxrs/attachment/{attid}/work/{workid}";
+         * var url = o2.filterUrl(attachmentUrl);
+         * //return "http://qmx.o2oa.net/dev/app/x_processplatform_assemble_surface/jaxrs/attachment/{attid}/work/{workid}"
+         */
         this.o2.filterUrl = _filterUrl;
         var _xhr_get = function (url, success, failure, completed, sync) {
             var xhr = new _request();
@@ -606,6 +645,37 @@ if (!window.o2) {
             }
 
         };
+        /**
+         * @summary 引入外部javascript文件。
+         * @function load
+         * @memberOf o2
+         * @param {String|Array} [urls] 要载入的js文件url，或要载入多个js问价的urls数组。
+         * @param {Object|Function} [options|callback] 载入js文件的配置参数，或者载入成功后的回调。
+         * <pre><code class="language-js">options参数格式如下：
+         * {
+         *      "noCache":  是否使用缓存，默认true,
+         *      "reload":   如果相同路径的js文件已经在如果了，是否重新载入,默认为：false
+         *      "sequence": 当urls参数为数组时，多个脚本文件是否按数组顺序依次载入,默认为false
+         *      "type":     载入脚本的类型,默认为"text/javascript"
+         *      "baseUrl":  要载入脚本的url的base路径,默认""
+         *      "doc":      要在哪个document对象中载入脚本文件，默认为当前document
+         * }
+         * </code></pre>
+         * @param {Function} [callback] 可选参数，载入成功后的回调方法。
+         * @o2syntax
+         * o2.load(urls, options, callback);
+         * @example
+         * //载入jsfile1.js和js/jsfile2.js两个文件，它们是按顺序载入的
+         * o2.load(["js/jsfile1.js", "js/jsfile2.js"], function(){
+         *     //js文件已经载入
+         * });
+         *
+         * //载入jsfile1.js和js/jsfile2.js两个文件，它们是同时载入的
+         * //并且无论是否已经加载过，都需要重新加载，并且要按顺序加载
+         * o2.load(["js/jsfile1.js", "js/jsfile2.js"], {"reload": true, "sequence": true}, function(){
+         *     //js文件已经载入
+         * });
+         */
         this.o2.load = _load;
 
         //load css
@@ -791,9 +861,74 @@ if (!window.o2) {
             return style;
         };
 
+        /**
+         * @summary 引入外部css资源。
+         * @function loadCss
+         * @memberOf o2
+         * @param {String|Array} [urls] 要载入的css文件url，或要载入多个css文件的urls数组。
+         * @param {Object|Function} [options|callback] 载入css文件的配置参数，或者载入成功后的回调。
+         * <pre><code class="language-js">options参数格式如下：
+         * {
+         *      "noCache":  是否使用缓存，默认true,
+         *      "reload":   如果相同路径的css文件已经引入了，是否重新载入,默认为：false
+         *      "sequence": 当urls参数为数组时，多个css文件是否按数组顺序依次载入,默认为false
+         *      "dom":      dom element对象，表示css在这个element生效，默认是null，表示对整个document生效
+         * }
+         * </code></pre>
+         * @param {Function} [callback] 可选参数，载入成功后的回调方法。
+         * @o2syntax
+         * o2.loadCss(urls, options, callback);
+         * @o2syntax
+         * Element.loadCss(urls, options, callback);
+         * @example
+         * //载入style1.css和style2.css两个文件，作用于document
+         * o2.loadCss(["../css/style1.css", "../css/style2.css"], function(){
+         *     //css文件已经载入
+         * });
+         *
+         * //载入style1.css和style2.css两个文件，作用于id为content的dom对象
+         * o2.loadCss(["../css/style1.css", "../css/style2.css"], {"dom": document.getELementById("content")}, function(){
+         *     //css文件已经载入
+         * });
+         * //在Dom对象上载入style1.css和style2.css两个css
+         * var node = document.getElementById("mydiv");
+         * node.loadCss(["../css/style1.css", "../css/style2.css"], function(){
+         *     //css文件已经载入
+         * });
+         */
         this.o2.loadCss = _loadCss;
+
+        /**
+         * @summary 引入文本css资源。
+         * @function loadCssText
+         * @memberOf o2
+         * @param {String} [cssText] 要载入的css文本内容。
+         * @param {Object|Function} [options|callback] 载入css文件的配置参数，或者载入成功后的回调。
+         * <pre><code class="language-js">options参数格式如下：
+         * {
+         *      "dom":      dom element对象，表示css在这个element生效，默认是null，表示对整个document生效
+         * }
+         * </code></pre>
+         * @param {Function} [callback] 可选参数，载入成功后的回调方法。
+         * @o2syntax
+         * o2.loadCssText(cssText, options, callback);
+         * @o2syntax
+         * Element.loadCssText(cssText, options, callback);
+         * @see o2.loadCss
+         * @example
+         * //引入css文本，作用于id为content的dom对象
+         * var csstext = ".myclass{color:#ff0000}"
+         * o2.loadCssText(csstext, {"dom": document.getELementById("content")}, function(){
+         *     //css已经载入
+         * });
+         * //引入css文本，作用于id为content的dom对象
+         * var csstext = ".myclass{color:#ff0000}"
+         * var node = document.getELementById("content");
+         * node.loadCssText(csstext, function(){
+         *     //css已经载入
+         * });
+         */
         this.o2.loadCssText = _loadCssText;
-        this.o2.removeCss = _removeCss;
         if (window.Element) Element.prototype.loadCss = function (modules, options, callback) {
             var op = (_typeOf(options) === "object") ? options : {};
             var cb = (_typeOf(options) === "function") ? options : callback;
@@ -806,7 +941,24 @@ if (!window.o2) {
             op.dom = this;
             return _loadCssText(cssText, op, cb);
         };
-
+        /**
+         * @summary 移除通过o2.loadCss方法引入css资源。
+         * @function removeCss
+         * @memberOf o2
+         * @param {String|Array} [urls] 要移除的的css文本url，必须与引入时所使用的url相同。
+         * @o2syntax
+         * o2.removeCss(urls);
+         * @example
+         * //载入style1.css和style2.css两个文件，作用于id为content的dom对象
+         * o2.load(["../css/style1.css", "../css/style2.css"], {"dom": document.getELementById("content")}, function(){
+         *     //css文件已经载入
+         * });
+         *
+         * //移除style1.css和style2.css两个文件
+         * //引入时使用了"../css/style1.css"字符串作为路径，移除时也要使用相同的字符串
+         * o2.removeCss(["../css/style1.css", "../css/style2.css"])
+         */
+        this.o2.removeCss = _removeCss;
 
         //load html
         _loadSingleHtml = function (module, callback, op) {
@@ -955,6 +1107,183 @@ if (!window.o2) {
                 });
             }
         };
+
+        /**
+         * @summary 引入外部html模板资源，并将html内容渲染到指定dom对象的某个位置。
+         * @function loadHtml
+         * @memberOf o2
+         * @param {String|Array} [urls] 要载入的html文件url，或要载入多个html文件的urls数组。
+         * @param {Object|Function} [options|callback] 载入html文件的配置参数，或者载入成功后的回调。
+         * <pre><code class="language-js">options参数格式如下：
+         * {
+         *       "noCache":  是否使用缓存，默认true,
+         *       "reload":   如果相同路径的html文件已经引入了，是否重新载入,默认为：false
+         *       "sequence": 当urls参数为数组时，多个html文件是否按数组顺序依次载入,默认为false
+         *       "dom": 引入html后，要将html内容渲染到的目标dom对象（具体位置由position参数确定）,
+         *       "position": 渲染到的目标dom对象的位置，可以是以下值：'beforebegin' 'afterbegin' 'beforeend'（默认） 'afterend'
+         *       "module": Object，与此html模板关联的对象。（在下面的例子中详细介绍）
+         *       "bind": Json，与此html模板关联的Json对象。（在下面的例子中详细介绍）
+         *       "evalScripts": html模板中通过&lt;script&gt;引入或内嵌的javascript，是否要执行。默认为false
+         *       "baseUrl": html模板中引用连接的baseUrl，默认为空
+         * }
+         * </code></pre>
+         * @param {Function} [callback] 可选参数，载入成功后的回调方法。
+         * @o2syntax
+         * o2.loadHtml(urls, options, callback);
+         * @o2syntax
+         * Element.loadHtml(urls, options, callback);
+         * @example
+         * <caption><b>样例1: </b>引入一个html模板文件，并插入到id为content的dom对象的最后</caption>
+         * //引入一个html模板文件，并插入到id为content的dom对象的最后
+         * var node = document.getELementById("content");
+         * o2.loadHtml("../html/template.html", {"dom": node}, function(){
+         *     //html文件已经载入
+         * });
+         *
+         * //或者使用Element.loadHtml方法
+         * var node = document.getELementById("content");
+         * node.loadHtml("../html/template.html", function(){
+         *     //html文件已经载入
+         * });
+         *
+         * @example
+         * <caption>
+         *    <b>样例2: </b>本例中我们使用一个html模板来渲染展现已有的数据。我们将一个json对象绑定到要载入的模板，通过{{$.xxx}}来展现json数据。<br>
+         *    html模板内容如下：
+         *    <pre><code class="language-js">&lt;div&gt;{{$.title}}&lt;/div&gt;
+         * &lt;div&gt;{{$.description}}&lt;/div&gt;</code></pre>
+         *    然后通过以下代码来载入html模板：
+         * </caption>
+         * var json = {
+         *     "title": "这是标题",
+         *     "description": "描述内容"
+         * };
+         * var node = document.getELementById("content");
+         * o2.loadHtml("../html/template.html", {"dom": node, "bind": json}, function(){
+         *     //html文件已经载入
+         *     //载入后，node对象的html如下：
+         *     //<div>
+         *     //   ......
+         *     //   <div>这是标题</div>;
+         *     //   <div>描述内容</div>
+         *     //</div>
+         * });
+         * @example
+         * <caption>
+         *    <b>样例3: </b>本例中我们除了使用一个html模板来渲染展现已有的json数据，还给已有模块绑定上html模板中的一个dom对象，并监听html模板中的指定元素的事件。<br>
+         *    html模板内容如下：
+         *    <pre><code class="language-js">&lt;div&gt;{{$.title}}&lt;/div&gt;
+         * &lt;div&gt;{{$.description}}&lt;/div&gt;
+         * &lt;div data-o2-element="myElement"&gt;&lt;/div&gt;
+         * &lt;button data-o2-events="click:clickMe:{{$.info}};mouseover:overMe;mouseout:outMe"&gt;绑定了事件的按钮&lt;/button&gt;
+         * </code></pre>
+         *    然后通过以下代码来载入html模板：
+         * </caption>
+         * //json数据
+         * var json = {
+         *     "title": "这是标题",
+         *     "description": "描述内容",
+         *     "info": "按钮点击后的信息"
+         * };
+         * //业务模块
+         * var module = {
+         *     //当button按钮被点击时，会调用此方法
+         *     clickMe: function(info, e){
+         *         this.myElement.insertAdjacentText("afterbegin", "button clicked " + info);
+         *     },
+         *     //当鼠标移动到button按钮时，会调用此方法
+         *     overMe: function(e){
+         *         console.log("button over");
+         *         console.log(e);  //MouseEvent对象
+         *     },
+         *     //当鼠标移出button按钮时，会调用此方法
+         *     outMe: function(e){
+         *         console.log("button out");
+         *         console.log(e);  //MouseEvent对象
+         *     }
+         * };
+         *
+         * var node = document.getELementById("content");
+         * node.loadHtml("../html/template.html", {"bind": json, "module": module}, function(){
+         *     //html文件已经载入
+         *     //载入后，node对象的html如下：
+         *     //<div>
+         *     //   ......
+         *     //   <div>这是标题</div>;
+         *     //   <div>描述内容</div>
+         *     //   <div data-o2-element="myElement"></div>
+         *     //   <button>绑定了事件的按钮</button>
+         *     //</div>
+         *     console.log(module.myElement);   //Dom对象：<div data-o2-element="myElement"></div>
+         *                                      //html模板中的div对象，被绑定到了module对象的myElement属性上
+         *
+         * });
+         * @example
+         * <caption>
+         *    <b>样例4: </b>本例中演示了html模板中each和if的用法。<br>
+         *    html模板内容如下：
+         *    <pre><code class="language-js">&lt;div&gt;
+         *    {{each $.items}}
+         *        &lt;div&gt;{{$.title}}&lt;/div&gt;
+         *        &lt;div&gt;{{$.description}}&lt;/div&gt;
+         *        {{if $.title=="这是标题2"}}
+         *             &lt;div&gt;这是标题2的个性化内容&lt;/div&gt;
+         *        {{end if}}
+         *        &lt;button data-o2-events="click:clickMe:{{$.info}}"&gt;绑定了事件的按钮&lt;/button&gt;
+         *        &lt;hr&gt;
+         *    {{end each}}
+         * &lt;/div&gt;</code></pre>
+         *    然后通过以下代码来载入html模板：
+         * </caption>
+         * //json数据
+         * var json = {
+         *       "items": [{
+         *           "title": "这是标题1",
+         *           "description": "描述内容1",
+         *           "info": "按钮点击后的信息1"
+         *       },{
+         *           "title": "这是标题2",
+         *           "description": "描述内容2",
+         *           "info": "按钮点击后的信息2"
+         *       },{
+         *           "title": "这是标题3",
+         *           "description": "描述内容3",
+         *           "info": "按钮点击后的信息3"
+         *       }]
+         * };
+         * //业务模块
+         * var module = {
+         *     //当button按钮被点击时，会调用此方法
+         *     clickMe: function(info, e){
+         *         alert(info);
+         *     }
+         * };
+         * var node = document.getELementById("content");
+         * node.loadHtml("../html/template.html", {"bind": json, "module": module}, function(){
+         *     //html文件已经载入
+         *     //载入后，node对象的html如下：
+         *     //<div>
+         *     //   <div>这是标题1</div>;
+         *     //   <div>描述内容1</div>
+         *     //   <button>绑定了事件的按钮</button>
+         *     //   <hr>
+         *     //</div>
+         *     //<div>
+         *     //   <div>这是标题2</div>;
+         *     //   <div>描述内容2</div>
+         *     //   <div>描这是标题2的个性化内容</div>
+         *     //   <button>绑定了事件的按钮</button>
+         *     //   <hr>
+         *     //</div>
+         *     //<div>
+         *     //   <div>这是标题3</div>;
+         *     //   <div>描述内容3</div>
+         *     //   <button>绑定了事件的按钮</button>
+         *     //   <hr>
+         *     //</div>
+         *     //当点击按钮时，会alert对应的items的info数据
+         * });
+         */
         this.o2.loadHtml = _loadHtml;
         if (window.Element) Element.prototype.loadHtml = function (modules, options, callback) {
             var op = (_typeOf(options) === "object") ? options : {};
@@ -962,10 +1291,44 @@ if (!window.o2) {
             op.dom = this;
             _loadHtml(modules, op, cb);
         };
-        this.o2.injectHtml = function (html, op) {
+
+        /**
+         * @summary 解析html文本内容，并将html内容渲染到指定dom对象的某个位置，与loadHtml相同，只是传入html内容，而不是获取html的url。
+         * @function loadHtmlText
+         * @memberOf o2
+         * @param {String} [html] 要解析的html文本内容。
+         * @param {Object} [options] 载入html文件的配置参数。
+         * <pre><code class="language-js">options参数格式如下：
+         * {
+         *       "noCache":  是否使用缓存，默认true,
+         *       "reload":   如果相同路径的html文件已经引入了，是否重新载入,默认为：false
+         *       "sequence": 当urls参数为数组时，多个html文件是否按数组顺序依次载入,默认为false
+         *       "dom": 引入html后，要将html内容渲染到的目标dom对象（具体位置由position参数确定）,
+         *       "position": 渲染到的目标dom对象的位置，可以是以下值：'beforebegin' 'afterbegin' 'beforeend'（默认） 'afterend'
+         *       "module": Object，与此html模板关联的对象。（在下面的例子中详细介绍）
+         *       "bind": Json，与此html模板关联的Json对象。（在下面的例子中详细介绍）
+         *       "evalScripts": html模板中通过&lt;script&gt;引入或内嵌的javascript，是否要执行。默认为false
+         *       "baseUrl": html模板中引用连接的baseUrl，默认为空
+         * }
+         * </code></pre>
+         * @o2syntax
+         * o2.loadHtmlText(urls, options);
+         * @o2syntax
+         * Element.loadHtmlText(urls, options);
+         * @see o2.loadHtml
+         * @example
+         * var html = "<div>{{$.title}}</div>"
+         * var json = {"title": "标题"};
+         * var node = document.getELementById("content");
+         * o2.loadHtmlText(html, {"dom": node, "bind": json});
+         *
+         * //获
+         * node.loadHtmlText(html, {"bind": json});
+         */
+        this.o2.loadHtmlText = this.o2.injectHtml = function (html, op) {
             _injectHtml(op, html);
         };
-        if (window.Element) Element.prototype.injectHtml = function (html, options) {
+        if (window.Element) Element.prototype.loadHtmlText = Element.prototype.injectHtml = function (html, options) {
             var op = (_typeOf(options) === "object") ? options : {};
             op.dom = this;
             op.position = (options && options.position) || "beforeend"
@@ -1005,6 +1368,52 @@ if (!window.o2) {
                 });
             }
         };
+        /**
+         * @summary 同时载入js文件、css文件和html模板文件，相当于同时调用了o2.load, o2.loadCss 和 o2.loadHtml。
+         * @function loadAll
+         * @memberOf o2
+         * @param {Object} [modules] 要解析的html文本内容。
+         * <pre><code class="language-js">modules参数格式如下：
+         * {
+         *       "js": {String|Array} 要载入的js文件url，或要载入多个js文件的urls数组。
+         *       "css": {String|Array} 要载入的css文件url，或要载入多个css文件的urls数组。
+         *       "html": {String|Array} 要载入的html文件url，或要载入多个html文件的urls数组。
+         * }
+         * </code></pre>
+         * @param {Object} [options] 载入html文件的配置参数。
+         * <pre><code class="language-js">options参数格式如下：
+         * {
+         *       "noCache":  是否使用缓存，默认true,
+         *       "reload":   如果相同路径的html文件已经引入了，是否重新载入,默认为：false
+         *       "sequence": 当urls参数为数组时，多个html文件是否按数组顺序依次载入,默认为false
+         *       "dom": 引入html后，要将html内容渲染到的目标dom对象（具体位置由position参数确定）,
+         *       "position": 渲染到的目标dom对象的位置，可以是以下值：'beforebegin' 'afterbegin' 'beforeend'（默认） 'afterend'
+         *       "module": Object，与此html模板关联的对象。（在下面的例子中详细介绍）
+         *       "bind": Json，与此html模板关联的Json对象。（在下面的例子中详细介绍）
+         *       "evalScripts": html模板中通过&lt;script&gt;引入或内嵌的javascript，是否要执行。默认为false
+         *       "baseUrl": html模板中引用连接的baseUrl，默认为空
+         * }
+         * </code></pre>
+         * @param {Function} [callback] 可选参数，载入成功后的回调方法。
+         * @o2syntax
+         * o2.loadAll(urls, options, callback);
+         * @o2syntax
+         * Element.loadAll(urls, options, callback);
+         * @see o2.load
+         * @see o2.loadCss
+         * @see o2.loadHtml
+         * @example
+         * var html = "<div>{{$.title}}</div>"
+         * var json = {"title": "标题"};
+         * var node = document.getELementById("content");
+         * o2.loadAll({
+         *     "js": ["file1.js", "file2.js"],
+         *     "css": ["style.css"],
+         *     "html": "template.html",
+         * }, {"dom": node, "bind": json}, function(){
+         *     //载入完成后的回调
+         * });
+         */
         this.o2.loadAll = _loadAll;
         if (window.Element) Element.prototype.loadAll = function (modules, options, callback) {
             var op = (_typeOf(options) === "object") ? options : {};
@@ -1167,7 +1576,6 @@ if (!window.o2) {
         }
 
     })();
-
 
     /** ***** BEGIN LICENSE BLOCK *****
      * |------------------------------------------------------------------------------|
@@ -1486,15 +1894,7 @@ if (!window.o2) {
             r.send();
         };
 
-        var _cacheUrls = (Browser.name == "ie") ? [
-            // /jaxrs\/form\/workorworkcompleted\/.+/ig,
-            // /jaxrs\/form\/.+/ig,
-            // /jaxrs\/script\/.+\/app\/.+\/imported/ig,
-            // /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
-            // /jaxrs\/script\/.+\/application\/.+\/imported/ig,
-            // /jaxrs\/page\/.+\/portal\/.+/ig,
-            // /jaxrs\/custom\/.+/ig
-        ] : [
+        var _cacheUrls = (Browser.name == "ie") ? [] : [
             /jaxrs\/form\/workorworkcompleted\/.+/ig,
             /jaxrs\/form\/.+/ig,
             /jaxrs\/script\/.+\/app\/.+\/imported/ig,
@@ -1507,71 +1907,6 @@ if (!window.o2) {
             /jaxrs\/definition\/idea.+/ig,
             /jaxrs\/distribute\/assemble\/source\/.+/ig,
         ];
-        // _restful_bak = function(method, address, data, callback, async, withCredentials, cache){
-        //     var loadAsync = (async !== false);
-        //     var credentials = (withCredentials !== false);
-        //     address = (address.indexOf("?")!==-1) ? address+"&v="+o2.version.v : address+"?v="+o2.version.v;
-        //     //var noCache = cache===false;
-        //     var noCache = !cache;
-        //
-        //
-        //     //if (Browser.name == "ie")
-        //     if (_cacheUrls.length){
-        //         for (var i=0; i<_cacheUrls.length; i++){
-        //             _cacheUrls[i].lastIndex = 0;
-        //             if (_cacheUrls[i].test(address)){
-        //                 noCache = false;
-        //                 break;
-        //             }
-        //         }
-        //     }
-        //     //var noCache = false;
-        //     var res = new Request.JSON({
-        //         url: o2.filterUrl(address),
-        //         secure: false,
-        //         method: method,
-        //         emulation: false,
-        //         noCache: noCache,
-        //         async: loadAsync,
-        //         withCredentials: credentials,
-        //         onSuccess: function(responseJSON, responseText){
-        //             // var xToken = this.getHeader("authorization");
-        //             // if (!xToken) xToken = this.getHeader("x-token");
-        //             var xToken = this.getHeader("x-token");
-        //             if (xToken){
-        //                 if (window.layout){
-        //                     if (!layout.session) layout.session = {};
-        //                     layout.session.token = xToken;
-        //                 }
-        //             }
-        //             o2.runCallback(callback, "success", [responseJSON]);
-        //         },
-        //         onFailure: function(xhr){
-        //             o2.runCallback(callback, "requestFailure", [xhr]);
-        //         }.bind(this),
-        //         onError: function(text, error){
-        //             o2.runCallback(callback, "error", [text, error]);
-        //         }.bind(this)
-        //     });
-        //
-        //     res.setHeader("Content-Type", "application/json; charset=utf-8");
-        //     res.setHeader("Accept", "text/html,application/json,*/*");
-        //     if (window.layout) {
-        //         if (layout["debugger"]){
-        //             res.setHeader("x-debugger", "true");
-        //         }
-        //         if (layout.session && layout.session.user){
-        //             if (layout.session.user.token) {
-        //                 res.setHeader("x-token", layout.session.user.token);
-        //                 res.setHeader("authorization", layout.session.user.token);
-        //             }
-        //         }
-        //     }
-        //     //Content-Type	application/x-www-form-urlencoded; charset=utf-8
-        //     res.send(data);
-        //     return res;
-        // };
-
         _restful = function (method, address, data, callback, async, withCredentials, cache) {
             var loadAsync = (async !== false);
             var credentials = (withCredentials !== false);
@@ -1869,223 +2204,60 @@ if (!window.o2) {
             }
             return arr;
         }
-        // Date.implement({
-        //     "getFromServer": function(callback){
-        //         if (callback){
-        //             o2.Actions.get("x_program_center").echo(function(json){
-        //                 d = Date.parse(json.data.serverTime);
-        //                 callback(d);
-        //             });
-        //         }else{
-        //             var d;
-        //             o2.Actions.get("x_program_center").echo(function(json){
-        //                 d = Date.parse(json.data.serverTime);
-        //             }, null, false);
-        //             return d;
-        //         }
-        //     }
-        // });
-        Date.getFromServer = function (async) {
+        /**
+         * @summary 从服务器获取当前时间。
+         * @function getDateFromServer
+         * @memberOf o2
+         * @param {Boolean|Function} [async|callback] 可选，如果传入true或一个Function：表示异步调用此方法，传入的function为回调方法。如果省略此参数或传入false，则为同步方法
+         * @return {Date|Promise} 同步调用时，返回获取到的时间Date；异步调用时，返回Promise。
+         * @o2syntax
+         * o2.getDateFromServer(async);
+         * @o2syntax
+         * Date.getFromServer(async);
+         * @example
+         * //同步获取服务器时间
+         * var d = o2.getDateFromServer();
+         * //或者
+         * var d = Date.getFromServer();
+         *
+         * //通过回调方法异步获取服务器时间
+         * o2.getDateFromServer(function(d){
+         *     console.log(d);  //从服务器获取的当前时间
+         * });
+         * //或者
+         * Date.getFromServer(function(d){
+         *     console.log(d);  //从服务器获取的当前时间
+         * });
+         *
+         * //通过Promise异步获取服务器时间
+         * o2.getDateFromServer(true).then((d)=>{
+         *     console.log(d);  //从服务器获取的当前时间
+         * });
+         * //或者
+         * Date.getFromServer(true).then((d)=>{
+         *     console.log(d);  //从服务器获取的当前时间
+         * });
+         */
+        this.o2.getDateFromServer = Date.getFromServer = function (async) {
             var d;
-            var cb = ((async && o2.typeOf(async) == "function") ? async : null) || function (json) {
-                //var cb = function(json){
+            // var cb = ((async && o2.typeOf(async) == "function") ? async : null) || function (json) {
+            //     //var cb = function(json){
+            //     d = Date.parse(json.data.serverTime);
+            //     return d;
+            // };
+
+            var cb = function(json){
                 d = Date.parse(json.data.serverTime);
                 return d;
-            };
+            }
 
             var promise = o2.Actions.get("x_program_center").echo(cb, null, !!async);
-
+            if (async && o2.typeOf(async) == "function"){
+                return promise.then(async);
+            }
             return (!!async) ? promise : d;
-
-            // if (callback){
-            //     o2.Actions.get("x_program_center").echo(function(json){
-            //         d = Date.parse(json.data.serverTime);
-            //         o2.runCallback(callback, "success", [d]);
-            //     });
-            // }else{
-            //     var d;
-            //     o2.Actions.get("x_program_center").echo(function(json){
-            //         d = Date.parse(json.data.serverTime);
-            //     }, null, false);
-            //     return d;
-            // }
         };
 
-        // Object.appendChain = function(oChain, oProto) {
-        //     if (arguments.length < 2) {
-        //         throw new TypeError('Object.appendChain - Not enough arguments');
-        //     }
-        //     if (typeof oProto === 'number' || typeof oProto === 'boolean') {
-        //         throw new TypeError('second argument to Object.appendChain must be an object or a string');
-        //     }
-        //
-        //     var oNewProto = oProto,
-        //         oReturn,
-        //         o2nd,
-        //         oLast;
-        //
-        //     oReturn = o2nd = oLast = oChain instanceof this ? oChain : new oChain.constructor(oChain);
-        //
-        //     for (var o1st = this.getPrototypeOf(o2nd);
-        //          o1st !== Object.prototype && o1st !== Function.prototype;
-        //          o1st = this.getPrototypeOf(o2nd)
-        //     ) {
-        //         o2nd = o1st;
-        //     }
-        //
-        //     if (oProto.constructor === String) {
-        //         oNewProto = Function.prototype;
-        //         oReturn = Function.apply(null, Array.prototype.slice.call(arguments, 1));
-        //         oReturn = oReturn.bind(oLast);
-        //         this.setPrototypeOf(oReturn, oLast);
-        //     }
-        //
-        //     this.setPrototypeOf(o2nd, oNewProto);
-        //     return oReturn;
-        // }
-
-        // user promise
-        // var _AsyncGeneratorPrototype = _Class.create({
-        //     initialize: function(resolve, reject, name){
-        //         this.isAG = true;
-        //         this.name = name || "";
-        //         this._createSuccess();
-        //         this._createFailure();
-        //         if (resolve) this.success.resolve = resolve;
-        //         if (reject) this.failure.reject = reject;
-        //     },
-        //     //$family: function(){ return "o2_async_function"; },
-        //     _createSuccess: function(){
-        //         var _self = this;
-        //         this.success = function(){
-        //             var result;
-        //             if (_self.success.resolve) result = _self.success.resolve.apply(this, arguments);
-        //             if (_self.success.resolveList){
-        //                 _self.success.resolveList.each(function(r){
-        //                     result = r(result, arguments) || result;
-        //                 });
-        //             }
-        //             _self.isSuccess = true;
-        //             _self.result = result;
-        //             _self.arg = arguments;
-        //             return result;
-        //         }
-        //     },
-        //     _createFailure: function(){
-        //         var _self = this;
-        //         this.failure = function(){
-        //             var result;
-        //             if (_self.failure.reject) result = _self.failure.reject.apply(this, arguments);
-        //             if (_self.failure.rejectList){
-        //                 _self.failure.rejectList.each(function(r){
-        //                     result = r(result, arguments) || result;
-        //                 });
-        //             }
-        //             _self.isFailure = true;
-        //             _self.result = result;
-        //             _self.arg = arguments;
-        //             return result;
-        //         }
-        //     },
-        //     setResolve: function(resolve){
-        //         if (!this.success) this._createSuccess();
-        //         this.success.resolve = resolve;
-        //         return this;
-        //     },
-        //     setReject: function(reject){
-        //         if (!this.failure) this._createFailure();
-        //         this.failure.reject = reject;
-        //         return this;
-        //     },
-        //     addResolve: function(resolve){
-        //         if (!this.success) this._createSuccess();
-        //         if (resolve){
-        //             if (this.isSuccess){
-        //                 this.result = resolve(this.result, this.arg);
-        //             }else{
-        //                 if (!this.success.resolve){
-        //                     this.success.resolve = resolve;
-        //                 }else{
-        //                     if (!this.success.resolveList) this.success.resolveList = [];
-        //                     this.success.resolveList.push(resolve);
-        //                 }
-        //             }
-        //         }
-        //         return this;
-        //     },
-        //     addReject: function(reject){
-        //         if (!this.failure) this._createFailure();
-        //         if (reject){
-        //             if (this.isFailure){
-        //                 this.result = reject(this.result, this.arg);
-        //             }else{
-        //                 if (!this.failure.reject){
-        //                     this.failure.reject = reject;
-        //                 }else{
-        //                     if (!this.failure.rejectList) this.failure.rejectList = [];
-        //                     this.failure.rejectList.push(reject);
-        //                 }
-        //             }
-        //         }
-        //         return this;
-        //     },
-        //     then: function(resolve){
-        //         return this.addResolve(resolve);
-        //     },
-        //     "catch": function(reject){
-        //         return this.addReject(reject);
-        //     },
-        // });
-        // var _AsyncGenerator = function(resolve, reject, name){
-        //     var asyncGeneratorPrototype = new _AsyncGeneratorPrototype(resolve, reject, name);
-        //     return Object.appendChain(asyncGeneratorPrototype, "if (this.success) this.success.apply(this, arguments);");
-        // }
-        //
-        //
-        // _AsyncGenerator.all = function(arr){
-        //     var result = [];
-        //     var ag = function (){
-        //         return result;
-        //     }.ag();
-        //
-        //     if (o2.typeOf(arr) !== "array") arr = [arr];
-        //
-        //     var count  = arr.length;
-        //     var check = function(){
-        //         count--;
-        //         if (count<=0)ag();
-        //     }
-        //
-        //     //window.setTimeout(function(){
-        //         arr.forEach(function(a){
-        //             if (typeOf(a)=="array"){
-        //                 o2.AG.all(a).then(function(v){
-        //                     result = result.concat(v);
-        //                     check();
-        //                 });
-        //             }else{
-        //                 if (a && a.isAG){
-        //                     a.then(function(v){
-        //                         o2.AG.all(v).then(function(r){
-        //                             result = result.concat(r);
-        //                             check();
-        //                         });
-        //                     });
-        //                 }else{
-        //                     result.push(a);
-        //                     check();
-        //                 }
-        //             }
-        //         });
-        //     //}, 0);
-        //     return ag;
-        // }
-        //
-        // o2.AsyncGenerator = o2.AG = _AsyncGenerator;
-        //
-        // Function.prototype.ag = function(){
-        //     return o2.AG(this);
-        // };
 
         var _promiseAll = function (p) {
             if (o2.typeOf(p) == "array") {
@@ -2330,6 +2502,18 @@ if (!window.o2) {
                 }
             }
         };
+
+        /**
+         * @summary 对页面进行缩放。
+         * @function zoom
+         * @memberOf o2
+         * @param {Number} [scale] 缩放的比例。1表示原始大小
+         * @o2syntax
+         * o2.zoom(scale);
+         * @example
+         * //将页面放大到150%大小
+         * o2.zoom(1.5);
+         */
         o2.zoom = function (scale) {
             if (!layout) layout = {};
             if (layout && !layout.userLayout) layout.userLayout = {};
