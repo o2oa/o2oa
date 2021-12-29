@@ -1167,7 +1167,18 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @event MWF.xApplication.process.Xform.Attachment#open
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["beforeUpload", "upload", "delete", "afterDelete", "load", "afterLoad", "change","download","open", "queryLoad", "queryLoadController", "loadController", "postLoadController"]
+        /**
+         * 选中附件后触发。本事件中可以通过this.event获取被选中的附件对象
+         * @event MWF.xApplication.process.Xform.Attachment#select
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 取消选中附件后触发。本事件中可以通过this.event获取被取消选中的附件对象
+         * @event MWF.xApplication.process.Xform.Attachment#unselect
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        "moduleEvents": ["beforeUpload", "upload", "delete", "afterDelete", "load", "afterLoad", "change","download",
+            "open", "queryLoad", "queryLoadController", "loadController", "postLoadController","select","unselect"]
     },
 
     initialize: function (node, json, form, options) {
@@ -1278,6 +1289,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }.bind(this));
 
     },
+
     isEmpty : function(){
         var data = this.getData();
         if( typeOf(data) === "array" ){
