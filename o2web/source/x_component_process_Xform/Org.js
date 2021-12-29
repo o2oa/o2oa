@@ -2,6 +2,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 MWF.xDesktop.requireApp("Selector", "package", null, false);
 MWF.require("MWF.widget.O2Identity", null, false);
 /** @class Org 人员组织组件。
+ * @o2cn 人员组织组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

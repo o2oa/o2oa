@@ -1606,6 +1606,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
         /**
          * page对象可在门户页面中可用。它的很多方法与form类似。<b>（仅前端脚本可用）</b><br/>
          * @module page
+         * @o2cn 门户页面
          * @o2category web
          * @o2range {Portal}
          * @o2ordernumber 50

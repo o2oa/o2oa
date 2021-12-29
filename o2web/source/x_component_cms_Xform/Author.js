@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("cms.Xform", "Org", null, false);
 /** @class Author 作者组件。
+ * @o2cn 作者组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

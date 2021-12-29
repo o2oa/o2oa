@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Button", null, false);
 /** @class Importer 导入数据组件，本组件通过导入模型来执行数据的导入，支持内容管理文档，流程管理work，自建表数据的导入。
+ * @o2cn 导入数据组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

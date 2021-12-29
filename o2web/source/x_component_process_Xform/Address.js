@@ -1,6 +1,7 @@
 //MWF.require("MWF.widget.PinYin", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Combox", null, false);
 /** @class Address 地址选择组件。
+ * @o2cn 地址选择
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
