@@ -10,6 +10,7 @@ MWF.require("MWF.widget.O2Identity", null, false);
 MWF.xDesktop.requireApp("cms.Xform", "Package", null, false);
 
 /** @class CMSForm 内容管理表单。
+ * @o2cn 内容管理表单
  * @o2category FormComponents
  * @o2range {CMS}
  * @alias CMSForm

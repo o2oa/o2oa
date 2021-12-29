@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.require("MWF.widget.Tab", null, false);
 /** @class Tab 分页组件。
+ * @o2cn 分页组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
 /** @class Elinput 基于Element UI的颜色选择组件。
+ * @o2cn 颜色选择
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

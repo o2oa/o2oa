@@ -1085,6 +1085,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
 
 /** @class Attachment 附件组件。
+ * @o2cn 附件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

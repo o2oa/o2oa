@@ -34,6 +34,7 @@ MWF.xScript.Environment = function(ev){
          * 这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本进行创建和增删改查操作。<br/>
          * data对象基本上是一个Object对象，您可以用访问Object对象的方法访问data对象的所有数据，但增加和删除数据时略有不同。
          * @module data
+         * @o2cn 业务数据
          * @o2category web
          * @o2ordernumber 10
          * @example
@@ -188,6 +189,7 @@ MWF.xScript.Environment = function(ev){
     /**
      * 您可以通过workContext获取和流程相关的流程实例对象数据。
      * @module workContext
+     * @o2cn 流程实例
      * @o2category web
      * @o2range {Process}
      * @o2ordernumber 20
@@ -1905,6 +1907,7 @@ MWF.xScript.Environment = function(ev){
      * this.include是一个方法，当您在流程、门户或者内容管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
      * <b>（建议使用表单中的预加载脚本，需要判断加载的时候才使用本方法加载脚本，此时建议异步加载有助于表单加载速度。）</b><br/>
      * @module include
+     * @o2cn 脚本引用
      * @o2category web
      * @o2ordernumber 140
      * @param {(String|Object|String[]|Object[])} optionsOrName 可以是脚本标识字符串（数组）或者是对象（数组）。
@@ -2088,6 +2091,7 @@ MWF.xScript.Environment = function(ev){
      * this.define是一个方法，您可以在流程、门户或者内容管理中创建脚本配置，在脚本配置中您可以通过this.define()来定义自己的方法。<br/>
      * 通过这种方式定义方法，在不同的应用使用相同的方法名称也不会造成冲突。
      * @module define
+     * @o2cn 方法定义
      * @o2category web
      * @o2ordernumber 150
      * @param {(String)} name 定义的方法名称。
@@ -2144,6 +2148,7 @@ MWF.xScript.Environment = function(ev){
      * this.wait需和this.goon配合使用。<br/>
      * <b>目前只有流程表单的queryload事件支持此方法。</b>
      * @module wait
+     * @o2cn 表单等待
      * @o2category web
      * @o2range {Process}
      * @o2syntax
@@ -2237,6 +2242,7 @@ MWF.xScript.Environment = function(ev){
     /**
      * form对象可在流程表单或内容管理表单中可用。（仅前端脚本可用）。
      * @module form
+     * @o2cn 流程及内容管理表单
      * @o2category web
      * @o2range {Process|CMS}
      * @o2ordernumber 40

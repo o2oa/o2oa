@@ -49,6 +49,7 @@
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class Datatemplate 数据模板组件。自定义结构和样式的多行数据编辑组件。
+ * @o2cn 数据模板
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
