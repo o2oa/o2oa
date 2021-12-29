@@ -24,7 +24,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class DelayProcessor extends AbstractDelayProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(DelayProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DelayProcessor.class);
 
 	public DelayProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -53,16 +53,17 @@ public class DelayProcessor extends AbstractDelayProcessor {
 		} else {
 			Integer minutes = this.minute(aeiObjects, delay);
 			if (BooleanUtils.isTrue(delay.getWorkMinute())) {
-				limit = Config.workTime().forwardMinutes(aeiObjects.getWork().getStartTime(), minutes);
+				limit = Config.workTime().forwardMinutes(aeiObjects.getWork().getActivityArrivedTime(), minutes);
 			} else {
-				limit = DateUtils.addMinutes(aeiObjects.getWork().getStartTime(), minutes);
+				limit = DateUtils.addMinutes(aeiObjects.getWork().getActivityArrivedTime(), minutes);
 			}
 		}
-		logger.debug("work title:{}, id:{}, limit time:{}.", aeiObjects.getWork().getTitle(),
-				aeiObjects.getWork().getId(), limit);
 		if (null == limit) {
-			logger.warn("work title:{}, id:{}, on delay activity id:{}, get null date value.",
-					aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), delay.getId());
+			LOGGER.warn("work title:{}, id:{}, on delay activity id:{}, get null date value.",
+					() -> aeiObjects.getWork().getTitle(), () -> aeiObjects.getWork().getId(), delay::getId);
+		} else {
+			LOGGER.debug("work title:{}, id:{}, limit time:{}.", () -> aeiObjects.getWork().getTitle(),
+					() -> aeiObjects.getWork().getId(), limit::toString);
 		}
 		if (null != limit && (new Date()).after(limit)) {
 			results.add(aeiObjects.getWork());
