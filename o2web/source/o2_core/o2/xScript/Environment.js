@@ -1751,10 +1751,10 @@ MWF.xScript.Environment = function(ev){
         }
     })();
 
-    this.service = {
-        "jaxwsClient":{},
-        "jaxrsClient":{}
-    };
+    // this.service = {
+    //     "jaxwsClient":{},
+    //     "jaxrsClient":{}
+    // };
 
     var lookupAction = null;
     var getLookupAction = function(callback){
