@@ -20,18 +20,48 @@ import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 
 public class HttpConnection {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpConnection.class);
+
+	private HttpConnection() {
+		// nothing
+	}
+
 	private static final int DEFAULT_CONNECTTIMEOUT = 2000;
 	private static final int DEFAULT_READTIMEOUT = 5 * 60 * 1000;
+
+	public static HttpConnectionResponse get(String address, List<NameValuePair> heads, int connectTimeout,
+			int readTimeout, Supplier<HttpConnectionResponse> supplier) {
+		HttpURLConnection connection = null;
+		try {
+			connection = prepare(address, heads);
+			connection.setRequestMethod(ConnectionAction.METHOD_GET);
+			connection.setDoOutput(false);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
+			return supplier.get(connection);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		} finally {
+			if (null != connection) {
+				connection.disconnect();
+			}
+		}
+		return null;
+	}
 
 	public static String getAsString(String address, List<NameValuePair> heads) throws Exception {
 		return getAsString(address, heads, DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT);
 	}
 
-	public static String getAsString(String address, List<NameValuePair> heads, int connectTimeout, int readTimeout) throws Exception {
+	public static String getAsString(String address, List<NameValuePair> heads, int connectTimeout, int readTimeout)
+			throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_GET);
 		connection.setDoOutput(false);
@@ -55,11 +85,35 @@ public class HttpConnection {
 		return XGsonBuilder.instance().fromJson(result, collectionType);
 	}
 
+	public static HttpConnectionResponse post(String address, List<NameValuePair> heads, String body,
+			int connectTimeout, int readTimeout, Supplier<HttpConnectionResponse> supplier) {
+		HttpURLConnection connection = null;
+		try {
+			connection = prepare(address, heads);
+			connection.setRequestMethod(ConnectionAction.METHOD_POST);
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
+			connection.connect();
+			doOutput(connection, body);
+			return supplier.get(connection);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		} finally {
+			if (null != connection) {
+				connection.disconnect();
+			}
+		}
+		return null;
+	}
+
 	public static String postAsString(String address, List<NameValuePair> heads, String body) throws Exception {
 		return postAsString(address, heads, body, DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT);
 	}
 
-	public static String postAsString(String address, List<NameValuePair> heads, String body, int connectTimeout, int readTimeout) throws Exception {
+	public static String postAsString(String address, List<NameValuePair> heads, String body, int connectTimeout,
+			int readTimeout) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_POST);
 		connection.setDoOutput(true);
@@ -87,11 +141,35 @@ public class HttpConnection {
 		return XGsonBuilder.instance().fromJson(result, collectionType);
 	}
 
+	public static HttpConnectionResponse put(String address, List<NameValuePair> heads, String body, int connectTimeout,
+			int readTimeout, Supplier<HttpConnectionResponse> supplier) {
+		HttpURLConnection connection = null;
+		try {
+			connection = prepare(address, heads);
+			connection.setRequestMethod(ConnectionAction.METHOD_PUT);
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
+			connection.connect();
+			doOutput(connection, body);
+			return supplier.get(connection);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		} finally {
+			if (null != connection) {
+				connection.disconnect();
+			}
+		}
+		return null;
+	}
+
 	public static String putAsString(String address, List<NameValuePair> heads, String body) throws Exception {
 		return putAsString(address, heads, body, DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT);
 	}
 
-	public static String putAsString(String address, List<NameValuePair> heads, String body, int connectTimeout, int readTimeout) throws Exception {
+	public static String putAsString(String address, List<NameValuePair> heads, String body, int connectTimeout,
+			int readTimeout) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_PUT);
 		connection.setDoOutput(true);
@@ -119,11 +197,33 @@ public class HttpConnection {
 		return XGsonBuilder.instance().fromJson(result, collectionType);
 	}
 
+	public static HttpConnectionResponse delete(String address, List<NameValuePair> heads, int connectTimeout,
+			int readTimeout, Supplier<HttpConnectionResponse> supplier) {
+		HttpURLConnection connection = null;
+		try {
+			connection = prepare(address, heads);
+			connection.setRequestMethod(ConnectionAction.METHOD_DELETE);
+			connection.setDoOutput(false);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
+			return supplier.get(connection);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		} finally {
+			if (null != connection) {
+				connection.disconnect();
+			}
+		}
+		return null;
+	}
+
 	public static String deleteAsString(String address, List<NameValuePair> heads) throws Exception {
 		return deleteAsString(address, heads, DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT);
 	}
 
-	public static String deleteAsString(String address, List<NameValuePair> heads, int connectTimeout, int readTimeout) throws Exception {
+	public static String deleteAsString(String address, List<NameValuePair> heads, int connectTimeout, int readTimeout)
+			throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_DELETE);
 		connection.setDoOutput(false);
@@ -171,15 +271,15 @@ public class HttpConnection {
 		return httpUrlConnection;
 	}
 
-	private static String readResultString(HttpURLConnection connection) throws Exception {
+	public static String readResultString(HttpURLConnection connection) throws Exception {
 		String result = "";
 		try (InputStream input = connection.getInputStream()) {
 			result = IOUtils.toString(input, StandardCharsets.UTF_8);
 		}
 		int code = connection.getResponseCode();
 		if (code != 200) {
-			throw new Exception("connection{url:" + connection.getURL() + "}, response error{responseCode:" + code
-					+ "}, response:" + result + ".");
+			throw new IllegalStateException("connection{url:" + connection.getURL() + "}, response error{responseCode:"
+					+ code + "}, response:" + result + ".");
 		}
 		return result;
 	}
