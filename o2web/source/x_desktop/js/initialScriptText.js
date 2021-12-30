@@ -2812,6 +2812,129 @@ bind.view = {
     },
     "select": function(view, callback, options){}
 };
+
+/**
+ * 可以通过service对象发起restful请求，或soap协议的webservice调用。
+ * @module service
+ * @o2category server.common
+ * @o2syntax
+ * var service = this.service;
+ * @example
+ * //通过get方法发起restful请求，获取json数据
+ * var res = this.service.restful("get", "config/myjson.json");
+ * if (res.responseCode>=200 && responseCode<300){
+ *     var jsonData = res.json;
+ * }
+ */
+bind.service = {
+    /**
+     * 发起restful请求。
+     * @method restful
+     * @o2category server.common
+     * @param {String} [method] - restful请求方法：get、post、put、delete ...
+     * @param {String} [url] - restful请求地址
+     * @param {Object} [headers] - 可选，json对象，请求的header，默认content-type为：“application/json charset=utf-8”
+     * @param {String|Object} [body] - 可选，post、put请求的消息体,传入文本或json对象
+     * @param {Number} [connectTimeout] - 可选，连接超时时间（毫秒），默认是2000。
+     * @param {Number} [readTimeout] - 可选，传输超时时间（毫秒），默认是300000。
+     * @return {Object} 返回json格式的请求结果对象，格式如下：
+     * <pre><code class='language-js'>
+     * {
+     *  "responseCode" : 200,   //请求返回的code
+     *  "headers" : {},         //响应头
+     *  "body": "",             //响应的body文本内容
+     *  "json": {}              //响应的body的json格式内容
+     * }
+     * </code></pre>
+     * @o2syntax
+     * var res = this.service.restful(method, url, headers, body, connectTimeout, readTimeout);
+     * @example
+     * //通过get方法发起restful请求，获取json数据
+     * var res = this.service.restful("get", "config/myjson.json");
+     * if (res.responseCode>=200 && responseCode<300){
+     *     var jsonData = res.json;
+     * }
+     */
+    restful: function(method, url, headers, body, connectTimeout, readTimeout){
+        var service = bind.java_resources.getWebservicesClient();
+        var bodyData = ((typeof body)==="object") ? JSON.stringify(body) : (body||"");
+        var res = service.restful(method, url, (headers||null), bodyData, (connectTimeout||2000), (readTimeout||300000));
+        try {
+            res.json = JSON.parse(res.body);
+        }catch(e){}
+        return res;
+    },
+
+    /**
+     * 通过get方法发起restful请求。
+     * @method get
+     * @methodOf restful
+     * @static
+     * @param {String} [url] - restful请求地址
+     * @param {Object} [headers] - 可选，json对象，请求的header，默认content-type为：“application/json charset=utf-8”
+     * @param {Number} [connectTimeout] - 可选，连接超时时间（毫秒），默认是2000。
+     * @param {Number} [readTimeout] - 可选，传输超时时间（毫秒），默认是300000。
+     * @return {Object} 返回json格式的请求结果对象，格式如下：
+     * <pre><code class='language-js'>
+     * {
+     *  "responseCode" : 200,   //请求返回的code
+     *  "headers" : {},         //响应头
+     *  "body": "",             //响应的body文本内容
+     *  "json": {}              //响应的body的json格式内容
+     * }
+     * </code></pre>
+     * @o2syntax
+     * var res = this.service.get(url, headers, connectTimeout, readTimeout);
+     */
+    "get": function(url, headers, connectTimeout, readTimeout){
+        return this.restful("get", url, headers, "", connectTimeout, readTimeout);
+    },
+
+    /**
+     * 通过post方法发起restful请求。
+     * @method post
+     * @static
+     * @param {String} [url] - restful请求地址
+     * @param {Object} [headers] - 可选，json对象，请求的header，默认content-type为：“application/json charset=utf-8”
+     * @param {String|Object} [body] - 可选，post、put请求的消息体,传入文本或json对象
+     * @param {Number} [connectTimeout] - 可选，连接超时时间（毫秒），默认是2000。
+     * @param {Number} [readTimeout] - 可选，传输超时时间（毫秒），默认是300000。
+     * @return {Object} 返回json格式的请求结果对象，格式如下：
+     * <pre><code class='language-js'>
+     * {
+     *  "responseCode" : 200,   //请求返回的code
+     *  "headers" : {},         //响应头
+     *  "body": "",             //响应的body文本内容
+     *  "json": {}              //响应的body的json格式内容
+     * }
+     * </code></pre>
+     * @o2syntax
+     * var res = this.service.post(url, headers, body, connectTimeout, readTimeout);
+     */
+    "post": function(url, headers, body, connectTimeout, readTimeout){
+        return this.restful("post", url, headers, body, connectTimeout, readTimeout);
+    },
+
+    /**
+     * 发起soap协议的webservice请求。
+     * @method soap
+     * @o2category server.common
+     * @param {String} [wsdl] - wsdl文件地址
+     * @param {String} [method] - 要调用的方法名称
+     * @param {Array} [pars] - 方法所需要的参数
+     * @return {Object} 与服务返回的类型有关：
+     * @o2syntax
+     * var res = this.service.soap(wsdl, method, pars);
+     * @example
+     * //模拟通过webservice获取用户
+     * var res = this.service.soap("wsdl/mywsdl.wsdl", "getPerson", ["张三", "李四"]);
+     */
+    soap: function(wsdl, method, pars){
+        var service = bind.java_resources.getWebservicesClient();
+        return service.restful(wsdl, method, pars);
+    }
+}
+
 //----------------------------------------------------------
 
 //java_workcontext work上下文对象，流程相关的脚本中可获取
@@ -3128,6 +3251,7 @@ bind.assginData = {     //java_assginData 应用调用活动的创建的流程�
      * @param {Object} [data] 要设置的assginData对象，一般情况都是通过assginData.get()获取并做必要修改的对象。
      * @o2syntax
      * this.assginData.set(data);
+     * @deprecated 不建议使用，建议return一个json对象或数组的方式来设置data。
      */
     "set": function(data){
         bind.java_assginData.set(JSON.stringify(data || this.data));
@@ -3154,6 +3278,7 @@ Object.defineProperties(bind.assginData, {"data": {
  * @module server.parameters
  * @o2category server.process
  * @o2ordernumber 215
+ * @deprecated 不建议使用，建议return一个json对象或数组的方式来设置参数。
  * @example
  * //使用jaxrs方式的服务调用活动的参数脚本中
  * //如果rest服务地址为：xxx/{id}/xx/{name},则需要传入两个参数：id和name，可使用如下代码：
@@ -3201,6 +3326,7 @@ bind.parameters = {
      * @param {Any|Array} [value] 要设置的参数值。
      * @o2syntax
      * this.parameters.add(value);
+     * @deprecated 不建议使用，建议return一个数组的方式来设置参数。
      */
     "add": function(value){
         try{
@@ -3225,6 +3351,7 @@ bind.parameters = {
      * @o2syntax
      * this.parameters.put(name, value);
      * this.parameters.put(obj);
+     * @deprecated 不建议使用，建议return一个json对象的方式来设置参数。
      */
     "put": function(name, value){
         try{
@@ -3265,6 +3392,7 @@ bind.parameters = {
  * @module server.body
  * @o2category server.process
  * @o2ordernumber 220
+ * @deprecated 不建议使用，建议return一个json对象的方式来设置body。
  * @example
  * //设置jaxrs服务调用的消息体
  * this.body.set({
@@ -3299,6 +3427,7 @@ bind.body = {
      * @param {String|Object} [data] 消息体内容。
      * @o2syntax
      * this.body.set(data);
+     * @deprecated 不建议使用，建议return一个json对象或数组的方式来设置body。
      */
     "set": function(data){
         if ((typeof data)==="string"){
@@ -3318,6 +3447,7 @@ bind.body = {
  * @module server.headers
  * @o2category server.process
  * @o2ordernumber 225
+ * @deprecated 不建议使用，建议return一个json对象的方式来设置headers。
  * @example
  * //设置jaxrs服务调用的消息头
  * this.headers.put("Content-Type", "application/x-www-form-urlencoded");
@@ -3349,6 +3479,7 @@ bind.headers = {
      * @o2syntax
      * this.headers.put(name, value);
      * this.headers.put(obj);
+     * @deprecated 不建议使用，建议return一个json对象的方式来设置headers。
      */
     "put": function(name, value){
         try{
@@ -3520,6 +3651,7 @@ Object.defineProperties(bind, {
  * @module server.expire
  * @o2category server.process
  * @o2ordernumber 240
+ * @deprecated 不建议使用，建议return一个json对象的方式来设置超时时间。
  * @example
  * //设置超时时限为待办产生后5小时
  * this.expire.setHour(5);
@@ -3583,7 +3715,7 @@ var o= {
     "context": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getContext() : null)} },
     "applications": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getApplications() : null)} },
     "organization": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getOrganization() : null)} },
-    "service": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getWebservicesClient() : null)} },
+    // "service": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getWebservicesClient() : null)} },
     "currentPerson": { "configurable": true, "get": function(){return (bind.java_effectivePerson || null)} },
     "effectivePerson": { "configurable": true, "get": function(){return (bind.java_effectivePerson || null)} },
     "resources": { "configurable": true, "get": function(){return (bind.java_resources || null)} },
