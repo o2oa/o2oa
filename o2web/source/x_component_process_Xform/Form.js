@@ -1994,8 +1994,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var _self = this;
         MWF.require("MWF.widget.Mask", function () {
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
-            this.mask.loadNode(this.app.content);
-
+            debugger; // 适配移动端
+            if (layout.mobile) {
+                this.mask.load();
+            } else {
+                this.mask.loadNode(this.app.content);
+            }
             if (callbackBeforeSave) callbackBeforeSave();
             this.fireEvent("beforeSave");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
