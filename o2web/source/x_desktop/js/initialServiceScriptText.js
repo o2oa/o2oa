@@ -994,6 +994,27 @@ bind.view = {
     "select": function(view, callback, options){}
 };
 
+bind.service = {
+    restful: function(method, url, headers, body, connectTimeout, readTimeout){
+        var service = bind.java_resources.getWebservicesClient();
+        var bodyData = ((typeof body)==="object") ? JSON.stringify(body) : (body||"");
+        var res = service.restful(method, url, (headers||null), bodyData, (connectTimeout||2000), (readTimeout||300000));
+        try {
+            res.json = JSON.parse(res.body);
+        }catch(e){}
+        return res;
+    },
+    "get": function(url, headers, connectTimeout, readTimeout){
+        return this.restful("get", url, headers, "", connectTimeout, readTimeout);
+    },
+    "post": function(url, headers, body, connectTimeout, readTimeout){
+        return this.restful("post", url, headers, body, connectTimeout, readTimeout);
+    },
+    soap: function(wsdl, method, pars){
+        var service = bind.java_resources.getWebservicesClient();
+        return service.restful(wsdl, method, pars);
+    }
+}
 //----------------------------------------------------------
 //java对象:  invoke
 //java_resources: getContext(); getApplications(); getOrganization(); getWebservicesClient();  ok
@@ -1044,7 +1065,7 @@ var response = {
     },
     /**
      * @summary 服务返回一个301跳转。
-     * @method redirect
+     * @method setBody
      * @methodOf service.module:response
      * @static
      * @param {String|Object} [body] 响应内容，文本或json对象。
@@ -1071,12 +1092,11 @@ var o= {
     "context": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getContext() : null)} },
     "applications": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getApplications() : null)} },
     "organization": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getOrganization() : null)} },
-    "service": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getWebservicesClient() : null)} },
+    //"service": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getWebservicesClient() : null)} },
     /**
-     * 用于服务管理的接口和代理脚本，获取当前用户的全称。<br>
-     * @o2range 服务管理-接口
+     * 获取当前用户的全称。
      * @module server.currentPerson
-     * @o2category server.service
+     * @o2category server.common
      * @o2ordernumber 250
      * @o2syntax
      * var user = this.currentPerson;
@@ -1118,6 +1138,15 @@ var o= {
      * return "SELECT o FROM Task o WHERE o.person='"+user+"' AND o.startTime>{ts '"+startTime+"'}"
      */
     "parameters": { "configurable": true, "get": function(){return ((bind.java_parameters) ? JSON.parse(bind.java_parameters) : null)} },
+    /**
+     * 原始请求消息体的文本内容。
+     * @o2range 服务管理-接口
+     * @module server.requestText
+     * @o2category server.service
+     * @o2ordernumber 250
+     * @o2syntax
+     * var text = this.requestText;
+     */
     "requestText": { "configurable": true, "get": function(){return bind.java_requestText || null; } },
     "request": { "configurable": true, "get": function(){return bind.java_request || null; } },
     "resources": { "configurable": true, "get": function(){return (bind.java_resources || null)} },
