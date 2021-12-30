@@ -77,6 +77,12 @@ public class ConnectionAction {
 		connection.setReadTimeout(readTimeout);
 		try {
 			connection.connect();
+			int status = connection.getResponseCode();
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
+					|| status == HttpURLConnection.HTTP_SEE_OTHER) {
+				String redirect = connection.getHeaderField("Location");
+				return getDelete(connectTimeout, readTimeout, redirect, method, heads);
+			}
 		} catch (Exception e) {
 			response.setType(Type.connectFatal);
 			response.setMessage(String.format("%s connect connection error, address: %s, because: %s.", method, address,
@@ -168,6 +174,12 @@ public class ConnectionAction {
 		connection.setReadTimeout(readTimeout);
 		try {
 			connection.connect();
+			int status = connection.getResponseCode();
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
+					|| status == HttpURLConnection.HTTP_SEE_OTHER) {
+				String redirect = connection.getHeaderField("Location");
+				return postPut(connectTimeout, readTimeout, redirect, method, heads, body);
+			}
 		} catch (Exception e) {
 			response.setType(Type.connectFatal);
 			response.setMessage(
@@ -371,32 +383,6 @@ public class ConnectionAction {
 		IOUtils.write(filePart.getBytes(), output);
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
 	}
-
-//	public static byte[] getFile(String address, List<NameValuePair> heads) throws ClientProtocolException, IOException  {
-//		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-//			HttpGet httpget = new HttpGet(address);
-//			if (ListTools.isNotEmpty(heads)) {
-//				String name;
-//				String value;
-//				for (NameValuePair o : heads) {
-//					name = Objects.toString(o.getName(), "");
-//					value = Objects.toString(o.getValue(), "");
-//					if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
-//						httpget.addHeader(name, value);
-//					}
-//				}
-//			}
-//			HttpResponse response = httpclient.execute(httpget);
-//			HttpEntity entity = response.getEntity();
-//			if (entity != null) {
-//				InputStream in = entity.getContent();
-//				if (in != null) {
-//					return IOUtils.toByteArray(in);
-//				}
-//			}
-//		}
-//		return null;
-//	}
 
 	private static String extractErrorMessageIfExist(String str) {
 		if (StringUtils.isBlank(str)) {
