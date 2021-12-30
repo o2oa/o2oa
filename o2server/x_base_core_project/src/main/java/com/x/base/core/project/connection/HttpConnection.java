@@ -32,8 +32,8 @@ public class HttpConnection {
 		// nothing
 	}
 
-	private static final int DEFAULT_CONNECTTIMEOUT = 2000;
-	private static final int DEFAULT_READTIMEOUT = 5 * 60 * 1000;
+	public static final int DEFAULT_CONNECTTIMEOUT = 2000;
+	public static final int DEFAULT_READTIMEOUT = 5 * 60 * 1000;
 
 	public static HttpConnectionResponse get(String address, List<NameValuePair> heads, int connectTimeout,
 			int readTimeout, Supplier<HttpConnectionResponse> supplier) {

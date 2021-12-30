@@ -19,8 +19,6 @@ public class HttpConnectionResponse {
 
 	private byte[] bytes;
 
- 
-
 	public Integer getResponseCode() {
 		return responseCode;
 	}

@@ -54,7 +54,6 @@ public class WebservicesClient {
 		if (StringUtils.equalsAnyIgnoreCase(method, ConnectionAction.METHOD_PUT)) {
 			return put(url, heads, body, connectTimeout, readTimeout);
 		}
-
 		return null;
 	}
 
