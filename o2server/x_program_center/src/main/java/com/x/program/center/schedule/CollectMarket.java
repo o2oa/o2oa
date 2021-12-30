@@ -44,11 +44,11 @@ public class CollectMarket extends BaseAction {
 					Business business = new Business(emc);
 					String token = business.loginCollect();
 					if (StringUtils.isNotEmpty(token)) {
-						logger.debug("start sync market data=====");
+						logger.info("start sync market data=====");
 						List<Wi> wiList = null;
 						try {
 							ActionResponse response = ConnectionAction.get(
-									Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_LIST),
+									Config.collect().url(Collect.ADDRESS_COLLECT_MARKET),
 									ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
 							wiList = response.getDataAsList(Wi.class);
 						} catch (Exception e) {
@@ -112,7 +112,7 @@ public class CollectMarket extends BaseAction {
 							}
 							emc.commit();
 						}
-						logger.debug("end sync market data=====");
+						logger.info("end sync market data=====");
 					}
 				}
 			}
@@ -138,6 +138,17 @@ public class CollectMarket extends BaseAction {
 		public void setAttList(List<Attachment> attList) {
 			this.attList = attList;
 		}
+	}
+
+	public static void main(String[] args) throws Exception{
+		System.out.println("==========1");
+		ActionResponse response1 = ConnectionAction.get(
+				"http://collect.o2oa.net:20080/market",
+				ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, "DltLNMgB3BaKEeBBjgHVADkfpuTt3sqriL15iT2Cjgk")));
+		List<Wi> wiList = response1.getDataAsList(Wi.class);
+		System.out.println("wait sync market app size："+ wiList.size());
+		System.out.println("==========2");
+
 	}
 
 }
