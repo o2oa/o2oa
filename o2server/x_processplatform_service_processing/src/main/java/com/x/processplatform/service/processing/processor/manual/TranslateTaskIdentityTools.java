@@ -40,7 +40,7 @@ public class TranslateTaskIdentityTools {
 		// nothing
 	}
 
-	private static Logger logger = LoggerFactory.getLogger(TranslateTaskIdentityTools.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TranslateTaskIdentityTools.class);
 
 	/* 计算manual节点中所有的待办，全部翻译成Identity */
 	public static TaskIdentities translate(AeiObjects aeiObjects, Manual manual) throws Exception {
@@ -109,12 +109,15 @@ public class TranslateTaskIdentityTools {
 			AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<String> list = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(manual.getTaskScript())) || (StringUtils.isNotEmpty(manual.getTaskScriptText()))) {
-			Object o = aeiObjects.business().element()
-					.getCompiledScript(aeiObjects.getWork().getApplication(), manual, Business.EVENT_MANUALTASK)
-					.eval(aeiObjects.scriptContext());
-			if (null != o) {
-				addObjectToTaskIdentities(taskIdentities, units, groups, o);
-			}
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					manual, Business.EVENT_MANUALTASK);
+			JsonScriptingExecutor.jsonElement(cs, aeiObjects.scriptContext(), o -> {
+				try {
+					addObjectToTaskIdentities(taskIdentities, units, groups, o);
+				} catch (Exception e) {
+					LOGGER.error(e);
+				}
+			});
 		}
 		return list;
 	}
@@ -151,7 +154,8 @@ public class TranslateTaskIdentityTools {
 		}
 	}
 
-	public static List<String> asDistinguishedNames(Object o) throws Exception {
+	public static List<String> asDistinguishedNames(Object o)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		List<String> list = new ArrayList<>();
 		if (null != o) {
 			if (o instanceof CharSequence) {
