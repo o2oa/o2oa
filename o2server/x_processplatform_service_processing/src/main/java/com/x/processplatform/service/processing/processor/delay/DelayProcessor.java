@@ -5,14 +5,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import javax.script.CompiledScript;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.tools.DateTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Delay;
@@ -98,32 +102,22 @@ public class DelayProcessor extends AbstractDelayProcessor {
 	}
 
 	private Date untilDelayScript(AeiObjects aeiObjects, Delay delay) throws Exception {
-		Object o = aeiObjects.business().element()
-				.getCompiledScript(aeiObjects.getWork().getApplication(), delay, Business.EVENT_DELAY)
-				.eval(aeiObjects.scriptContext());
-		if (null != o) {
-			if (o instanceof Date) {
-				return (Date) o;
-			} else {
-				if (o instanceof String) {
-					return DateTools.parse(o.toString());
-				}
-			}
-		}
-		return null;
+		CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+				delay, Business.EVENT_DELAY);
+		return DateTools.parse(JsonScriptingExecutor.evalString(cs, aeiObjects.scriptContext()));
 	}
 
 	private Integer minute(AeiObjects aeiObjects, Delay delay) throws Exception {
 		if (null != delay.getDelayMinute()) {
 			return delay.getDelayMinute();
 		} else if (StringUtils.isNotEmpty(delay.getDelayDataPath())) {
-			return Integer.parseInt(Objects.toString(aeiObjects.getData().find(delay.getDelayDataPath()), ""));
+			return NumberUtils.createFloat(Objects.toString(aeiObjects.getData().find(delay.getDelayDataPath()), "0"))
+					.intValue();
 		} else if (StringUtils.isNotEmpty(delay.getDelayScript())
 				|| StringUtils.isNotEmpty(delay.getDelayScriptText())) {
-			Object o = aeiObjects.business().element()
-					.getCompiledScript(aeiObjects.getWork().getApplication(), delay, Business.EVENT_DELAY)
-					.eval(aeiObjects.scriptContext());
-			return Integer.parseInt(Objects.toString(o, ""));
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					delay, Business.EVENT_DELAY);
+			return JsonScriptingExecutor.evalInteger(cs, aeiObjects.scriptContext());
 		}
 		return null;
 	}

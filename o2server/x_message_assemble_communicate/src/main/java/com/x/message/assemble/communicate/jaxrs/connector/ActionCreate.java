@@ -37,7 +37,7 @@ import com.x.message.core.entity.Message;
 
 class ActionCreate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
 	private static ConcurrentMap<String, CompiledScript> scriptMap = new ConcurrentHashMap<>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
@@ -71,16 +71,16 @@ class ActionCreate extends BaseAction {
 								}
 							}
 							if (compiledScript != null) {
-								ScriptContext scriptContext = new SimpleScriptContext();
+								ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
 								Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-								bindings.put("body", body);
-								bindings.put("message", cpwi);
+								bindings.put(ScriptingFactory.BINDING_NAME_BODY, body);
+								bindings.put(ScriptingFactory.BINDING_NAME_MESSAGE, cpwi);
 								Object o = compiledScript.eval(scriptContext);
 								cpwi.setBody(body);
 								if (o != null) {
 									if (o instanceof Boolean) {
 										if (!((Boolean) o).booleanValue()) {
-											logger.info("消息类型{}.{}的消息[{}]不满足发送条件，跳过...", wi.getType(), consumer,
+											LOGGER.info("消息类型{}.{}的消息[{}]不满足发送条件，跳过...", wi.getType(), consumer,
 													wi.getTitle());
 											continue;
 										}
@@ -89,7 +89,7 @@ class ActionCreate extends BaseAction {
 							}
 						}
 					} catch (Exception e) {
-						logger.warn("执行消息发送脚本[{}]方法异常:{}", func, e.getMessage());
+						LOGGER.warn("执行消息发送脚本[{}]方法异常:{}", func, e.getMessage());
 					}
 					Message message = null;
 					switch (Objects.toString(consumer, "")) {
