@@ -87,10 +87,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
      * @return {MWF.xApplication.process.Xform.Source|MWF.xApplication.process.Xform.SubSource|MWF.xApplication.process.Xform.SubSourceItem}。
      * @example
      * var source = this.target.getSource(); //获取当前组件的所在子上级数据源/子数据源/子数项组件.
-     * var data = source.data; //获取数据源的值
+     * var data = source.data; //获取数据
      *
      * var source = this.form.get("fieldId").getSource("source"); //获取数据源组件
-     * var data = source.data; //获取数据源的值
+     * var data = source.data; //获取数据
      */
     getSource: function( type ){
         if( type ){
