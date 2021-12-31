@@ -256,6 +256,7 @@
                 if (json && json.data && json.data.id) {
                   $("android_version").set("text", "当前最新版本："+json.data.appVersionName);
                   var downloadUrl = o2.Actions.getHost("x_program_center") + "/x_program_center/jaxrs/apppackanony/pack/info/file/download/" + json.data.id;
+                  downloadUrl = o2.filterUrl(downloadUrl);
                   $("android_download_link").set("href", downloadUrl);
                 } else {
                   $("android_box").setStyles({ display: "none" });

@@ -789,6 +789,22 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				if( !this._completeLineEdit() )return;
 			}
 			line.changeEditMode(true);
+
+			/**
+			 * 数据表格当前正在编辑的条目，当数据表格为“同时编辑多行”时无此属性。
+			 * @member {MWF.xApplication.process.Xform.DatatablePC.Line | MWF.xApplication.process.Xform.DatatableMobile.Line | Null}
+			 * @example
+			 * //获取数据表格“dt1”的正在编辑的条目。
+			 * var line = this.form.get("dt1").currentEditedLine;
+			 * //获取数据
+			 * var data = line.getData();
+			 * //设置数据
+			 * line.setData({"subject":"111"});
+			 * //获取subject字段的值
+			 * var data = line.get("subject").getData();
+			 * //设置subject字段的值
+			 * line.get("subject").setData("test1");
+			 */
 			this.currentEditedLine = line;
 		},
 
