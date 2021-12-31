@@ -75,6 +75,12 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
                 data = data[p];
             }.bind(this));
         }
+        /**
+         * @summary 该属性获取当前子数据源的数据，当所在上级数据源加载完成后才有值。
+         * @member {Array|Object|String|Number|Boolean|Null}
+         * @example
+         * var field = this.form.get("fieldId").data; //获取子数据源数据
+         */
         this.data = data;
     },
     _loopSub: function(dom, i){
