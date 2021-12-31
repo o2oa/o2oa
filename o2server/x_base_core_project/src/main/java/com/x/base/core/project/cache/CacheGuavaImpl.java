@@ -38,7 +38,6 @@ public class CacheGuavaImpl implements Cache {
 	@Override
 	public void shutdown() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
