@@ -26,7 +26,6 @@
 		"width": "18px",
 		"height": "2px",
 		"opacity": 0.5,
-		"display": "inline-block",
 		"background": "#ffa200"
 	},
 	"moduleNode": {
@@ -43,8 +42,7 @@
 		"position": "static",
 		"top": "auto",
 		"left": "auto",
-		"opacity": 1,
-		"display": "inline-block"
+		"opacity": 1
 	},
 	"moduleNodeError": {
 		"border-radius": "5px",
@@ -62,8 +60,7 @@
 		"position": "static",
 		"top": "auto",
 		"left": "auto",
-		"opacity": 1,
-		"display": "inline-block"
+		"opacity": 1
 	},
 	"buttonIcon": {
 		"height": "26px",

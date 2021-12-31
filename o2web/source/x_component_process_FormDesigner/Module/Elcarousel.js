@@ -16,16 +16,23 @@ MWF.xApplication.process.FormDesigner.Module.Elcarousel = MWF.FCElcarousel = new
 	_createElementHtml: function(){
 
 		var html = "<el-carousel";
-		html += " :height=\"height\"";
-		html += " :initial-index=\"initialIndex\"";
-		html += " :trigger=\"trigger\"";
-		html += " :autoplay=\"autoplay\"";
-		html += " :interval=\"interval\"";
-		html += " :indicator-position=\"indicatorPosition\"";
-		html += " :arrow=\"arrow\"";
+		html += " height="+ (this.json.height ? (this.json.height+"px") : "");
+		html += " initial-index=1";
+		html += " indicator-position=\"outside\"";
+		html += " arrow=\"always\"";
+		html += " interval=30000";
 		html += " :type=\"carouselType\"";
-		html += " :loop=\"loop\"";
+		html += " loop";
 		html += " :direction=\"direction\"";
+		// html += " :initial-index=\"initialIndex\"";
+		// html += " :trigger=\"trigger\"";
+		// html += " :autoplay=\"autoplay\"";
+		// html += " :interval=\"interval\"";
+		// html += " :indicator-position=\"indicatorPosition\"";
+		// html += " :arrow=\"arrow\"";
+		// html += " :type=\"carouselType\"";
+		// html += " :loop=\"loop\"";
+		// html += " :direction=\"direction\"";
 
 		if (this.json.elProperties){
 			Object.keys(this.json.elProperties).forEach(function(k){
@@ -38,8 +45,9 @@ MWF.xApplication.process.FormDesigner.Module.Elcarousel = MWF.FCElcarousel = new
 		if (this.json.vueSlot){
 			html += this.json.vueSlot;
 		}else{
-			html += "<el-carousel-item>";
-			html += 	"<h3 class=\"medium\">1</h3>";
+			var lineHeight = this.json.height ? ( "line-height:"+this.json.height + "px;") : "";
+			html += "<el-carousel-item v-for='item in 3' :key='item'>";
+			html += 	"<div style=\"text-align: center;"+lineHeight+"\">"+this.json.id+"</div>";
 			html += "</el-carousel-item>";
 		}
 
@@ -57,24 +65,19 @@ MWF.xApplication.process.FormDesigner.Module.Elcarousel = MWF.FCElcarousel = new
 	},
 	_getCopyNode: function(){
 		if (!this.copyNode) this._createCopyNode();
-		this.copyNode.setStyle("display", "inline-block");
+		// this.copyNode.setStyle("display", "inline-block");
 		return this.copyNode;
 	},
-	// _setEditStyle_custom: function(name){
-	// 	switch (name){
-	// 		case "name": this.setPropertyName(); break;
-	// 		case "id":
-	// 		case "text":
-	// 		case "size":
-	// 		case "buttonType":
-	// 		case "vueSlot":
-	// 			if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
-	// 		case "showButton":
-	// 		case "splitButton":
-	// 			if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
-	// 		default: break;
-	// 	}
-	// },
+	_setEditStyle_custom: function(name){
+		switch (name){
+			case "name": this.setPropertyName(); break;
+			case "id":
+			case "height":
+			case "vueSlot":
+				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
+			default: break;
+		}
+	},
 	setPropertyName: function(){
 		// if (this.json.name){
 		// 	var input = this.node.getElement("input");

@@ -1366,7 +1366,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "carouselTypeValue": ["默认","卡片"],
         "loop": "是否循环",
         "direction": "展示方向",
-        "directionValue": ["水平","垂直"]
+        "directionValue": ["水平","垂直"],
+        "hotpicture": "热点图片",
+        "page": "页数",
+        "filterParameter": "过滤参数"
+
     },
     "smartbi":{
         "nosetup":"请先安装SmartBI应用",
