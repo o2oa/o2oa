@@ -320,6 +320,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
                     this.apppackPublishStatusInfoNode.set("text",  this.lp.mobile_apppack_publish_status_completed);
                      // 发布完成，显示下载按钮
                     var url = o2.Actions.getHost("x_program_center") + "/x_program_center/jaxrs/apppack/pack/info/file/download/" + this.packInfo.appFile.id ;
+                    url = o2.filterUrl(url);
                     this.apppackDownloadLinkNode.set("href", url);
                     this.apppackDownloadShowNode.setStyles({
                         "display": ""
