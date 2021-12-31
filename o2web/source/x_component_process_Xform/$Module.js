@@ -81,6 +81,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
          */
         this.parentLine = null;
     },
+
     _getSource: function(){
         var parent = this.node.getParent();
         while(parent && (
