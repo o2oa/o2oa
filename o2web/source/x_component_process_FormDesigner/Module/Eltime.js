@@ -14,7 +14,6 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 		this.moduleName = "eltime";
 	},
 	_createElementHtml: function() {
-		debugger;
 		if (this.json.timeSelectType === "select"){
 			// if (this.json.isRange ) {
 			// 	return this.createSelectRangeElementHtml();
