@@ -48,8 +48,11 @@
     <div title="{{$.lp.service}}" class="MWFTab">
         <div style="background-color: #f1f1f1; height: 20px; padding: 5px; line-height: 20px"><b>{{$.lp.serviceResponseScript}}</b></div>
         <div class="MWFScript" name="script"></div>
-        <div class="MWFScriptText" name="scriptText"></div><hr/>
-        <div style="line-height: 24px; padding: 2px 5px;">{{$.lp.responseInfo}}</div>
+        <div class="MWFScriptText" name="scriptText" data-o2-api="../api/server.module_request.html#server.module_request"></div><hr/>
+        <div style="padding: 5px; margin-top: 5px; line-height:20px; border-top: 1px solid #cccccc">
+            <div style="line-height: 24px; padding: 2px 5px;">{{$.lp.responseInfo}}</div>
+            <a href="../api/server.module_request.html#server.module_request" target="_blank">{{$.lp.apiDoc}}</a>
+        </div>
     </div>
     <div title="{{$.lp.event}}"  class="MWFTab" data-o2-advanced="yes">
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">

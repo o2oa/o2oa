@@ -239,9 +239,17 @@
                 </tr>
             </table>
             <div class="MWFScriptText" name="taskExpireScriptText"></div><hr />
-            <div style="margin: 5px;">{{$.lp.specifyTimeoutTime}}: <br>this.expire.setDate([Date or String] date)</div>
-            <div style="margin: 5px;">{{$.lp.setTimeoutAfterHours}}: <br>this.expire.setHour([Int] hour)</div>
-            <div style="margin: 5px;">{{$.lp.setTimeoutAfterWorkHours}}：<br>this.expire.setWorkHour([Int] hour)</div>
+            <div style="padding: 5px">
+                <div style="margin: 5px;">{{$.lp.returnJson}}: <br>
+                    return {hour: 3}  <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourTimeout}}}<br>
+                    return {workHour: 5}   <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourWorkTimeout}}}<br>
+                    return {date: '2016-08-01'}    <span>&nbsp;&nbsp;</span>//{{$.lp.specifyTimeout}}}<br>
+                    {{$.lp.oneOfThree}}</div>
+                <div><a href="../api/server.module_expire.html#server.module_expire" target="_blank">{{$.lp.apiDoc}}</a></div>
+            </div>
+<!--            <div style="margin: 5px;">{{$.lp.specifyTimeoutTime}}: <br>this.expire.setDate([Date or String] date)</div>-->
+<!--            <div style="margin: 5px;">{{$.lp.setTimeoutAfterHours}}: <br>this.expire.setHour([Int] hour)</div>-->
+<!--            <div style="margin: 5px;">{{$.lp.setTimeoutAfterWorkHours}}：<br>this.expire.setWorkHour([Int] hour)</div>-->
         </div>
 
     </div>
