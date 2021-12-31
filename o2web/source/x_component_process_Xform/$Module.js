@@ -80,6 +80,29 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
          */
         this.parentLine = null;
     },
+    /**
+     * 当前组件在数据源组件中时，可以通过此方法获取所在的上级数据源/子数据源/子数项组件.
+     * @param {String} [type] 需要获取的类型，"source"为表示数据源,"subSource"表示子数据源,"subSourceItem"表示子数据项组件。
+     * 如果该参数省略，则获取离当前组件最近的上述组件。
+     * @return {MWF.xApplication.process.Xform.Source|MWF.xApplication.process.Xform.SubSource|MWF.xApplication.process.Xform.SubSourceItem}。
+     * @example
+     * var source = this.target.getSource(); //获取当前组件的所在子上级数据源/子数据源/子数项组件.
+     * var data = source.data; //获取数据源的值
+     *
+     * var source = this.form.get("fieldId").getSource("source"); //获取数据源组件
+     * var data = source.data; //获取数据源的值
+     */
+    getSource: function( type ){
+        if( type ){
+            var parent = this.node.getParent();
+            while(parent && parent.get("MWFtype")!= type ){
+                parent = parent.getParent();
+            }
+            return (parent) ? parent.retrieve("module") : null;
+        }else{
+            return this._getSource();
+        }
+    },
     _getSource: function(){
         var parent = this.node.getParent();
         while(parent && (
