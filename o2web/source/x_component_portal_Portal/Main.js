@@ -79,6 +79,8 @@ MWF.xApplication.portal.Portal.Main = new Class({
         MWF.release(this.appForm);
         this.appForm = null;
         this.formNode.empty();
+
+        this.portal = null;
         this.loadPortal(par);
     },
     doHistory: function(name, portal){
