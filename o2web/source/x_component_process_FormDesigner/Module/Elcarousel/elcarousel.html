@@ -143,7 +143,57 @@
 				}; </div>
 			<div class="MWFFormulaArea" name="filterScript" title="{{$.lp.filterParameter}}"></div>
 		</div>
-		<div id="text{$.pid}source" class="MWFElTDropdownData" name="dataJson" style="display: text{($.dataType=='script')?'none':''}"></div>
+		<div id="text{$.pid}source" style="display: text{($.dataType=='source')?'':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.method}}:</td>
+					<td class="editTableValue">
+						<select name="httpMethod" onchange="var i=this.selectedIndex; if (i==1 || i==2 || i==3){$('text{$.pid}requestBodyArea').setStyle('display', 'block');}else{$('text{$.pid}requestBodyArea').setStyle('display', 'none');}">
+							<option value="GET" text{($.httpMethod=='GET')?'selected':''}>GET</option>
+							<option value="POST" text{($.httpMethod=='POST')?'selected':''}>POST</option>
+							<option value="PUT" text{($.httpMethod=='PUT')?'selected':''}>PUT</option>
+							<option value="PATCH" text{($.httpMethod=='PATCH')?'selected':''}>PATCH</option>
+							<option value="OPTIONS" text{($.httpMethod=='OPTIONS')?'selected':''}>OPTIONS</option>
+							<option value="HEAD" text{($.httpMethod=='HEAD')?'selected':''}>HEAD</option>
+							<option value="DELETE" text{($.httpMethod=='DELETE')?'selected':''}>DELETE</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div id="text{$.pid}sourceO2Area" style="display: text{($.sourceType!='other')?'block':'none'}">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">{{$.lp.applicationService}}:</td>
+						<td class="editTableValue"><div class="MWFContextRoot" name="contextRoot">
+							<select></select>
+							<select style="display: none"></select><br/>
+							<select style="display: none"></select>
+							<input style="display: none" type="text" name="selectPath" value="text{$.selectPath}" class="editTableInput"/>
+						</div></td>
+					</tr>
+				</table>
+			</div>
+
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.path}}:</td>
+					<td class="editTableValue"><input type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
+				</tr>
+			</table>
+			<div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center;">{{$.lp.parameter}}</div>
+			<div class="MWFParameterArea" name="parameters"></div>
+
+			<div id="text{$.pid}requestBodyArea" style="display: text{($.httpMethod=='PUT' || $.httpMethod=='POST' || $.httpMethod=='PATCH')?'block':'none'}">
+				<div class="MWFFormulaArea" name="requestBody" title="{{$.lp.requestBody}}"></div>
+			</div>
+
+			<div class="MWFSourceTestRestful">
+				<div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center; cursor:pointer">{{$.lp.test}}</div>
+				<div style="margin: 10px; text-align:center"></div>
+			</div>
+
+
+		</div>
 		<div id="text{$.pid}dataScript" style="display: text{($.dataType=='script')?'':'none'}">
 			<div style="padding: 5px;">脚本返回选项数组，格式如下：<br/>return [{ <br/>
 				  "label" : "", //显示的文本, string<br/>
