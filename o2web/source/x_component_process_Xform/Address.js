@@ -107,9 +107,14 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
             }
         }.bind(this));
     },
-    _searchOptions: function(value, callback){
+    _searchOptions: function(value, callback, comboxValueObject){
         value = value.toLowerCase();
-        var i = (this.combox.editItem) ? this.combox.editItem.getItemPosition() : this.combox.values.length;
+        var i;
+        if( comboxValueObject ){
+            i = comboxValueObject.index;
+        }else{
+            i = (this.combox.editItem) ? this.combox.editItem.getItemPosition() : this.combox.values.length;
+        }
         debugger;
         if(this.json.selectRange==="province"){
             if( i > 0 ){

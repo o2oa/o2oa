@@ -25,7 +25,7 @@ o2.widget.Combox = new Class({
         //this.lastValue();
         this.load();
     },
-    getSelectList: function(value, callback){
+    getSelectList: function(value, callback, comboxValueObject){
         var list = [];
 
         if (this.options.list.length){
@@ -50,7 +50,7 @@ o2.widget.Combox = new Class({
                 }
 
                 if (callback) callback(list);
-            }.bind(this));
+            }.bind(this), comboxValueObject);
             //var methodValues = this.options.optionsMethod(value);
         }else{
             if (callback) callback(list);
@@ -325,7 +325,7 @@ o2.widget.Combox.Value = new Class({
                     this.value = list[0].text;
                 }
                 if (callback) callback();
-            }.bind(this));
+            }.bind(this), this );
         }else{
             if (callback) callback();
         }
