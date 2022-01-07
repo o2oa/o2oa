@@ -10,4 +10,9 @@ MWF.xApplication.process.workcenter.LP = {
 	"expire1": "Task deadline: {time}",
 	"expire2": "The task is about to time out. Deadline:{time}",
 	"expire3": "The task has timed out. Deadline:{time}",
+
+	"firstPage": "First Page",
+	"lastPage": "Last Page",
+
+	"process": "Flow"
 };

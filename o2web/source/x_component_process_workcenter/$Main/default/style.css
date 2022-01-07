@@ -307,6 +307,16 @@
     overflow: hidden;
 }
 
+.processNode{
+    height: 300px;
+    width: 600px;
+    padding: 10px;
+    background-color: #FFF;
+    overflow: hidden;
+}
+
+
+
 @font-face {
     font-family: 'o2taskcenter';
     src:

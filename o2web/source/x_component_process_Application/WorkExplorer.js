@@ -900,13 +900,13 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
 
         MWF.require("MWF.xDesktop.Dialog", function(){
             var width = 560;
-            var height = 260;
+            var height = 210;
             var p = MWF.getCenterPosition(this.explorer.app.content, width, height);
 
             var _self = this;
             var dlg = new MWF.xDesktop.Dialog({
                 "title": lp.reroute,
-                "style": "work",
+                "style": "user",
                 "top": p.y-100,
                 "left": p.x,
                 "fromTop": p.y-100,
@@ -916,13 +916,27 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
                 "url": this.explorer.app.path+"reroute.html",
                 "container": this.explorer.app.content,
                 "isClose": true,
+                "buttonList": [
+                    {
+                        "type": "ok",
+                        "text": MWF.LP.process.button.ok,
+                        "action": function (d, e) {
+                            this.doRerouteWork(dlg);
+                        }.bind(this)
+                    },
+                    {
+                        "type": "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () { dlg.close(); }
+                    }
+                ],
                 "onPostShow": function(){
-                    $("rerouteWork_okButton").addEvent("click", function(){
-                        _self.doRerouteWork(this);
-                    }.bind(this));
-                    $("rerouteWork_cancelButton").addEvent("click", function(){
-                        this.close();
-                    }.bind(this));
+                    // $("rerouteWork_okButton").addEvent("click", function(){
+                    //     _self.doRerouteWork(this);
+                    // }.bind(this));
+                    // $("rerouteWork_cancelButton").addEvent("click", function(){
+                    //     this.close();
+                    // }.bind(this));
 
                     var select = $("rerouteWork_selectActivity");
                     _self.explorer.actions.getRerouteTo(_self.data.process, function(json){
@@ -1480,13 +1494,14 @@ MWF.xApplication.process.Application.WorkExplorer.Task = new Class({
         }.bind(this));
     },
     flow: function(e){
+        debugger;
         this.node.setStyles(this.css.taskItemNode_action);
-        this.processNode = new Element("div", {"styles": this.css.taskItemFlowNode}).inject(this.explorer.app.content);
-        this.processNode.setStyles({"overflow":"auto"});
+        this.processNode = new Element("div").inject(this.explorer.app.content);
+        //this.processNode.setStyles({"overflow":"auto"});
 
         MWF.require("MWF.xDesktop.Dialog", function(){
-            var width = 560;
-            var height = 400;
+            var width = 600;
+            var height = 430;
             var size = this.explorer.app.content.getSize();
             var x = size.x/2-width/2;
             var y = size.y/2-height/2;
@@ -1501,20 +1516,43 @@ MWF.xApplication.process.Application.WorkExplorer.Task = new Class({
             if (y<0) y = 0;
 
             var dlg = new MWF.xDesktop.Dialog({
-                "title": "",
-                "style": "application",
+                "title": this.explorer.app.lp.flow,
+                //"style": "application",
+                "style": "user",
                 "top": y,
                 "left": x-20,
                 "fromTop":y,
                 "fromLeft": x-20,
                 "width": width,
                 "height": height,
+                "isResize": false,
                 "content": this.processNode,
                 "container": this.explorer.app.content,
+                "isClose": true,
+                "buttonList": [
+                    {
+                        "type": "ok",
+                        "text": MWF.LP.process.button.ok,
+                        "action": function (d, e) {
+                            debugger;
+                            if (this.processor) this.processor.okButton.click();
+                        }.bind(this)
+                    },
+                    {
+                        "type": "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () {
+                            this.close();
+                        }
+                    }
+                ],
+                "onPostClose": function(){
+                    this.node.setStyles(this.css.taskItemNode);
+                }.bind(this),
                 "onPostShow": function(){
                     var _self = this;
                     MWF.xDesktop.requireApp("process.Work", "Processor", function(){
-                        new MWF.xApplication.process.Work.Processor(this.processNode, this.data, {
+                        _self.processor = new MWF.xApplication.process.Work.Processor(this.processNode, this.data, {
                             "style": "task",
                             "isManagerProcess" : true,
                             "onCancel": function(){
