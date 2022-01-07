@@ -1036,7 +1036,7 @@ bind.service = {
 /**
  * 用于服务管理的接口脚本，描述服务的响应对象。<br>
  * @o2range 服务管理-接口
- * @module server.response
+ * @module server.service.response
  * @o2category server.service
  * @o2ordernumber 245
  * @o2syntax
@@ -1046,9 +1046,11 @@ var response = {
     /**
      * @summary 服务返回一个303跳转。
      * @method seeOther
-     * @methodOf service.module:response
+     * @methodOf service.service.module:response
      * @static
      * @param {String} [url] 跳转的url。
+     * @o2syntax
+     * this.response.seeOther(url);
      */
     seeOther: function(url){
         bind.java_customResponse.seeOther(url);
@@ -1056,9 +1058,11 @@ var response = {
     /**
      * @summary 服务返回一个301跳转。
      * @method redirect
-     * @methodOf service.module:response
+     * @methodOf service.service.module:response
      * @static
      * @param {String} [url] 跳转的url。
+     * @o2syntax
+     * this.response.temporaryRedirect(url);
      */
     redirect: function(url){
         bind.java_customResponse.temporaryRedirect(url);
@@ -1066,10 +1070,18 @@ var response = {
     /**
      * @summary 服务返回一个301跳转。
      * @method setBody
-     * @methodOf service.module:response
+     * @methodOf service.service.module:response
      * @static
      * @param {String|Object} [body] 响应内容，文本或json对象。
      * @param {String} [contentType] 响应头的Content-Type。
+     * @o2syntax
+     * this.response.setBody(body, contentType);
+     * @example
+     * //设置json格式的响应内容
+     * this.response.setBody({
+     *     "key1": "value1",
+     *     "key2": "value2"
+     * }, "application/json");
      */
     setBody: function(body, contentType){
         var o = body;
@@ -1107,7 +1119,7 @@ var o= {
     /**
      * 用于数据中心查询语句的脚本中，可获取语句参数。json对象，在调用此语句的时候传入<br>
      * @o2range 数据中心-查询配置-通过脚本创建查询语句
-     * @module server.parameters
+     * @module server.service.parameters
      * @o2category server.service
      * @o2ordernumber 255
      * @o2syntax

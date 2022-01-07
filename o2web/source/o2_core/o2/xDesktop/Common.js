@@ -809,3 +809,12 @@ MWF.org = {
 //         "method": "get"
 //     }).send();
 // }
+
+o2.openWindow = function(url){
+    var a = new Element("a", {
+        "target": "_blank",
+        "href": url
+    });
+    a.click();
+    a.destroy();
+}

@@ -235,7 +235,7 @@
             </table>
         </div>
 
-        <div id="text{$.id}expireTypeScriptEditArea" style="display: text{($.expireType=='script')?'block':'none'}; margin-top: 5px;">
+        <div id="text{$.id}expireTypeScriptEditArea" style="display: text{($.expireType=='script')?'block':'none'}; margin-top: 5px; padding: 5px">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
                     <td class="editTableTitle">{{$.lp.script}}:</td>
@@ -244,14 +244,13 @@
                     </td>
                 </tr>
             </table>
-            <div class="MWFScriptText" name="expireScriptText"></div><hr />
+            <div class="MWFScriptText" name="expireScriptText" data-o2-api="../api/server.module_expire.html#server.module_expire"></div><hr />
             <div style="margin: 5px;">{{$.lp.returnJson}}: <br>
-                {<br>
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>hour: 3  <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourTimeout}}<br>
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>workHour: 5   <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourWorkTimeout}}<br>
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>date: '2016-08-01'    <span>&nbsp;&nbsp;</span>//{{$.lp.specifyTimeout}}<br>
-                }<br>
+                return {hour: 3}  <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourTimeout}}}<br>
+                return {workHour: 5}   <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourWorkTimeout}}}<br>
+                return {date: '2016-08-01'}    <span>&nbsp;&nbsp;</span>//{{$.lp.specifyTimeout}}}<br>
                 {{$.lp.oneOfThree}}</div>
+            <div><a href="../api/server.module_expire.html#server.module_expire" target="_blank">{{$.lp.apiDoc}}</a></div>
         </div>
 
     </div>

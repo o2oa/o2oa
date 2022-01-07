@@ -430,6 +430,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             o2.require("o2.widget.ScriptArea", function () {
                 this.scriptEditor = new o2.widget.ScriptArea(this.scriptArea, {
                     "isbind": false,
+                    "api": "../api/server.service.module_parameters.html#server.service.module_parameters",
                     "maxObj": this.designer.designNode,
                     "title": this.designer.lp.scriptTitle,
                     "type": "service",
