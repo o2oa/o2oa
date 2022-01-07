@@ -147,7 +147,40 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 			}
 		}).inject(this.actionNode);
 	},
+	copyStyles: function(from){
+		var json = this.data.styles;
+		Object.each(from, function(style, key){
+			json[key] = style;
+		}.bind(this));
+	},
+	removeStyles: function(from){
+		var json = this.data.styles;
+		Object.each(from, function(style, key){
+			if (json[key] && json[key]==style){
+				delete json[key];
+			}
+		}.bind(this));
+	},
 	editItemProperties: function(){
+
+		var defaultStyles = {
+			"img": {
+				"height": "100%",
+					"width":"100%"
+			},
+			"text": {
+				"line-height":"30px",
+					"height": "30px",
+					"width": "100%",
+					"text-align": "center",
+					"position": "absolute",
+					"bottom":"0px",
+					"left":"0px",
+					"color":"#fff",
+					"background": "rgba(104, 104, 104, 0.5)"
+			}
+		};
+
 		if (this.tree.currentEditNode!=this){
 			if (this.tree.currentEditNode) this.tree.currentEditNode.completeItemProperties();
 
@@ -178,6 +211,9 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 							radio_type_2.checked = false;
 							this.setTitle();
 							this.srcScriptTr.setStyle("display", "");
+							this.removeStyles( defaultStyles.text );
+							this.copyStyles( defaultStyles.img );
+							this.maplist.reload(this.data.styles);
 						}.bind(this)
 					}
 				}).inject( div );
@@ -188,10 +224,14 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 					"checked" : this.data.type === "text",
 					"events" : {
 						"click": function () {
+							debugger;
 							this.data.type = "text";
 							radio_type_1.checked = false;
 							this.setTitle();
 							this.srcScriptTr.setStyle("display", "none");
+							this.removeStyles( defaultStyles.img );
+							this.copyStyles( defaultStyles.text );
+							this.maplist.reload(this.data.styles);
 						}.bind(this)
 					}
 				}).inject( div );
@@ -213,15 +253,18 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				}).inject(td);
 
 				//styles
+				debugger;
+				if( !Object.keys(this.data.styles).length ){
+					this.data.styles = Object.clone( defaultStyles[ this.data.type ] );
+				}
 				var tr = new Element("tr").inject(this.propertyTable);
 				td = new Element("td", { "colspan": "2" }).inject(tr);
 				MWF.require("MWF.widget.Maplist", function() {
-					var maplist = new MWF.widget.Maplist(td, {
+					var maplist = this.maplist = new MWF.widget.Maplist(td, {
 						"title": "样式",
 						"collapse": false,
 						"onChange": function () {
-							var data = maplist.toJson();
-							this.data.styles = data;
+							this.data.styles = maplist.toJson();
 						}.bind(this),
 						"onDelete": function (key) {
 							if (this.data.styles && this.data.styles[key]) {
