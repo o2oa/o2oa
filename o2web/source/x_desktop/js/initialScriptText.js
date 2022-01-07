@@ -2990,7 +2990,7 @@ bind.workContext = {
      * var work = this.workContext.getWork();
      */
     "getWork": function(){  //work的字符串
-        var work = SON.parse(bind.java_workContext.getWork());
+        var work = JSON.parse(bind.java_workContext.getWork());
         work.creatorPersonDn = work.creatorPerson ||"";
         work.creatorUnitDn = work.creatorUnit ||"";
         work.creatorUnitDnList = work.creatorUnitList ||"";
