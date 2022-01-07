@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -14,50 +16,72 @@ public class CacheGuavaImpl implements Cache {
 
 	private com.google.common.cache.Cache<String, Object> cache;
 
-	//private CacheGuavaNotifyReceiveQueue notifyReceiveQueue;
+	private CacheGuavaNotifyReceiveQueue notifyReceiveQueue;
 
-	private String application;
+	private String name;
 
-	public CacheGuavaImpl(String application) {
-		this.application = application;
-		cache = com.google.common.cache.CacheBuilder.newBuilder().maximumSize(1000)
-				.expireAfterAccess(30L, TimeUnit.MINUTES).build();
+	public CacheGuavaImpl(String name) {
+		this.name = name;
+		try {
+			cache = com.google.common.cache.CacheBuilder.newBuilder()
+					.maximumSize(Config.cache().getGuava().getMaximumSize()).recordStats()
+					.expireAfterWrite(Config.cache().getGuava().getExpireMinutes(), TimeUnit.MINUTES)
+					.expireAfterAccess(Config.cache().getGuava().getExpireMinutes(), TimeUnit.MINUTES).build();
+			this.notifyReceiveQueue = new CacheGuavaNotifyReceiveQueue(cache);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		LOGGER.debug("new CacheGuavaImpl instance:{}.", this.name);
 	}
 
 	@Override
-	public void put(CacheCategory category, CacheKey key, Object o) throws Exception {
+	public void put(CacheCategory category, CacheKey key, Object o) {
 		cache.put(concrete(category, key), o);
 
 	}
 
 	@Override
-	public Optional<?> get(CacheCategory category, CacheKey key) throws Exception {
+	public Optional<Object> get(CacheCategory category, CacheKey key) {
 		return Optional.ofNullable(cache.getIfPresent(concrete(category, key)));
 	}
 
 	@Override
 	public void shutdown() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void receive(WrapClearCacheRequest wi) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void notify(Class<?> clz, List<Object> keys) throws Exception {
-//		ClearCacheRequest req = new ClearCacheRequest();
-//		req.setType(WrapClearCacheRequest.TYPE_NOTIFY);
-//		req.setClassName(clz.getName());
-//		req.setKeys(keys);
-//		this.notifyReceiveQueue.send(req);
-
+		// nothing
 	}
 
 	private String concrete(CacheCategory category, CacheKey key) {
-		return this.application + "&" + category.toString() + "&" + key.toString();
+		return category.toString() + "&" + key.toString();
+	}
+
+	@Override
+	public void receive(WrapClearCacheRequest wi) {
+		LOGGER.debug("receive:{}.", wi::toString);
+		try {
+			wi.setType(WrapClearCacheRequest.TYPE_RECEIVE);
+			notifyReceiveQueue.send(wi);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	@Override
+	public void notify(Class<?> clz, List<Object> keys) {
+		LOGGER.debug("notify class:{}, keys:{}.", clz::toString, () -> XGsonBuilder.toJson(keys));
+		try {
+			ClearCacheRequest req = new ClearCacheRequest();
+			req.setType(WrapClearCacheRequest.TYPE_NOTIFY);
+			req.setClassName(clz.getName());
+			req.setKeys(keys);
+			this.notifyReceiveQueue.send(req);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	@Override
+	public String detail() {
+		return this.cache.stats().toString();
 	}
 
 }

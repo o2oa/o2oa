@@ -22,7 +22,14 @@
     "jmxEnable": false,
     "###jmxEnable": "是否启用jmx###"
   },
+  "guava": {
+    "maximumSize": 3000.0,
+    "expireMinutes": 30.0,
+    "###maximumSize": "缓存最大容量,默认值:3000.###",
+    "###expireMinutes": "过期时间,默认值:30.###"
+  },
   "###type": "缓存类型:ehcache,type###",
   "###redis": "redis配置###",
-  "###ehcache": "ehcache配置###"
+  "###ehcache": "ehcache配置###",
+  "###guava": "guava配置###"
 }
