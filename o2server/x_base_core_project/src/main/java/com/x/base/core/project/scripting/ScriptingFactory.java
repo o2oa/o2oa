@@ -45,8 +45,6 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_EFFECTIVEPERSON = "java_effectivePerson";
 
 	public static final String BINDING_NAME_DATA = "data";
-	public static final String BINDING_NAME_BODY = "body";
-	public static final String BINDING_NAME_MESSAGE = "message";
 
 	public static final String BINDING_NAME_SERVICE_RESOURCES = "java_resources";
 	public static final String BINDING_NAME_SERVICE_EFFECTIVEPERSON = "java_effectivePerson";
@@ -56,6 +54,8 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_SERVICE_PARAMETERS = "java_parameters";
 
 	public static final String BINDING_NAME_SERVICE_PERSON = "person";
+	public static final String BINDING_NAME_SERVICE_BODY = "body";
+	public static final String BINDING_NAME_SERVICE_MESSAGE = "message";
 
 	public static ScriptEngine newScriptEngine() {
 		return (new ScriptEngineManager()).getEngineByName(Config.SCRIPTING_ENGINE_NAME);
