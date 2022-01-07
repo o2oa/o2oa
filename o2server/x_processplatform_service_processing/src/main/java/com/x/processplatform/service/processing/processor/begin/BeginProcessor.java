@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -14,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
@@ -28,11 +26,10 @@ import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
-import com.x.processplatform.service.processing.processor.manual.ManualProcessor.ExpireScriptResult;
 
 public class BeginProcessor extends AbstractBeginProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(BeginProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BeginProcessor.class);
 
 	public BeginProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -52,7 +49,12 @@ public class BeginProcessor extends AbstractBeginProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Begin begin) throws Exception {
-		// nothing
+		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScript())
+				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScriptText())) {
+			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
+					aeiObjects.getWork().getApplication(), aeiObjects.getProcess(), Business.EVENT_PROCESSAFTERBEGIN);
+			compiledScript.eval(aeiObjects.scriptContext());
+		}
 	}
 
 	@Override
@@ -72,12 +74,7 @@ public class BeginProcessor extends AbstractBeginProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Begin begin, List<Work> works) throws Exception {
-		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScript())
-				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScriptText())) {
-			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
-					aeiObjects.getWork().getApplication(), aeiObjects.getProcess(), Business.EVENT_PROCESSAFTERBEGIN);
-			compiledScript.eval(aeiObjects.scriptContext());
-		}
+		// nothing
 	}
 
 	@Override
