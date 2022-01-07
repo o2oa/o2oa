@@ -1190,7 +1190,7 @@ MWF.xApplication.process.Work.Processor = new Class({
                 var aIdx = parseInt(a.orderNumber || "9999999");
                 var bIdx = parseInt(b.orderNumber || "9999999");
                 return aIdx - bIdx;
-            }.bind(this));
+            }.bind(this));inputOpinionNode_wide
             this.form.businessData.routeList.each( function(d){
                 d.selectConfigList = JSON.parse(d.selectConfig || "[]");
             }.bind(this));

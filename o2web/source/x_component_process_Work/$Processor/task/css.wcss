@@ -109,6 +109,7 @@
         "background-color": "#e6ecf8"
     },
     "managerProcessNoticeNode" : {
+        "margin-top": "10px",
         "color" : "red"
     },
     "managerLoginNode" : {
@@ -120,6 +121,7 @@
     "buttonsArea": {
         "height": "50px",
         "overflow": "hidden",
+        "display": "none"
     },
 
     "okButton": {

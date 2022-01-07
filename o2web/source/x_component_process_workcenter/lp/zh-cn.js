@@ -12,5 +12,7 @@ MWF.xApplication.process.workcenter.LP = {
 	"expire3": "任务已超时，截至时间：{time}",
 
 	"firstPage": "第一页",
-	"lastPage": "最后一页"
+	"lastPage": "最后一页",
+
+	"process": "继续流转"
 };
