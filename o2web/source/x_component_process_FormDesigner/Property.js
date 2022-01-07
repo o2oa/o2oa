@@ -119,6 +119,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadElCommonPreview();
                     this.loadElTreeData();
                     this.loadElTDropDownData();
+                    this.loadElCarouselContent();
 
                     this.loadSmartBISelect();
 
@@ -185,6 +186,26 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             if (!json) json = [];
             MWF.requireApp("process.FormDesigner", "widget.ElDropdownItemEditor", function(){
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor(node, {
+                    "title": title,
+                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "onChange": function(){
+                    }.bind(this)
+                });
+                treeEditor.load(json);
+            }.bind(this));
+            node.addEvent("keydown", function(e){e.stopPropagation();});
+        }.bind(this));
+    },
+
+    loadElCarouselContent: function(){
+        var arrays = this.propertyContent.getElements(".MWFElCarouselContent");
+        arrays.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var json = this.data[name];
+            if (!json) json = [];
+            MWF.requireApp("process.FormDesigner", "widget.ElCarouselContent", function(){
+                var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElCarouselContent(node, {
                     "title": title,
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "onChange": function(){
