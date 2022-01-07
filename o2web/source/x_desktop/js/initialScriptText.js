@@ -3326,7 +3326,8 @@ bind.parameters = {
      * @param {Any|Array} [value] 要设置的参数值。
      * @o2syntax
      * this.parameters.add(value);
-     * @deprecated 不建议使用，建议return一个数组的方式来设置参数。
+     * @deprecated 不建议使用，建议return一个数组的方式来设置参数。如：
+     * <pre><code class='language-js'>return ["参数1", "参数2", "参数3"];</code></pre>
      */
     "add": function(value){
         try{
@@ -3343,7 +3344,7 @@ bind.parameters = {
     },
     /**
      * @summary jaxrs方式的服务调用活动，“参数脚本”中，使用parameters.put设置参数。
-     * @method add
+     * @method put
      * @methodOf module:server.parameters
      * @static
      * @param {String|Object} [name] 要设置的参数key，或参数json对象。
@@ -3351,7 +3352,11 @@ bind.parameters = {
      * @o2syntax
      * this.parameters.put(name, value);
      * this.parameters.put(obj);
-     * @deprecated 不建议使用，建议return一个json对象的方式来设置参数。
+     * @deprecated 不建议使用，建议return一个json对象的方式来设置参数。如：
+     * <pre><code class='language-js'>return {
+     *     "id": "id value",
+     *     "name": "name value"
+     * };</code></pre>
      */
     "put": function(name, value){
         try{
@@ -3375,6 +3380,7 @@ bind.parameters = {
      * @o2syntax
      * this.parameters.put(name, value);
      * this.parameters.put(obj);
+     * @deprecated 不建议使用
      */
     "remove": function(name){
         try{
@@ -3392,12 +3398,17 @@ bind.parameters = {
  * @module server.body
  * @o2category server.process
  * @o2ordernumber 220
- * @deprecated 不建议使用，建议return一个json对象的方式来设置body。
+ * @deprecated 不建议使用，建议return一个json对象的方式来设置body。如：
+ * <pre><code class='language-js'>return {
+ *     "key1": "value1",
+ *     "key2": "value2",
+ *     "key3": "value3"
+ * };</code></pre>
  * @example
  * //设置jaxrs服务调用的消息体
  * this.body.set({
  *     "key1": "value1",
- *     "key2": "value2"
+ *     "key2": "value2",
  *     "key3": "value3"
  * })
  *
@@ -3411,7 +3422,7 @@ bind.parameters = {
  * </caption>
  * return {
  *      "key1": "value1",
- *     "key2": "value2"
+ *     "key2": "value2",
  *     "key3": "value3"
  * };
  *
@@ -3447,7 +3458,11 @@ bind.body = {
  * @module server.headers
  * @o2category server.process
  * @o2ordernumber 225
- * @deprecated 不建议使用，建议return一个json对象的方式来设置headers。
+ * @deprecated 不建议使用，建议return一个json对象的方式来设置headers。如：
+ * <pre><code class='language-js'>return {
+ *     "Content-Type": "application/x-www-form-urlencoded"，
+ *     "Accept-Language": "en"
+ * };</code></pre>
  * @example
  * //设置jaxrs服务调用的消息头
  * this.headers.put("Content-Type", "application/x-www-form-urlencoded");
@@ -3479,7 +3494,11 @@ bind.headers = {
      * @o2syntax
      * this.headers.put(name, value);
      * this.headers.put(obj);
-     * @deprecated 不建议使用，建议return一个json对象的方式来设置headers。
+     * @deprecated 不建议使用，建议return一个json对象的方式来设置headers。如：
+     * <pre><code class='language-js'>return {
+     *     "Content-Type": "application/x-www-form-urlencoded"，
+     *     "Accept-Language": "en"
+     * };</code></pre>
      */
     "put": function(name, value){
         try{
@@ -3501,6 +3520,7 @@ bind.headers = {
      * @param {String} [name] 要删除的消息头名称。
      * @o2syntax
      * this.headers.remove(name);
+     * @deprecated 不建议使用
      */
     "remove": function(name){
         try{
@@ -3591,7 +3611,7 @@ bind.form = null;
 //java_requestText, 服务活动，请求数据字符串
 /**
  * 用于流程配置的服务活动中的“服务响应脚本”，描述发起服务的请求对象。<br>
- * @o2range 流程配置-服务调用活动中的“响应脚本”
+ * @o2range 流程配置-服务活动中的“响应脚本”
  * @module server.request
  * @o2category server.process
  * @o2ordernumber 235
@@ -3683,6 +3703,8 @@ bind.expire = {
      * @methodOf server.module:expire
      * @static
      * @param {Number} [hour] 超时的小时数。
+     * @deprecated 不建议使用，建议return一个json对象的方式来设置超时时间。如：
+     * <pre><code class='language-js'>return {"hour": 5}</code></pre>
      */
     "setHour": function(hour){
         try{bind.java_expire.setHour(hour);}catch(e){}
@@ -3693,6 +3715,8 @@ bind.expire = {
      * @methodOf server.module:expire
      * @static
      * @param {Number} [hour] 超时的工作小时数。
+     * @deprecated 不建议使用，建议return一个json对象的方式来设置超时时间。如：
+     * <pre><code class='language-js'>return {"workHour": 5}</code></pre>
      */
     "setWorkHour": function(hour){
         try{bind.java_expire.setWorkHour(hour);}catch(e){}
@@ -3705,6 +3729,8 @@ bind.expire = {
      * YYYY-MM-DD HH:mm:SS
      * @param {String} [date] 一个表示日期时间的字符串，按以下格式：
      * <pre><code class="language-js">yyyy-MM-dd HH:mm:ss   //如2021-09-12 18:26:51</code></pre>
+     * @deprecated 不建议使用，建议return一个json对象的方式来设置超时时间。如：
+     * <pre><code class='language-js'>return {"date": "2021-09-12 18:26:51"}</code></pre>
      */
     "setDate": function(date){
         try{bind.java_expire.setDate(date);}catch(e){}
