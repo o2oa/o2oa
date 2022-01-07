@@ -823,7 +823,9 @@ MWF.xApplication.process.Work.Processor = new Class({
         }.bind(this));
 
         this.okButton.addEvent("click", function (ev) {
-            if (layout.mobile) {
+            if (!this.form && this.options.isManagerProcess) {
+                this.submit_withoutForm(ev)
+            }else if (layout.mobile) {
                 this.submit_mobile(ev)
             } else {
                 this.submit_pc(ev)
@@ -1165,6 +1167,75 @@ MWF.xApplication.process.Work.Processor = new Class({
 
             this.fireEvent("submit", array);
         }.bind(this))
+    },
+
+    submit_withoutForm: function (ev) {
+        if (this.hasDecisionOpinion && !this.selectedRouteGroup) {
+            this.routeGroupArea.setStyle("background-color", "#ffe9e9");
+            MWF.xDesktop.notice(
+                "error",
+                {"x": "center", "y": "top"},
+                MWF.xApplication.process.Work.LP.mustSelectRouteGroup,
+                this.routeGroupArea,
+                null,  //{"x": 0, "y": 30}
+                {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+            );
+            return false;
+        }
+
+        if (!this.selectedRoute) {
+            this.routeSelectorArea.setStyle("background-color", "#ffe9e9");
+            MWF.xDesktop.notice(
+                "error",
+                {"x": "center", "y": "top"},
+                MWF.xApplication.process.Work.LP.mustSelectRoute,
+                this.routeSelectorArea,
+                null,  //{"x": 0, "y": 30}
+                {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+            );
+            return false;
+        }
+        var routeName = this.selectedRoute.retrieve("routeName") || this.selectedRoute.get("text");
+        var opinion = this.inputTextarea.get("value");
+        if (opinion === MWF.xApplication.process.Work.LP.inputText) opinion = "";
+        var medias = [];
+        if (this.handwritingFile) medias.push(this.handwritingFile);
+        if (this.soundFile) medias.push(this.soundFile);
+        if (this.videoFile) medias.push(this.videoFile);
+
+        var currentRouteId = this.selectedRoute.retrieve("route");
+        var routeData = this.getRouteData(currentRouteId);
+        if (!opinion && medias.length === 0) {
+            if (routeData.opinionRequired == true) {
+                this.inputTextarea.setStyle("background-color", "#ffe9e9");
+                MWF.xDesktop.notice(
+                    "error",
+                    {"x": "center", "y": "top"},
+                    MWF.xApplication.process.Work.LP.opinionRequired,
+                    this.inputTextarea,
+                    null,  //{"x": 0, "y": 30}
+                    {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+                );
+                return false;
+            }
+        }
+
+        var appandTaskIdentityList = [];
+        this.node.mask({
+            "inject": {"where": "bottom", "target": this.node},
+            "destroyOnHide": true,
+            "style": {
+                "background-color": "#999",
+                "opacity": 0.3,
+                "z-index": 600
+            }
+        });
+
+
+        var array = [routeName, opinion, medias, appandTaskIdentityList, this.orgItems, function () {
+        }];
+
+        this.fireEvent("submit", array);
     },
 
 
