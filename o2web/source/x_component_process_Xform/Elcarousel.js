@@ -105,8 +105,8 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
                 var html = "";
                 this.json.items = json.data;
                 html += "<el-carousel-item v-for='item in items'>";
-                html +=     "<img :src=\"getImageSrc(item.picId)\"  @click=\"clickHotpictureItem($event, item)\" />";
-                html +=     "<div>{{item.text}}</div>";
+                html +=     "<img :src=\"getImageSrc(item.picId)\"  @click=\"clickHotpictureItem($event, item)\" style='height: 100%; width:100%'/>";
+                html +=     "<div style='line-height:30px;height: 30px;width:100%;text-align: center;position: absolute;bottom:0px;left:0px;color:#fff;background: rgba(104, 104, 104, 0.5);'>{{item.title}}</div>";
                 html += "</el-carousel-item>";
                 return html;
             }.bind(this))

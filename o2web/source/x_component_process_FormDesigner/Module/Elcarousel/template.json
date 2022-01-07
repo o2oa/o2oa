@@ -15,6 +15,7 @@
 	"count": "6",
 	"page": "1",
 	"httpMethod": "GET",
+	"contentConfig": [],
 	"vueData": {},
 	"vueMethods": {},
 	"vueCss": {},
