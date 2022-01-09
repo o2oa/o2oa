@@ -176,8 +176,18 @@
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">{{$.lp.path}}:</td>
-					<td class="editTableValue"><input type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
+					<td class="editTableTitle">{{$.lp.servicePath}}:</td>
+					<td class="editTableValue">
+						<div>{{$.lp.servicePathNote}}</div>
+						<input type="text" name="path" value="text{$.path}" class="editTableInput"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.dataItemPath}}:</td>
+					<td class="editTableValue">
+						<div>{{$.lp.dataItemPathNote}}</div>
+						<input type="text" name="dataItemPath" value="text{$.dataItemPath}" class="editTableInput"/>
+					</td>
 				</tr>
 			</table>
 			<div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center;">{{$.lp.parameter}}</div>

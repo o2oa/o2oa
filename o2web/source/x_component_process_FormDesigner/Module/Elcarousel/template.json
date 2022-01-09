@@ -16,6 +16,7 @@
 	"page": "1",
 	"httpMethod": "GET",
 	"contentConfig": [],
+	"dataItemPath": "data",
 	"vueData": {},
 	"vueMethods": {},
 	"vueCss": {},

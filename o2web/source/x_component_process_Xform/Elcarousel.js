@@ -31,6 +31,8 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
     },
     _loadNodeEdit: function(){
         this._createElementHtml().then(function(html){
+            console.log(html);
+            debugger;
             this.json["$id"] = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
             this.node.appendHTML(html, "before");
             var input = this.node.getPrevious();
@@ -57,7 +59,9 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
         // this.parseData();
     },
     _createElementHtml: function() {
-        return this.getItemHtml().then(function ( itemHtml ) {
+        return this.parseItem().then(function ( data ) {
+            var itemHtml = data[0];
+            debugger;
             var html = "<el-carousel";
             html += " :height=\"heightText\"";
             html += " :initial-index=initialIndex";
@@ -92,39 +96,188 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
             return html;
         }.bind(this))
     },
-    getItemHtml: function(){
-        if( this.json.dataType === "hotpicture" ){
+    parseItem: function(){
+        return Promise.all([
+            this.parseItemHtml(),
+            this.parseItemData()
+        ]);
+    },
+    parseItemData: function(){
+        if( this.json.dataType === "hotpicture" ) {
             var obj;
-            if( this.json.filterScript && this.json.filterScript.code){
+            if (this.json.filterScript && this.json.filterScript.code) {
                 obj = this.form.Macro.exec(((this.json.filterScript) ? this.json.filterScript.code : ""), this);
             }
-            if(obj)obj = {};
-            var action = o2.Actions.load("x_hotpic_assemble_control").HotPictureInfoAction.listForPage( this.json.page, this.json.count, obj );
+            if (obj) obj = {};
+            var action = o2.Actions.load("x_hotpic_assemble_control").HotPictureInfoAction.listForPage(this.json.page, this.json.count, obj);
             return action.then(function (json) {
                 // var lineHeight = this.json.height ? ( "line-height:"+this.json.height + "px;") : "";
-                var html = "";
                 this.json.items = json.data;
-                html += "<el-carousel-item v-for='item in items'>";
-                html +=     "<img :src=\"getImageSrc(item.picId)\"  @click=\"clickHotpictureItem($event, item)\" style='height: 100%; width:100%'/>";
-                html +=     "<div style='line-height:30px;height: 30px;width:100%;text-align: center;position: absolute;bottom:0px;left:0px;color:#fff;background: rgba(104, 104, 104, 0.5);'>{{item.title}}</div>";
-                html += "</el-carousel-item>";
-                return html;
+                return this.json.items;
+            }.bind(this))
+        }else if( this.json.dataType === "source" ){
+            return this._getO2Source().then(function (json) {
+                var paths = ( this.json.dataItemPath || "data" ).split(".");
+                var d = json;
+                for(var i=0; i<paths.length; i++){
+                    if( d && d[paths[i]] )d = d[paths[i]];
+                }
+                if( !d )d = [];
+                if( o2.typeOf(d) !== "array" )d = [ d ];
+                this.json.items = d;
+                return this.json.items;
             }.bind(this))
         }
     },
-    _afterCreateVueExtend: function (app) {
-        var _self = this;
-        app.methods.clickHotpictureItem = function (ev, item) {
-            if( item.application === "CMS" ){
-                _self.openDocument(item.infoId, item.title)
-            }else if( item.application === "BBS" ){
-                _self.openBBSDocument(item.infoId);
+    parseItemHtml: function(data){
+        var html = "";
+        if( this.json.dataType === "hotpicture" ){
+            if( this.json.contentType === "config" ){
+                if( (!this.json.contentConfig || !this.json.contentConfig.length) ){
+                    html += "<el-carousel-item v-for=\"item in items\">";
+                    html +=     "<img :src=\"getImageSrc(item.picId)\"  @click=\"clickHotpictureItem(item, $event)\" style=\"height: 100%; width:100%\"/>";
+                    html +=     "<div style=\"line-height:30px;height: 30px;width:100%;text-align: center;position: absolute;bottom:0px;left:0px;color:#fff;background: rgba(104, 104, 104, 0.5);\">{{item.title}}</div>";
+                    html += "</el-carousel-item>";
+                    return html;
+                }else{
+                    return this.parseContentConfig()
+                }
             }
-        }
-        app.methods.getImageSrc = function (picId) {
-            return o2.xDesktop.getImageSrc(picId);
+        }else if( this.json.contentType === "config" ){
+            return this.parseContentConfig()
         }
     },
+    parseContentConfig: function(){
+        var _self = this;
+        var html = "";
+        html += "<el-carousel-item v-for=\"item in items\">";
+        this.configFun = {};
+        this.json.contentConfig.each(function (config, i) {
+            var srcFunName, clickFunName, srcHtml = "", clickHtml = "";
+            if( config.type === "img" && config.srcScript && config.srcScript.code) {
+                srcFunName = "getImageSrc_" + i;
+                srcHtml = " :src=\"" + srcFunName + "(item)\"";
+                this.configFun[srcFunName] = function (item) {
+                    return _self.form.Macro.fire(this.srcScript.code, _self, item);
+                }.bind(config);
+            }
+            if( config.clickScript && config.clickScript.code ){
+                clickFunName = "click_"+i;
+                clickHtml = " @click=\""+clickFunName+"(item, $event)\"";
+                this.configFun[clickFunName] = function (item, ev) {
+                    return _self.form.Macro.fire(this.clickScript.code, _self, [item, ev]);
+                }.bind(config);
+            }
+            if( config.type === "img" ){
+                html +=  "<img" + srcHtml + clickHtml +" style=\""+this.jsonToStyle(config.styles)+"\"/>";
+            }else if(config.dataPath){
+                html +=  "<div"+ clickHtml +" style=\""+this.jsonToStyle(config.styles)+"\">{{item."+config.dataPath+"}}</div>";
+            }else{
+                html +=  "<div"+ clickHtml +" style=\""+this.jsonToStyle(config.styles)+"\"></div>";
+            }
+        }.bind(this));
+        html += "</el-carousel-item>";
+        return html;
+    },
+    _afterCreateVueExtend: function (app) {
+        var _self = this;
+        var flag = false;
+        if( this.json.dataType === "hotpicture" ) {
+            if (this.json.contentType === "config") {
+                if( (!this.json.contentConfig || !this.json.contentConfig.length) ) {
+                    app.methods.clickHotpictureItem = function (item, ev) {
+                        if (item.application === "CMS") {
+                            _self.openDocument(item.infoId, item.title)
+                        } else if (item.application === "BBS") {
+                            _self.openBBSDocument(item.infoId);
+                        }
+                    };
+                    app.methods.getImageSrc = function (picId) {
+                        return o2.xDesktop.getImageSrc(picId);
+                    }
+                    flag = true;
+                }
+            }
+        }
+        if( !flag && this.configFun ){
+            Object.each(this.configFun, function (fun, key) {
+                app.methods[key] = function (item, ev) {
+                    return fun(item, ev);
+                }.bind(this)
+            })
+        }
+    },
+
+    jsonToStyle: function(styles){
+        var style = "";
+        for( var key in styles ){
+            style += key+":"+styles[key]+";";
+        }
+        return style;
+    },
+    _getO2Source: function(){
+        this._getO2Address();
+        this._getO2Uri();
+        return MWF.restful(this.json.httpMethod, this.uri, JSON.encode(this.body), function(json){
+            return json;
+        }.bind(this), true, true);
+    },
+    _getO2Address: function(){
+        try {
+            this.json.service = JSON.parse(this.json.contextRoot);
+        }catch(e){
+            this.json.service = {"root": this.json.contextRoot, "action":"", "method": "", "url": ""};
+        }
+        var addressObj = layout.serviceAddressList[this.json.service.root];
+
+        if (addressObj){
+            this.address = layout.config.app_protocol+"//"+addressObj.host+(( !addressObj.port || addressObj.port==80 ) ? "" : ":"+addressObj.port)+addressObj.context;
+        }else{
+            var host = layout.desktop.centerServer.host || window.location.hostname;
+            var port = layout.desktop.centerServer.port;
+            this.address = layout.config.app_protocol+"//"+host+((!port || port=="80") ? "" : ":"+port)+"/x_program_center";
+        }
+    },
+    _getO2Uri: function(){
+        //var uri = this.json.path || this.json.selectPath;
+        var uri = this.json.path;
+        var pars = {};
+        if (this.json.parameters){
+            Object.each(this.json.parameters, function(v, key){
+                if (uri.indexOf("{"+key+"}")!=-1){
+                    var reg = new RegExp("{"+key+"}", "g");
+                    uri = uri.replace(reg, encodeURIComponent((v && v.code) ? (this.form.Macro.exec(v.code, this) || "") : v));
+                }else{
+                    pars[key] = v;
+                }
+            }.bind(this));
+        }
+
+        var data = null;
+        if (this.json.requestBody){
+            if (this.json.requestBody.code){
+                data = this.form.Macro.exec(this.json.requestBody.code, this)
+            }
+        }
+
+        if (this.json.httpMethod=="GET" || this.json.httpMethod=="OPTIONS" || this.json.httpMethod=="HEAD" || this.json.httpMethod=="DELETE"){
+            var tag = "?";
+            if (uri.indexOf("?")!=-1) tag = "&";
+            Object.each(pars, function(v, k){
+                var value = (v && v.code) ? (this.form.Macro.exec(v.code, this) || "") : v;
+                uri = uri+tag+k+"="+value;
+            }.bind(this));
+        }else{
+            Object.each(pars, function(v, k){
+                if (!data) data = {};
+                var value = (v && v.code) ? (this.form.Macro.exec(v.code, this) || "") : v;
+                data[k] = value;
+            }.bind(this));
+        }
+        this.body = data;
+        this.uri = this.address+uri;
+    },
+
     openDocument: function(id, title, options){
         var op = options || {};
         op.documentId = id;
