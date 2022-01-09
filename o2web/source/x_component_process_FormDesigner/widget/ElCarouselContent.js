@@ -4,6 +4,16 @@ o2.require("o2.widget.Common", null, false);
 o2.requireApp("process.FormDesigner", "widget.ElTreeEditor", null, false);
 MWF.xApplication.process.FormDesigner.widget.ElCarouselContent = new Class({
 	Extends: MWF.xApplication.process.FormDesigner.widget.ElTreeEditor,
+	initialize: function(node, options){
+		this.setOptions(options);
+		this.node = $(node);
+
+		this.path = "../x_component_process_FormDesigner/widget/$ElTreeEditor/";
+		this.cssPath = this.path+this.options.style+"/css.wcss";
+		this._loadCss();
+
+		this.container = new Element("div");
+	},
 	createContent: function(content){
 		this.contentNode = new Element("div", {
 			"styles": this.css.contentNode
@@ -243,7 +253,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				td = new Element("td").inject(tr);
 				this.pathInput = new Element("input", {
 					value: this.data.dataPath || "",
-					placeholder: "如: data.title",
+					placeholder: "如: title",
 					events: {
 						blur: function () {
 							this.data.dataPath = this.pathInput.get("value");
@@ -284,7 +294,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 					this.srcScriptEditor = new MWF.widget.ScriptArea(td, {
 						"title": "图片资源脚本",
 						"mode": "javascript",
-						// "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+						"maxObj": this.tree.editor.options.maxObj,
 						"onChange": function(){
 							var json = this.srcScriptEditor.toJson();
 							this.data.srcScript.code = json.code;
@@ -309,7 +319,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 					this.clickScriptEditor = new MWF.widget.ScriptArea(td, {
 						"title": "点击事件脚本",
 						"mode": "javascript",
-						// "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+						"maxObj": this.tree.editor.options.maxObj,
 						"onChange": function(){
 							var json = this.clickScriptEditor.toJson();
 							this.data.clickScript.code = json.code;
