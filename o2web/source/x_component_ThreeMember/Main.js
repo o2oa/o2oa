@@ -69,6 +69,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
         this.setContentSizeFun = this.setContentSize.bind(this);
         this.addEvent("resize", this.setContentSizeFun);
 
+        this.loadNavi();
         // this.loadLogView();
         this.loadPermissionView();
 
@@ -76,53 +77,61 @@ MWF.xApplication.ThreeMember.Main = new Class({
         // this.createContainerNode();
         // this.loaNavi();
     },
-    loaNavi: function (callback) {
-        debugger;
-        // var naviOpt = {};
-        // if (this.status) {
-        //     naviOpt.module = this.status.module || "all";
-        //     naviOpt.operation = this.status.operation;
-        // } else {
-        //     naviOpt.module = this.options.module || "all";
-        //     naviOpt.operation = this.options.operation;
-        // }
-        // this.navi = new MWF.xApplication.ThreeMember.Main.Navi(this, this.naviNode, naviOpt);
+    loadNavi : function(){
+        var naviJson = [
+            {
+                "title": "应用权限",
+                "action": "loadPermissionView",
+                "icon": "navi_mine"
+            },
+            {
+                "title": "组织管理",
+                "action": "openSharedExplorer",
+                "icon": "navi_share"
+            },
+            {
+                "title": "密码管理",
+                "action": "openReceivedExplorer",
+                "icon": "navi_receive"
+            },
+            {
+                "title": "查看日志",
+                "action": "loadLogView",
+                "icon": "navi_recycle"
+            }
+            // {
+            //     "title": "来自应用",
+            //     "action": "personConfig",
+            //     "icon": "navi_fromapp"
+            // }
+        ];
+        naviJson.each( function( d ){
+            this.createNaviNode( d );
+        }.bind(this))
     },
-    // createTopNode: function () {
-    //     this.topContainerNode = new Element("div.topContainerNode", {
-    //         "styles": this.css.topContainerNode
-    //     }).inject(this.contentContainerNode);
-    //
-    //     this.topNode = new Element("div.topNode", {
-    //         "styles": this.css.topNode
-    //     }).inject(this.topContainerNode);
-    //
-    //     this.topContentNode = new Element("div", {
-    //         "styles": this.css.topContentNode
-    //     }).inject(this.topNode);
-    //
-    //     // this.loadFilter();
-    //
-    // },
-    // createContainerNode: function () {
-    //     this.createContent();
-    // },
-    // createContent: function () {
-    //
-    //     this.middleNode = new Element("div.middleNode", {
-    //         "styles": this.css.middleNode
-    //     }).inject(this.contentContainerNode);
-    //
-    //     this.contentNode = new Element("div.contentNode", {
-    //         "styles": this.css.contentNode
-    //     }).inject(this.middleNode);
-    //
-    //     // this.loadView();
-    //
-    //     // this.setContentSizeFun = this.setContentSize.bind(this);
-    //     // this.addEvent("resize", this.setContentSizeFun);
-    //
-    // },
+    createNaviNode : function( d ){
+        var _self = this;
+        var node = new Element("div",{
+            text : d.title,
+            styles : this.css.naviItemNode,
+            events : {
+                click : function( ev ){
+                    if( _self.currentAction == d.action )return;
+                    ev.target.setStyles( _self.css.naviItemNode_selected );
+                    if(_self.currentNaviItemNode)_self.currentNaviItemNode.setStyles( _self.css.naviItemNode );
+                    _self.currentNaviItemNode = ev.target;
+                    _self.currentAction = d.action;
+                    _self[ d.action ]();
+                }
+            }
+        }).inject( this.naviNode );
+        node.setStyle("background-image", "url("+this.path + "icon/" + d.icon + ".png)" );
+        if( this.status && this.status.action && this.status.action == d.action ){
+            node.click();
+        }else if( this.options.defaultAction == d.action  ){
+            node.click();
+        }
+    },
     setContentSize: function(){
         var size = this.content.getSize();
         var h = size.y - this.getOffsetY(this.content);
@@ -136,6 +145,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
         // if (this.setContentSizeFun) this.removeEvent("resize", this.setContentSizeFun);
     },
     loadLogView: function(){
+        if(this.currentView)this.currentView.clearContent();
         MWF.xDesktop.requireApp("ThreeMember", "LogView", null, false);
         var options = {};
         if( this.status && this.status.es && this.status.es.explorer == "logview" ){
@@ -145,6 +155,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
 
     },
     loadPermissionView: function(){
+        if(this.currentView)this.currentView.clearContent();
         MWF.xDesktop.requireApp("ThreeMember", "PermissionView", null, false);
         var options = {};
         if( this.status && this.status.es && this.status.es.explorer == "permissionview" ){

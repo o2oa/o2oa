@@ -26,30 +26,24 @@ MWF.xApplication.ThreeMember.LogView = new Class({
         this.lp = MWF.xApplication.ThreeMember.LP;
         this.load();
     },
-    load: function(){
-        this.createNode();
-        this.loadLayout();
-    },
-
     reload: function () {
         this.clearContent();
-        this.loadLayout();
+        this.load();
     },
-    createNode: function () {
+    load: function () {
         this.content.setStyle("overflow", "hidden");
         this.node = new Element("div", {
             "styles": this.css.node
         }).inject(this.content);
-    },
-    loadLayout: function () {
+
         this.naviNode = new Element("div.naviNode", {
             "styles": this.css.naviNode
         }).inject(this.node);
         this.contentContainerNode = new Element("div.contentContainerNode", {
             "styles": this.css.contentContainerNode
         }).inject(this.node);
-        this.createTopNode();
-        this.createContainerNode();
+        this.createTop();
+        this.createContent();
         this.loaNavi();
 
     },
@@ -60,7 +54,7 @@ MWF.xApplication.ThreeMember.LogView = new Class({
         naviOpt.operation = this.options.operation;
         this.navi = new MWF.xApplication.ThreeMember.LogView.Navi(this, this.naviNode, naviOpt);
     },
-    createTopNode: function () {
+    createTop: function () {
         this.topContainerNode = new Element("div.topContainerNode", {
             "styles": this.css.topContainerNode
         }).inject(this.contentContainerNode);
@@ -75,9 +69,6 @@ MWF.xApplication.ThreeMember.LogView = new Class({
 
         this.loadFilter();
 
-    },
-    createContainerNode: function () {
-        this.createContent();
     },
     createContent: function () {
 
@@ -177,6 +168,7 @@ MWF.xApplication.ThreeMember.LogView = new Class({
             //this.middleNode.destroy();
             //this.contentNode.destroy();
         }
+        this.node.destroy();
     },
     loadFilter: function () {
         var lp = MWF.xApplication.ThreeMember.LP;
