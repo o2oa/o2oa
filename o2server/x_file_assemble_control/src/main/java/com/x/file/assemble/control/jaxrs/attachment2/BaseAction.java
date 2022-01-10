@@ -27,6 +27,8 @@ import com.x.file.core.entity.personal.Attachment2_;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
+	protected static final String EXCEPTION_FLAG = "existed";
+
 	protected Boolean exist(Business business, String fileName, String folderId, String person) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Attachment2.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
