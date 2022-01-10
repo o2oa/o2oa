@@ -5,44 +5,35 @@
     "overflow": "hidden"
   },
   "contentContainerNode" : {
-    "margin-left": "100px",
+    "margin-left": "80px",
     "overflow": "hidden",
     "background-color" : "#eee",
     "opacity": 1
   },
-  "topContainerNode" : {
-    "overflow" : "hidden",
-    "margin" : "0px auto"
+  "naviNode":{
+    "width" : "70px",
+    "background-color" : "#000",
+    "float" : "left"
   },
-  "topNode": {
-    "color" : "#333",
-    "min-height": "50px",
-    "overflow": "hidden",
-    "background-color": "#fff",
-    "line-height": "50px",
-    "font-size": "14px",
-    "font-weight": "bold",
-    "text-align": "left"
+  "naviTopNode" : {
+    "width" : "70px",
+    "height" : "70px",
+    "background" : "url(../x_component_ThreeMember/$Main/default/icon/navi_top.png) no-repeat center center",
+    "background-color" : "#000"
   },
-  "topIconNode" : {
-    "margin-left": "10px",
-    "width": "24px",
-    "height": "24px",
-    "float": "left",
-    "background": "url(../x_component_AuditLog/$Main/default/icon/topIcon.png) no-repeat 0px center",
-    "background-size": "24px 24px"
+  "naviItemNode" : {
+    "width" : "70px",
+    "height" : "28px",
+    "padding-top" : "42px",
+    "font-size" : "12px",
+    "text-align" : "center",
+    "color" : "#3C76B7",
+    "background-repeat" : "no-repeat",
+    "background-position" : "center 8px",
+    "background-color" : "#000",
+    "cursor" : "pointer"
   },
-  "topTextNode" : {
-    "color" : "#333",
-    "font-size": "16px",
-    "font-weight": "bold",
-    "float": "left",
-    "overflow" : "hidden",
-    "text-overflow" : "ellipsis",
-    "white-space":"nowrap"
-  },
-  "topContentNode" : {
-    "float" : "right",
-    "padding-right" : "10px"
+  "naviItemNode_selected" : {
+    "background-color" : "#F8F8F8"
   }
 }

@@ -26,30 +26,24 @@ MWF.xApplication.ThreeMember.PermissionView = new Class({
         this.lp = MWF.xApplication.ThreeMember.LP;
         this.load();
     },
-    load: function(){
-        this.createNode();
-        this.loadLayout();
-    },
-
     reload: function () {
         this.clearContent();
-        this.loadLayout();
+        this.load();
     },
-    createNode: function () {
+    load: function () {
         this.content.setStyle("overflow", "hidden");
         this.node = new Element("div", {
             "styles": this.css.node
         }).inject(this.content);
-    },
-    loadLayout: function () {
+
         this.naviNode = new Element("div.naviNode", {
             "styles": this.css.naviNode
         }).inject(this.node);
         this.contentContainerNode = new Element("div.contentContainerNode", {
             "styles": this.css.contentContainerNode
         }).inject(this.node);
-        this.createTopNode();
-        this.createContainerNode();
+        this.createTop();
+        this.createContent();
         this.loaNavi();
 
     },
@@ -60,7 +54,7 @@ MWF.xApplication.ThreeMember.PermissionView = new Class({
         naviOpt.operation = this.options.operation;
         this.navi = new MWF.xApplication.ThreeMember.PermissionView.Navi(this, this.naviNode, naviOpt);
     },
-    createTopNode: function () {
+    createTop: function () {
         this.topContainerNode = new Element("div.topContainerNode", {
             "styles": this.css.topContainerNode
         }).inject(this.contentContainerNode);
@@ -73,11 +67,6 @@ MWF.xApplication.ThreeMember.PermissionView = new Class({
             "styles": this.css.topContentNode
         }).inject(this.topNode);
 
-        this.loadFilter();
-
-    },
-    createContainerNode: function () {
-        this.createContent();
     },
     createContent: function () {
 
@@ -111,13 +100,9 @@ MWF.xApplication.ThreeMember.PermissionView = new Class({
         var topY = this.topContainerNode ? (this.getOffsetY(this.topContainerNode) + this.topContainerNode.getSize().y) : 0;
         h = h - topY;
 
-        h = h - this.getOffsetY(this.viewContainerNode);
+        h = h - this.getOffsetY(this.contentNode);
 
-        var pageSize = (this.view && this.view.pagingContainerBottom) ? this.view.pagingContainerBottom.getComputedSize() : {totalHeight: 0};
-        h = h - pageSize.totalHeight;
-
-        // this.viewContainerNode.setStyle("height", "" + h + "px");
-        this.view.viewWrapNode.setStyles({
+        this.contentNode.setStyles({
             "height": "" + h + "px",
             "overflow": "auto"
         });
@@ -130,110 +115,41 @@ MWF.xApplication.ThreeMember.PermissionView = new Class({
         }
         if (this.contentContainerNode) {
             this.contentContainerNode.destroy();
-            //this.middleNode.destroy();
-            //this.contentNode.destroy();
         }
+        this.node.destroy();
     },
-    loadFilter: function () {
-        var lp = MWF.xApplication.ThreeMember.LP;
-        this.fileterNode = new Element("div.fileterNode", {
-            "styles": this.css.fileterNode
-        }).inject(this.topContentNode);
-
-        var html = "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='filterTable'>" + //style='width: 900px;'
-            "<tr>" +
-            "    <td styles='filterTableTitle' lable='person'></td>" +
-            "    <td styles='filterTableValue' item='person'></td>" +
-            "    <td styles='filterTableTitle' lable='module'></td>" +
-            "    <td styles='filterTableValue' item='module'></td>" +
-            "    <td styles='filterTableTitle' lable='operation'></td>" +
-            "    <td styles='filterTableValue' item='operation'></td>" +
-            "    <td styles='filterTableTitle' lable='startTime'></td>" +
-            "    <td styles='filterTableValue' item='startTime' style='width: 150px;'></td>" +
-            "    <td styles='filterTableTitle' lable='endTime'></td>" +
-            "    <td styles='filterTableValue' item='endTime' style='width: 150px;'></td>" +
-            "    <td styles='filterTableValue' item='action'></td>" +
-            "    <td styles='filterTableValue' item='reset'></td>" +
-            "</tr>" +
-            "</table>";
-        this.fileterNode.set("html", html);
-
-
-        this.form = new MForm(this.fileterNode, {}, {
-            style: "attendance",
-            isEdited: true,
-            itemTemplate: {
-                person: {
-                    "text": lp.person,
-                    "type": "org",
-                    "orgType": "identity",
-                    "orgOptions": {"resultType": "person"},
-                    "style": {"min-width": "100px"},
-                    "orgWidgetOptions": {"disableInfor": true}
-                },
-                module: {
-                    "text": lp.module,
-                    "type": "select",
-                    "style": {"max-width": "150px"},
-                    "selectValue": function () {
-                        var array = [""];
-                        o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.listModule(function (json) {
-                            array = array.concat(json.data.valueList);
-                        }.bind(this), null, false);
-                        return array;
-                    },
-                    "event": {
-                        "change": function (item, ev) {
-                            var array;
-                            var v = item.getValue();
-                            if (v) {
-                                o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.listOperation(v, function (json) {
-                                    array = [""].concat(json.data.valueList);
-                                }.bind(this), null, false);
-                            } else {
-                                array = [];
-                            }
-                            item.form.getItem("operation").resetItemOptions(array, array)
-                        }.bind(this)
-                    }
-                },
-                operation: {text: lp.operation, "type": "select", "style": {"max-width": "150px"}, "selectValue": []},
-                startTime: {
-                    text: lp.startTime,
-                    "tType": "datetime",
-                    "calendarOptions": {"secondEnable": true, "format": "db"}
-                },
-                endTime: {
-                    text: lp.endTime,
-                    "tType": "datetime",
-                    "calendarOptions": {"secondEnable": true, "format": "db"}
-                },
-                action: {
-                    "value": lp.query, type: "button", className: "filterButton", event: {
-                        click: function () {
-                            var result = this.form.getResult(false, null, false, true, false);
-                            for (var key in result) {
-                                if (!result[key]) {
-                                    delete result[key];
-                                } else if (key === "person" && result[key].length > 0) {
-                                    result[key] = result[key][0].split("@")[1];
-                                }
-                            }
-                            this.loadView(result);
-                        }.bind(this)
-                    }
-                },
-                reset: {
-                    "value": lp.reset, type: "button", className: "filterButtonGrey", event: {
-                        click: function () {
-                            this.form.reset();
-                            this.loadView();
-                        }.bind(this)
-                    }
-                },
-            }
-        }, this, this.css);
-        this.form.load();
+    getCategories: function(){
+        return [
+            {"id":"process", "text": this.lp.process,
+                "action": o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction.list },
+            {"id":"cms", "text": this.lp.cms,
+                "action": o2.Actions.load("x_cms_assemble_control").AppInfoAction.listAllAppInfo },
+            {"id":"portal", "text": this.lp.portal,
+                "action": o2.Actions.load("x_portal_assemble_designer").PortalAction.list },
+            {"id":"query", "text": this.lp.query1,
+                "action": o2.Actions.load("x_query_assemble_designer").QueryAction.listAll }
+        ];
+    },
+    loadView: function(object){
+        if(this.contentView)this.contentView.clear();
+        switch (object.category.id) {
+            case "process":
+                this.contentView = new MWF.xApplication.ThreeMember.PermissionView.ProcessApplication(this,{});
+                this.contentView.load();
+                break;
+            case "cms":
+                this.contentView = new MWF.xApplication.ThreeMember.PermissionView.CMSApplication(this,{});
+                this.contentView.load();
+                break;
+            case "portal":
+                this.contentView = new MWF.xApplication.ThreeMember.PermissionView.PortalApplication(this,{});
+                this.contentView.load();
+                break;
+            case "query":
+                this.contentView = new MWF.xApplication.ThreeMember.PermissionView.QueryApplication(this,{});
+                this.contentView.load();
+                break;
+        }
     },
     recordStatus: function () {
         var status = this.navi.currentStatus || {};
@@ -245,7 +161,7 @@ MWF.xApplication.ThreeMember.PermissionView = new Class({
 MWF.xApplication.ThreeMember.PermissionView.Navi = new Class({
     Implements: [Options, Events],
     options: {
-        "module": "all"
+        "category": "process"
     },
     initialize: function (explorer, node, options) {
         this.setOptions(options);
@@ -266,12 +182,7 @@ MWF.xApplication.ThreeMember.PermissionView.Navi = new Class({
             "text": this.explorer.lp.title
         }).inject(this.areaNode);
 
-        [
-            {"id":"process", "text": this.explorer.lp.process, "action": o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction.list },
-            {"id":"cms", "text": this.explorer.lp.cms, "action": o2.Actions.load("x_cms_assemble_control").AppInfoAction.listAllAppInfo },
-            {"id":"portal", "text": this.explorer.lp.portal, "action": o2.Actions.load("x_portal_assemble_designer").PortalAction.list },
-            {"id":"query", "text": this.explorer.lp.query1, "action": o2.Actions.load("x_query_assemble_designer").QueryAction.listAll }
-        ].each(function (category) {
+        this.explorer.getCategories().each(function (category) {
             debugger;
             this.createMenuNode(category);
         }.bind(this));
@@ -284,17 +195,17 @@ MWF.xApplication.ThreeMember.PermissionView.Navi = new Class({
         if(this.setContentSizeFun)this.app.removeEvent("resize", this.setContentSizeFun );
         this.scrollNode.destroy();
     },
-    setCurrentAll: function () {
-        this.cancelCurrent();
-        this.currentStatus = null;
-        this.currentAll = this.naviAllNode;
-        this.naviAllNode.setStyles(this.css.naviAllNode_current);
-        if (this.explorer.form) {
-            this.explorer.form.reset();
-            this.explorer.form.getItem("module").items[0].fireEvent("change");
-        }
-        this.explorer.loadView()
-    },
+    // setCurrentAll: function () {
+    //     this.cancelCurrent();
+    //     this.currentStatus = null;
+    //     this.currentAll = this.naviAllNode;
+    //     this.naviAllNode.setStyles(this.css.naviAllNode_current);
+    //     if (this.explorer.form) {
+    //         this.explorer.form.reset();
+    //         this.explorer.form.getItem("module").items[0].fireEvent("change");
+    //     }
+    //     this.explorer.loadView()
+    // },
     createMenuNode: function (category) {
         var _self = this;
         var menuNode = new Element("div", {
@@ -333,7 +244,7 @@ MWF.xApplication.ThreeMember.PermissionView.Navi = new Class({
                 if (_self.currentMenu != this) this.setStyles(_self.explorer.css.naviMenuNode_normal);
             },
             "click": function (ev) {
-                _self.setCurrentMenu(menuObj);
+                _self.expandOrCollapse(menuObj);
                 ev.stopPropagation();
             }
         });
@@ -346,34 +257,34 @@ MWF.xApplication.ThreeMember.PermissionView.Navi = new Class({
         // }
     },
     cancelCurrent: function () {
-        if (this.currentMenu) {
-            this.currentMenu.setStyles(this.css.naviMenuNode);
-            this.currentMenu.setStyles(this.css.naviMenuNode_normal);
-            this.currentMenu = false;
-        }
+        // if (this.currentMenu) {
+        //     this.currentMenu.setStyles(this.css.naviMenuNode);
+        //     this.currentMenu.setStyles(this.css.naviMenuNode_normal);
+        //     this.currentMenu = false;
+        // }
         if (this.currentItem) {
             this.currentItem.setStyles(this.css.naviItemNode);
             this.currentItem = false;
         }
-        if (this.currentAll) {
-            this.currentAll.setStyles(this.css.naviAllNode_normal);
-            this.currentAll = false;
-        }
+        // if (this.currentAll) {
+        //     this.currentAll.setStyles(this.css.naviAllNode_normal);
+        //     this.currentAll = false;
+        // }
         this.currentStatus = null;
     },
-    setCurrentMenu: function (menuObj) {
-        this.cancelCurrent();
-        this.currentStatus = {
-            module: menuObj.module
-        };
-        this.currentMenu = menuObj.node;
-        menuObj.node.setStyles(this.css.naviMenuNode_current);
-        this.explorer.form.reset();
-        this.explorer.form.getItem("module").setValue(menuObj.module);
-        debugger;
-        this.explorer.form.getItem("module").items[0].fireEvent("change");
-        this.explorer.loadView({"module": menuObj.module})
-    },
+    // setCurrentMenu: function (menuObj) {
+    //     this.cancelCurrent();
+    //     this.currentStatus = {
+    //         module: menuObj.module
+    //     };
+    //     this.currentMenu = menuObj.node;
+    //     menuObj.node.setStyles(this.css.naviMenuNode_current);
+    //     this.explorer.form.reset();
+    //     this.explorer.form.getItem("module").setValue(menuObj.module);
+    //     debugger;
+    //     this.explorer.form.getItem("module").items[0].fireEvent("change");
+    //     this.explorer.loadView({"module": menuObj.module})
+    // },
     expandOrCollapse: function (menuObj) {
         if (!menuObj.itemContainer) {
             menuObj.itemContainer = new Element("div").inject(menuObj.node, "after");
@@ -426,26 +337,19 @@ MWF.xApplication.ThreeMember.PermissionView.Navi = new Class({
             }
         });
 
-        if (application.id === this.options.applicationId) {
+        if (application.id === this.options.application) {
             itemNode.click();
         }
     },
     setCurrentItem: function (itemObj) {
         this.cancelCurrent();
         this.currentStatus = {
-            module: itemObj.module,
-            operation: itemObj.operation
+            category: itemObj.category.id,
+            application: itemObj.application.id
         };
         this.currentItem = itemObj.node;
         itemObj.node.setStyles(this.css.naviItemNode_current);
-        this.explorer.form.reset();
-        this.explorer.form.getItem("module").setValue(itemObj.module);
-        this.explorer.form.getItem("module").items[0].fireEvent("change");
-        this.explorer.form.getItem("operation").setValue(itemObj.operation);
-        this.explorer.loadView({
-            "module": itemObj.module,
-            "operation": itemObj.operation
-        })
+        this.explorer.loadView(itemObj);
     },
     setContentSize: function () {
         var nodeSize = this.explorer.node.getSize();
@@ -453,4 +357,107 @@ MWF.xApplication.ThreeMember.PermissionView.Navi = new Class({
         this.node.setStyle("height", h);
         this.scrollNode.setStyle("height", h);
     }
+});
+
+MWF.xApplication.ThreeMember.PermissionView.ProcessApplication = new Class({
+    Implements: [Options, Events],
+    options: {
+        "id": "id"
+    },
+    initialize: function (explorer, options) {
+        this.setOptions(options);
+        this.app = explorer.app;
+        this.explorer = explorer;
+        this.topNode = explorer.topContentNode;
+        this.contentNode = explorer.contentNode;
+        this.css = this.explorer.css;
+        this.lp = MWF.xApplication.ThreeMember.LP;
+    },
+    clear: function () {
+        this.topNode.empty();
+        this.contentNode.empty();
+    },
+    load: function () {
+        this.getNaviData().each(function (data) {
+            var naviNode = new Element("div", {
+                styles : this.css.topNaviItemNode,
+                text: data.text
+            }).inject(this.topNode);
+            naviNode.store("data", data);
+            naviNode.addEvent("click", function () {
+                this.setCurrent( naviNode );
+            }.bind(this))
+        }.bind(this));
+    },
+    setCurrent: function (naviNode) {
+        if( this.currentNaviNode )this.currentNaviNode.setStyles(this.css.topNaviItemNode);
+        this.currentNaviNode = naviNode;
+        naviNode.setStyles( this.css.topNaviItemNode_current );
+        var data = naviNode.retrieve("data");
+        this.contentNode.empty();
+        if(this[data.action])this[data.action]();
+    },
+    getNaviData: function () {
+        return [{
+            "action": "loadApplication",
+            "text": this.lp.permission.application
+        },{
+            "id": "loadProcess",
+            "text": this.lp.permission.process
+        }]
+    },
+    loadApplication: function () {
+
+    },
+    loadProcess: function () {
+
+    }
+});
+
+MWF.xApplication.ThreeMember.PermissionView.CMSApplication = new Class({
+    Extends: MWF.xApplication.ThreeMember.PermissionView.ProcessApplication,
+    getNaviData: function () {
+        return [{
+            "action": "loadColumn",
+            "text": this.lp.permission.column
+        },{
+            "id": "loadCategory",
+            "text": this.lp.permission.category
+        }]
+    },
+});
+
+MWF.xApplication.ThreeMember.PermissionView.PortalApplication = new Class({
+    Extends: MWF.xApplication.ThreeMember.PermissionView.ProcessApplication,
+    getNaviData: function () {
+        return [{
+            "action": "loadPortal",
+            "text": this.lp.permission.portal
+        }]
+    },
+});
+
+MWF.xApplication.ThreeMember.PermissionView.QueryApplication = new Class({
+    Extends: MWF.xApplication.ThreeMember.PermissionView.ProcessApplication,
+    getNaviData: function () {
+        return [{
+            "action": "loadQuery",
+            "text": this.lp.permission.query
+        },{
+            "action": "loadView",
+            "text": this.lp.permission.view
+        },{
+            "action": "loadStat",
+            "text": this.lp.permission.stat
+        },{
+            "action": "loadTable",
+            "text": this.lp.permission.table
+        },{
+            "action": "loadStatement",
+            "text": this.lp.permission.statement
+        },{
+            "action": "loadImporter",
+            "text": this.lp.permission.importer
+        }]
+    },
 });

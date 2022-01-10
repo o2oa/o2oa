@@ -47,5 +47,21 @@ MWF.xApplication.ThreeMember.LP = {
 	"process": "流程管理",
 	"cms": "内容管理",
 	"portal": "门户管理",
-	"query1": "数据中心管理"
+	"query1": "数据中心管理",
+
+	"permission" : {
+		"application": "应用权限",
+		"process": "流程权限",
+		"column": "栏目权限",
+		"category": "分类权限",
+		"portal": "门户权限",
+		"query": "数据中心权限",
+		"view": "视图权限",
+		"stat": "统计权限",
+		"table": "数据表权限",
+		"statement": "查询权限",
+		"importer": "导入权限"
+	}
+
+
 };
