@@ -1,0 +1,48 @@
+{
+  "node" : {
+    "margin": "20px",
+    "height": "100%",
+    "overflow": "hidden"
+  },
+  "contentContainerNode" : {
+    "margin-left": "100px",
+    "overflow": "hidden",
+    "background-color" : "#eee",
+    "opacity": 1
+  },
+  "topContainerNode" : {
+    "overflow" : "hidden",
+    "margin" : "0px auto"
+  },
+  "topNode": {
+    "color" : "#333",
+    "min-height": "50px",
+    "overflow": "hidden",
+    "background-color": "#fff",
+    "line-height": "50px",
+    "font-size": "14px",
+    "font-weight": "bold",
+    "text-align": "left"
+  },
+  "topIconNode" : {
+    "margin-left": "10px",
+    "width": "24px",
+    "height": "24px",
+    "float": "left",
+    "background": "url(../x_component_AuditLog/$Main/default/icon/topIcon.png) no-repeat 0px center",
+    "background-size": "24px 24px"
+  },
+  "topTextNode" : {
+    "color" : "#333",
+    "font-size": "16px",
+    "font-weight": "bold",
+    "float": "left",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "topContentNode" : {
+    "float" : "right",
+    "padding-right" : "10px"
+  }
+}
