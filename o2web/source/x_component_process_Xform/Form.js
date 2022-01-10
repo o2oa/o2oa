@@ -774,6 +774,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
                 actionStyle.width = buttonWidth + "px";
                 var action = new Element("div", { "styles": actionStyle, "text": tool.text }).inject(node);
+                if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
                     var clickFun = function () {

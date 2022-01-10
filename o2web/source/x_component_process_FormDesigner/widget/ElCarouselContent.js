@@ -209,7 +209,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				}).inject(this.propertyArea);
 
 				tr = new Element("tr").inject(this.propertyTable);
-				td = new Element("td", { text: "类型" }).inject(tr);
+				var td = new Element("td", { text: "类型" }).inject(tr);
 				td = new Element("td").inject(tr);
 				var div = new Element( "div").inject(td);
 				var radio_type_1 = new Element( "input", {
@@ -221,6 +221,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 							radio_type_2.checked = false;
 							this.setTitle();
 							this.srcScriptTr.setStyle("display", "");
+							this.textScriptTr.setStyle("display", "none");
 							this.removeStyles( defaultStyles.text );
 							this.copyStyles( defaultStyles.img );
 							this.maplist.reload(this.data.styles);
@@ -239,6 +240,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 							radio_type_1.checked = false;
 							this.setTitle();
 							this.srcScriptTr.setStyle("display", "none");
+							this.textScriptTr.setStyle("display", "");
 							this.removeStyles( defaultStyles.img );
 							this.copyStyles( defaultStyles.text );
 							this.maplist.reload(this.data.styles);
@@ -248,19 +250,19 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				new Element( "span", { "text" : "文本" }).inject(div);
 
 
-				var tr = new Element("tr").inject(this.propertyTable);
-				var td = new Element("td", { text: "数据路径" }).inject(tr);
-				td = new Element("td").inject(tr);
-				this.pathInput = new Element("input", {
-					value: this.data.dataPath || "",
-					placeholder: "如: title",
-					events: {
-						blur: function () {
-							this.data.dataPath = this.pathInput.get("value");
-							// this.textNode.getElement("div").set("text", this.data.dataPath);
-						}.bind(this)
-					}
-				}).inject(td);
+				// var tr = new Element("tr").inject(this.propertyTable);
+				// var td = new Element("td", { text: "数据路径" }).inject(tr);
+				// td = new Element("td").inject(tr);
+				// this.pathInput = new Element("input", {
+				// 	value: this.data.dataPath || "",
+				// 	placeholder: "如: title",
+				// 	events: {
+				// 		blur: function () {
+				// 			this.data.dataPath = this.pathInput.get("value");
+				// 			// this.textNode.getElement("div").set("text", this.data.dataPath);
+				// 		}.bind(this)
+				// 	}
+				// }).inject(td);
 
 				//styles
 				debugger;
@@ -290,9 +292,13 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				var tr = new Element("tr").inject(this.propertyTable);
 				td = new Element("td", { "colspan": "2" }).inject(tr);
 				this.srcScriptTr = tr;
+				new Element("div", {
+					"text" : "通过this.event可以获得当前条目的数据，最终返回图片资源地址文本。" +
+						"系统通用图片获取方法为o2.xDesktop.getImageSrc(imgId)；该方法可用于图片编辑器、html编辑上传的图片；附件、资源文件不可以用本方法。"
+				}).inject( td );
 				MWF.require("MWF.widget.ScriptArea", function(){
 					this.srcScriptEditor = new MWF.widget.ScriptArea(td, {
-						"title": "图片资源脚本",
+						"title": "图片资源(src)脚本",
 						"mode": "javascript",
 						"maxObj": this.tree.editor.options.maxObj,
 						"onChange": function(){
@@ -303,7 +309,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 						"onSave": function(){
 							//this.designer.saveForm();
 						}.bind(this),
-						"style": "formula",
+						"style": "default",
 						"runtime": "web"
 					});
 					this.srcScriptEditor.load(this.data.srcScript);
@@ -312,9 +318,41 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 					this.srcScriptTr.hide();
 				}
 
+				//textScript
+				var tr = new Element("tr").inject(this.propertyTable);
+				td = new Element("td", { "colspan": "2" }).inject(tr);
+				this.textScriptTr = tr;
+				new Element("div", {
+					"text" : "通过this.event可以获得当前条目的数据，最终返回图片文本内容文本。"
+				}).inject( td );
+				MWF.require("MWF.widget.ScriptArea", function(){
+					this.textScriptEditor = new MWF.widget.ScriptArea(td, {
+						"title": "文本内容脚本",
+						"mode": "javascript",
+						"maxObj": this.tree.editor.options.maxObj,
+						"onChange": function(){
+							var json = this.textScriptEditor.toJson();
+							this.data.textScript.code = json.code;
+							//this.data[name].html = json.html;
+						}.bind(this),
+						"onSave": function(){
+							//this.designer.saveForm();
+						}.bind(this),
+						"style": "default",
+						"runtime": "web"
+					});
+					this.textScriptEditor.load(this.data.textScript);
+				}.bind(this));
+				if( this.data.type === "img"){
+					this.textScriptTr.hide();
+				}
+
 				//clickScript
 				var tr = new Element("tr").inject(this.propertyTable);
 				td = new Element("td", { "colspan": "2" }).inject(tr);
+				new Element("div", {
+					"text" : "通过this.event[0]可以获得当前条目的数据,通过this.event[1]可获取Event对象。"
+				}).inject( td );
 				MWF.require("MWF.widget.ScriptArea", function(){
 					this.clickScriptEditor = new MWF.widget.ScriptArea(td, {
 						"title": "点击事件脚本",
@@ -328,7 +366,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 						"onSave": function(){
 							//this.designer.saveForm();
 						}.bind(this),
-						"style": "formula",
+						"style": "default",
 						"runtime": "web"
 					});
 					this.clickScriptEditor.load(this.data.clickScript);
