@@ -102,7 +102,12 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.currentList = this.taskList;
 	},
 	loadRead: function(){
-
+		if (!this.readList) this.readList = new MWF.xApplication.process.workcenter.ReadList(this, {
+			"onLoadData": this.hideSkeleton.bind(this)
+		});
+		this.readList.init();
+		this.readList.load();
+		this.currentList = this.readList;
 	},
 	loadTaskCompleted: function(){
 
@@ -192,6 +197,10 @@ MWF.xApplication.process.workcenter.List = new Class({
 		this.loadData().then(function(data){
 			_self.loadItems(data);
 		});
+	},
+	refresh: function(){
+		this.hide();
+		this.load();
 	},
 	hide: function(){
 		if (this.node) this.node.destroy();
@@ -408,17 +417,6 @@ MWF.xApplication.process.workcenter.List = new Class({
 	processWork_pc: function(task, form) {
 		var _self = this;
 
-		// if (!this.formCustomValidation("", "")) {
-		// 	this.app.content.unmask();
-		// 	return false;
-		// }
-		//
-		// if (!this.formValidation("", "")) {
-		// 	this.app.content.unmask();
-		// 	//    if (callback) callback();
-		// 	return false;
-		// }
-
 		var setSize = function (notRecenter) {
 			var dlg = this;
 			if (!dlg || !dlg.node) return;
@@ -461,6 +459,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 						"action": function () {
 							this.processDlg.close();
 							if (this.processor) this.processor.destroy();
+							_self.app.content.unmask();
 						}.bind(this)
 					}
 				],
@@ -482,7 +481,6 @@ MWF.xApplication.process.workcenter.List = new Class({
 			if (layout.mobile) {
 				innerNode = new Element("div").inject(processNode);
 			}
-debugger;
 			this.processor = new MWF.xApplication.process.Work.Processor(innerNode || processNode, task, {
 				"style": (layout.mobile) ? "mobile" : (style || "default"),
 				"tabletWidth": form.json.tabletWidth || 0,
@@ -500,40 +498,142 @@ debugger;
 					delete this;
 				},
 				"onSubmit": function (routeName, opinion, medias, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
-					// if (!medias || !medias.length) {
-					// 	medias = mds;
-					// } else {
-					// 	medias = medias.concat(mds)
-					// }
-					//
-					// var promise;
-					// if (_self.toWordSubmitList && _self.toWordSubmitList.length){
-					// 	var p = [];
-					// 	_self.toWordSubmitList.each(function(editor){
-					// 		if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
-					// 	});
-					// 	Promise.all(p).then(function(){
-					// 		_self.submitWork(routeName, opinion, medias, function () {
-					// 			this.destroy();
-					// 			processNode.destroy();
-					// 			if (_self.processDlg) _self.processDlg.close();
-					// 			delete this;
-					// 		}.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
-					// 	}.bind(this));
-					// }else{
-					// 	_self.submitWork(routeName, opinion, medias, function () {
-					// 		this.destroy();
-					// 		processNode.destroy();
-					// 		if (_self.processDlg) _self.processDlg.close();
-					// 		delete this;
-					// 	}.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
-					// }
+					if (!medias || !medias.length) {
+						medias = mds;
+					} else {
+						medias = medias.concat(mds)
+					}
+
+					_self.submitTask(routeName, opinion, medias, task);
 				}
 			});
 		}.bind(this));
 	},
+	submitTask: function(routeName, opinion, medias, task){
+		if (!opinion) opinion = routeName;
+
+		task.routeName = routeName;
+		task.opinion = opinion;
+
+		var mediaIds = [];
+		if (medias.length){
+			medias.each(function(file){
+				var formData = new FormData();
+				formData.append("file", file);
+				formData.append("site", "$mediaOpinion");
+				this.action.AttachmentAction.upload(task.work, formData, file, function(json){
+					mediaIds.push(json.data.id);
+				}.bind(this), null, false);
+			}.bind(this));
+		}
+		if (mediaIds.length) task.mediaOpinion = mediaIds.join(",");
+
+		this.action.TaskAction.processing(task.id, task, function(json){
+			if (this.processor) this.processor.destroy();
+			if (this.processDlg) this.processDlg.close();
+			this.app.content.unmask();
+			this.refresh();
+			this.addMessage(json.data, task);
+		}.bind(this));
+	},
+	getMessageContent: function (data, task, maxLength, titlelp) {
+		var content = "";
+		var lp = this.lp;
+		if (data.completed) {
+			content += lp.workCompleted;
+		} else {
+			if (data.occurSignalStack) {
+				if (data.signalStack && data.signalStack.length) {
+					var activityUsers = [];
+					data.signalStack.each(function (stack) {
+						var idList = [];
+						if (stack.splitExecute) {
+							idList = stack.splitExecute.splitValueList || [];
+						}
+						if (stack.manualExecute) {
+							idList = stack.manualExecute.identities || [];
+						}
+						var count = 0;
+						var ids = [];
+						idList.each( function(i){
+							var cn = o2.name.cn(i);
+							if( !ids.contains( cn ) ){
+								ids.push(cn)
+							}
+						});
+						if (ids.length > 8) {
+							count = ids.length;
+							ids = ids.slice(0, 8);
+						}
+						ids = o2.name.cns(ids);
+
+						var t = "<b>" + lp.nextActivity + "</b><span style='color: #ea621f'>" + stack.name + "</span>；<b>" + lp.nextUser + "</b><span style='color: #ea621f'>" + ids.join(",") + "</span> <b>" + ((count) ? "," + lp.next_etc.replace("{count}", count) : "") + "</b>";
+						activityUsers.push(t);
+					}.bind(this));
+					content += activityUsers.join("<br>");
+				} else {
+					content += lp.processTaskCompleted;
+				}
+			} else {
+				if (data.properties.nextManualList && data.properties.nextManualList.length) {
+					var activityUsers = [];
+					data.properties.nextManualList.each(function (a) {
+						var ids = [];
+						a.taskIdentityList.each(function (i) {
+							var cn = o2.name.cn(i);
+							if( !ids.contains( cn ) ){
+								ids.push(cn)
+							}
+						});
+						var t = "<b>" + lp.nextActivity + "</b><span style='color: #ea621f'>" + a.activityName + "</span>；<b>" + lp.nextUser + "</b><span style='color: #ea621f'>" + ids.join(",") + "</span>";
+						activityUsers.push(t);
+					});
+					content += activityUsers.join("<br>");
+				} else {
+					if (data.arrivedActivityName) {
+						content += lp.arrivedActivity + data.arrivedActivityName;
+					} else {
+						content += lp.processTaskCompleted;
+					}
+
+				}
+			}
+		}
+		var title = task.title;
+		if (maxLength && title.length > maxLength) {
+			title = title.substr(0, maxLength) + "..."
+		}
+		return "<div>" + (titlelp || lp.taskProcessedMessage) + "“" + title + "”</div>" + content;
+	},
+	addMessage: function (data, task, notShowBrowserDkg) {
+		if (layout.desktop.message) {
+			var msg = {
+				"subject": this.lp.taskProcessed,
+				"content": this.getMessageContent(data, task, 0, this.lp.taskProcessedMessage)
+			};
+			layout.desktop.message.addTooltip(msg);
+			return layout.desktop.message.addMessage(msg);
+		} else {
+			// if (this.app.inBrowser && !notShowBrowserDkg) {
+			// 	this.inBrowserDkg(this.getMessageContent(data, 0, this.lp.taskProcessedMessage));
+			// }
+		}
+	}
+
 
 });
 MWF.xApplication.process.workcenter.TaskList = new Class({
 	Extends: MWF.xApplication.process.workcenter.List
+});
+
+MWF.xApplication.process.workcenter.ReadList = new Class({
+	Extends: MWF.xApplication.process.workcenter.List,
+	loadData: function(){
+		var _self = this;
+		return this.action.ReadAction.listMyPaging(this.page, this.size).then(function(json){
+			_self.fireEvent("loadData");
+			_self.total = json.size;
+			return json.data;
+		}.bind(this));
+	},
 });
