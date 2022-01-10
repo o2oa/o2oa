@@ -636,4 +636,19 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 			return json.data;
 		}.bind(this));
 	},
+	loadItemFlag: function(e, data){
+		debugger;
+		var node = e.currentTarget;
+		var iconNode = node.getElement(".listItemFlag");
+
+		if (data.completed){
+			iconNode.setStyle("background-image", "url("+"../x_component_process_workcenter/$Main/default/icons/pic_ok.png)");
+			return true;
+		}
+		var start = new Date().parse(data.startTime);
+		var now = new Date();
+		if (now.getTime()-start.getTime()<86400000){
+			iconNode.setStyle("background-image", "url("+"../x_component_process_workcenter/$Main/default/icons/pic_new.png)");
+		}
+	}
 });
