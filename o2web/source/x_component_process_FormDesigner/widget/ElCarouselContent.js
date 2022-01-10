@@ -54,6 +54,10 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree = new Class(
 			"code": "",
 			"html": ""
 		},
+		"textScript": {
+			"code": "",
+			"html": ""
+		},
 		"clickScript": {
 			"code": "",
 			"html": ""
@@ -319,6 +323,10 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				}
 
 				//textScript
+				if( !this.data.textScript )this.data.textScript = {
+					"code": "",
+					"html": ""
+				};
 				var tr = new Element("tr").inject(this.propertyTable);
 				td = new Element("td", { "colspan": "2" }).inject(tr);
 				this.textScriptTr = tr;
