@@ -153,7 +153,7 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
         html += "<el-carousel-item v-for=\"item in items\">";
         this.configFun = {};
         this.json.contentConfig.each(function (config, i) {
-            var srcFunName, clickFunName, srcHtml = "", clickHtml = "";
+            var srcFunName, textFunName, clickFunName, srcHtml = "", clickHtml = "", textHtml="";
             if( config.type === "img" && config.srcScript && config.srcScript.code) {
                 srcFunName = "getImageSrc_" + i;
                 srcHtml = " :src=\"" + srcFunName + "(item)\"";
@@ -168,12 +168,17 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
                     return _self.form.Macro.fire(this.clickScript.code, _self, [item, ev]);
                 }.bind(config);
             }
+            if( config.type === "text" && config.textScript && config.textScript.code) {
+                textFunName = "getText_" + i;
+                textHtml = "{{"+textFunName+"(item)}}";
+                this.configFun[textFunName] = function (item) {
+                    return _self.form.Macro.fire(this.textScript.code, _self, item);
+                }.bind(config);
+            }
             if( config.type === "img" ){
                 html +=  "<img" + srcHtml + clickHtml +" style=\""+this.jsonToStyle(config.styles)+"\"/>";
-            }else if(config.dataPath){
-                html +=  "<div"+ clickHtml +" style=\""+this.jsonToStyle(config.styles)+"\">{{item."+config.dataPath+"}}</div>";
             }else{
-                html +=  "<div"+ clickHtml +" style=\""+this.jsonToStyle(config.styles)+"\"></div>";
+                html +=  "<div"+ clickHtml +" style=\""+this.jsonToStyle(config.styles)+"\">"+textHtml+"</div>";
             }
         }.bind(this));
         html += "</el-carousel-item>";
