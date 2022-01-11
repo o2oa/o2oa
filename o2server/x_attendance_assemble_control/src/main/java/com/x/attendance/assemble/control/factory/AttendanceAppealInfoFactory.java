@@ -392,6 +392,9 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 				p = cb.and(p,cb.greaterThan(root.get(AttendanceAppealInfo_.sequence),sequence.toString()));
 			}
 		}
+		if(StringUtils.isNotEmpty(wrapIn.getProcessPerson1())) {
+			p = cb.and(p, cb.equal(root.get(AttendanceAppealInfo_.currentProcessor), wrapIn.getProcessPerson1()));
+		}
 		if(StringUtils.isNotEmpty(wrapIn.getDetailId())){
 			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.detailId),wrapIn.getDetailId()));
 		}
@@ -416,19 +419,19 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 		if (wrapIn.getStatus()!=999) {
 			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.status),wrapIn.getStatus()));
 		}
-
-		if(!isManager){
-			if(unitMap.isEmpty()){
-				p = cb.and(p,cb.isNull(root.get(AttendanceAppealInfo_.detailId)));
-			}else{
-				if(unitMap.containsKey("COMPANY")){
-					p = cb.and(p,root.get(AttendanceAppealInfo_.topUnitName).in(unitMap.get("COMPANY")));
-				}
-				if(unitMap.containsKey("DEPT")){
-					p = cb.and(p,root.get(AttendanceAppealInfo_.unitName).in(unitMap.get("DEPT")));
-				}
-			}
-		}
+		// 这个管理员应该不需要 以前的错误逻辑 2022-1-11 @FancyLou
+//		if(!isManager){
+//			if(unitMap.isEmpty()){
+//				p = cb.and(p,cb.isNull(root.get(AttendanceAppealInfo_.detailId)));
+//			}else{
+//				if(unitMap.containsKey("COMPANY")){
+//					p = cb.and(p,root.get(AttendanceAppealInfo_.topUnitName).in(unitMap.get("COMPANY")));
+//				}
+//				if(unitMap.containsKey("DEPT")){
+//					p = cb.and(p,root.get(AttendanceAppealInfo_.unitName).in(unitMap.get("DEPT")));
+//				}
+//			}
+//		}
 		Query query = em.createQuery(cq.select(root).where(p).orderBy(_order) );
 		return query.setMaxResults(count).getResultList();
 	}
@@ -618,6 +621,10 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 		Root<AttendanceAppealInfo> root = cq.from(AttendanceAppealInfo.class);
 		Predicate p = cb.isNotNull(root.get(AttendanceAppealInfo_.detailId));
 
+
+		if(StringUtils.isNotEmpty(wrapIn.getProcessPerson1())) {
+			p = cb.and(p, cb.equal(root.get(AttendanceAppealInfo_.currentProcessor), wrapIn.getProcessPerson1()));
+		}
 		if(StringUtils.isNotEmpty(wrapIn.getDetailId())){
 			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.detailId),wrapIn.getDetailId()));
 		}
@@ -642,18 +649,19 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 		if (wrapIn.getStatus()!=999) {
 			p = cb.and(p,cb.equal(root.get(AttendanceAppealInfo_.status),wrapIn.getStatus()));
 		}
-		if(!isManager){
-			if(unitMap.isEmpty()){
-				p = cb.and(p,cb.isNull(root.get(AttendanceAppealInfo_.detailId)));
-			}else{
-				if(unitMap.containsKey("COMPANY")){
-					p = cb.and(p,root.get(AttendanceAppealInfo_.topUnitName).in(unitMap.get("COMPANY")));
-				}
-				if(unitMap.containsKey("DEPT")){
-					p = cb.and(p,root.get(AttendanceAppealInfo_.unitName).in(unitMap.get("DEPT")));
-				}
-			}
-		}
+		// 这个管理员应该不需要 以前的错误逻辑 2022-1-11 @FancyLou
+//		if(!isManager){
+//			if(unitMap.isEmpty()){
+//				p = cb.and(p,cb.isNull(root.get(AttendanceAppealInfo_.detailId)));
+//			}else{
+//				if(unitMap.containsKey("COMPANY")){
+//					p = cb.and(p,root.get(AttendanceAppealInfo_.topUnitName).in(unitMap.get("COMPANY")));
+//				}
+//				if(unitMap.containsKey("DEPT")){
+//					p = cb.and(p,root.get(AttendanceAppealInfo_.unitName).in(unitMap.get("DEPT")));
+//				}
+//			}
+//		}
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
