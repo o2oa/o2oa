@@ -91,7 +91,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
             },
             {
                 "title": "密码管理",
-                "action": "openReceivedExplorer",
+                "action": "loadPasswordView",
                 "icon": "navi_receive"
             },
             {
