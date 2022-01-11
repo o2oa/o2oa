@@ -6,6 +6,8 @@ import cn.jpush.api.push.model.Options;
 import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
+import cn.jpush.api.push.model.notification.AndroidNotification;
+import cn.jpush.api.push.model.notification.IosNotification;
 import cn.jpush.api.push.model.notification.Notification;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -232,10 +234,15 @@ public class ActionSendMessage  extends StandardJaxrsAction {
      */
     private void send2Jpush(List<PushDevice> pushDeviceList, String message, JPushClient client) throws Exception {
         List<String> jiguangDeviceList = pushDeviceList.stream().map(PushDevice::getDeviceId).collect(Collectors.toList());
+        Notification n = Notification.newBuilder()
+                .addPlatformNotification(IosNotification.alert(message))
+                .addPlatformNotification(AndroidNotification.newBuilder().setPriority(2).setAlert(message).build())
+                .build();
         PushPayload pushPayload = PushPayload.newBuilder()
                 .setPlatform(Platform.all())
                 .setAudience(Audience.registrationId(jiguangDeviceList))
-                .setNotification(Notification.alert(message))
+//                .setNotification(Notification.alert(message))
+                .setNotification(n)
                 .setOptions(Options.newBuilder().setApnsProduction(true).build()).build();
         PushResult pushResult = client.sendPush(pushPayload);
         logger.info("极光推送 发送结果:{}.", pushResult);
