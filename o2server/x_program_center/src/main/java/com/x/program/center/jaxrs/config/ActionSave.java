@@ -54,7 +54,7 @@ public class ActionSave extends BaseAction {
 		} catch (Exception e) {
 			throw new ExceptionJsonError();
 		}
-		if ((null == je) || !je.isJsonObject()) {
+		if ((null == je) || !je.isJsonObject() || !je.isJsonArray()) {
 			throw new ExceptionJsonError();
 		}
 
