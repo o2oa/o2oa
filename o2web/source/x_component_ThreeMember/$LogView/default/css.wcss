@@ -361,5 +361,18 @@
   "naviItemNode_over" : {
     "background-color" : "#F2F5F7",
     "color" : "#666666"
+  },
+  "naviActionNode": {
+    "margin": "10px auto 10px auto",
+    "width": "160px",
+    "text-align": "center",
+    "height":"30px",
+    "line-height":"30px",
+    "font-size":"13px",
+    "color":"#4A90E2",
+    "border":"1px solid #4A90E2",
+    "background": "#FFFFFF",
+    "border-radius": "15px",
+    "cursor": "pointer"
   }
 }

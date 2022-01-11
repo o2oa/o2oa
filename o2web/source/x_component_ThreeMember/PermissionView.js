@@ -154,7 +154,7 @@ var TMPermissionView = MWF.xApplication.ThreeMember.PermissionView = new Class({
     },
     recordStatus: function () {
         var status = this.navi.currentStatus || {};
-        status.explorer = "permissionView";
+        status.explorer = "permissionview";
         return status;
     }
 });

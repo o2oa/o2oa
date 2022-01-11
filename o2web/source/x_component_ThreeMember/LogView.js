@@ -297,13 +297,18 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
         this.load();
     },
     load: function () {
+        this.naviActionNode = new Element("div.naviTopNode", {
+            "styles": this.css.naviActionNode,
+            "text": this.explorer.lp.syncLog
+        }).inject(this.node);
+
         this.scrollNode = new Element("div.naviScrollNode", {"styles": this.css.naviScrollNode}).inject(this.node);
         this.areaNode = new Element("div.naviAreaNode", {"styles": this.css.naviAreaNode}).inject(this.scrollNode);
 
-        this.naviTopNode = new Element("div.naviTopNode", {
-            "styles": this.css.naviTopNode,
-            "text": this.explorer.lp.title
-        }).inject(this.areaNode);
+        // this.naviTopNode = new Element("div.naviTopNode", {
+        //     "styles": this.css.naviTopNode,
+        //     "text": this.explorer.lp.title
+        // }).inject(this.areaNode);
 
         this.createAllNode();
 
@@ -513,6 +518,10 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
         var nodeSize = this.explorer.node.getSize();
         var h = nodeSize.y - this.explorer.getOffsetY(this.explorer.node);
         this.node.setStyle("height", h);
+
+        if( this.naviActionNode ){
+            h = h - this.naviActionNode.getSize().y - this.explorer.getOffsetY(this.naviActionNode);
+        }
         this.scrollNode.setStyle("height", h);
     }
 });

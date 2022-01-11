@@ -49,6 +49,7 @@ MWF.xApplication.ThreeMember.LP = {
 	"portal": "门户管理",
 	"query1": "数据中心",
 	"set": "设置",
+	"syncLog": "立即同步日志",
 
 	"viewer": "使用范围",
 	"publisher": "发布者",
