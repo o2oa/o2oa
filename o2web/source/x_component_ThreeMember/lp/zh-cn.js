@@ -47,7 +47,21 @@ MWF.xApplication.ThreeMember.LP = {
 	"process": "流程管理",
 	"cms": "内容管理",
 	"portal": "门户管理",
-	"query1": "数据中心管理",
+	"query1": "数据中心",
+	"set": "设置",
+
+	"viewer": "使用范围",
+	"publisher": "发布者",
+	"manager": "管理者",
+	"noDataText" : {
+		"process": "该应用下无流程",
+		"category": "该应用下无分类",
+		"view": "该应用下无视图",
+		"stat": "该应用下无统计",
+		"table": "该应用下无数据表",
+		"statement": "该应用下无查询配置",
+		"importer": "该应用下无导入配置",
+	},
 
 	"permission" : {
 		"application": "应用权限",

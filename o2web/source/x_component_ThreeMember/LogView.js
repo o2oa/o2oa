@@ -13,6 +13,7 @@ MWF.xApplication.ThreeMember.LogView = new Class({
         "viewPageNum": 1,
         "module": "",
         "operation": "",
+        "filterModule": false,
         "title": MWF.xApplication.ThreeMember.LP.title
     },
     initialize: function(node, app, options){
@@ -179,12 +180,14 @@ MWF.xApplication.ThreeMember.LogView = new Class({
         var html = "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='filterTable'>" + //style='width: 900px;'
             "<tr>" +
             "    <td styles='filterTableTitle' lable='person'></td>" +
-            "    <td styles='filterTableValue' item='person'></td>" +
-            "    <td styles='filterTableTitle' lable='module'></td>" +
-            "    <td styles='filterTableValue' item='module'></td>" +
-            "    <td styles='filterTableTitle' lable='operation'></td>" +
-            "    <td styles='filterTableValue' item='operation'></td>" +
-            "    <td styles='filterTableTitle' lable='startTime'></td>" +
+            "    <td styles='filterTableValue' item='person'></td>";
+            if( this.options.filterModule ) {
+                html +=   "<td styles='filterTableTitle' lable='module'></td>" +
+                "    <td styles='filterTableValue' item='module'></td>" +
+                "    <td styles='filterTableTitle' lable='operation'></td>" +
+                "    <td styles='filterTableValue' item='operation'></td>";
+            }
+            html +=  "<td styles='filterTableTitle' lable='startTime'></td>" +
             "    <td styles='filterTableValue' item='startTime' style='width: 150px;'></td>" +
             "    <td styles='filterTableTitle' lable='endTime'></td>" +
             "    <td styles='filterTableValue' item='endTime' style='width: 150px;'></td>" +
@@ -346,7 +349,9 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
         this.naviAllNode.setStyles(this.css.naviAllNode_current);
         if (this.explorer.form) {
             this.explorer.form.reset();
-            this.explorer.form.getItem("module").items[0].fireEvent("change");
+            if(this.explorer.options.filterModule){
+                this.explorer.form.getItem("module").items[0].fireEvent("change");
+            }
         }
         this.explorer.loadView()
     },
@@ -423,9 +428,10 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
         this.currentMenu = menuObj.node;
         menuObj.node.setStyles(this.css.naviMenuNode_current);
         this.explorer.form.reset();
-        this.explorer.form.getItem("module").setValue(menuObj.module);
-        debugger;
-        this.explorer.form.getItem("module").items[0].fireEvent("change");
+        if(this.explorer.options.filterModule) {
+            this.explorer.form.getItem("module").setValue(menuObj.module);
+            this.explorer.form.getItem("module").items[0].fireEvent("change");
+        }
         this.explorer.loadView({"module": menuObj.module})
     },
     expandOrCollapse: function (menuObj) {
@@ -493,9 +499,11 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
         this.currentItem = itemObj.node;
         itemObj.node.setStyles(this.css.naviItemNode_current);
         this.explorer.form.reset();
-        this.explorer.form.getItem("module").setValue(itemObj.module);
-        this.explorer.form.getItem("module").items[0].fireEvent("change");
-        this.explorer.form.getItem("operation").setValue(itemObj.operation);
+        if(this.explorer.options.filterModule) {
+            this.explorer.form.getItem("module").setValue(itemObj.module);
+            this.explorer.form.getItem("module").items[0].fireEvent("change");
+            this.explorer.form.getItem("operation").setValue(itemObj.operation);
+        }
         this.explorer.loadView({
             "module": itemObj.module,
             "operation": itemObj.operation

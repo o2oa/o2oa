@@ -4,7 +4,7 @@
     "overflow": "hidden"
   },
   "contentContainerNode" : {
-    "margin-left": "200px",
+    "margin-left": "240px",
     "overflow": "hidden",
     "background-color" : "#eee",
     "opacity": 1
@@ -246,7 +246,7 @@
 
   },
   "naviNode": {
-    "width": "190px",
+    "width": "230px",
     "height": "100%",
     "overflow": "hidden",
     "float": "left",
@@ -344,6 +344,7 @@
     "height" : "40px",
     "line-height" : "40px",
     "font-family": "Microsoft YaHei",
+    "overflow": "hidden",
     "font-size": "14px"
   },
   "naviItemNode_current" : {
@@ -354,6 +355,7 @@
     "height" : "40px",
     "line-height" : "40px",
     "font-family": "Microsoft YaHei",
+    "overflow": "hidden",
     "font-size": "14px"
   },
   "naviItemNode_over" : {
