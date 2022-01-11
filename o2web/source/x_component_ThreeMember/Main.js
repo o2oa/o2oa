@@ -164,6 +164,16 @@ MWF.xApplication.ThreeMember.Main = new Class({
         this.currentView = new MWF.xApplication.ThreeMember.PermissionView(this.contentContainerNode, this, options)
 
     },
+    loadPasswordView: function(){
+        if(this.currentView)this.currentView.clearContent();
+        MWF.xDesktop.requireApp("ThreeMember", "PasswordView", null, false);
+        var options = {};
+        if( this.status && this.status.es && this.status.es.explorer == "passwordview" ){
+            options = this.status.es;
+        }
+        this.currentView = new MWF.xApplication.ThreeMember.PasswordView(this.contentContainerNode, this, options)
+
+    },
     getOffsetY: function (node) {
         return (node.getStyle("margin-top").toInt() || 0) +
             (node.getStyle("margin-bottom").toInt() || 0) +

@@ -1,0 +1,21 @@
+{
+  "node" : {
+    "height": "100%",
+    "overflow": "hidden"
+  },
+  "contentContainerNode" : {
+    "margin-left": "240px",
+    "overflow": "hidden",
+    "background-color" : "#eee",
+    "opacity": 1
+  },
+  "contentScrollNode": {
+    "margin-top": "10px",
+    "background-color": "#fff",
+    "overflow": "scroll"
+  },
+  "contentNode": {
+    "background-color": "#fff",
+    "padding-bottom": "10px"
+  }
+}
