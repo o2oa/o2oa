@@ -105,9 +105,10 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/** 将导入的字节进行保存 */
 	public Long saveContent(StorageMapping mapping, byte[] bytes, String name) throws Exception {
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
-			return saveContent(mapping, bais, name);
-		}
+		this.setName(name);
+		this.setDeepPath(mapping.getDeepPath());
+		this.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(name, ".")));
+		return this.updateContent(mapping, bytes);
 	}
 
 	/** 将导入的流进行保存 */
@@ -140,21 +141,28 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/** 更新Content内容 */
 	public Long updateContent(StorageMapping mapping, InputStream input) throws Exception {
-		return updateContent(mapping, IOUtils.toByteArray(input));
+		if (Objects.equals(StorageProtocol.hdfs, mapping.getProtocol())) {
+			return this.hdfsUpdateContent(mapping, IOUtils.toByteArray(input));
+		} else {
+			return this.vfsUpdateContent(mapping, input);
+		}
 	}
 
 	/** 更新Content内容 */
 	public Long updateContent(StorageMapping mapping, byte[] bytes) throws Exception {
-
 		if (Objects.equals(StorageProtocol.hdfs, mapping.getProtocol())) {
 			return this.hdfsUpdateContent(mapping, bytes);
 		} else {
-			return this.vfsUpdateContent(mapping, bytes);
+			return this.vfsUpdateContent(mapping, new ByteArrayInputStream(bytes));
 		}
-
 	}
 
-	// 读出内容
+	/**
+	 * 读出内容
+	 * @param mapping
+	 * @return
+	 * @throws Exception
+	 */
 	public byte[] readContent(StorageMapping mapping) throws Exception {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			readContent(mapping, baos);
@@ -162,7 +170,13 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	// 将内容流出到output
+	/**
+	 * 将内容流出到output
+	 * @param mapping
+	 * @param output
+	 * @return
+	 * @throws Exception
+	 */
 	public Long readContent(StorageMapping mapping, OutputStream output) throws Exception {
 		if (Objects.equals(mapping.getProtocol(), StorageProtocol.hdfs)) {
 			return hdfsReadContent(mapping, output);
@@ -171,7 +185,12 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	// 检查是否存在内容
+	/**
+	 * 检查是否存在内容
+	 * @param mapping
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean existContent(StorageMapping mapping) throws Exception {
 		if (Objects.equals(mapping.getProtocol(), StorageProtocol.hdfs)) {
 			return hdfsExistContent(mapping);
@@ -188,46 +207,52 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	// 取得完整访问路径的前半部分
+	/**
+	 * 取得完整访问路径的前半部分
+	 * @param mapping
+	 * @return
+	 * @throws IllegalStateException
+	 * @throws UnsupportedEncodingException
+	 */
 	private String getPrefix(StorageMapping mapping) throws IllegalStateException, UnsupportedEncodingException {
 		String prefix = "";
 		if (null == mapping.getProtocol()) {
 			throw new IllegalStateException("storage protocol is null.");
 		}
 		switch (mapping.getProtocol()) {
-			case ftp:
-				prefix = "ftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-						+ mapping.getPort();
-				break;
-			case ftps:
-				prefix = "ftps://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-						+ mapping.getPort();
-				break;
-			case sftp:
-				prefix = "sftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-						+ mapping.getPort();
-				break;
-			case cifs:
-				prefix = "smb://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-						+ mapping.getPort();
-				break;
-			case webdav:
-				prefix = "webdav4://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-						+ mapping.getPort();
-				break;
-			case file:
-				prefix = "file://";
-				break;
-			case hdfs:
-				// 路径不采用带用户名的homeDirctory,直接返回
-				return StringUtils.isEmpty(mapping.getPrefix()) ? "/" : ("/" + mapping.getPrefix());
-			default:
-				break;
+		case ftp:
+			prefix = "ftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+					+ mapping.getPort();
+			break;
+		case ftps:
+			prefix = "ftps://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+					+ mapping.getPort();
+			break;
+		case sftp:
+			prefix = "sftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+					+ mapping.getPort();
+			break;
+		case cifs:
+			prefix = "smb://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+					+ mapping.getPort();
+			break;
+		case webdav:
+			prefix = "webdav4://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+					+ mapping.getPort();
+			break;
+		case file:
+			prefix = "file://";
+			break;
+		case hdfs:
+			// 路径不采用带用户名的homeDirctory,直接返回
+			return StringUtils.isEmpty(mapping.getPrefix()) ? "/" : ("/" + mapping.getPrefix());
+		default:
+			break;
 		}
 		return prefix + (StringUtils.isEmpty(mapping.getPrefix()) ? "" : ("/" + mapping.getPrefix()));
 	}
@@ -238,72 +263,72 @@ public abstract class StorageObject extends SliceJpaObject {
 			throw new IllegalStateException("storage protocol is null.");
 		}
 		switch (mapping.getProtocol()) {
-			case sftp:
-				FtpFileSystemConfigBuilder sftpBuilder = FtpFileSystemConfigBuilder.getInstance();
-				sftpBuilder.setPassiveMode(opts, Config.vfs().getSftp().getPassive());
-				// 强制不校验IP
-				sftpBuilder.setRemoteVerification(opts, false);
-				sftpBuilder.setFileType(opts, FtpFileType.BINARY);
-				sftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
-				sftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
-				sftpBuilder.setControlEncoding(opts, DefaultCharset.name);
-				// By default, the path is relative to the user's home directory. This can be
-				// changed with:
-				sftpBuilder.setUserDirIsRoot(opts, false);
-				break;
-			case ftp:
-				FtpFileSystemConfigBuilder ftpBuilder = FtpFileSystemConfigBuilder.getInstance();
-				/*
-				 * 如果使用被动模式在阿里云centos7下会经常性出现无法连接 Caused by: java.net.ConnectException:
-				 * Connection timed out (Connection timed out) at
-				 * java.net.PlainSocketImpl.socketConnect(Native Method) at
-				 * java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
-				 * at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.
-				 * java:206) at
-				 * java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) at
-				 * java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) at
-				 * java.net.Socket.connect(Socket.java:589)
-				 */
-				ftpBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
-				// 强制不校验IP
-				ftpBuilder.setRemoteVerification(opts, false);
-				// FtpFileType.BINARY is the default
-				ftpBuilder.setFileType(opts, FtpFileType.BINARY);
-				ftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
-				ftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
-				ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
-				break;
-			case ftps:
-				FtpsFileSystemConfigBuilder ftpsBuilder = FtpsFileSystemConfigBuilder.getInstance();
-				ftpsBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
-				// 强制不校验IP
-				ftpsBuilder.setRemoteVerification(opts, false);
-				// FtpFileType.BINARY is the default
-				ftpsBuilder.setFileType(opts, FtpFileType.BINARY);
-				ftpsBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
-				ftpsBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
-				ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
-				break;
-			case cifs:
-				break;
-			case webdav:
-				Webdav4FileSystemConfigBuilder webdavBuilder =  Webdav4FileSystemConfigBuilder.getInstance();
-				webdavBuilder.setConnectionTimeout(opts, Duration.ofSeconds(10));
-				webdavBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
-				webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
-				webdavBuilder.setMaxConnectionsPerHost(opts, 200);
-				webdavBuilder.setMaxTotalConnections(opts, 200);
-				webdavBuilder.setFollowRedirect(opts, true);
-				break;
-			case file:
-				break;
-			default:
-				break;
+		case sftp:
+			FtpFileSystemConfigBuilder sftpBuilder = FtpFileSystemConfigBuilder.getInstance();
+			sftpBuilder.setPassiveMode(opts, Config.vfs().getSftp().getPassive());
+			// 强制不校验IP
+			sftpBuilder.setRemoteVerification(opts, false);
+			sftpBuilder.setFileType(opts, FtpFileType.BINARY);
+			sftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
+			sftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			sftpBuilder.setControlEncoding(opts, DefaultCharset.name);
+			// By default, the path is relative to the user's home directory. This can be
+			// changed with:
+			sftpBuilder.setUserDirIsRoot(opts, false);
+			break;
+		case ftp:
+			FtpFileSystemConfigBuilder ftpBuilder = FtpFileSystemConfigBuilder.getInstance();
+			/*
+			 * 如果使用被动模式在阿里云centos7下会经常性出现无法连接 Caused by: java.net.ConnectException:
+			 * Connection timed out (Connection timed out) at
+			 * java.net.PlainSocketImpl.socketConnect(Native Method) at
+			 * java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+			 * at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.
+			 * java:206) at
+			 * java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) at
+			 * java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) at
+			 * java.net.Socket.connect(Socket.java:589)
+			 */
+			ftpBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
+			// 强制不校验IP
+			ftpBuilder.setRemoteVerification(opts, false);
+			// FtpFileType.BINARY is the default
+			ftpBuilder.setFileType(opts, FtpFileType.BINARY);
+			ftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
+			ftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
+			break;
+		case ftps:
+			FtpsFileSystemConfigBuilder ftpsBuilder = FtpsFileSystemConfigBuilder.getInstance();
+			ftpsBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
+			// 强制不校验IP
+			ftpsBuilder.setRemoteVerification(opts, false);
+			// FtpFileType.BINARY is the default
+			ftpsBuilder.setFileType(opts, FtpFileType.BINARY);
+			ftpsBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
+			ftpsBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
+			break;
+		case cifs:
+			break;
+		case webdav:
+			Webdav4FileSystemConfigBuilder webdavBuilder =  Webdav4FileSystemConfigBuilder.getInstance();
+			webdavBuilder.setConnectionTimeout(opts, Duration.ofSeconds(10));
+			webdavBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
+			webdavBuilder.setMaxConnectionsPerHost(opts, 200);
+			webdavBuilder.setMaxTotalConnections(opts, 200);
+			webdavBuilder.setFollowRedirect(opts, true);
+			break;
+		case file:
+			break;
+		default:
+			break;
 		}
 		return opts;
 	}
 
-	private Long vfsUpdateContent(StorageMapping mapping, byte[] bytes) throws Exception {
+	private Long vfsUpdateContent(StorageMapping mapping, InputStream inputStream) throws Exception {
 		String prefix = this.getPrefix(mapping);
 		String path = this.path();
 		if (StringUtils.isEmpty(path)) {
@@ -320,8 +345,8 @@ public abstract class StorageObject extends SliceJpaObject {
 		 */
 		for (int i = 0; i < 2; i++) {
 			try (FileObject fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
-				 OutputStream output = fo.getContent().getOutputStream()) {
-				length = IOUtils.copyLarge(new ByteArrayInputStream(bytes), output);
+					OutputStream output = fo.getContent().getOutputStream()) {
+				length = IOUtils.copyLarge(inputStream, output);
 				this.setLength(length);
 				if ((!Objects.equals(StorageProtocol.webdav, mapping.getProtocol()))
 						&& (!Objects.equals(StorageProtocol.sftp, mapping.getProtocol()))) {
@@ -341,7 +366,13 @@ public abstract class StorageObject extends SliceJpaObject {
 		return length;
 	}
 
-	// vfs读取数据
+	/**
+	 * vfs读取数据
+	 * @param mapping
+	 * @param output
+	 * @return
+	 * @throws Exception
+	 */
 	private Long vfsReadContent(StorageMapping mapping, OutputStream output) throws Exception {
 		long length = -1L;
 		FileSystemManager manager = this.getFileSystemManager();
@@ -375,7 +406,11 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	// 删除内容,同时判断上一级目录(只判断一级)是否为空,为空则删除上一级目录
+	/**
+	 * 删除内容,同时判断上一级目录(只判断一级)是否为空,为空则删除上一级目录
+	 * @param mapping
+	 * @throws Exception
+	 */
 	private void vfsDeleteContent(StorageMapping mapping) throws Exception {
 		FileSystemManager manager = this.getFileSystemManager();
 		String prefix = this.getPrefix(mapping);

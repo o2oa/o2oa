@@ -1592,6 +1592,7 @@ o2.xDesktop.Default.StartMenu = new Class({
     },
 
     checkMenuItem: function(value, currentNames){
+        if( value.path === "AuditLog" && ["securityManager","auditManager"].isIntersect(currentNames) )return true;
         if (value.visible===false) return false;
         var isAllow = true;
         if (value.allowList) isAllow = (value.allowList.length) ? (value.allowList.isIntersect(currentNames)) : true;
