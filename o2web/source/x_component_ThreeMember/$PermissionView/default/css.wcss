@@ -4,10 +4,19 @@
     "overflow": "hidden"
   },
   "contentContainerNode" : {
-    "margin-left": "270px",
+    "margin-left": "240px",
     "overflow": "hidden",
     "background-color" : "#eee",
     "opacity": 1
+  },
+  "contentScrollNode": {
+    "margin-top": "10px",
+    "background-color": "#fff",
+    "overflow": "scroll"
+  },
+  "contentNode": {
+    "background-color": "#fff",
+    "padding-bottom": "10px"
   },
   "topContainerNode" : {
     "overflow" : "hidden",
@@ -41,8 +50,17 @@
     "white-space":"nowrap"
   },
   "topContentNode" : {
-    "float" : "left",
-    "padding-right" : "10px"
+    "overflow" : "hidden",
+    "padding-right" : "20px"
+  },
+  "topNaviTitleNode": {
+    "font-weight": "normal",
+    "height": "50px",
+    "color": "#888",
+    "font-size": "16px",
+    "line-height": "50px",
+    "margin-left": "25px",
+    "float": "right"
   },
   "topNaviItemNode": {
     "height": "44px",
@@ -67,7 +85,7 @@
 
   },
   "naviNode": {
-    "width": "260px",
+    "width": "230px",
     "height": "100%",
     "overflow": "hidden",
     "float": "left",
@@ -180,5 +198,81 @@
   "naviItemNode_over" : {
     "background-color" : "#F2F5F7",
     "color" : "#666666"
+  },
+
+  "itemTitleNode": {
+    "overflow": "hidden",
+    "margin": "20px 40px 10px 40px",
+    "height": "40px",
+//    "color": "#888",
+    "font-size": "16px",
+    "line-height": "40px",
+    //"font-weight": "bold",
+    "clear": "both",
+    "border-bottom": "1px solid #ccc"
+  },
+  "itemsContentNode": {
+    "padding": "10px",
+    "overflow": "hidden",
+    "margin": "0px 40px"
+  },
+  "selectButtonStyle": {
+    "margin-left": "40px",
+    "float": "left",
+    "background-color": "#FFF",
+    "padding": "4px 14px",
+    "border": "1px solid #ccc",
+    "border-radius": "3px",
+    "margin-top": "10px",
+    "font-size": "12px",
+    "color": "#888",
+    "cursor": "pointer"
+  },
+
+  "noDataTextNode": {
+    "width": "300px",
+    "height": "150px",
+    "text-align": "center",
+    "border": "1px solid #ccc",
+    "line-height": "150px",
+    "margin": "30px auto 0px auto",
+    "font-size": "18px"
+  },
+
+  "propertyTitleNode": {
+    "font-size": "16px",
+    "height": "36px",
+    "line-height": "36px",
+    "padding-top": "30px",
+    "margin-left": "30px",
+    "margin-right": "30px",
+    "border-bottom": "1px solid #ccc"
+  },
+  "propertyTitleTd": {
+    "border-bottom": "1px solid #ddd",
+    "width": "80px"
+  },
+  "propertyContentTd": {
+    "border-bottom": "1px solid #ddd"
+  },
+  "propertyActionTd": {
+    "border-bottom": "1px solid #ddd",
+    "width": "130px"
+  },
+  "propertyContentNode": {
+    "padding": "10px",
+    "overflow": "hidden",
+    "margin": "0px 0px"
+  },
+  "propertyButtonStyle": {
+    "float": "right",
+    "background-color": "#FFF",
+    "padding": "4px 14px",
+    "border": "1px solid #ccc",
+    "border-radius": "3px",
+    "margin-top": "10px",
+    "font-size": "12px",
+    "color": "#888",
+    "cursor": "pointer"
   }
 }
