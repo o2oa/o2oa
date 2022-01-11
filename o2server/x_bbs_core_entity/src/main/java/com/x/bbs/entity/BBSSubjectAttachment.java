@@ -358,10 +358,12 @@ public class BBSSubjectAttachment extends StorageObject {
 		this.extension = extension;
 	}
 
-	public Long getLength() {
+	@Override
+    public Long getLength() {
 		return length;
 	}
 
+	@Override
 	public void setLength(Long length) {
 		this.length = length;
 	}
