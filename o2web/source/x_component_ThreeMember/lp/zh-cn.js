@@ -76,6 +76,27 @@ MWF.xApplication.ThreeMember.LP = {
 		"table": "数据表权限",
 		"statement": "查询权限",
 		"importer": "导入权限"
+	},
+
+	"passwordConfig":{
+		"title": "配置系统的人员账户基本信息",
+		"password": "新建用户的默认密码",
+		"passwordNote": "创建新建用户时，使用以下密码，用户可登录系统后自行修改",
+		"passwordPeriod": "密码过期时间（天）",
+		"passwordPeriodNote": "超过此设定天数未修改密码的用户，登录后会强制要求修改密码，否则无法进入系统",
+		"adminPassword": "超级管理员密码",
+		"adminPasswordNote": "超级管理员xadmin的密码",
+		"passwordRegex": "密码校验正则表达式",
+		"passwordRegexNote": "修改密码时的校验，不填则密码为7位以上,包含数字和字母",
+		"passwordRegexHint": "密码校验提示文本",
+		"passwordRegexHintNote": "修改密码时的校验不通过的提示文本",
+		"failureCount": "错误密码次数",
+		"failureCountNote": "登录时允许输入的错误密码次数上限",
+		"failureInterval": "登录限制时间(分钟)",
+		"failureIntervalNote": "达到错误密码次数上限后，限制登录的时间",
+		"systemManagerPassword": "系统管理员密码",
+		"securityManagerPassword": "安全管理员密码",
+		"auditManagerPassword": "安全审计员密码"
 	}
 
 
