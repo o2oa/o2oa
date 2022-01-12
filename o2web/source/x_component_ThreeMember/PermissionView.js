@@ -178,10 +178,10 @@ TMPermissionView.Navi = new Class({
         this.scrollNode = new Element("div.naviScrollNode", {"styles": this.css.naviScrollNode}).inject(this.node);
         this.areaNode = new Element("div.naviAreaNode", {"styles": this.css.naviAreaNode}).inject(this.scrollNode);
 
-        this.naviTopNode = new Element("div.naviTopNode", {
-            "styles": this.css.naviTopNode,
-            "text": this.explorer.lp.title
-        }).inject(this.areaNode);
+        // this.naviTopNode = new Element("div.naviTopNode", {
+        //     "styles": this.css.naviTopNode,
+        //     "text": this.explorer.lp.title
+        // }).inject(this.areaNode);
 
         this.explorer.getCategories().each(function (category) {
             debugger;
