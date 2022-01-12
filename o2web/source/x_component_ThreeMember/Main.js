@@ -40,7 +40,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
         if (callback) callback();
     },
     reload: function () {
-        this.clearContent();
+        this.clear();
         this.loadApplicationLayout();
     },
     isAdmin: function () {
@@ -86,7 +86,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
             },
             {
                 "title": "组织管理",
-                "action": "openSharedExplorer",
+                "action": "loadOrganizationView",
                 "icon": "navi_share"
             },
             {
@@ -140,12 +140,12 @@ MWF.xApplication.ThreeMember.Main = new Class({
         this.contentContainerNode.setStyle("height", h+"px");
 
     },
-    clearContent: function () {
-        if(this.currentView)this.currentView.clearContent();
+    clear: function () {
+        if(this.currentView)this.currentView.clear();
         // if (this.setContentSizeFun) this.removeEvent("resize", this.setContentSizeFun);
     },
     loadLogView: function(){
-        if(this.currentView)this.currentView.clearContent();
+        if(this.currentView)this.currentView.clear();
         MWF.xDesktop.requireApp("ThreeMember", "LogView", null, false);
         var options = {};
         if( this.status && this.status.es && this.status.es.explorer == "logview" ){
@@ -155,7 +155,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
 
     },
     loadPermissionView: function(){
-        if(this.currentView)this.currentView.clearContent();
+        if(this.currentView)this.currentView.clear();
         MWF.xDesktop.requireApp("ThreeMember", "PermissionView", null, false);
         var options = {};
         if( this.status && this.status.es && this.status.es.explorer == "permissionview" ){
@@ -165,7 +165,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
 
     },
     loadPasswordView: function(){
-        if(this.currentView)this.currentView.clearContent();
+        if(this.currentView)this.currentView.clear();
         MWF.xDesktop.requireApp("ThreeMember", "PasswordView", null, false);
         var options = {};
         if( this.status && this.status.es && this.status.es.explorer == "passwordview" ){
@@ -173,6 +173,27 @@ MWF.xApplication.ThreeMember.Main = new Class({
         }
         this.currentView = new MWF.xApplication.ThreeMember.PasswordView(this.contentContainerNode, this, options)
 
+    },
+    loadOrganizationView: function(){
+        if(this.currentView)this.currentView.clear();
+        MWF.xApplication.Org = MWF.xApplication.Org || {};
+        MWF.xDesktop.requireApp("Org", "lp."+o2.language, null, false);
+        MWF.xDesktop.requireApp("Org", "Main", null, false);
+        var options = {};
+        if( this.status && this.status.es && this.status.es.explorer == "passwordview" ){
+            options = this.status.es;
+        }
+        options.content = this.contentContainerNode;
+        this.currentView = new MWF.xApplication.Org.Main(this.desktop, options);
+        this.currentView.clear = function () {
+            this.fireAppEvent("queryClose");
+            if (this.resizeFun) this.eventTarget.removeEvent("resize", this.resizeFun);
+            this.fireAppEvent("postClose");
+            this.content.empty();
+            o2.release(this);
+        }.bind(this.currentView);
+        this.currentView.load();
+        this.currentView.setEvent(this);
     },
     getOffsetY: function (node) {
         return (node.getStyle("margin-top").toInt() || 0) +

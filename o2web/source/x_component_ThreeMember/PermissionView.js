@@ -24,7 +24,7 @@ var TMPermissionView = MWF.xApplication.ThreeMember.PermissionView = new Class({
         this.load();
     },
     reload: function () {
-        this.clearContent();
+        this.clear();
         this.load();
     },
     load: function () {
@@ -108,7 +108,7 @@ var TMPermissionView = MWF.xApplication.ThreeMember.PermissionView = new Class({
             "overflow": "auto"
         });
     },
-    clearContent: function () {
+    clear: function () {
         if (this.setContentSizeFun) this.removeEvent("resize", this.setContentSizeFun);
         if( this.navi )this.navi.destroy();
         if( this.naviNode ){

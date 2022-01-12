@@ -50,6 +50,9 @@ MWF.xApplication.ThreeMember.LP = {
 	"query1": "数据中心",
 	"set": "设置",
 	"syncLog": "立即同步日志",
+	"save": "保存",
+	"saveSuccess": "保存成功",
+	"saveFailure": "保存失败",
 
 	"viewer": "使用范围",
 	"publisher": "发布者",
@@ -87,7 +90,7 @@ MWF.xApplication.ThreeMember.LP = {
 		"adminPassword": "超级管理员密码",
 		"adminPasswordNote": "超级管理员xadmin的密码",
 		"passwordRegex": "密码校验正则表达式",
-		"passwordRegexNote": "修改密码时的校验，不填则密码为7位以上,包含数字和字母",
+		"passwordRegexNote": "修改密码时的校验正则表达式",
 		"passwordRegexHint": "密码校验提示文本",
 		"passwordRegexHintNote": "修改密码时的校验不通过的提示文本",
 		"failureCount": "错误密码次数",
@@ -95,8 +98,11 @@ MWF.xApplication.ThreeMember.LP = {
 		"failureInterval": "登录限制时间(分钟)",
 		"failureIntervalNote": "达到错误密码次数上限后，限制登录的时间",
 		"systemManagerPassword": "系统管理员密码",
+		"systemManagerPasswordNote": "systemManager密码",
 		"securityManagerPassword": "安全管理员密码",
-		"auditManagerPassword": "安全审计员密码"
+		"securityManagerPasswordNote": "securityManager密码",
+		"auditManagerPassword": "安全审计员密码",
+		"auditManagerPasswordNote": "auditManager密码"
 	}
 
 

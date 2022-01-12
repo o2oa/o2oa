@@ -3,6 +3,7 @@
     "width": "99%",
     "border":"1px solid #DEDEDE",
     "background-color":"#FFF",
+    "color": "#0000FF",
     "height": "26px",
     "font-size": "14px",
     "border-radius" : "13px"
@@ -11,6 +12,7 @@
     "width": "99%",
     "border-radius" : "13px",
     "border":"1px solid #DEDEDE",
+    "color": "#0000FF",
     "height": "26px",
     "font-size": "14px",
     "background" : "#fff url(../x_component_Template/$MForm/attendance/icon/calendar.png) 98% center no-repeat"
@@ -18,6 +20,7 @@
   "inputTimeUnformatWidth" : {
     "border-radius" : "13px",
     "border":"1px solid #DEDEDE",
+    "color": "#0000FF",
     "height": "26px",
     "font-size": "14px",
     "background" : "#fff url(../x_component_Template/$MForm/attendance/icon/calendar.png) 98% center no-repeat"
@@ -26,6 +29,7 @@
     "width": "99%",
     "border-radius" : "13px",
     "border":"1px solid #DEDEDE",
+    "color": "#0000FF",
     "min-height": "26px",
     "overflow" : "hidden",
     "font-size": "14px",
@@ -34,6 +38,7 @@
   "inputTextarea" : {
     "width": "99%",
     "border-radius" : "13px",
+    "color": "#0000FF",
     "border":"1px solid #DEDEDE",
     "background-color":"#FFF",
     "height": "80px"
