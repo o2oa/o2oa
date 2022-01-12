@@ -158,7 +158,7 @@ MWF.xApplication.ThreeMember.LogView = new Class({
         if (filterData) this.view.filterData = filterData;
         this.view.load();
     },
-    clearContent: function () {
+    clear: function () {
         if (this.setContentSizeFun) this.removeEvent("resize", this.setContentSizeFun);
         if( this.navi )this.navi.destroy();
         if( this.naviNode ){

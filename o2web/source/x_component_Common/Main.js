@@ -56,7 +56,8 @@ MWF.xApplication.Common.Main = new Class({
 		"isMax": true,
 		"setCurrent": true,
 		"isRefresh": false,
-		"isWindowRefresh": true
+		"isWindowRefresh": true,
+		"embededParent": ""
 	},
 	initialize: function (desktop, options) {
 		this.setOptions(options);
@@ -68,6 +69,10 @@ MWF.xApplication.Common.Main = new Class({
 		this.cssPath = this.path + this.options.style + "/css.wcss";
 		if (this.options.mvcStyle) this.stylePath = this.path + this.options.style + "/" + this.options.mvcStyle;
 		if (!this.options.mvcStyle) this._loadCss();
+
+		if( this.options.embededParent && o2.typeOf(this.options.embededParent)==="element" ){
+			this.embeded = true;
+		}
 	},
 	fireAppEvent: function (when) {
 		this.fireEvent(when);
@@ -80,7 +85,9 @@ MWF.xApplication.Common.Main = new Class({
 	},
 	loadNoAnimation: function (isCurrent, max, hide) {
 		this.fireAppEvent("queryLoad");
-		if (!this.inBrowser) {
+		if( this.embeded ){
+			this.loadEmbeded();
+		}else if (!this.inBrowser) {
 			if (layout.viewMode==="Homepage"){
 				this.loadWindowFlat(isCurrent);
 			}else{
@@ -92,7 +99,9 @@ MWF.xApplication.Common.Main = new Class({
 	},
 	load: function (isCurrent, content) {
 		this.fireAppEvent("queryLoad");
-		if (!this.inBrowser) {
+		if( this.embeded ){
+			this.loadEmbeded();
+		}else if (!this.inBrowser) {
 			if (layout.viewMode==="Default"){
 				this.loadWindowFlat(isCurrent);
 			}else{
@@ -295,6 +304,86 @@ MWF.xApplication.Common.Main = new Class({
 
 		this.fireAppEvent("postLoad");
 	},
+
+	setEventTarget: function( eventTarget ){
+		if( !this.embeded )return;
+
+		if (this.eventTarget){
+			if( this.resizeFun )this.eventTarget.removeEvent("resize", this.resizeFun );
+			this.resizeFun = null;
+
+			if( this.queryLoadFun )this.eventTarget.removeEvent("resize", this.queryLoadFun );
+			this.queryLoadFun = null;
+
+			if( this.postLoadFun )this.eventTarget.removeEvent("resize", this.postLoadFun );
+			this.postLoadFun = null;
+		}
+
+		if(eventTarget) this.eventTarget = eventTarget;
+
+		if (this.eventTarget){
+			var fireEventMethod = this.fireAppEvent || this.fireEvent;
+			if( fireEventMethod ) {
+				this.resizeFun = function () {
+					fireEventMethod("resize");
+				}.bind(this);
+				this.eventTarget.addEvent("resize", this.resizeFun);
+
+				this.queryLoadFun = function () {
+					fireEventMethod("queryClose");
+				}.bind(this);
+				this.eventTarget.addEvent("queryClose", this.queryLoadFun);
+
+				this.postLoadFun = function () {
+					if (this.resizeFun) this.eventTarget.removeEvent("resize", this.resizeFun);
+					fireEventMethod("postClose");
+				}.bind(this);
+				this.eventTarget.addEvent("postClose", this.postLoadFun);
+			}
+		}
+	},
+	loadEmbeded: function(){
+		if( !this.options.embededParent )return;
+
+		this.window = {
+			"isHide": false,
+			"isMax": true,
+			"maxSize": function(){},
+			"restore": function(){},
+			"setCurrent": function(){},
+			"setUncurrent": function () {},
+			"hide": function(){},
+			"maxOrRestoreSize": function(){},
+			"restoreSize": function(){},
+			"close": function(){},
+			"titleText" : {
+				set : function(){}
+			}
+		};
+		this.window.content = this.options.embededParent;
+		this.content = this.window.content;
+
+		if( this.eventTarget && o2.typeOf( this.eventTarget.addEvent ) === "function" ){
+			this.setEventTarget();
+		}
+
+		this.fireAppEvent("postLoadWindow");
+		this.fireAppEvent("queryLoadApplication");
+		this.setContentEvent();
+
+		//if (this.options.title) this.setTitle(this.options.title);
+		if (this.stylePath) o2.loadCss(this.stylePath);
+		//this.content.addClass("appContent");
+
+		this.loadApplication(function(){
+			this.fireAppEvent("postLoadApplication");
+		}.bind(this));
+
+		//this.content.setStyle("height", document.body.getSize().y);
+
+		this.fireAppEvent("postLoad");
+	},
+
 	openInNewBrowser: function (noClose) {
 		this.desktop.openBrowserApp = this.options.name;
 		this.desktop.openBrowserStatus = (this.recordStatus) ? this.recordStatus() : null;
@@ -411,6 +500,13 @@ MWF.xApplication.Common.Main = new Class({
 		if (this.inBrowser) {
 			window.open("", "_self").close();
 			window.close();
+		} else if( this.embeded ){
+
+			this.fireAppEvent("queryClose");
+			if (this.resizeFun && this.eventTarget) this.eventTarget.removeEvent("resize", this.resizeFun);
+			this.fireAppEvent("postClose");
+			o2.release(this);
+
 		} else {
 			this.fireAppEvent("queryClose");
 
