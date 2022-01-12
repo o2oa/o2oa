@@ -322,24 +322,22 @@ MWF.xApplication.Common.Main = new Class({
 		if(eventTarget) this.eventTarget = eventTarget;
 
 		if (this.eventTarget){
-			var fireEventMethod = this.fireAppEvent || this.fireEvent;
-			if( fireEventMethod ) {
-				this.resizeFun = function () {
-					fireEventMethod("resize");
-				}.bind(this);
-				this.eventTarget.addEvent("resize", this.resizeFun);
+			this.resizeFun = function () {
+				debugger;
+				this.fireAppEvent("resize");
+			}.bind(this);
+			this.eventTarget.addEvent("resize", this.resizeFun);
 
-				this.queryLoadFun = function () {
-					fireEventMethod("queryClose");
-				}.bind(this);
-				this.eventTarget.addEvent("queryClose", this.queryLoadFun);
+			this.queryLoadFun = function () {
+				this.fireAppEvent("queryClose");
+			}.bind(this);
+			this.eventTarget.addEvent("queryClose", this.queryLoadFun);
 
-				this.postLoadFun = function () {
-					if (this.resizeFun) this.eventTarget.removeEvent("resize", this.resizeFun);
-					fireEventMethod("postClose");
-				}.bind(this);
-				this.eventTarget.addEvent("postClose", this.postLoadFun);
-			}
+			this.postLoadFun = function () {
+				if (this.resizeFun) this.eventTarget.removeEvent("resize", this.resizeFun);
+				this.fireAppEvent("postClose");
+			}.bind(this);
+			this.eventTarget.addEvent("postClose", this.postLoadFun);
 		}
 	},
 	loadEmbeded: function(){
@@ -363,9 +361,9 @@ MWF.xApplication.Common.Main = new Class({
 		this.window.content = this.options.embededParent;
 		this.content = this.window.content;
 
-		if( this.eventTarget && o2.typeOf( this.eventTarget.addEvent ) === "function" ){
-			this.setEventTarget();
-		}
+		// if( this.eventTarget && o2.typeOf( this.eventTarget.addEvent ) === "function" ){
+		// 	this.setEventTarget();
+		// }
 
 		this.fireAppEvent("postLoadWindow");
 		this.fireAppEvent("queryLoadApplication");
@@ -502,6 +500,7 @@ MWF.xApplication.Common.Main = new Class({
 			window.close();
 		} else if( this.embeded ){
 
+			this.window = null;
 			this.fireAppEvent("queryClose");
 			if (this.resizeFun && this.eventTarget) this.eventTarget.removeEvent("resize", this.resizeFun);
 			this.fireAppEvent("postClose");

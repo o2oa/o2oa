@@ -71,7 +71,6 @@ MWF.xApplication.ThreeMember.Main = new Class({
 
         this.loadNavi();
         // this.loadLogView();
-        this.loadPermissionView();
 
         // this.createTopNode();
         // this.createContainerNode();
@@ -80,24 +79,24 @@ MWF.xApplication.ThreeMember.Main = new Class({
     loadNavi : function(){
         var naviJson = [
             {
+                "title": "查看日志",
+                "action": "loadLogView",
+                "icon": "log"
+            },
+            {
                 "title": "应用权限",
                 "action": "loadPermissionView",
-                "icon": "navi_mine"
+                "icon": "permission"
             },
             {
                 "title": "组织管理",
                 "action": "loadOrganizationView",
-                "icon": "navi_share"
+                "icon": "org"
             },
             {
                 "title": "密码管理",
                 "action": "loadPasswordView",
-                "icon": "navi_receive"
-            },
-            {
-                "title": "查看日志",
-                "action": "loadLogView",
-                "icon": "navi_recycle"
+                "icon": "password"
             }
             // {
             //     "title": "来自应用",
@@ -105,11 +104,11 @@ MWF.xApplication.ThreeMember.Main = new Class({
             //     "icon": "navi_fromapp"
             // }
         ];
-        naviJson.each( function( d ){
-            this.createNaviNode( d );
+        naviJson.each( function( d, index ){
+            this.createNaviNode( d, index );
         }.bind(this))
     },
-    createNaviNode : function( d ){
+    createNaviNode : function( d, index ){
         var _self = this;
         var node = new Element("div",{
             text : d.title,
@@ -118,17 +117,23 @@ MWF.xApplication.ThreeMember.Main = new Class({
                 click : function( ev ){
                     if( _self.currentAction == d.action )return;
                     ev.target.setStyles( _self.css.naviItemNode_selected );
-                    if(_self.currentNaviItemNode)_self.currentNaviItemNode.setStyles( _self.css.naviItemNode );
+                    ev.target.setStyle("background-image", "url("+_self.path + "icon/" + d.icon + "_click.png)" );
+                    if(_self.currentNaviItemNode){
+                        var data = _self.currentNaviItemNode.retrieve("data");
+                        _self.currentNaviItemNode.setStyles( _self.css.naviItemNode );
+                        _self.currentNaviItemNode.setStyle("background-image", "url("+_self.path + "icon/" + data.icon + ".png)" );
+                    }
                     _self.currentNaviItemNode = ev.target;
                     _self.currentAction = d.action;
                     _self[ d.action ]();
                 }
             }
         }).inject( this.naviNode );
+        node.store("data", d);
         node.setStyle("background-image", "url("+this.path + "icon/" + d.icon + ".png)" );
-        if( this.status && this.status.action && this.status.action == d.action ){
-            node.click();
-        }else if( this.options.defaultAction == d.action  ){
+        if( this.status && this.status.action ){
+            if(this.status.action === d.action)node.click();
+        }else if( index === 0  ){
             node.click();
         }
     },
@@ -136,6 +141,8 @@ MWF.xApplication.ThreeMember.Main = new Class({
         var size = this.content.getSize();
         var h = size.y - this.getOffsetY(this.content);
         h = h - this.getOffsetY(this.node);
+
+        h = h - this.naviNode.getSize().y - this.getOffsetY(this.naviNode);
 
         this.contentContainerNode.setStyle("height", h+"px");
 
@@ -180,20 +187,17 @@ MWF.xApplication.ThreeMember.Main = new Class({
         MWF.xDesktop.requireApp("Org", "lp."+o2.language, null, false);
         MWF.xDesktop.requireApp("Org", "Main", null, false);
         var options = {};
-        if( this.status && this.status.es && this.status.es.explorer == "passwordview" ){
+        if( this.status && this.status.es && this.status.es.explorer === "orgview" ){
             options = this.status.es;
         }
-        options.content = this.contentContainerNode;
+        options.embededParent = this.contentContainerNode;
         this.currentView = new MWF.xApplication.Org.Main(this.desktop, options);
         this.currentView.clear = function () {
-            this.fireAppEvent("queryClose");
-            if (this.resizeFun) this.eventTarget.removeEvent("resize", this.resizeFun);
-            this.fireAppEvent("postClose");
             this.content.empty();
-            o2.release(this);
+            this.close();
         }.bind(this.currentView);
         this.currentView.load();
-        this.currentView.setEvent(this);
+        this.currentView.setEventTarget(this);
     },
     getOffsetY: function (node) {
         return (node.getStyle("margin-top").toInt() || 0) +
