@@ -41,7 +41,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 					"set": function(v){
 						this.data[p] = v;
 						_self[p+"CountNode"].set("text", v);
-						if (_self[p+"List"]) _self[p+"List"].loadPage();
 					}
 				}
 			};
@@ -78,14 +77,15 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		}.bind(this));
 	},
 	loadList: function(type){
-		this.loadCount();
 		if (this.currentMenu) this.setMenuItemStyleDefault(this.currentMenu);
 		this.setMenuItemStyleCurrent(this[type+"MenuNode"]);
 		this.currentMenu = this[type+"MenuNode"];
 
 		if (this.currentList) this.currentList.hide();
 		this.showSkeleton();
-		this[("load-"+type).camelCase()]();
+		this._loadListContent(type);
+		this.loadCount();
+		//if (this.currentList) this.currentList.loadPage();
 	},
 	showSkeleton: function(){
 		if (this.skeletonNode) this.skeletonNode.inject(this.listContentNode);
@@ -93,31 +93,56 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	hideSkeleton: function(){
 		if (this.skeletonNode) this.skeletonNode.dispose();
 	},
-	loadTask: function(){
-		if (!this.taskList) this.taskList = new MWF.xApplication.process.workcenter.TaskList(this, {
-			"onLoadData": this.hideSkeleton.bind(this)
-		});
-		this.taskList.init();
-		this.taskList.load();
-		this.currentList = this.taskList;
+	_loadListContent: function(type){
+		var list = this[(type+"-list").camelCase()];
+		if (!list){
+			list = new MWF.xApplication.process.workcenter[type.capitalize()+"List"](this, { "onLoadData": this.hideSkeleton.bind(this) });
+			this[(type+"-list").camelCase()] = list;
+		}
+		list.init();
+		list.load();
+		this.currentList = list;
 	},
-	loadRead: function(){
-		if (!this.readList) this.readList = new MWF.xApplication.process.workcenter.ReadList(this, {
-			"onLoadData": this.hideSkeleton.bind(this)
-		});
-		this.readList.init();
-		this.readList.load();
-		this.currentList = this.readList;
-	},
-	loadTaskCompleted: function(){
-
-	},
-	loadReadCompleted: function(){
-
-	},
-	loadDraft: function(){
-
-	},
+	// loadTask: function(){
+	// 	if (!this.taskList) this.taskList = new MWF.xApplication.process.workcenter.TaskList(this, {
+	// 		"onLoadData": this.hideSkeleton.bind(this)
+	// 	});
+	// 	this.taskList.init();
+	// 	this.taskList.load();
+	// 	this.currentList = this.taskList;
+	// },
+	// loadRead: function(){
+	// 	if (!this.readList) this.readList = new MWF.xApplication.process.workcenter.ReadList(this, {
+	// 		"onLoadData": this.hideSkeleton.bind(this)
+	// 	});
+	// 	this.readList.init();
+	// 	this.readList.load();
+	// 	this.currentList = this.readList;
+	// },
+	// loadTaskCompleted: function(){
+	// 	if (!this.taskCompletedList) this.taskCompletedList = new MWF.xApplication.process.workcenter.TaskCompletedList(this, {
+	// 		"onLoadData": this.hideSkeleton.bind(this)
+	// 	});
+	// 	this.taskCompletedList.init();
+	// 	this.taskCompletedList.load();
+	// 	this.currentList = this.taskCompletedList;
+	// },
+	// loadReadCompleted: function(){
+	// 	if (!this.readCompletedList) this.readCompletedList = new MWF.xApplication.process.workcenter.ReadCompletedList(this, {
+	// 		"onLoadData": this.hideSkeleton.bind(this)
+	// 	});
+	// 	this.readCompletedList.init();
+	// 	this.readCompletedList.load();
+	// 	this.currentList = this.readCompletedList;
+	// },
+	// loadDraft: function(){
+	// 	if (!this.readCompletedList) this.readCompletedList = new MWF.xApplication.process.workcenter.ReadCompletedList(this, {
+	// 		"onLoadData": this.hideSkeleton.bind(this)
+	// 	});
+	// 	this.readCompletedList.init();
+	// 	this.readCompletedList.load();
+	// 	this.currentList = this.readCompletedList;
+	// },
 	setMenuItemStyleDefault: function(node){
 		node.removeClass("mainColor_bg_opacity");
 		node.getFirst().removeClass("mainColor_color");
@@ -170,7 +195,9 @@ MWF.xApplication.process.workcenter.Main = new Class({
 MWF.xApplication.process.workcenter.List = new Class({
 	Implements: [Options, Events],
 	options: {
-		"itemHeight": 60
+		"itemHeight": 60,
+		"view": "list.html",
+		"type": "task"
 	},
 	initialize: function (app, options) {
 		this.setOptions(options);
@@ -195,18 +222,21 @@ MWF.xApplication.process.workcenter.List = new Class({
 	load: function(){
 		var _self = this;
 		this.loadData().then(function(data){
+			_self.loadPage();
 			_self.loadItems(data);
 		});
 	},
 	refresh: function(){
 		this.hide();
 		this.load();
+		this.loadPage();
+		this.app.loadCount();
 	},
 	hide: function(){
 		if (this.node) this.node.destroy();
 	},
 	loadPage: function(){
-		var totalCount = this.app.countData.task;
+		var totalCount = this.app.countData[this.options.type];
 		var pages = totalCount/this.size;
 		var pageCount = pages.toInt();
 		if (pages !== pageCount) pageCount = pageCount+1;
@@ -273,8 +303,8 @@ MWF.xApplication.process.workcenter.List = new Class({
 		}.bind(this));
 	},
 	loadItems: function(data){
-		var url = this.app.path+this.app.options.style+"/view/list.html";
-		this.content.loadHtml(url, {"bind": {"lp": this.lp, "data": data}, "module": this}, function(){
+		var url = this.app.path+this.app.options.style+"/view/"+this.options.view;
+		this.content.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data}, "module": this}, function(){
 			this.node = this.content.getFirst();
 		}.bind(this));
 	},
@@ -285,10 +315,8 @@ MWF.xApplication.process.workcenter.List = new Class({
 	outTaskItem: function(e){
 		e.currentTarget.removeClass("listItem_over");
 	},
-	openTask: function(id, title){
-		//o2.api.page.notice("<input />")
-		//MWF.xDesktop.notice("error", {x: "right", y:"top"}, "aaa<input />ddd");
-		o2.api.form.openWork(id, "", title);
+	openTask: function(e, data){
+		o2.api.form.openWork(data.work, "", data.title);
 	},
 	loadItemIcon: function(application, e){
 		var node = e.currentTarget;
@@ -396,23 +424,6 @@ MWF.xApplication.process.workcenter.List = new Class({
 				}
 			}
 		}.bind(this));
-
-
-		// this.action.TaskAction.getReference(data.id).then(function(json){
-		//
-		// }.bind(this));
-		//
-		// this._getJobByTask(function(data){
-		// 	this.nodeClone = this.mainContentNode.clone(false);
-		// 	this.nodeClone.inject(this.mainContentNode, "after");
-		// 	this.mainContentNode.setStyles(this.list.css.itemNode_edit_from);
-		// 	this.mainContentNode.position({
-		// 		relativeTo: this.nodeClone,
-		// 		position: "topleft",
-		// 		edge: "topleft"
-		// 	});
-		// 	this.showEditNode(data);
-		// }.bind(this));
 	},
 	processWork_pc: function(task, form) {
 		var _self = this;
@@ -625,9 +636,12 @@ MWF.xApplication.process.workcenter.List = new Class({
 MWF.xApplication.process.workcenter.TaskList = new Class({
 	Extends: MWF.xApplication.process.workcenter.List
 });
-
 MWF.xApplication.process.workcenter.ReadList = new Class({
 	Extends: MWF.xApplication.process.workcenter.List,
+	options: {
+		"itemHeight": 60,
+		"type": "read"
+	},
 	loadData: function(){
 		var _self = this;
 		return this.action.ReadAction.listMyPaging(this.page, this.size).then(function(json){
@@ -650,5 +664,101 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		if (now.getTime()-start.getTime()<86400000){
 			iconNode.setStyle("background-image", "url("+"../x_component_process_workcenter/$Main/default/icons/pic_new.png)");
 		}
+	},
+	setReadCompleted: function(e, data){
+		var _self = this;
+		var text = this.lp.setReadedConfirmContent.replace("{title}", data.title );
+		var url = this.app.path+this.app.options.style+"/view/dlg/read.html";
+		o2.loadHtml(url, {"bind": {"lp": this.lp, "readedConfirmContent": text}, "module": this}, function(o){
+			var html = o2.bindJson(o[0].data, {"lp": this.lp, "readedConfirmContent": text});
+			var p = o2.dlgPosition(e, this.app.content, 550, 260)
+			var readDlg = o2.DL.open({
+				"title": this.lp.setReadedConfirmTitle,
+				"style": "user",
+				"isResize": false,
+				"height": "260",
+				"width": "550",
+				"top": p.y,
+				"left": p.x,
+				"fromTop": p.fromy,
+				"fromLeft": p.fromx,
+				"html": html,
+				"maskNode": this.app.content,
+				"minTop": 5,
+				"buttonList": [
+					{
+						"type": "ok",
+						"text": MWF.LP.process.button.ok,
+						"action": function () {
+							var opinion = this.content.getElement("textarea").get("text");
+							_self.setReadAction(data, opinion);
+							this.close();
+						}
+					},
+					{
+						"type": "cancel",
+						"text": MWF.LP.process.button.cancel,
+						"action": function () {
+							this.close();
+						}
+					}
+				]
+			});
+		}.bind(this));
+	},
+	setReadAction: function(data, opinion){
+		this.action.ReadAction.processing(data.id, {"opinion": opinion}, function(){
+			this.refresh();
+		}.bind(this));
+	}
+});
+MWF.xApplication.process.workcenter.TaskCompletedList = new Class({
+	Extends: MWF.xApplication.process.workcenter.ReadList,
+	options: {
+		"itemHeight": 60,
+		"type": "taskCompleted"
+	},
+	loadData: function(){
+		var _self = this;
+		return this.action.TaskCompletedAction.listMyPaging(this.page, this.size).then(function(json){
+			_self.fireEvent("loadData");
+			_self.total = json.size;
+			return json.data;
+		}.bind(this));
+	}
+});
+MWF.xApplication.process.workcenter.ReadCompletedList = new Class({
+	Extends: MWF.xApplication.process.workcenter.ReadList,
+	options: {
+		"itemHeight": 60,
+		"type": "readCompleted"
+	},
+	loadData: function(){
+		var _self = this;
+		return this.action.ReadCompletedAction.listMyPaging(this.page, this.size).then(function(json){
+			_self.fireEvent("loadData");
+			_self.total = json.size;
+			return json.data;
+		}.bind(this));
+	}
+});
+MWF.xApplication.process.workcenter.DraftList = new Class({
+	Extends: MWF.xApplication.process.workcenter.ReadList,
+	options: {
+		"itemHeight": 60,
+		"type": "draft"
+	},
+	loadData: function(){
+		var _self = this;
+		return this.action.DraftAction.listMyPaging(this.page, this.size, {}).then(function(json){
+			_self.fireEvent("loadData");
+			_self.total = json.size;
+			return json.data;
+		}.bind(this));
+	},
+	openTask: function(e, data){
+		debugger
+		var options = {"draftId": data.id, "appId": "process.Work"+data.id};
+		this.app.desktop.openApplication(e, "process.Work", options);
 	}
 });

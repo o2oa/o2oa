@@ -9,20 +9,33 @@
 
         <div class="listItemFlag">
             {{if $.allowRapid}}
-            <div class="rapidEditor o2icon-bianji" data-o2-events="click:editTask"></div>
+            <div class="rapidEditor o2icon-bianji" data-o2-events="click:editTask" title="{{$._.lp.rapidEditor}}"></div>
+            {{end if}}
+            {{if $._.type=='read'}}
+            <div class="rapidEditor o2icon-daiyue" data-o2-events="click:setReadCompleted" title="{{$._.lp.setReadCompleted}}"></div>
             {{end if}}
         </div>
         <div class="listItemDate">
             <div>
+                {{if $._.type=='task' || $._.type=='read'}}
                 <div>{{$.startTime}}</div>
+                {{end if}}
+
+                {{if $._.type=='taskCompleted' || $._.type=='readCompleted'}}
+                <div>{{$.completedTime}}</div>
+                {{end if}}
+
+                {{if $._.type=='draft'}}
+                <div>{{$.createTime}}</div>
+                {{end if}}
                 <div class="listItemExpire"></div>
             </div>
         </div>
         <div class="listItemActivity">
-            <div class="listItemActivityText mainColor_color" title="{{$.activityName}}">{{$.activityName}}</div>
+            <div class="listItemActivityText mainColor_color" title="{{$.activityName}}"> {{($._.type=='draft') ? $._.lp.draft : $.activityName)}}</div>
         </div>
 
-        <div class="listItemTitle" data-o2-events="click:openTask:{{$.work}}:{{$.title}}">
+        <div class="listItemTitle" data-o2-events="click:openTask">
             <div class="listItemTitleProcess" title="{{$.processName}}">
                 <div class="listItemTitleFlag">【</div>
                 <div class="listItemTitleProcessText">{{$.processName}}</div>

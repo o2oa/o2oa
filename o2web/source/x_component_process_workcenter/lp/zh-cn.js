@@ -14,5 +14,28 @@ MWF.xApplication.process.workcenter.LP = {
 	"firstPage": "第一页",
 	"lastPage": "最后一页",
 
-	"process": "继续流转"
+	"process": "继续流转",
+
+	"processStarted": "文件已启动",
+	"taskProcessed": "文件已提交",
+	"taskProcessedMessage": "您处理了一个待办任务：",
+	"nextActivity": "下一个活动：",
+	"nextUser": "处理人：",
+	"processStartedMessage": "您启动了一个新的工作：",
+
+	"processing": "正在处理",
+	"workCompleted": "文件流转完成",
+	"completed": "流转完成",
+	"workProcess": "继续流转",
+	"next_etc": "等{count}人",
+	"processTaskCompleted": "待办已处理",
+	"arrivedActivity": "工作已到达活动：",
+
+	"rapidEditor": "快速处理待办",
+	"setReadCompleted": "设置为已阅",
+	"setReaded" : "设置为已阅",
+	"setReadedConfirmContent" : "您确定要将“{title}”标记为已阅吗？",
+	"setReadedConfirmTitle" : "标记已阅确认",
+
+	"readOpinion": "阅读意见"
 };

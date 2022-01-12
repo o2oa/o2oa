@@ -12,16 +12,16 @@
             <div class="menuItemText">{{$.lp.task}}</div>
         </div>
 
-        <div class="menuItem" data-o2-element="readMenuNode" data-o2-events="click:loadList:read">
-            <div class="menuItemIcon"><icon class="o2icon-daiyue"></icon></div>
-            <div class="menuItemCount" data-o2-element="readCountNode"></div>
-            <div class="menuItemText">{{$.lp.read}}</div>
-        </div>
-
         <div class="menuItem" data-o2-element="taskCompletedMenuNode" data-o2-events="click:loadList:taskCompleted">
             <div class="menuItemIcon"><icon class="o2icon-yiban"></icon></div>
             <div class="menuItemCount" data-o2-element="taskCompletedCountNode"></div>
             <div class="menuItemText">{{$.lp.taskCompleted}}</div>
+        </div>
+
+        <div class="menuItem" data-o2-element="readMenuNode" data-o2-events="click:loadList:read">
+            <div class="menuItemIcon"><icon class="o2icon-daiyue"></icon></div>
+            <div class="menuItemCount" data-o2-element="readCountNode"></div>
+            <div class="menuItemText">{{$.lp.read}}</div>
         </div>
 
         <div class="menuItem" data-o2-element="readCompletedMenuNode" data-o2-events="click:loadList:readCompleted">
@@ -42,6 +42,7 @@
         </div>
     </div>
 </div>
+
 <div class="contentArea">
     <div class="content" data-o2-element="contentNode">
         <div class="contentTitle" data-o2-element="listTitleNode">
