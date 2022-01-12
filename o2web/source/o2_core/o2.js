@@ -1055,6 +1055,7 @@ if (!window.o2) {
                 } else { //text statement
                     var text = fullMatch.replace(/^\{\{\s*/, "");
                     text = text.replace(/\}\}\s*$/, "");
+                    debugger;
                     var value = _jsonText(json, text);
                     offset = value.length - fullMatch.length;
                     v = v.substring(0, match.index) + value + v.substring(rex.lastIndex, v.length);
@@ -2947,6 +2948,54 @@ if (!window.o2) {
                 y = parseFloat(e.event.y);
             }
             return {"x": x, "y": y};
+        };
+        o2.dlgPosition = function (e, content, width, height) {
+            var size = content.getSize();
+            var x = 0;
+            var y = 0;
+            var fromx = 0;
+            var fromy = 0;
+            if (typeOf(e) == "element") {
+                var position = e.getPosition(content);
+                fromx = position.x;
+                fromy = position.y;
+            } else {
+                if (Browser.name == "firefox") {
+                    fromx = parseFloat(e.clientX || e.x);
+                    fromy = parseFloat(e.clientY || e.y);
+                } else {
+                    fromx = parseFloat(e.x);
+                    fromy = parseFloat(e.y);
+                }
+
+                if (e.target) {
+                    var position = e.target.getPosition(content);
+                    fromx = position.x;
+                    fromy = position.y;
+                }
+            }
+            if (fromx + parseFloat(width) > size.x) {
+                //fromx = fromx + 20;
+                x = fromx - parseFloat(width);
+            }else{
+                fromx = x;
+                //if (x < 0) x = 20;
+            }
+
+            if (fromy + parseFloat(height) > size.y) {
+                y = fromy - parseFloat(height);
+                //y = y - 20;
+            }else{
+                y = fromy;
+                // if (y < 0) y = 0;
+                // y = y + 20;
+            }
+            return {
+                "x": x,
+                "y": y,
+                "fromx": fromx,
+                "fromy": fromy
+            }
         };
 
         if (window.Browser) {
