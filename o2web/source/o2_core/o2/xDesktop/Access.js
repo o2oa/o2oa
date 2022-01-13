@@ -18,6 +18,10 @@ MWF.xDesktop.Access = MWF.AC = {
         this.getRoleList();
         return (layout.desktop.session.user.name.toLowerCase() === "xadmin") || (this.roleList.indexOf("manager")!==-1) || (this.roleList.indexOf("systemmanager")!==-1);
     },
+    isManager: function(){
+        this.getRoleList();
+        return (layout.desktop.session.user.name.toLowerCase() === "xadmin") || (this.roleList.indexOf("manager")!==-1);
+    },
     isProcessManager: function(){
         if (!layout.desktop.session.user.roleList) return false;
         this.getRoleList();

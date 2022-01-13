@@ -178,9 +178,11 @@ MWF.xApplication.ThreeMember.LogView = new Class({
         }).inject(this.topContentNode);
 
         var html = "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='filterTable'>" + //style='width: 900px;'
-            "<tr>" +
-            "    <td styles='filterTableTitle' lable='person'></td>" +
-            "    <td styles='filterTableValue' item='person'></td>";
+            "<tr>";
+            if( !o2.AC.isAuditManager() || o2.AC.isSystemManager() || this.app.managerEnabled ){
+                html += "<td styles='filterTableTitle' lable='person'></td>" +
+                "<td styles='filterTableValue' item='person'></td>";
+            }
             if( this.options.filterModule ) {
                 html +=   "<td styles='filterTableTitle' lable='module'></td>" +
                 "    <td styles='filterTableValue' item='module'></td>" +

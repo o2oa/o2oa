@@ -61,7 +61,7 @@ MWF.xApplication.Org.UnitExplorer = new Class({
         }.bind(this));
     },
     _listElementNext: function(callback){
-        if (MWF.AC.isOrganizationManager() || MWF.AC.isSecurityManager() || MWF.AC.isAuditManager()){
+        if (MWF.AC.isOrganizationManager() || MWF.AC.isSecurityManager()){
             this.actions.listTopUnit(function(json){
                 if (callback) callback.apply(this, [json]);
             }.bind(this));
@@ -557,7 +557,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
     _listDutys: function(){
         var _self = this;
         this.dutyList = new MWF.xApplication.Org.List(this.dutyContentNode, this, {
-            "action": this.data.control.allowEdit,
+            "action": this.data.control.allowEdit || MWF.AC.isSecurityManager(),
             "saveAction": "saveUnitduty",
             "deleteAction": "deleteUnitduty",
             "data": {
@@ -740,7 +740,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
     _listIdentityMembers: function(){
         var _self = this;
         this.identityMemberList = new MWF.xApplication.Org.List(this.personMemberContentNode, this, {
-            "action": this.data.control.allowEdit,
+            "action": this.data.control.allowEdit || MWF.AC.isSecurityManager(),
             "canEdit": false,
             "deleteAction": "deleteIdentity",
             "deleteItemTitle": this.explorer.app.lp.deleteIdentityMemeberTitle,
@@ -789,10 +789,12 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
             }.bind(this),
             "onPostLoadAction": function () {
                 debugger;
-                this.sortAction = new Element("div", {"styles": this.css.sortActionNode, "text": _self.explorer.app.lp.sortByPinYin}).inject(this.actionNode);
-                this.sortAction.addEvent("click", function (e) {
-                    _self.sortByPinYin(e)
-                })
+                if( _self.data.control.allowEdit ){
+                    this.sortAction = new Element("div", {"styles": this.css.sortActionNode, "text": _self.explorer.app.lp.sortByPinYin}).inject(this.actionNode);
+                    this.sortAction.addEvent("click", function (e) {
+                        _self.sortByPinYin(e)
+                    })
+                }
             }
         });
         this.identityMemberList.addItem = this.addPersonMember.bind(this);
