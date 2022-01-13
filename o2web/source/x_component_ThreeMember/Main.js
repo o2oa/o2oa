@@ -21,6 +21,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
         "isResize": true,
         "isMax": true,
         "viewPageNum": 1,
+        "managerEnabled": true,
         "title": MWF.xApplication.ThreeMember.LP.title
     },
     onQueryLoad: function () {
@@ -77,36 +78,47 @@ MWF.xApplication.ThreeMember.Main = new Class({
         // this.loaNavi();
     },
     loadNavi : function(){
+        this.managerEnabled = this.options.managerEnabled && o2.AC.isManager();
         var naviJson = [
             {
-                "title": "查看日志",
+                "title": this.lp.log,
                 "action": "loadLogView",
-                "icon": "log"
+                "icon": "log",
+                "display": o2.AC.isSystemManager() || o2.AC.isAuditManager() || this.managerEnabled
             },
             {
-                "title": "应用权限",
-                "action": "loadPermissionView",
-                "icon": "permission"
-            },
-            {
-                "title": "组织管理",
+                "title": this.lp.org,
                 "action": "loadOrganizationView",
-                "icon": "org"
+                "icon": "org",
+                "display":  o2.AC.isSystemManager() || o2.AC.isSecurityManager() || this.managerEnabled
             },
             {
-                "title": "密码管理",
+                "title": this.lp.password,
                 "action": "loadPasswordView",
-                "icon": "password"
+                "icon": "password",
+                "display": o2.AC.isSystemManager() || this.managerEnabled
+            },
+            {
+                "title": this.lp.permission1,
+                "action": "loadPermissionView",
+                "icon": "permission",
+                "display":  o2.AC.isSecurityManager() || this.managerEnabled
             }
-            // {
-            //     "title": "来自应用",
-            //     "action": "personConfig",
-            //     "icon": "navi_fromapp"
-            // }
         ];
-        naviJson.each( function( d, index ){
-            this.createNaviNode( d, index );
-        }.bind(this))
+        var idx = 0;
+        naviJson.each( function( d ){
+            if( d.display ){
+                this.createNaviNode( d , idx);
+                idx++;
+            }
+        }.bind(this));
+        if( idx === 0 ){
+            this.contentContainerNode.setStyle("background-color","#fff");
+            new Element("div", {
+                "styles": this.css.noPermissionNode,
+                "text": this.lp.noPermissionText
+            }).inject(this.contentContainerNode)
+        }
     },
     createNaviNode : function( d, index ){
         var _self = this;

@@ -518,7 +518,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.TitleInfor = new Class({
     loadAction: function(){
         //this.explorer.app.lp.edit
         this.nameNode.setStyle("margin-right", "80px");
-        if (MWF.AC.isOrganizationManager() || MWF.AC.isPersonManager()){
+        if (MWF.AC.isOrganizationManager() || MWF.AC.isPersonManager() || MWF.AC.isSecurityManager()){
             this.resetPasswordAction = new Element("div", {"styles": this.style.titleInforResetPasswordNode, "text": this.item.explorer.app.lp.resetPassword}).inject(this.nameNode, "before");
             this.resetPasswordAction.addEvent("click", function(e){this.resetPassword(e);}.bind(this));
 
