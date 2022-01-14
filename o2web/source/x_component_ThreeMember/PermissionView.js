@@ -521,6 +521,130 @@ TMPermissionView.QueryApplication = new Class({
                 }.bind(this))
             }
         }.bind(this))
+    },
+    loadStat: function () {
+        o2.Actions.load("x_query_assemble_designer").StatAction.listWithQuery(this.options.id, function (json) {
+            debugger;
+            if( !json.data || !json.data.length ){
+                new Element("div", {
+                    styles : this.css.noDataTextNode,
+                    text: this.lp.noDataText.stat
+                }).inject(this.contentNode);
+            }else{
+                json.data.each(function (d) {
+                    new Element("div", {
+                        styles: this.css.propertyTitleNode,
+                        text: d.name
+                    }).inject(this.contentNode);
+                    var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
+                    var tr;
+                    tr = new Element("tr").inject(table);
+                    new TMPermissionView.QueryStatExecutor(this.explorer, tr, { id: this.options.id }, d);
+                }.bind(this))
+            }
+        }.bind(this))
+    },
+    loadTable: function () {
+        o2.Actions.load("x_query_assemble_designer").TableAction.listWithQuery(this.options.id, function (json) {
+            if( !json.data || !json.data.length ){
+                new Element("div", {
+                    styles : this.css.noDataTextNode,
+                    text: this.lp.noDataText.table
+                }).inject(this.contentNode);
+            }else{
+                json.data.each(function (d) {
+                    new Element("div", {
+                        styles: this.css.propertyTitleNode,
+                        text: d.name
+                    }).inject(this.contentNode);
+                    var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
+                    var tr;
+                    tr = new Element("tr").inject(table);
+                    new TMPermissionView.QueryTableReader(this.explorer, tr, { id: this.options.id }, d);
+                    tr = new Element("tr").inject(table);
+                    new TMPermissionView.QueryTableEditor(this.explorer, tr, { id: this.options.id }, d);
+                }.bind(this))
+            }
+        }.bind(this))
+    },
+    loadStatement: function () {
+        o2.Actions.load("x_query_assemble_designer").StatementAction.listWithQuery(this.options.id, function (json) {
+            if( !json.data || !json.data.length ){
+                new Element("div", {
+                    styles : this.css.noDataTextNode,
+                    text: this.lp.noDataText.statement
+                }).inject(this.contentNode);
+            }else{
+                MWF.xDesktop.requireApp("Template", "MDomItem", null, false);
+                json.data.each(function (d) {
+                    new Element("div", {
+                        styles: this.css.propertyTitleNode,
+                        text: d.name
+                    }).inject(this.contentNode);
+                    var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
+                    var tr = new Element("tr").inject(table);
+
+                    var td = new Element("td", {
+                        styles : this.css.propertyTitleTd,
+                        "text": this.lp.anonymousAccessible
+                    }).inject(tr);
+                    td.setStyles({
+                        "height": "36px",
+                        "line-height": "36px"
+                    });
+
+                    var td = new Element("td", {
+                        styles : this.css.propertyContentTd,
+                        colspan : 2
+                    }).inject(tr);
+                    td.setStyles({
+                        "height": "36px",
+                        "line-height": "36px"
+                    });
+
+                    var value = (o2.typeOf(d.anonymousAccessible) === "boolean" ? d.anonymousAccessible : true).toString();
+                    var anonymousAccessibleItem = new MDomItem(td, {
+                        "formStyle": "setting",
+                        "name": d.id+"anonymousAccessible",
+                        "type": "radio",
+                        "selectValue": ["true", "false"],
+                        "selectText": [this.lp.yes, this.lp.no],
+                        "value": value,
+                        "event": {
+                            "change": function (item) {
+                                executorTr.setStyle( "display", item.getValue() === "true" ? "none" : "" );
+                                d.anonymousAccessible = item.getValue() === "true";
+                                o2.Actions.load("x_query_assemble_designer").StatementAction.xxx(d.id, d);
+                            }
+                        }
+                    }).load();
+                    var executorTr = new Element("tr").inject(table);
+                    new TMPermissionView.QueryStatementExecutor(this.explorer, executorTr, { id: this.options.id }, d);
+                    if( value === "true" )executorTr.hide();
+                }.bind(this))
+            }
+        }.bind(this))
+    },
+    loadImporter: function () {
+        o2.Actions.load("x_query_assemble_designer").ImportModelAction.listWithQuery(this.options.id, function (json) {
+            if( !json.data || !json.data.length ){
+                new Element("div", {
+                    styles : this.css.noDataTextNode,
+                    text: this.lp.noDataText.importer
+                }).inject(this.contentNode);
+            }else{
+                json.data.each(function (d) {
+                    new Element("div", {
+                        styles: this.css.propertyTitleNode,
+                        text: d.name
+                    }).inject(this.contentNode);
+                    var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
+                    var tr;
+                    tr = new Element("tr").inject(table);
+                    new TMPermissionView.QueryImportModelExecutor(this.explorer, tr, { id: this.options.id }, d);
+                }.bind(this))
+            }
+        }.bind(this))
     }
 });
 
@@ -1025,8 +1149,82 @@ TMPermissionView.QueryImportModelExecutor = new Class({
     }
 });
 
+TMPermissionView.QueryTableReader = new Class({
+    Extends: TMPermissionView.CMSCateViewer,
+    options: {
+        orgTypes: ["person","unit"],
+        title: MWF.xApplication.ThreeMember.LP.dataViewer
+    },
+    selectData: function(array){
+        this.data.readPersonList = [];
+        this.data.readUnitList = [];
+        array.each( function( a ){
+            var dn = a.data.distinguishedName;
+            var flag = dn.substr(dn.length-1, 1);
+            switch (flag.toLowerCase()){
+                case "p":
+                    this.data.readPersonList.push( dn );
+                    break;
+                case "u":
+                    this.data.readUnitList.push( dn );
+                    break;
+            }
+        }.bind(this));
+        this.saveData( this.data, function(){
+            this.values = (this.data.readPersonList || []).combine(this.data.readUnitList || []);
+            this.loadOrg();
+        }.bind(this))
+    },
+    listData: function (callback) {
+        this.values = (this.data.readPersonList || []).combine(this.data.readUnitList || []);
+        if (callback) callback();
+    },
+    saveData: function (data, callback) {
+        o2.Actions.load("x_query_assemble_designer").TableAction.xxx(this.options.id, data, function (json) {
+            if (callback) callback()
+        }.bind(this));
+    }
+});
+
+TMPermissionView.QueryTableEditor = new Class({
+    Extends: TMPermissionView.CMSCateViewer,
+    options: {
+        orgTypes: ["person","unit"],
+        title: MWF.xApplication.ThreeMember.LP.dataEditor
+    },
+    selectData: function(array){
+        this.data.editPersonList = [];
+        this.data.editUnitList = [];
+        array.each( function( a ){
+            var dn = a.data.distinguishedName;
+            var flag = dn.substr(dn.length-1, 1);
+            switch (flag.toLowerCase()){
+                case "p":
+                    this.data.editPersonList.push( dn );
+                    break;
+                case "u":
+                    this.data.editUnitList.push( dn );
+                    break;
+            }
+        }.bind(this));
+        this.saveData( this.data, function(){
+            this.values = (this.data.editPersonList || []).combine(this.data.editUnitList || []);
+            this.loadOrg();
+        }.bind(this))
+    },
+    listData: function (callback) {
+        this.values = (this.data.editPersonList || []).combine(this.data.editUnitList || []);
+        if (callback) callback();
+    },
+    saveData: function (data, callback) {
+        o2.Actions.load("x_query_assemble_designer").TableAction.xxx(this.options.id, data, function (json) {
+            if (callback) callback()
+        }.bind(this));
+    }
+});
+
 TMPermissionView.QueryStatementExecutor = new Class({
-    Extends: TMPermissionView.QueryViewExecutor,
+    Extends: TMPermissionView.CMSCateViewer,
     options: {
         orgTypes: ["person","unit"],
         title: MWF.xApplication.ThreeMember.LP.executor

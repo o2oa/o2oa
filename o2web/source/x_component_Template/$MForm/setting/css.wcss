@@ -43,6 +43,15 @@
     "background-color":"#FFF",
     "height": "80px"
   },
+  "inputPassword": {
+    "width": "99%",
+    "border":"1px solid #DEDEDE",
+    "background-color":"#FFF",
+    "color": "#0000FF",
+    "height": "26px",
+    "font-size": "14px",
+    "border-radius" : "13px"
+  },
   "inputCheckbox" : {
     "float" : "left",
     "margin-right" : "12px"

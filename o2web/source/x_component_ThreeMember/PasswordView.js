@@ -223,14 +223,14 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
                 itemTemplate: {
                     password: { "text": lp.password, tType : "text", notEmpty: true },
                     passwordPeriod: { "text": lp.passwordPeriod, tType : "number" },
-                    adminPassword: { "text": lp.adminPassword, tType : "text", notEmpty: true },
+                    adminPassword: { "text": lp.adminPassword, type : "password", notEmpty: true },
                     passwordRegex: { "text": lp.passwordRegex, tType : "text", notEmpty: true },
                     passwordRegexHint: { "text": lp.passwordRegexHint, tType : "text", notEmpty: true },
                     failureCount: { "text": lp.failureCount, tType : "number" },
                     failureInterval: { "text": lp.failureInterval, tType : "number" },
-                    systemManagerPassword: { "text": lp.systemManagerPassword, tType : "text" },
-                    securityManagerPassword: { "text": lp.securityManagerPassword, tType : "text" },
-                    auditManagerPassword: { "text": lp.auditManagerPassword, tType : "text" },
+                    systemManagerPassword: { "text": lp.systemManagerPassword, type : "password" },
+                    securityManagerPassword: { "text": lp.securityManagerPassword, type : "password" },
+                    auditManagerPassword: { "text": lp.auditManagerPassword, type : "password" },
                 }
             }, this.app);
             this.form.load();
@@ -240,6 +240,7 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
         var lp = this.lp.passwordConfig;
         return  "<div styles='formTitle'>"+lp.title+"</div>"+
         "<table width='90%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
+
             "<tr><td styles='formTableTitle'>"+lp.password+"</td></tr>" +
             "<tr><td styles='formTableNote'>"+lp.passwordNote+"</td></tr>" +
             "<tr><td styles='formTableValue' item='password'></td></tr>" +
@@ -247,10 +248,6 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
             "<tr><td styles='formTableTitle'>"+lp.passwordPeriod+"</td></tr>" +
             "<tr><td styles='formTableNote'>"+lp.passwordPeriodNote+"</td></tr>" +
             "<tr><td styles='formTableValue' item='passwordPeriod'></td></tr>" +
-
-            "<tr><td styles='formTableTitle'>"+lp.adminPassword+"</td></tr>" +
-            "<tr><td styles='formTableNote'>"+lp.adminPasswordNote+"</td></tr>" +
-            "<tr><td styles='formTableValue' item='adminPassword'></td></tr>" +
 
             "<tr><td styles='formTableTitle'>"+lp.passwordRegex+"</td></tr>" +
             "<tr><td styles='formTableNote'>"+lp.passwordRegexNote+"</td></tr>" +
@@ -267,6 +264,11 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
             "<tr><td styles='formTableTitle'>"+lp.failureInterval+"</td></tr>" +
             "<tr><td styles='formTableNote'>"+lp.failureIntervalNote+"</td></tr>" +
             "<tr><td styles='formTableValue' item='failureInterval'></td></tr>" +
+
+            "<tr><td styles='formTableTitle'>"+lp.adminPassword+"</td></tr>" +
+            "<tr><td styles='formTableNote'>"+lp.adminPasswordNote+"</td></tr>" +
+            "<tr><td styles='formTableValue' item='adminPassword'></td></tr>" +
+
             "</table>"+
             "<table width='90%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
             "<tr>" +
