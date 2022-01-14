@@ -121,6 +121,7 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
             "events":{
                 "click": function () {
                     var result = this.form.getResult(true, null, true, true);
+                    if(!result)return;
                     if(Object.keys(result).length > 0){
                         this.saveForm(result);
                     }else{
@@ -221,16 +222,16 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
                 style : "setting",
                 hasColon : true,
                 itemTemplate: {
-                    password: { "text": lp.password, tType : "text", notEmpty: true },
-                    passwordPeriod: { "text": lp.passwordPeriod, tType : "number" },
-                    adminPassword: { "text": lp.adminPassword, type : "password", notEmpty: true },
-                    passwordRegex: { "text": lp.passwordRegex, tType : "text", notEmpty: true },
-                    passwordRegexHint: { "text": lp.passwordRegexHint, tType : "text", notEmpty: true },
-                    failureCount: { "text": lp.failureCount, tType : "number" },
-                    failureInterval: { "text": lp.failureInterval, tType : "number" },
-                    systemManagerPassword: { "text": lp.systemManagerPassword, type : "password" },
-                    securityManagerPassword: { "text": lp.securityManagerPassword, type : "password" },
-                    auditManagerPassword: { "text": lp.auditManagerPassword, type : "password" },
+                    password: { "text": lp.password, tType : "text", notEmpty: true, attr: {"autocomplete": "chrome-off"} },
+                    passwordPeriod: { "text": lp.passwordPeriod, tType : "number", attr: {"autocomplete": "off"} },
+                    adminPassword: { "text": lp.adminPassword, type : "password", notEmpty: true, attr: {"autocomplete": "chrome-off"} },
+                    passwordRegex: { "text": lp.passwordRegex, tType : "text", notEmpty: true, attr: {"autocomplete": "off"} },
+                    passwordRegexHint: { "text": lp.passwordRegexHint, tType : "text", notEmpty: true, attr: {"autocomplete": "off"} },
+                    failureCount: { "text": lp.failureCount, tType : "number", attr: {"autocomplete": "off"} },
+                    failureInterval: { "text": lp.failureInterval, tType : "number", attr: {"autocomplete": "off"} },
+                    systemManagerPassword: { "text": lp.systemManagerPassword, type : "password", attr: {"autocomplete": "chrome-off"} },
+                    securityManagerPassword: { "text": lp.securityManagerPassword, type : "password", attr: {"autocomplete": "chrome-off"} },
+                    auditManagerPassword: { "text": lp.auditManagerPassword, type : "password", attr: {"autocomplete": "chrome-off"} }
                 }
             }, this.app);
             this.form.load();
