@@ -515,10 +515,18 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
 });
 MWF.xApplication.Org.PersonExplorer.PersonContent.TitleInfor = new Class({
     Extends: MWF.xApplication.Org.$Explorer.ItemContent.TitleInfor,
+    getActionPermission: function(){
+        if(MWF.AC.isManager())return true;
+        if(MWF.AC.isSecurityManager())return true;
+        if(MWF.AC.isSystemManager())return false;
+        if(MWF.AC.isOrganizationManager())return true;
+        if(MWF.AC.isPersonManager())return true;
+        return false;
+    },
     loadAction: function(){
         //this.explorer.app.lp.edit
         this.nameNode.setStyle("margin-right", "80px");
-        if (MWF.AC.isOrganizationManager() || MWF.AC.isPersonManager() || MWF.AC.isSecurityManager()){
+        if (this.getActionPermission()){
             this.resetPasswordAction = new Element("div", {"styles": this.style.titleInforResetPasswordNode, "text": this.item.explorer.app.lp.resetPassword}).inject(this.nameNode, "before");
             this.resetPasswordAction.addEvent("click", function(e){this.resetPassword(e);}.bind(this));
 

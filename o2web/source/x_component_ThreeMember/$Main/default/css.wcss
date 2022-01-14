@@ -49,5 +49,31 @@
     "line-height": "150px",
     "margin": "50px auto 0px auto",
     "font-size": "18px"
+  },
+
+  "naviRightNode": {
+    "float": "right",
+    "height": "50px",
+    "background-color" : "#fff",
+    "margin-right": "30px",
+    "overflow": "hidden"
+  },
+  "userNode": {
+    "height": "50px",
+    "line-height": "50px",
+    "color" : "#666",
+    "font-size": "14px",
+    "float": "left"
+  },
+  "logoutNode": {
+    "background": "url(../o2_core/o2/xDesktop/$Default/blue/icons/logout.png) no-repeat left center",
+    "padding-left": "24px",
+    "margin-left": "20px",
+    "height": "50px",
+    "color" : "#666",
+    "line-height": "50px",
+    "font-size": "14px",
+    "cursor": "pointer",
+    "float": "left"
   }
 }

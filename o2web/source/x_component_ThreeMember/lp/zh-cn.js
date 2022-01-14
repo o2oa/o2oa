@@ -69,6 +69,8 @@ MWF.xApplication.ThreeMember.LP = {
 	"permission1": "应用权限",
 	"org": "组织管理",
 	"password": "密码管理",
+	"logout": "注销",
+	"welcome": "您好，",
 	"noDataText" : {
 		"process": "该应用下无流程",
 		"category": "该应用下无分类",
