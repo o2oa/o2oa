@@ -58,6 +58,8 @@ MWF.xApplication.ThreeMember.LP = {
 	"viewer": "使用范围",
 	"publisher": "发布者",
 	"manager": "管理者",
+	"starter": "启动者",
+	"executor": "可执行者",
 	"log": "查看日志",
 	"permission1": "应用权限",
 	"org": "组织管理",
