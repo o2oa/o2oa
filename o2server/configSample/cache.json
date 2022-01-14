@@ -28,7 +28,7 @@
     "###maximumSize": "缓存最大容量,默认值:3000.###",
     "###expireMinutes": "过期时间,默认值:30.###"
   },
-  "###type": "缓存类型:ehcache,type###",
+  "###type": "缓存类型:ehcache,redis,guava###",
   "###redis": "redis配置###",
   "###ehcache": "ehcache配置###",
   "###guava": "guava配置###"
