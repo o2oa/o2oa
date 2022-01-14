@@ -70,12 +70,46 @@ MWF.xApplication.ThreeMember.Main = new Class({
         this.setContentSizeFun = this.setContentSize.bind(this);
         this.addEvent("resize", this.setContentSizeFun);
 
+        this.loadUser();
         this.loadNavi();
         // this.loadLogView();
 
         // this.createTopNode();
         // this.createContainerNode();
         // this.loaNavi();
+    },
+    loadUser: function(){
+        if( !layout.inBrowser )return;
+
+        var naviRightNode = new Element("div", {
+            styles : this.css.naviRightNode
+        }).inject( this.naviNode );
+
+        new Element("div", {
+            styles : this.css.userNode,
+            text: this.lp.welcome + layout.session.user.name
+        }).inject(naviRightNode);
+
+        new Element("div", {
+            styles : this.css.logoutNode,
+            text: this.lp.logout,
+            events: {
+                click: function () {
+                    this.safeLogout();
+                }.bind(this)
+            }
+        }).inject(naviRightNode);
+    },
+    safeLogout: function(){
+        o2.Actions.get("x_organization_assemble_authentication").safeLogout(function () {
+            if (this.socket) {
+                this.socket.close();
+                this.socket = null;
+            }
+            if (layout.session && layout.session.user) layout.session.user.token = "";
+            if (sessionStorage) sessionStorage.removeItem("o2LayoutSessionToken");
+            window.location.reload();
+        }.bind(this));
     },
     loadNavi : function(){
         this.managerEnabled = this.options.managerEnabled && o2.AC.isManager();

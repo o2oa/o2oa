@@ -588,19 +588,13 @@ TMPermissionView.QueryApplication = new Class({
                         styles : this.css.propertyTitleTd,
                         "text": this.lp.anonymousAccessible
                     }).inject(tr);
-                    td.setStyles({
-                        "height": "36px",
-                        "line-height": "36px"
-                    });
+                    td.setStyles({ "height": "36px", "line-height": "36px" });
 
                     var td = new Element("td", {
                         styles : this.css.propertyContentTd,
                         colspan : 2
                     }).inject(tr);
-                    td.setStyles({
-                        "height": "36px",
-                        "line-height": "36px"
-                    });
+                    td.setStyles({ "height": "36px", "line-height": "36px" });
 
                     var value = (o2.typeOf(d.anonymousAccessible) === "boolean" ? d.anonymousAccessible : true).toString();
                     var anonymousAccessibleItem = new MDomItem(td, {
