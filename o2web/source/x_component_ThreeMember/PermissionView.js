@@ -370,7 +370,7 @@ TMPermissionView.ProcessApplication = new Class({
             "action": "loadApplication",
             "text": this.lp.permission.application
         },{
-            "id": "loadProcess",
+            "action": "loadProcess",
             "text": this.lp.permission.process
         }]
     },
@@ -382,8 +382,29 @@ TMPermissionView.ProcessApplication = new Class({
         }.bind(this))
     },
     loadProcess: function () {
-
+        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.listWithApplication(this.options.id, function (json) {
+            if( !json.data || !json.data.length ){
+                new Element("div", {
+                    styles : this.css.noDataTextNode,
+                    text: this.lp.noDataText.process
+                }).inject(this.contentNode);
+            }else{
+                json.data.each(function (d) {
+                    new Element("div", {
+                        styles: this.css.propertyTitleNode,
+                        text: d.name
+                    }).inject(this.contentNode);
+                    var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
+                    var tr;
+                    tr = new Element("tr").inject(table);
+                    new TMPermissionView.ProcessProcessStarter(this.explorer, tr, { id: this.options.id }, d);
+                    tr = new Element("tr").inject(table);
+                    new TMPermissionView.ProcessProcessManager(this.explorer, tr, { id: this.options.id }, d);
+                }.bind(this))
+            }
+        }.bind(this))
     }
+
 });
 
 TMPermissionView.CMSApplication = new Class({
@@ -419,15 +440,7 @@ TMPermissionView.CMSApplication = new Class({
                         styles: this.css.propertyTitleNode,
                         text: d.name || d.categoryName
                     }).inject(this.contentNode);
-                    var table = new Element("table", {
-                        "width": "90%",
-                        "border": "0",
-                        "cellpadding":"5",
-                        "cellspacing":"0",
-                        "styles":{
-                            "margin":"0px auto"
-                        }
-                    }).inject(this.contentNode);
+                    var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
                     var tr;
                     tr = new Element("tr").inject(table);
                     new TMPermissionView.CMSCateViewer(this.explorer, tr, { id: d.id });
@@ -486,6 +499,27 @@ TMPermissionView.QueryApplication = new Class({
             this.data = json.data;
             new TMPermissionView.QueryAppUser(this.explorer, this.contentNode, { id: this.options.id }, this.data);
             new TMPermissionView.QueryAppManager(this.explorer, this.contentNode, { id: this.options.id }, this.data);
+        }.bind(this))
+    },
+    loadView: function () {
+        o2.Actions.load("x_query_assemble_designer").ViewAction.listWithQuery(this.options.id, function (json) {
+            if( !json.data || !json.data.length ){
+                new Element("div", {
+                    styles : this.css.noDataTextNode,
+                    text: this.lp.noDataText.view
+                }).inject(this.contentNode);
+            }else{
+                json.data.each(function (d) {
+                    new Element("div", {
+                        styles: this.css.propertyTitleNode,
+                        text: d.name
+                    }).inject(this.contentNode);
+                    var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
+                    var tr;
+                    tr = new Element("tr").inject(table);
+                    new TMPermissionView.QueryViewExecutor(this.explorer, tr, { id: this.options.id }, d);
+                }.bind(this))
+            }
         }.bind(this))
     }
 });
@@ -824,6 +858,81 @@ TMPermissionView.ProcessAppManager = new Class({
 });
 
 
+TMPermissionView.ProcessProcessStarter = new Class({
+    Extends: TMPermissionView.CMSCateViewer,
+    options: {
+        orgTypes: ["identity","unit", "group"],
+        title: MWF.xApplication.ThreeMember.LP.starter
+    },
+    selectData: function(array){
+        this.data.startableIdentityList = [];
+        this.data.startableUnitList = [];
+        this.data.startableGroupList = [];
+        array.each( function( a ){
+            var dn = a.data.distinguishedName;
+            var flag = dn.substr(dn.length-1, 1);
+            switch (flag.toLowerCase()){
+                case "i":
+                    this.data.startableIdentityList.push( dn );
+                    break;
+                case "u":
+                    this.data.startableUnitList.push( dn );
+                    break;
+                case "g":
+                    this.data.startableGroupList.push( dn );
+                    break;
+            }
+        }.bind(this));
+        this.saveData( this.data, function(){
+            this.values = (this.data.startableIdentityList || []).combine(this.data.startableUnitList || []).combine(this.data.startableGroupList || []);
+            this.loadOrg();
+        }.bind(this))
+    },
+    listData: function (callback) {
+        this.values = (this.data.startableIdentityList || []).combine(this.data.startableUnitList || []).combine(this.data.startableGroupList || []);
+        if (callback) callback();
+    },
+    saveData: function (data, callback) {
+        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.xxx(this.options.id, data, function (json) {
+            if (callback) callback()
+        }.bind(this));
+    }
+});
+
+TMPermissionView.ProcessProcessManager = new Class({
+    Extends: TMPermissionView.CMSCateViewer,
+    options: {
+        orgTypes: ["person"],
+        title: MWF.xApplication.ThreeMember.LP.manager
+    },
+    selectData: function(array){
+        this.data.controllerList = [];
+        array.each( function( a ){
+            var dn = a.data.distinguishedName;
+            var flag = dn.substr(dn.length-1, 1);
+            switch (flag.toLowerCase()){
+                case "p":
+                    this.data.startableIdentityList.push( dn );
+                    break;
+            }
+        }.bind(this));
+        this.saveData( this.data, function(){
+            this.values = this.data.controllerList || [];
+            this.loadOrg();
+        }.bind(this))
+    },
+    listData: function (callback) {
+        this.values = this.data.controllerList || [];
+        if (callback) callback();
+    },
+    saveData: function (data, callback) {
+        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.xxx(this.options.id, data, function (json) {
+            if (callback) callback()
+        }.bind(this));
+    }
+});
+
+
 TMPermissionView.PortalAppUser = new Class({
     Extends: TMPermissionView.ProcessAppUser,
     saveData: function (data, callback) {
@@ -855,6 +964,99 @@ TMPermissionView.QueryAppManager = new Class({
     Extends: TMPermissionView.ProcessAppManager,
     saveData: function (data, callback) {
         o2.Actions.load("x_query_assemble_designer").QueryAction.edit(this.data.id, data, function (json) {
+            if (callback) callback()
+        }.bind(this));
+    }
+});
+
+TMPermissionView.QueryViewExecutor = new Class({
+    Extends: TMPermissionView.CMSCateViewer,
+    options: {
+        orgTypes: ["identity","unit"],
+        title: MWF.xApplication.ThreeMember.LP.executor
+    },
+    selectData: function(array){
+        this.data.availableIdentityList = [];
+        this.data.availableUnitList = [];
+        array.each( function( a ){
+            var dn = a.data.distinguishedName;
+            var flag = dn.substr(dn.length-1, 1);
+            switch (flag.toLowerCase()){
+                case "i":
+                    this.data.availableIdentityList.push( dn );
+                    break;
+                case "u":
+                    this.data.availableUnitList.push( dn );
+                    break;
+            }
+        }.bind(this));
+        this.saveData( this.data, function(){
+            this.values = (this.data.availableIdentityList || []).combine(this.data.availableUnitList || []);
+            this.loadOrg();
+        }.bind(this))
+    },
+    listData: function (callback) {
+        this.values = (this.data.availableIdentityList || []).combine(this.data.availableUnitList || []);
+        if (callback) callback();
+    },
+    saveData: function (data, callback) {
+        o2.Actions.load("x_query_assemble_designer").ViewAction.xxx(this.options.id, data, function (json) {
+            if (callback) callback()
+        }.bind(this));
+    }
+});
+
+
+TMPermissionView.QueryStatExecutor = new Class({
+    Extends: TMPermissionView.QueryViewExecutor,
+    saveData: function (data, callback) {
+        o2.Actions.load("x_query_assemble_designer").StatAction.xxx(this.options.id, data, function (json) {
+            if (callback) callback()
+        }.bind(this));
+    }
+});
+
+TMPermissionView.QueryImportModelExecutor = new Class({
+    Extends: TMPermissionView.QueryViewExecutor,
+    saveData: function (data, callback) {
+        o2.Actions.load("x_query_assemble_designer").ImportModelAction.xxx(this.options.id, data, function (json) {
+            if (callback) callback()
+        }.bind(this));
+    }
+});
+
+TMPermissionView.QueryStatementExecutor = new Class({
+    Extends: TMPermissionView.QueryViewExecutor,
+    options: {
+        orgTypes: ["person","unit"],
+        title: MWF.xApplication.ThreeMember.LP.executor
+    },
+    selectData: function(array){
+        this.data.executePersonList = [];
+        this.data.executeUnitList = [];
+        array.each( function( a ){
+            var dn = a.data.distinguishedName;
+            var flag = dn.substr(dn.length-1, 1);
+            switch (flag.toLowerCase()){
+                case "p":
+                    this.data.executePersonList.push( dn );
+                    break;
+                case "u":
+                    this.data.executeUnitList.push( dn );
+                    break;
+            }
+        }.bind(this));
+        this.saveData( this.data, function(){
+            this.values = (this.data.executePersonList || []).combine(this.data.executeUnitList || []);
+            this.loadOrg();
+        }.bind(this))
+    },
+    listData: function (callback) {
+        this.values = (this.data.executePersonList || []).combine(this.data.executeUnitList || []);
+        if (callback) callback();
+    },
+    saveData: function (data, callback) {
+        o2.Actions.load("x_query_assemble_designer").StatementAction.xxx(this.options.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }

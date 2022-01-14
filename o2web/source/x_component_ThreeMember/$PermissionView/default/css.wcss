@@ -239,6 +239,15 @@
     "font-size": "18px"
   },
 
+  "tableProperty": {
+    "width": "90%",
+    "border": "0",
+    "cellpadding":"5",
+    "cellspacing":"0",
+    "styles":{
+      "margin":"0px auto"
+    }
+  },
   "propertyTitleNode": {
     "font-size": "16px",
     "height": "36px",
