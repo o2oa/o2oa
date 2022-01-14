@@ -222,16 +222,16 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
                 style : "setting",
                 hasColon : true,
                 itemTemplate: {
-                    password: { "text": lp.password, tType : "text", notEmpty: true, attr: {"autocomplete": "chrome-off"} },
+                    password: { "text": lp.password, tType : "text", notEmpty: true, attr: {"autocomplete": "off"} },
                     passwordPeriod: { "text": lp.passwordPeriod, tType : "number", attr: {"autocomplete": "off"} },
-                    adminPassword: { "text": lp.adminPassword, type : "password", notEmpty: true, attr: {"autocomplete": "chrome-off"} },
+                    adminPassword: { "text": lp.adminPassword, type : "password", notEmpty: true, attr: {"autocomplete": "off"} },
                     passwordRegex: { "text": lp.passwordRegex, tType : "text", notEmpty: true, attr: {"autocomplete": "off"} },
                     passwordRegexHint: { "text": lp.passwordRegexHint, tType : "text", notEmpty: true, attr: {"autocomplete": "off"} },
                     failureCount: { "text": lp.failureCount, tType : "number", attr: {"autocomplete": "off"} },
                     failureInterval: { "text": lp.failureInterval, tType : "number", attr: {"autocomplete": "off"} },
-                    systemManagerPassword: { "text": lp.systemManagerPassword, type : "password", attr: {"autocomplete": "chrome-off"} },
-                    securityManagerPassword: { "text": lp.securityManagerPassword, type : "password", attr: {"autocomplete": "chrome-off"} },
-                    auditManagerPassword: { "text": lp.auditManagerPassword, type : "password", attr: {"autocomplete": "chrome-off"} }
+                    systemManagerPassword: { "text": lp.systemManagerPassword, type : "password", attr: {"autocomplete": "off"} },
+                    securityManagerPassword: { "text": lp.securityManagerPassword, type : "password", attr: {"autocomplete": "off"} },
+                    auditManagerPassword: { "text": lp.auditManagerPassword, type : "password", attr: {"autocomplete": "off"} }
                 }
             }, this.app);
             this.form.load();
