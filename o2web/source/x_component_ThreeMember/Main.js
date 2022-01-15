@@ -115,24 +115,28 @@ MWF.xApplication.ThreeMember.Main = new Class({
         this.managerEnabled = this.options.managerEnabled && o2.AC.isManager();
         var naviJson = [
             {
+                "id": "logview",
                 "title": this.lp.log,
                 "action": "loadLogView",
                 "icon": "log",
                 "display": o2.AC.isSystemManager() || o2.AC.isAuditManager() || this.managerEnabled
             },
             {
+                "id": "organizationview",
                 "title": this.lp.org,
                 "action": "loadOrganizationView",
                 "icon": "org",
                 "display":  o2.AC.isSystemManager() || o2.AC.isSecurityManager() || this.managerEnabled
             },
             {
+                "id": "passwordview",
                 "title": this.lp.password,
                 "action": "loadPasswordView",
                 "icon": "password",
                 "display": o2.AC.isSystemManager() || this.managerEnabled
             },
             {
+                "id": "permissionview",
                 "title": this.lp.permission1,
                 "action": "loadPermissionView",
                 "icon": "permission",
@@ -177,8 +181,8 @@ MWF.xApplication.ThreeMember.Main = new Class({
         }).inject( this.naviNode );
         node.store("data", d);
         node.setStyle("background-image", "url("+this.path + "icon/" + d.icon + ".png)" );
-        if( this.status && this.status.action ){
-            if(this.status.action === d.action)node.click();
+        if( this.status && this.status.es && this.status.es.explorer ){
+            if(this.status.es.explorer === d.id)node.click();
         }else if( index === 0  ){
             node.click();
         }
@@ -233,11 +237,12 @@ MWF.xApplication.ThreeMember.Main = new Class({
         MWF.xDesktop.requireApp("Org", "lp."+o2.language, null, false);
         MWF.xDesktop.requireApp("Org", "Main", null, false);
         var options = {};
-        if( this.status && this.status.es && this.status.es.explorer === "orgview" ){
+        if( this.status && this.status.es && this.status.es.explorer === "organizationview" ){
             options = this.status.es;
         }
         options.embededParent = this.contentContainerNode;
         this.currentView = new MWF.xApplication.Org.Main(this.desktop, options);
+        this.currentView.status = options;
         this.currentView.clear = function () {
             this.content.empty();
             this.close();
@@ -255,7 +260,15 @@ MWF.xApplication.ThreeMember.Main = new Class({
     },
     recordStatus: function () {
         var status = {};
-        var explorerStatus = this.currentView ? this.currentView.recordStatus() : "";
+        var explorerStatus;
+        if( !this.currentView ){
+            explorerStatus = ""
+        }else if( this.currentView.options.name === "Org" ){
+            explorerStatus = this.currentView.recordStatus();
+            explorerStatus.explorer = "organizationview";
+        }else{
+            explorerStatus = this.currentView.recordStatus();
+        }
         if( explorerStatus )status.es = explorerStatus;
         return status
     }
