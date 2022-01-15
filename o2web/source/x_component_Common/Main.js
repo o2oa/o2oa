@@ -329,13 +329,13 @@ MWF.xApplication.Common.Main = new Class({
 			this.eventTarget.addEvent("resize", this.resizeFun);
 
 			this.queryLoadFun = function () {
-				this.fireAppEvent("queryClose");
+				this.fireAppEvent && this.fireAppEvent("queryClose");
 			}.bind(this);
 			this.eventTarget.addEvent("queryClose", this.queryLoadFun);
 
 			this.postLoadFun = function () {
 				if (this.resizeFun) this.eventTarget.removeEvent("resize", this.resizeFun);
-				this.fireAppEvent("postClose");
+				this.fireAppEvent && this.fireAppEvent("postClose");
 			}.bind(this);
 			this.eventTarget.addEvent("postClose", this.postLoadFun);
 		}

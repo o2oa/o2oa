@@ -47,8 +47,8 @@ var TMPermissionView = MWF.xApplication.ThreeMember.PermissionView = new Class({
     loaNavi: function (callback) {
         debugger;
         var naviOpt = {};
-        naviOpt.module = this.options.module || "all";
-        naviOpt.operation = this.options.operation;
+        naviOpt.category = this.options.category || "";
+        naviOpt.application = this.options.application;
         this.navi = new TMPermissionView.Navi(this, this.naviNode, naviOpt);
     },
     createTop: function () {
@@ -238,6 +238,9 @@ TMPermissionView.Navi = new Class({
                 ev.stopPropagation();
             }
         });
+        if( this.options.category === category.id ){
+            menuNode.click();
+        }
     },
     cancelCurrent: function () {
         if (this.currentItem) {

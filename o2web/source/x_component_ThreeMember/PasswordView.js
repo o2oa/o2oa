@@ -291,7 +291,7 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
 
     },
     recordStatus: function () {
-        var status = this.navi.currentStatus || {};
+        var status = {};
         status.explorer = "passwordview";
         return status;
     }
