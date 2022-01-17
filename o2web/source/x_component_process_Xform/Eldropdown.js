@@ -84,8 +84,6 @@ MWF.xApplication.process.Xform.Eldropdown = MWF.APPEldropdown =  new Class(
         html += this.getItemHtml();
 
         html += "</el-dropdown>";
-
-        debugger;
         return html;
     },
     getItemHtml: function(){
@@ -115,7 +113,6 @@ MWF.xApplication.process.Xform.Eldropdown = MWF.APPEldropdown =  new Class(
         return html;
     },
     getButtonHtml: function(){
-        debugger;
         if( this.json.showButton ){
             if( this.json.splitButton ) {
                 return this.json.text || MWF.xApplication.process.Xform.LP.pleaseSelect;

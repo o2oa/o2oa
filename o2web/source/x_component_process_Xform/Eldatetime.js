@@ -38,7 +38,6 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         "elEvents": ["focus", "blur", "change"]
     },
     _queryLoaded: function(){
-        debugger;
         var data = this._getBusinessData();
         if( ["datetimerange"].contains(this.json.selectType) ) {
             if (typeOf(data) === "string") this._setBusinessData([data, ""]);

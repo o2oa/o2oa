@@ -94,6 +94,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_dropdown,
     "className": "Eldropdown"
   },
+  "elcarousel": {
+    "fontIcon": "el-icon-film",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_carousel,
+    "className": "Elcarousel"
+  },
   "elcommon": {
     "fontIcon": "el-icon-full-screen",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_common,

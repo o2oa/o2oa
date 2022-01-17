@@ -354,6 +354,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_colorpicker": "颜色选择",
         "el_tree": "树",
         "el_dropdown": "下拉菜单",
+        "el_carousel": "幻灯片",
         "el-menu": "导航菜单",
         "el_common": "通用",
 
@@ -779,6 +780,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "filter": "过滤",
         "title": "标题",
         "path": "路径",
+        "servicePath": "服务路径",
+        "servicePathNote" : "如：/jaxrs/user/hotpic/filter/list/page/1/count/6",
+        "dataItemPath": "数据项路径",
+        "dataItemPathNote": "需显示数据的路径，多层用点号'.'分隔，如：data",
+        "dataScriptNote2": "脚本返回Promise对象或数据，如：return this.Actions.load('x_hotpic_assemble_control').HotPictureInfoAction.listForPage(1, 6);",
         "dataType": "数据类型",
         "text": "文本",
         "number": "数字",
@@ -1227,7 +1233,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "addDefaultConditionByParameter": "通过参数添加默认条件",
 
         "placementValue": ["上中","上左","上右","下中","下左","下右"],
-        "trigger": "触发下拉",
+        "trigger": "触发方式",
         "triggerValue": ["鼠标经过","鼠标点击"],
         "hideOnClick": "点击隐藏菜单",
         "showTimeout": "展开延时",
@@ -1353,7 +1359,23 @@ MWF.xApplication.process.FormDesigner.LP = {
         "startDate": "开始日期",
         "endDate": "结束日期",
         "selectableRange": "可选范围",
-        "endSelectableRange": "结束可选范围"
+        "endSelectableRange": "结束可选范围",
+
+        "initialIndex": "初始幻灯片索引",
+        "autoplay": "自动切换",
+        "interval": "切换间隔",
+        "indicatorPosition": "指示器位置",
+        "indicatorPositionValue": ["内部","外部","无"],
+        "arrow": "箭头",
+        "arrowValue": ["鼠标经过时显示", "一直显示","不显示"],
+        "carouselTypeValue": ["默认","卡片"],
+        "loop": "是否循环",
+        "direction": "展示方向",
+        "directionValue": ["水平","垂直"],
+        "hotpicture": "热点图片",
+        "page": "页数",
+        "filterParameter": "过滤参数"
+
     },
     "smartbi":{
         "nosetup":"请先安装SmartBI应用",

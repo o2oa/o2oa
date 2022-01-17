@@ -145,7 +145,6 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         }
     },
     _createElementHtml: function(){
-        debugger;
         var html = "<el-select";
         html += " v-model=\""+this.json.$id+"\"";
         html += " :clearable=\"clearable\"";
