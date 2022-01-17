@@ -205,38 +205,46 @@
 
 		</div>
 		<div id="text{$.pid}dataScript" style="display: text{($.dataType=='script')?'':'none'}">
-			<div style="padding: 5px;">脚本返回Promise对象或数据</div>
+			<div style="padding: 5px;">{{$.lp.dataScriptNote2}}</div>
 			<div class="MWFScriptArea" name="dataScript"></div>
+			<table><tr>
+				<td class="editTableTitle">{{$.lp.dataItemPath}}:</td>
+				<td class="editTableValue">
+					<div>{{$.lp.dataItemPathNote}}</div>
+					<input type="text" name="scriptDataItemPath" value="text{$.scriptDataItemPath}" class="editTableInput"/>
+				</td>
+			</tr>
+			</table>
 		</div>
 	</div>
 
 	<div title="{{$.lp.content}}"  class="MWFTab">
-		<table>
-			<tr>
-				<td class="editTableTitle"></td>
-				<td class="editTableValue">
-					<input type="radio" name="contentType" value="config" text{(!$.contentType || $.contentType==='config')?'checked':''}
-						   onclick="if (this.checked){
-							$('text{$.pid}contentConfig').setStyle('display', '');
-							$('text{$.pid}contentScript').setStyle('display', 'none');
-						}"
-					/>{{$.lp.config}}
-					<input type="radio" name="contentType" value="script" text{($.contentType==='script')?'checked':''}
-						   onclick="if (this.checked){
-							$('text{$.pid}contentConfig').setStyle('display', 'none');
-							$('text{$.pid}contentScript').setStyle('display', '');
-						}"
-					/>{{$.lp.script}}
-				</td>
-			</tr>
-		</table>
+<!--		<table>-->
+<!--			<tr>-->
+<!--				<td class="editTableTitle"></td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input type="radio" name="contentType" value="config" text{(!$.contentType || $.contentType==='config')?'checked':''}-->
+<!--						   onclick="if (this.checked){-->
+<!--							$('text{$.pid}contentConfig').setStyle('display', '');-->
+<!--							$('text{$.pid}contentScript').setStyle('display', 'none');-->
+<!--						}"-->
+<!--					/>{{$.lp.config}}-->
+<!--					<input type="radio" name="contentType" value="script" text{($.contentType==='script')?'checked':''}-->
+<!--						   onclick="if (this.checked){-->
+<!--							$('text{$.pid}contentConfig').setStyle('display', 'none');-->
+<!--							$('text{$.pid}contentScript').setStyle('display', '');-->
+<!--						}"-->
+<!--					/>{{$.lp.script}}-->
+<!--				</td>-->
+<!--			</tr>-->
+<!--		</table>-->
 		<div id="text{$.pid}contentConfig" class="MWFElCarouselContent" name="contentConfig"
 			 style="display: text{($.contentType!='script')?'':'none'}">
 		</div>
-		<div id="text{$.pid}contentScript" style="display: text{($.contentType=='script')?'':'none'}">
-			<div style="padding: 5px;">脚本返回Promise对象或数据</div>
-			<div class="MWFScriptArea" name="contentScript"></div>
-		</div>
+<!--		<div id="text{$.pid}contentScript" style="display: text{($.contentType=='script')?'':'none'}">-->
+<!--			<div style="padding: 5px;">脚本返回Promise对象或数据</div>-->
+<!--			<div class="MWFScriptArea" name="contentScript"></div>-->
+<!--		</div>-->
 	</div>
 
 	<div title="Vue"  class="MWFTab">

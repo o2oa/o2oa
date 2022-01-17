@@ -779,6 +779,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "servicePathNote" : "Example：/jaxrs/user/hotpic/filter/list/page/1/count/6",
         "dataItemPath": "Data item path",
         "dataItemPathNote": "The path of the data to be displayed, such as: data",
+        "dataScriptNote2": "The script returns a Promise object or data, such as: return this.Actions.load('x_hotpic_assemble_control').HotPictureInfoAction.listForPage(1, 6);",
         "dataType": "Data Type",
         "text": "Text",
         "number": "Number",

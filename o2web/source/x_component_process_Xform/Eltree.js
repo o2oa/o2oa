@@ -154,7 +154,6 @@ MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
             this.json.data = this.json.dataJson;
         }
         this.parseData();
-        debugger;
     },
     _createElementHtml: function() {
         var html = "<el-tree";

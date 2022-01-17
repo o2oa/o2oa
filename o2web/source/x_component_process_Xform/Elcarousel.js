@@ -31,8 +31,6 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
     },
     _loadNodeEdit: function(){
         this._createElementHtml().then(function(html){
-            console.log(html);
-            debugger;
             this.json["$id"] = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
             this.node.appendHTML(html, "before");
             var input = this.node.getPrevious();
@@ -51,6 +49,7 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
         if (!this.json.heightText) this.json.heightText = this.json.height+"px";
         if( !this.json.initialIndex )this.json.initialIndex = 0;
         if( !this.json.carouselType )this.json.carouselType = "";
+        if( !this.json.trigger )this.json.trigger = "";
         // if (this.json.dataType === "script"){
         //     this.json.data = this.form.Macro.exec(((this.json.dataScript) ? this.json.dataScript.code : ""), this);
         // }else{
@@ -61,7 +60,6 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
     _createElementHtml: function() {
         return this.parseItem().then(function ( data ) {
             var itemHtml = data[0];
-            debugger;
             var html = "<el-carousel";
             html += " :height=\"heightText\"";
             html += " :initial-index=initialIndex";
@@ -88,9 +86,11 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
 
             html += ">";
 
-            if (this.json.vueSlot)html += this.json.vueSlot;
-
-            html += itemHtml;
+            if (this.json.vueSlot){
+                html += this.json.vueSlot;
+            }else{
+                html += itemHtml;
+            }
 
             html += "</el-carousel>";
             return html;
@@ -127,12 +127,32 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
                 this.json.items = d;
                 return this.json.items;
             }.bind(this))
+        }else if( this.json.dataType === "script" ){
+            var data;
+            if (this.json.dataScript && this.json.dataScript.code) {
+                data = this.form.Macro.exec(((this.json.dataScript) ? this.json.dataScript.code : ""), this);
+            }
+            if( !data ){
+                return;
+            }else if (typeof data.then !== 'function') {
+                data = Promise.resolve(data);
+            }
+            return data.then(function ( d ) {
+                var paths = ( this.json.scriptDataItemPath || "data" ).split(".");
+                for(var i=0; i<paths.length; i++){
+                    if( d && d[paths[i]] )d = d[paths[i]];
+                }
+                if( !d )d = [];
+                if( o2.typeOf(d) !== "array" )d = [ d ];
+                this.json.items = d;
+                return this.json.items;
+            }.bind(this))
         }
     },
     parseItemHtml: function(data){
         var html = "";
         if( this.json.dataType === "hotpicture" ){
-            if( this.json.contentType === "config" ){
+            // if( !this.json.contentType || this.json.contentType === "config" ){
                 if( (!this.json.contentConfig || !this.json.contentConfig.length) ){
                     html += "<el-carousel-item v-for=\"item in items\">";
                     html +=     "<img :src=\"getImageSrc(item.picId)\"  @click=\"clickHotpictureItem(item, $event)\" style=\"height: 100%; width:100%\"/>";
@@ -142,8 +162,8 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
                 }else{
                     return this.parseContentConfig()
                 }
-            }
-        }else if( this.json.contentType === "config" ){
+            // }
+        }else{ //if( this.json.contentType === "config" ){
             return this.parseContentConfig()
         }
     },
@@ -188,7 +208,7 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
         var _self = this;
         var flag = false;
         if( this.json.dataType === "hotpicture" ) {
-            if (this.json.contentType === "config") {
+            // if (this.json.contentType === "config") {
                 if( (!this.json.contentConfig || !this.json.contentConfig.length) ) {
                     app.methods.clickHotpictureItem = function (item, ev) {
                         if (item.application === "CMS") {
@@ -202,7 +222,7 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
                     }
                     flag = true;
                 }
-            }
+            // }
         }
         if( !flag && this.configFun ){
             Object.each(this.configFun, function (fun, key) {
