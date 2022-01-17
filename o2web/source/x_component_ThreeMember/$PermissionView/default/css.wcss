@@ -77,7 +77,25 @@
     "border-bottom": "3px solid #4A90E2"
   },
 
-
+  "searchInputNode": {
+    "margin": "10px 18px",
+    "padding-left": "10px",
+    "padding-right": "24px",
+    "width": "160px",
+    "height": "30px",
+    "background": "#FFFFFF",
+    "border-radius": "15px",
+    "border": "1px solid #4A90E2"
+  },
+  "searchActionNode": {
+    "position": "absolute",
+    "top": "17px",
+    "right": "20px",
+    "width": "20px",
+    "height": "20px",
+    "cursor": "pointer",
+    "background": "url(../x_component_ThreeMember/$PermissionView/default/icon/search_click.png) no-repeat 0px center"
+  },
   "naviScrollNode" : {
     "overflow": "auto"
   },
@@ -89,7 +107,7 @@
     "height": "100%",
     "overflow": "hidden",
     "float": "left",
-    "position": "static",
+    "position": "relative",
     "background-color" : "#fff"
   },
   "naviTopNode" : {

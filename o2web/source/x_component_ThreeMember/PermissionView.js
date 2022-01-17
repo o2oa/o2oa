@@ -172,9 +172,31 @@ TMPermissionView.Navi = new Class({
         this.css = this.explorer.css;
         this.currentMenu = null;
         this.currentItem = null;
+        this.menuObjList = [];
         this.load();
     },
     load: function () {
+        this.searchInputNode = new Element("input.searchInputNode", {
+            "styles": this.css.searchInputNode,
+            "placeholder": this.explorer.lp.search,
+            "events":{
+                "keydown": function(e){
+                    if (e.code==13){
+                        this.search();
+                        e.preventDefault();
+                    }
+                }.bind(this)
+            }
+        }).inject(this.node);
+        this.searchActionNode = new Element("div.searchActionNode", {
+            "styles": this.css.searchActionNode,
+            "events":{
+                "click": function () {
+                    this.search()
+                }.bind(this)
+            }
+        }).inject(this.node);
+
         this.scrollNode = new Element("div.naviScrollNode", {"styles": this.css.naviScrollNode}).inject(this.node);
         this.areaNode = new Element("div.naviAreaNode", {"styles": this.css.naviAreaNode}).inject(this.scrollNode);
 
@@ -191,6 +213,43 @@ TMPermissionView.Navi = new Class({
         this.setContentSize();
         this.setContentSizeFun = this.setContentSize.bind(this);
         this.app.addEvent("resize", this.setContentSizeFun);
+    },
+    search: function(){
+        var value = this.searchInputNode.get("value");
+        if( this.searchValue === value )return;
+        this.searchValue = value;
+        if( value === "" ){
+            this.menuObjList.each(function (menuObj) {
+                if (menuObj.itemContainer) {
+                    menuObj.itemContainer.getElements(".item").each(function (itemNode) {
+                        itemNode.setStyle("display", "");
+                    })
+                    menuObj.itemContainer.setStyle("display", "none");
+                }
+                menuObj.iconNode.setStyles( this.css.naviMenuIconNode_collapse );
+                menuObj.collapse = true;
+            }.bind(this))
+        }else{
+            this.menuObjList.each(function (menuObj) {
+                if (!menuObj.itemContainer) {
+                    menuObj.itemContainer = new Element("div").inject(menuObj.node, "after");
+                    menuObj.category.action(function (json) {
+                        json.data.each(function (application) {
+                            var hidden = !(application.appName || application.applicationName || application.name).contains(value);
+                            this.createItemNode(application, menuObj, hidden);
+                        }.bind(this))
+                    }.bind(this));
+                } else {
+                    menuObj.itemContainer.setStyle("display", "");
+                    menuObj.itemContainer.getElements(".item").each(function (itemNode) {
+                        var hidden = !itemNode.get("text").contains(value);
+                        itemNode.setStyle("display", hidden ? "none" : "");
+                    })
+                }
+                menuObj.iconNode.setStyles( this.css.naviMenuIconNode_expand );
+                menuObj.collapse = false;
+            }.bind(this))
+        }
     },
     destroy: function(){
         if(this.setContentSizeFun)this.app.removeEvent("resize", this.setContentSizeFun );
@@ -220,6 +279,7 @@ TMPermissionView.Navi = new Class({
             "node": menuNode,
             "iconNode": iconNode
         };
+        this.menuObjList.push(menuObj);
         iconNode.addEvents({
             click: function (ev) {
                 _self.expandOrCollapse(menuObj);
@@ -263,11 +323,12 @@ TMPermissionView.Navi = new Class({
         menuObj.iconNode.setStyles(menuObj.collapse ? this.css.naviMenuIconNode_expand : this.css.naviMenuIconNode_collapse);
         menuObj.collapse = !menuObj.collapse;
     },
-    createItemNode: function (application, menuObj) {
+    createItemNode: function (application, menuObj, hidden) {
         var _self = this;
-        var itemNode = new Element("div", {
+        var itemNode = new Element("div.item", {
             "styles": this.css.naviItemNode
         });
+        if(hidden)itemNode.hide();
 
         var itemObj = {
             "category": menuObj.category,
@@ -319,6 +380,8 @@ TMPermissionView.Navi = new Class({
         var nodeSize = this.explorer.node.getSize();
         var h = nodeSize.y - this.explorer.getOffsetY(this.explorer.node);
         this.node.setStyle("height", h);
+
+        h = h - this.searchInputNode.getSize().y - this.explorer.getOffsetY(this.searchInputNode);
         this.scrollNode.setStyle("height", h);
     }
 });
@@ -917,6 +980,7 @@ TMPermissionView.ProcessAppUser = new Class({
     selectData: function(array){
         this.data.availableIdentityList = [];
         this.data.availableUnitList = [];
+        this.data.availableGroupList = [];
         array.each( function( a ){
             var dn = a.data.distinguishedName;
             var flag = dn.substr(dn.length-1, 1);
@@ -927,19 +991,27 @@ TMPermissionView.ProcessAppUser = new Class({
                 case "u":
                     this.data.availableUnitList.push( dn );
                     break;
+                case "g":
+                    this.data.availableGroupList.push( dn );
+                    break;
             }
         }.bind(this));
         this.saveData( this.data, function(){
-            this.values = ( this.data.availableIdentityList || [] ).combine( this.data.availableUnitList || []);
+            this.values = ( this.data.availableIdentityList || [] )
+                .combine( this.data.availableUnitList || [])
+                .combine( this.data.availableGroupList || []);
             this.loadOrg();
         }.bind(this))
     },
     listData: function (callback) {
-        this.values = ( this.data.availableIdentityList || [] ).combine( this.data.availableUnitList || []);
+        this.values = ( this.data.availableIdentityList || [] )
+            .combine( this.data.availableUnitList || [])
+            .combine( this.data.availableGroupList || []);
         if( callback )callback();
     },
     saveData: function (data, callback) {
-        o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction.edit(this.data.id, data, function (json) {
+        o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction
+            .updatePermission(this.data.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }
@@ -1005,16 +1077,21 @@ TMPermissionView.ProcessProcessStarter = new Class({
             }
         }.bind(this));
         this.saveData( this.data, function(){
-            this.values = (this.data.startableIdentityList || []).combine(this.data.startableUnitList || []).combine(this.data.startableGroupList || []);
+            this.values = (this.data.startableIdentityList || [])
+                .combine(this.data.startableUnitList || [])
+                .combine(this.data.startableGroupList || []);
             this.loadOrg();
         }.bind(this))
     },
     listData: function (callback) {
-        this.values = (this.data.startableIdentityList || []).combine(this.data.startableUnitList || []).combine(this.data.startableGroupList || []);
+        this.values = (this.data.startableIdentityList || [])
+            .combine(this.data.startableUnitList || [])
+            .combine(this.data.startableGroupList || []);
         if (callback) callback();
     },
     saveData: function (data, callback) {
-        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.xxx(this.options.id, data, function (json) {
+        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction
+            .updatePermission(this.options.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }
@@ -1033,7 +1110,7 @@ TMPermissionView.ProcessProcessManager = new Class({
             var flag = dn.substr(dn.length-1, 1);
             switch (flag.toLowerCase()){
                 case "p":
-                    this.data.startableIdentityList.push( dn );
+                    this.data.controllerList.push( dn );
                     break;
             }
         }.bind(this));
@@ -1047,7 +1124,8 @@ TMPermissionView.ProcessProcessManager = new Class({
         if (callback) callback();
     },
     saveData: function (data, callback) {
-        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.xxx(this.options.id, data, function (json) {
+        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction
+            .updatePermission(this.options.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }
@@ -1057,7 +1135,8 @@ TMPermissionView.ProcessProcessManager = new Class({
 TMPermissionView.PortalAppUser = new Class({
     Extends: TMPermissionView.ProcessAppUser,
     saveData: function (data, callback) {
-        o2.Actions.load("x_portal_assemble_designer").PortalAction.edit(this.data.id, data, function (json) {
+        o2.Actions.load("x_portal_assemble_designer").PortalAction
+            .updatePermission(this.data.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }
@@ -1066,7 +1145,8 @@ TMPermissionView.PortalAppUser = new Class({
 TMPermissionView.PortalAppManager = new Class({
     Extends: TMPermissionView.ProcessAppManager,
     saveData: function (data, callback) {
-        o2.Actions.load("x_portal_assemble_designer").PortalAction.edit(this.data.id, data, function (json) {
+        o2.Actions.load("x_portal_assemble_designer").PortalAction
+            .updatePermission(this.data.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }
@@ -1075,7 +1155,8 @@ TMPermissionView.PortalAppManager = new Class({
 TMPermissionView.QueryAppUser = new Class({
     Extends: TMPermissionView.ProcessAppUser,
     saveData: function (data, callback) {
-        o2.Actions.load("x_query_assemble_designer").QueryAction.edit(this.data.id, data, function (json) {
+        o2.Actions.load("x_query_assemble_designer").QueryAction
+            .updatePermission(this.data.id, data, function (json){
             if (callback) callback()
         }.bind(this));
     }
@@ -1084,7 +1165,8 @@ TMPermissionView.QueryAppUser = new Class({
 TMPermissionView.QueryAppManager = new Class({
     Extends: TMPermissionView.ProcessAppManager,
     saveData: function (data, callback) {
-        o2.Actions.load("x_query_assemble_designer").QueryAction.edit(this.data.id, data, function (json) {
+        o2.Actions.load("x_query_assemble_designer").QueryAction
+            .updatePermission(this.data.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }
@@ -1099,6 +1181,7 @@ TMPermissionView.QueryViewExecutor = new Class({
     selectData: function(array){
         this.data.availableIdentityList = [];
         this.data.availableUnitList = [];
+        this.data.availableGroupList = [];
         array.each( function( a ){
             var dn = a.data.distinguishedName;
             var flag = dn.substr(dn.length-1, 1);
@@ -1109,19 +1192,27 @@ TMPermissionView.QueryViewExecutor = new Class({
                 case "u":
                     this.data.availableUnitList.push( dn );
                     break;
+                case "g":
+                    this.data.availableGroupList.push( dn );
+                    break;
             }
         }.bind(this));
         this.saveData( this.data, function(){
-            this.values = (this.data.availableIdentityList || []).combine(this.data.availableUnitList || []);
+            this.values = (this.data.availableIdentityList || [])
+                .combine(this.data.availableUnitList || [])
+                .combine(this.data.availableGroupList || []);
             this.loadOrg();
         }.bind(this))
     },
     listData: function (callback) {
-        this.values = (this.data.availableIdentityList || []).combine(this.data.availableUnitList || []);
+        this.values = (this.data.availableIdentityList || [])
+            .combine(this.data.availableUnitList || [])
+            .combine(this.data.availableGroupList || []);
         if (callback) callback();
     },
     saveData: function (data, callback) {
-        o2.Actions.load("x_query_assemble_designer").ViewAction.xxx(this.options.id, data, function (json) {
+        o2.Actions.load("x_query_assemble_designer").ViewAction
+            .updatePermission(this.options.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }
@@ -1131,7 +1222,8 @@ TMPermissionView.QueryViewExecutor = new Class({
 TMPermissionView.QueryStatExecutor = new Class({
     Extends: TMPermissionView.QueryViewExecutor,
     saveData: function (data, callback) {
-        o2.Actions.load("x_query_assemble_designer").StatAction.xxx(this.options.id, data, function (json) {
+        o2.Actions.load("x_query_assemble_designer").StatAction
+            .updatePermission(this.options.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }
@@ -1140,7 +1232,8 @@ TMPermissionView.QueryStatExecutor = new Class({
 TMPermissionView.QueryImportModelExecutor = new Class({
     Extends: TMPermissionView.QueryViewExecutor,
     saveData: function (data, callback) {
-        o2.Actions.load("x_query_assemble_designer").ImportModelAction.xxx(this.options.id, data, function (json) {
+        o2.Actions.load("x_query_assemble_designer").ImportModelAction
+            .updatePermission(this.options.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }
@@ -1155,6 +1248,7 @@ TMPermissionView.QueryTableReader = new Class({
     selectData: function(array){
         this.data.readPersonList = [];
         this.data.readUnitList = [];
+        this.data.readGroupList = [];
         array.each( function( a ){
             var dn = a.data.distinguishedName;
             var flag = dn.substr(dn.length-1, 1);
@@ -1165,19 +1259,27 @@ TMPermissionView.QueryTableReader = new Class({
                 case "u":
                     this.data.readUnitList.push( dn );
                     break;
+                case "g":
+                    this.data.readGroupList.push( dn );
+                    break;
             }
         }.bind(this));
         this.saveData( this.data, function(){
-            this.values = (this.data.readPersonList || []).combine(this.data.readUnitList || []);
+            this.values = (this.data.readPersonList || [])
+                .combine(this.data.readUnitList || [])
+                .combine(this.data.readGroupList || []);
             this.loadOrg();
         }.bind(this))
     },
     listData: function (callback) {
-        this.values = (this.data.readPersonList || []).combine(this.data.readUnitList || []);
+        this.values = (this.data.readPersonList || [])
+            .combine(this.data.readUnitList || [])
+            .combine(this.data.readGroupList || []);
         if (callback) callback();
     },
     saveData: function (data, callback) {
-        o2.Actions.load("x_query_assemble_designer").TableAction.xxx(this.options.id, data, function (json) {
+        o2.Actions.load("x_query_assemble_designer").TableAction
+            .updatePermission(this.options.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }
@@ -1192,6 +1294,7 @@ TMPermissionView.QueryTableEditor = new Class({
     selectData: function(array){
         this.data.editPersonList = [];
         this.data.editUnitList = [];
+        this.data.editGroupList = [];
         array.each( function( a ){
             var dn = a.data.distinguishedName;
             var flag = dn.substr(dn.length-1, 1);
@@ -1202,19 +1305,27 @@ TMPermissionView.QueryTableEditor = new Class({
                 case "u":
                     this.data.editUnitList.push( dn );
                     break;
+                case "g":
+                    this.data.editGroupList.push( dn );
+                    break;
             }
         }.bind(this));
         this.saveData( this.data, function(){
-            this.values = (this.data.editPersonList || []).combine(this.data.editUnitList || []);
+            this.values = (this.data.editPersonList || [])
+                .combine(this.data.editUnitList || [])
+                .combine(this.data.editGroupList || []);
             this.loadOrg();
         }.bind(this))
     },
     listData: function (callback) {
-        this.values = (this.data.editPersonList || []).combine(this.data.editUnitList || []);
+        this.values = (this.data.editPersonList || [])
+            .combine(this.data.editUnitList || [])
+            .combine(this.data.editGroupList || []);
         if (callback) callback();
     },
     saveData: function (data, callback) {
-        o2.Actions.load("x_query_assemble_designer").TableAction.xxx(this.options.id, data, function (json) {
+        o2.Actions.load("x_query_assemble_designer").TableAction
+            .updatePermission(this.options.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }
@@ -1229,6 +1340,7 @@ TMPermissionView.QueryStatementExecutor = new Class({
     selectData: function(array){
         this.data.executePersonList = [];
         this.data.executeUnitList = [];
+        this.data.executeGroupList = [];
         array.each( function( a ){
             var dn = a.data.distinguishedName;
             var flag = dn.substr(dn.length-1, 1);
@@ -1239,19 +1351,27 @@ TMPermissionView.QueryStatementExecutor = new Class({
                 case "u":
                     this.data.executeUnitList.push( dn );
                     break;
+                case "g":
+                    this.data.executeGroupList.push( dn );
+                    break;
             }
         }.bind(this));
         this.saveData( this.data, function(){
-            this.values = (this.data.executePersonList || []).combine(this.data.executeUnitList || []);
+            this.values = (this.data.executePersonList || [])
+                .combine(this.data.executeUnitList || [])
+                .combine(this.data.executeGroupList || []);
             this.loadOrg();
         }.bind(this))
     },
     listData: function (callback) {
-        this.values = (this.data.executePersonList || []).combine(this.data.executeUnitList || []);
+        this.values = (this.data.executePersonList || [])
+            .combine(this.data.executeUnitList || [])
+            .combine(this.data.executeGroupList || []);
         if (callback) callback();
     },
     saveData: function (data, callback) {
-        o2.Actions.load("x_query_assemble_designer").StatementAction.xxx(this.options.id, data, function (json) {
+        o2.Actions.load("x_query_assemble_designer").StatementAction
+            .updatePermission(this.options.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }

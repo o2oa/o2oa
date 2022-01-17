@@ -54,7 +54,7 @@ MWF.xApplication.ThreeMember.LP = {
 	"saveSuccess": "保存成功",
 	"saveFailure": "保存失败",
 	"noPermissionText": "抱歉，三员管理未开启或您没有权限查看本应用。",
-
+	"search": "搜索应用",
 	"viewer": "使用范围",
 	"publisher": "发布者",
 	"manager": "管理者",
