@@ -112,6 +112,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         app.methods = this._createVueMethods(app);
         this.appendVueExtend(app);
         this.appendVueWatch(app);
+        this._afterCreateVueExtend(app);
         return app;
     },
     appendVueWatch: function(app){
@@ -197,5 +198,6 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     _appendVueData: function(){},
     _createElementHtml: function(){
         return "";
-    }
+    },
+    _afterCreateVueExtend: function (app) {}
 }); 

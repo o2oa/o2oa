@@ -14,7 +14,6 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 		this.moduleName = "elselect";
 	},
 	_createElementHtml: function(){
-		debugger;
 		//var html = "<el-input placeholder=\"请输入内容\"></el-input>";
 		var html = "<el-select";
 		// if (this.json.description) html += " placeholder=\""+this.json.description+"\"";
