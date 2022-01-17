@@ -37,6 +37,10 @@ MWF.xApplication.process.Xform.Eldropdown = MWF.APPEldropdown =  new Class(
          */
         "elEvents": ["click", "command", "visible-change"]
     },
+    _loadNode: function(){
+        if (this.isReadonly()) this.json.disabled = true;
+        this._loadNodeEdit();
+    },
     _appendVueData: function(){
         if (!this.json.size) this.json.size = "";
         if (!this.json.placement) this.json.placement = "bottom-end";
@@ -46,10 +50,11 @@ MWF.xApplication.process.Xform.Eldropdown = MWF.APPEldropdown =  new Class(
         if (!this.json.buttonType) this.json.buttonType = "";
         if (!this.json.showTimeout) this.json.showTimeout = 250;
         if (!this.json.hideTimeout) this.json.hideTimeout = 150;
+        // if(o2.typeOf(this.json.disabled)!=="boolean")this.json.disabled = this.isReadonly();
     },
     _createElementHtml: function() {
         var html = "<el-dropdown";
-        html += " :readonly=\"readonly\"";
+        // html += " :readonly=\"readonly\"";
         html += " :placement=\"placement\"";
         html += " :trigger=\"trigger\"";
         html += " :hide-on-click=\"hideOnClick\"";

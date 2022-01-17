@@ -22,9 +22,11 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         "id": "",
         "actions": null,
         "category": null,
-        "processData": null
+        "processData": null,
+        "mvcStyle": "style.css"
 	},
 	onQueryLoad: function(){
+        this._loadCss();
         this.shortcut = true;
 		if (this.status){
 			this.options.id = this.status.id;
