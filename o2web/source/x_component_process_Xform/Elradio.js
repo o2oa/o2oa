@@ -212,7 +212,6 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
             },
             methods: {
                 change: function(v){
-                    debugger;
                     _self.validationMode();
                     if (_self.validation()) {
                         _self._setBusinessData(v);
