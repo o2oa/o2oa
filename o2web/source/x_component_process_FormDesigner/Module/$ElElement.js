@@ -11,7 +11,6 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	},
 
 	initialize: function(form, options){
-		debugger;
 		this.setOptions(options);
 		this._initModuleType();
 		this.path = "../x_component_process_FormDesigner/Module/"+this.className+"/";
@@ -111,7 +110,6 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		}.bind(this));
 	},
 	_resetVueModuleDomNode: function(callback){
-		debugger;
 		if (!this.vm){
 			if (!this.node.hasClass("o2_vue")) this.node.addClass("o2_vue");
 			var html = this._filterHtml(this._createElementHtml());
@@ -250,7 +248,6 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 			}.bind(this));
 			this.json.preprocessing = "y";
 
-			debugger;
 			this._resetElementFun = this.resetElement.bind(this);
 			this.form.addEvent("postSave", this._resetElementFun);
 		}catch(e){};

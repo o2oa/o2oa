@@ -1,0 +1,49 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Elcarousel",
+	"height": "200",
+	"initialIndex": 0,
+	"trigger": "",
+	"autoplay": true,
+	"interval": 3000,
+	"indicatorPosition": "outside",
+	"arrow": "hover",
+	"carouselType": "",
+	"loop": true,
+	"direction": "horizontal",
+	"count": "6",
+	"page": "1",
+	"httpMethod": "GET",
+	"contentConfig": [],
+	"dataItemPath": "data",
+	"scriptDataItemPath": "data",
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+	"vueSlot": "",
+	"elProperties": {},
+	"elStyles": {},
+	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
+		"change": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

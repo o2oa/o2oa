@@ -119,6 +119,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadElCommonPreview();
                     this.loadElTreeData();
                     this.loadElTDropDownData();
+                    this.loadElCarouselContent();
 
                     this.loadSmartBISelect();
 
@@ -160,7 +161,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             MWF.requireApp("process.FormDesigner", "widget.ElTreeEditor", function(){
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElTreeEditor(node, {
                     "title": title,
-                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
                         debugger;
                         // this.data[name] = Object.assign(this.data[name], treeEditor.toJson());
@@ -186,7 +187,27 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             MWF.requireApp("process.FormDesigner", "widget.ElDropdownItemEditor", function(){
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor(node, {
                     "title": title,
-                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+                    "onChange": function(){
+                    }.bind(this)
+                });
+                treeEditor.load(json);
+            }.bind(this));
+            node.addEvent("keydown", function(e){e.stopPropagation();});
+        }.bind(this));
+    },
+
+    loadElCarouselContent: function(){
+        var arrays = this.propertyContent.getElements(".MWFElCarouselContent");
+        arrays.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var json = this.data[name];
+            if (!json) json = [];
+            MWF.requireApp("process.FormDesigner", "widget.ElCarouselContent", function(){
+                var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElCarouselContent(node, {
+                    "title": title,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
                     }.bind(this)
                 });
@@ -1224,11 +1245,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var addressObj = layout.serviceAddressList[contextRoot];
         var address = "";
         if (addressObj){
-            address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+            address = layout.config.app_protocol+"//"+addressObj.host+((!addressObj.port || addressObj.port==80) ? "" : ":"+addressObj.port)+addressObj.context;
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
             var port = layout.desktop.centerServer.port;
-            address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
+            address = layout.config.app_protocol+"//"+host+(!port || port=="80" ? "" : ":"+port)+"/x_program_center";
         }
         return address;
     },
