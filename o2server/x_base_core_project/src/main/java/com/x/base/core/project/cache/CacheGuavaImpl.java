@@ -28,6 +28,7 @@ public class CacheGuavaImpl implements Cache {
 					.expireAfterWrite(Config.cache().getGuava().getExpireMinutes(), TimeUnit.MINUTES)
 					.expireAfterAccess(Config.cache().getGuava().getExpireMinutes(), TimeUnit.MINUTES).build();
 			this.notifyReceiveQueue = new CacheGuavaNotifyReceiveQueue(cache);
+			this.notifyReceiveQueue.start();
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -47,7 +48,7 @@ public class CacheGuavaImpl implements Cache {
 
 	@Override
 	public void shutdown() {
-		// nothing
+		this.notifyReceiveQueue.stop();
 	}
 
 	private String concrete(CacheCategory category, CacheKey key) {

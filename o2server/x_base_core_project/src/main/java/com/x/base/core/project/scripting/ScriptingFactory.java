@@ -84,10 +84,16 @@ public class ScriptingFactory {
 
 	public static String functionalization(String text) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("JSON.stringify((function(){").append(System.lineSeparator());
-		sb.append(Objects.toString(text, "")).append(System.lineSeparator());
-		sb.append("}).apply(this));");
+		sb.append("var o = (function(){").append(System.lineSeparator());
+		sb.append(Objects.toString(text, "")).append(System.lineSeparator()).append(System.lineSeparator());
+		sb.append("}.apply(this));").append(System.lineSeparator());
+		sb.append(
+				"(o && (o !== false) && o.getClass && (typeof o=='object')) ? Java.type('com.x.base.core.project.gson.XGsonBuilder').toJson(o) : JSON.stringify(o)");
 		return sb.toString();
+//		StringBuilder sb = new StringBuilder();
+//		sb.append("JSON.stringify((function(){").append(System.lineSeparator());
+//		sb.append("}).apply(this));");
+//		return sb.toString();
 	}
 
 	public static CompiledScript functionalizationCompile(String text) throws ScriptException {

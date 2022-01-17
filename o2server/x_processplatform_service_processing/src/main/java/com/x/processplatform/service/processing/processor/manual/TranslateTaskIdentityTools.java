@@ -113,7 +113,8 @@ public class TranslateTaskIdentityTools {
 					manual, Business.EVENT_MANUALTASK);
 			JsonScriptingExecutor.jsonElement(cs, aeiObjects.scriptContext(), o -> {
 				try {
-					addObjectToTaskIdentities(taskIdentities, units, groups, o);
+					addObjectToTaskIdentities(taskIdentities, units, groups,
+							JsonScriptingExecutor.Helper.stringOrDistinguishedNameAsList(o));
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
