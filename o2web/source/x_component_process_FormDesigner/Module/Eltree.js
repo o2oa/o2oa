@@ -41,7 +41,6 @@ MWF.xApplication.process.FormDesigner.Module.Eltree = MWF.FCEltree = new Class({
 		}).inject(this.iconNode);
 	},
 	_createElementHtml: function(){
-		debugger;
 		var html =  "<el-tree";
 		html += " v-model=\"tmpValue\"";
 
@@ -107,7 +106,6 @@ MWF.xApplication.process.FormDesigner.Module.Eltree = MWF.FCEltree = new Class({
 		}.bind(this)
 	},
 	_setEditStyle_custom: function(name, obj, oldValue){
-		debugger;
 		switch (name){
 			// case "dataType": this.setPropertyName(); break;
 			// case "id": this.setPropertyId(); break;

@@ -11,11 +11,15 @@ import java.util.HashMap;
 
 /**
  * 文件上传下载
+ * @author sword
  */
 public class FileUtil {
 
-	// 缓存文件头信息-文件头信息
-	public static final HashMap<String, String> mFileTypes = new HashMap<String, String>();
+	private static final Integer BYTE_LENGTH = 1024;
+	/**
+	 * 缓存文件头信息-文件头信息
+	 */
+	public static final HashMap<String, String> mFileTypes = new HashMap<>();
 	static {
 		// images
 		mFileTypes.put("FFD8FF", "jpg");
@@ -23,20 +27,19 @@ public class FileUtil {
 		mFileTypes.put("47494638", "gif");
 		mFileTypes.put("49492A00", "tif");
 		mFileTypes.put("424D", "bmp");
-		//
-		mFileTypes.put("41433130", "dwg"); // CAD
+		mFileTypes.put("41433130", "dwg");
 		mFileTypes.put("38425053", "psd");
-		mFileTypes.put("7B5C727466", "rtf"); // 日记本
+		mFileTypes.put("7B5C727466", "rtf");
 		mFileTypes.put("3C3F786D6C", "xml");
 		mFileTypes.put("68746D6C3E", "html");
-		mFileTypes.put("44656C69766572792D646174653A", "eml"); // 邮件
+		mFileTypes.put("44656C69766572792D646174653A", "eml");
 		mFileTypes.put("D0CF11E0", "doc");
-		mFileTypes.put("D0CF11E0", "xls");// excel2003版本文件
+		mFileTypes.put("D0CF11E0", "xls");
 		mFileTypes.put("5374616E64617264204A", "mdb");
 		mFileTypes.put("252150532D41646F6265", "ps");
 		mFileTypes.put("255044462D312E", "pdf");
 		mFileTypes.put("504B0304", "docx");
-		mFileTypes.put("504B0304", "xlsx");// excel2007以上版本文件
+		mFileTypes.put("504B0304", "xlsx");
 		mFileTypes.put("52617221", "rar");
 		mFileTypes.put("57415645", "wav");
 		mFileTypes.put("41564920", "avi");
@@ -56,13 +59,11 @@ public class FileUtil {
 	 * <p>
 	 * Description: 根据文件路径获取文件头信息
 	 * </p>
-	 * 
+	 *
 	 * @param filePath 文件路径
 	 * @return 文件头信息
 	 */
 	public static String getFileType(String filePath) {
-		System.out.println(getFileHeader(filePath)); // 返回十六进制 如：504B0304
-		// System.out.println(mFileTypes.get(getFileHeader(filePath))); //xlsx
 		return mFileTypes.get(getFileHeader(filePath));
 	}
 
@@ -73,7 +74,7 @@ public class FileUtil {
 	 * <p>
 	 * Description: 根据文件流获取文件头信息
 	 * </p>
-	 * 
+	 *
 	 * @param is 文件流
 	 * @return 文件头信息
 	 */
@@ -88,7 +89,7 @@ public class FileUtil {
 	 * <p>
 	 * Description: 根据文件路径获取文件头信息
 	 * </p>
-	 * 
+	 *
 	 * @param filePath 文件路径
 	 * @return 十六进制文件头信息
 	 */
@@ -126,7 +127,7 @@ public class FileUtil {
 	 * <p>
 	 * Description: 根据文件流获取文件头信息
 	 * </p>
-	 * 
+	 *
 	 * @param is 文件流
 	 * @return 十六进制文件头信息
 	 */
@@ -162,7 +163,7 @@ public class FileUtil {
 	 * <p>
 	 * Description: 将要读取文件头信息的文件的byte数组转换成string类型表示
 	 * </p>
-	 * 
+	 *
 	 * @param src 要读取文件头信息的文件的byte数组
 	 * @return 文件头信息
 	 */
@@ -220,12 +221,36 @@ public class FileUtil {
 		}
 		MessageDigest digest = null;
 		InputStream in = null;
-		byte buffer[] = new byte[1024];
+		byte[] buffer = new byte[BYTE_LENGTH];
 		int len;
 		try {
 			digest = MessageDigest.getInstance("MD5");
 			in = new ByteArrayInputStream(bytes);
-			while ((len = in.read(buffer, 0, 1024)) != -1) {
+			while ((len = in.read(buffer, 0, BYTE_LENGTH)) != -1) {
+				digest.update(buffer, 0, len);
+			}
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		BigInteger bigInt = new BigInteger(1, digest.digest());
+		return bigInt.toString(16);
+	}
+
+	/**
+	 * 获取文件的 MD5
+	 */
+	public static String getFileMD5(InputStream in) {
+		if (in == null) {
+			return null;
+		}
+		MessageDigest digest = null;
+		byte[] buffer = new byte[BYTE_LENGTH];
+		int len;
+		try {
+			digest = MessageDigest.getInstance("MD5");
+			while ((len = in.read(buffer, 0, BYTE_LENGTH)) != -1) {
 				digest.update(buffer, 0, len);
 			}
 			in.close();

@@ -1,8 +1,9 @@
 package com.x.file.assemble.control.jaxrs.attachment2;
 
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -21,12 +22,15 @@ import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 
+import java.io.File;
+import java.io.FileInputStream;
+
 class ActionUpload extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger( ActionUpload.class );
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String folderId, String fileName, String fileMd5, byte[] bytes,
-			FormDataContentDisposition disposition) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String folderId, String fileName, String fileMd5, final FormDataBodyPart filePart) throws Exception {
+		logger.debug(effectivePerson.getDistinguishedName());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
@@ -48,11 +52,9 @@ class ActionUpload extends BaseAction {
 			if (null == mapping) {
 				throw new ExceptionAllocateStorageMaaping();
 			}
-			/** 由于需要校验要把所有的必要字段进行填写 */
 
-			/** 文件名编码转换 */
 			if (StringUtils.isEmpty(fileName)) {
-				fileName = new String(disposition.getFileName().getBytes(DefaultCharset.charset_iso_8859_1),
+				fileName = new String(filePart.getFormDataContentDisposition().getFileName().getBytes(DefaultCharset.charset_iso_8859_1),
 						DefaultCharset.charset);
 			}
 			fileName = FilenameUtils.getName(fileName);
@@ -60,45 +62,41 @@ class ActionUpload extends BaseAction {
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
 				throw new ExceptionEmptyExtension(fileName);
 			}
-			/** 同一目录下文件名唯一 */
-
 			if (this.exist(business, fileName, folderId, effectivePerson.getDistinguishedName())) {
 				fileName = this.adjustFileName(business, folderId, fileName);
-				//throw new ExceptionSameNameFileExist(fileName);
+			}
+			File file = filePart.getValueAs(File.class);
+			if(file==null || !file.exists()){
+				throw new ExceptionAttachmentNone(fileName);
 			}
 			if(StringUtils.isEmpty(fileMd5)){
-				if(bytes==null) {
-					throw new ExceptionEmptyExtension("上传文件的md5值为空: {}.", fileName);
+				if(file.length() < Integer.MAX_VALUE) {
+					fileMd5 = FileUtil.getFileMD5(new FileInputStream(file));
+				}else{
+					fileMd5 = StringTools.uniqueToken();
 				}
-				fileMd5 = FileUtil.getFileMD5(bytes);
 			}
 			OriginFile originFile = business.originFile().getByMd5(fileMd5);
 			Attachment2 attachment2 = null;
 			if(originFile==null){
-				if(bytes==null){
-					throw new ExceptionAttachmentNone(fileName);
-				}
-				this.verifyConstraint(business, effectivePerson.getDistinguishedName(), bytes.length, fileName);
+				this.verifyConstraint(business, effectivePerson.getDistinguishedName(), file.length(), fileName);
 				originFile = new OriginFile(mapping.getName(), fileName, effectivePerson.getDistinguishedName(), fileMd5);
 				emc.check(originFile, CheckPersistType.all);
-				originFile.saveContent(mapping, bytes, fileName);
+				originFile.saveContent(mapping, new FileInputStream(file), fileName);
 				attachment2 = new Attachment2(fileName, effectivePerson.getDistinguishedName(),
 						folderId, originFile.getId(), originFile.getLength(), originFile.getType());
 				emc.check(attachment2, CheckPersistType.all);
 				emc.beginTransaction(OriginFile.class);
-				emc.beginTransaction(Attachment2.class);
 				emc.persist(originFile);
-				emc.persist(attachment2);
-				emc.commit();
 			}else{
 				this.verifyConstraint(business, effectivePerson.getDistinguishedName(), originFile.getLength(), fileName);
 				attachment2 = new Attachment2(fileName, effectivePerson.getDistinguishedName(),
 						folderId, originFile.getId(), originFile.getLength(), originFile.getType());
 				emc.check(attachment2, CheckPersistType.all);
-				emc.beginTransaction(Attachment2.class);
-				emc.persist(attachment2);
-				emc.commit();
 			}
+			emc.beginTransaction(Attachment2.class);
+			emc.persist(attachment2);
+			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(attachment2.getId());
 			result.setData(wo);
