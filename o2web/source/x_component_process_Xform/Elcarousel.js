@@ -218,7 +218,7 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
                         }
                     };
                     app.methods.getImageSrc = function (picId) {
-                        return o2.xDesktop.getImageSrc(picId);
+                        return MWF.xDesktop.getImageSrc(picId);
                     }
                     flag = true;
                 }
