@@ -17,7 +17,7 @@
 	"httpMethod": "GET",
 	"contentConfig": [],
 	"dataItemPath": "data",
-	"scriptDataItemPath": "data",
+	"scriptDataItemPath": "",
 	"vueData": {},
 	"vueMethods": {},
 	"vueCss": {},
