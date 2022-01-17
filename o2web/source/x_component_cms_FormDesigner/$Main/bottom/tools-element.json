@@ -49,6 +49,21 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_slider,
     "className": "Elslider"
   },
+  "eltime": {
+    "fontIcon": "el-icon-time",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_time,
+    "className": "Eltime"
+  },
+  "eldate": {
+    "fontIcon": "el-icon-date",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_date,
+    "className": "Eldate"
+  },
+  "eldatetime": {
+    "fontIcon": "el-icon-time",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_datetime,
+    "className": "Eldatetime"
+  },
   "elbutton": {
     "fontIcon": "el-icon-thumb",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_button,
@@ -58,6 +73,26 @@
     "fontIcon": "el-icon-picture-outline-round",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_icon,
     "className": "Elicon"
+  },
+  "elrate": {
+    "fontIcon": "el-icon-star-off",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_rate,
+    "className": "Elrate"
+  },
+  "elcolorpicker": {
+    "fontIcon": "el-icon-help",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_colorpicker,
+    "className": "Elcolorpicker"
+  },
+  "eltree": {
+    "fontIcon": "o2-icon-tree",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_tree,
+    "className": "Eltree"
+  },
+  "eldropdown": {
+    "fontIcon": "el-icon-caret-bottom",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_dropdown,
+    "className": "Eldropdown"
   },
   "elcommon": {
     "fontIcon": "el-icon-full-screen",
