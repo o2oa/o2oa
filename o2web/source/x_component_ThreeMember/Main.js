@@ -143,14 +143,12 @@ MWF.xApplication.ThreeMember.Main = new Class({
                 "display":  o2.AC.isSecurityManager() || this.managerEnabled
             }
         ];
-        var idx = 0;
-        naviJson.each( function( d ){
-            if( d.display ){
-                this.createNaviNode( d , idx);
-                idx++;
-            }
+        var displayNaviJson = naviJson.filter(function (d) { return d.display });
+        this.displayNaviId = displayNaviJson.map( function(d){ return d.id } );
+        displayNaviJson.each( function( d, idx ){
+            this.createNaviNode( d , idx, idx === 0 );
         }.bind(this));
-        if( idx === 0 ){
+        if( displayNaviJson.length === 0 ){
             this.contentContainerNode.setStyle("background-color","#fff");
             new Element("div", {
                 "styles": this.css.noPermissionNode,
@@ -158,7 +156,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
             }).inject(this.contentContainerNode)
         }
     },
-    createNaviNode : function( d, index ){
+    createNaviNode : function( d, index, isFirst ){
         var _self = this;
         var node = new Element("div",{
             text : d.title,
@@ -181,9 +179,10 @@ MWF.xApplication.ThreeMember.Main = new Class({
         }).inject( this.naviNode );
         node.store("data", d);
         node.setStyle("background-image", "url("+this.path + "icon/" + d.icon + ".png)" );
-        if( this.status && this.status.es && this.status.es.explorer ){
+        debugger;
+        if( this.status && this.status.es && this.displayNaviId.contains(this.status.es.explorer) && this.status.es.explorer ){
             if(this.status.es.explorer === d.id)node.click();
-        }else if( index === 0  ){
+        }else if( isFirst  ){
             node.click();
         }
     },
@@ -205,7 +204,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
         if(this.currentView)this.currentView.clear();
         MWF.xDesktop.requireApp("ThreeMember", "LogView", null, false);
         var options = {};
-        if( this.status && this.status.es && this.status.es.explorer == "logview" ){
+        if( this.status && this.status.es && this.status.es.explorer === "logview" ){
             options = this.status.es;
         }
         this.currentView = new MWF.xApplication.ThreeMember.LogView(this.contentContainerNode, this, options)
@@ -215,7 +214,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
         if(this.currentView)this.currentView.clear();
         MWF.xDesktop.requireApp("ThreeMember", "PermissionView", null, false);
         var options = {};
-        if( this.status && this.status.es && this.status.es.explorer == "permissionview" ){
+        if( this.status && this.status.es && this.status.es.explorer === "permissionview" ){
             options = this.status.es;
         }
         this.currentView = new MWF.xApplication.ThreeMember.PermissionView(this.contentContainerNode, this, options)
@@ -225,7 +224,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
         if(this.currentView)this.currentView.clear();
         MWF.xDesktop.requireApp("ThreeMember", "PasswordView", null, false);
         var options = {};
-        if( this.status && this.status.es && this.status.es.explorer == "passwordview" ){
+        if( this.status && this.status.es && this.status.es.explorer === "passwordview" ){
             options = this.status.es;
         }
         this.currentView = new MWF.xApplication.ThreeMember.PasswordView(this.contentContainerNode, this, options)
