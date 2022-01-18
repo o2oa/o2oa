@@ -672,7 +672,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             if( this.data.inviteDelPersonList && this.data.inviteDelPersonList.length )this.options.height += 40;
         }else{
             this.formTopTextNode.set( "text", this.lp.metting );
-            this.options.height = 780;
+            this.options.height = 730;
         }
         if( this.data.acceptPersonList && this.data.acceptPersonList.length )this.options.height += 40;
         if( this.data.rejectPersonList && this.data.rejectPersonList.length )this.options.height += 40;
