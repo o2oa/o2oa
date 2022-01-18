@@ -44,6 +44,8 @@ MWF.xApplication.ThreeMember.LP = {
 	"justNow": "JustNow",
 	"publishJustNow": "Just published",
 
+	"home": "Enter system",
+	"syncLogSuccess": "Sync log success",
 	"process": "Process Management",
 	"cms": "Content Management",
 	"portal": "Portal Management",

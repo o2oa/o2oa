@@ -315,7 +315,12 @@ var MDomItem = new Class({
         this.createElement();
     },
     reset: function(){
-        this.setValue( this.options.defaultValue || "" );
+        debugger;
+        if( typeOf(this.dom.reset) === "function" ){
+            this.dom.reset();
+        }else{
+            this.setValue( this.options.defaultValue || "" );
+        }
     },
     setValue :function(value){
         if( this.dom )this.dom.setValue(value);
@@ -2886,6 +2891,9 @@ MDomItem.Org = new Class({
         if(parent)item.inject(parent);
         this.items.push( item );
     },
+    reset: function(){
+        this.setValue( this.options.defaultValue || [] );
+    },
     getData : function( parse ){
         var data = [];
         this.OrgWidgetList.each( function( widget ){
@@ -2922,6 +2930,7 @@ MDomItem.Org = new Class({
         }else{
             this.orgData = [];
         }
+        this.orgObjData = null;
         item.empty();
         this.loadOrgWidget( this.orgData, item, this.options.isEdited );
         this.module.orgData = this.orgData
