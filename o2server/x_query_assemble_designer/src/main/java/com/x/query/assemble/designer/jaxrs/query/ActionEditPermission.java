@@ -1,9 +1,5 @@
 package com.x.query.assemble.designer.jaxrs.query;
 
-import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,10 +16,13 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
+import org.apache.commons.lang3.StringUtils;
 
-class ActionEdit extends BaseAction {
+import java.util.Date;
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
+class ActionEditPermission extends BaseAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionEditPermission.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 		logger.debug(effectivePerson.getDistinguishedName());
@@ -35,19 +34,13 @@ class ActionEdit extends BaseAction {
 			if (null == query) {
 				throw new ExceptionQueryNotExist(flag);
 			}
-			if (!business.editable(effectivePerson, query)) {
+			if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, query)) {
 				throw new ExceptionQueryAccessDenied(effectivePerson.getDistinguishedName(), query.getName(),
 						query.getId());
 			}
-			emc.beginTransaction(Query.class);
 
+			emc.beginTransaction(Query.class);
 			Wi.copier.copy(wi, query);
-			if (!this.idleName(business, query)) {
-				throw new ExceptionNameExist(query.getName());
-			}
-			if (StringUtils.isNotEmpty(query.getAlias()) && (!this.idleAlias(business, query))) {
-				throw new ExceptionAliasExist(query.getAlias());
-			}
 			query.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			query.setLastUpdateTime(new Date());
 			emc.check(query, CheckPersistType.all);
@@ -65,11 +58,12 @@ class ActionEdit extends BaseAction {
 
 	public static class Wi extends Query {
 
-		private static final long serialVersionUID = -5237741099036357033L;
+		private static final long serialVersionUID = -5028892909521045209L;
 
-		static WrapCopier<Wi, Query> copier = WrapCopierFactory.wi(Wi.class, Query.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, Query.creatorPerson_FIELDNAME,
-						Query.lastUpdatePerson_FIELDNAME, Query.lastUpdateTime_FIELDNAME));
+		static WrapCopier<Wi, Query> copier = WrapCopierFactory.wi(Wi.class, Query.class,
+				ListTools.toList(Query.controllerList_FIELDNAME, Query.availableIdentityList_FIELDNAME,
+						Query.availableUnitList_FIELDNAME, Query.availableGroupList_FIELDNAME),
+				null);
 
 	}
 }
