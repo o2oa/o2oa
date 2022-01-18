@@ -155,7 +155,13 @@ MWF.xApplication.ThreeMember.LogView = new Class({
         }, {
             lp: this.lp
         });
-        if (filterData) this.view.filterData = filterData;
+        var fData = filterData || {};
+        if( !fData.startTime )fData.startTime = this.form.getItem("startTime").getValue();
+        if( !fData.endTime )fData.endTime = this.form.getItem("endTime").getValue();
+        Object.each( (this.navi ? this.navi.currentStatus : {}) || {}, function (value, key) {
+            fData[key] = value;
+        });
+        this.view.filterData = fData;
         this.view.load();
     },
     clear: function () {
@@ -242,12 +248,14 @@ MWF.xApplication.ThreeMember.LogView = new Class({
                 startTime: {
                     text: lp.startTime,
                     "tType": "datetime",
-                    "calendarOptions": {"secondEnable": true, "format": "db"}
+                    "defaultValue": new Date().decrement('day', 1).format("%Y-%m-%d") + " 00:00:00",
+                    "calendarOptions": {"secondEnable": true, "format": "db", "clearEnable": false}
                 },
                 endTime: {
                     text: lp.endTime,
                     "tType": "datetime",
-                    "calendarOptions": {"secondEnable": true, "format": "db"}
+                    "defaultValue": new Date().format("%Y-%m-%d") + " 23:59:59",
+                    "calendarOptions": {"secondEnable": true, "format": "db", "clearEnable": false}
                 },
                 action: {
                     "value": lp.query, type: "button", className: "filterButton", event: {
@@ -301,7 +309,16 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
     load: function () {
         this.naviActionNode = new Element("div.naviTopNode", {
             "styles": this.css.naviActionNode,
-            "text": this.explorer.lp.syncLog
+            "text": this.explorer.lp.syncLog,
+            "events":{
+                click: function () {
+                    o2.Actions.load("x_auditlog_assemble_control").AuditLogAction.executeTodayDispatch(function(json){
+                        if(json.data.value){
+                            this.app.notice(this.explorer.lp.syncLogSuccess)
+                        }
+                    }.bind(this))
+                }.bind(this)
+            }
         }).inject(this.node);
 
         this.scrollNode = new Element("div.naviScrollNode", {"styles": this.css.naviScrollNode}).inject(this.node);
@@ -355,7 +372,7 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
         this.currentAll = this.naviAllNode;
         this.naviAllNode.setStyles(this.css.naviAllNode_current);
         if (this.explorer.form) {
-            this.explorer.form.reset();
+            // this.explorer.form.reset();
             if(this.explorer.options.filterModule){
                 this.explorer.form.getItem("module").items[0].fireEvent("change");
             }
@@ -434,7 +451,7 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
         };
         this.currentMenu = menuObj.node;
         menuObj.node.setStyles(this.css.naviMenuNode_current);
-        this.explorer.form.reset();
+        // this.explorer.form.reset();
         if(this.explorer.options.filterModule) {
             this.explorer.form.getItem("module").setValue(menuObj.module);
             this.explorer.form.getItem("module").items[0].fireEvent("change");
@@ -505,7 +522,7 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
         };
         this.currentItem = itemObj.node;
         itemObj.node.setStyles(this.css.naviItemNode_current);
-        this.explorer.form.reset();
+        //this.explorer.form.reset();
         if(this.explorer.options.filterModule) {
             this.explorer.form.getItem("module").setValue(itemObj.module);
             this.explorer.form.getItem("module").items[0].fireEvent("change");

@@ -463,9 +463,9 @@ TMPermissionView.ProcessApplication = new Class({
                     var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
                     var tr;
                     tr = new Element("tr").inject(table);
-                    new TMPermissionView.ProcessProcessStarter(this.explorer, tr, { id: this.options.id }, d);
+                    new TMPermissionView.ProcessProcessStarter(this.explorer, tr, { id: d.id }, d);
                     tr = new Element("tr").inject(table);
-                    new TMPermissionView.ProcessProcessManager(this.explorer, tr, { id: this.options.id }, d);
+                    new TMPermissionView.ProcessProcessManager(this.explorer, tr, { id: d.id }, d);
                 }.bind(this))
             }
         }.bind(this))
@@ -586,7 +586,7 @@ TMPermissionView.QueryApplication = new Class({
                     var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
                     var tr;
                     tr = new Element("tr").inject(table);
-                    new TMPermissionView.QueryViewExecutor(this.explorer, tr, { id: this.options.id }, d);
+                    new TMPermissionView.QueryViewExecutor(this.explorer, tr, { id: d.id }, d);
                 }.bind(this))
             }
         }.bind(this))
@@ -608,7 +608,7 @@ TMPermissionView.QueryApplication = new Class({
                     var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
                     var tr;
                     tr = new Element("tr").inject(table);
-                    new TMPermissionView.QueryStatExecutor(this.explorer, tr, { id: this.options.id }, d);
+                    new TMPermissionView.QueryStatExecutor(this.explorer, tr, { id: d.id }, d);
                 }.bind(this))
             }
         }.bind(this))
@@ -629,9 +629,9 @@ TMPermissionView.QueryApplication = new Class({
                     var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
                     var tr;
                     tr = new Element("tr").inject(table);
-                    new TMPermissionView.QueryTableReader(this.explorer, tr, { id: this.options.id }, d);
+                    new TMPermissionView.QueryTableReader(this.explorer, tr, { id: d.id }, d);
                     tr = new Element("tr").inject(table);
-                    new TMPermissionView.QueryTableEditor(this.explorer, tr, { id: this.options.id }, d);
+                    new TMPermissionView.QueryTableEditor(this.explorer, tr, { id: d.id }, d);
                 }.bind(this))
             }
         }.bind(this))
@@ -682,7 +682,7 @@ TMPermissionView.QueryApplication = new Class({
                         }
                     }).load();
                     var executorTr = new Element("tr").inject(table);
-                    new TMPermissionView.QueryStatementExecutor(this.explorer, executorTr, { id: this.options.id }, d);
+                    new TMPermissionView.QueryStatementExecutor(this.explorer, executorTr, { id: d.id }, d);
                     if( value === "true" )executorTr.hide();
                 }.bind(this))
             }
@@ -704,7 +704,7 @@ TMPermissionView.QueryApplication = new Class({
                     var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
                     var tr;
                     tr = new Element("tr").inject(table);
-                    new TMPermissionView.QueryImportModelExecutor(this.explorer, tr, { id: this.options.id }, d);
+                    new TMPermissionView.QueryImportModelExecutor(this.explorer, tr, { id: d.id }, d);
                 }.bind(this))
             }
         }.bind(this))
@@ -1237,7 +1237,8 @@ TMPermissionView.ProcessAppManager = new Class({
         if( callback )callback();
     },
     saveData: function (data, callback) {
-        o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction.edit(this.data.id, data, function (json) {
+        o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction
+            .updatePermission(this.data.id, data, function (json) {
             if (callback) callback()
         }.bind(this));
     }

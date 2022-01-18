@@ -141,6 +141,13 @@ MWF.xApplication.ThreeMember.Main = new Class({
                 "action": "loadPermissionView",
                 "icon": "permission",
                 "display":  o2.AC.isSecurityManager() || this.managerEnabled
+            },
+            {
+                "id": "gohome",
+                "title": this.lp.home,
+                "action": "goHome",
+                "icon": "home",
+                "display": this.inBrowser && (o2.AC.isSystemManager() || this.managerEnabled)
             }
         ];
         var displayNaviJson = naviJson.filter(function (d) { return d.display });
@@ -199,6 +206,9 @@ MWF.xApplication.ThreeMember.Main = new Class({
     clear: function () {
         if(this.currentView)this.currentView.clear();
         // if (this.setContentSizeFun) this.removeEvent("resize", this.setContentSizeFun);
+    },
+    goHome: function(){
+        window.location = "/";
     },
     loadLogView: function(){
         if(this.currentView)this.currentView.clear();
