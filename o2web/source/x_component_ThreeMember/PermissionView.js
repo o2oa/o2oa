@@ -677,7 +677,7 @@ TMPermissionView.QueryApplication = new Class({
                             "change": function (item) {
                                 executorTr.setStyle( "display", item.getValue() === "true" ? "none" : "" );
                                 d.anonymousAccessible = item.getValue() === "true";
-                                o2.Actions.load("x_query_assemble_designer").StatementAction.xxx(d.id, d);
+                                o2.Actions.load("x_query_assemble_designer").StatementAction.updatePermission(d.id, d);
                             }
                         }
                     }).load();
