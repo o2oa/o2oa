@@ -52,7 +52,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	protected List<Work> executing(AeiObjects aeiObjects, Embed embed) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.embedExecute(aeiObjects.getWork().getActivityToken(), embed));
-		AssginData assginData = new AssginData();
+		AssignData assignData = new AssignData();
 		String targetApplication = embed.getTargetApplication();
 		String targetProcess = embed.getTargetProcess();
 		if (StringUtils.isEmpty(targetApplication)) {
@@ -61,46 +61,45 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		if (StringUtils.isEmpty(targetProcess)) {
 			throw new ExceptionEmptyTargetProcess(embed.getName());
 		}
-		assginData.setApplication(targetApplication);
-		assginData.setProcess(embed.getTargetProcessName());
+		assignData.setApplication(targetApplication);
+		assignData.setProcess(embed.getTargetProcessName());
 		if (BooleanUtils.isTrue(embed.getInheritData())) {
-			assginData.setData(aeiObjects.getData());
+			assignData.setData(aeiObjects.getData());
 		}
 		if (BooleanUtils.isTrue(embed.getInheritAttachment())) {
 			List<Attachment> os = this.business().entityManagerContainer().list(Attachment.class,
 					this.business().attachment().listWithJob(aeiObjects.getWork().getJob()));
-			assginData.setAttachmentList(os);
+			assignData.setAttachmentList(os);
 		}
 		String targetIdentity = this.targetIdentity(aeiObjects, embed);
 		targetIdentity = this.business().organization().identity().get(targetIdentity);
 		if (StringUtils.isEmpty(targetIdentity)) {
 			throw new ExceptionEmptyTargetIdentity(embed.getName());
 		}
-		assginData.setIdentity(targetIdentity);
-		assginData.setTitle(this.targetTitle(aeiObjects, embed));
-		assginData.setProcessing(true);
-		if (this.hasAssginDataScript(embed)) {
+		assignData.setIdentity(targetIdentity);
+		assignData.setTitle(this.targetTitle(aeiObjects, embed));
+		assignData.setProcessing(true);
+		if (this.hasAssignDataScript(embed)) {
 			WrapScriptObject wrap = new WrapScriptObject();
-			wrap.set(gson.toJson(assginData));
+			wrap.set(gson.toJson(assignData));
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					embed, Business.EVENT_EMBEDTARGETASSIGNDATA);
-
-			AssginData returnData = JsonScriptingExecutor.eval(cs, scriptContext, AssginData.class);
+			AssignData returnData = JsonScriptingExecutor.eval(cs, scriptContext, AssignData.class);
 			if (null != returnData) {
-				assginData = returnData;
+				assignData = returnData;
 			} else {
-				assginData = gson.fromJson(wrap.get(), AssginData.class);
+				assignData = gson.fromJson(wrap.get(), AssignData.class);
 			}
 		}
-		LOGGER.debug("embed:{}, process:{} try to embed application:{}, process:{}, assginData:{}.", embed::getName,
-				embed::getProcess, embed::getTargetApplication, embed::getTargetProcess, assginData::toString);
+		LOGGER.debug("embed:{}, process:{} try to embed application:{}, process:{}, assignData:{}.", embed::getName,
+				embed::getProcess, embed::getTargetApplication, embed::getTargetProcess, assignData::toString);
 		if (BooleanUtils.isTrue(embed.getAsync())) {
-			ThisApplication.syncEmbedQueue.send(assginData);
+			ThisApplication.syncEmbedQueue.send(assignData);
 		} else {
 			EmbedExecutor executor = new EmbedExecutor();
-			String embedWorkId = executor.execute(assginData);
+			String embedWorkId = executor.execute(assignData);
 			aeiObjects.getWork().setEmbedTargetWork(embedWorkId);
 		}
 
@@ -196,7 +195,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 				|| StringUtils.isNotEmpty(embed.getTargetIdentityScriptText());
 	}
 
-	private boolean hasAssginDataScript(Embed embed) {
+	private boolean hasAssignDataScript(Embed embed) {
 		return StringUtils.isNotEmpty(embed.getTargetAssginDataScript())
 				|| StringUtils.isNotEmpty(embed.getTargetAssginDataScriptText());
 	}

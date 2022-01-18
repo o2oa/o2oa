@@ -8,10 +8,11 @@ import com.x.processplatform.core.entity.content.Data;
 
 /**
  * 创建流程实例使用的传参对象
+ * 
  * @author ray
  *
  */
-class AssginData extends GsonPropertyObject {
+class AssignData extends GsonPropertyObject {
 
 	private String application;
 
