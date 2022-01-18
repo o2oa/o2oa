@@ -178,7 +178,7 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
         if( actions.length > 0 ){
             Promise.all(actions).then(function () {
                 this.app.notice( this.lp.saveSuccess );
-                this.form.changeMode();
+                this.form.changeMode(true);
                 this.loadReadModeAction();
             }.bind(this)).catch(function (json) {
                 if (json.type === "error") {
