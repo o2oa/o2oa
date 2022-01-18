@@ -3,8 +3,14 @@ package com.x.program.center.jaxrs.config;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.h2.tools.RunScript;
@@ -21,18 +27,24 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 
+/**
+ * config/token.json配置修改
+ * @author sword
+ */
 public class ActionSetToken extends BaseAction {
-
+	private static Logger logger = LoggerFactory.getLogger(ActionSetToken.class);
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
 			throw new ExceptionModifyConfig();
 		}
+		Map<String,Object> map = XGsonBuilder.instance().fromJson(jsonElement, Map.class);
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		/** 需要修改数据库密码 */
-		if (!StringUtils.equals(wi.getPassword(), Config.token().getPassword())) {
+		if (StringUtils.isNotBlank(wi.getPassword()) && !StringUtils.equals(wi.getPassword(), Config.token().getPassword())) {
 			this.changeInternalDataServerPassword(Config.token().getPassword(), wi.getPassword());
 		}
+		Wi.copier = WrapCopierFactory.wi(Wi.class, Token.class, new ArrayList<>(map.keySet()), ListTools.toList("dingding", "qiyeweixin"));
 		Wi.copier.copy(wi, Config.token());
 		Config.token().save();
 		if (null != wi.getDingding()) {
@@ -68,7 +80,7 @@ public class ActionSetToken extends BaseAction {
 
 	public static class Wi extends Token {
 
-		static WrapCopier<Wi, Token> copier = WrapCopierFactory.wi(Wi.class, Token.class, null, null);
+		static WrapCopier<Wi, Token> copier = WrapCopierFactory.wi(Wi.class, Token.class, null, ListTools.toList("dingding", "qiyeweixin"));
 
 		private WiDingding dingding;
 

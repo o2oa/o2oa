@@ -57,7 +57,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Portal> root = cq.from(Portal.class);
 		Predicate p = cb.conjunction();
-		if (!business.isPortalManager(effectivePerson)) {
+		if (!effectivePerson.isSecurityManager() && !business.isPortalManager(effectivePerson)) {
 			p = cb.isMember(effectivePerson.getDistinguishedName(), root.get(Portal_.controllerList));
 			p = cb.or(p, cb.equal(root.get(Portal_.creatorPerson), effectivePerson.getDistinguishedName()));
 		}
