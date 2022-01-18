@@ -486,9 +486,12 @@ TMPermissionView.CMSApplication = new Class({
     },
     loadColumn: function () {
         debugger;
-        new TMPermissionView.CMSAppViewer(this.explorer, this.contentNode, { id: this.options.id });
-        new TMPermissionView.CMSAppPublisher(this.explorer, this.contentNode, { id: this.options.id });
-        new TMPermissionView.CMSAppManager(this.explorer, this.contentNode, { id: this.options.id });
+        o2.Actions.load("x_cms_assemble_control").AppInfoAction.get(this.options.id, function (json) {
+            this.data = json.data;
+            new TMPermissionView.CMSAppViewer(this.explorer, this.contentNode, { id: this.options.id }, this.data);
+            new TMPermissionView.CMSAppPublisher(this.explorer, this.contentNode, { id: this.options.id }, this.data);
+            new TMPermissionView.CMSAppManager(this.explorer, this.contentNode, { id: this.options.id }, this.data);
+        }.bind(this))
     },
     loadCategory: function () {
         debugger;
@@ -509,11 +512,11 @@ TMPermissionView.CMSApplication = new Class({
                     var table = new Element("table", this.css.tableProperty).inject(this.contentNode);
                     var tr;
                     tr = new Element("tr").inject(table);
-                    new TMPermissionView.CMSCateViewer(this.explorer, tr, { id: d.id });
+                    new TMPermissionView.CMSCateViewer(this.explorer, tr, { id: d.id }, d);
                     tr = new Element("tr").inject(table);
-                    new TMPermissionView.CMSCatePublisher(this.explorer, tr, { id: d.id });
+                    new TMPermissionView.CMSCatePublisher(this.explorer, tr, { id: d.id }, d);
                     tr = new Element("tr").inject(table);
-                    new TMPermissionView.CMSCateManager(this.explorer, tr, { id: d.id });
+                    new TMPermissionView.CMSCateManager(this.explorer, tr, { id: d.id }, d);
                 }.bind(this))
             }
         }.bind(this))
@@ -814,39 +817,44 @@ TMPermissionView.CMSAppViewer = new Class({
         var selector = new MWF.O2Selector(this.app.content, opt );
     },
     listData: function( callback ){
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.listAppInfoViewers(this.options.id, function(json){
-            this.data = json.data;
-            this.values = ( this.data.personList || [] ).combine( this.data.unitList || []).combine( this.data.groupList || [] );
-            if( callback )callback( json );
-        }.bind(this), null ,false)
+        // o2.Actions.load("x_cms_assemble_control").PermissionAction.listAppInfoViewers(this.options.id, function(json){
+        //     this.data = json.data;
+        //     this.values = ( this.data.personList || [] ).combine( this.data.unitList || []).combine( this.data.groupList || [] );
+        //     if( callback )callback( json );
+        // }.bind(this), null ,false)
+        this.values = ( this.data.viewablePersonList || [] )
+            .combine( this.data.viewableUnitList || [])
+            .combine( this.data.viewableGroupList || [] );
+        if( callback )callback();
     },
     selectData: function(array){
-        var data = {
-            personList : [], unitList : [],  groupList : []
-        };
+        this.data.viewablePersonList = [];
+        this.data.viewableUnitList = [];
+        this.data.viewableGroupList = [];
         array.each( function( a ){
             var dn = a.data.distinguishedName;
             var flag = dn.substr(dn.length-1, 1);
             switch (flag.toLowerCase()){
                 case "p":
-                    data.personList.push( dn );
+                    this.data.viewablePersonList.push( dn );
                     break;
                 case "u":
-                    data.unitList.push( dn );
+                    this.data.viewableUnitList.push( dn );
                     break;
                 case "g":
-                    data.groupList.push( dn );
+                    this.data.viewableGroupList.push( dn );
                     break;
             }
-        });
-        this.saveData( data, function(){
+        }.bind(this));
+        this.saveData( this.data, function(){
             this.listData( function(){
                 this.loadOrg();
             }.bind(this));
         }.bind(this))
     },
     saveData: function( data, callback ){
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.saveAppInfoViewer(this.options.id, data, function (json) {
+        o2.Actions.load("x_cms_assemble_control").AppInfoAction
+            .updatePermission(this.options.id, data, function (json) {
             if(callback)callback()
         }.bind(this));
     }
@@ -857,18 +865,55 @@ TMPermissionView.CMSAppPublisher = new Class({
     options: {
         title: MWF.xApplication.ThreeMember.LP.publisher
     },
-    listData: function (callback) {
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.listAppInfoPublishers(this.options.id, function (json) {
-            this.data = json.data;
-            this.values = (this.data.personList || []).combine(this.data.unitList || []).combine(this.data.groupList || []);
-            if (callback) callback(json);
-        }.bind(this), null, false)
+    listData: function( callback ){
+        this.values = ( this.data.publishablePersonList || [] )
+            .combine( this.data.publishableUnitList || [])
+            .combine( this.data.publishableGroupList || [] );
+        if( callback )callback();
     },
-    saveData: function (data, callback) {
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.saveAppInfoPublisher(this.options.id, data, function (json) {
-            if (callback) callback()
+    selectData: function(array){
+        this.data.publishablePersonList = [];
+        this.data.publishableUnitList = [];
+        this.data.publishableGroupList = [];
+        array.each( function( a ){
+            var dn = a.data.distinguishedName;
+            var flag = dn.substr(dn.length-1, 1);
+            switch (flag.toLowerCase()){
+                case "p":
+                    this.data.publishablePersonList.push( dn );
+                    break;
+                case "u":
+                    this.data.publishableUnitList.push( dn );
+                    break;
+                case "g":
+                    this.data.publishableGroupList.push( dn );
+                    break;
+            }
         }.bind(this));
+        this.saveData( this.data, function(){
+            this.listData( function(){
+                this.loadOrg();
+            }.bind(this));
+        }.bind(this))
+    },
+    saveData: function( data, callback ){
+        o2.Actions.load("x_cms_assemble_control").AppInfoAction
+            .updatePermission(this.options.id, data, function (json) {
+                if(callback)callback()
+            }.bind(this));
     }
+    // listData: function (callback) {
+    //     o2.Actions.load("x_cms_assemble_control").PermissionAction.listAppInfoPublishers(this.options.id, function (json) {
+    //         this.data = json.data;
+    //         this.values = (this.data.personList || []).combine(this.data.unitList || []).combine(this.data.groupList || []);
+    //         if (callback) callback(json);
+    //     }.bind(this), null, false)
+    // },
+    // saveData: function (data, callback) {
+    //     o2.Actions.load("x_cms_assemble_control").PermissionAction.saveAppInfoPublisher(this.options.id, data, function (json) {
+    //         if (callback) callback()
+    //     }.bind(this));
+    // }
 });
 
 TMPermissionView.CMSAppManager = new Class({
@@ -876,18 +921,55 @@ TMPermissionView.CMSAppManager = new Class({
     options: {
         title: MWF.xApplication.ThreeMember.LP.manager
     },
-    listData: function (callback) {
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.listAppInfoManagers(this.options.id, function (json) {
-            this.data = json.data;
-            this.values = (this.data.personList || []).combine(this.data.unitList || []).combine(this.data.groupList || []);
-            if (callback) callback(json);
-        }.bind(this), null, false)
+    listData: function( callback ){
+        this.values = ( this.data.manageablePersonList || [] )
+            .combine( this.data.manageableUnitList || [])
+            .combine( this.data.manageableGroupList || [] );
+        if( callback )callback();
     },
-    saveData: function (data, callback) {
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.saveAppInfoPublisher(this.options.id, data, function (json) {
-            if (callback) callback()
+    selectData: function(array){
+        this.data.manageablePersonList = [];
+        this.data.manageableUnitList = [];
+        this.data.manageableGroupList = [];
+        array.each( function( a ){
+            var dn = a.data.distinguishedName;
+            var flag = dn.substr(dn.length-1, 1);
+            switch (flag.toLowerCase()){
+                case "p":
+                    this.data.manageablePersonList.push( dn );
+                    break;
+                case "u":
+                    this.data.manageableUnitList.push( dn );
+                    break;
+                case "g":
+                    this.data.manageableGroupList.push( dn );
+                    break;
+            }
         }.bind(this));
+        this.saveData( this.data, function(){
+            this.listData( function(){
+                this.loadOrg();
+            }.bind(this));
+        }.bind(this))
+    },
+    saveData: function( data, callback ){
+        o2.Actions.load("x_cms_assemble_control").AppInfoAction
+            .updatePermission(this.options.id, data, function (json) {
+                if(callback)callback()
+            }.bind(this));
     }
+    // listData: function (callback) {
+    //     o2.Actions.load("x_cms_assemble_control").PermissionAction.listAppInfoManagers(this.options.id, function (json) {
+    //         this.data = json.data;
+    //         this.values = (this.data.personList || []).combine(this.data.unitList || []).combine(this.data.groupList || []);
+    //         if (callback) callback(json);
+    //     }.bind(this), null, false)
+    // },
+    // saveData: function (data, callback) {
+    //     o2.Actions.load("x_cms_assemble_control").PermissionAction.saveAppInfoPublisher(this.options.id, data, function (json) {
+    //         if (callback) callback()
+    //     }.bind(this));
+    // }
 });
 
 TMPermissionView.CMSCateViewer = new Class({
@@ -919,18 +1001,55 @@ TMPermissionView.CMSCateViewer = new Class({
             this.change();
         }.bind(this));
     },
-    listData: function (callback) {
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.listCategoryInfoViewers(this.options.id, function (json) {
-            this.data = json.data;
-            this.values = (this.data.personList || []).combine(this.data.unitList || []).combine(this.data.groupList || []);
-            if (callback) callback(json);
-        }.bind(this), null, false)
+    listData: function( callback ){
+        this.values = ( this.data.viewablePersonList || [] )
+            .combine( this.data.viewableUnitList || [])
+            .combine( this.data.viewableGroupList || [] );
+        if( callback )callback();
     },
-    saveData: function (data, callback) {
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.saveCategoryInfoViewer(this.options.id, data, function (json) {
-            if (callback) callback()
+    selectData: function(array){
+        this.data.viewablePersonList = [];
+        this.data.viewableUnitList = [];
+        this.data.viewableGroupList = [];
+        array.each( function( a ){
+            var dn = a.data.distinguishedName;
+            var flag = dn.substr(dn.length-1, 1);
+            switch (flag.toLowerCase()){
+                case "p":
+                    this.data.viewablePersonList.push( dn );
+                    break;
+                case "u":
+                    this.data.viewableUnitList.push( dn );
+                    break;
+                case "g":
+                    this.data.viewableGroupList.push( dn );
+                    break;
+            }
         }.bind(this));
+        this.saveData( this.data, function(){
+            this.listData( function(){
+                this.loadOrg();
+            }.bind(this));
+        }.bind(this))
+    },
+    saveData: function( data, callback ){
+        o2.Actions.load("x_cms_assemble_control").CategoryInfoAction
+            .updatePermission(this.options.id, data, function (json) {
+                if(callback)callback()
+            }.bind(this));
     }
+    // listData: function (callback) {
+    //     o2.Actions.load("x_cms_assemble_control").PermissionAction.listCategoryInfoViewers(this.options.id, function (json) {
+    //         this.data = json.data;
+    //         this.values = (this.data.personList || []).combine(this.data.unitList || []).combine(this.data.groupList || []);
+    //         if (callback) callback(json);
+    //     }.bind(this), null, false)
+    // },
+    // saveData: function (data, callback) {
+    //     o2.Actions.load("x_cms_assemble_control").PermissionAction.saveCategoryInfoViewer(this.options.id, data, function (json) {
+    //         if (callback) callback()
+    //     }.bind(this));
+    // }
 });
 
 TMPermissionView.CMSCatePublisher = new Class({
@@ -938,18 +1057,55 @@ TMPermissionView.CMSCatePublisher = new Class({
     options: {
         title: MWF.xApplication.ThreeMember.LP.publisher
     },
-    listData: function (callback) {
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.listCategoryInfoPublishers(this.options.id, function (json) {
-            this.data = json.data;
-            this.values = (this.data.personList || []).combine(this.data.unitList || []).combine(this.data.groupList || []);
-            if (callback) callback(json);
-        }.bind(this), null, false)
+    listData: function( callback ){
+        this.values = ( this.data.publishablePersonList || [] )
+            .combine( this.data.publishableUnitList || [])
+            .combine( this.data.publishableGroupList || [] );
+        if( callback )callback();
     },
-    saveData: function (data, callback) {
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.saveCategoryInfoPublisher(this.options.id, data, function (json) {
-            if (callback) callback()
+    selectData: function(array){
+        this.data.publishablePersonList = [];
+        this.data.publishableUnitList = [];
+        this.data.publishableGroupList = [];
+        array.each( function( a ){
+            var dn = a.data.distinguishedName;
+            var flag = dn.substr(dn.length-1, 1);
+            switch (flag.toLowerCase()){
+                case "p":
+                    this.data.publishablePersonList.push( dn );
+                    break;
+                case "u":
+                    this.data.publishableUnitList.push( dn );
+                    break;
+                case "g":
+                    this.data.publishableGroupList.push( dn );
+                    break;
+            }
         }.bind(this));
+        this.saveData( this.data, function(){
+            this.listData( function(){
+                this.loadOrg();
+            }.bind(this));
+        }.bind(this))
+    },
+    saveData: function( data, callback ){
+        o2.Actions.load("x_cms_assemble_control").CategoryInfoAction
+            .updatePermission(this.options.id, data, function (json) {
+                if(callback)callback()
+            }.bind(this));
     }
+    // listData: function (callback) {
+    //     o2.Actions.load("x_cms_assemble_control").PermissionAction.listCategoryInfoPublishers(this.options.id, function (json) {
+    //         this.data = json.data;
+    //         this.values = (this.data.personList || []).combine(this.data.unitList || []).combine(this.data.groupList || []);
+    //         if (callback) callback(json);
+    //     }.bind(this), null, false)
+    // },
+    // saveData: function (data, callback) {
+    //     o2.Actions.load("x_cms_assemble_control").PermissionAction.saveCategoryInfoPublisher(this.options.id, data, function (json) {
+    //         if (callback) callback()
+    //     }.bind(this));
+    // }
 });
 
 TMPermissionView.CMSCateManager = new Class({
@@ -957,18 +1113,55 @@ TMPermissionView.CMSCateManager = new Class({
     options: {
         title: MWF.xApplication.ThreeMember.LP.manager
     },
-    listData: function (callback) {
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.listCategoryInfoManagers(this.options.id, function (json) {
-            this.data = json.data;
-            this.values = (this.data.personList || []).combine(this.data.unitList || []).combine(this.data.groupList || []);
-            if (callback) callback(json);
-        }.bind(this), null, false)
+    listData: function( callback ){
+        this.values = ( this.data.manageablePersonList || [] )
+            .combine( this.data.manageableUnitList || [])
+            .combine( this.data.manageableGroupList || [] );
+        if( callback )callback();
     },
-    saveData: function (data, callback) {
-        o2.Actions.load("x_cms_assemble_control").PermissionAction.saveCategoryInfoManager(this.options.id, data, function (json) {
-            if (callback) callback()
+    selectData: function(array){
+        this.data.manageablePersonList = [];
+        this.data.manageableUnitList = [];
+        this.data.manageableGroupList = [];
+        array.each( function( a ){
+            var dn = a.data.distinguishedName;
+            var flag = dn.substr(dn.length-1, 1);
+            switch (flag.toLowerCase()){
+                case "p":
+                    this.data.manageablePersonList.push( dn );
+                    break;
+                case "u":
+                    this.data.manageableUnitList.push( dn );
+                    break;
+                case "g":
+                    this.data.manageableGroupList.push( dn );
+                    break;
+            }
         }.bind(this));
+        this.saveData( this.data, function(){
+            this.listData( function(){
+                this.loadOrg();
+            }.bind(this));
+        }.bind(this))
+    },
+    saveData: function( data, callback ){
+        o2.Actions.load("x_cms_assemble_control").CategoryInfoAction
+            .updatePermission(this.options.id, data, function (json) {
+                if(callback)callback()
+            }.bind(this));
     }
+    // listData: function (callback) {
+    //     o2.Actions.load("x_cms_assemble_control").PermissionAction.listCategoryInfoManagers(this.options.id, function (json) {
+    //         this.data = json.data;
+    //         this.values = (this.data.personList || []).combine(this.data.unitList || []).combine(this.data.groupList || []);
+    //         if (callback) callback(json);
+    //     }.bind(this), null, false)
+    // },
+    // saveData: function (data, callback) {
+    //     o2.Actions.load("x_cms_assemble_control").PermissionAction.saveCategoryInfoManager(this.options.id, data, function (json) {
+    //         if (callback) callback()
+    //     }.bind(this));
+    // }
 });
 
 TMPermissionView.ProcessAppUser = new Class({
