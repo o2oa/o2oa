@@ -10,6 +10,7 @@
   "sslEnable": false,
   "appPackServerHost": "apppack.o2oa.net",
   "appPackServerPort": 30088.0,
+  "isAppPackCoverAppUrl": false,
   "###enable": "是否启用连接到云平台###",
   "###name": "云平台账户名称,同时显示在登录页面底部.###",
   "###password": "云平台密码###",
@@ -22,5 +23,6 @@
   "###secret": "推送消息secret###",
   "###key": "推送消息key###",
   "###appPackServerHost": "app打包服务器域名###",
-  "###appPackServerPort": "app打包服务器端口###"
+  "###appPackServerPort": "app打包服务器端口###",
+  "###isAppPackCoverAppUrl": "是否用app打包的地址覆盖o2oa的appUrl###"
 }
