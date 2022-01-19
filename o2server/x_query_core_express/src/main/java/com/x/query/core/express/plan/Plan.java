@@ -20,6 +20,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
@@ -35,6 +37,7 @@ import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.core.entity.Item;
@@ -256,9 +259,10 @@ public abstract class Plan extends GsonPropertyObject {
 		}
 		Table table = this.order(fillTable);
 		/* 新增测试 */
-		if (!this.selectList.emptyColumnCode()) {
-			ScriptEngine engine = this.getScriptEngine();
-			engine.put("gird", table);
+		if (BooleanUtils.isFalse(this.selectList.emptyColumnCode())) {
+			// ScriptEngine engine = this.getScriptEngine();
+			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("gird", table);
 			for (SelectEntry selectEntry : this.selectList) {
 				if (StringUtils.isNotBlank(selectEntry.code)) {
 					List<ExtractObject> extractObjects = new TreeList<>();
@@ -270,8 +274,8 @@ public abstract class Plan extends GsonPropertyObject {
 						extractObject.setEntry(r);
 						extractObjects.add(extractObject);
 					});
-					engine.put("extractObjects", extractObjects);
-					StringBuffer text = new StringBuffer();
+					scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("extractObjects", extractObjects);
+					StringBuilder text = new StringBuilder();
 					text.append("function executeScript(o){\n");
 					text.append(selectEntry.code);
 					text.append("\n");
@@ -284,7 +288,9 @@ public abstract class Plan extends GsonPropertyObject {
 					text.append("}\n");
 					text.append("extractObject.setValue(executeScript.apply(o));\n");
 					text.append("}");
-					engine.eval(text.toString());
+					// engine.eval(text.toString());
+					CompiledScript cs = ScriptingFactory.compile(text.toString());
+					JsonScriptingExecutor.eval(cs, scriptContext);
 					for (ExtractObject extractObject : extractObjects) {
 						table.get(extractObject.getBundle()).put(extractObject.getColumn(), extractObject.getValue());
 					}
@@ -595,7 +601,6 @@ public abstract class Plan extends GsonPropertyObject {
 	private ScriptEngine getScriptEngine() throws ScriptException, Exception {
 		if (null == this.scriptEngine) {
 			scriptEngine = ScriptingFactory.newScriptEngine();
-			// scriptEngine.eval(Config.mooToolsScriptText());
 		}
 		return scriptEngine;
 	}
