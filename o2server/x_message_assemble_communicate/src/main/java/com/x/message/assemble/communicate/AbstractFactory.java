@@ -71,6 +71,7 @@ public abstract class AbstractFactory {
 			} else {
 				T t = this.entityManagerContainer().flag(flag, clz);
 				if (null != t) {
+					this.entityManagerContainer().get(clz).detach(t);
 					list.add(t);
 					CacheManager.put(cacheCategory, cacheKey, t);
 				}

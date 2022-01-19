@@ -134,6 +134,7 @@ public class Business {
 		}else{
 			config = this.entityManagerContainer().firstEqual(FileConfig.class, FileConfig.person_FIELDNAME, Business.SYSTEM_CONFIG);
 			if(config != null){
+				this.entityManagerContainer().get(FileConfig.class).detach(config);
 				CacheManager.put(cacheCategory, cacheKey, config);
 			}
 		}
