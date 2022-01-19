@@ -5,12 +5,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.TernaryManagement;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -25,10 +21,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,14 +47,14 @@ public class ActionSetTernaryManagement extends BaseAction {
 			if(!wi.getSecurityManagerPassword().matches(Config.person().getPasswordRegex())) {
 				throw new ExceptionInvalidPassword(Config.ternaryManagement().getSecurityManagerName(), Config.person().getPasswordRegexHint());
 			}else{
-				Config.ternaryManagement().setSystemManagerPassword(wi.getSecurityManagerPassword());
+				Config.ternaryManagement().setSecurityManagerPassword(wi.getSecurityManagerPassword());
 			}
 		}
 		if(StringUtils.isNotBlank(wi.getAuditManagerPassword())){
 			if(!wi.getAuditManagerPassword().matches(Config.person().getPasswordRegex())) {
 				throw new ExceptionInvalidPassword(Config.ternaryManagement().getAuditManagerName(), Config.person().getPasswordRegexHint());
 			}else{
-				Config.ternaryManagement().setSystemManagerPassword(wi.getAuditManagerPassword());
+				Config.ternaryManagement().setAuditManagerPassword(wi.getAuditManagerPassword());
 			}
 		}
 		if(wi.getEnable()!=null){
