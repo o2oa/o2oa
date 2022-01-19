@@ -16,6 +16,7 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Role_;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -40,6 +41,15 @@ public class ActionSetTernaryManagement extends BaseAction {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
 			throw new ExceptionModifyConfig();
+		}
+		if(StringUtils.isNotBlank(wi.getSystemManagerPassword()) && !wi.getSystemManagerPassword().matches(Config.person().getPasswordRegex())){
+			throw new ExceptionInvalidPassword(Config.ternaryManagement().getSystemManagerName(), Config.person().getPasswordRegexHint());
+		}
+		if(StringUtils.isNotBlank(wi.getSecurityManagerPassword()) && !wi.getSecurityManagerPassword().matches(Config.person().getPasswordRegex())){
+			throw new ExceptionInvalidPassword(Config.ternaryManagement().getSecurityManagerName(), Config.person().getPasswordRegexHint());
+		}
+		if(StringUtils.isNotBlank(wi.getAuditManagerPassword()) && !wi.getAuditManagerPassword().matches(Config.person().getPasswordRegex())){
+			throw new ExceptionInvalidPassword(Config.ternaryManagement().getAuditManagerName(), Config.person().getPasswordRegexHint());
 		}
 		Wi.copier = WrapCopierFactory.wi(Wi.class, TernaryManagement.class, new ArrayList<>(map.keySet()), null);
 		Wi.copier.copy(wi, Config.ternaryManagement());
