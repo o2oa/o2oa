@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentMap;
 import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -28,108 +27,42 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.message.assemble.communicate.Business;
 import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.Instant;
 import com.x.message.core.entity.Message;
 
 class ActionCreate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
-	private static ConcurrentMap<String,CompiledScript> scriptMap = new ConcurrentHashMap<>();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
+	private static ConcurrentMap<String, CompiledScript> scriptMap = new ConcurrentHashMap<>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		List<Message> messages = new ArrayList<>();
+		LOGGER.debug(effectivePerson.getDistinguishedName());
 		ActionResult<Wo> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		List<String> consumers = Config.messages().getConsumers(wi.getType());
+		Map<String, String> consumersV2 = Config.messages().getConsumersV2(wi.getType());
+		for (String consumer : consumers) {
+			if (!consumersV2.containsKey(consumer)) {
+				consumersV2.put(consumer, "");
+			}
+		}
+		Instant instant = this.instant(wi, new ArrayList<>(consumersV2.keySet()));
+		List<Message> messages = new ArrayList<>();
+		assemble(wi, consumersV2, instant, messages);
+		save(instant, messages);
+		this.sendMessage(messages);
+		Wo wo = new Wo();
+		wo.setValue(true);
+		result.setData(wo);
+		return result;
+	}
+
+	private void save(Instant instant, List<Message> messages) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			List<String> consumers = Config.messages().getConsumers(wi.getType());
-			Map<String,String> consumersV2 = Config.messages().getConsumersV2(wi.getType());
-			for(String consumer: consumers){
-				if(!consumersV2.containsKey(consumer)){
-					consumersV2.put(consumer,"");
-				}
-			}
-			Instant instant = this.instant(effectivePerson, business, wi, new ArrayList<>(consumersV2.keySet()));
-			if (!consumersV2.isEmpty()) {
-				for (String consumer : consumersV2.keySet()) {
-					Wi cpwi = wi;
-					String func = consumersV2.get(consumer);
-					try {
-						if(StringUtils.isNoneBlank(func)){
-							cpwi = (Wi)BeanUtils.cloneBean(wi);
-							JsonObject body = cpwi.getBody().deepCopy().getAsJsonObject();
-							CompiledScript compiledScript = scriptMap.get(func);
-							if(compiledScript == null) {
-								String eval = Config.messageSendRuleScript();
-								if(StringUtils.isNotEmpty(eval)) {
-									eval = "function" + StringUtils.substringAfter(eval, "function") + " " + func + "();";
-									compiledScript = ScriptFactory.compile(eval);
-									scriptMap.put(func, compiledScript);
-								}
-							}
-							if(compiledScript != null) {
-								ScriptContext scriptContext = new SimpleScriptContext();
-								Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-								bindings.put("body", body);
-								bindings.put("message", cpwi);
-								Object o = compiledScript.eval(scriptContext);
-								cpwi.setBody(body);
-								if (o != null) {
-									if (o instanceof Boolean) {
-										if (!((Boolean) o).booleanValue()) {
-											logger.info("消息类型{}.{}的消息[{}]不满足发送条件，跳过...", wi.getType(), consumer, wi.getTitle());
-											continue;
-										}
-									}
-								}
-							}
-						}
-					} catch (Exception e) {
-						logger.warn("执行消息发送脚本[{}]方法异常:{}", func, e.getMessage());
-					}
-					Message message = null;
-					switch (Objects.toString(consumer, "")) {
-					case MessageConnector.CONSUME_WS:
-						message = this.wsMessage(effectivePerson, business, cpwi, instant);
-						break;
-					case MessageConnector.CONSUME_PMS:
-						message = this.pmsMessage(effectivePerson, business, cpwi, instant);
-						break;
-					case MessageConnector.CONSUME_PMS_INNER:
-						message = this.pmsInnerMessage(effectivePerson, business, cpwi, instant);
-						break;
-					case MessageConnector.CONSUME_DINGDING:
-						message = this.dingdingMessage(effectivePerson, business, cpwi, instant);
-						break;
-					case MessageConnector.CONSUME_ZHENGWUDINGDING:
-						message = this.zhegnwudingdingMessage(effectivePerson, business, cpwi, instant);
-						break;
-					case MessageConnector.CONSUME_QIYEWEIXIN:
-						message = this.qiyeweixinMessage(effectivePerson, business, cpwi, instant);
-						break;
-					case MessageConnector.CONSUME_CALENDAR:
-						message = this.calendarMessage(effectivePerson, business, cpwi, instant);
-						break;
-					case MessageConnector.CONSUME_WELINK:
-						message = this.weLinkMessage(effectivePerson, business, cpwi, instant);
-						break;
-					case MessageConnector.CONSUME_MQ:
-						message = this.MQMessage(effectivePerson, business, cpwi, instant);
-						break;
-					case MessageConnector.CONSUME_MPWEIXIN:
-						message = this.mpweixinMessage(effectivePerson, business, cpwi, instant);
-						break;
-					default:
-						message = this.defaultMessage(effectivePerson, business, cpwi, consumer, instant);
-						break;
-					}
-					messages.add(message);
-				}
-			}
 			emc.beginTransaction(Instant.class);
 			emc.persist(instant, CheckPersistType.all);
 			if (ListTools.isNotEmpty(messages)) {
@@ -139,72 +72,213 @@ class ActionCreate extends BaseAction {
 				}
 			}
 			emc.commit();
-			/* emc上下文根必须结束掉,下面要直接调用发送队列,发送队列中会再次开启emc */
 		}
-		/* 开始发送,由于要回写所以先要commit */
+	}
+
+	private void assemble(Wi wi, Map<String, String> consumersV2, Instant instant, List<Message> messages)
+			throws Exception {
+		if (!consumersV2.isEmpty()) {
+			for (Map.Entry<String, String> en : consumersV2.entrySet()) {
+				String func = consumersV2.get(en.getKey());
+				Wi cpWi = this.executeFun(wi, func, en.getKey());
+				if (cpWi != null) {
+					Message message = this.assembleMessage(en.getKey(), cpWi, instant);
+					if (message != null) {
+						messages.add(message);
+					}
+				}
+			}
+		}
+	}
+
+	private Wi executeFun(Wi wi, String func, String consumer) {
+		Wi cpWi = wi;
+		try {
+			if (StringUtils.isNoneBlank(func)) {
+				cpWi = (Wi) BeanUtils.cloneBean(wi);
+				JsonObject body = cpWi.getBody().deepCopy().getAsJsonObject();
+				CompiledScript compiledScript = scriptMap.get(func);
+				if (compiledScript == null) {
+					String eval = Config.messageSendRuleScript();
+					if (StringUtils.isNotEmpty(eval)) {
+						compiledScript = ScriptingFactory.functionalizationCompile(func);
+						scriptMap.put(func, compiledScript);
+					}
+				}
+				if (compiledScript != null) {
+					ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
+					Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_BODY, body);
+					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_MESSAGE, cpWi);
+					Boolean ifSend = JsonScriptingExecutor.evalBoolean(compiledScript, scriptContext);
+					if (BooleanUtils.isNotTrue(ifSend)) {
+						LOGGER.info("消息类型{}.{}的消息[{}]不满足发送条件.", wi.getType(), consumer, wi.getTitle());
+						cpWi = null;
+					} else {
+						cpWi.setBody(body);
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.warn("执行消息发送脚本[{}]方法异常:{}", func, e.getMessage());
+		}
+		return cpWi;
+	}
+
+	private Message assembleMessage(String consumer, Wi cpWi, Instant instant) throws Exception {
+		Message message = null;
+		switch (Objects.toString(consumer, "")) {
+		case MessageConnector.CONSUME_WS:
+			message = this.wsMessage(cpWi, instant);
+			break;
+		case MessageConnector.CONSUME_PMS:
+			message = this.pmsMessage(cpWi, instant);
+			break;
+		case MessageConnector.CONSUME_PMS_INNER:
+			message = this.pmsInnerMessage(cpWi, instant);
+			break;
+		case MessageConnector.CONSUME_DINGDING:
+			message = this.dingdingMessage(cpWi, instant);
+			break;
+		case MessageConnector.CONSUME_ZHENGWUDINGDING:
+			message = this.zhengwudingdingMessage(cpWi, instant);
+			break;
+		case MessageConnector.CONSUME_QIYEWEIXIN:
+			message = this.qiyeweixinMessage(cpWi, instant);
+			break;
+		case MessageConnector.CONSUME_CALENDAR:
+			message = this.calendarMessage(cpWi, instant);
+			break;
+		case MessageConnector.CONSUME_WELINK:
+			message = this.weLinkMessage(cpWi, instant);
+			break;
+		case MessageConnector.CONSUME_MQ:
+			message = this.mqMessage(cpWi, instant, consumer);
+			break;
+		case MessageConnector.CONSUME_MPWEIXIN:
+			message = this.mpweixinMessage(cpWi, instant);
+			break;
+		default:
+			if (consumer.startsWith(MessageConnector.CONSUME_MQ)) {
+				message = this.mqMessage(cpWi, instant, consumer);
+			} else {
+				message = this.defaultMessage(cpWi, consumer, instant);
+			}
+			break;
+		}
+		return message;
+
+	}
+
+	private void sendMessage(List<Message> messages) throws Exception {
 		for (Message message : messages) {
 			switch (message.getConsumer()) {
 			case MessageConnector.CONSUME_WS:
-				if (Config.communicate().wsEnable()) {
-					ThisApplication.wsConsumeQueue.send(message);
-				}
+				sendMessageWs(message);
 				break;
 			case MessageConnector.CONSUME_PMS:
-				if (Config.communicate().pmsEnable()) {
-					ThisApplication.pmsConsumeQueue.send(message);
-				}
+				sendMessagePms(message);
 				break;
 			case MessageConnector.CONSUME_CALENDAR:
-				if (Config.communicate().calendarEnable()) {
-					ThisApplication.calendarConsumeQueue.send(message);
-				}
+				sendMessageCalendar(message);
 				break;
 			case MessageConnector.CONSUME_DINGDING:
-				if (Config.dingding().getEnable() && Config.dingding().getMessageEnable()) {
-					ThisApplication.dingdingConsumeQueue.send(message);
-				}
+				sendMessageDingding(message);
 				break;
 			case MessageConnector.CONSUME_WELINK:
-				if (Config.weLink().getEnable() && Config.weLink().getMessageEnable()) {
-					ThisApplication.weLinkConsumeQueue.send(message);
-				}
+				sendMessageWeLink(message);
 				break;
 			case MessageConnector.CONSUME_ZHENGWUDINGDING:
-				if (Config.zhengwuDingding().getEnable() && Config.zhengwuDingding().getMessageEnable()) {
-					ThisApplication.zhengwuDingdingConsumeQueue.send(message);
-				}
+				sendMessageZhengwuDingding(message);
 				break;
 			case MessageConnector.CONSUME_QIYEWEIXIN:
-				if (Config.qiyeweixin().getEnable() && Config.qiyeweixin().getMessageEnable()) {
-					ThisApplication.qiyeweixinConsumeQueue.send(message);
-				}
+				sendMessageQiyeweixin(message);
 				break;
 			case MessageConnector.CONSUME_PMS_INNER:
-				if (Config.pushConfig().getEnable()) {
-					ThisApplication.pmsInnerConsumeQueue.send(message);
-				}
+				sendMessagePmsInner(message);
 				break;
 			case MessageConnector.CONSUME_MQ:
-				if (Config.mq().getEnable()) {
+				sendMessageMq(message);
+				break;
+			case MessageConnector.CONSUME_MPWEIXIN:
+				sendMessageMPWeixin(message);
+				break;
+			default:
+				if (message.getConsumer().startsWith(MessageConnector.CONSUME_MQ)
+						&& BooleanUtils.isTrue(Config.mq().getEnable())) {
 					ThisApplication.mqConsumeQueue.send(message);
 				}
 				break;
-			case MessageConnector.CONSUME_MPWEIXIN:
-				if (BooleanUtils.isTrue(Config.mPweixin().getEnable()) && BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
-					ThisApplication.mpWeixinConsumeQueue.send(message);
-				}
-				break;
-			default:
-				break;
 			}
 		}
-		Wo wo = new Wo();
-		wo.setValue(true);
-		result.setData(wo);
-		return result;
 	}
 
-	private Instant instant(EffectivePerson effectivePerson, Business business, Wi wi, List<String> consumers) {
+	private void sendMessageMPWeixin(Message message) throws Exception {
+		if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
+				&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
+			ThisApplication.mpWeixinConsumeQueue.send(message);
+		}
+	}
+
+	private void sendMessageMq(Message message) throws Exception {
+		if (BooleanUtils.isTrue(Config.mq().getEnable())) {
+			ThisApplication.mqConsumeQueue.send(message);
+		}
+	}
+
+	private void sendMessagePmsInner(Message message) throws Exception {
+		if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
+			ThisApplication.pmsInnerConsumeQueue.send(message);
+		}
+	}
+
+	private void sendMessageQiyeweixin(Message message) throws Exception {
+		if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
+				&& BooleanUtils.isTrue(Config.qiyeweixin().getMessageEnable())) {
+			ThisApplication.qiyeweixinConsumeQueue.send(message);
+		}
+	}
+
+	private void sendMessageZhengwuDingding(Message message) throws Exception {
+		if (BooleanUtils.isTrue(Config.zhengwuDingding().getEnable())
+				&& BooleanUtils.isTrue(Config.zhengwuDingding().getMessageEnable())) {
+			ThisApplication.zhengwuDingdingConsumeQueue.send(message);
+		}
+	}
+
+	private void sendMessageWeLink(Message message) throws Exception {
+		if (BooleanUtils.isTrue(Config.weLink().getEnable())
+				&& BooleanUtils.isTrue(Config.weLink().getMessageEnable())) {
+			ThisApplication.weLinkConsumeQueue.send(message);
+		}
+	}
+
+	private void sendMessageDingding(Message message) throws Exception {
+		if (BooleanUtils.isTrue(Config.dingding().getEnable())
+				&& BooleanUtils.isTrue(Config.dingding().getMessageEnable())) {
+			ThisApplication.dingdingConsumeQueue.send(message);
+		}
+	}
+
+	private void sendMessageCalendar(Message message) throws Exception {
+		if (BooleanUtils.isTrue(Config.communicate().calendarEnable())) {
+			ThisApplication.calendarConsumeQueue.send(message);
+		}
+	}
+
+	private void sendMessagePms(Message message) throws Exception {
+		if (BooleanUtils.isTrue(Config.communicate().pmsEnable())) {
+			ThisApplication.pmsConsumeQueue.send(message);
+		}
+	}
+
+	private void sendMessageWs(Message message) throws Exception {
+		if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
+			ThisApplication.wsConsumeQueue.send(message);
+		}
+	}
+
+	private Instant instant(Wi wi, List<String> consumers) {
 		Instant instant = new Instant();
 		instant.setBody(Objects.toString(wi.getBody()));
 		instant.setType(wi.getType());
@@ -215,128 +289,197 @@ class ActionCreate extends BaseAction {
 		return instant;
 	}
 
-	private Message wsMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
-		Message message = new Message();
-		message.setBody(Objects.toString(wi.getBody()));
-		message.setType(wi.getType());
-		message.setPerson(wi.getPerson());
-		message.setTitle(wi.getTitle());
-		message.setConsumer(MessageConnector.CONSUME_WS);
-		message.setConsumed(false);
-		message.setInstant(instant.getId());
+	private Message wsMessage(Wi wi, Instant instant) throws Exception {
+		Message message = null;
+		if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
+			message = new Message();
+			message.setBody(Objects.toString(wi.getBody()));
+			message.setType(wi.getType());
+			message.setPerson(wi.getPerson());
+			message.setTitle(wi.getTitle());
+			message.setConsumer(MessageConnector.CONSUME_WS);
+			message.setConsumed(false);
+			message.setInstant(instant.getId());
+		}
 		return message;
 	}
 
-	private Message pmsMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
-		Message message = new Message();
-		message.setBody(Objects.toString(wi.getBody()));
-		message.setType(wi.getType());
-		message.setPerson(wi.getPerson());
-		message.setTitle(wi.getTitle());
-		message.setConsumer(MessageConnector.CONSUME_PMS);
-		message.setConsumed(false);
-		message.setInstant(instant.getId());
+	private Message pmsMessage(Wi wi, Instant instant) {
+		Message message = null;
+		try {
+			if (BooleanUtils.isTrue(Config.communicate().pmsEnable())) {
+				message = new Message();
+				message.setBody(Objects.toString(wi.getBody()));
+				message.setType(wi.getType());
+				message.setPerson(wi.getPerson());
+				message.setTitle(wi.getTitle());
+				message.setConsumer(MessageConnector.CONSUME_PMS);
+				message.setConsumed(false);
+				message.setInstant(instant.getId());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		return message;
 	}
 
-	private Message pmsInnerMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
-		Message message = new Message();
-		message.setBody(Objects.toString(wi.getBody()));
-		message.setType(wi.getType());
-		message.setPerson(wi.getPerson());
-		message.setTitle(wi.getTitle());
-		message.setConsumer(MessageConnector.CONSUME_PMS_INNER);
-		message.setConsumed(false);
-		message.setInstant(instant.getId());
+	private Message pmsInnerMessage(Wi wi, Instant instant) {
+		Message message = null;
+		try {
+			if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
+				message = new Message();
+				message.setBody(Objects.toString(wi.getBody()));
+				message.setType(wi.getType());
+				message.setPerson(wi.getPerson());
+				message.setTitle(wi.getTitle());
+				message.setConsumer(MessageConnector.CONSUME_PMS_INNER);
+				message.setConsumed(false);
+				message.setInstant(instant.getId());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		return message;
 	}
 
-	private Message dingdingMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
-		Message message = new Message();
-		message.setBody(Objects.toString(wi.getBody()));
-		message.setType(wi.getType());
-		message.setPerson(wi.getPerson());
-		message.setTitle(wi.getTitle());
-		message.setConsumer(MessageConnector.CONSUME_DINGDING);
-		message.setConsumed(false);
-		message.setInstant(instant.getId());
+	private Message dingdingMessage(Wi wi, Instant instant) {
+		Message message = null;
+		try {
+			if (BooleanUtils.isTrue(Config.dingding().getEnable())
+					&& BooleanUtils.isTrue(Config.dingding().getMessageEnable())) {
+				message = new Message();
+				message.setBody(Objects.toString(wi.getBody()));
+				message.setType(wi.getType());
+				message.setPerson(wi.getPerson());
+				message.setTitle(wi.getTitle());
+				message.setConsumer(MessageConnector.CONSUME_DINGDING);
+				message.setConsumed(false);
+				message.setInstant(instant.getId());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		return message;
 	}
 
-	private Message weLinkMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
-		Message message = new Message();
-		message.setBody(Objects.toString(wi.getBody()));
-		message.setType(wi.getType());
-		message.setPerson(wi.getPerson());
-		message.setTitle(wi.getTitle());
-		message.setConsumer(MessageConnector.CONSUME_WELINK);
-		message.setConsumed(false);
-		message.setInstant(instant.getId());
+	private Message weLinkMessage(Wi wi, Instant instant) {
+		Message message = null;
+		try {
+			if (BooleanUtils.isTrue(Config.weLink().getEnable())
+					&& BooleanUtils.isTrue(Config.weLink().getMessageEnable())) {
+				message = new Message();
+				message.setBody(Objects.toString(wi.getBody()));
+				message.setType(wi.getType());
+				message.setPerson(wi.getPerson());
+				message.setTitle(wi.getTitle());
+				message.setConsumer(MessageConnector.CONSUME_WELINK);
+				message.setConsumed(false);
+				message.setInstant(instant.getId());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		return message;
 	}
 
-	private Message zhegnwudingdingMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
-		Message message = new Message();
-		message.setBody(Objects.toString(wi.getBody()));
-		message.setType(wi.getType());
-		message.setPerson(wi.getPerson());
-		message.setTitle(wi.getTitle());
-		message.setConsumer(MessageConnector.CONSUME_ZHENGWUDINGDING);
-		message.setConsumed(false);
-		message.setInstant(instant.getId());
+	private Message zhengwudingdingMessage(Wi wi, Instant instant) {
+		Message message = null;
+		try {
+			if (Config.zhengwuDingding().getEnable() && Config.zhengwuDingding().getMessageEnable()) {
+				message = new Message();
+				message.setBody(Objects.toString(wi.getBody()));
+				message.setType(wi.getType());
+				message.setPerson(wi.getPerson());
+				message.setTitle(wi.getTitle());
+				message.setConsumer(MessageConnector.CONSUME_ZHENGWUDINGDING);
+				message.setConsumed(false);
+				message.setInstant(instant.getId());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		return message;
 	}
 
-	private Message qiyeweixinMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
-		Message message = new Message();
-		message.setBody(Objects.toString(wi.getBody()));
-		message.setType(wi.getType());
-		message.setPerson(wi.getPerson());
-		message.setTitle(wi.getTitle());
-		message.setConsumer(MessageConnector.CONSUME_QIYEWEIXIN);
-		message.setConsumed(false);
-		message.setInstant(instant.getId());
+	private Message qiyeweixinMessage(Wi wi, Instant instant) {
+		Message message = null;
+		try {
+			if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
+					&& BooleanUtils.isTrue(Config.qiyeweixin().getMessageEnable())) {
+				message = new Message();
+				message.setBody(Objects.toString(wi.getBody()));
+				message.setType(wi.getType());
+				message.setPerson(wi.getPerson());
+				message.setTitle(wi.getTitle());
+				message.setConsumer(MessageConnector.CONSUME_QIYEWEIXIN);
+				message.setConsumed(false);
+				message.setInstant(instant.getId());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		return message;
 	}
 
-	private Message mpweixinMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
-		Message message = new Message();
-		message.setBody(Objects.toString(wi.getBody()));
-		message.setType(wi.getType());
-		message.setPerson(wi.getPerson());
-		message.setTitle(wi.getTitle());
-		message.setConsumer(MessageConnector.CONSUME_MPWEIXIN);
-		message.setConsumed(false);
-		message.setInstant(instant.getId());
+	private Message mpweixinMessage(Wi wi, Instant instant) {
+		Message message = null;
+		try {
+			if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
+					&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
+				message = new Message();
+				message.setBody(Objects.toString(wi.getBody()));
+				message.setType(wi.getType());
+				message.setPerson(wi.getPerson());
+				message.setTitle(wi.getTitle());
+				message.setConsumer(MessageConnector.CONSUME_MPWEIXIN);
+				message.setConsumed(false);
+				message.setInstant(instant.getId());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		return message;
 	}
 
-	private Message calendarMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
-		Message message = new Message();
-		message.setBody(Objects.toString(wi.getBody()));
-		message.setType(wi.getType());
-		message.setPerson(wi.getPerson());
-		message.setTitle(wi.getTitle());
-		message.setConsumer(MessageConnector.CONSUME_CALENDAR);
-		message.setConsumed(false);
-		message.setInstant(instant.getId());
+	private Message calendarMessage(Wi wi, Instant instant) {
+		Message message = null;
+		try {
+			if (BooleanUtils.isTrue(Config.communicate().calendarEnable())) {
+				message = new Message();
+				message.setBody(Objects.toString(wi.getBody()));
+				message.setType(wi.getType());
+				message.setPerson(wi.getPerson());
+				message.setTitle(wi.getTitle());
+				message.setConsumer(MessageConnector.CONSUME_CALENDAR);
+				message.setConsumed(false);
+				message.setInstant(instant.getId());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		return message;
 	}
 
-	private Message MQMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
-		Message message = new Message();
-		message.setBody(Objects.toString(wi.getBody()));
-		message.setType(wi.getType());
-		message.setPerson(wi.getPerson());
-		message.setTitle(wi.getTitle());
-		message.setConsumer(MessageConnector.CONSUME_MQ);
-		message.setConsumed(false);
-		message.setInstant(instant.getId());
+	private Message mqMessage(Wi wi, Instant instant, String consumer) {
+		Message message = null;
+		if (consumer.startsWith(MessageConnector.CONSUME_MQ)) {
+			message = new Message();
+			message.setBody(Objects.toString(wi.getBody()));
+			message.setType(wi.getType());
+			message.setPerson(wi.getPerson());
+			message.setTitle(wi.getTitle());
+			if (StringUtils.isNotBlank(consumer)) {
+				message.setConsumer(consumer);
+			} else {
+				message.setConsumer(MessageConnector.CONSUME_MQ);
+			}
+			message.setConsumed(false);
+			message.setInstant(instant.getId());
+		}
 		return message;
 	}
 
-	private Message defaultMessage(EffectivePerson effectivePerson, Business business, Wi wi, String consumer,
-			Instant instant) {
+	private Message defaultMessage(Wi wi, String consumer, Instant instant) {
 		Message message = new Message();
 		message.setBody(Objects.toString(wi.getBody()));
 		message.setType(wi.getType());
@@ -349,9 +492,12 @@ class ActionCreate extends BaseAction {
 	}
 
 	public static class Wi extends MessageConnector.Wrap {
+		private static final long serialVersionUID = 1L;
+
 	}
 
 	public static class Wo extends WrapBoolean {
+		private static final long serialVersionUID = 1L;
 
 	}
 

@@ -17,6 +17,7 @@ import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.jaxrs.WoId;
@@ -34,7 +35,7 @@ import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
 
 public class TouchDelay extends AbstractJob {
 
-	private static Logger logger = LoggerFactory.getLogger(TouchDelay.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TouchDelay.class);
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
@@ -50,26 +51,26 @@ public class TouchDelay extends AbstractJob {
 				if (!targets.isEmpty()) {
 					sequence = targets.get(targets.size() - 1).getSequence();
 					for (Work work : targets) {
-						try {
-							try {
-								ThisApplication.context().applications()
-										.putQuery(x_processplatform_service_processing.class,
-												Applications.joinQueryUri("work", work.getId(), "processing"),
-												new ProcessingAttributes(), work.getJob())
-										.getData(WoId.class);
-								count.incrementAndGet();
-							} catch (Exception e) {
-								throw new ExceptionTouchDelay(e, work.getId(), work.getTitle(), work.getSequence());
-							}
-						} catch (Exception e) {
-							logger.error(e);
-						}
+						touch(work, count);
 					}
 				}
 			} while (!targets.isEmpty());
-			logger.print("完成触发{}个延时工作, 耗时:{}.", count.intValue(), stamp.consumingMilliseconds());
+			LOGGER.info("完成触发{}个延时工作, 耗时:{}.", count::intValue, stamp::consumingMilliseconds);
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
+		}
+	}
+
+	private void touch(Work work, AtomicInteger count) {
+		try {
+			ThisApplication.context().applications()
+					.putQuery(x_processplatform_service_processing.class,
+							Applications.joinQueryUri("work", work.getId(), "processing"), new ProcessingAttributes(),
+							work.getJob())
+					.getData(WoId.class);
+			count.incrementAndGet();
+		} catch (Exception e) {
+			LOGGER.error(new ExceptionTouchDelay(e, work.getId(), work.getTitle(), work.getSequence()));
 		}
 	}
 
@@ -78,21 +79,21 @@ public class TouchDelay extends AbstractJob {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Work> root = cq.from(Work.class);
-		Path<String> id_path = root.get(Work_.id);
-		Path<String> job_path = root.get(Work_.job);
-		Path<String> sequence_path = root.get(Work_.sequence);
+		Path<String> idPath = root.get(Work_.id);
+		Path<String> jobPath = root.get(Work_.job);
+		Path<String> sequencePath = root.get(JpaObject_.sequence);
 		Predicate p = cb.equal(root.get(Work_.activityType), ActivityType.delay);
 		if (StringUtils.isNotEmpty(sequence)) {
-			p = cb.and(p, cb.greaterThan(sequence_path, sequence));
+			p = cb.and(p, cb.greaterThan(sequencePath, sequence));
 		}
-		cq.multiselect(id_path, job_path, sequence_path).where(p).orderBy(cb.asc(sequence_path));
+		cq.multiselect(idPath, jobPath, sequencePath).where(p).orderBy(cb.asc(sequencePath));
 		List<Tuple> os = em.createQuery(cq).setMaxResults(200).getResultList();
 		List<Work> list = new ArrayList<>();
 		for (Tuple o : os) {
 			Work work = new Work();
-			work.setId(o.get(id_path));
-			work.setJob(o.get(job_path));
-			work.setSequence(o.get(sequence_path));
+			work.setId(o.get(idPath));
+			work.setJob(o.get(jobPath));
+			work.setSequence(o.get(sequencePath));
 			list.add(work);
 		}
 		return list;

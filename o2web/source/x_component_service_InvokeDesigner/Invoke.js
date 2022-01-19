@@ -113,16 +113,23 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
 
                 var lp = this.designer.lp.comment;
 
+                var url = new URI("../api");
+                var p  =url.get("port");
+                p = (!p || p===80) ? "" : ":"+p;
+                var h = url.get("host");
+                url.get("scheme")+"://"+h+p+"/api"
+
                 var defaultText = "/********************\n";
                 // defaultText += "this.entityManager; //"+lp.entityManager+"\n";
-                defaultText += "this.applications; //"+lp.applications+"\n";
+                // defaultText += "this.applications; //"+lp.applications+"\n";
                 defaultText += "this.requestText//"+lp.requestText+"\n";
-                defaultText += "this.request//"+lp.request+"\n";
+                // defaultText += "this.request//"+lp.request+"\n";
                 defaultText += "this.currentPerson//"+lp.currentPerson+"\n";
                 defaultText += "this.response//"+lp.response+"\n";
-                defaultText += "this.organization; //"+lp.organization+"\n";
+                // defaultText += "this.organization; //"+lp.organization+"\n";
                 defaultText += "this.org; //"+lp.org+"\n";
-                defaultText += "this.service; //"+lp.service+"\n";
+                // defaultText += "this.service; //"+lp.service+"\n";
+                defaultText += "API Document: "+url.get("scheme")+"://"+h+p+"/api"+"\n";
                 defaultText += "********************/\n";
                 this.editor.editor.setValue(defaultText);
             }

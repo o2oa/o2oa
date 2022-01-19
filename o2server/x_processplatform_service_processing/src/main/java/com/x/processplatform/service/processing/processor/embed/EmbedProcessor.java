@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.processor.embed;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -12,7 +13,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -28,7 +30,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class EmbedProcessor extends AbstractEmbedProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(EmbedProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EmbedProcessor.class);
 
 	public EmbedProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -43,6 +45,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Embed embed) throws Exception {
+		// nothing
 	}
 
 	@Override
@@ -80,13 +83,19 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			WrapScriptObject wrap = new WrapScriptObject();
 			wrap.set(gson.toJson(assginData));
 			ScriptContext scriptContext = aeiObjects.scriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_ASSIGNDATA, wrap);
-			aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), embed,
-					Business.EVENT_EMBEDTARGETASSIGNDATA).eval(scriptContext);
-			assginData = gson.fromJson(wrap.get(), AssginData.class);
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					embed, Business.EVENT_EMBEDTARGETASSIGNDATA);
+
+			AssginData returnData = JsonScriptingExecutor.eval(cs, scriptContext, AssginData.class);
+			if (null != returnData) {
+				assginData = returnData;
+			} else {
+				assginData = gson.fromJson(wrap.get(), AssginData.class);
+			}
 		}
-		logger.debug("embed:{}, process:{} try to embed application:{}, process:{}, assginData:{}", embed.getName(),
-				embed.getProcess(), embed.getTargetApplication(), embed.getTargetProcess(), gson.toJson(assginData));
+		LOGGER.debug("embed:{}, process:{} try to embed application:{}, process:{}, assginData:{}.", embed::getName,
+				embed::getProcess, embed::getTargetApplication, embed::getTargetProcess, assginData::toString);
 		if (BooleanUtils.isTrue(embed.getAsync())) {
 			ThisApplication.syncEmbedQueue.send(assginData);
 		} else {
@@ -102,9 +111,12 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Embed embed, List<Work> works) throws Exception {
+		// nothing
 	}
 
 	public static class WoWorkId extends WoId {
+
+		private static final long serialVersionUID = 7931241930072510113L;
 
 	}
 
@@ -137,12 +149,9 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		}
 		if (this.hasIdentityScript(embed)) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_IDENTITY, value);
-			Object objectValue = aeiObjects.business().element()
-					.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDTARGETIDENTITY)
-					.eval(scriptContext);
-			List<String> os = ScriptFactory.asDistinguishedNameList(objectValue);
-
+			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
+					aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDTARGETIDENTITY);
+			List<String> os = JsonScriptingExecutor.evalDistinguishedNames(compiledScript, scriptContext);
 			os = ListTools.trim(os, true, false);
 			if (ListTools.isEmpty(os)) {
 				value = "";
@@ -156,10 +165,9 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	private String targetTitle(AeiObjects aeiObjects, Embed embed) throws Exception {
 		String value = "";
 		if (this.hasTitleScript(embed)) {
-			Object objectValue = aeiObjects.business().element()
-					.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDTARGETTITLE)
-					.eval(aeiObjects.scriptContext());
-			value = ScriptFactory.asString(objectValue);
+			CompiledScript compiledScript = aeiObjects.business().element()
+					.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDTARGETTITLE);
+			value = JsonScriptingExecutor.evalString(compiledScript, aeiObjects.scriptContext());
 		}
 		if (StringUtils.isEmpty(value)) {
 			value = embed.getName() + ":" + aeiObjects.getWork().getTitle();
@@ -178,23 +186,24 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		}
 	}
 
-	private boolean hasTitleScript(Embed embed) throws Exception {
+	private boolean hasTitleScript(Embed embed) {
 		return StringUtils.isNotEmpty(embed.getTargetTitleScript())
 				|| StringUtils.isNotEmpty(embed.getTargetTitleScriptText());
 	}
 
-	private boolean hasIdentityScript(Embed embed) throws Exception {
+	private boolean hasIdentityScript(Embed embed) {
 		return StringUtils.isNotEmpty(embed.getTargetIdentityScript())
 				|| StringUtils.isNotEmpty(embed.getTargetIdentityScriptText());
 	}
 
-	private boolean hasAssginDataScript(Embed embed) throws Exception {
+	private boolean hasAssginDataScript(Embed embed) {
 		return StringUtils.isNotEmpty(embed.getTargetAssginDataScript())
 				|| StringUtils.isNotEmpty(embed.getTargetAssginDataScriptText());
 	}
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, Embed embed) throws Exception {
+		// nothing
 	}
 
 }
