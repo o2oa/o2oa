@@ -22,7 +22,7 @@ class ActionListWithQuery extends BaseAction {
 			if (null == query) {
 				throw new ExceptionQueryNotExist(flag);
 			}
-			if (!business.editable(effectivePerson, query)) {
+			if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, query)) {
 				throw new ExceptionQueryAccessDenied(effectivePerson.getDistinguishedName(), query.getName());
 			}
 			List<View> os = business.view().listWithQueryObject(query.getId());

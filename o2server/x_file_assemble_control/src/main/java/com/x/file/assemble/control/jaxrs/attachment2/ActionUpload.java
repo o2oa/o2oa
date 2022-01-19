@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 class ActionUpload extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger( ActionUpload.class );
+	private static final int ONE_G = 1024*1024*1024;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String folderId, String fileName, String fileMd5, final FormDataBodyPart filePart) throws Exception {
 		logger.debug(effectivePerson.getDistinguishedName());
@@ -68,6 +69,9 @@ class ActionUpload extends BaseAction {
 			File file = filePart.getValueAs(File.class);
 			if(file==null || !file.exists()){
 				throw new ExceptionAttachmentNone(fileName);
+			}
+			if(file.length() > ONE_G){
+				logger.info("上传超大附件：{},大小：{}",fileName, (file.length()/1024/1024)+"M");
 			}
 			if(StringUtils.isEmpty(fileMd5)){
 				if(file.length() < Integer.MAX_VALUE) {

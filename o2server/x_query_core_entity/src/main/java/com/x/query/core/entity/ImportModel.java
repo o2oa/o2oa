@@ -28,10 +28,12 @@ public class ImportModel extends SliceJpaObject {
 
 	public static final Integer MAX_COUNT = 5000;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -43,6 +45,7 @@ public class ImportModel extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		if ((this.count == null) || (this.count < 1)) {
 			this.count = MAX_COUNT;
@@ -72,7 +75,7 @@ public class ImportModel extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
-	@CheckPersist(allowEmpty = false, simplyString = false, citationNotExists =
+	@CheckPersist(allowEmpty = false, citationNotExists =
 	/* 验证不可重名 */
 	@CitationNotExist(fields = { "name", "id",
 			"alias" }, type = ImportModel.class, equals = @Equal(field = "query", property = "query")))
@@ -82,7 +85,7 @@ public class ImportModel extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = false, citationNotExists =
+	@CheckPersist(allowEmpty = true, citationNotExists =
 	/* 验证不可重名 */
 	@CitationNotExist(fields = { "name", "id",
 			"alias" }, type = ImportModel.class, equals = @Equal(field = "query", property = "query")))
@@ -165,6 +168,18 @@ public class ImportModel extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> availableUnitList;
+
+	public static final String availableGroupList_FIELDNAME = "availableGroupList";
+	@FieldDescribe("允许使用的群组.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ availableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+			+ availableGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + availableGroupList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + availableGroupList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> availableGroupList;
 
 	public static final String count_FIELDNAME = "count";
 	@FieldDescribe("最大导入数量.")
@@ -297,5 +312,13 @@ public class ImportModel extends SliceJpaObject {
 
 	public void setOrderNumber(Integer orderNumber) {
 		this.orderNumber = orderNumber;
+	}
+
+	public List<String> getAvailableGroupList() {
+		return availableGroupList;
+	}
+
+	public void setAvailableGroupList(List<String> availableGroupList) {
+		this.availableGroupList = availableGroupList;
 	}
 }

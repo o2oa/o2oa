@@ -63,10 +63,12 @@ public class Process extends SliceJpaObject {
 	public static final String STARTABLETERMINAL_MOBILE = "mobile";
 	public static final String STARTABLETERMINAL_ALL = "all";
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -78,6 +80,7 @@ public class Process extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		/* 默认流程名称作为意见为'是' */
 		if (this.routeNameAsOpinion == null) {
