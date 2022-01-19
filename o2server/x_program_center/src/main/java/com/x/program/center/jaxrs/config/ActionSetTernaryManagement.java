@@ -4,10 +4,12 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.TernaryManagement;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -37,22 +39,34 @@ public class ActionSetTernaryManagement extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		Map<String,Object> map = XGsonBuilder.instance().fromJson(jsonElement, Map.class);
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
 			throw new ExceptionModifyConfig();
 		}
-		if(StringUtils.isNotBlank(wi.getSystemManagerPassword()) && !wi.getSystemManagerPassword().matches(Config.person().getPasswordRegex())){
-			throw new ExceptionInvalidPassword(Config.ternaryManagement().getSystemManagerName(), Config.person().getPasswordRegexHint());
+		if(StringUtils.isNotBlank(wi.getSystemManagerPassword())){
+			if(!wi.getSystemManagerPassword().matches(Config.person().getPasswordRegex())) {
+				throw new ExceptionInvalidPassword(Config.ternaryManagement().getSystemManagerName(), Config.person().getPasswordRegexHint());
+			}else{
+				Config.ternaryManagement().setSystemManagerPassword(wi.getSystemManagerPassword());
+			}
 		}
-		if(StringUtils.isNotBlank(wi.getSecurityManagerPassword()) && !wi.getSecurityManagerPassword().matches(Config.person().getPasswordRegex())){
-			throw new ExceptionInvalidPassword(Config.ternaryManagement().getSecurityManagerName(), Config.person().getPasswordRegexHint());
+		if(StringUtils.isNotBlank(wi.getSecurityManagerPassword())){
+			if(!wi.getSecurityManagerPassword().matches(Config.person().getPasswordRegex())) {
+				throw new ExceptionInvalidPassword(Config.ternaryManagement().getSecurityManagerName(), Config.person().getPasswordRegexHint());
+			}else{
+				Config.ternaryManagement().setSystemManagerPassword(wi.getSecurityManagerPassword());
+			}
 		}
-		if(StringUtils.isNotBlank(wi.getAuditManagerPassword()) && !wi.getAuditManagerPassword().matches(Config.person().getPasswordRegex())){
-			throw new ExceptionInvalidPassword(Config.ternaryManagement().getAuditManagerName(), Config.person().getPasswordRegexHint());
+		if(StringUtils.isNotBlank(wi.getAuditManagerPassword())){
+			if(!wi.getAuditManagerPassword().matches(Config.person().getPasswordRegex())) {
+				throw new ExceptionInvalidPassword(Config.ternaryManagement().getAuditManagerName(), Config.person().getPasswordRegexHint());
+			}else{
+				Config.ternaryManagement().setSystemManagerPassword(wi.getAuditManagerPassword());
+			}
 		}
-		Wi.copier = WrapCopierFactory.wi(Wi.class, TernaryManagement.class, new ArrayList<>(map.keySet()), null);
-		Wi.copier.copy(wi, Config.ternaryManagement());
+		if(wi.getEnable()!=null){
+			Config.ternaryManagement().setEnable(wi.getEnable());
+		}
 		Config.ternaryManagement().save();
 		this.configFlush(effectivePerson);
 		Wo wo = new Wo();
@@ -114,13 +128,55 @@ public class ActionSetTernaryManagement extends BaseAction {
 		return "";
 	}
 
-	public static class Wi extends TernaryManagement {
+	public static class Wi extends GsonPropertyObject {
 
-		static WrapCopier<Wi, TernaryManagement> copier = WrapCopierFactory.wi(Wi.class, TernaryManagement.class, null, null);
+		@FieldDescribe("是否启用三元管理.")
+		private Boolean enable;
 
+		@FieldDescribe("系统管理员账号密码.")
+		private String systemManagerPassword;
+
+		@FieldDescribe("安全管理员账号密码.")
+		private String securityManagerPassword;
+
+		@FieldDescribe("安全审计员账号密码.")
+		private String auditManagerPassword;
+
+		public Boolean getEnable() {
+			return enable;
+		}
+
+		public void setEnable(Boolean enable) {
+			this.enable = enable;
+		}
+
+		public String getSystemManagerPassword() {
+			return systemManagerPassword;
+		}
+
+		public void setSystemManagerPassword(String systemManagerPassword) {
+			this.systemManagerPassword = systemManagerPassword;
+		}
+
+		public String getSecurityManagerPassword() {
+			return securityManagerPassword;
+		}
+
+		public void setSecurityManagerPassword(String securityManagerPassword) {
+			this.securityManagerPassword = securityManagerPassword;
+		}
+
+		public String getAuditManagerPassword() {
+			return auditManagerPassword;
+		}
+
+		public void setAuditManagerPassword(String auditManagerPassword) {
+			this.auditManagerPassword = auditManagerPassword;
+		}
 	}
 
 	public static class Wo extends WrapBoolean {
 
 	}
+
 }
