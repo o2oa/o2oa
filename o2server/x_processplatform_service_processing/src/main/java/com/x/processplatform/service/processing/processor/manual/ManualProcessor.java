@@ -324,10 +324,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 	protected void executingCommitted(AeiObjects aeiObjects, Manual manual, List<Work> works) throws Exception {
 		// Manual Work 还没有处理完 发生了停留,出发了停留事件
 		if ((ListTools.isEmpty(works)) && this.hasManualStayScript(manual)) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 					aeiObjects.getActivity(), Business.EVENT_MANUALSTAY);
-			JsonScriptingExecutor.eval(cs, scriptContext);
+			JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 		}
 	}
 

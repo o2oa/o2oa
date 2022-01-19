@@ -37,7 +37,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
  */
 public class SerialBuilder {
 
-	private static Logger logger = LoggerFactory.getLogger(SerialBuilder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SerialBuilder.class);
 
 	private static final String EMPTY_SYMBOL = "(0)";
 
@@ -46,7 +46,6 @@ public class SerialBuilder {
 	public SerialBuilder(Context context, EntityManagerContainer emc, String processId, String workId)
 			throws Exception {
 		this.context = context;
-		this.emc = emc;
 		process = emc.find(processId, Process.class);
 		if (null == process) {
 			throw new ExceptionEntityNotExist(processId, Process.class);
@@ -58,8 +57,6 @@ public class SerialBuilder {
 		serial = new Serial();
 		this.date = new Date();
 	}
-
-	private EntityManagerContainer emc;
 
 	private Process process;
 
@@ -89,8 +86,6 @@ public class SerialBuilder {
 							&& StringUtils.isNotEmpty(o.getScript())) {
 						JsonScriptingExecutor.evalString(ScriptingFactory.functionalizationCompile(o.getScript()),
 								scriptContext, s -> itemResults.add(s));
-//						Object v = ScriptingFactory.scriptEngine
-//								.eval(ScriptingFactory.functionalizationCompile(o.getScript()), scriptContext);
 					} else {
 						itemResults.add("");
 					}
@@ -98,11 +93,8 @@ public class SerialBuilder {
 				for (int i = 0; i < list.size(); i++) {
 					SerialTextureItem o = list.get(i);
 					if ((StringUtils.equalsIgnoreCase(o.getKey(), "number")) && StringUtils.isNotEmpty(o.getScript())) {
-//						Object v = ScriptingFactory.scriptEngine.eval(ScriptingFactory.functionalization(o.getScript()),
-//								scriptContext);
 						itemResults.add(i, JsonScriptingExecutor
 								.evalString(ScriptingFactory.functionalizationCompile(o.getScript()), scriptContext));
-//						itemResults.set(i, v);
 					}
 				}
 				for (Object o : itemResults) {
@@ -113,14 +105,6 @@ public class SerialBuilder {
 		}
 		return stringBuilder.toString();
 	}
-
-//	private String functionBind(SerialTextureItem o) {
-//		StringBuilder sb = new StringBuilder();
-//		sb.append("(function(){").append(System.lineSeparator());
-//		sb.append(o.getScript()).append(System.lineSeparator());
-//		sb.append("}).apply(bind);");
-//		return sb.toString();
-//	}
 
 	public class Serial {
 		public String text(String str) {
