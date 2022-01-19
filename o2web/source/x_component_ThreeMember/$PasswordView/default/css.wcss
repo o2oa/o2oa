@@ -1,0 +1,66 @@
+{
+  "node" : {
+    "height": "100%",
+    "overflow": "hidden"
+  },
+  "contentContainerNode" : {
+    "margin-left": "0px",
+    "overflow": "hidden",
+    "background-color" : "#eee",
+    "opacity": 1
+  },
+  "contentScrollNode": {
+    "background-color": "#fff",
+    "overflow": "scroll"
+  },
+  "contentNode": {
+    "background-color": "#fff",
+    "padding-bottom": "10px"
+  },
+  "bottomNode": {
+    "height": "60px",
+    "overflow": "hidden"
+  },
+  "inputEditButton": {
+    "margin-top": "20px",
+    "background": "#4A90E2",
+    "border-radius": "20px",
+    "width" : "320px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "border" : "0px",
+    "color" : "#fff",
+    "cursor" : "pointer",
+    "font-size" : "16px",
+    "text-align": "center"
+  },
+  "inputOkButton" : {
+    "margin-top": "20px",
+    "background": "#4A90E2",
+    "border-radius": "20px",
+    "width" : "230px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "border" : "0px",
+    "color" : "#fff",
+    "cursor" : "pointer",
+    "font-size" : "16px",
+    "text-align": "center",
+    "float": "left"
+  },
+  "inputCancelButton" : {
+    "margin-top": "20px",
+    "background": "#fff",
+    "border-radius": "20px",
+    "width" : "160px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "color" : "#666",
+    "border" : "0px",
+    "margin-left" : "20px",
+    "font-size" : "16px",
+    "text-align": "center",
+    "cursor" : "pointer",
+    "float": "left"
+  }
+}

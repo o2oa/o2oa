@@ -3405,7 +3405,7 @@ MWF.xScript.Environment = function(ev){
          * @param {String} app  - 流程应用的名称、别名或ID。
          * @param {String} process  - 要启动的流程的名称、别名或ID。
          * @param {Object} [data]   - 流程启动时默认的业务数据。
-         * @param {String} [identity]  - 流程启动所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
+         * @param {String} [identity]  - 流程启动所使用的身份。如果此参数为空/空字符串，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
          * @param {Function} [callback]  - 流程启动后的回调函数。
          * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。
          * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。
@@ -3414,7 +3414,7 @@ MWF.xScript.Environment = function(ev){
          this.form.startProcess("公文管理", "发文管理");
          * @example
          //启动一个发文管理实例，标题为：my file title，启动后提示
-         this.form.startProcess("公文管理", "发文管理", {"title": "my file title"}, function(json){
+         this.form.startProcess("公文管理", "发文管理", {"title": "my file title"}, "张三@kfb_zhangsan@I", function(json){
             this.form.notice("create file success!", "success");
         });
          */
