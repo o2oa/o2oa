@@ -2284,6 +2284,7 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
         // this.pagingWidget.load();
     },
     loadWidget : function( isReset ){
+        debugger;
         var visiblePages = this.json.visiblePages ? this.json.visiblePages.toInt() : 9;
         this.pagingWidget = new o2.widget.Paging(this.pagingNode, {
             style : this.json.style || "default",
@@ -2307,6 +2308,9 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
                 firstPage: this.json.firstPageText,
                 lastPage: this.json.lastPageText
             },
+            hasInfor: this.json.showPagingInfor,
+            inforPosition: this.json.pagingPosition,
+            inforTextStyle: this.json.textStyle,
             onJumpingPage : function( pageNum, itemNum ){
             }.bind(this),
             onPostLoad : function () {
@@ -2340,7 +2344,7 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
         if ( ["hasTruningBar","visiblePages","hasBatchTuring",
             "hasFirstLastPage","hasPreNextPage","hasPageJumper",
             "firstPageText","lastPageText","prePageText","nextPageText",
-            "pagingStyles"].contains(name)){
+            "pagingStyles","showPagingInfor","pagingPosition","textStyle"].contains(name)){
             this._refreshPaging();
         }else if( name === "buttonStyle" ){
             if( this.json.buttonStyle === "rect" ){

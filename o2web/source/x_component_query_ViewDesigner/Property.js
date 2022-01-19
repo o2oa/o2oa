@@ -82,6 +82,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     this.loadActionArea();
                     this.loadStylesList();
                     this.loadMaplist();
+                    this.loadHtmlEditorArea();
                 }
             }.bind(this));
         } else {
@@ -362,6 +363,37 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 this.setEditNodeStyles(el);
             }.bind(this));
         }
+    },
+    loadHtmlEditorArea: function(){
+        var htmlAreas = this.propertyContent.getElements(".MWFHtmlEditorArea");
+        htmlAreas.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var scriptContent = this.data[name];
+            MWF.require("MWF.widget.HtmlEditorArea", function(){
+                var htmlArea = new MWF.widget.HtmlEditorArea(node, {
+                    "title": title,
+                    //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+                    "onChange": function(){
+                        this.data[name] = htmlArea.getValue();
+                        this.changeData(name);
+                        htmlArea.isChanged = true;
+                    }.bind(this),
+                    // "onBlur": function(){
+                    //     if (htmlArea.isChanged){
+                    //         this.changeData(name, node, "");
+                    //         htmlArea.isChanged = false;
+                    //     }
+                    // }.bind(this),
+                    "onSave": function(){
+                        this.designer.saveForm();
+                    }.bind(this)
+                });
+                htmlArea.load({"code": scriptContent});
+            }.bind(this));
+
+        }.bind(this));
     },
     loadScriptArea: function () {
         var scriptAreas = this.propertyContent.getElements(".MWFScriptArea");
