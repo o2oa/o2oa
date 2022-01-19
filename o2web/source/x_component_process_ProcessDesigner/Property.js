@@ -252,7 +252,9 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.ScriptText", function(){
             var _self = this;
             scriptNodes.each(function(node){
+                var api = node.dataset["o2Api"];
                 var script = new MWF.xApplication.process.ProcessDesigner.widget.ScriptText(node, this.data[node.get("name")], this.process.designer, {
+                    "api": api,
                     "maskNode": this.process.designer.content,
                     "maxObj": this.process.designer.paperNode,
                     "onChange": function(code){

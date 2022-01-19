@@ -208,6 +208,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"person": "人员",
 		"split": "拆分",
 
+		"apiDoc": "点击此处查看API文档",
+
 		"id": "标识",
 		"name": "名称",
 		"alias": "别名",
@@ -325,6 +327,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"addParameter": "增加参数",
 		"deleteParameter": "删除参数",
 		"responseScript": "响应脚本",
+
 		"use": "使用",
 		"getJson": "获取响应内容。如果响应内容是JSON格式的字符串，则返回JSON对象；否则返回原始响应内容。",
 		"systemRequest": "系统内请求",
@@ -335,9 +338,15 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"addHeader": "增加http头信息",
 		"delHeader": "删除http头信息",
 
+		"setParameterInfo": "返回一个json对象来设置参数，请查看API文档",
+		"setParameterInfo2": "返回一个数组来设置参数，请查看API文档",
+		"setRequestBodyInfo": "返回一个json对象来设置消息体内容，请查看API文档",
+		"setHeaderInfo": "返回一个json对象来设置消息头，请查看API文档",
+		"getJaxws": "获取响应内容。响应类型取决于服务的返回",
+
 		"service": "响应",
 		"serviceResponseScript": "服务响应脚本",
-		"responseInfo": "通过 this.request.getBody() 获取请求数据<br/>返回 true，驱动流程继续流转<br/>返回 false，表示不符合流转条件，等待下一次调用",
+		"responseInfo": "通过 this.request.getBody() 获取请求数据。返回 true，驱动流程继续流转；返回 false，表示不符合流转条件，等待下一次调用",
 
 		"runScript": "执行脚本",
 

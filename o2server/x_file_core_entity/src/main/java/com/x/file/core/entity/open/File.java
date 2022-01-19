@@ -230,21 +230,21 @@ public class File extends StorageObject {
 	}
 
 	@Override
-	public String path() throws Exception {
+	public String path() {
 		if (null == this.person) {
-			throw new Exception("person can not be null.");
+			throw new IllegalStateException("person can not be null.");
 		}
 		if (StringUtils.isEmpty(id)) {
-			throw new Exception("id can not be empty.");
+			throw new IllegalStateException("id can not be empty.");
 		}
 		if (StringUtils.isEmpty(reference)) {
-			throw new Exception("reference can not be empty.");
+			throw new IllegalStateException("reference can not be empty.");
 		}
 		if (Objects.isNull(this.getCreateTime())) {
-			throw new Exception("createTime can not be empty.");
+			throw new IllegalStateException("createTime can not be empty.");
 		}
 		if (Objects.isNull(this.referenceType)) {
-			throw new Exception("referenceType can not be empty.");
+			throw new IllegalStateException("referenceType can not be empty.");
 		}
 
 		String str = this.person;

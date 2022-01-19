@@ -25,7 +25,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -86,13 +87,12 @@ class ActionProcessing extends BaseAction {
 						AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
 								new ProcessingAttributes());
 						ScriptContext scriptContext = aeiObjects.scriptContext();
-						((WorkContext) scriptContext.getAttribute(ScriptFactory.BINDING_NAME_WORKCONTEXT))
+						((WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT))
 								.bindTask(task);
 						WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
-						CompiledScript cs = null;
-						cs = business.element().getCompiledScript(task.getApplication(), manual,
+						CompiledScript cs = business.element().getCompiledScript(task.getApplication(), manual,
 								Business.EVENT_MANUALBEFORETASK);
-						cs.eval(scriptContext);
+						JsonScriptingExecutor.eval(cs, scriptContext);
 						workDataHelper.update(aeiObjects.getData());
 						business.entityManagerContainer().commit();
 					}
@@ -111,12 +111,11 @@ class ActionProcessing extends BaseAction {
 						AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
 								new ProcessingAttributes());
 						ScriptContext scriptContext = aeiObjects.scriptContext();
-						((WorkContext) scriptContext.getAttribute(ScriptFactory.BINDING_NAME_WORKCONTEXT))
+						((WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT))
 								.bindTaskCompleted(taskCompleted);
-						CompiledScript cs = null;
-						cs = business.element().getCompiledScript(task.getApplication(), manual,
+						CompiledScript cs = business.element().getCompiledScript(task.getApplication(), manual,
 								Business.EVENT_MANUALAFTERTASK);
-						cs.eval(scriptContext);
+						JsonScriptingExecutor.eval(cs, scriptContext);
 					}
 				}
 			}
@@ -142,9 +141,7 @@ class ActionProcessing extends BaseAction {
 				emc.beginTransaction(Task.class);
 				// 将所有前面的已办lastest标记false
 				emc.listEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, task.getJob(),
-						TaskCompleted.person_FIELDNAME, task.getPerson()).forEach(o -> {
-							o.setLatest(false);
-						});
+						TaskCompleted.person_FIELDNAME, task.getPerson()).forEach(o -> o.setLatest(false));
 				Date now = new Date();
 				Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
 				TaskCompleted taskCompleted = new TaskCompleted(task, wi.getProcessingType(), now, duration);

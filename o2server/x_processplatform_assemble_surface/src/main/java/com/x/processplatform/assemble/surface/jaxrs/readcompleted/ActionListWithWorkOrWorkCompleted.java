@@ -20,7 +20,7 @@ import com.x.processplatform.core.entity.content.ReadCompleted;
 
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -47,8 +47,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	private List<Wo> list(Business business, String job) throws Exception {
 		List<ReadCompleted> os = business.entityManagerContainer().listEqual(ReadCompleted.class,
 				ReadCompleted.job_FIELDNAME, job);
-		List<Wo> wos = Wo.copier.copy(os);
-		return wos;
+		return Wo.copier.copy(os);
 	}
 
 	public static class Wo extends ReadCompleted {

@@ -12,7 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Service;
@@ -22,7 +23,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class ServiceProcessor extends AbstractServiceProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(ServiceProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceProcessor.class);
 
 	public ServiceProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -52,11 +53,11 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 		boolean passThrough = false;
 		if (StringUtils.isNotEmpty(service.getScript()) || StringUtils.isNotEmpty(service.getScriptText())) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_SERVICEVALUE,
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_REQUESTTEXT,
 					gson.toJson(aeiObjects.getWork().getProperties().getServiceValue()));
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_SERVICE);
-			passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext));
+			passThrough = JsonScriptingExecutor.evalBoolean(cs, scriptContext, Boolean.TRUE);
 		} else {
 			passThrough = true;
 		}

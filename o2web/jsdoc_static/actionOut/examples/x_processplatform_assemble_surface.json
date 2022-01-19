@@ -251,5 +251,32 @@
     "lastUpdatePerson": "张三@zhangsan@P",
     "lastUpdateTime": "2018-09-30 22:46:30",
     "icon": "..."
+  },
+  "Review" : {
+    "id": "609714b5-a0d6-4d25-a40b-5414f7253708",
+    "job": "fef0af55-cd42-4424-ace1-28bfcd3566db",
+    "work": "21404cd7-ab61-4bf4-a890-3fc8fb357379",
+    "workCompleted": "",
+    "completed": false,
+    "title": "文件标题",
+    "serial": "",
+    "startTime": "2021-12-15 14:03:50",
+    "startTimeMonth": "2021-12",
+    "completedTimeMonth": "",
+    "application": "d2908ce7-6005-4d8c-bb02-6842e1d42bac",
+    "applicationName": "应用名称",
+    "applicationAlias": "",
+    "process": "1533cb6a-6819-4c13-8fbd-acc15f40d903",
+    "processName": "流程名称",
+    "processAlias": "",
+    "person": "xx@huqi@P",
+    "creatorPerson": "xx@huqi@P",
+    "creatorIdentity": "xxx@97a0584c-b78d-4cf5-8813-b64d9d355369@I",
+    "creatorUnit": "xxx@42a21689-1183-4b11-aeb0-2891a290a04e@U",
+    "properties": {
+      "title": "文件标题"
+    },
+    "createTime": "2021-12-15 14:03:50",
+    "updateTime": "2021-12-15 14:33:47"
   }
 }

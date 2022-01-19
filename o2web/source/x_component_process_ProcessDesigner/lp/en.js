@@ -209,6 +209,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"person": "Person",
 		"split": "Split",
 
+		"apiDoc": "Click here to view the API documentation",
+
 		"id": "ID",
 		"name": "Name",
 		"alias": "Alias",
@@ -326,6 +328,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"addParameter": "Add Parameter",
 		"deleteParameter": "Delete Parameter",
 		"responseScript": "Response Script",
+
 		"use": "Use",
 		"getJson": " get response content. If the response content is a string in JSON format, a JSON object is returned; otherwise, the original response content is returned.",
 		"systemRequest": "System Service",
@@ -335,6 +338,12 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"requestHeaderScript": "Request Header Script",
 		"addHeader": "Add Header ",
 		"delHeader": "Delete Header ",
+
+		"setParameterInfo": "Return a json object to set parameters, please check the API documentation",
+		"setParameterInfo2": "Return a array to set parameters, please check the API documentation",
+		"setRequestBodyInfo": "Return a json object to set the message body, please check the API documentation",
+		"setHeaderInfo": "Return a json object to set the message header, please check the API documentation",
+		"getJaxws": "Get the response content. The response type depends on the return of the service",
 
 		"service": "Service",
 		"serviceResponseScript": "Response Script",
