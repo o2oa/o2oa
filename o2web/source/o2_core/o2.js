@@ -828,6 +828,14 @@ if (!window.o2) {
             } else {
                 dom.insertAdjacentHTML(op.position, data);
             }
+
+            var bindDataId = "";
+            var bindDataNode = dom.querySelector("[data-o2-binddata]");
+            if (bindDataNode){
+                bindDataId = bindDataNode.dataset["o2Binddata"];
+                bindDataNode.destroy();
+            }
+
             var els = dom.querySelectorAll("[data-o2-element],[data-o2-events]");
             for (var i = 0; i < els.length; i++) {
                 var el = els.item(i);
@@ -836,7 +844,7 @@ if (!window.o2) {
                 if (el.hasAttribute("data-o2-events")) {
 
                     var events = el.getAttribute("data-o2-events").toString();
-                    if (events) _bindToEvents(op.module, el, events);
+                    if (events) _bindToEvents(op.module, el, events, bindDataId);
                 }
             }
 
@@ -852,10 +860,19 @@ if (!window.o2) {
             }
         };
 
-        var _bindToEvents = function (m, node, events) {
-            debugger;
+        var _bindToEvents = function (m, node, events, bindDataId) {
             var p = node.getParent("div[data-o2-binddataid]");
-            var data = (p) ? _parseDataCache[p.dataset["o2Binddataid"]] : (_parseDataCache["bind"] || null);
+            var data = null;
+            if (p){
+                data = _parseDataCache[p.dataset["o2Binddataid"]];
+                //_parseDataCache[p.dataset["o2Binddataid"]] = null;
+                //delete _parseDataCache[p.dataset["o2Binddataid"]];
+            }else{
+                if (bindDataId) data = (_parseDataCache[bindDataId] || null);
+                //_parseDataCache[bindDataId] = null;
+                //delete _parseDataCache[bindDataId];
+            }
+            // var data = (p) ? _parseDataCache[p.dataset["o2Binddataid"]] : (_parseDataCache["bind"] || null);
 
             var eventList = events.split(/\s*;\s*/);
             eventList.forEach(function (ev) {
@@ -997,13 +1014,16 @@ if (!window.o2) {
         var _parseDataCache = {};
         var _parseHtml = function (str, json, i) {
             var v = str;
+            var r = (Math.random() * 1000000).toInt().toString();
+            while (_parseDataCache[r]) r = (Math.random() * 1000000).toInt().toString();
             if (i || i===0) {
-                var r = (Math.random() * 1000000).toInt().toString();
-                while (_parseDataCache[r]) r = (Math.random() * 1000000).toInt().toString();
                 _parseDataCache[r] = json;
-                v = (i || i===0) ? "<div data-o2-binddataid='" + r + "'>" + str + "</div>" : str;
+                v = "<div data-o2-binddataid='" + r + "'>" + str + "</div>";
             }else{
-                if (json.data) _parseDataCache["bind"] = json.data;
+                if (json.data){
+                    _parseDataCache[r] = json.data;
+                    v = str+"<div style='display: none' data-o2-binddata='" + r + "'></div>"
+                }
             }
             var rex = /(\{\{\s*)[\s\S]*?(\s*\}\})/gmi;
 
