@@ -341,13 +341,13 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String expireScript;
 
-	public static final String expireScriptText_FIELDNAME = "expireScriptText";
-	@FieldDescribe("过期时间设定脚本文本.")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + expireScriptText_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String expireScriptText;
+//	public static final String expireScriptText_FIELDNAME = "expireScriptText";
+//	@FieldDescribe("过期时间设定脚本文本.")
+//	@Lob
+//	@Basic(fetch = FetchType.EAGER)
+//	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + expireScriptText_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String expireScriptText;
 
 	public static final String checkDraft_FIELDNAME = "checkDraft";
 	@FieldDescribe("是否进行无内容的草稿删除校验.")
@@ -708,13 +708,13 @@ public class Process extends SliceJpaObject {
 		this.expireScript = expireScript;
 	}
 
-	public String getExpireScriptText() {
-		return expireScriptText;
-	}
-
-	public void setExpireScriptText(String expireScriptText) {
-		this.expireScriptText = expireScriptText;
-	}
+//	public String getExpireScriptText() {
+//		return expireScriptText;
+//	}
+//
+//	public void setExpireScriptText(String expireScriptText) {
+//		this.expireScriptText = expireScriptText;
+//	}
 
 	public List<String> getControllerList() {
 		return controllerList;

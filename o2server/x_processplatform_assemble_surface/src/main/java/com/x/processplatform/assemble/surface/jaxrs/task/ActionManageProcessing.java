@@ -40,6 +40,7 @@ class ActionManageProcessing extends BaseAction {
 			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
+			emc.beginTransaction(Task.class);
 			/* 如果有输入新的路由决策覆盖原有决策 */
 			if (StringUtils.isNotEmpty(wi.getRouteName())) {
 				task.setRouteName(wi.getRouteName());

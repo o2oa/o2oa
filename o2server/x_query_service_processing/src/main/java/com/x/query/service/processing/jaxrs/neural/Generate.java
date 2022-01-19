@@ -40,7 +40,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.list.TreeList;
@@ -58,7 +57,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.MapTools;
 import com.x.base.core.project.tools.StringTools;
@@ -134,16 +134,14 @@ public class Generate {
 			/* 准备运算,清空数据 */
 			this.clean(business, model);
 			String text = model.getOutValueScriptText();
-			CompiledScript outValueCompiledScript = ScriptFactory.compile(ScriptFactory.functionalization(text));
+			CompiledScript outValueCompiledScript = ScriptingFactory.functionalizationCompile(text);
 			CompiledScript inValueCompiledScript = null;
 			if (StringUtils.isNotEmpty(model.getInValueScriptText())) {
-				inValueCompiledScript = ScriptFactory
-						.compile(ScriptFactory.functionalization(model.getInValueScriptText()));
+				inValueCompiledScript = ScriptingFactory.functionalizationCompile(model.getInValueScriptText());
 			}
 			CompiledScript attachmentCompiledScript = null;
 			if (StringUtils.isNotEmpty(model.getAttachmentScriptText())) {
-				attachmentCompiledScript = ScriptFactory
-						.compile(ScriptFactory.functionalization(model.getAttachmentScriptText()));
+				attachmentCompiledScript = ScriptingFactory.functionalizationCompile(model.getAttachmentScriptText());
 			}
 
 			LanguageProcessingHelper lph = new LanguageProcessingHelper();
@@ -421,11 +419,10 @@ public class Generate {
 				ItemCategory.pp, Item.bundle_FIELDNAME, workCompleted.getJob());
 		/* 先计算output,在后面可以在data的text先把output替换掉 */
 		Data data = XGsonBuilder.convert(converter.assemble(items), Data.class);
-		ScriptContext scriptContext = new SimpleScriptContext();
-		scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_DATA, data);
-		Object objectValue = outValueCompiledScript.eval(scriptContext);
-		outValue.addAll(ScriptFactory.asStringList(objectValue));
-		StringBuffer text = new StringBuffer();
+		ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
+		scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_DATA, data);
+		outValue.addAll(JsonScriptingExecutor.evalStrings(attachmentCompiledScript, scriptContext));
+		StringBuilder text = new StringBuilder();
 		String dataText = converter.text(items, true, true, true, true, true, ",");
 		dataText = StringUtils.replaceEach(dataText, outValue.toArray(new String[outValue.size()]),
 				StringTools.fill(outValue.size(), ","));
