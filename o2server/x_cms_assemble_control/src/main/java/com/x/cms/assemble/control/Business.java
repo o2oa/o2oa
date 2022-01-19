@@ -311,6 +311,39 @@ public class Business {
 	}
 
 	/**
+	 * 是否是栏目管理员
+	 * @param person
+	 * @param appInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isAppInfoManager(EffectivePerson person, AppInfo appInfo) throws Exception {
+		if( isManager(person) ) {
+			return true;
+		}
+		if(appInfo != null) {
+			if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
+				if (appInfo.getManageablePersonList().contains(person.getDistinguishedName())) {
+					return true;
+				}
+			}
+			if (ListTools.isNotEmpty(appInfo.getManageableUnitList())) {
+				List<String> unitNames = this.organization().unit().listWithPersonSupNested(person.getDistinguishedName());
+				if (ListTools.containsAny(unitNames, appInfo.getManageableUnitList())) {
+					return true;
+				}
+			}
+			if (ListTools.isNotEmpty(appInfo.getManageableGroupList())) {
+				List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
+				if (ListTools.containsAny(groupNames, appInfo.getManageableGroupList())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * TODO (uncomplete)判断用户是否有权限进行：[表单模板管理]操作
 	 *
 	 * @param person

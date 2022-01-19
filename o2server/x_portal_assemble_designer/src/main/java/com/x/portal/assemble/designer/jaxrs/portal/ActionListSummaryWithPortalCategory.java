@@ -44,8 +44,9 @@ class ActionListSummaryWithPortalCategory extends BaseAction {
 		}
 	}
 
+	@Override
 	List<String> listEditableWithPortalCategory(Business business, EffectivePerson effectivePerson,
-			String portalCategory) throws Exception {
+												String portalCategory) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Portal.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);

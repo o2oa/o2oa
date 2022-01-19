@@ -189,7 +189,7 @@ public class Business {
 	}
 
 	public boolean editable(EffectivePerson effectivePerson, Group group) throws Exception {
-		if (effectivePerson.isManager()) {
+		if (effectivePerson.isSecurityManager()) {
 			return true;
 		}
 		if (this.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,

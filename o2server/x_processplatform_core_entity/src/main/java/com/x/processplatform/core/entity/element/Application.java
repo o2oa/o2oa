@@ -38,7 +38,7 @@ import com.x.processplatform.core.entity.PersistenceProperties;
 
 /**
  * 流程平台应用
- * 
+ *
  * @author sword
  */
 @Entity
@@ -163,6 +163,18 @@ public class Application extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> availableUnitList;
+
+	public static final String availableGroupList_FIELDNAME = "availableGroupList";
+	@FieldDescribe("在指定启动时候,允许新建Work的群组.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ availableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+			+ availableGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + availableGroupList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + availableGroupList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> availableGroupList;
 
 	public static final String applicationCategory_FIELDNAME = "applicationCategory";
 	@FieldDescribe("应用分类.")
@@ -322,4 +334,11 @@ public class Application extends SliceJpaObject {
 		this.iconHue = iconHue;
 	}
 
+	public List<String> getAvailableGroupList() {
+		return availableGroupList;
+	}
+
+	public void setAvailableGroupList(List<String> availableGroupList) {
+		this.availableGroupList = availableGroupList;
+	}
 }

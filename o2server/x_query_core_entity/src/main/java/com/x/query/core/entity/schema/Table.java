@@ -50,10 +50,12 @@ public class Table extends SliceJpaObject {
 
 	public static final String STATUS_draft = "draft";
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -69,6 +71,7 @@ public class Table extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		if (StringUtils.isEmpty(this.getData())) {
 			this.setData("{}");
@@ -128,6 +131,17 @@ public class Table extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> readUnitList;
 
+	public static final String readGroupList_FIELDNAME = "readGroupList";
+	@FieldDescribe("可以访问数据的群组.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + readGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readGroupList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + readGroupList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> readGroupList;
+
 	public static final String editPersonList_FIELDNAME = "editPersonList";
 	@FieldDescribe("可以修改数据的用户.")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -149,6 +163,17 @@ public class Table extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + editUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> editUnitList;
+
+	public static final String editGroupList_FIELDNAME = "editGroupList";
+	@FieldDescribe("可以修改数据的群组.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + editGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + editGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + editGroupList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + editGroupList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> editGroupList;
 
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("表的创建者")
@@ -343,4 +368,19 @@ public class Table extends SliceJpaObject {
 		this.orderNumber = orderNumber;
 	}
 
+	public List<String> getReadGroupList() {
+		return readGroupList;
+	}
+
+	public void setReadGroupList(List<String> readGroupList) {
+		this.readGroupList = readGroupList;
+	}
+
+	public List<String> getEditGroupList() {
+		return editGroupList;
+	}
+
+	public void setEditGroupList(List<String> editGroupList) {
+		this.editGroupList = editGroupList;
+	}
 }
