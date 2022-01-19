@@ -29,7 +29,7 @@ class ActionGet extends BaseAction {
 				if (null == o) {
 					throw new PortalNotExistedException(id);
 				}
-				if (!business.editable(effectivePerson, o)) {
+				if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, o)) {
 					throw new InvisibleException(effectivePerson.getDistinguishedName(), o.getName(), o.getId());
 				}
 				wo = Wo.copier.copy(o);

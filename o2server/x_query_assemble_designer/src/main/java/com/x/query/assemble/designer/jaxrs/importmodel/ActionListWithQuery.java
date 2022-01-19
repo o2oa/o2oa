@@ -24,7 +24,7 @@ class ActionListWithQuery extends BaseAction {
 			if (null == query) {
 				throw new ExceptionEntityNotExist(flag, Query.class);
 			}
-			if (!business.editable(effectivePerson, query)) {
+			if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, query)) {
 				throw new ExceptionAccessDenied(effectivePerson, query.getName());
 			}
 			List<ImportModel> os = emc.listEqual(ImportModel.class, ImportModel.query_FIELDNAME, query.getId());

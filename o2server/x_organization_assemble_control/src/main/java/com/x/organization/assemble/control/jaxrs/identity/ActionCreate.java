@@ -53,7 +53,7 @@ class ActionCreate extends BaseAction {
 				if (null == unit) {
 					throw new ExceptionUnitNotExist(wi.getUnit());
 				}
-				if (!business.editable(effectivePerson, unit)) {
+				if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, unit)) {
 					throw new ExceptionAccessDenied(effectivePerson, unit);
 				}
 				if (this.existedWithPersonWithUnit(business, person, unit)) {

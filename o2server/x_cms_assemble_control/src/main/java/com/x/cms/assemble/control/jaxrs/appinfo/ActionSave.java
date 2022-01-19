@@ -1,7 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -25,27 +24,32 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+/**
+ * 栏目保存
+ * @author sword
+ */
 public class ActionSave extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionSave.class);
 
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		AppInfo old_appInfo = null;
 		AppInfo appInfo = null;
 		List<String> ids = null;
 		String identityName = null;
 		String unitName = null;
 		String topUnitName = null;
 		Boolean check = true;
-
 		Business business = new Business(null);
-		if (!business.isManager( effectivePerson)) {
+		Wi wi = this.convertToWrapIn( jsonElement, Wi.class );
+		if( StringUtils.isEmpty( wi.getId() )) {
+			wi.setId( AppInfo.createId() );
+		}
+		AppInfo old_appInfo = appInfoServiceAdv.get( wi.getId() );
+
+		if (!business.isAppInfoManager( effectivePerson, old_appInfo)) {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
-
-		Wi wi = this.convertToWrapIn( jsonElement, Wi.class );
-		identityName = wi.getIdentity();
 
 		if ( StringUtils.isEmpty( wi.getAppName() ) ) {
 			throw new ExceptionAppInfoNameEmpty();
@@ -68,6 +72,8 @@ public class ActionSave extends BaseAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
+
+		identityName = wi.getIdentity();
 
 		if (check) {
 			if ( !Token.defaultInitialManager.equalsIgnoreCase( effectivePerson.getDistinguishedName()) ) {
@@ -113,20 +119,6 @@ public class ActionSave extends BaseAction {
 				if( !"信息".equals(wi.getDocumentType()) && !"数据".equals( wi.getDocumentType() )) {
 					wi.setDocumentType( "信息" );
 				}
-			}
-		}
-
-		if (check) {//栏目不允许重名
-			if( StringUtils.isEmpty( wi.getId() )) {
-				wi.setId( AppInfo.createId() );
-			}
-			try {
-				old_appInfo = appInfoServiceAdv.get( wi.getId() );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionAppInfoProcess(e, "系统根据应用栏目ID查询应用栏目信息对象时发生异常。ID:" + wi.getId());
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
 			}
 		}
 

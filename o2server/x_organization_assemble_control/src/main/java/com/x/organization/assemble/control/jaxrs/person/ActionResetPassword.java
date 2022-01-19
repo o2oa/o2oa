@@ -27,7 +27,7 @@ class ActionResetPassword extends BaseAction {
 					throw new ExceptionPersonNotExist(flag);
 				}
 				o = emc.find(o.getId(), Person.class);
-				if (!business.editable(effectivePerson, o)) {
+				if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, o)) {
 					throw new ExceptionDenyEditPerson(effectivePerson, flag);
 				}
 				business.person().setPassword(o, this.initPassword(business, o),true);
