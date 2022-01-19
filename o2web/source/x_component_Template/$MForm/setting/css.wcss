@@ -1,0 +1,258 @@
+{
+  "inputText": {
+    "width": "99%",
+    "border":"1px solid #DEDEDE",
+    "background-color":"#FFF",
+    "color": "#0000FF",
+    "height": "26px",
+    "font-size": "14px",
+    "border-radius" : "13px"
+  },
+  "inputTime" : {
+    "width": "99%",
+    "border-radius" : "13px",
+    "border":"1px solid #DEDEDE",
+    "color": "#0000FF",
+    "height": "26px",
+    "font-size": "14px",
+    "background" : "#fff url(../x_component_Template/$MForm/attendance/icon/calendar.png) 98% center no-repeat"
+  },
+  "inputTimeUnformatWidth" : {
+    "border-radius" : "13px",
+    "border":"1px solid #DEDEDE",
+    "color": "#0000FF",
+    "height": "26px",
+    "font-size": "14px",
+    "background" : "#fff url(../x_component_Template/$MForm/attendance/icon/calendar.png) 98% center no-repeat"
+  },
+  "inputPerson" : {
+    "width": "99%",
+    "border-radius" : "13px",
+    "border":"1px solid #DEDEDE",
+    "color": "#0000FF",
+    "min-height": "26px",
+    "overflow" : "hidden",
+    "font-size": "14px",
+    "background" : "#fff url(../x_component_Template/$MForm/attendance/icon/selectperson.png) 98% center no-repeat"
+  },
+  "inputTextarea" : {
+    "width": "99%",
+    "border-radius" : "13px",
+    "color": "#0000FF",
+    "border":"1px solid #DEDEDE",
+    "background-color":"#FFF",
+    "height": "80px"
+  },
+  "inputPassword": {
+    "width": "99%",
+    "border":"1px solid #DEDEDE",
+    "background-color":"#FFF",
+    "color": "#0000FF",
+    "height": "26px",
+    "font-size": "14px",
+    "border-radius" : "13px"
+  },
+  "inputCheckbox" : {
+    "float" : "left",
+    "margin-right" : "12px"
+  },
+  "inputRadio" : {
+    "float" : "left",
+    "margin-right" : "12px"
+  },
+  "inputSelect" : {
+    "width": "99%",
+    "border-radius" : "13px",
+    "border":"1px solid #DEDEDE",
+    "background-color":"#FFF",
+    "font-size": "14px",
+    "height": "26px"
+  },
+  "inputSelectUnformatWidth" : {
+    "margin-right":"5px",
+    "border-radius" : "13px",
+    "border":"1px solid #DEDEDE",
+    "background-color":"#FFF",
+    "font-size": "14px",
+    "height": "26px"
+  },
+  "inputButton" : {
+    "background": "#3C76B7",
+    "border-radius": "13px",
+    "padding" : "0px 10px",
+    "line-height" : "26px",
+    "height" : "26px",
+    "border" : "0px",
+    "color" : "#fff",
+    "cursor" : "pointer",
+    "font-size" : "14px"
+  },
+  "inputAcceptButton" : {
+    "background-color": "#3C76B7",
+    "border-radius": "13px",
+    "padding" : "0px 10px",
+    "line-height" : "26px",
+    "height" : "26px",
+    "border" : "0px",
+    "color" : "#fff",
+    "cursor" : "pointer",
+    "float" : "left",
+    "font-size" : "14px"
+  },
+  "inputDenyButton" : {
+    "background-color": "#f0f0f0",
+    "border-radius": "13px",
+    "padding" : "0px 10px",
+    "float" : "left",
+    "line-height" : "26px",
+    "height" : "26px",
+    "border" : "0px",
+    "color" : "#666",
+    "cursor" : "pointer",
+    "font-size" : "14px"
+  },
+  "inputOkButton" : {
+    "background": "#3C76B7",
+    "border-radius": "13px",
+    "width" : "230px",
+    "height" : "40px",
+    "border" : "0px",
+    "color" : "#fff",
+    "cursor" : "pointer",
+    "font-size" : "18px"
+  },
+  "inputCancelButton" : {
+    "background": "#f0f0f0",
+    "border-radius": "13px",
+    "width" : "110px",
+    "height" : "40px",
+    "color" : "#666",
+    "border" : "0px",
+    "margin-left" : "20px",
+    "font-size" : "18px",
+    "cursor" : "pointer"
+  },
+  "inputA" : {
+    "color" : "#3C76B7",
+    "cursor" : "pointer"
+  },
+
+  "formTitle": {
+    "height": "40px",
+    "padding": "0px 30px",
+    "font-size": "24px",
+    "color": "#333333",
+    "font-weight": "bold",
+    "line-height": "40px",
+    "padding-top": "20px"
+  },
+  "formTable" : {
+    //"margin-top" : "10px"
+  },
+  "formTableHead" : {
+    "height": "50px",
+    "line-height": "50px",
+    "text-align": "center",
+    "min-width": "80px",
+    "font-size":"20px",
+    "font-weight": "bold"
+  },
+  "formTableTitle" : {
+    "height": "30px",
+    "line-height": "30px",
+    "padding": "20px 0px 0px 30px",
+    "padding-top": "20px",
+    "font-size": "18px",
+    "font-weight": "bold",
+    "clear": "both",
+    "color": "#666666",
+    "text-align": "left"
+  },
+  "formTableTitleRight": {
+    "height": "30px",
+    "line-height": "30px",
+    "padding": "20px 0px 0px 30px",
+    "padding-top": "20px",
+    "font-size": "18px",
+    "font-weight": "bold",
+    "clear": "both",
+    "color": "#666666",
+    "text-align": "right"
+  },
+  "formTableNote" : {
+    "overflow": "hidden",
+    "padding": "5px 30px",
+    "font-size": "14px",
+    "color": "#999999",
+    "text-align": "left"
+  },
+  "formTableValue" : {
+    "height": "24px",
+    "padding": "0px 30px",
+    "line-height": "24px",
+    "font-size": "14px",
+    "color": "#0000FF"
+  },
+//  "explorerContentInputNode": {
+//    "width": "auto",
+//    "height": "22px",
+//    //"width": "350px",
+//    "line-height": "22px",
+//    "border": "1px solid #ffffff",
+//    "font-size": "14px",
+//    "color": "#0000FF",
+//    "padding": "0px 5px",
+//    "background": "transparent",
+//    "display": "block",
+//    "float": "left"
+//  },
+//  "explorerContentInputNode_edit": {
+//    "width": "340px",
+//    "border": "1px solid #999999",
+//    "background": "#ffffff"
+//  },
+//  "explorerContentButtonNode": {
+//    "height": "24px",
+//    "line-height": "24px",
+//    "border": "1px solid #dddddd",
+//    "background-color": "#dddddd",
+//    "text-align": "center",
+//    "padding": "0px 10px",
+//    "float": "left",
+//    "cursor": "pointer",
+//    "margin-left": "10px"
+//  },
+  "formTableValueTop20" : {
+    "color" : "#666",
+    "padding-top" : "20px",
+    "text-align": "left"
+  },
+  "formTableTitleDiv" : {
+    "font-weight" : "bold"
+  },
+  "formTableValueDiv" : {
+    "color" : "#666",
+    "min-height" : "40px",
+    "line-height" : "22px"
+  },
+  "formTableInlineValueDiv" : {
+    "color" : "#666",
+    "float" : "left",
+    "margin-right" : "10px"
+  },
+  "warmMessageNode" : {
+    "margin-top" : "10px",
+    "font-size": "14px",
+    "color":"#ff5c42",
+    "padding-left": "20px",
+    "background" : "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+  },
+  "warningMessageNode" : {
+    "margin-top" : "10px",
+    "font-size": "14px",
+    "color":"#ff5c42",
+    "padding-left": "20px",
+    "background" : "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+  }
+}
+
