@@ -262,8 +262,8 @@
 }
 .listItemTitleProcess{
     float: left;
-    padding: 0 20px 0 10px;
-    width: 140px;
+    padding: 0 10px 0 10px;
+    max-width: 140px;
     height: 59px;
     display: flex;
     align-items: center;
@@ -314,7 +314,26 @@
     background-color: #FFF;
     overflow: hidden;
 }
-
+.processInfoTitle{
+    width: 700px;
+    height: 60px;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    border: 1px solid #E6E6E6;
+    margin: 10px auto;
+}
+.pf_item{
+    border-radius: 8px;
+}
+.pf_applicationText{
+    width: 120px;
+}
+.pf_application{
+    width: 180px;
+}
+.pf_titleProcess{
+    max-width: 120px;
+}
 
 
 @font-face {

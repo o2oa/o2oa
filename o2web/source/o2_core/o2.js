@@ -853,8 +853,9 @@ if (!window.o2) {
         };
 
         var _bindToEvents = function (m, node, events) {
+            debugger;
             var p = node.getParent("div[data-o2-binddataid]");
-            var data = (p) ? _parseDataCache[p.dataset["o2Binddataid"]] : null;
+            var data = (p) ? _parseDataCache[p.dataset["o2Binddataid"]] : (_parseDataCache["bind"] || null);
 
             var eventList = events.split(/\s*;\s*/);
             eventList.forEach(function (ev) {
@@ -866,9 +867,9 @@ if (!window.o2) {
                     //
                     //     if (m[method]) m[method].apply(m, evs.concat([new PointerEvent("o2load"), data]));
                     // }else{
-                        node.addEventListener(event, function (e) {
-                            if (m[method]) m[method].apply(m, evs.concat([e, data]));
-                        }, false);
+                    node.addEventListener(event, function (e) {
+                        if (m[method]) m[method].apply(m, evs.concat([e, data]));
+                    }, false);
                     // }
                     node.dispatchEvent(o2.customEventLoad);
                 }
@@ -1001,6 +1002,8 @@ if (!window.o2) {
                 while (_parseDataCache[r]) r = (Math.random() * 1000000).toInt().toString();
                 _parseDataCache[r] = json;
                 v = (i || i===0) ? "<div data-o2-binddataid='" + r + "'>" + str + "</div>" : str;
+            }else{
+                if (json.data) _parseDataCache["bind"] = json.data;
             }
             var rex = /(\{\{\s*)[\s\S]*?(\s*\}\})/gmi;
 
@@ -1519,8 +1522,34 @@ if (!window.o2) {
         //     res.send(data);
         //     return res;
         // };
+        var _resGetQueue = {};
+        var _checkRestful = function(address, callback){
+            if (_resGetQueue[address]){
+                var resPromise = _resGetQueue[address];
+                var p = new Promise(function(resolve, reject){
+                    resPromise.then(function(){
+                        resolve(resPromise.json);
+                    }, function(){
+                        reject(resPromise.err);
+                    });
+                });
+
+                if (_resGetQueue[address].res) p.res = _resGetQueue[address].res;
+                if (_resGetQueue[address].actionWorker) p.actionWorker = _resGetQueue[address].actionWorker;
+
+                return p;
+            }
+            return false
+        }
 
         _restful = function (method, address, data, callback, async, withCredentials, cache) {
+            if (method.toLowerCase()==="get"){
+                var p = _checkRestful(address, callback);
+                if (p) return p;
+            }
+
+            var _addr = address;
+
             var loadAsync = (async !== false);
             var credentials = (withCredentials !== false);
             address = (address.indexOf("?") !== -1) ? address + "&v=" + o2.version.v : address + "?v=" + o2.version.v;
@@ -1554,6 +1583,9 @@ if (!window.o2) {
                         onSuccess: function (responseJSON, responseText) {
                             // var xToken = this.getHeader("authorization");
                             // if (!xToken) xToken = this.getHeader("x-token");
+                            _resGetQueue[_addr] = null;
+                            delete _resGetQueue[_addr];
+
                             var xToken = this.getHeader(o2.tokenName);
                             if (xToken) {
                                 if (window.layout) {
@@ -1562,25 +1594,44 @@ if (!window.o2) {
                                 }
                                 if (layout.config && layout.config.sessionStorageEnable) sessionStorage.setItem("o2LayoutSessionToken", xToken);
                             }
-                            var r = o2.runCallback(callback, "success", [responseJSON], null);
-                            resolve(r || responseJSON);
+                            if (!loadAsync){
+                                var r = o2.runCallback(callback, "success", [responseJSON], null);
+                                resolve(r || responseJSON);
+                            }else{
+                                resolve(responseJSON);
+                            }
+
                             //resolve(responseJSON);
                             //return o2.runCallback(callback, "success", [responseJSON],null, resolve);
                         },
                         onFailure: function (xhr) {
-                            //var r = o2.runCallback(callback, "requestFailure", [xhr], null, reject);
-                            var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
-                            // (r) ? reject(r) : reject(xhr, "", "");
-                            reject((r) ? r : {"xhr": xhr, "text": "", "error": "error"});
-                            //return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
+                            _resGetQueue[_addr] = null;
+                            delete _resGetQueue[_addr];
+                            if (!loadAsync){
+                                var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
+                                reject((r) ? r : {"xhr": xhr, "text": "", "error": "error"});
+                            }else{
+                                reject({"xhr": xhr, "text": "", "error": "error"});
+                            }
                         }.bind(this),
                         onError: function (text, error) {
-                            // var r = o2.runCallback(callback, "error", [text, error], null, reject);
-                            // (r) ? reject(r) : reject(null, text, error);
-                            var r = o2.runCallback(callback, "failure", [text, error], null);
-                            reject((r) ? r : {"xhr": xhr, "text": text, "error": "error"});
-                            //return o2.runCallback(callback, "error", [text, error], null, reject);
-                        }.bind(this)
+                            _resGetQueue[_addr] = null;
+                            delete _resGetQueue[_addr];
+                            if (!loadAsync){
+                                var r = o2.runCallback(callback, "failure", [text, error], null);
+                                reject((r) ? r : {"xhr": xhr, "text": text, "error": "error"});
+                            }else{
+                                reject({"xhr": xhr, "text": text, "error": "error"});
+                            }
+                        }.bind(this),
+                        onComplete: function(){
+                            _resGetQueue[_addr] = null;
+                            delete _resGetQueue[_addr];
+                        },
+                        onCancel: function(){
+                            _resGetQueue[_addr] = null;
+                            delete _resGetQueue[_addr];
+                        }
                     });
 
                     res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -1604,14 +1655,44 @@ if (!window.o2) {
                         }
                     }
                     res.send(data);
-                }.bind(this)).then(function (responseJSON) {
-                    return responseJSON;
-                }).catch(function (err) {
-                    return Promise.reject(err);
+                }.bind(this)).catch(function (err) {
+                    throw err;
                 });
+                //     .then(function (responseJSON) {
+                //
+                //     _resGetQueue[address].events.each(function(e){
+                //         var r = o2.runCallback(e.callback, "success", [responseJSON], null);
+                //         if (e.promise){
+                //             e.promise
+                //         }
+                //     });
+                //
+                //     return responseJSON;
+                // }, function(err){
+                //     var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
+                //     return r || err;
+                // }).catch(function (err) {
+                //     throw err;
+                //     //return Promise.reject(err);
+                // });
                 var oReturn = p;
-                oReturn.res = res;
-                return oReturn;
+                //oReturn.res = res;
+                var resPromise = Promise.resolve(oReturn).then(function(json){
+                    if (!loadAsync) return json;
+                    resPromise.json = json;
+                    var r = o2.runCallback(callback, "success", [json], null);
+                    if (r) return r;
+                }, function(err){
+                    if (!loadAsync) return err;
+                    resPromise.err = err;
+                    var r = o2.runCallback(callback, "failure", [err.xhr, err.text, err.error], null);
+                    if (r) return r;
+                }).catch(function (err) { throw err;});
+                resPromise.res = res;
+
+                if (loadAsync) _resGetQueue[_addr] = resPromise;
+
+                return resPromise;
             } else {
                 var workerMessage = {
                     method: method,
@@ -1627,6 +1708,10 @@ if (!window.o2) {
                 var actionWorker = new Worker("../o2_core/o2/actionWorker.js");
                 var p = new Promise(function (s, f) {
                     actionWorker.onmessage = function (e) {
+
+                        _resGetQueue[_addr] = null;
+                        delete _resGetQueue[_addr];
+
                         result = e.data;
                         if (result.type === "done") {
                             var xToken = result.data.xToken;
@@ -1647,16 +1732,30 @@ if (!window.o2) {
                     actionWorker.postMessage(workerMessage);
                 }.bind(this));
 
-                p = p.then(function (data) {
-                    return o2.runCallback(callback, "success", [data], null);
-                }, function (data) {
-                    return o2.runCallback(callback, "failure", [data], null);
-                });
+                // p = p.then(function (data) {
+                //     return o2.runCallback(callback, "success", [data], null);
+                // }, function (data) {
+                //     return o2.runCallback(callback, "failure", [data], null);
+                // });
 
                 //var oReturn = (callback.success && callback.success.addResolve) ? callback.success : callback;
                 var oReturn = p;
-                oReturn.actionWorker = actionWorker;
-                return oReturn;
+                //oReturn.actionWorker = actionWorker;
+
+                var resPromise = Promise.resolve(oReturn).then(function(json){
+                    resPromise.json = json;
+                    var r = o2.runCallback(callback, "success", [json], null);
+                    if (r) return r;
+                }, function(err){
+                    resPromise.err = err;
+                    var r = o2.runCallback(callback, "failure", [err], null);
+                    if (r) return r;
+                }).catch(function (err) { throw err;});
+                resPromise.actionWorker = actionWorker;
+
+                _resGetQueue[_addr] = resPromise;
+                return resPromise;
+                //return oReturn;
                 //return callback;
             }
             //return res;
@@ -2444,7 +2543,7 @@ if (!window.o2) {
                 var elementCoords = this.getCoordinates();
                 var targetCoords = this.getCoordinates();
                 if (((e.page.x < elementCoords.left || e.page.x > (elementCoords.left + elementCoords.width)) ||
-                    (e.page.y < elementCoords.top || e.page.y > (elementCoords.top + elementCoords.height))) &&
+                        (e.page.y < elementCoords.top || e.page.y > (elementCoords.top + elementCoords.height))) &&
                     ((e.page.x < targetCoords.left || e.page.x > (targetCoords.left + targetCoords.width)) ||
                         (e.page.y < targetCoords.top || e.page.y > (targetCoords.top + targetCoords.height)))) return true;
 
