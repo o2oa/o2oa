@@ -53,6 +53,8 @@ public class ConnectionAction {
 	public static final String METHOD_GET = "GET";
 	public static final String METHOD_DELETE = "DELETE";
 
+	public static final String HEAD_LOCATION = "location";
+
 	private static Gson gson = XGsonBuilder.instance();
 
 	private static ActionResponse getDelete(int connectTimeout, int readTimeout, String address, String method,
