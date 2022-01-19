@@ -52,7 +52,7 @@ public class CollectMarket extends BaseAction {
 									ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
 							wiList = response.getDataAsList(Wi.class);
 						} catch (Exception e) {
-							logger.warn("connect o2cloud error:{}." + e.getMessage());
+							logger.warn("connect o2cloud {}.", e.getMessage());
 						}
 						if (wiList != null && !wiList.isEmpty()) {
 							logger.info("wait sync market app size：{}", wiList.size());

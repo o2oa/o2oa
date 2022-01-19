@@ -1160,7 +1160,8 @@ public class Business {
 		if (this.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob()) > 0) {
 			return true;
 		}
-		if (this.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess())) {
+		if (BooleanUtils.isTrue(
+				this.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess()))) {
 			return true;
 		}
 		return false;

@@ -6,6 +6,11 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 
+/**
+ * 创建流程实例使用的传参对象
+ * @author ray
+ *
+ */
 class AssginData extends GsonPropertyObject {
 
 	private String application;

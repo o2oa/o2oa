@@ -50,7 +50,7 @@
                 <td class="editTableTitle">{{$.lp.protocol}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" onclick="if (this.checked){$('text{$.id}webserviceInvokeModeJaxrs').setStyle('display', 'none'); $('text{$.id}webserviceInvokeModeJaxws').setStyle('display', 'block')}" name="invokeMode" text{($.invokeMode=='jaxws')?'checked':''} type="radio" value="jaxws"/>jaxws
-                    <input class="editTableRadio" checked onclick="if (this.checked){$('text{$.id}webserviceInvokeModeJaxrs').setStyle('display', 'block'); $('text{$.id}webserviceInvokeModeJaxws').setStyle('display', 'none')}" name="invokeMode" text{($.invokeMode=='jaxrs')?'checked':''} type="radio" value="jaxrs"/>jaxrs
+                    <input class="editTableRadio" onclick="if (this.checked){$('text{$.id}webserviceInvokeModeJaxrs').setStyle('display', 'block'); $('text{$.id}webserviceInvokeModeJaxws').setStyle('display', 'none')}" name="invokeMode" text{($.invokeMode=='jaxrs')?'checked':''} type="radio" value="jaxrs"/>jaxrs
                 </td>
             </tr>
         </table>
@@ -82,9 +82,14 @@
                     <td class="editTableValue"><div class="MWFScript" name="jaxwsParameterScript"></div></td>
                 </tr>
             </table>
-            <div class="MWFScriptText" name="jaxwsParameterScriptText"></div>
-            <div style="margin-left: 10px; line-height:20px">{{$.lp.addParameter}}: <font style="color: #e40000">this</font><font style="color: #666666">.parameters.add( par )</font></div>
-            <div style="margin-left: 10px; line-height:20px">{{$.lp.deleteParameter}}: <font style="color: #e40000">this</font><font style="color: #666666">.parameters.remove( index )</font></div>
+            <div class="MWFScriptText" name="jaxwsParameterScriptText" data-o2-api="../api/server.module_parameters.html#server.module_parameters"></div>
+            <div style="padding: 5px; margin-top: 5px; line-height:20px; border-top: 1px solid #cccccc">
+                {{$.lp.setParameterInfo2}}<br>
+                <a href="../api/server.module_parameters.html#server.module_parameters" target="_blank">{{$.lp.apiDoc}}</a>
+            </div>
+
+<!--            <div style="margin-left: 10px; line-height:20px">{{$.lp.addParameter}}: <font style="color: #e40000">this</font><font style="color: #666666">.parameters.add( par )</font></div>-->
+<!--            <div style="margin-left: 10px; line-height:20px">{{$.lp.deleteParameter}}: <font style="color: #e40000">this</font><font style="color: #666666">.parameters.remove( index )</font></div>-->
             <hr />
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
@@ -92,8 +97,12 @@
                     <td class="editTableValue"> <div class="MWFScript" name="jaxwsResponseScript"></div></td>
                 </tr>
             </table>
-            <div class="MWFScriptText" name="jaxwsResponseScriptText"></div>
-            <div style="text-align:center; line-height:26px">{{$.lp.use}} <font style="color: #e40000">this</font><font style="color: #666666">.response.get()</font>{{$.lp.getJson}}</div>
+            <div class="MWFScriptText" name="jaxwsResponseScriptText" data-o2-api="../api/server.module_response.html#server.module_response"></div>
+            <div style="padding: 5px; margin-top: 5px; line-height:20px; border-top: 1px solid #cccccc">
+                <div style="line-height:26px">{{$.lp.use}} <font style="color: #e40000">this</font><font style="color: #666666">.response.get()</font>{{$.lp.getJaxws}}</div>
+                <a href="../api/server.module_response.html#server.module_response" target="_blank">{{$.lp.apiDoc}}</a>
+            </div>
+
 
         </div>
         <div id="text{$.id}webserviceInvokeModeJaxrs" style="display: text{($.invokeMode=='jaxrs')?'block':'none'}">
@@ -148,9 +157,19 @@
                     <td class="editTableValue"><div class="MWFScript" name="jaxrsParameterScript"></div></td>
                 </tr>
             </table>
-            <div class="MWFScriptText" name="jaxrsParameterScriptText"></div>
-            <div style="margin-left: 10px; line-height:20px">{{$.lp.addParameter}}: <font style="color: #e40000">this</font><font style="color: #666666">.parameters.put( key, par )</font></div>
-            <div style="margin-left: 10px; line-height:20px">{{$.lp.deleteParameter}}: <font style="color: #e40000">this</font><font style="color: #666666">.parameters.remove( key )</font></div>
+            <div class="MWFScriptText" name="jaxrsParameterScriptText" data-o2-api="../api/server.module_parameters.html#server.module_parameters"></div>
+
+<!--            <div style="margin-left: 10px; line-height:20px">{{$.lp.addParameter}}: <br>-->
+<!--                <font style="color: #e40000">return</font><font style="color: #666666"> {<br>-->
+<!--                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>key1: "value",<br>-->
+<!--                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>key2: "value"<br>-->
+<!--                }</font></div>-->
+<!--            <div style="margin-left: 10px; line-height:20px">{{$.lp.deleteParameter}}: <font style="color: #e40000">this</font><font style="color: #666666">.parameters.remove( key )</font></div>-->
+            <div style="padding: 5px; margin-top: 5px; line-height:20px; border-top: 1px solid #cccccc">
+                {{$.lp.setParameterInfo}}<br>
+                <a href="../api/server.module_parameters.html#server.module_parameters" target="_blank">{{$.lp.apiDoc}}</a>
+            </div>
+
             <hr />
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
@@ -158,8 +177,14 @@
                     <td class="editTableValue"><div class="MWFScript" name="jaxrsBodyScript"></div></td>
                 </tr>
             </table>
-            <div class="MWFScriptText" name="jaxrsBodyScriptText"></div>
-            <div style="margin-left: 10px; line-height:20px">{{$.lp.setRequestBody}}: <font style="color: #e40000">this</font><font style="color: #666666">.body.set( value )</font></div>
+            <div class="MWFScriptText" name="jaxrsBodyScriptText" data-o2-api="../api/server.module_body.html#server.module_body"></div>
+
+            <div style="padding: 5px; margin-top: 5px; line-height:20px; border-top: 1px solid #cccccc">
+                {{$.lp.setRequestBodyInfo}}<br>
+                <a href="../api/server.module_body.html#server.module_body" target="_blank">{{$.lp.apiDoc}}</a>
+            </div>
+
+<!--            <div style="margin-left: 10px; line-height:20px">{{$.lp.setRequestBody}}: <font style="color: #e40000">this</font><font style="color: #666666">.body.set( value )</font></div>-->
             <hr />
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
@@ -167,10 +192,16 @@
                     <td class="editTableValue"><div class="MWFScript" name="jaxrsHeadScript"></div></td>
                 </tr>
             </table>
-            <div class="MWFScriptText" name="jaxrsHeadScriptText"></div>
-            <div style="margin-left: 10px; line-height:20px">{{$.lp.addHeader}}：<br><font style="color: #e40000">this</font><font style="color: #666666">.headers.put( key, value )</font><br>或<br><font style="color: #e40000">this</font><font style="color: #666666">.headers.put({"key1": "value1", "key2": "value2"})</font></div>
+            <div class="MWFScriptText" name="jaxrsHeadScriptText" data-o2-api="../api/server.module_headers.html#server.module_headers"></div>
 
-            <div style="margin-left: 10px; line-height:20px">{{$.lp.delHeader}}：<font style="color: #e40000">this</font><font style="color: #666666">.headers.remove( key )</font></div>
+            <div style="padding: 5px; margin-top: 5px; line-height:20px; border-top: 1px solid #cccccc">
+                {{$.lp.setRequestBodyInfo}}<br>
+                <a href="../api/server.module_headers.html#server.module_headers" target="_blank">{{$.lp.apiDoc}}</a>
+            </div>
+
+<!--            <div style="margin-left: 10px; line-height:20px">{{$.lp.addHeader}}：<br><font style="color: #e40000">this</font><font style="color: #666666">.headers.put( key, value )</font><br>或<br><font style="color: #e40000">this</font><font style="color: #666666">.headers.put({"key1": "value1", "key2": "value2"})</font></div>-->
+
+<!--            <div style="margin-left: 10px; line-height:20px">{{$.lp.delHeader}}：<font style="color: #e40000">this</font><font style="color: #666666">.headers.remove( key )</font></div>-->
             <hr />
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
@@ -178,8 +209,14 @@
                     <td class="editTableValue"> <div class="MWFScript" name="jaxrsResponseScript"></div></td>
                 </tr>
             </table>
-            <div class="MWFScriptText" name="jaxrsResponseScriptText"></div>
-            <div style="margin-left: 10px; line-height:26px">{{$.lp.use"}} <font style="color: #e40000">this</font><font style="color: #666666">.response.get()</font> {{$.lp.getJson}}</div>
+            <div class="MWFScriptText" name="jaxrsResponseScriptText" data-o2-api="../api/server.module_response.html#server.module_response"></div>
+
+
+            <div style="padding: 5px; margin-top: 5px; line-height:20px; border-top: 1px solid #cccccc">
+                <div>{{$.lp.use"}} <font style="color: #e40000">this</font><font style="color: #666666">.response.get()</font> {{$.lp.getJson}}</div>
+                <a href="../api/server.module_response.html#server.module_response" target="_blank">{{$.lp.apiDoc}}</a>
+            </div>
+
         </div>
     </div>
 
