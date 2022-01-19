@@ -194,6 +194,12 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "prevPageText":"上一页文本",
         "nextPageText":"下一页文本",
 
+        "desciption": "分页信息",
+        "position":"位置",
+        "top": "前方",
+        "bottom": "后方",
+        "format": "格式",
+
         "hideView":"隐藏视图",
         "orderNumber":"排序号",
         "viewStyles":"视图样式",
