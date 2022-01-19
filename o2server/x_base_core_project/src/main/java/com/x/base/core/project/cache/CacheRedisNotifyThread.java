@@ -24,9 +24,6 @@ public class CacheRedisNotifyThread extends Thread {
 		while (!isInterrupted()) {
 			try {
 				WrapClearCacheRequest wi = queue.take();
-//				String pattern = "^([\\s\\S]*)\\&(([\\s\\S]*)(" + new CacheCategory(wi.getClassName()).toString()
-//						+ ")(([\\s\\S]*)\\&))($|(([\\s\\S]*)" + new CacheKey(wi.getKeys()).toString()
-//						+ "([\\s\\S]*)$))";
 				String match = "*&*" + new CacheCategory(wi.getClassName()).toString() + "*&*"
 						+ new CacheKey(wi.getKeys()).toString() + "*";
 				Jedis jedis = RedisTools.getJedis();
@@ -39,6 +36,7 @@ public class CacheRedisNotifyThread extends Thread {
 					RedisTools.closeJedis(jedis);
 				}
 			} catch (InterruptedException ie) {
+				Thread.currentThread().interrupt();
 				break;
 			} catch (Exception e) {
 				e.printStackTrace();

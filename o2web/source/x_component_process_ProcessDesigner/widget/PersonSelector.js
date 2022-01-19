@@ -69,7 +69,11 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
             }else{
                 var names = this.options.names;
                 if( typeOf(names) === "string" ){
-                    names = JSON.parse( names );
+                    try{
+                        names = JSON.parse( names );
+                    }catch (e){
+                        names = [names];
+                    }
                 }
                 names.each(function(name){
                     debugger;
