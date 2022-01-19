@@ -26,7 +26,10 @@ o2.widget.Paging = new Class({
             nextPage: "",
             firstPage: "",
             lastPage: ""
-        }
+        },
+        hasInfor: false,
+        inforPosition: "bottom",
+        inforTextStyle: "",
     },
     initialize: function (node, options, css) {
 
@@ -88,6 +91,10 @@ o2.widget.Paging = new Class({
             max = currentPage + halfCount;
         }
 
+        if(this.options.hasInfor && this.options.inforTextStyle && this.options.inforPosition==="top" ){
+            this.createInfor()
+        }
+
         if( this.options.hasFirstPage && (min > 1 || showWithDisable) ){
             this.createFirst();
         }
@@ -131,6 +138,10 @@ o2.widget.Paging = new Class({
 
         if (this.options.hasJumper) {
             this.createPageJumper();
+        }
+
+        if(this.options.hasInfor && this.options.inforTextStyle && this.options.inforPosition==="bottom" ){
+            this.createInfor()
         }
     },
     createFirst : function(){
@@ -314,5 +325,15 @@ o2.widget.Paging = new Class({
         this.fireEvent("jumpingPage", [pageNum, itemNum, index]);
         this.options.currentPage = pageNum;
         this.load();
+    },
+    createInfor: function () {
+        var html = this.options.inforTextStyle.replace(/\{page\}/g, ""+this.options.pageSize )
+            .replace(/\{count\}/g, ""+this.options.itemSize )
+            .replace(/\{countPerPage\}/g, ""+this.options.countPerPage )
+            .replace(/\{currentPage\}/g, ""+this.options.currentPage );
+        this.inforNode = new Element("div.inforNode", {
+            styles: this.css.inforNode,
+            html:html
+        }).inject(this.node);
     }
 });
