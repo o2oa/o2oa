@@ -144,14 +144,14 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
     },
     saveForm: function(data){
         var actions = [];
-        if( data.adminPassword ){
-            actions.push(
-                o2.Actions.load("x_program_center").ConfigAction.setToken({
-                    password: data.adminPassword
-                })
-            );
-            delete data.adminPassword;
-        }
+        // if( data.adminPassword ){
+        //     actions.push(
+        //         o2.Actions.load("x_program_center").ConfigAction.setToken({
+        //             password: data.adminPassword
+        //         })
+        //     );
+        //     delete data.adminPassword;
+        // }
         if( data.systemManagerPassword || data.securityManagerPassword || data.auditManagerPassword ) {
             var d = {};
             if (data.systemManagerPassword) {
@@ -181,10 +181,17 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
                 this.form.changeMode(true);
                 this.loadReadModeAction();
             }.bind(this)).catch(function (json) {
-                if (json.type === "error") {
-                    this.app.notice(json.message, "error");
+                if (json.text) {
+                    this.app.notice(json.text, "error");
+                }else if(json.xhr){
+                    var responseJSON = JSON.parse( json.xhr.responseText );
+                    if( responseJSON.message ){
+                        this.app.notice( responseJSON.message, "error" );
+                    }else{
+                        this.app.notice( this.lp.saveFailure, "error" );
+                    }
                 }else{
-                    this.app.notice( this.lp.saveFailure );
+                    this.app.notice( this.lp.saveFailure, "error" );
                 }
             }.bind(this))
         }
@@ -197,13 +204,13 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
     loadData: function( callback ){
         var personAction = o2.Actions.load("x_program_center").ConfigAction.getPerson();
         var TMAction = o2.Actions.load("x_program_center").ConfigAction.getTernaryManagement();
-        var tokenAction = o2.Actions.load("x_program_center").ConfigAction.getToken();
-        Promise.all([personAction, TMAction, tokenAction]).then(function (args) {
+        // var tokenAction = o2.Actions.load("x_program_center").ConfigAction.getToken();
+        Promise.all([personAction, TMAction]).then(function (args) {
             this.personData = args[0].data;
             this.TMData = args[1].data;
-            this.tokenData = args[2].data;
+            // this.tokenData = args[2].data;
             var data = Object.clone(this.personData);
-            data.adminPassword = this.tokenData.password;
+            // data.adminPassword = this.tokenData.password;
             data.systemManagerPassword = "";
             data.securityManagerPassword = "";
             data.auditManagerPassword = "";
@@ -224,7 +231,7 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
                 itemTemplate: {
                     password: { "text": lp.password, tType : "text", notEmpty: true, attr: {"autocomplete": "off"} },
                     passwordPeriod: { "text": lp.passwordPeriod, tType : "number", attr: {"autocomplete": "off"} },
-                    adminPassword: { "text": lp.adminPassword, type : "password", notEmpty: true, attr: {"autocomplete": "off"} },
+                    // adminPassword: { "text": lp.adminPassword, type : "password", notEmpty: true, attr: {"autocomplete": "off"} },
                     passwordRegex: { "text": lp.passwordRegex, tType : "text", notEmpty: true, attr: {"autocomplete": "off"} },
                     passwordRegexHint: { "text": lp.passwordRegexHint, tType : "text", notEmpty: true, attr: {"autocomplete": "off"} },
                     failureCount: { "text": lp.failureCount, tType : "number", attr: {"autocomplete": "off"} },
@@ -266,9 +273,9 @@ MWF.xApplication.ThreeMember.PasswordView = new Class({
             "<tr><td styles='formTableNote'>"+lp.failureIntervalNote+"</td></tr>" +
             "<tr><td styles='formTableValue' item='failureInterval'></td></tr>" +
 
-            "<tr><td styles='formTableTitle'>"+lp.adminPassword+"</td></tr>" +
-            "<tr><td styles='formTableNote'>"+lp.adminPasswordNote+"</td></tr>" +
-            "<tr><td styles='formTableValue' item='adminPassword'></td></tr>" +
+            // "<tr><td styles='formTableTitle'>"+lp.adminPassword+"</td></tr>" +
+            // "<tr><td styles='formTableNote'>"+lp.adminPasswordNote+"</td></tr>" +
+            // "<tr><td styles='formTableValue' item='adminPassword'></td></tr>" +
 
             "</table>"+
             "<table width='90%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
