@@ -1,0 +1,37 @@
+<div>
+    <div class="processInfoTitle">
+        <div class="listItem pf_item" data-o2-events="o2load:loadItemFlag">
+            <div class="listItemApplication pf_application">
+                <div class="listItemApplicationIcon" data-o2-events="o2load:loadItemIcon:{{$.data.application}}"></div>
+                <div class="listItemApplicationText pf_applicationText" title="{{$.data.applicationName}}">{{$.data.applicationName}}</div>
+            </div>
+            <div class="listItemLine"></div>
+
+            <div class="listItemFlag">
+                {{if $.data.allowRapid}}
+                <div class="rapidEditor o2icon-bianji" data-o2-events="click:editTask" title="{{$.lp.rapidEditor}}"></div>
+                {{end if}}
+                {{if $.type=='read'}}
+                <div class="rapidEditor o2icon-daiyue" data-o2-events="click:setReadCompleted" title="{{$.lp.setReadCompleted}}"></div>
+                {{end if}}
+            </div>
+            <div class="listItemActivity">
+                <div class="listItemActivityText mainColor_color" title="{{$.data.activityName}}"> {{($.type=='draft') ? $.lp.draft : $.data.activityName}}</div>
+            </div>
+
+            <div class="listItemTitle">
+                <div class="listItemTitleProcess pf_titleProcess" title="{{$.data.processName}}">
+                    <div class="listItemTitleFlag">【</div>
+                    <div class="listItemTitleProcessText">{{$.data.processName}}</div>
+                    <div class="listItemTitleFlag">】</div>
+                </div>
+                <div class="listItemTitleSubject">
+                    <div>{{$.data.title}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+
+    </div>
+</div>

@@ -222,6 +222,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	load: function(){
 		var _self = this;
 		this.loadData().then(function(data){
+			_self.hide();
 			_self.loadPage();
 			_self.loadItems(data);
 		});
@@ -651,7 +652,6 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		}.bind(this));
 	},
 	loadItemFlag: function(e, data){
-		debugger;
 		var node = e.currentTarget;
 		var iconNode = node.getElement(".listItemFlag");
 
@@ -725,6 +725,23 @@ MWF.xApplication.process.workcenter.TaskCompletedList = new Class({
 			_self.total = json.size;
 			return json.data;
 		}.bind(this));
+	},
+	openWorkInfo: function(e, data){
+		var infoContent = new Element("div");
+		// var node = e.target.getParent(".listItem").clone(true);
+		// node.getElement(".listItemDate").destroy();
+		// node.inject(infoContent);
+		var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
+		infoContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data}, "module": this});
+		o2.DL.open({
+			"title": this.lp.processInfo,
+			"style": "user",
+			"isResize": false,
+			"content": infoContent,
+			"maskNode": this.app.content,
+			"width": 800,
+			"height": 720
+		});
 	}
 });
 MWF.xApplication.process.workcenter.ReadCompletedList = new Class({
@@ -740,6 +757,9 @@ MWF.xApplication.process.workcenter.ReadCompletedList = new Class({
 			_self.total = json.size;
 			return json.data;
 		}.bind(this));
+	},
+	openWorkInfo: function(){
+		console.log("openWorkInfo!");
 	}
 });
 MWF.xApplication.process.workcenter.DraftList = new Class({

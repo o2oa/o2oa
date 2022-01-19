@@ -37,5 +37,6 @@ MWF.xApplication.process.workcenter.LP = {
 	"setReadedConfirmContent" : "您确定要将“{title}”标记为已阅吗？",
 	"setReadedConfirmTitle" : "标记已阅确认",
 
-	"readOpinion": "阅读意见"
+	"readOpinion": "阅读意见",
+	"processInfo": "流转详情"
 };
