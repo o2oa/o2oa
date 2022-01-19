@@ -21,7 +21,7 @@ class ActionGet extends BaseAction {
 			if (null == application) {
 				throw new ExceptionApplicationNotExist(id);
 			}
-			if (!business.editable(effectivePerson, application)) {
+			if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, application)) {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
 						application.getName(), application.getId());
 			}

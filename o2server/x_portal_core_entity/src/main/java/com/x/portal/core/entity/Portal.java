@@ -98,7 +98,7 @@ public class Portal extends SliceJpaObject {
 	private String description;
 
 	public static final String availableIdentityList_FIELDNAME = "availableIdentityList";
-	@FieldDescribe("在指定启动时候,允许新建的用户.")
+	@FieldDescribe("可访问的身份.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ availableIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
@@ -110,7 +110,7 @@ public class Portal extends SliceJpaObject {
 	private List<String> availableIdentityList;
 
 	public static final String availableUnitList_FIELDNAME = "availableUnitList";
-	@FieldDescribe("在指定启动时候,允许新建的组织.")
+	@FieldDescribe("可访问的组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ availableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
@@ -120,6 +120,18 @@ public class Portal extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> availableUnitList;
+
+	public static final String availableGroupList_FIELDNAME = "availableGroupList";
+	@FieldDescribe("可访问的群组.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ availableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+			+ availableGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + availableGroupList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + availableGroupList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> availableGroupList;
 
 	public static final String portalCategory_FIELDNAME = "portalCategory";
 	@FieldDescribe("应用分类.")
@@ -307,4 +319,11 @@ public class Portal extends SliceJpaObject {
 		this.mobileClient = mobileClient;
 	}
 
+	public List<String> getAvailableGroupList() {
+		return availableGroupList;
+	}
+
+	public void setAvailableGroupList(List<String> availableGroupList) {
+		this.availableGroupList = availableGroupList;
+	}
 }

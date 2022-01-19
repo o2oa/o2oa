@@ -230,7 +230,7 @@ public class ActionPersistPublishContent extends BaseAction {
 			try {
 				wi.setDocStatus("published");
 				if( wi.getPublishTime() == null ) { wi.setPublishTime(new Date()); }
-				document =  wi.copier.copy(wi);
+				document =  Wi.copier.copy(wi);
 				document.setId( wi.getId() );
 				document = documentPersistService.save( document, wi.getDocData(), categoryInfo.getProjection());
 			} catch (Exception e) {
