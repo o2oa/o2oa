@@ -1,4 +1,4 @@
-MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
+MWF.xDesktop.requireApp("process.Xform", "$ElModule", null, false);
 /** @class Elicon 基于Element UI的图标组件。
  * @o2cn 图标组件
  * @example
