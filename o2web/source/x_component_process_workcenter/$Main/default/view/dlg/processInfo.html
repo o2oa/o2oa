@@ -31,7 +31,60 @@
             </div>
         </div>
     </div>
-    <div>
+    <div class="processInfoContent">
+        <div class="pf_workLog">
+            {{each $.data.workLog}}
 
+                {{if $.fromActivityType==="begin"}}
+                <div style="height: 50px">
+                    <div style="height: 50px; width: 40px; float: left">
+                        <div class="pf_icon o2icon-point mainColor_color" style="color: #4eb547!important; margin-top: 17px"></div>
+                        <div style="width: 1px; height: 17px; background-color: #E6E6E6; margin: auto;"></div>
+                    </div>
+                    <div style="height: 50px; margin-left: 40px; border-bottom: 1px solid #E6E6E6">
+                        <div class="pf_fromActivityName" style="float: left; line-height: 50px">{{$.fromActivityName}}</div>
+                        <div class="pf_arrivedTime" style="margin-left: 20px; float: left; line-height: 50px">{{$.arrivedTime.substring(0,15)}}</div>
+                    </div>
+                </div>
+                {{end if}}
+
+                {{if $.fromActivityType!=="begin"}}
+                <div class="pf_logItem">
+                    <div class="pf_itemLeft">
+                        <div class="pf_lineTop"></div>
+                        <div class="pf_icon o2icon-point mainColor_color"></div>
+                        <div class="pf_lineBottom"></div>
+                    </div>
+                    <div class="pf_itemActivity">
+                        <div class="pf_fromActivityName">{{$.fromActivityName}}</div>
+                        <div class="pf_routeName">{{$.routeName}}</div>
+                        <div class="pf_arrivedTime">{{$.arrivedTime.substring(0,15)}}</div>
+                    </div>
+                    <div class="pf_itemOpinion">
+                        {{each $.taskCompletedList}}
+                            <div style="width: 40px; height: 40px; float: right">
+                                <img style="width: 40px; height: 40px; border-radius: 20px;" src="http://develop.o2oa.net:20020/x_organization_assemble_control/jaxrs/person/{{$.person}}/icon?1642673028140" />
+                            </div>
+                        {{end each}}
+                    </div>
+                </div>
+                {{end if}}
+
+                {{if $.arrivedActivityType==="end" || $.arrivedActivityType==="cancel"}}
+                <div style="height: 50px">
+                    <div style="height: 50px; width: 40px; float: left">
+                        <div style="width: 1px; height: 17px; background-color: #E6E6E6; margin: auto;"></div>
+                        <div class="pf_icon o2icon-point mainColor_color" style="color: #ca6331!important;"></div>
+                    </div>
+                    <div style="height: 50px; margin-left: 40px; border-bottom: 1px solid #E6E6E6">
+                        <div class="pf_fromActivityName" style="float: left; line-height: 50px">{{$.arrivedActivityName}}</div>
+                        <div class="pf_arrivedTime" style="margin-left: 20px; float: left; line-height: 50px">{{$.arrivedTime.substring(0,15)}}</div>
+                    </div>
+                </div>
+                {{end if}}
+
+            {{end each}}
+        </div>
+        <div class="pf_workList"></div>
     </div>
 </div>

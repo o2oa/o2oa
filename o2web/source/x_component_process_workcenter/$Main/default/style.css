@@ -334,6 +334,71 @@
 .pf_titleProcess{
     max-width: 120px;
 }
+.processInfoContent{
+    height: 550px;
+    margin: 20px;
+    overflow: hidden;
+}
+.pf_workLog{
+    height: 550px;
+    width: 55%;
+    float: left;
+}
+.pf_workList{
+    height: 550px;
+    width: 45%;
+    float: right;
+}
+.pf_logItem{
+    height: 80px;
+}
+.pf_itemLeft{
+    height: 80px;
+    width: 40px;
+    float: left;
+}
+.pf_itemActivity{
+    height: 59px;
+    width: 100px;
+    float: left;
+    padding: 10px 0;
+    border-bottom: 1px solid #E6E6E6;
+}
+.pf_itemOpinion{
+    height: 79px;
+    margin-left: 120px;
+    border-bottom: 1px solid #E6E6E6;
+}
+.pf_icon{
+    height: 16px;
+    text-align: center;
+}
+.pf_lineTop{
+    width: 1px;
+    height: 20px;
+    background-color: #E6E6E6;
+    margin: auto;
+}
+.pf_lineBottom{
+    width: 1px;
+    height: 44px;
+    background-color: #E6E6E6;
+    margin: auto;
+}
+.pf_fromActivityName{
+    color: #333333;
+    line-height: 20px;
+}
+.pf_routeName{
+    color: #666666;
+    font-size: 12px;
+    line-height: 20px;
+}
+.pf_arrivedTime{
+    color: #666666;
+    font-size: 12px;
+    line-height: 20px;
+}
 
 
 @font-face {
