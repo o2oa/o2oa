@@ -107,6 +107,9 @@ MWF.xApplication.process.FormDesigner.Module.WritingBoard = MWF.FCWritingBoard =
 
 		}
 		if (name=="properties"){
+			try{
+				this.setCustomProperties();
+			}catch(e){}
 			this.node.setProperties(this.json.properties);
 		}
 	},
