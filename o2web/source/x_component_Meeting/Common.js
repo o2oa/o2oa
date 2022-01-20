@@ -981,7 +981,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         var editEnable = this.editEnable;
         var startImmediatelyEnable = this.startImmediatelyEnable;
         var finishImmediatelyEnable = this.finishImmediatelyEnable;
-        var html = "<div style='width: 700px;margin:0px auto;'><table><tr><td styles='formTableTitle' width='70'></td>" +
+        var html = "<div style='width: 700px;margin:0px auto;'><table><tr><td styles='formTableTitle' width='80'></td>" +
             "    <td styles='formTableValue' style='padding-top: 10px;'>"+
             "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
             "       <div item='editAction' style='float:left;display:"+ ( editEnable ? "" : "none") +";'></div>"+
