@@ -14,7 +14,34 @@
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
         <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
-        <div class="MWFApplicationSelector" name="application" title="{{$.lp.application}}"></div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue" colspan="2">
+                    <input type="radio" name="componentType" value="select" text{($.componentType!='script')?'checked':''}  onclick="if (this.checked) {
+                        $('text{$.pid}selectComponent').setStyle('display', 'block');
+                        $('text{$.pid}scriptComponent').setStyle('display', 'none');}"
+                    />{{$.lp.selectComponent}}
+                    <input type="radio" name="componentType" value="script" text{($.componentType=='script')?'checked':''}  onclick="if (this.checked) {
+                        $('text{$.pid}selectComponent').setStyle('display', 'none');
+                        $('text{$.pid}scriptComponent').setStyle('display', 'block');}"
+                    />{{$.lp.calculationComponent}}<br/>
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}selectComponent" class="MWFComponentSelectContainer" style="display: text{($.componentType!='script')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.component}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFComponentSelect" name="componentSelected"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="text{$.pid}scriptComponent" style="display: text{($.componentType=='script')?'block':'none'}">
+            <div style="padding: 5px;"> {{$.lp.scriptComponentNote}}：<br/>return "Org"; </div>
+            <div class="MWFScriptArea" name="componentScript" title="{{$.lp.componentScript}} (S)"></div>
+        </div>
 
     </div>
     <div title="{{$.lp.event}}"  class="MWFTab">
