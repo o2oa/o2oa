@@ -17,18 +17,40 @@ MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
     /** @lends MWF.xApplication.process.Xform.Elicon# */
     {
     Implements: [Events],
-    Extends: MWF.APP$Module,
-    _loadVue: function(callback){
-        if (!window.Vue){
-            var vue = (o2.session.isDebugger) ? "vue_develop" : "vue";
-            o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
-        }else{
-            if (callback) callback();
-        }
+    Extends: MWF.APP$ElModule,
+    _appendVueData: function(){
+        if (!this.json.icon) this.json.icon = "el-icon-platform-eleme";
+        if (!this.json.iconSize) this.json.iconSize = "16";
+        if (!this.json.iconColor) this.json.iconColor = "";
+        if (!this.json.elStyles) this.json.elStyles = {};
     },
-    _queryLoaded: function(){
-        this._loadVue();
+    _createElementHtml: function(){
+        var html = "<i";
+        html += " :class=\"icon\"";
+
+        if (this.json.elProperties){
+            Object.keys(this.json.elProperties).forEach(function(k){
+                if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
+            }, this);
+        }
+
+        html += " :style=\"[elStyles, {fontSize: iconSize+'px', color: iconColor}]\"";
+
+
+        html += "></i>";
+        return html;
     }
+    // _loadVue: function(callback){
+    //     if (!window.Vue){
+    //         var vue = (o2.session.isDebugger) ? "vue_develop" : "vue";
+    //         o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
+    //     }else{
+    //         if (callback) callback();
+    //     }
+    // },
+    // _queryLoaded: function(){
+    //     this._loadVue();
+    // },
 
     // load: function(){
     //     this._loadModuleEvents();
@@ -96,34 +118,34 @@ MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
     //     this.fireEvent("postLoad");
     //     this.fireEvent("load");
     // },
-    // _createElementHtml: function(){
-    //     debugger;
-    //     var html = "<i";
-    //     html += " :class=\"icon\"";
+    //     _createElementHtml: function(){
+    //         var html = "<i";
+    //         html += " :class=\"icon\"";
     //
-    //     if (this.json.elProperties){
-    //         Object.keys(this.json.elProperties).forEach(function(k){
-    //             if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
-    //         }, this);
+    //         if (this.json.elProperties){
+    //             Object.keys(this.json.elProperties).forEach(function(k){
+    //                 if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
+    //             }, this);
+    //         }
+    //
+    //         // var styles = {};
+    //         // if (this.json.iconSize) styles["font-size"] = this.json.iconSize+"px";
+    //         // if (this.json.iconColor) styles["color"] = this.json.iconColor;
+    //         // styles = Object.merge(styles, this.json.elStyles);
+    //         //
+    //         // if (styles){
+    //         //     var style = "";
+    //         //     Object.keys(styles).forEach(function(k){
+    //         //         if (styles[k]) style += k+":"+styles[k]+";";
+    //         //     }, this);
+    //         //     html += " style=\""+style+"\"";
+    //         // }
+    //
+    //         html += " :style=\"[elStyles, {fontSize: iconSize+'px', color: iconColor}]\"";
+    //
+    //
+    //         html += "></i>";
+    //         return html;
     //     }
-    //
-    //     // var styles = {};
-    //     // if (this.json.iconSize) styles["font-size"] = this.json.iconSize+"px";
-    //     // if (this.json.iconColor) styles["color"] = this.json.iconColor;
-    //     // styles = Object.merge(styles, this.json.elStyles);
-    //     //
-    //     // if (styles){
-    //     //     var style = "";
-    //     //     Object.keys(styles).forEach(function(k){
-    //     //         if (styles[k]) style += k+":"+styles[k]+";";
-    //     //     }, this);
-    //     //     html += " style=\""+style+"\"";
-    //     // }
-    //
-    //     html += " :style=\"[elStyles, {fontSize: iconSize+'px', color: iconColor}]\"";
-    //
-    //
-    //     html += "></i>";
-    //     return html;
-    // }
+
 }); 
