@@ -710,6 +710,29 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		this.action.ReadAction.processing(data.id, {"opinion": opinion}, function(){
 			this.refresh();
 		}.bind(this));
+	},
+
+	openWorkInfo: function(e, data){
+		var infoContent = new Element("div");
+		var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
+
+		var _self = this;
+		this.action.WorkLogAction.listWithJob(data.job).then(function(json){
+			data.workLog = json.data;
+			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self});
+			o2.DL.open({
+				"title": _self.lp.processInfo,
+				"style": "user",
+				"isResize": false,
+				"content": infoContent,
+				"maskNode": _self.app.content,
+				"width": 800,
+				"height": 720
+			});
+		});
+	},
+	loadProcessPerson:function(person, e){
+		o2.Actions.load("x_organization_core_express").PersonAction.get
 	}
 });
 MWF.xApplication.process.workcenter.TaskCompletedList = new Class({
@@ -725,23 +748,6 @@ MWF.xApplication.process.workcenter.TaskCompletedList = new Class({
 			_self.total = json.size;
 			return json.data;
 		}.bind(this));
-	},
-	openWorkInfo: function(e, data){
-		var infoContent = new Element("div");
-		// var node = e.target.getParent(".listItem").clone(true);
-		// node.getElement(".listItemDate").destroy();
-		// node.inject(infoContent);
-		var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
-		infoContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data}, "module": this});
-		o2.DL.open({
-			"title": this.lp.processInfo,
-			"style": "user",
-			"isResize": false,
-			"content": infoContent,
-			"maskNode": this.app.content,
-			"width": 800,
-			"height": 720
-		});
 	}
 });
 MWF.xApplication.process.workcenter.ReadCompletedList = new Class({
