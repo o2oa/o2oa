@@ -32,19 +32,26 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 			}
 		}).inject(this.form.container);
 	},
-	_createNode: function(callback){
-		this.node = new Element("div", {
-			"id": this.json.id,
-			"MWFType": "application",
-			"styles": this.css.moduleNode,
-			"events": {
-				"selectstart": function(e){
-					e.preventDefault();
-				}
+	_initModule: function(){
+		if (!this.json.isSaved) this.setStyleTemplate();
+
+		this._resetModuleDomNode();
+
+		this.setPropertiesOrStyles("styles");
+		this.setPropertiesOrStyles("properties");
+
+		this._setNodeProperty();
+		if (!this.form.isSubform) this._createIconAction();
+		this._setNodeEvent();
+		this.json.isSaved = true;
+	},
+	_setEditStyle_custom: function(name){
+		if (name=="size"){
+			if (this.json[name]=="min"){
+				this.attachmentController.changeControllerSizeToMin();
+			}else{
+				this.attachmentController.changeControllerSizeToMax();
 			}
-
-		}).inject(this.form.node);
-
-
+		}
 	},
 });

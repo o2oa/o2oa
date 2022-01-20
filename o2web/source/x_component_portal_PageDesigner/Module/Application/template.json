@@ -2,11 +2,6 @@
 	"id": "",
 	"name": "",
 	"type": "Application",
-	"description": "",
-	"defaultValue": {
-		"code": "",
-		"html": ""
-	},
 	"events": {
 	  "queryLoad": {
 		"code": "",
