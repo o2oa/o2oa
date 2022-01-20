@@ -304,7 +304,16 @@ MWF.APPPOD.LP = {
         "widgetmodules": "WidgetEl",
         "address": "Address",
         "importer": "DataImport",
-        "SmartBI":"SmartBI"
+        "SmartBI":"SmartBI",
+        "application ": "PlatformApplication",
+
+        "group_all": "all components ",
+        "group_form":" form component",
+        "group_layout":"Layout components",
+        "group_data": "data component ",
+        "group_filetext":"File editing component ",
+        "group_function":"function component ",
+        "group_element": "Element component"
     },
     "filedConfigurator": {
         "sequence": "Sequence",

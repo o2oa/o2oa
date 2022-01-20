@@ -267,6 +267,7 @@ MWF.APPPOD.LP = {
         "address": "地址",
         "importer": "数据导入",
         "SmartBI":"SmartBI报表",
+        "application": "平台应用",
 
         "group_all": "所有组件",
         "group_form": "表单组件",
