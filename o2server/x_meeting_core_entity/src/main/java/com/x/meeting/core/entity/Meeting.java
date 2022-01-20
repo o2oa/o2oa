@@ -136,7 +136,7 @@ public class Meeting extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ inviteMemberList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + inviteMemberList_FIELDNAME
-			+ JoinIndexNameSuffix))
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + inviteMemberList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + inviteMemberList_FIELDNAME + ElementIndexNameSuffix)
@@ -155,34 +155,17 @@ public class Meeting extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> invitePersonList;
 
-
 	public static final String inviteDelPersonList_FIELDNAME = "inviteDelPersonList";
 	@FieldDescribe("邀请人员,身份,组织已删列表.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ inviteDelPersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + inviteDelPersonList_FIELDNAME
-					+ JoinIndexNameSuffix))
+			+ inviteDelPersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ inviteDelPersonList_FIELDNAME + JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + inviteDelPersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + inviteDelPersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> inviteDelPersonList;
-
-	// public static final String expandInvitePersonList_FIELDNAME =
-	// "expandInvitePersonList";
-	// @FieldDescribe("实际邀请人员,含组织展开.")
-	// @PersistentCollection(fetch = FetchType.EAGER)
-	// @ContainerTable(name = TABLE + ContainerTableNameMiddle
-	// + expandInvitePersonList_FIELDNAME, joinIndex = @Index(name = TABLE +
-	// IndexNameMiddle
-	// + expandInvitePersonList_FIELDNAME + JoinIndexNameSuffix))
-	// @OrderColumn(name = ORDERCOLUMNCOLUMN)
-	// @ElementColumn(length = length_255B, name = ColumnNamePrefix +
-	// expandInvitePersonList_FIELDNAME)
-	// @ElementIndex(name = TABLE + IndexNameMiddle +
-	// expandInvitePersonList_FIELDNAME + ElementIndexNameSuffix)
-	// @CheckPersist(allowEmpty = true)
-	// private List<String> expandInvitePersonList;
 
 	public static final String acceptPersonList_FIELDNAME = "acceptPersonList";
 	@FieldDescribe("接受人员.")
@@ -226,7 +209,7 @@ public class Meeting extends SliceJpaObject {
 	@Column(length = JpaObject.length_8B, name = ColumnNamePrefix + confirmStatus_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + confirmStatus_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
-	@FieldTypeDescribe(fieldType="enum",fieldValue="allow|deny|wait",fieldTypeName = "com.x.meeting.core.entity.ConfirmStatus")
+	@FieldTypeDescribe(fieldType = "enum", fieldValue = "allow|deny|wait", fieldTypeName = "com.x.meeting.core.entity.ConfirmStatus")
 	private ConfirmStatus confirmStatus;
 
 	public static final String manualCompleted_FIELDNAME = "manualCompleted";
@@ -273,6 +256,27 @@ public class Meeting extends SliceJpaObject {
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + memo_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String memo;
+
+	public static final String hostUnit_FIELDNAME = "hostUnit";
+	@FieldDescribe("承办部门")
+	@Column(length = length_255B, name = ColumnNamePrefix + hostUnit_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + hostUnit_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String hostUnit;
+
+	public static final String hostPerson_FIELDNAME = "hostPerson";
+	@FieldDescribe("主持人")
+	@Column(length = length_255B, name = ColumnNamePrefix + hostPerson_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + hostPerson_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String hostPerson;
+
+	public static final String type_FIELDNAME = "type";
+	@FieldDescribe("会议类型")
+	@Column(length = length_255B, name = ColumnNamePrefix + type_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + type_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String type;
 
 	public String getRoom() {
 		return room;
@@ -424,6 +428,30 @@ public class Meeting extends SliceJpaObject {
 
 	public void setCheckinPersonList(List<String> checkinPersonList) {
 		this.checkinPersonList = checkinPersonList;
+	}
+
+	public String getHostUnit() {
+		return hostUnit;
+	}
+
+	public void setHostUnit(String hostUnit) {
+		this.hostUnit = hostUnit;
+	}
+
+	public String getHostPerson() {
+		return hostPerson;
+	}
+
+	public void setHostPerson(String hostPerson) {
+		this.hostPerson = hostPerson;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	/**
