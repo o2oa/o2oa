@@ -615,15 +615,16 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     options: {
         "style": "meeting",
         "width": "900",
-        "height": "640",
+        "height": "780",
         "hasTop": true,
         "hasIcon": false,
         "hasTopIcon" : false,
         "hasTopContent" : false,
-        "hasBottom": false,
+        "hasBottom": true,
         "draggable": true,
         "closeAction": true,
-        "maxAction" : true
+        "maxAction" : true,
+        "buttonList": []
     },
     open: function (e) {
         this.fireEvent("queryOpen");
@@ -648,19 +649,30 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         }.bind(this));
         this.fireEvent("postEdit");
     },
+    getIdentity: function(){
+        var user = layout.desktop.session.user;
+        var list = (user.identityList || []).filter(function(i){ return i.major; });
+        if( list.length )return list[0].distinguishedName;
+        if( user.identityList && user.identityList.length ){
+            return user.identityList[0].distinguishedName;
+        }else{
+            return "";
+        }
+    },
     _createTableContent: function () {
         var _self = this;
-        this.userName = layout.desktop.session.user.distinguishedName;
-        this.userId = layout.desktop.session.user.id;
+        var user = layout.desktop.session.user;
+        this.userName = user.distinguishedName;
+        this.userId = user.id;
         if( this.isNew ){
             this.formTopTextNode.set( "text", this.lp.addMeeting );
         }else if( this.isEdited ){
             this.formTopTextNode.set( "text", this.lp.editMeeting );
-            this.options.height = this.isShowInviteDelPersonList() ? 660 : 630;
+            this.options.height = this.isShowInviteDelPersonList() ? 860 : 770;
             if( this.data.inviteDelPersonList && this.data.inviteDelPersonList.length )this.options.height += 40;
         }else{
             this.formTopTextNode.set( "text", this.lp.metting );
-            this.options.height = 540;
+            this.options.height = 780;
         }
         if( this.data.acceptPersonList && this.data.acceptPersonList.length )this.options.height += 40;
         if( this.data.rejectPersonList && this.data.rejectPersonList.length )this.options.height += 40;
@@ -716,6 +728,12 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             finishImmediatelyEnable = true;
         }
 
+        this.isEditer = isEditer;
+        this.editEnable = editEnable;
+        this.isEditing = isEditing;
+        this.startImmediatelyEnable = startImmediatelyEnable;
+        this.finishImmediatelyEnable = finishImmediatelyEnable;
+
         var html = "<div item='qrCode' style='position: absolute;right:0px;top:-20px;width:150px;height:180px;'></div>" +
 
             (( this.isShowCurrentUserDelPersonInfor() ) ?
@@ -728,6 +746,9 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             "   <td styles='formTableTitle' width='70'>"+this.lp.applyPerson+":</td>" +
             "    <td styles='formTableValue' item='applicant'></td>" +
             "</tr>"+
+
+            "<tr><td styles='formTableTitle'>"+this.lp.meetingType+":</td>" +
+            "   <td styles='formTableValue'><div item='type'></div></td></tr>"+
 
             "<tr><td styles='formTableTitle' width='100'>"+this.lp.beginDate+":</td>" +
             "    <td styles='formTableValue' item='dateInput'></td>" +
@@ -743,6 +764,12 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             "<tr><td styles='formTableTitle'>"+ this.lp.selectRoom +":</td>" +
             "    <td styles='formTableValue' item='meetingRoom'></td></tr>" +
 
+            "<tr><td styles='formTableTitle'>"+this.lp.hostPerson+":</td>" +
+            "   <td styles='formTableValue'><div item='hostPerson'></div></td></tr>"+
+
+            "<tr><td styles='formTableTitle'>"+this.lp.hostUnit+":</td>" +
+            "   <td styles='formTableValue'><div item='hostUnit'></div></td></tr>"+
+
             (this.isOnlyPerson() ?  this.getHtmlOnlyPerson() : this.getHtmlWithGroup()) +
 
             "<tr style='display:"+ ( this.isNew ? "none" : "") +" ;' item='checkPersonTr'><td styles='formTableTitle'>"+this.lp.needSignInPerson+":</td>" +
@@ -753,15 +780,15 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             "    <td styles='formTableValue' item='summary'></td></tr>" +
             "<tr style='display:none ;' item='attachmentTr'><td styles='formTableTitle'>"+this.lp.meetingAttachment+":</td>" +
             "    <td styles='formTableValue' item='attachment'></td></tr>" +
-            "<tr><td styles='formTableTitle'></td>" +
-            "    <td styles='formTableValue' style='padding-top: 10px;'>"+
-            "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
-            "       <div item='editAction' style='float:left;display:"+ ( editEnable ? "" : "none") +";'></div>"+
-            "       <div item='startImmediatelyAction' style='float:left;display:"+ ( startImmediatelyEnable ? "" : "none") +";'></div>"+
-            "       <div item='finishImmediatelyAction' style='float:left;display:"+ ( finishImmediatelyEnable ? "" : "none") +";'></div>"+
-            "       <div item='removeAction' style='float:left;display:"+ ( this.isEdited ? "" : "none") +";'></div>"+
-            "       <div item='cancelAction' style='"+( (this.isEdited || this.isNew || editEnable || startImmediatelyEnable || finishImmediatelyEnable ) ? "float:left;" : "float:right;margin-right:15px;")+"'></div>"+
-            "   </td></tr>" +
+            // "<tr><td styles='formTableTitle'></td>" +
+            // "    <td styles='formTableValue' style='padding-top: 10px;'>"+
+            // "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
+            // "       <div item='editAction' style='float:left;display:"+ ( editEnable ? "" : "none") +";'></div>"+
+            // "       <div item='startImmediatelyAction' style='float:left;display:"+ ( startImmediatelyEnable ? "" : "none") +";'></div>"+
+            // "       <div item='finishImmediatelyAction' style='float:left;display:"+ ( finishImmediatelyEnable ? "" : "none") +";'></div>"+
+            // "       <div item='removeAction' style='float:left;display:"+ ( this.isEdited ? "" : "none") +";'></div>"+
+            // "       <div item='cancelAction' style='"+( (this.isEdited || this.isNew || editEnable || startImmediatelyEnable || finishImmediatelyEnable ) ? "float:left;" : "float:right;margin-right:15px;")+"'></div>"+
+            // "   </td></tr>" +
             "</table>";
         this.formTableArea.set("html", html);
 
@@ -900,30 +927,38 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                         } },
                     subject: {},
                     summary: {type: "textarea"},
+                    hostPerson: { type : "org", orgType : "identity",  count: 1, "defaultValue": this.getIdentity()  },
+                    hostUnit: { type : "org", orgType : "unit",  count: 1 },
+                    type: {
+                        type : (this.app.meetingConfig.typeList && this.app.meetingConfig.typeList.length) ? "select" : "text",
+                        selectValue : this.app.meetingConfig.typeList || [],
+                        selectText : this.app.meetingConfig.typeList || [],
+                        notEmpty: true
+                    },
                     acceptAction : { type : "button", value : this.lp.accept,  className : "inputAcceptButton",
                         event : {  click : function( it, ev ){ this.accept(ev); }.bind(this) }
                     },
                     rejectAction : { type : "button", value : this.lp.reject, style : {"margin-left": "20px"}, className : "inputDenyButton",
                         event : {  click : function( it, ev ){ this.reject(ev) }.bind(this) }
                     },
-                    saveAction : { type : "button", className : "inputOkButton", value : this.lp.save, event : {
-                        click : function(){ this.save();}.bind(this)
-                    } },
-                    removeAction : { type : "button", className : "inputCancelButton", value : this.lp.cancelMeeting , event : {
-                        click : function( item, ev ){ this.cancelMeeting(ev); }.bind(this)
-                    } },
-                    editAction : { type : "button", className : "inputOkButton", value : this.lp.editMeeting , event : {
-                        click : function(){ this.editMeeting(); }.bind(this)
-                    } },
-                    startImmediatelyAction : { type : "button", className : "inputCancelButton", value : this.lp.startMeetingImmediately , event : {
-                        click : function(){ this.startImmediately(); }.bind(this)
-                    } },
-                    finishImmediatelyAction : { type : "button", className : "inputCancelButton", value : this.lp.endMeetingImmediately , event : {
-                            click : function(){ this.finishImmediately(); }.bind(this)
-                        } },
-                    cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
-                        click : function(){ this.close(); }.bind(this)
-                    } }
+                    // saveAction : { type : "button", className : "inputOkButton", value : this.lp.save, event : {
+                    //     click : function(){ this.save();}.bind(this)
+                    // } },
+                    // removeAction : { type : "button", className : "inputCancelButton", value : this.lp.cancelMeeting , event : {
+                    //     click : function( item, ev ){ this.cancelMeeting(ev); }.bind(this)
+                    // } },
+                    // editAction : { type : "button", className : "inputOkButton", value : this.lp.editMeeting , event : {
+                    //     click : function(){ this.editMeeting(); }.bind(this)
+                    // } },
+                    // startImmediatelyAction : { type : "button", className : "inputCancelButton", value : this.lp.startMeetingImmediately , event : {
+                    //     click : function(){ this.startImmediately(); }.bind(this)
+                    // } },
+                    // finishImmediatelyAction : { type : "button", className : "inputCancelButton", value : this.lp.endMeetingImmediately , event : {
+                    //         click : function(){ this.finishImmediately(); }.bind(this)
+                    //     } },
+                    // cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
+                    //     click : function(){ this.close(); }.bind(this)
+                    // } }
                 }
             }, this.app);
             this.form.load();
@@ -941,6 +976,72 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 this.qrCodeArea.destroy();
             }
         }.bind(this), true);
+    },
+    _createBottomContent: function(){
+        var editEnable = this.editEnable;
+        var startImmediatelyEnable = this.startImmediatelyEnable;
+        var finishImmediatelyEnable = this.finishImmediatelyEnable;
+        var html = "<div style='width: 700px;margin:0px auto;'><table><tr><td styles='formTableTitle' width='70'></td>" +
+            "    <td styles='formTableValue' style='padding-top: 10px;'>"+
+            "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
+            "       <div item='editAction' style='float:left;display:"+ ( editEnable ? "" : "none") +";'></div>"+
+            "       <div item='startImmediatelyAction' style='float:left;display:"+ ( startImmediatelyEnable ? "" : "none") +";'></div>"+
+            "       <div item='finishImmediatelyAction' style='float:left;display:"+ ( finishImmediatelyEnable ? "" : "none") +";'></div>"+
+            "       <div item='removeAction' style='float:left;display:"+ ( this.isEdited ? "" : "none") +";'></div>"+
+            "       <div item='cancelAction' style='"+( (this.isEdited || this.isNew || editEnable || startImmediatelyEnable || finishImmediatelyEnable ) ? "float:left;" : "float:right;margin-right:15px;")+"'></div>"+
+            "   </td></tr></table></div>";
+        this.formBottomNode.set("html", html);
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.actionForm = new MForm(this.formBottomNode, {}, {
+                isEdited: this.isEdited || this.isNew,
+                style: "meeting",
+                itemTemplate: {
+                    saveAction: {
+                        type: "button", className: "inputOkButton", value: this.lp.save, event: {
+                            click: function () {
+                                this.save();
+                            }.bind(this)
+                        }
+                    },
+                    removeAction: {
+                        type: "button", className: "inputCancelButton", value: this.lp.cancelMeeting, event: {
+                            click: function (item, ev) {
+                                this.cancelMeeting(ev);
+                            }.bind(this)
+                        }
+                    },
+                    editAction: {
+                        type: "button", className: "inputOkButton", value: this.lp.editMeeting, event: {
+                            click: function () {
+                                this.editMeeting();
+                            }.bind(this)
+                        }
+                    },
+                    startImmediatelyAction: {
+                        type: "button", className: "inputCancelButton", value: this.lp.startMeetingImmediately, event: {
+                            click: function () {
+                                this.startImmediately();
+                            }.bind(this)
+                        }
+                    },
+                    finishImmediatelyAction: {
+                        type: "button", className: "inputCancelButton", value: this.lp.endMeetingImmediately, event: {
+                            click: function () {
+                                this.finishImmediately();
+                            }.bind(this)
+                        }
+                    },
+                    cancelAction: {
+                        type: "button", className: "inputCancelButton", value: this.lp.close, event: {
+                            click: function () {
+                                this.close();
+                            }.bind(this)
+                        }
+                    }
+                }
+            }, this.app);
+            this.actionForm.load();
+        }.bind(this))
     },
     isOnlyPerson: function(){
         return  (!this.data.inviteMemberList || this.data.inviteMemberList.length === 0 ) &&
@@ -1484,6 +1585,12 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         if( this.invitePersonList ){
             this.data.invitePersonList = this.invitePersonList;
         }
+        if( o2.typeOf( this.data.hostPerson ) === "array" ){
+            this.data.hostPerson = this.data.hostPerson[0];
+        }
+        if( o2.typeOf( this.data.hostUnit ) === "array" ){
+            this.data.hostUnit = this.data.hostUnit[0];
+        }
 
         var d = this.data.dateInput;
         // if( this.isNew ) {
@@ -1641,7 +1748,7 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         var html = deletedInfor +
             "<div style='overflow: hidden;padding:15px 20px 20px 10px;height:16px;line-height:16px;'>" +
             "   <div style='font-size: 12px;color:#666; float: right'>"+ this.lp.applyPerson  +":" + data.applicant.split("@")[0] +"</div>" +
-            "   <div style='font-size: 16px;color:#333;float: left'>"+ this.lp.meetingDetail +"</div>"+
+            "   <div style='font-size: 16px;color:#333;float: left'>"+ (this.data.type || this.lp.meetingDetail) +"</div>"+
             "</div>"+
             "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;overflow:hidden;'>"+ data.subject +"</div>"+
             "<div style='height:1px;margin:0px 20px;border-bottom:1px solid #ccc;'></div>"+
@@ -1657,12 +1764,24 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
             "<tr><td style='"+titleStyle+"'>"+this.lp.invitePerson2+":</td>" +
             "    <td style='"+valueStyle+"' item='invitePerson'>"+persons.join(",")+"</td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.meetingDescription+":</td>" +
-            "    <td style='"+valueStyle+"'>"+ description +"</td></tr>" +
-            ( this.options.isHideAttachment ? "" :
-            "<tr><td style='"+titleStyle+"'>"+this.lp.meetingAttachment+":</td>" +
-            "    <td style='"+valueStyle+"' item='attachment'></td></tr>"
-            )+
-        "</table>";
+            "    <td style='"+valueStyle+"'>"+ description +"</td></tr>";
+
+        if( this.data.hostPerson ){
+            html += "<tr><td style='"+titleStyle+"'>"+this.lp.hostPerson+":</td>" +
+                "    <td style='"+valueStyle+"'>"+ this.data.hostPerson.split("@")[0] +"</td></tr>";
+        }
+
+        if( this.data.hostUnit ){
+            html += "<tr><td style='"+titleStyle+"'>"+this.lp.hostUnit+":</td>" +
+                "    <td style='"+valueStyle+"'>"+ this.data.hostUnit.split("@")[0] +"</td></tr>";
+        }
+
+        if( !this.options.isHideAttachment ){
+            html += "<tr><td style='"+titleStyle+"'>"+this.lp.meetingAttachment+":</td>" +
+                "    <td style='"+valueStyle+"' item='attachment'></td></tr>";
+        }
+
+        html += "</table>";
         return html;
     },
     getString : function( str ){
