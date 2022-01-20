@@ -50,6 +50,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}else{
 			config = business.entityManagerContainer().firstEqual(FileConfig.class, FileConfig.person_FIELDNAME, Business.SYSTEM_CONFIG);
 			if(config != null){
+				business.entityManagerContainer().get(FileConfig.class).detach(config);
 				CacheManager.put(cacheCategory, cacheKey, config);
 			}
 		}
