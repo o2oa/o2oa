@@ -70,7 +70,15 @@ class ActionPagingManage extends BaseAction {
 				String meetingStatus = wi.getMeetingStatus();
 				
 				if(meetingStatus.equalsIgnoreCase("completed")) {
-					p = cb.and(p, cb.or(cb.lessThan(root.get(Meeting_.completedTime), new Date()),
+					if(wi.getStartTime() != null) {
+						   p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Meeting_.startTime), wi.getStartTime()));
+					 }
+						
+				    if(wi.getCompletedTime()!= null) {
+						   p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.completedTime), wi.getCompletedTime()));
+					 }
+				    
+				    p = cb.and(p, cb.or(cb.lessThan(root.get(Meeting_.completedTime), new Date()),
 							cb.equal(root.get(Meeting_.manualCompleted), true)));
 				}
 				
