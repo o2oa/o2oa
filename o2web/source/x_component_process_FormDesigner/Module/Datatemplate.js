@@ -380,6 +380,9 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 	},
 	setPropertiesOrStyles: function(name){
 		if (name=="styles"){
+			try{
+				this.setCustomStyles();
+			}catch(e){}
 			var border = this.node.getStyle("border");
 			this.node.clearStyles();
 			this.node.setStyles(this.css.moduleNode);
@@ -393,6 +396,9 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 		}
 
 		if (name=="properties"){
+			try{
+				this.setCustomProperties();
+			}catch(e){}
 			this.node.setProperties(this.json.properties);
 		}
 	},
