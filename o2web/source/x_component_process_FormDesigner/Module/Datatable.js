@@ -28,6 +28,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		this.containers = [];
 		this.elements = [];
 		this.selectedMultiTds = [];
+
+		debugger;
 	},
 	clearTemplateStyles: function(styles){
 		if (styles){
@@ -300,6 +302,9 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 	},
 	setPropertiesOrStyles: function(name){
 		if (name=="styles"){
+			try{
+				this.setCustomStyles();
+			}catch(e){}
 			var border = this.node.getStyle("border");
 			this.node.clearStyles();
 			this.node.setStyles(this.css.moduleNode);
@@ -322,6 +327,9 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		}
 
 		if (name=="properties"){
+			try{
+				this.setCustomProperties();
+			}catch(e){}
 			this.node.getFirst().setProperties(this.json.properties);
 		}
 	},
