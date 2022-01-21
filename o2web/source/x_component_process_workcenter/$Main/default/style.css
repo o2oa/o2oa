@@ -343,10 +343,11 @@
     height: 550px;
     width: 55%;
     float: left;
+    border-right: 1px solid #E6E6E6;
 }
 .pf_workList{
     height: 550px;
-    width: 45%;
+    width: 44%;
     float: right;
 }
 .pf_logItem{
@@ -365,8 +366,11 @@
     border-bottom: 1px solid #E6E6E6;
 }
 .pf_itemOpinion{
-    height: 79px;
+    height: 40px;
+    padding-top: 19px;
+    padding-bottom: 20px;
     margin-left: 120px;
+    margin-right: 30px;
     border-bottom: 1px solid #E6E6E6;
 }
 .pf_icon{
@@ -399,6 +403,27 @@
     font-size: 12px;
     line-height: 20px;
 }
+.pf_itemOpinionMore{
+    width: 30px;
+    height: 80px;
+    float: right;
+}
+.pf_itemOpinionIconArea{
+    width: 40px;
+    height: 40px;
+    float: right;
+}
+.pf_itemOpinionIcon{
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+.pf_itemOpinionIconFlag{
+    position: relative;
+    top: -40px;
+    left: 40px;
+}
+
 
 
 @font-face {
