@@ -64,8 +64,13 @@
                         {{each $.taskCompletedList}}
                             <div class="pf_itemOpinionIconArea">
                                 <img class="pf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{$.person}}/icon?1642673028140" />
-                                <icon class="pf_itemOpinionIconFlag o2icon-point"></icon>
+                                <icon class="pf_itemOpinionIconFlag o2icon-xuanzhong"></icon>
                             </div>
+                        {{end each}}
+                        {{each $.taskList}}
+                        <div class="pf_itemOpinionIconArea">
+                            <img class="pf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{$.person}}/icon?1642673028140" />
+                        </div>
                         {{end each}}
                     </div>
                     <div class="pf_itemOpinionMore"></div>

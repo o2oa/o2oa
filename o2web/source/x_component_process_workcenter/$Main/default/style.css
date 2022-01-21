@@ -412,16 +412,19 @@
     width: 40px;
     height: 40px;
     float: right;
+    margin-left: 10px;
 }
 .pf_itemOpinionIcon{
     width: 40px;
     height: 40px;
     border-radius: 20px;
+    cursor: pointer;
 }
 .pf_itemOpinionIconFlag{
     position: relative;
-    top: -40px;
-    left: 40px;
+    top: -50px;
+    left: 30px;
+    color: #4eb547;
 }
 
 
