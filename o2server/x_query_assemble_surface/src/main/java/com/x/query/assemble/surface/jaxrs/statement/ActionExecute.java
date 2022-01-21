@@ -78,6 +78,7 @@ class ActionExecute extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				statement = emc.flag(flag, Statement.class);
 				if (null != statement) {
+					emc.get(Statement.class).detach(statement);
 					CacheManager.put(cache, cacheKey, statement);
 				}
 			}
