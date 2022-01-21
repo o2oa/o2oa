@@ -184,6 +184,7 @@ MWF.APPPOD.LP = {
     "import_option1": "在表格的空单元格中添加输入框",
     "import_option2": "去除空元素",
     "implodeOfficeEmpty": "请先选择要导入的Word或Excel文件",
+    "applicationNotFound": "未找到应用",
 
     "scriptTitle": {
         "validationOpinion": "表单意见校验",

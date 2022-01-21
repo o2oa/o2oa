@@ -221,6 +221,7 @@ MWF.APPPOD.LP = {
     "import_option1": "Add an input box to an empty cell in the table",
     "import_option2": "Remove empty elements",
     "implodeOfficeEmpty": "Please select the Word or Excel file to import first",
+    "applicationNotFound": "App not found",
 
     "scriptTitle": {
         "validationOpinion": "Form Opinion Verification",

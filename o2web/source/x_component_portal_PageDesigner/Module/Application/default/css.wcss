@@ -50,7 +50,7 @@
 		"background-color": "#EEE"
 	},
 	"iconNode": {
-        "width": "80px",
+        "width": "100px",
         "height": "24px",
         "color": "#999",
         "font-size": "12px",
@@ -67,13 +67,13 @@
     "iconNodeIcon":{
         "width": "24px",
         "height": "24px",
-        "background": "url(../x_component_portal_PageDesigner/Module/Widget/default/icon/widget.png) 5px center no-repeat",
+        "background": "url(../x_component_portal_PageDesigner/Module/Application/default/icon/application.png) 5px center no-repeat",
         "float": "left"
     },
     "iconNodeText":{
         "line-height": "24px",
         "height": "24px",
-        "width": "54px",
-        "float": "right"
+        "width": "74px",
+        "float": "left"
     }
 }
