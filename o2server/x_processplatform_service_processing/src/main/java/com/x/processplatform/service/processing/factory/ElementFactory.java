@@ -93,6 +93,7 @@ public class ElementFactory extends AbstractFactory {
 		} else {
 			t = this.entityManagerContainer().find(id, clz);
 			if (t != null) {
+				this.entityManagerContainer().get(clz).detach(t);
 				CacheManager.put(cacheCategory, cacheKey, t);
 			}
 		}
@@ -189,7 +190,10 @@ public class ElementFactory extends AbstractFactory {
 			begin = (Begin) optional.get();
 		} else {
 			begin = this.entityManagerContainer().firstEqual(Begin.class, Activity.process_FIELDNAME, id);
-			CacheManager.put(cacheCategory, cacheKey, begin);
+			if(begin!=null) {
+				this.entityManagerContainer().get(Begin.class).detach(begin);
+				CacheManager.put(cacheCategory, cacheKey, begin);
+			}
 		}
 		return begin;
 	}
@@ -234,6 +238,9 @@ public class ElementFactory extends AbstractFactory {
 				Root<Route> root = cq.from(Route.class);
 				Predicate p = root.get(Route_.id).in(manual.getRouteList());
 				list = em.createQuery(cq.where(p).orderBy(cb.asc(root.get(Route_.orderNumber)))).getResultList();
+				for(Route route : list){
+					em.detach(route);
+				}
 				CacheManager.put(cacheCategory, cacheKey, list);
 			}
 		}
@@ -257,6 +264,9 @@ public class ElementFactory extends AbstractFactory {
 				Root<Route> root = cq.from(Route.class);
 				Predicate p = root.get(Route_.id).in(parallel.getRouteList());
 				list = em.createQuery(cq.where(p).orderBy(cb.asc(root.get(Route_.orderNumber)))).getResultList();
+				for(Route route : list){
+					em.detach(route);
+				}
 				CacheManager.put(cacheCategory, cacheKey, list);
 			}
 		}
@@ -305,6 +315,7 @@ public class ElementFactory extends AbstractFactory {
 		List<Script> list = em.createQuery(cq.where(p)).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			script = list.get(0);
+			em.detach(script);
 		}
 		return script;
 	}
@@ -446,6 +457,9 @@ public class ElementFactory extends AbstractFactory {
 			p = cb.and(p, cb.or(cb.equal(root.get(Mapping_.process), process), cb.equal(root.get(Mapping_.process), ""),
 					cb.isNull(root.get(Mapping_.process))));
 			List<Mapping> os = em.createQuery(cq.where(p)).getResultList();
+			for (Mapping mapping : os){
+				em.detach(mapping);
+			}
 			os.stream().collect(Collectors.groupingBy(o -> {
 				return o.getApplication() + o.getTableName();
 			})).forEach((k, v) -> {
