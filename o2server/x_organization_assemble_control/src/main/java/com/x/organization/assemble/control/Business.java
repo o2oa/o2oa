@@ -536,7 +536,7 @@ public class Business {
 	public Predicate personPredicateWithTopUnit(EffectivePerson effectivePerson) throws Exception {
 		EntityManager em = emc.get(Person.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		if (effectivePerson.isManager() || this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
+		if (effectivePerson.isSecurityManager() || this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
 				OrganizationDefinition.OrganizationManager)) {
 			return cb.conjunction();
 		} else {
