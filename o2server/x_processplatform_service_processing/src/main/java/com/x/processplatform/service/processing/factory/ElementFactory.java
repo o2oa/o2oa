@@ -195,7 +195,7 @@ public class ElementFactory extends AbstractFactory {
 			begin = (Begin) optional.get();
 		} else {
 			begin = this.entityManagerContainer().firstEqual(Begin.class, Activity.process_FIELDNAME, id);
-			if(begin != null) {
+			if (begin != null) {
 				this.entityManagerContainer().get(Begin.class).detach(begin);
 				CacheManager.put(cacheCategory, cacheKey, begin);
 			}
@@ -220,7 +220,7 @@ public class ElementFactory extends AbstractFactory {
 				Root<Route> root = cq.from(Route.class);
 				Predicate p = root.get(Route_.id).in(choice.getRouteList());
 				list = em.createQuery(cq.where(p).orderBy(cb.asc(root.get(Route_.orderNumber)))).getResultList();
-				for (Route route : list){
+				for (Route route : list) {
 					em.detach(route);
 				}
 				CacheManager.put(cacheCategory, cacheKey, list);
@@ -246,7 +246,7 @@ public class ElementFactory extends AbstractFactory {
 				Root<Route> root = cq.from(Route.class);
 				Predicate p = root.get(Route_.id).in(manual.getRouteList());
 				list = em.createQuery(cq.where(p).orderBy(cb.asc(root.get(Route_.orderNumber)))).getResultList();
-				for (Route route : list){
+				for (Route route : list) {
 					em.detach(route);
 				}
 				CacheManager.put(cacheCategory, cacheKey, list);
@@ -272,7 +272,7 @@ public class ElementFactory extends AbstractFactory {
 				Root<Route> root = cq.from(Route.class);
 				Predicate p = root.get(Route_.id).in(parallel.getRouteList());
 				list = em.createQuery(cq.where(p).orderBy(cb.asc(root.get(Route_.orderNumber)))).getResultList();
-				for (Route route : list){
+				for (Route route : list) {
 					em.detach(route);
 				}
 				CacheManager.put(cacheCategory, cacheKey, list);
@@ -297,9 +297,9 @@ public class ElementFactory extends AbstractFactory {
 				List<String> loops = new ArrayList<>();
 				for (String name : names) {
 					Script o = this.getScriptWithApplicationWithUniqueName(applicationId, name);
-					if(null != o){
+					if (null != o) {
 						this.entityManagerContainer().get(Script.class).detach(o);
-						if(!list.contains(o)){
+						if (!list.contains(o)) {
 							list.add(o);
 							loops.addAll(o.getDependScriptList());
 						}
@@ -434,7 +434,7 @@ public class ElementFactory extends AbstractFactory {
 			p = cb.and(p, cb.or(cb.equal(root.get(Mapping_.process), process), cb.equal(root.get(Mapping_.process), ""),
 					cb.isNull(root.get(Mapping_.process))));
 			List<Mapping> os = em.createQuery(cq.where(p)).getResultList();
-			for (Mapping mapping : os){
+			for (Mapping mapping : os) {
 				em.detach(mapping);
 			}
 			os.stream().collect(Collectors.groupingBy(o -> o.getApplication() + o.getTableName()))
