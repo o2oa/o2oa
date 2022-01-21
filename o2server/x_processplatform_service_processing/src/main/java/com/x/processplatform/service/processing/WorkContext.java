@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonNull;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
@@ -123,7 +124,7 @@ public class WorkContext {
 		if (null != route) {
 			return gson.toJson(route);
 		}
-		return "";
+		return JsonNull.INSTANCE.toString();
 	}
 
 	public void setTitle(String title) throws Exception {
@@ -268,6 +269,12 @@ public class WorkContext {
 		}
 	}
 
+	/**
+	 * 为脚本运行准备的Json对象,如果为空那么返回字符串null
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	public String getTaskOrTaskCompleted() throws Exception {
 		if (null != task) {
 			return gson.toJson(task);
@@ -287,7 +294,7 @@ public class WorkContext {
 		if (null != o) {
 			return gson.toJson(o);
 		}
-		return "";
+		return JsonNull.INSTANCE.toString();
 	}
 
 	public String getReadList() throws Exception {
