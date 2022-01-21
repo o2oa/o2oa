@@ -75,5 +75,25 @@
         "height": "24px",
         "width": "74px",
         "float": "left"
-    }
+    },
+	"maskIframeNode": {
+		"width": "100%",
+		"height": "100%",
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"background": "#f2f2f2",
+		"opacity": "0",
+		"z-index":"1"
+	},
+	"maskNode": {
+		"width": "100%",
+		"height": "100%",
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"background": "#f2f2f2",
+		"opacity": "0.3",
+		"z-index":"2"
+	}
 }

@@ -126,12 +126,7 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
         if (!node || node.contains(this.node)) this.hide();
     },
     hide: function(){
-		if( this.application ){
-			try{
-				this.application.close();
-			}catch (e) {}
-			this.application = null;
-		}
+		this.clear();
         this.node.empty();
     },
     show: function(){
@@ -144,10 +139,11 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
             if (this.queryGetPageDataFun) module.page.removeEvent("queryGetPageData", this.queryGetPageDataFun);
             if (this.postGetPageDataFun) module.page.removeEvent("postGetPageData", this.postGetPageDataFun);
 
-            module.destroy();
-            module.page.selected();
+			module.page.selected();
 
-            module.page.designer.shortcut = true;
+			module.page.designer.shortcut = true;
+
+            module.destroy();
             this.close();
         }, function(){
             module.page.designer.shortcut = true;
@@ -192,27 +188,47 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 			layout.desktop.openApplication(e, this.json.componentSelected);
 		}
 	},
-	loadApplication: function ( ) {
-		if(this.node)this.node.empty();
+	clear: function(){
 		if(this.application){
 			try{
 				this.application.close();
 			}catch (e) {}
 			this.application = null;
 		}
+		if( this.iframe ){
+			this.iframe.destroy();
+			this.iframe = null;
+		}
+		this.destroyMask();
+	},
+	loadApplication: function ( ) {
+		if(this.node)this.node.empty();
+		this.clear();
 		var options = this.options.optionType === "map" ? this.options.optionsMapList : {};
 		if (this.json.componentSelected && this.json.componentSelected!=="none" && this.json.componentType!=="script"){
-			if( this.json.componentSelected.indexOf("@url:") === 0 ){
-
+			var componentPath = this.json.componentSelected;
+			if( componentPath.indexOf("@url:") === 0 ){
+				this._loadIframe( componentPath.substring(5, componentPath.length ) );
 			}else{
-				this._loadApplication( this.json.componentSelected, options )
+				this._loadApplication( componentPath, options );
 			}
 		}else{
 			this.loadIcon();
 		}
 	},
+	_loadIframe: function( src ){
+		var options = {
+			"src": src,
+			"width": "100%",
+			"height": "100%",
+			"frameborder": "0px",
+			"scrolling": "auto",
+			"seamless": "seamless"
+		};
+		this.iframe = new Element("iframe", options).inject( this.node );
+		this.loadMask();
+	},
 	_loadApplication: function ( app, options ) {
-		debugger;
 		var clazz = MWF.xApplication;
 		app.split(".").each(function (a) {
 			clazz[a] = clazz[a] || {};
@@ -220,7 +236,6 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 		});
 		clazz.options = clazz.options || {};
 		try{
-			debugger;
 			MWF.xDesktop.requireApp(app, "lp."+o2.language, null, false);
 			MWF.xDesktop.requireApp(app, "Main", null, false);
 			if( clazz.Main ){
@@ -230,11 +245,27 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 				this.application.status = opt;
 				this.application.load();
 				this.application.setEventTarget(this.form.designer);
+				this.loadMask();
 			}else{
 				this.form.designer.notice(this.form.designer.lp.applicationNotFound+":"+app, "error");
 			}
 		}catch (e) {
 			this.form.designer.notice( e, "error" );
+		}
+	},
+	loadMask: function(){
+		this.destroyMask();
+		this.maskIframeNode = new Element("iframe.maskNode", {styles : this.css.maskIframeNode}).inject( this.node );
+		this.maskNode = new Element("div.maskNode", {styles : this.css.maskNode}).inject( this.node );
+	},
+	destroyMask: function(){
+		if(this.maskIframeNode){
+			this.maskIframeNode.destroy();
+			this.maskIframeNode = null;
+		}
+		if(this.maskNode){
+			this.maskNode.destroy();
+			this.maskNode = null;
 		}
 	},
     destroy: function(){
@@ -256,12 +287,7 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 
 		this.treeNode.destroy();
 
-        if( this.application ){
-			try{
-				this.application.close();
-			}catch (e) {}
-			this.application = null;
-		}
+		this.clear();
 
 		o2.release(this);
     }
