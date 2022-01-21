@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.script.CompiledScript;
+import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,7 +25,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class SplitProcessor extends AbstractSplitProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(SplitProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SplitProcessor.class);
 
 	public SplitProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -110,9 +111,10 @@ public class SplitProcessor extends AbstractSplitProcessor {
 	private List<String> splitWithPath(AeiObjects aeiObjects, Split split) throws Exception {
 		List<String> list = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(split.getScript())) || (StringUtils.isNotEmpty(split.getScriptText()))) {
+			ScriptContext scriptContext = aeiObjects.scriptContext();
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					split, Business.EVENT_SPLIT);
-			List<String> os = JsonScriptingExecutor.evalDistinguishedNames(cs, aeiObjects.scriptContext());
+			List<String> os = JsonScriptingExecutor.evalDistinguishedNames(cs, scriptContext);
 			list.addAll(os);
 		}
 		return list;

@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import javax.script.CompiledScript;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,6 +14,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.End;
@@ -145,8 +148,9 @@ public class EndProcessor extends AbstractEndProcessor {
 	protected void executingCommitted(AeiObjects aeiObjects, End end, List<Work> works) throws Exception {
 		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScript())
 				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScriptText())) {
-			aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
-					aeiObjects.getProcess(), Business.EVENT_PROCESSAFTEREND).eval(aeiObjects.scriptContext());
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					aeiObjects.getProcess(), Business.EVENT_PROCESSAFTEREND);
+			JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 		}
 	}
 

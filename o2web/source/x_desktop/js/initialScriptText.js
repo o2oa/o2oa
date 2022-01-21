@@ -3197,35 +3197,35 @@ bind.workContent = bind.workContext;
 //	title: "",
 //	processing: true
 //}
-//后续计划通过return 返回assginData,
+//后续计划通过return 返回assignData,
 /**
- * 用于流程配置的流程调用活动中的“数据脚本”，可以通过assginData对象获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。<br>
- * 也可以修改业务数据，并通过assginData的set方法，将业务数据传递到被调用的流程实例。<br/>
+ * 用于流程配置的流程调用活动中的“数据脚本”，可以通过assignData对象获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。<br>
+ * 也可以修改业务数据，并通过assignData的set方法，将业务数据传递到被调用的流程实例。<br/>
  * @o2range 流程配置-流程调用活动中的“数据脚本”中可用
- * @module server.assginData
+ * @module server.assignData
  * @o2category server.process
  * @o2ordernumber 210
  * @example
  * //在流程调用活动中的“数据脚本”，通过下面的代码修改业务数据，并传递给被调用流程的实例：
- * var data = this.assginData.get();
+ * var data = this.assignData.get();
  * data.data.parentProcessData = "父流程实例的信息";
- * this.assginData.set(data);
+ * this.assignData.set(data);
  * @example
  * <caption>
- *    assginData.set方法是为了兼容以前的版本。<br>
+ *    assignData.set方法是为了兼容以前的版本。<br>
  *    <b>建议通过return一个json对象的方式来设置data内容</b>
  * </caption>
- * //也可以通过return一个json对象的方式来代替assginData.set方法
- * var data = this.assginData.get();
+ * //也可以通过return一个json对象的方式来代替assignData.set方法
+ * var data = this.assignData.get();
  * data.data.parentProcessData = "父流程实例的信息";
  * return data;
  */
-bind.assginData = {     //java_assginData 应用调用活动的创建的流程实例的业务数据处理对象，get set 方法
+bind.assignData = {     //java_assignData 应用调用活动的创建的流程实例的业务数据处理对象，get set 方法
     _data: null,
     /**
      * @summary 获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。
      * @method get
-     * @methodOf module:server.assginData
+     * @methodOf module:server.assignData
      * @static
      * @return {Object} 描述被调用的流程的信息，及要传递的业务数据.
      * <pre><code class='language-js'>{
@@ -3237,31 +3237,31 @@ bind.assginData = {     //java_assginData 应用调用活动的创建的流程�
      *        "data": {}                        //要传递到被调用的流程实例的业务数据
      * }</code></pre>
      * @o2syntax
-     * var data = this.assginData.get();
+     * var data = this.assignData.get();
      */
     "get": function(){
-        this.data = JSON.parse(bind.java_assginData.get());
+        this.data = JSON.parse(bind.java_assignData.get());
         return this.data;
     },
     /**
-     * @summary 设置修改后的assginData对象。（set方法为了兼容早期的版本。建议使用 return data; 方式直接返回json对象）
+     * @summary 设置修改后的assignData对象。（set方法为了兼容早期的版本。建议使用 return data; 方式直接返回json对象）
      * @method set
-     * @methodOf module:server.assginData
+     * @methodOf module:server.assignData
      * @static
-     * @param {Object} [data] 要设置的assginData对象，一般情况都是通过assginData.get()获取并做必要修改的对象。
+     * @param {Object} [data] 要设置的assignData对象，一般情况都是通过assignData.get()获取并做必要修改的对象。
      * @o2syntax
-     * this.assginData.set(data);
+     * this.assignData.set(data);
      * @deprecated 不建议使用，建议return一个json对象或数组的方式来设置data。
      */
     "set": function(data){
-        bind.java_assginData.set(JSON.stringify(data || this.data));
+        bind.java_assignData.set(JSON.stringify(data || this.data));
     }
 };
-Object.defineProperties(bind.assginData, {"data": {
+Object.defineProperties(bind.assignData, {"data": {
         "configurable": true,
         "get": function(){
             if (this_data) return this._data;
-            return JSON.parse(bind.java_assginData.get());
+            return JSON.parse(bind.java_assignData.get());
         },
         "set": function(v){this._data = v;}
     }});

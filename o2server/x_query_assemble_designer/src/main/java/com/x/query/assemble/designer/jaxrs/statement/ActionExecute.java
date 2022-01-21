@@ -69,9 +69,6 @@ class ActionExecute extends BaseAction {
 		ScriptContext scriptContext = this.scriptContext(effectivePerson, runtime);
 		CompiledScript cs = ScriptingFactory.functionalizationCompile(statement.getScriptText());
 		String text = JsonScriptingExecutor.evalString(cs, scriptContext);
-//		Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(statement.getScriptText()),
-//				scriptContext);
-//		String text = ScriptFactory.asString(o);
 		Class<? extends JpaObject> cls = this.clazz(business, statement);
 		EntityManager em;
 		if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
