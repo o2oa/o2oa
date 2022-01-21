@@ -108,7 +108,8 @@ MWF.xApplication.ThreeMember.Main = new Class({
             }
             if (layout.session && layout.session.user) layout.session.user.token = "";
             if (sessionStorage) sessionStorage.removeItem("o2LayoutSessionToken");
-            window.location.reload();
+            // window.location.reload();
+            window.location = "/";
         }.bind(this));
     },
     loadNavi : function(){
