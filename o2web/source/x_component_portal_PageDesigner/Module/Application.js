@@ -127,7 +127,9 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
     },
     hide: function(){
 		if( this.application ){
-			this.application.close();
+			try{
+				this.application.close();
+			}catch (e) {}
 			this.application = null;
 		}
         this.node.empty();
@@ -164,7 +166,7 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
         }).inject(this.iconNode);
         new Element("div", {
             "styles": this.css.iconNodeText,
-            "text": "Widget"
+            "text": "Application"
         }).inject(this.iconNode);
 	},
 
@@ -193,31 +195,46 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 	loadApplication: function ( ) {
 		if(this.node)this.node.empty();
 		if(this.application){
-			this.application.close();
+			try{
+				this.application.close();
+			}catch (e) {}
 			this.application = null;
 		}
 		var options = this.options.optionType === "map" ? this.options.optionsMapList : {};
 		if (this.json.componentSelected && this.json.componentSelected!=="none" && this.json.componentType!=="script"){
-			this._loadApplication( this.json.componentSelected, options )
+			if( this.json.componentSelected.indexOf("@url:") === 0 ){
+
+			}else{
+				this._loadApplication( this.json.componentSelected, options )
+			}
 		}else{
 			this.loadIcon();
 		}
 	},
 	_loadApplication: function ( app, options ) {
+		debugger;
+		var clazz = MWF.xApplication;
+		app.split(".").each(function (a) {
+			clazz[a] = clazz[a] || {};
+			clazz = clazz[a];
+		});
+		clazz.options = clazz.options || {};
 		try{
 			debugger;
-			MWF.xApplication[app] = MWF.xApplication[app] || {};
 			MWF.xDesktop.requireApp(app, "lp."+o2.language, null, false);
-			MWF.xApplication[app].options = MWF.xApplication[app].options || {};
 			MWF.xDesktop.requireApp(app, "Main", null, false);
-			var opt = options || {};
-			opt.embededParent = this.node;
-			this.application = new MWF.xApplication[app].Main(this.form.designer.desktop, opt);
-			this.application.status = opt;
-			this.application.load();
-			this.application.setEventTarget(this.form.designer);
+			if( clazz.Main ){
+				var opt = options || {};
+				opt.embededParent = this.node;
+				this.application = new clazz.Main(this.form.designer.desktop, opt);
+				this.application.status = opt;
+				this.application.load();
+				this.application.setEventTarget(this.form.designer);
+			}else{
+				this.form.designer.notice(this.form.designer.lp.applicationNotFound+":"+app, "error");
+			}
 		}catch (e) {
-
+			this.form.designer.notice( e, "error" );
 		}
 	},
     destroy: function(){
@@ -240,7 +257,9 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 		this.treeNode.destroy();
 
         if( this.application ){
-			this.application.close();
+			try{
+				this.application.close();
+			}catch (e) {}
 			this.application = null;
 		}
 
