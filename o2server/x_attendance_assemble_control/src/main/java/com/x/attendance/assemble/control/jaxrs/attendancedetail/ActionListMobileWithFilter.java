@@ -93,10 +93,12 @@ public class ActionListMobileWithFilter extends BaseAction {
 							"查询结束日期格式异常，格式：yyyy-mm-dd.日期：" + wrapIn.getEndDate());
 					result.error(exception);
 					logger.error(e, currentPerson, request, null);
+					// 错误的格式 清空 没有endDate 只查询startDate当天数据
+					if ( StringUtils.isNotEmpty( wrapIn.getEndDate() )) {
+						wrapIn.setEndDate(null);
+					}
 				}
-				if ( StringUtils.isNotEmpty( wrapIn.getEndDate() )) {
-					wrapIn.setEndDate(wrapIn.getStartDate());
-				}
+
 			}
 			if ( StringUtils.isNotEmpty( wrapIn.getStartDate() )) {
 				try {
@@ -105,7 +107,7 @@ public class ActionListMobileWithFilter extends BaseAction {
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionAttendanceDetailProcess(e,
-							"查询开始日期格式异常，格式：yyyy-mm-dd.日期：" + wrapIn.getEndDate());
+							"查询开始日期格式异常，格式：yyyy-mm-dd.日期：" + wrapIn.getStartDate());
 					result.error(exception);
 					logger.error(e, currentPerson, request, null);
 				}
