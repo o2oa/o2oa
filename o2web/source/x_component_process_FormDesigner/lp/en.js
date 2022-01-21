@@ -1374,7 +1374,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "calculationComponent": "Calculation Application Path",
         "component": "Application",
         "scriptComponentNote": "Return application path, such as organization management",
-        "componentScript": "Apply Path Script"
+        "componentScript": "Apply Path Script",
+        "applicationOptions": "Application Options"
     },
     "smartbi":{
         "nosetup":"please install SmartBI APP first",
