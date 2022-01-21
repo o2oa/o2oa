@@ -44,7 +44,7 @@ class ActionListPrev extends BaseAction {
 					}
 					id = o.getId();
 				}
-				if (effectivePerson.isManager() || business.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
+				if (effectivePerson.isSecurityManager() || business.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
 						OrganizationDefinition.OrganizationManager)) {
 					result = this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, DESC,
 							business.personPredicateWithTopUnit(effectivePerson));
