@@ -476,6 +476,20 @@ public class Document extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Long longValue02;
 
+	public static final String doubleValue01_FIELDNAME = "doubleValue01";
+	@FieldDescribe("业务数据Double值01.")
+	@Column(name = ColumnNamePrefix + doubleValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + doubleValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Double doubleValue01;
+
+	public static final String doubleValue02_FIELDNAME = "doubleValue02";
+	@FieldDescribe("业务数据Double值02.")
+	@Column(name = ColumnNamePrefix + doubleValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + doubleValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Double doubleValue02;
+
 	public static final String dateTimeValue01_FIELDNAME = "dateTimeValue01";
 	@Temporal(TemporalType.TIMESTAMP)
 	@FieldDescribe("业务数据DateTime值01.")
@@ -960,6 +974,22 @@ public class Document extends SliceJpaObject {
 
 	public void setLongValue02(Long longValue02) {
 		this.longValue02 = longValue02;
+	}
+
+	public Double getDoubleValue01() {
+		return doubleValue01;
+	}
+
+	public void setDoubleValue01(Double doubleValue01) {
+		this.doubleValue01 = doubleValue01;
+	}
+
+	public Double getDoubleValue02() {
+		return doubleValue02;
+	}
+
+	public void setDoubleValue02(Double doubleValue02) {
+		this.doubleValue02 = doubleValue02;
 	}
 
 	public Date getDateTimeValue01() {
