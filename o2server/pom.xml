@@ -579,7 +579,7 @@
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-deploy</artifactId>
-				<version>9.4.33.v20201020</version>
+				<version>9.4.40.v20210413</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
