@@ -123,6 +123,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Invoke invoke = emc.flag(flag, Invoke.class);
 				if (null != invoke) {
+					emc.get(Invoke.class).detach(invoke);
 					CacheManager.put(cacheCategory, cacheKey, invoke);
 				}
 				return invoke;

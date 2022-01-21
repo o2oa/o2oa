@@ -129,6 +129,7 @@ public class ScriptFactory extends ElementFactory {
 				List<Script> list = em.createQuery( cq.where(p) ).setMaxResults(1).getResultList();
 				if (!list.isEmpty()) {
 					script = list.get(0);
+					em.detach(script);
 					CacheManager.put(cacheCategory, cacheKey, script );
 				}
 			}
