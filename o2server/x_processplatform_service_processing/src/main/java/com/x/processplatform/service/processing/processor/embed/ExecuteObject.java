@@ -4,21 +4,21 @@ import com.x.processplatform.core.entity.element.Embed;
 
 public class ExecuteObject {
 
-	public ExecuteObject(AssginData assginData, Embed embed) {
-		this.assginData = assginData;
+	public ExecuteObject(AssignData assignData, Embed embed) {
+		this.assignData = assignData;
 		this.embed = embed;
 	}
 
-	private AssginData assginData;
+	private AssignData assignData;
 
 	private Embed embed;
 
-	public AssginData getAssginData() {
-		return assginData;
+	public AssignData getAssignData() {
+		return assignData;
 	}
 
-	public void setAssginData(AssginData assginData) {
-		this.assginData = assginData;
+	public void setAssignData(AssignData assignData) {
+		this.assignData = assignData;
 	}
 
 	public Embed getEmbed() {
