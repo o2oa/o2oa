@@ -85,6 +85,18 @@
           <p class="pack-form-tips">{{$.lp.mobile_apppack_form_appBuildNo_tip}}</p>
         </div>
       </div>
+      
+
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_urlMapping}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box">
+            <input class="pack-form-input" type="text" data-o2-element="apppackUrlMappingInputNode"/>
+          </span>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_urlMapping_tip}}</p>
+        </div>
+      </div>
+
       <div class="pack-form-group">
         <label class="pack-form-label">{{$.lp.mobile_apppack_form_enable_outer_package}}</label>
         <div class="pack-form-controls">
@@ -96,12 +108,12 @@
       </div>
 
       <div class="pack-form-group">
-        <label class="pack-form-label">{{$.lp.mobile_apppack_form_urlMapping}}</label>
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_enable_delete_hms}}</label>
         <div class="pack-form-controls">
           <span class="pack-form-box">
-            <input class="pack-form-input" type="text" data-o2-element="apppackUrlMappingInputNode"/>
+            <input type="checkbox" data-o2-element="apppackIsDeleteHmsInputNode"/>
           </span>
-          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_urlMapping_tip}}</p>
+          <p class="pack-form-tips">{{$.lp.mobile_apppack_form_enable_delete_hms_tips}}</p>
         </div>
       </div>
 
@@ -181,6 +193,15 @@
           </span>
         </div>
       </div>
+      
+      <div class="pack-form-group">
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_urlMapping}}</label>
+        <div class="pack-form-controls">
+          <span class="pack-form-box" data-o2-element="apppackUrlMappingShowNode">
+          </span>
+        </div>
+      </div>
+      <!-- 外部包名 -->
       <div class="pack-form-group">
         <label class="pack-form-label">{{$.lp.mobile_apppack_form_enable_outer_package}}</label>
         <div class="pack-form-controls">
@@ -188,10 +209,11 @@
           </span>
         </div>
       </div>
+      <!-- 是否删除华为HMS -->
       <div class="pack-form-group">
-        <label class="pack-form-label">{{$.lp.mobile_apppack_form_urlMapping}}</label>
+        <label class="pack-form-label">{{$.lp.mobile_apppack_form_enable_delete_hms}}</label>
         <div class="pack-form-controls">
-          <span class="pack-form-box" data-o2-element="apppackUrlMappingShowNode">
+          <span class="pack-form-box" data-o2-element="apppackIsDeleteHmsShowNode">
           </span>
         </div>
       </div>

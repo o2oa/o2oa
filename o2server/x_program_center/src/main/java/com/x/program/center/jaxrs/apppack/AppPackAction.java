@@ -82,6 +82,7 @@ public class AppPackAction extends BaseAction  {
                                  @JaxrsParameterDescribe("o2ServerPort") @FormDataParam("o2ServerPort") String o2ServerPort,
                                  @JaxrsParameterDescribe("o2ServerContext") @FormDataParam("o2ServerContext") String o2ServerContext,
                                  @JaxrsParameterDescribe("isPackAppIdOuter") @FormDataParam("isPackAppIdOuter") String isPackAppIdOuter,
+                                 @JaxrsParameterDescribe("是否删除华为HMS") @FormDataParam("deleteHuawei") String deleteHuawei,
                                  @JaxrsParameterDescribe("urlMapping") @FormDataParam("urlMapping") String urlMapping,
                                  @JaxrsParameterDescribe("版本名称") @FormDataParam("appVersionName") String appVersionName,
                                  @JaxrsParameterDescribe("版本编号") @FormDataParam("appBuildNo") String appBuildNo,
@@ -91,7 +92,7 @@ public class AppPackAction extends BaseAction  {
         ActionResult<ActionAndroidPack.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionAndroidPack().execute(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, isPackAppIdOuter, urlMapping, appVersionName, appBuildNo, fileName, bytes, disposition);
+            result = new ActionAndroidPack().execute(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, isPackAppIdOuter, urlMapping, appVersionName, appBuildNo, deleteHuawei, fileName, bytes, disposition);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

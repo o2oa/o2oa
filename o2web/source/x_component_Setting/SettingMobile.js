@@ -229,6 +229,11 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
                 isPackAppIdOuter = this.lp.mobile_apppack_form_enable_outer_status_yes;
             }
             this.apppackIsPackAppIdOuterShowNode.set("text", isPackAppIdOuter);
+            var deleteHms = this.lp.mobile_apppack_form_enable_delete_hms_status_no;
+            if (this.packInfo.deleteHuawei && this.packInfo.deleteHuawei === "2") {
+                deleteHms = this.lp.mobile_apppack_form_enable_delete_hms_status_yes;
+            }
+            this.apppackIsDeleteHmsShowNode.set("text", deleteHms);
             this.apppackLogoShowImgNode.set("src", this.packServerUrl + this.packInfo.appLogoPath + "?token=" + this.token);
             var status = ""
             if (this.packInfo.packStatus === "0") {
@@ -389,14 +394,19 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.apppackPortInputNode.set("value", this.packInfo.o2ServerPort);
             this.apppackContextInputNode.set("value", this.packInfo.o2ServerContext);
             this.apppackAppNameInputNode.set("value", this.packInfo.appName);
-            this.apppackAppVersionNameInputNode.set("value", this.packInfo.versionName);
-            this.apppackAppBuildNoInputNode.set("value", this.packInfo.buildNo);
+            this.apppackAppVersionNameInputNode.set("value", ""); // 重新填写 版本号清空
+            this.apppackAppBuildNoInputNode.set("value", ""); // 重新填写 版本号清空
             this.apppackUrlMappingInputNode.set("value", this.packInfo.urlMapping);
             var isPackAppIdOuter = false;
             if (this.packInfo.isPackAppIdOuter && this.packInfo.isPackAppIdOuter === "2") {
                 isPackAppIdOuter = true;
             }
             this.apppackIsPackAppIdOuterInputNode.set("checked", isPackAppIdOuter);
+            var deleteHms = false;
+            if (this.packInfo.deleteHuawei && this.packInfo.deleteHuawei === "2") {
+                deleteHms = true;
+            }
+            this.apppackIsDeleteHmsInputNode.set("checked", deleteHms);
         }
         this.showForm();
     },
@@ -500,6 +510,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
         var appVersionName = this.apppackAppVersionNameInputNode.get("value");
         var appBuildNo = this.apppackAppBuildNoInputNode.get("value");
         var isPackAppIdOuter = this.apppackIsPackAppIdOuterInputNode.checked ? "2" : "1";
+        var deleteHms = this.apppackIsDeleteHmsInputNode.checked ? "2" : "1";
         var urlMapping = this.apppackUrlMappingInputNode.get("value");
         this.confirm(this.lp.alert, this.lp.mobile_apppack_message_alert_submit, function() {
             this.showLoading();
@@ -514,6 +525,7 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             formData.append('appVersionName', appVersionName);
             formData.append('appBuildNo', appBuildNo);
             formData.append('isPackAppIdOuter', isPackAppIdOuter);
+            formData.append('deleteHuawei', deleteHms);
             formData.append('urlMapping', urlMapping);
             formData.append('token', this.token);
             
