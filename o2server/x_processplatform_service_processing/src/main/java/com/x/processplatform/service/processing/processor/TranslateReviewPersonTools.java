@@ -95,7 +95,6 @@ public class TranslateReviewPersonTools {
 				String code = o.get("code").getAsString();
 				CompiledScript compiledScript = aeiObjects.business().element()
 						.getCompiledScript(aeiObjects.getActivity(), Business.EVENT_REVIEWDUTY, name, code);
-//				Object objectValue = compiledScript.eval(aeiObjects.scriptContext());
 				JsonScriptingExecutor.evalDistinguishedNames(compiledScript, aeiObjects.scriptContext(), ds -> {
 					try {
 						for (String str : ds) {
@@ -121,7 +120,7 @@ public class TranslateReviewPersonTools {
 				|| (StringUtils.isNotEmpty(aeiObjects.getActivity().getReviewScriptText()))) {
 			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
 					aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_REVIEW);
-			JsonScriptingExecutor.evalDistinguishedNames(compiledScript,  aeiObjects.scriptContext(),list::addAll);
+			JsonScriptingExecutor.evalDistinguishedNames(compiledScript, aeiObjects.scriptContext(), list::addAll);
 		}
 		return list;
 	}

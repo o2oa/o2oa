@@ -434,7 +434,7 @@ public class Generate {
 			List<String> attachments = ListTools.extractProperty(attachmentObjects, Attachment.name_FIELDNAME,
 					String.class, true, true);
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(BaseAction.PROPERTY_ATTACHMENTS, attachments);
-			attachmentCompiledScript.eval(scriptContext);
+			JsonScriptingExecutor.eval(attachmentCompiledScript, scriptContext);
 			attachmentObjects = ListTools.removePropertyNotIn(attachmentObjects, Attachment.name_FIELDNAME,
 					attachments);
 		}
