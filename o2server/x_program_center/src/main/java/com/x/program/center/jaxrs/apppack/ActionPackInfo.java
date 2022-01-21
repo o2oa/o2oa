@@ -125,9 +125,31 @@ public class ActionPackInfo extends BaseAction  {
         // 代理地址
         private String urlMapping;
 
+        //错误信息
+        private String packErrorLogs;
+
+        // 2 表示要删除华为推送包，防止不是华为手机打开app需要安装HMS服务框架
+        private String deleteHuawei;
+
 
         private AppPackApkFile appFile; // 关联的下载文件
 
+
+        public String getPackErrorLogs() {
+            return packErrorLogs;
+        }
+
+        public void setPackErrorLogs(String packErrorLogs) {
+            this.packErrorLogs = packErrorLogs;
+        }
+
+        public String getDeleteHuawei() {
+            return deleteHuawei;
+        }
+
+        public void setDeleteHuawei(String deleteHuawei) {
+            this.deleteHuawei = deleteHuawei;
+        }
 
         public String getUrlMapping() {
             return urlMapping;
