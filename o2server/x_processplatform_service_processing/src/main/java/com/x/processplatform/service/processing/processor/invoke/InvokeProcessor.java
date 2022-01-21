@@ -417,14 +417,18 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		Map<String, String> parameters = new HashMap<>();
 		if ((StringUtils.isNotEmpty(invoke.getJaxrsParameterScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsParameterScriptText()))) {
-
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSPARAMETER);
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSPARAMETERS,
 					parameters);
-			parameters.putAll(JsonScriptingExecutor.eval(cs, scriptContext, new TypeToken<Map<String, String>>() {
-			}.getType()));
+			// map有可能返回null
+			Map<String, String> map = JsonScriptingExecutor.eval(cs, scriptContext,
+					new TypeToken<Map<String, String>>() {
+					}.getType());
+			if (null != map) {
+				parameters.putAll(map);
+			}
 		}
 		for (Entry<String, String> entry : parameters.entrySet()) {
 			url = StringUtils.replace(url, "{" + entry.getKey() + "}", entry.getValue());
