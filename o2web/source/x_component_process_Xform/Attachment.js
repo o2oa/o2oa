@@ -1666,7 +1666,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     } else {
                         var ua = navigator.userAgent.toLowerCase();
                         if (ua.indexOf('dingtalk') >= 0) {
-                            this.addMessage("dingtalk");
                             this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
                                 var xtoken = Cookie.read(o2.tokenName);
                                 window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
@@ -1700,7 +1699,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     } else {
                         var ua = navigator.userAgent.toLowerCase();
                         if (ua.indexOf('dingtalk') >= 0) {
-                            this.addMessage("dingtalk");
                             this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, this.form.businessData.workCompleted.id, function (url) {
                                 var xtoken = Cookie.read(o2.tokenName);
                                 window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
@@ -1738,7 +1736,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                         // 钉钉客户端
                         var ua = navigator.userAgent.toLowerCase();
                         if (ua.indexOf('dingtalk') >= 0) {
-                            this.addMessage("dingtalk");
                             this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
                                 var xtoken = Cookie.read(o2.tokenName);
                                 window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
@@ -1774,7 +1771,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                         // 钉钉客户端
                         var ua = navigator.userAgent.toLowerCase();
                         if (ua.indexOf('dingtalk') >= 0) {
-                            this.addMessage("dingtalk");
                             this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id), function (url) {
                                 var xtoken = Cookie.read(o2.tokenName);
                                 window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
