@@ -2967,15 +2967,18 @@ bind.workContext = {
      * var task = this.workContext.getTask();
      */
     "getTask": function(){  //根据work获取当前处理的的task或者TaskCompleted  json字符串 只能在流转的过程中获取到
-        var task = JSON.parse(bind.java_workContext.getTaskOrTaskCompleted());
-        task.personDn = task.person || "";
-        task.unitDn = task.unit || "";
-        task.unitDnList = task.unitList || "";
-        task.identityDn = task.identity || "";
-        task.creatorPersonDn = work.creatorPerson ||"";
-        task.creatorUnitDn = work.creatorUnit ||"";
-        task.creatorUnitDnList = work.creatorUnitList ||"";
-        task.creatorIdentityDn = work.creatorIdentity ||"";
+        var taskString = bind.java_workContext.getTaskOrTaskCompleted();
+        var task = (taskString) ? JSON.parse(taskString) : null;
+        if (task){
+            task.personDn = task.person || "";
+            task.unitDn = task.unit || "";
+            task.unitDnList = task.unitList || "";
+            task.identityDn = task.identity || "";
+            task.creatorPersonDn = task.creatorPerson ||"";
+            task.creatorUnitDn = task.creatorUnit ||"";
+            task.creatorUnitDnList = task.creatorUnitList ||"";
+            task.creatorIdentityDn = task.creatorIdentity ||"";
+        }
         return task;
     },
     /**
