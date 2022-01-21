@@ -20,6 +20,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.webservices.WebservicesClient;
@@ -76,7 +77,7 @@ class ActionExecute extends BaseAction {
 					}
 
 					try {
-						compiledScript.eval(scriptContext);
+						JsonScriptingExecutor.eval(compiledScript, scriptContext);
 					} catch (Exception e) {
 						throw new ExceptionAgentEval(e, e.getMessage(), agent.getId(), agent.getName(),
 								agent.getAlias(), agent.getText());
