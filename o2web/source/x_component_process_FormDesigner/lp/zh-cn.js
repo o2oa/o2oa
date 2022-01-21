@@ -1380,7 +1380,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "calculationComponent": "计算应用路径",
         "component": "应用",
         "scriptComponentNote": "返回应用路径，如组织管理",
-        "componentScript": "应用路径脚本"
+        "componentScript": "应用路径脚本",
+        "applicationOptions": "应用options"
 
     },
     "smartbi":{
