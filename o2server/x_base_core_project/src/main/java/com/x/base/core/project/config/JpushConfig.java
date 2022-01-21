@@ -57,6 +57,7 @@ public class JpushConfig extends ConfigObject {
         config.setAppKey(O2_app_key_outer);
         config.setMasterSecret(O2_master_secret_outer);
         config.setEnable(true);
+        config.setHuaweiPushConfig(HuaweiPushConfig.outerPackInstance());
         return config;
     }
 
