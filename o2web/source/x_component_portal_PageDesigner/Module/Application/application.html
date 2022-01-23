@@ -51,17 +51,17 @@
 						if (this.checked){
 							$('text{$.pid}optionsMapList').setStyle('display', 'block');
 							$('text{$.pid}optionsScript').setStyle('display', 'none')}
-					" name="optionType" text{($.optionType!='script')?'checked':''} type="radio" value="map"/>{{$.lp.textValue}}
+					" name="optionsType" text{($.optionsType!='script')?'checked':''} type="radio" value="map"/>{{$.lp.textValue}}
                     <input class="editTableRadio" onclick="
 						if (this.checked){
 						 	$('text{$.pid}optionsScript').setStyle('display', 'block');
 						 	$('text{$.pid}optionsMapList').setStyle('display', 'none')}
-					"  name="optionType" text{($.optionType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+					"  name="optionsType" text{($.optionsType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
                 </td>
             </tr>
         </table>
-        <div id="text{$.pid}optionsMapList" class="MWFMaplist" name="optionsMapList" title="{{$.lp.option}}" style="display: text{($.optionType !=='script')?'block':'none'}" ></div>
-        <div id="text{$.pid}optionsScript" class="MWFScriptArea" name="optionsScript" title="options {{$.lp.script}}" style="display: text{($.optionType=='script')?'block':'none'}"></div>
+        <div id="text{$.pid}optionsMapList" class="MWFMaplist" name="optionsMapList" title="{{$.lp.option}}" style="display: text{($.optionsType !=='script')?'block':'none'}" ></div>
+        <div id="text{$.pid}optionsScript" class="MWFScriptArea" name="optionsScript" title="options {{$.lp.script}}" style="display: text{($.optionsType=='script')?'block':'none'}"></div>
 
     </div>
     <div title="{{$.lp.event}}"  class="MWFTab">
