@@ -126,7 +126,7 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
         if (!node || node.contains(this.node)) this.hide();
     },
     hide: function(){
-		this.clear();
+		this.clean();
         this.node.empty();
     },
     show: function(){
@@ -188,7 +188,7 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 			layout.desktop.openApplication(e, this.json.componentSelected);
 		}
 	},
-	clear: function(){
+	clean: function(){
 		if(this.application){
 			try{
 				this.application.close();
@@ -203,8 +203,8 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 	},
 	loadApplication: function ( ) {
 		if(this.node)this.node.empty();
-		this.clear();
-		var options = this.options.optionType === "map" ? this.options.optionsMapList : {};
+		this.clean();
+		var options = this.json.optionsType === "map" ? this.json.optionsMapList : {};
 		if (this.json.componentSelected && this.json.componentSelected!=="none" && this.json.componentType!=="script"){
 			var componentPath = this.json.componentSelected;
 			if( componentPath.indexOf("@url:") === 0 ){
@@ -217,7 +217,7 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 		}
 	},
 	_loadIframe: function( src ){
-		var options = {
+		var attr = {
 			"src": src,
 			"width": "100%",
 			"height": "100%",
@@ -225,7 +225,7 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 			"scrolling": "auto",
 			"seamless": "seamless"
 		};
-		this.iframe = new Element("iframe", options).inject( this.node );
+		this.iframe = new Element("iframe", attr).inject( this.node );
 		this.loadMask();
 	},
 	_loadApplication: function ( app, options ) {
@@ -250,7 +250,7 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 				this.form.designer.notice(this.form.designer.lp.applicationNotFound+":"+app, "error");
 			}
 		}catch (e) {
-			this.form.designer.notice( e, "error" );
+			this.form.designer.notice( e.message, "error" );
 		}
 	},
 	loadMask: function(){
@@ -287,7 +287,7 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 
 		this.treeNode.destroy();
 
-		this.clear();
+		this.clean();
 
 		o2.release(this);
     }

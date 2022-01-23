@@ -370,6 +370,8 @@ MWF.xApplication.process.Xform.LP = {
     "sendReview": "添加阅读人",
     "sendReviewOk": "已添加阅读人",
     "inputSendReviewPeople": "请选择阅读人",
-    "sendReviewPeopleCanNotEmpty": "阅读人不能为空"
+    "sendReviewPeopleCanNotEmpty": "阅读人不能为空",
+
+    "applicationNotFound": "未找到应用"
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

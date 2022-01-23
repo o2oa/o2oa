@@ -370,7 +370,9 @@ MWF.xApplication.process.Xform.LP = {
     "sendReview": "Add Review",
     "sendReviewOk": "Review has been added:",
     "inputSendReviewPeople": "Please select the person",
-    "sendReviewPeopleCanNotEmpty": "Please select the person"
+    "sendReviewPeopleCanNotEmpty": "Please select the person",
+
+    "applicationNotFound": "App Not Found"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;
