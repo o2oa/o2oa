@@ -3106,7 +3106,7 @@ bind.workContext = {
      * @o2syntax
      * var taskList = this.workContext.getTaskListByJob();
      */
-    "getTaskListByJob": this.getJobTaskList,
+    "getTaskListByJob": function(){return this.getJobTaskList();},
     /**
      * 根据当前工作的job获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
      * @method getTaskCompletedListByJob
@@ -3128,7 +3128,7 @@ bind.workContext = {
      * @o2syntax
      * var readList = this.workContext.getReadListByJob();
      */
-    "getReadListByJob": this.getJobReadList,
+    "getReadListByJob": function(){return this.getJobReadList();},
     /**
      * @summary 根据当前工作的job获取当前流程实例的所有已阅对象。如果流程实例没有已阅，则返回一个空数组。
      * @method getReadCompletedListByJob
@@ -3139,14 +3139,14 @@ bind.workContext = {
      * @o2syntax
      * var readCompletedList = this.workContext.getReadCompletedListByJob();
      */
-    "getReadCompletedListByJob": this.getJobReadCompletedList,
+    "getReadCompletedListByJob": function(){return this.getJobReadCompletedList();},
     /**
      * @summary getReviewList方法的别名。
      * @method getReviewListByJob
      * @static
      * @see server.module:workContext.getReviewList
      */
-    "getReviewListByJob": this.getJobReviewList,
+    "getReviewListByJob": function(){return this.getJobReviewList();},
 
     "getActivity": function(){return JSON.parse(bind.java_workContext.getActivity());},       //活动对象字符串
     "getWorkLogList": function(){return JSON.parse(bind.java_workContext.getWorkLogList());}, //WorkLogList对象数组的字符串
@@ -3260,7 +3260,7 @@ bind.assignData = {     //java_assignData 应用调用活动的创建的流程�
 Object.defineProperties(bind.assignData, {"data": {
         "configurable": true,
         "get": function(){
-            if (this_data) return this._data;
+            if (this._data) return this._data;
             return JSON.parse(bind.java_assignData.get());
         },
         "set": function(v){this._data = v;}
@@ -3556,7 +3556,7 @@ bind.response = {};
  * var status = this.response.status;
  */
 Object.defineProperty(bind.response, "status", {enumerable: true,configurable: true,
-    get: function(){ return (bind.java_jaxrsResponse) ? bind.java_jaxrsResponse.type : ""; }
+    get: function(){ return (bind.java_jaxrsResponse) ? bind.java_jaxrsResponse.type() : ""; }
 });
 /**
  * @summary 请求返回的值，如果是jaxrs服务，得到的是响应的文本，如果是jaxws服务，响应类型取决于服务的返回。
