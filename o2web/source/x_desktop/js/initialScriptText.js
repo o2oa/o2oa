@@ -3057,7 +3057,7 @@ bind.workContext = {
      * @o2syntax
      * var reviewList = this.workContext.getReviewList();
      */
-    "getReviewList": function(){JSON.parse(bind.java_workContext.getJobReviewList());},
+    "getReviewList": function(){return JSON.parse(bind.java_workContext.getJobReviewList());},
 
     /**
      * @summary getTaskListByJob方法的别名。
@@ -3094,7 +3094,7 @@ bind.workContext = {
      * @static
      * @see server.module:workContext.getReviewList
      */
-    "getJobReviewList": this.getReviewList,                                                                        //根据jobid获取所有的Review数组  json字符串
+    "getJobReviewList": function (){return this.getReviewList();},                                                                        //根据jobid获取所有的Review数组  json字符串
 
     /**
      * 根据当前工作的job获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
