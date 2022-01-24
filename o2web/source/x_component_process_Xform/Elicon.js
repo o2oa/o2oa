@@ -22,6 +22,7 @@ MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
         if (!this.json.icon) this.json.icon = "el-icon-platform-eleme";
         if (!this.json.iconSize) this.json.iconSize = "16";
         if (!this.json.iconColor) this.json.iconColor = "";
+        if (!this.json.icon) this.json.icon = "";
         if (!this.json.elStyles) this.json.elStyles = {};
     },
     _createElementHtml: function(){
