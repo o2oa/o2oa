@@ -1,5 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class Application 门户中嵌入的系统应用组件。
+/** @class Application 门户中嵌入的系统component对象或网页iframe（模块部署中配置的网页URL）。
  * @o2cn 嵌入的系统应用
  * @example
  * //可以在脚本中获取该组件
@@ -16,13 +16,32 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
     /** @lends MWF.xApplication.process.Xform.Application# */
     {
     Extends: MWF.APP$Module,
+    options: {
+        /**
+         * component对象初始化后，加载之前触发，this.event可获取component对象。
+         * @event MWF.xApplication.process.Xform.Application#queryLoadApplication
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        "moduleEvents": ["load", "queryLoad", "postLoad", "queryLoadApplication"]
+    },
 
     _loadUserInterface: function(){
+        /**
+         * @ignore
+         * @member parentLine
+         * @memberOf MWF.xApplication.process.Xform.Application#
+         */
+
+        /**
+         * @ignore
+         * @member getSource
+         * @memberOf MWF.xApplication.process.Xform.Application#
+         */
         this.node.empty();
         this.loadApplication();
     },
     /**
-     * @summary 重新加载嵌入应用
+     * @summary 重新加载嵌入对象
      * @example
      * this.form.get("fieldId").reload()
      */
@@ -30,6 +49,11 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
         this.clean();
         this.loadApplication();
     },
+    /**
+     * @summary 清除当前嵌入的对象
+     * @example
+     * this.form.get("fieldId").clean()
+     */
     clean: function(){
         if(this.application){
             try{
@@ -70,8 +94,15 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             "scrolling": "auto",
             "seamless": "seamless"
         };
+
+        /**
+         * @summary 当模块部署中配置的是@url:开头的链接时，嵌入的iframe.
+         * @member {Object}
+         * @example
+         * var iframe = this.form.get("fieldId").iframe; //获取iframe
+         * iframe.src; //获取iframe的地址
+         */
         this.iframe = new Element("iframe", attr).inject( this.node );
-        this.loadMask();
     },
     _loadApplication: function ( app, options ) {
         var clazz = MWF.xApplication;
@@ -86,8 +117,23 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             if( clazz.Main ){
                 var opt = options || {};
                 opt.embededParent = this.node;
+
+                /**
+                 * @summary 嵌入的component对象.
+                 * @member {Object}
+                 * @example
+                 * var app = this.form.get("fieldId").application; //获取component对象
+                 * app.recordStatus(); //获取应用的当前状态
+                 * app.refresh();      //刷新应用
+                 * app.dialog(option); //弹出一个对话框（详见MWF.widget.Dialog）
+                 * app.notice(content, type, target, where, offset); //显示一个通知消息
+                 * app.confirm(type, e, title, text, width, height, ok, cancel); //显示一个确认框
+                 * app.alert(type, e, title, text, width, height); //弹出一个信息框
+                 * app.addEvent(type, fun); //为应用绑定一个事件
+                 */
                 this.application = new clazz.Main(this.form.app.desktop, opt);
                 this.application.status = opt;
+                this.fireEvent("queryLoadApplication", this.application);
                 this.application.load();
                 this.application.setEventTarget(this.form.app);
             }else{
@@ -97,6 +143,14 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             this.form.app.notice( e.message, "error" );
         }
     },
+    /**
+     * @summary 获取component对象的路径
+     * @param {Function} callback 获取路径后的回调方法，参数为路径
+     * @example
+     * this.form.get("fieldId").getApplicationOptions(function(path){
+     *     //path为路径
+     * })
+     */
     getApplicationPath: function(callback){
         var path;
         if (this.json.componentType==="script"){
@@ -115,10 +169,10 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
         })
     },
     /**
-     * @summary 获取应用的参数
+     * @summary 获取component对象的参数
      * @return 设置的参数
      * @example
-     * var param = this.form.get("fieldId").getPageParamenters()
+     * var param = this.form.get("fieldId").getApplicationOptions()
      */
     getApplicationOptions : function(){
         var params = "";
