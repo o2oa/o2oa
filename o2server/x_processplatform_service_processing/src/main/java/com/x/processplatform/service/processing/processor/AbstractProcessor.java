@@ -135,37 +135,34 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	private void callBeforeArriveScript(AeiObjects aeiObjects) throws Exception {
 		if (aeiObjects.getActivityProcessingConfigurator().getCallBeforeArriveScript()) {
 			if (this.hasBeforeArriveScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
-				ScriptContext scriptContext = aeiObjects.scriptContext();
 				CompiledScript cs = null;
 				if (this.hasBeforeArriveScript(aeiObjects.getProcess())) {
 					cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 							aeiObjects.getProcess(), Business.EVENT_BEFOREARRIVE);
-					cs.eval(scriptContext);
+					JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 				}
 				if (this.hasBeforeArriveScript(aeiObjects.getActivity())) {
 					cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 							aeiObjects.getActivity(), Business.EVENT_BEFOREARRIVE);
-					cs.eval(scriptContext);
+					JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 				}
 			}
 		}
 	}
 
 	private void callAfterArriveScript(AeiObjects aeiObjects) throws Exception {
-		if (aeiObjects.getActivityProcessingConfigurator().getCallAfterArriveScript()) {
-			if (this.hasAfterArriveScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
-				ScriptContext scriptContext = aeiObjects.scriptContext();
-				CompiledScript cs = null;
-				if (this.hasAfterArriveScript(aeiObjects.getProcess())) {
-					cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
-							aeiObjects.getProcess(), Business.EVENT_AFTERARRIVE);
-					cs.eval(scriptContext);
-				}
-				if (this.hasAfterArriveScript(aeiObjects.getActivity())) {
-					cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
-							aeiObjects.getActivity(), Business.EVENT_AFTERARRIVE);
-					cs.eval(scriptContext);
-				}
+		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallAfterArriveScript())
+				&& this.hasAfterArriveScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
+			CompiledScript cs = null;
+			if (this.hasAfterArriveScript(aeiObjects.getProcess())) {
+				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+						aeiObjects.getProcess(), Business.EVENT_AFTERARRIVE);
+				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+			}
+			if (this.hasAfterArriveScript(aeiObjects.getActivity())) {
+				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+						aeiObjects.getActivity(), Business.EVENT_AFTERARRIVE);
+				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 			}
 		}
 	}
@@ -265,17 +262,16 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	private void callAfterExecuteScript(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallAfterExecuteScript())
 				&& this.hasAfterExecuteScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
 			CompiledScript cs = null;
 			if (this.hasAfterExecuteScript(aeiObjects.getProcess())) {
 				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getProcess(), Business.EVENT_AFTEREXECUTE);
-				cs.eval(scriptContext);
+				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 			}
 			if (this.hasAfterExecuteScript(aeiObjects.getActivity())) {
 				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getActivity(), Business.EVENT_AFTEREXECUTE);
-				cs.eval(scriptContext);
+				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 			}
 		}
 	}
@@ -373,17 +369,16 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	private void callAfterInquireScript(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallAfterInquireScript())
 				&& this.hasAfterInquireScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
 			CompiledScript cs = null;
 			if (this.hasAfterInquireScript(aeiObjects.getProcess())) {
 				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getProcess(), Business.EVENT_AFTERINQUIRE);
-				cs.eval(scriptContext);
+				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 			}
 			if (this.hasAfterInquireScript(aeiObjects.getActivity())) {
 				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getActivity(), Business.EVENT_AFTERINQUIRE);
-				cs.eval(scriptContext);
+				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 			}
 		}
 	}

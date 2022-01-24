@@ -51,9 +51,9 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	protected void arrivingCommitted(AeiObjects aeiObjects, Begin begin) throws Exception {
 		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScript())
 				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScriptText())) {
-			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
-					aeiObjects.getWork().getApplication(), aeiObjects.getProcess(), Business.EVENT_PROCESSAFTERBEGIN);
-			compiledScript.eval(aeiObjects.scriptContext());
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					aeiObjects.getProcess(), Business.EVENT_PROCESSAFTERBEGIN);
+			JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 		}
 	}
 

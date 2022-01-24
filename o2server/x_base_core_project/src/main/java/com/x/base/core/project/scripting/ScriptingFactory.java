@@ -45,6 +45,8 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_EFFECTIVEPERSON = "java_effectivePerson";
 
 	public static final String BINDING_NAME_DATA = "data";
+	public static final String BINDING_NAME_SERIAL = "serial";
+	public static final String BINDING_NAME_PROCESS = "process";
 
 	public static final String BINDING_NAME_SERVICE_RESOURCES = "java_resources";
 	public static final String BINDING_NAME_SERVICE_EFFECTIVEPERSON = "java_effectivePerson";
