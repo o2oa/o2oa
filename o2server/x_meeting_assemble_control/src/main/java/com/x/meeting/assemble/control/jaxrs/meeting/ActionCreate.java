@@ -55,18 +55,18 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionPersonNotExist(applicant);
 			}
 			meeting.setApplicant(applicant);
-			if( ListTools.isNotEmpty( meeting.getInviteMemberList() )) {
-				for( String str : meeting.getInviteMemberList() ) {
-					logger.debug(">>>>>>>> before convert invitePersonList:" + str );
+			if (ListTools.isNotEmpty(meeting.getInviteMemberList())) {
+				for (String str : meeting.getInviteMemberList()) {
+					logger.debug(">>>>>>>> before convert invitePersonList:" + str);
 				}
 			}
-			if(meeting.getInviteMemberList()==null){
+			if (meeting.getInviteMemberList() == null) {
 				meeting.setInviteMemberList(meeting.getInvitePersonList());
 			}
 			meeting.setInvitePersonList(this.convertToPerson(business, meeting.getInviteMemberList()));
-			if( ListTools.isNotEmpty( meeting.getInvitePersonList() )) {
-				for( String str : meeting.getInvitePersonList() ) {
-					logger.debug(">>>>>>>> after convert invitePersonList:" + str );
+			if (ListTools.isNotEmpty(meeting.getInvitePersonList())) {
+				for (String str : meeting.getInvitePersonList()) {
+					logger.debug("after convert invitePersonList:{}.", str::toString);
 				}
 			}
 			meeting.setAcceptPersonList(this.convertToPerson(business, meeting.getAcceptPersonList()));
@@ -84,7 +84,7 @@ class ActionCreate extends BaseAction {
 				for (String _s : meeting.getInvitePersonList()) {
 					MessageFactory.meeting_invite(_s, meeting, room);
 				}
-				this.notifyMeetingInviteMessage(business, meeting);
+				// this.notifyMeetingInviteMessage(business, meeting);
 			}
 			Wo wo = new Wo();
 			wo.setId(meeting.getId());
