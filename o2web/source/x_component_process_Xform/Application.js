@@ -85,6 +85,13 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             }
         }.bind(this))
     },
+    /**
+     * @summary 加载Iframe
+     * @param {String} src iframe的src，如'https://www.baidu.com/'
+     * @example
+     * this.form.get("fieldId").clean(); //清除当前嵌入的对象
+     * this.form.get("fieldId").loadIframe('https://www.baidu.com/'); //加载日程安排
+     */
     loadIframe: function( src ){
         var attr = {
             "src": src,
@@ -106,12 +113,16 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
     },
     /**
      * @summary 加载系统组件
-     * @param {String} path 组件的路径，如'org'
-     * @param {Object} options 组件的选项
+     * @param {String} path 组件的路径，如'Calendar'
+     * @param {Object} [options] 组件的选项
      * @example
-     * this.form.get("fieldId").getComponentPath(function(path){
-     *     //path为路径
-     * })
+     * this.form.get("fieldId").clean(); //清除当前嵌入的对象
+     * this.form.get("fieldId").loadComponent('Calendar'); //加载日程安排
+     * @example
+     * this.form.get("fieldId").clean(); //清除当前嵌入的对象
+     * this.form.get("fieldId").loadComponent('cms.Module', {
+     *  "columnId":"25434995-45d2-4c9a-a344-55ad0deff071"
+     *  }); //加载id为25434995-45d2-4c9a-a344-55ad0deff071的内容管理栏目
      */
     loadComponent: function ( path, options ) {
         var clazz = MWF.xApplication;
