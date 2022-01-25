@@ -164,7 +164,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
         }
     },
     /**
-     * @summary 获取component对象的路径
+     * @summary 获取获取表单设计配置的component对象的路径
      * @param {Function} callback 获取路径后的回调方法，参数为路径
      * @example
      * this.form.get("fieldId").getComponentPath(function(path){
@@ -189,7 +189,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
         })
     },
     /**
-     * @summary 获取component对象的参数
+     * @summary 获取表单设计配置的component对象的参数
      * @return 设置的参数
      * @example
      * var param = this.form.get("fieldId").getComponentOptions()
