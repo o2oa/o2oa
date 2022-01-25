@@ -55,11 +55,11 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
      * this.form.get("fieldId").clean()
      */
     clean: function(){
-        if(this.application){
+        if(this.component){
             try{
-                this.application.close();
+                this.component.close();
             }catch (e) {}
-            this.application = null;
+            this.component = null;
         }
         if( this.iframe ){
             this.iframe.destroy();
@@ -75,17 +75,17 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             });
         }
         this.clean();
-        var options = this.getApplicationOptions() || {};
-        this.getApplicationPath(function (componentPath) {
+        var options = this.getComponentOptions() || {};
+        this.getComponentPath(function (componentPath) {
             debugger;
             if( componentPath.indexOf("@url:") === 0 ){
-                this._loadIframe( componentPath.substring(5, componentPath.length ) );
+                this.loadIframe( componentPath.substring(5, componentPath.length ) );
             }else{
-                this._loadApplication( componentPath, options );
+                this.loadComponent( componentPath, options );
             }
         }.bind(this))
     },
-    _loadIframe: function( src ){
+    loadIframe: function( src ){
         var attr = {
             "src": src,
             "width": "100%",
@@ -104,16 +104,25 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
          */
         this.iframe = new Element("iframe", attr).inject( this.node );
     },
-    _loadApplication: function ( app, options ) {
+    /**
+     * @summary 加载系统组件
+     * @param {String} path 组件的路径，如'org'
+     * @param {Object} options 组件的选项
+     * @example
+     * this.form.get("fieldId").getComponentPath(function(path){
+     *     //path为路径
+     * })
+     */
+    loadComponent: function ( path, options ) {
         var clazz = MWF.xApplication;
-        app.split(".").each(function (a) {
+        path.split(".").each(function (a) {
             clazz[a] = clazz[a] || {};
             clazz = clazz[a];
         });
         clazz.options = clazz.options || {};
         try{
-            MWF.xDesktop.requireApp(app, "lp."+o2.language, null, false);
-            MWF.xDesktop.requireApp(app, "Main", null, false);
+            MWF.xDesktop.requireApp(path, "lp."+o2.language, null, false);
+            MWF.xDesktop.requireApp(path, "Main", null, false);
             if( clazz.Main ){
                 var opt = options || {};
                 opt.embededParent = this.node;
@@ -122,7 +131,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                  * @summary 嵌入的component对象.
                  * @member {Object}
                  * @example
-                 * var app = this.form.get("fieldId").application; //获取component对象
+                 * var app = this.form.get("fieldId").component; //获取component对象
                  * app.recordStatus(); //获取应用的当前状态
                  * app.refresh();      //刷新应用
                  * app.dialog(option); //弹出一个对话框（详见MWF.widget.Dialog）
@@ -131,13 +140,13 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                  * app.alert(type, e, title, text, width, height); //弹出一个信息框
                  * app.addEvent(type, fun); //为应用绑定一个事件
                  */
-                this.application = new clazz.Main(this.form.app.desktop, opt);
-                this.application.status = opt;
-                this.fireEvent("queryLoadApplication", this.application);
-                this.application.load();
-                this.application.setEventTarget(this.form.app);
+                this.component = new clazz.Main(this.form.app.desktop, opt);
+                this.component.status = opt;
+                this.fireEvent("queryLoadApplication", this.component);
+                this.component.load();
+                this.component.setEventTarget(this.form.app);
             }else{
-                this.form.app.notice(this.form.app.lp.applicationNotFound+":"+app, "error");
+                this.form.app.notice(this.form.app.lp.applicationNotFound+":"+path, "error");
             }
         }catch (e) {
             this.form.app.notice( e.message, "error" );
@@ -147,11 +156,11 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
      * @summary 获取component对象的路径
      * @param {Function} callback 获取路径后的回调方法，参数为路径
      * @example
-     * this.form.get("fieldId").getApplicationOptions(function(path){
+     * this.form.get("fieldId").getComponentPath(function(path){
      *     //path为路径
      * })
      */
-    getApplicationPath: function(callback){
+    getComponentPath: function(callback){
         var path;
         if (this.json.componentType==="script"){
             if (this.json.componentScript && this.json.componentScript.code){
@@ -172,12 +181,12 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
      * @summary 获取component对象的参数
      * @return 设置的参数
      * @example
-     * var param = this.form.get("fieldId").getApplicationOptions()
+     * var param = this.form.get("fieldId").getComponentOptions()
      */
-    getApplicationOptions : function(){
+    getComponentOptions : function(){
         var params = "";
         if( this.json.optionsType === "map" ){
-            params = this.json.optionssMapList;
+            params = this.json.optionsMapList;
         }else if( this.json.optionsType === "script" ){
             var code = (this.json.optionsScript) ? this.json.optionsScript.code : "";
             if (code){
