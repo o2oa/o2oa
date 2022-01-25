@@ -38,5 +38,14 @@ MWF.xApplication.process.workcenter.LP = {
 	"setReadedConfirmTitle" : "标记已阅确认",
 
 	"readOpinion": "阅读意见",
-	"processInfo": "流转详情"
+	"processInfo": "流转详情",
+
+	"opinion": "意见",
+	"time": "时间",
+	"processing": "正在办理",
+	"starttime": "到达时间",
+
+	"workFlowTo": "文件流转至：",
+	"taskPerson": "处理人：",
+	"open": "打开"
 };
