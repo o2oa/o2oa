@@ -2,13 +2,13 @@
     <div class="processInfoTitle">
         <div class="listItem pf_item" data-o2-events="o2load:loadItemFlag">
             <div class="listItemApplication pf_application">
-                <div class="listItemApplicationIcon" data-o2-events="o2load:loadItemIcon:{{$.data.application}}"></div>
-                <div class="listItemApplicationText pf_applicationText" title="{{$.data.applicationName}}">{{$.data.applicationName}}</div>
+                <div class="listItemApplicationIcon" data-o2-events="o2load:loadItemIcon:{{$.data.taskCompleted.application}}"></div>
+                <div class="listItemApplicationText pf_applicationText" title="{{$.data.taskCompleted.applicationName}}">{{$.data.taskCompleted.applicationName}}</div>
             </div>
             <div class="listItemLine"></div>
 
             <div class="listItemFlag">
-                {{if $.data.allowRapid}}
+                {{if $.data.taskCompleted.allowRapid}}
                 <div class="rapidEditor o2icon-bianji" data-o2-events="click:editTask" title="{{$.lp.rapidEditor}}"></div>
                 {{end if}}
                 {{if $.type=='read'}}
@@ -16,24 +16,24 @@
                 {{end if}}
             </div>
             <div class="listItemActivity">
-                <div class="listItemActivityText mainColor_color" title="{{$.data.activityName}}"> {{($.type=='draft') ? $.lp.draft : $.data.activityName}}</div>
+                <div class="listItemActivityText mainColor_color" title="{{$.data.taskCompleted.activityName}}"> {{($.type=='draft') ? $.lp.draft : $.data.taskCompleted.activityName}}</div>
             </div>
 
             <div class="listItemTitle">
-                <div class="listItemTitleProcess pf_titleProcess" title="{{$.data.processName}}">
+                <div class="listItemTitleProcess pf_titleProcess" title="{{$.data.taskCompleted.processName}}">
                     <div class="listItemTitleFlag">【</div>
-                    <div class="listItemTitleProcessText">{{$.data.processName}}</div>
+                    <div class="listItemTitleProcessText">{{$.data.taskCompleted.processName}}</div>
                     <div class="listItemTitleFlag">】</div>
                 </div>
                 <div class="listItemTitleSubject">
-                    <div>{{$.data.title}}</div>
+                    <div>{{$.data.taskCompleted.title}}</div>
                 </div>
             </div>
         </div>
     </div>
     <div class="processInfoContent">
         <div class="pf_workLog">
-            {{each $.data.workLog}}
+            {{each $.data.workLogList}}
 
                 {{if $.fromActivityType==="begin"}}
                 <div style="height: 50px">
@@ -60,20 +60,25 @@
                         <div class="pf_routeName">{{$.routeName}}</div>
                         <div class="pf_arrivedTime">{{$.arrivedTime.substring(0,15)}}</div>
                     </div>
-                    <div class="pf_itemOpinion">
-                        {{each $.taskCompletedList}}
-                            <div class="pf_itemOpinionIconArea">
+                    <div class="pf_itemOpinionMore">
+                        {{if $.taskList.concat($.taskCompletedList).length>4}}
+                        <span data-o2-events="click:moreWorkLog">...</span>
+                        {{end if}}
+                    </div>
+                    <div class="pf_itemOpinion" data-o2-events="click:moreWorkLog">
+                        <div class="pf_itemOpinionArea">
+                        {{each $.taskList.concat($.taskCompletedList).slice(0,4).reverse() }}
+                            <div class="pf_itemOpinionIconArea" data-o2-events="o2load:attachShowPersonLog">
                                 <img class="pf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{$.person}}/icon?1642673028140" />
+                                <div class="pf_itemOpinionPerson">{{o2.name.cn($.person)}}</div>
+                                {{if $.completedTime}}
                                 <icon class="pf_itemOpinionIconFlag o2icon-xuanzhong"></icon>
+                                {{end if}}
                             </div>
                         {{end each}}
-                        {{each $.taskList}}
-                        <div class="pf_itemOpinionIconArea">
-                            <img class="pf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{$.person}}/icon?1642673028140" />
                         </div>
-                        {{end each}}
                     </div>
-                    <div class="pf_itemOpinionMore"></div>
+
                 </div>
                 {{end if}}
 
@@ -92,6 +97,39 @@
 
             {{end each}}
         </div>
-        <div class="pf_workList"></div>
+        <div class="pf_workList">
+            <div class="pf_workListArea">
+                {{each $.data.workList}}
+                <div class="pf_workListItem">
+                    <div style="height: 24px; line-height: 24px;">
+                        <div style="float: left">{{$.activityArrivedTime.substring(0,16)}}</div>
+                        <button style="float: right" class="mainColor_color mainColor_border pf_button" data-o2-events="click:openWork">{{$._.lp.open}}</button>
+                    </div>
+                    <div><span style="color:#333333">{{$._.lp.workFlowTo}}</span><span class="mainColor_color">[{{$.activityName}}]</span></div>
+                    <div><span style="color:#333333">{{$._.lp.taskPerson}}</span>
+                        <span style="font-size: 12px">
+                            {{(function(){
+                                var taskList = [];
+                                $._.data.workLogList.forEach(function(log){
+                                    if (log.work===$.id){
+                                        if (log.taskList && log.taskList.length){
+                                            log.taskList.forEach(function(task){
+                                                taskList.push(o2.name.cn(task.person)+"("+o2.name.cn(task.unit)+")");
+                                            });
+                                        }
+                                    }
+                                });
+                                return taskList.join(", ");
+                            })()}}
+                        </span>
+                    </div>
+                </div>
+                {{end each}}
+
+                {{each $.data.workCompletedList}}
+
+                {{end each}}
+            </div>
+        </div>
     </div>
 </div>
