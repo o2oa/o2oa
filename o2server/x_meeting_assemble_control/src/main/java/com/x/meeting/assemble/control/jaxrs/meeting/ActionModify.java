@@ -43,27 +43,28 @@ class ActionModify extends BaseAction {
 				throw new ExceptionRoomNotExist(wi.getRoom());
 			}
 
-			//判断开始时间或者结束时间有没有修改过
+			// 判断开始时间或者结束时间有没有修改过
 			boolean modifyTime = false;
 			Date StartTime = wi.getStartTime();
 			Date CompletedTime = wi.getCompletedTime();
-			if(StartTime.getTime() != meeting.getStartTime().getTime() ) {
+			if (StartTime.getTime() != meeting.getStartTime().getTime()) {
 				modifyTime = true;
 			}
-			if(CompletedTime.getTime() != meeting.getCompletedTime().getTime()) {
+			if (CompletedTime.getTime() != meeting.getCompletedTime().getTime()) {
 				modifyTime = true;
 			}
 
 			emc.beginTransaction(Meeting.class);
 
 			Wi.copier.copy(wi, meeting);
-			if(meeting.getInviteMemberList()==null){
+			if (meeting.getInviteMemberList() == null) {
 				meeting.setInviteMemberList(meeting.getInvitePersonList());
 			}
-			List<String> personList = this.convertToPerson(business, ListTools.trim(wi.getInviteMemberList(), true, true));
+			List<String> personList = this.convertToPerson(business,
+					ListTools.trim(wi.getInviteMemberList(), true, true));
 			meeting.setInvitePersonList(personList);
 
-			List<String> modifyInvitePersonList = ListUtils.subtract(personList,meeting.getInvitePersonList());
+			List<String> modifyInvitePersonList = ListUtils.subtract(personList, meeting.getInvitePersonList());
 			List<String> inviteDelPersonList = ListUtils.subtract(meeting.getInvitePersonList(), personList);
 			meeting.setInviteDelPersonList(inviteDelPersonList);
 
@@ -76,11 +77,11 @@ class ActionModify extends BaseAction {
 			emc.commit();
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
 
-				if(modifyTime) { //开始时间或者结束时间有修改过
+				if (modifyTime) { // 开始时间或者结束时间有修改过
 					for (String _s : wi.getInvitePersonList()) {
 						MessageFactory.meeting_invite(_s, meeting, room);
 					}
-				}else {
+				} else {
 					for (String _s : modifyInvitePersonList) {
 						MessageFactory.meeting_invite(_s, meeting, room);
 					}
@@ -90,7 +91,7 @@ class ActionModify extends BaseAction {
 					MessageFactory.meeting_deleteInvitePerson(_s, meeting);
 				}
 
-				this.notifyMeetingInviteMessage(business, meeting);
+				// this.notifyMeetingInviteMessage(business, meeting);
 			}
 			Wo wo = new Wo();
 			wo.setId(meeting.getId());
