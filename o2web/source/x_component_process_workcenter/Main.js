@@ -717,9 +717,9 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
 
 		var _self = this;
-		this.action.WorkLogAction.listWithJob(data.job).then(function(json){
-			data.workLog = json.data;
-			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self});
+		this.action.TaskCompletedAction.getReference(data.id).then(function(json){
+			//data.workLog = json.data;
+			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": json.data}, "module": _self});
 			o2.DL.open({
 				"title": _self.lp.processInfo,
 				"style": "user",
@@ -731,8 +731,29 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 			});
 		});
 	},
-	loadProcessPerson:function(person, e){
-		o2.Actions.load("x_organization_core_express").PersonAction.get
+	attachShowPersonLog: function(e, data){
+		var inforNode = new Element("div.pf_workLogInfor");
+		var html = "<div>"+o2.name.cn(data.person)+"</div>";
+		if (data.completedTime){
+			html += "<div>"+this.lp.opinion+": "+data.opinion+"</div>";
+			html += "<div>"+this.lp.time+": "+data.completedTime.substring(0,16)+"</div>";
+		}else{
+			html += "<div style='color:red'>"+this.lp.processing+"</div>";
+			html += "<div>"+this.lp.starttime+": "+data.startTime.substring(0,16)+"</div>";
+		}
+		inforNode.set("html", html);
+
+		if (!Browser.Platform.ios){
+			new mBox.Tooltip({
+				content: inforNode,
+				setStyles: {content: {padding: 15, lineHeight: 20}},
+				attach: e.target,
+				transition: 'flyin'
+			});
+		}
+	},
+	openWork: function(e, data){
+		o2.api.form.openWork(data.id, "", data.title);
 	}
 });
 MWF.xApplication.process.workcenter.TaskCompletedList = new Class({

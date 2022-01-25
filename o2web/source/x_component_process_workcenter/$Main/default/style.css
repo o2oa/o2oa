@@ -343,12 +343,14 @@
     height: 550px;
     width: 55%;
     float: left;
+    overflow: auto;
     border-right: 1px solid #E6E6E6;
 }
 .pf_workList{
     height: 550px;
     width: 44%;
     float: right;
+    overflow: auto;
 }
 .pf_logItem{
     height: 80px;
@@ -360,18 +362,21 @@
 }
 .pf_itemActivity{
     height: 59px;
-    width: 100px;
+    width: 110px;
     float: left;
     padding: 10px 0;
     border-bottom: 1px solid #E6E6E6;
 }
 .pf_itemOpinion{
-    height: 40px;
-    padding-top: 19px;
-    padding-bottom: 20px;
+    height: 56px;
+    padding-top: 14px;
+    padding-bottom: 10px;
     margin-left: 120px;
     margin-right: 30px;
     border-bottom: 1px solid #E6E6E6;
+}
+.pf_itemOpinionArea{
+    height: 56px;
 }
 .pf_icon{
     height: 16px;
@@ -407,12 +412,16 @@
     width: 30px;
     height: 80px;
     float: right;
+    text-align:center;
+    line-height:60px;
+    cursor: pointer;
 }
 .pf_itemOpinionIconArea{
     width: 40px;
-    height: 40px;
+    height: 56px;
     float: right;
     margin-left: 10px;
+    position: relative;
 }
 .pf_itemOpinionIcon{
     width: 40px;
@@ -421,12 +430,37 @@
     cursor: pointer;
 }
 .pf_itemOpinionIconFlag{
-    position: relative;
-    top: -50px;
+    position: absolute;
+    top: -3px;
     left: 30px;
     color: #4eb547;
 }
-
+.pf_itemOpinionPerson{
+    height: 16px;
+    text-align: center;
+    line-height: 16px;
+    color: #666666;
+    font-size: 12px;
+    margin-top: -5px;
+}
+.pf_workListArea{
+    padding: 10px;
+    overflow: hidden;
+}
+.pf_workListItem{
+    margin: 10px;
+    color: #666666;
+}
+.pf_button{
+    height: 24px;
+    line-height: 24px;
+    padding: 0 15px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 12px;
+    border: 1px solid;
+    background-color: #FFFFFF;
+}
 
 
 @font-face {
