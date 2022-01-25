@@ -79,6 +79,12 @@ class ActionPaging extends BaseAction {
 
 			p = filterManualCompleted(cb, root, p, wi.getManualCompleted());
 
+			p = filterHostUnit(cb, root, p, wi.getHostUnit());
+
+			p = filterHostPerson(cb, root, p, wi.getHostPerson());
+
+			p = filterType(cb, root, p, wi.getType());
+
 			Order order;
 			String sortField = wi.getSortField();
 			String sortType = wi.getSortType();
@@ -122,8 +128,6 @@ class ActionPaging extends BaseAction {
 			return result;
 		}
 	}
-
- 
 
 	public static class Wo extends WrapOutMeeting {
 		private static final long serialVersionUID = 4609263020989488356L;
@@ -175,7 +179,7 @@ class ActionPaging extends BaseAction {
 		@FieldDescribe("承办部门")
 		private String hostUnit;
 
-		@FieldDescribe("承办人")
+		@FieldDescribe("主持人")
 		private String hostPerson;
 
 		@FieldDescribe("类型")

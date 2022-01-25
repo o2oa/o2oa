@@ -105,6 +105,12 @@ class ActionPagingManage extends BaseAction {
 
 			p = filterManualCompleted(cb, root, p, wi.getManualCompleted());
 
+			p = filterHostUnit(cb, root, p, wi.getHostUnit());
+
+			p = filterHostPerson(cb, root, p, wi.getHostPerson());
+
+			p = filterType(cb, root, p, wi.getType());
+
 			Order order;
 			String sortField = wi.getSortField();
 			String sortType = wi.getSortType();
@@ -128,7 +134,7 @@ class ActionPagingManage extends BaseAction {
 			typedQuery.setFirstResult(pageIndex);
 			typedQuery.setMaxResults(pageSize);
 			ids = typedQuery.getResultList();
-			LOGGER.info("pagingtypedQuery {}." , typedQuery::toString);
+			LOGGER.info("pagingtypedQuery {}.", typedQuery::toString);
 
 			TypedQuery<String> tqCount = em.createQuery(cq.select(root.get(Meeting_.id)).where(p).distinct(true));
 			List<String> allid = tqCount.getResultList();
@@ -198,11 +204,11 @@ class ActionPagingManage extends BaseAction {
 
 		@FieldDescribe("排序.(desc|asc)")
 		private String sortType;
-		
+
 		@FieldDescribe("承办部门")
 		private String hostUnit;
 
-		@FieldDescribe("承办人")
+		@FieldDescribe("主持人")
 		private String hostPerson;
 
 		@FieldDescribe("类型")
