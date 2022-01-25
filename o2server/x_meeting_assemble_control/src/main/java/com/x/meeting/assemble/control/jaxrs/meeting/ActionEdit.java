@@ -87,7 +87,7 @@ class ActionEdit extends BaseAction {
 					MessageFactory.meeting_deleteInvitePerson(_s, meeting);
 				}
 
-				this.notifyMeetingInviteMessage(business, meeting);
+				//this.notifyMeetingInviteMessage(business, meeting);
 			}
 			Wo wo = new Wo();
 			wo.setId(meeting.getId());

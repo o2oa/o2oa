@@ -35,24 +35,24 @@ class ActionEditStartTime extends BaseAction {
 			if (null == room) {
 				throw new ExceptionRoomNotExist(wi.getRoom());
 			}
-			
+
 			emc.beginTransaction(Meeting.class);
 			meeting.setStartTime(wi.getStartTime());
 			if (!business.room().checkIdle(meeting.getRoom(), meeting.getStartTime(), meeting.getCompletedTime(),
 					meeting.getId())) {
 				throw new ExceptionRoomNotAvailable(room.getName());
 			}
-			
+
 			emc.persist(meeting, CheckPersistType.all);
 			emc.commit();
-			
+
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
 				for (String _s : meeting.getInvitePersonList()) {
 					MessageFactory.meeting_invite(_s, meeting, room);
 				}
-				this.notifyMeetingInviteMessage(business, meeting);
+				// this.notifyMeetingInviteMessage(business, meeting);
 			}
-			
+
 			Wo wo = new Wo();
 			wo.setId(meeting.getId());
 			result.setData(wo);
@@ -60,10 +60,10 @@ class ActionEditStartTime extends BaseAction {
 		}
 	}
 
-	public static class Wi  {
+	public static class Wi {
 		@FieldDescribe("所属楼层.")
 		private String room;
-		
+
 		@FieldDescribe("开始时间.")
 		private Date startTime;
 
@@ -82,8 +82,7 @@ class ActionEditStartTime extends BaseAction {
 		public void setStartTime(Date startTime) {
 			this.startTime = startTime;
 		}
-		
-		
+
 	}
 
 	public static class Wo extends WoId {
