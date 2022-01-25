@@ -202,4 +202,25 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return p;
 	}
 
+	protected Predicate filterHostUnit(CriteriaBuilder cb, Root<Meeting> root, Predicate p, String hostUnit) {
+		if (!StringUtils.isBlank(hostUnit)) {
+			p = cb.and(p, cb.like(root.get(Meeting_.hostUnit), "%" + hostUnit + "%"));
+		}
+		return p;
+	}
+
+	protected Predicate filterHostPerson(CriteriaBuilder cb, Root<Meeting> root, Predicate p, String hostPerson) {
+		if (!StringUtils.isBlank(hostPerson)) {
+			p = cb.and(p, cb.like(root.get(Meeting_.hostPerson), "%" + hostPerson + "%"));
+		}
+		return p;
+	}
+
+	protected Predicate filterType(CriteriaBuilder cb, Root<Meeting> root, Predicate p, String type) {
+		if (!StringUtils.isBlank(type)) {
+			p = cb.and(p, cb.like(root.get(Meeting_.type), "%" + type + "%"));
+		}
+		return p;
+	}
+
 }
