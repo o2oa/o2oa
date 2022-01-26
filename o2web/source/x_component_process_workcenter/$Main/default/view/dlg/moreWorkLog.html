@@ -1,0 +1,14 @@
+<div>
+    {{each $.data.taskCompletedList}}
+        <div class="mf_workLogItem">
+            <div class="mf_workLogIcon">
+                <div class="pf_itemOpinionIconArea">
+                    <img class="pf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{encodeURIComponent($.person)}}/icon" />
+                </div>
+            </div>
+            <div>
+                <{{o2.name.cn($.person)}}>({{o2.name.cn($.unit}})
+            </div>
+        </div>
+    {{end each}}
+</div>

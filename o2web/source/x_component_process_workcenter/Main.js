@@ -712,12 +712,15 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		}.bind(this));
 	},
 
+	getReference: function(data){
+		return this.action.TaskCompletedAction.getReference(data.id);
+	},
 	openWorkInfo: function(e, data){
 		var infoContent = new Element("div");
 		var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
 
 		var _self = this;
-		this.action.TaskCompletedAction.getReference(data.id).then(function(json){
+		this.getReference(data).then(function(json){
 			//data.workLog = json.data;
 			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": json.data}, "module": _self});
 			o2.DL.open({
@@ -754,6 +757,29 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 	},
 	openWork: function(e, data){
 		o2.api.form.openWork(data.id, "", data.title);
+	},
+	moreWorkLog: function(e, data){
+		if (this.currentLogNode) this.currentLogNode.removeClass("mainColor_bg_opacity");
+		this.currentLogNode = e.target.getParent(".pf_logItem").addClass("mainColor_bg_opacity");
+		// if (!this.moreLogNode){
+		// 	this.moreLogNode = new Element("div");
+		// }
+		var _self = this;
+		var moreLogNode = new Element("div");
+		var url = this.app.path+this.app.options.style+"/view/dlg/moreWorkLog.html";
+		moreLogNode.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self});
+
+		o2.require("o2.widget.Panel", function(){
+
+		});
+		o2.DL.open({
+			"title": "",
+			"style": "user",
+			"isResize": false,
+			"content": moreLogNode,
+			"width": 800,
+			"height": 720
+		});
 	}
 });
 MWF.xApplication.process.workcenter.TaskCompletedList = new Class({
