@@ -62,14 +62,14 @@
                     </div>
                     <div class="pf_itemOpinionMore">
                         {{if $.taskList.concat($.taskCompletedList).length>4}}
-                        <span data-o2-events="click:moreWorkLog">...</span>
+                        <span>...</span>
                         {{end if}}
                     </div>
                     <div class="pf_itemOpinion" data-o2-events="click:moreWorkLog">
-                        <div class="pf_itemOpinionArea">
+                        <div class="pf_itemOpinionArea" data-o2-events="click:moreWorkLog">
                         {{each $.taskList.concat($.taskCompletedList).slice(0,4).reverse() }}
                             <div class="pf_itemOpinionIconArea" data-o2-events="o2load:attachShowPersonLog">
-                                <img class="pf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{$.person}}/icon?1642673028140" />
+                                <img class="pf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{encodeURIComponent($.person)}}/icon" />
                                 <div class="pf_itemOpinionPerson">{{o2.name.cn($.person)}}</div>
                                 {{if $.completedTime}}
                                 <icon class="pf_itemOpinionIconFlag o2icon-xuanzhong"></icon>

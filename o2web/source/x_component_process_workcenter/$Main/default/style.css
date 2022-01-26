@@ -377,6 +377,7 @@
 }
 .pf_itemOpinionArea{
     height: 56px;
+    cursor:pointer;
 }
 .pf_icon{
     height: 16px;
