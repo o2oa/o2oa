@@ -716,21 +716,27 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		return this.action.TaskCompletedAction.getReference(data.id);
 	},
 	openWorkInfo: function(e, data){
+		var p = e.target.getPosition(this.app.content);
 		var infoContent = new Element("div");
 		var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
 
 		var _self = this;
 		this.getReference(data).then(function(json){
 			//data.workLog = json.data;
-			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": json.data}, "module": _self});
-			o2.DL.open({
-				"title": _self.lp.processInfo,
-				"style": "user",
-				"isResize": false,
-				"content": infoContent,
-				"maskNode": _self.app.content,
-				"width": 800,
-				"height": 720
+			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": json.data}, "module": _self}, function(){
+				infoContent.inject(document.body);
+				debugger;
+				o2.DL.open({
+					"top": p.y,
+					"left": p.x,
+					"title": _self.lp.processInfo,
+					"style": "user",
+					"isResize": true,
+					"content": infoContent,
+					"maskNode": _self.app.content,
+					"width": 800,
+					"height": "auto"
+				});
 			});
 		});
 	},
