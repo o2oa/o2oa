@@ -335,19 +335,20 @@
     max-width: 120px;
 }
 .processInfoContent{
-    height: 550px;
+    max-height: 550px;
     margin: 20px;
     overflow: hidden;
 }
 .pf_workLog{
-    height: 550px;
+    max-height: 550px;
     width: 55%;
+    padding: 3px 0;
     float: left;
     overflow: auto;
     border-right: 1px solid #E6E6E6;
 }
 .pf_workList{
-    height: 550px;
+    max-height: 550px;
     width: 44%;
     float: right;
     overflow: auto;
