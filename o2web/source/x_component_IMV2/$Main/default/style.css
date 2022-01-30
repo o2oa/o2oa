@@ -44,6 +44,14 @@
   padding-left: 24px;
   float: left;
 }
+.o2_im_chat_list_top .im_setting {
+  background: url(../x_component_IMV2/$Main/default/icons/icon_setting.png)   no-repeat center;
+  height: 40px;
+  float: right;
+  width: 40px;
+  border-left: solid 1px #dedede;
+  cursor: pointer;
+}
 
 .o2_im_chat_list_top .search_out {
     margin-right: 40px; 

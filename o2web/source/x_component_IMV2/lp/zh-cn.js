@@ -20,13 +20,17 @@ MWF.xApplication.IMV2.LP = {
 	"selectPerson": "选择人员",
 	"ok": "确定",
 	"close": "关闭",
+	"alert": "提示",
+	"setting": "设置",
 
 	"modifyGroupName": "修改群名",
 	"groupName": "群名",
+	"clearAllMsg": "清空聊天记录",
 
 	"enterMessage": "输入消息内容",
 	"send": "发送",
 	"sendKeyTips": "Ctrl + Enter 换行",
 	"file": "[文件]",
-	"messageXadminNotSupport": "xadmin用户无法使用聊聊，请切换正常的用户登录！"
+	"messageXadminNotSupport": "xadmin用户无法使用聊聊，请切换正常的用户登录！",
+	"messageClearAllMsgAlert": "确定要清空聊天记录吗，清空后当前会话所有人都将看不到这些聊天记录？"
 };
