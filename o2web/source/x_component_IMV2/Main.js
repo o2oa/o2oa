@@ -56,21 +56,32 @@ MWF.xApplication.IMV2.Main = new Class({
 			this.app.notice(this.lp.messageXadminNotSupport, "error");
 			return;
 		}
-		var url = this.path + this.options.style + "/im.html";
-		this.content.loadHtml(url, { "bind": { "lp": this.lp, "data": {} }, "module": this }, function () {
-			//设置content
-			this.app.content = this.o2ImMainNode;
-			//启动监听
-			this.startListening();
-			//获取会话列表
-			this.conversationNodeItemList = [];
-			o2.Actions.load("x_message_assemble_communicate").ImAction.myConversationList(function (json) {
-				if (json.data && json.data instanceof Array) {
-					this.loadConversationList(json.data);
+		// 先加载配置文件 放入imConfig对象
+		MWF.xDesktop.loadConfig(function () {
+			this.imConfig = layout.config.imConfig || {}
+			console.log("imConfig", this.imConfig);
+			var url = this.path + this.options.style + "/im.html";
+			this.content.loadHtml(url, { "bind": { "lp": this.lp, "data": {} }, "module": this }, function () {
+				//设置content
+				this.app.content = this.o2ImMainNode;
+				//启动监听
+				this.startListening();
+				//获取会话列表
+				this.conversationNodeItemList = [];
+				o2.Actions.load("x_message_assemble_communicate").ImAction.myConversationList(function (json) {
+					if (json.data && json.data instanceof Array) {
+						this.loadConversationList(json.data);
+					}
+				}.bind(this));
+				// 管理员可见设置按钮
+				if (MWF.AC.isAdministrator()) {
+					this.o2ImAdminSettingNode.setStyle("display", "block");
+				} else {
+					this.o2ImAdminSettingNode.setStyle("display", "none");
 				}
 			}.bind(this));
-
 		}.bind(this));
+		
 		this.loadComponentName();
 	},
 	// 监听ws消息
@@ -128,6 +139,59 @@ MWF.xApplication.IMV2.Main = new Class({
 			console.log(error);
 		}.bind(this), false);
 	},
+	// 点击设置按钮
+	tapOpenSettings: function() {
+		this.openSettingsDialog();
+	},
+	// 打开IM配置文件
+	openSettingsDialog: function () {
+		var settingNode = new Element("div", {"style":"padding:10px;background-color:#fff;"});
+		// var imConfig = layout.config.imConfig || {}
+		var lineNode = new Element("div", {"style":"height:24px;line-height: 24px;", "text": "是否开启聊天消息清除功能："}).inject(settingNode);
+		var isClearEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableClearMsg || false}).inject(lineNode);
+		var dlg = o2.DL.open({
+				"title": this.lp.setting,
+				"mask": true,
+				"content": settingNode,
+				"onQueryClose": function () {
+					settingNode.destroy();
+				}.bind(this),
+				"buttonList": [
+					{
+						"type": "ok",
+						"text": this.lp.ok,
+						"action": function () { 
+							this.imConfig.enableClearMsg = isClearEnableNode.get("checked");
+							console.log(this.imConfig);
+							this.postIMConfig(this.imConfig);
+							// 保存配置文件
+							dlg.close(); 
+						}.bind(this)
+					},
+					{
+							"type": "cancel",
+							"text": this.lp.close,
+							"action": function () { dlg.close(); }
+					}
+				],
+				"onPostShow": function () {
+						dlg.reCenter();
+				}.bind(this),
+				"onPostClose": function(){
+					dlg = null;
+				}.bind(this)
+		});
+	},
+	// 保存IM配置文件
+	postIMConfig: function (imConfig) {
+		o2.Actions.load("x_message_assemble_communicate").ImAction.config(imConfig, function (json) {
+			console.log("保存配置完成", json.data);
+			this.refresh();//重新加载整个IM应用
+		}.bind(this), function (error) {
+			console.log(error);
+			this.app.notice(error, "error", this.app.content);
+		}.bind(this));
+	},
 	//点击会话
 	tapConv: function (conv) {
 		this._setCheckNode(conv);
@@ -135,6 +199,10 @@ MWF.xApplication.IMV2.Main = new Class({
 		var data = { "convName": conv.title, "lp": this.lp };
 		this.conversationId = conv.id;
 		this.chatNode.empty();
+		if (this.emojiBoxNode) {
+			this.emojiBoxNode.destroy();
+			this.emojiBoxNode = null;
+		}
 		this.chatNode.loadHtml(url, { "bind": data, "module": this }, function () {
 			var me = layout.session.user.distinguishedName;
 			if (conv.type === "group" && me === conv.adminPerson) {
@@ -144,13 +212,37 @@ MWF.xApplication.IMV2.Main = new Class({
 						var display = this.chatTitleMoreMenuNode.getStyle("display");
 						if (display === "none") {
 							this.chatTitleMoreMenuNode.setStyle("display", "block");
+							this.chatTitleMoreMenuItem1Node.setStyle("display", "block");
+							this.chatTitleMoreMenuItem2Node.setStyle("display", "block");
+							if (this.imConfig.enableClearMsg) {
+								this.chatTitleMoreMenuItem3Node.setStyle("display", "block");
+							} else {
+								this.chatTitleMoreMenuItem3Node.setStyle("display", "none");
+							}
 						} else {
 							this.chatTitleMoreMenuNode.setStyle("display", "none");
 						}
 					}.bind(this)
 				});
-			} else {
-				this.chatTitleMoreBtnNode.setStyle("display", "none");
+			} else if (conv.type !== "group") {
+				if (this.imConfig.enableClearMsg) {
+					this.chatTitleMoreBtnNode.setStyle("display", "block");
+					this.chatTitleMoreBtnNode.addEvents({
+						"click": function (e) {
+							var display = this.chatTitleMoreMenuNode.getStyle("display");
+							if (display === "none") {
+								this.chatTitleMoreMenuNode.setStyle("display", "block");
+								this.chatTitleMoreMenuItem1Node.setStyle("display", "none");
+								this.chatTitleMoreMenuItem2Node.setStyle("display", "none");
+								this.chatTitleMoreMenuItem3Node.setStyle("display", "block");
+							} else {
+								this.chatTitleMoreMenuNode.setStyle("display", "none");
+							}
+						}.bind(this)
+					});
+				} else {
+					this.chatTitleMoreBtnNode.setStyle("display", "none");
+				}
 			}
 			//获取聊天信息
 			this.messageList = [];
@@ -200,6 +292,29 @@ MWF.xApplication.IMV2.Main = new Class({
 		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": this.lp.modifyMember, "personCount": 0, "personSelected": members, "isUpdateMember": true }, { app: this.app });
 		form.create()
 	},
+	// 点击菜单 清空聊天记录
+	tapClearMsg: function(e) {
+		var _self = this;
+		MWF.xDesktop.confirm("info", this.chatTitleNode, this.lp.alert, this.lp.messageClearAllMsgAlert, 400, 150, function() {
+			o2.Actions.load("x_message_assemble_communicate").ImAction.clearConversationMsg(_self.conversationId, function (json) {
+				_self._reclickConv();
+			}, function (error) {
+				console.log(error);
+				_self.app.notice(error, "error", _self.app.content);
+			});
+			this.close();
+		}, function(){
+			this.close();
+		}, null, null, "o2");
+	},
+	_reclickConv: function() {
+		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+			var c = this.conversationNodeItemList[i];
+			if (this.conversationId == c.data.id) {
+				this.tapConv(c.data);
+			}
+		}
+	},
 	//点击发送消息
 	sendMsg: function () {
 		var text = this.chatBottomAreaTextareaNode.value;
@@ -208,6 +323,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			this._newAndSendTextMsg(text, "text");
 		} else {
 			console.log(this.lp.noMessage);
+			this.app.notice(this.lp.noMessage, "error", this.app.content);
 		}
 	},
 	//点击表情按钮

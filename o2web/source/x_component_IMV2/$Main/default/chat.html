@@ -6,6 +6,8 @@
     <div class="o2_im_chat_content_title_menu_item" data-o2-element="chatTitleMoreMenuItem1Node" data-o2-events="click:tapUpdateConvTitle">{{$.lp.modifyGroupName}}</div>
     <div class="o2_im_chat_content_title_menu_item" data-o2-element="chatTitleMoreMenuItem2Node" data-o2-events="click:tapUpdateConvMembers">
       {{$.lp.modifyMember}}</div>
+      <div class="o2_im_chat_content_title_menu_item" data-o2-element="chatTitleMoreMenuItem3Node" data-o2-events="click:tapClearMsg" style="display: none;">
+        {{$.lp.clearAllMsg}}</div>
   </div>
 </div>
 <!-- 聊天内容 -->
@@ -21,7 +23,7 @@
     <textarea data-o2-element="chatBottomAreaTextareaNode" placeholder="{{$.lp.enterMessage}}"></textarea>
   </div>
   <div class="chat-bottom-area-send-space">
-    <div class="chat-bottom-area-key-tips">Ctrl + Enter 换行</div>
+    <div class="chat-bottom-area-key-tips">{{$.lp.sendKeyTips}}</div>
     <div class="chat-bottom-area-send" data-o2-element="chatBottomAreaSendAreaNode">
       <span class="chat-bottom-area-send-btn" data-o2-element="chatBottomAreaSendBtnNode" data-o2-events="click:sendMsg">{{$.lp.send}}</span>
     </div>
