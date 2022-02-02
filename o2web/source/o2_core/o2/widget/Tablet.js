@@ -620,7 +620,14 @@ o2.widget.Tablet = o2.Tablet = new Class({
                     this.storeToPreArray();
                     this.ctx.drawImage(imageNode, coordinate.left, coordinate.top, coordinate.width, coordinate.height);
                     this.storeToMiddleArray();
-                }.bind(this)
+
+                    if(this.globalCompositeOperation)this.ctx.globalCompositeOperation = this.globalCompositeOperation;
+                    this.globalCompositeOperation = null;
+                }.bind(this),
+                onPostCancel: function(){
+                    if(this.globalCompositeOperation)this.ctx.globalCompositeOperation = this.globalCompositeOperation;
+                    this.globalCompositeOperation = null;
+                }.bind(this),
             });
             mover.load();
 
@@ -645,6 +652,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
         var fileUploadNode = uploadFileAreaNode.getFirst();
         fileUploadNode.addEvent("change", function () {
             var file =  fileUploadNode.files[0];
+            this.globalCompositeOperation = this.ctx.globalCompositeOperation;
+            this.ctx.globalCompositeOperation = "source-over";
             this.parseFileToImage( file, function(){
                 uploadFileAreaNode.destroy();
             })
@@ -656,6 +665,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
             "style": "default",
             "aspectRatio" : 0,
             "onOk" : function( img ){
+                this.globalCompositeOperation = this.ctx.globalCompositeOperation;
+                this.ctx.globalCompositeOperation = "source-over";
                 this.parseFileToImage( img );
             }.bind(this)
         });
@@ -1240,22 +1251,19 @@ o2.widget.Tablet.EraserRadiusPicker = new Class({
         ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
 
         ctx.strokeStyle="#000000"; //线条颜色; 默认 #000000
-        //ctx.strokeStyle= this.currentColor || this.options.color; // 线条颜色; 默认 #000000
-        ctx.lineWidth=  lineWidth ;
-
-        ctx.beginPath();
-
-        // ctx.moveTo( 1 , 15 );
-        // ctx.lineTo( 200, 15  );
-        // ctx.stroke();
-
         ctx.lineCap = "round";　　//设置线条两端为圆弧
         ctx.lineJoin = "round";　　//设置线条转折为圆弧
-        // ctx.lineWidth = radius*2;
-        // ctx.globalCompositeOperation = "destination-out";
-        ctx.moveTo(1, 15);
-        ctx.arc(1, 15, 1, 0, 2*Math.PI);
-        ctx.fill();
+        ctx.lineWidth=  lineWidth ;
+
+        // ctx.moveTo(1, 15);
+        // ctx.arc(30, 15, 1, 0, 2*Math.PI);
+        // ctx.fill();
+
+        ctx.strokeStyle="#000000";
+        ctx.beginPath();
+        ctx.lineTo( 28, 15  );
+        ctx.stroke();
+
     }
 });
 
@@ -1265,7 +1273,7 @@ o2.widget.Tablet.ImageClipper = new Class({
     Extends: MWF.widget.Common,
     options: {
         "imageUrl" : "",
-        "resultMaxSize" : 800,
+        "resultMaxSize" : 700,
         "description" : "",
         "title": o2.LP.widget.imageClipper,
         "style": "default",
@@ -1445,6 +1453,7 @@ o2.widget.Tablet.ImageMover = new Class({
             },
             events : {
                 click : function(){
+                    this.fireEvent("postCancel");
                     this.close();
                 }.bind(this)
             }
