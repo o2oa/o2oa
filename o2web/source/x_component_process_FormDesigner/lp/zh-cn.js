@@ -681,6 +681,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideModeButton": "隐藏模式操作",
         "showInDatagrid": "数据网格中的展现",
 
+        "hideEraserButton": "隐藏橡皮按钮",
+        "hideEraserRadioButton": "隐藏橡皮大小按钮",
         "hideSizeButton": "隐藏粗细按钮",
         "hideColorButton": "隐藏颜色按钮",
         "hideImageButton": "隐藏插入图片按钮",
@@ -889,6 +891,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "editScript": "编辑脚本",
         "printScript": "允许打印脚本",
         "viewTracesScript": "允许查看痕迹脚本",
+        "handwrittenApproval": "手写签批",
+        "handwrittenApprovalScript": "允许手写签批脚本",
         "zoom": "设置缩放",
         "zoomInfo": "用户是否可自定义缩放比例",
         "fullWidth": "全角转换",
