@@ -53,8 +53,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         this.setOptions(options);
 
-
-        if( !this.tablet.options.toolHidden )this.tablet.options.toolHidden = [];
+        if( !this.options.toolHidden )this.options.toolHidden = [];
 
         this.path = this.options.path || (o2.session.path+"/widget/$Tablet/");
         this.cssPath = this.path + this.options.style+"/css.wcss";
@@ -795,7 +794,8 @@ o2.widget.Tablet.Toolbar = new Class({
         }
 
         if( this.tablet.options.toolHidden.contains("eraser") ){
-            this.tablet.options.toolHidden.concat( ["pen", "eraserRadius"] );
+            this.tablet.options.toolHidden.push("pen");
+            this.tablet.options.toolHidden.push("eraserRadius");
         }
 
         items = items.filter(function(tool){
