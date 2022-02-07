@@ -716,7 +716,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		return this.action.TaskCompletedAction.getReference(data.id);
 	},
 	openWorkInfo: function(e, data){
-		var p = e.target.getPosition(this.app.content);
+		// var p = e.target.getPosition(this.app.content);
 		var infoContent = new Element("div");
 		var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
 
@@ -727,15 +727,15 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 				infoContent.inject(document.body);
 				debugger;
 				o2.DL.open({
-					"top": p.y,
-					"left": p.x,
+					// "top": p.y,
+					// "left": p.x,
 					"title": _self.lp.processInfo,
 					"style": "user",
 					"isResize": true,
 					"content": infoContent,
 					"maskNode": _self.app.content,
 					"width": 800,
-					"height": "auto"
+					"height": 720
 				});
 			});
 		});
@@ -767,25 +767,41 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 	moreWorkLog: function(e, data){
 		if (this.currentLogNode) this.currentLogNode.removeClass("mainColor_bg_opacity");
 		this.currentLogNode = e.target.getParent(".pf_logItem").addClass("mainColor_bg_opacity");
-		// if (!this.moreLogNode){
-		// 	this.moreLogNode = new Element("div");
-		// }
+
 		var _self = this;
 		var moreLogNode = new Element("div");
 		var url = this.app.path+this.app.options.style+"/view/dlg/moreWorkLog.html";
 		moreLogNode.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self});
 
+		debugger;
+		var targetNode = e.target.getParent(".processInfoContent").getElement(".pf_workListArea");
 		o2.require("o2.widget.Panel", function(){
+			var panel = new o2.widget.Panel(moreLogNode, {
+				"style": "flat",
+				"title": "",
+				"width": 300,
+				"height": 540,
+				"isMove": false,
+				"isClose": true,
+				"isMax": false,
+				"isExpand": false,
+				"isResize": false,
+				"target": targetNode
+			});
+			panel.load();
+			// panel.titleNode.addClass("mainColor_bg_opacity");
+			// panel.content.addClass("mainColor_bg_opacity");
+			// panel.bottomNode.addClass("mainColor_bg_opacity");
 
 		});
-		o2.DL.open({
-			"title": "",
-			"style": "user",
-			"isResize": false,
-			"content": moreLogNode,
-			"width": 800,
-			"height": 720
-		});
+		// o2.DL.open({
+		// 	"title": "",
+		// 	"style": "user",
+		// 	"isResize": false,
+		// 	"content": moreLogNode,
+		// 	"width": 800,
+		// 	"height": 720
+		// });
 	}
 });
 MWF.xApplication.process.workcenter.TaskCompletedList = new Class({

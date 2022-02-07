@@ -47,5 +47,6 @@ MWF.xApplication.process.workcenter.LP = {
 
 	"workFlowTo": "文件流转至：",
 	"taskPerson": "处理人：",
-	"open": "打开"
+	"open": "打开",
+	"select": "选择"
 };

@@ -60,13 +60,13 @@
                         <div class="pf_routeName">{{$.routeName}}</div>
                         <div class="pf_arrivedTime">{{$.arrivedTime.substring(0,15)}}</div>
                     </div>
-                    <div class="pf_itemOpinionMore">
+                    <div class="pf_itemOpinionMore" data-o2-events="click:moreWorkLog">
                         {{if $.taskList.concat($.taskCompletedList).length>4}}
                         <span>...</span>
                         {{end if}}
                     </div>
                     <div class="pf_itemOpinion" data-o2-events="click:moreWorkLog">
-                        <div class="pf_itemOpinionArea" data-o2-events="click:moreWorkLog">
+                        <div class="pf_itemOpinionArea">
                         {{each $.taskList.concat($.taskCompletedList).slice(0,4).reverse() }}
                             <div class="pf_itemOpinionIconArea" data-o2-events="o2load:attachShowPersonLog">
                                 <img class="pf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{encodeURIComponent($.person)}}/icon" />
