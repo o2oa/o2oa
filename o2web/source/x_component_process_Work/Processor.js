@@ -10,6 +10,8 @@ MWF.xApplication.process.Work.Processor = new Class({
         "mediaNode": null,
         "opinion": "",
         "defaultRoute": "",
+        "isHandwriting": true,
+        "tabletToolHidden": [],
         "tabletWidth": 0,
         "tabletHeight": 0,
         "orgHeight": 276,
@@ -551,20 +553,22 @@ MWF.xApplication.process.Work.Processor = new Class({
             }.bind(this)
         });
 
-        this.mediaActionArea = new Element("div", {"styles": this.css.inputOpinionMediaActionArea}).inject(this.inputOpinionNode);
-        this.handwritingAction = new Element("div", {
-            "styles": this.css.inputOpinionHandwritingAction,
-            "text": MWF.xApplication.process.Work.LP.handwriting
-        }).inject(this.mediaActionArea);
-        this.handwritingAction.addEvent("click", function () {
-            if (layout.mobile) {
-                window.setTimeout(function () {
+        if( this.options.isHandwriting ){
+            this.mediaActionArea = new Element("div", {"styles": this.css.inputOpinionMediaActionArea}).inject(this.inputOpinionNode);
+            this.handwritingAction = new Element("div", {
+                "styles": this.css.inputOpinionHandwritingAction,
+                "text": MWF.xApplication.process.Work.LP.handwriting
+            }).inject(this.mediaActionArea);
+            this.handwritingAction.addEvent("click", function () {
+                if (layout.mobile) {
+                    window.setTimeout(function () {
+                        this.handwriting();
+                    }.bind(this), 100)
+                } else {
                     this.handwriting();
-                }.bind(this), 100)
-            } else {
-                this.handwriting();
-            }
-        }.bind(this));
+                }
+            }.bind(this));
+        }
 
         // if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia){
         //     this.audioRecordAction = new Element("div", {"styles": this.css.inputOpinionAudioRecordAction, "text": MWF.xApplication.process.Work.LP.audioRecord}).inject(this.mediaActionArea);
@@ -675,7 +679,8 @@ MWF.xApplication.process.Work.Processor = new Class({
         var y = 320;
         if (!layout.mobile) {
 
-            x = Math.max(this.options.tabletWidth || x, 500);
+            x = Math.max(this.options.tabletWidth || x, 600);
+            this.options.tabletWidth = x;
             y = Math.max(this.options.tabletHeight ? (parseInt(this.options.tabletHeight) + 110) : y, 320);
 
             //y = Math.max(size.y, 320);
@@ -733,6 +738,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         MWF.require("MWF.widget.Tablet", function () {
             var handWritingOptions = {
                 "style": "default",
+                "toolHidden": this.options.tabletToolHidden || [],
                 "contentWidth": this.options.tabletWidth || 0,
                 "contentHeight": this.options.tabletHeight || 0,
                 "onSave": function (base64code, base64Image, imageFile) {

@@ -18,11 +18,13 @@
                 <td class="editTableValue">
                     <input type="radio" onclick="if (this.checked){
                         $('text{$.pid}tabletWidth').setStyle('display', '');
-                        $('text{$.pid}tabletHeight').setStyle('display', '')
+                        $('text{$.pid}tabletHeight').setStyle('display', '');
+                        $('text{$.pid}tabletActionBar').setStyle('display', '');
                        }" name="isHandwriting" value="yes" text{($.isHandwriting!='no')?'checked':''}/>{{$.lp.yes}}
                     <input type="radio" onclick="if (this.checked){
                         $('text{$.pid}tabletWidth').setStyle('display', 'none');
                         $('text{$.pid}tabletHeight').setStyle('display', 'none');
+                        $('text{$.pid}tabletActionBar').setStyle('display', 'none');
                        }" name="isHandwriting" value="no" text{($.isHandwriting=='no')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
@@ -38,6 +40,18 @@
                 <td class="editTableValue">
                     <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 100px;;margin-right:5px;" />px
                     <div style="color: #666">({{$.lp.tabletSizeNote}})</div>
+                </td>
+            </tr>
+            <tr id="text{$.pid}tabletActionBar" style="display: text{($.isHandwriting=='no')?'none':''};">
+                <td class="editTableTitle">{{$.lp.actionBar}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('eraser')!=-1)?'checked':''} type="checkbox" value="eraser"/>{{$.lp.hideEraserButton}}<br/>
+                    <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('eraserRadio')!=-1)?'checked':''} type="checkbox" value="eraserRadio"/>{{$.lp.hideEraserRadioButton}}<br/>
+                    <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('size')!=-1)?'checked':''} type="checkbox" value="size"/>{{$.lp.hideSizeButton}}<br/>
+                    <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('color')!=-1)?'checked':''} type="checkbox" value="color"/>{{$.lp.hideColorButton}}<br/>
+                    <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('image')!=-1)?'checked':''} type="checkbox" value="image"/>{{$.lp.hideImageButton}}<br/>
+                    <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('imageClipper')!=-1)?'checked':''} type="checkbox" value="imageClipper"/>{{$.lp.hideImageClipperButton}}<br/>
+                    <div style="color: #666">({{$.lp.tabletToolbarNote}})</div>
                 </td>
             </tr>
             <tr>

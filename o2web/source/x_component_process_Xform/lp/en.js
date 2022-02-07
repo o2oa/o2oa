@@ -199,6 +199,7 @@ MWF.xApplication.process.Xform.LP = {
     "editdocCompleted": "EditComplete",
     "printdoc": "Print",
     "history": "Text Trace",
+    "handwrittenApproval": "Handwritten Approval",
     "fullScreen": "FullScreen",
     "returnScreen": "Restore",
 
@@ -206,6 +207,7 @@ MWF.xApplication.process.Xform.LP = {
     "editdocCompleted_mobile": "EditComplete",
     "printdoc_mobile": "Print",
     "history_mobile": "Trace",
+    "handwrittenApproval_mobile": "Approval",
 
 
     "subformNestedError": "This form has nested subforms, please contact the administrator!",
