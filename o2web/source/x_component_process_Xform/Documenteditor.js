@@ -1969,6 +1969,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return true;
     },
     _isAllowHandwrittenApproval: function(){
+        return false;
         if (this.json.allowHandwrittenApproval=="n") return false;
         if (this.json.allowHandwrittenApprovalScript=="s"){
             if (this.json.allowHandwrittenApprovalScript && this.json.allowHandwrittenApprovalScript.code){
