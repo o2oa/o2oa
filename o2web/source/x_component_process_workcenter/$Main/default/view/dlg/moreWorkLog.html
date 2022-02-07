@@ -2,12 +2,20 @@
     {{each $.data.taskCompletedList}}
         <div class="mf_workLogItem">
             <div class="mf_workLogIcon">
-                <div class="pf_itemOpinionIconArea">
-                    <img class="pf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{encodeURIComponent($.person)}}/icon" />
+                <div class="mf_itemOpinionIconArea">
+                    <img class="mf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{encodeURIComponent($.person)}}/icon" />
                 </div>
             </div>
-            <div>
-                <{{o2.name.cn($.person)}}>({{o2.name.cn($.unit}})
+            <div class="mf_workLogContent">
+                <div class="mf_workLogPerson">
+                    <span>{{o2.name.cn($.person)}}</span>
+                    <span>({{o2.name.cn($.unit)}})</span>
+                    <span>{{$._.lp.select}}</span>
+                    <span style="color: #4A90E2">【{{$.routeName}}】</span>
+                </div>
+                <div class="mf_workLogOpinion">
+                    <span>{{$.opinion}}同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意</span>
+                </div>
             </div>
         </div>
     {{end each}}
