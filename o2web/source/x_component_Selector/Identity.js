@@ -1908,7 +1908,7 @@ MWF.xApplication.Selector.Identity.Include = new Class({
         //根据关键字获取组织和群组内的身份
         var keyString = typeOf( key )==="string" ? key.toLowerCase() : key.key.toLowerCase();
 
-        if ( this.includeUnit && this.includeUnit.length ){
+        if ( (this.includeUnit && this.includeUnit.length) || (this.includeGroup && this.includeGroup.length) ){
             key = this.getUnitFilterKey( key, this.includeUnit, this.includeGroup );
 
             this.orgAction.listIdentityByKey(function(json){
