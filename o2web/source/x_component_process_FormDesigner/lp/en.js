@@ -677,6 +677,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideModeButton": "Hide Mode Button",
         "showInDatagrid": "Show In Datagrid",
 
+        "hideEraserButton": "Hide Eraser Button",
+        "hideEraserRadioButton": "Hide Eraser Radio Button",
         "hideSizeButton": "Hide Size Button",
         "hideColorButton": "Hide Color Button",
         "hideImageButton": "Hide the Insert Picture Button",
@@ -883,6 +885,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "editScript": "Edit Script",
         "printScript": "Allow Print Script",
         "viewTracesScript": "Allow View Traces Script",
+        "handwrittenApproval": "Handwritten Approval",
+        "handwrittenApprovalScript": "Allow handwritten approval scripts",
         "zoom": "Allow Zoom",
         "zoomInfo": "Whether the user can customize the zoom ratio",
         "fullWidth": "Full-width conversion",

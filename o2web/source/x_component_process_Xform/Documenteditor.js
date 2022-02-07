@@ -1263,6 +1263,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.allowEdit = this._isAllowEdit();
         this.allowPrint = this._isAllowPrint();
         this.allowHistory = this._isAllowHistory();
+        this.allowHandwrittenApproval = this._isAllowHandwrittenApproval();
         this.toolNode = new Element("div", {"styles": this.css.doc_toolbar}).inject(this.node);
         this.contentNode = new Element("div#doc_content", {"styles": this.css.doc_content}).inject(this.node);
 
@@ -1640,6 +1641,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             e.enable();
         }.bind(this), "", null, true);
     },
+    _handwrittenApproval: function(){
+
+    },
     _historyDoc: function(){
         debugger;
         this._readFiletext();
@@ -1964,6 +1968,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         return true;
     },
+    _isAllowHandwrittenApproval: function(){
+        if (this.json.allowHandwrittenApproval=="n") return false;
+        if (this.json.allowHandwrittenApprovalScript=="s"){
+            if (this.json.allowHandwrittenApprovalScript && this.json.allowHandwrittenApprovalScript.code){
+                return !!this.form.Macro.exec(this.json.allowHandwrittenApprovalScript.code, this);
+            }
+        }
+        return true;
+    },
 
     _getEdit: function(name, typeItem, scriptItem){
         switch (this.json[typeItem]) {
@@ -1994,16 +2007,18 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     _loadToolbars: function(){
         var html ="";
-        var editdoc, printdoc, history, fullscreen=MWF.xApplication.process.Xform.LP.fullScreen;
+        var editdoc, printdoc, history, handwrittenApproval, fullscreen=MWF.xApplication.process.Xform.LP.fullScreen;
 
         if (layout.mobile){
             editdoc = MWF.xApplication.process.Xform.LP.editdoc_mobile;
             printdoc = MWF.xApplication.process.Xform.LP.printdoc_mobile;
             history = MWF.xApplication.process.Xform.LP.history_mobile;
+            handwrittenApproval = MWF.xApplication.process.Xform.LP.handwrittenApproval_mobile;
         }else{
             editdoc = MWF.xApplication.process.Xform.LP.editdoc;
             printdoc = MWF.xApplication.process.Xform.LP.printdoc;
             history = MWF.xApplication.process.Xform.LP.history;
+            handwrittenApproval = MWF.xApplication.process.Xform.LP.handwrittenApproval;
         }
         // if (this.allowEdit){
         //     //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEdit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
@@ -2015,6 +2030,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         if (this.allowHistory){
            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+history+"\" MWFButtonAction=\"_historyDoc\" MWFButtonText=\""+history+"\"></span>";
+        }
+        if (this.allowHandwrittenApproval){
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+handwrittenApproval+"\" MWFButtonAction=\"_handwrittenApproval\" MWFButtonText=\""+handwrittenApproval+"\"></span>";
         }
         if (this.json.canFullScreen!=="n"){
             html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/fullscreen.png\" title=\""+fullscreen+"\" MWFButtonAction=\"fullScreen\" MWFButtonText=\""+fullscreen+"\"></span>";
