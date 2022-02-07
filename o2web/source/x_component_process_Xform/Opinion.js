@@ -456,7 +456,8 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 this.json.tabletHeight = 0;
             } else {
                 var size = this.node.getSize();
-                x = Math.max(this.json.tabletWidth || size.x, 500);
+                x = Math.max(this.json.tabletWidth || size.x, 600);
+                this.json.tabletWidth = x;
                 y = Math.max(this.json.tabletHeight ? (parseInt(this.json.tabletHeight) + 110) : size.y, 320);
             }
 

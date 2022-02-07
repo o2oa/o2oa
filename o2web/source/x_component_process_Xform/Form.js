@@ -2549,6 +2549,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.processor = new MWF.xApplication.process.Work.Processor(innerNode || processNode, this.businessData.task, {
                 "style": (layout.mobile) ? "mobile" : (style || "default"),
                 "opinion": op.opinion,
+                "isHandwriting": this.json.isHandwriting === "no" ? false : true,
+                "tabletToolHidden": this.json.tabletToolHidden || [],
                 "tabletWidth": this.json.tabletWidth || 0,
                 "tabletHeight": this.json.tabletHeight || 0,
                 "defaultRoute": defaultRoute,
