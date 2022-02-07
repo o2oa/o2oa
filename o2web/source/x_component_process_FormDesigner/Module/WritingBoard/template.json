@@ -3,7 +3,7 @@
 	"name": "手写",
 	"type": "WritingBoard",
 	"description": "",
-  	"tabletWidth": 500,
+  	"tabletWidth": 600,
   	"tabletHeight": 320,
 	"events": {
 	  "queryLoad": {
