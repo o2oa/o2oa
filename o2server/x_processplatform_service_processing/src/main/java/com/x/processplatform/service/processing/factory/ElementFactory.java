@@ -676,6 +676,20 @@ public class ElementFactory extends AbstractFactory {
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScript_FIELDNAME));
 				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScriptText_FIELDNAME));
 				break;
+			case Business.EVENT_MANUALSTAY:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.MANUALSTAYSCRIPT_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.MANUALSTAYSCRIPTTEXT_FIELDNAME));
+				break;
+			case Business.EVENT_MANUALBEFORETASK:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.MANUALBEFORETASKSCRIPT_FIELDNAME));
+				scriptText = Objects
+						.toString(PropertyUtils.getProperty(o, Process.MANUALBEFORETASKSCRIPTTEXT_FIELDNAME));
+				break;
+			case Business.EVENT_MANUALAFTERTASK:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.MANUALAFTERTASKSCRIPT_FIELDNAME));
+				scriptText = Objects
+						.toString(PropertyUtils.getProperty(o, Process.MANUALAFTERTASKSCRIPTTEXT_FIELDNAME));
+				break;
 			default:
 				break;
 			}
