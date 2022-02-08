@@ -337,20 +337,30 @@ public class ManualProcessor extends AbstractManualProcessor {
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Manual manual, List<Work> works) throws Exception {
 		// Manual Work 还没有处理完 发生了停留,出发了停留事件
-		if ((ListTools.isEmpty(works)) && this.hasManualStayScript(manual)
-				&& (!aeiObjects.getCreateTasks().isEmpty())) {
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
-					aeiObjects.getActivity(), Business.EVENT_MANUALSTAY);
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-			WorkContext workContext = (WorkContext) bindings.get(ScriptingFactory.BINDING_NAME_WORKCONTEXT);
-			// 只有一条待办绑定到task
-			if (aeiObjects.getCreateTasks().size() == 1) {
-				workContext.bindTask(aeiObjects.getCreateTasks().get(0));
+		if ((ListTools.isEmpty(works)) && (!aeiObjects.getCreateTasks().isEmpty())) {
+			boolean hasManualStayScript = this.hasManualStayScript(manual);
+			boolean processHasManualStayScript = this.hasManualStayScript(aeiObjects.getProcess());
+			if (hasManualStayScript || processHasManualStayScript) {
+				ScriptContext scriptContext = aeiObjects.scriptContext();
+				Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+				WorkContext workContext = (WorkContext) bindings.get(ScriptingFactory.BINDING_NAME_WORKCONTEXT);
+				// 只有一条待办绑定到task
+				if (aeiObjects.getCreateTasks().size() == 1) {
+					workContext.bindTask(aeiObjects.getCreateTasks().get(0));
+				}
+				if (processHasManualStayScript) {
+					JsonScriptingExecutor
+							.eval(aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+									aeiObjects.getProcess(), Business.EVENT_MANUALSTAY), scriptContext);
+				}
+				if (hasManualStayScript) {
+					JsonScriptingExecutor
+							.eval(aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+									aeiObjects.getActivity(), Business.EVENT_MANUALSTAY), scriptContext);
+				}
+				// 解除绑定
+				workContext.bindTask(null);
 			}
-			JsonScriptingExecutor.eval(cs, scriptContext);
-			// 解除绑定
-			workContext.bindTask(null);
 		}
 	}
 
