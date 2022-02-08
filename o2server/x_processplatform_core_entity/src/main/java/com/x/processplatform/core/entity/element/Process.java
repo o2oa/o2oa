@@ -14,7 +14,9 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -147,7 +149,30 @@ public class Process extends SliceJpaObject {
 	}
 
 	public Boolean getRouteNameAsOpinion() {
-		return BooleanUtils.isFalse(routeNameAsOpinion) ? false : true;
+		return !BooleanUtils.isFalse(routeNameAsOpinion);
+	}
+
+	public ProcessProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new ProcessProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(ProcessProperties properties) {
+		this.properties = properties;
+	}
+
+	@PostLoad
+	public void postLoad() {
+		if (null != this.properties) {
+			this.manualBeforeTaskScript = this.getProperties().getManualBeforeTaskScript();
+			this.manualBeforeTaskScriptText = this.getProperties().getManualBeforeTaskScriptText();
+			this.manualAfterTaskScript = this.getProperties().getManualAfterTaskScript();
+			this.manualAfterTaskScriptText = this.getProperties().getManualAfterTaskScriptText();
+			this.manualStayScript = this.getProperties().getManualStayScript();
+			this.manualStayScriptText = this.getProperties().getManualStayScriptText();
+		}
 	}
 
 	public static final String name_FIELDNAME = "name";
@@ -336,13 +361,13 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Boolean expireWorkTime;
 
-	public static final String expireScript_FIELDNAME = "expireScript";
-	@IdReference(Script.class)
-	/** 脚本可能使用名称,所以长度为255 */
-	@FieldDescribe("过期时间设定脚本.")
-	@Column(length = length_255B, name = ColumnNamePrefix + expireScript_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String expireScript;
+//	public static final String expireScript_FIELDNAME = "expireScript";
+//	@IdReference(Script.class)
+//	/** 脚本可能使用名称,所以长度为255 */
+//	@FieldDescribe("过期时间设定脚本.")
+//	@Column(length = length_255B, name = ColumnNamePrefix + expireScript_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String expireScript;
 
 //	public static final String expireScriptText_FIELDNAME = "expireScriptText";
 //	@FieldDescribe("过期时间设定脚本文本.")
@@ -505,6 +530,91 @@ public class Process extends SliceJpaObject {
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + defaultStartMode_FIELDNAME)
 	private String defaultStartMode;
 
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private ProcessProperties properties;
+
+	public String getManualBeforeTaskScript() {
+		return manualBeforeTaskScript;
+	}
+
+	public void setManualBeforeTaskScript(String manualBeforeTaskScript) {
+		this.getProperties().setManualBeforeTaskScript(manualBeforeTaskScript);
+		this.manualBeforeTaskScript = manualBeforeTaskScript;
+	}
+
+	public void setManualBeforeTaskScriptText(String manualBeforeTaskScriptText) {
+		this.getProperties().setManualBeforeTaskScriptText(manualBeforeTaskScriptText);
+		this.manualBeforeTaskScriptText = manualBeforeTaskScriptText;
+	}
+
+	public void setManualAfterTaskScript(String manualAfterTaskScript) {
+		this.getProperties().setManualAfterTaskScript(manualAfterTaskScript);
+		this.manualAfterTaskScript = manualAfterTaskScript;
+	}
+
+	public void setManualAfterTaskScriptText(String manualAfterTaskScriptText) {
+		this.getProperties().setManualAfterTaskScriptText(manualAfterTaskScriptText);
+		this.manualAfterTaskScriptText = manualAfterTaskScriptText;
+	}
+
+	public void setManualStayScript(String manualStayScript) {
+		this.getProperties().setManualStayScript(manualStayScript);
+		this.manualStayScript = manualStayScript;
+	}
+
+	public void setManualStayScriptText(String manualStayScriptText) {
+		this.getProperties().setManualStayScriptText(manualStayScriptText);
+		this.manualStayScriptText = manualStayScriptText;
+	}
+
+	public String getManualBeforeTaskScriptText() {
+		return manualBeforeTaskScriptText;
+	}
+
+	public String getManualAfterTaskScript() {
+		return manualAfterTaskScript;
+	}
+
+	public String getManualAfterTaskScriptText() {
+		return manualAfterTaskScriptText;
+	}
+
+	public String getManualStayScript() {
+		return manualStayScript;
+	}
+
+	public String getManualStayScriptText() {
+		return manualStayScriptText;
+	}
+
+	@FieldDescribe("待办执行前脚本.")
+	@Transient
+	private String manualBeforeTaskScript;
+
+	@FieldDescribe("待办执行前脚本文本.")
+	@Transient
+	private String manualBeforeTaskScriptText;
+
+	@FieldDescribe("待办执行后脚本.")
+	@Transient
+	private String manualAfterTaskScript;
+
+	@FieldDescribe("待办执行后脚本文本.")
+	@Transient
+	private String manualAfterTaskScriptText;
+
+	@FieldDescribe("人工活动有停留脚本.")
+	@Transient
+	private String manualStayScript;
+
+	@FieldDescribe("人工活动有停留脚本文本.")
+	@Transient
+	private String manualStayScriptText;
+
 	/* flag标志位 */
 
 	public String getName() {
@@ -559,14 +669,6 @@ public class Process extends SliceJpaObject {
 		this.application = application;
 	}
 
-//	public String getBeforeBeginScript() {
-//		return beforeBeginScript;
-//	}
-//
-//	public void setBeforeBeginScript(String beforeBeginScript) {
-//		this.beforeBeginScript = beforeBeginScript;
-//	}
-
 	public String getAfterEndScript() {
 		return afterEndScript;
 	}
@@ -599,14 +701,6 @@ public class Process extends SliceJpaObject {
 		this.startableUnitList = startableUnitList;
 	}
 
-//	public String getBeforeBeginScriptText() {
-//		return beforeBeginScriptText;
-//	}
-//
-//	public void setBeforeBeginScriptText(String beforeBeginScriptText) {
-//		this.beforeBeginScriptText = beforeBeginScriptText;
-//	}
-
 	public String getAfterBeginScript() {
 		return afterBeginScript;
 	}
@@ -622,22 +716,6 @@ public class Process extends SliceJpaObject {
 	public void setAfterBeginScriptText(String afterBeginScriptText) {
 		this.afterBeginScriptText = afterBeginScriptText;
 	}
-
-//	public String getBeforeEndScript() {
-//		return beforeEndScript;
-//	}
-//
-//	public void setBeforeEndScript(String beforeEndScript) {
-//		this.beforeEndScript = beforeEndScript;
-//	}
-//
-//	public String getBeforeEndScriptText() {
-//		return beforeEndScriptText;
-//	}
-//
-//	public void setBeforeEndScriptText(String beforeEndScriptText) {
-//		this.beforeEndScriptText = beforeEndScriptText;
-//	}
 
 	public String getAfterEndScriptText() {
 		return afterEndScriptText;
@@ -702,22 +780,6 @@ public class Process extends SliceJpaObject {
 	public void setExpireWorkTime(Boolean expireWorkTime) {
 		this.expireWorkTime = expireWorkTime;
 	}
-
-	public String getExpireScript() {
-		return expireScript;
-	}
-
-	public void setExpireScript(String expireScript) {
-		this.expireScript = expireScript;
-	}
-
-//	public String getExpireScriptText() {
-//		return expireScriptText;
-//	}
-//
-//	public void setExpireScriptText(String expireScriptText) {
-//		this.expireScriptText = expireScriptText;
-//	}
 
 	public List<String> getControllerList() {
 		return controllerList;
