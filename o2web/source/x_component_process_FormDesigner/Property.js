@@ -95,6 +95,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadJSONArea();
                     this.loadFormSelect();
                     this.loadSubformSelect();
+                    this.loadComponentSelect();
                     //this.loadPageSelect();
                     this.loadWidgetSelect();
                     this.loadANNModelSelect();
@@ -408,6 +409,55 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 this.forms = json.data;
                 if (callback) callback();
             }.bind(this));
+        }else{
+            if (callback) callback();
+        }
+    },
+
+    loadComponentSelect: function(){
+        var componentSlectNodes = this.propertyContent.getElements(".MWFComponentSelect");
+        if (componentSlectNodes.length){
+            componentSlectNodes.each( function( node ){
+                var name = node.get("name");
+                var select;
+                this.getComponentList(function(){
+                    select = new Element("select").inject(node);
+                    select.addEvent("change", function(e){
+                        var value = select.options[select.selectedIndex].value;
+                        this.setValue(name, value, select);
+                    }.bind(this));
+                    this.setComponentSelectOptions(node, select);
+
+                    var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
+                    refreshNode.addEvent("click", function(e){
+                        this.getComponentList(function(){
+                            this.setComponentSelectOptions(node, select);
+                        }.bind(this), true);
+                    }.bind(this));
+                }.bind(this), false );
+                return select;
+            }.bind(this))
+        }
+    },
+    setComponentSelectOptions: function(node, select){
+        var name = node.get("name");
+        var value = this.data[name] || "";
+        select.empty();
+        var option = new Element("option", {"text": "none"}).inject(select);
+        this.components.each(function(component){
+            var option = new Element("option", {
+                "text": component.title,
+                "value": component.path,
+                "selected": (this.data[name]==component.path)
+            }).inject(select);
+        }.bind(this));
+    },
+    getComponentList: function(callback, refresh){
+        if (!this.components || refresh){
+            o2.Actions.load("x_component_assemble_control").ComponentAction.listAll( function(json){
+                this.components = json.data;
+                if (callback) callback();
+            }.bind(this), null, false);
         }else{
             if (callback) callback();
         }
