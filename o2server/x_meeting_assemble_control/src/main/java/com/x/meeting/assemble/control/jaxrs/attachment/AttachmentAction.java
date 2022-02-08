@@ -44,7 +44,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("id") String id) {
+			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

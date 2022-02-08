@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -38,6 +39,7 @@ class ActionFilterAttribute extends BaseAction {
 			wo.getCreatorUnitList().addAll(this.listCreatorUnitPair(business, effectivePerson));
 			wo.getStartTimeMonthList().addAll(this.listStartTimeMonthPair(business, effectivePerson));
 			wo.getActivityNameList().addAll(this.listActivityNamePair(business, effectivePerson));
+			wo.getCompletedList().addAll(this.listCompletedPair(business, effectivePerson));
 			result.setData(wo);
 			return result;
 		}
@@ -46,15 +48,17 @@ class ActionFilterAttribute extends BaseAction {
 	public static class Wo extends GsonPropertyObject {
 
 		@FieldDescribe("可选应用范围")
-		private List<NameValueCountPair> applicationList = new ArrayList<NameValueCountPair>();
+		private List<NameValueCountPair> applicationList = new ArrayList<>();
 		@FieldDescribe("可选流程范围")
-		private List<NameValueCountPair> processList = new ArrayList<NameValueCountPair>();
+		private List<NameValueCountPair> processList = new ArrayList<>();
 		@FieldDescribe("可选组织范围")
-		private List<NameValueCountPair> creatorUnitList = new ArrayList<NameValueCountPair>();
+		private List<NameValueCountPair> creatorUnitList = new ArrayList<>();
 		@FieldDescribe("可选择的开始月份")
-		private List<NameValueCountPair> startTimeMonthList = new ArrayList<NameValueCountPair>();
+		private List<NameValueCountPair> startTimeMonthList = new ArrayList<>();
 		@FieldDescribe("可选活动范围")
-		private List<NameValueCountPair> activityNameList = new ArrayList<NameValueCountPair>();
+		private List<NameValueCountPair> activityNameList = new ArrayList<>();
+		@FieldDescribe("可选择的完成状态")
+		private List<NameValueCountPair> completedList = new ArrayList<>();
 
 		public List<NameValueCountPair> getApplicationList() {
 			return applicationList;
@@ -94,6 +98,14 @@ class ActionFilterAttribute extends BaseAction {
 
 		public void setStartTimeMonthList(List<NameValueCountPair> startTimeMonthList) {
 			this.startTimeMonthList = startTimeMonthList;
+		}
+
+		public List<NameValueCountPair> getCompletedList() {
+			return completedList;
+		}
+
+		public void setCompletedList(List<NameValueCountPair> completedList) {
+			this.completedList = completedList;
 		}
 
 	}
@@ -217,6 +229,31 @@ class ActionFilterAttribute extends BaseAction {
 			}
 		}
 		SortTools.desc(wos, "name");
+		return wos;
+	}
+
+	private List<NameValueCountPair> listCompletedPair(Business business, EffectivePerson effectivePerson)
+			throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Read.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Boolean> cq = cb.createQuery(Boolean.class);
+		Root<Read> root = cq.from(Read.class);
+		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
+		cq.select(root.get(Read_.completed)).where(p);
+		List<Boolean> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
+		List<NameValueCountPair> wos = new ArrayList<>();
+		for (Boolean value : os) {
+			NameValueCountPair o = new NameValueCountPair();
+			if (BooleanUtils.isTrue(value)) {
+				o.setValue(Boolean.TRUE);
+				o.setName("not completed");
+			} else {
+				o.setValue(Boolean.FALSE);
+				o.setName("completed");
+			}
+			wos.add(o);
+		}
+		SortTools.asc(wos, "name");
 		return wos;
 	}
 
