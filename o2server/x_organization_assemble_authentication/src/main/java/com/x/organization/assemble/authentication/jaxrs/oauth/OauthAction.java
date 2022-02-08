@@ -94,8 +94,8 @@ public class OauthAction extends StandardJaxrsAction {
 	@GET
 	@Path("token")
 	public void getToken(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@Context HttpServletResponse response, @QueryParam("code") String code,
-			@QueryParam("grant_type") String grant_type,
+			@Context HttpServletResponse response, @JaxrsParameterDescribe("code") @QueryParam("code") String code,
+			@JaxrsParameterDescribe("grant_type") @QueryParam("grant_type") String grant_type,
 			@JaxrsParameterDescribe("response CONTENT_TYPE 设置 默认为text/plain; charset=UTF-8") @QueryParam("contentType") String contentType) {
 		ActionResult<ActionToken.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -113,7 +113,8 @@ public class OauthAction extends StandardJaxrsAction {
 	@Path("info")
 	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_FORM_URLENCODED })
 	public void postInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@Context HttpServletResponse response, @FormParam("access_token") String access_token,
+			@Context HttpServletResponse response,
+			@JaxrsParameterDescribe("access_token") @FormParam("access_token") String access_token,
 			@JaxrsParameterDescribe("response CONTENT_TYPE 设置 默认为text/plain; charset=UTF-8") @FormParam("contentType") String contentType) {
 		ActionResult<ActionInfo.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -149,7 +150,8 @@ public class OauthAction extends StandardJaxrsAction {
 	@Path("info")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void getInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@Context HttpServletResponse response, @QueryParam("access_token") String access_token,
+			@Context HttpServletResponse response,
+			@JaxrsParameterDescribe("access_token") @QueryParam("access_token") String access_token,
 			@JaxrsParameterDescribe("response CONTENT_TYPE 设置 默认为text/plain; charset=UTF-8") @QueryParam("contentType") String contentType) {
 		ActionResult<ActionInfo.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -168,7 +170,8 @@ public class OauthAction extends StandardJaxrsAction {
 	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void getInfoJira(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@Context HttpServletResponse response, @QueryParam("access_token") String access_token) {
+			@Context HttpServletResponse response,
+			@JaxrsParameterDescribe("access_token") @QueryParam("access_token") String access_token) {
 		ActionResult<ActionInfo.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

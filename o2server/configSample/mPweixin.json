@@ -1,0 +1,29 @@
+{
+  "enable": false,
+  "enablePublish": false,
+  "appid": "",
+  "appSecret": "",
+  "token": "",
+  "encodingAesKey": "",
+  "portalId": "",
+  "messageEnable": false,
+  "tempMessageId": "",
+  "fieldList": [
+    {
+      "name": "",
+      "tempName": "",
+      "###name": "流程字段名###",
+      "###tempName": "模版字段名###"
+    }
+  ],
+  "###enable": "是否启用.###",
+  "###enablePublish": "是否启用发布.###",
+  "###appid": "微信开放平台appid###",
+  "###appSecret": "微信开放平台appSecret###",
+  "###token": "微信公众号配的token###",
+  "###encodingAesKey": "微信公众号配的encodingAesKey###",
+  "###portalId": "微信公众号测试菜单的门户地址###",
+  "###messageEnable": "是否启用公众号模版消息###",
+  "###tempMessageId": "公众号模版消息id###",
+  "###fieldList": "模版字段###"
+}
