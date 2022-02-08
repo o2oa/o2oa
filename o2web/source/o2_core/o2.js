@@ -345,6 +345,7 @@ if (!window.o2) {
                 "dom": (options && options.dom) || document.body,
                 "module": (options && options.module) || null,
                 "noConflict": (options && options.noConflict) || false,
+                "url": !!(options && options.url),
                 "bind": (options && options.bind) || null,
                 "evalScripts": (options && options.evalScripts) || false,
                 "baseUrl": (options && options.baseUrl) ? options.baseUrl : "",
@@ -355,6 +356,7 @@ if (!window.o2) {
             var doc = (options && options.doc) || document;
             if (!doc.unid) doc.unid = _uuid();
             return {
+                "url": !!(options && options.url),
                 "noCache": !!(options && options.nocache),
                 "reload": !!(options && options.reload),
                 "sequence": !!(options && options.sequence),
@@ -694,11 +696,6 @@ if (!window.o2) {
                 return;
             }
 
-            if (_loadedCss[key]) uuid = _loadedCss[key]["class"];
-            if (op.dom) _parseDom(op.dom, function (node) {
-                if (node.className.indexOf(uuid) == -1) node.className += ((node.className) ? " " + uuid : uuid);
-            }, op.doc);
-
             var completed = function () {
                 if (_loadCssRunning[key]) {
                     _loadCssRunning[key] = false;
@@ -708,6 +705,10 @@ if (!window.o2) {
                     (_loadCssQueue.shift())();
                 }
             };
+            if (_loadedCss[key]) uuid = _loadedCss[key]["class"];
+            if (op.dom) _parseDom(op.dom, function (node) {
+                if (node.className.indexOf(uuid) == -1) node.className += ((node.className) ? " " + uuid : uuid);
+            }, op.doc);
 
             if (_loadedCss[key]) if (!op.reload) {
                 if (callback) callback(_loadedCss[key]);
@@ -715,30 +716,45 @@ if (!window.o2) {
                 return;
             }
 
-            var success = function (xhr) {
-                var cssText = xhr.responseText;
-                try {
-                    if (cssText) {
-                        op.uuid = uuid;
-                        var style = _loadCssText(cssText, op);
-                    }
-                    style.id = uid;
-                    var styleObj = {"module": module, "id": uid, "style": style, "doc": op.doc, "class": uuid};
-                    _loadedCss[key] = styleObj;
-                    if (callback) callback(styleObj);
-                } catch (e) {
-                    if (callback) callback();
-                    return;
+            if (op.url){
+                var style = op.doc.createElement("link");
+                style.setAttribute("rel", "stylesheet");
+                style.setAttribute("type", "text/css");
+                style.setAttribute("id", uuid);
+                style.setAttribute("href", url);
+                if (!op.notInject) {
+                    var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
+                    head.appendChild(style);
                 }
-            };
-            var failure = function (xhr) {
-                console.log("Error: load css module: " + module);
-                if (callback) callback();
-            };
+                var styleObj = {"module": module, "id": uid, "style": style, "doc": op.doc, "class": uuid};
+                if (callback) callback(styleObj);
+                completed();
+            }else{
+                var success = function (xhr) {
+                    var cssText = xhr.responseText;
+                    try {
+                        if (cssText) {
+                            op.uuid = uuid;
+                            var style = _loadCssText(cssText, op);
+                        }
+                        style.id = uid;
+                        var styleObj = {"module": module, "id": uid, "style": style, "doc": op.doc, "class": uuid};
+                        _loadedCss[key] = styleObj;
+                        if (callback) callback(styleObj);
+                    } catch (e) {
+                        if (callback) callback();
+                        return;
+                    }
+                };
+                var failure = function (xhr) {
+                    console.log("Error: load css module: " + module);
+                    if (callback) callback();
+                };
 
-            _loadCssRunning[key] = true;
+                _loadCssRunning[key] = true;
 
-            _xhr_get(url, success, failure, completed);
+                _xhr_get(url, success, failure, completed);
+            }
         };
 
         var _parseDomString = function (dom, fn, sourceDoc) {
@@ -1560,7 +1576,7 @@ if (!window.o2) {
         };
         var _loadComponent = function(o, res){
             o.loading = new Promise(function(resolve){
-                o2.loadAll(res, {evalScripts:true}, function(){ resolve(); });
+                o2.loadAll(res, {evalScripts:true, url: true}, function(){ resolve(); });
             });
         };
         o2.component = function(name, res){
