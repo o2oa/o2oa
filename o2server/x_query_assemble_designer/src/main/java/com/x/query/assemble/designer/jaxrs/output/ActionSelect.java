@@ -34,7 +34,7 @@ class ActionSelect extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			Query query = emc.flag(queryFlag, Query.class );
+			Query query = emc.flag(queryFlag, Query.class);
 			if (null == query) {
 				throw new ExceptionQueryNotExist(queryFlag);
 			}
@@ -61,69 +61,14 @@ class ActionSelect extends BaseAction {
 		wo.setStatList(WrapStat.outCopier.copy(business.entityManagerContainer().list(Stat.class, wi.listStatId())));
 		wo.setRevealList(
 				WrapReveal.outCopier.copy(business.entityManagerContainer().list(Reveal.class, wi.listRevealId())));
-		wo.setTableList(WrapTable.outCopier.copy(business.entityManagerContainer().list(Table.class, wi.listTableId())));
-		wo.setStatementList(WrapStatement.outCopier.copy(business.entityManagerContainer().list(Statement.class, wi.listStatementId())));
-		wo.setImportModelList(WrapImportModel.outCopier.copy(business.entityManagerContainer().list(ImportModel.class, wi.listImportModelId())));
+		wo.setTableList(
+				WrapTable.outCopier.copy(business.entityManagerContainer().list(Table.class, wi.listTableId())));
+		wo.setStatementList(WrapStatement.outCopier
+				.copy(business.entityManagerContainer().list(Statement.class, wi.listStatementId())));
+		wo.setImportModelList(WrapImportModel.outCopier
+				.copy(business.entityManagerContainer().list(ImportModel.class, wi.listImportModelId())));
 		return wo;
 	}
-
-	// private List<WrapView> listView(Business business, Query query, Wi wi) throws
-	// Exception {
-	// List<WrapView> wos = new ArrayList<>();
-	// for (WrapView wrap : wi.getViewList()) {
-	// View o = business.entityManagerContainer().find(wrap.getId(), View.class);
-	// if (null == o) {
-	// throw new ExceptionViewNotExist(wrap.getId());
-	// }
-	// wos.add(WrapView.outCopier.copy(o));
-	// }
-	//
-	// // List<String> ids = business.view().listWithQuery(query.getId());
-	// // if (!StringUtils.equals("*", wi.getViewList().get(0))) {
-	// // ids = ListUtils.intersection(ids, wi.getViewList());
-	// // }
-	// // for (String id : ListTools.trim(ids, true, true)) {
-	// // View o = business.entityManagerContainer().find(id, View.class);
-	// // if (null == o) {
-	// // throw new ExceptionViewNotExist(id);
-	// // }
-	// // wos.add(WrapView.outCopier.copy(o));
-	// // }
-	// return wos;
-	// }
-	//
-	// private List<WrapStat> listStat(Business business, Query query, Wi wi) throws
-	// Exception {
-	// List<WrapStat> wos = new ArrayList<>();
-	// for (String id : ListTools.trim(ids, true, true)) {
-	// Stat o = business.entityManagerContainer().find(id, Stat.class);
-	// if (null == o) {
-	// throw new ExceptionStatNotExist(id);
-	// }
-	// wos.add(WrapStat.outCopier.copy(o));
-	// }
-	// return wos;
-	// }
-	//
-	// private List<WrapReveal> listReveal(Business business, Query query, Wi wi)
-	// throws Exception {
-	// List<WrapReveal> wos = new ArrayList<>();
-	// if (ListTools.isEmpty(wi.getRevealList())) {
-	// return wos;
-	// }
-	// List<String> ids = business.reveal().listWithQuery(query.getId());
-	// if (!StringUtils.equals("*", wi.getRevealList().get(0))) {
-	// ids = ListUtils.intersection(ids, wi.getRevealList());
-	// }
-	// for (String id : ListTools.trim(ids, true, true)) {
-	// Reveal o = business.entityManagerContainer().find(id, Reveal.class);
-	// if (null == o) {
-	// throw new ExceptionRevealNotExist(id);
-	// }
-	// wos.add(WrapReveal.outCopier.copy(o));
-	// }
-	// return wos;
-	// }
 
 	public static class Wi extends WrapQuery {
 

@@ -38,7 +38,7 @@ public class UnexpectedErrorLogAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("id") String id) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {

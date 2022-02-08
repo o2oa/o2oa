@@ -71,7 +71,6 @@ public class ActionQueryViewDocument extends BaseAction {
 		if (optional.isPresent()) {
 			result = (ActionResult<Wo>) optional.get();
 		} else {
-			logger.debug(">>>>>>>>>>>>>view document '"+id+"' in database!" );
 			//继续进行数据查询
 			result = getDocumentQueryResult( id, request, effectivePerson, isManager );
 			CacheManager.put(cacheCategory, cacheKey, result );
