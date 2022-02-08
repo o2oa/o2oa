@@ -1206,7 +1206,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return moduleNodes;
     },
 
-    _loadModules: function (dom, beforeLoadModule) {
+    _loadModules: function (dom, beforeLoadModule, replace) {
         //var subDom = this.node.getFirst();
         //while (subDom){
         //    if (subDom.get("MWFtype")){
@@ -1223,11 +1223,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var json = this._getDomjson(node);
             //if( json.type === "Subform" || json.moduleName === "subform" )this.subformCount++;
             //if( json.type === "Subpage" || json.moduleName === "subpage" )this.subpageCount++;
-            var module = this._loadModule(json, node, beforeLoadModule);
+            var module = this._loadModule(json, node, beforeLoadModule, replace);
             this.modules.push(module);
         }.bind(this));
     },
-    _loadModule: function (json, node, beforeLoad) {
+    _loadModule: function (json, node, beforeLoad, replace) {
         //console.log( json.id );
         if (json.type === "Subform" || json.moduleName === "subform") this.subformCount++;
         //if( json.type === "Subform" || json.moduleName === "subform" ){
@@ -1242,7 +1242,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         var module = new MWF["APP" + json.type](node, json, this);
         if (beforeLoad) beforeLoad.apply(module);
-        if (!this.all[json.id]) this.all[json.id] = module;
+        if (replace || !this.all[json.id]) this.all[json.id] = module;
 
         if (json.name) {
             if (this.allForName[json.name]) {
@@ -1254,7 +1254,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
 
         if (module.field) {
-            if (!this.forms[json.id]) this.forms[json.id] = module;
+            if (replace || !this.forms[json.id]) this.forms[json.id] = module;
         }
         module.readonly = this.options.readonly;
         module.load();

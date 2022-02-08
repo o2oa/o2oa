@@ -95,7 +95,7 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
 
             var module = this.form._loadModule(subJson, node, function(){
                 if( _self.widget )this.widget = _self.widget;
-            });
+            }, true);
             //this.modules.push(module);
         }.bind(this));
     },
@@ -116,7 +116,7 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
                 if( _self.widget )this.widget = _self.widget;
                 this.data = d;
                 this.position = i;
-            });
+            }, true);
             this.subSourceItems.push(module);
             this.loopNodes.push(node);
 
@@ -157,7 +157,7 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
                     var _self = this;
                     this.form._loadModules(this.node, function () {
                         if( _self.widget )this.widget = _self.widget;
-                    });
+                    }, true);
                 }
 
                 //this.tmpDiv = new Element("div");
