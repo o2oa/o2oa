@@ -160,7 +160,7 @@
     "className": "Importer"
   },
   "application": {
-    "icon": "importer.png",
+    "icon": "application.png",
     "text": MWF.APPPOD.LP.modules.application, 
     "className": "Application"
   },
