@@ -90,7 +90,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
      * @param {String} src iframe的src，如'https://www.baidu.com/'
      * @example
      * this.form.get("fieldId").clean(); //清除当前嵌入的对象
-     * this.form.get("fieldId").loadIframe('https://www.baidu.com/'); //加载日程安排
+     * this.form.get("fieldId").loadIframe('https://www.baidu.com/'); //加载iframe
      */
     loadIframe: function( src ){
         var attr = {
