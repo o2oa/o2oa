@@ -30,7 +30,7 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
-			"MWFType": "itmleditor",
+			"MWFType": "attachment",
 			"id": this.json.id,
 			"styles": this.css.moduleNodeMove,
 			"events": {
