@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -42,6 +43,7 @@ class ActionFilterAttributeFilter extends BaseAction {
 			wo.getCreatorUnitList().addAll(this.listCreatorUnitPair(business, effectivePerson, wi));
 			wo.getStartTimeMonthList().addAll(this.listStartTimeMonthPair(business, effectivePerson, wi));
 			wo.getActivityNameList().addAll(this.listActivityNamePair(business, effectivePerson, wi));
+			wo.getCompletedList().addAll(this.listCompletedPair(business, effectivePerson, wi));
 			result.setData(wo);
 			return result;
 		}
@@ -63,6 +65,17 @@ class ActionFilterAttributeFilter extends BaseAction {
 
 		@FieldDescribe("限制活动名称范围")
 		private List<String> activityNameList = new ArrayList<>();
+
+		@FieldDescribe("可选择的完成状态")
+		private List<Boolean> completedList = new ArrayList<>();
+
+		public List<Boolean> getCompletedList() {
+			return completedList;
+		}
+
+		public void setCompletedList(List<Boolean> completedList) {
+			this.completedList = completedList;
+		}
 
 		public List<String> getApplicationList() {
 			return applicationList;
@@ -122,6 +135,17 @@ class ActionFilterAttributeFilter extends BaseAction {
 
 		@FieldDescribe("可选择的活动节点")
 		private List<NameValueCountPair> activityNameList = new ArrayList<>();
+
+		@FieldDescribe("可选择的完成状态")
+		private List<NameValueCountPair> completedList = new ArrayList<>();
+
+		public List<NameValueCountPair> getCompletedList() {
+			return completedList;
+		}
+
+		public void setCompletedList(List<NameValueCountPair> completedList) {
+			this.completedList = completedList;
+		}
 
 		public List<NameValueCountPair> getApplicationList() {
 			return applicationList;
@@ -187,6 +211,9 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Read_.activityName).in(wi.getActivityNameList()));
 		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(Read_.completed).in(wi.getCompletedList()));
+		}
 		cq.select(root.get(Read_.application)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -204,9 +231,10 @@ class ActionFilterAttributeFilter extends BaseAction {
 				wos.add(o);
 			}
 		}
-		wos = wos.stream().sorted(Comparator.comparing(NameValueCountPair::getName, (s1, s2) -> {
-			return Objects.toString(s1, "").compareTo(Objects.toString(s2, ""));
-		})).collect(Collectors.toList());
+		wos = wos.stream()
+				.sorted(Comparator.comparing(NameValueCountPair::getName,
+						(s1, s2) -> Objects.toString(s1, "").compareTo(Objects.toString(s2, ""))))
+				.collect(Collectors.toList());
 		return wos;
 	}
 
@@ -232,6 +260,9 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Read_.activityName).in(wi.getActivityNameList()));
 		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(Read_.completed).in(wi.getCompletedList()));
+		}
 		cq.select(root.get(Read_.process)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -249,9 +280,10 @@ class ActionFilterAttributeFilter extends BaseAction {
 				wos.add(o);
 			}
 		}
-		wos = wos.stream().sorted(Comparator.comparing(NameValueCountPair::getName, (s1, s2) -> {
-			return Objects.toString(s1, "").compareTo(Objects.toString(s2, ""));
-		})).collect(Collectors.toList());
+		wos = wos.stream()
+				.sorted(Comparator.comparing(NameValueCountPair::getName,
+						(s1, s2) -> Objects.toString(s1, "").compareTo(Objects.toString(s2, ""))))
+				.collect(Collectors.toList());
 		return wos;
 	}
 
@@ -277,6 +309,9 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Read_.activityName).in(wi.getActivityNameList()));
 		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(Read_.completed).in(wi.getCompletedList()));
+		}
 		cq.select(root.get(Read_.creatorUnit)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -288,9 +323,10 @@ class ActionFilterAttributeFilter extends BaseAction {
 				wos.add(o);
 			}
 		}
-		wos = wos.stream().sorted(Comparator.comparing(NameValueCountPair::getName, (s1, s2) -> {
-			return Objects.toString(s1, "").compareTo(Objects.toString(s2, ""));
-		})).collect(Collectors.toList());
+		wos = wos.stream()
+				.sorted(Comparator.comparing(NameValueCountPair::getName,
+						(s1, s2) -> Objects.toString(s1, "").compareTo(Objects.toString(s2, ""))))
+				.collect(Collectors.toList());
 		return wos;
 	}
 
@@ -316,6 +352,9 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Read_.activityName).in(wi.getActivityNameList()));
 		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(Read_.completed).in(wi.getCompletedList()));
+		}
 		cq.select(root.get(Read_.activityName)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -327,9 +366,10 @@ class ActionFilterAttributeFilter extends BaseAction {
 				wos.add(o);
 			}
 		}
-		wos = wos.stream().sorted(Comparator.comparing(NameValueCountPair::getName, (s1, s2) -> {
-			return Objects.toString(s1, "").compareTo(Objects.toString(s2, ""));
-		})).collect(Collectors.toList());
+		wos = wos.stream()
+				.sorted(Comparator.comparing(NameValueCountPair::getName,
+						(s1, s2) -> Objects.toString(s1, "").compareTo(Objects.toString(s2, ""))))
+				.collect(Collectors.toList());
 		return wos;
 	}
 
@@ -355,6 +395,9 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Read_.activityName).in(wi.getActivityNameList()));
 		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(Read_.completed).in(wi.getCompletedList()));
+		}
 		cq.select(root.get(Read_.startTimeMonth)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -366,9 +409,52 @@ class ActionFilterAttributeFilter extends BaseAction {
 				wos.add(o);
 			}
 		}
-		wos = wos.stream().sorted(Comparator.comparing(NameValueCountPair::getName, (s1, s2) -> {
-			return Objects.toString(s1, "").compareTo(Objects.toString(s2, ""));
-		})).collect(Collectors.toList());
+		wos = wos.stream()
+				.sorted(Comparator.comparing(NameValueCountPair::getName,
+						(s1, s2) -> Objects.toString(s1, "").compareTo(Objects.toString(s2, ""))))
+				.collect(Collectors.toList());
+		return wos;
+	}
+
+	private List<NameValueCountPair> listCompletedPair(Business business, EffectivePerson effectivePerson, Wi wi)
+			throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Read.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Boolean> cq = cb.createQuery(Boolean.class);
+		Root<Read> root = cq.from(Read.class);
+		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
+		if (ListTools.isNotEmpty(wi.getApplicationList())) {
+			p = cb.and(p, root.get(Read_.application).in(wi.getApplicationList()));
+		}
+		if (ListTools.isNotEmpty(wi.getProcessList())) {
+			p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
+		}
+		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
+			p = cb.and(p, root.get(Read_.creatorUnit).in(wi.getCreatorUnitList()));
+		}
+		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
+			p = cb.and(p, root.get(Read_.startTimeMonth).in(wi.getStartTimeMonthList()));
+		}
+		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
+			p = cb.and(p, root.get(Read_.activityName).in(wi.getActivityNameList()));
+		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(Read_.completed).in(wi.getCompletedList()));
+		}
+		cq.select(root.get(Read_.completed)).where(p);
+		List<Boolean> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
+		List<NameValueCountPair> wos = new ArrayList<>();
+		for (Boolean value : os) {
+			NameValueCountPair o = new NameValueCountPair();
+			if (BooleanUtils.isTrue(value)) {
+				o.setValue(Boolean.TRUE);
+				o.setName("not completed");
+			} else {
+				o.setValue(Boolean.FALSE);
+				o.setName("completed");
+			}
+			wos.add(o);
+		}
 		return wos;
 	}
 }
