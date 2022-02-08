@@ -159,6 +159,11 @@
     "text": MWF.APPPOD.LP.modules.importer,
     "className": "Importer"
   },
+  "application": {
+    "icon": "application.png",
+    "text": MWF.APPPOD.LP.modules.application,
+    "className": "Application"
+  },
   "SmartBI": { 
     "icon": "smartbi.png",
     "text": MWF.APPPOD.LP.modules.SmartBI,

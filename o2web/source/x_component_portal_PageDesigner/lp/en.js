@@ -221,6 +221,7 @@ MWF.APPPOD.LP = {
     "import_option1": "Add an input box to an empty cell in the table",
     "import_option2": "Remove empty elements",
     "implodeOfficeEmpty": "Please select the Word or Excel file to import first",
+    "applicationNotFound": "App not found",
 
     "scriptTitle": {
         "validationOpinion": "Form Opinion Verification",
@@ -304,7 +305,16 @@ MWF.APPPOD.LP = {
         "widgetmodules": "WidgetEl",
         "address": "Address",
         "importer": "DataImport",
-        "SmartBI":"SmartBI"
+        "SmartBI":"SmartBI",
+        "application ": "PlatformApplication",
+
+        "group_all": "all components ",
+        "group_form":" form component",
+        "group_layout":"Layout components",
+        "group_data": "data component ",
+        "group_filetext":"File editing component ",
+        "group_function":"function component ",
+        "group_element": "Element component"
     },
     "filedConfigurator": {
         "sequence": "Sequence",

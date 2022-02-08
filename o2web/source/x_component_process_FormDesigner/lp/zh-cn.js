@@ -1380,7 +1380,14 @@ MWF.xApplication.process.FormDesigner.LP = {
         "directionValue": ["水平","垂直"],
         "hotpicture": "热点图片",
         "page": "页数",
-        "filterParameter": "过滤参数"
+        "filterParameter": "过滤参数",
+
+        "selectComponent": "选择应用",
+        "calculationComponent": "计算应用路径",
+        "component": "应用",
+        "scriptComponentNote": "返回应用路径，如组织管理",
+        "componentScript": "应用路径脚本",
+        "applicationOptions": "应用options"
 
     },
     "smartbi":{
