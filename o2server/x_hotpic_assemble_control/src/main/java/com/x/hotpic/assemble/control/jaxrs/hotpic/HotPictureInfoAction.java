@@ -22,13 +22,14 @@ import java.util.List;
 public class HotPictureInfoAction extends StandardJaxrsAction {
 
 	private Logger logger = LoggerFactory.getLogger(HotPictureInfoAction.class);
-	@JaxrsMethodDescribe(value = "检查所有的热点新闻还在不在", action= ActionCheck.class )
+
+	@JaxrsMethodDescribe(value = "检查所有的热点新闻还在不在", action = ActionCheck.class)
 	@GET
 	@Path("exists/check")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void existsCheck(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		
+
 		ActionResult<ActionCheck.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -39,9 +40,8 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
 
-	@JaxrsMethodDescribe(value = "查询指定的图片的base64编码", action= ActionGet.class )
+	@JaxrsMethodDescribe(value = "查询指定的图片的base64编码", action = ActionGet.class)
 	@GET
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -51,7 +51,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGet().execute(effectivePerson,id);
+			result = new ActionGet().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -59,122 +59,127 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据应用类型以及信息ID查询热图信息", action= ActionGetList.class )
+	@JaxrsMethodDescribe(value = "根据应用类型以及信息ID查询热图信息", action = ActionGetList.class)
 	@GET
 	@Path("{application}/{infoId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listByApplicationAndInfoId(@Suspended final AsyncResponse asyncResponse,@Context HttpServletRequest request,
+	public void listByApplicationAndInfoId(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("应用名称：CMS|BBS等等.") @PathParam("application") String application,
 			@JaxrsParameterDescribe("信息id") @PathParam("infoId") String infoId) {
 		ActionResult<List<ActionGetList.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetList().execute(effectivePerson,application,infoId);
-		 } catch (Exception e) {
+			result = new ActionGetList().execute(effectivePerson, application, infoId);
+		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
-			 result.error(e);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
-	@JaxrsMethodDescribe(value = "列示根据过滤条件的HotPictureInfo,下一页", action= ActionGetListForPage.class )
+
+	@JaxrsMethodDescribe(value = "列示根据过滤条件的HotPictureInfo,下一页", action = ActionGetListForPage.class)
 	@PUT
 	@Path("filter/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listForPage(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("当前页码") @PathParam("page") Integer page, 
+			@JaxrsParameterDescribe("当前页码") @PathParam("page") Integer page,
 			@JaxrsParameterDescribe("每页数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<ActionGetListForPage.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetListForPage().execute(effectivePerson,page,count,jsonElement);
-		 } catch (Exception e) {
+			result = new ActionGetListForPage().execute(effectivePerson, page, count, jsonElement);
+		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
-			 result.error(e);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	/**
 	 * 保存热图信息，登录用户访问
+	 * 
 	 * @param request
 	 * @return
 	 */
-	@JaxrsMethodDescribe(value = "创建新的热图信息或者更新热图信息", action= ActionSave.class )
+	@JaxrsMethodDescribe(value = "创建新的热图信息或者更新热图信息", action = ActionSave.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,JsonElement jsonElement) {
+	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionSave().execute(effectivePerson,jsonElement);
-		 } catch (Exception e) {
+			result = new ActionSave().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
-		    result.error(e);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	/**
 	 * 修改已经存在的热点图片的标题信息
+	 * 
 	 * @param request
 	 * @return
 	 */
-	@JaxrsMethodDescribe(value = "修改已经存在的热点图片的标题信息", action= ActionChangeTitle.class )
+	@JaxrsMethodDescribe(value = "修改已经存在的热点图片的标题信息", action = ActionChangeTitle.class)
 	@Path("changeTitle")
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void changeTitle(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,JsonElement jsonElement) {
+	public void changeTitle(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<ActionChangeTitle.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionChangeTitle().execute(effectivePerson,jsonElement);
-		 } catch (Exception e) {
+			result = new ActionChangeTitle().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
-		    result.error(e);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
-	@JaxrsMethodDescribe(value = "根据ID删除指定的热图信息", action= ActionDeleteById.class )
+
+	@JaxrsMethodDescribe(value = "根据ID删除指定的热图信息", action = ActionDeleteById.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("信息ID") @PathParam("id") String id) {
+			@JaxrsParameterDescribe("信息标识") @PathParam("id") String id) {
 		ActionResult<ActionDeleteById.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteById().execute(effectivePerson,id);
-		 } catch (Exception e) {
+			result = new ActionDeleteById().execute(effectivePerson, id);
+		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
-		    result.error(e);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
-	
-	@JaxrsMethodDescribe(value = "根据应用类型以及信息ID删除热图信息", action= ActionDelete.class )
+
+	@JaxrsMethodDescribe(value = "根据应用类型以及信息ID删除热图信息", action = ActionDelete.class)
 	@DELETE
 	@Path("{application}/{infoId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("application") String application, @PathParam("infoId") String infoId) {
+			@JaxrsParameterDescribe("应用标识") @PathParam("application") String application,
+			@JaxrsParameterDescribe("信息标识") @PathParam("infoId") String infoId) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDelete().execute(effectivePerson,application,infoId);
-		 } catch (Exception e) {
+			result = new ActionDelete().execute(effectivePerson, application, infoId);
+		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
-		    result.error(e);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 }
