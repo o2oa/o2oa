@@ -3056,8 +3056,14 @@ MWF.xScript.Environment = function(ev){
          * @param {String} [workId] - 在流转的流程实例ID。workId和workCompletedId两个参数必须提供其中一个
          * @param {String} [workCompletedId] - 已完成的流程实例ID。
          * @param {String} [title] - 手机端打开时的窗口标题。
+         * @param {Object} [options] - 其他选项，如只读参数。
          * @example
-         this.form.openWork(id, "", "work title");
+         * this.form.openWork(id, "", "work title");
+         * @example
+         * //以只读方式打开
+         * this.form.openWork(id, "", "work title", {
+         *   readonly : true
+         * });
          */
         "openWork": function(workId, workCompletedId, title, options){
             var op = options || {};
