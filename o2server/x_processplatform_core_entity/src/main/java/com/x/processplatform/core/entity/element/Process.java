@@ -591,26 +591,32 @@ public class Process extends SliceJpaObject {
 		return manualStayScriptText;
 	}
 
+	public static final String MANUALBEFORETASKSCRIPT_FIELDNAME = "manualBeforeTaskScript";
 	@FieldDescribe("待办执行前脚本.")
 	@Transient
 	private String manualBeforeTaskScript;
 
+	public static final String MANUALBEFORETASKSCRIPTTEXT_FIELDNAME = "manualBeforeTaskScriptText";
 	@FieldDescribe("待办执行前脚本文本.")
 	@Transient
 	private String manualBeforeTaskScriptText;
 
+	public static final String MANUALAFTERTASKSCRIPT_FIELDNAME = "manualAfterTaskScript";
 	@FieldDescribe("待办执行后脚本.")
 	@Transient
 	private String manualAfterTaskScript;
 
+	public static final String MANUALAFTERTASKSCRIPTTEXT_FIELDNAME = "manualAfterTaskScriptText";
 	@FieldDescribe("待办执行后脚本文本.")
 	@Transient
 	private String manualAfterTaskScriptText;
 
+	public static final String MANUALSTAYSCRIPT_FIELDNAME = "manualStayScript";
 	@FieldDescribe("人工活动有停留脚本.")
 	@Transient
 	private String manualStayScript;
 
+	public static final String MANUALSTAYSCRIPTTEXT_FIELDNAME = "manualStayScriptText";
 	@FieldDescribe("人工活动有停留脚本文本.")
 	@Transient
 	private String manualStayScriptText;

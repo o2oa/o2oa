@@ -1,5 +1,6 @@
 package com.x.processplatform.service.processing.processor.manual;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +11,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
@@ -75,9 +77,15 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Manual manual) throws Exception;
 
-	protected boolean hasManualStayScript(Activity activity) throws Exception {
+	protected boolean hasManualStayScript(Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(activity.get(Manual.manualStayScript_FIELDNAME, String.class))
 				|| StringUtils.isNotEmpty(activity.get(Manual.manualStayScriptText_FIELDNAME, String.class));
+	}
+
+	protected boolean hasManualStayScript(Process process) {
+		return StringUtils.isNotEmpty(process.getManualStayScript())
+				|| StringUtils.isNotEmpty(process.getManualStayScriptText());
 	}
 
 	protected void mergeTaskCompleted(AeiObjects aeiObjects, Work work, Work oldest) {
