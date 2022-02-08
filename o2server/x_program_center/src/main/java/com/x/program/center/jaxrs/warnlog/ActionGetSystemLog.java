@@ -35,7 +35,7 @@ class ActionGetSystemLog extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String tag) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 
-		if (BooleanUtils.isFalse(Config.logLevel().getWebLogEnable())){
+		if (BooleanUtils.isFalse(Config.logLevel().getWebLogEnable())) {
 			throw new Exception("web log console not enable!");
 		}
 
@@ -43,12 +43,12 @@ class ActionGetSystemLog extends BaseAction {
 		String key = effectivePerson.getDistinguishedName();
 		if (key.indexOf("@") > -1) {
 			key = key.split("@")[1] + tag;
-		}else{
+		} else {
 			key = key + tag;
 		}
 
 		if (Config.node().equals(Config.resource_node_centersPirmaryNode())) {
-			//控制台最长展现日志时间为30分钟
+			// 控制台最长展现日志时间为30分钟
 			CacheCategory cacheCategory = new CacheCategory(CacheLogObject.class);
 			CacheKey cacheKey = new CacheKey(key, "time");
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
@@ -58,10 +58,10 @@ class ActionGetSystemLog extends BaseAction {
 				clo = (CacheLogObject) optional.get();
 				startTime = clo.getStartTime();
 				long curTime = new Date().getTime();
-				if((curTime - startTime) < durationTime){
+				if ((curTime - startTime) < durationTime) {
 					woList = getSystemLog(key);
 				}
-			}else{
+			} else {
 				woList = getSystemLog(key);
 			}
 			clo.setStartTime(startTime);
@@ -106,9 +106,6 @@ class ActionGetSystemLog extends BaseAction {
 						}
 						dos.writeLong(lastPoint);
 						dos.flush();
-
-						// logger.debug("socket dispatch getSystemLog to {}:{} lastPoint={}", node,
-						// nodes.get(node).nodeAgentPort(), lastPoint);
 
 						String result = dis.readUTF();
 						if (StringUtils.isNotEmpty(result) && result.startsWith("[")) {

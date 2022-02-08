@@ -207,14 +207,8 @@ public class UnitFactory extends AbstractFactory {
 			/** 级别从1开始 */
 			o.setLevel(list.size() + 1);
 			List<String> names = ListTools.extractProperty(list, "name", String.class, false, false);
-			// Collections.reverse(names);
 			names.add(o.getName());
 			o.setLevelName(StringUtils.join(names, PersistenceProperties.Unit.levelNameSplit));
-//			List<String> inheritControllerList = new ArrayList<>();
-//			for (Unit u : list) {
-//				inheritControllerList.addAll(u.getControllerList());
-//			}
-//			o.setInheritedControllerList(ListTools.trim(inheritControllerList, true, true));
 		}
 	}
 
