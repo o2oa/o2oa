@@ -47,7 +47,7 @@
             "show": "function( d ){ return d.isCreamSubject ? true : false }"
           },
           "creatorName" : {
-            "value": "function( d ){ return d.creatorName.split('@')[0] }"
+            "value": "function( d ){ return MWFForum.getSubjectCreatorName(d) }"
           },
           "createTime" : {  "value" : "function( d ){ return MWFForum.getDateDiff2( d.createTime || d.updateTime )}" , "title" : "function( d ){ return d.createTime || d.updateTime }" },
           "summaryContainer" : {

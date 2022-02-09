@@ -72,7 +72,7 @@
         "</div>",
         "items": {
           "creatorName" : {
-            "value" : "function( d ){ return d.creatorName.split('@')[0]; }",
+            "value" : "function( d ){ return MWFForum.getReplyCreatorName(d); }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
             "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"
