@@ -37,6 +37,7 @@ MWF.xApplication.Profile.LP = {
     "ipAddressPlaceHolder" : "If it is not empty, only the matching ip address can log in to the account. Separate multiple values with \",\"",
     "ipAddressIncorrectNotice" : "IP address format is incorrect:",
     "language": "Language",
+    "forumNickName": "Forum Nickname",
     "lps": {
         "zh-CN": "简体中文",
         "en": "English(US)"

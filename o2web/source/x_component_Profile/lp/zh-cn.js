@@ -37,6 +37,7 @@ MWF.xApplication.Profile.LP = {
     "ipAddressPlaceHolder" : "如果不为空，匹配的ip地址才能登录，用,分隔多值",
     "ipAddressIncorrectNotice" : "IP地址格式不正确：",
     "language": "语言设置",
+    "forumNickName": "论坛昵称",
     "lps": {
         "zh-CN": "简体中文",
         "en": "English"

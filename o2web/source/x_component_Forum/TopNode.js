@@ -19,6 +19,7 @@ MWF.xApplication.Forum.TopNode = new Class({
         this.access = app.access;
         this.explorer = explorer;
         this.userName = layout.desktop.session.user.distinguishedName || "";
+        this.displayName = MWFForum.getDisplayName();
 
         this.path = "../x_component_Forum/$TopNode/";
 
@@ -201,7 +202,7 @@ MWF.xApplication.Forum.TopNode = new Class({
             //}).inject(this.personNode);
             this.personTextNode = new Element("div", {
                 "styles": this.css.personTextNode,
-                "text": MWF.xApplication.Forum.LP.welcomeTitle.replace("{user}", ( this.userName || "").split("@")[0]),
+                "text": MWF.xApplication.Forum.LP.welcomeTitle.replace("{user}", ( this.displayName || "").split("@")[0]),
                 "title" : MWF.xApplication.Forum.LP.seePersonCenter
             }).inject(this.personNode);
             this.personNode.addEvent("click", function(){ this.openPerson(this.userName ) }.bind(this))
@@ -215,7 +216,7 @@ MWF.xApplication.Forum.TopNode = new Class({
         this.searchInput = new Element("input.searchInput",{
             "styles" : this.css.searchInput,
             "value" : this.lp.searchKey,
-            "title" : this.lp.searchTitle
+            "title" : MWFForum.isUseNickName() ? this.lp.searchTitleNick : this.lp.searchTitle
         }).inject(this.searchDiv);
         var _self = this;
         this.searchInput.addEvents({
