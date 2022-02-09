@@ -31,6 +31,8 @@ MWF.xApplication.ForumPerson.Main = new Class({
 	},
 	loadApplication: function(callback){
 		this.userName = layout.desktop.session.user.distinguishedName;
+		this.displayName = MWFForum.getDisplayName();
+
 		this.restActions = MWF.Actions.get("x_bbs_assemble_control"); //new MWF.xApplication.Forum.Actions.RestActions();
 
 		this.path = "../x_component_ForumPerson/$Main/"+this.options.style+"/";
@@ -241,7 +243,7 @@ MWF.xApplication.ForumPerson.Main = new Class({
 				"text" : this.personNameAbbreviate
 			}).inject(personTopDiv);
 
-			if( !this.access.isAnonymous() && !this.inBrowser ){
+			if( !this.access.isAnonymous() ){
 				if( this.isCurrentUser ){
 					var actionNode = new Element("input", {
 						"type" : "button",

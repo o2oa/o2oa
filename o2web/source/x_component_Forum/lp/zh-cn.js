@@ -14,6 +14,7 @@ MWF.xApplication.Forum.LP = {
 	"search" : "搜索",
 	"searchKey" : "请输入搜索关键字",
 	"searchTitle" : "关键字可以是主题、分区、板块、创建人",
+	"searchTitleNick": "关键字可以是主题、分区、板块",
 	"noSearchContentNotice" : "请输入搜索关键字，再执行搜索",
 
 	"dateFormatMonth": "%Y年%m月",

@@ -1896,7 +1896,7 @@ MWF.xApplication.ForumDocument.ReplyEditor = new Class({
 							return src;
 						}
 					}.bind(this)},
-					creatorName: { type : "innerText", value : ( this.app.userName || "" ).split('@')[0] },
+					creatorName: { type : "innerText", value : MWFForum.getDisplayName() },
 					content: { type : "rtf", RTFConfig : {
 						//skin : "bootstrapck",
 						"resize_enabled": false,

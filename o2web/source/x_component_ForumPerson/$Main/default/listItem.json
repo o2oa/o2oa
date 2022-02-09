@@ -108,7 +108,7 @@
         "html": "<td styles='normalTdCenterNode' width='10%'><div item='creatorName'></div><div item='createTime' styles='normalTdBottom'></div></td>",
         "items": {
           "creatorName" : {
-            "value" : "function(d){ return d.creatorName? d.creatorName.split('@')[0] : '' }"
+            "value" : "function(d){ return o2.name.cn( MWFForum.isUseNickName() ?  (d.nickName || d.creatorName): d.creatorName ) }"
           },
           "createTime" : {
             "value" : "function(d){ return MWFForum.getDateDiff( d.createTime ) }"

@@ -53,6 +53,28 @@ MWFForum.getDateDiff2 = function (publishTime) {
 MWFForum.BBS_LOGO_NAME = "BBS_LOGO_NAME";
 MWFForum.BBS_SUBJECT_TYPECATAGORY = "BBS_SUBJECT_TYPECATAGORY";
 MWFForum.BBS_TITLE_TAIL = "BBS_TITLE_TAIL";
+MWFForum.Use_Nick_Name = "BBS_USE_NICKNAME_POST";
+
+MWFForum.isUseNickName = function(){
+    return MWFForum.getSystemConfigValue( MWFForum.Use_Nick_Name ) === "YES";
+};
+
+MWFForum.getDisplayName = function( dn ){
+    if( !dn ){
+        dn = layout.desktop.session.user.distinguishedName;
+        if( MWFForum.isUseNickName() ){
+            return layout.desktop.session.user.nickName || dn.split("@")[0];
+        }else{
+            return dn.split("@")[0];
+        }
+    }else{
+        if( MWFForum.isUseNickName() ){
+            return layout.desktop.session.user.nickName || dn.split("@")[0];
+        }else{
+            return dn.split("@")[0];
+        }
+    }
+};
 
 MWFForum.getSystemConfig = function( code ){
     if( !MWFForum.SystemSetting )MWFForum.SystemSetting = {};
