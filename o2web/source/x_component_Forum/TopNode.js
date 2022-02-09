@@ -313,15 +313,7 @@ MWF.xApplication.Forum.TopNode = new Class({
         }
     },
     openPerson : function( userName ){
-        var appId = "ForumPerson"+userName;
-        if (this.app.desktop.apps[appId]){
-            this.app.desktop.apps[appId].setCurrent();
-        }else {
-            this.app.desktop.openApplication(null, "ForumPerson", {
-                "personName" : userName,
-                "appId": appId
-            });
-        }
+        MWFForum.openPersonCenter( userName );
     },
     openLoginForm : function(){
         MWF.require("MWF.xDesktop.Authentication", null, false);
