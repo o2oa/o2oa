@@ -87,7 +87,7 @@
             "show": "function( d ){ return d.isCreamSubject ? true : false }"
           },
           "creatorName" : {
-            "value" : "function( d ){ return d.creatorName.split('@')[0]; }",
+            "value" : "function( d ){ return MWFForum.getSubjectCreatorName(d); }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
             "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"

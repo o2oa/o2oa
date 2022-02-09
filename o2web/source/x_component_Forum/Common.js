@@ -53,10 +53,10 @@ MWFForum.getDateDiff2 = function (publishTime) {
 MWFForum.BBS_LOGO_NAME = "BBS_LOGO_NAME";
 MWFForum.BBS_SUBJECT_TYPECATAGORY = "BBS_SUBJECT_TYPECATAGORY";
 MWFForum.BBS_TITLE_TAIL = "BBS_TITLE_TAIL";
-MWFForum.Use_Nick_Name = "BBS_USE_NICKNAME_POST";
+MWFForum.BBS_USE_NICKNAME = "BBS_USE_NICKNAME";
 
 MWFForum.isUseNickName = function(){
-    return MWFForum.getSystemConfigValue( MWFForum.Use_Nick_Name ) === "YES";
+    return MWFForum.getSystemConfigValue( MWFForum.BBS_USE_NICKNAME ) === "YES";
 };
 
 MWFForum.Nick_Name_Map = {};
@@ -81,6 +81,14 @@ MWFForum.getDisplayName = function( dn ){
             return dn.split("@")[0];
         }
     }
+};
+
+MWFForum.getSubjectCreatorName = function(d){
+     return o2.name.cn( MWFForum.isUseNickName() ?  (d.nickName || d.creatorName): d.creatorName );
+};
+
+MWFForum.getReplyCreatorName = function(d){
+    return o2.name.cn( MWFForum.isUseNickName() ?  (d.nickName || d.creatorName): d.creatorName );
 };
 
 MWFForum.openPersonCenter = function( userName ){

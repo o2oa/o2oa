@@ -192,7 +192,7 @@ MWF.xApplication.Forum.ColumnTemplate.Document = new Class({
 
                         var div = new Element("div", {
                             "styles": this.css.itemReplyPersonNode,
-                            "text": ( d.creatorName || "" ).split("@")[0]
+                            "text": MWFForum.getSubjectCreatorName(d)
                         }).inject(replyNode);
                         div.addEvents({
                             "mouseover": function () {
