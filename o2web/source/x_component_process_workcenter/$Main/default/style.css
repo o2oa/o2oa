@@ -163,6 +163,8 @@
 }
 .contentTitleActionArea{
     float: right;
+    color: #666666;
+    cursor: pointer;
 }
 .contentTitleFilterArea{
     height: 44px;
@@ -340,7 +342,7 @@
     overflow: hidden;
 }
 .pf_workLog{
-    max-height: 550px;
+    height: 550px;
     width: 55%;
     padding: 3px 0;
     float: left;
@@ -463,6 +465,17 @@
     border: 1px solid;
     background-color: #FFFFFF;
 }
+.pf_listItemActivity{
+    min-width: 40px;
+    width: 12%;
+    height: 59px;
+    float: right;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .mf_workLogItem{
     min-height: 59px;
     border-bottom: 1px solid #E6E6E6;
@@ -486,8 +499,8 @@
     border-radius: 20px;
 }
 .mf_workLogContent{
-    min-height: 39px;
-    padding: 10px 0;
+    min-height: 49px;
+    padding: 5px 0;
     margin-left: 60px;
     color: #666666;
 }
@@ -496,7 +509,12 @@
     line-height: 20px;
 }
 .mf_workLogOpinion{
-    min-height: 20px;
+    min-height: 10px;
+}
+.mf_workLogTime{
+    height: 20px;
+    line-height: 20px;
+    color: #999999;
 }
 
 @font-face {

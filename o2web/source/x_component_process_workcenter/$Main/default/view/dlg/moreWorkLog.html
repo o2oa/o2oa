@@ -14,7 +14,32 @@
                     <span style="color: #4A90E2">【{{$.routeName}}】</span>
                 </div>
                 <div class="mf_workLogOpinion">
-                    <span>{{$.opinion}}同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意同意</span>
+                    <span>{{$.opinion||$.routeName}}</span>
+                </div>
+                <div class="mf_workLogTime">
+                    <span>{{$.completedTime.substring(0, 16)}}</span>
+                </div>
+            </div>
+        </div>
+    {{end each}}
+
+    {{each $.data.taskList}}
+        <div class="mf_workLogItem">
+            <div class="mf_workLogIcon">
+                <div class="mf_itemOpinionIconArea">
+                    <img class="mf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{encodeURIComponent($.person)}}/icon" />
+                </div>
+            </div>
+            <div class="mf_workLogContent">
+                <div class="mf_workLogPerson">
+                    <span>{{o2.name.cn($.person)}}</span>
+                    <span>({{o2.name.cn($.unit)}})</span>
+                </div>
+                <div class="mf_workLogOpinion">
+                    <span style="color: red">{{$._.lp.processing}}</span>
+                </div>
+                <div class="mf_workLogTime">
+                    <span>{{$.startTime.substring(0, 16)}}</span>
                 </div>
             </div>
         </div>

@@ -103,46 +103,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		list.load();
 		this.currentList = list;
 	},
-	// loadTask: function(){
-	// 	if (!this.taskList) this.taskList = new MWF.xApplication.process.workcenter.TaskList(this, {
-	// 		"onLoadData": this.hideSkeleton.bind(this)
-	// 	});
-	// 	this.taskList.init();
-	// 	this.taskList.load();
-	// 	this.currentList = this.taskList;
-	// },
-	// loadRead: function(){
-	// 	if (!this.readList) this.readList = new MWF.xApplication.process.workcenter.ReadList(this, {
-	// 		"onLoadData": this.hideSkeleton.bind(this)
-	// 	});
-	// 	this.readList.init();
-	// 	this.readList.load();
-	// 	this.currentList = this.readList;
-	// },
-	// loadTaskCompleted: function(){
-	// 	if (!this.taskCompletedList) this.taskCompletedList = new MWF.xApplication.process.workcenter.TaskCompletedList(this, {
-	// 		"onLoadData": this.hideSkeleton.bind(this)
-	// 	});
-	// 	this.taskCompletedList.init();
-	// 	this.taskCompletedList.load();
-	// 	this.currentList = this.taskCompletedList;
-	// },
-	// loadReadCompleted: function(){
-	// 	if (!this.readCompletedList) this.readCompletedList = new MWF.xApplication.process.workcenter.ReadCompletedList(this, {
-	// 		"onLoadData": this.hideSkeleton.bind(this)
-	// 	});
-	// 	this.readCompletedList.init();
-	// 	this.readCompletedList.load();
-	// 	this.currentList = this.readCompletedList;
-	// },
-	// loadDraft: function(){
-	// 	if (!this.readCompletedList) this.readCompletedList = new MWF.xApplication.process.workcenter.ReadCompletedList(this, {
-	// 		"onLoadData": this.hideSkeleton.bind(this)
-	// 	});
-	// 	this.readCompletedList.init();
-	// 	this.readCompletedList.load();
-	// 	this.currentList = this.readCompletedList;
-	// },
 	setMenuItemStyleDefault: function(node){
 		node.removeClass("mainColor_bg_opacity");
 		node.getFirst().removeClass("mainColor_color");
@@ -189,6 +149,16 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	},
 	nextPage: function(){
 		if (this.currentList) this.currentList.nextPage();
+	},
+	getFilterData: function(){
+		var type = this.currentList.options.type;
+		filterAttribute
+	},
+	showFilter: function(e){
+		var node = e.target;
+		this.getFilterData().then(function(data){
+
+		});
 	}
 });
 
@@ -613,7 +583,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 		}
 		var title = task.title;
 		if (maxLength && title.length > maxLength) {
-			title = title.substr(0, maxLength) + "..."
+			title = title.substr(0, maxLength) + "...";
 		}
 		return "<div>" + (titlelp || lp.taskProcessedMessage) + "“" + title + "”</div>" + content;
 	},
@@ -666,6 +636,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		}
 	},
 	setReadCompleted: function(e, data){
+		if (data.item) data = data.item;
 		var _self = this;
 		var text = this.lp.setReadedConfirmContent.replace("{title}", data.title );
 		var url = this.app.path+this.app.options.style+"/view/dlg/read.html";
@@ -690,7 +661,8 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 						"type": "ok",
 						"text": MWF.LP.process.button.ok,
 						"action": function () {
-							var opinion = this.content.getElement("textarea").get("text");
+							debugger;
+							var opinion = this.content.getElement("textarea").get("value");
 							_self.setReadAction(data, opinion);
 							this.close();
 						}
@@ -708,12 +680,16 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 	},
 	setReadAction: function(data, opinion){
 		this.action.ReadAction.processing(data.id, {"opinion": opinion}, function(){
+			if (this.infoDlg) this.infoDlg.close();
 			this.refresh();
 		}.bind(this));
 	},
 
 	getReference: function(data){
-		return this.action.TaskCompletedAction.getReference(data.id);
+		return this.action.ReadAction.reference(data.id).then(function(json){
+			json.data.item = json.data.read;
+			return json.data;
+		});
 	},
 	openWorkInfo: function(e, data){
 		// var p = e.target.getPosition(this.app.content);
@@ -721,12 +697,12 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
 
 		var _self = this;
-		this.getReference(data).then(function(json){
+		this.getReference(data).then(function(data){
 			//data.workLog = json.data;
-			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": json.data}, "module": _self}, function(){
+			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self}, function(){
 				infoContent.inject(document.body);
 				debugger;
-				o2.DL.open({
+				_self.infoDlg = o2.DL.open({
 					// "top": p.y,
 					// "left": p.x,
 					"title": _self.lp.processInfo,
@@ -744,7 +720,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		var inforNode = new Element("div.pf_workLogInfor");
 		var html = "<div>"+o2.name.cn(data.person)+"</div>";
 		if (data.completedTime){
-			html += "<div>"+this.lp.opinion+": "+data.opinion+"</div>";
+			html += "<div>"+this.lp.opinion+": "+(data.opinion || data.routeName)+"</div>";
 			html += "<div>"+this.lp.time+": "+data.completedTime.substring(0,16)+"</div>";
 		}else{
 			html += "<div style='color:red'>"+this.lp.processing+"</div>";
@@ -764,19 +740,30 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 	openWork: function(e, data){
 		o2.api.form.openWork(data.id, "", data.title);
 	},
+	openJob: function(e, data){
+		debugger;
+		o2.api.form.openJob(data.item.job);
+	},
+	closeMoerLogPanel: function(logNode){
+		if (logNode){
+			logNode.removeClass("mainColor_bg_opacity");
+			var workLogPanel = logNode.retrieve("workLogPanel");
+			if (workLogPanel) workLogPanel.closePanel();
+			logNode.store("workLogPanel", null);
+		}
+	},
 	moreWorkLog: function(e, data){
-		if (this.currentLogNode) this.currentLogNode.removeClass("mainColor_bg_opacity");
-		this.currentLogNode = e.target.getParent(".pf_logItem").addClass("mainColor_bg_opacity");
+		var logNode = e.target.getParent(".pf_logItem");
+		this.closeMoerLogPanel(this.currentLogNode);
 
 		var _self = this;
 		var moreLogNode = new Element("div");
 		var url = this.app.path+this.app.options.style+"/view/dlg/moreWorkLog.html";
 		moreLogNode.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self});
 
-		debugger;
 		var targetNode = e.target.getParent(".processInfoContent").getElement(".pf_workListArea");
 		o2.require("o2.widget.Panel", function(){
-			var panel = new o2.widget.Panel(moreLogNode, {
+			workLogPanel = new o2.widget.Panel(moreLogNode, {
 				"style": "flat",
 				"title": "",
 				"width": 300,
@@ -786,22 +773,22 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 				"isMax": false,
 				"isExpand": false,
 				"isResize": false,
-				"target": targetNode
-			});
-			panel.load();
-			// panel.titleNode.addClass("mainColor_bg_opacity");
-			// panel.content.addClass("mainColor_bg_opacity");
-			// panel.bottomNode.addClass("mainColor_bg_opacity");
+				"target": targetNode,
+				"duration": 0,
+				"onPostLoad": function(){
+					_self.currentLogNode = logNode.addClass("mainColor_bg_opacity");
+				},
+				"onQueryClose": function(){
+					var node = _self.currentLogNode;
+					_self.currentLogNode = null;
+					if (node) _self.closeMoerLogPanel(node);
 
+				}
+			});
+			logNode.store("workLogPanel", workLogPanel);
+			workLogPanel.logNode = logNode;
+			workLogPanel.load();
 		});
-		// o2.DL.open({
-		// 	"title": "",
-		// 	"style": "user",
-		// 	"isResize": false,
-		// 	"content": moreLogNode,
-		// 	"width": 800,
-		// 	"height": 720
-		// });
 	}
 });
 MWF.xApplication.process.workcenter.TaskCompletedList = new Class({
@@ -809,6 +796,12 @@ MWF.xApplication.process.workcenter.TaskCompletedList = new Class({
 	options: {
 		"itemHeight": 60,
 		"type": "taskCompleted"
+	},
+	getReference: function(data){
+		return this.action.TaskCompletedAction.getReference(data.id).then(function(json){
+			json.data.item = json.data.taskCompleted;
+			return json.data;
+		});
 	},
 	loadData: function(){
 		var _self = this;
@@ -825,6 +818,12 @@ MWF.xApplication.process.workcenter.ReadCompletedList = new Class({
 		"itemHeight": 60,
 		"type": "readCompleted"
 	},
+	getReference: function(data){
+		return this.action.ReadCompletedAction.getReference(data.id).then(function(json){
+			json.data.item = json.data.readCompleted;
+			return json.data;
+		});
+	},
 	loadData: function(){
 		var _self = this;
 		return this.action.ReadCompletedAction.listMyPaging(this.page, this.size).then(function(json){
@@ -832,9 +831,6 @@ MWF.xApplication.process.workcenter.ReadCompletedList = new Class({
 			_self.total = json.size;
 			return json.data;
 		}.bind(this));
-	},
-	openWorkInfo: function(){
-		console.log("openWorkInfo!");
 	}
 });
 MWF.xApplication.process.workcenter.DraftList = new Class({

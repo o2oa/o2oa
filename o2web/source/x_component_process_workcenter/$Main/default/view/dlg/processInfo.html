@@ -2,31 +2,41 @@
     <div class="processInfoTitle">
         <div class="listItem pf_item" data-o2-events="o2load:loadItemFlag">
             <div class="listItemApplication pf_application">
-                <div class="listItemApplicationIcon" data-o2-events="o2load:loadItemIcon:{{$.data.taskCompleted.application}}"></div>
-                <div class="listItemApplicationText pf_applicationText" title="{{$.data.taskCompleted.applicationName}}">{{$.data.taskCompleted.applicationName}}</div>
+                <div class="listItemApplicationIcon" data-o2-events="o2load:loadItemIcon:{{$.data.item.application}}"></div>
+                <div class="listItemApplicationText pf_applicationText" title="{{$.data.item.applicationName}}">{{$.data.item.applicationName}}</div>
             </div>
             <div class="listItemLine"></div>
 
             <div class="listItemFlag">
-                {{if $.data.taskCompleted.allowRapid}}
+                {{if $.data.item.allowRapid}}
                 <div class="rapidEditor o2icon-bianji" data-o2-events="click:editTask" title="{{$.lp.rapidEditor}}"></div>
                 {{end if}}
                 {{if $.type=='read'}}
                 <div class="rapidEditor o2icon-daiyue" data-o2-events="click:setReadCompleted" title="{{$.lp.setReadCompleted}}"></div>
                 {{end if}}
             </div>
-            <div class="listItemActivity">
-                <div class="listItemActivityText mainColor_color" title="{{$.data.taskCompleted.activityName}}"> {{($.type=='draft') ? $.lp.draft : $.data.taskCompleted.activityName}}</div>
+            <div class="pf_listItemActivity">
+                {{if $.type=='taskCompleted'}}
+                <div class="listItemActivityText" title="{{$.lp.processActivityInfo}}:{{$.data.item.activityName}}">
+                    <span>{{$.lp.processActivity}}</span><br/><span class="mainColor_color">{{$.data.item.activityName}}</span>
+                </div>
+                {{end if}}
+
+                {{if $.type=='read' ||  $.type=='readCompleted'}}
+                <div class="listItemActivityText" title="{{$.lp.readActivityInfo}}:{{$.data.item.activityName}}">
+                    <span>{{$.lp.readActivity}}</span><br/><span class="mainColor_color">{{$.data.item.activityName}}</span>
+                </div>
+                {{end if}}
             </div>
 
-            <div class="listItemTitle">
-                <div class="listItemTitleProcess pf_titleProcess" title="{{$.data.taskCompleted.processName}}">
+            <div class="listItemTitle" data-o2-events="click:openJob">
+                <div class="listItemTitleProcess pf_titleProcess" title="{{$.data.item.processName}}">
                     <div class="listItemTitleFlag">【</div>
-                    <div class="listItemTitleProcessText">{{$.data.taskCompleted.processName}}</div>
+                    <div class="listItemTitleProcessText">{{$.data.item.processName}}</div>
                     <div class="listItemTitleFlag">】</div>
                 </div>
                 <div class="listItemTitleSubject">
-                    <div>{{$.data.taskCompleted.title}}</div>
+                    <div>{{$.data.item.title}}</div>
                 </div>
             </div>
         </div>

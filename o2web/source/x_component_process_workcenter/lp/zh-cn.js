@@ -48,5 +48,11 @@ MWF.xApplication.process.workcenter.LP = {
 	"workFlowTo": "文件流转至：",
 	"taskPerson": "处理人：",
 	"open": "打开",
-	"select": "选择"
+	"select": "选择",
+	"processActivity": "办理活动",
+	"processActivityInfo": "办理此文件时的活动状态",
+	"readActivity": "待阅活动",
+	"readActivityInfo": "收到待阅时的活动状态",
+
+	"filter": "筛选"
 };

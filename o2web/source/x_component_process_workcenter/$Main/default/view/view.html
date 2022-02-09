@@ -47,8 +47,11 @@
     <div class="content" data-o2-element="contentNode">
         <div class="contentTitle" data-o2-element="listTitleNode">
             <div class="contentTitleArea">
-                <div class="contentTitleActionArea"></div>
-                <div class="contentTitleFilterArea"></div>
+                <div class="contentTitleActionArea" data-o2-events="click:showFilter">
+                    <icon class="o2icon-saixuan"></icon>
+                    <span>{{$.lp.filter}}</span>
+                </div>
+                <div class="contentTitleFilterArea" data-o2-element="filterItemArea"></div>
             </div>
         </div>
         <div class="contentList" data-o2-element="listContentNode">
