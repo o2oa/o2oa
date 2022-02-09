@@ -13,6 +13,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.process.workcenter.LP;
+		this.action = o2.Actions.load("x_processplatform_assemble_surface");
 	},
 	loadApplication: function(callback){
 		var url = this.path+this.options.style+"/view/view.html";
@@ -57,8 +58,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	loadCount: function(){
 		this.createCountData();
 
-		var action = o2.Actions.load("x_processplatform_assemble_surface");
-		action.WorkAction.countWithPerson(layout.session.user.id).then(function(json){
+		this.action.WorkAction.countWithPerson(layout.session.user.id).then(function(json){
 			this.countData.task = json.data.task;
 			this.countData.taskCompleted = json.data.taskCompleted;
 			this.countData.read = json.data.read;
@@ -70,7 +70,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			// this.readCountNode.set("text", json.data.read);
 			// this.readCompletedCountNode.set("text", json.data.readCompleted);
 		}.bind(this));
-		action.DraftAction.	listMyPaging(1,1, {}).then(function(json){
+		this.action.DraftAction.listMyPaging(1,1, {}).then(function(json){
 			this.countData.draft = json.size;
 			// this.pageData = Object.assign(this.pageData, {"draft": json.size});
 			// this.draftCountNode.set("text", json.size);
@@ -116,8 +116,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	getApplicationIcon: function(application){
 		var icon = (this.appIcons) ? this.appIcons[application] : null;
 		if (!icon) {
-			var action = o2.Actions.load("x_processplatform_assemble_surface");
-			return action.ApplicationAction.getIcon(application).then(function(json){
+			return this.action.ApplicationAction.getIcon(application).then(function(json){
 				if (json.data){
 					debugger;
 					if (!this.appIcons) this.appIcons = {};
@@ -151,14 +150,52 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		if (this.currentList) this.currentList.nextPage();
 	},
 	getFilterData: function(){
-		var type = this.currentList.options.type;
-		filterAttribute
+		var type = this.currentList.options.type.capitalize();
+		var action = type+"Action";
+		return this.action[action].filterAttribute().then(function(json){return json.data});
 	},
 	showFilter: function(e){
 		var node = e.target;
-		this.getFilterData().then(function(data){
+		var p = node.getPosition(this.content);
+		var size = node.getSize();
+		var y = p.y+size.y+10;
+		var x = p.x-500+size.x;
+		var fx = p.x+size.x;
 
+		var filterContent = new Element("div");
+		var url = this.path+this.options.style+"/view/dlg/filter.html";
+		this.getFilterData().then(function(data){
+			filterContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data}, "module": this})
+		}.bind(this));
+
+		var _self = this;
+		var closeFilterDlg = function(){
+			_self.filterDlg.close();
+			document.body.removeEvent("mousedown", closeFilterDlg);
+		}
+		this.filterDlg = o2.DL.open({
+			// "top": p.y,
+			// "left": p.x,
+			"mask": false,
+			"title": "",
+			"style": "user",
+			"isMove": false,
+			"isResize": false,
+			"isTitle": false,
+			"content": filterContent,
+			"maskNode": this.content,
+			"top": y,
+			"left": x,
+			"fromTop": y,
+			"fromLeft": fx,
+			"width": 500,
+			"height": 440,
+			"duration": 100
 		});
+		this.filterDlg.content.addEvent("mousedown", function(e){
+			e.stopPropagation();
+		});
+		document.body.addEvent("mousedown", closeFilterDlg);
 	}
 });
 
@@ -699,21 +736,18 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		var _self = this;
 		this.getReference(data).then(function(data){
 			//data.workLog = json.data;
-			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self}, function(){
-				infoContent.inject(document.body);
-				debugger;
-				_self.infoDlg = o2.DL.open({
-					// "top": p.y,
-					// "left": p.x,
-					"title": _self.lp.processInfo,
-					"style": "user",
-					"isResize": true,
-					"content": infoContent,
-					"maskNode": _self.app.content,
-					"width": 800,
-					"height": 720
-				});
-			});
+			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self});
+		});
+		this.infoDlg = o2.DL.open({
+			// "top": p.y,
+			// "left": p.x,
+			"title": this.lp.processInfo,
+			"style": "user",
+			"isResize": true,
+			"content": infoContent,
+			"maskNode": this.app.content,
+			"width": 800,
+			"height": 720
 		});
 	},
 	attachShowPersonLog: function(e, data){
