@@ -59,8 +59,9 @@ MWFForum.isUseNickName = function(){
     return MWFForum.getSystemConfigValue( MWFForum.Use_Nick_Name ) === "YES";
 };
 
+MWFForum.Nick_Name_Map = {};
 MWFForum.getDisplayName = function( dn ){
-    if( !dn ){
+    if( !dn || dn === layout.desktop.session.user.distinguishedName){
         dn = layout.desktop.session.user.distinguishedName;
         if( MWFForum.isUseNickName() ){
             return layout.desktop.session.user.nickName || dn.split("@")[0];
@@ -69,9 +70,45 @@ MWFForum.getDisplayName = function( dn ){
         }
     }else{
         if( MWFForum.isUseNickName() ){
-            return layout.desktop.session.user.nickName || dn.split("@")[0];
+            if( MWFForum.Nick_Name_Map[dn] )return MWFForum.Nick_Name_Map[dn];
+            return o2.Actions.load("x_organization_assemble_express").PersonAction.getNickName( dn ).then(function (json) {
+                MWFForum.Nick_Name_Map[dn] = json.data.value;
+                return MWF.name.cn(json.data.value);
+            }).catch(function () {
+                return "";
+            })
         }else{
             return dn.split("@")[0];
+        }
+    }
+};
+
+MWFForum.openPersonCenter = function( userName ){
+    if( MWFForum.isUseNickName() && userName!=="xadmin" ){
+        o2.Actions.load("x_organization_assemble_express").PersonAction.listObject(
+                { personList : [userName]}
+            ).then(function(json){
+                if( !json.data || !json.data.length )return;
+                var flag = json.data[0].id;
+                var appId = "ForumPerson"+flag;
+                if (layout.desktop.apps[appId]){
+                    layout.desktop.apps[appId].setCurrent();
+                }else {
+                    layout.desktop.openApplication(null, "ForumPerson", {
+                        "p" : flag,
+                        "appId": appId
+                    });
+                }
+        })
+    }else{
+        var appId = "ForumPerson"+userName;
+        if (layout.desktop.apps[appId]){
+            layout.desktop.apps[appId].setCurrent();
+        }else {
+            layout.desktop.openApplication(null, "ForumPerson", {
+                "personName" : userName,
+                "appId": appId
+            });
         }
     }
 };

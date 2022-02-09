@@ -24,14 +24,14 @@ MWF.xApplication.ForumPerson.Main = new Class({
 		"isResize": false,
 		"isMax": true,
 		"title": MWF.xApplication.ForumPerson.LP.title,
-		"personName" : ""
+		"personName" : "",
+		"p": ""
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.Forum.LP;
 	},
 	loadApplication: function(callback){
 		this.userName = layout.desktop.session.user.distinguishedName;
-		this.displayName = MWFForum.getDisplayName();
 
 		this.restActions = MWF.Actions.get("x_bbs_assemble_control"); //new MWF.xApplication.Forum.Actions.RestActions();
 
@@ -56,14 +56,20 @@ MWF.xApplication.ForumPerson.Main = new Class({
 		if( !this.options.personName && this.status && this.status.personName ){
 			this.options.personName = this.status.personName;
 		}
-		this.isCurrentUser = this.userName == this.options.personName;
-		this.personNameAbbreviate = this.options.personName.split('@')[0];
-		var tail = this.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
-		this.setTitle( this.personNameAbbreviate + tail );
+		if( !this.options.p && this.p && this.status.p ){
+			this.options.p = this.status.p;
+		}
 		this.loadController(function(){
 			this.access.login( function () {
-				this.getUserData( this.options.personName, function( json ){
+				this.getUserData( this.options.personName || this.options.p, function( json ){
 					this.personData = json.data;
+					this.options.personName = this.personData.distinguishedName;
+					this.isCurrentUser = this.userName == this.options.personName;
+					var name =  MWFForum.isUseNickName() ? this.personData.nickName : this.options.personName;
+					this.personNameAbbreviate = (name || this.options.personName).split('@')[0];
+					var tail = this.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+					this.setTitle( this.personNameAbbreviate + tail );
+
 					this.loadApplicationLayout();
 				}.bind(this) )
 			}.bind(this))
@@ -316,15 +322,7 @@ MWF.xApplication.ForumPerson.Main = new Class({
 	openPerson : function( userName ){
 		if( !userName || userName == "" ){
 		}else{
-			var appId = "ForumPerson"+userName;
-			if (this.desktop.apps[userName]){
-				this.desktop.apps[userName].setCurrent();
-			}else {
-				this.desktop.openApplication(null, "ForumPerson", {
-					"personName" : userName,
-					"appId": appId
-				});
-			}
+			MWFForum.openPersonCenter( userName );
 		}
 	},
 	setContentSize: function () {
@@ -338,11 +336,19 @@ MWF.xApplication.ForumPerson.Main = new Class({
 		this.contentContainerNode.setStyle("height", "" + height + "px");
 	},
 	recordStatus: function(){
-		return {
-			type : this.explorer.options.type,
-			personName : this.options.personName,
-			viewPageNum : this.explorer.view.getCurrentPageNum()
-		};
+		if( this.options.p ){
+			return {
+				type : this.explorer.options.type,
+				p : this.options.p,
+				viewPageNum : this.explorer.view.getCurrentPageNum()
+			};
+		}else{
+			return {
+				type : this.explorer.options.type,
+				personName : this.options.personName,
+				viewPageNum : this.explorer.view.getCurrentPageNum()
+			};
+		}
 	}
 });
 
@@ -446,7 +452,7 @@ MWF.xApplication.ForumPerson.Explorer = new Class({
 				}).inject( toolbar );
 				this.mySubjectNode = new Element("div.toolbarLeftItem",{
 					"styles" : this.css.toolbarLeftItem,
-					"text" : this.app.personData.genderType.toLowerCase() == "f" ? this.lp.herSubject : this.lp.hisSubject
+					"text" : ( this.app.personData.genderType || "" ).toLowerCase() == "f" ? this.lp.herSubject : this.lp.hisSubject
 				}).inject( this.toolbarLeft );
 				this.mySubjectNode.setStyles( this.css.toolbarLeftItem_current );
 				this.mySubjectNode.setStyle("cursor","default");
