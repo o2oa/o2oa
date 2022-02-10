@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.collections4.list.SetUniqueList;
@@ -9,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.ProcessingAttributes;
@@ -263,6 +265,9 @@ public class Processing extends BaseProcessing {
 				break;
 			case parallel:
 				inquired.addAll(this.parallel().inquire(workId, processingConfigurator, processingAttributes));
+				break;
+			case service:
+				inquired.addAll(this.service().inquire(workId, processingConfigurator, processingAttributes));
 				break;
 			case split:
 				inquired.addAll(this.split().inquire(workId, processingConfigurator, processingAttributes));
