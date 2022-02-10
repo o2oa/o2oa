@@ -914,6 +914,17 @@ MWF.xApplication.ForumDocument.VoteRecordDocument = new Class({
     _queryCreateDocumentNode:function( itemData ){
     },
     _postCreateDocumentNode: function( itemNode, itemData ){
-        if (itemData.votorName) new MWF.widget.O2Person({"name" : itemData.votorName }, itemNode,  {"style": "xform"});
+        if( MWFForum.isUseNickName() ){
+            new Element("div", {
+                text : o2.name.cn(itemData.nickName || itemData.votorName),
+                styles : {
+                    "margin-right": "10px",
+                    "margin-top": "5px",
+                    "float": "left"
+                }
+            }).inject(itemNode);
+        }else{
+            if (itemData.votorName) new MWF.widget.O2Person({"name" : itemData.votorName }, itemNode,  {"style": "xform"});
+        }
     }
 });
