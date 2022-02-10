@@ -44,7 +44,7 @@ public class CollectMarket extends BaseAction {
 					Business business = new Business(emc);
 					String token = business.loginCollect();
 					if (StringUtils.isNotEmpty(token)) {
-						logger.info("start sync market data=====");
+						logger.info("start sync market data.");
 						List<Wi> wiList = null;
 						try {
 							ActionResponse response = ConnectionAction.get(
@@ -112,7 +112,7 @@ public class CollectMarket extends BaseAction {
 							}
 							emc.commit();
 						}
-						logger.info("end sync market data=====");
+						logger.info("end sync market data.");
 					}
 				}
 			}
