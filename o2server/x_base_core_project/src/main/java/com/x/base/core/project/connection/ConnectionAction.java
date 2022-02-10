@@ -79,6 +79,14 @@ public class ConnectionAction {
 		connection.setReadTimeout(readTimeout);
 		try {
 			connection.connect();
+			int status = connection.getResponseCode();
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
+				String redirect = connection.getHeaderField("Location");
+				if(StringUtils.isNotBlank(redirect)) {
+					connection.disconnect();
+					return getDelete(connectTimeout, readTimeout, redirect, method, heads);
+				}
+			}
 		} catch (Exception e) {
 			response.setType(Type.connectFatal);
 			response.setMessage(String.format("%s connect connection error, address: %s, because: %s.", method, address,
