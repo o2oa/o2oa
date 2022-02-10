@@ -1983,7 +1983,7 @@ MWF.xApplication.ForumDocument.ReplyForm = new Class({
 			new Element( "div", {styles : this.css.quoteLeft} ).inject( quoteTop );
 			new Element( "div", {
 				styles : this.css.quoteInfor,
-				text : this.parentData.creatorName.split("@")[0] + this.lp.publishAt + this.parentData.createTime
+				text : MWFForum.getReplyCreatorName(this.parentData) + this.lp.publishAt + this.parentData.createTime
 			}).inject( quoteTop );
 
 			var quoteBottom = new Element( "div", {styles : this.css.quoteBottom} ).inject( mainContentEl );
@@ -2185,7 +2185,7 @@ MWF.xApplication.ForumDocument.ReplyDocument = new Class({
 					var quoteArea = new Element( "div", {styles : this.css.quoteAreaBig } ).inject( quoteContent );
 					var quoteInfor = new Element( "div", {
 						styles : this.css.quoteInforBig,
-						text : data.orderNumber + this.lp.floor + "：" + data.creatorName.split('@')[0] + this.lp.publishAt + data.createTime
+						text : data.orderNumber + this.lp.floor + "：" + MWFForum.getReplyCreatorName(data) + this.lp.publishAt + data.createTime
 					}).inject( quoteArea );
 					quoteInfor.addEvent("click", function(){
 						this.obj.app.gotoReply( this.index )
