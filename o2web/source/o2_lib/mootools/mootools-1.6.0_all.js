@@ -152,7 +152,7 @@ String.convert = function(item){
 };
 
 /*<1.5compat>*/
-Array.from = Array.convert;
+if(!Array.from)Array.from = Array.convert;
 /*</1.5compat>*/
 
 Function.from = Function.convert;
