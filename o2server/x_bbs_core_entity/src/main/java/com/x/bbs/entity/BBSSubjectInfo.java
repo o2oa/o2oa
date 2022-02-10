@@ -330,6 +330,7 @@ public class BBSSubjectInfo extends SliceJpaObject {
 	public static final String creatorName_FIELDNAME = "creatorName";
 	@FieldDescribe("创建人姓名")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + creatorName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + creatorName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorName = "";
 

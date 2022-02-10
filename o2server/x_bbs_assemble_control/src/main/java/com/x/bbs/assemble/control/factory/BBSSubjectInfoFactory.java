@@ -35,12 +35,12 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 	public BBSSubjectInfoFactory(Business business) throws Exception {
 		super(business);
 	}
-	
+
 	//@MethodDescribe( "获取指定Id的BBSSubjectInfo实体信息对象" )
 	public BBSSubjectInfo get( String id ) throws Exception {
 		return this.entityManagerContainer().find( id, BBSSubjectInfo.class, ExceptionWhen.none );
 	}
-	
+
 	//@MethodDescribe( "列示指定Id的BBSSubjectInfo实体信息列表" )
 	public List<BBSSubjectInfo> list(List<String> ids) throws Exception {
 		if( ids == null || ids.size() == 0 ){
@@ -53,7 +53,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		Predicate p = root.get(BBSSubjectInfo_.id).in(ids);
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
+
 	//@MethodDescribe( "根据版块信息查询所有需要展现的所有置顶主题列表" )
 	public List<String> listAllTopSubject( String forumId, String mainSectionId, String sectionId, String creatorName, Date startTime , Date endTime  ) throws Exception {
 		if( forumId == null || forumId.isEmpty() ){
@@ -64,21 +64,21 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery( String.class);
 		Root<BBSSubjectInfo> root = cq.from( BBSSubjectInfo.class );
 		cq.select(root.get( BBSSubjectInfo_.id));
-		
+
 		Predicate p = cb.isTrue( root.get( BBSSubjectInfo_.isTopSubject ) );
-		
+
 		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p,  cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
 		}
-		
+
 		if(startTime!= null) {
 			   p = cb.and(p, cb.greaterThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), startTime));
 		}
-			
+
 		if(endTime!= null) {
 			   p = cb.and(p, cb.lessThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), endTime));
 		}
-		
+
 		Predicate top_or = null;
 		Predicate top_toforum_or = null;
 		Predicate top_tomainsection_or = null;
@@ -88,7 +88,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			top_toforum_or = cb.and( top_toforum_or, cb.isTrue( root.get( BBSSubjectInfo_.topToForum )) );
 			top_or = top_toforum_or;
 		}
-		
+
 		if( StringUtils.isNotEmpty( mainSectionId ) ){//在指定的主版块中的所有置顶主题
 			top_tomainsection_or = cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId );
 			top_tomainsection_or = cb.and( top_tomainsection_or, cb.isTrue( root.get( BBSSubjectInfo_.topToMainSection )) );
@@ -98,7 +98,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 				top_or = top_tomainsection_or;
 			}
 		}
-		
+
 		if( StringUtils.isNotEmpty( sectionId ) ){//在指定的版块中的所有置顶主题
 			top_tosection_or = cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId );
 			top_tosection_or = cb.and( top_tosection_or, cb.isTrue( root.get( BBSSubjectInfo_.topToSection )) );
@@ -108,9 +108,9 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 				top_or = top_tosection_or;
 			}
 		}
-		
-		
-		
+
+
+
 		if( top_or != null ){
 			p = cb.and( p, top_or );
 		}
@@ -183,7 +183,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		}
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
+
 	//@MethodDescribe( "根据版块信息查询论坛内主题数量" )
 	public Long countByForumId( String forumId, Boolean withTopSubject ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( BBSSubjectInfo.class );
@@ -197,11 +197,11 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			}else{
 				p = cb.and( p, cb.isTrue( root.get( BBSSubjectInfo_.isTopSubject ) ) );
 			}
-		}		
-		cq.select( cb.count( root ) );		
+		}
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
-	
+
 	//@MethodDescribe( "根据版块信息查询论坛内主题列表" )
 	public List<BBSSubjectInfo> listByForumId( String forumId, Boolean withTopSubject ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( BBSSubjectInfo.class );
@@ -215,10 +215,10 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			}else{
 				p = cb.and( p, cb.isTrue( root.get( BBSSubjectInfo_.isTopSubject ) ) );
 			}
-		}	
+		}
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
+
 	//@MethodDescribe( "根据版块信息查询版块内主题数量，包括子版块内的主题数量" )
 	public Long countByMainAndSubSectionId( String sectionId, Boolean withTopSubject ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( BBSSubjectInfo.class );
@@ -239,7 +239,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
-	
+
 	//@MethodDescribe( "根据版块ID查询所有主题列表，包括子版块内的主题" )
 	public List<BBSSubjectInfo> listByMainAndSubSectionId( String sectionId, Boolean withTopSubject ) throws Exception {
 		if( sectionId == null || sectionId.isEmpty() ){
@@ -262,7 +262,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		}
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
+
 	/**
 	 * 根据版块ID查询所有主题ID列表，包括子版块内的主题
 	 * @param sectionId
@@ -292,7 +292,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		cq.select( root.get( BBSSubjectInfo_.id ) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
+
 	//@MethodDescribe( "根据版块ID查询所有主题数量，不包括子版块内的主题" )
 	public Long countSubjectIdsBySection( String sectionId ) throws Exception {
 		if( sectionId == null || sectionId.isEmpty() ){
@@ -306,7 +306,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
-	
+
 	//@MethodDescribe( "根据版块ID查询所有主题列表，不包括子版块内的主题" )
 	public List<BBSSubjectInfo> listSubjectBySection( String sectionId ) throws Exception {
 		if( sectionId == null || sectionId.isEmpty() ){
@@ -320,7 +320,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.latestReplyTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults(100).getResultList();
 	}
-	
+
 	//@MethodDescribe( "根据版块ID查询所有主题列表，不包括子版块内的主题" )
 	public List<String> listSubjectIdsBySection( String sectionId, Integer maxResults ) throws Exception {
 		if( sectionId == null || sectionId.isEmpty() ){
@@ -446,20 +446,20 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( searchTitle ) ){
 			p = cb.and( p, cb.like( root.get( BBSSubjectInfo_.title ), searchTitle ) );
 		}
-		
+
 		if(startTime!= null) {
 			   p = cb.and(p, cb.greaterThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), startTime));
 		}
-			
+
 		if(endTime!= null) {
 			   p = cb.and(p, cb.lessThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), endTime));
 		}
-		
+
 		cq.select( cb.count( root ) );
 		//SELECT COUNT(b) FROM BBSSubjectInfo b WHERE ((b.id IS NOT NULL AND b.sectionId IN ('1c1d9dfc-0034-4d9a-adc7-bb4b3925bbd5')) AND b.title LIKE 'Count')
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
-	
+
 	//@MethodDescribe( "根据版块ID, 主版块ID，版块ID，创建者姓名查询符合要求所有主题列表，不包括子版块内的主题" )
 	public List<BBSSubjectInfo> listSubjectInSectionForPage( String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, Integer maxRecordCount, List<String> viewSectionIds, Date startTime , Date endTime) throws Exception {
 		if( maxRecordCount == null ){
@@ -498,15 +498,15 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( searchTitle ) ){
 			p = cb.and( p, cb.like( root.get( BBSSubjectInfo_.title ), searchTitle ) );
 		}
-		
+
 		if(startTime!= null) {
 			   p = cb.and(p, cb.greaterThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), startTime));
 		}
-			
+
 		if(endTime!= null) {
 			   p = cb.and(p, cb.lessThanOrEqualTo(root.get(BBSSubjectInfo_.createTime), endTime));
 		}
-			
+
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.latestReplyTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults( maxRecordCount ).getResultList();
 	}
@@ -582,7 +582,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.latestReplyTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults(1).getResultList();
 	}
-	
+
 	//@MethodDescribe( "根据最后回帖时间，查询是否还有更早的回帖，数量查询" )
 	public Long countLastSubject( Date latestReplyTime ) throws Exception {
 		if( latestReplyTime == null ){
@@ -610,7 +610,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.latestReplyTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults(1).getResultList();
 	}
-	
+
 	//@MethodDescribe( "根据最后回帖时间，查询是否还有更晚的回帖，数量查询" )
 	public Long countNextSubject( Date latestReplyTime ) throws Exception {
 		if( latestReplyTime == null ){
@@ -657,7 +657,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( searchTitle ) ){
 			p = cb.and( p, cb.like( root.get( BBSSubjectInfo_.title ), searchTitle ) );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -711,10 +711,10 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( userName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), userName ) );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
-	
+
 	//@MethodDescribe( "查询指定用户发表的精华主题数量" )
 	public Long countCreamSubjectByUserName( String userName ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( BBSSubjectInfo.class );
@@ -725,7 +725,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( userName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), userName ) );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -739,7 +739,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( userName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), userName ) );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -756,7 +756,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			or = cb.or( or, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId ) );
 			p = cb.and( p, or );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -771,7 +771,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.or( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId ) );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -797,7 +797,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.updateTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults( count ).getResultList();
 	}
-	
+
 	//@MethodDescribe( "根据指定的论坛ID列表，主版块ID列表，版块ID列表查询推荐到论坛首页的主题列表" )
 	public List<BBSSubjectInfo> listRecommendedSubjectForForumIndex( List<String> forumIds, List<String> mainSectionIds, List<String> sectionIds, Integer count) throws Exception {
 		if( count == null ){
@@ -884,7 +884,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -963,7 +963,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.updateTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults( count ).getResultList();
 	}
-	
+
 	public List<BBSSubjectContent> getSubjectContent( String id ) throws Exception {
 		if( id == null || id.isEmpty() ){
 			throw new Exception("id is null");
@@ -983,7 +983,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 	 * @param todayEndTime
 	 * @param queryMainSection  是否也查询主版块是sectionId的数据
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Long countSubjectByDate(String sectionId, Date todayStartTime, Date todayEndTime, boolean queryMainSection) throws Exception {
 		if( StringUtils.isEmpty( sectionId ) ){
@@ -1007,6 +1007,19 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		p = cb.and( p, p_time );
 		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+
+	public List<String> listSubjectIdsByCreator(String creatorName) throws Exception {
+		if( StringUtils.isBlank(creatorName) ){
+			return new ArrayList<>();
+		}
+		EntityManager em = this.entityManagerContainer().get(BBSSubjectInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
+		Predicate p = cb.equal(  root.get(BBSSubjectInfo_.creatorName), creatorName);
+		cq.select( root.get(BBSSubjectInfo_.id) );
+		return em.createQuery(cq.where(p)).getResultList();
 	}
 
 }
