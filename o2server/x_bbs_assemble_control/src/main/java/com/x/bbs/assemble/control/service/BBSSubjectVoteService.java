@@ -34,7 +34,7 @@ public class BBSSubjectVoteService {
 		List<BBSVoteOptionGroup> voteOptionGroupList = null;
 		List<BBSVoteOption> voteOptionList = null;
 		Business busines = null;
-		
+
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			busines = new Business(emc);
 			voteOptionList = busines.voteOptionFactory().listVoteOptionBySubject( subjectInfo.getId() );
@@ -51,7 +51,7 @@ public class BBSSubjectVoteService {
 					emc.remove( group, CheckRemoveType.all );
 				}
 			}
-			
+
 			int groupIndex = 0;
 			int optionIndex = 0;
 			for( WiVoteOptionGroup group : optionGroups ){
@@ -94,17 +94,17 @@ public class BBSSubjectVoteService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 提交投票结果
-	 * 
+	 *
 	 * 1、记录投票日志
 	 * 2、计算投票结果到投票选项组信息中
-	 * 
+	 *
 	 * @param effectivePerson
 	 * @param subjectInfo
 	 * @param optionGroups
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void submitVoteResult( EffectivePerson effectivePerson, BBSSubjectInfo subjectInfo, List<WiVoteOptionGroup> optionGroups ) throws Exception {
 		//BBSVoteOptionGroup voteOptionGroup = null;
@@ -117,7 +117,7 @@ public class BBSSubjectVoteService {
 			//emc.beginTransaction( BBSVoteOptionGroup.class );
 			emc.beginTransaction( BBSVoteOption.class );
 			emc.beginTransaction( BBSVoteRecord.class );
-			Business buiness = new Business(emc);
+			Business business = new Business(emc);
 			for( WiVoteOptionGroup group : optionGroups ){
 				voteOptionGroup = emc.find( group.getId(), BBSVoteOptionGroup.class );
 				if( ListTools.isNotEmpty( group.getSelectedVoteOptionIds() ) ){
@@ -125,7 +125,7 @@ public class BBSSubjectVoteService {
 						voteOption = emc.find( selectedOptionId, BBSVoteOption.class );
 						if( voteOption != null ){
 							//查询一下是否已经投过票了
-							List<BBSVoteRecord> recordList = buiness.voteRecordFactory().listVoteCountByUserAndGroup( effectivePerson.getDistinguishedName(), group.getId() );
+							List<BBSVoteRecord> recordList = business.voteRecordFactory().listVoteCountByUserAndGroup( effectivePerson.getDistinguishedName(), group.getId() );
 							if( (ListTools.isEmpty( recordList) || recordList.size() < voteOptionGroup.getVoteChooseCount())
 									&& !doseNotChoosen( recordList, selectedOptionId )){
 								voteRecord = new BBSVoteRecord();
@@ -139,6 +139,7 @@ public class BBSSubjectVoteService {
 								voteRecord.setOptionValue( voteOption.getId() );
 								voteRecord.setCreateTime( new Date() );
 								voteRecord.setVotorName( effectivePerson.getDistinguishedName() );
+								voteRecord.setVotorNickName(business.organization().person().getNickName(effectivePerson.getDistinguishedName()));
 								emc.persist( voteRecord, CheckPersistType.all );
 
 								voteOption.setChooseCount( voteOption.getChooseCount() + 1 );
@@ -224,7 +225,7 @@ public class BBSSubjectVoteService {
 			throw e;
 		}
 	}
-	
+
 	public List<BBSVoteOptionGroup> listVoteOptionGroup( String subjectId ) throws Exception {
 		if( subjectId  == null || subjectId.isEmpty() ){
 			throw new Exception( "subjectId is null, return null!" );

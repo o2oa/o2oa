@@ -27,9 +27,9 @@ import org.apache.commons.lang3.StringUtils;
  *
  */
 public class BBSReplyInfoService {
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( BBSReplyInfoService.class );
-	
+
 	/**
 	 * 根据传入的ID从数据库查询BBSReplyInfo对象
 	 * @param id
@@ -46,7 +46,7 @@ public class BBSReplyInfoService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 向数据库保存BBSReplyInfo对象
 	 * @param _bBSReplyInfo
@@ -58,7 +58,7 @@ public class BBSReplyInfoService {
 		BBSSectionInfo _mainSectoinInfo = null;
 		BBSForumInfo _forumInfo = null;
 		BBSUserInfo _BBSUserInfo = null;
-		
+
 		if( _bBSReplyInfo.getId() == null ){
 			_bBSReplyInfo.setId( BBSReplyInfo.createId() );
 		}
@@ -71,13 +71,13 @@ public class BBSReplyInfoService {
 			}catch(Exception e){
 				maxOrderNumber = 0;
 			}
-			
+
 			_forumInfo = emc.find( _bBSReplyInfo.getForumId(), BBSForumInfo.class );
 			_mainSectoinInfo = emc.find( _bBSReplyInfo.getMainSectionId(), BBSSectionInfo.class );
 			_sectionInfo = emc.find( _bBSReplyInfo.getSectionId(), BBSSectionInfo.class );
 			_subjectInfo = emc.find( _bBSReplyInfo.getSubjectId(), BBSSubjectInfo.class );
 			_bBSReplyInfo_tmp = emc.find( _bBSReplyInfo.getId(), BBSReplyInfo.class );
-			
+
 			emc.beginTransaction( BBSReplyInfo.class );
 			emc.beginTransaction( BBSSubjectInfo.class );
 			emc.beginTransaction( BBSSectionInfo.class );
@@ -90,12 +90,16 @@ public class BBSReplyInfoService {
 				//更新一条记录
 				_bBSReplyInfo.setCreateTime( _bBSReplyInfo_tmp.getCreateTime() );
 				_bBSReplyInfo.copyTo( _bBSReplyInfo_tmp, JpaObject.FieldsUnmodify  );
-				emc.check( _bBSReplyInfo_tmp, CheckPersistType.all );	
+				emc.check( _bBSReplyInfo_tmp, CheckPersistType.all );
 			}
 			if( _subjectInfo != null ){
 				_subjectInfo.setLatestReplyTime( new Date() );
 				_subjectInfo.setLatestReplyId( _bBSReplyInfo.getId() );
-				_subjectInfo.setLatestReplyUser( _bBSReplyInfo.getCreatorName() );
+				if(StringUtils.isNoneBlank(_bBSReplyInfo.getNickName())){
+					_subjectInfo.setLatestReplyUser(_bBSReplyInfo.getNickName());
+				}else {
+					_subjectInfo.setLatestReplyUser(_bBSReplyInfo.getCreatorName());
+				}
 				_subjectInfo.setReplyTotal( _subjectInfo.getReplyTotal() + 1 );
 				emc.check( _subjectInfo, CheckPersistType.all );
 			}
@@ -115,23 +119,23 @@ public class BBSReplyInfoService {
 				_forumInfo.setReplyTotal( _forumInfo.getReplyTotal() + 1 );
 				emc.check( _forumInfo, CheckPersistType.all );
 			}
-			
+
 			emc.commit();
-			
+
 			//个人回复数增加1
 			BBSUserInfoService userInfoService = new BBSUserInfoService();
 			BBSUserInfo userInfo = userInfoService.getByUserName( _bBSReplyInfo.getCreatorName());
 			userInfo.setReplyCount(userInfo.getReplyCount() + 1);
 			userInfo.setReplyCountToday(userInfo.getReplyCountToday() + 1);
 			userInfoService.save(userInfo);
-			
+
 		}catch( Exception e ){
 			logger.warn( "system find BBSReplyInfo{'id':'"+_bBSReplyInfo.getId()+"'} got an exception!" );
 			throw e;
 		}
 		return _bBSReplyInfo;
 	}
-	
+
 	/**
 	 * 根据ID从数据库中删除BBSReplyInfo对象
 	 * @param id
@@ -146,7 +150,7 @@ public class BBSReplyInfoService {
 		if( id == null || id.isEmpty() ){
 			return;
 		}
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			replyInfo = emc.find( id, BBSReplyInfo.class );
 			if ( null == replyInfo ) {
@@ -156,7 +160,7 @@ public class BBSReplyInfoService {
 				emc.beginTransaction( BBSSubjectInfo.class );
 				emc.beginTransaction( BBSSectionInfo.class );
 				emc.beginTransaction( BBSForumInfo.class );
-				
+
 				_forumInfo = emc.find( replyInfo.getForumId(), BBSForumInfo.class );
 				_mainSectoinInfo = emc.find( replyInfo.getMainSectionId(), BBSSectionInfo.class );
 				_sectionInfo = emc.find( replyInfo.getSectionId(), BBSSectionInfo.class );
@@ -212,7 +216,7 @@ public class BBSReplyInfoService {
 			throw e;
 		}
 	}
-	
+
 	public Long countWithSubjectForPage(String subjectId, Boolean showSubReply) throws Exception {
 		if( subjectId == null ){
 			throw new Exception( "subjectId can not null." );

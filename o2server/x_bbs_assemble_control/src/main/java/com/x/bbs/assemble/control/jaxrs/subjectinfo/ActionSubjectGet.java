@@ -79,7 +79,7 @@ public class ActionSubjectGet extends BaseAction {
 		BBSSubjectInfo subjectInfo = null;
 		String subjectContent = null;
 		Boolean check = true;
-		
+
 		// 查询版块信息是否存在
 		if (check) {
 			try {
@@ -167,7 +167,6 @@ public class ActionSubjectGet extends BaseAction {
 		}
 
 		if (check) {
-			// 将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
 			if (wrap != null) {
 				cutPersonNames(wrap);
 			}
@@ -178,15 +177,18 @@ public class ActionSubjectGet extends BaseAction {
 
 	/**
 	 * 将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
-	 * 
+	 *
 	 * latestReplyUserShort = ""; bBSIndexSetterNameShort = "";
 	 * screamSetterNameShort = ""; originalSetterNameShort = ""; creatorNameShort =
 	 * ""; auditorNameShort = "";
-	 * 
+	 *
 	 * @param subject
 	 */
 	private void cutPersonNames(Wo subject) {
 		if (subject != null) {
+			if(StringUtils.isBlank(subject.getNickName())){
+				subject.setNickName(subject.getCreatorName());
+			}
 			if ( StringUtils.isNotEmpty( subject.getLatestReplyUser() )) {
 				subject.setLatestReplyUserShort(subject.getLatestReplyUser().split("@")[0]);
 			}

@@ -18,6 +18,7 @@ import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectFi
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectWrapOut;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionWrapInConvert;
 import com.x.bbs.entity.BBSVoteRecord;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionVoteRecordListMyForPage extends BaseAction {
 
@@ -86,6 +87,10 @@ public class ActionVoteRecordListMyForPage extends BaseAction {
 			int endIndex = page * count;
 			for (int i = 0; recordInfoList != null && i < recordInfoList.size(); i++) {
 				if (i < recordInfoList.size() && i >= startIndex && i < endIndex) {
+					BBSVoteRecord record = recordInfoList.get(i);
+					if(StringUtils.isBlank(record.getVotorNickName())){
+						record.setVotorNickName(record.getVotorName());
+					}
 					recordInfoList_out.add(recordInfoList.get(i));
 				}
 			}

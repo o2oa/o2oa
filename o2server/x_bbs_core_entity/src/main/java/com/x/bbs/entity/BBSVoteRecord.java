@@ -18,7 +18,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
  * 用户投票记录
- * 
+ *
  * @author LIYI
  */
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -110,8 +110,15 @@ public class BBSVoteRecord extends SliceJpaObject {
 	public static final String votorName_FIELDNAME = "votorName";
 	@FieldDescribe("投票人")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + votorName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + votorName_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String votorName = "";
+
+	public static final String votorNickName_FIELDNAME = "votorNickName";
+	@FieldDescribe("投票人昵称")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + votorNickName_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String votorNickName = "";
 
 	public String getForumId() {
 		return forumId;
@@ -175,5 +182,13 @@ public class BBSVoteRecord extends SliceJpaObject {
 
 	public void setOptionGroupId(final String optionGroupId) {
 		this.optionGroupId = optionGroupId;
+	}
+
+	public String getVotorNickName() {
+		return votorNickName;
+	}
+
+	public void setVotorNickName(String votorNickName) {
+		this.votorNickName = votorNickName;
 	}
 }

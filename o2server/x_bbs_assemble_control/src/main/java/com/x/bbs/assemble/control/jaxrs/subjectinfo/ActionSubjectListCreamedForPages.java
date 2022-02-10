@@ -26,9 +26,9 @@ import com.x.bbs.entity.BBSVoteOption;
 import com.x.bbs.entity.BBSVoteOptionGroup;
 
 public class ActionSubjectListCreamedForPages extends BaseAction {
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( ActionSubjectListCreamedForPages.class );
-	
+
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, Integer page, Integer count, JsonElement jsonElement ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = new ArrayList<>();
@@ -46,7 +46,7 @@ public class ActionSubjectListCreamedForPages extends BaseAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		
+
 		if( check ){
 			if( page == null ){
 				page = 1;
@@ -96,7 +96,7 @@ public class ActionSubjectListCreamedForPages extends BaseAction {
 			if( ListTools.isNotEmpty( subjectInfoList_out ) ){
 				try {
 					wraps = Wo.copier.copy( subjectInfoList_out );
-					
+
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionSubjectWrapOut( e );
@@ -105,7 +105,7 @@ public class ActionSubjectListCreamedForPages extends BaseAction {
 				}
 			}
 		}
-		
+
 		if (check) {
 			//将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
 			if( ListTools.isNotEmpty( wraps ) ){
@@ -114,7 +114,7 @@ public class ActionSubjectListCreamedForPages extends BaseAction {
 				}
 			}
 		}
-		
+
 		result.setData( wraps );
 		result.setCount( total );
 		return result;
@@ -122,18 +122,21 @@ public class ActionSubjectListCreamedForPages extends BaseAction {
 
 	/**
 	 *  将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
-	 *  
+	 *
 	 *  latestReplyUserShort = "";
 		bBSIndexSetterNameShort = "";
 		screamSetterNameShort = "";
 		originalSetterNameShort = "";
 		creatorNameShort = "";
 		auditorNameShort = "";
-		
+
 	 * @param subject
 	 */
 	private void cutPersonNames( Wo subject ) {
 		if( subject != null ) {
+			if(StringUtils.isBlank(subject.getNickName())){
+				subject.setNickName(subject.getCreatorName());
+			}
 			if( StringUtils.isNotEmpty( subject.getLatestReplyUser() ) ) {
 				subject.setLatestReplyUserShort( subject.getLatestReplyUser().split( "@" )[0]);
 			}
@@ -154,33 +157,33 @@ public class ActionSubjectListCreamedForPages extends BaseAction {
 			}
 		}
 	}
-	
+
 	public static class Wi{
-		
+
 		private Boolean getBBSTopSubject = true;
-		
+
 		private Boolean getForumTopSubject = true;
-		
+
 		private Boolean getSectionTopSubject = true;
-		
+
 		private String subjectId = null;
-		
+
 		private String voteOptionId = null;
-		
+
 		private String forumId = null;
-		
+
 		private String mainSectionId = null;
-		
+
 		private String sectionId = null;
-		
+
 		private String searchContent = null;
-		
+
 		private String creatorName = null;
-		
+
 		private Boolean needPicture = false;
-		
+
 		private Boolean withTopSubject = null; // 是否包含置顶贴
-		
+
 		public static List<String> Excludes = new ArrayList<String>( JpaObject.FieldsUnmodify );
 
 		public Boolean getGetBBSTopSubject() {
@@ -255,49 +258,49 @@ public class ActionSubjectListCreamedForPages extends BaseAction {
 		public void setVoteOptionId(String voteOptionId) {
 			this.voteOptionId = voteOptionId;
 		}
-		
+
 	}
-	
+
 	public static class Wo extends BBSSubjectInfo{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier< BBSSubjectInfo, Wo > copier = WrapCopierFactory.wo( BBSSubjectInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
-		
+
 		private List<WoSubjectAttachment> subjectAttachmentList;
-		
+
 		@FieldDescribe( "投票主题的所有投票选项列表." )
 		private List<WoBBSVoteOptionGroup> voteOptionGroupList;
-		
+
 		private String content = null;
-		
+
 		private Long voteCount = 0L;
-		
+
 		private String pictureBase64 = null;
-		
+
 		@FieldDescribe( "最新回复用户" )
 		private String latestReplyUserShort = "";
-		
+
 		@FieldDescribe( "首页推荐人姓名" )
 		private String bBSIndexSetterNameShort = "";
-		
+
 		@FieldDescribe( "精华设置人姓名" )
 		private String screamSetterNameShort = "";
-		
+
 		@FieldDescribe( "原创设置人姓名" )
 		private String originalSetterNameShort = "";
-		
+
 		@FieldDescribe( "创建人姓名" )
 		private String creatorNameShort = "";
-		
+
 		@FieldDescribe( "审核人姓名" )
 		private String auditorNameShort = "";
-		
+
 		@FieldDescribe( "当前用户是否已经投票过." )
-		private Boolean voted = false;		
-		
+		private Boolean voted = false;
+
 		public String getLatestReplyUserShort() {
 			return latestReplyUserShort;
 		}
@@ -394,24 +397,24 @@ public class ActionSubjectListCreamedForPages extends BaseAction {
 			this.voteCount = voteCount;
 		}
 	}
-	
+
 	public static class WoSubjectAttachment extends BBSSubjectAttachment{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier< BBSSubjectAttachment, WoSubjectAttachment > wo = WrapCopierFactory.wo( BBSSubjectAttachment.class, WoSubjectAttachment.class, null, JpaObject.FieldsInvisible);
 	}
-	
+
 	public static class WoBBSVoteOptionGroup extends BBSVoteOptionGroup{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier< BBSVoteOptionGroup, WoBBSVoteOptionGroup > copier = WrapCopierFactory.wo( BBSVoteOptionGroup.class, WoBBSVoteOptionGroup.class, null, JpaObject.FieldsInvisible);
-		
+
 		private List<WoBBSVoteOption> voteOptions = null;
 
 		public List<WoBBSVoteOption> getVoteOptions() {
@@ -424,13 +427,13 @@ public class ActionSubjectListCreamedForPages extends BaseAction {
 	}
 
 	public static class WoBBSVoteOption extends BBSVoteOption{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier< BBSVoteOption, WoBBSVoteOption > copier = WrapCopierFactory.wo( BBSVoteOption.class, WoBBSVoteOption.class, null, JpaObject.FieldsInvisible);
-		
+
 		private Boolean voted = false;
 
 		public Boolean getVoted() {
