@@ -1531,11 +1531,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	}
 
 	public <T extends JpaObject> Integer delete(Class<T> clz, String... ids) throws Exception {
-		List<String> list = new ArrayList<>();
-		for (String o : ids) {
-			list.add(o);
-		}
-		return this.delete(clz, list);
+		return this.delete(clz, Arrays.asList(ids));
 	}
 
 	public <T extends JpaObject> List<T> deleteEqual(Class<T> cls, String attribute, Object value) throws Exception {
