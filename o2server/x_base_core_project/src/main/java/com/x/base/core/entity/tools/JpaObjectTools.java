@@ -86,8 +86,12 @@ public class JpaObjectTools {
 	 * @param objects
 	 */
 	public static <T extends JpaObject> void detach(EntityManager em, Collection<T> objects) {
-		for (JpaObject o : objects) {
-			em.detach(o);
+		if (null != objects) {
+			for (JpaObject o : objects) {
+				if (null != o) {
+					em.detach(o);
+				}
+			}
 		}
 	}
 
@@ -99,7 +103,9 @@ public class JpaObjectTools {
 	 */
 	public static void detach(EntityManager em, JpaObject... objects) {
 		for (JpaObject o : objects) {
-			em.detach(o);
+			if (null != o) {
+				em.detach(o);
+			}
 		}
 	}
 
