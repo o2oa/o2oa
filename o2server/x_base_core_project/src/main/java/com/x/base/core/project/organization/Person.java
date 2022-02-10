@@ -14,6 +14,8 @@ public class Person extends GsonPropertyObject {
 	private String id;
 	@FieldDescribe("个人名称")
 	private String name;
+	@FieldDescribe("昵称")
+	private String nickName;
 	@FieldDescribe("性别,m:男,f:女,d:未知")
 	private GenderType genderType;
 	@FieldDescribe("签名")
@@ -237,5 +239,13 @@ public class Person extends GsonPropertyObject {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
 }

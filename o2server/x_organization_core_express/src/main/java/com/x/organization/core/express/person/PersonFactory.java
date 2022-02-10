@@ -48,6 +48,11 @@ public class PersonFactory {
 		}
 	}
 
+	/** 获取个人的昵称 */
+	public String getNickName(String value) throws Exception {
+		return ActionGetNickName.execute(context, value);
+	}
+
 	/** 批量获取个人的distinguishedName */
 	public List<String> list(Collection<String> values) throws Exception {
 		return ActionList.execute(context, values);

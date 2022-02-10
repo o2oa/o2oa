@@ -12,14 +12,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionPublicSectionFilter;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectInfoProcess;
-import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
-import com.x.bbs.assemble.control.service.BBSOperationRecordService;
-import com.x.bbs.assemble.control.service.BBSReplyInfoService;
-import com.x.bbs.assemble.control.service.BBSSectionInfoServiceAdv;
-import com.x.bbs.assemble.control.service.BBSSubjectInfoServiceAdv;
-import com.x.bbs.assemble.control.service.BBSSubjectVoteService;
-import com.x.bbs.assemble.control.service.UserManagerService;
-import com.x.bbs.assemble.control.service.UserPermissionService;
+import com.x.bbs.assemble.control.service.*;
 import com.x.bbs.entity.*;
 
 import net.sf.ehcache.Ehcache;
@@ -28,7 +21,7 @@ public class BaseAction extends StandardJaxrsAction{
 
 	private static  Logger logger = LoggerFactory.getLogger(BaseAction.class);
 	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(BBSSubjectInfo.class);
-	
+
 	protected UserPermissionService UserPermissionService = new UserPermissionService();
 	protected BBSReplyInfoService replyInfoService = new BBSReplyInfoService();
 	protected BBSSectionInfoServiceAdv sectionInfoServiceAdv = new BBSSectionInfoServiceAdv();
@@ -37,6 +30,7 @@ public class BaseAction extends StandardJaxrsAction{
 	protected BBSForumInfoServiceAdv forumInfoServiceAdv = new BBSForumInfoServiceAdv();
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected BBSOperationRecordService operationRecordService = new BBSOperationRecordService();
+	protected BBSConfigSettingService configSettingService = new BBSConfigSettingService();
 
 	protected boolean isImage(BBSSubjectAttachment fileInfo) {
 		if (fileInfo == null || fileInfo.getExtension() == null || fileInfo.getExtension().isEmpty()) {
@@ -60,11 +54,11 @@ public class BaseAction extends StandardJaxrsAction{
 
 	/**
 	 * 获取用户可访问的所有版块ID列表
-	 * 
+	 *
 	 * @param request
 	 * @param currentPerson
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	protected List<String> getViewableSectionIds(HttpServletRequest request, EffectivePerson currentPerson) throws Exception {
 		List<BBSSectionInfo> sectionInfoList = null;

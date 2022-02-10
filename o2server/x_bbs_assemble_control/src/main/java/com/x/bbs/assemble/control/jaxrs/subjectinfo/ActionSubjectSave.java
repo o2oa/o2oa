@@ -6,6 +6,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.organization.Person;
+import com.x.bbs.assemble.control.Business;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -137,6 +140,9 @@ public class ActionSubjectSave extends BaseAction {
 			subjectInfo.setVotePersonVisible(wrapIn.getVotePersonVisible());
 			subjectInfo.setVoteResultVisible(wrapIn.getVoteResultVisible());
 			subjectInfo.setGrade(wrapIn.getGrade());
+
+			Business business = new Business(null);
+			subjectInfo.setNickName(business.organization().person().getNickName(effectivePerson.getDistinguishedName()));
 		}
 
 		if (check) {
@@ -149,7 +155,7 @@ public class ActionSubjectSave extends BaseAction {
 				CacheManager.notify( BBSSubjectInfo.class );
 				CacheManager.notify( BBSSectionInfo.class );
 				CacheManager.notify( BBSForumInfo.class );
-				
+
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionSubjectSave(e);

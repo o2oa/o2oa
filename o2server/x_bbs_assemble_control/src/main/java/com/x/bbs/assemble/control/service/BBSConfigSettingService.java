@@ -21,9 +21,9 @@ import com.x.bbs.entity.BBSConfigSetting;
  * 日   期：2016-05-20 17:17:26
 **/
 public class BBSConfigSettingService{
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( BBSConfigSettingService.class );
-	
+
 	/**
 	 * 根据传入的ID从数据库查询BBSConfigSetting对象
 	 * @param id
@@ -40,10 +40,10 @@ public class BBSConfigSettingService{
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 向数据库保存BBSConfigSetting对象
-	 * @param wrapIn
+	 * @param bbsConfigSetting
 	 */
 	public BBSConfigSetting save( BBSConfigSetting bbsConfigSetting ) throws Exception {
 		BBSConfigSetting _bbsConfigSetting = null;
@@ -52,11 +52,11 @@ public class BBSConfigSettingService{
 			if( _bbsConfigSetting != null ){
 				emc.beginTransaction( BBSConfigSetting.class );
 				bbsConfigSetting.copyTo( _bbsConfigSetting, JpaObject.FieldsUnmodify  );
-				emc.check( _bbsConfigSetting, CheckPersistType.all );	
+				emc.check( _bbsConfigSetting, CheckPersistType.all );
 				emc.commit();
 			}else{
 				emc.beginTransaction( BBSConfigSetting.class );
-				emc.persist( bbsConfigSetting, CheckPersistType.all);	
+				emc.persist( bbsConfigSetting, CheckPersistType.all);
 				emc.commit();
 			}
 		}catch( Exception e ){
@@ -65,10 +65,10 @@ public class BBSConfigSettingService{
 		}
 		return bbsConfigSetting;
 	}
-	
+
 	/**
 	 * 向数据库保存BBSConfigSetting对象
-	 * @param wrapIn
+	 * @param bbsConfigSetting
 	 */
 	public BBSConfigSetting update( BBSConfigSetting bbsConfigSetting ) throws Exception {
 		BBSConfigSetting _bbsConfigSetting = null;
@@ -79,7 +79,7 @@ public class BBSConfigSettingService{
 			if( _bbsConfigSetting != null ){
 				emc.beginTransaction( BBSConfigSetting.class );
 				bbsConfigSetting.copyTo( _bbsConfigSetting, JpaObject.FieldsUnmodify  );
-				emc.check( _bbsConfigSetting, CheckPersistType.all );	
+				emc.check( _bbsConfigSetting, CheckPersistType.all );
 				emc.commit();
 			}else{
 				throw new Exception("config setting '"+ bbsConfigSetting.getConfigCode() +"'  not exists");
@@ -90,7 +90,7 @@ public class BBSConfigSettingService{
 		}
 		return bbsConfigSetting;
 	}
-	
+
 	/**
 	 * 根据ID从数据库中删除BBSConfigSetting对象
 	 * @param id
@@ -115,7 +115,7 @@ public class BBSConfigSettingService{
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据传入的ID从数据库查询BBSConfigSetting对象
 	 * @param configCode
@@ -134,10 +134,24 @@ public class BBSConfigSettingService{
 			throw e;
 		}
 	}
-	
+
+	/**
+	 * 论坛是否启用昵称，默认不启用
+	 */
+	public boolean useNickName() throws Exception {
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Business business = new Business(emc);
+			String configValue = business.configSettingFactory().getValueWithConfigCode(BBSConfigSetting.BBS_CONFIG_USE_NICKNAME);
+			if(BBSConfigSetting.BBS_CONFIG_USE_NICKNAME_YES.equalsIgnoreCase(configValue)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * 根据传入的ID从数据库查询BBSConfigSetting对象
-	 * @param id
+	 * @param configCode
 	 * @return
 	 * @throws Exception
 	 */
@@ -245,7 +259,7 @@ public class BBSConfigSettingService{
 		String value = null, description = null, type = null, selectContent = null;
 		Boolean isMultiple = false;
 		Integer ordernumber = 0;
-		
+
 		value = "企业论坛";
 		type = "text";
 		selectContent = null;
@@ -269,7 +283,7 @@ public class BBSConfigSettingService{
 			logger.warn( "system init system config 'BBS_TITLE_TAIL' got an exception." );
 			logger.error(e);
 		}
-		
+
 		value = "信息|问题|投票";
 		type = "select";
 		selectContent = "信息|问题|投票";
@@ -327,6 +341,18 @@ public class BBSConfigSettingService{
 			checkAndInitSystemConfig("BBS_ANONYMOUS_PERMISSION", "是否允许匿名访问", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
 			logger.warn( "system init system config 'BBS_ANONYMOUS_PERMISSION' got an exception." );
+			logger.error(e);
+		}
+
+		value = "YES";
+		type = "select";
+		selectContent = "YES|NO";
+		isMultiple = false;
+		description = "是否启用昵称：可选值：YES|NO（允许|不允许），单选。";
+		try {
+			checkAndInitSystemConfig("BBS_USE_NICKNAME", "是否启用昵称", value, description, type, selectContent, isMultiple, ++ordernumber );
+		} catch (Exception e) {
+			logger.warn( "system init system config 'BBS_USE_NICKNAME' got an exception." );
 			logger.error(e);
 		}
 	}

@@ -98,6 +98,9 @@ public class ActionListWithReply extends BaseAction {
 		if (check) {
 			if (ListTools.isNotEmpty(wraps)) {
 				for (Wo wo : wraps) {
+					if(StringUtils.isBlank(wo.getNickName())){
+						wo.setNickName(wo.getCreatorName());
+					}
 					if (StringUtils.isNotEmpty(wo.getCreatorName())) {
 						wo.setCreatorNameShort(wo.getCreatorName().split("@")[0]);
 					}
@@ -105,7 +108,6 @@ public class ActionListWithReply extends BaseAction {
 						wo.setAuditorNameShort(wo.getAuditorName().split("@")[0]);
 					}
 				}
-//				SortTools.desc(wraps, "createTime" );
 				result.setCount( Long.parseLong(wraps.size()+"") );
 			}
 		}

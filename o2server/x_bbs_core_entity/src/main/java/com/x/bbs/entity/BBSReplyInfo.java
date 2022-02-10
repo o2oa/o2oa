@@ -21,7 +21,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
  * 主题信息表
- * 
+ *
  * @author LIYI
  */
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -36,10 +36,12 @@ public class BBSReplyInfo extends SliceJpaObject {
 	private static final long serialVersionUID = 3856138316794473794L;
 	private static final String TABLE = PersistenceProperties.BBSReplyInfo.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -49,6 +51,7 @@ public class BBSReplyInfo extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
+	@Override
 	public void onPersist() throws Exception {
 	}
 	/*
@@ -145,6 +148,12 @@ public class BBSReplyInfo extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + creatorName_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String creatorName = "";
+
+	public static final String nickName_FIELDNAME = "nickName";
+	@FieldDescribe("创建人昵称")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + nickName_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String nickName = "";
 
 	public static final String replyAuditStatus_FIELDNAME = "replyAuditStatus";
 	@FieldDescribe("回复审核状态：无审核|待审核|审核通过")
@@ -331,4 +340,11 @@ public class BBSReplyInfo extends SliceJpaObject {
 		this.picId = picId;
 	}
 
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 }

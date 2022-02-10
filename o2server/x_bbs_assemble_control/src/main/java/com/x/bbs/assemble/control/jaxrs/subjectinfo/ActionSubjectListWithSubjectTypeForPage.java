@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( ActionSubjectListWithSubjectTypeForPage.class );
 
 	@SuppressWarnings("unchecked")
@@ -64,7 +64,7 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 				result.error(exception);
 			}
 		}
-		
+
 		if( check ) {
 			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(), MD5Tool.getMD5Str(gson.toJson(wrapIn)) ,isBBSManager,page,count);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
@@ -80,7 +80,7 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public ActionResult<List<Wo>> getSubjectQueryResult( Wi wrapIn, HttpServletRequest request, EffectivePerson effectivePerson, Integer page, Integer count ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps_nonTop = new ArrayList<>();
@@ -114,7 +114,7 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 				}
 			}
 		}
-		
+
 		if( check ){
 			try{
 				viewSectionIds = getViewableSectionIds( request, effectivePerson );
@@ -124,13 +124,13 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ){
 			if( page == null ){
 				page = 1;
 			}
 		}
-		
+
 		if( check ){
 			if( count == null ){
 				count = 20;
@@ -140,7 +140,7 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 		//查询的最大条目数
 		selectTotal = page * count;
 		Boolean selectTopInSection = null;//默认是将版块内所有的置顶和非置顶贴全部查出
-		
+
 		//查询出所有的置顶贴
 		if ( check && wrapIn != null && wrapIn.getWithTopSubject() != null && wrapIn.getWithTopSubject() ) {
 			try {
@@ -164,7 +164,7 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ){
 			//置顶贴会占用分页的每页条目数
 			if( wraps_top != null ){
@@ -175,7 +175,7 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 				}
 			}
 		}
-		
+
 		if( check ){
 			selectTopInSection = false; //置顶贴的处理已经在前面处理过了，置顶贴已经放到一个List里，不需要再次查询出来了，后续的查询过滤置顶贴
 			if( selectTotal > 0 ){
@@ -190,7 +190,7 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 				}
 			}
 		}
-		
+
 		if( check ){
 			if( selectTotal > 0 && total > 0 ){
 				try{
@@ -213,7 +213,7 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 				}
 			}
 		}
-		
+
 		if( check ){
 			if( page <= 0 ){
 				page = 1;
@@ -259,18 +259,21 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 
 	/**
 	 *  将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
-	 *  
+	 *
 	 *  latestReplyUserShort = "";
 		bBSIndexSetterNameShort = "";
 		screamSetterNameShort = "";
 		originalSetterNameShort = "";
 		creatorNameShort = "";
 		auditorNameShort = "";
-		
+
 	 * @param subject
 	 */
 	private void cutPersonNames( Wo subject ) {
 		if( subject != null ) {
+			if(StringUtils.isBlank(subject.getNickName())){
+				subject.setNickName(subject.getCreatorName());
+			}
 			if( StringUtils.isNotEmpty( subject.getLatestReplyUser() ) ) {
 				subject.setLatestReplyUserShort( subject.getLatestReplyUser().split( "@" )[0]);
 			}
@@ -320,21 +323,21 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 			subjectInfo.setWoBBSReplyInfo(bbsReplyInfoList);
 		}
 	}
-	
+
 	public static class Wi{
-		
+
 		@FieldDescribe( "贴子ID." )
 		private String subjectId = null;
-		
+
 		@FieldDescribe( "投标选项ID." )
 		private String voteOptionId = null;
-		
+
 		@FieldDescribe( "贴子所属论坛ID." )
 		private String forumId = null;
-		
+
 		@FieldDescribe( "贴子所属主版块ID." )
 		private String mainSectionId = null;
-		
+
 		@FieldDescribe( "贴子所属版块ID." )
 		private String sectionId = null;
 
@@ -346,25 +349,25 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 
 		@FieldDescribe( "标题模糊搜索关键词" )
 		private String searchContent = null;
-		
+
 		@FieldDescribe( "创建者名称." )
 		private String creatorName = null;
-		
+
 		@FieldDescribe( "是否只查询有大图的贴子." )
 		private Boolean needPicture = false;
-		
+
 		@FieldDescribe( "是否包含置顶贴." )
 		private Boolean withTopSubject = false; // 是否包含置顶贴
-		
+
 		@FieldDescribe( "创建日期开始." )
-		private Date startTime = null; 
-		
+		private Date startTime = null;
+
 		@FieldDescribe( "创建日期结束." )
-		private Date endTime = null; 
-		
+		private Date endTime = null;
+
 		public static List<String> Excludes = new ArrayList<String>( JpaObject.FieldsUnmodify );
-	
-		
+
+
 		public String getForumId() {
 			return forumId;
 		}
@@ -434,7 +437,7 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 		public void setVoteOptionId(String voteOptionId) {
 			this.voteOptionId = voteOptionId;
 		}
-		
+
 		public String getCacheKey(EffectivePerson effectivePerson, Boolean isBBSManager) {
 			StringBuffer sb = new StringBuffer();
 			String pattern = "yyyy-MM-dd HH:mm:ss";
@@ -478,7 +481,7 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 				sb.append( "#" );
 				sb.append( creatorName );
 			}
-			
+
 			if(  startTime != null ) {
 				sb.append( "#" );
 				sb.append( formatter.format(startTime));
@@ -487,14 +490,14 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 				sb.append( "#" );
 				sb.append( formatter.format(endTime));
 			}
-			
+
 			sb.append( "#" );
 			sb.append( needPicture );
 			sb.append( "#" );
 			sb.append( withTopSubject );
 			return sb.toString();
 		}
-		
+
 		public Date getStartTime() {
 			return startTime;
 		}
@@ -507,50 +510,50 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 		public void setEndTime(Date endTime) {
 			this.endTime = endTime;
 		}
-		
-		
-		
+
+
+
 	}
-	
+
 	public static class Wo extends BBSSubjectInfo{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier< BBSSubjectInfo, Wo > copier = WrapCopierFactory.wo( BBSSubjectInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
 
 		private  List<WoBBSReplyInfo> bbsReplyInfo = null;
 
 		private List<WoSubjectAttachment> subjectAttachmentList;
-		
+
 		@FieldDescribe( "投票主题的所有投票选项列表." )
 		private List<WoBBSVoteOptionGroup> voteOptionGroupList;
-		
+
 		private String content = null;
-		
+
 		private Long voteCount = 0L;
-		
+
 		private String pictureBase64 = null;
-		
+
 		@FieldDescribe( "最新回复用户" )
 		private String latestReplyUserShort = "";
-		
+
 		@FieldDescribe( "首页推荐人姓名" )
 		private String bBSIndexSetterNameShort = "";
-		
+
 		@FieldDescribe( "精华设置人姓名" )
 		private String screamSetterNameShort = "";
-		
+
 		@FieldDescribe( "原创设置人姓名" )
 		private String originalSetterNameShort = "";
-		
+
 		@FieldDescribe( "创建人姓名" )
 		private String creatorNameShort = "";
-		
+
 		@FieldDescribe( "审核人姓名" )
 		private String auditorNameShort = "";
-		
+
 		@FieldDescribe( "当前用户是否已经投票过." )
 		private Boolean voted = false;
 
@@ -658,21 +661,21 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 			this.voteCount = voteCount;
 		}
 	}
-	
+
 	public static class WoSubjectAttachment extends BBSSubjectAttachment{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		
+
+
 		public static WrapCopier< BBSSubjectAttachment, WoSubjectAttachment > copier = WrapCopierFactory.wo( BBSSubjectAttachment.class, WoSubjectAttachment.class, null, JpaObject.FieldsInvisible);
 	}
-	
+
 	public static class WoBBSVoteOptionGroup extends BBSVoteOptionGroup{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static WrapCopier< BBSVoteOptionGroup, WoBBSVoteOptionGroup > copier = WrapCopierFactory.wo( BBSVoteOptionGroup.class, WoBBSVoteOptionGroup.class, null, JpaObject.FieldsInvisible);
-		
+
 		private List<WoBBSVoteOption> voteOptions = null;
 
 		public List<WoBBSVoteOption> getVoteOptions() {
@@ -685,11 +688,11 @@ public class ActionSubjectListWithSubjectTypeForPage extends BaseAction {
 	}
 
 	public static class WoBBSVoteOption extends BBSVoteOption{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static WrapCopier< BBSVoteOption, WoBBSVoteOption > copier = WrapCopierFactory.wo( BBSVoteOption.class, WoBBSVoteOption.class, null, JpaObject.FieldsInvisible);
-		
+
 		private Boolean voted = false;
 
 		public Boolean getVoted() {

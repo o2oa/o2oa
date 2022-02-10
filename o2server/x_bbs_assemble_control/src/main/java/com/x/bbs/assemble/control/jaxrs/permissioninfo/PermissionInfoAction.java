@@ -26,11 +26,31 @@ import com.x.bbs.assemble.control.jaxrs.configsetting.exception.ExceptionConfigS
 import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionSectionIdEmpty;
 import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionSubjectIdEmpty;
 
+/**
+ * @author sword
+ */
 @Path("permission")
 @JaxrsDescribe("权限查询服务")
 public class PermissionInfoAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(PermissionInfoAction.class);
+
+	@JaxrsMethodDescribe(value = "查询当前用户的操作权限.", action = ActionGetUserPermission.class)
+	@GET
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getUserPermission(@Suspended final AsyncResponse asyncResponse,
+											  @Context HttpServletRequest request) {
+		ActionResult<ActionGetUserPermission.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetUserPermission().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 	@JaxrsMethodDescribe(value = "查询用户在指定板块中的所有操作权限.", action = ActionGetSectionOperationPermissoin.class)
 	@GET

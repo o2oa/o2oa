@@ -18,7 +18,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
  * 系统配置信息管理实体类
- * 
+ *
  * @author LIYI
  */
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -30,13 +30,19 @@ import com.x.base.core.project.annotation.FieldDescribe;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class BBSConfigSetting extends SliceJpaObject {
 
+	public static final String BBS_CONFIG_USE_NICKNAME = "BBS_USE_NICKNAME";
+
+	public static final String BBS_CONFIG_USE_NICKNAME_YES = "YES";
+
 	private static final long serialVersionUID = 3856138316794473794L;
 	private static final String TABLE = PersistenceProperties.BBSConfigSetting.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -46,6 +52,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
+	@Override
 	public void onPersist() throws Exception {
 		//nothing
 	}
@@ -115,7 +122,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 
 	/**
 	 * 获取配置名称
-	 * 
+	 *
 	 * @return
 	 */
 	public String getConfigName() {
@@ -124,7 +131,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 
 	/**
 	 * 设置配置名称
-	 * 
+	 *
 	 * @param configName
 	 */
 	public void setConfigName(String configName) {
@@ -133,7 +140,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 
 	/**
 	 * 获取配置编码
-	 * 
+	 *
 	 * @return
 	 */
 	public String getConfigCode() {
@@ -142,7 +149,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 
 	/**
 	 * 设置配置编码
-	 * 
+	 *
 	 * @param configCode
 	 */
 	public void setConfigCode(String configCode) {
@@ -151,7 +158,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 
 	/**
 	 * 获取配置值
-	 * 
+	 *
 	 * @return
 	 */
 	public String getConfigValue() {
@@ -160,7 +167,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 
 	/**
 	 * 设置配置值
-	 * 
+	 *
 	 * @param configValue
 	 */
 	public void setConfigValue(String configValue) {
@@ -169,7 +176,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 
 	/**
 	 * 获取排序号
-	 * 
+	 *
 	 * @return
 	 */
 	public Integer getOrderNumber() {
@@ -178,7 +185,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 
 	/**
 	 * 设置排序号
-	 * 
+	 *
 	 * @param orderNumber
 	 */
 	public void setOrderNumber(Integer orderNumber) {
@@ -187,7 +194,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 
 	/**
 	 * 获取备注说明信息
-	 * 
+	 *
 	 * @return
 	 */
 	public String getDescription() {
@@ -196,7 +203,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 
 	/**
 	 * 设置备注说明信息
-	 * 
+	 *
 	 * @param description
 	 */
 	public void setDescription(String description) {

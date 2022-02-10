@@ -59,10 +59,12 @@ public class Person extends SliceJpaObject {
 
 	private static final String TABLE = PersistenceProperties.Person.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -87,6 +89,7 @@ public class Person extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		this.pinyin = StringUtils.lowerCase(PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE));
 		this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(name));
@@ -175,6 +178,12 @@ public class Person extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist(allowEmpty = false, simplyString = false)
 	private String name;
+
+	public static final String nickName_FIELDNAME = "nickName";
+	@FieldDescribe("昵称.")
+	@Column(length = length_255B, name = ColumnNamePrefix + nickName_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String nickName;
 
 	public static final String employee_FIELDNAME = "employee";
 	@Flag
@@ -865,4 +874,12 @@ public class Person extends SliceJpaObject {
     public void setLanguage(String language) {
         this.language = language;
     }
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 }
