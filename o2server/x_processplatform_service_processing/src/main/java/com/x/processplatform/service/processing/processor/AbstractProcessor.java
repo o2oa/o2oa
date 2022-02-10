@@ -36,7 +36,7 @@ import com.x.processplatform.service.processing.configurator.ProcessingConfigura
  */
 public abstract class AbstractProcessor extends AbstractBaseProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractProcessor.class);
 
 	protected AbstractProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -111,7 +111,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			this.callAfterArriveScript(aeiObjects);
 			return work.getId();
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			return null;
 		}
 	}
@@ -237,7 +237,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				this.callAfterExecuteScript(aeiObjects);
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return results;
 	}
@@ -344,7 +344,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			/** 运行 AfterInquireScript事件 */
 			this.callAfterInquireScript(aeiObjects);
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return results;
 	}
