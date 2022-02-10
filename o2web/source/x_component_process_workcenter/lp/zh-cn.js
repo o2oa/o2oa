@@ -42,7 +42,6 @@ MWF.xApplication.process.workcenter.LP = {
 
 	"opinion": "意见",
 	"time": "时间",
-	"processing": "正在办理",
 	"starttime": "到达时间",
 
 	"workFlowTo": "文件流转至：",
@@ -54,5 +53,19 @@ MWF.xApplication.process.workcenter.LP = {
 	"readActivity": "待阅活动",
 	"readActivityInfo": "收到待阅时的活动状态",
 
-	"filter": "筛选"
+	"filter": "筛选",
+	"search": "搜索",
+	"filterPlaceholder": "请输入关键字",
+
+	"filterCategoryList": [
+		{"key": "applicationList", "name": "应用名称"},
+		{"key": "processList", "name": "流程名称"},
+		{"key": "activityNameList", "name": "办理活动"},
+		{"key": "creatorUnitList", "name": "创建部门"},
+		{"key": "startTimeMonthList", "name": "收到月份"},
+		{"key": "completedTimeMonthList", "name": "办理月份"},
+		{"key": "completedList", "name": "是否流转完成"}
+	]
+
+
 };

@@ -1,6 +1,6 @@
 <style>
     .ft_content{
-        padding: 20px 0;
+        padding-top: 20px;
     }
     .ft_titleSearchArea{
         height: 28px;
@@ -20,12 +20,76 @@
         margin-top: 6px;
         display: block;
     }
+    .ft_searchButton{
+        width: 50px;
+        height: 28px;
+        border-top-right-radius: 14px;
+        border-bottom-right-radius: 14px;
+        float: right;
+        text-align:center;
+        cursor: pointer;
+    }
+    .ft_titleInputArea{
+        margin-left: 38px;
+        margin-right: 50px;
+        height: 28px;
+    }
+    .ft_titleInputArea input{
+        display: block;
+        width: 100%;
+        padding: 0;
+        height: 28px;
+        border: 0px;
+        box-sizing: border-box!important;
+    }
+    .ft_filterItemsArea{
+        overflow: hidden;
+        margin-top: 10px;
+        height: 420px;
+        overflow: auto;
+    }
+    .ft_itemsCategory{
+        overflow: hidden;
+        margin-top: 10px;
+    }
+    .ft_itemsCategoryTitle{
+        font-size: 16px;
+        height: 28px;
+        line-height: 28px;
+        color: #333333;
+    }
+    .ft_itemNode{
+        float: left;
+        margin-top: 5px;
+        margin-right: 5px;
+        padding: 3px 10px;
+        background: #F0F0F0;
+        border-radius: 15px;
+        color: #666666;
+        cursor: pointer;
+    }
 </style>
 
 <div class="ft_content">
     <div class="ft_titleSearchArea">
         <div class="ft_filterIcon"><icon class="o2icon-sousuo mainColor_color"></icon></div>
+        <div class="ft_searchButton mainColor_bg" data-o2-events="click:doFilter">{{$.lp.search}}</div>
+        <div class="ft_titleInputArea"><input type="text" placeholder="{{$.lp.filterPlaceholder}}"  data-o2-events="keydown:inputFilter"/></div>
+    </div>
+    <div class="ft_filterItemsArea">
+        {{each ($.lp.filterCategoryList)}}
+            {{if ($._.data[$.key])}}
+                <div class="ft_itemsCategory">
+                    <div class="ft_itemsCategoryTitle">{{$.name}}</div>
+                    <div class="ft_itemsArea">
+                        {{each ($._.data[$.key])}}
+                            <div class="ft_itemNode {{if ($._._.filter && $._._.filter[$._.key] && $._._.filter[$._.key].indexOf($.value)!==-1 ) }}mainColor_bg{{end if}}"
+                                 data-o2-events="click:selectFilterItem:{{$.value}}:{{$._.key}}" data-value="{{$.value}}" data-category="{{$._.key}}">{{$.name}}</div>
+                        {{end each}}
+                    </div>
+                </div>
+            {{end if}}
+        {{end each}}
 
     </div>
-    <div class="fileItemsArea"></div>
 </div>

@@ -2480,6 +2480,7 @@ if (!window.o2) {
             });
         }
 
+
         var styleString = Element.getComputedStyle;
 
         function styleNumber(element, style) {
