@@ -159,23 +159,20 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var p = node.getPosition(this.content);
 		var size = node.getSize();
 		var y = p.y+size.y+10;
-		var x = p.x-500+size.x;
+		var x = p.x-600+size.x;
 		var fx = p.x+size.x;
 
 		var filterContent = new Element("div");
 		var url = this.path+this.options.style+"/view/dlg/filter.html";
 		this.getFilterData().then(function(data){
-			filterContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data}, "module": this})
+			filterContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data, filter: this.currentList.filterList}, "module": this})
 		}.bind(this));
 
 		var _self = this;
 		var closeFilterDlg = function(){
 			_self.filterDlg.close();
-			document.body.removeEvent("mousedown", closeFilterDlg);
 		}
 		this.filterDlg = o2.DL.open({
-			// "top": p.y,
-			// "left": p.x,
 			"mask": false,
 			"title": "",
 			"style": "user",
@@ -188,14 +185,57 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			"left": x,
 			"fromTop": y,
 			"fromLeft": fx,
-			"width": 500,
-			"height": 440,
-			"duration": 100
+			"width": 600,
+			"height": 550,
+			"duration": 100,
+			"onQueryClose": function(){
+				document.body.removeEvent("mousedown", closeFilterDlg);
+			},
+			"buttonList": [
+				{
+					"type": "ok",
+					"text": MWF.LP.process.button.ok,
+					"action": function (d, e) {
+						if (this.processor) this.processor.okButton.click();
+					}.bind(this)
+				},
+				{
+					"type": "cancel",
+					"text": MWF.LP.process.button.reset,
+					"action": function () {
+						this.filterDlg.close();
+					}.bind(this)
+				}
+			],
+
 		});
 		this.filterDlg.content.addEvent("mousedown", function(e){
 			e.stopPropagation();
 		});
 		document.body.addEvent("mousedown", closeFilterDlg);
+	},
+	selectFilterItem: function(value, category, e){
+		var node = e.target;
+		// var value = node.dataset.value;
+		// var category = node.dataset.category;
+
+		if (!this.currentList.filterList) this.currentList.filterList = {};
+		if (!this.currentList.filterList[category]) this.currentList.filterList[category] = [];
+		var findedIdx = this.currentList.filterList[category].indexOf(value);
+
+		if (findedIdx===-1){
+			node.addClass("mainColor_bg");
+			this.currentList.filterList[category].push(value)
+		}else{
+			node.removeClass("mainColor_bg");
+			this.currentList.filterList[category].splice(findedIdx, 1);
+		}
+	},
+	doFilter: function(){
+		debugger;
+		this.currentList.page = 1;;
+		this.currentList.refresh();
+		this.filterDlg.close();
 	}
 });
 
@@ -227,6 +267,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 
 	},
 	load: function(){
+		this.total = null;
 		var _self = this;
 		this.loadData().then(function(data){
 			_self.hide();
@@ -237,14 +278,14 @@ MWF.xApplication.process.workcenter.List = new Class({
 	refresh: function(){
 		this.hide();
 		this.load();
-		this.loadPage();
+		// this.loadPage();
 		this.app.loadCount();
 	},
 	hide: function(){
 		if (this.node) this.node.destroy();
 	},
 	loadPage: function(){
-		var totalCount = this.app.countData[this.options.type];
+		var totalCount = this.total || this.app.countData[this.options.type];
 		var pages = totalCount/this.size;
 		var pageCount = pages.toInt();
 		if (pages !== pageCount) pageCount = pageCount+1;
@@ -303,10 +344,10 @@ MWF.xApplication.process.workcenter.List = new Class({
 
 	loadData: function(){
 		var _self = this;
-		return this.action.TaskAction.listMyPaging(this.page, this.size).then(function(json){
+		return this.action.TaskAction.listMyFilterPaging(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
 			//if (_self.total!==json.size) _self.countNode.set("text", json.size);
-			_self.total = json.size;
+			_self.total = json.count;
 			return json.data;
 		}.bind(this));
 	},
