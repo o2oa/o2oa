@@ -32,12 +32,12 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 	public BBSReplyInfoFactory( Business business ) throws Exception {
 		super(business);
 	}
-	
+
 	//@MethodDescribe( "获取指定Id的BBSReplyInfo实体信息对象" )
 	public BBSReplyInfo get( String id ) throws Exception {
 		return this.entityManagerContainer().find( id, BBSReplyInfo.class, ExceptionWhen.none );
 	}
-	
+
 	//@MethodDescribe( "列示指定Id的BBSReplyInfo实体信息列表" )
 	public List<BBSReplyInfo> list(List<String> ids) throws Exception {
 		if( ids == null || ids.size() == 0 ){
@@ -74,7 +74,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 //		System.out.println( ">>>>>SQL:" + em.createQuery(cq.where(p)).toString() );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
-	
+
 	//@MethodDescribe( "根据版块信息查询版块内主题数量，包括子版块内的主题数量" )
 	public Long countBySectionId( String sectionId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( BBSReplyInfo.class );
@@ -83,7 +83,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class);
 		Predicate p = cb.equal( root.get( BBSReplyInfo_.mainSectionId ), sectionId );
 		p = cb.or( p, cb.equal( root.get( BBSReplyInfo_.sectionId ), sectionId ) );
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -94,7 +94,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class);
 		Predicate p = cb.equal( root.get( BBSReplyInfo_.forumId ), forumId );
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -193,7 +193,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( subjectId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId ) );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -248,7 +248,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		}
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount ).getResultList();
 	}
-	
+
 	//@MethodDescribe( "（今日）根据指定用户姓名、论坛ID，主版块ID， 版块ID查询符合条件的所有回复的数量" )
 	public Long countReplyForTodayByUserName( String creatorName, String forumId, String mainSectionId, String sectionId, String subjectId ) throws Exception {
 		Boolean allFilterNull = true;
@@ -291,10 +291,10 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( subjectId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId ) );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
-	
+
 	//@MethodDescribe( "（今日）根据指定用户姓名、论坛ID，主版块ID， 版块ID查询符合条件的所有回复对象列表" )
 	public List<BBSReplyInfo> listReplyForTodayByUserName( String creatorName, String forumId, String mainSectionId, String sectionId, String subjectId, Integer maxCount ) throws Exception {
 		Boolean allFilterNull = true;
@@ -356,7 +356,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 			or = cb.or( or, cb.equal( root.get( BBSReplyInfo_.sectionId ), sectionId ) );
 			p = cb.and( p, or );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -370,7 +370,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.forumId ), forumId ) );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -381,7 +381,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 	 * @param todayEndTime
 	 * @param queryMainSection  是否也查询主版块是sectionId的数据
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Long countReplyByDate(String sectionId, Date todayStartTime, Date todayEndTime, boolean queryMainSection ) throws Exception {
 		if( StringUtils.isEmpty( sectionId ) ){
@@ -400,7 +400,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get( BBSReplyInfo_.sectionId ), sectionId );
 		if( queryMainSection ) {
 			p = cb.or( p, cb.equal( root.get( BBSReplyInfo_.mainSectionId ), sectionId ));
-		}		
+		}
 		Predicate p_time = cb.between( root.get( BBSReplyInfo_.createTime ), todayStartTime, todayEndTime ) ;
 		p = cb.and( p, p_time );
 		cq.select( cb.count( root ) );
@@ -464,6 +464,19 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class );
 		Predicate p = cb.equal( root.get( BBSReplyInfo_.parentId ), replyId );
 		cq.select( root.get( BBSReplyInfo_.id ) );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
+	public List<String> listReplyIdsByCreator(String creatorName) throws Exception {
+		if( StringUtils.isBlank(creatorName) ){
+			return new ArrayList<>();
+		}
+		EntityManager em = this.entityManagerContainer().get(BBSReplyInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<BBSReplyInfo> root = cq.from(BBSReplyInfo.class);
+		Predicate p = cb.equal(  root.get(BBSReplyInfo_.creatorName), creatorName);
+		cq.select( root.get(BBSReplyInfo_.id) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 

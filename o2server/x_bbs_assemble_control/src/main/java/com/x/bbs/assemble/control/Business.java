@@ -1,6 +1,8 @@
 package com.x.bbs.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.bbs.assemble.control.factory.BBSConfigSettingFactory;
 import com.x.bbs.assemble.control.factory.BBSForumInfoFactory;
 import com.x.bbs.assemble.control.factory.BBSOperationRecordFactory;
@@ -18,11 +20,14 @@ import com.x.bbs.assemble.control.factory.BBSVoteOptionFactory;
 import com.x.bbs.assemble.control.factory.BBSVoteRecordFactory;
 import com.x.organization.core.express.Organization;
 
+/**
+ * @author sword
+ */
 public class Business {
 
 	private EntityManagerContainer emc;
 
-	public Business(EntityManagerContainer emc) throws Exception {
+	public Business(EntityManagerContainer emc) {
 		this.emc = emc;
 	}
 
@@ -54,6 +59,15 @@ public class Business {
 			this.organization = new Organization(ThisApplication.context());
 		}
 		return organization;
+	}
+
+	public boolean controlAble(EffectivePerson effectivePerson) throws Exception {
+		boolean result = false;
+		if (effectivePerson.isManager()
+				|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.BBSManager))) {
+			result = true;
+		}
+		return result;
 	}
 
 	public BBSVoteRecordFactory voteRecordFactory() throws Exception {
