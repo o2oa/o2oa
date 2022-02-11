@@ -12,8 +12,11 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.DocumentCommentInfo;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.yarn.webapp.hamlet2.Hamlet;
 
 public class ActionSave extends BaseAction {
 
@@ -31,6 +34,13 @@ public class ActionSave extends BaseAction {
 			documentCommentInfo = Wi.copier.copy(wi);
 			documentCommentInfo.setId( wi.getId());;
 			documentCommentInfo.setCreatorName( effectivePerson.getDistinguishedName() );
+			Business business = new Business(null);
+			if(StringUtils.isNoneBlank(wi.getCommentUser()) && business.isManager(effectivePerson)){
+				String person = business.organization().person().get(wi.getCommentUser());
+				if(StringUtils.isNoneBlank(person)){
+					documentCommentInfo.setCreatorName( person );
+				}
+			}
 			documentCommentInfo.setAuditorName( "" );
 			documentCommentInfo.setCommentAuditStatus( "通过" );
 		} catch (Exception e) {
@@ -100,6 +110,9 @@ public class ActionSave extends BaseAction {
 		@FieldDescribe("是否私信评论")
 		private Boolean isPrivate = false;
 
+		@FieldDescribe("评论用户(仅管理员可指定)")
+		private String commentUser = "";
+
 		public static final WrapCopier<Wi, DocumentCommentInfo> copier = WrapCopierFactory.wi( Wi.class, DocumentCommentInfo.class, null, null );
 
 		public String getId() {
@@ -148,6 +161,14 @@ public class ActionSave extends BaseAction {
 
 		public void setIsPrivate(Boolean isPrivate) {
 			this.isPrivate = isPrivate;
+		}
+
+		public String getCommentUser() {
+			return commentUser;
+		}
+
+		public void setCommentUser(String commentUser) {
+			this.commentUser = commentUser;
 		}
 	}
 
