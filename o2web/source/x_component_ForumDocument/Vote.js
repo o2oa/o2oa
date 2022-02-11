@@ -916,7 +916,7 @@ MWF.xApplication.ForumDocument.VoteRecordDocument = new Class({
     _postCreateDocumentNode: function( itemNode, itemData ){
         if( MWFForum.isUseNickName() ){
             new Element("div", {
-                text : o2.name.cn(itemData.nickName || itemData.votorName),
+                text : o2.name.cn(itemData.votorNickName || itemData.votorName),
                 styles : {
                     "margin-right": "10px",
                     "margin-top": "5px",
