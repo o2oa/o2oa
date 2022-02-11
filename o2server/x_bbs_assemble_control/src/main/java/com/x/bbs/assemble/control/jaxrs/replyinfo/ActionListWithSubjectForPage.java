@@ -146,6 +146,9 @@ public class ActionListWithSubjectForPage extends BaseAction {
 			if (ListTools.isNotEmpty(wraps)) {
 				List<BBSReplyInfo> subReplies = null;
 				for (Wo wo : wraps) {
+					if(StringUtils.isBlank(wo.getNickName())){
+						wo.setNickName(wo.getCreatorName());
+					}
 					if (StringUtils.isNotEmpty(wo.getCreatorName())) {
 						wo.setCreatorNameShort(wo.getCreatorName().split("@")[0]);
 					}
