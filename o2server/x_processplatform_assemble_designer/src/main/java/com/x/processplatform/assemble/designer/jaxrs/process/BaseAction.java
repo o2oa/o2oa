@@ -686,7 +686,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} else {
 					WrapRoute.inCopier.copy(w, o);
-
 					business.entityManagerContainer().check(o, CheckPersistType.all);
 				}
 			}
