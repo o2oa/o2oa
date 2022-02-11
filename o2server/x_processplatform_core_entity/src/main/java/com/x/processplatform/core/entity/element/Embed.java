@@ -560,6 +560,13 @@ public class Embed extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private EmbedProperties properties;
 
+	public static final String WAITUNTILEND_FIELDNAME = "waitUntilEnd";
+	@FieldDescribe("等待至子流程结束.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + WAITUNTILEND_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + WAITUNTILEND_FIELDNAME)
+	private Boolean waitUntilEnd;
+
 	public String getDisplayLogScript() {
 		return displayLogScript;
 	}
