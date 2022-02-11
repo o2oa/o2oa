@@ -21,16 +21,16 @@ import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyNotExi
 import com.x.bbs.entity.BBSReplyInfo;
 
 public class ActionGet extends BaseAction {
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( ActionGet.class );
-	
+
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		
+
 		Wo wrap = null;
 		BBSReplyInfo replyInfo = null;
 		Boolean check = true;
-		
+
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
@@ -58,6 +58,9 @@ public class ActionGet extends BaseAction {
 					result.error( exception );
 					logger.error( e, effectivePerson, request, null);
 				}
+				if(StringUtils.isBlank(wrap.getNickName())){
+					wrap.setNickName(wrap.getCreatorName());
+				}
 				if( wrap != null && StringUtils.isNotEmpty( wrap.getCreatorName() ) ) {
 					wrap.setCreatorNameShort( wrap.getCreatorName().split( "@" )[0]);
 				}
@@ -74,16 +77,16 @@ public class ActionGet extends BaseAction {
 	}
 
 	public static class Wo extends BBSReplyInfo{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier< BBSReplyInfo, Wo > copier = WrapCopierFactory.wo( BBSReplyInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
-		
+
 		@FieldDescribe( "创建人姓名" )
 		private String creatorNameShort = "";
-		
+
 		@FieldDescribe( "审核人姓名" )
 		private String auditorNameShort = "";
 

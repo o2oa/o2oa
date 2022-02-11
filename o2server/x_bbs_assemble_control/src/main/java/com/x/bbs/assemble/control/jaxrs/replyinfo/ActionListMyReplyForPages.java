@@ -102,6 +102,9 @@ public class ActionListMyReplyForPages extends BaseAction {
 		if (check) {
 			if (ListTools.isNotEmpty(wraps)) {
 				for (Wo wo : wraps) {
+					if(StringUtils.isBlank(wo.getNickName())){
+						wo.setNickName(wo.getCreatorName());
+					}
 					if (StringUtils.isNotEmpty(wo.getCreatorName())) {
 						wo.setCreatorNameShort(wo.getCreatorName().split("@")[0]);
 					}

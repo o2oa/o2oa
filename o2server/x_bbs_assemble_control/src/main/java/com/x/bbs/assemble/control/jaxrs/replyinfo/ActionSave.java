@@ -5,8 +5,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.organization.Person;
+import com.x.bbs.assemble.control.Business;
 import com.x.bbs.assemble.control.ThisApplication;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -228,6 +232,8 @@ public class ActionSave extends BaseAction {
 			wrapIn.setSectionId(subjectInfo.getSectionId());
 			wrapIn.setSectionName(subjectInfo.getSectionName());
 			wrapIn.setCreatorName(effectivePerson.getDistinguishedName());
+			Business business = new Business(null);
+			wrapIn.setNickName(business.organization().person().getNickName(effectivePerson.getDistinguishedName()));
 		}
 
 		if (check) {
@@ -266,7 +272,7 @@ public class ActionSave extends BaseAction {
 				CacheManager.notify( BBSForumInfo.class );
 				CacheManager.notify( BBSSectionInfo.class );
 				CacheManager.notify( BBSSubjectInfo.class );
-				
+
 				operationRecordService.replyOperation(effectivePerson.getDistinguishedName(), replyInfo, "CREATE", hostIp, hostName);
 			} catch (Exception e) {
 				check = false;
