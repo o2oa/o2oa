@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.bbs.assemble.control.Business;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -35,9 +36,9 @@ import com.x.bbs.entity.BBSVoteOptionGroup;
 import net.sf.ehcache.Element;
 
 public class ActionSubjectView extends BaseAction {
-	
+
 	private static Logger logger = LoggerFactory.getLogger( ActionSubjectView.class );
-	
+
 	@SuppressWarnings("unchecked")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -49,7 +50,7 @@ public class ActionSubjectView extends BaseAction {
 				result.error( exception );
 			}
 		}
-		
+
 		if( check ){
 			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
@@ -63,7 +64,7 @@ public class ActionSubjectView extends BaseAction {
 				CacheManager.put( cacheCategory, cacheKey, result );
 			}
 		}
-		
+
 		if( check && result.getData() != null ) {
 			WoBBSSubjectInfo currentSubject = result.getData().getCurrentSubject();
 			if (check) {
@@ -72,9 +73,9 @@ public class ActionSubjectView extends BaseAction {
 					List<BBSVoteOptionGroup> voteOptionGroupList = null;
 					List<WoBBSVoteOptionGroup> wrapOutSubjectVoteOptionGroupList = null;
 					List<WoBBSVoteOption> wrapOutSubjectVoteOptionList = null;
-					
+
 					currentSubject.setVoted( false );
-					
+
 					try {
 						voteOptionGroupList = subjectVoteService.listVoteOptionGroup( id );
 						if( ListTools.isNotEmpty( voteOptionGroupList ) ){
@@ -137,7 +138,7 @@ public class ActionSubjectView extends BaseAction {
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}
-					
+
 //					try {
 //						voteOptionList = subjectVoteService.listVoteOption( id );
 //					} catch (Exception e) {
@@ -150,7 +151,7 @@ public class ActionSubjectView extends BaseAction {
 				}
 			}
 		}
-		
+
 		if( check ){
 			try {
 				// 查看次数+1
@@ -176,7 +177,7 @@ public class ActionSubjectView extends BaseAction {
 		BBSSubjectInfo subjectInfo = null;
 		String subjectContent = null;
 		Boolean check = true;
-		
+
 		if (check) {//查询版块信息是否存在
 			try {
 				subjectInfo = subjectInfoServiceAdv.get( id );
@@ -187,7 +188,7 @@ public class ActionSubjectView extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check) {
 			if ( subjectInfo == null ) {
 				check = false;
@@ -196,7 +197,7 @@ public class ActionSubjectView extends BaseAction {
 			}else{//查到了主题信息
 				try {
 					currentSubject = WoBBSSubjectInfo.copier.copy( subjectInfo );
-					
+
 					//根据附件ID列表查询附件信息
 					if( currentSubject.getAttachmentList() != null && currentSubject.getAttachmentList().size() > 0 ){
 						subjectAttachmentList = subjectInfoServiceAdv.listAttachmentByIds( currentSubject.getAttachmentList() );
@@ -212,9 +213,9 @@ public class ActionSubjectView extends BaseAction {
 					result.error( exception );
 					logger.error( e, effectivePerson, request, null);
 				}
-			}			
+			}
 		}
-		
+
 		if (check) {
 			if( wrapOutNearSubjectInfo.getCurrentSubject() != null ){
 				currentSubject = wrapOutNearSubjectInfo.getCurrentSubject();
@@ -232,7 +233,7 @@ public class ActionSubjectView extends BaseAction {
 				}
 			}
 		}
-		
+
 		//开始查询上一个主题的信息
 		if (check) {
 			try {
@@ -252,7 +253,7 @@ public class ActionSubjectView extends BaseAction {
 				wrapOutNearSubjectInfo.setLastSubject( lastSubject );
 			}
 		}
-		
+
 		//开始查询下一个主题的信息
 		if (check) {
 			try {
@@ -271,30 +272,41 @@ public class ActionSubjectView extends BaseAction {
 				nextSubject.setTitle( subjectInfo.getTitle() );
 				wrapOutNearSubjectInfo.setNextSubject( nextSubject );
 			}
-		}		
+		}
 		//将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
 		cutPersonNames( wrapOutNearSubjectInfo.getCurrentSubject() );
-		
+
 		result.setData( wrapOutNearSubjectInfo );
 		return result;
 	}
 
 	/**
 	 *  将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
-	 *  
+	 *
 	 *  latestReplyUserShort = "";
 		bBSIndexSetterNameShort = "";
 		screamSetterNameShort = "";
 		originalSetterNameShort = "";
 		creatorNameShort = "";
 		auditorNameShort = "";
-		
+
 	 * @param subject
 	 */
 	private void cutPersonNames( WoBBSSubjectInfo subject ) {
 		if( subject != null ) {
-			if( StringUtils.isNotEmpty( subject.getLatestReplyUser() ) ) {
-				subject.setLatestReplyUserShort( subject.getLatestReplyUser().split( "@" )[0]);
+			if(StringUtils.isBlank(subject.getNickName())){
+				subject.setNickName(subject.getCreatorName());
+			}
+			if ( StringUtils.isNotEmpty( subject.getLatestReplyUser() )) {
+				subject.setLatestReplyUserNickName(subject.getLatestReplyUser().split("@")[0]);
+				try {
+					if(configSettingService.useNickName()) {
+						Business business = new Business(null);
+						subject.setLatestReplyUserNickName(business.organization().person().getNickName(subject.getLatestReplyUser()));
+					}
+				} catch (Exception e) {
+					logger.debug(e.getMessage());
+				}
 			}
 			if( StringUtils.isNotEmpty( subject.getbBSIndexSetterName() ) ) {
 				subject.setbBSIndexSetterNameShort( subject.getbBSIndexSetterName().split( "@" )[0]);
@@ -317,9 +329,9 @@ public class ActionSubjectView extends BaseAction {
 	public static class Wo{
 
 		private WoBBSSubjectInfo lastSubject = null;
-		
+
 		private WoBBSSubjectInfo currentSubject = null;
-		
+
 		private WoBBSSubjectInfo nextSubject = null;
 
 		public WoBBSSubjectInfo getLastSubject() {
@@ -343,17 +355,17 @@ public class ActionSubjectView extends BaseAction {
 		}
 		public void setCurrentSubject(WoBBSSubjectInfo currentSubject) {
 			this.currentSubject = currentSubject;
-		}	
+		}
 	}
-	
+
 	public static class WoBBSSubjectInfo extends BBSSubjectInfo{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static WrapCopier< BBSSubjectInfo, WoBBSSubjectInfo > copier = WrapCopierFactory.wo( BBSSubjectInfo.class, WoBBSSubjectInfo.class, null, JpaObject.FieldsInvisible);
-		
+
 		private List<WoSubjectAttachment> subjectAttachmentList;
-		
+
 		@FieldDescribe( "投票主题的所有投票选项列表." )
 		private List<WoBBSVoteOptionGroup> voteOptionGroupList;
 
@@ -365,27 +377,27 @@ public class ActionSubjectView extends BaseAction {
 
 		@FieldDescribe( "投票人数" )
 		private Integer voteUserCount = 0;
-		
+
 		private String pictureBase64 = null;
-		
-		@FieldDescribe( "最新回复用户" )
-		private String latestReplyUserShort = "";
-		
+
+		@FieldDescribe("最新回复用户昵称")
+		private String latestReplyUserNickName = "";
+
 		@FieldDescribe( "首页推荐人姓名" )
 		private String bBSIndexSetterNameShort = "";
-		
+
 		@FieldDescribe( "精华设置人姓名" )
 		private String screamSetterNameShort = "";
-		
+
 		@FieldDescribe( "原创设置人姓名" )
 		private String originalSetterNameShort = "";
-		
+
 		@FieldDescribe( "创建人姓名" )
 		private String creatorNameShort = "";
-		
+
 		@FieldDescribe( "审核人姓名" )
 		private String auditorNameShort = "";
-		
+
 		@FieldDescribe( "当前用户是否已经投票过." )
 		private Boolean voted = false;
 
@@ -393,8 +405,12 @@ public class ActionSubjectView extends BaseAction {
 
 		public void setVoteUserCount(Integer voteUserCount) { this.voteUserCount = voteUserCount; }
 
-		public String getLatestReplyUserShort() {
-			return latestReplyUserShort;
+		public String getLatestReplyUserNickName() {
+			return latestReplyUserNickName;
+		}
+
+		public void setLatestReplyUserNickName(String latestReplyUserNickName) {
+			this.latestReplyUserNickName = latestReplyUserNickName;
 		}
 
 		public String getbBSIndexSetterNameShort() {
@@ -415,10 +431,6 @@ public class ActionSubjectView extends BaseAction {
 
 		public String getAuditorNameShort() {
 			return auditorNameShort;
-		}
-
-		public void setLatestReplyUserShort(String latestReplyUserShort) {
-			this.latestReplyUserShort = latestReplyUserShort;
 		}
 
 		public void setbBSIndexSetterNameShort(String bBSIndexSetterNameShort) {
@@ -489,24 +501,24 @@ public class ActionSubjectView extends BaseAction {
 			this.voteCount = voteCount;
 		}
 	}
-	
+
 	public static class WoSubjectAttachment extends BBSSubjectAttachment{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier< BBSSubjectAttachment, WoSubjectAttachment > copier = WrapCopierFactory.wo( BBSSubjectAttachment.class, WoSubjectAttachment.class, null, JpaObject.FieldsInvisible);
 	}
-	
+
 	public static class WoBBSVoteOptionGroup extends BBSVoteOptionGroup{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier< BBSVoteOptionGroup, WoBBSVoteOptionGroup > copier = WrapCopierFactory.wo( BBSVoteOptionGroup.class, WoBBSVoteOptionGroup.class, null, JpaObject.FieldsInvisible);
-		
+
 		private List<WoBBSVoteOption> voteOptions = null;
 
 		public List<WoBBSVoteOption> getVoteOptions() {
@@ -519,13 +531,13 @@ public class ActionSubjectView extends BaseAction {
 	}
 
 	public static class WoBBSVoteOption extends BBSVoteOption{
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier< BBSVoteOption, WoBBSVoteOption > copier = WrapCopierFactory.wo( BBSVoteOption.class, WoBBSVoteOption.class, null, JpaObject.FieldsInvisible);
-		
+
 		private Boolean voted = false;
 
 		public Boolean getVoted() {

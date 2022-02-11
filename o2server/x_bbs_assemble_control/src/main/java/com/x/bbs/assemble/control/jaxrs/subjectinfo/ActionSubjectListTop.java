@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.bbs.assemble.control.Business;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -125,7 +126,15 @@ public class ActionSubjectListTop extends BaseAction {
 				subject.setNickName(subject.getCreatorName());
 			}
 			if ( StringUtils.isNotEmpty( subject.getLatestReplyUser() )) {
-				subject.setLatestReplyUserShort(subject.getLatestReplyUser().split("@")[0]);
+				subject.setLatestReplyUserNickName(subject.getLatestReplyUser().split("@")[0]);
+				try {
+					if(configSettingService.useNickName()) {
+						Business business = new Business(null);
+						subject.setLatestReplyUserNickName(business.organization().person().getNickName(subject.getLatestReplyUser()));
+					}
+				} catch (Exception e) {
+					logger.debug(e.getMessage());
+				}
 			}
 			if ( StringUtils.isNotEmpty( subject.getbBSIndexSetterName() )) {
 				subject.setbBSIndexSetterNameShort(subject.getbBSIndexSetterName().split("@")[0]);
@@ -156,8 +165,8 @@ public class ActionSubjectListTop extends BaseAction {
 
 		private List<WoSubjectAttachment> subjectAttachmentList;
 
-		@FieldDescribe("最新回复用户")
-		private String latestReplyUserShort = "";
+		@FieldDescribe("最新回复用户昵称")
+		private String latestReplyUserNickName = "";
 
 		@FieldDescribe("首页推荐人姓名")
 		private String bBSIndexSetterNameShort = "";
@@ -186,8 +195,12 @@ public class ActionSubjectListTop extends BaseAction {
 		@FieldDescribe("当前用户是否已经投票过.")
 		private Boolean voted = false;
 
-		public String getLatestReplyUserShort() {
-			return latestReplyUserShort;
+		public String getLatestReplyUserNickName() {
+			return latestReplyUserNickName;
+		}
+
+		public void setLatestReplyUserNickName(String latestReplyUserNickName) {
+			this.latestReplyUserNickName = latestReplyUserNickName;
 		}
 
 		public String getbBSIndexSetterNameShort() {
@@ -208,10 +221,6 @@ public class ActionSubjectListTop extends BaseAction {
 
 		public String getAuditorNameShort() {
 			return auditorNameShort;
-		}
-
-		public void setLatestReplyUserShort(String latestReplyUserShort) {
-			this.latestReplyUserShort = latestReplyUserShort;
 		}
 
 		public void setbBSIndexSetterNameShort(String bBSIndexSetterNameShort) {

@@ -95,11 +95,7 @@ public class BBSReplyInfoService {
 			if( _subjectInfo != null ){
 				_subjectInfo.setLatestReplyTime( new Date() );
 				_subjectInfo.setLatestReplyId( _bBSReplyInfo.getId() );
-				if(StringUtils.isNoneBlank(_bBSReplyInfo.getNickName())){
-					_subjectInfo.setLatestReplyUser(_bBSReplyInfo.getNickName());
-				}else {
-					_subjectInfo.setLatestReplyUser(_bBSReplyInfo.getCreatorName());
-				}
+				_subjectInfo.setLatestReplyUser(_bBSReplyInfo.getCreatorName());
 				_subjectInfo.setReplyTotal( _subjectInfo.getReplyTotal() + 1 );
 				emc.check( _subjectInfo, CheckPersistType.all );
 			}

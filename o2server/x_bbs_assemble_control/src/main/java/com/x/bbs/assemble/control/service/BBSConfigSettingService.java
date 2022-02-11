@@ -1,28 +1,31 @@
 package com.x.bbs.assemble.control.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSConfigSetting;
 
 
+
 /**
- * 类   名：BBSConfigSettingService<br/>
- * 实体类：BBSConfigSetting<br/>
- * 作   者：Liyi<br/>
- * 单   位：O2 Team<br/>
- * 日   期：2016-05-20 17:17:26
-**/
+ * 平台配置
+ * @author sword
+ */
 public class BBSConfigSettingService{
 
 	private static  Logger logger = LoggerFactory.getLogger( BBSConfigSettingService.class );
+
+	private Cache.CacheCategory cacheCategory = new Cache.CacheCategory(BBSConfigSetting.class);
 
 	/**
 	 * 根据传入的ID从数据库查询BBSConfigSetting对象
@@ -59,6 +62,7 @@ public class BBSConfigSettingService{
 				emc.persist( bbsConfigSetting, CheckPersistType.all);
 				emc.commit();
 			}
+			CacheManager.notify(BBSConfigSetting.class);
 		}catch( Exception e ){
 			logger.warn( "BBSConfigSetting update/ got a error!" );
 			throw e;
@@ -81,6 +85,7 @@ public class BBSConfigSettingService{
 				bbsConfigSetting.copyTo( _bbsConfigSetting, JpaObject.FieldsUnmodify  );
 				emc.check( _bbsConfigSetting, CheckPersistType.all );
 				emc.commit();
+				CacheManager.notify(BBSConfigSetting.class);
 			}else{
 				throw new Exception("config setting '"+ bbsConfigSetting.getConfigCode() +"'  not exists");
 			}
@@ -110,6 +115,7 @@ public class BBSConfigSettingService{
 				emc.beginTransaction( BBSConfigSetting.class );
 				emc.remove( bbsConfigSetting, CheckRemoveType.all );
 				emc.commit();
+				CacheManager.notify(BBSConfigSetting.class);
 			}
 		} catch ( Exception e ) {
 			throw e;
@@ -126,25 +132,35 @@ public class BBSConfigSettingService{
 		if( configCode  == null || configCode.isEmpty() ){
 			throw new Exception( "configCode is null!" );
 		}
-		Business business = null;
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			business = new Business(emc);
-			return business.configSettingFactory().getValueWithConfigCode( configCode );
-		}catch( Exception e ){
-			throw e;
+		Cache.CacheKey cacheKey = new Cache.CacheKey(BBSConfigSetting.class.getName(), configCode);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			return String.valueOf(optional.get());
+		} else {
+			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+				Business business = new Business(emc);
+				String result =  business.configSettingFactory().getValueWithConfigCode( configCode );
+				if(result != null){
+					CacheManager.put(cacheCategory, cacheKey, result);
+				}
+				return result;
+			}catch( Exception e ){
+				throw e;
+			}
 		}
 	}
 
 	/**
 	 * 论坛是否启用昵称，默认不启用
 	 */
-	public boolean useNickName() throws Exception {
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			Business business = new Business(emc);
-			String configValue = business.configSettingFactory().getValueWithConfigCode(BBSConfigSetting.BBS_CONFIG_USE_NICKNAME);
+	public boolean useNickName() {
+		try {
+			String configValue = this.getValueWithConfigCode(BBSConfigSetting.BBS_CONFIG_USE_NICKNAME);
 			if(BBSConfigSetting.BBS_CONFIG_USE_NICKNAME_YES.equalsIgnoreCase(configValue)){
 				return true;
 			}
+		} catch (Exception e) {
+			logger.debug(e.getMessage());
 		}
 		return false;
 	}
