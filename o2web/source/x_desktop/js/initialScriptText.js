@@ -2859,10 +2859,15 @@ bind.service = {
         var service = bind.java_resources.getWebservicesClient();
         var bodyData = ((typeof body)==="object") ? JSON.stringify(body) : (body||"");
         var res = service.restful(method, url, (headers||null), bodyData, (connectTimeout||2000), (readTimeout||300000));
+        var o = {
+            "responseCode" : res.responseCode,
+            "headers" : res.headers,
+            "body": res.body
+        }
         try {
-            res.json = JSON.parse(res.body);
+            o.json = JSON.parse(res.body);
         }catch(e){}
-        return res;
+        return o;
     },
 
     /**
@@ -2931,7 +2936,7 @@ bind.service = {
      */
     soap: function(wsdl, method, pars){
         var service = bind.java_resources.getWebservicesClient();
-        return service.restful(wsdl, method, pars);
+        return service.soap(wsdl, method, pars);
     }
 }
 
