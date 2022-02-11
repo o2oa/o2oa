@@ -266,8 +266,8 @@ MWF.xApplication.Forum.Access = new Class({
         }
         return flag;
     },
-    getUserPermission: function (callback) {
-        if( this.userPermission ){
+    getUserPermission: function (callback, reload) {
+        if( !reload && this.userPermission ){
             callback(this.userPermission);
             return;
         }

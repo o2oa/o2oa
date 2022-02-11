@@ -90,6 +90,7 @@
         "items": {
           "creatorName" : {
             "value" : "function(d){ return MWFForum.getSubjectCreatorName(d) }",
+            "title" : "function(d){ return MWFForum.getSubjectCreatorName(d) }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
             "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"},
@@ -125,6 +126,7 @@
         "items": {
           "latestReplyUser" : {
             "value" : "function(d){ return MWFForum.getLastReplyUserName(d) }",
+            "title" : "function(d){ return MWFForum.getLastReplyUserName(d) }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
             "event" : "click^^function(node){ this.app.openPerson( this.data.latestReplyUser ) }"
