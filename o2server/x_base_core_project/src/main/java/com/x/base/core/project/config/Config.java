@@ -1057,13 +1057,13 @@ public class Config {
 		return instance().zhengwuDingding;
 	}
 
-	private MQ mq;
+	private Mq mq;
 
-	public static synchronized MQ mq() throws Exception {
+	public static synchronized Mq mq() throws Exception {
 		if (null == instance().mq) {
-			MQ obj = BaseTools.readConfigObject(PATH_CONFIG_MQ, MQ.class);
+			Mq obj = BaseTools.readConfigObject(PATH_CONFIG_MQ, Mq.class);
 			if (null == obj) {
-				obj = MQ.defaultInstance();
+				obj = Mq.defaultInstance();
 			}
 			instance().mq = obj;
 		}
