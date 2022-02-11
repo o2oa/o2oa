@@ -298,20 +298,18 @@ MWF.xApplication.process.workcenter.List = new Class({
 	},
 	loadFilterFlag: function(){
 		this.filterNode.empty();
-		var filterItemHtml = "<div>" +
-			"<div>{{$.title}}</div>" +
-			"<div>{{each ($.items)}}" +
-			"<div>{{$.name}}</div>"+
+		var filterItemHtml = "<div class='ft_filterItem'>" +
+			"<div class='ft_filterItemTitle mainColor_color'>{{$.title}}</div>" +
+			"<div class='ft_filterItemArea'>{{each ($.items)}}" +
+			"<div class='ft_filterItemName'>{{$}}</div>"+
 			"{{end each}}</div>" +
 			"</div>";
 		this.lp.filterCategoryList.forEach(function(list){
-			if (this.filterList[list.key]){
-
+			if (this.filterList && this.filterList[list.key] && this.filterList[list.key].length){
+				var html = o2.bindJson(filterItemHtml, {"title": list.name, "items": this.filterList[list.key]});
+				this.filterNode.appendHTML(html);
 			}
 		}.bind(this));
-		;
-		this.filterNode
-
 	},
 	hide: function(){
 		if (this.node) this.node.destroy();
