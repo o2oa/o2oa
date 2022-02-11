@@ -1,5 +1,6 @@
 package com.x.base.core.project.connection;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -15,7 +16,7 @@ public class HttpConnectionResponse {
 
 	private String body;
 
-	private Map<String, String> headers;
+	private Map<String, String> headers = new LinkedHashMap<>();
 
 	private byte[] bytes;
 
