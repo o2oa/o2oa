@@ -690,8 +690,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 		static WrapCopier<Route, WoRoute> copier = WrapCopierFactory.wo(Route.class, WoRoute.class, null,
 				ListTools.toList(Route.createTime_FIELDNAME, Route.edition_FIELDNAME, Route.position_FIELDNAME,
-						Route.process_FIELDNAME, Route.updateTime_FIELDNAME, Route.track_FIELDNAME,
-						Route.properties_FIELDNAME));
+						Route.process_FIELDNAME, Route.updateTime_FIELDNAME, Route.track_FIELDNAME));
 	}
 
 	public static class WoAttachment extends Attachment {

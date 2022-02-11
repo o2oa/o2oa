@@ -54,6 +54,15 @@ public class WrapCopier<T, W> {
 	}
 
 	private void copyFields(T orig, W dest) {
+		// properties 的值会再次覆盖
+		if (copyFields.contains(JpaObject.PROPERTIES_FIELDNAME)) {
+			try {
+				Object o = propertyUtilsBean.getProperty(orig, JpaObject.PROPERTIES_FIELDNAME);
+				setDestProperty(dest, JpaObject.PROPERTIES_FIELDNAME, o);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		copyFields.stream().forEach(f -> {
 			try {
 				// openjpa在访问主键(getId()会执行pcGetId())会发起一个锁定所以在这里对id(xid column)进行单独的处理
@@ -63,7 +72,7 @@ public class WrapCopier<T, W> {
 						Object o = FieldUtils.readField(field, orig, true);
 						setDestProperty(dest, f, o);
 					}
-				} else {
+				} else if (!StringUtils.equals(f, JpaObject.PROPERTIES_FIELDNAME)) {
 					Object o = propertyUtilsBean.getProperty(orig, f);
 					setDestProperty(dest, f, o);
 				}
