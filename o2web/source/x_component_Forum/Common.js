@@ -87,6 +87,10 @@ MWFForum.getSubjectCreatorName = function(d){
      return o2.name.cn( MWFForum.isUseNickName() ?  (d.nickName || d.creatorName): d.creatorName );
 };
 
+MWFForum.getLastReplyUserName = function(d){
+    return o2.name.cn( MWFForum.isUseNickName() ?  (d.latestReplyUserNickName || d.latestReplyUser): d.latestReplyUser );
+};
+
 MWFForum.getReplyCreatorName = function(d){
     return o2.name.cn( MWFForum.isUseNickName() ?  (d.nickName || d.creatorName): d.creatorName );
 };
