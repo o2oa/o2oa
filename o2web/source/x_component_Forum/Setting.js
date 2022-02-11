@@ -809,7 +809,7 @@ MWF.xApplication.Forum.Setting.SectionSettingExplorer = new Class({
                 if( this.currentCategoryNode )this.currentCategoryNode.setStyles(this.css.categoryNode);
                 this.currentCategoryNode = this.allCategoryNode;
                 this.allCategoryNode.setStyles(this.css.categoryNode_current);
-                this.loadView(  )
+                this.loadView()
             }.bind(this)
         });
         var isManager = false;
@@ -884,6 +884,8 @@ MWF.xApplication.Forum.Setting.SectionSettingExplorer = new Class({
             categoryId = this.currentCategoryNode.retrieve("categoryId");
         }
         categoryId = categoryId || "all";
+
+        if(this.view)this.view.destroy();
 
         if(this.viewContainer)this.viewContainer.destroy();
         this.viewContainer = Element("div",{
@@ -1460,9 +1462,8 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
         }.bind(this), null, this.formData, this.file);
     },
     _ok: function (data, callback) {
-        debugger;
         if( typeOf(data.moderatorNames) === "string" ){
-            data.moderatorNames = data.moderatorNames.split(",");
+            data.moderatorNames = data.moderatorNames.split(",").filter(function(d){ return !!d} );
         }
         data.sectionLevel = MWF.xApplication.Forum.LP.mainSection;
         data.typeCategory = data.typeCatagory.split(",").join("|");
