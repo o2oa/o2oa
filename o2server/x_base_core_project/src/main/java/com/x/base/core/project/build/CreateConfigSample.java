@@ -33,7 +33,7 @@ import com.x.base.core.project.config.HuaweiPushConfig;
 import com.x.base.core.project.config.JpushConfig;
 import com.x.base.core.project.config.LogLevel;
 import com.x.base.core.project.config.MPweixin;
-import com.x.base.core.project.config.MQ;
+import com.x.base.core.project.config.Mq;
 import com.x.base.core.project.config.Meeting;
 import com.x.base.core.project.config.Messages;
 import com.x.base.core.project.config.Node;
@@ -54,7 +54,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 
 /**
- * 
+ *
  * @author ray
  *
  */
@@ -83,7 +83,7 @@ public class CreateConfigSample {
 		classes.add(Meeting.class);
 		classes.add(Messages.class);
 		classes.add(MPweixin.class);
-		classes.add(MQ.class);
+		classes.add(Mq.class);
 		classes.add(Node.class);
 		classes.add(Organization.class);
 		classes.add(Person.class);
