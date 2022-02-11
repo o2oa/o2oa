@@ -196,20 +196,22 @@ MWF.xApplication.process.workcenter.Main = new Class({
 					"type": "ok",
 					"text": MWF.LP.process.button.ok,
 					"action": function (d, e) {
-						if (this.processor) this.processor.okButton.click();
+						_self.doFilter();
 					}.bind(this)
 				},
 				{
 					"type": "cancel",
 					"text": MWF.LP.process.button.reset,
 					"action": function () {
+						debugger;
+						_self.resetFilter();
 						this.filterDlg.close();
 					}.bind(this)
 				}
 			],
 
 		});
-		this.filterDlg.content.addEvent("mousedown", function(e){
+		this.filterDlg.node.addEvent("mousedown", function(e){
 			e.stopPropagation();
 		});
 		document.body.addEvent("mousedown", closeFilterDlg);
@@ -231,9 +233,20 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			this.currentList.filterList[category].splice(findedIdx, 1);
 		}
 	},
+	resetFilter: function(){
+		debugger;
+		this.currentList.page = 1;
+		this.currentList.filterList = {};
+		this.currentList.refresh();
+	},
 	doFilter: function(){
 		debugger;
-		this.currentList.page = 1;;
+		var key = this.filterDlg.content.getElement("input").get("value");
+		if (key) {
+			if (!this.currentList.filterList) this.currentList.filterList = {};
+			this.currentList.filterList.key = key;
+		}
+		this.currentList.page = 1;
 		this.currentList.refresh();
 		this.filterDlg.close();
 	}
@@ -252,6 +265,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 		this.content = app.listContentNode;
 		this.bottomNode = app.listBottomNode;
 		this.pageNode = app.pageNumberAreaNode;
+		this.filterNode = app.filterItemArea;
 		this.lp = this.app.lp;
 		this.action = o2.Actions.load("x_processplatform_assemble_surface");
 		this.init();
@@ -269,6 +283,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	load: function(){
 		this.total = null;
 		var _self = this;
+		this.loadFilterFlag();
 		this.loadData().then(function(data){
 			_self.hide();
 			_self.loadPage();
@@ -280,6 +295,23 @@ MWF.xApplication.process.workcenter.List = new Class({
 		this.load();
 		// this.loadPage();
 		this.app.loadCount();
+	},
+	loadFilterFlag: function(){
+		this.filterNode.empty();
+		var filterItemHtml = "<div>" +
+			"<div>{{$.title}}</div>" +
+			"<div>{{each ($.items)}}" +
+			"<div>{{$.name}}</div>"+
+			"{{end each}}</div>" +
+			"</div>";
+		this.lp.filterCategoryList.forEach(function(list){
+			if (this.filterList[list.key]){
+
+			}
+		}.bind(this));
+		;
+		this.filterNode
+
 	},
 	hide: function(){
 		if (this.node) this.node.destroy();
