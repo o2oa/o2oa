@@ -847,12 +847,17 @@ MWF.xApplication.Profile.Main = new Class({
         this.personData.mobile = this.mobileInputNode.get("value");
         this.personData.weixin = this.weixinInputNode.get("value");
         this.personData.qq = this.qqInputNode.get("value");
+        var oldNickName = this.personData;
         this.personData.nickName = this.nickNameInputNode.get("value");
         // this.personData.ipAddress = this.ipAddressInputNode.get("value");
         this.personData.signature = this.signatureInputNode.get("value");
         this.personData.language = this.languageSelectNode.options[this.languageSelectNode.selectedIndex].value;
 
         this.action.updatePerson(this.personData, function(){
+            if( oldNickName !== this.personData.nickName ){
+                //通知论坛昵称修改了
+                o2.Actions.load("x_bbs_assemble_control").UserInfoAction.updateNickName( this.personData.distinguishedName );
+            }
             this.notice(this.lp.saveInforOk, "success");
             localStorage.setItem('o2.language', this.personData.language);
         }.bind(this));
