@@ -19,6 +19,7 @@ MWF.xApplication.Forum.TopNode = new Class({
         this.access = app.access;
         this.explorer = explorer;
         this.userName = layout.desktop.session.user.distinguishedName || "";
+        this.displayName = MWFForum.getDisplayName();
 
         this.path = "../x_component_Forum/$TopNode/";
 
@@ -162,26 +163,34 @@ MWF.xApplication.Forum.TopNode = new Class({
             }
 
             if( this.options.settingEnable ){
-                this.settingNode = new Element("div", {
-                    "styles": this.css.settingNode
-                }).inject(this.topContentNode);
-                //this.settingIconNode = new Element("div", {
-                //    "styles": this.css.settingIconNode
-                //}).inject(this.settingNode);
-                this.settingTextNode = new Element("div", {
-                    "styles": this.css.settingTextNode,
-                    "text": this.lp.setting,
-                    "title" : this.lp.forumConfig
-                }).inject(this.settingNode);
-                this.settingNode.addEvent("click", function(){ this.app.openSetting( ) }.bind(this));
 
-            }
-
-            if( this.options.settingEnable ) {
-                new Element("div", {
-                    "styles": this.css.topSepNode,
-                    "text": "|"
+                this.settingArea = new Element("div", {
+                    styles : { float : "right" }
                 }).inject(this.topContentNode);
+
+                this.access.getUserPermission(function (permission) {
+                    if( this.access.isAdmin() || permission.bbsAdmin || permission.bbsForumAdmin || permission.bbsSectionAdmin ){
+                        this.settingNode = new Element("div", {
+                            "styles": this.css.settingNode
+                        }).inject(this.settingArea);
+                        //this.settingIconNode = new Element("div", {
+                        //    "styles": this.css.settingIconNode
+                        //}).inject(this.settingNode);
+                        this.settingTextNode = new Element("div", {
+                            "styles": this.css.settingTextNode,
+                            "text": this.lp.setting,
+                            "title" : this.lp.forumConfig
+                        }).inject(this.settingNode);
+                        this.settingNode.addEvent("click", function(){ this.app.openSetting( ) }.bind(this));
+
+                        new Element("div", {
+                            "styles": this.css.topSepNode,
+                            "text": "|"
+                        }).inject(this.settingArea);
+                    }else{
+                        this.settingArea.hide();
+                    }
+                }.bind(this))
             }
 
             if( this.options.naviModeEnable ){
@@ -201,7 +210,7 @@ MWF.xApplication.Forum.TopNode = new Class({
             //}).inject(this.personNode);
             this.personTextNode = new Element("div", {
                 "styles": this.css.personTextNode,
-                "text": MWF.xApplication.Forum.LP.welcomeTitle.replace("{user}", ( this.userName || "").split("@")[0]),
+                "text": MWF.xApplication.Forum.LP.welcomeTitle.replace("{user}", ( this.displayName || "").split("@")[0]),
                 "title" : MWF.xApplication.Forum.LP.seePersonCenter
             }).inject(this.personNode);
             this.personNode.addEvent("click", function(){ this.openPerson(this.userName ) }.bind(this))
@@ -215,7 +224,7 @@ MWF.xApplication.Forum.TopNode = new Class({
         this.searchInput = new Element("input.searchInput",{
             "styles" : this.css.searchInput,
             "value" : this.lp.searchKey,
-            "title" : this.lp.searchTitle
+            "title" : MWFForum.isUseNickName() ? this.lp.searchTitleNick : this.lp.searchTitle
         }).inject(this.searchDiv);
         var _self = this;
         this.searchInput.addEvents({
@@ -312,15 +321,7 @@ MWF.xApplication.Forum.TopNode = new Class({
         }
     },
     openPerson : function( userName ){
-        var appId = "ForumPerson"+userName;
-        if (this.app.desktop.apps[appId]){
-            this.app.desktop.apps[appId].setCurrent();
-        }else {
-            this.app.desktop.openApplication(null, "ForumPerson", {
-                "personName" : userName,
-                "appId": appId
-            });
-        }
+        MWFForum.openPersonCenter( userName );
     },
     openLoginForm : function(){
         MWF.require("MWF.xDesktop.Authentication", null, false);

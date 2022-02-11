@@ -57,7 +57,8 @@
         "html": "<td styles='normalTdCenterNode' width='14%'><div item='creatorName'></div><div item='createTime' styles='normalTdBottom'></div></td>",
         "items": {
           "creatorName" : {
-            "value" : "function(d){ return d.creatorName.split('@')[0] }",
+            "value" : "function(d){ return MWFForum.getSubjectCreatorName(d) }",
+            "title" : "function(d){ return MWFForum.getSubjectCreatorName(d) }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
             "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"
@@ -93,7 +94,8 @@
         "html": "<td styles='normalTdCenterNode' width='9%'><div item='latestReplyUser'></div><div item='latestReplyTime2' styles='normalTdBottom'></div></td>",
         "items": {
           "latestReplyUser" : {
-            "value" : "function(d){ return d.latestReplyUser ? d.latestReplyUser.split('@')[0] : '' }",
+            "value" : "function(d){ return MWFForum.getLastReplyUserName(d) }",
+            "title" : "function(d){ return MWFForum.getLastReplyUserName(d) }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
             "event" : "click^^function(node){ this.app.openPerson( this.data.latestReplyUser ) }"

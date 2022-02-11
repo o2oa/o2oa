@@ -53,6 +53,77 @@ MWFForum.getDateDiff2 = function (publishTime) {
 MWFForum.BBS_LOGO_NAME = "BBS_LOGO_NAME";
 MWFForum.BBS_SUBJECT_TYPECATAGORY = "BBS_SUBJECT_TYPECATAGORY";
 MWFForum.BBS_TITLE_TAIL = "BBS_TITLE_TAIL";
+MWFForum.BBS_USE_NICKNAME = "BBS_USE_NICKNAME";
+
+MWFForum.isUseNickName = function(){
+    return MWFForum.getSystemConfigValue( MWFForum.BBS_USE_NICKNAME ) === "YES";
+};
+
+MWFForum.Nick_Name_Map = {};
+MWFForum.getDisplayName = function( dn ){
+    if( !dn || dn === layout.desktop.session.user.distinguishedName){
+        dn = layout.desktop.session.user.distinguishedName;
+        if( MWFForum.isUseNickName() ){
+            return layout.desktop.session.user.nickName || dn.split("@")[0];
+        }else{
+            return dn.split("@")[0];
+        }
+    }else{
+        if( MWFForum.isUseNickName() ){
+            if( MWFForum.Nick_Name_Map[dn] )return MWFForum.Nick_Name_Map[dn];
+            return o2.Actions.load("x_organization_assemble_express").PersonAction.getNickName( dn ).then(function (json) {
+                MWFForum.Nick_Name_Map[dn] = json.data.value;
+                return MWF.name.cn(json.data.value);
+            }).catch(function () {
+                return "";
+            })
+        }else{
+            return dn.split("@")[0];
+        }
+    }
+};
+
+MWFForum.getSubjectCreatorName = function(d){
+     return o2.name.cn( MWFForum.isUseNickName() ?  (d.nickName || d.creatorName): d.creatorName );
+};
+
+MWFForum.getLastReplyUserName = function(d){
+    return o2.name.cn( MWFForum.isUseNickName() ?  (d.latestReplyUserNickName || d.latestReplyUser): d.latestReplyUser );
+};
+
+MWFForum.getReplyCreatorName = function(d){
+    return o2.name.cn( MWFForum.isUseNickName() ?  (d.nickName || d.creatorName): d.creatorName );
+};
+
+MWFForum.openPersonCenter = function( userName ){
+    if( MWFForum.isUseNickName() && userName!=="xadmin" ){
+        o2.Actions.load("x_organization_assemble_express").PersonAction.listObject(
+                { personList : [userName]}
+            ).then(function(json){
+                if( !json.data || !json.data.length )return;
+                var flag = json.data[0].id;
+                var appId = "ForumPerson"+flag;
+                if (layout.desktop.apps[appId]){
+                    layout.desktop.apps[appId].setCurrent();
+                }else {
+                    layout.desktop.openApplication(null, "ForumPerson", {
+                        "p" : flag,
+                        "appId": appId
+                    });
+                }
+        })
+    }else{
+        var appId = "ForumPerson"+userName;
+        if (layout.desktop.apps[appId]){
+            layout.desktop.apps[appId].setCurrent();
+        }else {
+            layout.desktop.openApplication(null, "ForumPerson", {
+                "personName" : userName,
+                "appId": appId
+            });
+        }
+    }
+};
 
 MWFForum.getSystemConfig = function( code ){
     if( !MWFForum.SystemSetting )MWFForum.SystemSetting = {};

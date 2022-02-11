@@ -223,6 +223,8 @@
     "width" : "65px",
     "height" : "30px",
     "overflow" : "hidden",
+    "text-overflow": "ellipsis",
+    "white-space": "nowrap",
     "text-align" : "right",
     "min-width" : "40px",
     "font-size" : "12px",

@@ -108,7 +108,9 @@
         "html": "<td styles='normalTdCenterNode' width='10%'><div item='creatorName'></div><div item='createTime' styles='normalTdBottom'></div></td>",
         "items": {
           "creatorName" : {
-            "value" : "function(d){ return d.creatorName? d.creatorName.split('@')[0] : '' }"
+            "styles" : "person",
+            "value" : "function(d){ return MWFForum.getSubjectCreatorName(d) }",
+            "title" : "function(d){ return MWFForum.getSubjectCreatorName(d) }"
           },
           "createTime" : {
             "value" : "function(d){ return MWFForum.getDateDiff( d.createTime ) }"
@@ -141,7 +143,8 @@
         "html": "<td styles='normalTdCenterNode' width='9%'><div item='latestReplyUser'></div><div item='latestReplyTime2' styles='normalTdBottom'></div></td>",
         "items": {
           "latestReplyUser" : {
-            "value" : "function(d){ return d.latestReplyUser ? d.latestReplyUser.split('@')[0] : '' }",
+            "value" : "function(d){ return MWFForum.getLastReplyUserName(d) }",
+            "title" : "function(d){ return MWFForum.getLastReplyUserName(d) }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
             "event" : "click^^function(node){ this.app.openPerson( this.data.latestReplyUser ) }"
@@ -176,7 +179,7 @@
             "mousedownStyles": "actionEditNode_over"
           },
           "placeholder" : {
-            "show": "function( d ){ return !((d.typeCategory!='投票' && d.typeCategory!=this.app.lp.vote) && (this.isAdmin() || (d.creatorName == this.app.userName))) }"
+            "show": "function( d ){ return false; return !((d.typeCategory!='投票' && d.typeCategory!=this.app.lp.vote) && (this.isAdmin() || (d.creatorName == this.app.userName))) }"
           },
           "remove": {
             "title": "remove",
