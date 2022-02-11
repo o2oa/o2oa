@@ -33,10 +33,12 @@ MWF.xApplication.Profile.LP = {
     "signature": "个人签名",
     "saveInfor": "保存个人信息",
     "saveInforOk": "保存个人信息成功",
+    "nickNameInforError": "昵称格式不正确，规则如下：只能用中文、英文、_、-和空格，长度为4到20，一个中文长度为2",
     "ipAddress" : "登录IP",
     "ipAddressPlaceHolder" : "如果不为空，匹配的ip地址才能登录，用,分隔多值",
     "ipAddressIncorrectNotice" : "IP地址格式不正确：",
     "language": "语言设置",
+    "forumNickName": "论坛昵称",
     "lps": {
         "zh-CN": "简体中文",
         "en": "English"
