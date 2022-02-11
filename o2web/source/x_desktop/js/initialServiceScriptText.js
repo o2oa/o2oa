@@ -926,7 +926,7 @@ bind.statement = {
             "parameter" : parameter
         };
         var value;
-        MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+        bind.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
             statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
             function (json) {
                 if (callback) callback(json);
@@ -981,7 +981,7 @@ bind.view = {
     "lookup": function(view, callback){
         var filterList = {"filterList": (view.filter || null)};
         var value;
-        MWF.Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(view.view, view.application, filterList, function(json){
+        bind.Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(view.view, view.application, filterList, function(json){
             var data = {
                 "grid": json.data.grid || json.data.groupGrid,
                 "groupGrid": json.data.groupGrid
