@@ -265,6 +265,16 @@ MWF.xApplication.Forum.Access = new Class({
             fun( sectionIdOrData );
         }
         return flag;
+    },
+    getUserPermission: function (callback, reload) {
+        if( !reload && this.userPermission ){
+            callback(this.userPermission);
+            return;
+        }
+        o2.Actions.load("x_bbs_assemble_control").PermissionInfoAction.getUserPermission(function (json) {
+            this.userPermission = json.data;
+            callback(this.userPermission);
+        }.bind(this))
     }
 
 

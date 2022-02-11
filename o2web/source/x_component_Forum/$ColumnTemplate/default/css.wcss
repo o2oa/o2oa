@@ -1,7 +1,12 @@
 {
   "person" : {
     "cursor" : "pointer",
-    "color": "#5c7084"
+    "color": "#5c7084",
+    "max-width": "76px",
+    "overflow": "hidden",
+    "white-space": "nowrap",
+    "text-overflow": "ellipsis",
+    "display": "inline-block"
   },
   "person_over" : {
     "color": "#0258ad"
@@ -170,6 +175,10 @@
     "margin-left" : "10px",
     "float" : "right",
     "min-width" : "40px",
+    "max-width": "70px",
+    "overflow": "hidden",
+    "text-overflow": "ellipsis",
+    "white-space": "nowrap",
     "text-align" : "right",
     "color" : "#5c7084"
   },

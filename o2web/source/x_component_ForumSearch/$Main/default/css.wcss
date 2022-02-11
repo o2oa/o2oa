@@ -420,7 +420,10 @@
   },
   "person" : {
     "cursor" : "pointer",
-    "color": "#5c7084"
+    "color": "#5c7084",
+    "overflow": "hidden",
+    "white-space": "nowrap",
+    "text-overflow": "ellipsis"
   },
   "person_over" : {
     "color": "#0258ad"

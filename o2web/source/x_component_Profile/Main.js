@@ -123,6 +123,7 @@ MWF.xApplication.Profile.Main = new Class({
         this.weixinInputNode = inputs[3];
         this.qqInputNode = inputs[4];
         // this.ipAddressInputNode = inputs[5];
+        this.nickNameInputNode = inputs[5];
 
         this.signatureInputNode = this.tab.pages[0].contentNode.getElement("textarea");
         this.signatureInputNode.addEvent("focus",function(){
@@ -824,7 +825,18 @@ MWF.xApplication.Profile.Main = new Class({
             }
         }
     },
-
+    checkNickName: function( v ){
+        debugger;
+        var rx = /[a-z\d]/i, rxcn =  /[\u4e00-\u9fa5]/, num = 0;
+        for (var i = 0, j = v.length; i < j; i++) {
+            if (rx.test(v[i])) num += 1;
+            else if (rxcn.test(v[i])) num += 2;
+            else if( ["-"," ", "_"].contains(v[i]) ) num += 1;
+            else return false;
+        }
+        if (num < 4 || num > 20) return false;
+        return true;
+    },
     savePersonInfor: function(){
         // var array = [];
         // var ipAddress = this.ipAddressInputNode.get("value") || "";
@@ -840,17 +852,29 @@ MWF.xApplication.Profile.Main = new Class({
         //     return false;
         // }
 
+        var nickName = this.nickNameInputNode.get("value");
+        if( !this.checkNickName( nickName ) ){
+            //不包含特殊字符
+            this.notice(this.lp.nickNameInforError, "error");
+            return false;
+        }
 
         this.personData.officePhone = this.officePhoneInputNode.get("value");
         this.personData.mail = this.mailInputNode.get("value");
         this.personData.mobile = this.mobileInputNode.get("value");
         this.personData.weixin = this.weixinInputNode.get("value");
         this.personData.qq = this.qqInputNode.get("value");
+        var oldNickName = this.personData;
+        this.personData.nickName = this.nickNameInputNode.get("value");
         // this.personData.ipAddress = this.ipAddressInputNode.get("value");
         this.personData.signature = this.signatureInputNode.get("value");
         this.personData.language = this.languageSelectNode.options[this.languageSelectNode.selectedIndex].value;
 
         this.action.updatePerson(this.personData, function(){
+            if( oldNickName !== this.personData.nickName ){
+                //通知论坛昵称修改了
+                o2.Actions.load("x_bbs_assemble_control").UserInfoAction.updateNickName( this.personData.distinguishedName );
+            }
             this.notice(this.lp.saveInforOk, "success");
             localStorage.setItem('o2.language', this.personData.language);
         }.bind(this));
