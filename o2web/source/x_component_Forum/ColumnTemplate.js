@@ -192,7 +192,8 @@ MWF.xApplication.Forum.ColumnTemplate.Document = new Class({
 
                         var div = new Element("div", {
                             "styles": this.css.itemReplyPersonNode,
-                            "text": MWFForum.getSubjectCreatorName(d)
+                            "text": MWFForum.getSubjectCreatorName(d),
+                            "title": MWFForum.getSubjectCreatorName(d)
                         }).inject(replyNode);
                         div.addEvents({
                             "mouseover": function () {
@@ -294,6 +295,7 @@ MWF.xApplication.Forum.ColumnTemplate.Document = new Class({
             Promise.resolve( MWFForum.getDisplayName( userName ) ).then(function (name) {
                 var span = new Element("span", {
                     "text" : name.split('@')[0],
+                    "title" : name.split('@')[0],
                     "styles" : this.css.person
                 }).inject(container);
                 span.addEvents( {

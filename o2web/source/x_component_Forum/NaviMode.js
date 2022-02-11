@@ -219,7 +219,8 @@ MWFForum.NaviMode.CategoryItem = new Class({
 
         this.textNode = new Element("div.categoryTextNode",{
             "styles": this.css.categoryTextNode,
-            "text": this.data.forumName
+            "text": this.data.forumName,
+            "title": this.data.forumName
         }).inject(this.node);
 
         this.node.addEvents({

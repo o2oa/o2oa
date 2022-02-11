@@ -236,7 +236,9 @@ MWF.xApplication.Forum.Setting.CategorySettingExplorer = new Class({
         this.createActionNode.addEvent("click",function(){
             var form = new MWF.xApplication.Forum.Setting.CategorySettingForm(this, {}, {
                 onPostOk : function(){
-                    this.view.reload();
+                    this.app.access.getUserPermission(function () {
+                        this.view.reload();
+                    }.bind(this), true);
                 }.bind(this)});
             form.create();
         }.bind(this));
@@ -782,7 +784,9 @@ MWF.xApplication.Forum.Setting.SectionSettingExplorer = new Class({
             this.createActionNode.addEvent("click",function(){
                 var form = new MWF.xApplication.Forum.Setting.SectionSettingForm(this, {}, {
                     onPostOk : function(){
-                        this.view.reload();
+                        this.app.access.getUserPermission(function () {
+                            this.view.reload();
+                        }.bind(this), true);
                     }.bind(this)});
                 form.create();
             }.bind(this));

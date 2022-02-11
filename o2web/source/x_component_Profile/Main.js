@@ -825,7 +825,18 @@ MWF.xApplication.Profile.Main = new Class({
             }
         }
     },
-
+    checkNickName: function( v ){
+        debugger;
+        var rx = /[a-z\d]/i, rxcn =  /[\u4e00-\u9fa5]/, num = 0;
+        for (var i = 0, j = v.length; i < j; i++) {
+            if (rx.test(v[i])) num += 1;
+            else if (rxcn.test(v[i])) num += 2;
+            else if( ["-"," ", "_"].contains(v[i]) ) num += 1;
+            else return false;
+        }
+        if (num < 4 || num > 20) return false;
+        return true;
+    },
     savePersonInfor: function(){
         // var array = [];
         // var ipAddress = this.ipAddressInputNode.get("value") || "";
@@ -841,6 +852,12 @@ MWF.xApplication.Profile.Main = new Class({
         //     return false;
         // }
 
+        var nickName = this.nickNameInputNode.get("value");
+        if( !this.checkNickName( nickName ) ){
+            //不包含特殊字符
+            this.notice(this.lp.nickNameInforError, "error");
+            return false;
+        }
 
         this.personData.officePhone = this.officePhoneInputNode.get("value");
         this.personData.mail = this.mailInputNode.get("value");
