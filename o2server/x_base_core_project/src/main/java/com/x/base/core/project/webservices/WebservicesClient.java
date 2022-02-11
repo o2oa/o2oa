@@ -58,7 +58,7 @@ public class WebservicesClient {
 	}
 
 	private HttpConnectionResponse get(String url, Map<String, String> heads, int connectTimeout, int readTimeout) {
-		List<NameValuePair> list = heads(heads);
+		List<NameValuePair> list = jaxrsHeads(heads);
 		return HttpConnection.get(url, list, connectTimeout, readTimeout, o -> {
 			HttpConnectionResponse response = new HttpConnectionResponse();
 			try {
@@ -75,7 +75,7 @@ public class WebservicesClient {
 
 	private HttpConnectionResponse post(String url, Map<String, String> heads, String body, int connectTimeout,
 			int readTimeout) {
-		List<NameValuePair> list = heads(heads);
+		List<NameValuePair> list = jaxrsHeads(heads);
 		return HttpConnection.post(url, list, body, connectTimeout, readTimeout, o -> {
 			HttpConnectionResponse response = new HttpConnectionResponse();
 			try {
@@ -91,7 +91,7 @@ public class WebservicesClient {
 	}
 
 	private HttpConnectionResponse delete(String url, Map<String, String> heads, int connectTimeout, int readTimeout) {
-		List<NameValuePair> list = heads(heads);
+		List<NameValuePair> list = jaxrsHeads(heads);
 		return HttpConnection.delete(url, list, connectTimeout, readTimeout, o -> {
 			HttpConnectionResponse response = new HttpConnectionResponse();
 			try {
@@ -108,7 +108,7 @@ public class WebservicesClient {
 
 	private HttpConnectionResponse put(String url, Map<String, String> heads, String body, int connectTimeout,
 			int readTimeout) {
-		List<NameValuePair> list = heads(heads);
+		List<NameValuePair> list = jaxrsHeads(heads);
 		return HttpConnection.put(url, list, body, connectTimeout, readTimeout, o -> {
 			HttpConnectionResponse response = new HttpConnectionResponse();
 			try {
@@ -123,9 +123,14 @@ public class WebservicesClient {
 		});
 	}
 
-	private List<NameValuePair> heads(Map<String, String> heads) {
+	private List<NameValuePair> jaxrsHeads(Map<String, String> heads) {
 		List<NameValuePair> list = new ArrayList<>();
-		heads.entrySet().forEach(en -> list.add(new NameValuePair(en.getKey(), en.getValue())));
+//		if (null == heads || (!heads.containsKey(ConnectionAction.CONTENT_TYPE))) {
+//			list.add(new NameValuePair(ConnectionAction.CONTENT_TYPE, ConnectionAction.CONTENT_TYPE_VALUE));
+//		}
+		if (null != heads) {
+			heads.entrySet().forEach(en -> list.add(new NameValuePair(en.getKey(), en.getValue())));
+		}
 		return list;
 	}
 
