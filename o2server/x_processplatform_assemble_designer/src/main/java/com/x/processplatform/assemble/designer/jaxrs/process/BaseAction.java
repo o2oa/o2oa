@@ -685,13 +685,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					o.setDistributeFactor(process.getDistributeFactor());
 					business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} else {
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!update_route11");
-					System.out.println(o);
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!update_route11");
 					WrapRoute.inCopier.copy(w, o);
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!update_route22");
-					System.out.println(o);
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!update_route22");
 					business.entityManagerContainer().check(o, CheckPersistType.all);
 				}
 			}
