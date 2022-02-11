@@ -10,6 +10,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.SortTools;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionPermissionInfoProcess;
 import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionSectionIdEmpty;
@@ -47,7 +48,9 @@ public class ActionGetUserPermission extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<BBSForumInfo> forumInfoList = emc.fetchAll(BBSForumInfo.class, ListTools.toList(JpaObject.id_FIELDNAME));
 				wo.setForumList(ListTools.extractField(forumInfoList, JpaObject.id_FIELDNAME, String.class, true, true));
-				List<BBSSectionInfo> sectionInfoList = emc.fetchAll(BBSSectionInfo.class, ListTools.toList(JpaObject.id_FIELDNAME));
+				List<BBSSectionInfo> sectionInfoList = emc.fetchAll(BBSSectionInfo.class,
+						ListTools.toList(JpaObject.id_FIELDNAME, BBSSectionInfo.orderNumber_FIELDNAME, JpaObject.createTime_FIELDNAME));
+				SortTools.asc(sectionInfoList, BBSSectionInfo.orderNumber_FIELDNAME, JpaObject.createTime_FIELDNAME);
 				wo.setSectionList(ListTools.extractField(sectionInfoList, JpaObject.id_FIELDNAME, String.class, true, true));
 			}
 		}else{
@@ -63,9 +66,20 @@ public class ActionGetUserPermission extends BaseAction {
 				});
 				if(!wo.getForumList().isEmpty()){
 					wo.setBbsForumAdmin(true);
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						business = new Business(emc);
+						wo.setSectionList(ListTools.add(business.sectionInfoFactory().listByForumIds(wo.getForumList()),
+								true, true, wo.getSectionList()));
+					}
 				}
 				if(!wo.getSectionList().isEmpty()){
 					wo.setBbsSectionAdmin(true);
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						List<BBSSectionInfo> sectionInfoList = emc.fetch(wo.getSectionList(), BBSSectionInfo.class,
+								ListTools.toList(JpaObject.id_FIELDNAME, BBSSectionInfo.orderNumber_FIELDNAME, JpaObject.createTime_FIELDNAME));
+						SortTools.asc(sectionInfoList, BBSSectionInfo.orderNumber_FIELDNAME, JpaObject.createTime_FIELDNAME);
+						wo.setSectionList(ListTools.extractField(sectionInfoList, JpaObject.id_FIELDNAME, String.class, true, true));
+					}
 				}
 			}
 		}
