@@ -163,26 +163,34 @@ MWF.xApplication.Forum.TopNode = new Class({
             }
 
             if( this.options.settingEnable ){
-                this.settingNode = new Element("div", {
-                    "styles": this.css.settingNode
-                }).inject(this.topContentNode);
-                //this.settingIconNode = new Element("div", {
-                //    "styles": this.css.settingIconNode
-                //}).inject(this.settingNode);
-                this.settingTextNode = new Element("div", {
-                    "styles": this.css.settingTextNode,
-                    "text": this.lp.setting,
-                    "title" : this.lp.forumConfig
-                }).inject(this.settingNode);
-                this.settingNode.addEvent("click", function(){ this.app.openSetting( ) }.bind(this));
 
-            }
-
-            if( this.options.settingEnable ) {
-                new Element("div", {
-                    "styles": this.css.topSepNode,
-                    "text": "|"
+                this.settingArea = new Element("div", {
+                    styles : { float : "right" }
                 }).inject(this.topContentNode);
+
+                this.access.getUserPermission(function (permission) {
+                    if( this.access.isAdmin() || permission.bbsAdmin || permission.bbsForumAdmin || permission.bbsSectionAdmin ){
+                        this.settingNode = new Element("div", {
+                            "styles": this.css.settingNode
+                        }).inject(this.settingArea);
+                        //this.settingIconNode = new Element("div", {
+                        //    "styles": this.css.settingIconNode
+                        //}).inject(this.settingNode);
+                        this.settingTextNode = new Element("div", {
+                            "styles": this.css.settingTextNode,
+                            "text": this.lp.setting,
+                            "title" : this.lp.forumConfig
+                        }).inject(this.settingNode);
+                        this.settingNode.addEvent("click", function(){ this.app.openSetting( ) }.bind(this));
+
+                        new Element("div", {
+                            "styles": this.css.topSepNode,
+                            "text": "|"
+                        }).inject(this.settingArea);
+                    }else{
+                        this.settingArea.hide();
+                    }
+                }.bind(this))
             }
 
             if( this.options.naviModeEnable ){
