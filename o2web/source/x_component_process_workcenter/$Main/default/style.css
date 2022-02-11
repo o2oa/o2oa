@@ -516,6 +516,27 @@
     line-height: 20px;
     color: #999999;
 }
+.ft_filterItem{
+    float: left;
+    margin-right: 10px;
+    padding: 0 10px;
+    background-color: #EBF1F7;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 14px;
+}
+.ft_filterItemTitle{
+    float: left;
+}
+.ft_filterItemArea{
+    float: left;
+    margin-left: 10px;
+}
+.ft_filterItemName{
+    float: left;
+    color: #666666;
+    margin-right: 10px;
+}
 
 @font-face {
     font-family: 'o2taskcenter';
