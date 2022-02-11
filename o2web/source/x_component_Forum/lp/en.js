@@ -14,6 +14,7 @@ MWF.xApplication.Forum.LP = {
 	"search": "Search",
 	"searchKey": "Please enter the search key",
 	"searchTitle": "Keywords can be topics, divisions, sections, creators",
+	"searchTitleNick": "Keywords can be topics, divisions, sections",
 	"noSearchContentNotice": "Please enter the search keyword, and then perform the search",
 
 	"dateFormatMonth": "%Y-%m",

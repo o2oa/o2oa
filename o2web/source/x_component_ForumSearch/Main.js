@@ -198,15 +198,7 @@ MWF.xApplication.ForumSearch.Main = new Class({
 	openPerson : function( userName ){
 		if( !userName || userName == "" ){
 		}else{
-			var appId = "ForumPerson"+userName;
-			if (this.desktop.apps[userName]){
-				this.desktop.apps[userName].setCurrent();
-			}else {
-				this.desktop.openApplication(null, "ForumPerson", {
-					"personName" : userName,
-					"appId": appId
-				});
-			}
+			MWFForum.openPersonCenter( userName );
 		}
 	},
 	createPersonNode : function( container, personName ){
@@ -347,15 +339,7 @@ MWF.xApplication.ForumSearch.Explorer = new Class({
 		}
 	},
 	openPerson : function( userName ){
-		var appId = "ForumPerson"+userName;
-		if (this.desktop.apps[userName]){
-			this.desktop.apps[userName].setCurrent();
-		}else {
-			this.desktop.openApplication(null, "ForumPerson", {
-				"personName" : userName,
-				"appId": appId
-			});
-		}
+		MWFForum.openPersonCenter( userName );
 	},
 	createPersonNode : function( container, personName ){
 		var persons = personName.split(",");
