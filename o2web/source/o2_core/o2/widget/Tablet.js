@@ -296,14 +296,47 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         this.canvas.ontouchstart = this.canvas.onmousedown = function(ev){
             if( this.mode === "inputing" ){
-
+                this.doInput(ev)
             }else{
                 this.doWritOrErase(ev)
             }
         }.bind(this)
     },
-    doInput: function(ev){
+    doInput: function(event){
+        if( this.currentInput ){
+            this.currentInput.readMode();
+            this.currentInput = null;
+            return;
+        }
+        debugger;
+        var x,y;
+        if(event.touches){
+            var touch=event.touches[0];
+            x=touch.clientX;
+            y=touch.clientY;
+        }else{
+            x=event.clientX;
+            y=event.clientY;
+        }
 
+        this.currentInput = new o2.widget.Tablet.Input( this, this.canvasWrap , {
+            top: y,
+            left: x,
+            onPostOk : function(){
+                // var coordinate =  mover.getCoordinage();
+                // this.storeToPreArray();
+                // this.ctx.drawImage(imageNode, coordinate.left, coordinate.top, coordinate.width, coordinate.height);
+                // this.storeToMiddleArray();
+                //
+                // if(this.globalCompositeOperation)this.ctx.globalCompositeOperation = this.globalCompositeOperation;
+                // this.globalCompositeOperation = null;
+            }.bind(this),
+            onPostCancel: function(){
+                // if(this.globalCompositeOperation)this.ctx.globalCompositeOperation = this.globalCompositeOperation;
+                // this.globalCompositeOperation = null;
+            }.bind(this),
+        });
+        this.currentInput.load();
     },
     doWritOrErase: function(ev){
         var _self = this;
@@ -707,23 +740,6 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.toolbar.hideItem("eraserRadius");
         this.toolbar.hideItem("size");
         this.toolbar.hideItem("color");
-
-        var mover = new o2.widget.Tablet.Input( this, this.canvasWrap , {
-            onPostOk : function(){
-                // var coordinate =  mover.getCoordinage();
-                // this.storeToPreArray();
-                // this.ctx.drawImage(imageNode, coordinate.left, coordinate.top, coordinate.width, coordinate.height);
-                // this.storeToMiddleArray();
-                //
-                // if(this.globalCompositeOperation)this.ctx.globalCompositeOperation = this.globalCompositeOperation;
-                // this.globalCompositeOperation = null;
-            }.bind(this),
-            onPostCancel: function(){
-                // if(this.globalCompositeOperation)this.ctx.globalCompositeOperation = this.globalCompositeOperation;
-                // this.globalCompositeOperation = null;
-            }.bind(this),
-        });
-        mover.load();
     },
     eraser : function( itemNode ){
         this.mode = "erasing";
@@ -1540,7 +1556,7 @@ o2.widget.Tablet.ImageMover = new Class({
         });
 
 
-        this.reizeNode = new Element("div.reizeNode",{ styles :  {
+        this.resizeNode = new Element("div.resizeNode",{ styles :  {
             "cursor" : "nw-resize",
             "position": "absolute",
             "bottom": "0px",
@@ -1551,7 +1567,7 @@ o2.widget.Tablet.ImageMover = new Class({
         }}).inject(this.dragNode);
 
         this.docBody = window.document.body;
-        this.reizeNode.addEvents({
+        this.resizeNode.addEvents({
             "touchstart" : function(ev){
                 this.drag.detach();
                 this.dragNode.setStyle("cursor", "nw-resize" );
@@ -1745,10 +1761,13 @@ o2.widget.Tablet.Input = new Class({
     options: {
         minWidth: 100,
         minHeight: 30,
-        width: "200px",
-        height: "60px",
-        top: "0px",
-        left: "0px"
+        width: 200,
+        height: 60,
+        top: 0,
+        left: 0,
+        isEditing: true,
+        editable: true,
+        text: ""
     },
     initialize: function (tablet, relativeNode, options) {
         this.setOptions(options);
@@ -1756,16 +1775,42 @@ o2.widget.Tablet.Input = new Class({
         this.relativeNode = relativeNode;
         this.path = this.tablet.path + this.tablet.options.style + "/"
     },
+    readMode: function(){
+        this.options.isEditing = false;
+        if(this.drag)this.drag.detach();
+        if( this.dragNode )this.dragNode.hide(); //.setStyle("cursor","none");
+        if( this.resizeNode )this.resizeNode.hide(); //.setStyle("cursor", "none" );
+        if( this.textareaWrap )this.textareaWrap.setStyle("border", "1px dashed transparent");
+        this.node.setStyle("background" , "rgba(255,255,255,0)")
+    },
+    editMode: function(){
+        this.options.isEditing = true;
+        if(this.drag)this.drag.attach();
+        if( this.dragNode )this.dragNode.show(); //.setStyle("cursor","move");
+        if( this.resizeNode )this.resizeNode.show(); //.setStyle("cursor", "nw-resize" );
+        if( this.textareaWrap )this.textareaWrap.setStyle("border", "1px dashed red");
+        this.node.setStyle("background" , "rgba(255,255,255,0.5)")
+    },
     load: function(){
         // var coordinates = this.relativeNode.getCoordinates();
 
+        this.relativeCoordinates = this.relativeNode.getCoordinates();
+        var top = this.options.top;
+        if( top + this.options.height > this.relativeCoordinates.bottom ){
+            top = this.relativeCoordinates.bottom - this.options.height;
+        }
+        var left = this.options.left;
+        if( left + this.options.width > this.relativeCoordinates.right ){
+            left = this.relativeCoordinates.right - this.options.width;
+        }
+
         this.node = new Element( "div", {
             styles : {
-                "width" : this.options.width,
-                "height" : this.options.height,
+                "width" : this.options.width+"px",
+                "height" : this.options.height+"px",
                 "position" : "absolute",
-                "top" : this.options.top,
-                "left" : this.options.left,
+                "top" : top+"px",
+                "left" : left+"px",
                 "background" : "rgba(255,255,255,0.5)",
                 "z-index" : 1003,
                 "-webkit-user-select": "none",
@@ -1778,6 +1823,7 @@ o2.widget.Tablet.Input = new Class({
         this.dragNode = new Element("div",{
             styles : {
                 "position": "absolute",
+                "background": "transparent",
                 "cursor" : "move",
                 "top": "-10px",
                 "right": "-10px",
@@ -1795,6 +1841,7 @@ o2.widget.Tablet.Input = new Class({
                 "left": "0px",
                 "width": "calc( 100% - 2px )",
                 "height": "calc( 100% - 2px )",
+                "background": "transparent",
                 "z-index": 1003
             }
         }).inject(this.node);
@@ -1804,6 +1851,7 @@ o2.widget.Tablet.Input = new Class({
                 "width": "calc( 100% - 10px )",
                 "height": "calc( 100% - 10px )",
                 "vertical-align":"top",
+                "background": "transparent",
                 "resize": "none",
                 "padding":"5px"
             }
@@ -1815,7 +1863,7 @@ o2.widget.Tablet.Input = new Class({
         });
 
 
-        this.reizeNode = new Element("div.reizeNode",{ styles :  {
+        this.resizeNode = new Element("div.resizeNode",{ styles :  {
                 "cursor" : "nw-resize",
                 "position": "absolute",
                 "bottom": "-5px",
@@ -1826,8 +1874,9 @@ o2.widget.Tablet.Input = new Class({
             }}).inject(this.textareaWrap);
 
         this.docBody = window.document.body;
-        this.reizeNode.addEvents({
+        this.resizeNode.addEvents({
             "touchstart" : function(ev){
+                if( !this.options.isEditing )return;
                 this.drag.detach();
                 this.dragNode.setStyle("cursor", "nw-resize" );
                 this.docBody.setStyle("cursor", "nw-resize" );
@@ -1837,6 +1886,7 @@ o2.widget.Tablet.Input = new Class({
                 ev.stopPropagation();
             }.bind(this),
             "mousedown" : function(ev){
+                if( !this.options.isEditing )return;
                 this.drag.detach();
                 this.dragNode.setStyle("cursor", "nw-resize" );
                 this.docBody.setStyle("cursor", "nw-resize" );
@@ -1882,6 +1932,10 @@ o2.widget.Tablet.Input = new Class({
         this.bodyMouseEndFun = this.bodyMouseEnd.bind(this);
         this.docBody.addEvent("touchend", this.bodyMouseEndFun);
         this.docBody.addEvent("mouseup", this.bodyMouseEndFun);
+
+        window.setTimeout(function () {
+            this.textarea.focus();
+        }.bind(this), 100)
     },
     bodyMouseMove: function(ev){
         if(!this.lastPoint)return;
@@ -1946,28 +2000,11 @@ o2.widget.Tablet.Input = new Class({
             x=event.clientX;
             y=event.clientY;
         }
-
-
-        // if(!this.lastPoint){
-        //     this.lastPoint={
-        //         x:x,
-        //         y:y
-        //     };
-        // }
-
-        // var offset={
-        //     x:x-this.lastPoint.x,
-        //     y:y-this.lastPoint.y
-        // };
         this.lastPoint={
             x:x,
             y:y
         };
-
-        console.log( this.lastPoint );
-
         return this.lastPoint;
-        // return offset;
     },
     getCoordinage : function(){
         return this.node.getCoordinates( this.relativeNode );
@@ -1982,7 +2019,6 @@ o2.widget.Tablet.Input = new Class({
         this.docBody.removeEvent("mouseup",this.bodyMouseEndFun);
 
         //this.backgroundNode.destroy();
-        this.maskNode.destroy();
         this.node.destroy();
 
         delete this;
