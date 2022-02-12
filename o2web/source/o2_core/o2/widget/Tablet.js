@@ -20,6 +20,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             "undo",
             "redo", "|",
             "eraser", //橡皮
+            "input", //输入法
             "pen", "|", //笔画
             "eraserRadius",
             "size",
@@ -32,6 +33,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
         "toolHidden": [],
         "description" : "", //描述文字
         "imageSrc": "",
+
+        "eraserEnable": true,
+        "inputEnable": true,
 
 
         "action" : null, //uploadImage方法的上传服务，可选，如果不设置，使用公共图片服务
@@ -55,6 +59,15 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         if( !this.options.toolHidden )this.options.toolHidden = [];
 
+        if( !this.options.eraserEnable ){
+            this.options.toolHidden.push("eraser");
+            this.options.toolHidden.push("eraserRadius");
+        }
+
+        if( !this.options.inputEnable ){
+            this.options.toolHidden.push("input");
+        }
+
         this.path = this.options.path || (o2.session.path+"/widget/$Tablet/");
         this.cssPath = this.path + this.options.style+"/css.wcss";
 
@@ -64,6 +77,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             "undo" : o2.LP.widget.undo,
             "redo" : o2.LP.widget.redo,
             "eraser": o2.LP.widget.eraser,
+            "input": o2.LP.widget.input,
             "pen": o2.LP.widget.pen,
             "eraserRadius": o2.LP.widget.eraserRadius,
             "size" : o2.LP.widget.thickness,
@@ -87,7 +101,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         //中间数组
         this.middleAry = [];
 
-        this.mode = "writing"; //writing表示写状态，erasing表示擦除状态
+        this.mode = "writing"; //writing表示写状态，erasing表示擦除状态, inputing表示输入法
 
         this.container = new Element("div.container", {
             styles :  this.css.container
@@ -281,83 +295,94 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
 
         this.canvas.ontouchstart = this.canvas.onmousedown = function(ev){
-            var ev = ev || event;
-            var ctx = this.ctx;
-            var canvas = this.canvas;
-            var container = this.contentNode;
-            var position = this.canvasWrap.getPosition();
-            var doc = $(document);
+            if( this.mode === "inputing" ){
 
-            if( this.mode === "erasing" ){
-                ctx.lineCap = "round";　　//设置线条两端为圆弧
-                ctx.lineJoin = "round";　　//设置线条转折为圆弧
-                ctx.lineWidth = this.currentEraserRadius || this.options.eraserRadiusSize;
-                ctx.globalCompositeOperation = "destination-out";
             }else{
-                //ctx.strokeStyle="#0000ff" 线条颜色; 默认 #000000
-                if( this.options.color )ctx.strokeStyle= this.currentColor || this.options.color; // 线条颜色; 默认 #000000
-                if( this.options.lineWidth  )ctx.lineWidth= this.currentWidth || this.options.lineWidth; //默认1 像素
-                ctx.lineCap = "butt";　　//设置线条两端为平直的边缘
-                ctx.lineJoin = "miter";　　//设置线条转折为圆弧
-                ctx.globalCompositeOperation = "source-over";
+                this.doWritOrErase(ev)
             }
-
-            ctx.beginPath();
-
-            var x , y;
-            if(this.rotate && _self.transform > 0){
-                var clientY = ev.type.indexOf('touch') !== -1 ? ev.touches[0].clientY : ev.clientY;
-                var clientX = ev.type.indexOf('touch') !== -1 ? ev.touches[0].clientX : ev.clientX;
-                var newX = clientY;
-                var newY = _self.canvas.height - clientX; //y轴旋转偏移 // - parseInt(_self.transformOrigin)
-            }else{
-                x = ev.clientX-position.x;
-                y = ev.clientY-position.y
-            }
-
-
-            ctx.moveTo(x, y);
-            if( this.mode === "erasing" ){
-                ctx.arc(x, y, 1, 0, 2*Math.PI);
-                ctx.fill();
-            }
-
-            this.storeToPreArray();
-
-            var mousemove = function(ev){
-                var mx , my;
-                if(_self.rotate && _self.transform > 0){
-                    mx = ev.client.y;
-                    my = _self.canvas.height - ev.client.x //y轴旋转偏移 //  - + parseInt(_self.transformOrigin);
-                }else{
-                    mx = ev.client.x - position.x;
-                    my = ev.client.y - position.y;
-                }
-
-                ctx.lineTo(mx, my);
-                ctx.stroke();
-            };
-            doc.addEvent( "mousemove", mousemove );
-            doc.addEvent( "touchmove", mousemove );
-
-            var mouseup = function(ev){
-                //document.onmousemove = document.onmouseup = null;
-                doc.removeEvent("mousemove", mousemove);
-                doc.removeEvent("mouseup", mouseup);
-                doc.removeEvent("touchmove", mousemove);
-                doc.removeEvent("touchend", mouseup);
-
-                this.storeToMiddleArray();
-
-                ctx.closePath();
-            }.bind(this);
-            doc.addEvent("mouseup", mouseup);
-            doc.addEvent("touchend", mouseup);
-            //document.onmouseup = function(ev){
-            //    document.onmousemove = document.onmouseup = null;
-            //    ctx.closePath();
-            //}
         }.bind(this)
+    },
+    doInput: function(ev){
+
+    },
+    doWritOrErase: function(ev){
+        var _self = this;
+        var ev = ev || event;
+        var ctx = this.ctx;
+        var canvas = this.canvas;
+        var container = this.contentNode;
+        var position = this.canvasWrap.getPosition();
+        var doc = $(document);
+
+        if( this.mode === "erasing" ) {
+            ctx.lineCap = "round";　　//设置线条两端为圆弧
+            ctx.lineJoin = "round";　　//设置线条转折为圆弧
+            ctx.lineWidth = this.currentEraserRadius || this.options.eraserRadiusSize;
+            ctx.globalCompositeOperation = "destination-out";
+        }else{
+            //ctx.strokeStyle="#0000ff" 线条颜色; 默认 #000000
+            if( this.options.color )ctx.strokeStyle= this.currentColor || this.options.color; // 线条颜色; 默认 #000000
+            if( this.options.lineWidth  )ctx.lineWidth= this.currentWidth || this.options.lineWidth; //默认1 像素
+            ctx.lineCap = "butt";　　//设置线条两端为平直的边缘
+            ctx.lineJoin = "miter";　　//设置线条转折为圆弧
+            ctx.globalCompositeOperation = "source-over";
+        }
+
+        ctx.beginPath();
+
+        var x , y;
+        if(this.rotate && _self.transform > 0){
+            var clientY = ev.type.indexOf('touch') !== -1 ? ev.touches[0].clientY : ev.clientY;
+            var clientX = ev.type.indexOf('touch') !== -1 ? ev.touches[0].clientX : ev.clientX;
+            var newX = clientY;
+            var newY = _self.canvas.height - clientX; //y轴旋转偏移 // - parseInt(_self.transformOrigin)
+        }else{
+            x = ev.clientX-position.x;
+            y = ev.clientY-position.y
+        }
+
+
+        ctx.moveTo(x, y);
+        if( this.mode === "erasing" ){
+            ctx.arc(x, y, 1, 0, 2*Math.PI);
+            ctx.fill();
+        }
+
+        this.storeToPreArray();
+
+        var mousemove = function(ev){
+            var mx , my;
+            if(_self.rotate && _self.transform > 0){
+                mx = ev.client.y;
+                my = _self.canvas.height - ev.client.x //y轴旋转偏移 //  - + parseInt(_self.transformOrigin);
+            }else{
+                mx = ev.client.x - position.x;
+                my = ev.client.y - position.y;
+            }
+
+            ctx.lineTo(mx, my);
+            ctx.stroke();
+        };
+        doc.addEvent( "mousemove", mousemove );
+        doc.addEvent( "touchmove", mousemove );
+
+        var mouseup = function(ev){
+            //document.onmousemove = document.onmouseup = null;
+            doc.removeEvent("mousemove", mousemove);
+            doc.removeEvent("mouseup", mouseup);
+            doc.removeEvent("touchmove", mousemove);
+            doc.removeEvent("touchend", mouseup);
+
+            this.storeToMiddleArray();
+
+            ctx.closePath();
+        }.bind(this);
+        doc.addEvent("mouseup", mouseup);
+        doc.addEvent("touchend", mouseup);
+        //document.onmouseup = function(ev){
+        //    document.onmousemove = document.onmouseup = null;
+        //    ctx.closePath();
+        //}
     },
     detectOrient: function(){
         // 利用 CSS3 旋转 对根容器逆时针旋转 90 度
@@ -674,6 +699,32 @@ o2.widget.Tablet = o2.Tablet = new Class({
         });
         clipper.load();
     },
+    input: function( itemNode ){
+        this.mode = "inputing";
+        this.toolbar.enableItem("pen");
+        this.toolbar.enableItem("eraser");
+        this.toolbar.activeItem("input");
+        this.toolbar.hideItem("eraserRadius");
+        this.toolbar.hideItem("size");
+        this.toolbar.hideItem("color");
+
+        var mover = new o2.widget.Tablet.Input( this, this.canvasWrap , {
+            onPostOk : function(){
+                // var coordinate =  mover.getCoordinage();
+                // this.storeToPreArray();
+                // this.ctx.drawImage(imageNode, coordinate.left, coordinate.top, coordinate.width, coordinate.height);
+                // this.storeToMiddleArray();
+                //
+                // if(this.globalCompositeOperation)this.ctx.globalCompositeOperation = this.globalCompositeOperation;
+                // this.globalCompositeOperation = null;
+            }.bind(this),
+            onPostCancel: function(){
+                // if(this.globalCompositeOperation)this.ctx.globalCompositeOperation = this.globalCompositeOperation;
+                // this.globalCompositeOperation = null;
+            }.bind(this),
+        });
+        mover.load();
+    },
     eraser : function( itemNode ){
         this.mode = "erasing";
         this.toolbar.enableItem("pen");
@@ -681,6 +732,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.toolbar.showItem("eraserRadius");
         this.toolbar.hideItem("size");
         this.toolbar.hideItem("color");
+        this.toolbar.enableItem("input");
     },
     eraserRadius : function( itemNode ){
         if( !this.eraserRadiusSelector ){
@@ -694,6 +746,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
     pen : function( itemNode ){
         this.mode = "writing";
         this.toolbar.activeItem("pen");
+        this.toolbar.enableItem("input");
         this.toolbar.enableItem("eraser");
         this.toolbar.hideItem("eraserRadius");
         this.toolbar.showItem("size");
@@ -752,17 +805,21 @@ o2.widget.Tablet.Toolbar = new Class({
                 enable : function(){ return true },
                 show : function(){ return this.tablet.mode === "erasing" }.bind(this)
             },
+            input: {
+                enable : function(){ return true },
+                active : function(){ return this.tablet.mode === "inputing" }.bind(this)
+            },
             pen: {
                 enable : function(){ return true },
-                active : function(){ return this.tablet.mode !== "erasing" }.bind(this)
+                active : function(){ return this.tablet.mode === "writing" }.bind(this)
             },
             size : {
                 enable : function(){ return true },
-                show : function(){ return this.tablet.mode !== "erasing" }.bind(this)
+                show : function(){ return this.tablet.mode === "writing" }.bind(this)
             },
             color : {
                 enable : function(){ return true },
-                show : function(){ return this.tablet.mode !== "erasing" }.bind(this)
+                show : function(){ return this.tablet.mode === "writing" }.bind(this)
             },
             image : {
                 enable : function(){ return true }
@@ -784,6 +841,7 @@ o2.widget.Tablet.Toolbar = new Class({
                 "undo", "|",
                 "redo", "|",
                 "eraser", "|",
+                "input", "|",
                 "pen", "|",
                 "eraserRadius","|",
                 "size", "|",
@@ -793,10 +851,17 @@ o2.widget.Tablet.Toolbar = new Class({
             ];
         }
 
-        if( this.tablet.options.toolHidden.contains("eraser") ){
+        if( this.tablet.options.toolHidden.contains("eraser") && this.tablet.options.toolHidden.contains("input")){
             this.tablet.options.toolHidden.push("pen");
+        }
+        if( this.tablet.options.toolHidden.contains("eraser")){
             this.tablet.options.toolHidden.push("eraserRadius");
         }
+        if( this.tablet.options.toolHidden.contains("input")){
+
+        }
+
+
 
         items = items.filter(function(tool){
             return !this.tablet.options.toolHidden.contains(tool)
@@ -832,6 +897,9 @@ o2.widget.Tablet.Toolbar = new Class({
                     break;
                 case "eraserRadius" :
                     html +=  "<div item='eraserRadius' styles='" + style + "'>"+ this.lp.eraserRadius  +"</div>";
+                    break;
+                case "input" :
+                    html +=  "<div item='input' styles='" + style + "'>"+ this.lp.input  +"</div>";
                     break;
                 case "pen" :
                     html +=  "<div item='pen' styles='" + style + "'>"+ this.lp.pen  +"</div>";
@@ -1670,3 +1738,253 @@ o2.widget.Tablet.ImageMover = new Class({
         delete this;
     }
 });
+
+
+o2.widget.Tablet.Input = new Class({
+    Implements: [Options, Events],
+    options: {
+        minWidth: 100,
+        minHeight: 30,
+        width: "200px",
+        height: "60px",
+        top: "0px",
+        left: "0px"
+    },
+    initialize: function (tablet, relativeNode, options) {
+        this.setOptions(options);
+        this.tablet = tablet;
+        this.relativeNode = relativeNode;
+        this.path = this.tablet.path + this.tablet.options.style + "/"
+    },
+    load: function(){
+        // var coordinates = this.relativeNode.getCoordinates();
+
+        this.node = new Element( "div", {
+            styles : {
+                "width" : this.options.width,
+                "height" : this.options.height,
+                "position" : "absolute",
+                "top" : this.options.top,
+                "left" : this.options.left,
+                "background" : "rgba(255,255,255,0.5)",
+                "z-index" : 1003,
+                "-webkit-user-select": "none",
+                "-moz-user-select": "none",
+                "user-select" : "none"
+            }
+        }).inject($(document.body));
+
+
+        this.dragNode = new Element("div",{
+            styles : {
+                "position": "absolute",
+                "cursor" : "move",
+                "top": "-10px",
+                "right": "-10px",
+                "bottom": "-10px",
+                "left": "-10px",
+                "z-index": 1003
+            }
+        }).inject( this.node );
+
+        this.textareaWrap = new Element("div", {
+            styles: {
+                "position": "absolute",
+                "border": "1px dashed red",
+                "top": "0px",
+                "left": "0px",
+                "width": "calc( 100% - 2px )",
+                "height": "calc( 100% - 2px )",
+                "z-index": 1003
+            }
+        }).inject(this.node);
+        this.textarea = new Element("textarea", {
+            "styles": {
+                "border": "0px",
+                "width": "calc( 100% - 10px )",
+                "height": "calc( 100% - 10px )",
+                "vertical-align":"top",
+                "resize": "none",
+                "padding":"5px"
+            }
+        }).inject( this.textareaWrap );
+
+        this.drag = this.node.makeDraggable({
+            "container" : this.relativeNode,
+            "handle": this.dragNode
+        });
+
+
+        this.reizeNode = new Element("div.reizeNode",{ styles :  {
+                "cursor" : "nw-resize",
+                "position": "absolute",
+                "bottom": "-5px",
+                "right": "-5px",
+                "background-color" : "#52a3f5",
+                "width" : "10px",
+                "height" : "10px"
+            }}).inject(this.textareaWrap);
+
+        this.docBody = window.document.body;
+        this.reizeNode.addEvents({
+            "touchstart" : function(ev){
+                this.drag.detach();
+                this.dragNode.setStyle("cursor", "nw-resize" );
+                this.docBody.setStyle("cursor", "nw-resize" );
+                this.relativeCoordinates = this.relativeNode.getCoordinates();
+                this.resizeMode = true;
+                // this.getOffset(ev);
+                ev.stopPropagation();
+            }.bind(this),
+            "mousedown" : function(ev){
+                this.drag.detach();
+                this.dragNode.setStyle("cursor", "nw-resize" );
+                this.docBody.setStyle("cursor", "nw-resize" );
+                this.relativeCoordinates = this.relativeNode.getCoordinates();
+                this.resizeMode = true;
+                // this.getOffset(ev);
+                ev.stopPropagation();
+            }.bind(this),
+            "touchmove" : function(ev){
+                if( !this.resizeMode )return;
+                var point = this.getLastPoint(ev);
+                this.resizeDragNode( point );
+                ev.stopPropagation();
+            }.bind(this),
+            "mousemove" : function(ev){
+                if( !this.resizeMode )return;
+                var point= this.getLastPoint(ev);
+                this.resizeDragNode( point );
+                ev.stopPropagation();
+            }.bind(this),
+            "touchend" : function(ev){
+                this.drag.attach();
+                this.dragNode.setStyle("cursor", "move" );
+                this.docBody.setStyle("cursor", "default" );
+                this.resizeMode = false;
+                this.lastPoint=null;
+                ev.stopPropagation();
+            }.bind(this),
+            "mouseup" : function(ev){
+                this.drag.attach();
+                this.dragNode.setStyle("cursor", "move" );
+                this.docBody.setStyle("cursor", "default" );
+                this.resizeMode = false;
+                this.lastPoint=null;
+                ev.stopPropagation();
+            }.bind(this)
+        });
+
+        this.bodyMouseMoveFun = this.bodyMouseMove.bind(this);
+        this.docBody.addEvent("touchmove", this.bodyMouseMoveFun);
+        this.docBody.addEvent("mousemove", this.bodyMouseMoveFun);
+
+        this.bodyMouseEndFun = this.bodyMouseEnd.bind(this);
+        this.docBody.addEvent("touchend", this.bodyMouseEndFun);
+        this.docBody.addEvent("mouseup", this.bodyMouseEndFun);
+    },
+    bodyMouseMove: function(ev){
+        if(!this.lastPoint)return;
+        if( this.resizeMode ){
+            var point = this.getLastPoint(ev);
+            this.resizeDragNode( point );
+        }
+    },
+    bodyMouseEnd: function(ev){
+        this.lastPoint=null;
+        if( this.resizeMode ){
+            this.drag.attach();
+            this.dragNode.setStyle("cursor", "move" );
+            this.docBody.setStyle("cursor", "default" );
+            this.resizeMode = false;
+        }
+    },
+    resizeDragNode : function(lastPoint){
+        debugger;
+        var x=lastPoint.x;
+        if( x == 0 )return;
+
+        var	y=lastPoint.y;
+        if( y == 0 )return;
+
+        var coordinates = this.node.getCoordinates();
+
+        var	top=coordinates.top,
+            left=coordinates.left,
+            w,
+            h;
+
+       if( x > this.relativeCoordinates.right ){
+           return;
+       }else{
+           w = x - left;
+       }
+       if( y  > this.relativeCoordinates.bottom){
+           return;
+       }else{
+           h = y - top;
+       }
+
+        var minWidth = this.options.minWidth;
+        var minHeight = this.options.minHeight;
+        w=w< minWidth ? minWidth:w;
+        h=h< minHeight ? minHeight:h;
+
+        this.node.setStyles({
+            width:w+'px',
+            height:h+'px'
+        });
+    },
+    getLastPoint: function(event){
+        event=event.event;
+        var x,y;
+        if(event.touches){
+            var touch=event.touches[0];
+            x=touch.clientX;
+            y=touch.clientY;
+        }else{
+            x=event.clientX;
+            y=event.clientY;
+        }
+
+
+        // if(!this.lastPoint){
+        //     this.lastPoint={
+        //         x:x,
+        //         y:y
+        //     };
+        // }
+
+        // var offset={
+        //     x:x-this.lastPoint.x,
+        //     y:y-this.lastPoint.y
+        // };
+        this.lastPoint={
+            x:x,
+            y:y
+        };
+
+        console.log( this.lastPoint );
+
+        return this.lastPoint;
+        // return offset;
+    },
+    getCoordinage : function(){
+        return this.node.getCoordinates( this.relativeNode );
+    },
+    ok : function(){
+        this.fireEvent("postOk")
+    },
+    close : function(){
+        this.docBody.removeEvent("touchmove",this.bodyMouseMoveFun);
+        this.docBody.removeEvent("mousemove",this.bodyMouseMoveFun);
+        this.docBody.removeEvent("touchend",this.bodyMouseEndFun);
+        this.docBody.removeEvent("mouseup",this.bodyMouseEndFun);
+
+        //this.backgroundNode.destroy();
+        this.maskNode.destroy();
+        this.node.destroy();
+
+        delete this;
+    }
+})
