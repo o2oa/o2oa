@@ -1784,6 +1784,8 @@ o2.widget.Tablet.Input = new Class({
         this.node.setStyle("background" , "rgba(255,255,255,0)")
     },
     editMode: function(){
+        if(this.tablet.currentInput)this.tablet.currentInput.readMode();
+        this.tablet.currentInput = this;
         this.options.isEditing = true;
         if(this.drag)this.drag.attach();
         if( this.dragNode )this.dragNode.show(); //.setStyle("cursor","move");
@@ -1854,6 +1856,11 @@ o2.widget.Tablet.Input = new Class({
                 "background": "transparent",
                 "resize": "none",
                 "padding":"5px"
+            },
+            events: {
+                focus: function () {
+                    if( !this.options.isEditing )this.editMode();
+                }.bind(this)
             }
         }).inject( this.textareaWrap );
 
