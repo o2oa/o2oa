@@ -265,7 +265,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.canvasWrap = new Element("div.canvasWrap", { styles :  this.css.canvasWrap}).inject(this.contentNode);
         this.canvasWrap.setStyles({
             width : this.contentWidth+"px",
-            height : this.contentHeight+"px"
+            height : this.contentHeight+"px",
+            position: "relative"
         });
 
         this.canvas = new Element("canvas", {
@@ -295,7 +296,14 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
 
         this.canvas.ontouchstart = this.canvas.onmousedown = function(ev){
+            var flag;
+            if( this.currentInput ){
+                this.currentInput.readMode();
+                this.currentInput = null;
+                flag = true;
+            }
             if( this.mode === "inputing" ){
+                if(flag)return;
                 this.doInput(ev)
             }else{
                 this.doWritOrErase(ev)
@@ -303,11 +311,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }.bind(this)
     },
     doInput: function(event){
-        if( this.currentInput ){
-            this.currentInput.readMode();
-            this.currentInput = null;
-            return;
-        }
+        if( !this.inputList )this.inputList = [];
         debugger;
         var x,y;
         if(event.touches){
@@ -318,6 +322,10 @@ o2.widget.Tablet = o2.Tablet = new Class({
             x=event.clientX;
             y=event.clientY;
         }
+
+        var coordinate =  this.canvasWrap.getCoordinates();
+        x = x - coordinate.left;
+        y = y- coordinate.top;
 
         this.currentInput = new o2.widget.Tablet.Input( this, this.canvasWrap , {
             top: y,
@@ -337,6 +345,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             }.bind(this),
         });
         this.currentInput.load();
+        this.inputList.push( this.currentInput );
     },
     doWritOrErase: function(ev){
         var _self = this;
@@ -561,6 +570,11 @@ o2.widget.Tablet = o2.Tablet = new Class({
         return 'data:'+ this.fileType +';base64,' + base64Code;
     },
     close : function(){
+        if( this.inputList ){
+            this.inputList.each(function (input) {
+                input.close( true );
+            })
+        }
         this.container.destroy();
         delete this;
     },
@@ -676,7 +690,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
             var mover = new o2.widget.Tablet.ImageMover( this, imageNode, this.canvasWrap , {
                 onPostOk : function(){
-                    var coordinate =  mover.getCoordinage();
+                    var coordinate =  mover.getCoordinates();
                     this.storeToPreArray();
                     this.ctx.drawImage(imageNode, coordinate.left, coordinate.top, coordinate.width, coordinate.height);
                     this.storeToMiddleArray();
@@ -1735,7 +1749,7 @@ o2.widget.Tablet.ImageMover = new Class({
         };
         return offset;
     },
-    getCoordinage : function(){
+    getCoordinates : function(){
         return this.imageNode.getCoordinates( this.node );
     },
     ok : function(){
@@ -1776,10 +1790,15 @@ o2.widget.Tablet.Input = new Class({
         this.path = this.tablet.path + this.tablet.options.style + "/"
     },
     readMode: function(){
+        if( this.textarea && !this.textarea.get("value") ){
+            this.close();
+            return;
+        }
         this.options.isEditing = false;
         if(this.drag)this.drag.detach();
         if( this.dragNode )this.dragNode.hide(); //.setStyle("cursor","none");
         if( this.resizeNode )this.resizeNode.hide(); //.setStyle("cursor", "none" );
+        if( this.cancelNode )this.cancelNode.hide();
         if( this.textareaWrap )this.textareaWrap.setStyle("border", "1px dashed transparent");
         this.node.setStyle("background" , "rgba(255,255,255,0)")
     },
@@ -1791,19 +1810,22 @@ o2.widget.Tablet.Input = new Class({
         if( this.dragNode )this.dragNode.show(); //.setStyle("cursor","move");
         if( this.resizeNode )this.resizeNode.show(); //.setStyle("cursor", "nw-resize" );
         if( this.textareaWrap )this.textareaWrap.setStyle("border", "1px dashed red");
+        if( this.cancelNode )this.cancelNode.show();
         this.node.setStyle("background" , "rgba(255,255,255,0.5)")
     },
     load: function(){
         // var coordinates = this.relativeNode.getCoordinates();
 
+        debugger;
+
         this.relativeCoordinates = this.relativeNode.getCoordinates();
         var top = this.options.top;
-        if( top + this.options.height > this.relativeCoordinates.bottom ){
-            top = this.relativeCoordinates.bottom - this.options.height;
+        if( top + this.options.height > this.relativeCoordinates.height ){
+            top = this.relativeCoordinates.height - this.options.height;
         }
         var left = this.options.left;
-        if( left + this.options.width > this.relativeCoordinates.right ){
-            left = this.relativeCoordinates.right - this.options.width;
+        if( left + this.options.width > this.relativeCoordinates.width ){
+            left = this.relativeCoordinates.width - this.options.width;
         }
 
         this.node = new Element( "div", {
@@ -1819,7 +1841,7 @@ o2.widget.Tablet.Input = new Class({
                 "-moz-user-select": "none",
                 "user-select" : "none"
             }
-        }).inject($(document.body));
+        }).inject(this.relativeNode);
 
 
         this.dragNode = new Element("div",{
@@ -1860,6 +1882,7 @@ o2.widget.Tablet.Input = new Class({
             events: {
                 focus: function () {
                     if( !this.options.isEditing )this.editMode();
+                    this.tablet.input();
                 }.bind(this)
             }
         }).inject( this.textareaWrap );
@@ -1868,6 +1891,25 @@ o2.widget.Tablet.Input = new Class({
             "container" : this.relativeNode,
             "handle": this.dragNode
         });
+
+        this.cancelNode = new Element("div",{
+            styles : {
+                "background" : "url("+ this.path + "icon/cancel2.png) no-repeat",
+                "width" : "16px",
+                "height" : "16px",
+                "right" : "-8px",
+                "top" : "-8px",
+                "position" : "absolute",
+                "cursor" : "pointer"
+            },
+            events : {
+                click : function(){
+                    this.fireEvent("postCancel");
+                    this.tablet.currentInput = null;
+                    this.close();
+                }.bind(this)
+            }
+        }).inject(this.textareaWrap);
 
 
         this.resizeNode = new Element("div.resizeNode",{ styles :  {
@@ -1880,7 +1922,7 @@ o2.widget.Tablet.Input = new Class({
                 "height" : "10px"
             }}).inject(this.textareaWrap);
 
-        this.docBody = window.document.body;
+        this.docBody = this.relativeNode; //window.document.body;
         this.resizeNode.addEvents({
             "touchstart" : function(ev){
                 if( !this.options.isEditing )return;
@@ -2013,13 +2055,15 @@ o2.widget.Tablet.Input = new Class({
         };
         return this.lastPoint;
     },
-    getCoordinage : function(){
+    getCoordinates : function(){
         return this.node.getCoordinates( this.relativeNode );
     },
     ok : function(){
         this.fireEvent("postOk")
     },
-    close : function(){
+    close : function( flag ){
+        if(!flag)this.tablet.inputList.erase(this);
+
         this.docBody.removeEvent("touchmove",this.bodyMouseMoveFun);
         this.docBody.removeEvent("mousemove",this.bodyMouseMoveFun);
         this.docBody.removeEvent("touchend",this.bodyMouseEndFun);
