@@ -265,9 +265,11 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.canvasWrap = new Element("div.canvasWrap", { styles :  this.css.canvasWrap}).inject(this.contentNode);
         this.canvasWrap.setStyles({
             width : this.contentWidth+"px",
-            height : this.contentHeight+"px",
-            position: "relative"
+            height : this.contentHeight+"px"
         });
+        if( !this.rotate ){
+            this.canvasWrap.setStyle("position", "relative");
+        }
 
         this.canvas = new Element("canvas", {
             width : this.contentWidth,
