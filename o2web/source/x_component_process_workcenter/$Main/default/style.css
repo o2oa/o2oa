@@ -101,7 +101,8 @@
     background: #f2f2f2;
 }
 .contentTitle{
-    height: 60px;
+    min-height: 20px;
+    padding: 15px 20px;
 }
 .contentList{
     height: inherit;
@@ -158,8 +159,8 @@
     margin-left: 10px;
 }
 .contentTitleArea {
-    margin: 15px 20px;
-    height: 44px;
+    overflow: hidden;
+    min-height: 20px;
 }
 .contentTitleActionArea{
     float: right;
@@ -167,7 +168,8 @@
     cursor: pointer;
 }
 .contentTitleFilterArea{
-    height: 44px;
+    min-height: 20px;
+    overflow: hidden;
 }
 
 /*list*/
@@ -524,18 +526,25 @@
     height: 28px;
     line-height: 28px;
     border-radius: 14px;
+    margin-bottom:3px;
 }
 .ft_filterItemTitle{
     float: left;
 }
-.ft_filterItemArea{
+.ft_filterItemName{
     float: left;
-    margin-left: 10px;
 }
 .ft_filterItemName{
     float: left;
     color: #666666;
     margin-right: 10px;
+}
+.ft_filterItemDel{
+    float: left;
+    color: #999999;
+    line-height: 28px;
+    margin-top: 7px;
+    cursor: pointer;
 }
 
 @font-face {

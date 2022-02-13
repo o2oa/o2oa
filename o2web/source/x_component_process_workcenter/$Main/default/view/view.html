@@ -2,7 +2,7 @@
     <div class="menu">
         <div class="menuTitle">
             <div class="menuTitleText">{{$.lp.title}}</div>
-            <div class="menuTitleAction">
+            <div class="menuTitleAction" data-o2-events="click:startProcess">
                 <icon class="o2icon-zengjia mainColor_color"></icon>
             </div>
         </div>
@@ -36,7 +36,7 @@
             <div class="menuItemText">{{$.lp.draft}}</div>
         </div>
 
-        <div class="createProcessAction mainColor_bg">
+        <div class="createProcessAction mainColor_bg" data-o2-events="click:startProcess">
             <icon class="o2icon-zengjia"></icon>
             <span>{{$.lp.createProcess}}</span>
         </div>
