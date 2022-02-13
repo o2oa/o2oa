@@ -420,6 +420,7 @@ o2.LP.widget = {
     "redo" : "重做",
     "eraserRadius": "橡皮大小",
     "eraser": "橡皮",
+    "input": "输入法",
     "pen": "笔画",
     "thickness" : "粗细",
     "color" : "颜色",
