@@ -35,7 +35,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         "imageSrc": "",
 
         "eraserEnable": true,
-        "inputEnable": true,
+        "inputEnable": false,
 
 
         "action" : null, //uploadImage方法的上传服务，可选，如果不设置，使用公共图片服务
@@ -516,6 +516,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
     getBase64Code : function( ignoreResultSize ){
         var ctx = this.ctx;
         var canvas = this.canvas;
+
+        this.drawInput();
+
         //var container = this.contentNode;
         //var size = this.options.size;
         if( !ignoreResultSize && this.options.resultMaxSize ){
@@ -568,6 +571,11 @@ o2.widget.Tablet = o2.Tablet = new Class({
         if( !base64Code )base64Code = this.getBase64Code( ignoreResultSize );
         if( !base64Code )return null;
         return 'data:'+ this.fileType +';base64,' + base64Code;
+    },
+    drawInput: function(){
+        if( this.inputList )this.inputList.each(function (input) {
+            input.draw();
+        })
     },
     close : function(){
         if( this.inputList ){
@@ -1033,36 +1041,48 @@ o2.widget.Tablet.Toolbar = new Class({
     },
     disableItem : function( itemName ){
         var itemNode =  this.items[ itemName ];
-        itemNode.store("status", "disable");
-        this._setItemNodeDisable( itemNode, itemName );
+        if(itemNode){
+            itemNode.store("status", "disable");
+            this._setItemNodeDisable( itemNode, itemName );
+        }
     },
     enableItem : function( itemName ){
         var itemNode =  this.items[ itemName ];
-        itemNode.store("status", "enable");
-        this._setItemNodeNormal( itemNode, itemName );
+        if(itemNode) {
+            itemNode.store("status", "enable");
+            this._setItemNodeNormal(itemNode, itemName);
+        }
     },
     activeItem: function( itemName ){
         var itemNode =  this.items[ itemName ];
-        itemNode.store("status", "active");
-        this._setItemNodeActive( itemNode, itemName );
+        if(itemNode) {
+            itemNode.store("status", "active");
+            this._setItemNodeActive(itemNode, itemName);
+        }
     },
     _setItemNodeDisable : function( itemNode ){
         var item = itemNode.get("item");
-        itemNode.setStyles( this.css.toolItem_disable );
-        itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_disable.png)");
+        if(item){
+            itemNode.setStyles( this.css.toolItem_disable );
+            itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_disable.png)");
+        }
     },
     _setItemNodeActive: function( itemNode ){
         if( itemNode.retrieve("status") == "disable" )return;
         var item = itemNode.get("item");
-        itemNode.setStyles( this.css.toolItem_over );
-        itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_active.png)");
+        if(item){
+            itemNode.setStyles( this.css.toolItem_over );
+            itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_active.png)");
+        }
     },
     _setItemNodeNormal: function( itemNode ){
         if( itemNode.retrieve("status") == "disable" )return;
         var item = itemNode.get("item");
-        var style = itemNode.get("styles");
-        itemNode.setStyles( this.css[style] );
-        itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_normal.png)");
+        if(item){
+            var style = itemNode.get("styles");
+            itemNode.setStyles( this.css[style] );
+            itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_normal.png)");
+        }
     }
 
 });
@@ -1813,6 +1833,14 @@ o2.widget.Tablet.Input = new Class({
         if( this.cancelNode )this.cancelNode.show();
         this.node.setStyle("background" , "rgba(255,255,255,0.5)")
     },
+    draw: function(){
+        debugger;
+        var text = this.textarea.get("value");
+        var coordinates = this.textarea.getCoordinates( this.relativeNode );
+        this.tablet.ctx.font = "14px \"Microsoft YaHei\", SimSun, 宋体, serif ";
+        this.tablet.ctx.fillText(text, coordinates.left + 5, coordinates.top+15, coordinates.width);
+        this.drawed = true;
+    },
     load: function(){
         // var coordinates = this.relativeNode.getCoordinates();
 
@@ -1822,10 +1850,12 @@ o2.widget.Tablet.Input = new Class({
         var top = this.options.top;
         if( top + this.options.height > this.relativeCoordinates.height ){
             top = this.relativeCoordinates.height - this.options.height;
+            this.options.top = top;
         }
         var left = this.options.left;
         if( left + this.options.width > this.relativeCoordinates.width ){
             left = this.relativeCoordinates.width - this.options.width;
+            this.options.left = left;
         }
 
         this.node = new Element( "div", {
