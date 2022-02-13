@@ -83,8 +83,8 @@
                     <div class="ft_itemsCategoryTitle">{{$.name}}</div>
                     <div class="ft_itemsArea">
                         {{each ($._.data[$.key])}}
-                            <div class="ft_itemNode {{if ($._._.filter && $._._.filter[$._.key] && $._._.filter[$._.key].indexOf($.value)!==-1 ) }}mainColor_bg{{end if}}"
-                                 data-o2-events="click:selectFilterItem:{{$.value}}:{{$._.key}}" data-value="{{$.value}}" data-category="{{$._.key}}">{{$.name}}</div>
+                            <div class="ft_itemNode {{if ($._._.filter && $._._.filter[$._.key] && $._._.filter[$._.key].indexOf($.value.toString())!==-1 ) }}mainColor_bg{{end if}}"
+                                 data-o2-events="click:selectFilterItem:{{$.name}}:{{$.value}}:{{$._.key}}" data-value="{{$.value}}" data-category="{{$._.key}}">{{$.name}}</div>
                         {{end each}}
                     </div>
                 </div>

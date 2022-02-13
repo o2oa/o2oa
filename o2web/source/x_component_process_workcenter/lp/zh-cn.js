@@ -64,7 +64,18 @@ MWF.xApplication.process.workcenter.LP = {
 		{"key": "creatorUnitList", "name": "创建部门"},
 		{"key": "startTimeMonthList", "name": "收到月份"},
 		{"key": "completedTimeMonthList", "name": "办理月份"},
-		{"key": "completedList", "name": "是否流转完成"}
+		{"key": "completedList", "name": "是否流转完成"},
+		{"key": "key", "name": "关键字"}
+	],
+	"filterCategoryShortList": [
+		{"key": "applicationList", "name": "应用"},
+		{"key": "processList", "name": "流程"},
+		{"key": "activityNameList", "name": "活动"},
+		{"key": "creatorUnitList", "name": "部门"},
+		{"key": "startTimeMonthList", "name": "收到月份"},
+		{"key": "completedTimeMonthList", "name": "办理月份"},
+		{"key": "completedList", "name": "完成"},
+		{"key": "key", "name": "关键字"}
 	]
 
 

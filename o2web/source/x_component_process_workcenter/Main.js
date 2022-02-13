@@ -165,6 +165,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var filterContent = new Element("div");
 		var url = this.path+this.options.style+"/view/dlg/filter.html";
 		this.getFilterData().then(function(data){
+			this.currentList.filterAttribute = data;
 			filterContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data, filter: this.currentList.filterList}, "module": this})
 		}.bind(this));
 
@@ -216,27 +217,31 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		});
 		document.body.addEvent("mousedown", closeFilterDlg);
 	},
-	selectFilterItem: function(value, category, e){
+	selectFilterItem: function(name, value, category, e){
 		var node = e.target;
 		// var value = node.dataset.value;
 		// var category = node.dataset.category;
 
 		if (!this.currentList.filterList) this.currentList.filterList = {};
 		if (!this.currentList.filterList[category]) this.currentList.filterList[category] = [];
+		if (!this.currentList.filterNameList) this.currentList.filterNameList = {};
+		if (!this.currentList.filterNameList[category]) this.currentList.filterNameList[category] = [];
 		var findedIdx = this.currentList.filterList[category].indexOf(value);
 
 		if (findedIdx===-1){
 			node.addClass("mainColor_bg");
-			this.currentList.filterList[category].push(value)
+			this.currentList.filterList[category].push(value);
+			this.currentList.filterNameList[category].push(name)
 		}else{
 			node.removeClass("mainColor_bg");
 			this.currentList.filterList[category].splice(findedIdx, 1);
+			this.currentList.filterNameList[category].splice(findedIdx, 1);
 		}
 	},
 	resetFilter: function(){
-		debugger;
 		this.currentList.page = 1;
 		this.currentList.filterList = {};
+		this.currentList.filterNameList = {};
 		this.currentList.refresh();
 	},
 	doFilter: function(){
@@ -244,11 +249,55 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var key = this.filterDlg.content.getElement("input").get("value");
 		if (key) {
 			if (!this.currentList.filterList) this.currentList.filterList = {};
+			if (!this.currentList.filterNameList) this.currentList.filterNameList = {};
 			this.currentList.filterList.key = key;
+			this.currentList.filterNameList.key = [key];
 		}
 		this.currentList.page = 1;
 		this.currentList.refresh();
 		this.filterDlg.close();
+	},
+
+	startProcess: function(){
+		this.filterDlg = o2.DL.open({
+			"mask": false,
+			"title": "",
+			"style": "user",
+			"isMove": false,
+			"isResize": false,
+			"isTitle": false,
+			"content": filterContent,
+			"maskNode": this.content,
+			"top": y,
+			"left": x,
+			"fromTop": y,
+			"fromLeft": fx,
+			"width": 600,
+			"height": 550,
+			"duration": 100,
+			"onQueryClose": function(){
+				document.body.removeEvent("mousedown", closeFilterDlg);
+			},
+			"buttonList": [
+				{
+					"type": "ok",
+					"text": MWF.LP.process.button.ok,
+					"action": function (d, e) {
+						_self.doFilter();
+					}.bind(this)
+				},
+				{
+					"type": "cancel",
+					"text": MWF.LP.process.button.reset,
+					"action": function () {
+						debugger;
+						_self.resetFilter();
+						this.filterDlg.close();
+					}.bind(this)
+				}
+			],
+
+		});
 	}
 });
 
@@ -276,6 +325,8 @@ MWF.xApplication.process.workcenter.List = new Class({
 		this.size = (this.listHeight/this.options.itemHeight).toInt()
 		this.page = 1;
 		this.totalCount = this.app.countData.task;
+		this.filterList = {};
+		this.filterNameList = {};
 	},
 	setLayout: function(){
 
@@ -299,17 +350,40 @@ MWF.xApplication.process.workcenter.List = new Class({
 	loadFilterFlag: function(){
 		this.filterNode.empty();
 		var filterItemHtml = "<div class='ft_filterItem'>" +
-			"<div class='ft_filterItemTitle mainColor_color'>{{$.title}}</div>" +
-			"<div class='ft_filterItemArea'>{{each ($.items)}}" +
-			"<div class='ft_filterItemName'>{{$}}</div>"+
-			"{{end each}}</div>" +
+			"<div class='ft_filterItemTitle mainColor_color'>{{$.title}}:</div>" +
+			"<div class='ft_filterItemName'>{{$.name}}</div>"+
+			"<icon class='o2icon-clear ft_filterItemDel' data-key='{{$.key}}' data-name='{{$.name}}'/>"+
 			"</div>";
-		this.lp.filterCategoryList.forEach(function(list){
-			if (this.filterList && this.filterList[list.key] && this.filterList[list.key].length){
-				var html = o2.bindJson(filterItemHtml, {"title": list.name, "items": this.filterList[list.key]});
-				this.filterNode.appendHTML(html);
+		var _self = this;
+		this.lp.filterCategoryShortList.forEach(function(list){
+			if (_self.filterNameList && _self.filterNameList[list.key] && _self.filterNameList[list.key].length){
+				_self.filterNameList[list.key].forEach(function(i){
+					var html = o2.bindJson(filterItemHtml, {"title": list.name, "name": i, "key": list.key});
+					_self.filterNode.appendHTML(html);
+				});
 			}
-		}.bind(this));
+		});
+		this.filterNode.getElements(".ft_filterItemDel").addEvent("click", this.clearFilterItem.bind(this));
+	},
+	clearFilterItem: function(e){
+		debugger;
+		var node = e.target;
+		var key = node.dataset.key;
+		var name = node.dataset.name;
+		if (this.filterNameList && this.filterNameList[key]){
+			var findedIdx = this.filterNameList[key].indexOf(name);
+			this.filterNameList[key].splice(findedIdx, 1);
+
+			if (this.filterList && this.filterList[key]){
+				if (this.filterList[key].splice){
+					this.filterList[key].splice(findedIdx, 1);
+				}else{
+					delete this.filterList[key];
+				}
+			}
+			this.page = 1;
+			this.refresh();
+		}
 	},
 	hide: function(){
 		if (this.node) this.node.destroy();
@@ -369,7 +443,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 		this.hide();
 		this.app.showSkeleton();
 		this.load();
-		this.loadPage();
+		//this.loadPage();
 	},
 
 	loadData: function(){
@@ -723,11 +797,18 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 	},
 	loadData: function(){
 		var _self = this;
-		return this.action.ReadAction.listMyPaging(this.page, this.size).then(function(json){
+		return this.action.ReadAction.listMyFilterPaging(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
-			_self.total = json.size;
+			_self.total = json.count;
 			return json.data;
 		}.bind(this));
+
+		// var _self = this;
+		// return this.action.ReadAction.listMyPaging(this.page, this.size).then(function(json){
+		// 	_self.fireEvent("loadData");
+		// 	_self.total = json.size;
+		// 	return json.data;
+		// }.bind(this));
 	},
 	loadItemFlag: function(e, data){
 		var node = e.currentTarget;
@@ -910,11 +991,17 @@ MWF.xApplication.process.workcenter.TaskCompletedList = new Class({
 	},
 	loadData: function(){
 		var _self = this;
-		return this.action.TaskCompletedAction.listMyPaging(this.page, this.size).then(function(json){
+		return this.action.TaskCompletedAction.listMyFilterPaging(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
-			_self.total = json.size;
+			_self.total = json.count;
 			return json.data;
 		}.bind(this));
+		// var _self = this;
+		// return this.action.TaskCompletedAction.listMyPaging(this.page, this.size).then(function(json){
+		// 	_self.fireEvent("loadData");
+		// 	_self.total = json.size;
+		// 	return json.data;
+		// }.bind(this));
 	}
 });
 MWF.xApplication.process.workcenter.ReadCompletedList = new Class({
@@ -931,11 +1018,17 @@ MWF.xApplication.process.workcenter.ReadCompletedList = new Class({
 	},
 	loadData: function(){
 		var _self = this;
-		return this.action.ReadCompletedAction.listMyPaging(this.page, this.size).then(function(json){
+		return this.action.ReadCompletedAction.listMyFilterPaging(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
-			_self.total = json.size;
+			_self.total = json.count;
 			return json.data;
 		}.bind(this));
+		// var _self = this;
+		// return this.action.ReadCompletedAction.listMyPaging(this.page, this.size).then(function(json){
+		// 	_self.fireEvent("loadData");
+		// 	_self.total = json.size;
+		// 	return json.data;
+		// }.bind(this));
 	}
 });
 MWF.xApplication.process.workcenter.DraftList = new Class({
@@ -946,11 +1039,17 @@ MWF.xApplication.process.workcenter.DraftList = new Class({
 	},
 	loadData: function(){
 		var _self = this;
-		return this.action.DraftAction.listMyPaging(this.page, this.size, {}).then(function(json){
+		return this.action.DraftAction.listMyFilterPaging(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
-			_self.total = json.size;
+			_self.total = json.count;
 			return json.data;
 		}.bind(this));
+		// var _self = this;
+		// return this.action.DraftAction.listMyPaging(this.page, this.size, {}).then(function(json){
+		// 	_self.fireEvent("loadData");
+		// 	_self.total = json.size;
+		// 	return json.data;
+		// }.bind(this));
 	},
 	openTask: function(e, data){
 		debugger
