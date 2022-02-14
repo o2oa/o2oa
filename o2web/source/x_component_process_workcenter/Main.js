@@ -257,47 +257,135 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.currentList.refresh();
 		this.filterDlg.close();
 	},
+	inputFilter: function(e){
+		if (e.keyCode==13) this.doFilter();
+	},
 
-	startProcess: function(){
-		this.filterDlg = o2.DL.open({
-			"mask": false,
-			"title": "",
-			"style": "user",
-			"isMove": false,
-			"isResize": false,
-			"isTitle": false,
-			"content": filterContent,
-			"maskNode": this.content,
-			"top": y,
-			"left": x,
-			"fromTop": y,
-			"fromLeft": fx,
-			"width": 600,
-			"height": 550,
-			"duration": 100,
-			"onQueryClose": function(){
-				document.body.removeEvent("mousedown", closeFilterDlg);
-			},
-			"buttonList": [
-				{
-					"type": "ok",
-					"text": MWF.LP.process.button.ok,
-					"action": function (d, e) {
-						_self.doFilter();
-					}.bind(this)
-				},
-				{
-					"type": "cancel",
-					"text": MWF.LP.process.button.reset,
-					"action": function () {
-						debugger;
-						_self.resetFilter();
-						this.filterDlg.close();
-					}.bind(this)
-				}
-			],
-
+	getStartData: function(){
+		var p1 = this.action.ApplicationAction.listWithPersonComplex().then(function(json){return json.data});
+		var p2 = new Promise(function(resolve){
+			o2.UD.getDataJson("taskCenter_startTop", function(data){
+				resolve(data);
+			});
 		});
+		return Promise.all([p1, p2]);
+	},
+	closeStartProcess: function(e){
+		e.target.getParent(".st_area").destroy();
+		this.appNode.show();
+	},
+	startProcess: function(){
+		var startContent = new Element("div.st_area");
+		var url = this.path+this.options.style+"/view/dlg/start.html";
+		this.getStartData().then(function(data){
+			startContent.loadHtml(url, {"bind": {"lp": this.lp, "data": {"app": data[0], "topApp": data[1]}}, "module": this});
+		}.bind(this));
+
+		this.appNode.hide();
+		startContent.inject(this.content);
+	},
+	loadStartProcessList: function(e, data){
+		var node = e.target;
+		var url = this.path+this.options.style+"/view/dlg/processList.html";
+		node.loadHtml(url, {"bind": {"lp": this.lp, "data": data}, "module": this});
+	},
+
+	startAppItemOver: function(e, data){
+		var node = e.target;
+		while (node && !node.hasClass("st_appListItem")){ node = node.getParent();}
+		if (node) node.addClass("menuItem_over");
+	},
+	startAppItemOut: function(e, data){
+		var node = e.target;
+		while (node && !node.hasClass("st_appListItem")){ node = node.getParent();}
+		if (node) node.removeClass("menuItem_over");
+	},
+	startAppItemClick: function(e, data){
+		var node = e.target;
+
+		this.clearStartAppSelected(e);
+		while (node && !node.hasClass("st_appListItem")){ node = node.getParent();}
+		node.addClass("mainColor_bg_opacity");
+
+		var appData = (data.app) ? data : {"app": [data]};
+		this.reloadStartProcessList(node, appData);
+	},
+	clearStartAppSelected: function(e){
+		var node = e.target.getParent(".st_menu").getElement(".mainColor_bg_opacity");
+		if (node) node.removeClass("mainColor_bg_opacity");
+	},
+	reloadStartProcessList: function(node, data){
+		var processListNode = node.getParent(".st_processContent").getElement(".st_processList").empty();
+		var url = this.path+this.options.style+"/view/dlg/processList.html";
+		processListNode.loadHtml(url, {"bind": {"lp": this.lp, "data": data}, "module": this});
+	},
+	startProcessSearch: function(e, data){
+		if (e.keyCode===13){
+			var key = e.target.get("value");
+			if (key){
+				var name = this.lp.searchProcessResault.replace("{key}", key);
+				var processList = [];
+				data.app.forEach(function(app){
+					app.processList.forEach(function(process){
+						if (process.name.indexOf(key)!==-1){
+							processList.push(process);
+						}
+					});
+				});
+				this.clearStartAppSelected(e);
+				e.target.getParent(".st_search").addClass("mainColor_bg_opacity");
+				this.reloadStartProcessList(e.target, {"app": [{"name": name, processList: processList}]});
+			}else{
+				this.clearStartProcessSearch(e);
+			}
+		}
+	},
+	clearStartProcessSearch: function(e){
+		var pnode = e.target.getParent(".st_processContent");
+		pnode.getElement(".st_all").click();
+		pnode.getElement("input").set("value", "");
+	},
+	loadItemIcon: function(application, e){
+		var node = e.currentTarget;
+		Promise.resolve(this.getApplicationIcon(application)).then(function(icon){
+			if (icon.icon){
+				node.setStyle("background-image", "url(data:image/png;base64,"+icon.icon+")");
+			}else{
+				node.setStyle("background-image", "url("+"../x_component_process_ApplicationExplorer/$Main/default/icon/application.png)");
+			}
+		});
+	},
+	startProcessItemOver: function(e){
+		var node = e.target;
+		while (node && !node.hasClass("st_processItem")){ node = node.getParent();}
+		if (node){
+			node.addClass("menuItem_over");
+			node.removeClass("mainColor_bg");
+		}
+	},
+	startProcessItemOut: function(e){
+		var node = e.target;
+		while (node && !node.hasClass("st_processItem")){ node = node.getParent();}
+		if (node){
+			node.removeClass("menuItem_over");
+			node.removeClass("mainColor_bg");
+		}
+	},
+	startProcessItemDown: function(e){
+		var node = e.target;
+		while (node && !node.hasClass("st_processItem")){ node = node.getParent();}
+		if (node){
+			node.removeClass("menuItem_over");
+			node.addClass("mainColor_bg");
+		}
+	},
+	startProcessItemUp: function(e){
+		var node = e.target;
+		while (node && !node.hasClass("st_processItem")){ node = node.getParent();}
+		if (node){
+			node.addClass("menuItem_over");
+			node.removeClass("mainColor_bg");
+		}
 	}
 });
 
@@ -472,14 +560,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 		o2.api.form.openWork(data.work, "", data.title);
 	},
 	loadItemIcon: function(application, e){
-		var node = e.currentTarget;
-		Promise.resolve(this.app.getApplicationIcon(application)).then(function(icon){
-			if (icon.icon){
-				node.setStyle("background-image", "url(data:image/png;base64,"+icon.icon+")");
-			}else{
-				node.setStyle("background-image", "url("+"../x_component_process_ApplicationExplorer/$Main/default/icon/application.png)");
-			}
-		});
+		this.app.loadItemIcon(application, e);
 	},
 	loadItemFlag: function(e, data){
 		var node = e.currentTarget;

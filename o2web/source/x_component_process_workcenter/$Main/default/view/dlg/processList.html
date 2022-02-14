@@ -1,0 +1,52 @@
+<div class="st_processListBox">
+    {{if ($.data.topApp)}}
+        <div class="st_processListApp">
+            <div class="st_processListAppTitle">
+                <div class="st_processListAppIcon"><div class="st_processCommonIcon"></div></div>
+                <div class="st_processListAppText" title="{{$.lp.commonUseProcess}}">{{$.lp.commonUseProcess}}</div>
+            </div>
+            <div class="st_processListAppContent">
+                {{each $.data.topApp}}
+                <div class="st_processItemArea">
+                    <div class="st_processItem"
+                         data-o2-events="mouseover:startProcessItemOver;mouseout:startProcessItemOut; mousedown:startProcessItemDown;mouseup:startProcessItemUp;click:startProcessItemClick;">
+                        {{$.name}}
+                    </div>
+                </div>
+                {{end each}}
+            </div>
+        </div>
+    {{end if}}
+
+    {{each $.data.app}}
+        <div class="st_processListApp">
+            <div class="st_processListAppTitle">
+                {{if ($.id)}}
+                    <div class="st_processListAppIcon" data-o2-events="o2load:loadItemIcon:{{$.id}}"></div>
+                {{end if}}
+                {{if (!$.id)}}
+                <div class="st_processListAppIcon">
+                    <div class="st_processSearchIcon"></div>
+                </div>
+                {{end if}}
+                <div class="st_processListAppText" title="{{$.name}}">{{$.name}}</div>
+
+                {{if (!$.id)}}
+                    <div class="o2icon-clear st_clearSearch" data-o2-events="click:clearStartProcessSearch">
+                    </div>
+                {{end if}}
+
+            </div>
+            <div class="st_processListAppContent">
+                {{each $.processList}}
+                <div class="st_processItemArea">
+                    <div class="st_processItem"
+                         data-o2-events="mouseover:startProcessItemOver;mouseout:startProcessItemOut; mousedown:startProcessItemDown;mouseup:startProcessItemUp;click:startProcessItemClick;">
+                        {{$.name}}
+                    </div>
+                </div>
+                {{end each}}
+            </div>
+        </div>
+    {{end each}}
+</div>

@@ -1,3 +1,7 @@
+.appNode{
+    overflow: hidden;
+    height: 100%;
+}
 .menuArea{
     max-width: 300px;
     min-width: 160px;
@@ -546,7 +550,280 @@
     margin-top: 7px;
     cursor: pointer;
 }
+.ft_content{
+    padding-top: 20px;
+}
+.ft_titleSearchArea{
+    height: 28px;
+    line-height: 28px;
+    border: 1px solid #CCCCCC;
+    border-radius:15px;
+}
+.ft_filterIcon{
+    height: 28px;
+    width: 38px;
+    border-radius: 14px;
+    float: left;
+    font-size: 16px;
+    text-align:center;
+}
+.ft_filterIcon icon{
+    margin-top: 6px;
+    display: block;
+}
+.ft_searchButton{
+    width: 50px;
+    height: 28px;
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+    float: right;
+    text-align:center;
+    cursor: pointer;
+}
+.ft_titleInputArea{
+    margin-left: 38px;
+    margin-right: 50px;
+    height: 28px;
+}
+.ft_titleInputArea input{
+    display: block;
+    width: 100%;
+    padding: 0;
+    height: 28px;
+    border: 0px;
+    box-sizing: border-box!important;
+}
+.ft_filterItemsArea{
+    overflow: hidden;
+    margin-top: 10px;
+    height: 420px;
+    overflow: auto;
+}
+.ft_itemsCategory{
+    overflow: hidden;
+    margin-top: 10px;
+}
+.ft_itemsCategoryTitle{
+    font-size: 16px;
+    height: 28px;
+    line-height: 28px;
+    color: #333333;
+}
+.ft_itemNode{
+    float: left;
+    margin-top: 5px;
+    margin-right: 5px;
+    padding: 3px 10px;
+    background: #F0F0F0;
+    border-radius: 15px;
+    color: #666666;
+    cursor: pointer;
+}
 
+.st_area{
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+.st_content{
+    width: 100%;
+    margin: 10px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.st_title{
+    height: 40px;
+    line-height: 40px;
+    color: #666666;
+    padding: 10px;
+}
+.st_titleAction{
+    float: right;
+    height: 40px;
+    width: 50px;
+    cursor: pointer;
+    text-align: center;
+}
+.st_titleText{
+    height: 40px;
+    margin-right: 50px;
+    padding-left: 20px;
+    font-size: 16px;
+}
+.st_processContent{
+    height: 100%;
+    display: flex;
+    overflow: hidden;
+}
+.st_menu{
+    max-width: 300px;
+    min-width: 200px;
+    width: 18%;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #E6E6E6;
+    float: left;
+    display: flex;
+    flex-direction:column;
+    margin-left: 20px;
+}
+
+.st_processList{
+    margin: 0 20px;
+    width: 82%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: auto;
+    border: 1px solid #E6E6E6;
+}
+/*.st_processListBox{*/
+/*    border: 1px solid #E6E6E6;*/
+/*    border-radius: 8px;*/
+/*    margin: 0 20px;*/
+/*}*/
+.st_all{
+    height: 40px;
+    line-height: 40px;
+    color: #666666;
+    font-size: 16px;
+    padding: 0 10px;
+    cursor: pointer;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.st_search{
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #E6E6E6;
+}
+.st_searchIcon{
+    float: left; width: 43px; height: 40px; text-align: center;line-height: 45px;
+}
+.st_searchInputArea{
+    margin-left:43px;
+}
+.st_searchInputArea input{
+    display: block;
+    width: 100%;
+    padding: 0;
+    height: 40px;
+    border: 0px;
+    box-sizing: border-box!important;
+    background: transparent;
+    font-size: 16px;
+    color: #666666;
+}
+.st_appListArea{
+    height: 100%;
+    overflow: auto;
+}
+.st_appListItem{
+    height: 45px;
+    line-height: 45px;
+    display: flex;
+    color: #666666;
+    cursor: pointer;
+}
+.st_appItemIcon{
+    width: 45px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-size: 24px 24px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.st_appItemText{
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: keep-all;
+    font-size: 16px;
+}
+.st_appItemCount{
+    width: 60px;
+    text-align: right;
+    margin-right: 20px;
+}
+.st_processListApp{
+    /*border: 1px solid #E6E6E6;*/
+    /*border-radius: 8px;*/
+    /*padding: 0 20px;*/
+    /*margin-bottom: 20px;*/
+}
+.st_processListAppTitle{
+    height: 49px;
+    line-height: 49px;
+    /*border-bottom: 1px solid #E6E6E6;*/
+    display: flex;
+    background-color: #f6f6f6;
+    padding: 0 20px;
+}
+.st_processListAppIcon{
+    width: 30px;
+    margin-right: 10px;
+    background-size: 30px 30px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.st_processListAppContent{
+    padding: 10px 20px;
+    overflow: hidden;
+}
+.st_processListAppText{
+    font-size: 16px;
+    color: #666666;
+}
+.st_processItemArea{
+    height: 30px;
+    color: #666666;
+    width: 140px;
+    line-height: 30px;
+    overflow: hidden;
+    float: left;
+    margin-right: 20px;
+}
+.st_processItem{
+    cursor: pointer;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    float: left;
+    padding: 0 10px;
+    border-radius: 20px;
+    user-select: none;
+}
+.st_processCommonIcon{
+    background-image: url("../o2_core/o2/xDesktop/$Default/appicons/process.png");
+    background-color: rgb(79, 178, 227);
+    background-size: 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    margin-top: 10px;
+}
+.st_processSearchIcon{
+    background-image: url("../o2_core/o2/xDesktop/$Default/appicons/search.png");
+    background-color: rgb(117, 135, 144);
+    background-size: 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    margin-top: 10px;
+}
+.st_clearSearch{
+    margin-left: 30px;
+    cursor: pointer;
+    line-height:49px !important;
+    font-size: 20px;
+    color: #cccccc;
+}
 @font-face {
     font-family: 'o2taskcenter';
     src:
