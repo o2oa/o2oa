@@ -386,6 +386,131 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			node.addClass("menuItem_over");
 			node.removeClass("mainColor_bg");
 		}
+	},
+	startProcessItemClick: function(e, data){
+		MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
+			var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(data, this, {
+				"onStarted": function(workdata, title, processName){
+					this.afterStartProcess(workdata, title, processName, data);
+					this.closeStartProcess(e);
+				}.bind(this)
+			});
+			starter.load();
+		}.bind(this));
+	},
+	recordProcessData: function(data){
+		debugger;
+		MWF.UD.getDataJson("taskCenter_startTop", function(json){
+			if (!json || !json.length) json = [];
+			var recordProcess = null;
+			data.lastStartTime = new Date();
+			var earlyProcessIdx = 0;
+			var flag = true;
+			for (var i=0; i<json.length; i++){
+				var process = json[i];
+				if (process.id === data.id) recordProcess = process;
+				if (flag){
+					if (!process.lastStartTime){
+						earlyProcessIdx = i;
+						flag = false;
+					}else{
+						if (new Date(process.lastStartTime)<new Date(json[earlyProcessIdx].lastStartTime)){
+							earlyProcessIdx = i;
+						}
+					}
+				}
+			}
+			if (recordProcess) {
+				recordProcess.lastStartTime = new Date();
+				recordProcess.count = (recordProcess.count || 0)+1;
+				recordProcess.applicationName = data.applicationName;
+			}else{
+				if (json.length<10){
+					data.count = 1;
+					//data.applicationName = this.applicationData.name;
+					json.push(data);
+				}else{
+					json.splice(earlyProcessIdx, 1);
+					data.count = 1;
+					//data.applicationName = this.applicationData.name;
+					json.push(data);
+				}
+			}
+			MWF.UD.putData("taskCenter_startTop", json);
+		}.bind(this));
+	},
+	afterStartProcess: function(data, title, processName, processdata){
+		this.recordProcessData(processdata);
+		if (data.work){
+			this.startProcessDraft(data, title, processName);
+		}else{
+			this.startProcessInstance(data, title, processName);
+		}
+	},
+	startProcessDraft: function(data, title, processName){
+		var work = data.work;
+		var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false};
+		this.desktop.openApplication(null, "process.Work", options);
+	},
+	startProcessInstance: function(data, title, processName){
+		var workInfors = [];
+		var currentTask = [];
+		data.each(function(work){
+			if (work.currentTaskIndex !== -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
+			workInfors.push(this.getStartWorkInforObj(work));
+		}.bind(this));
+
+		if (currentTask.length===1){
+			var options = {"workId": currentTask[0], "appId": "process.Work"+currentTask[0]};
+			this.desktop.openApplication(null, "process.Work", options);
+
+			if (layout.desktop.message) this.createStartWorkResault(workInfors, title, processName, false);
+		}else{
+			if (layout.desktop.message) this.createStartWorkResault(workInfors, title, processName, true);
+		}
+	},
+	getStartWorkInforObj: function(work){
+		var users = [];
+		var currentTask = "";
+		work.taskList.each(function(task, idx){
+			users.push(task.person+"("+task.department + ")");
+			if (work.currentTaskIndex===idx) currentTask = task.id;
+		}.bind(this));
+		return {"activity": work.fromActivityName, "users": users, "currentTask": currentTask};
+	},
+	createStartWorkResault: function(workInfors, title, processName, isopen){
+		var content = "";
+		workInfors.each(function(infor){
+			var users = [];
+			infor.users.each(function(uname){
+				users.push(MWF.name.cn(uname));
+			});
+
+			content += "<div><b>"+this.lp.nextActivity+"<font style=\"color: #ea621f\">"+infor.activity+"</font>, "+this.lp.nextUser+"<font style=\"color: #ea621f\">"+users.join(", ")+"</font></b>";
+			if (infor.currentTask && isopen){
+				content += "&nbsp;&nbsp;&nbsp;&nbsp;<span value=\""+infor.currentTask+"\">"+this.lp.deal+"</span></div>";
+			}else{
+				content += "</div>";
+			}
+		}.bind(this));
+
+		var msg = {
+			"subject": this.lp.processStarted,
+			"content": "<div>"+this.lp.processStartedMessage+"“["+processName+"]"+title+"”</div>"+content
+		};
+		var tooltip = layout.desktop.message.addTooltip(msg);
+		var item = layout.desktop.message.addMessage(msg);
+
+		this.setStartWorkResaultAction(tooltip);
+		this.setStartWorkResaultAction(item);
+	},
+	setStartWorkResaultAction: function(item){
+		var node = item.node.getElements("span.dealStartedWorkAction");
+		var _self = this;
+		node.addEvent("click", function(e){
+			var options = {"taskId": this.get("value"), "appId": this.get("value")};
+			_self.app.desktop.openApplication(e, "process.Work", options);
+		});
 	}
 });
 
