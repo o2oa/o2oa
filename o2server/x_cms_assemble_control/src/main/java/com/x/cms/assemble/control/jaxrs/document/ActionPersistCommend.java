@@ -40,11 +40,11 @@ public class ActionPersistCommend extends BaseAction {
 		}
 
 		if (check) {
-			try {				
-				DocumentCommend documentCommend = docCommendPersistService.create( effectivePerson.getDistinguishedName(), id );
+			try {
+				DocumentCommend documentCommend = docCommendPersistService.create( effectivePerson.getDistinguishedName(), id, document.getTitle() );
 				Wo wo = new Wo();
 				wo.setId( documentCommend.getId() );
-				result.setData( wo );				
+				result.setData( wo );
 			} catch (Exception e) {
 				Exception exception = new ExceptionDocumentInfoProcess(e, "给文档点赞时时发生异常。Id:" + id);
 				result.error(exception);
@@ -57,7 +57,7 @@ public class ActionPersistCommend extends BaseAction {
 
 		return result;
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}
