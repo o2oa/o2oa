@@ -24,7 +24,7 @@ class DocCommendService {
 		Business business = new Business( emc );
 		return business.documentCommendFactory().listByDocAndPerson(docId, personName, maxCount );
 	}
-	
+
 	public List<String> listByDocument( EntityManagerContainer emc, String docId, Integer maxCount ) throws Exception {
 		if( StringUtils.isEmpty( docId ) ){
 			return null;
@@ -32,7 +32,7 @@ class DocCommendService {
 		Business business = new Business( emc );
 		return business.documentCommendFactory().listByDocument(docId, maxCount);
 	}
-	
+
 	public List<String> listWithPerson( EntityManagerContainer emc, String personName, Integer maxCount ) throws Exception {
 		if( StringUtils.isEmpty( personName ) ){
 			return null;
@@ -48,13 +48,14 @@ class DocCommendService {
 		Business business = new Business( emc );
 		List<String> commendIds = null;
 		DocumentCommend documentCommend = null;
-		commendIds = business.documentCommendFactory().listByDocAndPerson( wrapIn.getDocumentId(), wrapIn.getCommendPerson(), 1 );		
+		commendIds = business.documentCommendFactory().listByDocAndPerson( wrapIn.getDocumentId(), wrapIn.getCommendPerson(), 1 );
 		if( ListTools.isEmpty( commendIds ) ){
 			Document doc = emc.find( wrapIn.getDocumentId(), Document.class );
 			documentCommend = new DocumentCommend();
 			documentCommend.setId( DocumentCommend.createId() );
 			documentCommend.setCommendPerson( wrapIn.getCommendPerson() );
 			documentCommend.setDocumentId( wrapIn.getDocumentId() );
+			documentCommend.setTitle(wrapIn.getTitle());
 			emc.beginTransaction( DocumentCommend.class );
 			if( doc != null ) {
 				emc.beginTransaction( Document.class );
@@ -66,9 +67,9 @@ class DocCommendService {
 		}else {
 			documentCommend = emc.find( commendIds.get(0), DocumentCommend.class );
 		}
-		return documentCommend;		
+		return documentCommend;
 	}
-	
+
 	public DocumentCommend delete( EntityManagerContainer emc, String id ) throws Exception {
 		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is empty!");
@@ -85,7 +86,7 @@ class DocCommendService {
 			emc.remove( documentCommend, CheckRemoveType.all );
 			emc.commit();
 		}
-		return documentCommend;		
+		return documentCommend;
 	}
 
 	public List<String> delete(EntityManagerContainer emc, List<String> ids ) throws Exception {
@@ -107,6 +108,6 @@ class DocCommendService {
 			}
 			emc.commit();
 		}
-		return ids;		
+		return ids;
 	}
 }
