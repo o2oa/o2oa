@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
+import javax.script.Bindings;
 import javax.script.CompiledScript;
+import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,8 +18,11 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.log.Signal;
@@ -153,7 +159,45 @@ public class EndProcessor extends AbstractEndProcessor {
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getProcess(), Business.EVENT_PROCESSAFTEREND);
 			JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+			// 回写到父Work
+			tryUpdateParentWork(aeiObjects);
+
 		}
+	}
+
+	private void tryUpdateParentWork(AeiObjects aeiObjects) {
+		if (StringUtils.isBlank(aeiObjects.getWork().getProperties().getParentWork())) {
+			try {
+				Work work = aeiObjects.entityManagerContainer()
+						.find(aeiObjects.getWork().getProperties().getParentWork(), Work.class);
+				if ((null != work) && Objects.equals(work.getActivityType(), ActivityType.embed)) {
+					Embed embed = (Embed) aeiObjects.business().element().get(work.getActivity(),
+							work.getActivityType());
+					if ((null != embed) && BooleanUtils.isTrue(embed.getWaitUntilCompleted())) {
+						updateParentWork(aeiObjects, work, embed);
+					}
+				}
+			} catch (Exception e) {
+				LOGGER.error(new ExceptionUpdateParentWork(aeiObjects.getWork().getId(),
+						aeiObjects.getWork().getProperties().getParentWork()));
+			}
+		}
+	}
+
+	private void updateParentWork(AeiObjects aeiObjects, Work work, Embed embed) throws Exception {
+		AeiObjects embedAeiObjects = new AeiObjects(aeiObjects.business(), work, embed,
+				aeiObjects.getProcessingConfigurator(), aeiObjects.getProcessingAttributes());
+		embedAeiObjects.entityManagerContainer().beginTransaction(Work.class);
+		work.getProperties().setEmbedCompleted(ActivityType.end.toString());
+		if (this.hasEmbedCompletedEndScript(embed)) {
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					embed, Business.EVENT_EMBEDCOMPLETEDEND);
+			ScriptContext scriptContext = embedAeiObjects.scriptContext();
+			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+			bindings.put(ScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
+			JsonScriptingExecutor.eval(cs, scriptContext);
+		}
+		embedAeiObjects.commit();
 	}
 
 	@Override
