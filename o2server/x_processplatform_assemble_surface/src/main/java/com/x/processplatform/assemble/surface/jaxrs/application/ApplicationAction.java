@@ -12,7 +12,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -49,7 +48,7 @@ public class ApplicationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取可见的应用,同时判断应用下有可见的流程.", action = ActionListWithPerson.class)
+	@JaxrsMethodDescribe(value = "获取可见的应用,同时判断应用下有启动的流程.", action = ActionListWithPerson.class)
 	@GET
 	@Path("list")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -66,13 +65,13 @@ public class ApplicationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取可见的应用,同时判断应用下有可见的流程,并进行流程的名称匹配.", action = ActionListWithPersonLike.class)
+	@JaxrsMethodDescribe(value = "获取可见的应用,同时判断应用下有启动的流程,并进行流程的名称匹配.", action = ActionListWithPersonLike.class)
 	@GET
 	@Path("list/key/{key}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithPersonLike(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("关键字") @PathParam("key") String key) {
+	public void listWithPersonLike(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("关键字") @PathParam("key") String key) {
 		ActionResult<List<ActionListWithPersonLike.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -84,7 +83,7 @@ public class ApplicationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据当前用户所有可见的Application,并绑定其可见的Porcess", action = ActionListWithPersonComplex.class)
+	@JaxrsMethodDescribe(value = "根据当前用户所有可见的Application,并绑定其启动的Porcess", action = ActionListWithPersonComplex.class)
 	@GET
 	@Path("list/complex")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -102,17 +101,17 @@ public class ApplicationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据传入用户，获取可见的Application,并绑定其可见的Porcess", action = ActionManageListWithPersonComplex.class)
+	@JaxrsMethodDescribe(value = "根据传入用户，获取可见的Application,并绑定其启动的Porcess", action = ActionManageListWithPersonComplex.class)
 	@GET
 	@Path("list/complex/manage/{person}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void manageListWithPersonComplex(@Suspended final AsyncResponse asyncResponse,
-									  @Context HttpServletRequest request, @JaxrsParameterDescribe("用户") @PathParam("person") String person) {
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("用户") @PathParam("person") String person) {
 		ActionResult<List<ActionManageListWithPersonComplex.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionManageListWithPersonComplex().execute(effectivePerson,person);
+			result = new ActionManageListWithPersonComplex().execute(effectivePerson, person);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

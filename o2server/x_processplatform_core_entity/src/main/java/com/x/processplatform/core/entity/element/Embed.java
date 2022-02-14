@@ -75,6 +75,10 @@ public class Embed extends Activity {
 	public void postLoad() {
 		if (null != this.properties) {
 			this.customData = this.getProperties().getCustomData();
+			this.completedEndScript = this.getProperties().getCompletedEndScript();
+			this.completedEndScriptText = this.getProperties().getCompletedEndScriptText();
+			this.completedCancelScript = this.getProperties().getCompletedCancelScript();
+			this.completedCancelScriptText = this.getProperties().getCompletedCancelScriptText();
 		}
 	}
 
@@ -104,23 +108,76 @@ public class Embed extends Activity {
 		this.properties = new EmbedProperties();
 	}
 
+	public static final String COMPLETEDENDSCRIPT_FIELDNAME = "completedEndScript";
+	@FieldDescribe("嵌入子流程在End节点结束事件脚本.")
+	@Transient
+	private String completedEndScript;
+
+	public static final String COMPLETEDENDSCRIPTTEXT_FIELDNAME = "completedEndScriptText";
+	@FieldDescribe("嵌入子流程在End节点结束事件脚本文本.")
+	@Transient
+	private String completedEndScriptText;
+
+	public static final String COMPLETEDCANCELSCRIPT_FIELDNAME = "completedCancelScript";
+	@FieldDescribe("嵌入子流程在Cancel节点结束事件脚本.")
+	@Transient
+	private String completedCancelScript;
+
+	public static final String COMPLETEDCANCELSCRIPTTEXT_FIELDNAME = "completedCancelScriptText";
+	@FieldDescribe("嵌入子流程在Cancel节点结束事件脚本文本.")
+	@Transient
+	private String completedCancelScriptText;
+
 	public static final String CUSTOMDATA_FIELDNAME = "customData";
+	@FieldDescribe("节点自定义数据.")
 	@Transient
 	private JsonElement customData;
 
 	@Override
 	public JsonElement getCustomData() {
-		if (null != customData) {
-			return this.customData;
-		} else {
-			return this.getProperties().getCustomData();
-		}
+		return this.customData;
+	}
+
+	public String getCompletedEndScript() {
+		return completedEndScript;
+	}
+
+	public String getCompletedCancelScriptText() {
+		return completedCancelScriptText;
+	}
+
+	public String getCompletedCancelScript() {
+		return completedCancelScript;
+	}
+
+	public String getCompletedEndScriptText() {
+		return completedEndScriptText;
 	}
 
 	@Override
 	public void setCustomData(JsonElement customData) {
 		this.customData = customData;
 		this.properties.setCustomData(customData);
+	}
+
+	public void setCompletedEndScript(String completedEndScript) {
+		this.getProperties().setCompletedEndScript(completedEndScript);
+		this.completedEndScript = completedEndScript;
+	}
+
+	public void setCompletedEndScriptText(String completedEndScriptText) {
+		this.getProperties().setCompletedEndScriptText(completedEndScriptText);
+		this.completedEndScriptText = completedEndScriptText;
+	}
+
+	public void setCompletedCancelScript(String completedCancelScript) {
+		this.getProperties().setCompletedCancelScript(completedCancelScript);
+		this.completedCancelScript = completedCancelScript;
+	}
+
+	public void setCompletedCancelScriptText(String completedCancelScriptText) {
+		this.getProperties().setCompletedCancelScriptText(completedCancelScriptText);
+		this.completedCancelScriptText = completedCancelScriptText;
 	}
 
 	@FieldDescribe("分组")
@@ -560,12 +617,19 @@ public class Embed extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private EmbedProperties properties;
 
-	public static final String WAITUNTILEND_FIELDNAME = "waitUntilEnd";
+	public static final String WAITUNTILCOMPLETED_FIELDNAME = "waitUntilCompleted";
 	@FieldDescribe("等待至子流程结束.")
 	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + WAITUNTILEND_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + WAITUNTILEND_FIELDNAME)
-	private Boolean waitUntilEnd;
+	@Column(name = ColumnNamePrefix + WAITUNTILCOMPLETED_FIELDNAME)
+	private Boolean waitUntilCompleted;
+
+	public Boolean getWaitUntilCompleted() {
+		return waitUntilCompleted;
+	}
+
+	public void setWaitUntilCompleted(Boolean waitUntilCompleted) {
+		this.waitUntilCompleted = waitUntilCompleted;
+	}
 
 	public String getDisplayLogScript() {
 		return displayLogScript;

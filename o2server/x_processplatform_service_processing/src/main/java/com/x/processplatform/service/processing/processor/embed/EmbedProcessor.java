@@ -102,9 +102,12 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			String embedWorkId = executor.execute(assignData);
 			aeiObjects.getWork().setEmbedTargetWork(embedWorkId);
 		}
-
 		List<Work> results = new ArrayList<>();
-		results.add(aeiObjects.getWork());
+		// 如果设置了停留至子流程结束,需要等待回写的标记.
+		if (BooleanUtils.isNotTrue(embed.getWaitUntilCompleted())
+				|| StringUtils.isNotBlank(aeiObjects.getWork().getProperties().getEmbedCompleted())) {
+			results.add(aeiObjects.getWork());
+		}
 		return results;
 	}
 
