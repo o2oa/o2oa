@@ -75,6 +75,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.urge = new Urge();
 		this.expire = new Expire();
 		this.touchDelay = new TouchDelay();
+		this.touchEmbedWaitUntilCompleted = new TouchEmbedWaitUntilCompleted();
 		this.merge = new Merge();
 		this.touchDetained = new TouchDetained();
 		this.deleteDraft = new DeleteDraft();
@@ -162,6 +163,9 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("延时任务设置,定时触发延时任务,当超过延时时间后继续流转.")
 	private TouchDelay touchDelay;
 
+	@FieldDescribe("触发等待子流程结束设置,当子流程结束回写标识后继续流转.")
+	private TouchEmbedWaitUntilCompleted touchEmbedWaitUntilCompleted;
+
 	@FieldDescribe("合并任务设置,定时触发合并任务,将已完成工作的Data从Item表中提取合并到WorkCompleted的Data字段中,默认工作完成后2年开始进行合并.")
 	private Merge merge;
 
@@ -237,6 +241,11 @@ public class ProcessPlatform extends ConfigObject {
 		return this.touchDelay == null ? new TouchDelay() : this.touchDelay;
 	}
 
+	public TouchEmbedWaitUntilCompleted getTouchEmbedWaitUntilCompleted() {
+		return this.touchEmbedWaitUntilCompleted == null ? new TouchEmbedWaitUntilCompleted()
+				: this.touchEmbedWaitUntilCompleted;
+	}
+
 	public TouchDetained getTouchDetained() {
 		return this.touchDetained == null ? new TouchDetained() : this.touchDetained;
 	}
@@ -269,8 +278,7 @@ public class ProcessPlatform extends ConfigObject {
 	public static class Urge extends ConfigObject {
 
 		public static Urge defaultInstance() {
-			Urge o = new Urge();
-			return o;
+			return new Urge();
 		}
 
 		public static final Boolean DEFAULT_ENABLE = false;
@@ -307,8 +315,7 @@ public class ProcessPlatform extends ConfigObject {
 	public static class Expire extends ConfigObject {
 
 		public static Expire defaultInstance() {
-			Expire o = new Expire();
-			return o;
+			return new Expire();
 		}
 
 		public static final Boolean DEFAULT_ENABLE = true;
@@ -338,8 +345,7 @@ public class ProcessPlatform extends ConfigObject {
 	public static class TouchDelay extends ConfigObject {
 
 		public static TouchDelay defaultInstance() {
-			TouchDelay o = new TouchDelay();
-			return o;
+			return new TouchDelay();
 		}
 
 		public static final Boolean DEFAULT_ENABLE = true;
@@ -366,13 +372,42 @@ public class ProcessPlatform extends ConfigObject {
 
 	}
 
+	public static class TouchEmbedWaitUntilCompleted extends ConfigObject {
+
+		public static TouchEmbedWaitUntilCompleted defaultInstance() {
+			return new TouchEmbedWaitUntilCompleted();
+		}
+
+		public static final Boolean DEFAULT_ENABLE = true;
+
+		public static final String DEFAULT_CRON = "15 0/5 * * * ?";
+
+		@FieldDescribe("是否启用")
+		private Boolean enable = DEFAULT_ENABLE;
+
+		@FieldDescribe("定时cron表达式")
+		private String cron = DEFAULT_CRON;
+
+		public String getCron() {
+			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
+				return this.cron;
+			} else {
+				return DEFAULT_CRON;
+			}
+		}
+
+		public Boolean getEnable() {
+			return BooleanUtils.isTrue(this.enable);
+		}
+
+	}
+
 	public static class Merge extends ConfigObject {
 
 		private static final long serialVersionUID = -5858277850858377338L;
 
 		public static Merge defaultInstance() {
-			Merge o = new Merge();
-			return o;
+			return new Merge();
 		}
 
 		public Merge() {
@@ -427,8 +462,7 @@ public class ProcessPlatform extends ConfigObject {
 	public static class TouchDetained extends ConfigObject {
 
 		public static TouchDetained defaultInstance() {
-			TouchDetained o = new TouchDetained();
-			return o;
+			return new TouchDetained();
 		}
 
 		public static final String DEFAULT_CRON = "30 30 12 * * ?";
@@ -467,8 +501,7 @@ public class ProcessPlatform extends ConfigObject {
 	public static class DeleteDraft extends ConfigObject {
 
 		public static DeleteDraft defaultInstance() {
-			DeleteDraft o = new DeleteDraft();
-			return o;
+			return new DeleteDraft();
 		}
 
 		public static final String DEFAULT_CRON = "0 0 20 * * ?";
@@ -507,8 +540,7 @@ public class ProcessPlatform extends ConfigObject {
 	public static class PassExpired extends ConfigObject {
 
 		public static PassExpired defaultInstance() {
-			PassExpired o = new PassExpired();
-			return o;
+			return new PassExpired();
 		}
 
 		public static final String DEFAULT_CRON = "5 5 8-18 * * ?";
@@ -537,8 +569,7 @@ public class ProcessPlatform extends ConfigObject {
 	public static class LogLongDetained extends ConfigObject {
 
 		public static LogLongDetained defaultInstance() {
-			LogLongDetained o = new LogLongDetained();
-			return o;
+			return new LogLongDetained();
 		}
 
 		public static final String DEFAULT_CRON = "0 0 4 * * ?";
@@ -598,8 +629,7 @@ public class ProcessPlatform extends ConfigObject {
 	public static class Press extends ConfigObject {
 
 		public static Press defaultInstance() {
-			Press o = new Press();
-			return o;
+			return new Press();
 		}
 
 		public static final Integer DEFAULT_INTERVALMINUTES = 10;
@@ -633,8 +663,7 @@ public class ProcessPlatform extends ConfigObject {
 	public static class AttachmentConfig extends ConfigObject {
 
 		public static AttachmentConfig defaultInstance() {
-			AttachmentConfig o = new AttachmentConfig();
-			return o;
+			return new AttachmentConfig();
 		}
 
 		public static final Integer DEFAULT_FILE_SIZE = 0;

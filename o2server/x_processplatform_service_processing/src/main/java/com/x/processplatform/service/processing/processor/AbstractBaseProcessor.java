@@ -20,6 +20,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.service.processing.Business;
@@ -253,6 +254,16 @@ public abstract class AbstractBaseProcessor {
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(activity.get(AIS, String.class))
 				|| StringUtils.isNotEmpty(activity.get(AIST, String.class));
+	}
+
+	protected boolean hasEmbedCompletedEndScript(Embed embed) {
+		return StringUtils.isNotEmpty(embed.getProperties().getCompletedEndScript())
+				|| StringUtils.isNotEmpty(embed.getProperties().getCompletedEndScriptText());
+	}
+
+	protected boolean hasEmbedCompletedCancelScript(Embed embed) {
+		return StringUtils.isNotEmpty(embed.getProperties().getCompletedCancelScript())
+				|| StringUtils.isNotEmpty(embed.getProperties().getCompletedCancelScriptText());
 	}
 
 	protected void createFromWorkLog(AeiObjects aeiObjects, String token, Date date) throws Exception {

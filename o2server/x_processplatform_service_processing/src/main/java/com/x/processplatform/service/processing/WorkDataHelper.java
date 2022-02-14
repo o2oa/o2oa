@@ -65,7 +65,7 @@ public class WorkDataHelper {
 		this.items = this.load();
 	}
 
-	private List<Item> load() throws Exception  {
+	private List<Item> load() throws Exception {
 		EntityManager em = emc.get(Item.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Item> cq = cb.createQuery(Item.class);

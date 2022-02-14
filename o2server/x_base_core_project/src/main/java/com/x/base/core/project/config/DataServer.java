@@ -63,7 +63,7 @@ public class DataServer extends ConfigObject {
 	private Integer maxTotal;
 	@FieldDescribe("最大空闲连接数")
 	private Integer maxIdle;
-	@FieldDescribe("启用统计,默认启用")
+	@FieldDescribe("启用统计,默认开启")
 	private Boolean statEnable;
 	@FieldDescribe("统计方式配置,默认mergeStat")
 	private String statFilter;
