@@ -6,6 +6,7 @@ MWF.xApplication.process.workcenter.LP = {
 	"readCompleted": "已阅",
 	"draft": "草稿",
 	"createProcess": "新建流程",
+	"all": "全部",
 
 	"expire1": "任务截至时间：{time}",
 	"expire2": "任务即将超时，截至时间：{time}",
@@ -56,6 +57,8 @@ MWF.xApplication.process.workcenter.LP = {
 	"filter": "筛选",
 	"search": "搜索",
 	"filterPlaceholder": "请输入关键字",
+	"commonUseProcess":"常用流程",
+	"searchProcessResault": "”{key}“ 的搜索结果",
 
 	"filterCategoryList": [
 		{"key": "applicationList", "name": "应用名称"},
