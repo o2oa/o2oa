@@ -11,13 +11,13 @@ import com.x.cms.core.entity.DocumentCommend;
 
 /**
  * 文档点赞信息持久化管理的服务类
- * 
+ *
  * @author O2LEE
  */
 public class DocCommendPersistService {
-	
+
 	private DocCommendService docCommendService = new DocCommendService();
-	
+
 	public DocumentCommend create( DocumentCommend documentCommend ) throws Exception {
 		if( documentCommend == null ){
 			throw new Exception("wrapIn document commend is null!");
@@ -28,8 +28,8 @@ public class DocCommendPersistService {
 			throw e;
 		}
 	}
-	
-	public DocumentCommend create( String personName, String docId ) throws Exception {
+
+	public DocumentCommend create( String personName, String docId, String title ) throws Exception {
 		if( StringUtils.isEmpty( docId ) ){
 			throw new Exception("docId can not empty!");
 		}
@@ -40,12 +40,13 @@ public class DocCommendPersistService {
 			DocumentCommend documentCommend = new DocumentCommend();
 			documentCommend.setCommendPerson( personName );
 			documentCommend.setDocumentId( docId );
+			documentCommend.setTitle(title);
 			return docCommendService.create(emc, documentCommend );
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
-	
+
 	public List<String> delete( String docId, String personName ) throws Exception {
 		if( StringUtils.isEmpty( docId ) ){
 			throw new Exception("docId is empty!");
@@ -60,12 +61,12 @@ public class DocCommendPersistService {
 			}else {
 				return null;
 			}
-			
+
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
-	
+
 	public DocumentCommend delete( String id ) throws Exception {
 		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is empty!");
@@ -76,5 +77,5 @@ public class DocCommendPersistService {
 			throw e;
 		}
 	}
-	
+
 }
