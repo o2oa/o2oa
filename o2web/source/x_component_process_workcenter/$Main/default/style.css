@@ -713,7 +713,7 @@
     border: 0px;
     box-sizing: border-box!important;
     background: transparent;
-    font-size: 16px;
+    font-size: 14px;
     color: #666666;
 }
 .st_appListArea{
@@ -740,7 +740,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: keep-all;
-    font-size: 16px;
+    font-size: 14px;
 }
 .st_appItemCount{
     width: 60px;
@@ -903,4 +903,8 @@
 }
 .o2icon-zengjia:before {
     content: "\e911";
+}
+.dealStartedWorkAction{
+    color: #0000FF;
+    cursor: pointer;
 }

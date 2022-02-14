@@ -23,6 +23,8 @@ MWF.xApplication.process.workcenter.LP = {
 	"nextActivity": "下一个活动：",
 	"nextUser": "处理人：",
 	"processStartedMessage": "您启动了一个新的工作：",
+	"datch": "批量处理",
+	"deal": "处理",
 
 	"processing": "正在处理",
 	"workCompleted": "文件流转完成",
@@ -79,7 +81,8 @@ MWF.xApplication.process.workcenter.LP = {
 		{"key": "completedTimeMonthList", "name": "办理月份"},
 		{"key": "completedList", "name": "完成"},
 		{"key": "key", "name": "关键字"}
-	]
+	],
+
 
 
 };

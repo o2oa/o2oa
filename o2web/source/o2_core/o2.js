@@ -450,7 +450,10 @@ if (!window.o2) {
             if (op.noCache) url = (url.indexOf("?") !== -1) ? url + "&v=" + uuid : addr_uri + "?v=" + uuid;
             var key = encodeURIComponent(url + op.doc.unid);
             if (!op.reload) if (_loaded[key]) {
-                if (callback) callback();
+                Promise.resolve(_loaded[key]).then(function(o){
+                    if (callback) callback(o);
+                });
+                //if (callback) callback();
                 return;
             }
 
@@ -580,7 +583,10 @@ if (!window.o2) {
             }, op.doc);
 
             if (_loadedCss[key]) if (!op.reload) {
-                if (callback) callback(_loadedCss[key]);
+                Promise.resolve(_loadedCss[key]).then(function(o){
+                    if (callback) callback(o);
+                });
+                //if (callback) callback(_loadedCss[key]);
                 completed();
                 return;
             }
@@ -772,7 +778,10 @@ if (!window.o2) {
             if (op.noCache) url = (url.indexOf("?") !== -1) ? url + "&v=" + uid : url + "?v=" + uid;
             var key = encodeURIComponent(url + op.doc.unid);
             if (!op.reload) if (_loadedHtml[key]) {
-                if (callback) callback(_loadedHtml[key]);
+                Promise.resolve(_loadedHtml[key]).then(function(html){
+                    if (callback) callback(html);
+                });
+                //if (callback) callback(_loadedHtml[key]);
                 return;
             }
 
@@ -904,9 +913,15 @@ if (!window.o2) {
                         if (m[method]) m[method].apply(m, evs.concat([e, data]));
                     }, false);
                     // }
-                    node.dispatchEvent(o2.customEventLoad);
                 }
             });
+            // try {
+                node.dispatchEvent(o2.customEventLoad);
+            // }catch(e){
+            //     debugger;
+            //     console.error(e)
+            // }
+
         }
         var _bindToModule = function (m, node, name) {
             // if (m[name]){
@@ -1094,7 +1109,6 @@ if (!window.o2) {
                 } else { //text statement
                     var text = fullMatch.replace(/^\{\{\s*/, "");
                     text = text.replace(/\}\}\s*$/, "");
-                    debugger;
                     var value = _jsonText(json, text);
                     offset = value.length - fullMatch.length;
                     v = v.substring(0, match.index) + value + v.substring(rex.lastIndex, v.length);
