@@ -4,14 +4,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 
-import org.apache.commons.io.FileUtils;
-
 public class Components extends ConfigObject {
+
+	private static final long serialVersionUID = -6261924434387247937L;
 
 	public static final String NAME_SETTING = "Setting";
 	public static final String NAME_ORG = "Org";
@@ -26,13 +28,11 @@ public class Components extends ConfigObject {
 	public static final String NAME_PROFILE = "Profile";
 	public static final String NAME_BAM = "BAM";
 	public static final String NAME_CMS = "cms";
-	public static final String NAME_TASKCENTER = "TaskCenter";
+	public static final String NAME_WORKCENTER = "WorkCenter";
 	public static final String NAME_HOMEPAGE = "Homepage";
 	public static final String NAME_HOTARTICLE = "HotArticle";
-//	public static final String NAME_FILE = "File";
 	public static final String NAME_NOTE = "Note";
 	public static final String NAME_MEETING = "Meeting";
-	//public static final String NAME_ONLINEMEETING = "OnlineMeeting";
 	public static final String NAME_ATTENDANCE = "Attendance";
 	public static final String NAME_FORUM = "Forum";
 	public static final String NAME_MINDER = "Minder";
@@ -41,11 +41,11 @@ public class Components extends ConfigObject {
 	public static final String NAME_SEARCH = "Search";
 	public static final String NAME_IM = "IMV2";
 
-	public static List<String> SYSTEM_NAME_NAMES = ListTools.toList(NAME_SETTING, NAME_ORG, NAME_CMSMANAGER,
+	public static final List<String> SYSTEM_NAME_NAMES = ListTools.toList(NAME_SETTING, NAME_ORG, NAME_CMSMANAGER,
 			NAME_APPLICATIONEXPLORER, NAME_PORTALEXPLORER, NAME_DATAEXPLORER, NAME_SERVICEMANAGER, NAME_APPMARKET,
-			NAME_APPCENTER, NAME_LOGVIEWER, NAME_PROFILE, NAME_BAM, NAME_CMS, NAME_TASKCENTER, NAME_HOMEPAGE,
-			NAME_HOTARTICLE, NAME_NOTE, NAME_MEETING, NAME_ATTENDANCE, NAME_FORUM,
-			NAME_MINDER, NAME_CALENDAR, NAME_ANN, NAME_SEARCH, NAME_IM);
+			NAME_APPCENTER, NAME_LOGVIEWER, NAME_PROFILE, NAME_BAM, NAME_CMS, NAME_WORKCENTER, NAME_HOMEPAGE,
+			NAME_HOTARTICLE, NAME_NOTE, NAME_MEETING, NAME_ATTENDANCE, NAME_FORUM, NAME_MINDER, NAME_CALENDAR, NAME_ANN,
+			NAME_SEARCH, NAME_IM);
 
 	public static final String APPICON_PNG = "appicon.png";
 
@@ -81,21 +81,16 @@ public class Components extends ConfigObject {
 			return new Component(NAME_BAM, NAME_BAM, "流程监控", APPICON_PNG, 12, Component.TYPE_SYSTEM);
 		case NAME_CMS:
 			return new Component(NAME_CMS, "cms.Index", "信息平台", APPICON_PNG, 12, Component.TYPE_SYSTEM);
-		case NAME_TASKCENTER:
-			return new Component(NAME_TASKCENTER, "process.TaskCenter", "办公中心", APPICON_PNG, 13, Component.TYPE_SYSTEM);
+		case NAME_WORKCENTER:
+			return new Component(NAME_WORKCENTER, "process.workcenter", "办公中心", APPICON_PNG, 13, Component.TYPE_SYSTEM);
 		case NAME_HOMEPAGE:
 			return new Component(NAME_HOMEPAGE, NAME_HOMEPAGE, "首页", APPICON_PNG, 14, Component.TYPE_SYSTEM);
 		case NAME_HOTARTICLE:
 			return new Component(NAME_HOTARTICLE, NAME_HOTARTICLE, "热点", APPICON_PNG, 15, Component.TYPE_SYSTEM);
-//		case NAME_FILE:
-//			return new Component(NAME_FILE, NAME_FILE, "云文件", APPICON_PNG, 16, Component.TYPE_SYSTEM);
 		case NAME_NOTE:
 			return new Component(NAME_NOTE, NAME_NOTE, "便签", APPICON_PNG, 17, Component.TYPE_SYSTEM);
 		case NAME_MEETING:
 			return new Component(NAME_MEETING, NAME_MEETING, "会议管理", APPICON_PNG, 18, Component.TYPE_SYSTEM);
-//		case NAME_ONLINEMEETING:
-//			return new Component(NAME_ONLINEMEETING, NAME_ONLINEMEETING, "网络会议", APPICON_PNG, 19,
-//					Component.TYPE_SYSTEM);
 		case NAME_ATTENDANCE:
 			return new Component(NAME_ATTENDANCE, NAME_ATTENDANCE, "考勤管理", APPICON_PNG, 20, Component.TYPE_SYSTEM);
 		case NAME_FORUM:
@@ -130,13 +125,11 @@ public class Components extends ConfigObject {
 		o.systems.add(systemComponent(NAME_LOGVIEWER));
 		o.systems.add(systemComponent(NAME_PROFILE));
 		o.systems.add(systemComponent(NAME_BAM));
-		o.systems.add(systemComponent(NAME_TASKCENTER));
+		o.systems.add(systemComponent(NAME_WORKCENTER));
 		o.systems.add(systemComponent(NAME_HOMEPAGE));
 		o.systems.add(systemComponent(NAME_HOTARTICLE));
-//		o.systems.add(systemComponent(NAME_FILE));
 		o.systems.add(systemComponent(NAME_NOTE));
 		o.systems.add(systemComponent(NAME_MEETING));
-//		o.systems.add(systemComponent(NAME_ONLINEMEETING));
 		o.systems.add(systemComponent(NAME_ATTENDANCE));
 		o.systems.add(systemComponent(NAME_FORUM));
 		o.systems.add(systemComponent(NAME_MINDER));
