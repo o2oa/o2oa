@@ -138,11 +138,11 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
         }).inject(this.createNode);
 
         var html = "<table width=\"100%\" height=\"90%\" border=\"0\" cellPadding=\"0\" cellSpacing=\"0\">" +
-            "<tr><td colSpan=\"2\" style=\"height: 50px; line-height: 50px; text-align: center; font-size: 24px; font-weight: bold\">" +
+            "<tr><td style=\"height: 50px; line-height: 50px; text-align: left; font-size: 16px; color:#333333; \">" +
             this.lp.start+" - "+this.data.name+"</td></tr>" +
-            "<tr><td colSpan=\"2\" style=\"height: 40px; color: #0044cc; line-height: 40px; text-align: center; font-size: 18px; font-weight: bold\">" +
-            this.lp.selectStartIdentity+"</td></tr>" +
-            "<tr><td colSpan=\"2\" id=\"form_startIdentity\"></td></tr>" +
+            "<tr><td style=\"height: 60px; color: #0044cc; line-height: 80px; text-align: left; font-size: 16px; color:#333333; display: block; overflow: hidden\"><div style='padding-left:30px; line-height:80px'>" +
+            this.lp.selectStartIdentity+"</div></td></tr>" +
+            "<tr><td id=\"form_startIdentity\"></td></tr>" +
             "</table>";
         this.formNode.set("html", html);
 
@@ -165,6 +165,7 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
             id.node.store("identity", id);
             id.node.addEvents({
                 "mouseover": function(){
+                    this.addClass("mainColor_border");
                     this.setStyles(_self.css.identityNode_over);
                     this.getFirst().getLast().setStyles(_self.css.identityInforNameTextNode_over);
                     this.getFirst().getNext().getFirst().setStyles(_self.css.identityTitleNode_over);
@@ -172,6 +173,7 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
                     //this.getFirst().getNext().getNext().getNext().getFirst().setStyles(_self.css.identityTitleNode_over);
                 },
                 "mouseout": function(){
+                    this.removeClass("mainColor_border");
                     this.setStyles((layout.mobile) ? _self.css.identityNode_mobile : _self.css.identityNode);
                     this.getFirst().getLast().setStyles(_self.css.identityInforNameTextNode);
                     this.getFirst().getNext().getFirst().setStyles(_self.css.identityTitleNode);
@@ -230,7 +232,7 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
             });
             var count = this.identitys.length;
             if (count>2) count=2;
-            var w = count*294;
+            var w = count*320;
             this.formNode.setStyles({
                 "width": ""+w+"px"
             });
@@ -375,6 +377,11 @@ MWF.xApplication.process.TaskCenter.ProcessStarter.Identity = new Class({
             if (duty.woUnit) dutyTitleList.push(duty.name+"("+duty.woUnit.levelName+")");
         }.bind(this));
         this.dutyTextNode.set({"text": dutyTextList.join(", "), "title": dutyTitleList.join(", ")});
+
+        var unitTextNode = new Element("div.mainColor_color", {
+            "styles": this.style.identityInforUnitTextNode,
+            "text": "【"+this.data.woUnit.name+"】"
+        }).inject(this.node);
 
         // this.item.explorer.actions.getDepartment(function(json){
         //     this.department = json.data;

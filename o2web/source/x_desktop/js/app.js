@@ -38,6 +38,10 @@ layout.addReady(function(){
                 },function(){});
             }
         }
+        o2.xDesktop.getUserLayout(function(){
+            var style = layout.userLayout.flatStyle;
+            o2.loadCss("../o2_core/o2/xDesktop/$Default/"+style+"/style-skin.css");
+        });
 
         //_load();
     })(layout);

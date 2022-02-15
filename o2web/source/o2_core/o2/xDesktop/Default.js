@@ -685,7 +685,8 @@ debugger;
             "widgets": {},
             "menuData": this.menuData,
             "scale": layout.userLayout.scale || 1,
-            "clearCustomMenuDataFlag": this.status.clearCustomMenuDataFlag || ""
+            "clearCustomMenuDataFlag": this.status.clearCustomMenuDataFlag || "",
+            "gotoWorkcenterConfirm": layout.userLayout.gotoWorkcenterConfirm || false
         };
         // this.appArr.each(function(app){
         //     if (app.options.appId!==this.options.index){

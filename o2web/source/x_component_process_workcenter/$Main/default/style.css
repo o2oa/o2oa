@@ -1,0 +1,972 @@
+.appNode{
+    overflow: hidden;
+    height: 100%;
+}
+.menuArea{
+    max-width: 300px;
+    min-width: 160px;
+    width: 15%;
+    height: 100%;
+    background: #FFFFFF;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+    float: left;
+
+}
+.contentArea {
+    height: 100%;
+    background: #F0F0F0;
+    display: flex;
+    flex-direction:column;
+}
+.content{
+    height: 100%;
+    margin: 10px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+.menu{
+    margin: 0;
+    user-select: none;
+}
+
+.menuTitle{
+    margin: 0 20px;
+    height: 40px;
+    font-size: 16px;
+    color: #333333;
+    line-height: 40px;
+    border-bottom: 1px solid #E6E6E6;
+}
+.menuTitleText{
+    float: left;
+}
+.menuTitleAction {
+    text-align: right;
+    width: 40px;
+    height: 40px;
+    float: right;
+    cursor: pointer;
+    color: #4A90E2;
+}
+.menuItem{
+    height: 40px;
+    cursor: pointer;
+}
+.menuItem_current{
+    background-color: #EBF1F7;
+}
+.menuItem_over{
+    background-color: #F7F7F7;
+}
+.menuItemIcon {
+    margin-left: 20px;
+    height: 16px;
+    width: 16px;
+    padding: 11px 10px 12px 0;
+    float: left;
+    color: #999999;
+}
+.menuItemCount{
+    margin-right: 20px;
+    float: right;
+    width: 60px;
+    font-size: 12px;
+    color: #999999;
+    line-height: 40px;
+    text-align: right;
+}
+.menuItemText{
+    margin: 0 80px 0 48px;
+    height: 40px;
+    line-height: 40px;
+    color: #666666;
+}
+
+.createProcessAction{
+    text-align: center;
+    margin: 30px 20px 0 20px;
+    height: 30px;
+    line-height: 30px;
+    background: #4A90E2;
+    border-radius: 15px;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+.skeleton {
+    padding: 10px 30px;
+}
+.skeleton_item {
+    height: 16px;
+    border-radius: 15px;
+    margin-top: 20px;
+    background: #f2f2f2;
+}
+.contentTitle{
+    min-height: 20px;
+    padding: 15px 20px;
+}
+.contentList{
+    height: inherit;
+    overflow: auto;
+    padding: 0 20px;
+    position: relative;
+}
+.contentBottom{
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.contentPageArea{
+    height: 60px;
+}
+.firstPage, .lastPage, .pageItem, .prevPage, .nextPage{
+    height: 24px;
+    width: 80px;
+    border-radius: 12px;
+    background: #FFFFFF;
+    border: 1px solid #E6E6E6;
+    font-size: 12px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+}
+.firstPage{
+    float: left;
+}
+.lastPage {
+    float: right;
+    margin-left: 10px;
+}
+.prevPage{
+    float: left;
+    margin-left: 10px;
+    width: 24px;
+    font-size: 24px;
+    color: #999999;
+}
+.nextPage{
+    float: right;
+    margin-left: 10px;
+    width: 24px;
+    font-size: 24px;
+    color: #999999;
+}
+.pageNumberArea{
+    float: left;
+}
+.pageItem{
+    float: left;
+    width: 24px;
+    margin-left: 10px;
+}
+.contentTitleArea {
+    overflow: hidden;
+    min-height: 20px;
+}
+.contentTitleActionArea{
+    float: right;
+    color: #666666;
+    cursor: pointer;
+}
+.contentTitleFilterArea{
+    min-height: 20px;
+    overflow: hidden;
+}
+
+/*list*/
+.listItem{
+    height: 59px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E6E6E6;
+    cursor: pointer;
+    overflow: hidden;
+}
+.listItem_over{
+    background: #F7F7F7;
+}
+.listItemApplication{
+    height: 59px;
+    width: 210px;
+    float: left;
+    display: flex;
+    align-items: center;
+}
+.selectFlag{
+    float: left;
+    width: 20px;
+    height: 59px;
+    text-align: center;
+}
+.selectFlagIcon{
+    color: #cccccc;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 20px;
+    margin: 22px auto auto auto;
+}
+.selectFlagArea_disabled{
+    opacity: 0;
+}
+.selectFlagIcon_select{
+    border: 0;
+}
+.listItemLine{
+    width: 1px;
+    height: 35px;
+    background: #E6E6E6;
+    border-radius: 6px;
+    margin-top: 17px;
+    float: left;
+}
+.listItemTitle{
+    height: 59px;
+}
+.listItemActivity{
+    min-width: 40px;
+    width: 8%;
+    height: 59px;
+    float: right;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.listItemActivityText{
+    max-height: 38px;
+    overflow: hidden;
+}
+.listItemDate{
+    height: 59px;
+    min-width: 160px;
+    width: 13%;
+    text-align: center;
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.listItemFlag{
+    height: 59px;
+    width: 50px;
+    float: right;
+    background-position: top right;
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.rapidEditor{
+    font-size: 16px;
+    cursor: pointer;
+    color: #999999;
+}
+.listItemApplicationIcon{
+    width: 60px;
+    height: 59px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 40px 40px;
+}
+.listItemApplicationText{
+    max-height: 40px;
+    width: 170px;
+    overflow: hidden;
+    font-size: 16px;
+    color: #333333;
+    line-height: 20px;
+    padding-right: 10px;
+
+}
+
+.listItemTitleFlag{
+    float: left;
+    height: 20px;
+    color: #999999;
+}
+.listItemTitleProcess{
+    float: left;
+    padding: 0 10px 0 10px;
+    max-width: 140px;
+    height: 59px;
+    display: flex;
+    align-items: center;
+}
+.listItemTitleProcessText{
+    text-align: center;
+    float: left;
+    font-size: 14px;
+    color: #999999;
+    height: 20px;
+    overflow: hidden;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.listItemTitleSubject{
+    height: 59px;
+    display: flex;
+    align-items: center;
+}
+.listItemTitleSubject a{
+    max-height: 38px;
+    overflow: hidden;
+    color: #333333;
+}
+.listItemTitleSubject a:hover{
+    color: #0f81cc;
+    text-decoration: underline;
+}
+
+.listItemExpire{
+    height: 20px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    position: absolute;
+    width: 138px;
+}
+.maskNode{
+    background-color: #999999;
+    opacity: 0.4;
+    overflow: hidden;
+}
+
+.processNode{
+    height: 300px;
+    width: 600px;
+    padding: 10px;
+    background-color: #FFF;
+    overflow: hidden;
+}
+.processInfoTitle{
+    width: 700px;
+    height: 60px;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    border: 1px solid #E6E6E6;
+    margin: 10px auto;
+}
+.pf_item{
+    border-radius: 8px;
+}
+.pf_applicationText{
+    width: 120px;
+}
+.pf_application{
+    width: 180px;
+}
+.pf_titleProcess{
+    max-width: 120px;
+}
+.processInfoContent{
+    max-height: 550px;
+    margin: 20px;
+    overflow: hidden;
+}
+.pf_workLog{
+    height: 550px;
+    width: 55%;
+    padding: 3px 0;
+    float: left;
+    overflow: auto;
+    border-right: 1px solid #E6E6E6;
+}
+.pf_workList{
+    max-height: 550px;
+    width: 44%;
+    float: right;
+    overflow: auto;
+}
+.pf_logItem{
+    height: 80px;
+}
+.pf_itemLeft{
+    height: 80px;
+    width: 40px;
+    float: left;
+}
+.pf_itemActivity{
+    height: 59px;
+    width: 110px;
+    float: left;
+    padding: 10px 0;
+    border-bottom: 1px solid #E6E6E6;
+}
+.pf_itemOpinion{
+    height: 55px;
+    padding-top: 14px;
+    padding-bottom: 10px;
+    margin-left: 150px;
+    margin-right: 30px;
+    border-bottom: 1px solid #E6E6E6;
+}
+.pf_itemOpinionArea{
+    height: 55px;
+    cursor:pointer;
+}
+.pf_icon{
+    height: 16px;
+    text-align: center;
+}
+.pf_lineTop{
+    width: 1px;
+    height: 20px;
+    background-color: #E6E6E6;
+    margin: auto;
+}
+.pf_lineBottom{
+    width: 1px;
+    height: 44px;
+    background-color: #E6E6E6;
+    margin: auto;
+}
+.pf_fromActivityName{
+    color: #333333;
+    line-height: 20px;
+}
+.pf_routeName{
+    color: #666666;
+    font-size: 12px;
+    line-height: 20px;
+}
+.pf_arrivedTime{
+    color: #666666;
+    font-size: 12px;
+    line-height: 20px;
+}
+.pf_itemOpinionMore{
+    width: 30px;
+    height: 80px;
+    float: right;
+    text-align:center;
+    line-height:60px;
+    cursor: pointer;
+}
+.pf_itemOpinionIconArea{
+    width: 40px;
+    height: 56px;
+    float: right;
+    margin-left: 10px;
+    position: relative;
+}
+.pf_itemOpinionIcon{
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.pf_itemOpinionIconFlag{
+    position: absolute;
+    top: -3px;
+    left: 30px;
+    color: #4eb547;
+}
+.pf_itemOpinionPerson{
+    height: 16px;
+    text-align: center;
+    line-height: 16px;
+    color: #666666;
+    font-size: 12px;
+    margin-top: -5px;
+}
+.pf_workListArea{
+    padding: 10px;
+    overflow: hidden;
+}
+.pf_workListItem{
+    margin: 10px;
+    color: #666666;
+}
+.pf_button{
+    height: 24px;
+    line-height: 24px;
+    padding: 0 15px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 12px;
+    border: 1px solid;
+    background-color: #FFFFFF;
+}
+.pf_listItemActivity{
+    min-width: 40px;
+    width: 12%;
+    height: 59px;
+    float: right;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mf_workLogItem{
+    min-height: 59px;
+    border-bottom: 1px solid #E6E6E6;
+    overflow: hidden;
+    font-size: 12px;
+}
+.mf_workLogIcon{
+    float: left;
+    width: 60px;
+    height: 59px;
+}
+.mf_itemOpinionIconArea{
+    height: 40px;
+    width: 40px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.mf_itemOpinionIcon{
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+}
+.mf_workLogContent{
+    min-height: 49px;
+    padding: 5px 0;
+    margin-left: 60px;
+    color: #666666;
+}
+.mf_workLogPerson{
+    height: 20px;
+    line-height: 20px;
+}
+.mf_workLogOpinion{
+    min-height: 10px;
+}
+.mf_workLogTime{
+    height: 20px;
+    line-height: 20px;
+    color: #999999;
+}
+.ft_filterItem{
+    float: left;
+    margin-right: 10px;
+    padding: 0 10px;
+    background-color: #EBF1F7;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 14px;
+    margin-bottom:3px;
+}
+.ft_filterItemTitle{
+    float: left;
+}
+.ft_filterItemName{
+    float: left;
+}
+.ft_filterItemName{
+    float: left;
+    color: #666666;
+    margin-right: 10px;
+}
+.ft_filterItemDel{
+    float: left;
+    color: #999999;
+    line-height: 28px;
+    margin-top: 7px;
+    cursor: pointer;
+}
+.ft_content{
+    padding-top: 20px;
+}
+.ft_titleSearchArea{
+    height: 28px;
+    line-height: 28px;
+    border: 1px solid #CCCCCC;
+    border-radius:15px;
+}
+.ft_filterIcon{
+    height: 28px;
+    width: 38px;
+    border-radius: 14px;
+    float: left;
+    font-size: 16px;
+    text-align:center;
+}
+.ft_filterIcon icon{
+    margin-top: 6px;
+    display: block;
+}
+.ft_searchButton{
+    width: 50px;
+    height: 28px;
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+    float: right;
+    text-align:center;
+    cursor: pointer;
+}
+.ft_titleInputArea{
+    margin-left: 38px;
+    margin-right: 50px;
+    height: 28px;
+}
+.ft_titleInputArea input{
+    display: block;
+    width: 100%;
+    padding: 0;
+    height: 28px;
+    border: 0px;
+    box-sizing: border-box!important;
+}
+.ft_filterItemsArea{
+    overflow: hidden;
+    margin-top: 10px;
+    height: 420px;
+    overflow: auto;
+}
+.ft_itemsCategory{
+    overflow: hidden;
+    margin-top: 10px;
+}
+.ft_itemsCategoryTitle{
+    font-size: 16px;
+    height: 28px;
+    line-height: 28px;
+    color: #333333;
+}
+.ft_itemNode{
+    float: left;
+    margin-top: 5px;
+    margin-right: 5px;
+    padding: 3px 10px;
+    background: #F0F0F0;
+    border-radius: 15px;
+    color: #666666;
+    cursor: pointer;
+}
+
+.st_area{
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+.st_content{
+    width: 100%;
+    margin: 10px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.st_title{
+    height: 40px;
+    line-height: 40px;
+    color: #666666;
+    padding: 10px;
+}
+.st_titleAction{
+    float: right;
+    height: 40px;
+    width: 50px;
+    cursor: pointer;
+    text-align: center;
+}
+.st_titleText{
+    height: 40px;
+    margin-right: 50px;
+    padding-left: 20px;
+    font-size: 16px;
+}
+.st_processContent{
+    height: 100%;
+    display: flex;
+    overflow: hidden;
+}
+.st_menu{
+    max-width: 300px;
+    min-width: 200px;
+    width: 18%;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #E6E6E6;
+    float: left;
+    display: flex;
+    flex-direction:column;
+    margin-left: 20px;
+}
+
+.st_processList{
+    margin: 0 20px;
+    width: 82%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: auto;
+    border: 1px solid #E6E6E6;
+}
+/*.st_processListBox{*/
+/*    border: 1px solid #E6E6E6;*/
+/*    border-radius: 8px;*/
+/*    margin: 0 20px;*/
+/*}*/
+.st_all{
+    height: 40px;
+    line-height: 40px;
+    color: #666666;
+    font-size: 16px;
+    padding: 0 10px;
+    cursor: pointer;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.st_search{
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #E6E6E6;
+}
+.st_searchIcon{
+    float: left; width: 43px; height: 40px; text-align: center;line-height: 45px;
+}
+.st_searchInputArea{
+    margin-left:43px;
+}
+.st_searchInputArea input{
+    display: block;
+    width: 100%;
+    padding: 0;
+    height: 40px;
+    border: 0px;
+    box-sizing: border-box!important;
+    background: transparent;
+    font-size: 14px;
+    color: #666666;
+}
+.st_appListArea{
+    height: 100%;
+    overflow: auto;
+}
+.st_appListItem{
+    height: 45px;
+    line-height: 45px;
+    display: flex;
+    color: #666666;
+    cursor: pointer;
+}
+.st_appItemIcon{
+    width: 45px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-size: 24px 24px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.st_appItemText{
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: keep-all;
+    font-size: 14px;
+}
+.st_appItemCount{
+    width: 60px;
+    text-align: right;
+    margin-right: 20px;
+}
+.st_processListApp{
+    /*border: 1px solid #E6E6E6;*/
+    /*border-radius: 8px;*/
+    /*padding: 0 20px;*/
+    /*margin-bottom: 20px;*/
+}
+.st_processListAppTitle{
+    height: 49px;
+    line-height: 49px;
+    /*border-bottom: 1px solid #E6E6E6;*/
+    display: flex;
+    background-color: #f6f6f6;
+    padding: 0 20px;
+}
+.st_processListAppIcon{
+    width: 30px;
+    margin-right: 10px;
+    background-size: 30px 30px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.st_processListAppContent{
+    padding: 10px 20px;
+    overflow: hidden;
+}
+.st_processListAppText{
+    font-size: 16px;
+    color: #666666;
+}
+.st_processItemArea{
+    height: 30px;
+    color: #666666;
+    width: 140px;
+    line-height: 30px;
+    overflow: hidden;
+    float: left;
+    margin-right: 20px;
+}
+.st_processItem{
+    cursor: pointer;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    float: left;
+    padding: 0 10px;
+    border-radius: 20px;
+    user-select: none;
+}
+.st_processCommonIcon{
+    background-image: url("../o2_core/o2/xDesktop/$Default/appicons/process.png");
+    background-color: rgb(79, 178, 227);
+    background-size: 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    margin-top: 10px;
+}
+.st_processSearchIcon{
+    background-image: url("../o2_core/o2/xDesktop/$Default/appicons/search.png");
+    background-color: rgb(117, 135, 144);
+    background-size: 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    margin-top: 10px;
+}
+.st_clearSearch{
+    margin-left: 30px;
+    cursor: pointer;
+    line-height:49px !important;
+    font-size: 20px;
+    color: #cccccc;
+}
+.emptyListArea{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    height: 120px;
+    transform: translateX(-50%) translateY(-50%);
+}
+.emptyListIcon{
+    width: 72px;
+    height: 72px;
+    background-image: url(../x_component_process_workcenter/$Main/default/empty.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: auto;
+}
+.emptyListText{
+    height: 22px;
+    font-size: 16px;
+    color: #CCCCCC;
+    line-height: 22px;
+}
+.emptyListAction{
+    margin-top: 20px;
+    height: 22px;
+    font-size: 16px;
+    color: #4A90E2;
+    line-height: 22px;
+    cursor: pointer;
+}
+.dealStartedWorkAction{
+    color: #0000FF;
+    cursor: pointer;
+}
+
+.batchAction{
+    display: none;
+    position: fixed;
+    padding: 5px 20px;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    box-shadow: 0px 0px 5px 0px #cccccc;
+    border-radius: 30px;
+    border: 1px solid;
+}
+
+@font-face {
+    font-family: 'o2taskcenter';
+    src:
+            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.ttf?mcfdrb') format('truetype'),
+            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.woff?mcfdrb') format('woff'),
+            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.svg?mcfdrb#o2taskcenter') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^="o2icon-"], [class*=" o2icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'o2taskcenter' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.o2icon-bianji:before {
+    content: "\e900";
+}
+.o2icon-caogao:before {
+    content: "\e901";
+}
+.o2icon-circle:before {
+    content: "\e902";
+}
+.o2icon-clear:before {
+    content: "\e903";
+}
+.o2icon-daiban:before {
+    content: "\e904";
+}
+.o2icon-daiyue:before {
+    content: "\e905";
+}
+.o2icon-more_zd:before {
+    content: "\e906";
+}
+.o2icon-more_zk:before {
+    content: "\e907";
+}
+.o2icon-off:before {
+    content: "\e908";
+}
+.o2icon-point:before {
+    content: "\e909";
+}
+.o2icon-saixuan:before {
+    content: "\e90a";
+}
+.o2icon-sousuo:before {
+    content: "\e90b";
+}
+.o2icon-triangle_left:before {
+    content: "\e90c";
+}
+.o2icon-triangle_right:before {
+    content: "\e90d";
+}
+.o2icon-xuanzhong:before {
+    content: "\e90e";
+}
+.o2icon-yiban:before {
+    content: "\e90f";
+}
+.o2icon-yiyue:before {
+    content: "\e910";
+}
+.o2icon-zengjia:before {
+    content: "\e911";
+}

@@ -1,0 +1,33 @@
+<div class="st_content">
+    <div class="st_title">
+        <div class="st_titleAction" data-o2-events="click:closeStartProcess"><icon class="o2icon-off"/></div>
+        <div class="st_titleText">{{$.lp.createProcess}}</div>
+    </div>
+    <div class="st_processContent">
+        <div class="st_menu">
+            <div clasS="st_all st_appListItem mainColor_bg_opacity" data-o2-events="mouseover:startAppItemOver;mouseout:startAppItemOut;click:startAppItemClick;">{{$.lp.all}}({{
+                (function(){
+                    var count = 0;
+                    $.data.app.forEach(function(app){
+                        count+=app.processList.length;
+                    });
+                    return count;
+                })() }})</div>
+            <div clasS="st_search">
+                <div class="st_searchIcon"><icon class="o2icon-sousuo mainColor_color"/></div>
+                <div class="st_searchInputArea"><input type="text" placeholder="{{$.lp.filterPlaceholder}}"  data-o2-events="keydown:startProcessSearch"/></div>
+            </div>
+            <div class="st_appListArea">
+                {{each $.data.app}}
+                    <div class="st_appListItem" data-o2-events="mouseover:startAppItemOver;mouseout:startAppItemOut;click:startAppItemClick;">
+                        <div class="st_appItemIcon" data-o2-events="o2load:loadItemIcon:{{$.id}};click:clickitem"></div>
+                        <div class="st_appItemText" title="{{$.name}}">{{$.name}}</div>
+                        <div class="st_appItemCount">{{$.processList.length}}</div>
+                    </div>
+                {{end each}}
+            </div>
+
+        </div>
+        <div class="st_processList" data-o2-events="o2load:loadStartProcessList"></div>
+    </div>
+</div>

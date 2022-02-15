@@ -310,7 +310,6 @@ if (!layout.isReady) {
         } else {
             loadModuls();
         }
-
         o2.getJSON("../x_desktop/res/config/config.json", function (config) {
             _loadProgressBar();
             if (config.proxyCenterEnable){

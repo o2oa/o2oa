@@ -45,6 +45,9 @@
     background-color: #4A90E2 !important;
     color: #ffffff !important;
 }
+.mainColor_bg_opacity{
+    background-color: rgba(74, 144, 226, 0.12) !important;
+}
 .mainColor_color {
     color: #4A90E2 !important;
 }

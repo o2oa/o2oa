@@ -1,0 +1,76 @@
+{
+	"container": {
+		"border": "0px",
+		"padding": "2px",
+		"opacity": 1,
+		"z-index": "200",
+		"background-color": "#ffffff"
+	},
+	"panelTitleNode": {
+		"display":"block",
+		"height": "30px",
+		"line-height": "30px",
+	},
+	"panelTextNode": {
+		"opacity": 1,
+		"display":"block",
+		"height": "30px",
+		"line-height": "30px",
+		"font-size": "12px",
+		"font-weight": "bold",
+		"margin-right": "72px",
+		"padding-left": "10px"
+	},
+	"panelActionNode": {
+		"height": "30px",
+		"float": "right",
+		"display":"block",
+		"height": "24px",
+		"line-height": "24px",
+		"width": "70px"
+	},
+	"closeAction": {
+		"width": "16px",
+		"height": "16px",
+		"cursor": "pointer", 
+		"float": "right",
+		"margin-right": "3px",
+		"margin-top": "6px",
+		"background-image": "url("+o2.session.path+"/widget/$Panel/flat/icon/close.png)"
+	},
+	"maxAction": {
+		"width": "16px",
+		"height": "16px",
+		"cursor": "pointer", 
+		"float": "right",
+		"margin-right": "3px",
+		"margin-top": "6px"
+	},
+	"explandAction": {
+		"width": "16px",
+		"height": "16px",
+		"cursor": "pointer", 
+		"float": "right",
+		"margin-right": "3px",
+		"margin-top": "6px"
+	},
+	
+	"panelContent": {
+		"background-color": "#ffffff",
+		"overflow": "auto"
+	},
+	
+	"bottomNode": {
+		"border-bottom": "0px solid #FFF",
+		"height": "10px",
+		"background-color": "#ffffff"
+	},
+	"resizeAction": {
+		"width": "16px",
+		"height": "16px",
+		"cursor": "se-resize", 
+		"float": "right",
+		"margin-right": "1px",
+		"margin-top": "1px"
+	}
+}

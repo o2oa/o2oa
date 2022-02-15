@@ -908,17 +908,6 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
                 position: "topleft",
                 edge: "topleft"
             });
-
-
-            // this.nodeClone = this.node.clone(false);
-            // this.nodeClone.inject(this.node, "after");
-            // this.node.setStyles(this.list.css.itemNode_edit_from);
-            // this.node.position({
-            //     relativeTo: this.nodeClone,
-            //     position: "topleft",
-            //     edge: "topleft"
-            // });
-
             this.showEditNode(data);
         }.bind(this));
     },
