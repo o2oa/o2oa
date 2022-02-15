@@ -30,6 +30,12 @@ public class WorkProperties extends JsonProperties {
 	@FieldDescribe("父工作,在当前工作是通过子流程调用时产生.")
 	private String parentWork;
 
+	@FieldDescribe("父工作Job,在当前工作是通过子流程调用时产生.")
+	private String parentJob;
+
+	@FieldDescribe("Embed活动生成的Work的Job.")
+	private String embedTargetJob;
+
 	@FieldDescribe("拆分值列表")
 	private List<String> splitValueList = new ArrayList<>();
 
@@ -99,6 +105,22 @@ public class WorkProperties extends JsonProperties {
 
 	public void setParentWork(String parentWork) {
 		this.parentWork = parentWork;
+	}
+
+	public String getParentJob() {
+		return parentJob;
+	}
+
+	public void setParentJob(String parentJob) {
+		this.parentJob = parentJob;
+	}
+
+	public String getEmbedTargetJob() {
+		return embedTargetJob;
+	}
+
+	public void setEmbedTargetJob(String embedTargetJob) {
+		this.embedTargetJob = embedTargetJob;
 	}
 
 }
