@@ -677,7 +677,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideLayoutButton": "Hide Layout Buttons",
         "hideSettingButton": "Hide Setting Buttons",
         "hideModeButton": "Hide Mode Button",
-        "showInDatagrid": "Show In Datagrid",
+        "showInDatagrid": "Show In Datatable",
 
         "hideEraserButton": "Hide Eraser Button",
         "hideEraserRadioButton": "Hide Eraser Radio Button",

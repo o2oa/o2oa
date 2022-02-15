@@ -681,7 +681,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideLayoutButton": "隐藏布局操作组",
         "hideSettingButton": "隐藏设置操作组",
         "hideModeButton": "隐藏模式操作",
-        "showInDatagrid": "数据网格中的展现",
+        "showInDatagrid": "数据表格中的展现",
 
         "hideEraserButton": "隐藏橡皮按钮",
         "hideEraserRadioButton": "隐藏橡皮大小按钮",
