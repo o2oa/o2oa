@@ -92,6 +92,12 @@ public class WrapInDocumentFilter {
 	@FieldDescribe("业务数据Long值02.")
 	private Long longValue02;
 
+	@FieldDescribe("业务数据Double值01.")
+	private Double doubleValue01;
+
+	@FieldDescribe("业务数据Double值02.")
+	private Double doubleValue02;
+
 	public String getTopFlag() {
 		return topFlag;
 	}
@@ -300,6 +306,22 @@ public class WrapInDocumentFilter {
 		this.longValue02 = longValue02;
 	}
 
+	public Double getDoubleValue01() {
+		return doubleValue01;
+	}
+
+	public void setDoubleValue01(Double doubleValue01) {
+		this.doubleValue01 = doubleValue01;
+	}
+
+	public Double getDoubleValue02() {
+		return doubleValue02;
+	}
+
+	public void setDoubleValue02(Double doubleValue02) {
+		this.doubleValue02 = doubleValue02;
+	}
+
 	/**
 	 * 根据传入的查询参数，组织一个完整的QueryFilter对象
 	 * @return
@@ -481,6 +503,14 @@ public class WrapInDocumentFilter {
 
 		if( this.getLongValue02() != null) {
 			queryFilter.addEqualsTerm( new EqualsTerm(Document.longValue02_FIELDNAME, this.getLongValue02() ) );
+		}
+
+		if( this.getDoubleValue01() != null) {
+			queryFilter.addEqualsTerm( new EqualsTerm(Document.doubleValue01_FIELDNAME, this.getDoubleValue01() ) );
+		}
+
+		if( this.getDoubleValue02() != null) {
+			queryFilter.addEqualsTerm( new EqualsTerm(Document.doubleValue02_FIELDNAME, this.getDoubleValue02() ) );
 		}
 
 		return queryFilter;
