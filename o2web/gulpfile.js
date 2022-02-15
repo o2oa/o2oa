@@ -324,6 +324,14 @@ function createCMSXFormConcatTask(path, isMin, thisOptions) {
             'source/' + processPath + '/Elswitch.js',
             'source/' + processPath + '/Elautocomplete.js',
             'source/' + processPath + '/Elbutton.js',
+            'source/' + processPath + '/Eltime.js',
+            'source/' + processPath + '/Eldate.js',
+            'source/' + processPath + '/Eldatetime.js',
+            'source/' + processPath + '/Elrate.js',
+            'source/' + processPath + '/Elcolorpicker.js',
+            'source/' + processPath + '/Eltree.js',
+            'source/' + processPath + '/Eldropdown.js',
+            'source/' + processPath + '/Elcarousel.js',
             //'source/' + processPath + '/Tree.js',
             //'source/' + processPath + '/View.js',
             // 'source/x_component_process_Work/Processor.js',
@@ -370,7 +378,15 @@ function createCMSXFormConcatTask(path, isMin, thisOptions) {
             'source/' + path + '/Elslider.js',
             'source/' + path + '/Elswitch.js',
             'source/' + path + '/Elautocomplete.js',
-            'source/' + path + '/Elbutton.js'
+            'source/' + path + '/Elbutton.js',
+            'source/' + path + '/Eltime.js',
+            'source/' + path + '/Eldate.js',
+            'source/' + path + '/Eldatetime.js',
+            'source/' + path + '/Elrate.js',
+            'source/' + path + '/Elcolorpicker.js',
+            'source/' + path + '/Eltree.js',
+            'source/' + path + '/Eldropdown.js',
+            'source/' + path + '/Elcarousel.js',
 
             //'source/' + path + '/Personfield.js',
             //'source/' + path + '/Readerfield.js',
@@ -1371,7 +1387,7 @@ gulp.task("cleanAll", getCleanTask('/'));
 function getGitV(){
     var tagPromise = new Promise(function(s){
         git.exec({args : 'describe --tag'}, function (err, stdout) {
-            var v = stdout.substring(0, stdout.indexOf("-"));
+            var v = stdout.substring(0, stdout.lastIndexOf("-"));
             s(v);
         });
     });
@@ -1418,6 +1434,7 @@ gulp.task("o2:new-v:o2", function () {
 
     return getGitV().then(function(arr){
         var v = arr[0]+"-"+arr[1];
+
         return gulp.src(src)
             .pipe(assetRev({"verConnecter": arr[0], "md5": arr[1], "replace": true}))
             .pipe(gulpif((options.upload == 'local' && options.location != ''), gulp.dest(options.location + path + '/')))

@@ -48,7 +48,7 @@ class ActionAddInvite extends BaseAction {
 				for (String _s : modifyInvitePersonList) {
 					MessageFactory.meeting_invite(_s, meeting, room);
 				}
-				this.notifyMeetingInviteMessage(business, meeting);
+				// this.notifyMeetingInviteMessage(business, meeting);
 			}
 			Wo wo = new Wo();
 			wo.setId(meeting.getId());

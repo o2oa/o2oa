@@ -32,7 +32,7 @@ class ActionSetPassword extends BaseAction {
 					throw new ExceptionPersonNotExist(flag);
 				}
 				o = emc.find(o.getId(), Person.class);
-				if (!business.editable(effectivePerson, o)) {
+				if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, o)) {
 					throw new ExceptionDenyEditPerson(effectivePerson, flag);
 				}
 				if (StringUtils.isEmpty(wi.getValue())) {

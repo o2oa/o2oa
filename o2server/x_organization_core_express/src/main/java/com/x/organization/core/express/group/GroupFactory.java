@@ -116,7 +116,7 @@ public class GroupFactory {
 
 	/** 查询人员所在的群组 */
 	public List<String> listWithPerson(String... values) throws Exception {
-		return listWithPersonReference(Arrays.asList(values),true,false, false);
+		return listWithPersonReference(Arrays.asList(values),true,true, false);
 	}
 
 	/** 查询人员所在的群组 */

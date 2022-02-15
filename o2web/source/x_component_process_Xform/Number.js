@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "Textfield", null, false);
 /** @class Number 数字输入组件。
+ * @o2cn 数字输入组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

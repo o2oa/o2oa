@@ -11,10 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.script.Bindings;
+import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
-import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -29,13 +28,16 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.type.GenderType;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
@@ -46,7 +48,6 @@ import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.PersonAttribute;
 import com.x.organization.core.entity.Role;
-import com.x.base.core.project.cache.Cache.CacheKey;
 
 class ActionInput extends BaseAction {
 
@@ -93,12 +94,13 @@ class ActionInput extends BaseAction {
 		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 		Matcher matcher = pattern.matcher(Config.person().getPassword());
 		if (matcher.matches()) {
-			String eval = ScriptFactory.functionalization(StringEscapeUtils.unescapeJson(matcher.group(1)));
-			ScriptContext scriptContext = new SimpleScriptContext();
+			CompiledScript cs = ScriptingFactory
+					.functionalizationCompile(StringEscapeUtils.unescapeJson(matcher.group(1)));
+			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 			for (PersonItem o : people) {
-				bindings.put("person", o);
-				String pass = ScriptFactory.scriptEngine.eval(eval, scriptContext).toString();
+				bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PERSON, o);
+				String pass = JsonScriptingExecutor.evalString(cs, scriptContext);
 				o.setPassword(pass);
 			}
 		} else {
@@ -204,11 +206,6 @@ class ActionInput extends BaseAction {
 			for (PersonItem o : people) {
 				for (PersonItem item : people) {
 					if (o != item) {
-//						if (StringUtils.equals(o.getName(), item.getName())) {
-//							this.setMemo(workbook, configurator, o, "姓名冲突.");
-//							validate = false;
-//							continue;
-//						}
 						if (StringUtils.equals(o.getMobile(), item.getMobile())) {
 							this.setMemo(workbook, configurator, o, "手机号冲突,本次导入中不唯一.");
 							validate = false;
@@ -236,13 +233,6 @@ class ActionInput extends BaseAction {
 			}
 			if (validate) {
 				for (PersonItem o : people) {
-//					p = emc.flag(o.getName(), Person.class);
-//					if (null != p) {
-//						this.setMemo(workbook, configurator, o,
-//								"姓名: " + o.getName() + " 与已经存在用户: " + p.getName() + " 冲突.");
-//						validate = false;
-//						continue;
-//					}
 					p = emc.flag(o.getMobile(), Person.class);
 					if (null != p) {
 						this.setMemo(workbook, configurator, o,

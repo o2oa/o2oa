@@ -46,7 +46,25 @@ public class AppInfoAction extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "设置栏目权限.", action = ActionEditPermission.class)
+	@POST
+	@Path("{id}/permission")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updatePermission(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								 @JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionEditPermission.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEditPermission().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID删除指定的栏目信息（如果栏目下仍存在分类信息，则不可删除）。", action = ActionDelete.class)

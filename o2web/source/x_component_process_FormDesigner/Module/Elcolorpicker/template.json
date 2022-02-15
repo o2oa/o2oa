@@ -1,0 +1,42 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Elcolorpicker",
+	"description": "",
+	"isReadonly" : false,
+	"disabled": false,
+	"showAlpha": false,
+	"colorFormat": "hex",
+	"vueData": {},
+	"vueMethods": {},
+	"vueCss": {},
+	"vueSlot": "",
+	"elProperties": {},
+	"elStyles": {},
+	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
+		"change": {
+			"code": "",
+			"html": ""
+		},
+		"active-change": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

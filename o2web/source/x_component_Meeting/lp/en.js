@@ -160,6 +160,10 @@ MWF.xApplication.Meeting.LP = {
     "noMeeting": "No meeting",
     "noAddress": "Address not filled in",
 
+    "hostPerson": "Host Person",
+    "hostUnit": "Host Unit",
+    "meetingType":"Meeting Type",
+
     "week": "Week",
     "weeks": {
         "Sun": "Sun",
@@ -235,7 +239,8 @@ MWF.xApplication.Meeting.LP = {
         "viewSetting": "Enable View",
         "viewCustomName": "Display name",
         "mobileCreateEnable": "Whether the mobile terminal can create a new meeting",
-        "mobileCreateEnableOptions": ["Yes","No"]
+        "mobileCreateEnableOptions": ["Yes","No"],
+        "meetingType":"Meeting Type (one per line)"
     },
     "nextActivity": "Next Activity:",
     "nextUser": "Processor:",

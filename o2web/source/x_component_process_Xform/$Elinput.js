@@ -8,8 +8,10 @@ o2.xApplication.process.Xform.$Elinput = o2.APP$Elinput = new Class({
 Object.assign(o2.APP$Elinput.prototype, o2.APP$Input.prototype);
 
 Object.assign(o2.APP$Elinput.prototype, {
+    isReadonly : function(){
+        return !!(this.readonly || this.json.isReadonly);
+    },
     __setValue: function(value){
-        debugger;
         this.moduleValueAG = null;
         this._setBusinessData(value);
         this.json[this.json.$id] = value;

@@ -281,7 +281,7 @@ var mBox = new Class({
         // get elements to add events to, if none given use this.options.attach
         el = el || this.options.attach;
 
-        elements = Array.from($(el)).combine(Array.from($$('.' + el))).combine(Array.from($$(el))).clean();
+        elements = Array.convert($(el)).combine(Array.convert($$('.' + el))).combine(Array.convert($$(el))).clean();
 
         if(!elements || elements.length == 0) return this;
 
@@ -933,6 +933,10 @@ var mBox = new Class({
                 this[where || 'content'].grab($(content) || $$('.' + content));
                 if($(content)) $(content).setStyle('display', '');
             } else if(content != null) {
+                content = content.replace(/(?:<script[\s\S]*?)(?:(?:<\/script>)|(?:\/>))/gmi, '')
+                content = content.replace(/<[^>]+/gmi, function(match){
+                    return match.replace(/ on\w+=[\"\'\S][^"]*[\"\'\S]/gmi, '').replace(/javascript/gmi, '');
+                });
                 this[where || 'content'].set('html', content);
             }
         }

@@ -2,6 +2,11 @@ package com.x.base.core.project.jaxrs;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import javax.ws.rs.core.StreamingOutput;
+
+/**
+ * @author sword
+ */
 public abstract class WoFile extends WoMaxAgeFastETag {
 
 	private static final long serialVersionUID = -4566232046358204025L;
@@ -11,11 +16,22 @@ public abstract class WoFile extends WoMaxAgeFastETag {
 	private String contentType;
 	@FieldDescribe("字节内容.")
 	private byte[] bytes;
+	@FieldDescribe("附件流.")
+	private StreamingOutput streamingOutput;
+	@FieldDescribe("附件大小.")
+	private Long contentLength;
 
 	public WoFile(byte[] bytes, String contentType, String contentDisposition) {
 		this.bytes = bytes;
 		this.contentType = contentType;
 		this.contentDisposition = contentDisposition;
+	}
+
+	public WoFile(StreamingOutput streamingOutput, String contentType, String contentDisposition, Long contentLength) {
+		this.streamingOutput = streamingOutput;
+		this.contentType = contentType;
+		this.contentDisposition = contentDisposition;
+		this.contentLength = contentLength;
 	}
 
 	public String getContentDisposition() {
@@ -42,4 +58,19 @@ public abstract class WoFile extends WoMaxAgeFastETag {
 		this.bytes = bytes;
 	}
 
+	public StreamingOutput getStreamingOutput() {
+		return streamingOutput;
+	}
+
+	public void setStreamingOutput(StreamingOutput streamingOutput) {
+		this.streamingOutput = streamingOutput;
+	}
+
+	public Long getContentLength() {
+		return contentLength;
+	}
+
+	public void setContentLength(Long contentLength) {
+		this.contentLength = contentLength;
+	}
 }

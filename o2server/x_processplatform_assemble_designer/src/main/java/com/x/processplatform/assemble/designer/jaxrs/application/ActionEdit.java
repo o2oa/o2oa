@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.designer.jaxrs.application;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import com.google.gson.JsonElement;
@@ -54,8 +53,7 @@ class ActionEdit extends BaseAction {
 		private static final long serialVersionUID = 6624639107781167248L;
 
 		static WrapCopier<Wi, Application> copier = WrapCopierFactory.wi(Wi.class, Application.class, null,
-				Arrays.asList(JpaObject.createTime_FIELDNAME, JpaObject.updateTime_FIELDNAME,
-						JpaObject.sequence_FIELDNAME, JpaObject.distributeFactor_FIELDNAME));
+				JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId);
 
 	}
 

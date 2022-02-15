@@ -3,13 +3,7 @@ package com.x.message.assemble.communicate.jaxrs.im;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
@@ -39,6 +33,26 @@ public class ImAction extends StandardJaxrsAction {
     private static Logger logger = LoggerFactory.getLogger(ImAction.class);
 
 
+    /**************** im manager ************/
+
+
+    @JaxrsMethodDescribe(value = "更新IM配置.", action = ActionWriteImConfig.class)
+    @POST
+    @Path("manager/config")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void config(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       JsonElement jsonElement) {
+        ActionResult<ActionWriteImConfig.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionWriteImConfig().execute( effectivePerson, jsonElement );
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 
     /************* im conversation ************/
 
@@ -167,6 +181,24 @@ public class ImAction extends StandardJaxrsAction {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionMyConversationList().execute( effectivePerson );
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "清空会话的所有消息.", action = ActionDeleteConversationMsgs.class)
+    @DELETE
+    @Path("conversation/{id}/clear/all/msg")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void clearConversationMsg(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       @JaxrsParameterDescribe("会话ID") @PathParam("id") String id) {
+        ActionResult<ActionDeleteConversationMsgs.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionDeleteConversationMsgs().execute(effectivePerson, id);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

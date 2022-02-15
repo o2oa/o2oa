@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
@@ -22,7 +25,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class SplitProcessor extends AbstractSplitProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(SplitProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SplitProcessor.class);
 
 	public SplitProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -108,13 +111,11 @@ public class SplitProcessor extends AbstractSplitProcessor {
 	private List<String> splitWithPath(AeiObjects aeiObjects, Split split) throws Exception {
 		List<String> list = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(split.getScript())) || (StringUtils.isNotEmpty(split.getScriptText()))) {
-			Object objectValue = aeiObjects.business().element()
-					.getCompiledScript(aeiObjects.getWork().getApplication(), split, Business.EVENT_SPLIT)
-					.eval(aeiObjects.scriptContext());
-			List<String> os = ScriptFactory.asDistinguishedNameList(objectValue);
-			if (ListTools.isNotEmpty(os)) {
-				list.addAll(os);
-			}
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					split, Business.EVENT_SPLIT);
+			List<String> os = JsonScriptingExecutor.evalDistinguishedNames(cs, scriptContext);
+			list.addAll(os);
 		}
 		return list;
 	}

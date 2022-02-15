@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -106,8 +107,10 @@ public class ExmailAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "接收腾讯企业邮回调Get方法.", action = ActionGet.class)
 	@GET
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@QueryParam("msg_signature") String msg_signature, @QueryParam("timestamp") String timestamp,
-			@QueryParam("nonce") String nonce, @QueryParam("echostr") String echostr) {
+			@JaxrsParameterDescribe("msg_signature") @QueryParam("msg_signature") String msg_signature,
+			@JaxrsParameterDescribe("timestamp") @QueryParam("timestamp") String timestamp,
+			@JaxrsParameterDescribe("nonce") @QueryParam("nonce") String nonce,
+			@JaxrsParameterDescribe("echostr") @QueryParam("echostr") String echostr) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
@@ -132,8 +135,9 @@ public class ExmailAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "接收腾讯企业邮回调Post方法.", action = ActionCallback.class)
 	@POST
 	public void callback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@QueryParam("msg_signature") String msg_signature, @QueryParam("timestamp") String timestamp,
-			@QueryParam("nonce") String nonce, String body) {
+			@JaxrsParameterDescribe("msg_signature") @QueryParam("msg_signature") String msg_signature,
+			@JaxrsParameterDescribe("timestamp") @QueryParam("timestamp") String timestamp,
+			@JaxrsParameterDescribe("nonce") @QueryParam("nonce") String nonce, String body) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionCallback.Wo> result = new ActionResult<>();
 		try {

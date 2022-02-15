@@ -26,7 +26,7 @@ class ActionUnlock extends BaseAction {
 			if (null == person) {
 				throw new ExceptionPersonNotExist(flag);
 			}
-			if (!this.editable(business, effectivePerson, person)) {
+			if (!effectivePerson.isSecurityManager() && !this.editable(business, effectivePerson, person)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 

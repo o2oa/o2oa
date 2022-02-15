@@ -193,7 +193,6 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
         }
     },
     loadMultiToolbar : function(){
-	    debugger;
         if( this.json.multiTools ){
             if (MWF.xApplication.process.FormDesigner.LP.actionBar){
                 var jsonStr = JSON.stringify(this.json.multiTools);

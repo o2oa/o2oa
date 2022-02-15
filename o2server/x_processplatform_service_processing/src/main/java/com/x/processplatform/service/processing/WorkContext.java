@@ -3,19 +3,19 @@ package com.x.processplatform.service.processing;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonNull;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -23,8 +23,6 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Script;
-import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class WorkContext {
@@ -33,10 +31,10 @@ public class WorkContext {
 	private Work work;
 	private Activity activity;
 	private Gson gson = XGsonBuilder.instance();
-	private ProcessingAttributes processingAttributes;
 	private AeiObjects aeiObjects = null;
 	private Task task;
 	private TaskCompleted taskCompleted;
+	private Route route;
 
 	public void bindTask(Task task) {
 		this.task = task;
@@ -46,49 +44,36 @@ public class WorkContext {
 		this.taskCompleted = taskCompleted;
 	}
 
+	public void bindRoute(Route route) {
+		this.route = route;
+	}
+
 	public WorkContext(AeiObjects aeiObjects) throws Exception {
 		this.aeiObjects = aeiObjects;
 		this.business = aeiObjects.business();
 		this.work = aeiObjects.getWork();
 		this.activity = aeiObjects.getActivity();
-		this.processingAttributes = aeiObjects.getProcessingAttributes();
 	}
 
-	public WorkContext(Business business, Work work, Activity activity, Task task) throws Exception {
-		this.business = business;
-		this.work = work;
-		this.activity = activity;
-		this.gson = XGsonBuilder.instance();
+	public WorkContext(AeiObjects aeiObjects, Task task) throws Exception {
+		this(aeiObjects);
 		this.task = task;
 	}
 
-	public WorkContext(Business business, Work work, Activity activity, TaskCompleted taskCompleted) throws Exception {
-		this.business = business;
-		this.work = work;
-		this.activity = activity;
-		this.gson = XGsonBuilder.instance();
+	public WorkContext(AeiObjects aeiObjects, TaskCompleted taskCompleted) throws Exception {
+		this(aeiObjects);
 		this.taskCompleted = taskCompleted;
 	}
 
-	public String getWork() throws Exception {
+	public String getWork() {
 		return gson.toJson(work);
 	}
 
-	public String getActivity() throws Exception {
+	public String getActivity() {
 		return gson.toJson(this.activity);
 	}
 
-	public String getReviewList() throws Exception {
-		try {
-			List<Review> list = business.entityManagerContainer().listEqual(Review.class, Review.work_FIELDNAME,
-					work.getId());
-			return gson.toJson(list);
-		} catch (Exception e) {
-			throw new Exception("getReviewList error.", e);
-		}
-	}
-
-	public String getWorkLogList() throws Exception {
+	public String getWorkLogList() {
 		try {
 			List<String> ids = business.workLog().listWithWork(work.getId());
 			List<WorkLog> list = business.entityManagerContainer().list(WorkLog.class, ids);
@@ -99,11 +84,26 @@ public class WorkContext {
 					.collect(Collectors.toList());
 			return gson.toJson(list);
 		} catch (Exception e) {
-			throw new Exception("getWorkLogList error.", e);
+			throw new IllegalStateException("getWorkLogList error.", e);
 		}
 	}
 
-	public String getRouteList() throws Exception {
+	public String getRecordList() throws Exception {
+		try {
+			List<Record> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getRecords());
+				list.addAll(aeiObjects.getCreateRecords());
+			}
+			return gson.toJson(
+					list.stream().filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
+							.collect(Collectors.toList()));
+		} catch (Exception e) {
+			throw new IllegalStateException("getRecordList error.", e);
+		}
+	}
+
+	public String getRouteList() {
 		try {
 			List<Route> list = new ArrayList<>();
 			if (null != this.aeiObjects) {
@@ -111,8 +111,20 @@ public class WorkContext {
 			}
 			return gson.toJson(list);
 		} catch (Exception e) {
-			throw new Exception("getWorkLogList error.", e);
+			throw new IllegalStateException("getRouteList error.", e);
 		}
+	}
+
+	/**
+	 * 
+	 * @return 当前注入的路由
+	 * @throws Exception
+	 */
+	public String getRoute() {
+		if (null != route) {
+			return gson.toJson(route);
+		}
+		return JsonNull.INSTANCE.toString();
 	}
 
 	public void setTitle(String title) throws Exception {
@@ -157,42 +169,7 @@ public class WorkContext {
 			}
 			return gson.toJson(list);
 		} catch (Exception e) {
-			throw new Exception("getAttachmentList error.", e);
-		}
-	}
-
-	public String getScript(String uniqueName, List<String> imported) throws Exception {
-		try {
-			List<Script> list = new ArrayList<>();
-			for (Script o : business.element().listScriptNestedWithApplicationWithUniqueName(work.getApplication(),
-					uniqueName)) {
-				if ((null != imported) && ((StringUtils.isNotEmpty(o.getAlias())) && (!imported.contains(o.getAlias())))
-						&& ((StringUtils.isNotEmpty(o.getName())) && (!imported.contains(o.getName())))
-						&& (StringUtils.isNotEmpty(o.getId())) && (!imported.contains(o.getId()))) {
-					list.add(o);
-				}
-			}
-			StringBuffer buffer = new StringBuffer();
-			List<String> libs = new ArrayList<>();
-			for (Script o : list) {
-				buffer.append(o.getText());
-				buffer.append(System.lineSeparator());
-				if (StringUtils.isNotEmpty(o.getId())) {
-					libs.add(o.getId());
-				}
-				if (StringUtils.isNotEmpty(o.getName())) {
-					libs.add(o.getName());
-				}
-				if (StringUtils.isNotEmpty(o.getAlias())) {
-					libs.add(o.getAlias());
-				}
-			}
-			Map<String, Object> map = new HashMap<>();
-			map.put("importedList", libs);
-			map.put("text", buffer.toString());
-			return gson.toJson(map);
-		} catch (Exception e) {
-			throw new Exception("getScript error.", e);
+			throw new IllegalStateException("getAttachmentList error.", e);
 		}
 	}
 
@@ -206,7 +183,7 @@ public class WorkContext {
 			}
 			return gson.toJson(list);
 		} catch (Exception e) {
-			throw new Exception("getJobTaskList error.", e);
+			throw new IllegalStateException("getJobTaskList error.", e);
 		}
 	}
 
@@ -219,7 +196,7 @@ public class WorkContext {
 			}
 			return gson.toJson(list);
 		} catch (Exception e) {
-			throw new Exception("getJobTaskCompletedList error.", e);
+			throw new IllegalStateException("getJobTaskCompletedList error.", e);
 		}
 	}
 
@@ -232,7 +209,7 @@ public class WorkContext {
 			}
 			return gson.toJson(list);
 		} catch (Exception e) {
-			throw new Exception("getJobReadList error.", e);
+			throw new IllegalStateException("getJobReadList error.", e);
 		}
 	}
 
@@ -245,7 +222,20 @@ public class WorkContext {
 			}
 			return gson.toJson(list);
 		} catch (Exception e) {
-			throw new Exception("getJobReadCompletedList error.", e);
+			throw new IllegalStateException("getJobReadCompletedList error.", e);
+		}
+	}
+
+	public String getJobReviewList() throws Exception {
+		try {
+			List<Review> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getReviews());
+				list.addAll(aeiObjects.getCreateReviews());
+			}
+			return gson.toJson(list);
+		} catch (Exception e) {
+			throw new IllegalStateException("getJobReviewList error.", e);
 		}
 	}
 
@@ -260,7 +250,7 @@ public class WorkContext {
 					list.stream().filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
 							.collect(Collectors.toList()));
 		} catch (Exception e) {
-			throw new Exception("getTaskList error.", e);
+			throw new IllegalStateException("getTaskList error.", e);
 		}
 	}
 
@@ -275,10 +265,16 @@ public class WorkContext {
 					list.stream().filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
 							.collect(Collectors.toList()));
 		} catch (Exception e) {
-			throw new Exception("getTaskCompletedList error.", e);
+			throw new IllegalStateException("getTaskCompletedList error.", e);
 		}
 	}
 
+	/**
+	 * 为脚本运行准备的Json对象,如果为空那么返回字符串null
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	public String getTaskOrTaskCompleted() throws Exception {
 		if (null != task) {
 			return gson.toJson(task);
@@ -298,7 +294,7 @@ public class WorkContext {
 		if (null != o) {
 			return gson.toJson(o);
 		}
-		return "";
+		return JsonNull.INSTANCE.toString();
 	}
 
 	public String getReadList() throws Exception {
@@ -312,7 +308,7 @@ public class WorkContext {
 					list.stream().filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
 							.collect(Collectors.toList()));
 		} catch (Exception e) {
-			throw new Exception("getReadList error.", e);
+			throw new IllegalStateException("getReadList error.", e);
 		}
 	}
 
@@ -327,7 +323,17 @@ public class WorkContext {
 					list.stream().filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
 							.collect(Collectors.toList()));
 		} catch (Exception e) {
-			throw new Exception("getReadCompletedList error.", e);
+			throw new IllegalStateException("getReadCompletedList error.", e);
+		}
+	}
+
+	public String getReviewList() {
+		try {
+			List<Review> list = business.entityManagerContainer().listEqual(Review.class, Review.work_FIELDNAME,
+					work.getId());
+			return gson.toJson(list);
+		} catch (Exception e) {
+			throw new IllegalStateException("getReviewList error.", e);
 		}
 	}
 

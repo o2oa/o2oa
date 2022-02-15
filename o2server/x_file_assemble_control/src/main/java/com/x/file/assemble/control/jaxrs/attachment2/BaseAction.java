@@ -27,6 +27,8 @@ import com.x.file.core.entity.personal.Attachment2_;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
+	protected static final String EXCEPTION_FLAG = "existed";
+
 	protected Boolean exist(Business business, String fileName, String folderId, String person) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Attachment2.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -48,6 +50,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}else{
 			config = business.entityManagerContainer().firstEqual(FileConfig.class, FileConfig.person_FIELDNAME, Business.SYSTEM_CONFIG);
 			if(config != null){
+				business.entityManagerContainer().get(FileConfig.class).detach(config);
 				CacheManager.put(cacheCategory, cacheKey, config);
 			}
 		}

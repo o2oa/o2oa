@@ -34,6 +34,7 @@ public class Collect extends ConfigObject {
 	public static String ADDRESS_COLLECT_VALIDATE = "/o2_collect_assemble/jaxrs/unit/validate";
 	public static String ADDRESS_COLLECT_VALIDATE_CODE = "/o2_collect_assemble/jaxrs/unit/validate/codeanswer";
 	public static String ADDRESS_COLLECT_APPLICATION_LIST = "/o2_collect_assemble/jaxrs/application/list";
+	public static String ADDRESS_COLLECT_MARKET = "/market";
 	public static String ADDRESS_COLLECT_APPLICATION_DOWN = "/o2_collect_assemble/jaxrs/application/download";
 	public static String COLLECT_TOKEN = "c-token";
 	public static String ADDRESS_APPPACK_AUTH = "/auth/collect";
@@ -58,6 +59,7 @@ public class Collect extends ConfigObject {
 		this.sslEnable = false;
 		this.appPackServerHost = Default_appPackServerHost;
 		this.appPackServerPort = Default_appPackServerPort;
+		this.isAppPackCoverAppUrl = false;
 	}
 
 	@FieldDescribe("是否启用连接到云平台")
@@ -86,7 +88,17 @@ public class Collect extends ConfigObject {
 	private String appPackServerHost;
 	@FieldDescribe(("app打包服务器端口"))
 	private Integer appPackServerPort;
+	@FieldDescribe("是否用app打包的地址覆盖o2oa的appUrl")
+	private Boolean isAppPackCoverAppUrl;
 
+
+	public Boolean getAppPackCoverAppUrl() {
+		return isAppPackCoverAppUrl;
+	}
+
+	public void setAppPackCoverAppUrl(Boolean appPackCoverAppUrl) {
+		isAppPackCoverAppUrl = appPackCoverAppUrl;
+	}
 
 	public String getAppPackServerHost() {
 		return StringUtils.isEmpty(appPackServerHost) ? Default_appPackServerHost : appPackServerHost;

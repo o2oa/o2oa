@@ -6,6 +6,7 @@ MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
 //MWF.xDesktop.requireApp("process.Xform", "Package", null, false);
 
 /** @class Form 流程表单。
+ * @o2cn 流程表单
  * @o2category FormComponents
  * @o2range {Process}
  * @example
@@ -774,6 +775,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
                 actionStyle.width = buttonWidth + "px";
                 var action = new Element("div", { "styles": actionStyle, "text": tool.text }).inject(node);
+                if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
                     var clickFun = function () {
@@ -1204,7 +1206,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return moduleNodes;
     },
 
-    _loadModules: function (dom, beforeLoadModule) {
+    _loadModules: function (dom, beforeLoadModule, replace) {
         //var subDom = this.node.getFirst();
         //while (subDom){
         //    if (subDom.get("MWFtype")){
@@ -1221,11 +1223,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var json = this._getDomjson(node);
             //if( json.type === "Subform" || json.moduleName === "subform" )this.subformCount++;
             //if( json.type === "Subpage" || json.moduleName === "subpage" )this.subpageCount++;
-            var module = this._loadModule(json, node, beforeLoadModule);
+            var module = this._loadModule(json, node, beforeLoadModule, replace);
             this.modules.push(module);
         }.bind(this));
     },
-    _loadModule: function (json, node, beforeLoad) {
+    _loadModule: function (json, node, beforeLoad, replace) {
         //console.log( json.id );
         if (json.type === "Subform" || json.moduleName === "subform") this.subformCount++;
         //if( json.type === "Subform" || json.moduleName === "subform" ){
@@ -1240,7 +1242,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         var module = new MWF["APP" + json.type](node, json, this);
         if (beforeLoad) beforeLoad.apply(module);
-        if (!this.all[json.id]) this.all[json.id] = module;
+        if (replace || !this.all[json.id]) this.all[json.id] = module;
 
         if (json.name) {
             if (this.allForName[json.name]) {
@@ -1252,7 +1254,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
 
         if (module.field) {
-            if (!this.forms[json.id]) this.forms[json.id] = module;
+            if (replace || !this.forms[json.id]) this.forms[json.id] = module;
         }
         module.readonly = this.options.readonly;
         module.load();
@@ -1993,8 +1995,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var _self = this;
         MWF.require("MWF.widget.Mask", function () {
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
-            this.mask.loadNode(this.app.content);
-
+            debugger; // 适配移动端
+            if (layout.mobile) {
+                this.mask.load();
+            } else {
+                this.mask.loadNode(this.app.content);
+            }
             if (callbackBeforeSave) callbackBeforeSave();
             this.fireEvent("beforeSave");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
@@ -2399,6 +2405,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         //var node = new Element("div", {"styles": this.css.rollbackAreaNode});
         var processNode = new Element("div", { "styles": this.app.css.processNode_Area }).inject(this.node);
+        processNode.setStyle("opacity", 0);
         this.setProcessNode(processNode, "process", function (processor) {
             this.processDlg = o2.DL.open({
                 "title": this.app.lp.process,
@@ -2430,11 +2437,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                 ],
                 "onPostLoad": function () {
+                    processNode.setStyle("opacity", 1);
                     processor.options.mediaNode = this.content;
                     setSize.call(this)
                 }
-            });
-
+            })
         }.bind(this), function () {
             if (this.processDlg) setSize.call(this.processDlg, true)
         }.bind(this), defaultRoute);
@@ -2542,6 +2549,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.processor = new MWF.xApplication.process.Work.Processor(innerNode || processNode, this.businessData.task, {
                 "style": (layout.mobile) ? "mobile" : (style || "default"),
                 "opinion": op.opinion,
+                "isHandwriting": this.json.isHandwriting === "no" ? false : true,
+                "tabletToolHidden": this.json.tabletToolHidden || [],
                 "tabletWidth": this.json.tabletWidth || 0,
                 "tabletHeight": this.json.tabletHeight || 0,
                 "defaultRoute": defaultRoute,
@@ -3404,7 +3413,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         htmlFormId = htmlFormId.replace("#", "%23");
         var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/work/" + this.businessData.work.id + "/site/(0)/stream";
         url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
-        window.open(o2.filterUrl(url + "?fileName=&flag=" + htmlFormId));
+
+        var downloadUrl = o2.filterUrl(url + "?fileName=&flag=" + htmlFormId);
+        if (this.isDingtalkPc()) {
+            var xtoken = Cookie.read(o2.tokenName);
+            downloadUrl += "&" + o2.tokenName + "=" + xtoken;
+        }
+        window.open(downloadUrl);
     },
     resetWork: function () {
         if (!this.businessData.control["allowReset"]) {
@@ -4381,10 +4396,20 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
-            window.open(o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form));
+            var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
+            if (this.isDingtalkPc()) {
+                var xtoken = Cookie.read(o2.tokenName);
+                url += "&" + o2.tokenName + "=" + xtoken;
+            }
+            window.open(url);
         } else {
             var application = app || this.businessData.work.application;
-            window.open(o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form));
+            var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
+            if (this.isDingtalkPc()) {
+                var xtoken = Cookie.read(o2.tokenName);
+                url += "&" + o2.tokenName + "=" + xtoken;
+            }
+            window.open(url);
         }
     },
     /**
@@ -4429,7 +4454,7 @@ debugger;
                 "fromLeft": p.x,
                 "width": width,
                 "height": height,
-                "url": this.app.path + "readed.html",
+                "url": this.app.path + ( layout.mobile ? "readedmobile.html" : "readed.html" ),
                 "lp": MWF.xApplication.process.Xform.LP.form,
                 "container": layout.mobile ? content : this.app.content,
                 "isClose": true,
@@ -4548,10 +4573,20 @@ debugger;
         }
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
-            window.open(o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form));
+            var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
+            if (this.isDingtalkPc()) {
+                var xtoken = Cookie.read(o2.tokenName);
+                url += "&" + o2.tokenName + "=" + xtoken;
+            }
+            window.open(url);
         } else {
             var application = app || this.businessData.work.application;
-            window.open(o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form));
+            var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
+            if (this.isDingtalkPc()) {
+                var xtoken = Cookie.read(o2.tokenName);
+                url += "&" + o2.tokenName + "=" + xtoken;
+            }
+            window.open(url);
         }
         //window.open("../x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
     },
@@ -4645,15 +4680,21 @@ debugger;
     },
     // 判断是否是钉钉pc上 
     dingTalkPcCloseOrAppClose: function () {
-        // 判断是否是钉钉环境 是否是独立窗口
-        var ua = navigator.userAgent.toLowerCase();
-        debugger;
-        if (layout.inBrowser && ua.indexOf('dingtalk') >= 0) {
+        if (this.isDingtalkPc() && layout.inBrowser) { // 如果是钉钉pc上 并且是浏览器模式
             var centerUrl = o2.filterUrl("../x_desktop/app.html?app=process.TaskCenter");
             history.replaceState(null, "work", centerUrl);
             centerUrl.toURI().go();
         } else {
             this.app.close();
+        }
+    },
+     // 判断是否是钉钉环境
+    isDingtalkPc: function () {
+        var ua = navigator.userAgent.toLowerCase();
+        if (!(o2.session.isMobile || layout.mobile) && ua.indexOf('dingtalk') >= 0) {
+            return true;
+        } else {
+            return false;
         }
     },
     /**
@@ -4933,6 +4974,7 @@ debugger;
 
 /**
  * @class PortalPage 门户页面。
+ * @o2cn 门户页面
  * @alias PortalPage
  * @o2category FormComponents
  * @o2range {Portal}

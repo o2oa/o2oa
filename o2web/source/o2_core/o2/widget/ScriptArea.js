@@ -54,13 +54,20 @@ o2.widget.ScriptArea = new Class({
             }
         }).inject(this.titleNode);
         this.referenceNode = new Element("div", {
-            "styles": this.css.referenceNode
+            "styles": this.css.referenceNode,
+            "title": "open API",
+            "events": {
+                "click": this.openApi.bind(this)
+            }
         }).inject(this.titleNode);
 
         this.titleTextNode = new Element("div", {
             "styles": this.css.titleTextNode,
             "text": this.options.title
         }).inject(this.titleNode);
+    },
+    openApi: function(){
+        o2.openWindow(this.options.api || "../api")
     },
     toggleSize: function(e){
         var status = this.titleActionNode.retrieve("status", "max");

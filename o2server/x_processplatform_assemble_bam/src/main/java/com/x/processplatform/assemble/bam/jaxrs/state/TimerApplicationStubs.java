@@ -31,7 +31,6 @@ import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
@@ -98,7 +97,6 @@ public class TimerApplicationStubs {
 		list.addAll(this.listActivity(business, Invoke.class, processId));
 		list.addAll(this.listActivity(business, Manual.class, processId));
 		list.addAll(this.listActivity(business, Merge.class, processId));
-		list.addAll(this.listActivity(business, Message.class, processId));
 		list.addAll(this.listActivity(business, Parallel.class, processId));
 		list.addAll(this.listActivity(business, Service.class, processId));
 		list.addAll(this.listActivity(business, Split.class, processId));

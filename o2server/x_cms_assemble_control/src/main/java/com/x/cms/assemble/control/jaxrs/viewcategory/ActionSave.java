@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -55,10 +56,6 @@ public class ActionSave extends BaseAction {
 		if(check ){
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				//看看用户是否有权限进行应用信息新增操作
-				if (!business.viewEditAvailable( effectivePerson )) {
-					throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} 用户没有内容管理视图分类关联信息信息操作的权限！");
-				}
 				viewCategory = business.getViewCategoryFactory().getByViewAndCategory( wrapIn.getViewId(), wrapIn.getCategoryId() );
 				if( viewCategory == null ){
 					viewCategory = Wi.copier.copy( wrapIn );

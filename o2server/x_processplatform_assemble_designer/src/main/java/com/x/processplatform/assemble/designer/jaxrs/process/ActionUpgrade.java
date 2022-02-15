@@ -1,5 +1,11 @@
 package com.x.processplatform.assemble.designer.jaxrs.process;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -10,14 +16,23 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.MessageFactory;
+import com.x.processplatform.core.entity.element.Agent;
+import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Begin;
+import com.x.processplatform.core.entity.element.Cancel;
+import com.x.processplatform.core.entity.element.Choice;
+import com.x.processplatform.core.entity.element.Delay;
+import com.x.processplatform.core.entity.element.Embed;
+import com.x.processplatform.core.entity.element.End;
+import com.x.processplatform.core.entity.element.Invoke;
+import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Merge;
+import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.element.Service;
+import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 class ActionUpgrade extends BaseAction {
 
@@ -39,7 +54,7 @@ class ActionUpgrade extends BaseAction {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
 						application.getName(), application.getId());
 			}
-			if(StringUtils.isEmpty(process.getEdition())){
+			if (StringUtils.isEmpty(process.getEdition())) {
 				emc.beginTransaction(Process.class);
 				process.setEdition(process.getId());
 				process.setEditionEnable(true);
@@ -72,7 +87,6 @@ class ActionUpgrade extends BaseAction {
 			jpaObjects.addAll(create_invoke(wrapIn.getInvokeList(), newProcess));
 			jpaObjects.addAll(create_manual(wrapIn.getManualList(), newProcess));
 			jpaObjects.addAll(create_merge(wrapIn.getMergeList(), newProcess));
-			jpaObjects.addAll(create_message(wrapIn.getMessageList(), newProcess));
 			jpaObjects.addAll(create_parallel(wrapIn.getParallelList(), newProcess));
 			jpaObjects.addAll(create_service(wrapIn.getServiceList(), newProcess));
 			jpaObjects.addAll(create_split(wrapIn.getSplitList(), newProcess));
@@ -88,7 +102,6 @@ class ActionUpgrade extends BaseAction {
 			emc.beginTransaction(Invoke.class);
 			emc.beginTransaction(Manual.class);
 			emc.beginTransaction(Merge.class);
-			emc.beginTransaction(Message.class);
 			emc.beginTransaction(Parallel.class);
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);

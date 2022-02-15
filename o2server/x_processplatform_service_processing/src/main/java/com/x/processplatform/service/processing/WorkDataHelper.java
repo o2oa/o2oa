@@ -37,12 +37,12 @@ public class WorkDataHelper {
 
 	public WorkDataHelper(EntityManagerContainer emc, Work work) throws Exception {
 		if ((null == emc) || (null == work)) {
-			throw new Exception("create instance error.");
+			throw new IllegalStateException("create instance error.");
 		}
 		this.job = work.getJob();
 		this.distributeFactor = work.getDistributeFactor();
 		if (StringUtils.isEmpty(this.job)) {
-			throw new Exception("can not create DataHelper job is empty.");
+			throw new IllegalStateException("can not create DataHelper job is empty.");
 		}
 		this.emc = emc;
 		this.converter = new DataItemConverter<>(Item.class);
@@ -65,7 +65,7 @@ public class WorkDataHelper {
 		this.items = this.load();
 	}
 
-	private List<Item> load() throws Exception {
+	private List<Item> load() throws Exception  {
 		EntityManager em = emc.get(Item.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Item> cq = cb.createQuery(Item.class);

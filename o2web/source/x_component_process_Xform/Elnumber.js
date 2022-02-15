@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
 /** @class Elinput 基于Element UI的数字输入框组件。
+ * @o2cn 数字输入框
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -10,6 +11,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/input-number|Element UI InputNumber 计数器}
  */
 MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
     /** @lends o2.xApplication.process.Xform.Elnumber# */
@@ -18,6 +20,21 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
+        /**
+         * 当 input 获得焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elnumber#focus
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/input-number|计数器的Events章节}
+         */
+        /**
+         * 当 input 失去焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elnumber#blur
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/input-number|计数器的Events章节}
+         */
+        /**
+         * 绑定值被改变时触发。this.event[0]为组件的currentValue，this.event[1]为组件的oldValue
+         * @event MWF.xApplication.process.Xform.Elnumber#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/input-number|计数器的Events章节}
+         */
         "elEvents": ["focus", "blur", "change"]
     },
     /**

@@ -59,10 +59,12 @@ public class Statement extends SliceJpaObject {
 	public static final String ENTITYCATEGORY_OFFICIAL = "official";
 	public static final String ENTITYCATEGORY_CUSTOM = "custom";
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -74,6 +76,7 @@ public class Statement extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 
 	}
@@ -151,6 +154,17 @@ public class Statement extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + executeUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> executeUnitList;
+
+	public static final String executeGroupList_FIELDNAME = "executeGroupList";
+	@FieldDescribe("可以访问的群组.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + executeGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + executeGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + executeGroupList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + executeGroupList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> executeGroupList;
 
 	public static final String data_FIELDNAME = "data";
 	@FieldDescribe("jpql语句.")
@@ -430,4 +444,11 @@ public class Statement extends SliceJpaObject {
 		this.orderNumber = orderNumber;
 	}
 
+	public List<String> getExecuteGroupList() {
+		return executeGroupList;
+	}
+
+	public void setExecuteGroupList(List<String> executeGroupList) {
+		this.executeGroupList = executeGroupList;
+	}
 }

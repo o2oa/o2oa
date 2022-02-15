@@ -26,7 +26,7 @@ class ActionEdit extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
-		logger.debug(effectivePerson, "jsonElement:{}.", jsonElement);
+		logger.debug(effectivePerson.getDistinguishedName());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);

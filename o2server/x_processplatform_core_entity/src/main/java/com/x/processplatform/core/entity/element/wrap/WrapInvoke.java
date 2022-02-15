@@ -13,6 +13,6 @@ public class WrapInvoke extends Invoke {
 			null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapInvoke, Invoke> inCopier = WrapCopierFactory.wi(WrapInvoke.class, Invoke.class,
-			null, JpaObject.FieldsUnmodifyExcludeId, false);
+			null, JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId, false);
 
 }

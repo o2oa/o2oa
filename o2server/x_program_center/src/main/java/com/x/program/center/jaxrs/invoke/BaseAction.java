@@ -93,11 +93,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 		resources.setOrganization(new Organization(ThisApplication.context()));
 		resources.setWebservicesClient(new WebservicesClient());
 		resources.setApplications(ThisApplication.context().applications());
-		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
-		bindings.put(ScriptingFactory.BINDING_NAME_REQUESTTEXT, gson.toJson(jsonElement));
-		bindings.put(ScriptingFactory.BINDING_NAME_REQUEST, request);
-		bindings.put(ScriptingFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
-		bindings.put(ScriptingFactory.BINDING_NAME_CUSTOMRESPONSE, customResponse);
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_REQUESTTEXT, gson.toJson(jsonElement));
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_REQUEST, request);
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, effectivePerson);
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_CUSTOMRESPONSE, customResponse);
 	}
 
 	protected CompiledScript getCompiledScript(CacheCategory cacheCategory, Invoke invoke) throws ScriptException {
@@ -123,6 +123,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Invoke invoke = emc.flag(flag, Invoke.class);
 				if (null != invoke) {
+					emc.get(Invoke.class).detach(invoke);
 					CacheManager.put(cacheCategory, cacheKey, invoke);
 				}
 				return invoke;

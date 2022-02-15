@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //MWF.xDesktop.requireApp("process.Xform", "widget.Monitor", null, false);
 /** @class Monitor 流程图组件。
+ * @o2cn 流程图
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

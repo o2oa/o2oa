@@ -17,7 +17,7 @@ import com.x.base.core.project.tools.StringTools;
 
 public abstract class CacheManager {
 
-	private static Logger logger = LoggerFactory.getLogger(CacheManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CacheManager.class);
 
 	private CacheManager() {
 	}
@@ -35,8 +35,10 @@ public abstract class CacheManager {
 		if (null == cache) {
 			if (StringUtils.equals(Config.cache().getType(), Cache.TYPE_REDIS)) {
 				cache = new CacheRedisImpl(name);
-			} else {
+			} else if (StringUtils.equals(Config.cache().getType(), Cache.TYPE_EHCACHE)) {
 				cache = new CacheEhcacheImpl(name);
+			} else {
+				cache = new CacheGuavaImpl(name);
 			}
 		}
 		return cache;
@@ -46,15 +48,15 @@ public abstract class CacheManager {
 		try {
 			cache().put(category, key, o);
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
-	public static Optional<?> get(CacheCategory category, CacheKey key) {
+	public static Optional<Object> get(CacheCategory category, CacheKey key) {
 		try {
 			return cache().get(category, key);
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return Optional.empty();
 	}
@@ -65,7 +67,7 @@ public abstract class CacheManager {
 				cache.shutdown();
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -75,7 +77,7 @@ public abstract class CacheManager {
 				cache.receive(wi);
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -85,27 +87,31 @@ public abstract class CacheManager {
 				cache.notify(clz, keys);
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
-	public static void notify(Class<?> clz) throws Exception {
+	public static void notify(Class<?> clz) {
 		try {
 			if (null != cache) {
 				cache.notify(clz, new ArrayList<Object>());
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
-	public static void notify(Class<?> clz, Object... objects) throws Exception {
+	public static void notify(Class<?> clz, Object... objects) {
 		try {
 			if (null != cache) {
 				cache.notify(clz, ListTools.toList(objects));
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
+	}
+
+	public static String detail() throws Exception {
+		return cache().detail();
 	}
 }

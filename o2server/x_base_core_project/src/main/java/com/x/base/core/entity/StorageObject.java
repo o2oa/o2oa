@@ -1,9 +1,12 @@
 package com.x.base.core.entity;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
@@ -13,17 +16,21 @@ import javax.persistence.Transient;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.vfs2.*;
+import org.apache.commons.vfs2.CacheStrategy;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.cache.NullFilesCache;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.ftp.FtpFileType;
 import org.apache.commons.vfs2.provider.ftps.FtpsFileSystemConfigBuilder;
+import org.apache.commons.vfs2.provider.webdav4.Webdav4FileSystemConfigBuilder;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.tools.DefaultCharset;
-import org.apache.commons.vfs2.provider.webdav4.Webdav4FileSystemConfigBuilder;
 
 @MappedSuperclass
 public abstract class StorageObject extends SliceJpaObject {
@@ -105,9 +112,10 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/** 将导入的字节进行保存 */
 	public Long saveContent(StorageMapping mapping, byte[] bytes, String name) throws Exception {
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
-			return saveContent(mapping, bais, name);
-		}
+		this.setName(name);
+		this.setDeepPath(mapping.getDeepPath());
+		this.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(name, ".")));
+		return this.updateContent(mapping, bytes);
 	}
 
 	/** 将导入的流进行保存 */
@@ -140,21 +148,28 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/** 更新Content内容 */
 	public Long updateContent(StorageMapping mapping, InputStream input) throws Exception {
-		return updateContent(mapping, IOUtils.toByteArray(input));
+		if (Objects.equals(StorageProtocol.hdfs, mapping.getProtocol())) {
+			return this.hdfsUpdateContent(mapping, IOUtils.toByteArray(input));
+		} else {
+			return this.vfsUpdateContent(mapping, input);
+		}
 	}
 
 	/** 更新Content内容 */
 	public Long updateContent(StorageMapping mapping, byte[] bytes) throws Exception {
-
 		if (Objects.equals(StorageProtocol.hdfs, mapping.getProtocol())) {
 			return this.hdfsUpdateContent(mapping, bytes);
 		} else {
-			return this.vfsUpdateContent(mapping, bytes);
+			return this.vfsUpdateContent(mapping, new ByteArrayInputStream(bytes));
 		}
-
 	}
 
-	// 读出内容
+	/**
+	 * 读出内容
+	 * @param mapping
+	 * @return
+	 * @throws Exception
+	 */
 	public byte[] readContent(StorageMapping mapping) throws Exception {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			readContent(mapping, baos);
@@ -162,7 +177,13 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	// 将内容流出到output
+	/**
+	 * 将内容流出到output
+	 * @param mapping
+	 * @param output
+	 * @return
+	 * @throws Exception
+	 */
 	public Long readContent(StorageMapping mapping, OutputStream output) throws Exception {
 		if (Objects.equals(mapping.getProtocol(), StorageProtocol.hdfs)) {
 			return hdfsReadContent(mapping, output);
@@ -171,7 +192,12 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	// 检查是否存在内容
+	/**
+	 * 检查是否存在内容
+	 * @param mapping
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean existContent(StorageMapping mapping) throws Exception {
 		if (Objects.equals(mapping.getProtocol(), StorageProtocol.hdfs)) {
 			return hdfsExistContent(mapping);
@@ -188,7 +214,13 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	// 取得完整访问路径的前半部分
+	/**
+	 * 取得完整访问路径的前半部分
+	 * @param mapping
+	 * @return
+	 * @throws IllegalStateException
+	 * @throws UnsupportedEncodingException
+	 */
 	private String getPrefix(StorageMapping mapping) throws IllegalStateException, UnsupportedEncodingException {
 		String prefix = "";
 		if (null == mapping.getProtocol()) {
@@ -244,8 +276,8 @@ public abstract class StorageObject extends SliceJpaObject {
 			// 强制不校验IP
 			sftpBuilder.setRemoteVerification(opts, false);
 			sftpBuilder.setFileType(opts, FtpFileType.BINARY);
-			sftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
-			sftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			sftpBuilder.setConnectTimeout(opts, 10 * 1000);
+			sftpBuilder.setSoTimeout(opts, 10 * 1000);
 			sftpBuilder.setControlEncoding(opts, DefaultCharset.name);
 			// By default, the path is relative to the user's home directory. This can be
 			// changed with:
@@ -269,8 +301,8 @@ public abstract class StorageObject extends SliceJpaObject {
 			ftpBuilder.setRemoteVerification(opts, false);
 			// FtpFileType.BINARY is the default
 			ftpBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
-			ftpBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			ftpBuilder.setConnectTimeout(opts, 10 * 1000);
+			ftpBuilder.setSoTimeout(opts, 10 * 1000);
 			ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
 			break;
 		case ftps:
@@ -280,16 +312,16 @@ public abstract class StorageObject extends SliceJpaObject {
 			ftpsBuilder.setRemoteVerification(opts, false);
 			// FtpFileType.BINARY is the default
 			ftpsBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpsBuilder.setConnectTimeout(opts, Duration.ofSeconds(10));
-			ftpsBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			ftpsBuilder.setConnectTimeout(opts, 10 * 1000);
+			ftpsBuilder.setSoTimeout(opts, 10 * 1000);
 			ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
 			break;
 		case cifs:
 			break;
 		case webdav:
-			Webdav4FileSystemConfigBuilder webdavBuilder =  Webdav4FileSystemConfigBuilder.getInstance();
-			webdavBuilder.setConnectionTimeout(opts, Duration.ofSeconds(10));
-			webdavBuilder.setSoTimeout(opts, Duration.ofSeconds(10));
+			Webdav4FileSystemConfigBuilder webdavBuilder = Webdav4FileSystemConfigBuilder.getInstance();
+			webdavBuilder.setConnectionTimeout(opts, 10 * 1000);
+			webdavBuilder.setSoTimeout(opts, 10 * 1000);
 			webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
 			webdavBuilder.setMaxConnectionsPerHost(opts, 200);
 			webdavBuilder.setMaxTotalConnections(opts, 200);
@@ -303,7 +335,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		return opts;
 	}
 
-	private Long vfsUpdateContent(StorageMapping mapping, byte[] bytes) throws Exception {
+	private Long vfsUpdateContent(StorageMapping mapping, InputStream inputStream) throws Exception {
 		String prefix = this.getPrefix(mapping);
 		String path = this.path();
 		if (StringUtils.isEmpty(path)) {
@@ -321,7 +353,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		for (int i = 0; i < 2; i++) {
 			try (FileObject fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
 					OutputStream output = fo.getContent().getOutputStream()) {
-				length = IOUtils.copyLarge(new ByteArrayInputStream(bytes), output);
+				length = IOUtils.copyLarge(inputStream, output);
 				this.setLength(length);
 				if ((!Objects.equals(StorageProtocol.webdav, mapping.getProtocol()))
 						&& (!Objects.equals(StorageProtocol.sftp, mapping.getProtocol()))) {
@@ -341,7 +373,13 @@ public abstract class StorageObject extends SliceJpaObject {
 		return length;
 	}
 
-	// vfs读取数据
+	/**
+	 * vfs读取数据
+	 * @param mapping
+	 * @param output
+	 * @return
+	 * @throws Exception
+	 */
 	private Long vfsReadContent(StorageMapping mapping, OutputStream output) throws Exception {
 		long length = -1L;
 		FileSystemManager manager = this.getFileSystemManager();
@@ -375,7 +413,11 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	// 删除内容,同时判断上一级目录(只判断一级)是否为空,为空则删除上一级目录
+	/**
+	 * 删除内容,同时判断上一级目录(只判断一级)是否为空,为空则删除上一级目录
+	 * @param mapping
+	 * @throws Exception
+	 */
 	private void vfsDeleteContent(StorageMapping mapping) throws Exception {
 		FileSystemManager manager = this.getFileSystemManager();
 		String prefix = this.getPrefix(mapping);

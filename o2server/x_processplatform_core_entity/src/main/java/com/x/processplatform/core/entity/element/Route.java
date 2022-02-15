@@ -73,6 +73,7 @@ public class Route extends SliceJpaObject {
 	public void postLoad() {
 		this.asyncSupported = this.getProperties().getAsyncSupported();
 		this.soleDirect = this.getProperties().getSoleDirect();
+		this.defaultSelected = this.getProperties().getDefaultSelected();
 	}
 
 	public Route() {
@@ -98,6 +99,10 @@ public class Route extends SliceJpaObject {
 		return soleDirect;
 	}
 
+	public Boolean getDefaultSelected() {
+		return defaultSelected;
+	}
+
 	public void setAsyncSupported(Boolean asyncSupported) {
 		this.asyncSupported = asyncSupported;
 		this.getProperties().setAsyncSupported(asyncSupported);
@@ -108,11 +113,25 @@ public class Route extends SliceJpaObject {
 		this.getProperties().setSoleDirect(soleDirect);
 	}
 
+	public void setDefaultSelected(Boolean defaultSelected) {
+		this.defaultSelected = defaultSelected;
+		this.getProperties().setDefaultSelected(defaultSelected);
+	}
+
+	@FieldDescribe("是否启用异步返回.")
+	public static final String ASYNCSUPPORTED_FIELDNAME = "asyncSupported";
 	@Transient
 	private Boolean asyncSupported;
 
+	@FieldDescribe("选择优先路由时是否直接执行路由(一票否决),默认null.")
+	public static final String SOLEDIRECT_FIELDNAME = "soleDirect";
 	@Transient
 	private Boolean soleDirect;
+
+	@FieldDescribe("默认选中的路由.")
+	public static final String DEFAULTSELECTED_FIELDNAME = "defaultSelected";
+	@Transient
+	private Boolean defaultSelected;
 
 	public static final String name_FIELDNAME = "name";
 	@FieldDescribe("名称.")
@@ -152,8 +171,7 @@ public class Route extends SliceJpaObject {
 
 	public static final String activity_FIELDNAME = "activity";
 	@IdReference({ Agent.class, Begin.class, Cancel.class, Choice.class, Choice.class, Delay.class, Embed.class,
-			End.class, Invoke.class, Manual.class, Merge.class, Message.class, Parallel.class, Service.class,
-			Split.class })
+			End.class, Invoke.class, Manual.class, Merge.class, Parallel.class, Service.class, Split.class })
 	@FieldDescribe("目标活动节点标识符.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + activity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + activity_FIELDNAME)
@@ -315,11 +333,10 @@ public class Route extends SliceJpaObject {
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + edition_FIELDNAME)
 	private String edition;
 
-	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent(fetch = FetchType.EAGER)
 	@Strategy(JsonPropertiesValueHandler)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private RouteProperties properties;
 

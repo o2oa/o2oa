@@ -1,21 +1,30 @@
 package com.x.base.core.project.tools;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Objects;
 import java.util.regex.Matcher;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
 
@@ -24,14 +33,13 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 
 public class Crypto {
 
 	private Crypto() {
 	}
-
-	private static final String utf8 = "UTF-8";
 
 	private static final String DES = "DES";
 
@@ -39,13 +47,16 @@ public class Crypto {
 
 	private static final String NEVERCHANGEKEY = "NEVERCHANGEKEY";
 
-	public static String encrypt(String data, String key) throws Exception {
+	public static String encrypt(String data, String key)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		byte[] bt = encrypt(data.getBytes(), key.getBytes());
 		String str = Base64.encodeBase64URLSafeString(bt);
-		return URLEncoder.encode(str, utf8);
+		return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
 	}
 
-	public static byte[] encrypt(byte[] data, byte[] key) throws Exception {
+	public static byte[] encrypt(byte[] data, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException,
+			InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		// 生成一个可信任的随机数源
 		SecureRandom sr = new SecureRandom();
 		// 从原始密钥数据创建DESKeySpec对象
@@ -60,17 +71,20 @@ public class Crypto {
 		return cipher.doFinal(data);
 	}
 
-	public static String decrypt(String data, String key) throws Exception {
+	public static String decrypt(String data, String key)
+			throws UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException,
+			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		if (StringUtils.isEmpty(data)) {
 			return null;
 		}
-		String str = URLDecoder.decode(data, utf8);
+		String str = URLDecoder.decode(data, StandardCharsets.UTF_8.name());
 		byte[] buf = Base64.decodeBase64(str);
 		byte[] bt = decrypt(buf, key.getBytes());
 		return new String(bt);
 	}
 
-	public static byte[] decrypt(byte[] data, byte[] key) throws Exception {
+	public static byte[] decrypt(byte[] data, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException,
+			InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		// 生成一个可信任的随机数源
 		SecureRandom sr = new SecureRandom();
 		// 从原始密钥数据创建DESKeySpec对象
@@ -85,21 +99,23 @@ public class Crypto {
 		return cipher.doFinal(data);
 	}
 
-	public static PublicKey rsaPublicKey(String publicKey) throws Exception {
+	public static PublicKey rsaPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		byte[] keyBytes = Base64.decodeBase64(publicKey);
 		X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
 		KeyFactory keyFactory = KeyFactory.getInstance(RSA);
 		return keyFactory.generatePublic(keySpec);
 	}
 
-	public static PrivateKey rsaPrivateKey(String privateKey) throws Exception {
+	public static PrivateKey rsaPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		byte[] keyBytes = Base64.decodeBase64(privateKey);
 		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
 		KeyFactory keyFactory = KeyFactory.getInstance(RSA);
 		return keyFactory.generatePrivate(keySpec);
 	}
 
-	public static String rsaEncrypt(String content, String publicKey) throws Exception {
+	public static String rsaEncrypt(String content, String publicKey)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException,
+			IllegalBlockSizeException, BadPaddingException, IOException {
 		Cipher cipher = Cipher.getInstance(RSA);
 		cipher.init(Cipher.ENCRYPT_MODE, rsaPublicKey(publicKey));
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -111,7 +127,9 @@ public class Crypto {
 		}
 	}
 
-	public static String rsaDecrypt(String content, String privateKey) throws Exception {
+	public static String rsaDecrypt(String content, String privateKey)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException,
+			IllegalBlockSizeException, BadPaddingException, IOException {
 		Cipher cipher = Cipher.getInstance(RSA);
 		cipher.init(Cipher.DECRYPT_MODE, rsaPrivateKey(privateKey));
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -138,9 +156,9 @@ public class Crypto {
 					String de = StringUtils.substringAfter(value, ":");
 					return decrypt(de, NEVERCHANGEKEY);
 				} else {
-					String eval = ScriptFactory.functionalization(StringEscapeUtils.unescapeJson(value));
+					CompiledScript cs = ScriptingFactory.functionalizationCompile(text);
 					ScriptContext scriptContext = new SimpleScriptContext();
-					return Objects.toString(ScriptFactory.scriptEngine.eval(eval, scriptContext));
+					return JsonScriptingExecutor.evalString(cs, scriptContext);
 				}
 			} else {
 				return text;
@@ -151,9 +169,11 @@ public class Crypto {
 		return null;
 	}
 
-	public static String defaultEncrypt(String data) throws Exception {
+	public static String defaultEncrypt(String data)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		byte[] bt = encrypt(data.getBytes(), NEVERCHANGEKEY.getBytes());
 		String str = Base64.encodeBase64URLSafeString(bt);
-		return URLEncoder.encode(str, utf8);
+		return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
 	}
 }

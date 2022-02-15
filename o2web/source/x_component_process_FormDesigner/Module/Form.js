@@ -916,7 +916,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this.data.json.mode = this.options.mode;
 		this.data.html = html;
 
-		debugger;
 		var data = this._copyFormJson(this.data);
 
 		if (data.json.styleConfig && data.json.styleConfig.extendFile){

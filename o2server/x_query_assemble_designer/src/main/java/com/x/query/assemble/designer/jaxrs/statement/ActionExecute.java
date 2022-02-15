@@ -69,9 +69,6 @@ class ActionExecute extends BaseAction {
 		ScriptContext scriptContext = this.scriptContext(effectivePerson, runtime);
 		CompiledScript cs = ScriptingFactory.functionalizationCompile(statement.getScriptText());
 		String text = JsonScriptingExecutor.evalString(cs, scriptContext);
-//		Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(statement.getScriptText()),
-//				scriptContext);
-//		String text = ScriptFactory.asString(o);
 		Class<? extends JpaObject> cls = this.clazz(business, statement);
 		EntityManager em;
 		if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
@@ -164,9 +161,9 @@ class ActionExecute extends BaseAction {
 		resources.setWebservicesClient(new WebservicesClient());
 		resources.setOrganization(new Organization(ThisApplication.context()));
 		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
-		bindings.put(ScriptingFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
-		bindings.put(ScriptingFactory.BINDING_NAME_PARAMETERS, gson.toJson(runtime.getParameters()));
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, effectivePerson);
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PARAMETERS, gson.toJson(runtime.getParameters()));
 		return scriptContext;
 	}
 

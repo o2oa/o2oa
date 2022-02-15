@@ -63,4 +63,22 @@ public class CacheAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@GET
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("detail")
+	@JaxrsMethodDescribe(value = "显示缓存状态.", action = ActionDetail.class)
+	public void detail(@Suspended final AsyncResponse asyncResponse, @Context ServletContext servletContext,
+			@Context HttpServletRequest request) {
+		ActionResult<ActionDetail.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDetail().execute(effectivePerson, servletContext);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

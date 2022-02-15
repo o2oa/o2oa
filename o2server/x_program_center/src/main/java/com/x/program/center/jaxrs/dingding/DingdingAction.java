@@ -65,19 +65,18 @@ public class DingdingAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-
 	@JaxrsMethodDescribe(value = "获取钉钉回调的EncodingAESKey.", action = ActionCallbackAESKey.class)
 	@GET
 	@Path("get/callback/aes")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void syncOrganizationCallbackEncodingAESKeyGet(@Suspended final AsyncResponse asyncResponse,
-														  @Context HttpServletRequest request) {
+			@Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionCallbackAESKey.Wo> result = new ActionResult<>();
 		try {
 			result = new ActionCallbackAESKey().execute(effectivePerson);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
@@ -89,8 +88,9 @@ public class DingdingAction extends StandardJaxrsAction {
 	@Path("sync/organization/register/callback/{enable}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void registerSyncOrgCallbackUrl(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-										   @JaxrsParameterDescribe("注册回调地址还是更新") @PathParam("enable") boolean enable) {
+	public void registerSyncOrgCallbackUrl(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("注册回调地址还是更新") @PathParam("enable") boolean enable) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionSyncOrganizationCallbackUrlRegister.Wo> result = new ActionResult<>();
 		try {
@@ -104,6 +104,7 @@ public class DingdingAction extends StandardJaxrsAction {
 
 	/**
 	 * 钉钉回调用的post接口 需要返回固定格式的json字符串
+	 * 
 	 * @param asyncResponse
 	 * @param request
 	 * @param signature
@@ -116,20 +117,21 @@ public class DingdingAction extends StandardJaxrsAction {
 	@Path("sync/organization/callback")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void syncOrganizationCallback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-										 @QueryParam("signature") String signature, @QueryParam("timestamp") String timestamp,
-										 @QueryParam("nonce") String nonce, JsonElement jsonElement) {
+	public void syncOrganizationCallback(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("signature") @QueryParam("signature") String signature,
+			@JaxrsParameterDescribe("timestamp") @QueryParam("timestamp") String timestamp,
+			@JaxrsParameterDescribe("nonce") @QueryParam("nonce") String nonce, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			Map<String, String> json = new ActionSyncOrganizationCallbackPost().execute(effectivePerson, signature, timestamp, nonce, jsonElement);
+			Map<String, String> json = new ActionSyncOrganizationCallbackPost().execute(effectivePerson, signature,
+					timestamp, nonce, jsonElement);
 			Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 			asyncResponse.resume(Response.ok(gson.toJson(json)).build());
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			asyncResponse.resume(Response.serverError().entity("fail").build());
 		}
-
-
 
 //		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}

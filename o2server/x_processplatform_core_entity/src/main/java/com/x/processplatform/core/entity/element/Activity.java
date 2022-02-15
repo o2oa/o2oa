@@ -2,6 +2,7 @@ package com.x.processplatform.core.entity.element;
 
 import java.util.List;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.entity.SliceJpaObject;
 
 public abstract class Activity extends SliceJpaObject {
@@ -114,15 +115,14 @@ public abstract class Activity extends SliceJpaObject {
 
 	public abstract void setAllowRerouteTo(Boolean allowReroute);
 
-	// 是否允许快照
-//	public abstract Boolean getAllowSnap();
-//
-//	public abstract void setAllowSnap(Boolean allowSnap);
-
 	// 是否允许挂起
 	public abstract Boolean getAllowSuspend();
 
 	public abstract void setAllowSuspend(Boolean allowSuspend);
+
+	public abstract JsonElement getCustomData();
+
+	public abstract void setCustomData(JsonElement customData);
 
 	public ActivityType getActivityType() throws Exception {
 		if (this instanceof Agent) {
@@ -145,8 +145,6 @@ public abstract class Activity extends SliceJpaObject {
 			return ActivityType.manual;
 		} else if (this instanceof Merge) {
 			return ActivityType.merge;
-		} else if (this instanceof Message) {
-			return ActivityType.message;
 		} else if (this instanceof Parallel) {
 			return ActivityType.parallel;
 		} else if (this instanceof Service) {

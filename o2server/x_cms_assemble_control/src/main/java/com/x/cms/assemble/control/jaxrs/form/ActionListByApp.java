@@ -61,7 +61,7 @@ public class ActionListByApp extends BaseAction {
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static List<String> excludes = new ArrayList<String>();
+		public static List<String> excludes = new ArrayList<>();
 
 		public static final WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null, JpaObject.FieldsInvisible);
 

@@ -1,6 +1,6 @@
 MWF.xApplication.Collect.options.multitask = false;
 MWF.require("MWF.xDesktop.Access", null, false);
-MWF.xDesktop.requireApp("Collect", "Actions.RestActions", null, false);
+// MWF.xDesktop.requireApp("Collect", "Actions.RestActions", null, false);
 MWF.xApplication.Collect.Main = new Class({
     Extends: MWF.xApplication.Common.Main,
     Implements: [Options, Events],

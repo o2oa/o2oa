@@ -27,7 +27,7 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
 
 class ActionEdit extends BaseAction {
-	
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
@@ -45,7 +45,7 @@ class ActionEdit extends BaseAction {
 				throw new ExceptionEntityNotExist(identity.getUnit(), Unit.class);
 			}
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			if (!business.editable(effectivePerson, unit)) {
+			if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, unit)) {
 				throw new ExceptionAccessDenied(effectivePerson, unit);
 			}
 			if (StringUtils.isEmpty(wi.getName())) {
@@ -54,10 +54,10 @@ class ActionEdit extends BaseAction {
 			emc.beginTransaction(Identity.class);
 			emc.beginTransaction(Person.class);
 			identity = emc.find(identity.getId(), Identity.class);
-			
+
 			Gson gsontool = new Gson();
 			String strIdentity = gsontool.toJson(identity);
-			
+
 			Wi.copier.copy(wi, identity);
 			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
 			if (this.uniqueDuplicateWhenNotEmpty(business, identity)) {
@@ -83,12 +83,12 @@ class ActionEdit extends BaseAction {
 			emc.commit();
 			CacheManager.notify(Identity.class);
 			CacheManager.notify(Person.class);
-			
+
 			/**创建 组织变更org消息通信 */
 			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
 			orgMessageFactory.createMessageCommunicate("modfiy", "identity",strIdentity, identity, effectivePerson);
-			
-			
+
+
 			Wo wo = new Wo();
 			wo.setId(identity.getId());
 			result.setData(wo);

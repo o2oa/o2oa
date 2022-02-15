@@ -189,7 +189,7 @@ public class Business {
 	}
 
 	public boolean editable(EffectivePerson effectivePerson, Group group) throws Exception {
-		if (effectivePerson.isManager()) {
+		if (effectivePerson.isSecurityManager()) {
 			return true;
 		}
 		if (this.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
@@ -536,7 +536,7 @@ public class Business {
 	public Predicate personPredicateWithTopUnit(EffectivePerson effectivePerson) throws Exception {
 		EntityManager em = emc.get(Person.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		if (effectivePerson.isManager() || this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
+		if (effectivePerson.isSecurityManager() || this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
 				OrganizationDefinition.OrganizationManager)) {
 			return cb.conjunction();
 		} else {

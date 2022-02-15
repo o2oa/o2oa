@@ -1,0 +1,76 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="{{$.lp.base}}" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
+                <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.name}}:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+        </table>
+
+        <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+        <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue" colspan="2">
+                    <input type="radio" name="componentType" value="select" text{($.componentType!='script')?'checked':''}  onclick="if (this.checked) {
+                        $('text{$.pid}selectComponent').setStyle('display', 'block');
+                        $('text{$.pid}scriptComponent').setStyle('display', 'none');}"
+                    />{{$.lp.selectComponent}}
+                    <input type="radio" name="componentType" value="script" text{($.componentType=='script')?'checked':''}  onclick="if (this.checked) {
+                        $('text{$.pid}selectComponent').setStyle('display', 'none');
+                        $('text{$.pid}scriptComponent').setStyle('display', 'block');}"
+                    />{{$.lp.calculationComponent}}<br/>
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}selectComponent" class="MWFComponentSelectContainer" style="display: text{($.componentType!='script')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.component}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFComponentSelect" name="componentSelected"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="text{$.pid}scriptComponent" style="display: text{($.componentType=='script')?'block':'none'}">
+            <div style="padding: 5px;"> {{$.lp.scriptComponentNote}}：<br/>return "Org"; </div>
+            <div class="MWFScriptArea" name="componentScript" title="{{$.lp.componentScript}} (S)"></div>
+        </div>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.applicationOptions}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" onclick="
+						if (this.checked){
+							$('text{$.pid}optionsMapList').setStyle('display', 'block');
+							$('text{$.pid}optionsScript').setStyle('display', 'none')}
+					" name="optionsType" text{($.optionsType!='script')?'checked':''} type="radio" value="map"/>{{$.lp.textValue}}
+                    <input class="editTableRadio" onclick="
+						if (this.checked){
+						 	$('text{$.pid}optionsScript').setStyle('display', 'block');
+						 	$('text{$.pid}optionsMapList').setStyle('display', 'none')}
+					"  name="optionsType" text{($.optionsType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}optionsMapList" class="MWFMaplist" name="optionsMapList" title="{{$.lp.option}}" style="display: text{($.optionsType !=='script')?'block':'none'}" ></div>
+        <div id="text{$.pid}optionsScript" class="MWFScriptArea" name="optionsScript" title="options {{$.lp.script}}" style="display: text{($.optionsType=='script')?'block':'none'}"></div>
+
+    </div>
+    <div title="{{$.lp.event}}"  class="MWFTab">
+        <div class="MWFEventsArea" name="events"></div>
+    </div>
+    <div title="{{$.lp.html}}"  class="MWFTab">
+        <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+    <div title="{{$.lp.json}}"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

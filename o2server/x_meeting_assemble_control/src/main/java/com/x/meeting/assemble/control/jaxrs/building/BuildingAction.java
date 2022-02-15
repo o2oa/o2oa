@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -39,7 +40,7 @@ public class BuildingAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("id") String id) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -74,8 +75,8 @@ public class BuildingAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listWithStartCompleted(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @PathParam("start") String start,
-			@PathParam("completed") String completed) {
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("开始时间") @PathParam("start") String start,
+			@JaxrsParameterDescribe("结束时间") @PathParam("completed") String completed) {
 		ActionResult<List<ActionListWithStartCompleted.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -93,19 +94,21 @@ public class BuildingAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listWithStartCompletedRoom(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @PathParam("start") String start,
-			@PathParam("completed") String completed , @PathParam("room")  String room , @PathParam("meeting")  String meetingId) {
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("开始时间") @PathParam("start") String start,
+			@JaxrsParameterDescribe("结束时间") @PathParam("completed") String completed,
+			@JaxrsParameterDescribe("会议室标识") @PathParam("room") String room,
+			@JaxrsParameterDescribe("会议标识") @PathParam("meeting") String meetingId) {
 		ActionResult<List<ActionListWithStartCompletedRoom.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithStartCompletedRoom().execute(effectivePerson, start, completed,room,meetingId);
+			result = new ActionListWithStartCompletedRoom().execute(effectivePerson, start, completed, room, meetingId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "创建Building.", action = ActionCreate.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -129,7 +132,7 @@ public class BuildingAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("id") String id, JsonElement jsonElement) {
+			@JaxrsParameterDescribe("建筑标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -147,7 +150,7 @@ public class BuildingAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("id") String id) {
+			@JaxrsParameterDescribe("建筑标识") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -165,7 +168,7 @@ public class BuildingAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listPinyinInitial(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("key") String key) {
+			@JaxrsParameterDescribe("拼音首字母") @PathParam("key") String key) {
 		ActionResult<List<ActionListPinyinInitial.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -183,7 +186,7 @@ public class BuildingAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listLike(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("key") String key) {
+			@JaxrsParameterDescribe("拼音首字母") @PathParam("key") String key) {
 		ActionResult<List<ActionListLike.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -201,7 +204,7 @@ public class BuildingAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listLikePinyin(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("key") String key) {
+			@JaxrsParameterDescribe("拼音首字母") @PathParam("key") String key) {
 		ActionResult<List<ActionListLikePinyin.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

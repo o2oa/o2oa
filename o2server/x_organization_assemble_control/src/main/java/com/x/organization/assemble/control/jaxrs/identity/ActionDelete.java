@@ -42,7 +42,7 @@ public class ActionDelete extends BaseAction {
 				if (null == unit) {
 					throw new ExceptionUnitNotExist(identity.getUnit());
 				}
-				if (!business.editable(effectivePerson, unit)) {
+				if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, unit)) {
 					throw new ExceptionAccessDenied(effectivePerson, unit);
 				}
 				/** 由于有关联所以要分段提交，提交UnitDuty的成员删除。 */
@@ -75,11 +75,11 @@ public class ActionDelete extends BaseAction {
 			emc.remove(identity, CheckRemoveType.all);
 			emc.commit();
 			CacheManager.notify(Identity.class);
-			
+
 			/**创建 组织变更org消息通信 */
 			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
 			orgMessageFactory.createMessageCommunicate("delete", "identity", identity, effectivePerson);
-			
+
 			Wo wo = new Wo();
 			wo.setId(identity.getId());
 			result.setData(wo);

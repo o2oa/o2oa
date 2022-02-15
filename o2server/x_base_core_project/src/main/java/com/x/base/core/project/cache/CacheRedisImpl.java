@@ -12,12 +12,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.script.CompiledScript;
 
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.RedisTools;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.params.SetParams;
 
 public class CacheRedisImpl implements Cache {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CacheRedisImpl.class);
 
 	private LinkedBlockingQueue<WrapClearCacheRequest> notifyQueue;
 
@@ -27,45 +31,52 @@ public class CacheRedisImpl implements Cache {
 
 	private CacheRedisNotifyThread notifyThread;
 
-	public CacheRedisImpl(String application) throws Exception {
+	public CacheRedisImpl(String application) {
 		this.notifyQueue = new LinkedBlockingQueue<>();
 		this.application = application;
 		this.setParams = new SetParams();
-		this.setParams.px(1000 * 60 * 60);
+		this.setParams.px(3600000);
 		this.notifyThread = new CacheRedisNotifyThread(notifyQueue);
 		this.notifyThread.start();
 	}
 
 	@Override
-	public void put(CacheCategory category, CacheKey key, Object o) throws Exception {
+	public void put(CacheCategory category, CacheKey key, Object o) {
 		// 无法序列化CompiledScript类型,在使用Redis缓存无法缓存CompiledScript类型,直接跳过
-		if ((null != o) && (!(o instanceof CompiledScript))) {
-			Jedis jedis = RedisTools.getJedis();
-			if (jedis != null) {
-				try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-						ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-					oos.writeObject(o);
-					byte[] bytes = baos.toByteArray();
-					jedis.set(concrete(category, key).getBytes(StandardCharsets.UTF_8), bytes, setParams);
+		try {
+			if ((null != o) && (!(o instanceof CompiledScript))) {
+				Jedis jedis = RedisTools.getJedis();
+				if (jedis != null) {
+					try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+							ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+						oos.writeObject(o);
+						byte[] bytes = baos.toByteArray();
+						jedis.set(concrete(category, key).getBytes(StandardCharsets.UTF_8), bytes, setParams);
+					}
+					RedisTools.closeJedis(jedis);
 				}
-				RedisTools.closeJedis(jedis);
 			}
+		} catch (Exception e) {
+			LOGGER.error(e);
 		}
-
 	}
 
 	@Override
-	public Optional<Object> get(CacheCategory category, CacheKey key) throws Exception {
-		Jedis jedis = RedisTools.getJedis();
-		if (jedis != null) {
-			byte[] bytes = jedis.get(concrete(category, key).getBytes(StandardCharsets.UTF_8));
-			RedisTools.closeJedis(jedis);
-			if ((null != bytes) && bytes.length > 0) {
-				try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-						ObjectInputStream ois = new ObjectInputStream(bais)) {
-					return Optional.ofNullable(ois.readObject());
+	public Optional<Object> get(CacheCategory category, CacheKey key) {
+		try {
+			Jedis jedis = RedisTools.getJedis();
+			if (jedis != null) {
+				byte[] bytes = jedis.get(concrete(category, key).getBytes(StandardCharsets.UTF_8));
+				RedisTools.closeJedis(jedis);
+				if ((null != bytes) && bytes.length > 0) {
+					try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+							ObjectInputStream ois = new ObjectInputStream(bais)) {
+						return Optional.ofNullable(ois.readObject());
+					}
 				}
 			}
+		} catch (Exception e) {
+			LOGGER.error(e);
 		}
 		return Optional.empty();
 	}
@@ -77,16 +88,26 @@ public class CacheRedisImpl implements Cache {
 	}
 
 	@Override
-	public void receive(WrapClearCacheRequest wi) throws Exception {
+	public void receive(WrapClearCacheRequest wi) {
 		// nothing
 	}
 
 	@Override
-	public void notify(Class<?> clz, List<Object> keys) throws Exception {
-		Wi wi = new Wi();
-		wi.setClassName(clz.getName());
-		wi.setKeys(keys);
-		this.notifyQueue.put(wi);
+	public void notify(Class<?> clz, List<Object> keys) {
+		try {
+			Wi wi = new Wi();
+			wi.setClassName(clz.getName());
+			wi.setKeys(keys);
+			this.notifyQueue.put(wi);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			LOGGER.error(e);
+		}
+	}
+
+	@Override
+	public String detail() {
+		return "";
 	}
 
 	private String concrete(CacheCategory category, CacheKey key) {
@@ -94,9 +115,7 @@ public class CacheRedisImpl implements Cache {
 	}
 
 	public static class Wi extends WrapClearCacheRequest {
-
 		private static final long serialVersionUID = 9200759731216457906L;
-
 	}
 
 }

@@ -53,6 +53,8 @@ public class ConnectionAction {
 	public static final String METHOD_GET = "GET";
 	public static final String METHOD_DELETE = "DELETE";
 
+	public static final String HEAD_LOCATION = "location";
+
 	private static Gson gson = XGsonBuilder.instance();
 
 	private static ActionResponse getDelete(int connectTimeout, int readTimeout, String address, String method,
@@ -77,6 +79,14 @@ public class ConnectionAction {
 		connection.setReadTimeout(readTimeout);
 		try {
 			connection.connect();
+			int status = connection.getResponseCode();
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
+				String redirect = connection.getHeaderField("Location");
+				if(StringUtils.isNotBlank(redirect)) {
+					connection.disconnect();
+					return getDelete(connectTimeout, readTimeout, redirect, method, heads);
+				}
+			}
 		} catch (Exception e) {
 			response.setType(Type.connectFatal);
 			response.setMessage(String.format("%s connect connection error, address: %s, because: %s.", method, address,
@@ -187,6 +197,14 @@ public class ConnectionAction {
 			response.setMessage(
 					String.format("%s ouput error, address: %s, because: %s.", method, address, e.getMessage()));
 			return response;
+		}
+		int status = connection.getResponseCode();
+		if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
+			String redirect = connection.getHeaderField(HEAD_LOCATION);
+			if (StringUtils.isNotBlank(redirect)) {
+				connection.disconnect();
+				return postPut(connectTimeout, readTimeout, redirect, method, heads, body);
+			}
 		}
 		return read(response, connection);
 	}

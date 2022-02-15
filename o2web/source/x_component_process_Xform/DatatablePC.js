@@ -55,6 +55,7 @@
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class DatatablePC 数据表格组件。表格形式的多行数据编辑组件。
+ * @o2cn 数据表格PC端
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -64,7 +65,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @extends MWF.xApplication.process.Xform.$Module
  * @o2category FormComponents
  * @since v6.2
- * @o2range {Process|CMS|Protal}
+ * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.DatatablePC = new Class(
@@ -152,7 +153,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 *  	 	"毕业日期" : "2019-9-2",
 			 *  	 	"errorTextList" : [
 			 *  	 	    "第5列：aa01-1-2不是正确的日期格式。"
-			 *  	 	] //校验出的错误信息，如果改行数据正确，则无该字段
+			 *  	 	] //校验出的错误信息，如果该行数据正确，则无该字段
 			 *  	 }
 			 *  	 ...
 			 *     ], //导入的数据
@@ -788,6 +789,22 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				if( !this._completeLineEdit() )return;
 			}
 			line.changeEditMode(true);
+
+			/**
+			 * 数据表格当前正在编辑的条目，当数据表格为“同时编辑多行”时无此属性。
+			 * @member {MWF.xApplication.process.Xform.DatatablePC.Line | MWF.xApplication.process.Xform.DatatableMobile.Line | Null}
+			 * @example
+			 * //获取数据表格“dt1”的正在编辑的条目。
+			 * var line = this.form.get("dt1").currentEditedLine;
+			 * //获取数据
+			 * var data = line.getData();
+			 * //设置数据
+			 * line.setData({"subject":"111"});
+			 * //获取subject字段的值
+			 * var data = line.get("subject").getData();
+			 * //设置subject字段的值
+			 * line.get("subject").setData("test1");
+			 */
 			this.currentEditedLine = line;
 		},
 

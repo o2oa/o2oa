@@ -289,4 +289,17 @@ public class BBSSectionInfoFactory extends AbstractFactory {
 		cq.select( root.get( BBSSectionInfo_.id ) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
+
+	public List<String> listByForumIds( List<String> forumIds ) throws Exception {
+		if(ListTools.isEmpty(forumIds)){
+			return new ArrayList<>();
+		}
+		EntityManager em = this.entityManagerContainer().get(BBSSectionInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<BBSSectionInfo> root = cq.from(BBSSectionInfo.class);
+		Predicate p = root.get( BBSSectionInfo_.forumId ).in( forumIds );
+		cq.select( root.get( BBSSectionInfo_.id ) );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
 }

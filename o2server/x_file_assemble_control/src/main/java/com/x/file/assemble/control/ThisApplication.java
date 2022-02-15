@@ -4,7 +4,11 @@ import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.file.assemble.control.jaxrs.file.FileRemoveQueue;
+import com.x.file.assemble.control.schedule.RecycleClean;
 
+/**
+ * @author sword
+ */
 public class ThisApplication {
 
 	private ThisApplication() {
@@ -23,6 +27,7 @@ public class ThisApplication {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
 			MessageConnector.start(context());
+			context.schedule(RecycleClean.class, "0 20 15 * * ?");
 			context().startQueue(fileRemoveQueue);
 		} catch (Exception e) {
 			e.printStackTrace();

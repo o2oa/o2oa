@@ -773,6 +773,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         html += "<tr><td class='formTitle'>"+this.app.lp.application.alias+"</td><td id='formApplicationAlias'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.description+"</td><td id='formApplicationDescription'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.type+"</td><td id='formApplicationType'></td></tr>";
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.defaultForm+"</td><td id='formApplicationDefaultForm'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.id+"</td><td id='formApplicationId'></td></tr>";
    //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
         html += "</table>";
@@ -784,6 +785,15 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         this.descriptionInput = new MWF.xApplication.process.ProcessManager.Input(this.propertyContentNode.getElement("#formApplicationDescription"), this.data.description, this.app.css.formInput);
         this.typeInput = new MWF.xApplication.process.ProcessManager.Input(this.propertyContentNode.getElement("#formApplicationType"), this.data.applicationCategory, this.app.css.formInput);
         this.idInput = new MWF.xApplication.process.ProcessManager.Input(this.propertyContentNode.getElement("#formApplicationId"), this.data.id, this.app.css.formInput);
+        this.defaultFormInput = new MWF.xApplication.process.ProcessManager.Select(this.propertyContentNode.getElement("#formApplicationDefaultForm"), this.data.defaultForm, this.app.css.formInput, function(){
+            var pages = {};
+            this.app.restActions.listForm(this.app.options.application.id, function(json){
+                json.data.each(function(page) {
+                    pages[page.id] = page.name;
+                }.bind(this));
+            }.bind(this), null, false);
+            return pages;
+        }.bind(this));
     },
     createControllerListNode: function(){
         //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
@@ -990,6 +1000,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         this.aliasInput.editMode();
         this.descriptionInput.editMode();
         this.typeInput.editMode();
+        this.defaultFormInput.editMode();
         this.isEdit = true;
     },
     readMode: function(){
@@ -997,6 +1008,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         this.aliasInput.readMode();
         this.descriptionInput.readMode();
         this.typeInput.readMode();
+        this.defaultFormInput.readMode();
         this.isEdit = false;
     },
     cancelBaseInfor: function(){
@@ -1043,6 +1055,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         this.data.alias = this.aliasInput.input.get("value");
         this.data.description = this.descriptionInput.input.get("value");
         this.data.applicationCategory = this.typeInput.input.get("value");
+        this.data.defaultForm = this.defaultFormInput.input.get("value");
 
         this.app.restActions.saveApplication(this.data, function(json){
             this.propertyTitleBar.set("text", this.data.name);
@@ -1051,6 +1064,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
             this.aliasInput.save();
             this.descriptionInput.save();
             this.typeInput.save();
+            this.defaultFormInput.save();
 
             if (callback) callback();
         }.bind(this), function(xhr, text, error){
@@ -1097,6 +1111,75 @@ MWF.xApplication.process.ProcessManager.Input = new Class({
     },
     save: function(){
         if (this.input) this.value = this.input.get("value");
+        return this.value;
+    }
+});
+MWF.xApplication.process.ProcessManager.Select = new Class({
+    Extends: MWF.xApplication.process.ProcessManager.Input,
+    Implements: [Events],
+    initialize: function(node, value, style, select){
+        this.node = $(node);
+        this.value = (value) ? value: "";
+        this.style = style;
+        this.select = select;
+        this.selectList = null;
+        this.load();
+    },
+    getSelectList: function(){
+        if (this.select){
+            return this.select();
+        }
+        return [];
+    },
+    getText: function(value){
+        if (value){
+            if (this.selectList){
+                return this.selectList[value] || "";
+            }
+        }
+        return "";
+    },
+    load: function(){
+        this.selectList = this.getSelectList();
+        this.content = new Element("div", {
+            "styles": this.style.content,
+            "text": this.getText(this.value)
+        }).inject(this.node);
+    },
+    editMode: function(){
+        this.content.empty();
+        this.input = new Element("select",{
+            //"styles": this.style.input,
+            //"value": this.value
+        }).inject(this.content);
+
+        Object.each(this.selectList, function(v, k){
+            new Element("option", {
+                "value": k,
+                "text": v,
+                "selected": (this.value==k)
+            }).inject(this.input);
+        }.bind(this));
+
+        //this.input.addEvents({
+        //    //"focus": function(){
+        //    //    this.input.setStyles(this.style.input_focus);
+        //    //}.bind(this),
+        //    //"blur": function(){
+        //    //    this.input.setStyles(this.style.input);
+        //    //}.bind(this),
+        //    //"change": function(){
+        //    //    this.input.setStyles(this.style.input);
+        //    //}.bind(this)
+        //});
+    },
+    readMode: function(){
+        this.content.empty();
+        this.input = null;
+        this.content.set("text", this.getText(this.value));
+    },
+    save: function(){
+        if (this.input) this.value = this.input.options[this.input.selectedIndex].get("value");
         return this.value;
     }
 });

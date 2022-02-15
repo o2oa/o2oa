@@ -108,22 +108,21 @@ public class Attachment extends StorageObject {
 		this.setActivityName(work.getActivityName());
 	}
 
-
 	/** 更新运行方法 */
 
 	@Override
-	public String path() throws Exception {
-		if(StringUtils.isNotEmpty(fromPath)){
+	public String path() {
+		if (StringUtils.isNotEmpty(fromPath)) {
 			return fromPath;
 		}
 		if (null == this.workCreateTime) {
-			throw new Exception("workCreateTime can not be null.");
+			throw new IllegalStateException("workCreateTime can not be null.");
 		}
 		if (StringUtils.isEmpty(job)) {
-			throw new Exception("job can not be empty.");
+			throw new IllegalStateException("job can not be empty.");
 		}
 		if (StringUtils.isEmpty(id)) {
-			throw new Exception("id can not be empty.");
+			throw new IllegalStateException("id can not be empty.");
 		}
 		String str = DateTools.format(workCreateTime, DateTools.formatCompact_yyyyMMdd);
 		if (BooleanUtils.isTrue(this.getDeepPath())) {
@@ -141,18 +140,18 @@ public class Attachment extends StorageObject {
 	}
 
 	@Override
-	public String path(String operate) throws Exception {
-		if(StringUtils.isNotEmpty(fromPath) && !DELETE_OPERATE.equals(operate)){
+	public String path(String operate) {
+		if (StringUtils.isNotEmpty(fromPath) && !DELETE_OPERATE.equals(operate)) {
 			return fromPath;
 		}
 		if (null == this.workCreateTime) {
-			throw new Exception("workCreateTime can not be null.");
+			throw new IllegalStateException("workCreateTime can not be null.");
 		}
 		if (StringUtils.isEmpty(job)) {
-			throw new Exception("job can not be empty.");
+			throw new IllegalStateException("job can not be empty.");
 		}
 		if (StringUtils.isEmpty(id)) {
-			throw new Exception("id can not be empty.");
+			throw new IllegalStateException("id can not be empty.");
 		}
 		String str = DateTools.format(workCreateTime, DateTools.formatCompact_yyyyMMdd);
 		if (BooleanUtils.isTrue(this.getDeepPath())) {
@@ -393,8 +392,9 @@ public class Attachment extends StorageObject {
 	public static final String readUnitList_FIELDNAME = "readUnitList";
 	@FieldDescribe("可以访问的组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + readUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME + ElementIndexNameSuffix)
@@ -416,8 +416,9 @@ public class Attachment extends StorageObject {
 	public static final String editUnitList_FIELDNAME = "editUnitList";
 	@FieldDescribe("可以修改的组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + editUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + editUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ editUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + editUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + editUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + editUnitList_FIELDNAME + ElementIndexNameSuffix)
@@ -464,8 +465,9 @@ public class Attachment extends StorageObject {
 	public static final String divisionList_FIELDNAME = "divisionList";
 	@FieldDescribe("分组.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + divisionList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + divisionList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ divisionList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + divisionList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + divisionList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + divisionList_FIELDNAME + ElementIndexNameSuffix)

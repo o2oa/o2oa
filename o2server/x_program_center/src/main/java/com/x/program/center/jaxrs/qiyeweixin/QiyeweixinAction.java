@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -85,9 +86,11 @@ public class QiyeweixinAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "接收企业微信通讯录变更回调的验证请求.", action = ActionSyncOrganizationCallbackGet.class)
 	@GET
 	public void syncOrganizationCallbackGet(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @QueryParam("msg_signature") String msg_signature,
-			@QueryParam("timestamp") String timestamp, @QueryParam("nonce") String nonce,
-			@QueryParam("echostr") String echostr) {
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("msg_signature") @QueryParam("msg_signature") String msg_signature,
+			@JaxrsParameterDescribe("timestamp") @QueryParam("timestamp") String timestamp,
+			@JaxrsParameterDescribe("nonce") @QueryParam("nonce") String nonce,
+			@JaxrsParameterDescribe("echostr") @QueryParam("echostr") String echostr) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionSyncOrganizationCallbackGet.Wo> result = new ActionResult<>();
 		try {
@@ -103,8 +106,10 @@ public class QiyeweixinAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "接收企业微信通讯录变更回调.", action = ActionSyncOrganizationCallbackPost.class)
 	@POST
 	public void syncOrganizationCallbackPost(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @QueryParam("msg_signature") String msg_signature,
-			@QueryParam("timestamp") String timestamp, @QueryParam("nonce") String nonce, String body) {
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("msg_signature") @QueryParam("msg_signature") String msg_signature,
+			@JaxrsParameterDescribe("timestamp") @QueryParam("timestamp") String timestamp,
+			@JaxrsParameterDescribe("nonce") @QueryParam("nonce") String nonce, String body) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionSyncOrganizationCallbackPost.Wo> result = new ActionResult<>();
 		try {

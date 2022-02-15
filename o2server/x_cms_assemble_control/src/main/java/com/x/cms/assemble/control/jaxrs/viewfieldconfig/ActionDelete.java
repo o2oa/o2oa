@@ -8,6 +8,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -33,11 +34,6 @@ public class ActionDelete extends BaseAction {
 
 			if (null == viewFieldConfig) {
 				logger.warn("viewFieldConfig{id:" + id + "} 应用信息不存在.");
-			}
-			// 如果信息存在，再判断用户是否有操作的权限，如果没权限不允许继续操作
-			if (!business.viewEditAvailable(effectivePerson)) {
-				throw new Exception(
-						"viewFieldConfig{name:" + effectivePerson.getDistinguishedName() + "} 用户没有内容管理应用信息操作的权限！");
 			}
 			// 查询视图信息
 			View view = business.getViewFactory().get(viewFieldConfig.getViewId());

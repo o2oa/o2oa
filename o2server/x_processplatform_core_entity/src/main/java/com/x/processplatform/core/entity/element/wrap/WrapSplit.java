@@ -13,5 +13,5 @@ public class WrapSplit extends Split {
 			null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapSplit, Split> inCopier = WrapCopierFactory.wi(WrapSplit.class, Split.class, null,
-			JpaObject.FieldsUnmodifyExcludeId, false);
+			JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId, false);
 }

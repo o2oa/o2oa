@@ -87,7 +87,7 @@ class ActionWill extends BaseAction {
 				if (null != route) {
 					wo.setDefaultRouteName(route.getName());
 					wo.setNextActivityType(route.getActivityType());
-					Activity nextActivity = business.element().getActivity(route.getActivity());
+					Activity nextActivity = business.element().get(route.getActivity(), route.getActivityType());
 					if (null != nextActivity) {
 						wo.setNextActivityName(nextActivity.getName());
 						wo.setNextActivityAlias(nextActivity.getAlias());

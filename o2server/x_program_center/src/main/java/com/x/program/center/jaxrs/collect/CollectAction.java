@@ -32,7 +32,7 @@ public class CollectAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void code(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("mobile") String mobile) {
+			@JaxrsParameterDescribe("手机号") @PathParam("mobile") String mobile) {
 		ActionResult<ActionCode.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -168,8 +168,8 @@ public class CollectAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JaxrsMethodDescribe(value = "验证短信验证码是否正确.", action = ActionValidateCodeAnswer.class)
-	public void validateCodeAnswer(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void validateCodeAnswer(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<ActionValidateCodeAnswer.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -205,7 +205,7 @@ public class CollectAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JaxrsMethodDescribe(value = "测试用户名是否可用.", action = ActionExist.class)
 	public void exist(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("name") String name) {
+			@JaxrsParameterDescribe("用户名称") @PathParam("name") String name) {
 		ActionResult<ActionExist.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -223,7 +223,8 @@ public class CollectAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JaxrsMethodDescribe(value = "测试手机号码是否在管理手机列表中", action = ActionControllerMobile.class)
 	public void controllerMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("name") String name, @PathParam("mobile") String mobile) {
+			@JaxrsParameterDescribe("用户名称") @PathParam("name") String name,
+			@JaxrsParameterDescribe("手机号") @PathParam("mobile") String mobile) {
 		ActionResult<ActionControllerMobile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -310,9 +311,9 @@ public class CollectAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JaxrsMethodDescribe(value = "删除collect上的unit.", action = ActionDelete.class)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   @JaxrsParameterDescribe("组织名称") @PathParam("name") String name,
-					   @JaxrsParameterDescribe("手机号") @PathParam("mobile") String mobile,
-					   @JaxrsParameterDescribe("短信认证码") @PathParam("code") String code) {
+			@JaxrsParameterDescribe("组织名称") @PathParam("name") String name,
+			@JaxrsParameterDescribe("手机号") @PathParam("mobile") String mobile,
+			@JaxrsParameterDescribe("短信认证码") @PathParam("code") String code) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -330,7 +331,7 @@ public class CollectAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JaxrsMethodDescribe(value = "更新在collect服务器上的unit.", action = ActionUpdateUnit.class)
 	public void updateUnit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							  JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<ActionUpdateUnit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -348,7 +349,7 @@ public class CollectAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JaxrsMethodDescribe(value = "登录collect服务", action = ActionLogin.class)
 	public void login(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					  @Context HttpServletResponse response) {
+			@Context HttpServletResponse response) {
 		ActionResult<ActionLogin.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -383,11 +384,11 @@ public class CollectAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateUrlMapping(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-								 WrapInUrlMapping wrapIn) {
+			WrapInUrlMapping wrapIn) {
 		ActionResult<ActionUpdateUnitUrlMapping.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateUnitUrlMapping().execute(effectivePerson,wrapIn);
+			result = new ActionUpdateUnitUrlMapping().execute(effectivePerson, wrapIn);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

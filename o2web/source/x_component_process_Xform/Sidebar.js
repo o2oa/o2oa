@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //MWF.require("MWF.widget.Tree", null, false);
 /** @class Sidebar 侧边操作条。
+ * @o2cn 侧边操作条
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

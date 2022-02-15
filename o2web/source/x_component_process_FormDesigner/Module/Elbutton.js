@@ -14,7 +14,6 @@ MWF.xApplication.process.FormDesigner.Module.Elbutton = MWF.FCElbutton = new Cla
 		this.moduleName = "elbutton";
 	},
 	_createElementHtml: function(){
-		debugger;
 		var html = "<el-button";
 		// if (this.json.size && this.json.size!=="auto") html += " size=\""+this.json.size+"\"";
 		// if (this.json.bttype && this.json.bttype!=="default") html += " type=\""+this.json.bttype+"\"";

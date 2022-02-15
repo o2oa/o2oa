@@ -55,6 +55,12 @@ MWF.xApplication.Meeting.Main = new Class({
                 }
                 if( !this.meetingConfig.disableViewList ) this.meetingConfig.disableViewList = [];
 
+                if( !this.meetingConfig.typeList ){
+                    this.meetingConfig.typeList = [];
+                }else{
+                    this.meetingConfig.typeList = this.meetingConfig.typeList.filter(function(t){return !!t});
+                }
+
                 this.createNode();
                 if (!this.options.isRefresh) {
                     this.maxSize(function () {
@@ -843,7 +849,11 @@ MWF.xApplication.Meeting.Config = new Class({
                 "<div item='meetingViewerNode'></div>" +
 
                 "<div class='configTitle'>"+this.lp.config.mobileCreateEnable +"</div>" +
-                "<div item='mobileCreateEnable'></div>";
+                "<div item='mobileCreateEnable'></div>" +
+
+                "<div class='line'></div>"+
+                "<div class='configTitle'>"+this.lp.config.meetingType +"</div>" +
+                "<div><textarea name='typeList' style='width: 270px;height: 120px;'>"+ d.typeList.join("\n") +"</textarea></div>"
 
         }
 
@@ -982,6 +992,11 @@ MWF.xApplication.Meeting.Config = new Class({
             if( this.meetingViewer ){
                 viewer = this.meetingViewer.getValue();
             }
+
+            var typeList = [];
+            var typeListInput = this.contentNode.getElement("textarea[name='typeList']");
+            if(typeListInput)typeList = typeListInput.get("value").split("\n");
+
             MWF.UD.putPublicData("meetingConfig", {
                 //"hideMenu": hideMenu,
                 "process": this.process || this.configData.process,
@@ -989,6 +1004,7 @@ MWF.xApplication.Meeting.Config = new Class({
                 "meetingViewer" : viewer,
                 "mobileCreateEnable" : this.mobileCreateEnable.getValue(),
                 "disableViewList" : disableViewList,
+                "typeList": typeList,
                 "toMyMeetingViewName" : this.contentNode.getElement("input[name='toMyMeetingViewName']").get("value"),
                 "toMonthViewName" : this.contentNode.getElement("input[name='toMonthViewName']").get("value"),
                 "toWeekViewName" : this.contentNode.getElement("input[name='toWeekViewName']").get("value"),

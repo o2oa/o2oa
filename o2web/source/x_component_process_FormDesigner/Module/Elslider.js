@@ -14,7 +14,6 @@ MWF.xApplication.process.FormDesigner.Module.Elslider = MWF.FCElslider = new Cla
 		this.moduleName = "elslider";
 	},
 	_createElementHtml: function(){
-		debugger;
 		//var html = "<el-input placeholder=\"请输入内容\"></el-input>";
 		var html = "<el-slider";
 		html += " v-model=\"tmpValue\"";

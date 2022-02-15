@@ -87,10 +87,10 @@ public class OriginFile extends StorageObject {
 	@Override
 	public String path() throws Exception {
 		if (StringUtils.isEmpty(id)) {
-			throw new Exception("id can not be empty.");
+			throw new IllegalStateException("id can not be empty.");
 		}
 		if (StringUtils.isEmpty(type)) {
-			throw new Exception("type can not be empty.");
+			throw new IllegalStateException("type can not be empty.");
 		}
 		String str = this.type;
 		str += PATHSEPARATOR;

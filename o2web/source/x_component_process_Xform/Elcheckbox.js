@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "Elradio", null, false);
-/** @class Elradio 基于Element UI的按钮组件。
+/** @class Elradio 基于Element UI的多选组件。
+ * @o2cn 多选组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -10,9 +11,10 @@ MWF.xDesktop.requireApp("process.Xform", "Elradio", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/checkbox|Element UI Checkbox 多选框}
  */
 MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
-    /** @lends MWF.xApplication.process.Xform.Elradio# */
+    /** @lends MWF.xApplication.process.Xform.Elcheckbox# */
     {
     Implements: [Events],
     Extends: MWF.APPElradio,
@@ -32,12 +34,13 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
          * @event MWF.xApplication.process.Xform.$Module#postLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
+        "moduleEvents": ["load", "queryLoad", "postLoad", "change"],
         /**
-         * 值发生改变时触发.
-         * @event MWF.xApplication.process.Xform.$Module#change
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         * 当绑定值变化时触发的事件。this.event[0]为更新后的值
+         * @event MWF.xApplication.process.Xform.Elcheckbox#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/checkbox|多选框的Checkbox Events章节}
          */
-        "moduleEvents": ["load", "queryLoad", "postLoad", "change"]
+        "elEvents": ["change"]
     },
     /**
      * @summary 组件的配置信息，同时也是Vue组件的data。

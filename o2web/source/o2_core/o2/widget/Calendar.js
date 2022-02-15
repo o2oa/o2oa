@@ -20,6 +20,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		"defaultDate": new Date(),
 
 		"beforeCurrent": true,
+		"clearEnable": true,
 
 		"range": false,
 		"rangeNodes": [],
@@ -265,7 +266,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	showMonthYearButton : function(){
-		if( this.buttonArea && !this.clearButton_month ){
+		if( this.options.clearEnable && this.buttonArea && !this.clearButton_month ){
 			this.container.setStyle("height","auto");
 			this.clearButton_month = new Element("div", {"text": o2.LP.widget.clear }).inject(this.buttonArea);
 			this.clearButton_month.addEvent("click", function(){
@@ -929,7 +930,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			this.okButton.setStyles(this.css.calendarActionShowButton_mobile_ok);
 		}
 
-		if (!this.clearButton){
+		if (!this.clearButton && this.options.clearEnable){
 			this.clearButton = new Element("button", {"text": o2.LP.widget.clear }).inject(this.showActionNode);
 			this.clearButton.addEvent("click", function(){
 				var t = this.node.get("value");
@@ -1116,7 +1117,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			this.okButton.setStyles(this.css.calendarActionShowButton);
 		}
 
-		if (!this.clearButton){
+		if (!this.clearButton && this.options.clearEnable){
 			this.clearButton = new Element("button", {"text": o2.LP.widget.clear }).inject(this.showActionNode);
 			this.clearButton.addEvent("click", function(){
 				var t = this.node.get("value");

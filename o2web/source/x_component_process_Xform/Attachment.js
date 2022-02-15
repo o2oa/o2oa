@@ -1085,6 +1085,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
 
 /** @class Attachment 附件组件。
+ * @o2cn 附件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -1166,7 +1167,18 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @event MWF.xApplication.process.Xform.Attachment#open
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["beforeUpload", "upload", "delete", "afterDelete", "load", "afterLoad", "change","download","open", "queryLoad", "queryLoadController", "loadController", "postLoadController"]
+        /**
+         * 选中附件后触发。本事件中可以通过this.event获取被选中的附件对象
+         * @event MWF.xApplication.process.Xform.Attachment#select
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 取消选中附件后触发。本事件中可以通过this.event获取被取消选中的附件对象
+         * @event MWF.xApplication.process.Xform.Attachment#unselect
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        "moduleEvents": ["beforeUpload", "upload", "delete", "afterDelete", "load", "afterLoad", "change","download",
+            "open", "queryLoad", "queryLoadController", "loadController", "postLoadController","select","unselect"]
     },
 
     initialize: function (node, json, form, options) {
@@ -1277,6 +1289,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }.bind(this));
 
     },
+
     isEmpty : function(){
         var data = this.getData();
         if( typeOf(data) === "array" ){
@@ -1653,7 +1666,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     } else {
                         var ua = navigator.userAgent.toLowerCase();
                         if (ua.indexOf('dingtalk') >= 0) {
-                            this.addMessage("dingtalk");
                             this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
                                 var xtoken = Cookie.read(o2.tokenName);
                                 window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
@@ -1687,7 +1699,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     } else {
                         var ua = navigator.userAgent.toLowerCase();
                         if (ua.indexOf('dingtalk') >= 0) {
-                            this.addMessage("dingtalk");
                             this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, this.form.businessData.workCompleted.id, function (url) {
                                 var xtoken = Cookie.read(o2.tokenName);
                                 window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
@@ -1725,7 +1736,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                         // 钉钉客户端
                         var ua = navigator.userAgent.toLowerCase();
                         if (ua.indexOf('dingtalk') >= 0) {
-                            this.addMessage("dingtalk");
                             this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
                                 var xtoken = Cookie.read(o2.tokenName);
                                 window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
@@ -1761,7 +1771,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                         // 钉钉客户端
                         var ua = navigator.userAgent.toLowerCase();
                         if (ua.indexOf('dingtalk') >= 0) {
-                            this.addMessage("dingtalk");
                             this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id), function (url) {
                                 var xtoken = Cookie.read(o2.tokenName);
                                 window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);

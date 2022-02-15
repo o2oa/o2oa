@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("cms.Xform", "Org", null, false);
 /** @class Author 作者组件。
+ * @o2cn 作者组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -8,7 +9,7 @@ MWF.xDesktop.requireApp("cms.Xform", "Org", null, false);
  * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
  *
  * var data = field.getData(); //获取值
- * field.setData("字符串值"); //设置值
+ * field.setData(value); //设置值
  * field.hide(); //隐藏字段
  * var id = field.json.id; //获取字段标识
  * var flag = field.isEmpty(); //字段是否为空

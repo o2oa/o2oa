@@ -10,9 +10,9 @@ public class EmbedExecutor {
 
 	private static Logger logger = LoggerFactory.getLogger(EmbedExecutor.class);
 
-	public String execute(AssginData assginData) throws Exception {
+	public String execute(AssignData assignData) throws Exception {
 		Wo wo = ThisApplication.context().applications()
-				.postQuery(x_processplatform_service_processing.class, "work", assginData).getData(Wo.class);
+				.postQuery(x_processplatform_service_processing.class, "work", assignData).getData(Wo.class);
 		return wo.getId();
 	}
 

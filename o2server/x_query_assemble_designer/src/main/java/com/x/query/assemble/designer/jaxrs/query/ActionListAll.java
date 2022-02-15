@@ -25,7 +25,7 @@ class ActionListAll extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug(effectivePerson, effectivePerson.getDistinguishedName());
+			logger.debug(effectivePerson.getDistinguishedName());
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			List<Wo> wos = this.list(business, effectivePerson);
@@ -42,7 +42,7 @@ class ActionListAll extends BaseAction {
 
 	private List<Wo> list(Business business, EffectivePerson effectivePerson) throws Exception {
 		List<Wo> wos = new ArrayList<>();
-		if (effectivePerson.isManager() || business.organization().person().hasRole(effectivePerson,
+		if (effectivePerson.isSecurityManager() || business.organization().person().hasRole(effectivePerson,
 				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager)) {
 			wos = business.entityManagerContainer().fetchAll(Query.class, Wo.copier);
 		} else {
@@ -57,8 +57,9 @@ class ActionListAll extends BaseAction {
 
 		private static final long serialVersionUID = 2886873983211744188L;
 
-		static WrapCopier<Query, Wo> copier = WrapCopierFactory.wo(Query.class, Wo.class, null,
-				ListTools.toList(JpaObject.FieldsInvisible, Query.controllerList_FIELDNAME, Query.availableIdentityList_FIELDNAME, Query.availableUnitList_FIELDNAME));
+		static WrapCopier<Query, Wo> copier = WrapCopierFactory.wo(Query.class, Wo.class,
+				JpaObject.singularAttributeField(View.class, true, false),
+				null);
 
 		private List<WoView> viewList = new ArrayList<>();
 

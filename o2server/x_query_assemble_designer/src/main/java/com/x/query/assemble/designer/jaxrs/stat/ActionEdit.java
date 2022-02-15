@@ -37,10 +37,6 @@ class ActionEdit extends BaseAction {
 			}
 			emc.beginTransaction(Stat.class);
 			Wi.copier.copy(wi, stat);
-//			View view = emc.find(stat.getView(), View.class);
-//			if (null == view) {
-//				throw new ExceptionViewNotExist(stat.getView());
-//			}
 			if (StringUtils.isNotEmpty(stat.getName()) && (!this.idleName(business, stat))) {
 				throw new ExceptionNameExist(stat.getName());
 			}

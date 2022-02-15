@@ -17,7 +17,7 @@ import com.x.base.core.project.webservices.WebservicesClient;
 
 public class InvokeExecutor {
 
-	private static Logger logger = LoggerFactory.getLogger(InvokeExecutor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(InvokeExecutor.class);
 
 	public String execute(JaxrsObject o) throws Exception {
 		String result = "";
@@ -69,7 +69,7 @@ public class InvokeExecutor {
 				return HttpConnection.postAsString(jaxrsObject.getAddress(), heads, jaxrsObject.getBody());
 			}
 		} catch (Exception e) {
-			logger.error(new ExceptionJaxrsHttpPost(e));
+			LOGGER.error(new ExceptionJaxrsHttpPost(e));
 		}
 		return null;
 	}
@@ -90,7 +90,7 @@ public class InvokeExecutor {
 				return HttpConnection.putAsString(jaxrsObject.getAddress(), heads, jaxrsObject.getBody());
 			}
 		} catch (Exception e) {
-			logger.error(new ExceptionJaxrsHttpPut(e));
+			LOGGER.error(new ExceptionJaxrsHttpPut(e));
 		}
 		return null;
 	}
@@ -110,7 +110,7 @@ public class InvokeExecutor {
 				return HttpConnection.getAsString(jaxrsObject.getAddress(), heads);
 			}
 		} catch (Exception e) {
-			logger.error(new ExceptionJaxrsHttpGet(e));
+			LOGGER.error(new ExceptionJaxrsHttpGet(e));
 		}
 		return null;
 	}
@@ -130,7 +130,7 @@ public class InvokeExecutor {
 				return HttpConnection.deleteAsString(jaxrsObject.getAddress(), heads);
 			}
 		} catch (Exception e) {
-			logger.error(new ExceptionJaxrsHttpDelete(e));
+			LOGGER.error(new ExceptionJaxrsHttpDelete(e));
 		}
 		return null;
 	}

@@ -130,7 +130,11 @@ var MDomItem = new Class({
         this.parent = parent;
         this.app = app;
         this.container = $(container);
-        this.css = css;
+        if( css )this.css = css;
+        if( options.formStyle ){
+            this.cssPath = "../x_component_Template/$MForm/"+options.formStyle+"/css.wcss";
+            this._loadCss();
+        }
 
         //for(var o in options ){	//允许使用 function 来计算设置, on开头的属性被留作 fireEvent
         //    if( o != "validRule" && o!="validMessage" && o.substr(0,2)!="on" && typeOf( options[o] )== "function" ){
@@ -194,6 +198,30 @@ var MDomItem = new Class({
         this.createElement();
 
         this.fireEvent("postLoad", [this]);
+    },
+    _loadCss: function(reload){
+        debugger;
+        var key = encodeURIComponent(this.cssPath);
+        if (!reload && o2.widget.css[key]){
+            this.css = !this.css ? o2.widget.css[key] : Object.merge({}, o2.widget.css[key], this.css);
+        }else{
+            this.cssPath = (this.cssPath.indexOf("?")!=-1) ? this.cssPath+"&v="+o2.version.v : this.cssPath+"?v="+o2.version.v;
+            var r = new Request.JSON({
+                url: o2.filterUrl(this.cssPath),
+                secure: false,
+                async: false,
+                method: "get",
+                noCache: false,
+                onSuccess: function(responseJSON, responseText){
+                    this.css = !this.css ? responseJSON : Object.merge({}, responseJSON, this.css);
+                    o2.widget.css[key] = responseJSON;
+                }.bind(this),
+                onError: function(text, error){
+                    alert(error + text);
+                }
+            });
+            r.send();
+        }
     },
     editMode : function( keep ){
         if(keep)this.save();
@@ -287,7 +315,12 @@ var MDomItem = new Class({
         this.createElement();
     },
     reset: function(){
-        this.setValue( this.options.defaultValue || "" );
+        debugger;
+        if( typeOf(this.dom.reset) === "function" ){
+            this.dom.reset();
+        }else{
+            this.setValue( this.options.defaultValue || "" );
+        }
     },
     setValue :function(value){
         if( this.dom )this.dom.setValue(value);
@@ -1177,7 +1210,7 @@ MDomItem.Password = new Class({
         if( this.options.isEdited ){
             value = item.get("value");
         }else{
-            value = options.value || options.defaultValue
+            value = this.options.value || this.options.defaultValue
         }
         if( vort == "value" )return value;
         if( vort == "text")return value;
@@ -2858,6 +2891,9 @@ MDomItem.Org = new Class({
         if(parent)item.inject(parent);
         this.items.push( item );
     },
+    reset: function(){
+        this.setValue( this.options.defaultValue || [] );
+    },
     getData : function( parse ){
         var data = [];
         this.OrgWidgetList.each( function( widget ){
@@ -2894,6 +2930,7 @@ MDomItem.Org = new Class({
         }else{
             this.orgData = [];
         }
+        this.orgObjData = null;
         item.empty();
         this.loadOrgWidget( this.orgData, item, this.options.isEdited );
         this.module.orgData = this.orgData

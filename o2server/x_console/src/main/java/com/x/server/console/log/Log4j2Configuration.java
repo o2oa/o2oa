@@ -1,11 +1,13 @@
 package com.x.server.console.log;
 
 import java.io.PrintStream;
+import java.util.Map;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.OutputStreamAppender;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +36,18 @@ public class Log4j2Configuration {
 	}
 
 	private static void addStandardOutAppender(final Configuration config, final PrintStream stdout) {
+		final LoggerConfig rootLogger = config.getRootLogger();
+		final Map<String, Appender> appenders = rootLogger.getAppenders();
+		//System.out.println("log4j appenders: " + appenders);
+		if  (appenders.containsKey("stdout")) {
+			return;
+		}
 		final PatternLayout layout = PatternLayout.newBuilder().withConfiguration(config)
 				.withPattern(CONVERSION_PATTERN).build();
 		final Appender appender = OutputStreamAppender.createAppender(layout, null, stdout, "stdout", true, true);
 		appender.start();
 		config.addAppender(appender);
-		config.getRootLogger().addAppender(appender, null, null);
+		rootLogger.addAppender(appender, null, null);
 	}
 
 	private static void bypassErr(final PrintStream stderr) {

@@ -36,6 +36,7 @@ public class BeginFactory extends ElementFactory {
 		} else {
 			o = this.entityManagerContainer().firstEqual(Begin.class, Activity.process_FIELDNAME, process.getId());
 			if (null != o) {
+				this.entityManagerContainer().get(Begin.class).detach(o);
 				CacheManager.put(cacheCategory, cacheKey, o);
 			}
 		}

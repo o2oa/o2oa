@@ -31,7 +31,6 @@ import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
@@ -68,8 +67,6 @@ class ActionProcessOrphan extends BaseAction {
 					emc.fetch(this.listOrphanProcessElement(business, processIds, WoManual.copier), WoManual.copier));
 			wo.setMergeList(
 					emc.fetch(this.listOrphanProcessElement(business, processIds, WoMerge.copier), WoMerge.copier));
-			wo.setMessageList(
-					emc.fetch(this.listOrphanProcessElement(business, processIds, WoMessage.copier), WoMessage.copier));
 			wo.setParallelList(emc.fetch(this.listOrphanProcessElement(business, processIds, WoParallel.copier),
 					WoParallel.copier));
 			wo.setServiceList(
@@ -180,15 +177,7 @@ class ActionProcessOrphan extends BaseAction {
 				JpaObject.id_FIELDNAME, Merge.name_FIELDNAME, Merge.alias_FIELDNAME, Merge.process_FIELDNAME), null);
 	}
 
-	public static class WoMessage extends Message {
-		private static final long serialVersionUID = -5257306329734318116L;
-		static WrapCopier<Message, WoMessage> copier = WrapCopierFactory.wo(Message.class, WoMessage.class,
-				ListTools.toList(JpaObject.id_FIELDNAME, Message.name_FIELDNAME, Message.alias_FIELDNAME,
-						Message.process_FIELDNAME),
-				null);
-	}
-
-	public static class WoParallel extends Message {
+	public static class WoParallel extends Parallel {
 		private static final long serialVersionUID = -5257306329734318116L;
 		static WrapCopier<Parallel, WoParallel> copier = WrapCopierFactory.wo(Parallel.class, WoParallel.class,
 				ListTools.toList(JpaObject.id_FIELDNAME, Parallel.name_FIELDNAME, Parallel.alias_FIELDNAME,
@@ -229,7 +218,6 @@ class ActionProcessOrphan extends BaseAction {
 		private List<WoInvoke> invokeList = new ArrayList<>();
 		private List<WoManual> manualList = new ArrayList<>();
 		private List<WoMerge> mergeList = new ArrayList<>();
-		private List<WoMessage> messageList = new ArrayList<>();
 		private List<WoParallel> parallelList = new ArrayList<>();
 		private List<WoService> serviceList = new ArrayList<>();
 		private List<WoSplit> splitList = new ArrayList<>();
@@ -321,14 +309,6 @@ class ActionProcessOrphan extends BaseAction {
 
 		public void setMergeList(List<WoMerge> mergeList) {
 			this.mergeList = mergeList;
-		}
-
-		public List<WoMessage> getMessageList() {
-			return messageList;
-		}
-
-		public void setMessageList(List<WoMessage> messageList) {
-			this.messageList = messageList;
 		}
 
 		public List<WoParallel> getParallelList() {

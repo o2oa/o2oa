@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
-/** @class Elinput 基于Element UI的数字输入框组件。
+/** @class Elinput 基于Element UI的开关组件。
+ * @o2cn 开关组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -10,14 +11,20 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/switch|Element UI Switch 开关}
  */
 MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elnumber# */
+    /** @lends o2.xApplication.process.Xform.Elswitch# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
+        /**
+         * switch 状态发生变化时的回调函数。this.event[0]为新状态的值
+         * @event MWF.xApplication.process.Xform.Elswitch#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/switch|开关组件的的 Events章节}
+         */
         "elEvents": ["change"]
     },
     /**

@@ -36,6 +36,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         }else{
             this.referenceNode.setStyle("background", "url("+"../x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/icon/"+codeIcon+") no-repeat center center")
         }
+        this.referenceNode.addEvent("click", this.openApi.bind(this));
         this.maxNode = new Element("div", {"styles": this.css.actionMaxNode}).inject(this.titleNode);
 
         this.returnNode = new Element("div", {"styles": this.css.actionReturnNode}).inject(this.titleNode);
@@ -52,6 +53,9 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
             //_self.inforNode = null;
             _self.loadEditor();
         });
+    },
+    openApi: function(){
+        o2.openWindow(this.options.api || "../api")
     },
 
     loadEditor: function(callback){

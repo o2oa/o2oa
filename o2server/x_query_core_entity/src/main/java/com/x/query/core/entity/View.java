@@ -20,8 +20,6 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -50,10 +48,12 @@ public class View extends SliceJpaObject {
 
 	public static final Integer DEFAULT_PAGESIZE = 20;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -62,12 +62,12 @@ public class View extends SliceJpaObject {
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	@CheckRemove(citationNotExists =
-	/* 已经没有Stat使用View了 */
 	@CitationNotExist(type = Stat.class, fields = Stat.view_FIELDNAME))
 	private String id = createId();
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 
 		if ((this.count == null) || (this.count < 1)) {
@@ -234,6 +234,18 @@ public class View extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> availableUnitList;
+
+	public static final String availableGroupList_FIELDNAME = "availableGroupList";
+	@FieldDescribe("允许使用的群组.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ availableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+			+ availableGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + availableGroupList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + availableGroupList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> availableGroupList;
 
 	public static final String count_FIELDNAME = "count";
 	@FieldDescribe("最大返回数量.")
@@ -411,5 +423,13 @@ public class View extends SliceJpaObject {
 
 	public void setOrderNumber(Integer orderNumber) {
 		this.orderNumber = orderNumber;
+	}
+
+	public List<String> getAvailableGroupList() {
+		return availableGroupList;
+	}
+
+	public void setAvailableGroupList(List<String> availableGroupList) {
+		this.availableGroupList = availableGroupList;
 	}
 }

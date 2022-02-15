@@ -1,0 +1,16 @@
+{
+  "enable": false,
+  "host": "",
+  "port": 25.0,
+  "sslEnable": false,
+  "from": "",
+  "user": "",
+  "pass": "",
+  "###enable": "是否启用###",
+  "###host": "SMTP主机地址###",
+  "###port": "SMTP发送端口###",
+  "###sslEnable": "是否启用ssl###",
+  "###from": "发送人###",
+  "###user": "用户名###",
+  "###pass": "密码###"
+}

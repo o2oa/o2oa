@@ -1,5 +1,28 @@
 package com.x.program.center.qiyeweixin;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.script.Bindings;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
@@ -10,28 +33,21 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.organization.core.entity.*;
+import com.x.organization.core.entity.Identity;
+import com.x.organization.core.entity.Identity_;
+import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.PersonAttribute;
+import com.x.organization.core.entity.PersonAttribute_;
+import com.x.organization.core.entity.Person_;
+import com.x.organization.core.entity.Unit;
+import com.x.organization.core.entity.UnitAttribute;
+import com.x.organization.core.entity.UnitDuty;
+import com.x.organization.core.entity.Unit_;
 import com.x.program.center.Business;
 import com.x.program.center.qiyeweixin.User.Extattr.Attr;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class SyncOrganization {
 
@@ -295,12 +311,12 @@ public class SyncOrganization {
 		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 		Matcher matcher = pattern.matcher(str);
 		if (matcher.matches()) {
-			String eval = ScriptFactory.functionalization(StringEscapeUtils.unescapeJson(matcher.group(1)));
-			ScriptContext scriptContext = new SimpleScriptContext();
+			CompiledScript cs = ScriptingFactory
+					.functionalizationCompile(StringEscapeUtils.unescapeJson(matcher.group(1)));
+			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-			bindings.put("person", person);
-			Object o = ScriptFactory.scriptEngine.eval(eval, scriptContext);
-			return o.toString();
+			bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PERSON, person);
+			return JsonScriptingExecutor.evalString(cs, scriptContext);
 		} else {
 			return str;
 		}
@@ -410,7 +426,7 @@ public class SyncOrganization {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		emc.beginTransaction(Identity.class);
 		Identity identity = new Identity();
-		identity.setUnique(unit.getUnique()+"_"+person.getUnique());
+		identity.setUnique(unit.getUnique() + "_" + person.getUnique());
 		identity.setName(person.getName());
 		identity.setPerson(person.getId());
 		identity.setUnit(unit.getId());

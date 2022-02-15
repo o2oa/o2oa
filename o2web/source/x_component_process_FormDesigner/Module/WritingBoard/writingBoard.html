@@ -40,6 +40,8 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.actionBar}}:</td>
                     <td class="editTableValue">
+                        <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('eraser')!=-1)?'checked':''} type="checkbox" value="eraser"/>{{$.lp.hideEraserButton}}<br/>
+                        <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('eraserRadio')!=-1)?'checked':''} type="checkbox" value="eraserRadio"/>{{$.lp.hideEraserRadioButton}}<br/>
                         <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('size')!=-1)?'checked':''} type="checkbox" value="size"/>{{$.lp.hideSizeButton}}<br/>
                         <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('color')!=-1)?'checked':''} type="checkbox" value="color"/>{{$.lp.hideColorButton}}<br/>
                         <input class="editTableRadio" name="toolHidden" text{(($.toolHidden || []).indexOf('image')!=-1)?'checked':''} type="checkbox" value="image"/>{{$.lp.hideImageButton}}<br/>

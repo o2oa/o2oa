@@ -279,6 +279,41 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 break;
             case "Elswitch":
                 this.loadVueElementScript(v, true); break;
+            case "Eltime":
+                this.loadVueElementScript(v, true);
+                this.addScriptItem(v.selectableRange, "code", v, "selectableRange");
+                break;
+            case "Eldate":
+                this.loadVueElementScript(v, true);
+                this.addScriptItem(v.disabledDate, "code", v, "disabledDate");
+                break;
+            case "Eldatetime":
+                this.loadVueElementScript(v, true);
+                this.addScriptItem(v.disabledDate, "code", v, "disabledDate");
+                break;
+            case "Elrate":
+                this.loadVueElementScript(v, true);
+                break;
+            case "Elcolorpicker":
+                this.loadVueElementScript(v, true);
+                break;
+            case "Eltree":
+                this.loadVueElementScript(v, false);
+                this.addScriptItem(v.currentNodeKey, "code", v, "currentNodeKey");
+                this.addScriptItem(v.defaultExpandedKeys, "code", v, "defaultExpandedKeys");
+                this.addScriptItem(v.defaultCheckedKeys, "code", v, "defaultCheckedKeys");
+                this.addScriptItem(v.allowDrag, "code", v, "allowDrag");
+                this.addScriptItem(v.allowDrop, "code", v, "allowDrop");
+                break;
+            case "Eldropdown":
+                this.loadVueElementScript(v, false);
+                break;
+            case "Elcarousel":
+                this.loadVueElementScript(v, false);
+                this.addScriptItem(v.dataScript, "code", v, "dataScript");
+                this.addScriptItem(v.filterScript, "code", v, "filterScript");
+                this.addScriptItem(v.requestBody, "code", v, "requestBody");
+                break;
         }
         this.bindDataId(v);
     },

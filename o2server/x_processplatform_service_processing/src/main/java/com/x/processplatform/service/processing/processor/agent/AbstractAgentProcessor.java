@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Agent;
 import com.x.processplatform.core.entity.element.Route;
@@ -51,7 +52,7 @@ public abstract class AbstractAgentProcessor extends AbstractProcessor {
 			if (this.hasAgentInterruptScript(agent)) {
 				CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
 						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_AGENTINTERRUPT);
-				compiledScript.eval(aeiObjects.scriptContext());
+				JsonScriptingExecutor.eval(compiledScript, aeiObjects.scriptContext());
 			}
 			throw e;
 		}

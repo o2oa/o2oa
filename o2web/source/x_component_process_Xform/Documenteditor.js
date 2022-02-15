@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class Documenteditor 公文编辑器。
+ * @o2cn 公文编辑器
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -1262,6 +1263,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.allowEdit = this._isAllowEdit();
         this.allowPrint = this._isAllowPrint();
         this.allowHistory = this._isAllowHistory();
+        this.allowHandwrittenApproval = this._isAllowHandwrittenApproval();
         this.toolNode = new Element("div", {"styles": this.css.doc_toolbar}).inject(this.node);
         this.contentNode = new Element("div#doc_content", {"styles": this.css.doc_content}).inject(this.node);
 
@@ -1639,6 +1641,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             e.enable();
         }.bind(this), "", null, true);
     },
+    _handwrittenApproval: function(){
+
+    },
     _historyDoc: function(){
         debugger;
         this._readFiletext();
@@ -1963,6 +1968,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         return true;
     },
+    _isAllowHandwrittenApproval: function(){
+        if (this.json.allowHandwrittenApproval=="n") return false;
+        if (this.json.allowHandwrittenApprovalScript=="s"){
+            if (this.json.allowHandwrittenApprovalScript && this.json.allowHandwrittenApprovalScript.code){
+                return !!this.form.Macro.exec(this.json.allowHandwrittenApprovalScript.code, this);
+            }
+        }
+        return true;
+    },
 
     _getEdit: function(name, typeItem, scriptItem){
         switch (this.json[typeItem]) {
@@ -1993,16 +2007,18 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     _loadToolbars: function(){
         var html ="";
-        var editdoc, printdoc, history, fullscreen=MWF.xApplication.process.Xform.LP.fullScreen;
+        var editdoc, printdoc, history, handwrittenApproval, fullscreen=MWF.xApplication.process.Xform.LP.fullScreen;
 
         if (layout.mobile){
             editdoc = MWF.xApplication.process.Xform.LP.editdoc_mobile;
             printdoc = MWF.xApplication.process.Xform.LP.printdoc_mobile;
             history = MWF.xApplication.process.Xform.LP.history_mobile;
+            handwrittenApproval = MWF.xApplication.process.Xform.LP.handwrittenApproval_mobile;
         }else{
             editdoc = MWF.xApplication.process.Xform.LP.editdoc;
             printdoc = MWF.xApplication.process.Xform.LP.printdoc;
             history = MWF.xApplication.process.Xform.LP.history;
+            handwrittenApproval = MWF.xApplication.process.Xform.LP.handwrittenApproval;
         }
         // if (this.allowEdit){
         //     //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEdit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
@@ -2014,6 +2030,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         if (this.allowHistory){
            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+history+"\" MWFButtonAction=\"_historyDoc\" MWFButtonText=\""+history+"\"></span>";
+        }
+        if (this.allowHandwrittenApproval){
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+handwrittenApproval+"\" MWFButtonAction=\"_handwrittenApproval\" MWFButtonText=\""+handwrittenApproval+"\"></span>";
         }
         if (this.json.canFullScreen!=="n"){
             html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/fullscreen.png\" title=\""+fullscreen+"\" MWFButtonAction=\"fullScreen\" MWFButtonText=\""+fullscreen+"\"></span>";
@@ -3003,7 +3022,7 @@ debugger;
                 //if (this.data[name]){
                 if (this[dom]){
                             if (dom=="layout_redHeader" ||dom=="layout_issuanceUnit" || dom=="layout_meetingAttendContent" || dom=="layout_meetingLeaveContent" || dom=="layout_meetingSitContent" || dom=="layout_meetingRecordContent" || dom=="layout_signer") {
-                                this[dom].set("html", this.data[name] || "");
+                                this[dom].set("html", this.filterHtml(this.data[name] || ""));
                             }else if (dom=="layout_subject"){
                                 this[dom].set("html", (this.data[name] || ""));
                             }else if (dom=="layout_attachment"){
@@ -3446,6 +3465,16 @@ debugger;
         }
     },
 
+    filterHtml: function(html){
+        var content = html.replace(/(?:<script[\s\S]*?)(?:(?:<\/script>)|(?:\/>))/gmi, "");
+        // content = content.replace(/(?<=[\"\'])javascript\:(?=.*")/gmi, "");
+        //content = content.replace(/(?<=\s)on\w*|src|href(?=\=[\"\'])/gmi, function(match){
+        content = content.replace(/\son\w*|src|href(?=\=[\"\'])/gmi, function(match){
+            return "data-"+match;
+        });
+        return content;
+    },
+
     /**设置公文编辑器数据
      * @param {Object} data
      * @example
@@ -3537,10 +3566,10 @@ debugger;
             if (this.layout_meetingLeaveTitle) this.layout_meetingLeaveTitle.set("text", data.meetingLeaveTitle || this.json.defaultValue.meetingLeaveTitle || " ");
             if (this.layout_meetingSitTitle) this.layout_meetingSitTitle.set("text", data.meetingSitTitle || this.json.defaultValue.meetingSitTitle || " ");
 
-            if (this.layout_meetingAttendContent) this.layout_meetingAttendContent.set("html", data.meetingAttend || " ");
-            if (this.layout_meetingLeaveContent) this.layout_meetingLeaveContent.set("html", data.meetingLeave || " ");
-            if (this.layout_meetingSitContent) this.layout_meetingSitContent.set("html", data.meetingSit || " ");
-            if (this.layout_meetingRecordContent) this.layout_meetingRecordContent.set("html", data.meetingRecord || " ");
+            if (this.layout_meetingAttendContent) this.layout_meetingAttendContent.set("html", this.filterHtml(data.meetingAttend || " "));
+            if (this.layout_meetingLeaveContent) this.layout_meetingLeaveContent.set("html", this.filterHtml(data.meetingLeave || " "));
+            if (this.layout_meetingSitContent) this.layout_meetingSitContent.set("html", this.filterHtml(data.meetingSit || " "));
+            if (this.layout_meetingRecordContent) this.layout_meetingRecordContent.set("html", this.filterHtml(data.meetingRecord || " "));
 
             if (this.layout_seals){
                 if (data.seals && data.seals.length){

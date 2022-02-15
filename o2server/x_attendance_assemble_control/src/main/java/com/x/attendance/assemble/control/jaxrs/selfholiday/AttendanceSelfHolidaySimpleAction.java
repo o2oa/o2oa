@@ -16,6 +16,7 @@ import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.jaxrs.ExceptionAttendanceProcess;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -59,7 +60,7 @@ public class AttendanceSelfHolidaySimpleAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteByWfDocId(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("docId") String docId) {
+			@JaxrsParameterDescribe("文档标识") @PathParam("docId") String docId) {
 		ActionResult<ActionDeleteByWfDocId.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;

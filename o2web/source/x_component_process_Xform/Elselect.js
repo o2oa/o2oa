@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
 /** @class Elselect 基于Element UI的选择框组件。
+ * @o2cn 选择框
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -10,6 +11,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/select|Element UI Select 选择器}
  */
 MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
     /** @lends o2.xApplication.process.Xform.Elselect# */
@@ -18,6 +20,36 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
+        /**
+         * 当 input 获得焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elselect#focus
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
+        /**
+         * 当 input 失去焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elselect#blur
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
+        /**
+         * 选中值发生变化时触发。this.event[0]为组件目前的选中值
+         * @event MWF.xApplication.process.Xform.Elselect#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
+        /**
+         * 下拉框出现/隐藏时触发。this.event[0]的值出现则为 true，隐藏则为 false
+         * @event MWF.xApplication.process.Xform.Elselect#visible-change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
+        /**
+         * 多选模式下移除tag时触发。this.event[0]为移除的tag值
+         * @event MWF.xApplication.process.Xform.Elselect#remove-tag
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
+        /**
+         * 可清空的单选模式下用户点击清空按钮时触发。
+         * @event MWF.xApplication.process.Xform.Elselect#clear
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/select|选择器的Select Events章节}
+         */
         "elEvents": ["focus", "blur", "change", "visible-change", "remove-tag", "clear"]
     },
     _loadNode: function(){
@@ -113,7 +145,6 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         }
     },
     _createElementHtml: function(){
-        debugger;
         var html = "<el-select";
         html += " v-model=\""+this.json.$id+"\"";
         html += " :clearable=\"clearable\"";

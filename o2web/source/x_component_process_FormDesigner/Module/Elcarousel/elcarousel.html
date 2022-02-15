@@ -1,0 +1,272 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.id}}:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.name}}:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		</table>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.height}}:</td>
+				<td class="editTableValue"><input type="number" name="height" value="text{$.height}" class="editTableInputNoWidth"/>px</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.initialIndex}}:</td>
+				<td class="editTableValue"><input type="number" name="initialIndex" value="text{$.initialIndex}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.type}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="carouselType" value="" text{(!$.carouselType)?'checked':''}/>{{$.lp.carouselTypeValue[0]}}
+					<input type="radio" name="carouselType" value="card" text{($.trigger==='card')?'checked':''}/>{{$.lp.carouselTypeValue[1]}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.trigger}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="trigger" value="" text{(!$.trigger)?'checked':''}/>{{$.lp.triggerValue[0]}}
+					<input type="radio" name="trigger" value="click" text{($.trigger==='click')?'checked':''}/>{{$.lp.triggerValue[1]}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.autoplay}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="autoplay" value="true" text{($.autoplay)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="autoplay" value="false" text{(!$.autoplay)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.interval}}:</td>
+				<td class="editTableValue"><input type="number" name="interval" value="text{$.interval}" class="editTableInputNoWidth"/>ms</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.indicatorPosition}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="indicatorPosition" value="" text{(!$.indicatorPosition || $.indicatorPosition==='')?'checked':''}/>{{$.lp.indicatorPositionValue[0]}}
+					<input type="radio" name="indicatorPosition" value="outside" text{($.indicatorPosition==='outside')?'checked':''}/>{{$.lp.indicatorPositionValue[1]}}
+					<input type="radio" name="indicatorPosition" value="none" text{($.indicatorPosition==='none')?'checked':''}/>{{$.lp.indicatorPositionValue[2]}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.arrow}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="arrow" value="hover" text{(!$.arrow || $.arrow==='hover')?'checked':''}/>{{$.lp.arrowValue[0]}}
+					<input type="radio" name="arrow" value="always" text{($.arrow==='always')?'checked':''}/>{{$.lp.arrowValue[1]}}
+					<input type="radio" name="arrow" value="never" text{($.arrow==='never')?'checked':''}/>{{$.lp.arrowValue[2]}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.loop}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="loop" value="true" text{($.loop)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="loop" value="false" text{(!$.loop)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.direction}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="direction" value="horizontal" text{(!$.direction || $.direction==='horizontal')?'checked':''}/>{{$.lp.directionValue[0]}}
+					<input type="radio" name="direction" value="vertical" text{($.direction==='vertical')?'checked':''}/>{{$.lp.directionValue[1]}}
+				</td>
+			</tr>
+		</table>
+
+		<div class="MWFMaplist" name="elStyles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="elProperties" title="{{$.lp.attribute}}"></div>
+
+<!--		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--			<tr>-->
+<!--				<td class="editTableTitle">{{$.lp.compute}}:</td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input type="radio" name="compute" value="create" text{(!$.compute || $.compute=='create')?'checked':''}/>{{$.lp.create}}-->
+<!--					<input type="radio" name="compute" value="save" text{($.compute=='save')?'checked':''}/>{{$.lp.save}}-->
+<!--					<input type="radio" name="compute" value="show" text{($.compute=='show')?'checked':''}/>{{$.lp.show}}-->
+<!--				</td>-->
+<!--			</tr>-->
+<!--		</table>-->
+
+<!--		<div class="MWFScriptArea" name="defaultValue" title="{{$.lp.defaultValue}} (S)"></div>-->
+
+<!--		<div class="MWFValidation" name="validationConfig"></div>-->
+<!--		<div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>-->
+		
+	</div>
+	<div title="{{$.lp.data}}"  class="MWFTab">
+		<table>
+			<tr>
+				<td class="editTableTitle"></td>
+				<td class="editTableValue">
+					<input type="radio" name="dataType" value="hotpicture" text{(!$.dataType || $.dataType==='hotpicture')?'checked':''}
+						   onclick="if (this.checked){
+							$('text{$.pid}hotpicture').setStyle('display', '');
+							$('text{$.pid}source').setStyle('display', 'none');
+							$('text{$.pid}dataScript').setStyle('display', 'none');
+						}"
+					/>{{$.lp.hotpicture}}
+					<input type="radio" name="dataType" value="source" text{($.dataType==='source')?'checked':''}
+						   onclick="if (this.checked){
+							$('text{$.pid}hotpicture').setStyle('display', 'none');
+							$('text{$.pid}source').setStyle('display', '');
+							$('text{$.pid}dataScript').setStyle('display', 'none');
+						}"
+					/>{{$.lp.systemSource}}
+					<input type="radio" name="dataType" value="script" text{($.dataType==='script')?'checked':''}
+						   onclick="if (this.checked){
+							$('text{$.pid}hotpicture').setStyle('display', 'none');
+							$('text{$.pid}source').setStyle('display', 'none');
+							$('text{$.pid}dataScript').setStyle('display', '');
+						}"
+					/>{{$.lp.script}}
+				</td>
+			</tr>
+		</table>
+		<div id="text{$.pid}hotpicture" style="display: text{(!$.dataType || $.dataType=='hotpicture')?'':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.count}}:</td>
+					<td class="editTableValue"><input type="number" name="count" value="text{$.count}" class="editTableInput"/></td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.page}}:</td>
+					<td class="editTableValue"><input type="number" name="page" value="text{$.page}" class="editTableInput"/></td>
+				</tr>
+			</table>
+			<div style="padding: 5px;">脚本可返回过滤参数，格式如下：<br/>return { <br/>
+				"application" : "", //BBS论坛, CMS内容管理，忽略为全部<br/>
+				"title" : "", //标题包含的文字，模糊匹配<br/>
+				}; </div>
+			<div class="MWFFormulaArea" name="filterScript" title="{{$.lp.filterParameter}}"></div>
+		</div>
+		<div id="text{$.pid}source" style="display: text{($.dataType=='source')?'':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.method}}:</td>
+					<td class="editTableValue">
+						<select name="httpMethod" onchange="var i=this.selectedIndex; if (i==1 || i==2 || i==3){$('text{$.pid}requestBodyArea').setStyle('display', 'block');}else{$('text{$.pid}requestBodyArea').setStyle('display', 'none');}">
+							<option value="GET" text{($.httpMethod=='GET')?'selected':''}>GET</option>
+							<option value="POST" text{($.httpMethod=='POST')?'selected':''}>POST</option>
+							<option value="PUT" text{($.httpMethod=='PUT')?'selected':''}>PUT</option>
+							<option value="PATCH" text{($.httpMethod=='PATCH')?'selected':''}>PATCH</option>
+							<option value="OPTIONS" text{($.httpMethod=='OPTIONS')?'selected':''}>OPTIONS</option>
+							<option value="HEAD" text{($.httpMethod=='HEAD')?'selected':''}>HEAD</option>
+							<option value="DELETE" text{($.httpMethod=='DELETE')?'selected':''}>DELETE</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div id="text{$.pid}sourceO2Area" style="display: text{($.sourceType!='other')?'block':'none'}">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">{{$.lp.applicationService}}:</td>
+						<td class="editTableValue"><div class="MWFContextRoot" name="contextRoot">
+							<select></select>
+							<select style="display: none"></select><br/>
+							<select style="display: none"></select>
+							<input style="display: none" type="text" name="selectPath" value="text{$.selectPath}" class="editTableInput"/>
+						</div></td>
+					</tr>
+				</table>
+			</div>
+
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.servicePath}}:</td>
+					<td class="editTableValue">
+						<div>{{$.lp.servicePathNote}}</div>
+						<input type="text" name="path" value="text{$.path}" class="editTableInput"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.dataItemPath}}:</td>
+					<td class="editTableValue">
+						<div>{{$.lp.dataItemPathNote}}</div>
+						<input type="text" name="dataItemPath" value="text{$.dataItemPath}" class="editTableInput"/>
+					</td>
+				</tr>
+			</table>
+			<div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center;">{{$.lp.parameter}}</div>
+			<div class="MWFParameterArea" name="parameters"></div>
+
+			<div id="text{$.pid}requestBodyArea" style="display: text{($.httpMethod=='PUT' || $.httpMethod=='POST' || $.httpMethod=='PATCH')?'block':'none'}">
+				<div class="MWFFormulaArea" name="requestBody" title="{{$.lp.requestBody}}"></div>
+			</div>
+
+			<div class="MWFSourceTestRestful">
+				<div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center; cursor:pointer">{{$.lp.test}}</div>
+				<div style="margin: 10px; text-align:center"></div>
+			</div>
+
+
+		</div>
+		<div id="text{$.pid}dataScript" style="display: text{($.dataType=='script')?'':'none'}">
+			<div style="padding: 5px;">{{$.lp.dataScriptNote2}}</div>
+			<div class="MWFScriptArea" name="dataScript"></div>
+			<table><tr>
+				<td class="editTableTitle">{{$.lp.dataItemPath}}:</td>
+				<td class="editTableValue">
+					<div>{{$.lp.dataItemPathNote}}</div>
+					<input type="text" name="scriptDataItemPath" value="text{$.scriptDataItemPath}" class="editTableInput"/>
+				</td>
+			</tr>
+			</table>
+		</div>
+	</div>
+
+	<div title="{{$.lp.content}}"  class="MWFTab">
+<!--		<table>-->
+<!--			<tr>-->
+<!--				<td class="editTableTitle"></td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input type="radio" name="contentType" value="config" text{(!$.contentType || $.contentType==='config')?'checked':''}-->
+<!--						   onclick="if (this.checked){-->
+<!--							$('text{$.pid}contentConfig').setStyle('display', '');-->
+<!--							$('text{$.pid}contentScript').setStyle('display', 'none');-->
+<!--						}"-->
+<!--					/>{{$.lp.config}}-->
+<!--					<input type="radio" name="contentType" value="script" text{($.contentType==='script')?'checked':''}-->
+<!--						   onclick="if (this.checked){-->
+<!--							$('text{$.pid}contentConfig').setStyle('display', 'none');-->
+<!--							$('text{$.pid}contentScript').setStyle('display', '');-->
+<!--						}"-->
+<!--					/>{{$.lp.script}}-->
+<!--				</td>-->
+<!--			</tr>-->
+<!--		</table>-->
+		<div id="text{$.pid}contentConfig" class="MWFElCarouselContent" name="contentConfig"
+			 style="display: text{($.contentType!='script')?'':'none'}">
+		</div>
+<!--		<div id="text{$.pid}contentScript" style="display: text{($.contentType=='script')?'':'none'}">-->
+<!--			<div style="padding: 5px;">脚本返回Promise对象或数据</div>-->
+<!--			<div class="MWFScriptArea" name="contentScript"></div>-->
+<!--		</div>-->
+	</div>
+
+	<div title="Vue"  class="MWFTab">
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Data</div>
+		<div style="display: text{($.vueData && $.vueData.code) ? 'block': 'none'}" class="MWFScriptArea" name="vueData" title="Vue Data (S)"></div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Method</div>
+		<div div style="display: text{($.vueMethods && $.vueMethods.code) ? 'block': 'none'}" class="MWFScriptArea" name="vueMethods" title="Vue Methods (S)"></div>
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue CSS</div>
+		<div div style="display: text{($.vueCss && $.vueCss.code) ? 'block': 'none'}" class="MWFCssArea" name="vueCss" title="Vue Css (S)"></div>
+
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Slots</div>
+		<div style="display: text{($.vueSlot) ? 'block' : 'none'}">
+			<div class="MWFHtmlEditorArea" name="vueSlot" title="Input Slot (HTML)"></div>
+		</div>
+	</div>
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab" style="display: none">
+		<div class="MWFHTMLArea" style="width:100%; height:400px; border:0px;font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

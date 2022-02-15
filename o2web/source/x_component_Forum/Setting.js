@@ -24,10 +24,21 @@ MWF.xApplication.Forum.Setting = new Class({
         this.cssPath = "../x_component_Forum/$Setting/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
-    load: function () {
+    load: function(){
+        this.app.access.getUserPermission(function ( permission ) {
+            this.permission = permission;
+            this._load();
+        }.bind(this))
+    },
+    _load: function () {
         //this.middleContent = this.app.middleContent;
+        this.naviDiv = new Element("div.naviDiv",{
+            "styles":this.css.naviDiv
+        }).inject(this.node);
+        this.contentDiv = new Element("div.contentDiv",{
+            "styles":this.css.contentDiv
+        }).inject(this.node);
         this.createNaviContent();
-        this.createContentDiv();
 
         this.resizeWindowFun = this.resizeWindow.bind(this);
         this.resizeWindow();
@@ -56,9 +67,6 @@ MWF.xApplication.Forum.Setting = new Class({
         this.contentDiv.setStyles({"height":height+"px"});
     },
     createNaviContent: function(){
-        this.naviDiv = new Element("div.naviDiv",{
-            "styles":this.css.naviDiv
-        }).inject(this.node);
 
         this.naviTitleDiv = new Element("div.naviTitleDiv",{
             "styles":this.css.naviTitleDiv,
@@ -67,39 +75,59 @@ MWF.xApplication.Forum.Setting = new Class({
         this.naviContentDiv = new Element("div.naviContentDiv",{"styles":this.css.naviContentDiv}).inject(this.naviDiv);
         this.naviBottomDiv = new Element("div.naviBottomDiv",{"styles":this.css.naviBottomDiv}).inject(this.naviDiv);
 
-        var jsonUrl = this.path+"navi.json";
-        MWF.getJSON(jsonUrl, function(json){
-            json.each(function(data, i){
-                var naviContentLi = new Element("li.naviContentLi",{"styles":this.css.naviContentLi}).inject(this.naviContentDiv);
-                naviContentLi.addEvents({
-                    "mouseover" : function(ev){
-                        if(this.bindObj.currentNaviItem != this.node) this.node.setStyles( this.styles );
-                    }.bind({"styles": this.css.naviContentLi_over, "node":naviContentLi, "bindObj": this }),
-                    "mouseout" : function(ev){
-                        if(this.bindObj.currentNaviItem != this.node)this.node.setStyles( this.styles )
-                    }.bind({"styles": this.css.naviContentLi, "node":naviContentLi, "bindObj": this }) ,
-                    "click" : function(ev){
-                        if( this.bindObj.currentNaviItem )this.bindObj.currentNaviItem.setStyles( this.bindObj.css.naviContentLi );
-                        this.node.setStyles( this.styles );
-                        this.bindObj.currentNaviItem = this.node;
-                        this.node.store( "index" , i );
-                        if( this.action && this.bindObj[this.action] )this.bindObj[this.action]();
-                    }.bind({"styles": this.css.naviContentLi_current, "node":naviContentLi, "bindObj": this, "action" : data.action })
-                });
-                var naviContentImg = new Element("img.naviContentImg",{
-                    "styles":this.css.naviContentImg,
-                    "src":this.path+this.options.style+"/icon/"+data.icon
-                }).inject(naviContentLi);
-                var naviContentSpan = new Element("span.naviContentSpan",{
-                    "styles":this.css.naviContentSpan,
-                    "text":data.title
-                }).inject(naviContentLi);
-                if( i == this.options.index )naviContentLi.click();
-            }.bind(this));
+        // var jsonUrl = this.path+"navi.json";
+        // MWF.getJSON(jsonUrl, function(json){
+        var permission = this.permission;
+
+        [
+            {
+                "title" : MWF.xApplication.Forum.LP.systemSettingFormTitle,
+                "icon" :"systemSetting.png",
+                "action" : "openSystemSetting",
+                "enable": this.app.access.isAdmin() || permission.bbsAdmin
+            },
+            {
+                "title" : MWF.xApplication.Forum.LP.categoryFormTitle,
+                "icon" :"categorize.png",
+                "action" : "openCategorySetting",
+                "enable": this.app.access.isAdmin() || permission.bbsAdmin || permission.bbsForumAdmin
+            },
+            {
+                "title" : MWF.xApplication.Forum.LP.sectionFormTitle,
+                "icon" :"squared.png",
+                "action" : "openSectionSetting",
+                "enable": this.app.access.isAdmin() || permission.bbsAdmin || permission.bbsForumAdmin || permission.bbsSectionAdmin
+            }
+        ].filter(function(data){
+            return data.enable;
+        }).each( function(data, i){
+            var naviContentLi = new Element("li.naviContentLi",{"styles":this.css.naviContentLi}).inject(this.naviContentDiv);
+            naviContentLi.addEvents({
+                "mouseover" : function(ev){
+                    if(this.bindObj.currentNaviItem != this.node) this.node.setStyles( this.styles );
+                }.bind({"styles": this.css.naviContentLi_over, "node":naviContentLi, "bindObj": this }),
+                "mouseout" : function(ev){
+                    if(this.bindObj.currentNaviItem != this.node)this.node.setStyles( this.styles )
+                }.bind({"styles": this.css.naviContentLi, "node":naviContentLi, "bindObj": this }) ,
+                "click" : function(ev){
+                    if( this.bindObj.currentNaviItem )this.bindObj.currentNaviItem.setStyles( this.bindObj.css.naviContentLi );
+                    this.node.setStyles( this.styles );
+                    this.bindObj.currentNaviItem = this.node;
+                    this.node.store( "index" , i );
+                    if( this.action && this.bindObj[this.action] )this.bindObj[this.action]();
+                }.bind({"styles": this.css.naviContentLi_current, "node":naviContentLi, "bindObj": this, "action" : data.action })
+            });
+            var naviContentImg = new Element("img.naviContentImg",{
+                "styles":this.css.naviContentImg,
+                "src":this.path+this.options.style+"/icon/"+data.icon
+            }).inject(naviContentLi);
+            var naviContentSpan = new Element("span.naviContentSpan",{
+                "styles":this.css.naviContentSpan,
+                "text":data.title
+            }).inject(naviContentLi);
+            if( i == this.options.index )naviContentLi.click();
         }.bind(this));
-    },
-    createContentDiv: function(){
-        this.contentDiv = new Element("div.contentDiv",{"styles":this.css.contentDiv}).inject(this.node);
+
     },
     openCategorySetting: function(){
         if( this.contentDiv )this.contentDiv.empty();
@@ -208,7 +236,9 @@ MWF.xApplication.Forum.Setting.CategorySettingExplorer = new Class({
         this.createActionNode.addEvent("click",function(){
             var form = new MWF.xApplication.Forum.Setting.CategorySettingForm(this, {}, {
                 onPostOk : function(){
-                    this.view.reload();
+                    this.app.access.getUserPermission(function () {
+                        this.view.reload();
+                    }.bind(this), true);
                 }.bind(this)});
             form.create();
         }.bind(this));
@@ -252,7 +282,14 @@ MWF.xApplication.Forum.Setting.CategorySettingView = new Class({
         //var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
         //var filter = this.filterData || {};
         this.actions.listCategoryAllByAdmin( function (json) {
-            if (callback)callback(json);
+            this.explorer.app.access.getUserPermission(function (permission) {
+                var list = ( json.data || [] ).filter(function(d){
+                    return this.explorer.app.access.isAdmin() || permission.bbsAdmin || permission.forumList.contains(d.id);
+                }.bind(this))
+                json.data = list;
+                json.data.size = list.length;
+                if (callback)callback(json);
+            }.bind(this))
         }.bind(this))
     },
     _removeDocument: function(documentData, all){
@@ -365,11 +402,11 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
             "   </td>" +
             "   <td styles='formTableTitle' lable='subjectType'></td>" +
             "   <td styles='formTableValue' item='subjectType'></td>" +
-                //"</tr><tr>" +
-                //"   <td styles='formTableTitle' lable='indexRecommendable'></td>" +
-                // "   <td styles='formTableValue' item='indexRecommendable'></td>" +
-                //"   <td styles='formTableTitle' lable=''></td>" +
-                //"   <td styles='formTableValue' item=''></td>" +
+            //"</tr><tr>" +
+            //"   <td styles='formTableTitle' lable='indexRecommendable'></td>" +
+            // "   <td styles='formTableValue' item='indexRecommendable'></td>" +
+            //"   <td styles='formTableTitle' lable=''></td>" +
+            //"   <td styles='formTableValue' item=''></td>" +
             "</tr><tr>" +
             "   <td styles='formTableTitle' lable='indexListStyleLable'></td>" +
             "   <td styles='formTableValue' colspan='3'><div item='indexListStyleShow'></div><div item='indexListStyleButton'></div></td>" +
@@ -377,7 +414,7 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
             "   <td styles='formTableTitle' lable='forumNotice'></td>" +
             "   <td styles='formTableValue' item='forumNotice' colspan='3'></td>" +
             "</tr>"+
-        "</table>";
+            "</table>";
         this.formTableArea.set("html", html);
 
         //value : function(){ return this.lp.defaultForumColor }.bind(this), defaultValue : this.lp.defaultForumColor
@@ -404,16 +441,16 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
                     forumName: {text: this.lp.forumName, notEmpty: true},
                     forumManagerName: { type : "org", text: this.lp.forumManagerName, orgType : "person", "defaultValue" : this.app.userName, "count" : 0 },
                     forumVisible: {text: this.lp.forumVisible, type : "select", selectValue : this.lp.forumVisibleValue.split(","), event : {
-                        change : function( it, ev ){
-                            var styles = it.getValue() == this.lp.allPerson ? { display : "none" } : { display : "" };
-                            it.form.getItem("forumVisibleResult").setStyles( styles );
-                        }.bind(this)
-                    }},
+                            change : function( it, ev ){
+                                var styles = it.getValue() == this.lp.allPerson ? { display : "none" } : { display : "" };
+                                it.form.getItem("forumVisibleResult").setStyles( styles );
+                            }.bind(this)
+                        }},
                     forumVisibleResult : { type : "org", count : 0,  orgType : ["person","unit"], value : function(){ return this.getRoleMemberByCode("FORUM_GUEST_") }.bind(this), style : formVisibleStyle },
                     indexListStyleLable: {text: this.lp.indexListStyle }, //selectValue : this.lp.indexListStyleValue.split(",")
                     indexListStyleButton: { type : "button", value: this.lp.indexListStyleButton, event : {
-                        click : function( it, ev ){ this.selectIndexType() }.bind(this)
-                    } },
+                            click : function( it, ev ){ this.selectIndexType() }.bind(this)
+                        } },
                     forumIndexStyle: {text: this.lp.forumIndexStyle, type : "select", selectValue : this.lp.forumIndexStyleValue.split(",") },
                     indexRecommendable: {text: this.lp.indexRecommendable, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(",") },
                     subjectNeedAudit: {text: this.lp.subjectNeedAudit, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(","), defaultValue : "false" },
@@ -424,8 +461,8 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
                     orderNumber: {text: this.lp.orderNumber, tType : "number" },
                     forumColorArea: {text: this.lp.forumColor, type: "innerText" },
                     forumColorButton : { value : this.lp.selectColor , type : "button", style : selectColorButtonStyle, event : {
-                        click : function( it, ev ){ this.selectColor()  }.bind(this)
-                    }},
+                            click : function( it, ev ){ this.selectColor()  }.bind(this)
+                        }},
                     subjectType: {text: this.lp.subjectType, type: "text", defaultValue : this.lp.subjectTypeDefaultValue },
                     forumNotice: {text: this.lp.forumNotice, type: "rtf", RTFConfig : { "enablePreview": false }}
                 }
@@ -720,7 +757,13 @@ MWF.xApplication.Forum.Setting.SectionSettingExplorer = new Class({
         this.css = this.parent.css;
         this.lp = this.app.lp;
     },
-    load: function () {
+    load: function(){
+        this.app.access.getUserPermission(function (permission) {
+            this.permission = permission;
+            this._load();
+        }.bind(this))
+    },
+    _load: function () {
         this.container.empty();
         this.loadToolbar();
     },
@@ -733,17 +776,21 @@ MWF.xApplication.Forum.Setting.SectionSettingExplorer = new Class({
             styles : this.css.toolbar
         }).inject(this.container);
 
-        this.createActionNode = new Element("div",{
-            styles : this.css.toolbarActionNode,
-            text: this.lp.createSection
-        }).inject(this.toolbar);
-        this.createActionNode.addEvent("click",function(){
-            var form = new MWF.xApplication.Forum.Setting.SectionSettingForm(this, {}, {
-                onPostOk : function(){
-                    this.view.reload();
-                }.bind(this)});
-            form.create();
-        }.bind(this));
+        if( this.app.access.isAdmin() || this.permission.bbsAdmin || this.permission.bbsForumAdmin ){
+            this.createActionNode = new Element("div",{
+                styles : this.css.toolbarActionNode,
+                text: this.lp.createSection
+            }).inject(this.toolbar);
+            this.createActionNode.addEvent("click",function(){
+                var form = new MWF.xApplication.Forum.Setting.SectionSettingForm(this, {}, {
+                    onPostOk : function(){
+                        this.app.access.getUserPermission(function () {
+                            this.view.reload();
+                        }.bind(this), true);
+                    }.bind(this)});
+                form.create();
+            }.bind(this));
+        }
 
         this.loadCategoryBar();
 
@@ -766,38 +813,73 @@ MWF.xApplication.Forum.Setting.SectionSettingExplorer = new Class({
                 if( this.currentCategoryNode )this.currentCategoryNode.setStyles(this.css.categoryNode);
                 this.currentCategoryNode = this.allCategoryNode;
                 this.allCategoryNode.setStyles(this.css.categoryNode_current);
-                this.loadView(  )
+                this.loadView()
             }.bind(this)
         });
         var isManager = false;
         this.forumAdminObj = {};
-        this.app.restActions.listCategoryAllByAdmin( function( json ){
-                json.data = json.data || [];
-                json.data.each( function( d ){
-                    var flag = this.app.access.hasForumAdminAuthority( d );
-                    this.forumAdminObj[d.id] = flag;
-                    if( !isManager ){
-                        isManager = flag;
-                    }
-                    var categoryNode = new Element("li.categoryNode", {
-                        "styles": this.css.categoryNode,
-                        "text" : d.forumName
-                    }).inject(this.toolbar);
-                    categoryNode.store( "categoryId" , d.id );
-                    categoryNode.addEvents({
-                        "mouseover" : function(){ if( _self.currentCategoryNode != this.node)this.node.setStyles(_self.css.categoryNode_over) }.bind({node : categoryNode }),
-                        "mouseout" : function(){ if( _self.currentCategoryNode != this.node)this.node.setStyles(_self.css.categoryNode) }.bind({node : categoryNode }),
-                        "click":function(){
-                            if( _self.currentCategoryNode )_self.currentCategoryNode.setStyles(_self.css.categoryNode);
-                            _self.currentCategoryNode = this.node;
-                            this.node.setStyles(_self.css.categoryNode_current);
-                            _self.loadView(  )
-                        }.bind({ name : d.id, node : categoryNode })
-                    })
-                }.bind(this))
-            }.bind(this), null, false
-        );
-        if( !isManager )this.createActionNode.destroy();
+
+        this.app.restActions.listSectionAll( function (json) {
+            var list = ( json.data || [] ).filter(function(d){
+                return this.app.access.isAdmin() || this.permission.bbsAdmin || this.permission.sectionList.contains(d.id);
+            }.bind(this));
+            var categoryList = [];
+            var idList = [];
+            list.each(function( d ){
+                if( !idList.contains( d.forumId ) ){
+                    categoryList.push({
+                        "forumName": d.forumName,
+                        "id": d.forumId
+                    });
+                    idList.push( d.forumId );
+                }
+            });
+            categoryList.each(function(d){
+                var categoryNode = new Element("li.categoryNode", {
+                    "styles": this.css.categoryNode,
+                    "text" : d.forumName
+                }).inject(this.toolbar);
+                categoryNode.store( "categoryId" , d.id );
+                categoryNode.addEvents({
+                    "mouseover" : function(){ if( _self.currentCategoryNode != this.node)this.node.setStyles(_self.css.categoryNode_over) }.bind({node : categoryNode }),
+                    "mouseout" : function(){ if( _self.currentCategoryNode != this.node)this.node.setStyles(_self.css.categoryNode) }.bind({node : categoryNode }),
+                    "click":function(){
+                        if( _self.currentCategoryNode )_self.currentCategoryNode.setStyles(_self.css.categoryNode);
+                        _self.currentCategoryNode = this.node;
+                        this.node.setStyles(_self.css.categoryNode_current);
+                        _self.loadView(  )
+                    }.bind({ name : d.id, node : categoryNode })
+                })
+            }.bind(this))
+        }.bind(this));
+
+        // this.app.restActions.listCategoryAllByAdmin( function( json ){
+        //         json.data = json.data || [];
+        //         json.data.each( function( d ){
+        //             var flag = this.app.access.hasForumAdminAuthority( d );
+        //             this.forumAdminObj[d.id] = flag;
+        //             if( !isManager ){
+        //                 isManager = flag;
+        //             }
+        //             var categoryNode = new Element("li.categoryNode", {
+        //                 "styles": this.css.categoryNode,
+        //                 "text" : d.forumName
+        //             }).inject(this.toolbar);
+        //             categoryNode.store( "categoryId" , d.id );
+        //             categoryNode.addEvents({
+        //                 "mouseover" : function(){ if( _self.currentCategoryNode != this.node)this.node.setStyles(_self.css.categoryNode_over) }.bind({node : categoryNode }),
+        //                 "mouseout" : function(){ if( _self.currentCategoryNode != this.node)this.node.setStyles(_self.css.categoryNode) }.bind({node : categoryNode }),
+        //                 "click":function(){
+        //                     if( _self.currentCategoryNode )_self.currentCategoryNode.setStyles(_self.css.categoryNode);
+        //                     _self.currentCategoryNode = this.node;
+        //                     this.node.setStyles(_self.css.categoryNode_current);
+        //                     _self.loadView(  )
+        //                 }.bind({ name : d.id, node : categoryNode })
+        //             })
+        //         }.bind(this))
+        //     }.bind(this), null, false
+        // );
+        // if( !isManager )this.createActionNode.destroy();
         this.allCategoryNode.click();
     },
     loadView : function(){
@@ -806,6 +888,8 @@ MWF.xApplication.Forum.Setting.SectionSettingExplorer = new Class({
             categoryId = this.currentCategoryNode.retrieve("categoryId");
         }
         categoryId = categoryId || "all";
+
+        if(this.view)this.view.destroy();
 
         if(this.viewContainer)this.viewContainer.destroy();
         this.viewContainer = Element("div",{
@@ -840,13 +924,25 @@ MWF.xApplication.Forum.Setting.SectionSettingView = new Class({
         //var filter = this.filterData || {};
         if( this.options.categoryId == "all" ){
             this.actions.listSectionAll( function (json) {
-                if( !json.data )json.data = [];
-                if (callback)callback(json);
+                this.explorer.app.access.getUserPermission(function (permission) {
+                    var list = ( json.data || [] ).filter(function(d){
+                        return this.explorer.app.access.isAdmin() || permission.bbsAdmin || permission.sectionList.contains(d.id);
+                    }.bind(this))
+                    json.data = list;
+                    json.data.size = list.length;
+                    if (callback)callback(json);
+                }.bind(this))
             }.bind(this))
         }else{
             this.actions.listSectionByAdmin( this.options.categoryId, function (json) {
-                if( !json.data )json.data = [];
-                if (callback)callback(json);
+                this.explorer.app.access.getUserPermission(function (permission) {
+                    var list = ( json.data || [] ).filter(function(d){
+                        return this.explorer.app.access.isAdmin() || permission.bbsAdmin || permission.sectionList.contains(d.id);
+                    }.bind(this))
+                    json.data = list;
+                    json.data.size = list.length;
+                    if (callback)callback(json);
+                }.bind(this))
             }.bind(this))
         }
     },
@@ -983,9 +1079,9 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
             "   <td styles='formTableTitle' lable='forumId' width='10%'></td>" +
             "   <td styles='formTableValue' item='forumId' width='40%'></td>" +
             "</tr><tr>" +
-                //"   <td styles='formTableTitle' lable='sectionType'></td>" +
-                //"   <td styles='formTableValue' item='sectionType'></td>" +
-                //"</tr><tr>" +
+            //"   <td styles='formTableTitle' lable='sectionType'></td>" +
+            //"   <td styles='formTableValue' item='sectionType'></td>" +
+            //"</tr><tr>" +
             "   <td styles='formTableTitle' lable='sectionStatus'></td>" +
             "   <td styles='formTableValue' item='sectionStatus'></td>" +
             "   <td styles='formTableTitle' lable='orderNumber'></td>" +
@@ -1010,7 +1106,7 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
             "   <td styles='formTableTitle' lable='sectionNotice'></td>" +
             "   <td styles='formTableValue' item='sectionNotice' colspan='3'></td>" +
             "</tr>"+
-        "</table>";
+            "</table>";
         this.baseContainer.set("html", html);
 
         this.permissionContainer = new Element("div", { styles : {"display":"none"} }).inject( this.formTableArea );
@@ -1074,7 +1170,7 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
             //"   <td styles='formTableTitle' lable='replyAuditPerson' width='10%' style='"+ ( this.data.replyNeedAudit == true  ? "display:;" : "display:none;" ) +"'></td>" +
             //"   <td styles='formTableValue' item='replyAuditPerson' width='60%' style='"+ ( this.data.replyNeedAudit == true  ? "display:;" : "display:none;" ) +"'></td>" +
             "</tr>"+
-        "</table>";
+            "</table>";
         this.permissionContainer.set("html", html);
 
         var forumNames = [""];
@@ -1116,55 +1212,55 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
                     forumId: {text: this.lp.owneForum, type : "select", "selectText" : forumNames, "selectValue" : forumIds , notEmpty: true, isEdited : function(){ return this.isNew }.bind(this)},
 
                     sectionVisible: {text: this.lp.sectionVisible, type : "select", selectValue : this.lp.sectionVisibleValue.split(","), event : {
-                        change : function( it, ev ){
-                            this.setItemStyle( it, "sectionVisible" );
-                            if( it.getValue() == this.lp.allPerson ){
-                                this.formTableArea.getElements("[item='indexRecommendTr']")[0].setStyle("display","")
-                            }else{
-                                this.formTableArea.getElements("[item='indexRecommendTr']")[0].setStyle("display","none")
-                            }
-                        }.bind(this)
-                    }},
+                            change : function( it, ev ){
+                                this.setItemStyle( it, "sectionVisible" );
+                                if( it.getValue() == this.lp.allPerson ){
+                                    this.formTableArea.getElements("[item='indexRecommendTr']")[0].setStyle("display","")
+                                }else{
+                                    this.formTableArea.getElements("[item='indexRecommendTr']")[0].setStyle("display","none")
+                                }
+                            }.bind(this)
+                        }},
                     sectionVisibleResult : { type : "org", orgType : ["person","unit"], count :0 , value : function(){ return this.getRoleMemberByCode("SECTION_GUEST_") }.bind(this), style : this.getContainerStyle("sectionVisible") },
 
                     subjectPublishAble: {text: this.lp.subjectPublishAble, type : "select", selectValue : this.lp.subjectPublishAbleValue.split(","), event : {
-                        change : function( it, ev ){  this.setItemStyle( it, "subjectPublish" ); }.bind(this)
-                    }},
+                            change : function( it, ev ){  this.setItemStyle( it, "subjectPublish" ); }.bind(this)
+                        }},
                     subjectPublishResult : { type : "org", orgType : ["person","unit"], count :0 , value : function(){ return this.getRoleMemberByCode("SECTION_SUBJECT_PUBLISHER_") }.bind(this), style : this.getContainerStyle("subjectPublishAble") },
 
                     replyPublishAble: {text: this.lp.replyPublishAble, type : "select", selectValue : this.lp.replyPublishAbleValue.split(","), event : {
-                        change : function( it, ev ){  this.setItemStyle( it, "replyPublish" ); }.bind(this)
-                    }},
+                            change : function( it, ev ){  this.setItemStyle( it, "replyPublish" ); }.bind(this)
+                        }},
                     replyPublishResult : { type : "org", orgType : ["person","unit"], count :0 , value : function(){ return this.getRoleMemberByCode("SECTION_REPLY_PUBLISHER_") }.bind(this), style : this.getContainerStyle("replyPublishAble") },
 
                     indexRecommendable: {text: this.lp.indexRecommendable, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(",") , defaultValue : "true" ,event : {
-                        change : function( it, ev ){
-                            var styles = it.getValue() == "true" ? {"display":""} : {"display":"none"};
-                            this.permissionContainer.getElements("[item='indexRecommenPerson']")[0].setStyles( styles );
-                            this.permissionContainer.getElements("[lable='indexRecommenPerson']")[0].setStyles( styles );
-                        }.bind(this)
-                    }},
+                            change : function( it, ev ){
+                                var styles = it.getValue() == "true" ? {"display":""} : {"display":"none"};
+                                this.permissionContainer.getElements("[item='indexRecommenPerson']")[0].setStyles( styles );
+                                this.permissionContainer.getElements("[lable='indexRecommenPerson']")[0].setStyles( styles );
+                            }.bind(this)
+                        }},
                     indexRecommenPerson : { type : "org", text: this.lp.indexRecommenPerson , orgType : "person", count : 0, value : function(){
-                        var v = this.getRoleMemberByCode("SECTION_RECOMMENDER_");
-                        return v == "" ? this.app.userName : v;
-                    }.bind(this)},
+                            var v = this.getRoleMemberByCode("SECTION_RECOMMENDER_");
+                            return v == "" ? this.app.userName : v;
+                        }.bind(this)},
 
                     subjectNeedAudit: {text: this.lp.subjectNeedAudit, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(","), defaultValue : "false" ,event : {
-                        change : function( it, ev ){
-                            var styles = it.getValue() == "true" ? {"display":""} : {"display":"none"};
-                            this.permissionContainer.getElements("[item='subjectAuditPerson']")[0].setStyles( styles );
-                            this.permissionContainer.getElements("[lable='subjectAuditPerson']")[0].setStyles( styles );
-                        }.bind(this)
-                    }},
+                            change : function( it, ev ){
+                                var styles = it.getValue() == "true" ? {"display":""} : {"display":"none"};
+                                this.permissionContainer.getElements("[item='subjectAuditPerson']")[0].setStyles( styles );
+                                this.permissionContainer.getElements("[lable='subjectAuditPerson']")[0].setStyles( styles );
+                            }.bind(this)
+                        }},
                     subjectAuditPerson : { type : "org", text: this.lp.auditPerson , orgType : "person", count : 0, value : function(){ return this.getRoleMemberByCode("SECTION_SUBJECT_AUDITOR_") }.bind(this) },
 
                     replyNeedAudit: {text: this.lp.replyNeedAudit, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(",") , defaultValue : "false" ,event : {
-                        change : function( it, ev ){
-                            var styles = it.getValue() == "true" ? {"display":""} : {"display":"none"};
-                            this.permissionContainer.getElements("[item='replyAuditPerson']")[0].setStyles( styles );
-                            this.permissionContainer.getElements("[lable='replyAuditPerson']")[0].setStyles( styles );
-                        }.bind(this)
-                    }},
+                            change : function( it, ev ){
+                                var styles = it.getValue() == "true" ? {"display":""} : {"display":"none"};
+                                this.permissionContainer.getElements("[item='replyAuditPerson']")[0].setStyles( styles );
+                                this.permissionContainer.getElements("[lable='replyAuditPerson']")[0].setStyles( styles );
+                            }.bind(this)
+                        }},
                     replyAuditPerson : { type : "org", text: this.lp.auditPerson , orgType : "person", count : 0, value : function(){ return this.getRoleMemberByCode("SECTION_REPLY_AUDITOR_") }.bind(this) },
 
                     moderatorNames : {type : "org",text:this.lp.moderatorNames, orgType:"person", count : 0,  defaultValue : this.app.userName },
@@ -1370,9 +1466,8 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
         }.bind(this), null, this.formData, this.file);
     },
     _ok: function (data, callback) {
-        debugger;
         if( typeOf(data.moderatorNames) === "string" ){
-            data.moderatorNames = data.moderatorNames.split(",");
+            data.moderatorNames = data.moderatorNames.split(",").filter(function(d){ return !!d} );
         }
         data.sectionLevel = MWF.xApplication.Forum.LP.mainSection;
         data.typeCategory = data.typeCatagory.split(",").join("|");

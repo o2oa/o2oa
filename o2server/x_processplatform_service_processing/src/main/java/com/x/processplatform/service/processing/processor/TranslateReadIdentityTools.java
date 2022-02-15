@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization.ClassifyDistinguishedName;
 import com.x.processplatform.core.entity.content.Data;
@@ -30,7 +30,11 @@ import com.x.processplatform.service.processing.Business;
  */
 public class TranslateReadIdentityTools {
 
-	private static Logger logger = LoggerFactory.getLogger(TranslateReadIdentityTools.class);
+	private TranslateReadIdentityTools() {
+		// nothing
+	}
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(TranslateReadIdentityTools.class);
 
 	/** 计算活动节点中所有的待阅，全部翻译成Identity */
 	public static List<String> translate(AeiObjects aeiObjects) throws Exception {
@@ -66,12 +70,12 @@ public class TranslateReadIdentityTools {
 		identities.addAll(aeiObjects.business().organization().identity().listWithGroup(groups));
 		identities.addAll(aeiObjects.business().organization().identity().listWithUnitSubDirect(units));
 		identities = ListTools.trim(identities, true, true);
-		logger.debug("work title:{}, id:{}, activity name:{}, id:{}, translate read identity: {}",
+		LOGGER.debug("work title:{}, id:{}, activity name:{}, id:{}, translate read identity: {}",
 				aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), aeiObjects.getActivity().getName(),
 				aeiObjects.getActivity().getId(), XGsonBuilder.toJson(identities));
 		List<String> os = aeiObjects.business().organization().identity().list(identities);
 		if (os.size() != identities.size()) {
-			logger.warn(
+			LOGGER.warn(
 					"work title:{}, id:{}, activity name:{}, id:{}, translate read identity: {}, result not with same length: {}.",
 					aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), aeiObjects.getActivity().getName(),
 					aeiObjects.getActivity().getId(), XGsonBuilder.toJson(identities), XGsonBuilder.toJson(os));
@@ -91,17 +95,19 @@ public class TranslateReadIdentityTools {
 				String code = o.get("code").getAsString();
 				CompiledScript compiledScript = aeiObjects.business().element()
 						.getCompiledScript(aeiObjects.getActivity(), Business.EVENT_READDUTY, name, code);
-				Object objectValue = compiledScript.eval(aeiObjects.scriptContext());
-				List<String> ds = ScriptFactory.asDistinguishedNameList(objectValue);
-				if (ListTools.isNotEmpty(ds)) {
-					for (String str : ds) {
-						List<String> os = aeiObjects.business().organization().unitDuty()
-								.listIdentityWithUnitWithName(str, name);
-						if (ListTools.isNotEmpty(os)) {
-							list.addAll(os);
+				JsonScriptingExecutor.evalDistinguishedNames(compiledScript, aeiObjects.scriptContext(), ds -> {
+					try {
+						for (String str : ds) {
+							List<String> os = aeiObjects.business().organization().unitDuty()
+									.listIdentityWithUnitWithName(str, name);
+							if (ListTools.isNotEmpty(os)) {
+								list.addAll(os);
+							}
 						}
+					} catch (Exception e) {
+						LOGGER.error(e);
 					}
-				}
+				});
 			}
 		}
 		return ListTools.trim(list, true, true);
@@ -115,11 +121,7 @@ public class TranslateReadIdentityTools {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
 					aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_READ);
-			Object objectValue = compiledScript.eval(scriptContext);
-			List<String> os = ScriptFactory.asDistinguishedNameList(objectValue);
-			if (ListTools.isNotEmpty(os)) {
-				list.addAll(os);
-			}
+			JsonScriptingExecutor.evalDistinguishedNames(compiledScript, scriptContext, list::addAll);
 		}
 		return list;
 	}

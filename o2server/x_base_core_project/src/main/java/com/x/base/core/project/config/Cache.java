@@ -10,6 +10,7 @@ public class Cache extends ConfigObject {
 
 	public static final String TYPE_EHCACHE = "ehcache";
 	public static final String TYPE_REDIS = "redis";
+	public static final String TYPE_GUAVA = "guava";
 
 	public static Cache defaultInstance() {
 		return new Cache();
@@ -19,13 +20,14 @@ public class Cache extends ConfigObject {
 		this.type = TYPE_EHCACHE;
 		this.redis = Redis.defaultInstance();
 		this.ehcache = Ehcache.defaultInstance();
+		this.guava = Guava.defaultInstance();
 	}
 
 	public String getType() {
-		return StringUtils.equals(this.type, TYPE_EHCACHE) ? TYPE_EHCACHE : TYPE_REDIS;
+		return this.type;
 	}
 
-	@FieldDescribe("缓存类型:ehcache,type")
+	@FieldDescribe("缓存类型:ehcache,redis,guava")
 	private String type;
 
 	@FieldDescribe("redis配置")
@@ -34,12 +36,19 @@ public class Cache extends ConfigObject {
 	@FieldDescribe("ehcache配置")
 	private Ehcache ehcache;
 
+	@FieldDescribe("guava配置")
+	private Guava guava;
+
 	public Redis getRedis() {
 		return this.redis == null ? new Redis() : this.redis;
 	}
 
 	public Ehcache getEhcache() {
-		return this.redis == null ? new Ehcache() : this.ehcache;
+		return this.ehcache == null ? new Ehcache() : this.ehcache;
+	}
+
+	public Guava getGuava() {
+		return this.guava == null ? new Guava() : this.guava;
 	}
 
 	public static class Redis extends ConfigObject {
@@ -147,6 +156,37 @@ public class Cache extends ConfigObject {
 		public Boolean getJmxEnable() {
 			return BooleanUtils.isTrue(jmxEnable);
 		}
+	}
+
+	public static class Guava extends ConfigObject {
+
+		private static final long serialVersionUID = -428873131796764885L;
+		public static final Integer DEFAULT_MAXIMUMSIZE = 3000;
+		public static final Integer DEFAULT_EXPIREMINUTES = 30;
+
+		public static Guava defaultInstance() {
+			return new Guava();
+		}
+
+		public Guava() {
+			this.maximumSize = DEFAULT_MAXIMUMSIZE;
+			this.expireMinutes = DEFAULT_EXPIREMINUTES;
+		}
+
+		@FieldDescribe("缓存最大容量,默认值:3000.")
+		private Integer maximumSize;
+
+		@FieldDescribe("过期时间,默认值:30.")
+		private Integer expireMinutes;
+
+		public Integer getMaximumSize() {
+			return maximumSize;
+		}
+
+		public Integer getExpireMinutes() {
+			return expireMinutes;
+		}
+
 	}
 
 }

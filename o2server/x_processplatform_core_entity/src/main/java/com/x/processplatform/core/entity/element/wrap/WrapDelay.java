@@ -13,6 +13,6 @@ public class WrapDelay extends Delay {
 			null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapDelay, Delay> inCopier = WrapCopierFactory.wi(WrapDelay.class, Delay.class, null,
-			JpaObject.FieldsUnmodifyExcludeId, false);
+			JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId, false);
 
 }

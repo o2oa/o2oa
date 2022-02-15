@@ -17,6 +17,9 @@ public class HuaweiPushConfig extends ConfigObject {
 
     private static final String O2_app_id_default = "100016851";
     private static final String O2_app_secret_default = "b3ad9287e8d1d16d0aad8fde66e59118";
+    // outer 包的 华为推送 appId和secret
+    private static final String O2_app_id_outer = "105181971";
+    private static final String O2_app_secret_outer = "59862104d3080cfda20bbe6881db88327f015e53646ae675d71358cc81918fc3";
     // 获取accesssToken的url
     private static final String huawei_get_token_url = "https://oauth-login.cloud.huawei.com/oauth2/v3/token";
     // 华为推送消息接口url
@@ -29,6 +32,17 @@ public class HuaweiPushConfig extends ConfigObject {
     public HuaweiPushConfig() {
         this.appId = O2_app_id_default;
         this.appSecret = O2_app_secret_default;
+    }
+
+    /**
+     * 外部包的时候使用的华为推送key
+     * @return
+     */
+    public static HuaweiPushConfig outerPackInstance() {
+        HuaweiPushConfig config = new HuaweiPushConfig();
+        config.setAppId(O2_app_id_outer);
+        config.setAppSecret(O2_app_secret_outer);
+        return config;
     }
 
 

@@ -8,6 +8,7 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
         "maxTypeCount": {
             "string": 4,
             "long": 2,
+            "double": 2,
             "dateTime": 2
         }
 	},
@@ -92,6 +93,7 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
             '           <td class="editTableValue"><select>'+
             '               <option value="string">string</option>'+
             '               <option value="long">long</option>'+
+            '               <option value="double">double</option>'+
             '               <option value="dateTime">dateTime</option>'+
             '           </select></td>'+
             '       </tr>'+

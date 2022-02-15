@@ -9,6 +9,7 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
 
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.http.HttpHeader;
 
@@ -22,6 +23,9 @@ import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.tools.DefaultCharset;
 
+/**
+ * @author sword
+ */
 public class ResponseFactory {
 
 	private static CacheControl defaultCacheControl = CacheControlFactory.getDefault();
@@ -102,13 +106,16 @@ public class ResponseFactory {
 			if ((null != result.getData()) && (result.getData() instanceof WoFile)) {
 				// 附件,二进制流文件
 				WoFile wo = (WoFile) result.getData();
-				EntityTag tag = new EntityTag(etagWoFile(wo));
-				if (notModified(request, tag)) {
-					return Response.notModified().tag(tag).build();
+				EntityTag tag = new EntityTag(StringTools.uniqueToken());
+				if (wo.getStreamingOutput() != null){
+					return Response.ok(wo.getStreamingOutput()).header(Content_Disposition, wo.getContentDisposition())
+							.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getContentLength())
+							.header(Accept_Ranges, "bytes").tag(tag).build();
+				}else {
+					return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
+							.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
+							.header(Accept_Ranges, "bytes").tag(tag).build();
 				}
-				return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
-						.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
-						.header(Accept_Ranges, "bytes").tag(tag).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
 				// 纯文本text
 				WoText wo = (WoText) result.getData();

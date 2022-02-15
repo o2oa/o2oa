@@ -1,6 +1,8 @@
 MWF.xDesktop.requireApp("process.Xform", "Div", null, false);
 
 /** @class Source 数据源组件。
+ * @o2cn 数据源
+ * @alias Source
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -108,6 +110,12 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class(
     },
     _invoke: function(callback){
         MWF.restful(this.json.httpMethod, this.uri, JSON.encode(this.body), function(json){
+            /**
+             * @summary 该属性获取当前数据源的数据，当数据源加载完成后才有值。
+             * @member {Array|Object|String|Number|Boolean|Null}
+             * @example
+             * var field = this.form.get("fieldId").data; //获取数据源数据
+             */
             this.data = json;
             this.fireEvent("postLoadData");
             if (callback) callback();

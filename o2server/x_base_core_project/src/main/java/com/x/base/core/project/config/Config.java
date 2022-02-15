@@ -69,6 +69,7 @@ public class Config {
 	public static final String PATH_CONFIG_WORKTIME = "config/workTime.json";
 	public static final String PATH_CONFIG_CENTERSERVER = "config/centerServer.json";
 	public static final String PATH_CONFIG_COLLECT = "config/collect.json";
+	public static final String NAME_CONFIG_COLLECT = "collect.json";
 	public static final String PATH_CONFIG_DUMPRESTOREDATA = "config/dumpRestoreData.json";
 	public static final String PATH_CONFIG_DUMPRESTORESTORAGE = "config/dumpRestoreStorage.json";
 	public static final String PATH_CONFIG_MESSAGES = "config/messages.json";
@@ -94,6 +95,7 @@ public class Config {
 	public static final String PATH_COMMONS_INITIALSERVICESCRIPTTEXT = "commons/initialServiceScriptText.js";
 	public static final String PATH_COMMONS_MOOTOOLSSCRIPTTEXT = "commons/mooToolsScriptText.js";
 	public static final String PATH_CONFIG_JPUSH = "config/jpushConfig.json";
+	public static final String NAME_CONFIG_JPUSH = "jpushConfig.json";
 	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
 	public static final String PATH_CONFIG_PORTAL = "config/portal.json";
@@ -1055,13 +1057,13 @@ public class Config {
 		return instance().zhengwuDingding;
 	}
 
-	private MQ mq;
+	private Mq mq;
 
-	public static synchronized MQ mq() throws Exception {
+	public static synchronized Mq mq() throws Exception {
 		if (null == instance().mq) {
-			MQ obj = BaseTools.readConfigObject(PATH_CONFIG_MQ, MQ.class);
+			Mq obj = BaseTools.readConfigObject(PATH_CONFIG_MQ, Mq.class);
 			if (null == obj) {
-				obj = MQ.defaultInstance();
+				obj = Mq.defaultInstance();
 			}
 			instance().mq = obj;
 		}

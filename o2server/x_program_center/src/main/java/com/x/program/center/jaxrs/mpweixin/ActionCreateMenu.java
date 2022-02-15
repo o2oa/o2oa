@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.MPweixin;
 import com.x.base.core.project.connection.HttpConnection;
@@ -19,10 +17,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import static com.x.base.core.entity.JpaObject.*;
 
 /**
  * Created by fancyLou on 3/15/21.
@@ -33,7 +28,7 @@ public class ActionCreateMenu  extends BaseAction {
 
     ActionResult<Wo> execute() throws Exception {
         ActionResult<Wo> result = new ActionResult<>();
-        if (Config.mPweixin() == null || BooleanUtils.isFalse(Config.mPweixin().getEnable())) {
+        if (Config.mPweixin() == null || BooleanUtils.isNotTrue(Config.mPweixin().getEnable()) || BooleanUtils.isNotTrue(Config.mPweixin().getEnablePublish())) {
             throw new ExceptionConfigError();
         }
         String accessToken = Config.mPweixin().accessToken();

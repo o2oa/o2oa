@@ -485,35 +485,31 @@ MWF.xApplication.ForumSection.Main = new Class({
 	openPerson : function( userName ){
 		if( !userName || userName == "" ){
 		}else{
-			var appId = "ForumPerson"+userName;
-			if (this.desktop.apps[userName]){
-				this.desktop.apps[userName].setCurrent();
-			}else {
-				this.desktop.openApplication(null, "ForumPerson", {
-					"personName" : userName,
-					"appId": appId
-				});
-			}
+			MWFForum.openPersonCenter( userName );
 		}
 	},
 	createPersonNode : function( container, personName ){
 		var persons = typeOf( personName ) === "string" ? personName.split(",") : personName;
 		persons.each( function(userName, i){
 			if( !userName )return;
-			var span = new Element("span", {
-				"text" : userName.split("@")[0],
-				"styles" : this.css.person
-			}).inject(container);
-			span.addEvents( {
-				mouseover : function(){ this.node.setStyles( this.obj.css.person_over )}.bind( {node:span, obj:this} ),
-				mouseout : function(){ this.node.setStyles( this.obj.css.person )}.bind( {node:span, obj:this} ),
-				click : function(){ this.obj.openPerson( this.userName ) }.bind( {userName:userName, obj:this} )
-			});
-			if( i != persons.length - 1 ){
-				new Element("span", {
-					"text" : "、"
+
+            Promise.resolve( MWFForum.getDisplayName( userName ) ).then(function (name) {
+				var span = new Element("span", {
+					"text" : name.split("@")[0],
+					"styles" : this.css.person
 				}).inject(container);
-			}
+				span.addEvents( {
+					mouseover : function(){ this.node.setStyles( this.obj.css.person_over )}.bind( {node:span, obj:this} ),
+					mouseout : function(){ this.node.setStyles( this.obj.css.person )}.bind( {node:span, obj:this} ),
+					click : function(){ this.obj.openPerson( this.userName ) }.bind( {userName:userName, obj:this} )
+				});
+				if( i != persons.length - 1 ){
+					new Element("span", {
+						"text" : "、"
+					}).inject(container);
+				}
+
+            }.bind(this))
 		}.bind(this))
 	},
 	destroy : function(){
