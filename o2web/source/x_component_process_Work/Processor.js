@@ -577,9 +577,9 @@ MWF.xApplication.process.Work.Processor = new Class({
         //     }.bind(this));
         // }
 
-        if (layout.mobile) {
-            this.selectIdeaNode.inject(this.routeOpinionArea, "after");
-        }
+        // if (layout.mobile) {
+        //     this.selectIdeaNode.inject(this.routeOpinionArea, "after");
+        // }
 
         MWF.require("MWF.widget.ScrollBar", function () {
             new MWF.widget.ScrollBar(this.selectIdeaScrollNode, {
@@ -1246,7 +1246,7 @@ MWF.xApplication.process.Work.Processor = new Class({
 
 
     destroy: function () {
-        this.node.empty();
+        if (this.node) this.node.empty();
         delete this.task;
         delete this.node;
         delete this.routeSelectorTile;
@@ -1260,7 +1260,6 @@ MWF.xApplication.process.Work.Processor = new Class({
         delete this.okButton;
     },
     getRouteDataList: function () {
-        debugger;
         if(this.routeDataList)return this.routeDataList;
         if( this.form && this.form.businessData && this.form.businessData.routeList ){
             this.form.businessData.routeList.sort( function(a, b){
@@ -1775,7 +1774,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         if (this.routeSelectorArea) height = height + this.getOffsetY(this.routeSelectorArea) + this.routeSelectorArea.getStyle("height").toInt();
         if (this.routeOpinionTile) height = height + this.getOffsetY(this.routeOpinionTile) + this.routeOpinionTile.getStyle("height").toInt();
         if (this.routeOpinionArea) height = height + this.getOffsetY(this.routeOpinionArea) + this.routeOpinionArea.getStyle("height").toInt();
-        this.node.setStyle("height", height);
+        this.node.setStyle("height", height+30);
         this.fireEvent("resize");
     },
     setSize: function (currentOrgLength, flag) {
