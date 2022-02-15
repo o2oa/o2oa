@@ -914,7 +914,8 @@ o2.DL.open = function(options){
 
     var dlg = new o2.DDL(options);
     if( options.width === "auto" || options.height === "auto" ){
-        dlg.reCenter();
+        dlg.addEvent("postShow", function(){this.reCenter()});
+
     }
     dlg.show();
     return dlg;
