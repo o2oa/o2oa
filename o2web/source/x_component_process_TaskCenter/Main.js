@@ -51,6 +51,52 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
 
         this.openTab();
         if (callback) callback();
+
+        if (!layout.userLayout.gotoWorkcenterConfirm) this.gotoWorkcenterComfirm();
+    },
+    gotoWorkcenterComfirm: function(){
+        var _self = this;
+        o2.DL.open({
+            "title": "",
+            "style": "user",
+            "isResize": false,
+            "text": this.lp.workcenter,
+            "maskNode": this.content,
+            "width": 500,
+            "height": 150,
+            "buttonList": [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function (d, e) {
+                        this.close();
+                        _self.checkConfirm();
+                        _self.gotoWorkcenter();
+                    }
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function () {
+                        _self.checkConfirm();
+                        this.close();
+                    }
+                }
+            ]
+        });
+    },
+    checkConfirm: function(){
+        layout.userLayout.gotoWorkcenterConfirm = true;
+    },
+    gotoWorkcenter: function(){
+        debugger;
+        layout.userLayout.flatLnks.forEach(function(lnk){
+            if (lnk.name==="process.TaskCenter"){
+                lnk.name="process.workcenter"
+            }
+        });
+        this.close();
+        layout.openApplication(null, "process.workcenter");
     },
     loadTitle: function () {
         this.loadTitleBar();
@@ -91,6 +137,11 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
             "styles": this.css.taskTitleTextNode,
             "text": this.lp.title
         }).inject(this.taskTitleBar);
+        var node = new Element("div.mainColor_color", {
+            "styles": this.css.taskTitleInforTextNode,
+            "text": this.lp.gotoWorkcenter
+        }).inject(this.taskTitleBar);
+        node.addEvent("click", this.gotoWorkcenter.bind(this));
     },
     loadSearchNode: function () {
         this.searchBarAreaNode = new Element("div", {

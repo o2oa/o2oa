@@ -77,6 +77,9 @@ MWF.xApplication.process.TaskCenter.LP = {
     "setReadedConfirmContent" : "您确定要将“{title}”标记为已阅吗？",
     "setReadedConfirmTitle" : "标记已阅确认",
 
-    "open" : "打开"
+    "open" : "打开",
+
+    "workcenter": "新版办公中心已上线，是否切换到新版办公中心？",
+    "gotoWorkcenter": "切换到新版办公中心"
 
 };

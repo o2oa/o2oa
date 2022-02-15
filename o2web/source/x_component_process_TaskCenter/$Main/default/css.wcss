@@ -39,6 +39,19 @@
         "width": "160px",
         "float": "left"
     },
+    "taskTitleInforTextNode": {
+        "padding": "0 20px",
+        "color": "#333333",
+        "font-size": "14px",
+        "line-height": "24px",
+        "height": "24px",
+        "margin-top": "12px",
+        "border": "1px solid #cccccc",
+        "border-radius": "12px",
+        "background-color": "#ffffff",
+        "float": "left",
+        "cursor": "pointer"
+    },
     "searchBarAreaNode": {
         "margin": "0px 110px 0px 160px",
         "height": "50px",

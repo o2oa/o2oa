@@ -20,7 +20,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
 			this.setLayout();
 			this.loadCount();
-			this.loadList("task");
+			var list = (this.status) ? (this.status.navi || "task") : "task";
+			this.loadList(list);
 			if (callback) callback();
 		}.bind(this));
 	},
@@ -523,7 +524,10 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			};
 			_self.app.desktop.openApplication(e, "process.Work", options);
 		});
-	}
+	},
+	recordStatus: function(){
+		return {"navi": this.currentList.options.type};
+	},
 });
 
 MWF.xApplication.process.workcenter.List = new Class({
