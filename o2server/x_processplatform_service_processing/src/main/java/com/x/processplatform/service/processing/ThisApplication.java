@@ -16,7 +16,6 @@ import com.x.processplatform.service.processing.schedule.Merge;
 import com.x.processplatform.service.processing.schedule.PassExpired;
 import com.x.processplatform.service.processing.schedule.TouchDelay;
 import com.x.processplatform.service.processing.schedule.TouchDetained;
-import com.x.processplatform.service.processing.schedule.TouchEmbedWaitUntilCompleted;
 import com.x.processplatform.service.processing.schedule.Urge;
 
 public class ThisApplication {
@@ -74,11 +73,6 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.processPlatform().getUrge().getEnable())) {
 				context.schedule(Urge.class, Config.processPlatform().getUrge().getCron());
 			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getTouchEmbedWaitUntilCompleted().getEnable())) {
-				context.schedule(TouchEmbedWaitUntilCompleted.class,
-						Config.processPlatform().getTouchEmbedWaitUntilCompleted().getCron());
-			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

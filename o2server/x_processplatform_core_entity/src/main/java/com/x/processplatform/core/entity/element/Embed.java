@@ -75,6 +75,8 @@ public class Embed extends Activity {
 	public void postLoad() {
 		if (null != this.properties) {
 			this.customData = this.getProperties().getCustomData();
+			this.completedScript = this.getProperties().getCompletedScript();
+			this.completedScriptText = this.getProperties().getCompletedScriptText();
 			this.completedEndScript = this.getProperties().getCompletedEndScript();
 			this.completedEndScriptText = this.getProperties().getCompletedEndScriptText();
 			this.completedCancelScript = this.getProperties().getCompletedCancelScript();
@@ -108,6 +110,16 @@ public class Embed extends Activity {
 		this.properties = new EmbedProperties();
 	}
 
+	public static final String COMPLETEDSCRIPT_FIELDNAME = "completedScript";
+	@FieldDescribe("嵌入子流程在结束事件(包含cancel和end活动)脚本,.")
+	@Transient
+	private String completedScript;
+
+	public static final String COMPLETEDSCRIPTTEXT_FIELDNAME = "completedScriptText";
+	@FieldDescribe("嵌入子流程在结束事件包含cancel和end活动脚本文本.")
+	@Transient
+	private String completedScriptText;
+
 	public static final String COMPLETEDENDSCRIPT_FIELDNAME = "completedEndScript";
 	@FieldDescribe("嵌入子流程在End节点结束事件脚本.")
 	@Transient
@@ -138,8 +150,20 @@ public class Embed extends Activity {
 		return this.customData;
 	}
 
+	public String getCompletedScript() {
+		return completedScript;
+	}
+
+	public String getCompletedScriptText() {
+		return completedScriptText;
+	}
+
 	public String getCompletedEndScript() {
 		return completedEndScript;
+	}
+
+	public String getCompletedEndScriptText() {
+		return completedEndScriptText;
 	}
 
 	public String getCompletedCancelScriptText() {
@@ -148,10 +172,6 @@ public class Embed extends Activity {
 
 	public String getCompletedCancelScript() {
 		return completedCancelScript;
-	}
-
-	public String getCompletedEndScriptText() {
-		return completedEndScriptText;
 	}
 
 	@Override
@@ -178,6 +198,16 @@ public class Embed extends Activity {
 	public void setCompletedCancelScriptText(String completedCancelScriptText) {
 		this.getProperties().setCompletedCancelScriptText(completedCancelScriptText);
 		this.completedCancelScriptText = completedCancelScriptText;
+	}
+
+	public void setCompletedScript(String completedScript) {
+		this.getProperties().setCompletedScript(completedScript);
+		this.completedScript = completedScript;
+	}
+
+	public void setCompletedScriptText(String completedScriptText) {
+		this.getProperties().setCompletedScriptText(completedScriptText);
+		this.completedScriptText = completedScriptText;
 	}
 
 	@FieldDescribe("分组")

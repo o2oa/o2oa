@@ -563,6 +563,27 @@ public class ElementFactory extends AbstractFactory {
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Embed.targetTitleScript_FIELDNAME));
 				scriptText = Objects.toString(PropertyUtils.getProperty(o, Embed.targetTitleScriptText_FIELDNAME));
 				break;
+			case Business.EVENT_EMBEDCOMPLETED:
+				if (o instanceof Embed) {
+					Embed embed = (Embed) o;
+					scriptName = embed.getCompletedScript();
+					scriptText = embed.getCompletedScriptText();
+				}
+				break;
+			case Business.EVENT_EMBEDCOMPLETEDCANCEL:
+				if (o instanceof Embed) {
+					Embed embed = (Embed) o;
+					scriptName = embed.getCompletedCancelScript();
+					scriptText = embed.getCompletedCancelScriptText();
+				}
+				break;
+			case Business.EVENT_EMBEDCOMPLETEDEND:
+				if (o instanceof Embed) {
+					Embed embed = (Embed) o;
+					scriptName = embed.getCompletedEndScript();
+					scriptText = embed.getCompletedEndScriptText();
+				}
+				break;
 			case Business.EVENT_SPLIT:
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Split.script_FIELDNAME));
 				scriptText = Objects.toString(PropertyUtils.getProperty(o, Split.scriptText_FIELDNAME));

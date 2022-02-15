@@ -19,6 +19,12 @@ public class EmbedProperties extends JsonProperties {
 		this.customData = customData;
 	}
 
+	@FieldDescribe("嵌入子流程在结束事件(包含cancel和end活动)脚本,.")
+	private String completedScript;
+
+	@FieldDescribe("嵌入子流程在结束事件包含cancel和end活动脚本文本.")
+	private String completedScriptText;
+
 	@FieldDescribe("嵌入子流程在End节点结束事件脚本.")
 	private String completedEndScript;
 
@@ -61,6 +67,22 @@ public class EmbedProperties extends JsonProperties {
 
 	public void setCompletedCancelScriptText(String completedCancelScriptText) {
 		this.completedCancelScriptText = completedCancelScriptText;
+	}
+
+	public String getCompletedScript() {
+		return completedScript;
+	}
+
+	public void setCompletedScript(String completedScript) {
+		this.completedScript = completedScript;
+	}
+
+	public String getCompletedScriptText() {
+		return completedScriptText;
+	}
+
+	public void setCompletedScriptText(String completedScriptText) {
+		this.completedScriptText = completedScriptText;
 	}
 
 }
