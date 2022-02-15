@@ -110,7 +110,8 @@ o2.LP.process = {
     },
     "button": {
         "ok": "确定",
-        "cancel": "取消"
+        "cancel": "取消",
+        "reset": "重置"
     },
     "formAction": {
         "insertRow": "插入行",

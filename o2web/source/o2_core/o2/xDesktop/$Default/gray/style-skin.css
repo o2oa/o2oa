@@ -2,6 +2,9 @@
     background-color: #666666 !important;
     color: #ffffff !important;
 }
+.mainColor_bg_opacity{
+    background-color: rgba(102, 102, 102, 0.12) !important;
+}
 .mainColor_color {
     color: #666666 !important;
 }

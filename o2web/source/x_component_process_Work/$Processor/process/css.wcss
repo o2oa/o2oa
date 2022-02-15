@@ -261,7 +261,7 @@
         "position": "relative",
         "height": "25px",
         "line-height": "25px",
-        "top": "-30px",
+        "top": "-35px",
         "margin-right": "5px"
     },
 
@@ -273,7 +273,6 @@
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "cursor": "pointer",
         "background": "url("+"../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
     },
 
@@ -500,6 +499,12 @@
     },
     "empowerItemPersonNode_selected": {
         "color": "#ffffff"
+    },
+    "managerProcessNoticeNode" : {
+        "color" : "red"
+    },
+    "managerLoginNode" : {
+        "color" : "#4a90e2",
+        "cursor" : "pointer"
     }
-
 }

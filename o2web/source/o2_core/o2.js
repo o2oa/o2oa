@@ -330,6 +330,7 @@ if (!window.o2) {
         };
         this.o2.runCallback = _runCallback;
 
+        if (window.CustomEvent) this.o2.customEventLoad = new CustomEvent("o2load");
 
         //load js, css, html adn all.
         var _getAllOptions = function (options) {
@@ -550,7 +551,10 @@ if (!window.o2) {
             if (op.noCache) url = (url.indexOf("?") !== -1) ? url + "&v=" + uuid : addr_uri + "?v=" + uuid;
             var key = encodeURIComponent(url + op.doc.unid);
             if (!op.reload) if (_loaded[key]) {
-                if (callback) callback();
+                Promise.resolve(_loaded[key]).then(function(o){
+                    if (callback) callback(o);
+                });
+                //if (callback) callback();
                 return;
             }
 
@@ -711,7 +715,10 @@ if (!window.o2) {
             }, op.doc);
 
             if (_loadedCss[key]) if (!op.reload) {
-                if (callback) callback(_loadedCss[key]);
+                Promise.resolve(_loadedCss[key]).then(function(o){
+                    if (callback) callback(o);
+                });
+                //if (callback) callback(_loadedCss[key]);
                 completed();
                 return;
             }
@@ -985,7 +992,10 @@ if (!window.o2) {
             if (op.noCache) url = (url.indexOf("?") !== -1) ? url + "&v=" + uid : url + "?v=" + uid;
             var key = encodeURIComponent(url + op.doc.unid);
             if (!op.reload) if (_loadedHtml[key]) {
-                if (callback) callback(_loadedHtml[key]);
+                Promise.resolve(_loadedHtml[key]).then(function(html){
+                    if (callback) callback(html);
+                });
+                //if (callback) callback(_loadedHtml[key]);
                 return;
             }
 
@@ -1057,6 +1067,14 @@ if (!window.o2) {
             } else {
                 dom.insertAdjacentHTML(op.position, data);
             }
+
+            var bindDataId = "";
+            var bindDataNode = dom.querySelector("[data-o2-binddata]");
+            if (bindDataNode){
+                bindDataId = bindDataNode.dataset["o2Binddata"];
+                bindDataNode.destroy();
+            }
+
             var els = dom.querySelectorAll("[data-o2-element],[data-o2-events]");
             for (var i = 0; i < els.length; i++) {
                 var el = els.item(i);
@@ -1065,7 +1083,7 @@ if (!window.o2) {
                 if (el.hasAttribute("data-o2-events")) {
 
                     var events = el.getAttribute("data-o2-events").toString();
-                    if (events) _bindToEvents(op.module, el, events);
+                    if (events) _bindToEvents(op.module, el, events, bindDataId);
                 }
             }
 
@@ -1081,9 +1099,19 @@ if (!window.o2) {
             }
         };
 
-        var _bindToEvents = function (m, node, events) {
-            var p = node.getParent("div[data-o2-$binddatadd]");
-            var data = (p) ? _parseDataCache[p.dataset["o2-$binddataid"]] : null;
+        var _bindToEvents = function (m, node, events, bindDataId) {
+            var p = node.getParent("div[data-o2-binddataid]");
+            var data = null;
+            if (p){
+                data = _parseDataCache[p.dataset["o2Binddataid"]];
+                //_parseDataCache[p.dataset["o2Binddataid"]] = null;
+                //delete _parseDataCache[p.dataset["o2Binddataid"]];
+            }else{
+                if (bindDataId) data = (_parseDataCache[bindDataId] || null);
+                //_parseDataCache[bindDataId] = null;
+                //delete _parseDataCache[bindDataId];
+            }
+            // var data = (p) ? _parseDataCache[p.dataset["o2Binddataid"]] : (_parseDataCache["bind"] || null);
 
             var eventList = events.split(/\s*;\s*/);
             eventList.forEach(function (ev) {
@@ -1091,11 +1119,23 @@ if (!window.o2) {
                 if (evs.length > 1) {
                     var event = evs.shift();
                     var method = evs.shift();
+                    // if (event==="o2load"){
+                    //
+                    //     if (m[method]) m[method].apply(m, evs.concat([new PointerEvent("o2load"), data]));
+                    // }else{
                     node.addEventListener(event, function (e) {
                         if (m[method]) m[method].apply(m, evs.concat([e, data]));
                     }, false);
+                    // }
                 }
             });
+            // try {
+                node.dispatchEvent(o2.customEventLoad);
+            // }catch(e){
+            //     debugger;
+            //     console.error(e)
+            // }
+
         }
         var _bindToModule = function (m, node, name) {
             // if (m[name]){
@@ -1476,11 +1516,16 @@ if (!window.o2) {
         var _parseDataCache = {};
         var _parseHtml = function (str, json, i) {
             var v = str;
-            if (i) {
-                var r = (Math.random() * 1000000).toInt().toString();
-                while (_parseDataCache[r]) r = (Math.random() * 1000000).toInt().toString();
+            var r = (Math.random() * 1000000).toInt().toString();
+            while (_parseDataCache[r]) r = (Math.random() * 1000000).toInt().toString();
+            if (i || i===0) {
                 _parseDataCache[r] = json;
-                v = (i) ? "<div data-o2-$binddataid='" + r + "'>" + str + "</div>" : str;
+                v = "<div data-o2-binddataid='" + r + "'>" + str + "</div>";
+            }else{
+                if (json.data){
+                    _parseDataCache[r] = json.data;
+                    v = str+"<div style='display: none' data-o2-binddata='" + r + "'></div>"
+                }
             }
             var rex = /(\{\{\s*)[\s\S]*?(\s*\}\})/gmi;
 
@@ -1925,7 +1970,98 @@ if (!window.o2) {
             /jaxrs\/definition\/idea.+/ig,
             /jaxrs\/distribute\/assemble\/source\/.+/ig,
         ];
+        // _restful_bak = function(method, address, data, callback, async, withCredentials, cache){
+        //     var loadAsync = (async !== false);
+        //     var credentials = (withCredentials !== false);
+        //     address = (address.indexOf("?")!==-1) ? address+"&v="+o2.version.v : address+"?v="+o2.version.v;
+        //     //var noCache = cache===false;
+        //     var noCache = !cache;
+        //
+        //
+        //     //if (Browser.name == "ie")
+        //     if (_cacheUrls.length){
+        //         for (var i=0; i<_cacheUrls.length; i++){
+        //             _cacheUrls[i].lastIndex = 0;
+        //             if (_cacheUrls[i].test(address)){
+        //                 noCache = false;
+        //                 break;
+        //             }
+        //         }
+        //     }
+        //     //var noCache = false;
+        //     var res = new Request.JSON({
+        //         url: o2.filterUrl(address),
+        //         secure: false,
+        //         method: method,
+        //         emulation: false,
+        //         noCache: noCache,
+        //         async: loadAsync,
+        //         withCredentials: credentials,
+        //         onSuccess: function(responseJSON, responseText){
+        //             // var xToken = this.getHeader("authorization");
+        //             // if (!xToken) xToken = this.getHeader("x-token");
+        //             var xToken = this.getHeader("x-token");
+        //             if (xToken){
+        //                 if (window.layout){
+        //                     if (!layout.session) layout.session = {};
+        //                     layout.session.token = xToken;
+        //                 }
+        //             }
+        //             o2.runCallback(callback, "success", [responseJSON]);
+        //         },
+        //         onFailure: function(xhr){
+        //             o2.runCallback(callback, "requestFailure", [xhr]);
+        //         }.bind(this),
+        //         onError: function(text, error){
+        //             o2.runCallback(callback, "error", [text, error]);
+        //         }.bind(this)
+        //     });
+        //
+        //     res.setHeader("Content-Type", "application/json; charset=utf-8");
+        //     res.setHeader("Accept", "text/html,application/json,*/*");
+        //     if (window.layout) {
+        //         if (layout["debugger"]){
+        //             res.setHeader("x-debugger", "true");
+        //         }
+        //         if (layout.session && layout.session.user){
+        //             if (layout.session.user.token) {
+        //                 res.setHeader("x-token", layout.session.user.token);
+        //                 res.setHeader("authorization", layout.session.user.token);
+        //             }
+        //         }
+        //     }
+        //     //Content-Type	application/x-www-form-urlencoded; charset=utf-8
+        //     res.send(data);
+        //     return res;
+        // };
+        var _resGetQueue = {};
+        var _checkRestful = function(address, callback){
+            if (_resGetQueue[address]){
+                var resPromise = _resGetQueue[address];
+                var p = new Promise(function(resolve, reject){
+                    resPromise.then(function(){
+                        resolve(resPromise.json);
+                    }, function(){
+                        reject(resPromise.err);
+                    });
+                });
+
+                if (_resGetQueue[address].res) p.res = _resGetQueue[address].res;
+                if (_resGetQueue[address].actionWorker) p.actionWorker = _resGetQueue[address].actionWorker;
+
+                return p;
+            }
+            return false
+        }
+
         _restful = function (method, address, data, callback, async, withCredentials, cache) {
+            if (method.toLowerCase()==="get"){
+                var p = _checkRestful(address, callback);
+                if (p) return p;
+            }
+
+            var _addr = address;
+
             var loadAsync = (async !== false);
             var credentials = (withCredentials !== false);
             address = (address.indexOf("?") !== -1) ? address + "&v=" + o2.version.v : address + "?v=" + o2.version.v;
@@ -1959,6 +2095,9 @@ if (!window.o2) {
                         onSuccess: function (responseJSON, responseText) {
                             // var xToken = this.getHeader("authorization");
                             // if (!xToken) xToken = this.getHeader("x-token");
+                            _resGetQueue[_addr] = null;
+                            delete _resGetQueue[_addr];
+
                             var xToken = this.getHeader(o2.tokenName);
                             if (xToken) {
                                 if (window.layout) {
@@ -1967,25 +2106,44 @@ if (!window.o2) {
                                 }
                                 if (layout.config && layout.config.sessionStorageEnable) sessionStorage.setItem("o2LayoutSessionToken", xToken);
                             }
-                            var r = o2.runCallback(callback, "success", [responseJSON], null);
-                            resolve(r || responseJSON);
+                            if (!loadAsync){
+                                var r = o2.runCallback(callback, "success", [responseJSON], null);
+                                resolve(r || responseJSON);
+                            }else{
+                                resolve(responseJSON);
+                            }
+
                             //resolve(responseJSON);
                             //return o2.runCallback(callback, "success", [responseJSON],null, resolve);
                         },
                         onFailure: function (xhr) {
-                            //var r = o2.runCallback(callback, "requestFailure", [xhr], null, reject);
-                            var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
-                            // (r) ? reject(r) : reject(xhr, "", "");
-                            reject((r) ? r : {"xhr": xhr, "text": "", "error": "error"});
-                            //return o2.runCallback(callback, "requestFailure", [xhr], null, reject);
+                            _resGetQueue[_addr] = null;
+                            delete _resGetQueue[_addr];
+                            if (!loadAsync){
+                                var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
+                                reject((r) ? r : {"xhr": xhr, "text": "", "error": "error"});
+                            }else{
+                                reject({"xhr": xhr, "text": "", "error": "error"});
+                            }
                         }.bind(this),
                         onError: function (text, error) {
-                            // var r = o2.runCallback(callback, "error", [text, error], null, reject);
-                            // (r) ? reject(r) : reject(null, text, error);
-                            var r = o2.runCallback(callback, "failure", [text, error], null);
-                            reject((r) ? r : {"xhr": xhr, "text": text, "error": "error"});
-                            //return o2.runCallback(callback, "error", [text, error], null, reject);
-                        }.bind(this)
+                            _resGetQueue[_addr] = null;
+                            delete _resGetQueue[_addr];
+                            if (!loadAsync){
+                                var r = o2.runCallback(callback, "failure", [text, error], null);
+                                reject((r) ? r : {"xhr": xhr, "text": text, "error": "error"});
+                            }else{
+                                reject({"xhr": xhr, "text": text, "error": "error"});
+                            }
+                        }.bind(this),
+                        onComplete: function(){
+                            _resGetQueue[_addr] = null;
+                            delete _resGetQueue[_addr];
+                        },
+                        onCancel: function(){
+                            _resGetQueue[_addr] = null;
+                            delete _resGetQueue[_addr];
+                        }
                     });
 
                     res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -2009,14 +2167,44 @@ if (!window.o2) {
                         }
                     }
                     res.send(data);
-                }.bind(this)).then(function (responseJSON) {
-                    return responseJSON;
-                }).catch(function (err) {
-                    return Promise.reject(err);
+                }.bind(this)).catch(function (err) {
+                    throw err;
                 });
+                //     .then(function (responseJSON) {
+                //
+                //     _resGetQueue[address].events.each(function(e){
+                //         var r = o2.runCallback(e.callback, "success", [responseJSON], null);
+                //         if (e.promise){
+                //             e.promise
+                //         }
+                //     });
+                //
+                //     return responseJSON;
+                // }, function(err){
+                //     var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
+                //     return r || err;
+                // }).catch(function (err) {
+                //     throw err;
+                //     //return Promise.reject(err);
+                // });
                 var oReturn = p;
-                oReturn.res = res;
-                return oReturn;
+                //oReturn.res = res;
+                var resPromise = Promise.resolve(oReturn).then(function(json){
+                    if (!loadAsync) return json;
+                    resPromise.json = json;
+                    var r = o2.runCallback(callback, "success", [json], null);
+                    if (r) return r;
+                }, function(err){
+                    if (!loadAsync) return err;
+                    resPromise.err = err;
+                    var r = o2.runCallback(callback, "failure", [err.xhr, err.text, err.error], null);
+                    if (r) return r;
+                }).catch(function (err) { throw err;});
+                resPromise.res = res;
+
+                if (loadAsync) _resGetQueue[_addr] = resPromise;
+
+                return resPromise;
             } else {
                 var workerMessage = {
                     method: method,
@@ -2032,6 +2220,10 @@ if (!window.o2) {
                 var actionWorker = new Worker("../o2_core/o2/actionWorker.js");
                 var p = new Promise(function (s, f) {
                     actionWorker.onmessage = function (e) {
+
+                        _resGetQueue[_addr] = null;
+                        delete _resGetQueue[_addr];
+
                         result = e.data;
                         if (result.type === "done") {
                             var xToken = result.data.xToken;
@@ -2052,16 +2244,30 @@ if (!window.o2) {
                     actionWorker.postMessage(workerMessage);
                 }.bind(this));
 
-                p = p.then(function (data) {
-                    return o2.runCallback(callback, "success", [data], null);
-                }, function (data) {
-                    return o2.runCallback(callback, "failure", [data], null);
-                });
+                // p = p.then(function (data) {
+                //     return o2.runCallback(callback, "success", [data], null);
+                // }, function (data) {
+                //     return o2.runCallback(callback, "failure", [data], null);
+                // });
 
                 //var oReturn = (callback.success && callback.success.addResolve) ? callback.success : callback;
                 var oReturn = p;
-                oReturn.actionWorker = actionWorker;
-                return oReturn;
+                //oReturn.actionWorker = actionWorker;
+
+                var resPromise = Promise.resolve(oReturn).then(function(json){
+                    resPromise.json = json;
+                    var r = o2.runCallback(callback, "success", [json], null);
+                    if (r) return r;
+                }, function(err){
+                    resPromise.err = err;
+                    var r = o2.runCallback(callback, "failure", [err], null);
+                    if (r) return r;
+                }).catch(function (err) { throw err;});
+                resPromise.actionWorker = actionWorker;
+
+                _resGetQueue[_addr] = resPromise;
+                return resPromise;
+                //return oReturn;
                 //return callback;
             }
             //return res;
@@ -2599,6 +2805,7 @@ if (!window.o2) {
             });
         }
 
+
         var styleString = Element.getComputedStyle;
 
         function styleNumber(element, style) {
@@ -2698,7 +2905,7 @@ if (!window.o2) {
                 var elementCoords = this.getCoordinates();
                 var targetCoords = this.getCoordinates();
                 if (((e.page.x < elementCoords.left || e.page.x > (elementCoords.left + elementCoords.width)) ||
-                    (e.page.y < elementCoords.top || e.page.y > (elementCoords.top + elementCoords.height))) &&
+                        (e.page.y < elementCoords.top || e.page.y > (elementCoords.top + elementCoords.height))) &&
                     ((e.page.x < targetCoords.left || e.page.x > (targetCoords.left + targetCoords.width)) ||
                         (e.page.y < targetCoords.top || e.page.y > (targetCoords.top + targetCoords.height)))) return true;
 
@@ -3202,6 +3409,54 @@ if (!window.o2) {
                 y = parseFloat(e.event.y);
             }
             return {"x": x, "y": y};
+        };
+        o2.dlgPosition = function (e, content, width, height) {
+            var size = content.getSize();
+            var x = 0;
+            var y = 0;
+            var fromx = 0;
+            var fromy = 0;
+            if (typeOf(e) == "element") {
+                var position = e.getPosition(content);
+                fromx = position.x;
+                fromy = position.y;
+            } else {
+                if (Browser.name == "firefox") {
+                    fromx = parseFloat(e.clientX || e.x);
+                    fromy = parseFloat(e.clientY || e.y);
+                } else {
+                    fromx = parseFloat(e.x);
+                    fromy = parseFloat(e.y);
+                }
+
+                if (e.target) {
+                    var position = e.target.getPosition(content);
+                    fromx = position.x;
+                    fromy = position.y;
+                }
+            }
+            if (fromx + parseFloat(width) > size.x) {
+                //fromx = fromx + 20;
+                x = fromx - parseFloat(width);
+            }else{
+                fromx = x;
+                //if (x < 0) x = 20;
+            }
+
+            if (fromy + parseFloat(height) > size.y) {
+                y = fromy - parseFloat(height);
+                //y = y - 20;
+            }else{
+                y = fromy;
+                // if (y < 0) y = 0;
+                // y = y + 20;
+            }
+            return {
+                "x": x,
+                "y": y,
+                "fromx": fromx,
+                "fromy": fromy
+            }
         };
 
         if (window.Browser) {
