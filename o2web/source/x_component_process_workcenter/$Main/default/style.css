@@ -112,6 +112,7 @@
     height: inherit;
     overflow: auto;
     padding: 0 20px;
+    position: relative;
 }
 .contentBottom{
     height: 80px;
@@ -189,10 +190,30 @@
 }
 .listItemApplication{
     height: 59px;
-    width: 230px;
+    width: 210px;
     float: left;
     display: flex;
     align-items: center;
+}
+.selectFlag{
+    float: left;
+    width: 20px;
+    height: 59px;
+    text-align: center;
+}
+.selectFlagIcon{
+    color: #cccccc;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 20px;
+    margin: 22px auto auto auto;
+}
+.selectFlagArea_disabled{
+    opacity: 0;
+}
+.selectFlagIcon_select{
+    border: 0;
 }
 .listItemLine{
     width: 1px;
@@ -246,7 +267,7 @@
     color: #999999;
 }
 .listItemApplicationIcon{
-    width: 80px;
+    width: 60px;
     height: 59px;
     background-position: center;
     background-repeat: no-repeat;
@@ -824,6 +845,51 @@
     font-size: 20px;
     color: #cccccc;
 }
+.emptyListArea{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    height: 120px;
+    transform: translateX(-50%) translateY(-50%);
+}
+.emptyListIcon{
+    width: 72px;
+    height: 72px;
+    background-image: url(../x_component_process_workcenter/$Main/default/empty.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: auto;
+}
+.emptyListText{
+    height: 22px;
+    font-size: 16px;
+    color: #CCCCCC;
+    line-height: 22px;
+}
+.emptyListAction{
+    margin-top: 20px;
+    height: 22px;
+    font-size: 16px;
+    color: #4A90E2;
+    line-height: 22px;
+    cursor: pointer;
+}
+.dealStartedWorkAction{
+    color: #0000FF;
+    cursor: pointer;
+}
+
+.batchAction{
+    display: none;
+    position: fixed;
+    padding: 5px 20px;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    box-shadow: 0px 0px 5px 0px #cccccc;
+    border-radius: 30px;
+    border: 1px solid;
+}
+
 @font-face {
     font-family: 'o2taskcenter';
     src:
@@ -903,8 +969,4 @@
 }
 .o2icon-zengjia:before {
     content: "\e911";
-}
-.dealStartedWorkAction{
-    color: #0000FF;
-    cursor: pointer;
 }

@@ -449,7 +449,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	},
 	startProcessDraft: function(data, title, processName){
 		var work = data.work;
-		var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false};
+		var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false,
+			"onPostClose": function(){
+				if (this.currentList.refresh) this.currentList.refresh();
+			}.bind(this)
+		};
 		this.desktop.openApplication(null, "process.Work", options);
 	},
 	startProcessInstance: function(data, title, processName){
@@ -461,7 +465,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		}.bind(this));
 
 		if (currentTask.length===1){
-			var options = {"workId": currentTask[0], "appId": "process.Work"+currentTask[0]};
+			var options = {"workId": currentTask[0], "appId": "process.Work"+currentTask[0],
+				"onPostClose": function(){
+					if (this.currentList.refresh) this.currentList.refresh();
+				}.bind(this)
+			};
 			this.desktop.openApplication(null, "process.Work", options);
 
 			if (layout.desktop.message) this.createStartWorkResault(workInfors, title, processName, false);
@@ -508,7 +516,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var node = item.node.getElements("span.dealStartedWorkAction");
 		var _self = this;
 		node.addEvent("click", function(e){
-			var options = {"taskId": this.get("value"), "appId": this.get("value")};
+			var options = {"taskId": this.get("value"), "appId": this.get("value"),
+				"onPostClose": function(){
+					if (_self.currentList.refresh) _self.currentList.refresh();
+				}
+			};
 			_self.app.desktop.openApplication(e, "process.Work", options);
 		});
 	}
@@ -541,6 +553,9 @@ MWF.xApplication.process.workcenter.List = new Class({
 		this.filterList = {};
 		this.filterNameList = {};
 	},
+	startProcess: function(){
+		this.app.startProcess();
+	},
 	setLayout: function(){
 
 	},
@@ -548,6 +563,8 @@ MWF.xApplication.process.workcenter.List = new Class({
 		this.total = null;
 		var _self = this;
 		this.loadFilterFlag();
+		this.app.filterActionNode.show();
+		this.selectedTaskList = [];
 		this.loadData().then(function(data){
 			_self.hide();
 			_self.loadPage();
@@ -682,7 +699,11 @@ MWF.xApplication.process.workcenter.List = new Class({
 		e.currentTarget.removeClass("listItem_over");
 	},
 	openTask: function(e, data){
-		o2.api.form.openWork(data.work, "", data.title);
+		o2.api.form.openWork(data.work, "", data.title, {
+			"onPostClose": function(){
+				if (this.refresh) this.refresh();
+			}.bind(this)
+		});
 	},
 	loadItemIcon: function(application, e){
 		this.app.loadItemIcon(application, e);
@@ -759,7 +780,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 
 		return Promise.all([formPromise, taskPromise]);
 	},
-	editTask: function(e, data){
+	editTask: function(e, data, action){
 		this.app.content.mask({
 			"destroyOnHide": true,
 			"id": "mask_"+data.id,
@@ -779,12 +800,12 @@ MWF.xApplication.process.workcenter.List = new Class({
 						this.processWork_mobile();
 					}.bind(this), 100);
 				} else {
-					this.processWork_pc(task, form);
+					this.processWork_pc(task, form, action);
 				}
 			}
 		}.bind(this));
 	},
-	processWork_pc: function(task, form) {
+	processWork_pc: function(task, form, action) {
 		var _self = this;
 
 		var setSize = function (notRecenter) {
@@ -841,9 +862,9 @@ MWF.xApplication.process.workcenter.List = new Class({
 
 		}.bind(this), function () {
 			if (this.processDlg) setSize.call(this.processDlg, true)
-		}.bind(this), "");
+		}.bind(this), "", action);
 	},
-	setProcessNode: function (task, form, processNode, style, postLoadFun, resizeFun, defaultRoute) {
+	setProcessNode: function (task, form, processNode, style, postLoadFun, resizeFun, defaultRoute, action) {
 		var _self = this;
 		MWF.xDesktop.requireApp("process.Work", "Processor", function () {
 			var mds = [];
@@ -873,8 +894,8 @@ MWF.xApplication.process.workcenter.List = new Class({
 					} else {
 						medias = medias.concat(mds)
 					}
-
-					_self.submitTask(routeName, opinion, medias, task);
+					var method = action || "submitTask";
+					_self[method](routeName, opinion, medias, task);
 				}
 			});
 		}.bind(this));
@@ -988,9 +1009,137 @@ MWF.xApplication.process.workcenter.List = new Class({
 			// 	this.inBrowserDkg(this.getMessageContent(data, 0, this.lp.taskProcessedMessage));
 			// }
 		}
-	}
+	},
 
+	selectTask: function(e, data){
+		if (e.currentTarget.get("disabled").toString()!="true"){
+			var itemNode = e.currentTarget.getParent(".listItem");
+			var iconNode = e.currentTarget.getElement(".selectFlagIcon");
 
+			if (itemNode){
+				if (itemNode.hasClass("mainColor_bg_opacity")){
+					itemNode.removeClass("mainColor_bg_opacity");
+					iconNode.removeClass("o2icon-xuanzhong");
+					iconNode.removeClass("selectFlagIcon_select");
+					iconNode.removeClass("mainColor_color");
+					this.unSelectedTask(data);
+					this.showBatchAction();
+				}else{
+					itemNode.addClass("mainColor_bg_opacity");
+					iconNode.addClass("o2icon-xuanzhong");
+					iconNode.addClass("selectFlagIcon_select");
+					iconNode.addClass("mainColor_color");
+					this.selectedTask(data);
+					this.showBatchAction(itemNode);
+				}
+				this.checkSelectTask();
+			}
+		}
+	},
+	checkSelectTask: function(){
+		var _self = this;
+		var nodes = this.app.listContentNode.getElements(".selectFlagArea");
+		if (this.selectedTaskList && this.selectedTaskList.length){
+			var data = this.selectedTaskList[0];
+			nodes.each(function(node){
+				var t = node.retrieve("task");
+				if (t.activity !== data.activity){
+					node.set("disabled", true);
+					node.set("title", _self.lp.cannotSelectBatch);
+					node.addClass("selectFlagArea_disabled");
+				}
+			});
+
+		}else{
+			nodes.set("disabled", false);
+			nodes.set("title", this.lp.selectBatch);
+			nodes.removeClass("selectFlagArea_disabled");
+		}
+
+	},
+	showBatchAction: function(itemNode){
+		if (this.selectedTaskList && this.selectedTaskList.length){
+			if (!itemNode){
+				var nodes = this.app.listContentNode.getElements(".listItem.mainColor_bg_opacity");
+				if (nodes && nodes.length){
+					itemNode = nodes[nodes.length-1];
+				}
+			}
+			if (itemNode){
+				this.batchAction.show();
+				this.batchAction.position({
+					"relativeTo": itemNode,
+					"position": "centerBottom",
+					"edge": "centerTop",
+					"offset": {"y": 10}
+				});
+			}else{
+				this.batchAction.hide();
+			}
+		}else{
+			this.batchAction.hide();
+		}
+	},
+	selectedTask: function(data){
+		delete data._;
+		if (!this.selectedTaskList) this.selectedTaskList = [];
+		var idx = this.selectedTaskList.findIndex(function(t){
+			return t.id == data.id;
+		});
+		if (idx===-1) this.selectedTaskList.push(data);
+	},
+	unSelectedTask: function(data){
+		delete data._;
+		if (!this.selectedTaskList) this.selectedTaskList = [];
+		var idx = this.selectedTaskList.findIndex(function(t){
+			return t.id == data.id;
+		});
+		if (idx!==-1) this.selectedTaskList.splice(idx, 1);
+	},
+	bindSelectData: function(e, data){
+		delete data._;
+		e.currentTarget.store("task", data);
+	},
+	batchProcessTask: function(e){
+		if (this.selectedTaskList && this.selectedTaskList.length){
+			var data = this.selectedTaskList[0];
+			this.editTask(e, data, "batchSubmitTask")
+		}
+	},
+	batchSubmitTask: function(routeName, opinion, medias){
+		if (this.selectedTaskList && this.selectedTaskList.length){
+			var p = [];
+			this.selectedTaskList.forEach(function(task){
+				if (!opinion) opinion = routeName;
+
+				task.routeName = routeName;
+				task.opinion = opinion;
+
+				var mediaIds = [];
+				if (medias.length){
+					medias.each(function(file){
+						var formData = new FormData();
+						formData.append("file", file);
+						formData.append("site", "$mediaOpinion");
+						this.action.AttachmentAction.upload(task.work, formData, file, function(json){
+							mediaIds.push(json.data.id);
+						}.bind(this), null, false);
+					}.bind(this));
+				}
+				if (mediaIds.length) task.mediaOpinion = mediaIds.join(",");
+
+				p.push(this.action.TaskAction.processing(task.id, task, function(json){
+					if (this.processor) this.processor.destroy();
+					if (this.processDlg) this.processDlg.close();
+					this.addMessage(json.data, task);
+				}.bind(this)));
+			}.bind(this));
+			Promise.all(p).then(function(){
+				this.app.content.unmask();
+				this.refresh();
+			}.bind(this));
+		}
+	},
 });
 MWF.xApplication.process.workcenter.TaskList = new Class({
 	Extends: MWF.xApplication.process.workcenter.List
@@ -1244,22 +1393,26 @@ MWF.xApplication.process.workcenter.DraftList = new Class({
 		"type": "draft"
 	},
 	loadData: function(){
-		var _self = this;
-		return this.action.DraftAction.listMyFilterPaging(this.page, this.size, this.filterList||{}).then(function(json){
-			_self.fireEvent("loadData");
-			_self.total = json.count;
-			return json.data;
-		}.bind(this));
 		// var _self = this;
-		// return this.action.DraftAction.listMyPaging(this.page, this.size, {}).then(function(json){
+		// return this.action.DraftAction.listMyFilterPaging(this.page, this.size, this.filterList||{}).then(function(json){
 		// 	_self.fireEvent("loadData");
-		// 	_self.total = json.size;
+		// 	_self.total = json.count;
 		// 	return json.data;
 		// }.bind(this));
+		this.app.filterActionNode.hide();
+		var _self = this;
+		return this.action.DraftAction.listMyPaging(this.page, this.size, {}).then(function(json){
+			_self.fireEvent("loadData");
+			_self.total = json.size;
+			return json.data;
+		}.bind(this));
 	},
 	openTask: function(e, data){
-		debugger
-		var options = {"draftId": data.id, "appId": "process.Work"+data.id};
+		var options = {"draftId": data.id, "appId": "process.Work"+data.id,
+			"onPostClose": function(){
+				if (this.refresh) this.refresh();
+			}.bind(this)
+		};
 		this.app.desktop.openApplication(e, "process.Work", options);
 	}
 });
