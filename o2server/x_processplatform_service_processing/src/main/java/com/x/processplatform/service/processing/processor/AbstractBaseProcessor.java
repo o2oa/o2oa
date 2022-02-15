@@ -1,5 +1,6 @@
 package com.x.processplatform.service.processing.processor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -28,7 +29,7 @@ import com.x.processplatform.service.processing.Business;
  */
 public abstract class AbstractBaseProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractBaseProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBaseProcessor.class);
 
 	private EntityManagerContainer entityManagerContainer;
 
@@ -49,35 +50,33 @@ public abstract class AbstractBaseProcessor {
 		return this.business;
 	}
 
-	protected static Integer MAX_ERROR_RETRY = 5;
+	protected static final Integer MAX_ERROR_RETRY = 5;
 
-	protected static String BAS = "beforeArriveScript";
-	protected static String BAST = "beforeArriveScriptText";
-	protected static String AAS = "afterArriveScript";
-	protected static String AAST = "afterArriveScriptText";
-	protected static String BES = "beforeExecuteScript";
-	protected static String BEST = "beforeExecuteScriptText";
-	protected static String AES = "afterExecuteScript";
-	protected static String AEST = "afterExecuteScriptText";
-	protected static String BIS = "beforeInquireScript";
-	protected static String BIST = "beforeInquireScriptText";
-	protected static String AIS = "afterInquireScript";
-	protected static String AIST = "afterInquireScriptText";
+	protected static final String BAS = "beforeArriveScript";
+	protected static final String BAST = "beforeArriveScriptText";
+	protected static final String AAS = "afterArriveScript";
+	protected static final String AAST = "afterArriveScriptText";
+	protected static final String BES = "beforeExecuteScript";
+	protected static final String BEST = "beforeExecuteScriptText";
+	protected static final String AES = "afterExecuteScript";
+	protected static final String AEST = "afterExecuteScriptText";
+	protected static final String BIS = "beforeInquireScript";
+	protected static final String BIST = "beforeInquireScriptText";
+	protected static final String AIS = "afterInquireScript";
+	protected static final String AIST = "afterInquireScriptText";
 
 	protected void arriveActivity(AeiObjects aeiObjects) throws Exception {
 		String token = aeiObjects.getWork().getActivityToken();
-		if (aeiObjects.getActivityProcessingConfigurator().getChangeActivityToken()) {
+		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getChangeActivityToken())) {
 			token = StringTools.uniqueToken();
 		}
 		Date date = new Date();
-		if (aeiObjects.getActivityProcessingConfigurator().getStampArrivedWorkLog()) {
-			/* 需要创建到达的工作日志 */
-			if (ListTools.isNotEmpty(aeiObjects.getWorkLogs())) {
-				/* 如果为空的话那么就是新建的工作,不需要连接到达日志 */
-				this.stampArriveWorkLog(aeiObjects, token, date);
-			}
+		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getStampArrivedWorkLog())
+				&& ListTools.isNotEmpty(aeiObjects.getWorkLogs())) {
+			/* 如果为空的话那么就是新建的工作,不需要连接到达日志 */
+			this.stampArriveWorkLog(aeiObjects, token, date);
 		}
-		if (aeiObjects.getActivityProcessingConfigurator().getCreateFromWorkLog()) {
+		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCreateFromWorkLog())) {
 			this.createFromWorkLog(aeiObjects, token, date);
 		}
 		aeiObjects.getWork().setActivityToken(token);
@@ -88,11 +87,6 @@ public abstract class AbstractBaseProcessor {
 		aeiObjects.getWork().setActivityDescription(aeiObjects.getActivity().getDescription());
 		aeiObjects.getWork().setActivityType(aeiObjects.getActivity().getActivityType());
 		aeiObjects.getWork().setWorkStatus(WorkStatus.processing);
-//		aeiObjects.getWork().setDestinationActivity(null);
-//		aeiObjects.getWork().setDestinationActivityType(null);
-//		aeiObjects.getWork().setDestinationRoute(null);
-//		aeiObjects.getWork().setDestinationRouteName(null);
-//		aeiObjects.getWork().setErrorRetry(0);
 		if (StringUtils.isNotEmpty(aeiObjects.getActivity().getForm())) {
 			/** 检查表单存在 */
 			Form form = this.business().element().get(aeiObjects.getActivity().getForm(), Form.class);
@@ -130,7 +124,6 @@ public abstract class AbstractBaseProcessor {
 					.sorted(Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)))
 					.findFirst().orElse(null);
 			if (null != oldest) {
-				// @Todo
 				workLog = new WorkLog();
 				oldest.copyTo(workLog, JpaObject.ID_DISTRIBUTEFACTOR);
 				workLog.setArrivedActivity(aeiObjects.getActivity().getId());
@@ -148,98 +141,116 @@ public abstract class AbstractBaseProcessor {
 				aeiObjects.getCreateWorkLogs().add(workLog);
 			} else {
 				/* 这样的情况应该是不可能的 */
-				throw new Exception("不能发生的情况,没有找到任何WorkLog");
+				throw new IllegalStateException("不能发生的情况,没有找到任何WorkLog");
 			}
 		}
 		return workLog;
 	}
 
-	protected Work copyWork(Work work) throws Exception {
+	protected Work copyWork(Work work) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Work copy = new Work();
 		work.copyTo(copy, JpaObject.ID_DISTRIBUTEFACTOR);
 		return copy;
 	}
 
-	protected boolean hasBeforeArriveScript(Process process, Activity activity) throws Exception {
+	protected boolean hasBeforeArriveScript(Process process, Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return this.hasBeforeArriveScript(process) || this.hasBeforeArriveScript(activity);
 	}
 
-	protected boolean hasBeforeArriveScript(Process process) throws Exception {
+	protected boolean hasBeforeArriveScript(Process process)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(process.get(BAS, String.class))
 				|| StringUtils.isNotEmpty(process.get(BAST, String.class));
 	}
 
-	protected boolean hasBeforeArriveScript(Activity activity) throws Exception {
+	protected boolean hasBeforeArriveScript(Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(activity.get(BAS, String.class))
 				|| StringUtils.isNotEmpty(activity.get(BAST, String.class));
 	}
 
-	protected boolean hasAfterArriveScript(Process process, Activity activity) throws Exception {
+	protected boolean hasAfterArriveScript(Process process, Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return this.hasAfterArriveScript(process) || this.hasAfterArriveScript(activity);
 	}
 
-	protected boolean hasAfterArriveScript(Process process) throws Exception {
+	protected boolean hasAfterArriveScript(Process process)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(process.get(AAS, String.class))
 				|| StringUtils.isNotEmpty(process.get(AAST, String.class));
 	}
 
-	protected boolean hasAfterArriveScript(Activity activity) throws Exception {
+	protected boolean hasAfterArriveScript(Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(activity.get(AAS, String.class))
 				|| StringUtils.isNotEmpty(activity.get(AAST, String.class));
 	}
 
-	protected boolean hasBeforeExecuteScript(Process process, Activity activity) throws Exception {
+	protected boolean hasBeforeExecuteScript(Process process, Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return this.hasBeforeExecuteScript(process) || this.hasBeforeExecuteScript(activity);
 	}
 
-	protected boolean hasBeforeExecuteScript(Process process) throws Exception {
+	protected boolean hasBeforeExecuteScript(Process process)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(process.get(BES, String.class))
 				|| StringUtils.isNotEmpty(process.get(BEST, String.class));
 	}
 
-	protected boolean hasBeforeExecuteScript(Activity activity) throws Exception {
+	protected boolean hasBeforeExecuteScript(Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(activity.get(BES, String.class))
 				|| StringUtils.isNotEmpty(activity.get(BEST, String.class));
 	}
 
-	protected boolean hasAfterExecuteScript(Process process, Activity activity) throws Exception {
+	protected boolean hasAfterExecuteScript(Process process, Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return this.hasAfterExecuteScript(process) || this.hasAfterExecuteScript(activity);
 	}
 
-	protected boolean hasAfterExecuteScript(Process process) throws Exception {
+	protected boolean hasAfterExecuteScript(Process process)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(process.get(AES, String.class))
 				|| StringUtils.isNotEmpty(process.get(AEST, String.class));
 	}
 
-	protected boolean hasAfterExecuteScript(Activity activity) throws Exception {
+	protected boolean hasAfterExecuteScript(Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(activity.get(AES, String.class))
 				|| StringUtils.isNotEmpty(activity.get(AEST, String.class));
 	}
 
-	protected boolean hasBeforeInquireScript(Process process, Activity activity) throws Exception {
+	protected boolean hasBeforeInquireScript(Process process, Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return this.hasBeforeInquireScript(process) || this.hasBeforeInquireScript(activity);
 	}
 
-	protected boolean hasBeforeInquireScript(Process process) throws Exception {
+	protected boolean hasBeforeInquireScript(Process process)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(process.get(BIS, String.class))
 				|| StringUtils.isNotEmpty(process.get(BIST, String.class));
 	}
 
-	protected boolean hasBeforeInquireScript(Activity activity) throws Exception {
+	protected boolean hasBeforeInquireScript(Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(activity.get(BIS, String.class))
 				|| StringUtils.isNotEmpty(activity.get(BIST, String.class));
 	}
 
-	protected boolean hasAfterInquireScript(Process process, Activity activity) throws Exception {
+	protected boolean hasAfterInquireScript(Process process, Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return this.hasAfterInquireScript(process) || this.hasAfterInquireScript(activity);
 	}
 
-	protected boolean hasAfterInquireScript(Process process) throws Exception {
+	protected boolean hasAfterInquireScript(Process process)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(process.get(AIS, String.class))
 				|| StringUtils.isNotEmpty(process.get(AIST, String.class));
 	}
 
-	protected boolean hasAfterInquireScript(Activity activity) throws Exception {
+	protected boolean hasAfterInquireScript(Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(activity.get(AIS, String.class))
 				|| StringUtils.isNotEmpty(activity.get(AIST, String.class));
 	}

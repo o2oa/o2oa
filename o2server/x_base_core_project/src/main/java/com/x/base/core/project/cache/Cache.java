@@ -15,16 +15,19 @@ public interface Cache {
 
 	public static final String TYPE_EHCACHE = "ehcache";
 	public static final String TYPE_REDIS = "redis";
+	public static final String TYPE_GUAVA = "guava";
 
-	public abstract void put(CacheCategory category, CacheKey key, Object o) throws Exception;
+	public abstract void put(CacheCategory category, CacheKey key, Object o);
 
-	public abstract Optional<?> get(CacheCategory category, CacheKey key) throws Exception;
+	public abstract Optional<Object> get(CacheCategory category, CacheKey key);
 
 	public abstract void shutdown();
 
-	public abstract void receive(WrapClearCacheRequest wi) throws Exception;
+	public abstract void receive(WrapClearCacheRequest wi);
 
-	public abstract void notify(Class<?> clz, List<Object> keys) throws Exception;
+	public abstract void notify(Class<?> clz, List<Object> keys);
+
+	public abstract String detail();
 
 	public static class CacheCategory {
 

@@ -40,7 +40,7 @@
         "</div>",
         "items": {
           "creatorName" : {
-            "value": "function( d ){ return d.creatorName.split('@')[0] }"
+            "value": "function( d ){ return MWFForum.getReplyCreatorName(d) }"
           },
 //          "subject": { "value" : "function(d){ return 8 }" },
 //          "reply" : { "value" : "function(d){ return 66 }"},

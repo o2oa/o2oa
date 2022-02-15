@@ -95,6 +95,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadJSONArea();
                     this.loadFormSelect();
                     this.loadSubformSelect();
+                    this.loadComponentSelect();
                     //this.loadPageSelect();
                     this.loadWidgetSelect();
                     this.loadANNModelSelect();
@@ -117,6 +118,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadElSelectIcon();
                     this.loadVueElementUI();
                     this.loadElCommonPreview();
+                    this.loadElTreeData();
+                    this.loadElTDropDownData();
+                    this.loadElCarouselContent();
 
                     this.loadSmartBISelect();
 
@@ -146,6 +150,72 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             this.propertyContent.destroy();
         }
         MWF.release(this);
+    },
+
+    loadElTreeData: function(){
+        var arrays = this.propertyContent.getElements(".MWFElTreeData");
+        arrays.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var json = this.data[name];
+            if (!json) json = [];
+            MWF.requireApp("process.FormDesigner", "widget.ElTreeEditor", function(){
+                var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElTreeEditor(node, {
+                    "title": title,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+                    "onChange": function(){
+                        debugger;
+                        // this.data[name] = Object.assign(this.data[name], treeEditor.toJson());
+                        // this.data[name] = treeEditor.toJson();
+                        // this.module.json[name] = this.data[name];
+                        //
+                        this.module._refreshTree();
+                    }.bind(this)
+                });
+                treeEditor.load(json);
+            }.bind(this));
+            node.addEvent("keydown", function(e){e.stopPropagation();});
+        }.bind(this));
+    },
+
+    loadElTDropDownData: function(){
+        var arrays = this.propertyContent.getElements(".MWFElTDropdownData");
+        arrays.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var json = this.data[name];
+            if (!json) json = [];
+            MWF.requireApp("process.FormDesigner", "widget.ElDropdownItemEditor", function(){
+                var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor(node, {
+                    "title": title,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+                    "onChange": function(){
+                    }.bind(this)
+                });
+                treeEditor.load(json);
+            }.bind(this));
+            node.addEvent("keydown", function(e){e.stopPropagation();});
+        }.bind(this));
+    },
+
+    loadElCarouselContent: function(){
+        var arrays = this.propertyContent.getElements(".MWFElCarouselContent");
+        arrays.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var json = this.data[name];
+            if (!json) json = [];
+            MWF.requireApp("process.FormDesigner", "widget.ElCarouselContent", function(){
+                var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElCarouselContent(node, {
+                    "title": title,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+                    "onChange": function(){
+                    }.bind(this)
+                });
+                treeEditor.load(json);
+            }.bind(this));
+            node.addEvent("keydown", function(e){e.stopPropagation();});
+        }.bind(this));
     },
 	
 	loadTreeData: function(){
@@ -339,6 +409,55 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 this.forms = json.data;
                 if (callback) callback();
             }.bind(this));
+        }else{
+            if (callback) callback();
+        }
+    },
+
+    loadComponentSelect: function(){
+        var componentSlectNodes = this.propertyContent.getElements(".MWFComponentSelect");
+        if (componentSlectNodes.length){
+            componentSlectNodes.each( function( node ){
+                var name = node.get("name");
+                var select;
+                this.getComponentList(function(){
+                    select = new Element("select").inject(node);
+                    select.addEvent("change", function(e){
+                        var value = select.options[select.selectedIndex].value;
+                        this.setValue(name, value, select);
+                    }.bind(this));
+                    this.setComponentSelectOptions(node, select);
+
+                    var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
+                    refreshNode.addEvent("click", function(e){
+                        this.getComponentList(function(){
+                            this.setComponentSelectOptions(node, select);
+                        }.bind(this), true);
+                    }.bind(this));
+                }.bind(this), false );
+                return select;
+            }.bind(this))
+        }
+    },
+    setComponentSelectOptions: function(node, select){
+        var name = node.get("name");
+        var value = this.data[name] || "";
+        select.empty();
+        var option = new Element("option", {"text": "none"}).inject(select);
+        this.components.each(function(component){
+            var option = new Element("option", {
+                "text": component.title,
+                "value": component.path,
+                "selected": (this.data[name]==component.path)
+            }).inject(select);
+        }.bind(this));
+    },
+    getComponentList: function(callback, refresh){
+        if (!this.components || refresh){
+            o2.Actions.load("x_component_assemble_control").ComponentAction.listAll( function(json){
+                this.components = json.data;
+                if (callback) callback();
+            }.bind(this), null, false);
         }else{
             if (callback) callback();
         }
@@ -1176,11 +1295,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var addressObj = layout.serviceAddressList[contextRoot];
         var address = "";
         if (addressObj){
-            address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+            address = layout.config.app_protocol+"//"+addressObj.host+((!addressObj.port || addressObj.port==80) ? "" : ":"+addressObj.port)+addressObj.context;
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
             var port = layout.desktop.centerServer.port;
-            address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
+            address = layout.config.app_protocol+"//"+host+(!port || port=="80" ? "" : ":"+port)+"/x_program_center";
         }
         return address;
     },

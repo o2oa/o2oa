@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class DatatableMobile 数据网格组件（移动端）。表格形式的多行数据编辑组件。
+/** @class DatatableMobile 数据表格组件（移动端）。表格形式的多行数据编辑组件。
+ * @o2cn 数据表格移动端
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

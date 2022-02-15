@@ -63,13 +63,13 @@ public class ActionListNextWithFilterWithManager extends BaseAction {
 					}
 				}
 
-				isManager = business.isManager(effectivePerson);
+//				isManager = business.isManager(effectivePerson);
 				// 从数据库中查询符合条件的一页数据对象(根据当前审批人查询)
-				Map<String,List<String>> unitMap = business.getAttendanceAppealInfoFactory().listUnits(effectivePerson);
+//				Map<String,List<String>> unitMap = business.getAttendanceAppealInfoFactory().listUnits(effectivePerson);
 				detailList = business.getAttendanceAppealInfoFactory().listIdsNextWithFilterWithManager(id, count, sequence,
-						wrapIn,unitMap,isManager);
+						wrapIn,null, false);
 				// 从数据库中查询符合条件的对象总数
-				total = business.getAttendanceAppealInfoFactory().getCountWithFilterWithManager(wrapIn,unitMap,isManager);
+				total = business.getAttendanceAppealInfoFactory().getCountWithFilterWithManager(wrapIn, null ,false);
 				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
 				wraps = Wo.copier.copy(detailList);
 

@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xDesktop.requireApp("cms.Xform", "widget.Log", null, false);
 /** @class CMSLog 文档查看日志组件。
+ * @o2cn 文档查看日志组件
  * @alias CMSLog
  * @example
  * //可以在脚本中获取该组件

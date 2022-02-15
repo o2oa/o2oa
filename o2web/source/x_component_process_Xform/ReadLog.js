@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 
 /** @class ReadLog 阅读记录组件。
+ * @o2cn 阅读记录组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

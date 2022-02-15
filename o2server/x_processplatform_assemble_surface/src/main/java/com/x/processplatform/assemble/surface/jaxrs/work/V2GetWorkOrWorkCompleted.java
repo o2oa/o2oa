@@ -111,7 +111,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			workCompletedRecordFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		}
 
-		if (BooleanUtils.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
+		if (BooleanUtils
+				.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
 			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 		}
 
@@ -599,6 +600,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 		private ManualMode manualMode;
 
+		private JsonElement customData;
+
 		public String getName() {
 			return name;
 		}
@@ -671,6 +674,14 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			this.manualMode = manualMode;
 		}
 
+		public JsonElement getCustomData() {
+			return customData;
+		}
+
+		public void setCustomData(JsonElement customData) {
+			this.customData = customData;
+		}
+
 	}
 
 	public static class WoRoute extends Route {
@@ -679,8 +690,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 		static WrapCopier<Route, WoRoute> copier = WrapCopierFactory.wo(Route.class, WoRoute.class, null,
 				ListTools.toList(Route.createTime_FIELDNAME, Route.edition_FIELDNAME, Route.position_FIELDNAME,
-						Route.process_FIELDNAME, Route.updateTime_FIELDNAME, Route.track_FIELDNAME,
-						Route.properties_FIELDNAME));
+						Route.process_FIELDNAME, Route.updateTime_FIELDNAME, Route.track_FIELDNAME));
 	}
 
 	public static class WoAttachment extends Attachment {

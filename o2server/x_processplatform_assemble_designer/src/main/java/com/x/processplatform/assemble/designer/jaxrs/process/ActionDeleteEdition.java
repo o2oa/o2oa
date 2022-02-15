@@ -1,5 +1,10 @@
 package com.x.processplatform.assemble.designer.jaxrs.process;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -7,12 +12,22 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.MessageFactory;
+import com.x.processplatform.core.entity.element.Agent;
+import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Begin;
+import com.x.processplatform.core.entity.element.Cancel;
+import com.x.processplatform.core.entity.element.Choice;
+import com.x.processplatform.core.entity.element.Delay;
+import com.x.processplatform.core.entity.element.Embed;
+import com.x.processplatform.core.entity.element.End;
+import com.x.processplatform.core.entity.element.Invoke;
+import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Merge;
+import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.*;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.element.Service;
+import com.x.processplatform.core.entity.element.Split;
 
 class ActionDeleteEdition extends BaseAction {
 
@@ -70,7 +85,6 @@ class ActionDeleteEdition extends BaseAction {
 			emc.beginTransaction(Invoke.class);
 			emc.beginTransaction(Manual.class);
 			emc.beginTransaction(Merge.class);
-			emc.beginTransaction(Message.class);
 			emc.beginTransaction(Parallel.class);
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
@@ -86,7 +100,6 @@ class ActionDeleteEdition extends BaseAction {
 				this.delete_invoke(business, process);
 				this.delete_manual(business, process);
 				this.delete_merge(business, process);
-				this.delete_message(business, process);
 				this.delete_parallel(business, process);
 				this.delete_route(business, process);
 				this.delete_service(business, process);

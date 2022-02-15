@@ -33,7 +33,7 @@
             "attr" : "title^^function(d){ return d.createTime }"
           },
           "creatorName" : {
-            "value" : "function(d){ return d.creatorName.split('@')[0] }",
+            "value" : "function(d){ return MWFForum.getSubjectCreatorName(d) }",
             "event" : "mouseover^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_person_over ) }##mouseout^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_person )}##click^^function(){this.app.openPerson( this.data.creatorName ) }"
           },
           "sectionName": {

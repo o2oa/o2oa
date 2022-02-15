@@ -774,7 +774,8 @@ public class PeriodAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listCountExpiredWorkByApplication(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @PathParam("unit") String unit, @PathParam("person") String person) {
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("组织标识") @PathParam("unit") String unit,
+			@JaxrsParameterDescribe("用户标识") @PathParam("person") String person) {
 		ActionResult<ActionListCountExpiredWorkByApplication.Wo> result = new ActionResult<>();
 		try {
 			result = new ActionListCountExpiredWorkByApplication().execute(unit, person);

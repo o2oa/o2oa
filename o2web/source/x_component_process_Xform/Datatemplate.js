@@ -49,6 +49,7 @@
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class Datatemplate 数据模板组件。自定义结构和样式的多行数据编辑组件。
+ * @o2cn 数据模板
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -131,7 +132,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 *  	 	"毕业日期" : "2019-9-2",
 			 *  	 	"errorTextList" : [
 			 *  	 	    "第5列：aa01-1-2不是正确的日期格式。"
-			 *  	 	] //校验出的错误信息，如果改行数据正确，则无该字段
+			 *  	 	] //校验出的错误信息，如果该行数据正确，则无该字段
 			 *  	 }
 			 *  	 ...
 			 *     ], //导入的数据

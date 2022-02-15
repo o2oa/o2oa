@@ -9,6 +9,7 @@
   "nextPageText" : "",
   "firstPageText" : "第一页",
   "lastPageText" : "最后一页",
+  "textStyle": "共<font style='color:#4a90e2;'>{count}</font>条数据，每页<font style='color:#4a90e2;'>{countPerPage}</font>条，共<font style='color:#4a90e2;'>{page}</font>页",
   "events": {
     "queryLoad" : {
       "code": "",

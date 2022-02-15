@@ -11,6 +11,7 @@ import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.MD5Tool;
+import com.x.bbs.assemble.control.Business;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -40,7 +41,7 @@ import net.sf.ehcache.Element;
  *
  */
 public class ActionSubjectListForBBSIndex extends BaseAction {
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( ActionSubjectListForBBSIndex.class );
 
 	@SuppressWarnings("unchecked")
@@ -58,11 +59,11 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		
+
 		if ( check ) {
 			isBBSManager = ThisApplication.isBBSManager(effectivePerson);
 		}
-		
+
 		if( check ) {
 			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(), MD5Tool.getMD5Str(gson.toJson(wrapIn)), isBBSManager, count, page);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
@@ -78,7 +79,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public ActionResult<List<Wo>> getSubjectQueryResult( Wi wrapIn, HttpServletRequest request, EffectivePerson effectivePerson, Integer page, Integer count ) {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps_out = null;
@@ -91,7 +92,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		Boolean check = true;
 
 		if( check && StringUtils.isNotEmpty( wrapIn.getSectionId() ) ){
-			
+
 			if (check) {
 				try {
 					sectionInfo = sectionInfoServiceAdv.get( wrapIn.getSectionId() );
@@ -102,7 +103,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 					logger.error( e, effectivePerson, request, null);
 				}
 			}
-			
+
 			if (check) {
 				if ( sectionInfo == null ) {
 					check = false;
@@ -111,7 +112,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 				}
 			}
 		}
-		
+
 		if( check ){
 			try{
 				viewSectionIds = getViewableSectionIds( request, effectivePerson );
@@ -121,13 +122,13 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ){
 			if( page == null ){
 				page = 1;
 			}
 		}
-		
+
 		if( check ){
 			if( count == null ){
 				count = 20;
@@ -148,7 +149,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 				}
 			}
 		}
-		
+
 		if( check ){
 			if( selectTotal > 0 && total > 0 ){
 				if( page <= 0 ){ page = 1; }
@@ -189,54 +190,65 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	/**
 	 *  将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
-	 *  
+	 *
 	 * @param subject
 	 */
 	private void cutPersonNames( Wo subject ) {
 		if( subject != null ) {
-			if( StringUtils.isNotEmpty( subject.getLatestReplyUser() ) ) {
-				subject.setLatestReplyUserShort( subject.getLatestReplyUser().split( "@" )[0]);
+			if(StringUtils.isBlank(subject.getNickName())){
+				subject.setNickName(subject.getCreatorName());
+			}
+			if ( StringUtils.isNotEmpty( subject.getLatestReplyUser() )) {
+				subject.setLatestReplyUserNickName(subject.getLatestReplyUser().split("@")[0]);
+				try {
+					if(configSettingService.useNickName()) {
+						Business business = new Business(null);
+						subject.setLatestReplyUserNickName(business.organization().person().getNickName(subject.getLatestReplyUser()));
+					}
+				} catch (Exception e) {
+					logger.debug(e.getMessage());
+				}
 			}
 			if( StringUtils.isNotEmpty( subject.getCreatorName() ) ) {
 				subject.setCreatorNameShort( subject.getCreatorName().split( "@" )[0]);
 			}
 		}
 	}
-	
+
 	public static class Wi{
-		
+
 		@FieldDescribe( "贴子ID." )
 		private String subjectId = null;
-		
+
 		@FieldDescribe( "投标选项ID." )
 		private String voteOptionId = null;
-		
+
 		@FieldDescribe( "贴子所属论坛ID." )
 		private String forumId = null;
-		
+
 		@FieldDescribe( "贴子所属主版块ID." )
 		private String mainSectionId = null;
-		
+
 		@FieldDescribe( "贴子所属版块ID." )
 		private String sectionId = null;
-		
+
 		@FieldDescribe( "标题模糊搜索关键词" )
 		private String searchContent = null;
-		
+
 		@FieldDescribe( "创建者名称." )
 		private String creatorName = null;
-		
+
 		@FieldDescribe( "是否只查询有大图的贴子." )
 		private Boolean needPicture = false;
-		
+
 		@FieldDescribe( "是否包含置顶贴." )
 		private Boolean withTopSubject = false; // 是否包含置顶贴
-		
+
 		public static List<String> Excludes = new ArrayList<String>( JpaObject.FieldsUnmodify );
-		
+
 		public String getForumId() {
 			return forumId;
 		}
@@ -294,7 +306,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		public void setVoteOptionId(String voteOptionId) {
 			this.voteOptionId = voteOptionId;
 		}
-		
+
 		public String getCacheKey( EffectivePerson effectivePerson, Boolean isBBSManager ) {
 			StringBuffer sb = new StringBuffer();
 			if( StringUtils.isNotEmpty( effectivePerson.getDistinguishedName() )) {
@@ -340,26 +352,26 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 			return sb.toString();
 		}
 	}
-	
+
 	public static class Wo{
-		
+
 		public static WrapCopier< BBSSubjectInfo, Wo > copier = WrapCopierFactory.wo( BBSSubjectInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
-		
+
 		@FieldDescribe("ID")
 		private String id = "";
-		
+
 		@FieldDescribe("论坛ID")
 		private String forumId = "";
-		
+
 		@FieldDescribe("版块ID")
 		private String sectionId = "";
-		
+
 		@FieldDescribe("主版块ID")
 		private String mainSectionId = "";
 
 		@FieldDescribe("首页图片ID")
 		private String picId = "";
-		
+
 		@FieldDescribe("主题名称：标题")
 		private String title = "";
 
@@ -374,12 +386,18 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 
 		@FieldDescribe("最新回复时间")
 		private Date latestReplyTime = null;
-		
+
 		@FieldDescribe("发贴用户")
 		private String creatorName = null;
 
+		@FieldDescribe("发贴用户昵称")
+		private String nickName = null;
+
 		@FieldDescribe("最新回复用户")
 		private String latestReplyUser = null;
+
+		@FieldDescribe("最新回复用户昵称")
+		private String latestReplyUserNickName = "";
 
 		@FieldDescribe("最新回复ID")
 		private String latestReplyId = null;
@@ -391,7 +409,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		private Long viewTotal = 0L;
 
 		@FieldDescribe("主题热度")
-		private Long hot = 0L;		
+		private Long hot = 0L;
 
 		@FieldDescribe("是否为置顶主题")
 		private Boolean isTopSubject = false;
@@ -404,16 +422,13 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 
 		@FieldDescribe("版主推荐主题")
 		private Boolean isRecommendSubject = false;
-		
-		@FieldDescribe( "最新回复用户" )
-		private String latestReplyUserShort = "";
-		
+
 		@FieldDescribe( "创建人姓名" )
 		private String creatorNameShort = "";
-		
+
 		@FieldDescribe( "当前用户是否已经投票过." )
 		private Boolean voted = false;
-		
+
 		public String getCreatorName() {
 			return creatorName;
 		}
@@ -422,10 +437,6 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 			this.creatorName = creatorName;
 		}
 
-		public String getLatestReplyUserShort() {
-			return latestReplyUserShort;
-		}
-		
 		public String getCreatorNameShort() {
 			return creatorNameShort;
 		}
@@ -438,10 +449,6 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 			this.id = id;
 		}
 
-		public void setLatestReplyUserShort(String latestReplyUserShort) {
-			this.latestReplyUserShort = latestReplyUserShort;
-		}
-		
 		public void setCreatorNameShort(String creatorNameShort) {
 			this.creatorNameShort = creatorNameShort;
 		}
@@ -596,6 +603,22 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 
 		public void setIsRecommendSubject(Boolean isRecommendSubject) {
 			this.isRecommendSubject = isRecommendSubject;
+		}
+
+		public String getNickName() {
+			return nickName;
+		}
+
+		public void setNickName(String nickName) {
+			this.nickName = nickName;
+		}
+
+		public String getLatestReplyUserNickName() {
+			return latestReplyUserNickName;
+		}
+
+		public void setLatestReplyUserNickName(String latestReplyUserNickName) {
+			this.latestReplyUserNickName = latestReplyUserNickName;
 		}
 	}
 }

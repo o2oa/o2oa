@@ -31,7 +31,7 @@ class ActionListWithApplication extends BaseAction {
 			if (null == application) {
 				throw new ExceptionApplicationNotExist(applicationId);
 			}
-			if (!business.editable(effectivePerson, application)) {
+			if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, application)) {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
 						application.getName(), application.getId());
 			}

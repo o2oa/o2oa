@@ -51,7 +51,7 @@ class ActionDeleteInvite extends BaseAction {
 				for (String _s : inviteDelPersonList) {
 					MessageFactory.meeting_deleteInvitePerson(_s, meeting);
 				}
-				this.notifyMeetingInviteMessage(business, meeting);
+				//this.notifyMeetingInviteMessage(business, meeting);
 			}
 			
 			Wo wo = new Wo();

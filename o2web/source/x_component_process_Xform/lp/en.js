@@ -199,6 +199,7 @@ MWF.xApplication.process.Xform.LP = {
     "editdocCompleted": "EditComplete",
     "printdoc": "Print",
     "history": "Text Trace",
+    "handwrittenApproval": "Handwritten Approval",
     "fullScreen": "FullScreen",
     "returnScreen": "Restore",
 
@@ -206,6 +207,7 @@ MWF.xApplication.process.Xform.LP = {
     "editdocCompleted_mobile": "EditComplete",
     "printdoc_mobile": "Print",
     "history_mobile": "Trace",
+    "handwrittenApproval_mobile": "Approval",
 
 
     "subformNestedError": "This form has nested subforms, please contact the administrator!",
@@ -302,6 +304,8 @@ MWF.xApplication.process.Xform.LP = {
     "importTooManyNotice ":" you import {n1} data, allowed to import {n2} data maximum ",
     "importTooFewNotice ": "you import {n1} data, need to keep at least {n2} data ",
 
+    "pleaseSelect": "Please Choose",
+
     "form": {
         "close":"Close",
         "closeTitle": "Close Document",
@@ -368,7 +372,9 @@ MWF.xApplication.process.Xform.LP = {
     "sendReview": "Add Review",
     "sendReviewOk": "Review has been added:",
     "inputSendReviewPeople": "Please select the person",
-    "sendReviewPeopleCanNotEmpty": "Please select the person"
+    "sendReviewPeopleCanNotEmpty": "Please select the person",
+
+    "applicationNotFound": "App Not Found"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

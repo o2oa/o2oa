@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class Table 表格组件。
+ * @o2cn 表格
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

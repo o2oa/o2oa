@@ -120,18 +120,18 @@ public class FileInfo extends StorageObject {
 	}
 
 	@Override
-	public String path() throws Exception {
+	public String path() {
 		if (StringUtils.isEmpty(this.appId)) {
-			throw new Exception("appId can not be null.");
+			throw new IllegalStateException("appId can not be null.");
 		}
 		if (StringUtils.isEmpty(this.categoryId)) {
-			throw new Exception("categoryId can not be null.");
+			throw new IllegalStateException("categoryId can not be null.");
 		}
 		if (StringUtils.isEmpty(documentId)) {
-			throw new Exception("documentId can not be null.");
+			throw new IllegalStateException("documentId can not be null.");
 		}
 		if (StringUtils.isEmpty(id)) {
-			throw new Exception("id can not be empty.");
+			throw new IllegalStateException("id can not be empty.");
 		}
 		String str = DateTools.format(this.getCreateTime(), DateTools.formatCompact_yyyyMMdd);
 		str += PATHSEPARATOR;
@@ -281,8 +281,9 @@ public class FileInfo extends StorageObject {
 	public static final String readUnitList_FIELDNAME = "readUnitList";
 	@FieldDescribe("可以访问的组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + readUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME + ElementIndexNameSuffix)
@@ -304,8 +305,9 @@ public class FileInfo extends StorageObject {
 	public static final String editUnitList_FIELDNAME = "editUnitList";
 	@FieldDescribe("可以修改的组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + editUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + editUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ editUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + editUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + editUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + editUnitList_FIELDNAME + ElementIndexNameSuffix)
@@ -345,7 +347,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 获取文件所属应用ID
-	 * 
+	 *
 	 * @return
 	 */
 	public String getAppId() {
@@ -354,7 +356,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 设置文件所属应用ID
-	 * 
+	 *
 	 * @param appId
 	 */
 	public void setAppId(String appId) {
@@ -363,7 +365,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 获取分类说明信息
-	 * 
+	 *
 	 * @return
 	 */
 	public String getDescription() {
@@ -372,7 +374,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 设置分类说明信息
-	 * 
+	 *
 	 * @param description
 	 */
 	public void setDescription(String description) {
@@ -381,7 +383,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 获取分类创建者帐号
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCreatorUid() {
@@ -390,7 +392,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 设置分类创建者帐号
-	 * 
+	 *
 	 * @param creatorUid
 	 */
 	public void setCreatorUid(String creatorUid) {
@@ -399,7 +401,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 获取文件名称
-	 * 
+	 *
 	 * @return
 	 */
 	public String getFileName() {
@@ -408,7 +410,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 设置文件名称
-	 * 
+	 *
 	 * @param fileName
 	 */
 	public void setFileName(String fileName) {
@@ -417,7 +419,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 获取文件所属分类ID
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCategoryId() {
@@ -426,7 +428,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 设置文件所属分类ID
-	 * 
+	 *
 	 * @param categoryId
 	 */
 	public void setCategoryId(String categoryId) {
@@ -435,7 +437,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 获取文件所属应用ID
-	 * 
+	 *
 	 * @return
 	 */
 	public String getDocumentId() {
@@ -444,7 +446,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 设置文件所属应用ID
-	 * 
+	 *
 	 * @param documentId
 	 */
 	public void setDocumentId(String documentId) {
@@ -453,7 +455,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 获取文件的类别：文件（FILE）|附件(ATTACHMENT)
-	 * 
+	 *
 	 * @return
 	 */
 	public String getFileType() {
@@ -462,7 +464,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 设置文件的类别：文件（FILE）|附件(ATTACHMENT)
-	 * 
+	 *
 	 * @param fileType
 	 */
 	public void setFileType(String fileType) {
@@ -471,7 +473,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 获取文件存储的主机名
-	 * 
+	 *
 	 * @return
 	 */
 	public String getFileHost() {
@@ -480,7 +482,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 设置文件存储的主机名
-	 * 
+	 *
 	 * @param fileHost
 	 */
 	public void setFileHost(String fileHost) {
@@ -489,7 +491,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 获取文件存储的路径
-	 * 
+	 *
 	 * @return
 	 */
 	public String getFilePath() {
@@ -498,7 +500,7 @@ public class FileInfo extends StorageObject {
 
 	/**
 	 * 设置文件存储的路径
-	 * 
+	 *
 	 * @param filePath
 	 */
 	public void setFilePath(String filePath) {
@@ -521,17 +523,19 @@ public class FileInfo extends StorageObject {
 		this.extension = extension;
 	}
 
-	public Long getLength() {
+	@Override
+    public Long getLength() {
 		return length;
 	}
 
+	@Override
 	public void setLength(Long length) {
 		this.length = length;
 	}
 
 	/**
 	 * 附件控件框
-	 * 
+	 *
 	 * @return
 	 */
 	public String getSite() {

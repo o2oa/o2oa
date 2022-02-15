@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 /** @class Textarea 多行文本组件。
+ * @o2cn 多行文本输入
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

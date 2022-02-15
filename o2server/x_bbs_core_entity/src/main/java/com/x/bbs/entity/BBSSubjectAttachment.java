@@ -92,12 +92,12 @@ public class BBSSubjectAttachment extends StorageObject {
 	}
 
 	@Override
-	public String path() throws Exception {
+	public String path() {
 		if (null == this.sectionId) {
-			throw new Exception("sectionId can not be null.");
+			throw new IllegalStateException("sectionId can not be null.");
 		}
 		if (StringUtils.isEmpty(id)) {
-			throw new Exception("id can not be empty.");
+			throw new IllegalStateException("id can not be empty.");
 		}
 		String str = DateTools.format(this.getCreateTime(), DateTools.formatCompact_yyyyMMdd);
 		str += PATHSEPARATOR;
@@ -358,10 +358,12 @@ public class BBSSubjectAttachment extends StorageObject {
 		this.extension = extension;
 	}
 
-	public Long getLength() {
+	@Override
+    public Long getLength() {
 		return length;
 	}
 
+	@Override
 	public void setLength(Long length) {
 		this.length = length;
 	}

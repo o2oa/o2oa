@@ -23,7 +23,7 @@ import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -39,7 +39,6 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Mapping;
 import com.x.processplatform.core.entity.element.Mapping_;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -93,6 +92,7 @@ public class ElementFactory extends AbstractFactory {
 		} else {
 			t = this.entityManagerContainer().find(id, clz);
 			if (t != null) {
+				this.entityManagerContainer().get(clz).detach(t);
 				CacheManager.put(cacheCategory, cacheKey, t);
 			}
 		}
@@ -102,46 +102,54 @@ public class ElementFactory extends AbstractFactory {
 	public Activity getActivity(String id) throws Exception {
 		Activity activity = null;
 		activity = this.get(id, ActivityType.manual);
-		if (null == activity) {
-			activity = this.get(id, ActivityType.begin);
-			if (null == activity) {
-				activity = this.get(id, ActivityType.cancel);
-				if (null == activity) {
-					activity = this.get(id, ActivityType.choice);
-					if (null == activity) {
-						activity = this.get(id, ActivityType.delay);
-						if (null == activity) {
-							activity = this.get(id, ActivityType.embed);
-							if (null == activity) {
-								activity = this.get(id, ActivityType.split);
-								if (null == activity) {
-									activity = this.get(id, ActivityType.invoke);
-									if (null == activity) {
-										activity = this.get(id, ActivityType.agent);
-										if (null == activity) {
-											activity = this.get(id, ActivityType.merge);
-											if (null == activity) {
-												activity = this.get(id, ActivityType.message);
-												if (null == activity) {
-													activity = this.get(id, ActivityType.parallel);
-													if (null == activity) {
-														activity = this.get(id, ActivityType.service);
-														if (null == activity) {
-															activity = this.get(id, ActivityType.end);
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
+		if (null != activity) {
+			return activity;
 		}
-		return activity;
+		activity = this.get(id, ActivityType.begin);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.cancel);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.choice);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.delay);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.embed);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.split);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.invoke);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.agent);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.merge);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.parallel);
+		if (null != activity) {
+			return activity;
+		}
+		activity = this.get(id, ActivityType.service);
+		if (null != activity) {
+			return activity;
+		}
+		return this.get(id, ActivityType.end);
 	}
 
 	public Activity get(String id, ActivityType activityType) throws Exception {
@@ -166,8 +174,6 @@ public class ElementFactory extends AbstractFactory {
 			return this.get(id, Manual.class);
 		case merge:
 			return this.get(id, Merge.class);
-		case message:
-			return this.get(id, Message.class);
 		case parallel:
 			return this.get(id, Parallel.class);
 		case service:
@@ -189,7 +195,10 @@ public class ElementFactory extends AbstractFactory {
 			begin = (Begin) optional.get();
 		} else {
 			begin = this.entityManagerContainer().firstEqual(Begin.class, Activity.process_FIELDNAME, id);
-			CacheManager.put(cacheCategory, cacheKey, begin);
+			if (begin != null) {
+				this.entityManagerContainer().get(Begin.class).detach(begin);
+				CacheManager.put(cacheCategory, cacheKey, begin);
+			}
 		}
 		return begin;
 	}
@@ -211,6 +220,9 @@ public class ElementFactory extends AbstractFactory {
 				Root<Route> root = cq.from(Route.class);
 				Predicate p = root.get(Route_.id).in(choice.getRouteList());
 				list = em.createQuery(cq.where(p).orderBy(cb.asc(root.get(Route_.orderNumber)))).getResultList();
+				for (Route route : list) {
+					em.detach(route);
+				}
 				CacheManager.put(cacheCategory, cacheKey, list);
 			}
 		}
@@ -234,6 +246,9 @@ public class ElementFactory extends AbstractFactory {
 				Root<Route> root = cq.from(Route.class);
 				Predicate p = root.get(Route_.id).in(manual.getRouteList());
 				list = em.createQuery(cq.where(p).orderBy(cb.asc(root.get(Route_.orderNumber)))).getResultList();
+				for (Route route : list) {
+					em.detach(route);
+				}
 				CacheManager.put(cacheCategory, cacheKey, list);
 			}
 		}
@@ -257,6 +272,9 @@ public class ElementFactory extends AbstractFactory {
 				Root<Route> root = cq.from(Route.class);
 				Predicate p = root.get(Route_.id).in(parallel.getRouteList());
 				list = em.createQuery(cq.where(p).orderBy(cb.asc(root.get(Route_.orderNumber)))).getResultList();
+				for (Route route : list) {
+					em.detach(route);
+				}
 				CacheManager.put(cacheCategory, cacheKey, list);
 			}
 		}
@@ -279,9 +297,12 @@ public class ElementFactory extends AbstractFactory {
 				List<String> loops = new ArrayList<>();
 				for (String name : names) {
 					Script o = this.getScriptWithApplicationWithUniqueName(applicationId, name);
-					if ((null != o) && (!list.contains(o))) {
-						list.add(o);
-						loops.addAll(o.getDependScriptList());
+					if (null != o) {
+						this.entityManagerContainer().get(Script.class).detach(o);
+						if (!list.contains(o)) {
+							list.add(o);
+							loops.addAll(o.getDependScriptList());
+						}
 					}
 				}
 				names = loops;
@@ -356,10 +377,6 @@ public class ElementFactory extends AbstractFactory {
 			Merge merge = this.get(id, Merge.class);
 			list.add(this.get(merge.getRoute(), Route.class));
 			break;
-		case message:
-			Message message = this.get(id, Message.class);
-			list.add(this.get(message.getRoute(), Route.class));
-			break;
 		case parallel:
 			Parallel parallel = this.get(id, Parallel.class);
 			for (String str : parallel.getRouteList()) {
@@ -382,48 +399,19 @@ public class ElementFactory extends AbstractFactory {
 
 	public List<String> listFormWithProcess(Process process) throws Exception {
 		List<String> ids = new ArrayList<>();
-		this.listWithProcess(Agent.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Begin.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Cancel.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Choice.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Delay.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Embed.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(End.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Invoke.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Manual.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Merge.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Message.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Parallel.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Service.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
-		this.listWithProcess(Split.class, process).forEach(o -> {
-			ids.add(o.getForm());
-		});
+		this.listWithProcess(Agent.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Begin.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Cancel.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Choice.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Delay.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Embed.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(End.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Invoke.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Manual.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Merge.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Parallel.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Service.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Split.class, process).forEach(o -> ids.add(o.getForm()));
 		return ListTools.trim(ids, true, true);
 	}
 
@@ -446,19 +434,22 @@ public class ElementFactory extends AbstractFactory {
 			p = cb.and(p, cb.or(cb.equal(root.get(Mapping_.process), process), cb.equal(root.get(Mapping_.process), ""),
 					cb.isNull(root.get(Mapping_.process))));
 			List<Mapping> os = em.createQuery(cq.where(p)).getResultList();
-			os.stream().collect(Collectors.groupingBy(o -> {
-				return o.getApplication() + o.getTableName();
-			})).forEach((k, v) -> {
-				list.add(v.stream().filter(i -> StringUtils.isNotEmpty(i.getProcess())).findFirst().orElse(v.get(0)));
-			});
+			for (Mapping mapping : os) {
+				em.detach(mapping);
+			}
+			os.stream().collect(Collectors.groupingBy(o -> o.getApplication() + o.getTableName()))
+					.forEach((k, v) -> list.add(v.stream().filter(i -> StringUtils.isNotEmpty(i.getProcess()))
+							.findFirst().orElse(v.get(0))));
 			CacheManager.put(cacheCategory, cacheKey, list);
 		}
 		return list;
 	}
 
+	private static final String GETCOMPILEDSCRIPT = "getCompiledScript";
+
 	public CompiledScript getCompiledScript(String applicationId, Activity o, String event) throws Exception {
 		CacheCategory cacheCategory = new CacheCategory(o.getClass(), Script.class);
-		CacheKey cacheKey = new CacheKey("getCompiledScript", applicationId, o.getId(), event);
+		CacheKey cacheKey = new CacheKey(GETCOMPILEDSCRIPT, applicationId, o.getId(), event);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
 		if (optional.isPresent()) {
@@ -581,7 +572,6 @@ public class ElementFactory extends AbstractFactory {
 			}
 			StringBuilder sb = new StringBuilder();
 			try {
-				sb.append("(function(){").append(System.lineSeparator());
 				if (StringUtils.isNotEmpty(scriptName)) {
 					List<Script> list = listScriptNestedWithApplicationWithUniqueName(applicationId, scriptName);
 					for (Script script : list) {
@@ -591,8 +581,7 @@ public class ElementFactory extends AbstractFactory {
 				if (StringUtils.isNotEmpty(scriptText)) {
 					sb.append(scriptText).append(System.lineSeparator());
 				}
-				sb.append("}).apply(bind);");
-				compiledScript = ScriptFactory.compile(sb.toString());
+				compiledScript = ScriptingFactory.functionalizationCompile(sb.toString());
 				CacheManager.put(cacheCategory, cacheKey, compiledScript);
 			} catch (Exception e) {
 				logger.error(e);
@@ -603,7 +592,7 @@ public class ElementFactory extends AbstractFactory {
 
 	public CompiledScript getCompiledScript(String applicationId, Route o, String event) throws Exception {
 		CacheCategory cacheCategory = new CacheCategory(Route.class, Script.class);
-		CacheKey cacheKey = new CacheKey("getCompiledScript", applicationId, o.getId(), event);
+		CacheKey cacheKey = new CacheKey(GETCOMPILEDSCRIPT, applicationId, o.getId(), event);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
 		if (optional.isPresent()) {
@@ -626,7 +615,6 @@ public class ElementFactory extends AbstractFactory {
 			}
 			StringBuilder sb = new StringBuilder();
 			try {
-				sb.append("(function(){").append(System.lineSeparator());
 				if (StringUtils.isNotEmpty(scriptName)) {
 					List<Script> list = listScriptNestedWithApplicationWithUniqueName(applicationId, scriptName);
 					for (Script script : list) {
@@ -636,8 +624,7 @@ public class ElementFactory extends AbstractFactory {
 				if (StringUtils.isNotEmpty(scriptText)) {
 					sb.append(scriptText).append(System.lineSeparator());
 				}
-				sb.append("}).apply(bind);");
-				compiledScript = ScriptFactory.compile(sb.toString());
+				compiledScript = ScriptingFactory.functionalizationCompile(sb.toString());
 				CacheManager.put(cacheCategory, cacheKey, compiledScript);
 			} catch (Exception e) {
 				logger.error(e);
@@ -648,7 +635,7 @@ public class ElementFactory extends AbstractFactory {
 
 	public CompiledScript getCompiledScript(String applicationId, Process o, String event) throws Exception {
 		CacheCategory cacheCategory = new CacheCategory(Process.class, Script.class);
-		CacheKey cacheKey = new CacheKey("getCompiledScript", applicationId, o.getId(), event);
+		CacheKey cacheKey = new CacheKey(GETCOMPILEDSCRIPT, applicationId, o.getId(), event);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
 		if (optional.isPresent()) {
@@ -689,16 +676,25 @@ public class ElementFactory extends AbstractFactory {
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScript_FIELDNAME));
 				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScriptText_FIELDNAME));
 				break;
-			case Business.EVENT_PROCESSEXPIRE:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.expireScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.expireScriptText_FIELDNAME));
+			case Business.EVENT_MANUALSTAY:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.MANUALSTAYSCRIPT_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.MANUALSTAYSCRIPTTEXT_FIELDNAME));
+				break;
+			case Business.EVENT_MANUALBEFORETASK:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.MANUALBEFORETASKSCRIPT_FIELDNAME));
+				scriptText = Objects
+						.toString(PropertyUtils.getProperty(o, Process.MANUALBEFORETASKSCRIPTTEXT_FIELDNAME));
+				break;
+			case Business.EVENT_MANUALAFTERTASK:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.MANUALAFTERTASKSCRIPT_FIELDNAME));
+				scriptText = Objects
+						.toString(PropertyUtils.getProperty(o, Process.MANUALAFTERTASKSCRIPTTEXT_FIELDNAME));
 				break;
 			default:
 				break;
 			}
 			StringBuilder sb = new StringBuilder();
 			try {
-				sb.append("(function(){").append(System.lineSeparator());
 				if (StringUtils.isNotEmpty(scriptName)) {
 					List<Script> list = listScriptNestedWithApplicationWithUniqueName(applicationId, scriptName);
 					for (Script script : list) {
@@ -708,8 +704,7 @@ public class ElementFactory extends AbstractFactory {
 				if (StringUtils.isNotEmpty(scriptText)) {
 					sb.append(scriptText).append(System.lineSeparator());
 				}
-				sb.append("}).apply(bind);");
-				compiledScript = ScriptFactory.compile(sb.toString());
+				compiledScript = ScriptingFactory.functionalizationCompile(sb.toString());
 				CacheManager.put(cacheCategory, cacheKey, compiledScript);
 			} catch (Exception e) {
 				logger.error(e);
@@ -720,20 +715,14 @@ public class ElementFactory extends AbstractFactory {
 
 	public CompiledScript getCompiledScript(Activity activity, String event, String name, String code) {
 		CacheCategory cacheCategory = new CacheCategory(activity.getClass(), Script.class);
-		CacheKey cacheKey = new CacheKey("getCompiledScript", activity.getId(), event, name, code);
+		CacheKey cacheKey = new CacheKey(GETCOMPILEDSCRIPT, activity.getId(), event, name, code);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
 		if (optional.isPresent()) {
 			compiledScript = (CompiledScript) optional.get();
 		} else {
-			StringBuilder sb = new StringBuilder();
 			try {
-				sb.append("(function(){").append(System.lineSeparator());
-				if (StringUtils.isNotEmpty(code)) {
-					sb.append(code).append(System.lineSeparator());
-				}
-				sb.append("}).apply(bind);");
-				compiledScript = ScriptFactory.compile(sb.toString());
+				compiledScript = ScriptingFactory.functionalizationCompile(code);
 				CacheManager.put(cacheCategory, cacheKey, compiledScript);
 			} catch (Exception e) {
 				logger.error(e);

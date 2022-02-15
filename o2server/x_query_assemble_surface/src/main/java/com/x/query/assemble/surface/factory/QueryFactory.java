@@ -34,8 +34,8 @@ public class QueryFactory extends AbstractFactory {
 				list.add((Query) optional.get());
 			} else {
 				Query o = this.pickObject(str);
-				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
+					CacheManager.put(cache, cacheKey, o);
 					list.add(o);
 				}
 			}
@@ -54,7 +54,9 @@ public class QueryFactory extends AbstractFactory {
 			o = (Query) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			CacheManager.put(cache, cacheKey, o);
+			if(o != null) {
+				CacheManager.put(cache, cacheKey, o);
+			}
 		}
 		return o;
 	}

@@ -816,7 +816,7 @@
     "empowerItemOddNode": {
         "float" : "left",
         "width" : "250px",
-        "height": "20px",
+        "min-height": "20px",
         "margin-bottom": "10px",
         "padding": "10px",
         "cursor": "pointer",
@@ -826,7 +826,7 @@
     "empowerItemEvenNode": {
         "float" : "left",
         "width" : "250px",
-        "height": "20px",
+        "min-height": "20px",
         "margin-bottom": "10px",
         "padding": "10px",
         "cursor": "pointer",
@@ -855,11 +855,11 @@
         "background": "url(../x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
     },
     "empowerItemContentNode": {
-        "height": "20px"
+        "min-height": "20px"
     },
     "empowerItemTitleNode": {
         "float": "left",
-        "height": "20px",
+        "min-height": "20px",
         "margin-left": "5px",
         "line-height": "20px",
         "font-size": "14px",
@@ -871,7 +871,7 @@
     "empowerItemPersonNode": {
         "float": "left",
         "margin-left": "5px",
-        "height": "20px",
+        "min-height": "20px",
         "line-height": "20px",
         "font-size": "14px",
         "color": "#0000ff"

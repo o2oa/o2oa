@@ -99,6 +99,12 @@
 		"float": "right",
 		"background": "url("+o2.session.path+"/widget/$Tree/form/script.png) center center no-repeat"
 	},
+	"itemPropertyActionNode": {
+		"width": "20px",
+		"height": "22px",
+		"float": "right",
+		"background": "url("+o2.session.path+"/widget/$Tree/editor/code.png) center center no-repeat"
+	},
 	"scriptNode":{
 		"width": "98%",
 		"height": "98%",

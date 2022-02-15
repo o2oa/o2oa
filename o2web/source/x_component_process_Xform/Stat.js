@@ -2,6 +2,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //MWF.xDesktop.requireApp("process.Xform", "widget.View", null, false);
 
 /** @class Stat 统计组件。
+ * @o2cn 统计组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

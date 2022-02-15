@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -33,20 +34,18 @@ import com.x.program.center.Business;
 
 public class Area extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(Area.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Area.class);
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
-			if (pirmaryCenter()) {
-				if (Config.collect().getEnable()) {
-					logger.print("start sync area from o2 cloud!");
-					area();
-					logger.print("completed sync area!");
-				}
+			if (pirmaryCenter() && BooleanUtils.isTrue(Config.collect().getEnable())) {
+				LOGGER.info("start sync area from o2 cloud!");
+				area();
+				LOGGER.info("completed sync area!");
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
@@ -59,14 +58,14 @@ public class Area extends BaseAction {
 				String sha = DigestUtils.sha256Hex(XGsonBuilder.toJson(wrapProvince));
 				District province = this.getProvinceDistrict(business, wrapProvince.getName());
 				if (null != province && StringUtils.equals(sha, province.getSha())) {
-					logger.debug("{} 无需更新.", wrapProvince.getName());
+					LOGGER.debug("{} 无需更新.", wrapProvince::getName);
 					continue;
 				}
 				if (null != province) {
-					logger.debug("删除 {}.", wrapProvince.getName());
+					LOGGER.debug("删除 {}.", wrapProvince::getName);
 					this.removeProvince(business, province);
 				}
-				logger.debug("更新 {}.", wrapProvince.getName());
+				LOGGER.debug("更新 {}.", wrapProvince::getName);
 				this.saveProvince(business, wrapProvince, sha);
 			}
 		}

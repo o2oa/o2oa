@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -51,8 +52,9 @@ public class CaptchaAction extends StandardJaxrsAction {
 	@Path("v2/create/width/{width}/height/{height}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2Create(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("width") Integer width, @PathParam("height") Integer height) {
+	public void v2Create(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("像素宽度") @PathParam("width") Integer width,
+			@JaxrsParameterDescribe("像素高度") @PathParam("height") Integer height) {
 		ActionResult<V2Create.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -70,7 +72,8 @@ public class CaptchaAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void validate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("id") String id, @PathParam("answer") String answer) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("验证码") @PathParam("answer") String answer) {
 		ActionResult<ActionValidate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -25,7 +24,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -79,47 +79,96 @@ class ActionProcessing extends BaseAction {
 		private void callManualBeforeTaskScript(Business business, Task task) throws Exception {
 			if (Objects.equals(task.getActivityType(), ActivityType.manual)) {
 				Manual manual = business.element().get(task.getActivity(), Manual.class);
-				if ((null != manual) && (StringUtils.isNotEmpty(manual.getManualBeforeTaskScript())
-						|| StringUtils.isNotEmpty(manual.getManualBeforeTaskScriptText()))) {
-					Work work = business.entityManagerContainer().find(task.getWork(), Work.class);
-					if (null != work) {
-						AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
-								new ProcessingAttributes());
-						ScriptContext scriptContext = aeiObjects.scriptContext();
-						((WorkContext) scriptContext.getAttribute(ScriptFactory.BINDING_NAME_WORKCONTEXT))
-								.bindTask(task);
-						WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
-						CompiledScript cs = null;
-						cs = business.element().getCompiledScript(task.getApplication(), manual,
-								Business.EVENT_MANUALBEFORETASK);
-						cs.eval(scriptContext);
-						workDataHelper.update(aeiObjects.getData());
-						business.entityManagerContainer().commit();
+				Process process = business.element().get(task.getProcess(), Process.class);
+				if ((null != manual) && (null != process)) {
+					boolean processHasManualBeforeTaskScript = processHasManualBeforeTaskScript(process);
+					boolean hasManualBeforeTaskScript = hasManualBeforeTaskScript(manual);
+					if (processHasManualBeforeTaskScript || hasManualBeforeTaskScript) {
+						Work work = business.entityManagerContainer().find(task.getWork(), Work.class);
+						if (null != work) {
+							evalCallManualBeforeTaskScript(business, task, manual, process,
+									processHasManualBeforeTaskScript, hasManualBeforeTaskScript, work);
+						}
 					}
 				}
 			}
 		}
 
-		private void callManualAfterTaskScript(Business business, Task task, TaskCompleted taskCompleted)
+		private void evalCallManualBeforeTaskScript(Business business, Task task, Manual manual, Process process,
+				boolean processHasManualBeforeTaskScript, boolean hasManualBeforeTaskScript, Work work)
 				throws Exception {
-			if (Objects.equals(task.getActivityType(), ActivityType.manual)) {
-				Manual manual = business.element().get(task.getActivity(), Manual.class);
-				if ((null != manual) && (StringUtils.isNotEmpty(manual.getManualAfterTaskScript())
-						|| StringUtils.isNotEmpty(manual.getManualAfterTaskScriptText()))) {
-					Work work = business.entityManagerContainer().find(task.getWork(), Work.class);
-					if (null != work) {
-						AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
-								new ProcessingAttributes());
-						ScriptContext scriptContext = aeiObjects.scriptContext();
-						((WorkContext) scriptContext.getAttribute(ScriptFactory.BINDING_NAME_WORKCONTEXT))
-								.bindTaskCompleted(taskCompleted);
-						CompiledScript cs = null;
-						cs = business.element().getCompiledScript(task.getApplication(), manual,
-								Business.EVENT_MANUALAFTERTASK);
-						cs.eval(scriptContext);
+			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
+					new ProcessingAttributes());
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			((WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT)).bindTask(task);
+			WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
+			if (processHasManualBeforeTaskScript) {
+				JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), process,
+						Business.EVENT_MANUALBEFORETASK), scriptContext);
+			}
+			if (hasManualBeforeTaskScript) {
+				JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), manual,
+						Business.EVENT_MANUALBEFORETASK), scriptContext);
+			}
+			workDataHelper.update(aeiObjects.getData());
+			business.entityManagerContainer().commit();
+		}
+
+		private boolean hasManualBeforeTaskScript(Manual manual) {
+			return ((null != manual) && (StringUtils.isNotEmpty(manual.getManualBeforeTaskScript())
+					|| StringUtils.isNotEmpty(manual.getManualBeforeTaskScriptText())));
+		}
+
+		private boolean processHasManualBeforeTaskScript(Process process) {
+			return ((null != process) && (StringUtils.isNotEmpty(process.getManualBeforeTaskScript())
+					|| StringUtils.isNotEmpty(process.getManualBeforeTaskScriptText())));
+		}
+
+		private void callManualAfterTaskScript(Business business, TaskCompleted taskCompleted) throws Exception {
+			if (Objects.equals(taskCompleted.getActivityType(), ActivityType.manual)) {
+				Manual manual = business.element().get(taskCompleted.getActivity(), Manual.class);
+				Process process = business.element().get(taskCompleted.getProcess(), Process.class);
+				if ((null != manual) && (null != process)) {
+					boolean processHasManualAfterTaskScript = processHasManualAfterTaskScript(process);
+					boolean hasManualAfterTaskScript = hasManualAfterTaskScript(manual);
+					if (processHasManualAfterTaskScript || hasManualAfterTaskScript) {
+						Work work = business.entityManagerContainer().find(taskCompleted.getWork(), Work.class);
+						if (null != work) {
+							evalCallManualAfterTaskScript(business, taskCompleted, manual, process,
+									processHasManualAfterTaskScript, hasManualAfterTaskScript, work);
+						}
 					}
 				}
 			}
+		}
+
+		private void evalCallManualAfterTaskScript(Business business, TaskCompleted taskCompleted, Manual manual,
+				Process process, boolean processHasManualAfterTaskScript, boolean hasManualAfterTaskScript, Work work)
+				throws Exception {
+			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
+					new ProcessingAttributes());
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			((WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT))
+					.bindTaskCompleted(taskCompleted);
+			if (processHasManualAfterTaskScript) {
+				JsonScriptingExecutor.eval(business.element().getCompiledScript(taskCompleted.getApplication(), process,
+						Business.EVENT_MANUALAFTERTASK), scriptContext);
+			}
+			if (hasManualAfterTaskScript) {
+				JsonScriptingExecutor.eval(business.element().getCompiledScript(taskCompleted.getApplication(), manual,
+						Business.EVENT_MANUALAFTERTASK), scriptContext);
+			}
+
+		}
+
+		private boolean hasManualAfterTaskScript(Manual manual) {
+			return ((null != manual) && (StringUtils.isNotEmpty(manual.getManualAfterTaskScript())
+					|| StringUtils.isNotEmpty(manual.getManualAfterTaskScriptText())));
+		}
+
+		private boolean processHasManualAfterTaskScript(Process process) {
+			return ((null != process) && (StringUtils.isNotEmpty(process.getManualAfterTaskScript())
+					|| StringUtils.isNotEmpty(process.getManualAfterTaskScriptText())));
 		}
 
 		public ActionResult<Wo> call() throws Exception {
@@ -142,9 +191,7 @@ class ActionProcessing extends BaseAction {
 				emc.beginTransaction(Task.class);
 				// 将所有前面的已办lastest标记false
 				emc.listEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, task.getJob(),
-						TaskCompleted.person_FIELDNAME, task.getPerson()).forEach(o -> {
-							o.setLatest(false);
-						});
+						TaskCompleted.person_FIELDNAME, task.getPerson()).forEach(o -> o.setLatest(false));
 				Date now = new Date();
 				Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
 				TaskCompleted taskCompleted = new TaskCompleted(task, wi.getProcessingType(), now, duration);
@@ -165,7 +212,7 @@ class ActionProcessing extends BaseAction {
 				emc.remove(task, CheckRemoveType.all);
 				emc.commit();
 				/* 待办执行后脚本,不能修改数据. */
-				callManualAfterTaskScript(business, task, taskCompleted);
+				callManualAfterTaskScript(business, taskCompleted);
 				MessageFactory.task_to_taskCompleted(taskCompleted);
 				wo.setId(taskCompleted.getId());
 			}
@@ -175,9 +222,13 @@ class ActionProcessing extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 1L;
 	}
 
 	public static class Wi extends WrapProcessing {
+
+		private static final long serialVersionUID = -6828623155146710691L;
 
 	}
 

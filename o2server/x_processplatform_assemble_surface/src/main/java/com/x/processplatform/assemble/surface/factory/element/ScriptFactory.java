@@ -78,6 +78,9 @@ public class ScriptFactory extends ElementFactory {
 		if (null == script) {
 			script = this.getWithApplicationWithName(application, uniqueName);
 		}
+		if(script != null){
+			this.entityManagerContainer().get(Script.class).detach(script);
+		}
 		return script;
 	}
 

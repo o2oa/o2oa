@@ -46,6 +46,7 @@ import java.util.Set;
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
 
+	@Override
 	public Set<Class<?>> getClasses() {
 
 		this.classes.add(TemplateFormAction.class);

@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xDesktop.requireApp("cms.Xform", "widget.Comment", null, false);
 /** @class Comment 评论组件。
+ * @o2cn 评论组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

@@ -13,5 +13,5 @@ public class WrapParallel extends Parallel {
 			WrapParallel.class, null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapParallel, Parallel> inCopier = WrapCopierFactory.wi(WrapParallel.class,
-			Parallel.class, null, JpaObject.FieldsUnmodifyExcludeId, false);
+			Parallel.class, null, JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId, false);
 }

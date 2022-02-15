@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 /** @class Combox 组合框组件。
+ * @o2cn 组合框
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

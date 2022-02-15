@@ -33,6 +33,7 @@ MWF.xApplication.process.Work.Main = new Class({
         });
 		this.lp = MWF.xApplication.process.Work.LP;
         if (!this.status) {
+            if( this.options.readonly === "true" )this.options.readonly=true;
         } else {
             this.options.workId = this.status.workId;
             this.options.workCompletedId = this.status.workCompletedId;
@@ -498,7 +499,14 @@ MWF.xApplication.process.Work.Main = new Class({
         //        if( !task.routeDecisionOpinionList )task.routeDecisionOpinionList = task.properties.routeDecisionOpinionList;
         //    }
         //});
-
+        // if (workData.activity && workData.activity.customData){
+        //     try{
+        //         var customData = JSON.parse(workData.activity.customData);
+        //         workData.activity.customData = customData;
+        //     }catch(e){
+        //         console.error(e);
+        //     }
+        // }
         this.activity = workData.activity;
         this.data = workData.data;
         this.taskList = workData.taskList;
@@ -678,6 +686,8 @@ MWF.xApplication.process.Work.Main = new Class({
     // },
     openWork: function(){
         if (this.form){
+            if( this.options.readonly )this.readonly = true;
+
             //this.readonly = true;
             //if (this.currentTask) {
             //    this.readonly = false;
@@ -719,7 +729,7 @@ MWF.xApplication.process.Work.Main = new Class({
             var cl = "$all";
             MWF.xDesktop.requireApp("process.Xform", cl, function(){
             //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
-                this.appForm = new MWF.APPForm(this.formNode, this.form, {});
+                this.appForm = new MWF.APPForm(this.formNode, this.form, {"readonly": this.readonly});
                 this.appForm.businessData = {
                     "data": this.data,
                     "originalData" : Object.clone( this.data ),

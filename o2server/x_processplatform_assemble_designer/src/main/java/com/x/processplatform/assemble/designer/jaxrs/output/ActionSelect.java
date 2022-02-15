@@ -39,7 +39,6 @@ import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -60,7 +59,6 @@ import com.x.processplatform.core.entity.element.wrap.WrapFormField;
 import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
 import com.x.processplatform.core.entity.element.wrap.WrapManual;
 import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapMessage;
 import com.x.processplatform.core.entity.element.wrap.WrapParallel;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -156,8 +154,6 @@ class ActionSelect extends BaseAction {
 					Manual.process_FIELDNAME, process.getId())));
 			wo.setMergeList(WrapMerge.outCopier.copy(business.entityManagerContainer().listEqual(Merge.class,
 					Merge.process_FIELDNAME, process.getId())));
-			wo.setMessageList(WrapMessage.outCopier.copy(business.entityManagerContainer().listEqual(Message.class,
-					Message.process_FIELDNAME, process.getId())));
 			wo.setParallelList(WrapParallel.outCopier.copy(business.entityManagerContainer().listEqual(Parallel.class,
 					Parallel.process_FIELDNAME, process.getId())));
 			wo.setServiceList(WrapService.outCopier.copy(business.entityManagerContainer().listEqual(Service.class,

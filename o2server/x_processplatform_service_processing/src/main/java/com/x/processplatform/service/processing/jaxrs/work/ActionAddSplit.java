@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -62,7 +63,7 @@ class ActionAddSplit extends BaseAction {
 						throw new ExceptionEntityNotExist(id, Work.class);
 					}
 
-					if (!work.getSplitting()) {
+					if (BooleanUtils.isFalse(work.getSplitting())) {
 						throw new ExceptionNotSplit(work.getId());
 					}
 					if (ListTools.isEmpty(wi.getSplitValueList())) {
@@ -89,7 +90,7 @@ class ActionAddSplit extends BaseAction {
 						throw new ExceptionInvalidFromWorkLog(wi.getWorkLog());
 					}
 
-					Activity activity = business.element().getActivity(from.getFromActivity());
+					Activity activity = business.element().get(from.getFromActivity(), from.getArrivedActivityType());
 
 					for (String splitValue : wi.getSplitValueList()) {
 

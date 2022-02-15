@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -56,7 +57,7 @@ public class ComponentAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("flag") String flag) {
+			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -91,7 +92,7 @@ public class ComponentAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void edit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("flag") String flag, JsonElement jsonElement) {
+			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag, JsonElement jsonElement) {
 		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -109,7 +110,7 @@ public class ComponentAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("flag") String flag) {
+			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

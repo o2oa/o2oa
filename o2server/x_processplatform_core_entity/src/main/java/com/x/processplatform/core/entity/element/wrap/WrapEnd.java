@@ -13,6 +13,6 @@ public class WrapEnd extends End {
 			JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapEnd, End> inCopier = WrapCopierFactory.wi(WrapEnd.class, End.class, null,
-			JpaObject.FieldsUnmodifyExcludeId, false);
+			JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId, false);
 
 }

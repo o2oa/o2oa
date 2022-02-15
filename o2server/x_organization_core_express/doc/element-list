@@ -1,0 +1,13 @@
+com.x.organization.core.express
+com.x.organization.core.express.assemble.authentication.jaxrs.sso
+com.x.organization.core.express.empower
+com.x.organization.core.express.empowerlog
+com.x.organization.core.express.group
+com.x.organization.core.express.identity
+com.x.organization.core.express.person
+com.x.organization.core.express.personattribute
+com.x.organization.core.express.role
+com.x.organization.core.express.unit
+com.x.organization.core.express.unitattribute
+com.x.organization.core.express.unitduty
+test.com.x.organization.core.express

@@ -159,5 +159,11 @@
         "text-align" : "center",
         "line-height" : "20px",
         "margin-right" : "5px"
+    },
+    "inforNode": {
+        "float":"left",
+        "height": "26px",
+        "line-height": "26px",
+        "padding":"0px 10px"
     }
 }

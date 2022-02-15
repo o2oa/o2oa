@@ -16,6 +16,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemType;
@@ -47,11 +49,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected Gson gson = XGsonBuilder.instance();
 
 	JsonElement getData(Business business, String job, String... paths) throws Exception {
-		//JsonElement jsonElement = null;
+		// JsonElement jsonElement = null;
 		List<Item> list = business.item().listWithJobWithPath(job, paths);
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
-		return  converter.assemble(list, paths.length);
-		//return XGsonBuilder.convert(jsonElement, Data.class);
+		return converter.assemble(list, paths.length);
+		// return XGsonBuilder.convert(jsonElement, Data.class);
 	}
 
 	/** 将data中的Title 和 serial 字段同步到work中 */
@@ -336,4 +338,36 @@ abstract class BaseAction extends StandardJaxrsAction {
 		cq.select(root.get(WorkCompleted_.application)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+
+	/**
+	 * ActionUpdateWithJob的校验方法
+	 * 
+	 * @param effectivePerson
+	 * @param job
+	 * @param jsonElement
+	 * @throws ExceptionNotJsonObject
+	 * @throws Exception
+	 * @throws ExceptionJobNotExist
+	 * @throws ExceptionWorkAccessDenied
+	 */
+	protected void checkUpdateWithJob(EffectivePerson effectivePerson, String job, JsonElement jsonElement)
+			throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			// 防止提交空数据清空data
+			if (null == jsonElement || (!jsonElement.isJsonObject())) {
+				throw new ExceptionNotJsonObject();
+			}
+			Business business = new Business(emc);
+			// 通过job获取任意一个work用于判断权限
+			Work work = emc.firstEqual(Work.class, Work.job_FIELDNAME, job);
+			if (null == work) {
+				throw new ExceptionJobNotExist(job);
+			}
+			if (!business.editable(effectivePerson, work)) {
+				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
+						work.getId());
+			}
+		}
+	}
+
 }

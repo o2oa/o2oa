@@ -1,5 +1,6 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
 /** @class Elinput 基于Element UI的输入框组件。
+ * @o2cn 输入框
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -10,6 +11,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/input|Element UI Input 输入框}
  */
 MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     /** @lends o2.xApplication.process.Xform.Elinput# */
@@ -18,6 +20,31 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     Extends: MWF.APP$Elinput,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
+        /**
+         * 当 input 获得焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elinput#focus
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/input|输入组件的Input Events章节}
+         */
+        /**
+         * 当 input 失去焦点时触发。this.event[0]指向Event
+         * @event MWF.xApplication.process.Xform.Elinput#blur
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/input|输入组件的Input Events章节}
+         */
+        /**
+         * 仅在输入框失去焦点或用户按下回车时触发。this.event[0]为组件的value
+         * @event MWF.xApplication.process.Xform.Elinput#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/input|输入组件的Input Events章节}
+         */
+        /**
+         * 在 Input 值改变时触发。this.event[0]为组件的value
+         * @event MWF.xApplication.process.Xform.Elinput#input
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/input|输入组件的Input Events章节}
+         */
+        /**
+         * 在点击由 clearable 属性生成的清空按钮时触发
+         * @event MWF.xApplication.process.Xform.Elinput#clear
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/input|输入组件的Input Events章节}
+         */
         "elEvents": ["focus", "blur", "change", "input", "clear"]
     },
     _appendVueData: function(){
@@ -47,7 +74,6 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     //     }.bind(this);
     // },
     _createElementHtml: function(){
-        debugger;
         var html = "<el-input";
         html += " v-model=\""+this.json.$id+"\"";
         html += " :maxlength=\"maxlength\"";

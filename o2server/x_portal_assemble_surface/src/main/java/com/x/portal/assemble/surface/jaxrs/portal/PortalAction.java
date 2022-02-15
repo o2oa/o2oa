@@ -31,6 +31,10 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+/**
+ * 门户应用管理
+ * @author sword
+ */
 @Path("portal")
 @JaxrsDescribe("门户")
 public class PortalAction extends StandardJaxrsAction {
@@ -90,7 +94,7 @@ public class PortalAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示当前用户所有可见的Portal.", action = ActionList.class)
+	@JaxrsMethodDescribe(value = "列示当前用户PC端所有可见的Portal.", action = ActionList.class)
 	@GET
 	@Path("list")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -100,6 +104,23 @@ public class PortalAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionList().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示当前用户mobile端所有可见的Portal.", action = ActionListMobile.class)
+	@GET
+	@Path("list/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<List<ActionListMobile.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListMobile().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

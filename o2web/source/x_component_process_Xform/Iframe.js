@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class Iframe HTML iframe。
+ * @o2cn iframe
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

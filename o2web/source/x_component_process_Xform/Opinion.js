@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 MWF.xDesktop.requireApp("process.Work", "lp." + o2.language, null, false);
 /** @class Opinion 意见输入框。
+ * @o2cn 意见输入框
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -455,7 +456,8 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 this.json.tabletHeight = 0;
             } else {
                 var size = this.node.getSize();
-                x = Math.max(this.json.tabletWidth || size.x, 500);
+                x = Math.max(this.json.tabletWidth || size.x, 600);
+                this.json.tabletWidth = x;
                 y = Math.max(this.json.tabletHeight ? (parseInt(this.json.tabletHeight) + 110) : size.y, 320);
             }
 

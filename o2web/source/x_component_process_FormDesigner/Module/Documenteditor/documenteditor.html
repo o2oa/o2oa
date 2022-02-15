@@ -87,7 +87,7 @@
 				</td>
 			</tr>
 		</table>
-		<div id="text{$.pid}allowHistoryScriptArea" style="display: text{($.allowHistory=='s')?'block':'none'}" class="MWFFormulaArea" name="allowHistoryScript" title="$.lp.viewTracesScript (S)"></div>
+		<div id="text{$.pid}allowHistoryScriptArea" style="display: text{($.allowHistory=='s')?'block':'none'}" class="MWFFormulaArea" name="allowHistoryScript" title="{{$.lp.viewTracesScript}} (S)"></div>
 
 <!--		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 <!--			<tr>-->
@@ -99,6 +99,20 @@
 <!--				</td>-->
 <!--			</tr>-->
 <!--		</table>-->
+
+
+<!--		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--			<tr>-->
+<!--				<td class="editTableTitle">{{$.lp.handwrittenApproval}}:</td>-->
+<!--				<td class="editTableValue">-->
+<!--					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowHandwrittenApprovalScriptArea').setStyle('display', 'none')}" name="allowHandwrittenApproval" text{($.allowHandwrittenApproval=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}-->
+<!--					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowHandwrittenApprovalScriptArea').setStyle('display', 'none')}" name="allowHandwrittenApproval" text{(!$.allowHandwrittenApproval || $.allowHandwrittenApproval=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}-->
+<!--					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowHandwrittenApprovalScriptArea').setStyle('display', 'block')}" name="allowHandwrittenApproval" text{($.allowHandwrittenApproval=='s')?'checked':''} type="radio" value="s"/>{{$.lp.byScript}}-->
+<!--				</td>-->
+<!--			</tr>-->
+<!--		</table>-->
+<!--		<div id="text{$.pid}allowHandwrittenApprovalScriptArea" style="display: text{($.allowHistory=='s')?'block':'none'}" class="MWFFormulaArea" name="allowHandwrittenApprovalScript" title="{{$.lp.handwrittenApprovalScript}} (S)"></div>-->
+
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>

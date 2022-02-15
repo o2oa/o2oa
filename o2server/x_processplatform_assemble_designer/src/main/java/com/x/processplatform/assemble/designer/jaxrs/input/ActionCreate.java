@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -31,7 +34,6 @@ import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -52,7 +54,6 @@ import com.x.processplatform.core.entity.element.wrap.WrapFormField;
 import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
 import com.x.processplatform.core.entity.element.wrap.WrapManual;
 import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapMessage;
 import com.x.processplatform.core.entity.element.wrap.WrapParallel;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -60,15 +61,12 @@ import com.x.processplatform.core.entity.element.wrap.WrapRoute;
 import com.x.processplatform.core.entity.element.wrap.WrapScript;
 import com.x.processplatform.core.entity.element.wrap.WrapService;
 import com.x.processplatform.core.entity.element.wrap.WrapSplit;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		// logger.debug(effectivePerson, "jsonElement:{}.", jsonElement);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
@@ -159,15 +157,16 @@ class ActionCreate extends BaseAction {
 			process.setApplication(application.getId());
 			persistObjects.add(process);
 			if (StringUtils.isNotEmpty(process.getEdition())) {
-				if(BooleanUtils.isTrue(process.getEditionEnable())) {
-					for (Process p : business.entityManagerContainer().listEqualAndEqual(Process.class, Process.application_FIELDNAME,
-							process.getApplication(), Process.edition_FIELDNAME, process.getEdition())) {
+				if (BooleanUtils.isTrue(process.getEditionEnable())) {
+					for (Process p : business.entityManagerContainer().listEqualAndEqual(Process.class,
+							Process.application_FIELDNAME, process.getApplication(), Process.edition_FIELDNAME,
+							process.getEdition())) {
 						if (!process.getId().equals(p.getId()) && BooleanUtils.isTrue(p.getEditionEnable())) {
 							p.setEditionEnable(false);
 						}
 					}
 				}
-			}else{
+			} else {
 				process.setEdition(process.getId());
 				process.setEditionEnable(true);
 				process.setEditionNumber(1.0);
@@ -263,15 +262,6 @@ class ActionCreate extends BaseAction {
 				obj.setProcess(process.getId());
 				persistObjects.add(obj);
 			}
-			for (WrapMessage _o : wrapProcess.getMessageList()) {
-				Message obj = business.entityManagerContainer().find(_o.getId(), Message.class);
-				if (null != obj) {
-					throw new ExceptionEntityExistForCreate(_o.getId(), Message.class);
-				}
-				obj = WrapMessage.inCopier.copy(_o);
-				obj.setProcess(process.getId());
-				persistObjects.add(obj);
-			}
 			for (WrapParallel _o : wrapProcess.getParallelList()) {
 				Parallel obj = business.entityManagerContainer().find(_o.getId(), Parallel.class);
 				if (null != obj) {
@@ -320,7 +310,6 @@ class ActionCreate extends BaseAction {
 		business.entityManagerContainer().beginTransaction(FormField.class);
 		business.entityManagerContainer().beginTransaction(ApplicationDict.class);
 		business.entityManagerContainer().beginTransaction(ApplicationDictItem.class);
-		// business.entityManagerContainer().beginTransaction(ApplicationDictLobItem.class);
 		business.entityManagerContainer().beginTransaction(Process.class);
 		business.entityManagerContainer().beginTransaction(Agent.class);
 		business.entityManagerContainer().beginTransaction(Begin.class);
@@ -332,7 +321,6 @@ class ActionCreate extends BaseAction {
 		business.entityManagerContainer().beginTransaction(Invoke.class);
 		business.entityManagerContainer().beginTransaction(Manual.class);
 		business.entityManagerContainer().beginTransaction(Merge.class);
-		business.entityManagerContainer().beginTransaction(Message.class);
 		business.entityManagerContainer().beginTransaction(Parallel.class);
 		business.entityManagerContainer().beginTransaction(Service.class);
 		business.entityManagerContainer().beginTransaction(Split.class);

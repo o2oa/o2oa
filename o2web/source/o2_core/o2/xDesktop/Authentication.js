@@ -74,7 +74,14 @@ MWF.xDesktop.Authentication = new Class({
                     });
                     user.roleList = user.roleList.concat(userRoleName);
                 }
-                window.location.reload();
+                var roleLCList = (user.roleList || []).map(function(role){
+                    return role.toLowerCase();
+                }.bind(this));
+                if( roleLCList.isIntersect(["systemmanager","securitymanager","auditmanager"]) ){
+                    window.location = "../x_desktop/app.html?app=ThreeMember";
+                }else{
+                    window.location.reload();
+                }
             }.bind(this);
             this.openLoginForm(this.popupOptions);
             this.fireEvent("openLogin");

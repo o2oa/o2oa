@@ -1357,7 +1357,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploader+": </div><div style='width:120px; float:left; margin-left:10px'>"+( this.data.person || this.data.creatorUid )+"</div></div>";
         html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploadTime+": </div><div style='width:120px; float:left; margin-left:10px'>"+this.data.createTime+"</div></div>";
         html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.modifyTime+": </div><div style='width:120px; float:left; margin-left:10px'>"+this.data.lastUpdateTime+"</div></div>";
-        html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploadActivity+": </div><div style='width:120px; float:left; margin-left:10px'>"+(this.data.activityName || o2.LP.widget.unknow)+"</div></div>";
+        if(this.data.activityName)html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploadActivity+": </div><div style='width:120px; float:left; margin-left:10px'>"+(this.data.activityName || o2.LP.widget.unknow)+"</div></div>";
         html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.size+": </div><div style='width:120px; float:left; margin-left:10px'>"+size+"</div></div>";
         this.inforNode.set("html", html);
 
@@ -1403,8 +1403,10 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.textTimeNode = new Element("div", {"styles": this.css.attachmentTextTimeNode_list}).inject(this.textNode);
         this.textTimeNode.set("text", this.data.lastUpdateTime);
 
-        this.textActivityNode = new Element("div", {"styles": this.css.attachmentTextActivityNode_list}).inject(this.textNode);
-        this.textActivityNode.set("text", this.data.activityName || o2.LP.widget.unknow);
+        if(this.data.activityName){
+            this.textActivityNode = new Element("div", {"styles": this.css.attachmentTextActivityNode_list}).inject(this.textNode);
+            this.textActivityNode.set("text", this.data.activityName || o2.LP.widget.unknow);
+        }
 
         this.custom_List();
     },
@@ -1443,8 +1445,10 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.textTimeNode = new Element("div", {"styles": this.css.attachmentTextTimeNode_list}).inject(this.textNode);
         this.textTimeNode.set("text", this.data.lastUpdateTime);
 
-        this.textActivityNode = new Element("div", {"styles": this.css.attachmentTextActivityNode_list}).inject(this.textNode);
-        this.textActivityNode.set("text", this.data.activityName || o2.LP.widget.unknow);
+        if(this.data.activityName){
+            this.textActivityNode = new Element("div", {"styles": this.css.attachmentTextActivityNode_list}).inject(this.textNode);
+            this.textActivityNode.set("text", this.data.activityName || o2.LP.widget.unknow);
+        }
 
         this.custom_Sequence();
     },
@@ -1580,6 +1584,11 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.isSelected = true;
         this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle+"_selected"]);
         //}
+
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("select", [this]);
+        }
+
         if (e) e.stopPropagation();
         this.controller.checkActions();
     },
@@ -1588,6 +1597,10 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.isSelected = false;
         this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle]);
         this.controller.selectedAttachments.erase(this);
+
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("unselect", [this]);
+        }
     },
 
     changeListStyle: function(style){
@@ -1960,6 +1973,10 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
             //this.node.setStyles(this.css["minAttachmentNode_list_selected"]);
         }
 
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("select", [this]);
+        }
+
         //}
         if (e) e.stopPropagation();
         this.controller.checkActions();
@@ -1998,6 +2015,10 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
             this.node.setStyles(this.css[cssKey]);
         }else{
             this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle]);
+        }
+
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("unselect", [this]);
         }
 
         this.controller.selectedAttachments.erase(this);

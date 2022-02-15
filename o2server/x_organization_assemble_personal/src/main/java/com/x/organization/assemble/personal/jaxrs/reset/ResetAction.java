@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -37,7 +38,7 @@ public class ResetAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void checkCredential(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("credential") String credential) {
+			@JaxrsParameterDescribe("用户标识") @PathParam("credential") String credential) {
 		ActionResult<WrapOutBoolean> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -55,7 +56,7 @@ public class ResetAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void checkPassword(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("password") String password) {
+			@JaxrsParameterDescribe("密码") @PathParam("password") String password) {
 		ActionResult<ActionCheckPassword.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -73,7 +74,7 @@ public class ResetAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void code(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("credential") String credential) {
+			@JaxrsParameterDescribe("用户标识") @PathParam("credential") String credential) {
 		ActionResult<WrapOutBoolean> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

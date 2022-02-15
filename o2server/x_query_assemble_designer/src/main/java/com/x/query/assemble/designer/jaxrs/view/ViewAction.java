@@ -29,6 +29,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.core.express.plan.Plan;
 
+/**
+ * @author sword
+ */
 @Path("view")
 @JaxrsDescribe("视图")
 public class ViewAction extends StandardJaxrsAction {
@@ -142,6 +145,24 @@ public class ViewAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "设置视图权限.", action = ActionEditPermission.class)
+	@POST
+	@Path("{id}/permission")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updatePermission(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								 @JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionEditPermission.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEditPermission().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "删除View.", action = ActionDelete.class)

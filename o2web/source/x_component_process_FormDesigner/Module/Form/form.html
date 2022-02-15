@@ -166,17 +166,59 @@
             <div class="MWFScriptArea" name="submitScript" title="{{$.lp.flowActionScript}}"></div>
         </div>
 
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.handwritingSetting}}</div>
+<!--        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--            <tr>-->
+<!--                <td colspan="2" class="editTableValue"><b>{{$.lp.handwritingWidth}}:</b>-->
+<!--                    <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 50px;margin-right:3px;" />px-->
+<!--                    <span>&nbsp;&nbsp;&nbsp;&nbsp;({{$.lp.effectivePC}})</span>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td colspan="2" class="editTableValue"><b>{{$.lp.handwritingHeight}}:</b>-->
+<!--                    <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 50px;;margin-right:3px;" />px-->
+<!--                    <span>&nbsp;&nbsp;&nbsp;&nbsp;({{$.lp.effectivePC}})</span>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </table>-->
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td colspan="2" class="editTableValue"><b>{{$.lp.handwritingWidth}}:</b>
-                    <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 50px;margin-right:3px;" />px
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;({{$.lp.effectivePC}})</span>
+                <td class="editTableTitle">{{$.lp.handwriting}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" onclick="if (this.checked){
+                        $('text{$.pid}tabletTable').setStyle('display', '');
+                       }" name="isHandwriting" value="yes" text{($.isHandwriting!='no')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" onclick="if (this.checked){
+                        $('text{$.pid}tabletTable').setStyle('display', 'none');
+                       }" name="isHandwriting" value="no" text{($.isHandwriting=='no')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+        </table>
+        <table id="text{$.pid}tabletTable" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.isHandwriting=='no')?'none':''};">
+            <tr>
+                <td class="editTableTitle">{{$.lp.writingBoard}}<br/>{{$.lp.width}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 100px;margin-right:5px;" />px
+                    <div style="color: #666">({{$.lp.tabletSizeNote}})</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="2" class="editTableValue"><b>{{$.lp.handwritingHeight}}:</b>
-                    <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 50px;;margin-right:3px;" />px
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;({{$.lp.effectivePC}})</span>
+                <td class="editTableTitle">{{$.lp.writingBoard}}<br/>{{$.lp.height}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 100px;;margin-right:5px;" />px
+                    <div style="color: #666">({{$.lp.tabletSizeNote}})</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.actionBar}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="tabletToolHidden" text{(($.tabletToolHidden || []).indexOf('eraser')!=-1)?'checked':''} type="checkbox" value="eraser"/>{{$.lp.hideEraserButton}}<br/>
+                    <input class="editTableRadio" name="tabletToolHidden" text{(($.tabletToolHidden || []).indexOf('eraserRadio')!=-1)?'checked':''} type="checkbox" value="eraserRadio"/>{{$.lp.hideEraserRadioButton}}<br/>
+                    <input class="editTableRadio" name="tabletToolHidden" text{(($.tabletToolHidden || []).indexOf('size')!=-1)?'checked':''} type="checkbox" value="size"/>{{$.lp.hideSizeButton}}<br/>
+                    <input class="editTableRadio" name="tabletToolHidden" text{(($.tabletToolHidden || []).indexOf('color')!=-1)?'checked':''} type="checkbox" value="color"/>{{$.lp.hideColorButton}}<br/>
+                    <input class="editTableRadio" name="tabletToolHidden" text{(($.tabletToolHidden || []).indexOf('image')!=-1)?'checked':''} type="checkbox" value="image"/>{{$.lp.hideImageButton}}<br/>
+                    <input class="editTableRadio" name="tabletToolHidden" text{(($.tabletToolHidden || []).indexOf('imageClipper')!=-1)?'checked':''} type="checkbox" value="imageClipper"/>{{$.lp.hideImageClipperButton}}<br/>
+                    <div style="color: #666">({{$.lp.tabletToolbarNote}})</div>
                 </td>
             </tr>
         </table>

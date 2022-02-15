@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class WritingBoard 手写板组件。
+ * @o2cn 手写板
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -168,7 +169,8 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
                 this.json.tabletHeight = 0;
             }else{
                 var size = this.node.getSize();
-                x = Math.max(this.json.tabletWidth || size.x, 500);
+                x = Math.max(this.json.tabletWidth || size.x, 600);
+                this.json.tabletWidth = x;
                 y = Math.max(this.json.tabletHeight ? (parseInt(this.json.tabletHeight) + 110) : size.y, 320);
             }
 

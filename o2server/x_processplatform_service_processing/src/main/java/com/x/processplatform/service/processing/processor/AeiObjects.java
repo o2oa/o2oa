@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -27,9 +26,11 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.script.AbstractResources;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.webservices.WebservicesClient;
+import com.x.organization.core.express.Organization;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.DocumentVersion;
@@ -53,7 +54,6 @@ import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.MappingFactory;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.service.processing.ApplicationDictHelper;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
@@ -66,7 +66,7 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -4125441813647193068L;
 
-	private static Logger logger = LoggerFactory.getLogger(AeiObjects.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AeiObjects.class);
 
 	public AeiObjects(Business business, Work work, Activity activity, ProcessingConfigurator processingConfigurator,
 			ProcessingAttributes processingAttributes) throws Exception {
@@ -194,9 +194,13 @@ public class AeiObjects extends GsonPropertyObject {
 				.orElse(null);
 	}
 
-	public WorkDataHelper getWorkDataHelper() throws Exception {
-		if (null == this.workDataHelper) {
-			this.workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
+	public WorkDataHelper getWorkDataHelper() {
+		try {
+			if (null == this.workDataHelper) {
+				this.workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
 		}
 		return this.workDataHelper;
 	}
@@ -560,7 +564,7 @@ public class AeiObjects extends GsonPropertyObject {
 			this.executeProjection();
 			this.executeMapping();
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		this.commitWork();
 		this.commitWorkCompleted();
@@ -788,7 +792,7 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			// 更新工作
@@ -796,7 +800,7 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			// 删除工作
@@ -808,7 +812,7 @@ public class AeiObjects extends GsonPropertyObject {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 		}
@@ -823,7 +827,7 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			// 更新完成工作
@@ -831,7 +835,7 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			// 删除完成工作
@@ -843,7 +847,7 @@ public class AeiObjects extends GsonPropertyObject {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 		}
@@ -858,7 +862,7 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			// 更新工作日志
@@ -866,7 +870,7 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			// 删除工作日志
@@ -878,7 +882,7 @@ public class AeiObjects extends GsonPropertyObject {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 		}
@@ -913,7 +917,7 @@ public class AeiObjects extends GsonPropertyObject {
 				// 创建待办的参阅
 				this.createReview(new Review(this.getWork(), o.getPerson()));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -923,7 +927,7 @@ public class AeiObjects extends GsonPropertyObject {
 			try {
 				this.business.entityManagerContainer().check(o, CheckPersistType.all);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -937,7 +941,7 @@ public class AeiObjects extends GsonPropertyObject {
 					this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -965,7 +969,7 @@ public class AeiObjects extends GsonPropertyObject {
 				// 创建已办的参阅
 				this.createReview(new Review(this.getWork(), o.getPerson()));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -975,7 +979,7 @@ public class AeiObjects extends GsonPropertyObject {
 			try {
 				this.business.entityManagerContainer().check(o, CheckPersistType.all);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -997,7 +1001,7 @@ public class AeiObjects extends GsonPropertyObject {
 							.findFirst().ifPresent(q -> q.setLatest(true));
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -1041,7 +1045,7 @@ public class AeiObjects extends GsonPropertyObject {
 											o.copyTo(existOptional.get(), JpaObject.FieldsUnmodify);
 										}
 									} catch (Exception e) {
-										logger.error(e);
+										LOGGER.error(e);
 									}
 								}));
 
@@ -1052,7 +1056,7 @@ public class AeiObjects extends GsonPropertyObject {
 			try {
 				this.business.entityManagerContainer().check(o, CheckPersistType.all);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -1066,7 +1070,7 @@ public class AeiObjects extends GsonPropertyObject {
 					this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -1101,7 +1105,7 @@ public class AeiObjects extends GsonPropertyObject {
 					o.copyTo(optional.get(), JpaObject.FieldsUnmodify);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -1111,7 +1115,7 @@ public class AeiObjects extends GsonPropertyObject {
 			try {
 				this.business.entityManagerContainer().check(o, CheckPersistType.all);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -1125,7 +1129,7 @@ public class AeiObjects extends GsonPropertyObject {
 					this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -1164,7 +1168,7 @@ public class AeiObjects extends GsonPropertyObject {
 									o.copyTo(existOptional.get(), JpaObject.FieldsUnmodify);
 								}
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						}));
 	}
@@ -1174,7 +1178,7 @@ public class AeiObjects extends GsonPropertyObject {
 			try {
 				this.business.entityManagerContainer().check(o, CheckPersistType.all);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -1188,7 +1192,7 @@ public class AeiObjects extends GsonPropertyObject {
 					this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -1203,7 +1207,7 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			// 更新版式文件
@@ -1211,7 +1215,7 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			// 删除版式文件
@@ -1222,7 +1226,7 @@ public class AeiObjects extends GsonPropertyObject {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 		}
@@ -1236,14 +1240,14 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			this.getUpdateSnaps().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			this.getDeleteSnaps().stream().forEach(o -> {
@@ -1253,7 +1257,7 @@ public class AeiObjects extends GsonPropertyObject {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 		}
@@ -1268,7 +1272,7 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			// 删除记录
@@ -1276,7 +1280,7 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			this.getDeleteRecords().stream().forEach(o -> {
@@ -1287,7 +1291,7 @@ public class AeiObjects extends GsonPropertyObject {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 		}
@@ -1310,7 +1314,7 @@ public class AeiObjects extends GsonPropertyObject {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 		}
@@ -1325,11 +1329,10 @@ public class AeiObjects extends GsonPropertyObject {
 		} else {
 			dataToUpdate.setWork(this.getWork());
 		}
-		// this.getWorkDataHelper().update(data);
 		this.getWorkDataHelper().update(dataToUpdate);
 	}
 
-	private void commitDynamicEntity() throws Exception {
+	private void commitDynamicEntity() {
 		if (ListTools.isNotEmpty(this.getCreateDynamicEntities())
 				|| ListTools.isNotEmpty(this.getDeleteDynamicEntities())
 				|| ListTools.isNotEmpty(this.getUpdateDynamicEntities())) {
@@ -1339,7 +1342,7 @@ public class AeiObjects extends GsonPropertyObject {
 					this.business.entityManagerContainer().beginTransaction(o.getClass());
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			// 更新自定义对象
@@ -1348,7 +1351,7 @@ public class AeiObjects extends GsonPropertyObject {
 					this.business.entityManagerContainer().beginTransaction(o.getClass());
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			// 删除自定义对象
@@ -1357,7 +1360,7 @@ public class AeiObjects extends GsonPropertyObject {
 					this.business.entityManagerContainer().beginTransaction(o.getClass());
 					this.business.entityManagerContainer().remove(o, CheckRemoveType.all);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 
@@ -1487,7 +1490,7 @@ public class AeiObjects extends GsonPropertyObject {
 											MessageFactory.read_create(o);
 										}
 									} catch (Exception e) {
-										logger.error(e);
+										LOGGER.error(e);
 									}
 								}));
 	}
@@ -1526,7 +1529,7 @@ public class AeiObjects extends GsonPropertyObject {
 									MessageFactory.review_create(o);
 								}
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						}));
 	}
@@ -1615,22 +1618,32 @@ public class AeiObjects extends GsonPropertyObject {
 		return deleteDynamicEntities;
 	}
 
+	public static class Resources extends AbstractResources {
+		private Organization organization;
+
+		public Organization getOrganization() {
+			return organization;
+		}
+
+		public void setOrganization(Organization organization) {
+			this.organization = organization;
+		}
+
+	}
+
 	public ScriptContext scriptContext() throws Exception {
 		if (null == this.scriptContext) {
-			this.scriptContext = new SimpleScriptContext();
-			Bindings bindings = this.scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-			bindings.put(ScriptFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(this));
-			bindings.put(ScriptFactory.BINDING_NAME_GSON, XGsonBuilder.instance());
-			bindings.put(ScriptFactory.BINDING_NAME_DATA, this.getData());
-			bindings.put(ScriptFactory.BINDING_NAME_ORGANIZATION, this.business().organization());
-			bindings.put(ScriptFactory.BINDING_NAME_WEBSERVICESCLIENT, new WebservicesClient());
-			bindings.put(ScriptFactory.BINDING_NAME_DICTIONARY,
-					new ApplicationDictHelper(this.entityManagerContainer(), this.getWork().getApplication()));
-			bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
-			bindings.put(ScriptFactory.BINDING_NAME_ROUTES, this.getRoutes());
-			// 重新创建的ScriptContext是需要初始化的
-			ScriptFactory.initialScriptText().eval(this.scriptContext);
+			this.scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
 		}
+		Bindings bindings = this.scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+		Resources resources = new Resources();
+		resources.setApplications(ThisApplication.context().applications());
+		resources.setOrganization(this.business().organization());
+		resources.setWebservicesClient(new WebservicesClient());
+		resources.setContext(ThisApplication.context());
+		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
+		bindings.put(ScriptingFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(this));
+		bindings.put(ScriptingFactory.BINDING_NAME_DATA, this.getData());
 		return this.scriptContext;
 	}
 

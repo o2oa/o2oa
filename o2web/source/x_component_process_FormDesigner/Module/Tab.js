@@ -136,7 +136,6 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 	},
 	
 	_createTabWidget: function(){
-		debugger;
         var style = "form";
         if (this.form.options.mode=="Mobile") style = "mobileForm";
 

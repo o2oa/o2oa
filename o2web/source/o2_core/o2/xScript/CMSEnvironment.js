@@ -36,6 +36,7 @@ MWF.xScript.CMSEnvironment = function(ev){
     /**
      * 您可以通过documentContext获取内容管理实例相关的对象数据。
      * @module documentContext
+     * @o2cn 内容管理实例
      * @o2category web
      * @o2range {CMS}
      * @o2ordernumber 30
@@ -1049,10 +1050,10 @@ MWF.xScript.CMSEnvironment = function(ev){
         }
     })();
 
-    this.service = {
-        "jaxwsClient": {},
-        "jaxrsClient":{}
-    };
+    // this.service = {
+    //     "jaxwsClient": {},
+    //     "jaxrsClient":{}
+    // };
 
     var lookupAction = null;
     var getLookupAction = function(callback){

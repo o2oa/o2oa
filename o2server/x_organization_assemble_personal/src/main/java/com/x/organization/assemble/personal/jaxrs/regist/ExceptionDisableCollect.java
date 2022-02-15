@@ -7,6 +7,6 @@ class ExceptionDisableCollect extends LanguagePromptException {
 	private static final long serialVersionUID = 6351023802034208595L;
 
 	ExceptionDisableCollect() {
-		super("系统没有启用节点连接,无法发送短信.");
+		super("短信发送失败，请联系管理员配置O2云连接.");
 	}
 }

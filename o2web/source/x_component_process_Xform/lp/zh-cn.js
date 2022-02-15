@@ -200,6 +200,7 @@ MWF.xApplication.process.Xform.LP = {
     "editdocCompleted": "编辑完成",
     "printdoc": "打印正文",
     "history": "正文痕迹审查",
+    "handwrittenApproval": "手写签批",
     "fullScreen": "全屏",
     "returnScreen": "还原",
 
@@ -207,6 +208,7 @@ MWF.xApplication.process.Xform.LP = {
     "editdocCompleted_mobile": "编辑完成",
     "printdoc_mobile": "打印",
     "history_mobile": "痕迹",
+    "handwrittenApproval_mobile": "签批",
 
 
     "subformNestedError" : "该表单存在相互嵌套的子表单，请联系管理员！",
@@ -301,6 +303,8 @@ MWF.xApplication.process.Xform.LP = {
     "importTooManyNotice": "本次导入了{n1}条数据，最多允许导入{n2}条数据",
     "importTooFewNotice": "本次导入了{n1}条数据，最少需要保留{n2}条数据",
 
+    "pleaseSelect": "请选择",
+
     "form": {
         "close":"关闭",
         "closeTitle": "关闭文档",
@@ -368,6 +372,8 @@ MWF.xApplication.process.Xform.LP = {
     "sendReview": "添加阅读人",
     "sendReviewOk": "已添加阅读人",
     "inputSendReviewPeople": "请选择阅读人",
-    "sendReviewPeopleCanNotEmpty": "阅读人不能为空"
+    "sendReviewPeopleCanNotEmpty": "阅读人不能为空",
+
+    "applicationNotFound": "未找到应用"
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

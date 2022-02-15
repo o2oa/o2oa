@@ -1,5 +1,6 @@
-MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
+MWF.xDesktop.requireApp("process.Xform", "$ElModule", null, false);
 /** @class Elbutton 基于Element UI的按钮组件。
+ * @o2cn 按钮组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -10,6 +11,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/button|Element UI Button 按钮}
  */
 MWF.xApplication.process.Xform.Elbutton = MWF.APPElbutton =  new Class(
     /** @lends MWF.xApplication.process.Xform.Elbutton# */

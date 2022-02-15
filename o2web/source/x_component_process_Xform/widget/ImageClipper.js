@@ -9,7 +9,7 @@ MWF.xApplication.process.Xform.widget.ImageClipper = new Class({
         "imageUrl" : "",
         "resultMaxSize" : 800,
         "description" : "",
-        "title": "Select Image",
+        "title": MWF.xApplication.process.Xform.LP ? MWF.xApplication.process.Xform.LP.imageClipper : "Select Image",
 		"style": "default",
         "aspectRatio": 1
 	},

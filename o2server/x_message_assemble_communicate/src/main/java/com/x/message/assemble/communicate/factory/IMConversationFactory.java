@@ -123,6 +123,22 @@ public class IMConversationFactory extends AbstractFactory {
 	}
 
 	/**
+	 * 根据会话id查询所有的消息id
+	 * 清空聊天记录用
+	 * @param conversationId 会话id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listAllMsgIdsWithConversationId(String conversationId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(IMMsg.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<IMMsg> root = cq.from(IMMsg.class);
+		Predicate p = cb.equal(root.get(IMMsg_.conversationId), conversationId);
+		return em.createQuery(cq.select(root.get(IMMsg_.id)).where(p)).getResultList();
+	}
+
+	/**
 	 * 查询会话聊天消息总数
 	 * 分页查询需要
 	 * @param conversationId

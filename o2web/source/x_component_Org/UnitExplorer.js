@@ -61,7 +61,7 @@ MWF.xApplication.Org.UnitExplorer = new Class({
         }.bind(this));
     },
     _listElementNext: function(callback){
-        if (MWF.AC.isOrganizationManager() || MWF.AC.isSecurityManager() || MWF.AC.isAuditManager()){
+        if (MWF.AC.isOrganizationManager() || MWF.AC.isSecurityManager()){
             this.actions.listTopUnit(function(json){
                 if (callback) callback.apply(this, [json]);
             }.bind(this));
@@ -554,10 +554,16 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
     _listBaseInfor: function(){
         this.baseInfor = new MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor(this);
     },
+    getDutyActionPermission: function(){
+        if( MWF.AC.isManager() )return true;
+        if( MWF.AC.isSecurityManager() )return true;
+        if( MWF.AC.isSystemManager() )return false;
+        return this.data.control.allowEdit;
+    },
     _listDutys: function(){
         var _self = this;
         this.dutyList = new MWF.xApplication.Org.List(this.dutyContentNode, this, {
-            "action": this.data.control.allowEdit,
+            "action": _self.getDutyActionPermission(),
             "saveAction": "saveUnitduty",
             "deleteAction": "deleteUnitduty",
             "data": {
@@ -737,10 +743,22 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
             this.attributeList.push(item);
         }.bind(this));
     },
+    getIdentityActionPermission: function(){
+        if( MWF.AC.isManager() )return true;
+        if( MWF.AC.isSecurityManager() )return true;
+        if( MWF.AC.isSystemManager() )return false;
+        return this.data.control.allowEdit;
+    },
+    getIdentitySortActionPermission: function(){
+        if( MWF.AC.isManager() )return true;
+        if( MWF.AC.isSecurityManager() )return false;
+        if( MWF.AC.isSystemManager() )return false;
+        return this.data.control.allowEdit;
+    },
     _listIdentityMembers: function(){
         var _self = this;
         this.identityMemberList = new MWF.xApplication.Org.List(this.personMemberContentNode, this, {
-            "action": this.data.control.allowEdit,
+            "action": _self.getIdentityActionPermission(),
             "canEdit": false,
             "deleteAction": "deleteIdentity",
             "deleteItemTitle": this.explorer.app.lp.deleteIdentityMemeberTitle,
@@ -789,10 +807,12 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
             }.bind(this),
             "onPostLoadAction": function () {
                 debugger;
-                this.sortAction = new Element("div", {"styles": this.css.sortActionNode, "text": _self.explorer.app.lp.sortByPinYin}).inject(this.actionNode);
-                this.sortAction.addEvent("click", function (e) {
-                    _self.sortByPinYin(e)
-                })
+                if( _self.getIdentitySortActionPermission() ){
+                    this.sortAction = new Element("div", {"styles": this.css.sortActionNode, "text": _self.explorer.app.lp.sortByPinYin}).inject(this.actionNode);
+                    this.sortAction.addEvent("click", function (e) {
+                        _self.sortByPinYin(e)
+                    })
+                }
             }
         });
         this.identityMemberList.addItem = this.addPersonMember.bind(this);
@@ -1067,7 +1087,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
         this.editContentNode.getElements("td.inforAction").setStyles(this.style.baseInforActionNode);
 
         var tdContents = this.editContentNode.getElements("td.inforContent");
-        if (this.data.control.allowEdit){
+        if (this.data.control.allowEdit || o2.AC.isSecurityManager() ){
             if (this.data.controllerList){
                 this.data.controllerList.each(function(id){
                     new MWF.widget.O2Person({"name": id}, tdContents[5], {"style": "xform"});
@@ -1082,14 +1102,14 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
     getContentHtml: function(){
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitName+":</td><td class='inforContent infor_name'></td>";
-        if (this.data.control.allowEdit) html += "<td class='inforTitle'>"+this.explorer.app.lp.unitUnique+":</td><td class='inforContent infor_unique'></td>";
+        if (this.data.control.allowEdit || o2.AC.isSecurityManager()) html += "<td class='inforTitle'>"+this.explorer.app.lp.unitUnique+":</td><td class='inforContent infor_unique'></td>";
         html += "</tr><tr><td class='inforTitle'>"+this.explorer.app.lp.unitTypeList+":</td><td class='inforContent infor_type'></td>" +
             "<td class='inforTitle'>"+this.explorer.app.lp.unitShortName+":</td><td class='inforContent infor_shortName'></td></tr>";
         // html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitLevel+":</td><td class='inforContent'>"+this.data.level+"</td>" +
         //     "<td class='inforTitle'>"+this.explorer.app.lp.unitLevelName+":</td><td class='inforContent'>"+(this.data.levelName || "")+"</td></tr>";
 
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitDescription+":</td><td colspan='3' class='inforContent infor_description'></td>";
-        if (this.data.control.allowEdit){
+        if (this.data.control.allowEdit || o2.AC.isSecurityManager()){
             html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitControllerList+":</td><td class='inforContent'></td>" +
                 "<td class='inforTitle'>"+this.explorer.app.lp.unitSuperUnit+":</td><td class='inforContent'></td></tr>";
             html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.orderNumber+":</td><td colspan='3' class='inforContent infor_orderNumber'></td></tr>";

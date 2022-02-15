@@ -8,6 +8,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -17,7 +18,7 @@ import com.x.cms.core.entity.element.ViewCategory;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
 public class ActionDelete extends BaseAction {
-	
+
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -30,16 +31,16 @@ public class ActionDelete extends BaseAction {
 			//查询视图关联的所有分类关联配置
 			List<String> viewCategoryIds = business.getViewCategoryFactory().listByViewId(id);
 			List<ViewCategory> viewCategorys = emc.list( ViewCategory.class, viewCategoryIds );
-			
+
 			//如果信息存在，再判断用户是否有操作的权限，如果没权限不允许继续操作
-			if (!business.viewEditAvailable( effectivePerson )) {
-				throw new Exception("view{name:" + effectivePerson.getDistinguishedName() + "} 用户没有内容管理应用信息操作的权限！");
+			if (!business.isManager( effectivePerson)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			//进行数据库持久化操作
 			emc.beginTransaction( View.class );
 			emc.beginTransaction( ViewFieldConfig.class );
 			emc.beginTransaction( ViewCategory.class );
-			
+
 			//删除所有的viewFieldConfig
 			if( fieldConfigs != null && fieldConfigs.size() > 0 ){
 				for( ViewFieldConfig viewFieldConfig : fieldConfigs ){
@@ -55,11 +56,11 @@ public class ActionDelete extends BaseAction {
 				emc.remove( view, CheckRemoveType.all );
 			}
 			emc.commit();
-			
+
 			if( view != null ){
 				logService.log( emc,  effectivePerson.getDistinguishedName(), view.getName(), view.getAppId(), "", "", view.getId(), "VIEW", "删除" );
 			}
-			
+
 			Wo wo = new Wo();
 			wo.setId( view.getId() );
 			result.setData( wo );
@@ -73,7 +74,7 @@ public class ActionDelete extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}

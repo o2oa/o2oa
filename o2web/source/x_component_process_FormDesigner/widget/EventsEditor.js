@@ -191,6 +191,7 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
 			if (!this.codeEditor){
 				this.codeEditor = new MWF.widget.ScriptArea(this.codeNode, {
 					"style": "event",
+					"api": "../api/MWF.xApplication.process.Xform."+this.editor.module.type+".html#event:"+this.event,
 					"title": "on"+this.event+" (S)",
 					"maxObj": this.editor.options.maxObj,
 					"onChange": function(){

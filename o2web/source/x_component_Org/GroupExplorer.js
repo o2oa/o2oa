@@ -61,12 +61,37 @@ MWF.xApplication.Org.GroupExplorer = new Class({
         };
     },
     _isActionManager: function() {
-        return (MWF.AC.isOrganizationManager() || MWF.AC.isGroupManager());
+        return (MWF.AC.isOrganizationManager() || MWF.AC.isGroupManager() && !MWF.AC.isSecurityManager());
     }
 });
 
 MWF.xApplication.Org.GroupExplorer.Group = new Class({
     Extends: MWF.xApplication.Org.$Explorer.Item,
+    addActions: function(){
+        if (this.isEditor){
+            if (this.data.id){
+                if (this.data.control.allowDelete || MWF.AC.isSecurityManager()){
+                    if (!this.deleteNode){
+                        this.deleteNode = new Element("div", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
+                        this.deleteNode.addEvent("click", function(e){
+                            if (!this.notDelete){
+                                if (!this.deleteSelected){
+                                    this.setDelete();
+                                }else{
+                                    this.setUndelete();
+                                }
+                            }
+                            e.stopPropagation();
+                        }.bind(this));
+
+                        if (this.explorer.currentItem===this){
+                            if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode_selected);
+                        }
+                    }
+                }
+            }
+        }
+    },
     showItemProperty: function(){
         this.content = new MWF.xApplication.Org.GroupExplorer.GroupContent(this);
     },
@@ -277,7 +302,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
     },
     _listMembers: function(list, woList, node, attr, titles, addItemFun, countNode, deleteTitle, deleteText){
         var memberList = new MWF.xApplication.Org.List(node, this, {
-            "action": this.data.control.allowEdit,
+            "action": this.data.control.allowEdit && !MWF.AC.isSystemManager(),
             "canEdit": false,
             "deleteItemTitle": deleteTitle,
             "deleteItemText": deleteText,
@@ -515,7 +540,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent.BaseInfor = new Class({
         var actionAreas = this.editContentNode.getElements("td");
         var actionArea = actionAreas[actionAreas.length-1];
 
-        if (this.data.control.allowEdit){
+        if (this.data.control.allowEdit && !MWF.AC.isSecurityManager()){
             this.baseInforEditActionAreaNode = new Element("div", {"styles": this.style.baseInforEditActionAreaNode}).inject(actionArea);
 
             this.editNode = new Element("div", {"styles": this.style.actionEditNode, "text": this.explorer.app.lp.editGroup}).inject(this.baseInforEditActionAreaNode);

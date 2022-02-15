@@ -2978,6 +2978,9 @@ MWF.xApplication.query.Query.Viewer.Paging = new Class({
             hasJumper: typeOf( this.json.hasPageJumper ) === "boolean" ? this.json.hasPageJumper : (layout.mobile?false:true),
             hiddenWithDisable: false,
             hiddenWithNoItem: true,
+            hasInfor: this.json.showPagingInfor,
+            inforPosition: this.json.pagingPosition,
+            inforTextStyle: this.json.textStyle,
             text: {
                 prePage: this.json.prePageText,
                 nextPage: this.json.nextPageText,

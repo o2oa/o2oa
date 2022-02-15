@@ -61,10 +61,13 @@ class ActionMerge extends BaseAction {
 			executorSeed = workCompleted.getJob();
 		}
 
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(new CallableAction(id)).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(new CallableAction(id)).get(300,
+				TimeUnit.SECONDS);
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 8166148918001178788L;
 	}
 
 	public class CallableAction implements Callable<ActionResult<Wo>> {
@@ -97,9 +100,11 @@ class ActionMerge extends BaseAction {
 						StoreForm mobileStoreForm = new StoreForm();
 						storeForm.setForm(new RelatedForm(form, form.getDataOrMobileData()));
 						mobileStoreForm.setForm(new RelatedForm(form, form.getMobileDataOrData()));
-						CompletableFuture.allOf(relateForm(business, form, storeForm),
-								relateScript(business, form, storeForm), relateFormMobile(business, form, storeForm),
-								relateScriptMobile(business, form, storeForm)).get();
+						CompletableFuture
+								.allOf(relateForm(business, form, storeForm), relateScript(business, form, storeForm),
+										relateFormMobile(business, form, mobileStoreForm),
+										relateScriptMobile(business, form, mobileStoreForm))
+								.get();
 						workCompleted.getProperties().setStoreForm(storeForm);
 						workCompleted.getProperties().setMobileStoreForm(mobileStoreForm);
 					}
@@ -113,18 +118,22 @@ class ActionMerge extends BaseAction {
 					emc.beginTransaction(WorkCompleted.class);
 					workCompleted.setMerged(true);
 					emc.commit();
-					CompletableFuture
-							.allOf(deleteItem(business, items), deleteTaskCompleted(business, taskCompleteds),
-									deleteReadCompleted(business, readCompleteds), deleteReview(business, reviews),
-									deleteWorkLog(business, workLogs), deleteRecord(business, records),
-									deleteRead(business, reads), deleteDocumentVersion(business, documentVersions))
-							.get();
+//					CompletableFuture
+//							.allOf(deleteItem(business, items), deleteTaskCompleted(business, taskCompleteds),
+//									deleteReadCompleted(business, readCompleteds), deleteReview(business, reviews),
+//									deleteWorkLog(business, workLogs), deleteRecord(business, records),
+//									deleteRead(business, reads), deleteDocumentVersion(business, documentVersions))
+//							.get();
+					CompletableFuture.allOf(deleteItem(business, items), deleteWorkLog(business, workLogs),
+							deleteRecord(business, records), deleteRead(business, reads),
+							deleteDocumentVersion(business, documentVersions)).get();
 					emc.commit();
 					logger.print("已完成工作合并, id: {}, title:{}, sequence:{}.", workCompleted.getId(),
 							workCompleted.getTitle(), workCompleted.getSequence());
 				}
-			} catch (Exception e) {
-				throw new ExceptionCombine(e, id);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new ExceptionMerge(e, id);
 			}
 			Wo wo = new Wo();
 			wo.setId(id);
@@ -271,44 +280,44 @@ class ActionMerge extends BaseAction {
 			});
 		}
 
-		private CompletableFuture<Void> deleteTaskCompleted(Business business, List<TaskCompleted> taskCompleteds) {
-			return CompletableFuture.runAsync(() -> {
-				try {
-					business.entityManagerContainer().beginTransaction(TaskCompleted.class);
-					for (TaskCompleted o : taskCompleteds) {
-						business.entityManagerContainer().remove(o);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-		}
+//		private CompletableFuture<Void> deleteTaskCompleted(Business business, List<TaskCompleted> taskCompleteds) {
+//			return CompletableFuture.runAsync(() -> {
+//				try {
+//					business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+//					for (TaskCompleted o : taskCompleteds) {
+//						business.entityManagerContainer().remove(o);
+//					}
+//				} catch (Exception e) {
+//					logger.error(e);
+//				}
+//			});
+//		}
 
-		private CompletableFuture<Void> deleteReadCompleted(Business business, List<ReadCompleted> readCompleteds) {
-			return CompletableFuture.runAsync(() -> {
-				try {
-					business.entityManagerContainer().beginTransaction(ReadCompleted.class);
-					for (ReadCompleted o : readCompleteds) {
-						business.entityManagerContainer().remove(o);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-		}
+//		private CompletableFuture<Void> deleteReadCompleted(Business business, List<ReadCompleted> readCompleteds) {
+//			return CompletableFuture.runAsync(() -> {
+//				try {
+//					business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+//					for (ReadCompleted o : readCompleteds) {
+//						business.entityManagerContainer().remove(o);
+//					}
+//				} catch (Exception e) {
+//					logger.error(e);
+//				}
+//			});
+//		}
 
-		private CompletableFuture<Void> deleteReview(Business business, List<Review> reviews) {
-			return CompletableFuture.runAsync(() -> {
-				try {
-					business.entityManagerContainer().beginTransaction(Review.class);
-					for (Review o : reviews) {
-						business.entityManagerContainer().remove(o);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-		}
+//		private CompletableFuture<Void> deleteReview(Business business, List<Review> reviews) {
+//			return CompletableFuture.runAsync(() -> {
+//				try {
+//					business.entityManagerContainer().beginTransaction(Review.class);
+//					for (Review o : reviews) {
+//						business.entityManagerContainer().remove(o);
+//					}
+//				} catch (Exception e) {
+//					logger.error(e);
+//				}
+//			});
+//		}
 
 		private CompletableFuture<Void> deleteWorkLog(Business business, List<WorkLog> workLogs) {
 			return CompletableFuture.runAsync(() -> {
@@ -367,11 +376,11 @@ class ActionMerge extends BaseAction {
 			return CompletableFuture.runAsync(() -> {
 				Map<String, RelatedForm> map = new TreeMap<>();
 				try {
-					Form _f;
-					for (String _id : form.getProperties().getRelatedFormList()) {
-						_f = business.element().get(_id, Form.class);
-						if (null != _f) {
-							map.put(_id, new RelatedForm(_f, _f.getDataOrMobileData()));
+					Form f;
+					for (String fid : form.getProperties().getRelatedFormList()) {
+						f = business.element().get(fid, Form.class);
+						if (null != f) {
+							map.put(fid, new RelatedForm(f, f.getDataOrMobileData()));
 						}
 					}
 				} catch (Exception e) {
@@ -388,27 +397,13 @@ class ActionMerge extends BaseAction {
 					for (Entry<String, String> entry : form.getProperties().getRelatedScriptMap().entrySet()) {
 						switch (entry.getValue()) {
 						case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
-							Script _pp = business.element().get(entry.getKey(), Script.class);
-							if (null != _pp) {
-								map.put(entry.getKey(), new RelatedScript(_pp.getId(), _pp.getName(), _pp.getAlias(),
-										_pp.getText(), entry.getValue()));
-							}
+							processPlatformScript(business, map, entry);
 							break;
 						case WorkCompletedProperties.RelatedScript.TYPE_CMS:
-							com.x.cms.core.entity.element.Script _cms = business.element().get(entry.getKey(),
-									com.x.cms.core.entity.element.Script.class);
-							if (null != _cms) {
-								map.put(entry.getKey(), new RelatedScript(_cms.getId(), _cms.getName(), _cms.getAlias(),
-										_cms.getText(), entry.getValue()));
-							}
+							cmsScript(business, map, entry);
 							break;
 						case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
-							com.x.portal.core.entity.Script _portal = business.element().get(entry.getKey(),
-									com.x.portal.core.entity.Script.class);
-							if (null != _portal) {
-								map.put(entry.getKey(), new RelatedScript(_portal.getId(), _portal.getName(),
-										_portal.getAlias(), _portal.getText(), entry.getValue()));
-							}
+							portalScript(business, map, entry);
 							break;
 						default:
 							break;
@@ -425,11 +420,11 @@ class ActionMerge extends BaseAction {
 			return CompletableFuture.runAsync(() -> {
 				Map<String, RelatedForm> map = new TreeMap<>();
 				try {
-					Form _f;
-					for (String _id : form.getProperties().getMobileRelatedFormList()) {
-						_f = business.element().get(_id, Form.class);
-						if (null != _f) {
-							map.put(_id, new RelatedForm(_f, _f.getMobileDataOrData()));
+					Form f;
+					for (String fid : form.getProperties().getMobileRelatedFormList()) {
+						f = business.element().get(fid, Form.class);
+						if (null != f) {
+							map.put(fid, new RelatedForm(f, f.getMobileDataOrData()));
 						}
 					}
 				} catch (Exception e) {
@@ -446,27 +441,13 @@ class ActionMerge extends BaseAction {
 					for (Entry<String, String> entry : form.getProperties().getMobileRelatedScriptMap().entrySet()) {
 						switch (entry.getValue()) {
 						case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
-							Script _pp = business.element().get(entry.getKey(), Script.class);
-							if (null != _pp) {
-								map.put(entry.getKey(), new RelatedScript(_pp.getId(), _pp.getName(), _pp.getAlias(),
-										_pp.getText(), entry.getValue()));
-							}
+							processPlatformScript(business, map, entry);
 							break;
 						case WorkCompletedProperties.RelatedScript.TYPE_CMS:
-							com.x.cms.core.entity.element.Script _cms = business.element().get(entry.getKey(),
-									com.x.cms.core.entity.element.Script.class);
-							if (null != _cms) {
-								map.put(entry.getKey(), new RelatedScript(_cms.getId(), _cms.getName(), _cms.getAlias(),
-										_cms.getText(), entry.getValue()));
-							}
+							cmsScript(business, map, entry);
 							break;
 						case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
-							com.x.portal.core.entity.Script _portal = business.element().get(entry.getKey(),
-									com.x.portal.core.entity.Script.class);
-							if (null != _portal) {
-								map.put(entry.getKey(), new RelatedScript(_portal.getId(), _portal.getName(),
-										_portal.getAlias(), _portal.getText(), entry.getValue()));
-							}
+							portalScript(business, map, entry);
 							break;
 						default:
 							break;
@@ -477,6 +458,35 @@ class ActionMerge extends BaseAction {
 				}
 				storeForm.setRelatedScriptMap(map);
 			});
+		}
+
+		private void portalScript(Business business, Map<String, RelatedScript> map, Entry<String, String> entry)
+				throws Exception {
+			com.x.portal.core.entity.Script script = business.element().get(entry.getKey(),
+					com.x.portal.core.entity.Script.class);
+			if (null != script) {
+				map.put(entry.getKey(), new RelatedScript(script.getId(), script.getName(), script.getAlias(),
+						script.getText(), entry.getValue()));
+			}
+		}
+
+		private void cmsScript(Business business, Map<String, RelatedScript> map, Entry<String, String> entry)
+				throws Exception {
+			com.x.cms.core.entity.element.Script script = business.element().get(entry.getKey(),
+					com.x.cms.core.entity.element.Script.class);
+			if (null != script) {
+				map.put(entry.getKey(), new RelatedScript(script.getId(), script.getName(), script.getAlias(),
+						script.getText(), entry.getValue()));
+			}
+		}
+
+		private void processPlatformScript(Business business, Map<String, RelatedScript> map,
+				Entry<String, String> entry) throws Exception {
+			Script script = business.element().get(entry.getKey(), Script.class);
+			if (null != script) {
+				map.put(entry.getKey(), new RelatedScript(script.getId(), script.getName(), script.getAlias(),
+						script.getText(), entry.getValue()));
+			}
 		}
 	}
 

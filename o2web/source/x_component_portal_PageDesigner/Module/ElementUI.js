@@ -34,9 +34,32 @@ MWF.APPPOD.Module.Elslider.templateJsonPath = "../x_component_process_FormDesign
 MWF.APPPOD.Module.Elswitch = MWF.PCElswitch = new Class({ Extends: MWF.FCElswitch });
 MWF.APPPOD.Module.Elswitch.templateJsonPath = "../x_component_process_FormDesigner/Module/";
 
+MWF.APPPOD.Module.Eltime = MWF.PCEltime = new Class({ Extends: MWF.FCEltime });
+MWF.APPPOD.Module.Eltime.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+
+MWF.APPPOD.Module.Eldate = MWF.PCEldate = new Class({ Extends: MWF.FCEldate });
+MWF.APPPOD.Module.Eldate.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+
+MWF.APPPOD.Module.Eldatetime = MWF.PCEldatetime = new Class({ Extends: MWF.FCEldatetime });
+MWF.APPPOD.Module.Eldatetime.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+
+MWF.APPPOD.Module.Elrate = MWF.PCElrate = new Class({ Extends: MWF.FCElrate });
+MWF.APPPOD.Module.Elrate.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+
+MWF.APPPOD.Module.Elcolorpicker = MWF.PCElcolorpicker = new Class({ Extends: MWF.FCElcolorpicker });
+MWF.APPPOD.Module.Elcolorpicker.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+
+MWF.APPPOD.Module.Eltree = MWF.PCEltree = new Class({ Extends: MWF.FCEltree });
+MWF.APPPOD.Module.Eltree.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+
+MWF.APPPOD.Module.Eldropdown = MWF.PCEldropdown = new Class({ Extends: MWF.FCEldropdown });
+MWF.APPPOD.Module.Eldropdown.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+
+MWF.APPPOD.Module.Elcarousel = MWF.PCElcarousel = new Class({ Extends: MWF.FCElcarousel });
+MWF.APPPOD.Module.Elcarousel.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+
 MWF.APPPOD.Module.Elcontainer = MWF.PCElcontainer = new Class({ Extends: MWF.FCElcontainer });
 MWF.APPPOD.Module.Elcontainer.templateJsonPath = "../x_component_process_FormDesigner/Module/";
-
 
 MWF.APPPOD.Module.Elcontainer$Main = MWF.PCElcontainer$Main = new Class({ Extends: MWF.FCElcontainer$Main });
 MWF.APPPOD.Module.Elcontainer$Main.templateJsonPath = "../x_component_process_FormDesigner/Module/";

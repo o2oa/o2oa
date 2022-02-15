@@ -170,3 +170,4 @@ typings/
 **/nbproject/
 *.lock
 *.checkstyle
+o2server/test.sh

@@ -3,6 +3,7 @@ package com.x.file.assemble.control.jaxrs.attachment2;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,7 +18,7 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.google.gson.JsonElement;
@@ -33,7 +34,6 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.file.assemble.control.jaxrs.attachment2.ActionUploadCallback.WoObject;
 
 @Path("attachment2")
 @JaxrsDescribe("附件操作")
@@ -302,11 +302,12 @@ public class Attachment2Action extends StandardJaxrsAction {
 	@Path("{id}/download")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void download(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response,
 			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
 		ActionResult<ActionDownload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownload().execute(effectivePerson, id);
+			result = new ActionDownload().execute(response, effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -319,11 +320,12 @@ public class Attachment2Action extends StandardJaxrsAction {
 	@Path("{id}/download/stream")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadStream(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response,
 			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
 		ActionResult<ActionDownloadStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadStream().execute(effectivePerson, id);
+			result = new ActionDownloadStream().execute(response, effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -337,11 +339,12 @@ public class Attachment2Action extends StandardJaxrsAction {
 	@Path("{id}/download")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void postDownload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response,
 			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionDownload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownload().execute(effectivePerson, id);
+			result = new ActionDownload().execute(response, effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -355,11 +358,12 @@ public class Attachment2Action extends StandardJaxrsAction {
 	@Path("{id}/download/stream")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void postDownloadStream(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response,
 			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionDownloadStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadStream().execute(effectivePerson, id);
+			result = new ActionDownloadStream().execute(response, effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -376,36 +380,11 @@ public class Attachment2Action extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("目录") @PathParam("folderId") String folderId,
 			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("附件md5值") @FormDataParam("fileMd5") String fileMd5,
-			@JaxrsParameterDescribe("附件标识") @FormDataParam(FILE_FIELD) final byte[] bytes,
-			@JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+			@JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataBodyPart part) {
 		ActionResult<ActionUpload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpload().execute(effectivePerson, folderId, fileName, fileMd5, bytes, disposition);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "创建Attachment的内容并返回回调.", action = ActionUploadCallback.class)
-	@POST
-	@Path("upload/folder/{folderId}/callback/{callback}")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(HttpMediaType.TEXT_HTML_UTF_8)
-	public void uploadCallback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("目录") @PathParam("folderId") String folderId,
-			@JaxrsParameterDescribe("回调函数名") @PathParam("callback") String callback,
-			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
-			@JaxrsParameterDescribe("附件md5值") @FormDataParam("fileMd5") String fileMd5,
-			@JaxrsParameterDescribe("附件标识") @FormDataParam(FILE_FIELD) final byte[] bytes,
-			@JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
-		ActionResult<ActionUploadCallback.Wo<WoObject>> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionUploadCallback().execute(effectivePerson, folderId, callback, fileName, fileMd5, bytes,
-					disposition);
+			result = new ActionUpload().execute(effectivePerson, folderId, fileName, fileMd5, part);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

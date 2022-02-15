@@ -20,6 +20,10 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 回收站
+ * @author sword
+ */
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Personal.Recycle.table, uniqueConstraints = {
@@ -33,10 +37,12 @@ public class Recycle extends SliceJpaObject {
 
 	private static final String TABLE = PersistenceProperties.Personal.Recycle.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -48,6 +54,7 @@ public class Recycle extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		/* 如果扩展名为空去掉null */
 		this.extension = StringUtils.trimToEmpty(extension);
@@ -87,7 +94,6 @@ public class Recycle extends SliceJpaObject {
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist(allowEmpty = false, fileNameString = true, citationNotExists =
-	/* 同一个用户同一个名称文件不能多次分享 */
 	@CitationNotExist(fields = { "name", "id" }, type = Recycle.class, equals = {
 			@Equal(property = "person", field = "person") }))
 	private String name;
@@ -96,7 +102,6 @@ public class Recycle extends SliceJpaObject {
 	@FieldDescribe("文件或目录id.")
 	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + fileId_FIELDNAME)
 	@CheckPersist(allowEmpty = false, fileNameString = true, citationNotExists =
-	/* 同一个用户同一个文件或目录不能多次分享 */
 	@CitationNotExist(fields = { "fileId", "id" }, type = Recycle.class, equals = {
 			@Equal(property = "person", field = "person") }))
 	private String fileId;

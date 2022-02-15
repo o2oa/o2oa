@@ -12,15 +12,20 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
@@ -56,13 +61,55 @@ public class End extends Activity {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		// nothing
+	}
+
+	@PostLoad
+	public void postLoad() {
+		if (null != this.properties) {
+			this.customData = this.getProperties().getCustomData();
+		}
 	}
 
 	@Override
 	public List<String> getRouteList() {
 		return new ArrayList<>();
+	}
+
+	public EndProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new EndProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(EndProperties properties) {
+		this.properties = properties;
+	}
+
+	public End() {
+		this.properties = new EndProperties();
+	}
+
+	public static final String CUSTOMDATA_FIELDNAME = "customData";
+	@Transient
+	private JsonElement customData;
+
+	@Override
+	public JsonElement getCustomData() {
+		if (null != customData) {
+			return this.customData;
+		} else {
+			return this.getProperties().getCustomData();
+		}
+	}
+
+	@Override
+	public void setCustomData(JsonElement customData) {
+		this.customData = customData;
+		this.properties.setCustomData(customData);
 	}
 
 	@FieldDescribe("分组")
@@ -130,8 +177,9 @@ public class End extends Activity {
 
 	@FieldDescribe("待阅组织名称,存储unit,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + readUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME + ElementIndexNameSuffix)
@@ -140,8 +188,9 @@ public class End extends Activity {
 
 	@FieldDescribe("待阅群组名称,存储group,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + readGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ readGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readGroupList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readGroupList_FIELDNAME + ElementIndexNameSuffix)
@@ -192,8 +241,9 @@ public class End extends Activity {
 
 	@FieldDescribe("参与人组织名称,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + reviewUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + reviewUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ reviewUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + reviewUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewUnitList_FIELDNAME + ElementIndexNameSuffix)
@@ -202,8 +252,9 @@ public class End extends Activity {
 
 	@FieldDescribe("参与人群组名称,存储group,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + reviewGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + reviewGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ reviewGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + reviewGroupList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewGroupList_FIELDNAME + ElementIndexNameSuffix)
@@ -359,6 +410,14 @@ public class End extends Activity {
 	@FieldDescribe("版本编码.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + edition_FIELDNAME)
 	private String edition;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private EndProperties properties;
 
 	public String getDisplayLogScript() {
 		return displayLogScript;

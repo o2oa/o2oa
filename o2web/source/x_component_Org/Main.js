@@ -244,6 +244,11 @@ MWF.xApplication.Org.Main = new Class({
 				this.privateConfigurator.load();
 		}.bind(this));
 	},
+	isOnlySecurityManager: function(){
+		if( MWF.AC.isAdministrator() )return false;
+		if( MWF.AC.isSystemManager() )return false;
+		return MWF.AC.isSecurityManager();
+	},
 
     recordStatus: function(){
         var idx = null;

@@ -35,7 +35,7 @@ class ActionEdit extends BaseAction {
 			if (null == unit) {
 				throw new ExceptionUnitNotExist(o.getUnit());
 			}
-			if (!business.editable(effectivePerson, unit)) {
+			if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, unit)) {
 				throw new ExceptionDenyEditUnit(effectivePerson, unit.getName());
 			}
 			if (StringUtils.isEmpty(wi.getName())) {
@@ -46,10 +46,10 @@ class ActionEdit extends BaseAction {
 			}
 			/** pick出来的需要重新find */
 			o = emc.find(o.getId(), UnitDuty.class);
-			
+
 			Gson gsontool = new Gson();
 			String strDuty = gsontool.toJson(o);
-			
+
 			emc.beginTransaction(UnitDuty.class);
 			Wi.copier.copy(wi, o);
 			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
@@ -62,11 +62,11 @@ class ActionEdit extends BaseAction {
 			emc.check(o, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(UnitDuty.class);
-			
+
 			/**创建 组织变更org消息通信 */
 			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
 			orgMessageFactory.createMessageCommunicate("modfiy", "duty",strDuty, o, effectivePerson);
-			
+
 			Wo wo = new Wo();
 			wo.setId(o.getId());
 			result.setData(wo);

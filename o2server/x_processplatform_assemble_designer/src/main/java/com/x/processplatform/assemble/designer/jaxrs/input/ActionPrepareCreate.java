@@ -28,7 +28,6 @@ import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -48,7 +47,6 @@ import com.x.processplatform.core.entity.element.wrap.WrapFormField;
 import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
 import com.x.processplatform.core.entity.element.wrap.WrapManual;
 import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapMessage;
 import com.x.processplatform.core.entity.element.wrap.WrapParallel;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -173,12 +171,6 @@ class ActionPrepareCreate extends BaseAction {
 			for (WrapMerge wrap : wrapProcess.getMergeList()) {
 				Merge exist_merge = business.entityManagerContainer().find(wrap.getId(), Merge.class);
 				if (null != exist_merge) {
-					wos.add(new Wo(wrap.getId(), JpaObject.createId()));
-				}
-			}
-			for (WrapMessage wrap : wrapProcess.getMessageList()) {
-				Message exist_message = business.entityManagerContainer().find(wrap.getId(), Message.class);
-				if (null != exist_message) {
 					wos.add(new Wo(wrap.getId(), JpaObject.createId()));
 				}
 			}

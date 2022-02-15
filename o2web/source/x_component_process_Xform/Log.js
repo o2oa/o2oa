@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 
 /** @class Log 流程记录组件。
+ * @o2cn 流程记录组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -1459,7 +1460,6 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             this.form.Macro.environment.list = null;
             flag = this.form.Macro.exec(this.json.filterScript.code, this);
         }else{
-            debugger;
             var isExactMatch = function (property) {
                 return property && o2.typeOf(property)==="array" && property.length && property[0] === "yes";
             };

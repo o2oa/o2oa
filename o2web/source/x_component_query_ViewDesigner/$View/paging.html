@@ -100,6 +100,35 @@
 				</td>
 			</tr>
 		</table>
+
+		<div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.desciption}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.show}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="showPagingInfor" text{($.showPagingInfor===true)?'checked':''} type="radio" value="true"  onclick="
+                    if (this.checked){
+                        $('text{$.id}pagingInforDiv').setStyle('display', '');
+                    }" />{{$.lp.yes}}
+					<input class="editTableRadio" name="showPagingInfor" text{($.showPagingInfor!==true)?'checked':''} type="radio" value="false"  onclick="
+                    if (this.checked){
+                        $('text{$.id}pagingInforDiv').setStyle('display', 'none');
+                    }" />{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+		<div id="text{$.id}pagingInforDiv" style="display: text{($.showPagingInfor)?'':'none'};">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.position}}:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" name="pagingPosition" text{($.pagingPosition==='top')?'checked':''} type="radio" value="top"/>{{$.lp.top}}
+						<input class="editTableRadio" name="pagingPosition" text{($.pagingPosition!=='top')?'checked':''} type="radio" value="bottom"/>{{$.lp.bottom}}
+					</td>
+				</tr>
+			</table>
+			<div class="MWFHtmlEditorArea" name="textStyle" title="{{$.lp.format}} (H)"></div>
+		</div>
 	</div>
     <div title="{{$.lp.style}}"  class="MWFTab">
         <div class="MWFPagingStylesArea" name="pagingStyles"></div>

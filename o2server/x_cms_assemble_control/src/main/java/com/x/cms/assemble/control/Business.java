@@ -15,6 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 通用业务类
+ * @author sword
+ */
 public class Business {
 
 	private EntityManagerContainer emc;
@@ -307,18 +311,36 @@ public class Business {
 	}
 
 	/**
-	 * TODO (uncomplete)判断用户是否有权限进行：[文件或者附件管理]的操作
-	 *
+	 * 是否是栏目管理员
 	 * @param person
+	 * @param appInfo
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean fileInfoEditAvailable( EffectivePerson person) throws Exception {
-		if ( isManager( person)) {
+	public boolean isAppInfoManager(EffectivePerson person, AppInfo appInfo) throws Exception {
+		if( isManager(person) ) {
 			return true;
 		}
-		// 其他情况暂时全部不允许操作
-		return true;
+		if(appInfo != null) {
+			if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
+				if (appInfo.getManageablePersonList().contains(person.getDistinguishedName())) {
+					return true;
+				}
+			}
+			if (ListTools.isNotEmpty(appInfo.getManageableUnitList())) {
+				List<String> unitNames = this.organization().unit().listWithPersonSupNested(person.getDistinguishedName());
+				if (ListTools.containsAny(unitNames, appInfo.getManageableUnitList())) {
+					return true;
+				}
+			}
+			if (ListTools.isNotEmpty(appInfo.getManageableGroupList())) {
+				List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
+				if (ListTools.containsAny(groupNames, appInfo.getManageableGroupList())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -352,7 +374,6 @@ public class Business {
 	}
 
 	public boolean editable( EffectivePerson effectivePerson, AppInfo appInfo ) throws Exception {
-		boolean result = false;
 		if ((StringUtils.equals(appInfo.getCreatorPerson(), effectivePerson.getDistinguishedName()))
 				|| effectivePerson.isManager() || organization().person().hasRole(effectivePerson,
 						OrganizationDefinition.CMSManager)) {
@@ -386,6 +407,6 @@ public class Business {
 				return true;
 			}
 		}
-		return result;
+		return false;
 	}
 }

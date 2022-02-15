@@ -5,7 +5,5 @@
   "removeHotPicByInfor" : {"uri":"/jaxrs/user/hotpic/{application}/{infoId}","method": "DELETE"},
   //filter条件
   //{ application : "CMS|BBS" , infoId : "信息ID." , title : "信息标题，模糊查询."}
-  "listHotPicFilterPage": {"uri" : "/jaxrs/user/hotpic/filter/list/page/{page}/count/{count}", "method": "PUT"},
-
-  "clazz": "x_hotpic_assemble_control"
+  "listHotPicFilterPage": {"uri" : "/jaxrs/user/hotpic/filter/list/page/{page}/count/{count}", "method": "PUT"}
 }

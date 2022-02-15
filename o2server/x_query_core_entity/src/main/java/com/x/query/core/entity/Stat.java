@@ -20,7 +20,6 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -31,6 +30,10 @@ import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+/**
+ * 统计对象
+ * @author sword
+ */
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Stat.table, uniqueConstraints = {
@@ -44,10 +47,12 @@ public class Stat extends SliceJpaObject {
 
 	private static final String TABLE = PersistenceProperties.Stat.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -59,6 +64,7 @@ public class Stat extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 
 	}
@@ -138,6 +144,18 @@ public class Stat extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> availableUnitList;
+
+	public static final String availableGroupList_FIELDNAME = "availableGroupList";
+	@FieldDescribe("允许使用的群组.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ availableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+			+ availableGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + availableGroupList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + availableGroupList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> availableGroupList;
 
 	public static final String display_FIELDNAME = "display";
 	@FieldDescribe("是否前端可见.")
@@ -230,4 +248,11 @@ public class Stat extends SliceJpaObject {
 		this.orderNumber = orderNumber;
 	}
 
+	public List<String> getAvailableGroupList() {
+		return availableGroupList;
+	}
+
+	public void setAvailableGroupList(List<String> availableGroupList) {
+		this.availableGroupList = availableGroupList;
+	}
 }

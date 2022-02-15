@@ -13,5 +13,5 @@ public class WrapCancel extends Cancel {
 			null, JpaObject.FieldsInvisible);
 
 	public static final WrapCopier<WrapCancel, Cancel> inCopier = WrapCopierFactory.wi(WrapCancel.class, Cancel.class,
-			null, JpaObject.FieldsUnmodifyExcludeId, false);
+			null, JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId, false);
 }

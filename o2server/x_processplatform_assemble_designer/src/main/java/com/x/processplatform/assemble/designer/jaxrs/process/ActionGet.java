@@ -16,7 +16,6 @@ import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -32,7 +31,6 @@ import com.x.processplatform.core.entity.element.wrap.WrapEnd;
 import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
 import com.x.processplatform.core.entity.element.wrap.WrapManual;
 import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapMessage;
 import com.x.processplatform.core.entity.element.wrap.WrapParallel;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 import com.x.processplatform.core.entity.element.wrap.WrapRoute;
@@ -89,8 +87,6 @@ class ActionGet extends BaseAction {
 				business.manual().listWithProcess(process.getId()))));
 		wrap.setMergeList(WrapMerge.outCopier.copy(business.entityManagerContainer().list(Merge.class,
 				business.merge().listWithProcess(process.getId()))));
-		wrap.setMessageList(WrapMessage.outCopier.copy(business.entityManagerContainer().list(Message.class,
-				business.message().listWithProcess(process.getId()))));
 		wrap.setParallelList(WrapParallel.outCopier.copy(business.entityManagerContainer().list(Parallel.class,
 				business.parallel().listWithProcess(process.getId()))));
 		wrap.setServiceList(WrapService.outCopier.copy(business.entityManagerContainer().list(Service.class,

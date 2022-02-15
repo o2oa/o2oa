@@ -1,6 +1,8 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //COMMON.AjaxModule.load("JSONTemplate", null, false);
 /** @class SubSource 子数据源。
+ * @alias SubSource
+ * @o2cn 子数据源
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -74,6 +76,12 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
                 data = data[p];
             }.bind(this));
         }
+        /**
+         * @summary 该属性获取当前子数据源的数据，当所在上级数据源加载完成后才有值。
+         * @member {Array|Object|String|Number|Boolean|Null}
+         * @example
+         * var field = this.form.get("fieldId").data; //获取子数据源数据
+         */
         this.data = data;
     },
     _loopSub: function(dom, i){
@@ -87,7 +95,7 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
 
             var module = this.form._loadModule(subJson, node, function(){
                 if( _self.widget )this.widget = _self.widget;
-            });
+            }, true);
             //this.modules.push(module);
         }.bind(this));
     },
@@ -108,7 +116,7 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
                 if( _self.widget )this.widget = _self.widget;
                 this.data = d;
                 this.position = i;
-            });
+            }, true);
             this.subSourceItems.push(module);
             this.loopNodes.push(node);
 
@@ -149,7 +157,7 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
                     var _self = this;
                     this.form._loadModules(this.node, function () {
                         if( _self.widget )this.widget = _self.widget;
-                    });
+                    }, true);
                 }
 
                 //this.tmpDiv = new Element("div");

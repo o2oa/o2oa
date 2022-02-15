@@ -39,10 +39,6 @@ public class ActionListAll extends BaseAction {
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				//如判断用户是否有查看所有文件或者附件的权限，如果没权限不允许继续操作
-				if (!business.fileInfoEditAvailable( effectivePerson )) {
-					throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} 用户没有查询全部文件或者附件的权限！");
-				}
 				//如果有权限，继续操作
 				FileInfoFactory fileInfoFactory  = business.getFileInfoFactory();
 				List<String> ids = fileInfoFactory.listAll();//获取所有文件或者附件列表

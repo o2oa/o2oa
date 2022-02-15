@@ -77,7 +77,6 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
         this.checkSequence();
         this.json.moduleName = this.moduleName;
 
-        debugger;
 		if( this.json.isShow === false ){
 			this._switchShow();
 		}
@@ -105,7 +104,6 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 		this.json.recoveryStyles = null;
 	},
     setCustomStyles: function(){
-		debugger;
 		this._recoveryModuleData();
 
         var border = this.node.getStyle("border");

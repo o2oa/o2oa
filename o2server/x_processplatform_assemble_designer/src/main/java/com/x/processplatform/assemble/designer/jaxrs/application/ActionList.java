@@ -50,7 +50,7 @@ class ActionList extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Application> root = cq.from(Application.class);
 		cq.select(root.get(Application_.id));
-		if (effectivePerson.isNotManager() && (!business.organization().person().hasRole(effectivePerson,
+		if (!effectivePerson.isSecurityManager() && (!business.organization().person().hasRole(effectivePerson,
 				OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager))) {
 			Predicate p = cb.isMember(effectivePerson.getDistinguishedName(), root.get(Application_.controllerList));
 			p = cb.or(p, cb.equal(root.get(Application_.creatorPerson), effectivePerson.getDistinguishedName()));

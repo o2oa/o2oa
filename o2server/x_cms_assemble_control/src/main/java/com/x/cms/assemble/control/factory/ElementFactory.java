@@ -41,8 +41,8 @@ public abstract class ElementFactory extends AbstractFactory {
 			t = this.entityManagerContainer().flag(flag, clz);
 			if (t != null) {
 				this.entityManagerContainer().get(clz).detach(t);
+				CacheManager.put(cacheCategory, cacheKey, t );
 			}
-			CacheManager.put(cacheCategory, cacheKey, t );
 		}
 		return t;
 	}
@@ -65,8 +65,8 @@ public abstract class ElementFactory extends AbstractFactory {
 					appInfo.getId());
 			if (t != null) {
 				this.entityManagerContainer().get(clz).detach(t);
+				CacheManager.put(cacheCategory, cacheKey, t );
 			}
-			CacheManager.put(cacheCategory, cacheKey, t );
 		}
 		return t;
 	}

@@ -261,9 +261,6 @@ class ActionProcessingNeural extends BaseAction {
 		business.merge().listWithProcess(process).forEach(o -> {
 			ids.add(o.getForm());
 		});
-		business.message().listWithProcess(process).forEach(o -> {
-			ids.add(o.getForm());
-		});
 		business.parallel().listWithProcess(process).forEach(o -> {
 			ids.add(o.getForm());
 		});

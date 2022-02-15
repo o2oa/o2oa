@@ -709,7 +709,7 @@ Describe.createSampleCommon= function(m,className) {
 	       }
 		  strSample +=  "      formData"+",//from参数\n";
 		 if(hasFile == true){
-		    strSample +=  '      $("input[type=file]").files[0])'+",//file参数\n";	 
+		    strSample +=  '      $("input[type=file]").files[0]'+",//file参数\n";	 
 		 }
 		 strSample +=  "function( json ){ //服务调用成功的回调函数, json为服务传回的数据\n";
 		 strSample +=  "      data = json.data; //为变量data赋值\n";

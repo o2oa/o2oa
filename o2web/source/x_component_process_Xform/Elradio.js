@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "Radio", null, false);
-/** @class Elradio 基于Element UI的按钮组件。
+/** @class Elradio 基于Element UI的单选按钮组件。
+ * @o2cn 单选按钮
  * @example
  * //可以在脚本中获取该组件
  * //方法1：
@@ -10,6 +11,7 @@ MWF.xDesktop.requireApp("process.Xform", "Radio", null, false);
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
+ * @see {@link https://element.eleme.cn/#/zh-CN/component/radio|Element UI Radio 单选框}
  */
 MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     /** @lends MWF.xApplication.process.Xform.Elradio# */
@@ -32,12 +34,13 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
          * @event MWF.xApplication.process.Xform.$Module#postLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
+        "moduleEvents": ["load", "queryLoad", "postLoad"],
         /**
-         * 值发生改变时触发.
-         * @event MWF.xApplication.process.Xform.$Module#change
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         * 绑定值变化时触发的事件。this.event[0]为选中的 Radio label 值
+         * @event MWF.xApplication.process.Xform.Elradio#change
+         * @see {@link https://element.eleme.cn/#/zh-CN/component/radio|单选组件的Radio-group Events章节}
          */
-        "moduleEvents": ["load", "queryLoad", "postLoad", "change"]
+        "elEvents": ["change"]
     },
     load: function(){
         this._loadModuleEvents();
@@ -210,7 +213,6 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
             },
             methods: {
                 change: function(v){
-                    debugger;
                     _self.validationMode();
                     if (_self.validation()) {
                         _self._setBusinessData(v);

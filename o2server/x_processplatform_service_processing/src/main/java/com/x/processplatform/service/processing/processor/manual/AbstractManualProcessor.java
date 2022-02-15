@@ -1,21 +1,18 @@
 package com.x.processplatform.service.processing.processor.manual;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -24,7 +21,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
  */
 public abstract class AbstractManualProcessor extends AbstractProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractManualProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractManualProcessor.class);
 
 	protected AbstractManualProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -41,19 +38,7 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 
 	@Override
 	protected List<Work> executeProcessing(AeiObjects aeiObjects) throws Exception {
-		Manual manual = (Manual) aeiObjects.getActivity();
-		List<Work> os = executing(aeiObjects, manual);
-		if (ListTools.isEmpty(os)) {
-			/** Manual Work 还没有处理完 发生了停留,出发了停留事件 */
-			if (this.hasManualStayScript(manual)) {
-				ScriptContext scriptContext = aeiObjects.scriptContext();
-				CompiledScript cs = null;
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
-						aeiObjects.getActivity(), Business.EVENT_MANUALSTAY);
-				cs.eval(scriptContext);
-			}
-		}
-		return os;
+		return executing(aeiObjects, (Manual) aeiObjects.getActivity());
 	}
 
 	@Override
@@ -92,9 +77,15 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Manual manual) throws Exception;
 
-	protected boolean hasManualStayScript(Activity activity) throws Exception {
+	protected boolean hasManualStayScript(Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return StringUtils.isNotEmpty(activity.get(Manual.manualStayScript_FIELDNAME, String.class))
 				|| StringUtils.isNotEmpty(activity.get(Manual.manualStayScriptText_FIELDNAME, String.class));
+	}
+
+	protected boolean hasManualStayScript(Process process) {
+		return StringUtils.isNotEmpty(process.getManualStayScript())
+				|| StringUtils.isNotEmpty(process.getManualStayScriptText());
 	}
 
 	protected void mergeTaskCompleted(AeiObjects aeiObjects, Work work, Work oldest) {
@@ -102,11 +93,10 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 			aeiObjects.getTaskCompleteds().stream().filter(o -> StringUtils.equals(o.getWork(), work.getId()))
 					.forEach(o -> {
 						o.setWork(oldest.getId());
-						// o.setActivityToken(oldest.getActivityToken());
 						aeiObjects.getUpdateTaskCompleteds().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -117,7 +107,7 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 				aeiObjects.getUpdateReads().add(o);
 			});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -129,7 +119,7 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 						aeiObjects.getUpdateReadCompleteds().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -140,7 +130,7 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 				aeiObjects.getUpdateReviews().add(o);
 			});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -152,7 +142,7 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 						aeiObjects.getUpdateAttachments().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -163,11 +153,10 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 							&& StringUtils.equals(o.getWork(), work.getId()))
 					.forEach(o -> {
 						o.setWork(target.getId());
-						// o.setArrivedActivityToken(target.getActivityToken());
 						aeiObjects.getUpdateWorkLogs().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 }

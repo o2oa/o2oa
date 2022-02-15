@@ -47,7 +47,10 @@ public class JsonScriptingExecutor {
 		JsonElement jsonElement = JsonNull.INSTANCE;
 		try {
 			Object o = cs.eval(scriptContext);
-			jsonElement = XGsonBuilder.instance().fromJson(Objects.toString(o, ""), JsonElement.class);
+			JsonElement value = XGsonBuilder.instance().fromJson(Objects.toString(o, ""), JsonElement.class);
+			if (null != value) {
+				jsonElement = value;
+			}
 		} catch (ScriptException e) {
 			LOGGER.error(e);
 		}
@@ -155,13 +158,12 @@ public class JsonScriptingExecutor {
 	}
 
 	/**
-	 * 非boolean值或者null返回Boolean.FALSE
 	 * 
 	 * @param cs
 	 * @param scriptContext
 	 * @return
 	 */
-	public static Boolean evalBoolean(CompiledScript cs, ScriptContext scriptContext) {
+	public static Boolean evalBoolean(CompiledScript cs, ScriptContext scriptContext, Boolean defaultValue) {
 		JsonElement jsonElement = jsonElement(cs, scriptContext);
 		if (jsonElement.isJsonPrimitive()) {
 			JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
@@ -169,11 +171,23 @@ public class JsonScriptingExecutor {
 				return jsonPrimitive.getAsBoolean();
 			}
 		}
-		return Boolean.FALSE;
+		return defaultValue;
 	}
 
-	public static void evalBoolean(CompiledScript cs, ScriptContext scriptContext, Consumer<Boolean> consumer) {
-		consumer.accept(evalBoolean(cs, scriptContext));
+	/**
+	 * 非boolean值或者null返回Boolean.FALSE
+	 * 
+	 * @param cs
+	 * @param scriptContext
+	 * @return
+	 */
+	public static Boolean evalBoolean(CompiledScript cs, ScriptContext scriptContext) {
+		return evalBoolean(cs, scriptContext, Boolean.FALSE);
+	}
+
+	public static void evalBoolean(CompiledScript cs, ScriptContext scriptContext, Consumer<Boolean> consumer,
+			Boolean defaultValue) {
+		consumer.accept(evalBoolean(cs, scriptContext, defaultValue));
 	}
 
 	public static List<String> evalStrings(CompiledScript cs, ScriptContext scriptContext) {
@@ -189,39 +203,40 @@ public class JsonScriptingExecutor {
 	}
 
 	public static List<String> evalDistinguishedNames(CompiledScript cs, ScriptContext scriptContext) {
-		List<String> list = new ArrayList<>();
-		JsonElement jsonElement = jsonElement(cs, scriptContext);
-		if (jsonElement.isJsonObject()) {
-			dfsDistinguishedNames(jsonElement.getAsJsonObject(), list);
-		} else if (jsonElement.isJsonArray()) {
-			for (JsonElement element : jsonElement.getAsJsonArray()) {
-				if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
-					list.add(element.getAsJsonPrimitive().getAsString());
-				} else if (element.isJsonObject()) {
-					dfsDistinguishedNames(element.getAsJsonObject(), list);
-				}
-			}
-		}
-		return list;
+		return Helper.stringOrDistinguishedNameAsList(jsonElement(cs, scriptContext));
+//		List<String> list = new ArrayList<>();
+//		JsonElement jsonElement = jsonElement(cs, scriptContext);
+		// if (jsonElement.isJsonObject()) {
+//			dfsDistinguishedNames(jsonElement.getAsJsonObject(), list);
+//		} else if (jsonElement.isJsonArray()) {
+//			for (JsonElement element : jsonElement.getAsJsonArray()) {
+//				if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
+//					list.add(element.getAsJsonPrimitive().getAsString());
+//				} else if (element.isJsonObject()) {
+//					dfsDistinguishedNames(element.getAsJsonObject(), list);
+//				}
+//			}
+//		}
+//		return list;
 	}
 
 	public static void evalDistinguishedNames(CompiledScript cs, ScriptContext scriptContext,
 			Consumer<List<String>> consumer) {
 		consumer.accept(evalDistinguishedNames(cs, scriptContext));
 	}
-
-	private static void dfsDistinguishedNames(JsonObject jsonObject, List<String> list) {
-		if ((null != jsonObject) && (!jsonObject.isJsonNull())) {
-			for (Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-				if (StringUtils.equals(entry.getKey(), JpaObject.DISTINGUISHEDNAME)
-						&& entry.getValue().isJsonPrimitive() && entry.getValue().getAsJsonPrimitive().isString()) {
-					list.add((entry.getValue().getAsJsonPrimitive().getAsString()));
-				} else if (entry.getValue().isJsonObject()) {
-					dfsDistinguishedNames(entry.getValue().getAsJsonObject(), list);
-				}
-			}
-		}
-	}
+//
+//	private static void dfsDistinguishedNames(JsonObject jsonObject, List<String> list) {
+//		if ((null != jsonObject) && (!jsonObject.isJsonNull())) {
+//			for (Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+//				if (StringUtils.equals(entry.getKey(), JpaObject.DISTINGUISHEDNAME)
+//						&& entry.getValue().isJsonPrimitive() && entry.getValue().getAsJsonPrimitive().isString()) {
+//					list.add((entry.getValue().getAsJsonPrimitive().getAsString()));
+//				} else if (entry.getValue().isJsonObject()) {
+//					dfsDistinguishedNames(entry.getValue().getAsJsonObject(), list);
+//				}
+//			}
+//		}
+//	}
 
 	public static void eval(CompiledScript cs, ScriptContext scriptContext) {
 		Objects.requireNonNull(cs);
@@ -237,6 +252,10 @@ public class JsonScriptingExecutor {
 		return XGsonBuilder.instance().fromJson(jsonElement(cs, scriptContext), clz);
 	}
 
+	public static <T> T eval(CompiledScript cs, ScriptContext scriptContext, Type type) {
+		return XGsonBuilder.instance().fromJson(jsonElement(cs, scriptContext), type);
+	}
+
 	public static <T> T eval(CompiledScript cs, ScriptContext scriptContext, Supplier<T> supplier) {
 		JsonElement jsonElement = jsonElement(cs, scriptContext);
 		return supplier.get(jsonElement);
@@ -250,6 +269,61 @@ public class JsonScriptingExecutor {
 	public static <T> void eval(CompiledScript cs, ScriptContext scriptContext, Supplier<T> supplier,
 			Consumer<T> consumer) {
 		consumer.accept(supplier.get(jsonElement(cs, scriptContext)));
+	}
+
+	public static class Helper {
+
+		private Helper() {
+			// nothing
+		}
+
+		/**
+		 * 对jsonElement抽取可能是身份,个人,组织,群组的文本值,不进行递归的抽取,仅抽取地一层
+		 * 
+		 * @param jsonElement
+		 * @return
+		 * 
+		 */
+		public static List<String> stringOrDistinguishedNameAsList(JsonElement jsonElement) {
+			List<String> list = new ArrayList<>();
+			if (null != jsonElement) {
+				if (jsonElement.isJsonObject()) {
+					objectStringOrDistinguishedNameAsList(jsonElement.getAsJsonObject(), list);
+				} else if (jsonElement.isJsonArray()) {
+					arrayStringOrDistinguishedNameAsList(jsonElement.getAsJsonArray(), list);
+				} else if (jsonElement.isJsonPrimitive()) {
+					primitiveStringOrDistinguishedNameAsList(jsonElement.getAsJsonPrimitive(), list);
+				}
+			}
+			return list;
+		}
+
+		private static void primitiveStringOrDistinguishedNameAsList(JsonPrimitive primitive, List<String> list) {
+			if (primitive.isString()) {
+				list.add(primitive.getAsString());
+			}
+		}
+
+		private static void arrayStringOrDistinguishedNameAsList(JsonArray arr, List<String> list) {
+			for (JsonElement element : arr) {
+				if (element.isJsonObject()) {
+					objectStringOrDistinguishedNameAsList(element.getAsJsonObject(), list);
+				} else if (element.isJsonPrimitive()) {
+					primitiveStringOrDistinguishedNameAsList(element.getAsJsonPrimitive(), list);
+				}
+			}
+		}
+
+		private static void objectStringOrDistinguishedNameAsList(JsonObject jsonObject, List<String> list) {
+			for (Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+				if (StringUtils.equals(entry.getKey(), JpaObject.DISTINGUISHEDNAME)
+						&& entry.getValue().isJsonPrimitive() && entry.getValue().getAsJsonPrimitive().isString()) {
+					list.add((entry.getValue().getAsJsonPrimitive().getAsString()));
+//				} else if (entry.getValue().isJsonObject()) {
+//					objectStringOrDistinguishedNameAsList(entry.getValue().getAsJsonObject(), list);
+				}
+			}
+		}
 	}
 
 }

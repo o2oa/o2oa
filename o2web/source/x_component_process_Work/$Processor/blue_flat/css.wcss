@@ -388,7 +388,7 @@
         "float" : "left",
         "width" : "190px",
         "border-radius" : "3px",
-        "height": "20px",
+        "min-height": "20px",
         "margin-bottom": "10px",
         "padding": "8px 3px",
         "cursor": "pointer",
@@ -400,7 +400,7 @@
         "float" : "left",
         "width" : "190px",
         "border-radius" : "3px",
-        "height": "20px",
+        "min-height": "20px",
         "margin-bottom": "10px",
         "padding": "8px 3px",
         "cursor": "pointer",
@@ -434,11 +434,11 @@
         "background": "url(../x_component_process_Work/$Processor/blue_flat/checked2.png) no-repeat center center"
     },
     "empowerItemContentNode": {
-        "height": "20px"
+        "min-height": "20px"
     },
     "empowerItemTitleNode": {
         "float": "left",
-        "height": "20px",
+        "min-height": "20px",
         "margin-left": "5px",
         "line-height": "20px",
         "color": "#333"
@@ -449,7 +449,7 @@
     "empowerItemPersonNode": {
         "float": "left",
         "margin-left": "5px",
-        "height": "20px",
+        "min-height": "20px",
         "width" : "48px",
         "line-height": "20px",
         "color": "#333"

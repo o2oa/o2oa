@@ -180,16 +180,21 @@ layout.addReady(function(){
     _worker.runtimeEnvironment = {};
 
     _worker.createEnvironment = function(runtime, url){
-        return new Promise(function(s, f){
-            o2.xhr_get(url, function (xhr) {
-                if (xhr.responseText){
-                    _worker.createRuntime(runtime, xhr.responseText);
-                    if (s) s();
-                }
-            }, function (err) {
-                f(err);
+        debugger;
+        if (!_worker.runtimeEnvironment[runtime]){
+            return new Promise(function(s, f){
+                o2.xhr_get(url, function (xhr) {
+                    if (xhr.responseText){
+                        var r =_worker.createRuntime(runtime, xhr.responseText);
+                        if (s) s(r);
+                    }
+                }, function (err) {
+                    f(err);
+                });
             });
-        });
+        }else{
+            return Promise.resolve(_worker.runtimeEnvironment[runtime]);
+        }
     };
     _worker.createRuntime = function(runtime, script){
         var code = "o2.Macro.swapSpace.tmpMacroCompletionFunction = function (){\n" + script + "\nreturn bind;" + "\n};";
@@ -205,38 +210,78 @@ layout.addReady(function(){
                 }
             }
         }
+        return _worker.runtimeEnvironment[runtime];
     };
 
     _worker.getCompletionEnvironment = function(runtime) {
         if (!_worker.runtimeEnvironment[runtime]) {
             return new Promise(function(s){
-                o2.require("o2.xScript.Macro", function() {
-                    switch (runtime) {
-                        case "service":
-                            s(_worker.getServiceCompletionEnvironment());
-                            break;
-                        case "server":
-                            s(_worker.getServerCompletionEnvironment());
-                            break;
-                        case "all":
-                            s(_worker.getAllCompletionEnvironment());
-                            break;
-                        default:
-                            s(_worker.getDefaultCompletionEnvironment());
-                    }
-                });
+
+                switch (runtime) {
+                    case "service":
+                        //s(_worker.getServiceCompletionEnvironment());
+                        s(_worker.getEnvironment(runtime, ["_service", "web"]));
+                        break;
+                    case "server":
+                        //s(_worker.getServerCompletionEnvironment());
+                        s(_worker.getEnvironment(runtime, ["_server", "web"]));
+                        break;
+                    case "all":
+                        //s(_worker.getAllCompletionEnvironment());
+                        s(_worker.getEnvironment(runtime, ["_service", "_server", "web"]));
+                        break;
+                    default:
+                        s(_worker.getDefaultCompletionEnvironment());
+                }
+
             });
         } else {
-            return Promise.resolve();
+            return Promise.resolve(_worker.runtimeEnvironment[runtime]);
         }
     };
+    _worker.getEnvironment = function(runtime, rArr) {
+        var ev = {}
+        rArr.forEach(function(r){
+            ev = Object.assign(ev, _worker.runtimeEnvironment[r].environment);
+        });
+        _worker.runtimeEnvironment[runtime] = {
+            "environment": ev,
+            exec: function(code){
+                try{
+                    return o2.Macro.exec(code, this.environment);
+                }catch(e){
+                    return null;
+                }
+            }
+        }
+        return Promise.resolve(_worker.runtimeEnvironment[runtime]);
+
+        // var arr = pArr;
+        // return Promise.all(arr).then(function(evs){
+        //     var ev = {}
+        //     evs.forEach(function(e){
+        //         ev = Object.assign(ev, e.environment);
+        //     });
+        //     _worker.runtimeEnvironment[runtime] = {
+        //         "environment": ev,
+        //         exec: function(code){
+        //             try{
+        //                 return o2.Macro.exec(code, this.environment);
+        //             }catch(e){
+        //                 return null;
+        //             }
+        //         }
+        //     }
+        // });
+    };
+
     _worker.getServiceCompletionEnvironment = function() {
-        var runtime = "service";
-        return _worker.createEnvironment(runtime, "../x_desktop/js/initalServiceScriptSubstitute.js");
+        var runtime = "_service";
+        return _worker.createEnvironment(runtime, "../x_desktop/js/initialServiceScriptText.min.js");
     };
     _worker.getServerCompletionEnvironment = function() {
-        var runtime = "server";
-        return _worker.createEnvironment(runtime, "../x_desktop/js/initalScriptSubstitute.js");
+        var runtime = "_server";
+        return _worker.createEnvironment(runtime, "../x_desktop/js/initialScriptText.min.js");
     };
     _worker.getDefaultCompletionEnvironment = function(){
         var runtime = "web";
@@ -244,7 +289,7 @@ layout.addReady(function(){
             o2.getJSON("../o2_core/o2/widget/$JavascriptEditor/environment.json", function (data) {
                 json = data;
                 _worker.runtimeEnvironment[runtime] = new o2.Macro.FormContext(json);
-                if (s) s();
+                if (s) s(_worker.runtimeEnvironment[runtime]);
             });
         });
     }
@@ -442,7 +487,17 @@ layout.addReady(function(){
             }
         }, function(){});
     };
-    _worker.postMessage({"type": "ready"});
+    o2.require("o2.xScript.Macro", function() {
+        var arr = [
+            _worker.getServiceCompletionEnvironment(),
+            _worker.getServerCompletionEnvironment(),
+            _worker.getDefaultCompletionEnvironment()
+        ];
+        Promise.all(arr).then(function(){
+            _worker.postMessage({"type": "ready"});
+        });
+    });
+
 });
 onmessage = function(e) {
     if (e.data){

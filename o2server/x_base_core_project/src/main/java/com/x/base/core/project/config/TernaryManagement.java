@@ -122,18 +122,24 @@ public class TernaryManagement extends ConfigObject {
     public InitialManager initialManagerInstance(String name) {
         InitialManager o = new InitialManager();
         String distinguishedName = "";
+        String userName = name;
         if(isSystemManager(name)){
             name = this.getSystemManager();
             distinguishedName = this.getSystemManagerDistinguishedName();
+            userName = this.getSystemManagerName();
         }else if(isSecurityManager(name)){
             name = this.getSecurityManager();
             distinguishedName = this.getSecurityManagerDistinguishedName();
+            userName = this.getSecurityManagerName();
         }else if(isAuditManager(name)){
             name = this.getAuditManager();
             distinguishedName = this.getAuditManagerDistinguishedName();
+            userName = this.getAuditManagerName();
         }
-        o.name = name;
+
+        o.name = userName;
         o.id = name;
+        o.unique = name;
         o.employee = name;
         o.display = name;
         o.mail = name + "@o2oa.net";
@@ -157,6 +163,7 @@ public class TernaryManagement extends ConfigObject {
             o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.TeamWorkManager));
         }else if(isSecurityManager(name)){
             o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SecurityManager));
+            o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.GroupManager));
         }else if(isAuditManager(name)){
             o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager));
         }

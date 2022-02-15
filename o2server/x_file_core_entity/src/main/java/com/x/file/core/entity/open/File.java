@@ -30,7 +30,7 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.file.core.entity.PersistenceProperties;
 
 /**
- * 
+ *
  * 有两个可能性创建File:<br/>
  * 1.通过servlet上传<br/>
  * 2.通过Attachment转储<br/>
@@ -209,38 +209,42 @@ public class File extends StorageObject {
 		this.extension = extension;
 	}
 
-	public String getStorage() {
+	@Override
+    public String getStorage() {
 		return storage;
 	}
 
+	@Override
 	public void setStorage(String storage) {
 		this.storage = storage;
 	}
 
+	@Override
 	public Long getLength() {
 		return length;
 	}
 
+	@Override
 	public void setLength(Long length) {
 		this.length = length;
 	}
 
 	@Override
-	public String path() throws Exception {
+	public String path() {
 		if (null == this.person) {
-			throw new Exception("person can not be null.");
+			throw new IllegalStateException("person can not be null.");
 		}
 		if (StringUtils.isEmpty(id)) {
-			throw new Exception("id can not be empty.");
+			throw new IllegalStateException("id can not be empty.");
 		}
 		if (StringUtils.isEmpty(reference)) {
-			throw new Exception("reference can not be empty.");
+			throw new IllegalStateException("reference can not be empty.");
 		}
 		if (Objects.isNull(this.getCreateTime())) {
-			throw new Exception("createTime can not be empty.");
+			throw new IllegalStateException("createTime can not be empty.");
 		}
 		if (Objects.isNull(this.referenceType)) {
-			throw new Exception("referenceType can not be empty.");
+			throw new IllegalStateException("referenceType can not be empty.");
 		}
 
 		String str = this.person;

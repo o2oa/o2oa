@@ -9,6 +9,7 @@ import com.x.program.center.jaxrs.adminlogin.AdminLoginAction;
 import com.x.program.center.jaxrs.agent.AgentAction;
 import com.x.program.center.jaxrs.applications.ApplicationsAction;
 import com.x.program.center.jaxrs.apppack.AppPackAction;
+import com.x.program.center.jaxrs.apppack.AppPackAnonymousAction;
 import com.x.program.center.jaxrs.appstyle.AppStyleAction;
 import com.x.program.center.jaxrs.authentication.AuthenticationAction;
 import com.x.program.center.jaxrs.cachedispatch.CacheDispatchAction;
@@ -77,6 +78,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(DesignerAction.class);
 		classes.add(MPWeixinAction.class);
 		classes.add(AppPackAction.class);
+		classes.add(AppPackAnonymousAction.class);
 		classes.add(TokenThresholdAction.class);
 		return classes;
 	}

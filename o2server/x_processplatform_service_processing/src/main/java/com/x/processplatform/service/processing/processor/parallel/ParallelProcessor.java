@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.processor.parallel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -11,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
@@ -23,7 +24,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class ParallelProcessor extends AbstractParallelProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(ParallelProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ParallelProcessor.class);
 
 	public ParallelProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -34,11 +35,11 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.parallelArrive(aeiObjects.getWork().getActivityToken(), parallel));
-		logger.info(
+		LOGGER.info(
 				"parallel arrvie processing, work title:{}, id:{}, actvity name:{}, id:{}, activityToken:{}, process name:{}, id{}.",
-				aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), parallel.getName(), parallel.getId(),
-				aeiObjects.getWork().getActivityToken(), aeiObjects.getWork().getProcessName(),
-				aeiObjects.getWork().getProcess());
+				() -> aeiObjects.getWork().getTitle(), () -> aeiObjects.getWork().getId(), parallel::getName,
+				parallel::getId, () -> aeiObjects.getWork().getActivityToken(),
+				() -> aeiObjects.getWork().getProcessName(), () -> aeiObjects.getWork().getProcess());
 		return aeiObjects.getWork();
 	}
 
@@ -56,28 +57,29 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 		aeiObjects.getWork().setSplitting(true);
 		aeiObjects.getWork().setSplitToken(StringTools.uniqueToken());
 		aeiObjects.getWork().getSplitTokenList().add(aeiObjects.getWork().getSplitToken());
-		/* 并行拆分不影响splitValue */
-		// aeiObjects.getWork().setSplitValue("");
-		/* 新创建并行Work需要单独的workLog,拷贝当前的WorkLog */
+		/*
+		 * 并行拆分不影响 <code>splitValue aeiObjects.getWork().setSplitValue("");</code>
+		 * 新创建并行Work需要单独的workLog,拷贝当前的WorkLog
+		 */
 		WorkLog mainWorkLog = aeiObjects.getWorkLogs().stream()
 				.filter(o -> StringUtils.equals(aeiObjects.getWork().getId(), o.getWork())
 						&& StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getFromActivityToken()))
 				.findFirst().orElse(null);
-		mainWorkLog.setSplitting(aeiObjects.getWork().getSplitting());
-		mainWorkLog.getProperties().setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
-		mainWorkLog.setSplitToken(aeiObjects.getWork().getSplitToken());
-		mainWorkLog.setSplitValue(aeiObjects.getWork().getSplitValue());
-		aeiObjects.getUpdateWorkLogs().add(mainWorkLog);
+		if (null != mainWorkLog) {
+			mainWorkLog.setSplitting(aeiObjects.getWork().getSplitting());
+			mainWorkLog.getProperties().setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
+			mainWorkLog.setSplitToken(aeiObjects.getWork().getSplitToken());
+			mainWorkLog.setSplitValue(aeiObjects.getWork().getSplitValue());
+			aeiObjects.getUpdateWorkLogs().add(mainWorkLog);
+		}
 
 		List<Route> routes = new ArrayList<>();
 		/* 多条路由进行判断 */
 		for (Route o : aeiObjects.getRoutes()) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_ROUTE, o);
-			Object objectValue = aeiObjects.business().element()
-					.getCompiledScript(aeiObjects.getWork().getApplication(), o, Business.EVENT_ROUTE)
-					.eval(scriptContext);
-			if (BooleanUtils.isTrue(ScriptFactory.asBoolean(objectValue))) {
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					o, Business.EVENT_ROUTE);
+			if (BooleanUtils.isTrue(JsonScriptingExecutor.evalBoolean(cs, scriptContext, Boolean.FALSE))) {
 				routes.add(o);
 			}
 		}

@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 MWF.require("MWF.widget.UUID", null, false);
 /** @class Radio 单选按钮。
+ * @o2cn 单选按钮
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

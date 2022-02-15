@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 /** @class Image 图片。
+ * @o2cn 图片
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

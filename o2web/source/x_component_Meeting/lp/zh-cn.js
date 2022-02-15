@@ -160,6 +160,10 @@ MWF.xApplication.Meeting.LP = {
     "noMeeting": "当日无会议",
     "noAddress" : "未填写地址",
 
+    "hostPerson": "主持人",
+    "hostUnit": "承办部门",
+    "meetingType":"会议类型",
+
     "week" : "周",
     "weeks": {
         "Sun": "周日",
@@ -235,7 +239,8 @@ MWF.xApplication.Meeting.LP = {
         "viewSetting" : "启用视图",
         "viewCustomName" : "视图显示名称",
         "mobileCreateEnable" : "移动端是否能新建会议",
-        "mobileCreateEnableOptions" : ["是","否"]
+        "mobileCreateEnableOptions" : ["是","否"],
+        "meetingType":"会议类型（每行一种）"
     },
     "nextActivity": "下一个活动：",
     "nextUser": "处理人：",
