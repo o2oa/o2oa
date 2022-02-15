@@ -99,6 +99,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			this.title = this.getProperties().getTitle();
 		}
 		this.splitValueList = this.getProperties().getSplitValueList();
+		this.embedTargetJob = this.getProperties().getEmbedTargetJob();
 	}
 
 	/* 更新运行方法 */
@@ -160,11 +161,23 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.getProperties().setSplitValueList(splitValueList);
 	}
 
-	/* 修改过的Set Get 方法 */
+	public String getEmbedTargetJob() {
+		return embedTargetJob;
+	}
+
+	public void setEmbedTargetJob(String embedTargetJob) {
+		this.getProperties().setEmbedTargetJob(embedTargetJob);
+		this.embedTargetJob = embedTargetJob;
+
+	}
 
 	@Transient
 	@FieldDescribe("要拆分的值")
 	private List<String> splitValueList;
+
+	@Transient
+	@FieldDescribe("Embed活动生成的Work的Job.")
+	private String embedTargetJob;
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工作")

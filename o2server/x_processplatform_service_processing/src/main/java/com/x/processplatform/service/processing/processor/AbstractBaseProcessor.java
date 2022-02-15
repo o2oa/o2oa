@@ -256,6 +256,11 @@ public abstract class AbstractBaseProcessor {
 				|| StringUtils.isNotEmpty(activity.get(AIST, String.class));
 	}
 
+	protected boolean hasEmbedCompletedScript(Embed embed) {
+		return StringUtils.isNotEmpty(embed.getProperties().getCompletedScript())
+				|| StringUtils.isNotEmpty(embed.getProperties().getCompletedScriptText());
+	}
+
 	protected boolean hasEmbedCompletedEndScript(Embed embed) {
 		return StringUtils.isNotEmpty(embed.getProperties().getCompletedEndScript())
 				|| StringUtils.isNotEmpty(embed.getProperties().getCompletedEndScriptText());

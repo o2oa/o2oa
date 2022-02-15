@@ -23,6 +23,9 @@ import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.EmbedCreatorType;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.log.Signal;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAssignCreateWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAssignCreateWi.WiAttachment;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAssignCreateWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WrapScriptObject;
@@ -40,6 +43,10 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	protected Work arriving(AeiObjects aeiObjects, Embed embed) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.embedArrive(aeiObjects.getWork().getActivityToken(), embed));
+		// 清理标识
+		aeiObjects.getWork().getProperties().setEmbedCompleted("");
+		aeiObjects.getWork().setEmbedTargetWork("");
+		aeiObjects.getWork().setEmbedTargetJob("");
 		return aeiObjects.getWork();
 	}
 
@@ -52,7 +59,22 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	protected List<Work> executing(AeiObjects aeiObjects, Embed embed) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.embedExecute(aeiObjects.getWork().getActivityToken(), embed));
-		AssignData assignData = new AssignData();
+		List<Work> results = new ArrayList<>();
+		if (StringUtils.isBlank(aeiObjects.getWork().getEmbedTargetWork())) {
+			embed(aeiObjects, embed);
+			if (BooleanUtils.isTrue(embed.getAsync()) || BooleanUtils.isNotTrue(embed.getWaitUntilCompleted())) {
+				results.add(aeiObjects.getWork());
+			}
+		} else if (BooleanUtils.isNotTrue(embed.getWaitUntilCompleted())
+				|| StringUtils.isNotBlank(aeiObjects.getWork().getProperties().getEmbedCompleted())) {
+			// 如果设置了停留至子流程结束,需要等待回写的标记.
+			results.add(aeiObjects.getWork());
+		}
+		return results;
+	}
+
+	private void embed(AeiObjects aeiObjects, Embed embed) throws Exception {
+		ActionAssignCreateWi assignData = new ActionAssignCreateWi();
 		String targetApplication = embed.getTargetApplication();
 		String targetProcess = embed.getTargetProcess();
 		if (StringUtils.isEmpty(targetApplication)) {
@@ -69,7 +91,11 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		if (BooleanUtils.isTrue(embed.getInheritAttachment())) {
 			List<Attachment> os = this.business().entityManagerContainer().list(Attachment.class,
 					this.business().attachment().listWithJob(aeiObjects.getWork().getJob()));
-			assignData.setAttachmentList(os);
+			for (Attachment attachment : os) {
+				WiAttachment wiAttachment = new WiAttachment();
+				attachment.copyTo(wiAttachment, true);
+				assignData.getAttachmentList().add(wiAttachment);
+			}
 		}
 		String targetIdentity = this.targetIdentity(aeiObjects, embed);
 		targetIdentity = this.business().organization().identity().get(targetIdentity);
@@ -79,6 +105,8 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		assignData.setIdentity(targetIdentity);
 		assignData.setTitle(this.targetTitle(aeiObjects, embed));
 		assignData.setProcessing(true);
+		assignData.setParentWork(aeiObjects.getWork().getId());
+		assignData.setParentJob(aeiObjects.getWork().getJob());
 		if (this.hasAssignDataScript(embed)) {
 			WrapScriptObject wrap = new WrapScriptObject();
 			wrap.set(gson.toJson(assignData));
@@ -86,11 +114,11 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					embed, Business.EVENT_EMBEDTARGETASSIGNDATA);
-			AssignData returnData = JsonScriptingExecutor.eval(cs, scriptContext, AssignData.class);
+			ActionAssignCreateWi returnData = JsonScriptingExecutor.eval(cs, scriptContext, ActionAssignCreateWi.class);
 			if (null != returnData) {
 				assignData = returnData;
 			} else {
-				assignData = gson.fromJson(wrap.get(), AssignData.class);
+				assignData = gson.fromJson(wrap.get(), ActionAssignCreateWi.class);
 			}
 		}
 		LOGGER.debug("embed:{}, process:{} try to embed application:{}, process:{}, assignData:{}.", embed::getName,
@@ -99,16 +127,10 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			ThisApplication.syncEmbedQueue.send(assignData);
 		} else {
 			EmbedExecutor executor = new EmbedExecutor();
-			String embedWorkId = executor.execute(assignData);
-			aeiObjects.getWork().setEmbedTargetWork(embedWorkId);
+			ActionAssignCreateWo wo = executor.execute(assignData);
+			aeiObjects.getWork().setEmbedTargetWork(wo.getId());
+			aeiObjects.getWork().setEmbedTargetJob(wo.getJob());
 		}
-		List<Work> results = new ArrayList<>();
-		// 如果设置了停留至子流程结束,需要等待回写的标记.
-		if (BooleanUtils.isNotTrue(embed.getWaitUntilCompleted())
-				|| StringUtils.isNotBlank(aeiObjects.getWork().getProperties().getEmbedCompleted())) {
-			results.add(aeiObjects.getWork());
-		}
-		return results;
 	}
 
 	@Override

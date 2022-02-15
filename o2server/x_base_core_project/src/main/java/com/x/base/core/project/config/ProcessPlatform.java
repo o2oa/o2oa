@@ -21,6 +21,8 @@ import com.x.base.core.project.tools.NumberTools;
  */
 public class ProcessPlatform extends ConfigObject {
 
+	private static final long serialVersionUID = 8025969872758663591L;
+
 	public static final Integer DEFAULT_FORMVERSIONPERIOD = 45;
 
 	public static final Integer DEFAULT_PROCESSVERSIONPERIOD = 45;
@@ -75,7 +77,6 @@ public class ProcessPlatform extends ConfigObject {
 		this.urge = new Urge();
 		this.expire = new Expire();
 		this.touchDelay = new TouchDelay();
-		this.touchEmbedWaitUntilCompleted = new TouchEmbedWaitUntilCompleted();
 		this.merge = new Merge();
 		this.touchDetained = new TouchDetained();
 		this.deleteDraft = new DeleteDraft();
@@ -163,9 +164,6 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("延时任务设置,定时触发延时任务,当超过延时时间后继续流转.")
 	private TouchDelay touchDelay;
 
-	@FieldDescribe("触发等待子流程结束设置,当子流程结束回写标识后继续流转.")
-	private TouchEmbedWaitUntilCompleted touchEmbedWaitUntilCompleted;
-
 	@FieldDescribe("合并任务设置,定时触发合并任务,将已完成工作的Data从Item表中提取合并到WorkCompleted的Data字段中,默认工作完成后2年开始进行合并.")
 	private Merge merge;
 
@@ -241,11 +239,6 @@ public class ProcessPlatform extends ConfigObject {
 		return this.touchDelay == null ? new TouchDelay() : this.touchDelay;
 	}
 
-	public TouchEmbedWaitUntilCompleted getTouchEmbedWaitUntilCompleted() {
-		return this.touchEmbedWaitUntilCompleted == null ? new TouchEmbedWaitUntilCompleted()
-				: this.touchEmbedWaitUntilCompleted;
-	}
-
 	public TouchDetained getTouchDetained() {
 		return this.touchDetained == null ? new TouchDetained() : this.touchDetained;
 	}
@@ -276,6 +269,8 @@ public class ProcessPlatform extends ConfigObject {
 	}
 
 	public static class Urge extends ConfigObject {
+
+		private static final long serialVersionUID = 1159238658106337292L;
 
 		public static Urge defaultInstance() {
 			return new Urge();
@@ -314,6 +309,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class Expire extends ConfigObject {
 
+		private static final long serialVersionUID = -8659190297973094979L;
+
 		public static Expire defaultInstance() {
 			return new Expire();
 		}
@@ -344,6 +341,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class TouchDelay extends ConfigObject {
 
+		private static final long serialVersionUID = 8716159849643530909L;
+
 		public static TouchDelay defaultInstance() {
 			return new TouchDelay();
 		}
@@ -351,36 +350,6 @@ public class ProcessPlatform extends ConfigObject {
 		public static final Boolean DEFAULT_ENABLE = true;
 
 		public static final String DEFAULT_CRON = "5 0/5 * * * ?";
-
-		@FieldDescribe("是否启用")
-		private Boolean enable = DEFAULT_ENABLE;
-
-		@FieldDescribe("定时cron表达式")
-		private String cron = DEFAULT_CRON;
-
-		public String getCron() {
-			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
-				return this.cron;
-			} else {
-				return DEFAULT_CRON;
-			}
-		}
-
-		public Boolean getEnable() {
-			return BooleanUtils.isTrue(this.enable);
-		}
-
-	}
-
-	public static class TouchEmbedWaitUntilCompleted extends ConfigObject {
-
-		public static TouchEmbedWaitUntilCompleted defaultInstance() {
-			return new TouchEmbedWaitUntilCompleted();
-		}
-
-		public static final Boolean DEFAULT_ENABLE = true;
-
-		public static final String DEFAULT_CRON = "15 0/5 * * * ?";
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -461,6 +430,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class TouchDetained extends ConfigObject {
 
+		private static final long serialVersionUID = -1557669565639237145L;
+
 		public static TouchDetained defaultInstance() {
 			return new TouchDetained();
 		}
@@ -499,6 +470,8 @@ public class ProcessPlatform extends ConfigObject {
 	}
 
 	public static class DeleteDraft extends ConfigObject {
+
+		private static final long serialVersionUID = -2127401618190754038L;
 
 		public static DeleteDraft defaultInstance() {
 			return new DeleteDraft();
@@ -539,6 +512,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class PassExpired extends ConfigObject {
 
+		private static final long serialVersionUID = 2660210790582417811L;
+
 		public static PassExpired defaultInstance() {
 			return new PassExpired();
 		}
@@ -567,6 +542,8 @@ public class ProcessPlatform extends ConfigObject {
 	}
 
 	public static class LogLongDetained extends ConfigObject {
+
+		private static final long serialVersionUID = 6183346578358650613L;
 
 		public static LogLongDetained defaultInstance() {
 			return new LogLongDetained();
@@ -628,6 +605,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class Press extends ConfigObject {
 
+		private static final long serialVersionUID = -4223137429803117953L;
+
 		public static Press defaultInstance() {
 			return new Press();
 		}
@@ -661,6 +640,8 @@ public class ProcessPlatform extends ConfigObject {
 	}
 
 	public static class AttachmentConfig extends ConfigObject {
+
+		private static final long serialVersionUID = -5672631798073576284L;
 
 		public static AttachmentConfig defaultInstance() {
 			return new AttachmentConfig();
@@ -781,6 +762,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class WorkExtensionEvents extends ArrayList<WorkExtensionEvent> {
 
+		private static final long serialVersionUID = -2847222465064494098L;
+
 		public Optional<WorkExtensionEvent> bind(String application, String process, String activity) {
 			return this.stream().filter(o -> BooleanUtils.isTrue(o.getEnable()))
 					.filter(o -> (ListTools.contains(o.getApplications(), application)
@@ -877,6 +860,9 @@ public class ProcessPlatform extends ConfigObject {
 	}
 
 	public static class WorkCompletedExtensionEvents extends ArrayList<WorkCompletedExtensionEvent> {
+
+		private static final long serialVersionUID = -5527994436451255023L;
+
 		public Optional<WorkCompletedExtensionEvent> bind(String application, String process) {
 			return this.stream().filter(o -> BooleanUtils.isTrue(o.getEnable()))
 					.filter(o -> (ListTools.contains(o.getApplications(), application)
