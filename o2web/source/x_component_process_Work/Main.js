@@ -729,7 +729,7 @@ MWF.xApplication.process.Work.Main = new Class({
             var cl = "$all";
             MWF.xDesktop.requireApp("process.Xform", cl, function(){
             //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
-                this.appForm = new MWF.APPForm(this.formNode, this.form, {});
+                this.appForm = new MWF.APPForm(this.formNode, this.form, {"readonly": this.readonly});
                 this.appForm.businessData = {
                     "data": this.data,
                     "originalData" : Object.clone( this.data ),
