@@ -50,9 +50,6 @@ public class NickNameConsumeQueue extends AbstractQueue<String> {
 				logger.warn("更新帖子{}的昵称{}异常：{}",id, nickName, e.getMessage());
 			}
 		}
-		if(!subjectIds.isEmpty()){
-			CacheManager.notify(BBSSubjectInfo.class);
-		}
 		for(String id : replyIds){
 			try {
 				this.updateReplayNickName(id, nickName);
@@ -60,8 +57,8 @@ public class NickNameConsumeQueue extends AbstractQueue<String> {
 				logger.warn("更新回帖{}的昵称{}异常：{}",id, nickName, e.getMessage());
 			}
 		}
-		if(!replyIds.isEmpty()){
-			CacheManager.notify(BBSReplyInfo.class);
+		if(replyIds.size() > 0 || subjectIds.size() > 0){
+			CacheManager.notify(BBSSubjectInfo.class);
 		}
 	}
 

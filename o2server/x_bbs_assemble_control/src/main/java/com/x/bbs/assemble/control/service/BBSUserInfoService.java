@@ -17,7 +17,7 @@ import com.x.bbs.entity.BBSUserInfo;
 
 /**
  * 用户信息管理服务类
- * 
+ *
  * @author LIYI
  *
  */
@@ -27,7 +27,7 @@ public class BBSUserInfoService {
 
 	/**
 	 * 根据传入的ID从数据库查询BBSUserInfo对象
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 * @throws Exception
@@ -45,7 +45,7 @@ public class BBSUserInfoService {
 
 	/**
 	 * 根据传入的用户姓名从数据库查询BBSUserInfo对象
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 * @throws Exception
@@ -61,7 +61,7 @@ public class BBSUserInfoService {
 			userInfoList = business.userInfoFactory().listByUserName(userName);
 			if (ListTools.isNotEmpty(userInfoList)) {
 				BBSUserInfo o = userInfoList.get(0);
-				JpaObjectTools.detach(emc.get(BBSUserInfo.class), o);
+				emc.get(BBSUserInfo.class).detach(o);
 				return o;
 			} else {
 				return null;
@@ -73,7 +73,7 @@ public class BBSUserInfoService {
 
 	/**
 	 * 向数据库保存BBSUserInfo对象
-	 * 
+	 *
 	 * @param wrapIn
 	 */
 	public BBSUserInfo save(BBSUserInfo _bBSUserInfo) throws Exception {
@@ -119,7 +119,7 @@ public class BBSUserInfoService {
 
 	/**
 	 * 向数据库保存BBSUserInfo对象
-	 * 
+	 *
 	 * @param wrapIn
 	 */
 	public BBSUserInfo updatePermissionAndVisit(BBSUserInfo _bBSUserInfo) throws Exception {
@@ -166,7 +166,7 @@ public class BBSUserInfoService {
 
 	/**
 	 * 向数据库保存BBSUserInfo对象
-	 * 
+	 *
 	 * @param wrapIn
 	 */
 	public Boolean updatePermission(String userName, String permissionContent) throws Exception {
@@ -203,7 +203,7 @@ public class BBSUserInfoService {
 
 	/**
 	 * 根据ID从数据库中删除BBSUserInfo对象
-	 * 
+	 *
 	 * @param id
 	 * @throws Exception
 	 */
@@ -229,7 +229,7 @@ public class BBSUserInfoService {
 
 	/**
 	 * 根据userName从数据库中删除BBSUserInfo对象
-	 * 
+	 *
 	 * @param userName
 	 * @throws Exception
 	 */
