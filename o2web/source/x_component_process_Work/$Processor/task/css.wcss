@@ -120,8 +120,7 @@
 
     "buttonsArea": {
         "height": "50px",
-        "overflow": "hidden",
-        "display": "none"
+        "overflow": "hidden"
     },
 
     "okButton": {

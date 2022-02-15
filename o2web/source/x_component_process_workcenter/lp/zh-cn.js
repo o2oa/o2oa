@@ -23,7 +23,6 @@ MWF.xApplication.process.workcenter.LP = {
 	"nextActivity": "下一个活动：",
 	"nextUser": "处理人：",
 	"processStartedMessage": "您启动了一个新的工作：",
-	"datch": "批量处理",
 	"deal": "处理",
 
 	"processing": "正在处理",
@@ -82,7 +81,15 @@ MWF.xApplication.process.workcenter.LP = {
 		{"key": "completedList", "name": "完成"},
 		{"key": "key", "name": "关键字"}
 	],
+	"noTask": "没有要处理的待办",
+	"noTaskCompleted": "没有已处理的文件",
+	"noRead": "没有需要阅读的文件",
+	"noReadCompleted": "没有已经阅读的文件",
+	"noDraft": "没有草稿文件",
+	"createWork": "新建流程文件",
 
-
+	"batch": "批量处理",
+	"selectBatch": "选中多个相同环节的待办进行批量处理",
+	"cannotSelectBatch": "不同环节的待办不能进行批量处理"
 
 };
