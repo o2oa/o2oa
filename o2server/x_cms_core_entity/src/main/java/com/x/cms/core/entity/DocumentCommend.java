@@ -18,7 +18,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
  * 文档点赞
- * 
+ *
  * @author O2LEE
  *
  */
@@ -34,10 +34,12 @@ public class DocumentCommend extends SliceJpaObject {
 	private static final long serialVersionUID = 3856138316794473794L;
 	private static final String TABLE = PersistenceProperties.DocumentCommend.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -47,6 +49,7 @@ public class DocumentCommend extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
+	@Override
 	public void onPersist() throws Exception {
 	}
 	/*
@@ -56,18 +59,19 @@ public class DocumentCommend extends SliceJpaObject {
 	 * =====
 	 */
 
-	/*
-	 * =============================================================================
-	 * ===== 以下为具体不同的业务及数据表字段要求
-	 * =============================================================================
-	 * =====
-	 */
 	public static final String documentId_FIELDNAME = "documentId";
 	@FieldDescribe("文档ID")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + documentId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	@Index(name = TABLE + IndexNameMiddle + documentId_FIELDNAME)
 	private String documentId;
+
+	public static final String title_FIELDNAME = "title";
+	@FieldDescribe("文档标题")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + title_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String title;
 
 	public static final String commendPerson_FIELDNAME = "commendPerson";
 	@FieldDescribe("点赞者")
@@ -90,5 +94,13 @@ public class DocumentCommend extends SliceJpaObject {
 
 	public void setCommendPerson(String commendPerson) {
 		this.commendPerson = commendPerson;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }
