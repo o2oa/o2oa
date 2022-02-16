@@ -1,6 +1,6 @@
 [
   { "name": "Homepage", "title": o2.LP.desktop.homepage },
-  { "name": "process.TaskCenter", "title": o2.LP.desktop.taskCenter },
+  { "name": "process.workcenter", "title": o2.LP.desktop.taskCenter },
   { "name": "cms.Index", "title": o2.LP.desktop.info},
   { "name": "Calendar", "title": o2.LP.desktop.calendar },
   { "name": "Profile", "title":  o2.LP.desktop.profile }
