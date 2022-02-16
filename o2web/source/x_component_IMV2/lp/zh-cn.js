@@ -27,6 +27,13 @@ MWF.xApplication.IMV2.LP = {
 	"groupName": "群名",
 	"clearAllMsg": "清空聊天记录",
 
+	"msgMenuItemRevokeMemberMsg": "撤回成员消息",
+	"msgMenuItemRevokeMsg": "撤回",
+	
+	
+	"settingsClearMsg": "是否开启聊天消息清除功能：",
+	"settingsRevokeMsg": "是否开启聊天消息撤回功能：",
+
 	"enterMessage": "输入消息内容",
 	"send": "发送",
 	"sendKeyTips": "Ctrl + Enter 换行",
