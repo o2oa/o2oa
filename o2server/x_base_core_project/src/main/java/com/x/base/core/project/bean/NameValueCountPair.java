@@ -32,11 +32,8 @@ public class NameValueCountPair {
 			return false;
 		}
 		NameValueCountPair other = (NameValueCountPair) obj;
-		if ((Objects.equals(this.getCount(), other.getCount())) && (Objects.equals(this.getName(), other.getName()))
-				&& (Objects.equals(this.getValue(), other.getValue()))) {
-			return true;
-		}
-		return false;
+		return (Objects.equals(this.getCount(), other.getCount())) && (Objects.equals(this.getName(), other.getName()))
+				&& (Objects.equals(this.getValue(), other.getValue()));
 	}
 
 	public Object getValue() {
