@@ -27,7 +27,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.ReadCompleted_;
-import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
@@ -35,17 +34,18 @@ class ActionFilterAttributeFilter extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Business business = new Business(emc);
+			Predicate p = predicate(effectivePerson, business, wi);
 			Wo wo = new Wo();
-			wo.getApplicationList().addAll(this.listApplicationPair(business, effectivePerson, wi));
-			wo.getProcessList().addAll(this.listProcessPair(business, effectivePerson, wi));
-			wo.getCreatorUnitList().addAll(this.listCreatorUnitPair(business, effectivePerson, wi));
-			wo.getStartTimeMonthList().addAll(this.listStartTimeMonthPair(business, effectivePerson, wi));
-			wo.getCompletedTimeMonthList().addAll(this.listCompletedTimeMonthPair(business, effectivePerson, wi));
-			wo.getActivityNameList().addAll(this.listActivityNamePair(business, effectivePerson, wi));
-			wo.getCompletedList().addAll(this.listCompletedPair(business, effectivePerson, wi));
+			wo.getApplicationList().addAll(this.listApplicationPair(business, p));
+			wo.getProcessList().addAll(this.listProcessPair(business, p));
+			wo.getCreatorUnitList().addAll(this.listCreatorUnitPair(business, p));
+			wo.getStartTimeMonthList().addAll(this.listStartTimeMonthPair(business, p));
+			wo.getCompletedTimeMonthList().addAll(this.listCompletedTimeMonthPair(business, p));
+			wo.getActivityNameList().addAll(this.listActivityNamePair(business, p));
+			wo.getCompletedList().addAll(this.listCompletedPair(business, p));
 			result.setData(wo);
 			return result;
 		}
@@ -213,8 +213,7 @@ class ActionFilterAttributeFilter extends BaseAction {
 
 	}
 
-	private List<NameValueCountPair> listApplicationPair(Business business, EffectivePerson effectivePerson, Wi wi)
-			throws Exception {
+	private Predicate predicate(EffectivePerson effectivePerson, Business business, Wi wi) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -238,12 +237,26 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(ReadCompleted_.activityName).in(wi.getActivityNameList()));
 		}
+		// completed对象按单值处理
 		if (ListTools.isNotEmpty(wi.getCompletedList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completed).in(wi.getCompletedList()));
+			boolean value = BooleanUtils.isTrue(wi.getCompletedList().get(0));
+			if (value) {
+				p = cb.and(p, cb.isTrue(root.get(ReadCompleted_.completed)));
+			} else {
+				p = cb.and(p, cb.or(cb.isNull(root.get(ReadCompleted_.completed)),
+						cb.isFalse(root.get(ReadCompleted_.completed))));
+			}
 		}
+		return p;
+	}
+
+	private List<NameValueCountPair> listApplicationPair(Business business, Predicate p) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
 		cq.select(root.get(ReadCompleted_.application)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
-		;
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -265,34 +278,11 @@ class ActionFilterAttributeFilter extends BaseAction {
 		return wos;
 	}
 
-	private List<NameValueCountPair> listProcessPair(Business business, EffectivePerson effectivePerson, Wi wi)
-			throws Exception {
+	private List<NameValueCountPair> listProcessPair(Business business, Predicate p) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
-		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		if (ListTools.isNotEmpty(wi.getApplicationList())) {
-			p = cb.and(p, root.get(ReadCompleted_.application).in(wi.getApplicationList()));
-		}
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(ReadCompleted_.process).in(wi.getProcessList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
-			p = cb.and(p, root.get(ReadCompleted_.creatorUnit).in(wi.getCreatorUnitList()));
-		}
-		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completedTimeMonth).in(wi.getCompletedTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
-			p = cb.and(p, root.get(ReadCompleted_.activityName).in(wi.getActivityNameList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completed).in(wi.getCompletedList()));
-		}
 		cq.select(root.get(ReadCompleted_.process)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -316,34 +306,11 @@ class ActionFilterAttributeFilter extends BaseAction {
 		return wos;
 	}
 
-	private List<NameValueCountPair> listCreatorUnitPair(Business business, EffectivePerson effectivePerson, Wi wi)
-			throws Exception {
+	private List<NameValueCountPair> listCreatorUnitPair(Business business, Predicate p) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
-		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		if (ListTools.isNotEmpty(wi.getApplicationList())) {
-			p = cb.and(p, root.get(ReadCompleted_.application).in(wi.getApplicationList()));
-		}
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(ReadCompleted_.process).in(wi.getProcessList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
-			p = cb.and(p, root.get(ReadCompleted_.creatorUnit).in(wi.getCreatorUnitList()));
-		}
-		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completedTimeMonth).in(wi.getCompletedTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
-			p = cb.and(p, root.get(ReadCompleted_.activityName).in(wi.getActivityNameList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completed).in(wi.getCompletedList()));
-		}
 		cq.select(root.get(ReadCompleted_.creatorUnit)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -361,34 +328,11 @@ class ActionFilterAttributeFilter extends BaseAction {
 		return wos;
 	}
 
-	private List<NameValueCountPair> listActivityNamePair(Business business, EffectivePerson effectivePerson, Wi wi)
-			throws Exception {
+	private List<NameValueCountPair> listActivityNamePair(Business business, Predicate p) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
-		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		if (ListTools.isNotEmpty(wi.getApplicationList())) {
-			p = cb.and(p, root.get(ReadCompleted_.application).in(wi.getApplicationList()));
-		}
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(ReadCompleted_.process).in(wi.getProcessList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
-			p = cb.and(p, root.get(ReadCompleted_.creatorUnit).in(wi.getCreatorUnitList()));
-		}
-		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completedTimeMonth).in(wi.getCompletedTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
-			p = cb.and(p, root.get(ReadCompleted_.activityName).in(wi.getActivityNameList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completed).in(wi.getCompletedList()));
-		}
 		cq.select(root.get(ReadCompleted_.activityName)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -406,34 +350,11 @@ class ActionFilterAttributeFilter extends BaseAction {
 		return wos;
 	}
 
-	private List<NameValueCountPair> listStartTimeMonthPair(Business business, EffectivePerson effectivePerson, Wi wi)
-			throws Exception {
+	private List<NameValueCountPair> listStartTimeMonthPair(Business business, Predicate p) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
-		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		if (ListTools.isNotEmpty(wi.getApplicationList())) {
-			p = cb.and(p, root.get(ReadCompleted_.application).in(wi.getApplicationList()));
-		}
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(ReadCompleted_.process).in(wi.getProcessList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
-			p = cb.and(p, root.get(ReadCompleted_.creatorUnit).in(wi.getCreatorUnitList()));
-		}
-		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completedTimeMonth).in(wi.getCompletedTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
-			p = cb.and(p, root.get(ReadCompleted_.activityName).in(wi.getActivityNameList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completed).in(wi.getCompletedList()));
-		}
 		cq.select(root.get(ReadCompleted_.startTimeMonth)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -451,34 +372,11 @@ class ActionFilterAttributeFilter extends BaseAction {
 		return wos;
 	}
 
-	private List<NameValueCountPair> listCompletedTimeMonthPair(Business business, EffectivePerson effectivePerson,
-			Wi wi) throws Exception {
+	private List<NameValueCountPair> listCompletedTimeMonthPair(Business business, Predicate p) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
-		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		if (ListTools.isNotEmpty(wi.getApplicationList())) {
-			p = cb.and(p, root.get(ReadCompleted_.application).in(wi.getApplicationList()));
-		}
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(ReadCompleted_.process).in(wi.getProcessList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
-			p = cb.and(p, root.get(ReadCompleted_.creatorUnit).in(wi.getCreatorUnitList()));
-		}
-		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completedTimeMonth).in(wi.getCompletedTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
-			p = cb.and(p, root.get(ReadCompleted_.activityName).in(wi.getActivityNameList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completed).in(wi.getCompletedList()));
-		}
 		cq.select(root.get(ReadCompleted_.completedTimeMonth)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -496,34 +394,11 @@ class ActionFilterAttributeFilter extends BaseAction {
 		return wos;
 	}
 
-	private List<NameValueCountPair> listCompletedPair(Business business, EffectivePerson effectivePerson, Wi wi)
-			throws Exception {
-		EntityManager em = business.entityManagerContainer().get(TaskCompleted.class);
+	private List<NameValueCountPair> listCompletedPair(Business business, Predicate p) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Boolean> cq = cb.createQuery(Boolean.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
-		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
-		if (ListTools.isNotEmpty(wi.getApplicationList())) {
-			p = cb.and(p, root.get(ReadCompleted_.application).in(wi.getApplicationList()));
-		}
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(ReadCompleted_.process).in(wi.getProcessList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
-			p = cb.and(p, root.get(ReadCompleted_.creatorUnit).in(wi.getCreatorUnitList()));
-		}
-		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedTimeMonthList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completedTimeMonth).in(wi.getCompletedTimeMonthList()));
-		}
-		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
-			p = cb.and(p, root.get(ReadCompleted_.activityName).in(wi.getActivityNameList()));
-		}
-		if (ListTools.isNotEmpty(wi.getCompletedList())) {
-			p = cb.and(p, root.get(ReadCompleted_.completed).in(wi.getCompletedList()));
-		}
 		cq.select(root.get(ReadCompleted_.completed)).where(p);
 		List<Boolean> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();

@@ -131,8 +131,8 @@
       "dentyList": []
     },
     {
-      "name": "TaskCenter",
-      "path": "process.TaskCenter",
+      "name": "WorkCenter",
+      "path": "process.workcenter",
       "title": "办公中心",
       "iconPath": "appicon.png",
       "orderNumber": 13.0,
