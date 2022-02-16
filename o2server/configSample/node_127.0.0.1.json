@@ -128,7 +128,7 @@
     "logLevel": "WARN",
     "maxTotal": 50.0,
     "maxIdle": 0.0,
-    "statEnable": true,
+    "statEnable": false,
     "statFilter": "mergeStat",
     "slowSqlMillis": 2000.0,
     "lockTimeout": 120000.0,
@@ -142,7 +142,7 @@
     "###logLevel": "默认日志级别,FATAL, ERROR, WARN, INFO, TRACE. 完整的配置为DefaultLevel\u003dWARN, Tool\u003dTRACE, Enhance\u003dTRACE, METADATA\u003dTRACE, Runtime\u003dTRACE, Query\u003dTRACE, DataCache\u003dTRACE, JDBC\u003dTRACE, SQL\u003dTRACE###",
     "###maxTotal": "最大使用连接数###",
     "###maxIdle": "最大空闲连接数###",
-    "###statEnable": "启用统计,默认开启###",
+    "###statEnable": "启用统计,默认关闭###",
     "###statFilter": "统计方式配置,默认mergeStat###",
     "###slowSqlMillis": "执行缓慢sql毫秒数,默认2000毫秒,执行缓慢的sql将被单独记录.###",
     "###lockTimeout": "默认锁超时时间()毫秒).###"
