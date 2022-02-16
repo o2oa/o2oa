@@ -768,10 +768,15 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         if (this.module) this.module.uploadAttachment(e, node, files);
     },
     doUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery, files){
-        if (FormData.expiredIE){
-            this.doInputUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery);
+        if (this.options.isUpload){
+            if (FormData.expiredIE){
+                this.doInputUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery);
+            }else{
+                this.doFormDataUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery, files);
+            }
         }else{
-            this.doFormDataUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery, files);
+            var text = o2.LP.widget.notUploadNotice;
+            if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("info", {"x": "right", "y": "top"}, text, this.node);
         }
     },
     addUploadMessage: function(fileName){
