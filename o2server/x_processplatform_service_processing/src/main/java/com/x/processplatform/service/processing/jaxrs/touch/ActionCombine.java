@@ -1,4 +1,4 @@
-package com.x.processplatform.service.processing.jaxrs.test;
+package com.x.processplatform.service.processing.jaxrs.touch;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;

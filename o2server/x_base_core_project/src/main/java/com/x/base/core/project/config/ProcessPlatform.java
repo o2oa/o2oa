@@ -21,6 +21,8 @@ import com.x.base.core.project.tools.NumberTools;
  */
 public class ProcessPlatform extends ConfigObject {
 
+	private static final long serialVersionUID = 8025969872758663591L;
+
 	public static final Integer DEFAULT_FORMVERSIONPERIOD = 45;
 
 	public static final Integer DEFAULT_PROCESSVERSIONPERIOD = 45;
@@ -268,9 +270,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class Urge extends ConfigObject {
 
+		private static final long serialVersionUID = 1159238658106337292L;
+
 		public static Urge defaultInstance() {
-			Urge o = new Urge();
-			return o;
+			return new Urge();
 		}
 
 		public static final Boolean DEFAULT_ENABLE = false;
@@ -306,9 +309,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class Expire extends ConfigObject {
 
+		private static final long serialVersionUID = -8659190297973094979L;
+
 		public static Expire defaultInstance() {
-			Expire o = new Expire();
-			return o;
+			return new Expire();
 		}
 
 		public static final Boolean DEFAULT_ENABLE = true;
@@ -337,9 +341,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class TouchDelay extends ConfigObject {
 
+		private static final long serialVersionUID = 8716159849643530909L;
+
 		public static TouchDelay defaultInstance() {
-			TouchDelay o = new TouchDelay();
-			return o;
+			return new TouchDelay();
 		}
 
 		public static final Boolean DEFAULT_ENABLE = true;
@@ -371,8 +376,7 @@ public class ProcessPlatform extends ConfigObject {
 		private static final long serialVersionUID = -5858277850858377338L;
 
 		public static Merge defaultInstance() {
-			Merge o = new Merge();
-			return o;
+			return new Merge();
 		}
 
 		public Merge() {
@@ -426,9 +430,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class TouchDetained extends ConfigObject {
 
+		private static final long serialVersionUID = -1557669565639237145L;
+
 		public static TouchDetained defaultInstance() {
-			TouchDetained o = new TouchDetained();
-			return o;
+			return new TouchDetained();
 		}
 
 		public static final String DEFAULT_CRON = "30 30 12 * * ?";
@@ -466,9 +471,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class DeleteDraft extends ConfigObject {
 
+		private static final long serialVersionUID = -2127401618190754038L;
+
 		public static DeleteDraft defaultInstance() {
-			DeleteDraft o = new DeleteDraft();
-			return o;
+			return new DeleteDraft();
 		}
 
 		public static final String DEFAULT_CRON = "0 0 20 * * ?";
@@ -506,9 +512,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class PassExpired extends ConfigObject {
 
+		private static final long serialVersionUID = 2660210790582417811L;
+
 		public static PassExpired defaultInstance() {
-			PassExpired o = new PassExpired();
-			return o;
+			return new PassExpired();
 		}
 
 		public static final String DEFAULT_CRON = "5 5 8-18 * * ?";
@@ -536,9 +543,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class LogLongDetained extends ConfigObject {
 
+		private static final long serialVersionUID = 6183346578358650613L;
+
 		public static LogLongDetained defaultInstance() {
-			LogLongDetained o = new LogLongDetained();
-			return o;
+			return new LogLongDetained();
 		}
 
 		public static final String DEFAULT_CRON = "0 0 4 * * ?";
@@ -597,9 +605,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class Press extends ConfigObject {
 
+		private static final long serialVersionUID = -4223137429803117953L;
+
 		public static Press defaultInstance() {
-			Press o = new Press();
-			return o;
+			return new Press();
 		}
 
 		public static final Integer DEFAULT_INTERVALMINUTES = 10;
@@ -632,9 +641,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class AttachmentConfig extends ConfigObject {
 
+		private static final long serialVersionUID = -5672631798073576284L;
+
 		public static AttachmentConfig defaultInstance() {
-			AttachmentConfig o = new AttachmentConfig();
-			return o;
+			return new AttachmentConfig();
 		}
 
 		public static final Integer DEFAULT_FILE_SIZE = 0;
@@ -752,6 +762,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static class WorkExtensionEvents extends ArrayList<WorkExtensionEvent> {
 
+		private static final long serialVersionUID = -2847222465064494098L;
+
 		public Optional<WorkExtensionEvent> bind(String application, String process, String activity) {
 			return this.stream().filter(o -> BooleanUtils.isTrue(o.getEnable()))
 					.filter(o -> (ListTools.contains(o.getApplications(), application)
@@ -848,6 +860,9 @@ public class ProcessPlatform extends ConfigObject {
 	}
 
 	public static class WorkCompletedExtensionEvents extends ArrayList<WorkCompletedExtensionEvent> {
+
+		private static final long serialVersionUID = -5527994436451255023L;
+
 		public Optional<WorkCompletedExtensionEvent> bind(String application, String process) {
 			return this.stream().filter(o -> BooleanUtils.isTrue(o.getEnable()))
 					.filter(o -> (ListTools.contains(o.getApplications(), application)
