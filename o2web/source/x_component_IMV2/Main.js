@@ -145,12 +145,17 @@ MWF.xApplication.IMV2.Main = new Class({
 	// 打开IM配置文件
 	openSettingsDialog: function () {
 		var settingNode = new Element("div", {"style":"padding:10px;background-color:#fff;"});
-		// var imConfig = layout.config.imConfig || {}
-		var lineNode = new Element("div", {"style":"height:24px;line-height: 24px;", "text": "是否开启聊天消息清除功能："}).inject(settingNode);
-		var isClearEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableClearMsg || false}).inject(lineNode);
+
+		var lineNode = new Element("div", {"style":"height:24px;line-height: 24px;", "text": this.lp.settingsClearMsg}).inject(settingNode);
+		var isClearEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableClearMsg || false, "name": "clearEnable"}).inject(lineNode);
+
+		var line2Node = new Element("div", {"style":"height:24px;line-height: 24px;", "text": this.lp.settingsRevokeMsg}).inject(settingNode);
+		var isRevokeEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableRevokeMsg || false, "name": "revokeEnable"}).inject(line2Node);
+
 		var dlg = o2.DL.open({
 				"title": this.lp.setting,
 				"mask": true,
+				"height": "200",
 				"content": settingNode,
 				"onQueryClose": function () {
 					settingNode.destroy();
@@ -161,6 +166,7 @@ MWF.xApplication.IMV2.Main = new Class({
 						"text": this.lp.ok,
 						"action": function () { 
 							this.imConfig.enableClearMsg = isClearEnableNode.get("checked");
+							this.imConfig.enableRevokeMsg = isRevokeEnableNode.get("checked");
 							this.postIMConfig(this.imConfig);
 							// 保存配置文件
 							dlg.close(); 
@@ -780,22 +786,25 @@ MWF.xApplication.IMV2.Main = new Class({
 		var createPerson = msg.createPerson;
 		var distinguishedName = layout.session.user.distinguishedName;
 		var list = []; // 菜单列表
-		if (createPerson != distinguishedName) {
-			// 判断是否群主
-			var isGroupAdmin = false;
-			for (var i = 0; i < this.conversationNodeItemList.length; i++) {
-				var c = this.conversationNodeItemList[i];
-				if (this.conversationId == c.data.id) {
-					if (c.data.type === "group" && distinguishedName === c.data.adminPerson) {
-						isGroupAdmin = true;
+		
+		if (this.imConfig.enableRevokeMsg) { // 是否启用撤回消息
+			if (createPerson != distinguishedName) {
+				// 判断是否群主
+				var isGroupAdmin = false;
+				for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+					var c = this.conversationNodeItemList[i];
+					if (this.conversationId == c.data.id) {
+						if (c.data.type === "group" && distinguishedName === c.data.adminPerson) {
+							isGroupAdmin = true;
+						}
 					}
 				}
+				if (isGroupAdmin) {
+					list.push({"id":"revokeMemberMsg", "text": this.lp.msgMenuItemRevokeMemberMsg});
+				}
+			} else {
+				list.push({"id":"revokeMsg", "text": this.lp.msgMenuItemRevokeMsg});
 			}
-			if (isGroupAdmin) {
-				list.push({"id":"revokeMemberMsg", "text": this.lp.msgMenuItemRevokeMemberMsg});
-			}
-		} else {
-			 list.push({"id":"revokeMsg", "text": this.lp.msgMenuItemRevokeMsg});
 		}
 		if (this.menuNode) {
 			this.menuNode.destroy();
