@@ -468,3 +468,27 @@
     border-radius: 5px;
     padding: 5px 10px;
   }
+
+  /* 右键菜单 */
+  .chat-menulist {
+    width: 130px;
+    background: #fff;
+    border: 1px solid #f2f2f5;
+    border-bottom: none;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px 1px rgb(0 0 0 / 20%);
+    padding: 2px;
+    list-style-type: none;
+  }
+  .chat-menulist li {
+    font-size: 12px;
+    cursor: pointer;
+    line-height: 12px;
+    position: relative;
+    display: block;
+    white-space: nowrap;
+    min-width: 50px;
+    padding: 14px 35px 14px 16px;
+    color: #333;
+    list-style: none;
+  }

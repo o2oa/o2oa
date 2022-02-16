@@ -59,7 +59,6 @@ MWF.xApplication.IMV2.Main = new Class({
 		// 先加载配置文件 放入imConfig对象
 		MWF.xDesktop.loadConfig(function () {
 			this.imConfig = layout.config.imConfig || {}
-			console.log("imConfig", this.imConfig);
 			var url = this.path + this.options.style + "/im.html";
 			this.content.loadHtml(url, { "bind": { "lp": this.lp, "data": {} }, "module": this }, function () {
 				//设置content
@@ -146,12 +145,17 @@ MWF.xApplication.IMV2.Main = new Class({
 	// 打开IM配置文件
 	openSettingsDialog: function () {
 		var settingNode = new Element("div", {"style":"padding:10px;background-color:#fff;"});
-		// var imConfig = layout.config.imConfig || {}
-		var lineNode = new Element("div", {"style":"height:24px;line-height: 24px;", "text": "是否开启聊天消息清除功能："}).inject(settingNode);
-		var isClearEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableClearMsg || false}).inject(lineNode);
+
+		var lineNode = new Element("div", {"style":"height:24px;line-height: 24px;", "text": this.lp.settingsClearMsg}).inject(settingNode);
+		var isClearEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableClearMsg || false, "name": "clearEnable"}).inject(lineNode);
+
+		var line2Node = new Element("div", {"style":"height:24px;line-height: 24px;", "text": this.lp.settingsRevokeMsg}).inject(settingNode);
+		var isRevokeEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableRevokeMsg || false, "name": "revokeEnable"}).inject(line2Node);
+
 		var dlg = o2.DL.open({
 				"title": this.lp.setting,
 				"mask": true,
+				"height": "200",
 				"content": settingNode,
 				"onQueryClose": function () {
 					settingNode.destroy();
@@ -162,7 +166,7 @@ MWF.xApplication.IMV2.Main = new Class({
 						"text": this.lp.ok,
 						"action": function () { 
 							this.imConfig.enableClearMsg = isClearEnableNode.get("checked");
-							console.log(this.imConfig);
+							this.imConfig.enableRevokeMsg = isRevokeEnableNode.get("checked");
 							this.postIMConfig(this.imConfig);
 							// 保存配置文件
 							dlg.close(); 
@@ -185,7 +189,6 @@ MWF.xApplication.IMV2.Main = new Class({
 	// 保存IM配置文件
 	postIMConfig: function (imConfig) {
 		o2.Actions.load("x_message_assemble_communicate").ImAction.config(imConfig, function (json) {
-			console.log("保存配置完成", json.data);
 			this.refresh();//重新加载整个IM应用
 		}.bind(this), function (error) {
 			console.log(error);
@@ -526,7 +529,7 @@ MWF.xApplication.IMV2.Main = new Class({
 				console.log(error);
 			}.bind(this));
 		this.messageList.push(message);
-		this._buildReceiver(body, distinguishedName, false);
+		this._buildReceiver(body, distinguishedName, false, message);
 		this._refreshConvMessage(message);
 	},
 	//创建文本消息 并发送
@@ -553,7 +556,7 @@ MWF.xApplication.IMV2.Main = new Class({
 				console.log(error);
 			}.bind(this));
 		this.messageList.push(textMessage);
-		this._buildReceiver(body, distinguishedName, false);
+		this._buildReceiver(body, distinguishedName, false, textMessage);
 		this._refreshConvMessage(textMessage);
 	},
 	//刷新会话Item里面的最后消息内容
@@ -631,12 +634,12 @@ MWF.xApplication.IMV2.Main = new Class({
 	_buildMsgNode: function (msg, isTop) {
 		var createPerson = msg.createPerson;
 		var jsonbody = msg.body;
-		var body = JSON.parse(jsonbody);//todo 目前只有一种text类型
+		var body = JSON.parse(jsonbody);
 		var distinguishedName = layout.session.user.distinguishedName;
 		if (createPerson != distinguishedName) {
-			this._buildSender(body, createPerson, isTop);
+			this._buildSender(body, createPerson, isTop, msg);
 		} else {
-			this._buildReceiver(body, createPerson, isTop);
+			this._buildReceiver(body, createPerson, isTop, msg);
 		}
 	},
 	/**
@@ -644,9 +647,11 @@ MWF.xApplication.IMV2.Main = new Class({
 	 * @param  msgBody 消息体
 	 * @param createPerson 消息人员
 	 * @param isTop 是否放在顶部
+	 * @param msg 消息对象
 	 */
-	 _buildSender: function (msgBody, createPerson, isTop) {
-		var receiverBodyNode = new Element("div", { "class": "chat-sender" }).inject(this.chatContentNode, isTop ? "top" : "bottom");
+	 _buildSender: function (msgBody, createPerson, isTop, msg) {
+		var receiverBodyNode = new Element("div", { "class": "chat-sender", "id": msg.id}).inject(this.chatContentNode, isTop ? "top" : "bottom");
+		this._addContextMenuEvent(receiverBodyNode, msg);
 		var avatarNode = new Element("div").inject(receiverBodyNode);
 		var avatarUrl = this._getIcon(createPerson);
 		var name = createPerson;
@@ -704,9 +709,12 @@ MWF.xApplication.IMV2.Main = new Class({
 	 * @param  msgBody 
 	 * @param createPerson 消息人员
 	 * @param isTop 是否放在顶部
+	 * @param msg 消息对象
 	 */
-	_buildReceiver: function (msgBody, createPerson, isTop) {
-		var receiverBodyNode = new Element("div", { "class": "chat-receiver" }).inject(this.chatContentNode, isTop ? "top" : "bottom");
+	_buildReceiver: function (msgBody, createPerson, isTop, msg) {
+		var receiverBodyNode = new Element("div", { "class": "chat-receiver", "id": msg.id}).inject(this.chatContentNode, isTop ? "top" : "bottom");
+		this._addContextMenuEvent(receiverBodyNode, msg);
+	
 		var avatarNode = new Element("div").inject(receiverBodyNode);
 		var avatarUrl = this._getIcon(createPerson);
 		var name = createPerson;
@@ -758,6 +766,102 @@ MWF.xApplication.IMV2.Main = new Class({
 			var scrollFx = new Fx.Scroll(this.chatContentNode);
 			scrollFx.toBottom();
 		}
+	},
+	// 绑定右键事件
+	_addContextMenuEvent: function(receiverBodyNode, msg) {
+		receiverBodyNode.store("msg", msg);
+		receiverBodyNode.addEvents({
+			"contextmenu": function(e) {
+				//取消默认的浏览器自带右键 很重要！！
+				e.preventDefault();
+				var menuleft=e.client.x+'px';
+    		var menutop=e.client.y+'px';
+				var m = receiverBodyNode.retrieve("msg");
+				this._createMsgContextMenu(m, menuleft, menutop);
+			}.bind(this)
+		});
+	},
+	// 打开 消息体上 右键菜单
+	_createMsgContextMenu: function(msg, menuleft, menutop) {
+		var createPerson = msg.createPerson;
+		var distinguishedName = layout.session.user.distinguishedName;
+		var list = []; // 菜单列表
+		
+		if (this.imConfig.enableRevokeMsg) { // 是否启用撤回消息
+			if (createPerson != distinguishedName) {
+				// 判断是否群主
+				var isGroupAdmin = false;
+				for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+					var c = this.conversationNodeItemList[i];
+					if (this.conversationId == c.data.id) {
+						if (c.data.type === "group" && distinguishedName === c.data.adminPerson) {
+							isGroupAdmin = true;
+						}
+					}
+				}
+				if (isGroupAdmin) {
+					list.push({"id":"revokeMemberMsg", "text": this.lp.msgMenuItemRevokeMemberMsg});
+				}
+			} else {
+				list.push({"id":"revokeMsg", "text": this.lp.msgMenuItemRevokeMsg});
+			}
+		}
+		if (this.menuNode) {
+			this.menuNode.destroy();
+			this.menuNode = null;
+		}
+		if (list.length > 0) {
+			// 生成菜单
+			this.menuNode = new Element("ul", {"class": "chat-menulist", "styles": { "position": "fixed", "z-index": "9999", "top": menutop, "left": menuleft } }).inject(this.chatNode);
+			for (let index = 0; index < list.length; index++) {
+				const element = list[index];
+				var menuItemNode = new Element("li", {"text": element.text}).inject(this.menuNode);
+				menuItemNode.store('menuItemData', element);
+				menuItemNode.store('menuItemMsgData', msg);
+				menuItemNode.addEvents({
+					"click": function(e) {
+						var menuItemData = menuItemNode.retrieve('menuItemData'); // 菜单项数据
+						var menuItemMsgData = menuItemNode.retrieve('menuItemMsgData'); // 消息数据
+						this._clickMsgContextMenuItem(menuItemData, menuItemMsgData);
+						e.preventDefault();
+					}.bind(this)
+				});
+			}
+			// 添加关闭菜单事件
+			this.closeMsgContextMenuFun = function(e) {
+				if (this.menuNode) {
+					this.menuNode.destroy();
+					this.menuNode = null;
+				}
+				e.preventDefault();
+				if( this.closeMsgContextMenuFun )this.app.content.removeEvent( "click", this.closeMsgContextMenuFun );
+			}.bind(this);
+	
+			this.app.content.addEvents({
+				"click": this.closeMsgContextMenuFun
+			});
+		}
+	},
+	// 点击 右键菜单项
+	_clickMsgContextMenuItem: function(menuItemData, menuItemMsgData) {
+		// 关闭菜单
+		if (this.menuNode) {
+			this.menuNode.destroy();
+			this.menuNode = null;
+		}
+		// 根据菜单不同处理不同内容
+		// 撤回
+		if (menuItemData.id === "revokeMemberMsg" || menuItemData.id === "revokeMsg") {
+			this._revokeMsg(menuItemMsgData);
+		}
+	},
+	// 撤回消息
+	_revokeMsg: function(msg) {
+		o2.Actions.load("x_message_assemble_communicate").ImAction.msgRevoke(msg.id, function(json) {
+			console.log("撤回消息：", json);
+			// 删除消息
+			$(msg.id).destroy();
+		}.bind(this));
 	},
 	//图片 根据大小 url
 	_getFileUrlWithWH: function (id, width, height) {
