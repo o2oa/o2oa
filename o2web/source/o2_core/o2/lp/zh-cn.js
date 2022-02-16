@@ -336,7 +336,7 @@ o2.LP.widget = {
     "refuseUploadNotice" : "文件：“{filename}”不符合允许上传类型",
     "refuseUploadHTML_size" : "<div>名为：<font style='color:#0000ff'>“{filename}”</font>的附件超出允许的大小，<font style='color:#ff0000'>已经被剔除</font>（仅允许上传小于{size}M的文件）</div>",
     "refuseUploadNotice_size": "文件：“{filename}”超出允许的大小，（仅允许上传小于{size}M的文件）",
-
+    "notUploadNotice": "当前状态不允许上传附件",
 
     "list": "列表",
     "sequence": "序列",

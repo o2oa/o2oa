@@ -7,6 +7,10 @@
     "icon": "taskCenter.png",
     "color": "#4A90E2"
   },
+  "process.workcenter": {
+    "icon": "taskCenter.png",
+    "color": "#4A90E2"
+  },
   "cms.Index": {
     "icon": "cmsIndex.png",
     "color": "#66CC80"
