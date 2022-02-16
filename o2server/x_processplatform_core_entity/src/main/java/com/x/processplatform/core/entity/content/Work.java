@@ -91,8 +91,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			text = StringTools.utf8SubString(text, length_255B);
 			this.setManualTaskIdentityText(text);
 		}
-		// 强制进行properties对象写入
-		//this.setProperties(this.getProperties());
 	}
 
 	@PostLoad
@@ -101,6 +99,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			this.title = this.getProperties().getTitle();
 		}
 		this.splitValueList = this.getProperties().getSplitValueList();
+		this.embedTargetJob = this.getProperties().getEmbedTargetJob();
 	}
 
 	/* 更新运行方法 */
@@ -154,11 +153,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	}
 
 	public List<String> getSplitValueList() {
-		// 这里调用必须重新指向一次,如果使用
-		// Work copy = XGsonBuilder.convert(work, Work.class);
-		// copy.copyTo(this, JpaObject.id_FIELDNAME);
-		// 这样的方法调用,那么在运行完成以后copy.splitValueList不再指向this.getProperties().getSplitValueList()
-		this.splitValueList = this.getProperties().getSplitValueList();
 		return this.splitValueList;
 	}
 
@@ -167,11 +161,23 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.getProperties().setSplitValueList(splitValueList);
 	}
 
-	/* 修改过的Set Get 方法 */
+	public String getEmbedTargetJob() {
+		return embedTargetJob;
+	}
+
+	public void setEmbedTargetJob(String embedTargetJob) {
+		this.getProperties().setEmbedTargetJob(embedTargetJob);
+		this.embedTargetJob = embedTargetJob;
+
+	}
 
 	@Transient
 	@FieldDescribe("要拆分的值")
 	private List<String> splitValueList;
+
+	@Transient
+	@FieldDescribe("Embed活动生成的Work的Job.")
+	private String embedTargetJob;
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工作")
@@ -399,8 +405,9 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@FieldDescribe("拆分工作产生的Token")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + splitTokenList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + splitTokenList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ splitTokenList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + splitTokenList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + splitTokenList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + splitTokenList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)

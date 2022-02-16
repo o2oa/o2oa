@@ -73,7 +73,6 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.processPlatform().getUrge().getEnable())) {
 				context.schedule(Urge.class, Config.processPlatform().getUrge().getCron());
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

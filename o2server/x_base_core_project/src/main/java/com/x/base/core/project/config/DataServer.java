@@ -10,13 +10,15 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 public class DataServer extends ConfigObject {
 
+	private static final long serialVersionUID = 77120835343101221L;
+
 	private static final Integer DEFAULT_TCPPORT = 20050;
 	private static final Integer DEFAULT_WEBPORT = 20051;
 	private static final Integer DEFAULT_CACHESIZE = 512;
 	private static final Boolean DEFAULT_JMXENABLE = false;
 	private static final Integer DEFAULT_MAXTOTAL = 50;
 	private static final Integer DEFAULT_MAXIDLE = 0;
-	private static final Boolean DEFAULT_STATENABLE = true;
+	private static final Boolean DEFAULT_STATENABLE = false;
 	private static final String DEFAULT_STATFILTER = "mergeStat";
 	private static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
 	private static final Integer DEFAULT_LOCKTIMEOUT = 120000;
@@ -63,7 +65,7 @@ public class DataServer extends ConfigObject {
 	private Integer maxTotal;
 	@FieldDescribe("最大空闲连接数")
 	private Integer maxIdle;
-	@FieldDescribe("启用统计,默认启用")
+	@FieldDescribe("启用统计,默认关闭")
 	private Boolean statEnable;
 	@FieldDescribe("统计方式配置,默认mergeStat")
 	private String statFilter;
@@ -138,14 +140,14 @@ public class DataServer extends ConfigObject {
 		if (null != this.includes) {
 			return this.includes;
 		}
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
 	public List<String> getExcludes() {
 		if (null != this.excludes) {
 			return this.excludes;
 		}
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
 	public void setTcpPort(Integer tcpPort) {

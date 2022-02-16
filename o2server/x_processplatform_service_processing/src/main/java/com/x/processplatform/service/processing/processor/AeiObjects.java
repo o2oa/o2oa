@@ -74,6 +74,7 @@ public class AeiObjects extends GsonPropertyObject {
 		this.work = work;
 		this.activity = activity;
 		this.processingAttributes = processingAttributes;
+		this.processingConfigurator = processingConfigurator;
 		this.activityProcessingConfigurator = processingConfigurator.get(activity.getActivityType());
 	}
 

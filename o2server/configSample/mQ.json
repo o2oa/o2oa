@@ -1,0 +1,37 @@
+{
+  "enable": false,
+  "mq": "kafka",
+  "###enable": "是否启用.###",
+  "###mq": "消息服务类型###",
+  "###kafka": "Kafka服务器配置###",
+  "kafka": {
+    "bootstrap_servers": "localhost:9092",
+    "topic": "topic-test",
+    "acks": "all",
+    "retries": 0.0,
+    "batch_size": 16384.0,
+    "linger_ms": 1.0,
+    "buffer_memory": 3.3554432E7,
+    "key_deserializer": "org.apache.kafka.common.serialization.StringDeserializer",
+    "value_deserializer": "org.apache.kafka.common.serialization.StringDeserializer",
+    "###bootstrap_servers": "服务器地址###",
+    "###topic": "主题###",
+    "###acks": "指定必须有多少个分区副本接收消息，生产者才认为消息写入成功###",
+    "###retries": "错误的次数###",
+    "###batch_size": "批次可以使用的内存大小###",
+    "###linger_ms": "等待更多消息加入批次的时间###",
+    "###buffer_memory": "生产者内存缓冲区的大小###",
+    "###key_deserializer": "key值的序列化类###",
+    "###value_deserializer": "value的序列化类###"
+  },
+  "###activeMQ": "ActiveMQ服务器配置###",
+  "activeMQ": {
+    "url": "tcp://127.0.0.1:61616",
+    "queueName": "queue-test",
+    "###url": "服务器地址###",
+    "###queueName": "消息队列名###",
+    "###keyStore": "密钥文件存储路径###",
+    "###trustStore": "证书文件存储路径###",
+    "###keyStorePassword": "密钥密码###"
+  }
+}
