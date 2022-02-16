@@ -228,6 +228,23 @@ public class ImAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "撤回消息", action = ActionMsgRevoke.class)
+    @GET
+    @Path("msg/revoke/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void msgRevoke(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                          @JaxrsParameterDescribe("消息标识") @PathParam("id") String id) {
+        ActionResult<ActionMsgRevoke.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionMsgRevoke().execute(effectivePerson, id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
 
 
     @JaxrsMethodDescribe(value = "分页查询某个会话的消息列表.", action = ActionMsgListWithConversationByPage.class)
