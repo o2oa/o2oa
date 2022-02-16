@@ -73,7 +73,7 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	@FieldDescribe("是否含有首页图片")
 	private Boolean hasIndexPic = false;
 
-	@FieldDescribe("首页图片列表")
+	@FieldDescribe("首页图片列表，分页展现返回前3个图片")
 	private List<String> pictureList;
 
 	@FieldDescribe("文档所有数据信息.")
@@ -102,6 +102,12 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 
 	@FieldDescribe("业务数据Long值02.")
 	private Long longValue02;
+
+	@FieldDescribe("业务数据Double值01.")
+	private Double doubleValue01;
+
+	@FieldDescribe("业务数据Double值02.")
+	private Double doubleValue02;
 
 	@FieldDescribe("业务数据DateTime值01.")
 	private Date dateTimeValue01;
@@ -389,6 +395,22 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 
 	public void setLongValue02(Long longValue02) {
 		this.longValue02 = longValue02;
+	}
+
+	public Double getDoubleValue01() {
+		return doubleValue01;
+	}
+
+	public void setDoubleValue01(Double doubleValue01) {
+		this.doubleValue01 = doubleValue01;
+	}
+
+	public Double getDoubleValue02() {
+		return doubleValue02;
+	}
+
+	public void setDoubleValue02(Double doubleValue02) {
+		this.doubleValue02 = doubleValue02;
 	}
 
 	public Date getDateTimeValue01() {
