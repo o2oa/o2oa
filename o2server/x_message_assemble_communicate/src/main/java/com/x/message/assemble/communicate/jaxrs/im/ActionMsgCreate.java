@@ -72,7 +72,7 @@ public class ActionMsgCreate extends BaseAction {
                 MessageConnector.send(MessageConnector.TYPE_IM_CREATE,  title, person, msg);
                 //如果消息接收者没有在线 连接ws 就发送一个推送消息
                 try {
-                    if (!ActionCollaboration.clients.values().contains(person)) {
+                    if (!ActionCollaboration.clients.containsValue(person)) {
                         logger.info("向app 推送im消息， person: " + person);
                         Message message = new Message();
                         String body = imMessageBody(msg);

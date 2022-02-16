@@ -27,6 +27,9 @@ MWF.xApplication.IMV2.LP = {
 	"groupName": "Name",
 	"clearAllMsg": "Clear chat history",
 
+	"msgMenuItemRevokeMemberMsg": "Revoke member message",
+	"msgMenuItemRevokeMsg": "Revoke",
+
 	"enterMessage": "Enter message content",
 	"send": "Send",
 	"sendKeyTips": "Ctrl + Enter Line feed",
