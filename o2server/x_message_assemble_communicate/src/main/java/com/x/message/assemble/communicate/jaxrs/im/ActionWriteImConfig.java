@@ -101,6 +101,8 @@ public class ActionWriteImConfig extends BaseAction {
 
         @FieldDescribe("是否开启清空聊天记录的功能.")
         private Boolean enableClearMsg;
+        @FieldDescribe("是否开启撤回聊天消息的功能.")
+        private Boolean enableRevokeMsg;
 
         public Boolean getEnableClearMsg() {
             return enableClearMsg;
@@ -108,6 +110,14 @@ public class ActionWriteImConfig extends BaseAction {
 
         public void setEnableClearMsg(Boolean enableClearMsg) {
             this.enableClearMsg = enableClearMsg;
+        }
+
+        public Boolean getEnableRevokeMsg() {
+            return enableRevokeMsg;
+        }
+
+        public void setEnableRevokeMsg(Boolean enableRevokeMsg) {
+            this.enableRevokeMsg = enableRevokeMsg;
         }
     }
 
