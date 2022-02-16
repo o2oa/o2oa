@@ -1067,7 +1067,7 @@ var response = {
      * @static
      * @param {String} [url] 跳转的url。
      * @o2syntax
-     * this.response.temporaryRedirect(url);
+     * this.response.redirect(url);
      */
     redirect: function(url){
         bind.java_customResponse.temporaryRedirect(url);
