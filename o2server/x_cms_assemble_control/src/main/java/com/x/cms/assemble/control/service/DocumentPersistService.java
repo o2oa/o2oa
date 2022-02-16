@@ -40,6 +40,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 对文档信息进行持久化服务类
+ * @author sword
  */
 public class DocumentPersistService {
 	private static Logger logger = LoggerFactory.getLogger(DocumentPersistService.class);
@@ -51,8 +52,13 @@ public class DocumentPersistService {
 		if( document == null ){
 			throw new Exception("document is null!");
 		}
-		if (document.getPictureList() != null && !document.getPictureList().isEmpty()) {
+		if (ListTools.isNotEmpty(document.getPictureList())) {
 			document.setHasIndexPic(true);
+			if(document.getPictureList().size() > 3){
+				document.setIndexPics(StringUtils.join(document.getPictureList().subList(0, 2), ","));
+			}else{
+				document.setIndexPics(StringUtils.join(document.getPictureList(), ","));
+			}
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			document.setModifyTime( new Date());

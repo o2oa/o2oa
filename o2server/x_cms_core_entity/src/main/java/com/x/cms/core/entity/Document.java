@@ -265,6 +265,12 @@ public class Document extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Boolean reviewed = false;
 
+	public static final String indexPics_FIELDNAME = "indexPics";
+	@FieldDescribe("首页图片，取自pictureList的前3个图片用于列表展示")
+	@Column(name = ColumnNamePrefix + indexPics_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String indexPics;
+
 	public static final String sequenceTitle_FIELDNAME = "sequenceTitle";
 	@FieldDescribe("用于标题排序的sequence")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceTitle_FIELDNAME)
@@ -655,6 +661,14 @@ public class Document extends SliceJpaObject {
 
 	public void setHasIndexPic(Boolean hasIndexPic) {
 		this.hasIndexPic = hasIndexPic;
+	}
+
+	public String getIndexPics() {
+		return indexPics;
+	}
+
+	public void setIndexPics(String indexPics) {
+		this.indexPics = indexPics;
 	}
 
 	public String getSummary() {
