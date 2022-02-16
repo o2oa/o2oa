@@ -785,12 +785,6 @@ MWF.xApplication.process.workcenter.List = new Class({
 		return Promise.all([formPromise, taskPromise]);
 	},
 	editTask: function(e, data, action){
-		this.app.content.mask({
-			"destroyOnHide": true,
-			"id": "mask_"+data.id,
-			"class": "maskNode"
-		});
-
 		this.getFormData(data).then(function(dataArr){
 			var form = dataArr[0];
 			var task = dataArr[1];
@@ -832,6 +826,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 				"title": this.lp.process,
 				"style": form.json.dialogStyle || "user",
 				"isResize": false,
+				//"isClose": false,
 				"content": processNode,
 				"maskNode": this.app.content,
 				"positionHeight": 800,
