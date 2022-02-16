@@ -368,9 +368,12 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector.DutyInput = Class
                 //    _self.data[node.get("name")] = code;
                 //}
             });
-            this.scriptEditor.loadEditor(function(){
-                if (this.data.code) this.scriptEditor.editor.editor.setValue(this.data.code);
-            }.bind(this));
+            window.setTimeout(function(){
+                this.scriptEditor.loadEditor(function(){
+                    if (this.data.code) this.scriptEditor.editor.editor.setValue(this.data.code);
+                }.bind(this));
+            }.bind(this), 20);
+
         }.bind(this));
     },
     createReference: function(text, code, action){
