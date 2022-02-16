@@ -1,23 +1,24 @@
 package com.x.processplatform.service.processing.processor.embed;
 
 import com.x.processplatform.core.entity.element.Embed;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAssignCreateWi;
 
 public class ExecuteObject {
 
-	public ExecuteObject(AssignData assignData, Embed embed) {
+	public ExecuteObject(ActionAssignCreateWi assignData, Embed embed) {
 		this.assignData = assignData;
 		this.embed = embed;
 	}
 
-	private AssignData assignData;
+	private ActionAssignCreateWi assignData;
 
 	private Embed embed;
 
-	public AssignData getAssignData() {
+	public ActionAssignCreateWi getAssignData() {
 		return assignData;
 	}
 
-	public void setAssignData(AssignData assignData) {
+	public void setAssignData(ActionAssignCreateWi assignData) {
 		this.assignData = assignData;
 	}
 

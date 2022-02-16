@@ -5,23 +5,32 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import javax.script.Bindings;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Cancel;
+import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.core.express.ProcessingAttributes;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.Processing;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class CancelProcessor extends AbstractCancelProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(CancelProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CancelProcessor.class);
 
 	public CancelProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -75,10 +84,75 @@ public class CancelProcessor extends AbstractCancelProcessor {
 		if (!aeiObjects.getWorks().isEmpty()) {
 			Predicate<Work> p = o -> Objects.equals(ActivityType.end, o.getActivityType());
 			if (aeiObjects.getWorks().stream().allMatch(p)) {
-				Processing processing = new Processing(new ProcessingAttributes());
-				processing.processing(aeiObjects.getWorks().get(0).getId());
+				touchWork(aeiObjects.getWorks().get(0).getId());
 			}
 		}
+		tryUpdateParentWork(aeiObjects);
+	}
+
+	private void tryUpdateParentWork(AeiObjects aeiObjects) {
+		if (StringUtils.isNotBlank(aeiObjects.getWork().getProperties().getParentWork())) {
+			try {
+				Work parent = aeiObjects.entityManagerContainer()
+						.find(aeiObjects.getWork().getProperties().getParentWork(), Work.class);
+				aeiObjects.entityManagerContainer().get(Work.class).detach(parent);
+				if ((null != parent) && Objects.equals(parent.getActivityType(), ActivityType.embed)) {
+					Embed embed = (Embed) aeiObjects.business().element().get(parent.getActivity(),
+							parent.getActivityType());
+					if ((null != embed) && BooleanUtils.isTrue(embed.getWaitUntilCompleted())) {
+						updateParentWork(aeiObjects, parent, embed);
+					}
+				} else {
+					LOGGER.warn("work id:{}, can not find embed activity parent work id:{}.",
+							aeiObjects.getWork().getId(), aeiObjects.getWork().getProperties().getParentWork());
+				}
+			} catch (Exception e) {
+				LOGGER.error(new ExceptionUpdateParentWork(e, aeiObjects.getWork().getId(),
+						aeiObjects.getWork().getProperties().getParentWork()));
+			}
+		}
+	}
+
+	private void updateParentWork(AeiObjects aeiObjects, Work parent, Embed embed) throws Exception {
+		AeiObjects embedAeiObjects = new AeiObjects(aeiObjects.business(), parent, embed,
+				aeiObjects.getProcessingConfigurator(), aeiObjects.getProcessingAttributes());
+		embedAeiObjects.entityManagerContainer().beginTransaction(Work.class);
+		parent.getProperties().setEmbedCompleted(ActivityType.cancel.toString());
+		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedEndScript(embed)) {
+			ScriptContext scriptContext = embedAeiObjects.scriptContext();
+			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+			bindings.put(ScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
+			if (this.hasEmbedCompletedScript(embed)) {
+				CompiledScript cs = aeiObjects.business().element()
+						.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETED);
+				JsonScriptingExecutor.eval(cs, scriptContext);
+			}
+			if (this.hasEmbedCompletedEndScript(embed)) {
+				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
+						aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETEDEND);
+				JsonScriptingExecutor.eval(cs, scriptContext);
+			}
+		}
+		embedAeiObjects.commit();
+		touchWork(parent.getId());
+	}
+
+	/**
+	 * 触发在等待状态的父文档
+	 * 
+	 * @param parentWorkId
+	 */
+	private void touchWork(String workId) {
+		new Thread(CancelProcessor.class.getName() + "_touchWork") {
+			@Override
+			public void run() {
+				try {
+					new Processing(new ProcessingAttributes()).processing(workId);
+				} catch (Exception e) {
+					LOGGER.error(e);
+				}
+			}
+		}.start();
 	}
 
 	@Override

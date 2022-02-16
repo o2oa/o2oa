@@ -45,6 +45,9 @@ public class Business {
 	public static final String EVENT_EMBEDTARGETASSIGNDATA = "embedTargetAssignData";
 	public static final String EVENT_EMBEDTARGETIDENTITY = "embedTargetIdentity";
 	public static final String EVENT_EMBEDTARGETTITLE = "embedTargetTitle";
+	public static final String EVENT_EMBEDCOMPLETED = "embedCompleted";
+	public static final String EVENT_EMBEDCOMPLETEDEND = "embedCompletedEnd";
+	public static final String EVENT_EMBEDCOMPLETEDCANCEL = "embedCompletedCancel";
 	public static final String EVENT_PROCESSAFTERBEGIN = "processAfterBegin";
 	public static final String EVENT_PROCESSAFTEREND = "processAfterEnd";
 	public static final String EVENT_PROCESSEXPIRE = "processExpire";

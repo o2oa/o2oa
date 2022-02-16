@@ -83,8 +83,9 @@ class ActionCreate extends BaseAction {
 			}
 		}
 		if (StringUtils.isEmpty(workId)) {
-			WoId woId = ThisApplication.context().applications().postQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("work", "process", process.getId()), wi.getData(), null)
+			WoId woId = ThisApplication.context().applications()
+					.postQuery(x_processplatform_service_processing.class,
+							Applications.joinQueryUri("work", "process", process.getId()), wi.getData(), null)
 					.getData(WoId.class);
 			workId = woId.getId();
 		}
@@ -100,6 +101,10 @@ class ActionCreate extends BaseAction {
 					throw new ExceptionWorkNotExist(workId);
 				}
 				work.setTitle(wi.getTitle());
+				// 写入父work标识
+				if (StringUtils.isNotBlank(wi.getParentWork())) {
+					work.getProperties().setParentWork(wi.getParentWork());
+				}
 				work.setCreatorIdentity(identity);
 				work.setCreatorPerson(organization.person().getWithIdentity(identity));
 				work.setCreatorUnit(organization.unit().getWithIdentity(identity));
@@ -156,6 +161,17 @@ class ActionCreate extends BaseAction {
 
 		@FieldDescribe("工作数据.")
 		private JsonElement data;
+
+		@FieldDescribe("父工作标识.")
+		private String parentWork;
+
+		public String getParentWork() {
+			return parentWork;
+		}
+
+		public void setParentWork(String parentWork) {
+			this.parentWork = parentWork;
+		}
 
 		public String getTitle() {
 			return title;
@@ -247,12 +263,6 @@ class ActionCreate extends BaseAction {
 	public static class WoTask extends Task {
 
 		private static final long serialVersionUID = 2279846765261247910L;
-
-		// public static List<String> Includes = ListTools.toList("createTime",
-		// "updateTime", "startTime",
-		// "startTimeMonth", "person", "identity", "unit", "topUnit",
-		// "routeList", "routeNameList", "work",
-		// "allowRapid");
 
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class, null,
 				JpaObject.FieldsInvisible);
@@ -370,21 +380,6 @@ class ActionCreate extends BaseAction {
 			}
 		});
 		wo.setTaskCompletedList(list);
-//		/* 补充召回 */
-//		List<WoTaskCompleted> results = new ArrayList<>();
-//		for (WoTaskCompleted o : list) {
-//			results.add(o);
-//			if (o.getProcessingType().equals(ProcessingType.retract)) {
-//				WoTaskCompleted retract = new WoTaskCompleted();
-//				o.copyTo(retract);
-//				retract.setRouteName("撤回");
-//				retract.setOpinion("撤回");
-//				retract.setStartTime(retract.getRetractTime());
-//				retract.setCompletedTime(retract.getRetractTime());
-//				results.add(retract);
-//			}
-//		}
-//		wo.setTaskCompletedList(results);
 	}
 
 }

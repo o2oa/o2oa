@@ -1,6 +1,5 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,28 +9,24 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.ActionLogger;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -41,14 +36,14 @@ import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
 import com.x.processplatform.core.express.ProcessingAttributes;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAssignCreateWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAssignCreateWi.WiAttachment;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAssignCreateWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.Processing;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkDataHelper;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 创建处于start状态的work 此方法不需要进入队列运行
@@ -66,8 +61,6 @@ class ActionAssignCreate extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		Boolean processing = wi.getProcessing();
-
 		Work work = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -79,59 +72,10 @@ class ActionAssignCreate extends BaseAction {
 			Application application = business.element().get(process.getApplication(), Application.class);
 			Begin begin = business.element().getBeginWithProcess(process.getId());
 			work = create(application, process, begin);
-			String identityDn = business.organization().identity().get(wi.getIdentity());
-			if (StringUtils.isEmpty(identityDn)) {
-				throw new ExceptionIdentityNotExist(wi.getIdentity());
-			}
-			work.setTitle(wi.getTitle());
-			work.setCreatorIdentity(identityDn);
-			work.setCreatorPerson(business.organization().person().getWithIdentity(identityDn));
-			work.setCreatorUnit(business.organization().unit().getWithIdentity(identityDn));
-			if (StringUtils.isNotEmpty(work.getCreatorUnit())) {
-				Unit unit = business.organization().unit().getObject(work.getCreatorUnit());
-				work.setCreatorUnitLevelName(unit.getLevelName());
-			}
+			updateWork(business, work, wi);
 			/* 通过赋值调用的是不能被作为草稿删除的 */
 			work.setDataChanged(true);
-			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
-				emc.beginTransaction(Attachment.class);
-				/** 这个attachmentList要手动初始化 */
-				// work.setAttachmentList(new ArrayList<String>());
-				for (WiAttachment o : wi.getAttachmentList()) {
-					StorageMapping fromMapping = ThisApplication.context().storageMappings().get(Attachment.class,
-							o.getStorage());
-					if (null == fromMapping) {
-						throw new ExceptionFromMappingNotExist(o.getStorage());
-					}
-					Attachment oldAtt = emc.find(o.getId(), Attachment.class);
-					if (null == oldAtt) {
-						throw new ExceptionEntityNotExist(o.getId(), Attachment.class);
-					}
-					StorageMapping toMapping = ThisApplication.context().storageMappings().random(Attachment.class);
-					if (null == toMapping) {
-						throw new ExceptionToMappingNotExist(Attachment.class);
-					}
-					Attachment attachment = new Attachment(work, effectivePerson.getDistinguishedName(), o.getSite());
-					attachment.setActivity(begin.getId());
-					attachment.setActivityName(begin.getName());
-					attachment.setActivityType(ActivityType.begin);
-					attachment.setActivityToken(work.getActivityToken());
-					if(BooleanUtils.isTrue(wi.getAttachmentSoftCopy())){
-						attachment.setName(o.getName());
-						attachment.setDeepPath(toMapping.getDeepPath());
-						attachment.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(o.getName(), ".")));
-						attachment.setLength(oldAtt.getLength());
-						attachment.setStorage(toMapping.getName());
-						attachment.setLastUpdateTime(new Date());
-						attachment.setFromJob(oldAtt.getJob());
-						attachment.setFromId(oldAtt.getId());
-						attachment.setFromPath(oldAtt.path());
-					}else {
-						attachment.saveContent(toMapping, o.readContent(fromMapping), o.getName());
-					}
-					emc.persist(attachment, CheckPersistType.all);
-				}
-			}
+			updateAttachment(business, effectivePerson, work, begin, wi);
 			emc.beginTransaction(Work.class);
 			emc.persist(work, CheckPersistType.all);
 			if (null != wi.getData()) {
@@ -141,118 +85,187 @@ class ActionAssignCreate extends BaseAction {
 			emc.commit();
 		}
 		MessageFactory.work_create(work);
-		// if (BooleanUtils.isTrue(processing)) {
-		// ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-		// Applications.joinQueryUri("work", work.getId(), "processing"), null,
-		// work.getJob());
-		// }
-		if (BooleanUtils.isTrue(processing)) {
+		if (BooleanUtils.isTrue(wi.getProcessing())) {
 			ProcessingAttributes processingAttributes = new ProcessingAttributes();
 			Processing p = new Processing(processingAttributes);
 			p.processing(work.getId());
 		}
 
 		wo.setId(work.getId());
+		wo.setJob(work.getJob());
 		result.setData(wo);
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject {
-
-		@FieldDescribe("应用标识")
-		private String application;
-		@FieldDescribe("流程标识")
-		private String process;
-		@FieldDescribe("身份标识")
-		private String identity;
-		@FieldDescribe("标题")
-		private String title;
-		@FieldDescribe("业务数据")
-		private Data data;
-		@FieldDescribe("附件")
-		private List<WiAttachment> attachmentList;
-		@FieldDescribe("是否软拷贝附件，true表示不拷贝真实存储附件，只拷贝附件记录，共用附件.")
-		private Boolean attachmentSoftCopy;
-		@FieldDescribe("自动流转")
-		private Boolean processing;
-
-		public String getApplication() {
-			return application;
-		}
-
-		public void setApplication(String application) {
-			this.application = application;
-		}
-
-		public String getProcess() {
-			return process;
-		}
-
-		public void setProcess(String process) {
-			this.process = process;
-		}
-
-		public String getIdentity() {
-			return identity;
-		}
-
-		public void setIdentity(String identity) {
-			this.identity = identity;
-		}
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
-
-		public Data getData() {
-			return data;
-		}
-
-		public void setData(Data data) {
-			this.data = data;
-		}
-
-		public List<WiAttachment> getAttachmentList() {
-			return attachmentList;
-		}
-
-		public void setAttachmentList(List<WiAttachment> attachmentList) {
-			this.attachmentList = attachmentList;
-		}
-
-		public Boolean getProcessing() {
-			return processing;
-		}
-
-		public void setProcessing(Boolean processing) {
-			this.processing = processing;
-		}
-
-		public Boolean getAttachmentSoftCopy() {
-			return attachmentSoftCopy;
-		}
-
-		public void setAttachmentSoftCopy(Boolean attachmentSoftCopy) {
-			this.attachmentSoftCopy = attachmentSoftCopy;
+	private void updateAttachment(Business business, EffectivePerson effectivePerson, Work work, Begin begin, Wi wi)
+			throws Exception {
+		if (ListTools.isNotEmpty(wi.getAttachmentList())) {
+			EntityManagerContainer emc = business.entityManagerContainer();
+			emc.beginTransaction(Attachment.class);
+			/** 这个attachmentList要手动初始化 */
+			for (WiAttachment o : wi.getAttachmentList()) {
+				StorageMapping fromMapping = ThisApplication.context().storageMappings().get(Attachment.class,
+						o.getStorage());
+				if (null == fromMapping) {
+					throw new ExceptionFromMappingNotExist(o.getStorage());
+				}
+				Attachment fromAttachment = emc.find(o.getId(), Attachment.class);
+				if (null == fromAttachment) {
+					throw new ExceptionEntityNotExist(o.getId(), Attachment.class);
+				}
+				StorageMapping toMapping = ThisApplication.context().storageMappings().random(Attachment.class);
+				if (null == toMapping) {
+					throw new ExceptionToMappingNotExist(Attachment.class);
+				}
+				Attachment toAttachment = new Attachment(work, effectivePerson.getDistinguishedName(), o.getSite());
+				toAttachment.setActivity(begin.getId());
+				toAttachment.setActivityName(begin.getName());
+				toAttachment.setActivityType(ActivityType.begin);
+				toAttachment.setActivityToken(work.getActivityToken());
+				copyAttachment(fromMapping, toMapping, fromAttachment, toAttachment, wi, o);
+				emc.persist(toAttachment, CheckPersistType.all);
+			}
 		}
 	}
 
-	public static class WiAttachment extends Attachment {
+	private void copyAttachment(StorageMapping fromMapping, StorageMapping toMapping, Attachment formAttachment,
+			Attachment toAttachment, Wi wi, WiAttachment o) throws Exception {
+		if (BooleanUtils.isTrue(wi.getAttachmentSoftCopy())) {
+			toAttachment.setName(o.getName());
+			toAttachment.setDeepPath(toMapping.getDeepPath());
+			toAttachment.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(o.getName(), ".")));
+			toAttachment.setLength(formAttachment.getLength());
+			toAttachment.setStorage(toMapping.getName());
+			toAttachment.setLastUpdateTime(new Date());
+			toAttachment.setFromJob(formAttachment.getJob());
+			toAttachment.setFromId(formAttachment.getId());
+			toAttachment.setFromPath(formAttachment.path());
+		} else {
+			toAttachment.saveContent(toMapping, o.readContent(fromMapping), o.getName());
+		}
+	}
 
-		private static final long serialVersionUID = 1954637399762611493L;
+	private void updateWork(Business business, Work work, Wi wi) throws Exception {
+		String identityDn = business.organization().identity().get(wi.getIdentity());
+		if (StringUtils.isEmpty(identityDn)) {
+			throw new ExceptionIdentityNotExist(wi.getIdentity());
+		}
+		work.setTitle(wi.getTitle());
+		work.setCreatorIdentity(identityDn);
+		work.setCreatorPerson(business.organization().person().getWithIdentity(identityDn));
+		work.setCreatorUnit(business.organization().unit().getWithIdentity(identityDn));
+		work.getProperties().setParentWork(wi.getParentWork());
+		work.getProperties().setParentJob(wi.getParentJob());
+		if (StringUtils.isNotEmpty(work.getCreatorUnit())) {
+			Unit unit = business.organization().unit().getObject(work.getCreatorUnit());
+			work.setCreatorUnitLevelName(unit.getLevelName());
+		}
+	}
 
-		public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+	public static class Wi extends ActionAssignCreateWi {
 
-		public static WrapCopier<WiAttachment, Attachment> copier = WrapCopierFactory.wi(WiAttachment.class,
-				Attachment.class, null, JpaObject.FieldsUnmodify);
+		private static final long serialVersionUID = 6368988907940597016L;
 
 	}
 
-	public static class Wo extends WoId {
+//	public static class Wi extends GsonPropertyObject {
+//
+//		@FieldDescribe("应用标识")
+//		private String application;
+//		@FieldDescribe("流程标识")
+//		private String process;
+//		@FieldDescribe("身份标识")
+//		private String identity;
+//		@FieldDescribe("标题")
+//		private String title;
+//		@FieldDescribe("业务数据")
+//		private Data data;
+//		@FieldDescribe("附件")
+//		private List<WiAttachment> attachmentList;
+//		@FieldDescribe("是否软拷贝附件，true表示不拷贝真实存储附件，只拷贝附件记录，共用附件.")
+//		private Boolean attachmentSoftCopy;
+//		@FieldDescribe("自动流转")
+//		private Boolean processing;
+//
+//		public String getApplication() {
+//			return application;
+//		}
+//
+//		public void setApplication(String application) {
+//			this.application = application;
+//		}
+//
+//		public String getProcess() {
+//			return process;
+//		}
+//
+//		public void setProcess(String process) {
+//			this.process = process;
+//		}
+//
+//		public String getIdentity() {
+//			return identity;
+//		}
+//
+//		public void setIdentity(String identity) {
+//			this.identity = identity;
+//		}
+//
+//		public String getTitle() {
+//			return title;
+//		}
+//
+//		public void setTitle(String title) {
+//			this.title = title;
+//		}
+//
+//		public Data getData() {
+//			return data;
+//		}
+//
+//		public void setData(Data data) {
+//			this.data = data;
+//		}
+//
+//		public List<WiAttachment> getAttachmentList() {
+//			return attachmentList;
+//		}
+//
+//		public void setAttachmentList(List<WiAttachment> attachmentList) {
+//			this.attachmentList = attachmentList;
+//		}
+//
+//		public Boolean getProcessing() {
+//			return processing;
+//		}
+//
+//		public void setProcessing(Boolean processing) {
+//			this.processing = processing;
+//		}
+//
+//		public Boolean getAttachmentSoftCopy() {
+//			return attachmentSoftCopy;
+//		}
+//
+//		public void setAttachmentSoftCopy(Boolean attachmentSoftCopy) {
+//			this.attachmentSoftCopy = attachmentSoftCopy;
+//		}
+//	}
+//
+//	public static class WiAttachment extends Attachment {
+//
+//		private static final long serialVersionUID = 1954637399762611493L;
+//
+//		public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+//
+//		public static WrapCopier<WiAttachment, Attachment> copier = WrapCopierFactory.wi(WiAttachment.class,
+//				Attachment.class, null, JpaObject.FieldsUnmodify);
+//
+//	}
+
+	public static class Wo extends ActionAssignCreateWo {
+
+		private static final long serialVersionUID = 1974733636474717701L;
 
 	}
 
@@ -287,10 +300,10 @@ class ActionAssignCreate extends BaseAction {
 		return list.get(0);
 	}
 
-	private Work create(Application application, Process process, Begin begin) throws Exception {
+	private Work create(Application application, Process process, Begin begin) {
 		Date now = new Date();
 		Work work = new Work();
-		/* 标识工作数据未修改 */
+		// 标识工作数据未修改
 		work.setDataChanged(false);
 		work.setWorkThroughManual(false);
 		work.setWorkCreateType(Work.WORKCREATETYPE_ASSIGN);
@@ -302,7 +315,6 @@ class ActionAssignCreate extends BaseAction {
 		work.setProcessAlias(process.getAlias());
 		work.setJob(StringTools.uniqueToken());
 		work.setStartTime(now);
-		// work.setErrorRetry(0);
 		work.setWorkStatus(WorkStatus.start);
 		work.setDestinationActivity(begin.getId());
 		work.setDestinationActivityType(ActivityType.begin);
