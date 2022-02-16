@@ -2318,11 +2318,11 @@ bind.Table = function(name){
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @o2syntax
-     * table.listRowNext( id, count, success, failure )
+     * table.listRowPrev( id, count, success, failure )
      * @example
      * var table = new this.Table("table1");
      *
-     * table.listRowNext( "0", 20, function(data){
+     * table.listRowPrev( "0", 20, function(data){
      *    //data 形如
      *    //{
      *    //    "type": "success",
@@ -2361,7 +2361,7 @@ bind.Table = function(name){
      * var table = new this.Table("table1");
      *
      * //查询字段name等于zhangsan的数据，结果按updateTime倒序
-     * table.listRowSelect( "o.name='zhangsan", "o.updateTime desc", 20, function(data){
+     * table.listRowSelect( "o.name='zhangsan'", "o.updateTime desc", 20, function(data){
      *    //data 形如
      *    //{
      *    //    "type": "success",
@@ -2851,7 +2851,7 @@ bind.service = {
      * @example
      * //通过get方法发起restful请求，获取json数据
      * var res = this.service.restful("get", "config/myjson.json");
-     * if (res.responseCode>=200 && responseCode<300){
+     * if (res.responseCode>=200 && res.responseCode<300){
      *     var jsonData = res.json;
      * }
      */
@@ -3259,7 +3259,11 @@ bind.assignData = {     //java_assignData 应用调用活动的创建的流程�
      * @param {Object} [data] 要设置的assignData对象，一般情况都是通过assignData.get()获取并做必要修改的对象。
      * @o2syntax
      * this.assignData.set(data);
-     * @deprecated 不建议使用，建议return一个json对象或数组的方式来设置data。
+     * @deprecated set方法已不建议使用了。建议return一个json对象或数组的方式来设置data。
+     * @example
+     * var data = this.assignData.get();
+     * data.data.parentProcessData = "父流程实例的信息";
+     * return data;
      */
     "set": function(data){
         bind.java_assignData.set(JSON.stringify(data || this.data));
@@ -3286,7 +3290,7 @@ Object.defineProperties(bind.assignData, {"data": {
  * @module server.parameters
  * @o2category server.process
  * @o2ordernumber 215
- * @deprecated 不建议使用，建议return一个json对象或数组的方式来设置参数。
+ * @deprecated parameters对象已经不建议使用了。建议return一个json对象或数组的方式来设置参数。
  * @example
  * //使用jaxrs方式的服务调用活动的参数脚本中
  * //如果rest服务地址为：xxx/{id}/xx/{name},则需要传入两个参数：id和name，可使用如下代码：
@@ -3384,10 +3388,8 @@ bind.parameters = {
      * @methodOf module:server.parameters
      * @static
      * @param {String|Number} [name] jaxrs方式的服务调用活动，传入要删除参数的key；jaxws方式的服务调用活动，传入要删除的参数的索引。
-     * @param {String|Number|boolean} [value] 要设置的参数值。
      * @o2syntax
-     * this.parameters.put(name, value);
-     * this.parameters.put(obj);
+     * this.parameters.remove(name);
      * @deprecated 不建议使用
      */
     "remove": function(name){
@@ -3406,7 +3408,7 @@ bind.parameters = {
  * @module server.body
  * @o2category server.process
  * @o2ordernumber 220
- * @deprecated 不建议使用，建议return一个json对象的方式来设置body。如：
+ * @deprecated body对象已经不建议使用了。建议return一个json对象的方式来设置body。如：
  * <pre><code class='language-js'>return {
  *     "key1": "value1",
  *     "key2": "value2",
@@ -3466,7 +3468,7 @@ bind.body = {
  * @module server.headers
  * @o2category server.process
  * @o2ordernumber 225
- * @deprecated 不建议使用，建议return一个json对象的方式来设置headers。如：
+ * @deprecated headers对象已经不建议使用了，建议return一个json对象的方式来设置headers。如：
  * <pre><code class='language-js'>return {
  *     "Content-Type": "application/x-www-form-urlencoded"，
  *     "Accept-Language": "en"
@@ -3543,7 +3545,7 @@ bind.headers = {
 
 //java_jaxwsResponse  直接返回不做处理
 /**
- * 用于流程配置的服务调用活动中的“响应脚本”，描述调用服务后得到的响应。<br>
+ * 用于流程配置的服务调用活动中的“响应脚本”，描述调用服务后得到的响应。(注意：调用方式为异步时，“响应脚本”不会执行)<br>
  * @o2range 流程配置-服务调用活动中的“响应脚本”
  * @module server.response
  * @o2category server.process
@@ -3624,7 +3626,7 @@ bind.form = null;
  * @o2category server.process
  * @o2ordernumber 235
  * @o2syntax
- * var res = this.response;
+ * var res = this.request;
  */
 bind.request = {
     /**
@@ -3634,7 +3636,7 @@ bind.request = {
      * @static
      * @return {Object|String} 请求的body内容，如果能转换为json，则返回json对象，否则返回请求的内容的文本.
      * @o2syntax
-     * var req = this.response.getBody();
+     * var req = this.request.getBody();
      */
     "getBody": function(){
         try{
@@ -3645,16 +3647,16 @@ bind.request = {
     }
 }
 /**
- * @summary 获取请求的body内容。与getBody()方法相同
- * @member {Object|String} requestData
+ * @summary 获取请求的body的原始内容。
+ * @member {String} text
  * @memberOf server.module:request
  * @o2syntax
- * var req = this.request.value;
+ * var req = this.request.text;
  */
 Object.defineProperties(bind, {
-    "requestData": {
+    "text": {
         "configurable": true,
-        "get": function(){return bind.request.getBody();}
+        "get": function(){return bind.java_requestText;}
     }
 });
 
@@ -3679,7 +3681,7 @@ Object.defineProperties(bind, {
  * @module server.expire
  * @o2category server.process
  * @o2ordernumber 240
- * @deprecated 不建议使用，建议return一个json对象的方式来设置超时时间。
+ * @deprecated expire对象已经不建议使用了。建议return一个json对象的方式来设置超时时间。
  * @example
  * //设置超时时限为待办产生后5小时
  * this.expire.setHour(5);
