@@ -91,6 +91,9 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 				if( wo.getCreatorTopUnitName() != null && !wo.getCreatorTopUnitName().isEmpty() ) {
 					wo.setCreatorTopUnitNameShort( wo.getCreatorTopUnitName().split( "@" )[0]);
 				}
+				if(StringUtils.isNoneBlank(document.getIndexPics())) {
+					wo.setPictureList(ListTools.toList(document.getIndexPics().split(",")));
+				}
 				if( wi.getNeedData() ) {
 					//需要组装数据
 					wo.setData( documentQueryService.getDocumentData( document ) );
