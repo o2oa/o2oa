@@ -9,8 +9,8 @@ public class RouteProperties extends JsonProperties {
 
 	private static final long serialVersionUID = -7792270726211126577L;
 
-	@FieldDescribe("是否启用异步返回.")
-	private Boolean asyncSupported = true;
+	@FieldDescribe("是否启用异步返回.默认为false")
+	private Boolean asyncSupported = false;
 
 	@FieldDescribe("选择优先路由时是否直接执行路由(一票否决),默认null.")
 	private Boolean soleDirect;
