@@ -1041,6 +1041,7 @@ bind.service = {
 /**
  * 用于服务管理的接口脚本，描述服务的响应对象。<br>
  * @o2range 服务管理-接口
+ * @o2cn 服务的响应对象
  * @module server.service.response
  * @o2category server.service
  * @o2ordernumber 245
@@ -1113,6 +1114,7 @@ var o= {
     /**
      * 获取当前用户的全称。
      * @module server.currentPerson
+     * @o2cn 当前用户全称
      * @o2category server.common
      * @o2ordernumber 250
      * @o2syntax
@@ -1124,6 +1126,7 @@ var o= {
     /**
      * 用于数据中心查询语句的脚本中，可获取语句参数。json对象，在调用此语句的时候传入<br>
      * @o2range 数据中心-查询配置-通过脚本创建查询语句
+     * @o2cn 数据中心查询语句参数
      * @module server.service.parameters
      * @o2category server.service
      * @o2ordernumber 255
@@ -1156,13 +1159,17 @@ var o= {
      */
     "parameters": { "configurable": true, "get": function(){return ((bind.java_parameters) ? JSON.parse(bind.java_parameters) : null)} },
     /**
-     * 原始请求消息体的文本内容。
+     * 调用接口时传入的请求消息体的文本内容。
      * @o2range 服务管理-接口
      * @module server.requestText
+     * @o2cn 传入的服务消息体文本
      * @o2category server.service
      * @o2ordernumber 250
      * @o2syntax
      * var text = this.requestText;
+     * @example
+     * var text = this.requestText; //传入的服务消息体文本
+     * var object = JSON.parse(text); //转成对象
      */
     "requestText": { "configurable": true, "get": function(){return bind.java_requestText || null; } },
     "request": { "configurable": true, "get": function(){return bind.java_request || null; } },
