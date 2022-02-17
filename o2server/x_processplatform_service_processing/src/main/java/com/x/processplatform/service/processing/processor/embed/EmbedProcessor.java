@@ -43,7 +43,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.embedArrive(aeiObjects.getWork().getActivityToken(), embed));
 		// 清理标识
-		aeiObjects.getWork().getProperties().setEmbedCompleted("");
+		aeiObjects.getWork().setEmbedCompleted("");
 		aeiObjects.getWork().setEmbedTargetWork("");
 		aeiObjects.getWork().setEmbedTargetJob("");
 		return aeiObjects.getWork();
@@ -60,7 +60,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		aeiObjects.getProcessingAttributes().push(Signal.embedExecute(aeiObjects.getWork().getActivityToken(), embed));
 		List<Work> results = new ArrayList<>();
 		int blinker = blinker(BooleanUtils.isTrue(embed.getWaitUntilCompleted()),
-				aeiObjects.getWork().getEmbedTargetWork(), aeiObjects.getWork().getProperties().getEmbedCompleted());
+				aeiObjects.getWork().getEmbedTargetWork(), aeiObjects.getWork().getEmbedCompleted());
 		switch (blinker) {
 		case 0:// waitUntilCompleted:false, embedTargetWork:false, embedCompleted:false
 		case 1:// waitUntilCompleted:false, embedTargetWork:false, embedCompleted:true X
@@ -87,16 +87,6 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		default:
 			break;
 		}
-//		if (StringUtils.isBlank(aeiObjects.getWork().getEmbedTargetWork())) {
-//			embed(aeiObjects, embed);
-//			if (BooleanUtils.isTrue(embed.getAsync()) || BooleanUtils.isNotTrue(embed.getWaitUntilCompleted())) {
-//				results.add(aeiObjects.getWork());
-//			}
-//		} else if (BooleanUtils.isNotTrue(embed.getWaitUntilCompleted())
-//				|| StringUtils.isNotBlank(aeiObjects.getWork().getProperties().getEmbedCompleted())) {
-//			// 如果设置了停留至子流程结束,需要等待回写的标记.
-//			results.add(aeiObjects.getWork());
-//		}
 		return results;
 	}
 
