@@ -170,16 +170,12 @@ public class EndProcessor extends AbstractEndProcessor {
 			try {
 				Work parent = aeiObjects.entityManagerContainer()
 						.find(aeiObjects.getWork().getProperties().getParentWork(), Work.class);
-				aeiObjects.entityManagerContainer().get(Work.class).detach(parent);
 				if ((null != parent) && Objects.equals(parent.getActivityType(), ActivityType.embed)) {
-					Embed embed = (Embed) aeiObjects.business().element().get(parent.getActivity(),
-							parent.getActivityType());
+					Embed embed = (Embed) aeiObjects.business().element().get(parent.getActivity(), ActivityType.embed);
+
 					if ((null != embed) && BooleanUtils.isTrue(embed.getWaitUntilCompleted())) {
 						updateParentWork(aeiObjects, parent, embed);
 					}
-				} else {
-					LOGGER.warn("work id:{}, can not find embed activity parent work id:{}.",
-							aeiObjects.getWork().getId(), aeiObjects.getWork().getProperties().getParentWork());
 				}
 			} catch (Exception e) {
 				LOGGER.error(new ExceptionUpdateParentWork(e, aeiObjects.getWork().getId(),
@@ -189,10 +185,11 @@ public class EndProcessor extends AbstractEndProcessor {
 	}
 
 	private void updateParentWork(AeiObjects aeiObjects, Work parent, Embed embed) throws Exception {
+		// 先把状态值注入,这样脚本执行时可以取得到值.
+		parent.setEmbedCompleted(ActivityType.end.toString());
 		AeiObjects embedAeiObjects = new AeiObjects(aeiObjects.business(), parent, embed,
 				aeiObjects.getProcessingConfigurator(), aeiObjects.getProcessingAttributes());
 		embedAeiObjects.entityManagerContainer().beginTransaction(Work.class);
-		parent.getProperties().setEmbedCompleted(ActivityType.end.toString());
 		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedEndScript(embed)) {
 			ScriptContext scriptContext = embedAeiObjects.scriptContext();
 			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);

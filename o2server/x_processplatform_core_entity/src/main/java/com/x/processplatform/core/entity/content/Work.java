@@ -100,6 +100,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		}
 		this.splitValueList = this.getProperties().getSplitValueList();
 		this.embedTargetJob = this.getProperties().getEmbedTargetJob();
+		this.embedCompleted = this.getProperties().getEmbedCompleted();
 	}
 
 	/* 更新运行方法 */
@@ -171,6 +172,15 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	}
 
+	public String getEmbedCompleted() {
+		return embedCompleted;
+	}
+
+	public void setEmbedCompleted(String embedCompleted) {
+		this.getProperties().setEmbedCompleted(embedCompleted);
+		this.embedCompleted = embedCompleted;
+	}
+
 	@Transient
 	@FieldDescribe("要拆分的值")
 	private List<String> splitValueList;
@@ -178,6 +188,10 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@Transient
 	@FieldDescribe("Embed活动生成的Work的Job.")
 	private String embedTargetJob;
+
+	@Transient
+	@FieldDescribe("子流程返回标识.")
+	private String embedCompleted;
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工作")
