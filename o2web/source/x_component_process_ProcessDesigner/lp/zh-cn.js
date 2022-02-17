@@ -323,15 +323,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"completedCancelEventInfo": "当子流程流转到取消活动，此事件会被执行",
 		"completedEventInfo": "当子流程流转到结束或取消活动，此事件会被执行",
 
-		"responseScript": "响应数据脚本",
-		"completedScript": "",
-		// completedScriptText
-		// completedEndScript
-		// completedEndScriptText
-		// completedCancelScript
-		// completedCancelScriptText
-
-
 		"timer": "定时",
 		"timerType": "定时方式",
 		"delayTime": "延时指定的分钟后执行",
