@@ -95,7 +95,6 @@ public class CancelProcessor extends AbstractCancelProcessor {
 			try {
 				Work parent = aeiObjects.entityManagerContainer()
 						.find(aeiObjects.getWork().getProperties().getParentWork(), Work.class);
-				aeiObjects.entityManagerContainer().get(Work.class).detach(parent);
 				if ((null != parent) && Objects.equals(parent.getActivityType(), ActivityType.embed)) {
 					Embed embed = (Embed) aeiObjects.business().element().get(parent.getActivity(),
 							parent.getActivityType());

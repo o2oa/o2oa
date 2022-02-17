@@ -168,10 +168,9 @@ public class EndProcessor extends AbstractEndProcessor {
 			try {
 				Work parent = aeiObjects.entityManagerContainer()
 						.find(aeiObjects.getWork().getProperties().getParentWork(), Work.class);
-				aeiObjects.entityManagerContainer().get(Work.class).detach(parent);
 				if ((null != parent) && Objects.equals(parent.getActivityType(), ActivityType.embed)) {
-					Embed embed = (Embed) aeiObjects.business().element().get(parent.getActivity(),
-							parent.getActivityType());
+					Embed embed = (Embed) aeiObjects.business().element().get(parent.getActivity(), ActivityType.embed);
+
 					if ((null != embed) && BooleanUtils.isTrue(embed.getWaitUntilCompleted())) {
 						updateParentWork(aeiObjects, parent, embed);
 					}

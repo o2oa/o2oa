@@ -6,7 +6,6 @@ import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.message.MessageConnector;
-import com.x.processplatform.service.processing.processor.embed.SyncEmbedQueue;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxrsInvokeQueue;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxwsInvokeQueue;
 import com.x.processplatform.service.processing.schedule.DeleteDraft;
@@ -30,8 +29,6 @@ public class ThisApplication {
 
 	public static final SyncJaxwsInvokeQueue syncJaxwsInvokeQueue = new SyncJaxwsInvokeQueue();
 
-	public static final SyncEmbedQueue syncEmbedQueue = new SyncEmbedQueue();
-
 	private static ProcessingToProcessingSignalStack processingToProcessingSignalStack = new ProcessingToProcessingSignalStack();
 
 	public static ProcessingToProcessingSignalStack getProcessingToProcessingSignalStack() {
@@ -48,7 +45,6 @@ public class ThisApplication {
 			MessageConnector.start(context());
 			context().startQueue(syncJaxrsInvokeQueue);
 			context().startQueue(syncJaxwsInvokeQueue);
-			context().startQueue(syncEmbedQueue);
 			if (BooleanUtils.isTrue(Config.processPlatform().getMerge().getEnable())) {
 				context.schedule(Merge.class, Config.processPlatform().getMerge().getCron());
 			}
