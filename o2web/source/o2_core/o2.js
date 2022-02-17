@@ -1370,9 +1370,9 @@ if (!window.o2) {
          * }
          * </code></pre>
          * @o2syntax
-         * o2.loadHtmlText(urls, options);
+         * o2.loadHtmlText(html, options);
          * @o2syntax
-         * Element.loadHtmlText(urls, options);
+         * Element.loadHtmlText(html, options);
          * @see o2.loadHtml
          * @example
          * var html = "<div>{{$.title}}</div>"
@@ -1454,9 +1454,9 @@ if (!window.o2) {
          * </code></pre>
          * @param {Function} [callback] 可选参数，载入成功后的回调方法。
          * @o2syntax
-         * o2.loadAll(urls, options, callback);
+         * o2.loadAll(modules, options, callback);
          * @o2syntax
-         * Element.loadAll(urls, options, callback);
+         * Element.loadAll(modules, options, callback);
          * @see o2.load
          * @see o2.loadCss
          * @see o2.loadHtml
