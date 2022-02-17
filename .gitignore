@@ -14,7 +14,12 @@
 /o2server/commons/
 /o2server/jvm/
 /o2server/local/
-# /o2server/configSample/
+/o2server/configSample/
+!/o2server/configSample/externalDataSources*.json
+!/o2server/configSample/externalStorageSources.json
+!/o2server/configSample/manifest.cfg
+!/o2server/configSample/messageSendRule.js
+!/o2server/configSample/web.json
 /o2server/*/src/main/webapp/describe/
 /o2server/*/src/main/webapp/WEB-INF/
 **/.settings/
