@@ -615,11 +615,11 @@ public class Embed extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private String targetAssginDataScriptText;
 
-	public static final String async_FIELDNAME = "async";
-	@FieldDescribe("是否是异步调用")
-	@Column(name = ColumnNamePrefix + async_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Boolean async;
+//	public static final String async_FIELDNAME = "async";
+//	@FieldDescribe("是否是异步调用")
+//	@Column(name = ColumnNamePrefix + async_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private Boolean async;
 
 	@IdReference(Script.class)
 	@FieldDescribe("生成displayLog脚本.")
@@ -1101,13 +1101,13 @@ public class Embed extends Activity {
 		this.reviewGroupList = reviewGroupList;
 	}
 
-	public Boolean getAsync() {
-		return async;
-	}
-
-	public void setAsync(Boolean async) {
-		this.async = async;
-	}
+//	public Boolean getAsync() {
+//		return async;
+//	}
+//
+//	public void setAsync(Boolean async) {
+//		this.async = async;
+//	}
 
 	public String getGroup() {
 		return group;
