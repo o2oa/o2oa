@@ -130,9 +130,7 @@ public class CreateConfigSample {
 	private static void renameNode(File dir) throws IOException {
 		File fileNode = new File(dir, "node.json");
 		File fileNodeLocal = new File(dir, "node_127.0.0.1.json");
-		if (!Files.deleteIfExists(fileNodeLocal.toPath())) {
-			throw new IOException("delete file failure.");
-		}
+		Files.deleteIfExists(fileNodeLocal.toPath());
 		FileUtils.moveFile(fileNode, fileNodeLocal);
 	}
 
