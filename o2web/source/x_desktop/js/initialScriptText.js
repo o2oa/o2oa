@@ -3747,6 +3747,28 @@ bind.expire = {
     }
 };
 
+/**
+ * 在流程调用活动中。当启用流程等待的情况下，在"子流程成功后"、"子流程取消后"、"子流程完成后"，三个事件脚本中，可以访问到embedData对象<br/>
+ * embedData对象就是被调用的子流程的业务数据，它是一个类似JSON的对象，您可以用访问JSON对象的方法访问embedData对象的所有数据。<br/>
+ * 您可以通过work对象的embedCompleted值来判断被调用的子流程是否正常完成。 cancel end
+ * <pre><code class='language-js'>
+ *  var embedStatus = this.workContext.getWork().embedCompleted;
+ *  if (embedStatus=="end"){
+ *      //被调用的子流程正常流转到了结束活动
+ *  }
+ *  if (embedStatus=="cancel"){
+ *      //被调用的子流程流转到了取消活动
+ *  }
+ * </code></pre>
+ * @o2range 流程配置-流程调用活动中，当启用流程等待的情况下，在"子流程成功后"、"子流程取消后"、"子流程完成后"，三个事件中可用
+ * @module server.embedData
+ * @o2category server.process
+ * @o2ordernumber 205
+ * @example
+ * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前实例的业务数据，如下：
+ * var embedData = this.embedData;
+ */
+
 var o= {
     "context": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getContext() : null)} },
     "applications": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getApplications() : null)} },

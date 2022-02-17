@@ -95,16 +95,12 @@ public class CancelProcessor extends AbstractCancelProcessor {
 			try {
 				Work parent = aeiObjects.entityManagerContainer()
 						.find(aeiObjects.getWork().getProperties().getParentWork(), Work.class);
-				aeiObjects.entityManagerContainer().get(Work.class).detach(parent);
 				if ((null != parent) && Objects.equals(parent.getActivityType(), ActivityType.embed)) {
 					Embed embed = (Embed) aeiObjects.business().element().get(parent.getActivity(),
 							parent.getActivityType());
 					if ((null != embed) && BooleanUtils.isTrue(embed.getWaitUntilCompleted())) {
 						updateParentWork(aeiObjects, parent, embed);
 					}
-				} else {
-					LOGGER.warn("work id:{}, can not find embed activity parent work id:{}.",
-							aeiObjects.getWork().getId(), aeiObjects.getWork().getProperties().getParentWork());
 				}
 			} catch (Exception e) {
 				LOGGER.error(new ExceptionUpdateParentWork(e, aeiObjects.getWork().getId(),
@@ -114,11 +110,12 @@ public class CancelProcessor extends AbstractCancelProcessor {
 	}
 
 	private void updateParentWork(AeiObjects aeiObjects, Work parent, Embed embed) throws Exception {
+		// 先把状态值注入,这样脚本执行时可以取得到值.
+		parent.setEmbedCompleted(ActivityType.cancel.toString());
 		AeiObjects embedAeiObjects = new AeiObjects(aeiObjects.business(), parent, embed,
 				aeiObjects.getProcessingConfigurator(), aeiObjects.getProcessingAttributes());
 		embedAeiObjects.entityManagerContainer().beginTransaction(Work.class);
-		parent.getProperties().setEmbedCompleted(ActivityType.cancel.toString());
-		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedEndScript(embed)) {
+		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedCancelScript(embed)) {
 			ScriptContext scriptContext = embedAeiObjects.scriptContext();
 			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 			bindings.put(ScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
@@ -127,9 +124,9 @@ public class CancelProcessor extends AbstractCancelProcessor {
 						.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETED);
 				JsonScriptingExecutor.eval(cs, scriptContext);
 			}
-			if (this.hasEmbedCompletedEndScript(embed)) {
+			if (this.hasEmbedCompletedCancelScript(embed)) {
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
-						aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETEDEND);
+						aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETEDCANCEL);
 				JsonScriptingExecutor.eval(cs, scriptContext);
 			}
 		}
