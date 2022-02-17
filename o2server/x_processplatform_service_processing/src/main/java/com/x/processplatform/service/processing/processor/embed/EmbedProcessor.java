@@ -27,7 +27,6 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAs
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAssignCreateWi.WiAttachment;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAssignCreateWo;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WrapScriptObject;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -44,7 +43,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.embedArrive(aeiObjects.getWork().getActivityToken(), embed));
 		// 清理标识
-		aeiObjects.getWork().getProperties().setEmbedCompleted("");
+		aeiObjects.getWork().setEmbedCompleted("");
 		aeiObjects.getWork().setEmbedTargetWork("");
 		aeiObjects.getWork().setEmbedTargetJob("");
 		return aeiObjects.getWork();
@@ -60,17 +59,49 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.embedExecute(aeiObjects.getWork().getActivityToken(), embed));
 		List<Work> results = new ArrayList<>();
-		if (StringUtils.isBlank(aeiObjects.getWork().getEmbedTargetWork())) {
+		int blinker = blinker(BooleanUtils.isTrue(embed.getWaitUntilCompleted()),
+				aeiObjects.getWork().getEmbedTargetWork(), aeiObjects.getWork().getEmbedCompleted());
+		switch (blinker) {
+		case 0:// waitUntilCompleted:false, embedTargetWork:false, embedCompleted:false
+		case 1:// waitUntilCompleted:false, embedTargetWork:false, embedCompleted:true X
 			embed(aeiObjects, embed);
-			if (BooleanUtils.isTrue(embed.getAsync()) || BooleanUtils.isNotTrue(embed.getWaitUntilCompleted())) {
-				results.add(aeiObjects.getWork());
-			}
-		} else if (BooleanUtils.isNotTrue(embed.getWaitUntilCompleted())
-				|| StringUtils.isNotBlank(aeiObjects.getWork().getProperties().getEmbedCompleted())) {
-			// 如果设置了停留至子流程结束,需要等待回写的标记.
 			results.add(aeiObjects.getWork());
+			break;
+		case 2:// waitUntilCompleted:false, embedTargetWork:true, embedCompleted:false
+		case 3:// waitUntilCompleted:false, embedTargetWork:true, embedCompleted:true X
+			results.add(aeiObjects.getWork());
+			break;
+		case 4:// waitUntilCompleted:true, embedTargetWork:false, embedCompleted:false
+			embed(aeiObjects, embed);
+			break;
+		case 5:// waitUntilCompleted:true, embedTargetWork:false, embedCompleted:true
+				// impossible
+			results.add(aeiObjects.getWork());
+			break;
+		case 6:// waitUntilCompleted:true, embedTargetWork:true, embedCompleted:false
+				// wait
+			break;
+		case 7:// waitUntilCompleted:true, embedTargetWork:true, embedCompleted:true
+			results.add(aeiObjects.getWork());
+			break;
+		default:
+			break;
 		}
 		return results;
+	}
+
+	private int blinker(boolean waitUntilCompleted, String embedTargetWork, String embedCompleted) {
+		int value = 0;
+		if (waitUntilCompleted) {
+			value += 4;
+		}
+		if (StringUtils.isNotBlank(embedTargetWork)) {
+			value += 2;
+		}
+		if (StringUtils.isNotBlank(embedCompleted)) {
+			value += 1;
+		}
+		return value;
 	}
 
 	private void embed(AeiObjects aeiObjects, Embed embed) throws Exception {
@@ -123,14 +154,10 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		}
 		LOGGER.debug("embed:{}, process:{} try to embed application:{}, process:{}, assignData:{}.", embed::getName,
 				embed::getProcess, embed::getTargetApplication, embed::getTargetProcess, assignData::toString);
-		if (BooleanUtils.isTrue(embed.getAsync())) {
-			ThisApplication.syncEmbedQueue.send(assignData);
-		} else {
-			EmbedExecutor executor = new EmbedExecutor();
-			ActionAssignCreateWo wo = executor.execute(assignData);
-			aeiObjects.getWork().setEmbedTargetWork(wo.getId());
-			aeiObjects.getWork().setEmbedTargetJob(wo.getJob());
-		}
+		EmbedExecutor executor = new EmbedExecutor();
+		ActionAssignCreateWo wo = executor.execute(assignData);
+		aeiObjects.getWork().setEmbedTargetWork(wo.getId());
+		aeiObjects.getWork().setEmbedTargetJob(wo.getJob());
 	}
 
 	@Override

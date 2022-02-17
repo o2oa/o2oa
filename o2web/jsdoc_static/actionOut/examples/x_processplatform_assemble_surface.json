@@ -27,7 +27,8 @@
     "splitting": false,
     "form": "db3b2766-93a1-4058-b522-0edb922bd84f",
     "manualTaskIdentityList" : "张三@db3b2766-93a1-4058-b522-0edb922bd84f@I",
-    "manualTaskIdentityText" : "张三"
+    "manualTaskIdentityText" : "张三",
+    "embedCompleted": true
   },
   "WorkParsed" : {
     "id": "854e2c22-718e-48bb-98db-96f4b43e7ee8",
