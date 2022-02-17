@@ -38,8 +38,15 @@
   
 #### server
  * 后台脚本（服务端）可以使用的对象、方法和类。
- 
-   {@o2IndexTable modules|o2category=server}
+    
+##### common 通用后台api
+{@o2IndexTable modules|o2category=server.common}
+
+##### process 流程后台api
+  {@o2IndexTable modules|o2category=server.process}
+  
+##### service 服务管理api
+  {@o2IndexTable modules|o2category=server.service}
  
 
 ### FormComponent

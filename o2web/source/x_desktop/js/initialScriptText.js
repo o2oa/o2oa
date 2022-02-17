@@ -100,6 +100,7 @@ bind.library = library;
 /**
  * this.print是一个方法，在服务器控制台输出信息。<br/>
  * @module print()
+ * @o2cn 控制台输出打印
  * @o2category server.common
  * @o2ordernumber 145
  *
@@ -140,7 +141,7 @@ var _parsePrint = function(str){
  * @module console
  * @o2category server.common
  * @o2ordernumber 155
- *
+ * @o2cn 分等级控制台输出
  * @example
  * console.log("这是我要输出的信息");
  * //2021-12-20 13:26:24.739 [script] PRINT 这是我要输出的信息
@@ -190,7 +191,7 @@ bind.exec = exec;
  * @module define()
  * @o2category server.common
  * @o2ordernumber 160
- *
+ * @o2cn 方法定义
  * @param {(String)} name 定义的方法名称。
  * @param {Function} fun  定义的方法
  * @param {Boolean} [overwrite] 定义的方法是否能被覆盖重写。默认值为true。
@@ -342,6 +343,7 @@ bind.Action.applications = bind.applications;
  * 本文档说明如何在后台脚本中使用Actions调用平台的RESTful服务。<br/>
  * 通过访问以下地址来查询服务列表：http://server:20030/x_program_center/jest/list.html
  * @module server.Actions
+ * @o2cn 服务调用
  * @o2category server.common
  * @o2ordernumber 165
  * @o2syntax
@@ -522,6 +524,7 @@ var getNameFlag = function(name){
 /**
  * 您可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。后端调用都是同步的。
  * @module server.org
+ * @o2cn 组织查询
  * @o2category server.common
  * @o2ordernumber 170
  * @property    {GroupFactory}  group   后端的GroupFactory实例，可用于获取group群组相关数据, <a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/GroupFactory.html">查看javadoc</a>
@@ -1596,6 +1599,7 @@ bind.includedScripts = includedScripts;
 /**
  * this.include是一个方法，当您在流程、门户或者内容管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
  * @module include()
+ * @o2cn 脚本引用
  * @o2category server.common
  * @o2ordernumber 175
  *
@@ -1720,6 +1724,7 @@ bind.include = function( optionsOrName , callback ){
 /**
  * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。
  * @module server.Dict
+ * @o2cn 数据字典
  * @o2category server.common
  * @o2ordernumber 180
  * @o2syntax
@@ -2259,6 +2264,7 @@ bind.Dict = function(optionsOrName){
 /**
  * this.Table是一个工具类，您可以使用这个类对数据中心的数据表进行增删改查操作。
  * @module server.Table
+ * @o2cn 数据表执行
  * @o2category server.common
  * @o2ordernumber 185
  * @param {String} tableName 数据表的id、名称或别名。
@@ -2586,6 +2592,7 @@ bind.Table = function(name){
 /**
  * 您可以通过statement对象，获取执行查询语句或者对查询结果进行选择。<br/>
  * @module server.statement
+ * @o2cn 查询视图执行
  * @o2category server.common
  * @o2ordernumber 190
  * @o2syntax
@@ -2716,6 +2723,7 @@ bind.statement = {
 /**
  * 您可以通过view对象，获取视图数据或选择视图数据。<br/>
  * @module server.view
+ * @o2cn 视图执行
  * @o2category server.common
  * @o2ordernumber 195
  * @o2syntax
@@ -2816,6 +2824,7 @@ bind.view = {
 /**
  * 可以通过service对象发起restful请求，或soap协议的webservice调用。
  * @module service
+ * @o2cn 通用service调用
  * @o2category server.common
  * @o2syntax
  * var service = this.service;
@@ -2946,6 +2955,7 @@ bind.service = {
 /**
  * 您可以在流程事件、流程路由事件、流程活动事件中通过workContext获取和流程相关的流程实例对象数据。
  * @module server.workContext
+ * @o2cn 流程实例
  * @o2category server.process
  * @o2range {Process} 所有流程配置中的脚本可以使用此对象
  * @o2ordernumber 200
@@ -3185,6 +3195,7 @@ bind.workContent = bind.workContext;
  * 这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本进行创建和增删改查操作。<br/>
  * data对象基本上是一个JSON对象，您可以用访问JSON对象的方法访问data对象的所有数据。
  * @module server.data
+ * @o2cn 流程数据
  * @o2category server.process
  * @o2ordernumber 205
  * @example
@@ -3211,6 +3222,7 @@ bind.workContent = bind.workContext;
  * 也可以修改业务数据，并通过assignData的set方法，将业务数据传递到被调用的流程实例。<br/>
  * @o2range 流程配置-流程调用活动中的“数据脚本”中可用
  * @module server.assignData
+ * @o2cn 流程实例业务数据
  * @o2category server.process
  * @o2ordernumber 210
  * @example
@@ -3288,6 +3300,7 @@ Object.defineProperties(bind.assignData, {"data": {
  * 当调用类型为jaxws时：可使用parameters.add和parameters.remove方法<br/>
  * @o2range 流程配置-服务调用活动中的“参数脚本”中可用
  * @module server.parameters
+ * @o2cn 服务调用参数
  * @o2category server.process
  * @o2ordernumber 215
  * @deprecated parameters对象已经不建议使用了。建议return一个json对象或数组的方式来设置参数。
@@ -3406,6 +3419,7 @@ bind.parameters = {
  * 用于流程配置的服务调用活动中的“消息体脚本”，仅在jaxrs方式的服务调用活动中可用。<br>
  * @o2range 流程配置-服务调用活动中的“消息体脚本”，服务协议为jaxrs
  * @module server.body
+ * @o2cn 服务调用消息体
  * @o2category server.process
  * @o2ordernumber 220
  * @deprecated body对象已经不建议使用了。建议return一个json对象的方式来设置body。如：
@@ -3466,6 +3480,7 @@ bind.body = {
  * 用于流程配置的服务调用活动中的“消息头脚本”，仅在jaxrs方式的服务调用活动中可用。<br>
  * @o2range 流程配置-服务调用活动中的“消息头脚本”，服务协议为jaxrs
  * @module server.headers
+ * @o2cn 服务调用消息头
  * @o2category server.process
  * @o2ordernumber 225
  * @deprecated headers对象已经不建议使用了，建议return一个json对象的方式来设置headers。如：
@@ -3548,6 +3563,7 @@ bind.headers = {
  * 用于流程配置的服务调用活动中的“响应脚本”，描述调用服务后得到的响应。(注意：调用方式为异步时，“响应脚本”不会执行)<br>
  * @o2range 流程配置-服务调用活动中的“响应脚本”
  * @module server.response
+ * @o2cn 服务调用的响应
  * @o2category server.process
  * @o2ordernumber 230
  * @o2syntax
@@ -3623,6 +3639,7 @@ bind.form = null;
  * 用于流程配置的服务活动中的“服务响应脚本”，描述发起服务的请求对象。<br>
  * @o2range 流程配置-服务活动中的“响应脚本”
  * @module server.request
+ * @o2cn 服务调用请求对象
  * @o2category server.process
  * @o2ordernumber 235
  * @o2syntax
@@ -3679,6 +3696,7 @@ Object.defineProperties(bind, {
  * 用于流程配置的人工活动的“时效脚本”中，用于设置超时时间。可以通过设置小时数，工作小时数，和指定时间点来设置超时，如果全部设置，则优先级为：工作小时>小时>时间<br>
  * @o2range 流程配置-人工活动中的“时效脚本”
  * @module server.expire
+ * @o2cn 超时时间设置
  * @o2category server.process
  * @o2ordernumber 240
  * @deprecated expire对象已经不建议使用了。建议return一个json对象的方式来设置超时时间。
@@ -3762,6 +3780,7 @@ bind.expire = {
  * </code></pre>
  * @o2range 流程配置-流程调用活动中，当启用流程等待的情况下，在"子流程成功后"、"子流程取消后"、"子流程完成后"，三个事件中可用
  * @module server.embedData
+ * @o2cn 调用活动的子流程业务数据
  * @o2category server.process
  * @o2ordernumber 205
  * @example
