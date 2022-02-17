@@ -101,9 +101,6 @@ public class CancelProcessor extends AbstractCancelProcessor {
 					if ((null != embed) && BooleanUtils.isTrue(embed.getWaitUntilCompleted())) {
 						updateParentWork(aeiObjects, parent, embed);
 					}
-				} else {
-					LOGGER.warn("work id:{}, can not find embed activity parent work id:{}.",
-							aeiObjects.getWork().getId(), aeiObjects.getWork().getProperties().getParentWork());
 				}
 			} catch (Exception e) {
 				LOGGER.error(new ExceptionUpdateParentWork(e, aeiObjects.getWork().getId(),
