@@ -51,6 +51,6 @@
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0",
     "readline-sync": "^1.4.10",
-    "tidy-jsdoc-o2": "latest"
+    "@o2oa/tidy-jsdoc-o2": "latest"
   }
 }
