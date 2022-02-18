@@ -28,7 +28,7 @@ public class ActionWriteImConfig extends BaseAction {
         for (Map.Entry<String, JsonElement> en : Config.web().entrySet()) {
             map.put(en.getKey(), en.getValue());
         }
-        map.put(Wi.IM_CONFIG_KEY_NAME, wi);
+        map.put(IM_CONFIG_KEY_NAME, wi);
         String content = gson.toJson(map);
         String fileName = "web.json";
         logger.info("更新配置文件。。。。。。。。。。。。。。");
@@ -96,7 +96,7 @@ public class ActionWriteImConfig extends BaseAction {
      */
     static class Wi extends GsonPropertyObject {
 
-        public static final String IM_CONFIG_KEY_NAME = "imConfig"; // 这个配置会已对象写入到 web.json ，已imConfig作为key名称
+
 
 
         @FieldDescribe("是否开启清空聊天记录的功能.")
