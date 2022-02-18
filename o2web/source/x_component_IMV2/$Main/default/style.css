@@ -366,6 +366,7 @@
     border-radius: 7px;
     text-indent: -12px;
     word-wrap: break-word;
+    white-space: pre-line;
   }
   .chat-sender .img-chat {
     width:192px;
@@ -418,6 +419,7 @@
     padding: 10px 10px 10px 10px;
     border-radius: 7px;
     word-wrap: break-word;
+    white-space: pre-line;
   }
 
   .chat-receiver div:first-child img,
