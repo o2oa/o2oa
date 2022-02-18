@@ -747,6 +747,19 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
 
         this.currentEditLine = null;
         this.table.inject(tableDiv);
+
+        debugger;
+        var titleThs = this.table.getElements("th");
+        titleThs.each(function(th, i){
+            var id = th.get("id");
+            var module = this.editModules[i];
+            if (module){
+                if (module.json.type=="sequence"){
+                    module.node.set("text", idx+1);
+                }
+            }
+        }.bind(this));
+
         this.isEdit = true;
 
         var actions = dataDiv.getFirst("div").getLast("div").getElements("div");
@@ -1342,19 +1355,31 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         }
         return data;
     },
-    _loadSequence: function(){
-        var tables = this.node.getElements("table");
-        tables.each(function(table, idx){
-            var cells = table.getElements("td");
-            cells.each(function(cell){
-                var module = cell.retrieve("module");
-                if (module){
-                    if (module.json.cellType=="sequence"){
-                        cell.set("text", idx)
-                    }
+    getSequeceTrIndex: function(){
+        debugger;
+        var indexList = [];
+        this.table.getElements("th").each(function(th, idx) {
+            var module = this.editModules[idx];
+            if (module) {
+                if (module.json.type == "sequence") {
+                    indexList.push( module.index );
                 }
-            }.bind(this));
-        }.bind(this));
+            }
+        }.bind(this))
+        return indexList;
+    },
+    _loadSequence: function(){
+        var indexList = this.getSequeceTrIndex();
+        var tables = this.node.getElements("table");
+        if( indexList.length && tables.length ){
+            tables.each(function (table, tableIndex) {
+                table.getElements("tr").each(function (tr, trIndex) {
+                    if( indexList.contains(trIndex) ){
+                        tr.getElements("td").getLast().set("text", tableIndex);
+                    }
+                })
+            })
+        }
 
         var sequenceDivs = this.node.getElements(".sequenceDiv");
         sequenceDivs.each( function(div, index){
@@ -1877,6 +1902,7 @@ MWF.xApplication.process.Xform.DatagridMobile$Data =  new Class({
             if (flag){
                 this.dataGrid.editModules.push({
                     "json": {"type": "sequence", "id": this.json.id},
+                    "index": this.node.getParent("tr").rowIndex,
                     "node": td  ,
                     "focus": function(){}
                 });
