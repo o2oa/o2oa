@@ -29,6 +29,9 @@ public enum FileType {
 		} else if("pdf".equalsIgnoreCase( ext ) ){ type = FileType.office.name();
 		} else if("txt".equalsIgnoreCase( ext ) ){ type = FileType.office.name();
 		} else if("mp3".equalsIgnoreCase( ext ) ){ type = FileType.music.name();
+		} else if("flac".equalsIgnoreCase( ext ) ){ type = FileType.music.name();
+		} else if("ape".equalsIgnoreCase( ext ) ){ type = FileType.music.name();
+		} else if("wav".equalsIgnoreCase( ext ) ){ type = FileType.music.name();
 		} else if("mp4".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
 		} else if("wmv".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
 		} else if("rmvb".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
