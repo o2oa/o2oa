@@ -2967,7 +2967,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         node = item.getLast().getLast();
         node.getFirst().setStyles(this.css.rollbackItemTaskTitleNode_current);
-        node.getLast().setStyles(this.css.rollbackItemTaskNode_current);
+        node.getLast().setStyles(this.css.rollbackItemTaskBodyNode_current);
+
+        debugger;
 
         var checkeds = item.getElements("input");
         if (checkeds){
@@ -2987,7 +2989,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         node = item.getLast().getLast();
         node.getFirst().setStyles(this.css.rollbackItemTaskTitleNode);
-        node.getLast().setStyles(this.css.rollbackItemTaskNode);
+        node.getLast().setStyles(this.css.rollbackItemTaskBodyNode);
 
         var checkeds = item.getElements("input");
         if (checkeds) {
@@ -3013,23 +3015,30 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     div = new Element("div", { "styles": { "overflow": "hidden" } }).inject(contentNode);
                     var taskTitleNode = new Element("div", { "styles": this.css.rollbackItemTaskTitleNode, "text": this.app.lp.taskCompletedPerson + ": " }).inject(div);
 
+                    var taskBodyNode = new Element("div", {
+                        "styles": this.css.rollbackItemTaskBodyNode
+                    }).inject(div);
+
                     if (log.taskCompletedList.length) {
                         log.taskCompletedList.each(function (o) {
+                            var itemNode = new Element("div", {
+                                style: "float:left;overflow:hidden;"
+                            }).inject(taskBodyNode);
                             var text = o2.name.cn(o.person) + "(" + o.completedTime + ")";
                             var check = new Element("input", {
                                 "value": o.identity,
                                 "type": "checkbox",
                                 "disabled": true,
                                 "styles": this.css.rollbackItemTaskCheckNode
-                            }).inject(div);
+                            }).inject(itemNode);
                             check.addEvent("click", function (e) {
                                 e.stopPropagation();
                             });
-                            var taskNode = new Element("div", { "styles": this.css.rollbackItemTaskNode, "text": text }).inject(div);
+                            var taskNode = new Element("div", { "styles": this.css.rollbackItemTaskNode, "text": text }).inject(itemNode);
                         }.bind(this));
                     } else {
                         var text = this.app.lp.systemFlow;
-                        var taskNode = new Element("div", { "styles": this.css.rollbackItemTaskNode, "text": text }).inject(div);
+                        var taskNode = new Element("div", { "styles": this.css.rollbackItemTaskNode, "text": text }).inject(taskBodyNode);
                     }
 
 
@@ -3109,6 +3118,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 var text = this.app.lp.rollbackConfirmContent;
                 var log = items[i].retrieve("log");
                 var checks = items[i].getElements("input:checked");
+                debugger;
                 var idList = [];
                 checks.each(function (check) {
                     var id = check.get("value");

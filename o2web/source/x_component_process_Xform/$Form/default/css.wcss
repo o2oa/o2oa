@@ -892,7 +892,7 @@
     },
     "rollbackItemContentNode": {
         "margin-right": "30px",
-        "height": "46px"
+        "min-height": "46px"
     },
 
     "rollbackAreaNode": {
@@ -915,7 +915,7 @@
     },
 
     "rollbackItemIconNode": {
-        "height": "46px",
+        "min-height": "46px",
         "width": "30px",
         "float": "right",
         "overflow": "hidden",
@@ -926,7 +926,7 @@
     },
     "rollbackItemContentNode": {
         "margin-right": "30px",
-        "height": "46px"
+        "min-height": "46px"
     },
     "rollbackItemActivityNode": {
         "height": "26px",
@@ -957,16 +957,22 @@
         "font-weight": "bold"
     },
     "rollbackItemTaskTitleNode_current":{
-        "color": "#ffffff",
+        "color": "#ffffff"
+    },
+    "rollbackItemTaskBodyNode": {
+      "float": "left",
+      "overflow": "hidden",
+      "color": "#666666"
+    },
+    "rollbackItemTaskBodyNode_current": {
+      "color": "#eeeeee"
     },
     "rollbackItemTaskNode": {
         "float": "left",
         "margin-left": "5px",
-        "height": "20px",
+        "min-height": "20px",
         "line-height": "20px",
-        "font-size": "12px",
-        "color": "#666666",
-        "float": "left"
+        "font-size": "12px"
     },
     "rollbackItemTaskCheckNode": {
         "float": "left"

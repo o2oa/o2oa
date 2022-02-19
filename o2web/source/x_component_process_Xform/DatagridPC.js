@@ -903,6 +903,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 				this.editorTr.inject(currentTr, "after");
 			}
 			this.isEdit =true;
+			debugger;
+			this._loadSequence();
 			this.validationMode();
 			this.fireEvent("addLine",[this.editorTr]);
 //		newTr.addEvent("blur", function(e){

@@ -48,15 +48,15 @@
 <!--        <div class="MWFApplicationSelect" title="选择应用"></div>-->
         <div class="MWFProcessSelect" title="{{$.lp.selectProcess}}"></div>
 
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">{{$.lp.embedType}}:</td>
-                <td class="editTableValue">
-                    <input type="radio" name="async" text{(!$.async)?'checked':''} value="false"/>{{$.lp.sync}}
-                    <input type="radio" name="async" text{($.async)?'checked':''} value="true"/>{{$.lp.async}}
-                </td>
-            </tr>
-        </table>
+<!--        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--            <tr>-->
+<!--                <td class="editTableTitle">{{$.lp.embedType}}:</td>-->
+<!--                <td class="editTableValue">-->
+<!--                    <input type="radio" name="async" text{(!$.async)?'checked':''} value="false"/>{{$.lp.sync}}-->
+<!--                    <input type="radio" name="async" text{($.async)?'checked':''} value="true"/>{{$.lp.async}}-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </table>-->
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
@@ -104,8 +104,19 @@
             <div class="MWFScriptText" name="targetIdentityScriptText"></div>
         </div>
 
-        <hr/>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.waitUntilCompletedTitle}}</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}eventNotWaitArrow').setStyle('display', 'none');$('text{$.id}eventWaitArea').setStyle('display', 'block');}" name="waitUntilCompleted" text{($.waitUntilCompleted)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}eventNotWaitArrow').setStyle('display', 'block');$('text{$.id}eventWaitArea').setStyle('display', 'none');}" name="waitUntilCompleted" text{(!$.waitUntilCompleted)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                    <div style="color: #999999">{{$.lp.waitUntilCompleted}}</div>
+                </td>
+            </tr>
+        </table>
 
+        <hr/>
+        <div></div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">{{$.lp.titleScript}}:</td>
@@ -114,7 +125,7 @@
                 </td>
             </tr>
         </table>
-        <div class="MWFScriptText" name="targetTitleScriptText"></div>
+        <div class="MWFScriptText" name="targetTitleScriptText" data-o2-api="../api/server.module_assginData.html#server.module_assginData"></div>
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
@@ -126,7 +137,7 @@
         </table>
         <div class="MWFScriptText" name="targetAssginDataScriptText" data-o2-api="../api/server.module_assginData.html#server.module_assginData"></div>
         <div style="margin: 5px;">{{$.lp.getOldData}}: var data = this.assignData.get(); </div>
-        <div style="margin: 5px;">{{$.lp.setNewData}}: this.assignData.set(data); </div>
+        <div style="margin: 5px;">{{$.lp.setNewData}}: return data; </div>
         <div style="padding: 5px"><a href="../api/server.module_assginData.html#server.module_assginData" target="_blank">{{$.lp.apiDoc}}</a></div>
 
     </div>
@@ -284,9 +295,80 @@
     <div class="MWFScriptText" name="afterExecuteScriptText"></div><hr />
 </div>
 
-<div style="line-height: 20px; height: 26px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC">
+<div style="line-height: 20px; height: 26px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; display: text{($.waitUntilCompleted) ? 'none' : 'block'}" id="text{$.id}eventNotWaitArrow">
     <div style="height: 26px; background: url(../x_component_process_ProcessDesigner/$Process/down16.png) no-repeat center center;"></div>
 </div>
+
+<div style="line-height: 20px; display:flex; width: 100%; display: text{(!$.waitUntilCompleted) ? 'none' : 'block'}"  id="text{$.id}eventWaitArea">
+<!--    <div style="width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center; background-size: 8px 80px;background-color:#EEEEEE"></div>-->
+    <div style="width: inherit; text-align: center; color: #666666;">
+        <div style="line-height: 20px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC;">
+            <div style="padding: 5px 10px;">{{$.lp.completedEventsInfo}}</div>
+        </div>
+
+        <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; font-weight: bold; background-color: #EEEEEE;text-align: left;">
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.completedEndScript || $.completedEndScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.completedEndEvent}}</div>
+            <div style="padding-left: 20px; padding-bottom: 5px; font-size: 12px; color: #999999; line-height: 18px">{{$.lp.completedEndEventInfo}}</div>
+        </div>
+
+        <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;text-align: left;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.completedEnd}}</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="completedEndScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="completedEndScriptText" data-o2-api="../api/server.module_parameters.html#server.module_embedData"></div><hr />
+
+        </div>
+
+        <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; font-weight: bold; background-color: #EEEEEE;text-align: left;border-top: 1px solid #CCCCCC; ">
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.completedCancelScript || $.completedCancelScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.completedCancelEvent}}</div>
+            <div style="padding-left: 20px; padding-bottom: 5px; font-size: 12px; color: #999999; line-height: 18px">{{$.lp.completedCancelEventInfo}}</div>
+        </div>
+
+        <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;text-align: left;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.completedCancel}}</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="completedCancelScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="completedCancelScriptText" data-o2-api="../api/server.module_parameters.html#server.module_embedData"></div><hr />
+        </div>
+
+        <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; font-weight: bold; background-color: #EEEEEE;text-align: left;border-top: 1px solid #CCCCCC; ">
+            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.completedScript || $.completedScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.completedEvent}}</div>
+            <div style="padding-left: 20px; padding-bottom: 5px; font-size: 12px; color: #999999; line-height: 18px">{{$.lp.completedEventInfo}}</div>
+        </div>
+
+        <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;text-align: left;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.completed}}</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="completedScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="completedScriptText" data-o2-api="../api/server.module_parameters.html#server.module_embedData"></div><hr />
+        </div>
+
+        <div style="line-height: 20px; height: 26px; border-top: 1px solid #CCCCCC; border-bottom: 1px solid #CCCCCC;">
+            <div style="height: 26px; background: url(../x_component_process_ProcessDesigner/$Process/down16.png) no-repeat center center;"></div>
+        </div>
+
+    </div>
+</div>
+
+
 
 <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
     <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeInquireScript || $.beforeInquireScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>
