@@ -240,7 +240,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/windows_java11/"/>
+				<include name="jvm/windows/"/>
 				<include name="service_windows.bat"/>
 				<include name="start_windows.bat"/>
 				<include name="start_windows_debug.bat"/>
@@ -262,7 +262,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/linux_java11/"/>
+				<include name="jvm/linux/"/>
 				<include name="start_linux.sh"/>
 				<include name="start_linux_debug.sh"/>
 				<include name="console_linux.sh"/>
@@ -283,7 +283,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/macos_java11/"/>
+				<include name="jvm/macos/"/>
 				<include name="start_macos.sh"/>
 				<include name="start_macos_debug.sh"/>
 				<include name="console_macos.sh"/>
@@ -304,7 +304,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/aix_java11/"/>
+				<include name="jvm/aix/"/>
 				<include name="start_aix.sh"/>
 				<include name="start_aix_debug.sh"/>
 				<include name="console_aix.sh"/>
@@ -325,7 +325,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/raspi_java11/"/>
+				<include name="jvm/raspi/"/>
 				<include name="start_raspi.sh"/>
 				<include name="start_raspi_debug.sh"/>
 				<include name="console_raspi.sh"/>
@@ -346,7 +346,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/mips_java11/"/>
+				<include name="jvm/mips/"/>
 				<include name="start_mips.sh"/>
 				<include name="start_mips_debug.sh"/>
 				<include name="console_mips.sh"/>
@@ -367,7 +367,7 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/arm_java11/"/>
+				<include name="jvm/arm/"/>
 				<include name="start_arm.sh"/>
 				<include name="start_arm_debug.sh"/>
 				<include name="console_arm.sh"/>
