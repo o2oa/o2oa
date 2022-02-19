@@ -33,7 +33,7 @@ MWF.xApplication.Profile.LP = {
     "signature": "Signature",
     "saveInfor": "Save personal information",
     "saveInforOk": "Personal information saved successfully",
-    "nickNameInforError": "The nickname format is incorrect, the rules are as follows: only Chinese, English, _, - and spaces can be used, the length is 4 to 20, and the length of one Chinese is 2",
+    "nickNameInforError": "The nickname format is incorrect, the rules are as follows: only Chinese, Number, English, _, - and spaces can be used, the length is 4 to 20, and the length of one Chinese is 2",
     "ipAddress" : "Login IP",
     "ipAddressPlaceHolder" : "If it is not empty, only the matching ip address can log in to the account. Separate multiple values with \",\"",
     "ipAddressIncorrectNotice" : "IP address format is incorrect:",
