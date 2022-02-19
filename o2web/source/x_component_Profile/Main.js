@@ -853,7 +853,7 @@ MWF.xApplication.Profile.Main = new Class({
         // }
 
         var nickName = this.nickNameInputNode.get("value");
-        if( !this.checkNickName( nickName ) ){
+        if( nickName && nickName.trim() && !this.checkNickName( nickName ) ){
             //不包含特殊字符
             this.notice(this.lp.nickNameInforError, "error");
             return false;
@@ -864,8 +864,8 @@ MWF.xApplication.Profile.Main = new Class({
         this.personData.mobile = this.mobileInputNode.get("value");
         this.personData.weixin = this.weixinInputNode.get("value");
         this.personData.qq = this.qqInputNode.get("value");
-        var oldNickName = this.personData;
-        this.personData.nickName = this.nickNameInputNode.get("value");
+        var oldNickName = this.personData.nickName || "";
+        this.personData.nickName = this.nickNameInputNode.get("value") || "";
         // this.personData.ipAddress = this.ipAddressInputNode.get("value");
         this.personData.signature = this.signatureInputNode.get("value");
         this.personData.language = this.languageSelectNode.options[this.languageSelectNode.selectedIndex].value;

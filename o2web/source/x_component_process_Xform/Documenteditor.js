@@ -3180,6 +3180,31 @@ debugger;
                         //this.data[name] = (typeOf(v)=="array") ? v.map(function(n, i){ var j = i+1; return j+"、"+n}).join("<br>") : v;
                         this.data[name] = (typeOf(v)=="array") ? v : [v];
                     }
+                    if (name=="signer"){
+                        var strs = [];
+                        var strLength = 0;
+                        v.each(function(value){
+                            if (o2.typeOf(value)=="object" && value.distinguishedName){
+                                if (value.name.length>strLength) strLength = value.name.length;
+                                strs.push(value.name);
+                            }else{
+                                if (value.length>strLength) strLength = value.length;
+                                strs.push(value.toString());
+                            }
+                        });
+                        var signers = "";
+                        strs.each(function(name, i){
+                            while (name.length<strLength){ name = name+"　";}
+                            //signers.push(name);
+                            if (i % 2==0){
+                                signers = signers+name+"　";
+                            }else{
+                                signers = signers+name+"<br>";
+                            }
+                        });
+
+                        this.data[name] = signers;
+                    }
                     if (name=="issuanceDate" || name=="editionDate"){
                         var d = Date.parse(v);
                         if (d.isValid() && d.getFullYear()!=1970){

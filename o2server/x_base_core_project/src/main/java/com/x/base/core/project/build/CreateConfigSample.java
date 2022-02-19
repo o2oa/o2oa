@@ -33,9 +33,9 @@ import com.x.base.core.project.config.HuaweiPushConfig;
 import com.x.base.core.project.config.JpushConfig;
 import com.x.base.core.project.config.LogLevel;
 import com.x.base.core.project.config.MPweixin;
-import com.x.base.core.project.config.Mq;
 import com.x.base.core.project.config.Meeting;
 import com.x.base.core.project.config.Messages;
+import com.x.base.core.project.config.Mq;
 import com.x.base.core.project.config.Node;
 import com.x.base.core.project.config.Organization;
 import com.x.base.core.project.config.Person;
@@ -43,6 +43,7 @@ import com.x.base.core.project.config.Portal;
 import com.x.base.core.project.config.ProcessPlatform;
 import com.x.base.core.project.config.Qiyeweixin;
 import com.x.base.core.project.config.Query;
+import com.x.base.core.project.config.TernaryManagement;
 import com.x.base.core.project.config.Token;
 import com.x.base.core.project.config.Vfs;
 import com.x.base.core.project.config.WeLink;
@@ -60,7 +61,7 @@ import com.x.base.core.project.tools.DefaultCharset;
  */
 public class CreateConfigSample {
 
-	private static Logger logger = LoggerFactory.getLogger(CreateConfigSample.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CreateConfigSample.class);
 
 	private static final String DEFAULTINSTANCE = "defaultInstance";
 
@@ -92,6 +93,7 @@ public class CreateConfigSample {
 		classes.add(Qiyeweixin.class);
 		classes.add(Query.class);
 		classes.add(Token.class);
+		classes.add(TernaryManagement.class);
 		classes.add(Vfs.class);
 		classes.add(WeLink.class);
 		classes.add(WorkTime.class);
@@ -122,16 +124,13 @@ public class CreateConfigSample {
 		String name = StringUtils.lowerCase(cls.getSimpleName().substring(0, 1)) + cls.getSimpleName().substring(1)
 				+ ".json";
 		File file = new File(dir.toFile(), name);
-		// logger.print("create file:{}.", file.getAbsoluteFile());
 		FileUtils.write(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
 	}
 
 	private static void renameNode(File dir) throws IOException {
 		File fileNode = new File(dir, "node.json");
 		File fileNodeLocal = new File(dir, "node_127.0.0.1.json");
-		if (!Files.deleteIfExists(fileNodeLocal.toPath())) {
-			throw new IOException("delete file failure.");
-		}
+		Files.deleteIfExists(fileNodeLocal.toPath());
 		FileUtils.moveFile(fileNode, fileNodeLocal);
 	}
 

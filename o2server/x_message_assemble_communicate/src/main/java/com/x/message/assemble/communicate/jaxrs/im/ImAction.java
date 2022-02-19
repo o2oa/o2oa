@@ -54,6 +54,23 @@ public class ImAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "获取IM配置.", action = ActionImConfig.class)
+    @GET
+    @Path("manager/config")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void getImConfig(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+        ActionResult<ActionImConfig.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionImConfig().execute( );
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     /************* im conversation ************/
 
     @JaxrsMethodDescribe(value = "创建会话.", action = ActionConversationCreate.class)
