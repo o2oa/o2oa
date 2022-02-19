@@ -2991,8 +2991,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         node.getFirst().setStyles(this.css.rollbackItemTaskTitleNode);
         node.getLast().setStyles(this.css.rollbackItemTaskBodyNode);
 
-        debugger;
-
         var checkeds = item.getElements("input");
         if (checkeds) {
             checkeds.set("checked", false);
