@@ -1522,9 +1522,12 @@ if (!window.o2) {
                 _parseDataCache[r] = json;
                 v = "<div data-o2-binddataid='" + r + "'>" + str + "</div>";
             }else{
-                if (json.data){
-                    _parseDataCache[r] = json.data;
-                    v = str+"<div style='display: none' data-o2-binddata='" + r + "'></div>"
+                var regex = new RegExp("\\<[\\s\\S]+\\>");
+                if (regex.test(str)){
+                    if (json.data){
+                        _parseDataCache[r] = json.data;
+                        v = str+"<div style='display: none' data-o2-binddata='" + r + "'></div>"
+                    }
                 }
             }
             var rex = /(\{\{\s*)[\s\S]*?(\s*\}\})/gmi;
