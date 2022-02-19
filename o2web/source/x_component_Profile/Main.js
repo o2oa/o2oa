@@ -853,7 +853,7 @@ MWF.xApplication.Profile.Main = new Class({
         // }
 
         var nickName = this.nickNameInputNode.get("value");
-        if( !this.checkNickName( nickName ) ){
+        if( nickName && nickName.trim() && !this.checkNickName( nickName ) ){
             //不包含特殊字符
             this.notice(this.lp.nickNameInforError, "error");
             return false;
