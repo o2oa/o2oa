@@ -50,7 +50,11 @@ MWF.xApplication.Homepage.TaskContent = new Class({
 
             if (!this.processStarter) this.processStarter = new MWF.xApplication.process.TaskCenter.Starter(obj, {
                 "onStartProcess": function(){
-                    if (this.currentTab.options.type == "task") this.currentTab.reload();
+                    if (this.currentTab.options.type == "task" || this.currentTab.options.type == "draft") {
+                        this.currentTab.reload();
+                    }
+                    this.loadTaskCount();
+                    this.loadDraftCount();
                 }.bind(this)
             });
             this.processStarter.load();
@@ -114,9 +118,63 @@ MWF.xApplication.Homepage.TaskContent = new Class({
             this.fireEvent("loadProcessDraftCount");
         }.bind(this));
     },
+
+    loadTaskCount: function(){
+        o2.Actions.load("x_processplatform_assemble_surface").TaskAction.countWithPerson(layout.session.user.id, function(json){
+            if (!this.itemCounts) this.itemCounts = {};
+            this.itemCounts.task = json.data.count || 0;
+            this.showTabCount(this.taskTab, json.data.count || 0);
+            this.fireEvent("loadTaskCount");
+        }.bind(this));
+    },
+    loadTaskCompletedCount: function(){
+        o2.Actions.load("x_processplatform_assemble_surface").TaskCompletedAction.countWithPerson(layout.session.user.id, function(json){
+            if (!this.itemCounts) this.itemCounts = {};
+            this.itemCounts.taskCompleted = json.data.count || 0;
+            this.showTabCount(this.taskCompletedTab, json.data.count || 0);
+            this.fireEvent("loadTaskCompletedCount");
+        }.bind(this));
+    },
+    loadReadCount: function(){
+        o2.Actions.load("x_processplatform_assemble_surface").ReadAction.countWithPerson(layout.session.user.id, function(json){
+            if (!this.itemCounts) this.itemCounts = {};
+            this.itemCounts.read = json.data.count  || 0;
+            this.showTabCount(this.readTab, json.data.count  || 0);
+            this.fireEvent("loadReadCount");
+        }.bind(this));
+    },
+    loadReadCompletedCount: function(){
+        o2.Actions.load("x_processplatform_assemble_surface").ReadCompletedAction.countWithPerson(layout.session.user.id, function(json){
+            if (!this.itemCounts) this.itemCounts = {};
+            this.itemCounts.readCompleted = json.data.count || 0;
+            this.showTabCount(this.readCompletedTab, json.data.count || 0);
+            this.fireEvent("loadReadCompletedCount");
+        }.bind(this));
+    },
+    loadDraftCount: function(){
+        o2.Actions.load("x_processplatform_assemble_surface").ReviewAction.V2Count({"creatorPersonList": [layout.session.user.id]}, function(json){
+            if (!this.itemCounts) this.itemCounts = {};
+            this.itemCounts.draft = json.data.count || 0;
+            this.showTabCount(this.draftTab, json.data.count || 0);
+            this.fireEvent("loadDraftCount");
+        }.bind(this));
+    },
+    loadProcessDraftCount: function(){
+        o2.Actions.load("x_processplatform_assemble_surface").DraftAction.listNext("(0)", 1, function(json){
+            if (!this.itemCounts) this.itemCounts = {};
+            this.itemCounts.processDraft = json.count || 0;
+            this.showTabCount(this.processDraftTab, json.count || 0);
+            this.fireEvent("loadProcessDraftCount");
+        }.bind(this));
+    },
+
     showTabCount: function(node, count){
         var text = node.get("text");
-        node.set("text", text+"("+count+")");
+        if( text.indexOf( "(" ) > -1 ){
+            node.set("text", text.split("(")[0] +"("+count+")");
+        }else{
+            node.set("text", text+"("+count+")");
+        }
     },
     tabover: function(e){
         e.currentTarget.addClass("o2_homepage_title_tab_over");
@@ -136,6 +194,7 @@ MWF.xApplication.Homepage.TaskContent = new Class({
             }else{
                 this.taskContentTab.reload();
             }
+            this.loadTaskCount();
             this.currentTab = this.taskContentTab;
         }
     },
@@ -147,6 +206,7 @@ MWF.xApplication.Homepage.TaskContent = new Class({
             }else{
                 this.taskCompletedContentTab.reload();
             }
+            this.loadTaskCompletedCount();
             this.currentTab = this.taskCompletedContentTab;
         }
     },
@@ -157,6 +217,7 @@ MWF.xApplication.Homepage.TaskContent = new Class({
             }else{
                 this.readContentTab.reload();
             }
+            this.loadReadCount();
             this.currentTab = this.readContentTab;
         }
     },
@@ -167,6 +228,7 @@ MWF.xApplication.Homepage.TaskContent = new Class({
             }else{
                 this.readCompletedContentTab.reload();
             }
+            this.loadReadCompletedCount();
             this.currentTab = this.readCompletedContentTab;
         }
     },
@@ -177,6 +239,7 @@ MWF.xApplication.Homepage.TaskContent = new Class({
             }else{
                 this.draftContentTab.reload();
             }
+            this.loadDraftCount();
             this.currentTab = this.draftContentTab;
         }
     },
@@ -186,6 +249,7 @@ MWF.xApplication.Homepage.TaskContent = new Class({
                 this.processDraftContentTab = new MWF.xApplication.Homepage.TaskContent.ProcessDraft(this, this.processDraftTab);
             }else{
                 this.processDraftContentTab.reload();
+                this.loadProcessDraftCount();
             }
             this.currentTab = this.processDraftContentTab;
         }
@@ -334,12 +398,16 @@ MWF.xApplication.Homepage.TaskContent.Task = new Class({
         if (type=="task" || type=="taskCompleted"){
             this.content.currentTab.reload();
         }
+        this.content.loadTaskCount();
+        this.content.loadTaskCompletedCount();
     },
     reloadReads: function(){
         var type = this.content.currentTab.options.type;
         if (type=="read" || type=="readCompleted"){
             this.content.currentTab.reload();
         }
+        this.content.loadReadCount();
+        this.content.loadReadCompletedCount();
     },
     open: function(e, d){
         //     this._getJobByTask(function(data){
