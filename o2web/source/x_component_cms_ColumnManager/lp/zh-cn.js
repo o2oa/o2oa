@@ -222,8 +222,8 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "attachment": "附件",
     "upload": "上传附件",
 
-    "selectDataView" : "选择数据视图",
-    "selectDataViewTitle" : "从已有数据视图中选择",
+    "selectDataView" : "选择视图",
+    "selectDataViewTitle" : "从已有视图中选择",
 
     "selectList": "选择列表",
     "selectListTitle": "从已有列表中选择",
@@ -268,7 +268,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "type": "类型",
     "listName": "列表名称",
     "relativeForm": "关联表单",
-    "dataView": "数据视图",
+    "dataView": "视图",
     "viewName": "视图名称",
     "column": "栏目",
     "categorySetting": "分类配置",

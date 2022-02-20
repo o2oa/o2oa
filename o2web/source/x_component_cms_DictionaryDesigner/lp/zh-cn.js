@@ -40,6 +40,7 @@ MWF.xApplication.cms.DictionaryDesigner.LP = {
             "editorNotValidated" : "请先修正编辑器报的错",
 
             "inputName": "请输入数据字典名称",
+            "inputAlias": "请输入数据字典别名",
             "noModifyName": "不能修改名称或者别名",
             "jsonParseError" : "json格式错误，请先修正"
 		},
