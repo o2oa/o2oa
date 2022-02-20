@@ -58,15 +58,18 @@ MWF.xApplication.cms.ColumnManager.FileExplorer = new Class({
                     data.description = file.name+" "+this.getSizeText(file.size);
                     data.updateTime = (new Date()).format("db");
                     MWF.Actions.get("x_cms_assemble_control").saveFile(data, function(json){
+                        debugger;
                         up.options.parameter = {"id": json.data.id};
 
-                        var node = this.elementContentListNode.getFirst();
-                        if (node) if (node.hasClass("noElementNode")){
-                            node.destroy();
-                        }
+                        // var node = this.elementContentListNode.getFirst();
+                        // if (node) if (node.hasClass("noElementNode")){
+                        //     node.destroy();
+                        // }
+
+                        if(this.noElementNode)this.noElementNode.hide();
 
                         var itemObj = this._getItemObject(data);
-                        itemObj.load();
+                        itemObj.load( true );
                     }.bind(this), null, false);
                 }.bind(this)
             }).load();
@@ -154,10 +157,36 @@ MWF.xApplication.cms.ColumnManager.FileExplorer = new Class({
 
 MWF.xApplication.cms.ColumnManager.FileExplorer.File = new Class({
     Extends: MWF.xApplication.cms.ColumnManager.Explorer.Item,
-
-    load: function(){
+    // load: function( wait ){
+    //     if( wait ){
+    //         window.setTimeout(function () {
+    //             this._load();
+    //         }.bind(this), 100)
+    //     }else{
+    //         this._load();
+    //     }
+    // },
+    reset: function( data ){
+        this.data = data;
+        var node = new Element("div.o2_fileItemNode", {
+            "events": {
+                "mouseover": function(){
+                    if (this.deleteActionNode) this.deleteActionNode.fade("in");
+                    if (this.saveasActionNode) this.saveasActionNode.fade("in");
+                }.bind(this),
+                "mouseout": function(){
+                    if (this.deleteActionNode) this.deleteActionNode.fade("out");
+                    if (this.saveasActionNode) this.saveasActionNode.fade("out");
+                }.bind(this)
+            }
+        }).inject(this.node, "after");
+        this.node.destroy();
+        this.node = node;
+        this.load(true);
+    },
+    load: function( checkIcon ){
         var view = this.explorer.path+this.explorer.options.style+"/file.html";
-        this.node = new Element("div.o2_fileItemNode", {
+        if(!this.node)this.node = new Element("div.o2_fileItemNode", {
             "events": {
                 "mouseover": function(){
                     if (this.deleteActionNode) this.deleteActionNode.fade("in");
@@ -174,7 +203,7 @@ MWF.xApplication.cms.ColumnManager.FileExplorer.File = new Class({
         var ext = this.data.fileName.substring(this.data.fileName.lastIndexOf(".")+1, this.data.fileName.length);
         this.data.fileUrl = this._getUrl();
 
-        if (["png","jpg","bmp","gif","jpeg","jpe"].indexOf(ext)!==-1){
+        if (this.data.fileUrl && ["png","jpg","bmp","gif","jpeg","jpe"].indexOf(ext)!==-1){
             //new Image()
             this.data.iconUrl = this.data.fileUrl;
         }else{
@@ -186,6 +215,7 @@ MWF.xApplication.cms.ColumnManager.FileExplorer.File = new Class({
         this.node.loadHtml(view, {"bind": this.data}, function(){
             var itemIconNode = this.node.getElement(".o2_fileItemIconNode");
             var itemImgNode = this.node.getElement(".o2_fileItemImgNode");
+            this.itemImgNode = itemImgNode;
             var itemUrlNode = this.node.getElement(".o2_fileItemUrlNode");
             itemUrlNode.setStyle("-webkit-user-select", "text");
             var s = itemIconNode.getSize();
@@ -207,6 +237,11 @@ MWF.xApplication.cms.ColumnManager.FileExplorer.File = new Class({
             itemIconNode.makeLnk({
                 "par": this._getLnkPar()
             });
+            if( checkIcon ){
+                this.setIcon();
+            }else{
+                itemImgNode.set("src", this.data.iconUrl);
+            }
 
             if (!this.explorer.options.noDelete) this._createActions();
 
@@ -220,6 +255,22 @@ MWF.xApplication.cms.ColumnManager.FileExplorer.File = new Class({
             this._isNew();
         }.bind(this));
     },
+    // resetIcon: function(){
+    //     this.itemImgNode.set("src", "");
+    //     this.setIcon();
+    // },
+    setIcon: function(){
+        this.itemImgNode.addEvents({
+            "error": function () {
+                window.setTimeout( function () {
+                    this.itemImgNode.set("src", this.data.iconUrl+ "?"+new Date().getMilliseconds())
+                }.bind(this), 1000 )
+            }.bind(this)
+        })
+        window.setTimeout( function () {
+            this.itemImgNode.set("src", this.data.iconUrl + "?"+new Date().getMilliseconds())
+        }.bind(this), 1000 )
+    },
     _createActions: function(){
         if (this.deleteActionNode) this.deleteActionNode.addEvent("click", function(e){
             this.deleteItem(e);
@@ -231,13 +282,14 @@ MWF.xApplication.cms.ColumnManager.FileExplorer.File = new Class({
         var _self = this;
         MWF.Actions.get("x_cms_assemble_control").getFile(this.data.id, function(json){
             this.data = json.data;
-            new MWF.xApplication.cms.ColumnManager.FileDesigner(this.explorer, this.data);
+            new MWF.xApplication.cms.ColumnManager.FileDesigner(this.explorer, this.data, this);
         }.bind(this));
     },
     _getIcon: function(){
         return "file.png";
     },
     _getUrl: function(){
+        debugger;
         var url = MWF.Actions.get("x_cms_assemble_control").action.actions.readFile.uri;
         url = url.replace(/{flag}/, this.data.id);
         url = url.replace(/{applicationFlag}/, this.data.application || this.data.appId);
@@ -266,10 +318,11 @@ MWF.xApplication.cms.ColumnManager.FileExplorer.File = new Class({
 });
 
 MWF.xApplication.cms.ColumnManager.FileDesigner = new Class({
-    initialize: function(explorer, item){
+    initialize: function(explorer, item, fileItem){
         this.explorer = explorer;
         this.app = this.explorer.app;
         this.data = item;
+        this.fileItem = fileItem;
         this.container = this.explorer.container;
         this.css = this.explorer.css;
         this.lp = MWF.CMSCM.LP;
@@ -307,7 +360,7 @@ MWF.xApplication.cms.ColumnManager.FileDesigner = new Class({
         if (!this.data) this.data = this.getNewData();
 
         this.fileMaskNode = new Element("div", {"styles": this.css.createTemplateMaskNode}).inject(this.app.content);
-        this.fileAreaNode = new Element("div", {"styles": this.css.createFormTemplateAreaNode}).inject(this.app.content);
+        this.fileAreaNode = new Element("div", {"styles": this.css.createTemplateAreaNode}).inject(this.app.content);
         this.fileAreaNode.fade("in");
 
         this.titleNode = new Element("div", {"styles": this.css.fileDesignerTitleNode}).inject(this.fileAreaNode);
@@ -457,7 +510,7 @@ MWF.xApplication.cms.ColumnManager.FileDesigner = new Class({
                 "onCompleted": function(){
                     this.loadFileIcon();
                     this.modifyContentFileUrl();
-                    this.explorer.reload();
+                    // this.explorer.reload();
                     if (callback) callback();
                 }.bind(this),
                 "onBeforeUpload": function(files, up){
@@ -466,7 +519,7 @@ MWF.xApplication.cms.ColumnManager.FileDesigner = new Class({
                     var data = this.getData();
                     this.data = Object.merge(this.data, data);
                     MWF.Actions.get("x_cms_assemble_control").saveFile(this.data, function(json){
-                        this.explorer.reload();
+                        // this.explorer.reload();
                         up.options.parameter = {"id": json.data.id};
                     }.bind(this), null, false);
                 }.bind(this),
@@ -522,7 +575,10 @@ MWF.xApplication.cms.ColumnManager.FileDesigner = new Class({
         var data = this.getData();
         this.data = Object.merge(this.data, data);
         MWF.Actions.get("x_cms_assemble_control").saveFile(this.data, function(){
-            this.explorer.reload();
+            // this.explorer.reload();
+            if( this.fileItem && this.fileItem.reset ){
+                this.fileItem.reset( this.data );
+            }
             this.app.notice(this.lp.file.saveSuccess, "success");
             this.destroy();
         }.bind(this));
