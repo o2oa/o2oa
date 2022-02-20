@@ -150,12 +150,12 @@ MWF.xAction.RestActions = MWF.Actions = {
         var address = "";
         if (addressObj){
             //var mapping = layout.getAppUrlMapping();
-            address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+(addressObj.port==80 ? "" : ":"+addressObj.port);
+            address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+ (( !addressObj.port || addressObj.port==80 ) ? "" : ":"+addressObj.port);
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
             var port = layout.desktop.centerServer.port;
             //var mapping = layout.getCenterUrlMapping();
-            address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port);
+            address = layout.config.app_protocol+"//"+host+( (!port || port=="80") ? "" : ":"+port);
         }
         return address;
     },

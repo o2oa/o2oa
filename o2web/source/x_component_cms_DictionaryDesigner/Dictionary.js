@@ -289,6 +289,10 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary = new Class({
                 this.designer.notice(this.designer.lp.notice.inputName, "error");
                 return false;
             }
+            if (!alias){
+                this.designer.notice(this.designer.lp.notice.inputAlias, "error");
+                return false;
+            }
             this.data.name = name;
             this.data.alias = alias;
             this.data.description = description;
@@ -327,8 +331,12 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary = new Class({
                 var alias = this.designer.propertyAliasNode.get("value");
                 var description = this.designer.propertyDescriptionNode.get("value");
 
-                if (!name || !alias){
+                if (!name){
                     this.designer.notice(this.designer.lp.notice.inputName, "error");
+                    return false;
+                }
+                if (!alias){
+                    this.designer.notice(this.designer.lp.notice.inputAlias, "error");
                     return false;
                 }
                 this.data.name = name;

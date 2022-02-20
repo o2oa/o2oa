@@ -184,6 +184,13 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
 //			alert("ok")
 //		}.bind(this));
     },
+    setIcon : function( icon ){
+        if (icon){
+            this.leftTitleIconNode.setStyle("background-image", "url(data:image/png;base64,"+icon+")");
+        }else{
+            this.leftTitleIconNode.setStyle("background-image", "url("+"../x_component_cms_Column/$Main/default/icon/column.png)");
+        }
+    },
     loadStartMenu: function(callback){
         this.leftContentNode = new Element("div", {
             "styles": this.css.leftContentNode
@@ -980,9 +987,12 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
                                     this.data = json.data;
                                     if (this.data.appIcon){
                                         this.iconPreviewNode.setStyle("background", "url(data:image/png;base64,"+this.data.appIcon+") center center no-repeat");
+                                        this.app.setIcon(this.data.appIcon)
                                     }else{
                                         this.iconPreviewNode.setStyle("background", "url("+"../x_component_cms_Column/$Main/default/icon/category2.png) center center no-repeat")
+                                        this.app.setIcon()
                                     }
+
                                 }
                             }.bind(this), false)
                         }.bind(this), null, formData, file);

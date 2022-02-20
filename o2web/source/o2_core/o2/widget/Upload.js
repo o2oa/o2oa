@@ -53,6 +53,7 @@ o2.widget.Upload = new Class({
     formData_Upload: function(){
         var files = this.fileUploadNode.files;
         if (files.length){
+            debugger;
             var count = files.length;
             var current = 0;
 
