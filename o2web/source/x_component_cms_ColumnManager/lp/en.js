@@ -221,8 +221,8 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "attachment": "Attachment",
     "upload": "Upload attachments",
 
-    "selectDataView": "Select Data View",
-    "selectDataViewTitle": "Select from an existing data view",
+    "selectDataView": "Select View",
+    "selectDataViewTitle": "Select from an existing view",
 
     "selectList": "Select List",
     "selectListTitle": "Select from an existing list",
@@ -267,7 +267,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "type": "Type",
     "listName": "List Name",
     "relativeForm": "Related Form",
-    "dataView": "Data View",
+    "dataView": "View",
     "viewName": "View Name",
     "column": "AppInfo",
 

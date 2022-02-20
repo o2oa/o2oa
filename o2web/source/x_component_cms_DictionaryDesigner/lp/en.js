@@ -39,6 +39,7 @@ MWF.xApplication.cms.DictionaryDesigner.LP = {
         "editorNotValidated": "Please fix the error reported by the editor first",
 
         "inputName": "Please enter the name of the data dictionary",
+        "inputAlias": "Please enter the alias of the data dictionary",
         "noModifyName": "Cannot modify the name or alias",
         "jsonParseError": "json format error, please correct it first"
     },
