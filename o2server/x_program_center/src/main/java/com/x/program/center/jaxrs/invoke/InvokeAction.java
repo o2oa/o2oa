@@ -151,7 +151,7 @@ public class InvokeAction extends StandardJaxrsAction {
 			if(StringUtils.isBlank(params)){
 				params = "{}";
 			}
-			JsonElement jsonElement = XGsonBuilder.instance().fromJson("{}", JsonElement.class);
+			JsonElement jsonElement = XGsonBuilder.instance().fromJson(params, JsonElement.class);
 			result = new ActionExecute().execute(request, effectivePerson, flag, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
