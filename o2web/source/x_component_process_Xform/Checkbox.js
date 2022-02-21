@@ -267,10 +267,14 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);
-        var radios = this.node.getElements("input");
-        for (var i=0; i<radios.length; i++){
-            var radio = radios[i];
-            radio.checked = value.indexOf(radio.value) != -1;
+        if (this.readonly || this.json.isReadonly ){
+            this._loadNodeRead();
+        }else{
+            var radios = this.node.getElements("input");
+            for (var i=0; i<radios.length; i++){
+                var radio = radios[i];
+                radio.checked = value.indexOf(radio.value) != -1;
+            }
         }
         this.fieldModuleLoaded = true;
     },
