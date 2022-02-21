@@ -338,14 +338,19 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);
-		var radios = this.node.getElements("input");
-		for (var i=0; i<radios.length; i++){
-			var radio = radios[i];
-			if (radio.value==value){
-				radio.checked = true;
-				break;
-			}
-		}
+
+        if (this.readonly || this.json.isReadonly ){
+            this._loadNodeRead();
+        }else{
+            var radios = this.node.getElements("input");
+            for (var i=0; i<radios.length; i++){
+                var radio = radios[i];
+                if (radio.value==value){
+                    radio.checked = true;
+                    break;
+                }
+            }
+        }
         this.fieldModuleLoaded = true;
 	},
     /**

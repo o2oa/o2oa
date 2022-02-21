@@ -18,6 +18,7 @@
                 "build_web": "gulp build_web",
                 "build_api_version": "jsdoc -c o2web/jsdoc.conf.json -q version=${VAPI}",
                 "build_api": "gulp build_api",
+                "build_historyJson": "gulp build_historyJson",
                 "build_parallel": "npm run build_server && npm run build_web && npm run build_api",
                 "deploy": "gulp deploy",
                 "deploy:win": "gulp deploy --e windows",
