@@ -3,19 +3,14 @@ package com.x.program.center.jaxrs.invoke;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.x.base.core.project.gson.XGsonBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -141,6 +136,28 @@ public class InvokeAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "执行调用接口get方法.", action = ActionExecute.class)
+	@GET
+	@Path("{flag}/execute/get")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void executeGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						   @JaxrsParameterDescribe("标识") @PathParam("flag") String flag,
+						   @JaxrsParameterDescribe("参数(json格式)") @QueryParam("params") String params) {
+		ActionResult<Object> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			if(StringUtils.isBlank(params)){
+				params = "{}";
+			}
+			JsonElement jsonElement = XGsonBuilder.instance().fromJson("{}", JsonElement.class);
+			result = new ActionExecute().execute(request, effectivePerson, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, null));
 	}
 
 	@JaxrsMethodDescribe(value = "执行调用接口.", action = ActionExecute.class)
