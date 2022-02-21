@@ -259,7 +259,7 @@ function decompress_commons_and_jvm(cb){
         var jvmUnziped = false;
         targz.decompress({
             src: 'o2server/commons_git.tar.gz',
-            dest: 'o2server',
+            dest: 'o2server/tmp',
             tar: {map: function(header){
                     count++;
                     var d = new Date();
@@ -276,7 +276,7 @@ function decompress_commons_and_jvm(cb){
         });
         targz.decompress({
             src: 'o2server/jvm_git.tar.gz',
-            dest: 'o2server',
+            dest: 'o2server/tmp',
             tar: {map: function(header){
                     count++;
                     var d = new Date();
@@ -302,7 +302,7 @@ function move_commons(){
     console.log(`---------------------------------------------------------------------
   . move commons files to o2server/commons ...
 ---------------------------------------------------------------------`);
-    return gulp.src("o2server/evn-o2server-commons-7.0-commons/commons/**/*")
+    return gulp.src("o2server/tmp/evn-o2server-commons-7.0-commons/commons/**/*")
         .pipe(gulp.dest("o2server/commons/"));
 }
 function move_jvm(){
@@ -311,24 +311,24 @@ function move_jvm(){
 ---------------------------------------------------------------------`);
     var path;
     if (options.ev=="all"){
-        path = "o2server/evn-o2server-jvm-master-jvm/jvm/**/*"
+        path = "o2server/tmp/evn-o2server-jvm-master-jvm/jvm/**/*"
     }else{
-        path = "o2server/evn-o2server-jvm-master-jvm-"+options.ev+"/jvm/**/*"
+        path = "o2server/tmp/evn-o2server-jvm-master-jvm-"+options.ev+"/jvm/**/*"
     }
     return gulp.src(path)
         .pipe(gulp.dest("o2server/jvm/"));
 }
 async function clear_commons_git(cb) {
-    var dest = ['o2server/evn-o2server-commons-7.0-commons/', 'o2server/commons_git.tar.gz'];
+    var dest = ['o2server/tmp/evn-o2server-commons-7.0-commons/', 'o2server/commons_git.tar.gz'];
     await del(dest, {force: true});
     cb();
 }
 async function clear_jvm_git(cb){
     var path;
     if (options.ev=="all"){
-        path = "o2server/evn-o2server-jvm-master-jvm/"
+        path = "o2server/tmp/evn-o2server-jvm-master-jvm/"
     }else{
-        path = "o2server/evn-o2server-jvm-master-jvm-"+options.ev+"/"
+        path = "o2server/tmp/evn-o2server-jvm-master-jvm-"+options.ev+"/"
     }
     await del([path, 'o2server/jvm_git.tar.gz'], { force: true });
     cb();
