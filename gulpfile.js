@@ -14,7 +14,7 @@ var gulp = require('gulp'),
     changed = require('gulp-changed'),
     gulpif = require('gulp-if'),
     http = require('http');
-    const ora = require('ora');
+const ora = require('ora');
 concat = require('gulp-concat');
 var fg = require('fast-glob');
 var logger = require('gulp-logger');
@@ -72,11 +72,12 @@ var scripts = {
 };
 
 var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
-    string: ["e", "lp"]
+    string: ["e", "lp", "w"]
 });
 var options = {};
 options.ev = o_options.e || "all";
 options.lp = o_options.lp || "zh-cn";
+options.webSite = o_options.w;
 var jvmUrl = jvmUrls[options.ev];
 var scriptSource = scripts[options.ev];
 
@@ -749,7 +750,7 @@ function build_concat_lp(cb) {
         lpTasks.push(new Promise((resolve)=>{
             stream.on("end", ()=>{  resolve(); });
         }));
-            //.pipe(sourceMap.init())
+        //.pipe(sourceMap.init())
         stream.pipe(concat('base_lp_' + lp + '.js'))
             .pipe(gulp.dest(dest))
             .pipe(concat('base_lp_' + lp + '.min.js'))
@@ -1178,6 +1179,7 @@ function deploy_server(){
 exports.preperation =  gulp.series(download_commons_and_jvm, decompress_commons_and_jvm, move_commons, move_jvm, clear_commons_git, clear_jvm_git);
 
 var shell = require('gulp-shell')
+const shelljs = require("shelljs");
 exports.build_server = function(){
     console.log(`---------------------------------------------------------------------
   . Start compiling the server ...
@@ -1213,14 +1215,44 @@ exports.build_web = gulp.series(
         build_bundle
     ),
     build_web_v_html,
-    build_web_v_o2
-    //gulp.series(build_doc, build_web_api)
-);
+    build_web_v_o2,
+    gulp.series(build_doc, build_web_api));
 
 if (os.platform().indexOf("win")==-1){
     exports.deploy = gulp.series(deploy_server, chmod_jvm, chmod_commons, chmod_sh, chmod_servers);
 }else{
     exports.deploy = gulp.series(deploy_server);
 }
+
+function createHistroyJson(cb){
+    const host = options.webSite;
+    const fp = fs.promises;
+
+    if (host){
+        const url = host+"/webSite/history.json?t="+(new Date()).getTime();
+        request.get({'url': url}, function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                const historyJsons = JSON.parse(body);
+                fp.readFile(path.resolve(process.cwd(), 'download-pro.json'), 'utf8').then(function(str){
+                    const downloadJson = JSON.parse(str);
+                    let append = true;
+                    for (var i=0; i<historyJsons.length; i++){
+                        var o = historyJsons[i];
+                        if (o.title == downloadJson.title){
+                            historyJsons.splice(i, 1, downloadJson)
+                            append = false;
+                            break;
+                        }
+                    }
+                    if (append){
+                        historyJsons.unshift(downloadJson);
+                    }
+                    fp.writeFile(path.resolve(process.cwd(), 'history.json'), JSON.stringify(historyJsons, null, '\t')).then(cb);
+                });
+            }
+        });
+    }
+}
+exports.build_historyJson = createHistroyJson;
 
 // /exports.build_module = build_web_module;
