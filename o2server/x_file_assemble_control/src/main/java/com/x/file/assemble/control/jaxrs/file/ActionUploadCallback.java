@@ -52,7 +52,7 @@ class ActionUploadCallback extends BaseAction {
 			}
 			File file = new File(mapping.getName(), fileName, effectivePerson.getDistinguishedName(), type, reference);
 			emc.check(file, CheckPersistType.all);
-			if ((scale > 0) && ArrayUtils.contains(IMAGE_EXTENSIONS, file.getExtension())) {
+			if ((scale > 0) && ArrayUtils.contains(IMAGE_EXTENSIONS_COMPRESS, file.getExtension())) {
 				/** 如果是需要压缩的附件 */
 				try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 					BufferedImage image = ImageIO.read(in);
