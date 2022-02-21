@@ -1156,7 +1156,7 @@ function deploy_server(){
     console.log(`---------------------------------------------------------------------
   . deploy to target ...
 ---------------------------------------------------------------------`);
-    var source = ["o2server/*store/**/*", "o2server/commons/**/*", "o2server/jvm/**/*", "o2server/*configSample/**/*", "o2server/*localSample/**/*"];
+    var source = ["o2server/*store/**/*", "o2server/*commons/**/*", "o2server/*jvm/**/*", "o2server/*configSample/**/*", "o2server/*localSample/**/*"];
     source = source.concat(scriptSource);
     console.log(source)
     var dest = "target/o2server/"
