@@ -66,13 +66,13 @@ class ActionUpload extends BaseAction {
 			emc.persist(file);
 			emc.commit();
 			wo.setOrigId(file.getId());
-			
+
 		}
-		
+
          /*保存压缩图*/
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
 				ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
-			if ((scale > 0) && ArrayUtils.contains(IMAGE_EXTENSIONS, file.getExtension())) {
+			if ((scale > 0) && ArrayUtils.contains(IMAGE_EXTENSIONS_COMPRESS, file.getExtension())) {
 				String fileNameThumbnail = fileName.substring(0, fileName.lastIndexOf(".")) + "_t" + "."+ file.getExtension();
 				File fileThumbnail = new File(mapping.getName(), fileNameThumbnail,effectivePerson.getDistinguishedName(), type, reference);
 				/** 如果是需要压缩的附件 */
