@@ -271,11 +271,11 @@ MWF.xDesktop.getImageSrc = function( id ){
 
     var addressObj = layout.serviceAddressList["x_file_assemble_control"];
     if (addressObj){
-        var address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+        var address = layout.config.app_protocol+"//"+addressObj.host+((!addressObj.port || addressObj.port==80) ? "" : ":"+addressObj.port)+addressObj.context;
     }else{
         var host = layout.config.center.host || window.location.hostname;
         var port = layout.config.center.port;
-        var address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
+        var address = layout.config.app_protocol+"//"+host+((port || port=="80") ? "" : ":"+port)+"/x_program_center";
     }
     var url = "/jaxrs/file/"+id+"/download/stream";
     return o2.filterUrl(address+url);
