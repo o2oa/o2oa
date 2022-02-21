@@ -1249,9 +1249,10 @@ function createHistroyJson(cb){
                     if (append){
                         historyJsons.unshift(downloadJson);
                     }
-                    var p1 = fp.writeFile(path.resolve(process.cwd(), 'history.json'), JSON.stringify(historyJsons, null, '\t'));
-                    var p2 = fp.writeFile(path.resolve(process.cwd(), 'download-history.json'), JSON.stringify(historyJsons, null, '\t'))
-                    Promise.all([p1,p2]).then(cb);
+                    const jsonStr = JSON.stringify(historyJsons, null, '\t');
+                    var p1 = fp.writeFile(path.resolve(process.cwd(), 'history.json'), jsonStr);
+                    var p2 = fp.writeFile(path.resolve(process.cwd(), 'download-history.json'), jsonStr)
+                    Promise.all([p1,p2]).then(()=>{cb()});
                 });
             }
         });
