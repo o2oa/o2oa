@@ -60,6 +60,7 @@ MWF.xApplication.process.workcenter.LP = {
 	"filterPlaceholder": "请输入关键字",
 	"commonUseProcess":"常用流程",
 	"searchProcessResault": "”{key}“ 的搜索结果",
+	"filterStartPlaceholder": "搜索可启动流程",
 
 	"filterCategoryList": [
 		{"key": "applicationList", "name": "应用名称"},

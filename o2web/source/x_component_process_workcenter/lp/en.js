@@ -50,9 +50,9 @@ MWF.xApplication.process.workcenter.LP = {
 	"taskPerson": "Processor:",
 	"open": "Open",
 	"select": "Select",
-	"processActivity": "Process activity",
+	"processActivity": "Done",
 	"processActivityInfo": "Activity status when processing this file",
-	"readActivity": "Activity to be read",
+	"readActivity": "Read",
 	"readActivityInfo": "Activity status when receiving pending reading",
 
 	"filter": "Filter",
@@ -60,6 +60,7 @@ MWF.xApplication.process.workcenter.LP = {
 	"filterPlaceholder": "Please enter a keyword",
 	"commonUseProcess":"Common Process",
 	"searchProcessResault": "Search results for “{key}”",
+	"filterStartPlaceholder": "Search for a startable process",
 
 	"filterCategoryList": [
 		{"key": "applicationList", "name": "Application"},
