@@ -1176,7 +1176,8 @@ function deploy_server(){
         }));
 }
 
-exports.preperation =  gulp.series(download_commons_and_jvm, decompress_commons_and_jvm, move_commons, move_jvm, clear_commons_git, clear_jvm_git);
+exports.preperation =  gulp.series(download_commons_and_jvm, decompress_commons_and_jvm, move_commons, move_jvm);
+//.preperation =  gulp.series(download_commons_and_jvm, decompress_commons_and_jvm, move_commons, move_jvm, clear_commons_git, clear_jvm_git);
 
 var shell = require('gulp-shell')
 const shelljs = require("shelljs");
