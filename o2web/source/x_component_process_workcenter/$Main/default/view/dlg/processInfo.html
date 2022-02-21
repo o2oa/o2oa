@@ -71,13 +71,13 @@
                         <div class="pf_arrivedTime">{{$.arrivedTime.substring(0,15)}}</div>
                     </div>
                     <div class="pf_itemOpinionMore" data-o2-events="click:moreWorkLog">
-                        {{if $.taskList.concat($.taskCompletedList).length>4}}
+                        {{if $.taskList.concat($.taskCompletedList).length>3}}
                         <span>...</span>
                         {{end if}}
                     </div>
                     <div class="pf_itemOpinion" data-o2-events="click:moreWorkLog">
                         <div class="pf_itemOpinionArea">
-                        {{each $.taskList.concat($.taskCompletedList).slice(0,4).reverse() }}
+                        {{each $.taskList.concat($.taskCompletedList).slice(0,3).reverse() }}
                             <div class="pf_itemOpinionIconArea" data-o2-events="o2load:attachShowPersonLog">
                                 <img class="pf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{encodeURIComponent($.person)}}/icon" />
                                 <div class="pf_itemOpinionPerson">{{o2.name.cn($.person)}}</div>
@@ -137,7 +137,13 @@
                 {{end each}}
 
                 {{each $.data.workCompletedList}}
-
+                <div class="pf_workListItem">
+                    <div style="height: 24px; line-height: 24px;">
+                        <div style="float: left">{{$.completedTime.substring(0,16)}}</div>
+                        <button style="float: right" class="mainColor_color mainColor_border pf_button" data-o2-events="click:openWork">{{$._.lp.open}}</button>
+                    </div>
+                    <div><span style="color:#333333">{{$._.lp.workFlowTo}}</span><span class="mainColor_color">[{{$.activityName}}]</span></div>
+                </div>
                 {{end each}}
             </div>
         </div>

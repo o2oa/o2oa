@@ -156,6 +156,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		return this.action[action].filterAttribute().then(function(json){return json.data});
 	},
 	showFilter: function(e){
+		//console.log(this.filterDlg);
+		if (this.filterDlg) return;
 		var node = e.target;
 		var p = node.getPosition(this.content);
 		var size = node.getSize();
@@ -190,8 +192,12 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			"width": 600,
 			"height": 550,
 			"duration": 100,
-			"onQueryClose": function(){
+			// "onQueryClose": function(){
+			// 	document.body.removeEvent("mousedown", closeFilterDlg);
+			// },
+			"onPostClose": function(){
 				document.body.removeEvent("mousedown", closeFilterDlg);
+				_self.filterDlg = null;
 			},
 			"buttonList": [
 				{
