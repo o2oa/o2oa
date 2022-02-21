@@ -448,11 +448,12 @@
     cursor: pointer;
 }
 .pf_itemOpinionIconArea{
-    width: 40px;
+    width: 60px;
     height: 56px;
     float: right;
-    margin-left: 10px;
+    margin-left: 5px;
     position: relative;
+    text-align: center;
 }
 .pf_itemOpinionIcon{
     width: 40px;
@@ -463,7 +464,7 @@
 .pf_itemOpinionIconFlag{
     position: absolute;
     top: -3px;
-    left: 30px;
+    left: 40px;
     color: #4eb547;
 }
 .pf_itemOpinionPerson{
@@ -473,6 +474,7 @@
     color: #666666;
     font-size: 12px;
     margin-top: -5px;
+    overflow: hidden;
 }
 .pf_workListArea{
     padding: 10px;
@@ -800,7 +802,6 @@
 .st_processItemArea{
     height: 30px;
     color: #666666;
-    width: 140px;
     line-height: 30px;
     overflow: hidden;
     float: left;
