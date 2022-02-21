@@ -324,13 +324,13 @@ async function clear_commons_git(cb) {
     cb();
 }
 async function clear_jvm_git(cb){
-    var path;
-    if (options.ev=="all"){
-        path = "o2server/tmp/evn-o2server-jvm-master-jvm/"
-    }else{
-        path = "o2server/tmp/evn-o2server-jvm-master-jvm-"+options.ev+"/"
-    }
-    await del([path, 'o2server/jvm_git.tar.gz'], { force: true });
+    //var path;
+    // if (options.ev=="all"){
+    //     path = "o2server/tmp/evn-o2server-jvm-master-jvm/"
+    // }else{
+    //     path = "o2server/tmp/evn-o2server-jvm-master-jvm-"+options.ev+"/"
+    // }
+    await del(['o2server/tmp/', 'o2server/jvm_git.tar.gz'], { force: true });
     cb();
 }
 
