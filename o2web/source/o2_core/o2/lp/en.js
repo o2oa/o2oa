@@ -110,7 +110,8 @@ o2.LP.process = {
 	},
 	"button": {
 		"ok": "Ok",
-		"cancel": "Cancel"
+		"cancel": "Cancel",
+		"reset": "Reset"
 	},
 	"formAction": {
 		"insertRow": "Insert Row",

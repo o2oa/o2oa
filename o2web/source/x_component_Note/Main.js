@@ -107,6 +107,7 @@ MWF.xApplication.Note.NoteItem = new Class({
         this.css = this.note.css;
         this.id = id;
         this.load(where);
+        this.addedCount = 0;
     },
     load: function(where){
         if (this.id){
@@ -259,12 +260,18 @@ MWF.xApplication.Note.NoteItem = new Class({
         var p = this.node.getPosition();
         var x = p.x-205;
         var y = p.y;
+
+        x = x - 10*this.addedCount;
+        y = y + 10*this.addedCount;
+
         if (x<0) x = 0;
         if (x>s.x) x = s.x;
         if (y<0) y = 0;
         if (y>s.y) y = s.y;
 
         this.note.loadNewNote({"left": ""+x+"px", "top": ""+y+"px"});
+
+        this.addedCount++;
     },
 
     closeNote: function(e){
