@@ -75,13 +75,14 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             });
         }
         this.clean();
+        var status = this.getComponentStatus() || {};
         var options = this.getComponentOptions() || {};
         this.getComponentPath(function (componentPath) {
             debugger;
             if( componentPath.indexOf("@url:") === 0 ){
                 this.loadIframe( componentPath.substring(5, componentPath.length ) );
             }else{
-                this.loadComponent( componentPath, options );
+                this.loadComponent( componentPath, status, options );
             }
         }.bind(this))
     },
@@ -114,6 +115,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
     /**
      * @summary 加载系统组件
      * @param {String} path 组件的路径，如'Calendar'
+     * @param {Object} [status] 组件的状态
      * @param {Object} [options] 组件的选项
      * @example
      * this.form.get("fieldId").clean(); //清除当前嵌入的对象
@@ -124,7 +126,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
      *  "columnId":"25434995-45d2-4c9a-a344-55ad0deff071"
      *  }); //加载id为25434995-45d2-4c9a-a344-55ad0deff071的内容管理栏目
      */
-    loadComponent: function ( path, options ) {
+    loadComponent: function ( path, status, options ) {
         var clazz = MWF.xApplication;
         path.split(".").each(function (a) {
             clazz[a] = clazz[a] || {};
@@ -136,6 +138,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             MWF.xDesktop.requireApp(path, "Main", null, false);
             if( clazz.Main ){
                 var opt = options || {};
+                var stt = status || {};
                 opt.embededParent = this.node;
 
                 /**
@@ -152,7 +155,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                  * app.addEvent(type, fun); //为应用绑定一个事件
                  */
                 this.component = new clazz.Main(this.form.app.desktop, opt);
-                this.component.status = opt;
+                this.component.status = stt;
                 this.fireEvent("queryLoadApplication", this.component);
                 this.component.load();
                 this.component.setEventTarget(this.form.app);
@@ -200,6 +203,24 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             params = this.json.optionsMapList;
         }else if( this.json.optionsType === "script" ){
             var code = (this.json.optionsScript) ? this.json.optionsScript.code : "";
+            if (code){
+                params = this.form.Macro.exec(code, this);
+            }
+        }
+        return params;
+    },
+    /**
+     * @summary 获取表单设计配置的component对象的状态
+     * @return 设置的状态
+     * @example
+     * var param = this.form.get("fieldId").getComponentStatus()
+     */
+    getComponentStatus: function(){
+        var params = "";
+        if( this.json.statusType === "map" ){
+            params = this.json.statusMapList;
+        }else if( this.json.statusType === "script" ){
+            var code = (this.json.statusScript) ? this.json.statusScript.code : "";
             if (code){
                 params = this.form.Macro.exec(code, this);
             }

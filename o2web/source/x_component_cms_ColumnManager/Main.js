@@ -145,7 +145,7 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         }.bind(this));
     },
     getColumn: function(success, failure){
-        if( this.options.column ){
+        if( this.options.column && o2.typeOf(this.options.column)==="object" ){
             if (success) success();
             return;
         }

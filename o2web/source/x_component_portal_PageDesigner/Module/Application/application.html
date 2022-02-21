@@ -45,6 +45,26 @@
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
+                <td class="editTableTitle">{{$.lp.applicationStatus}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" onclick="
+						if (this.checked){
+							$('text{$.pid}statusMapList').setStyle('display', 'block');
+							$('text{$.pid}statusScript').setStyle('display', 'none')}
+					" name="statusType" text{($.statusType!='script')?'checked':''} type="radio" value="map"/>{{$.lp.textValue}}
+                    <input class="editTableRadio" onclick="
+						if (this.checked){
+						 	$('text{$.pid}statusScript').setStyle('display', 'block');
+						 	$('text{$.pid}statusMapList').setStyle('display', 'none')}
+					"  name="statusType" text{($.statusType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}statusMapList" class="MWFMaplist" name="statusMapList" title="{{$.lp.option}}" style="display: text{($.statusType !=='script')?'block':'none'}" ></div>
+        <div id="text{$.pid}statusScript" class="MWFScriptArea" name="statusScript" title="status {{$.lp.script}}" style="display: text{($.statusType=='script')?'block':'none'}"></div>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
                 <td class="editTableTitle">{{$.lp.applicationOptions}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" onclick="

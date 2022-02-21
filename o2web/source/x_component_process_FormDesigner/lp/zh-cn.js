@@ -1387,7 +1387,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "component": "应用",
         "scriptComponentNote": "返回应用路径，如组织管理",
         "componentScript": "应用路径脚本",
-        "applicationOptions": "应用options"
+        "applicationOptions": "应用options",
+        "applicationStatus": "应用status"
 
     },
     "smartbi":{
