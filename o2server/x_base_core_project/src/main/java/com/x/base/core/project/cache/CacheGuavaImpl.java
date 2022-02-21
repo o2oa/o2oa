@@ -37,8 +37,19 @@ public class CacheGuavaImpl implements Cache {
 
 	@Override
 	public void put(CacheCategory category, CacheKey key, Object o) {
-		cache.put(concrete(category, key), o);
-
+		if ((null != category) && (null != key) && (null != o)) {
+			cache.put(concrete(category, key), o);
+		} else {
+			if ((null != category)) {
+				throw new IllegalStateException("cache category is null.");
+			}
+			if ((null != key)) {
+				throw new IllegalStateException("cache key is null.");
+			}
+			if ((null != o)) {
+				throw new IllegalStateException("cache value is null.");
+			}
+		}
 	}
 
 	@Override
