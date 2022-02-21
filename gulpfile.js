@@ -318,19 +318,19 @@ function move_jvm(){
     return gulp.src(path)
         .pipe(gulp.dest("o2server/jvm/"));
 }
-function clear_commons_git(cb){
+async function clear_commons_git(cb) {
     var dest = ['o2server/evn-o2server-commons-7.0-commons/', 'o2server/commons_git.tar.gz'];
-    del(dest, { force: true });
+    await del(dest, {force: true});
     cb();
 }
-function clear_jvm_git(cb){
+async function clear_jvm_git(cb){
     var path;
     if (options.ev=="all"){
         path = "o2server/evn-o2server-jvm-master-jvm/"
     }else{
         path = "o2server/evn-o2server-jvm-master-jvm-"+options.ev+"/"
     }
-    del([path, 'o2server/jvm_git.tar.gz'], { force: true });
+    await del([path, 'o2server/jvm_git.tar.gz'], { force: true });
     cb();
 }
 
@@ -1130,21 +1130,21 @@ function build_web_v_o2() {
 
 
 
-function clear_build(cb){
+async function clear_build(cb) {
     console.log(`---------------------------------------------------------------------
   . clear old build ...
 ---------------------------------------------------------------------`);
     var dest = 'target';
-    del(dest, { force: true });
+    await del(dest, {force: true});
     cb();
 }
-function clear_deploy(cb){
+async function clear_deploy(cb) {
     console.log(`---------------------------------------------------------------------
   . clear old deploy ...
 ---------------------------------------------------------------------`);
     var dest = ["target/o2server/store/", "target/o2server/commons/", "target/o2server/jvm/", "target/o2server/configSample/", "target/o2server/localSample/", "target/o2server/servers/"];
     dest = dest.concat(["target/o2server/*.sh", "target/o2server/*.jar", "target/o2server/*.html", "target/o2server/*.bat", "target/o2server/version.o2"]);
-    del(dest, { force: true });
+    await del(dest, {force: true});
     cb();
 }
 exports.clear_build = clear_build;
