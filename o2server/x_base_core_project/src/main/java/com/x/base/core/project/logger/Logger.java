@@ -224,7 +224,7 @@ public class Logger {
 	private String message(String id, String message) {
 		StringBuilder o = new StringBuilder();
 		o.append(ID_TAG).append(StringUtils.isEmpty(id) ? Thread.currentThread().getName() : id).append(NAME_TAG)
-				.append(this.name).append(MESSAGE_TAG).append(message).append(".");
+				.append(this.name).append(MESSAGE_TAG).append(message);
 		return o.toString();
 	}
 
