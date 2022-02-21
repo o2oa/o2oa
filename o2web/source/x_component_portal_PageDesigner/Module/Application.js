@@ -136,8 +136,8 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
         var module = this;
         this.page.designer.shortcut = false;
         this.page.designer.confirm("warn", module.node, MWF.APPPOD.LP.notice.deleteElementTitle, MWF.APPPOD.LP.notice.deleteElement, 300, 120, function(){
-            if (this.queryGetPageDataFun) module.page.removeEvent("queryGetPageData", this.queryGetPageDataFun);
-            if (this.postGetPageDataFun) module.page.removeEvent("postGetPageData", this.postGetPageDataFun);
+            if (module.queryGetPageDataFun) module.page.removeEvent("queryGetPageData", module.queryGetPageDataFun);
+            if (module.postGetPageDataFun) module.page.removeEvent("postGetPageData", module.postGetPageDataFun);
 
 			module.page.selected();
 
@@ -204,13 +204,14 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 	loadApplication: function ( ) {
 		if(this.node)this.node.empty();
 		this.clean();
+		var status = this.json.statusType === "map" ? this.json.statusMapList : {};
 		var options = this.json.optionsType === "map" ? this.json.optionsMapList : {};
 		if (this.json.componentSelected && this.json.componentSelected!=="none" && this.json.componentType!=="script"){
 			var componentPath = this.json.componentSelected;
 			if( componentPath.indexOf("@url:") === 0 ){
 				this._loadIframe( componentPath.substring(5, componentPath.length ) );
 			}else{
-				this._loadApplication( componentPath, options );
+				this._loadApplication( componentPath, status, options );
 			}
 		}else{
 			this.loadIcon();
@@ -228,7 +229,7 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 		this.iframe = new Element("iframe", attr).inject( this.node );
 		this.loadMask();
 	},
-	_loadApplication: function ( app, options ) {
+	_loadApplication: function ( app, status, options ) {
 		var clazz = MWF.xApplication;
 		app.split(".").each(function (a) {
 			clazz[a] = clazz[a] || {};
@@ -242,7 +243,7 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 				var opt = options || {};
 				opt.embededParent = this.node;
 				this.application = new clazz.Main(this.form.designer.desktop, opt);
-				this.application.status = opt;
+				this.application.status = status;
 				this.application.load();
 				this.application.setEventTarget(this.form.designer);
 				this.loadMask();
