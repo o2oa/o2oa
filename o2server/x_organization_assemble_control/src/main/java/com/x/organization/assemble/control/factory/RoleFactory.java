@@ -87,8 +87,8 @@ public class RoleFactory extends AbstractFactory {
 				list.add((Role) optional.get());
 			} else {
 				Role o = this.pickObject(str);
-				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
+					CacheManager.put(cache, cacheKey, o);
 					list.add(o);
 				}
 			}
