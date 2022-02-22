@@ -72,7 +72,7 @@ var scripts = {
 };
 
 var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
-    string: ["e", "lp", "w"]
+    string: ["e", "lp", "w", "m"]
 });
 var options = {};
 options.ev = o_options.e || "all";
