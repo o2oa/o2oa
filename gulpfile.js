@@ -1236,12 +1236,12 @@ function createHistoryJsonFile(url, fileName, host){
                 fp.readFile(path.resolve(process.cwd(), 'download-pro.json'), 'utf8').then(function(str){
                     const downloadJson = JSON.parse(str);
                     downloadJson.windows.url = host+downloadJson.windows.url;
-                    downloadJson.linux = host+downloadJson.linux.url
-                    downloadJson.macos = host+downloadJson.macos.url
-                    downloadJson.aix = host+downloadJson.aix.url
-                    downloadJson.raspi = host+downloadJson.raspi.url
-                    downloadJson.mips = host+downloadJson.mips.url
-                    downloadJson.arm = host+downloadJson.arm.url
+                    downloadJson.linux.url = host+downloadJson.linux.url
+                    downloadJson.macos.url = host+downloadJson.macos.url
+                    downloadJson.aix.url = host+downloadJson.aix.url
+                    downloadJson.raspi.url = host+downloadJson.raspi.url
+                    downloadJson.mips.url = host+downloadJson.mips.url
+                    downloadJson.arm.url = host+downloadJson.arm.url
                     let append = true;
                     for (var i=0; i<historyJsons.length; i++){
                         var o = historyJsons[i];
