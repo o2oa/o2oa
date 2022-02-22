@@ -39,12 +39,14 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
     },
     _queryLoaded: function(){
         var data = this._getBusinessData();
-        if( ["monthrange","daterange"].contains(this.json.selectType) ) {
-            if (typeOf(data) === "string") this._setBusinessData([data, ""]);
-        }else if( ["dates"].contains(this.json.selectType) ){
-            if (typeOf(data) === "string") this._setBusinessData([data]);
-        }else{
-            if( typeOf(data) === "array" )this._setBusinessData(data[0] || "");
+        if (data){
+            if( ["monthrange","daterange"].contains(this.json.selectType) ) {
+                if (typeOf(data) === "string") this._setBusinessData([data, ""]);
+            }else if( ["dates"].contains(this.json.selectType) ){
+                if (typeOf(data) === "string") this._setBusinessData([data]);
+            }else{
+                if( typeOf(data) === "array" )this._setBusinessData(data[0] || "");
+            }
         }
     },
     _appendVueData: function(){
