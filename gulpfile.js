@@ -79,7 +79,7 @@ options.ev = o_options.e || "all";
 options.lp = o_options.lp || "zh-cn";
 options.webSite = o_options.w || "https://www.o2oa.net";
 options.mirrorSite = o_options.m || "http://mirror1.o2oa.net";
-options.downloadSite = o_options.d || "http://download.o2oa.net";
+options.downloadSite = o_options.d || "https://download.o2oa.net";
 var jvmUrl = jvmUrls[options.ev];
 var scriptSource = scripts[options.ev];
 
