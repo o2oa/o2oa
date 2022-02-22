@@ -77,7 +77,8 @@ var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
 var options = {};
 options.ev = o_options.e || "all";
 options.lp = o_options.lp || "zh-cn";
-options.webSite = o_options.w;
+options.webSite = o_options.w || "https://www.o2oa.net";
+options.mirrorSite = o_options.m || "http://mirror1.o2oa.net";
 var jvmUrl = jvmUrls[options.ev];
 var scriptSource = scripts[options.ev];
 
@@ -1226,17 +1227,21 @@ if (os.platform().indexOf("win")==-1){
     exports.deploy = gulp.series(deploy_server);
 }
 
-function createHistroyJson(cb){
-    const host = options.webSite;
+function createHistoryJsonFile(url, fileName, host){
     const fp = fs.promises;
-
-    if (host){
-        const url = host+"/webSite/history.json?t="+(new Date()).getTime();
+    return new Promise(function(resolve){
         request.get({'url': url}, function(error, response, body) {
             if (!error && response.statusCode == 200) {
                 const historyJsons = JSON.parse(body);
                 fp.readFile(path.resolve(process.cwd(), 'download-pro.json'), 'utf8').then(function(str){
                     const downloadJson = JSON.parse(str);
+                    downloadJson.windows.url = host+downloadJson.windows.url;
+                    downloadJson.linux = host+downloadJson.linux.url
+                    downloadJson.macos = host+downloadJson.macos.url
+                    downloadJson.aix = host+downloadJson.aix.url
+                    downloadJson.raspi = host+downloadJson.raspi.url
+                    downloadJson.mips = host+downloadJson.mips.url
+                    downloadJson.arm = host+downloadJson.arm.url
                     let append = true;
                     for (var i=0; i<historyJsons.length; i++){
                         var o = historyJsons[i];
@@ -1250,13 +1255,30 @@ function createHistroyJson(cb){
                         historyJsons.unshift(downloadJson);
                     }
                     const jsonStr = JSON.stringify(historyJsons, null, '\t');
-                    var p1 = fp.writeFile(path.resolve(process.cwd(), 'history.json'), jsonStr);
-                    var p2 = fp.writeFile(path.resolve(process.cwd(), 'download-history.json'), jsonStr)
-                    Promise.all([p1,p2]).then(()=>{cb()});
+                    fp.writeFile(path.resolve(process.cwd(), fileName), jsonStr).then(()=>{resolve();});
                 });
             }
         });
+    });
+}
+
+async function createHistroyJson(cb) {
+    const host = options.webSite;
+    const mirrorHost = options.mirrorSite;
+
+    if (host) {
+        const url = host + "/webSite/history.json?t=" + (new Date()).getTime();
+        const mirrorUrl = mirrorHost + "/download/download-history.json?t=" + (new Date()).getTime();
+
+        var doneWebSite = false;
+        var doneMirror = false;
+        var check = function () {
+            if (doneWebSite && doneMirror) cb();
+        };
+        await createHistoryJsonFile(url, 'history.json', host);
+        await createHistoryJsonFile(mirrorUrl, 'download-history.json', mirrorHost);
     }
+    cb();
 }
 exports.build_historyJson = createHistroyJson;
 
