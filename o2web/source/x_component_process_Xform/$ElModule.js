@@ -67,7 +67,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         this.node.appendHTML(this._createElementHtml(), "before");
         var input = this.node.getPrevious();
 
-        this.node.destroy();
+        //this.node.destroy();
         this.node = input;
         this.node.set({
             "id": this.json.id,
@@ -190,8 +190,8 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
             this.node.removeClass(this.styleNode.get("id"));
         }
         if (this.json.vueCss && this.json.vueCss.code){
-            this.styleNode = this.node.loadCssText(this.json.vueCss.code, {"notInject": true});
-            this.styleNode.inject(this.node, "before");
+            this.styleNode = this.node.getParent().loadCssText(this.json.vueCss.code, {"notInject": true});
+            this.styleNode.inject(this.node.getParent(), "before");
         }
     },
 
