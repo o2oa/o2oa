@@ -62,6 +62,9 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         if (!this.json.readonly) this.json.readonly = false;
         if (!this.json.resize) this.json.resize = "none";
         if (!this.json.description) this.json.description = "";
+        if (this.json.minRows && this.json.maxRows){
+            this.json.autosize = {minRows: this.json.minRows.toInt(), maxRows: this.json.maxRows.toInt()}
+        }
     },
     // appendVueExtend: function(app){
     //     if (!app.methods) app.methods = {};
