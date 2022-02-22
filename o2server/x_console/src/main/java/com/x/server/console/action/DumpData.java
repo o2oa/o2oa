@@ -138,7 +138,6 @@ public class DumpData {
 			List<String> list = new ArrayList<>();
 			if (StringUtils.equals(Config.dumpRestoreData().getMode(), DumpRestoreData.TYPE_FULL)) {
 				list.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
-				//return list;
 			}else {
 				for (String str : (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES)) {
 					Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(str);
