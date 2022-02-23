@@ -35,6 +35,7 @@ import com.x.base.core.project.config.LogLevel;
 import com.x.base.core.project.config.MPweixin;
 import com.x.base.core.project.config.Meeting;
 import com.x.base.core.project.config.Messages;
+import com.x.base.core.project.config.Mock;
 import com.x.base.core.project.config.Mq;
 import com.x.base.core.project.config.Node;
 import com.x.base.core.project.config.Organization;
@@ -83,6 +84,7 @@ public class CreateConfigSample {
 		classes.add(LogLevel.class);
 		classes.add(Meeting.class);
 		classes.add(Messages.class);
+		classes.add(Mock.class);
 		classes.add(MPweixin.class);
 		classes.add(Mq.class);
 		classes.add(Node.class);
