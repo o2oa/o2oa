@@ -76,7 +76,8 @@ var AMDLoader;
             }
             this._detected = true;
             this._isWindows = Environment._isWindows();
-            this._isNode = (typeof module !== 'undefined' && !!module.exports);
+            this._isNode = false;
+            // this._isNode = (typeof module !== 'undefined' && !!module.exports);
             this._isElectronRenderer = (typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions.electron !== 'undefined' && process.type === 'renderer');
             this._isWebWorker = (typeof AMDLoader.global.importScripts === 'function');
         };
