@@ -34,7 +34,7 @@ public class Mock extends ConfigObject {
 
 		public Item() {
 			this.put = new Method("post", "mockputtopost");
-			this.delete = new Method("delete", "mockdeletetoget");
+			this.delete = new Method("get", "mockdeletetoget");
 		}
 
 		private Method put;
