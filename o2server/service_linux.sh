@@ -24,7 +24,7 @@ echo "Wants=network-online.target" >>${servicefile}
 echo "After=network.target" >>${servicefile}
 echo "[Service]" >>${servicefile}
 echo "Type=simple" >>${servicefile}
-echo "ExecStart=${current_dir}/start_linux.sh" >>${servicefile}
+echo "ExecStart=${current_dir}/${servicefile}" >>${servicefile}
 echo "ExecReload=${current_dir}/restart_linux.sh" >>${servicefile}
 echo "ExecStop=${current_dir}/stop_linux.sh" >>${servicefile}
 echo "[Install]" >>${servicefile}
