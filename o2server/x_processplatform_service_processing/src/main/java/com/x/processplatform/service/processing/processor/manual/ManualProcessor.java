@@ -286,7 +286,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 				break;
 			}
 		}
-		LOGGER.debug("pass same target find workLog:{}.", workLog::toString);
 		return workLog;
 	}
 
