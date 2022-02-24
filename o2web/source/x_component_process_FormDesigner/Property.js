@@ -543,7 +543,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             this.form.designer.actions.listForm( application || this.form.designer.application.id, function(json){
                 this.subforms = json.data;
                 if (callback) callback();
-            }.bind(this), null, false);
+            }.bind(this));
         }else{
             if (callback) callback();
         }
