@@ -40,6 +40,7 @@ MWF.xApplication.process.Xform.Elbutton = MWF.APPElbutton =  new Class(
         if (!this.json.circle) this.json.circle = false;
         if (!this.json.disabled) this.json.disabled = false;
         if (!this.json.loading) this.json.loading = false;
+        if (!this.json.icon) this.json.icon = false;
     },
     _createElementHtml: function(){
         debugger;
@@ -51,6 +52,7 @@ MWF.xApplication.process.Xform.Elbutton = MWF.APPElbutton =  new Class(
         html += " :circle=\"circle\"";
         html += " :disabled=\"disabled\"";
         html += " :loading=\"loading\"";
+        html += " :icon=\"icon\"";
 
         if (this.json.autofocus==="yes") html += " autofocus";
 
