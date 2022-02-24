@@ -8,13 +8,13 @@ import com.x.cms.core.express.tools.DateOperation;
 import org.apache.commons.lang3.StringUtils;
 /**
  * 对评论信息的持久化服务
- * 
+ *
  * @author O2LEE
  */
 public class DocumentCommentInfoPersistService {
 
 	private DocumentCommentInfoService documentCommentInfoService = new DocumentCommentInfoService();
-	
+
 	public void delete( String flag, EffectivePerson effectivePerson ) throws Exception {
 		if ( StringUtils.isEmpty( flag )) {
 			throw new Exception("flag is empty.");
@@ -36,7 +36,7 @@ public class DocumentCommentInfoPersistService {
 				throw new Exception("documentCommentInfo delete permission denied.");
 			}else {
 				documentCommentInfoService.delete( emc, flag );
-			}			
+			}
 		} catch (Exception e) {
 			throw e;
 		}
@@ -54,13 +54,14 @@ public class DocumentCommentInfoPersistService {
 			throw new Exception("documentCommentInfo is null.");
 		}
 		if( StringUtils.isEmpty( documentCommentInfo.getTitle() )) {
-			documentCommentInfo.setTitle("无标题评论信息("+ DateOperation.getNowDateTime() +")");
+			if(content.length() > 70){
+				documentCommentInfo.setTitle(content.substring(0, 70) + "...");
+			}else{
+				documentCommentInfo.setTitle(content);
+			}
 		}
-		if( documentCommentInfo.getTitle().length() > 70 ) {
-			documentCommentInfo.setTitle( documentCommentInfo.getTitle().substring(0, 70) + "..." );
-		}
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
-			documentCommentInfo = documentCommentInfoService.save( emc, documentCommentInfo, content );			
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			documentCommentInfo = documentCommentInfoService.save( emc, documentCommentInfo, content );
 		} catch (Exception e) {
 			throw e;
 		}

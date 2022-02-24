@@ -10,36 +10,30 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.DocumentCommend;
 
+/**
+ * 取消评论点赞
+ * @author sword
+ */
 public class ActionPersistUnCommend extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionPersistUnCommend.class);
 
 	protected ActionResult<Wo> execute(HttpServletRequest request, String commentId, EffectivePerson effectivePerson ) throws Exception {
+		logger.debug(request.getRequestURI());
 		ActionResult<Wo> result = new ActionResult<>();
-		Boolean check = true;
-
-		if (check) {
-			try {				
-				List<String> ids = commentCommendPersistService.deleteWithCommentId( commentId, effectivePerson.getDistinguishedName() );		
-				Wo wo = new Wo();
-				wo.setIds( ids );
-				result.setData( wo );				
-			} catch (Exception e) {
-				Exception exception = new ExceptionCommentPersist(e, "系统根据个人和文档评论ID删除点赞信息时发生异常。commentId:" + commentId );
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-				throw exception;
-			}
-		}
-
+		List<String> ids = docCommendPersistService.delete(commentId, effectivePerson.getDistinguishedName(), DocumentCommend.COMMEND_TYPE_COMMENT);
+		Wo wo = new Wo();
+		wo.setIds( ids );
+		result.setData( wo );
 		CacheManager.notify( Document.class );
-		
+
 		return result;
 	}
-	
+
 	public static class Wo {
-		
+
 		private List<String> ids = null;
 
 		public List<String> getIds() {
@@ -49,7 +43,7 @@ public class ActionPersistUnCommend extends BaseAction {
 		public void setIds(List<String> ids) {
 			this.ids = ids;
 		}
-		
-		
+
+
 	}
 }
