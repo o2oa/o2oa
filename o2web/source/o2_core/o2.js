@@ -1383,7 +1383,8 @@ if (!window.o2) {
          * //获
          * node.loadHtmlText(html, {"bind": json});
          */
-        this.o2.loadHtmlText = this.o2.injectHtml = function (html, op) {
+        this.o2.loadHtmlText = this.o2.injectHtml = function (html, options) {
+            var op = (_typeOf(options) === "object") ? _getHtmlOptions(options) : _getHtmlOptions(null);
             _injectHtml(op, html);
         };
         if (window.Element) Element.prototype.loadHtmlText = Element.prototype.injectHtml = function (html, options) {
@@ -2059,11 +2060,9 @@ if (!window.o2) {
 
         _restful = function (method, address, data, callback, async, withCredentials, cache) {
             var p = null;
-            if (method.toLowerCase()==="get"){
+            if (method.toLowerCase()==="get" && async!==false){
                 p = _checkRestful(address, callback);
                 //if (p) return p;
-            }else{
-
             }
 
             var _addr = address;
