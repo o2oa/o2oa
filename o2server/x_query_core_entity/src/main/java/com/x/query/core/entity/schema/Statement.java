@@ -170,7 +170,7 @@ public class Statement extends SliceJpaObject {
 	@FieldDescribe("jpql语句.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_4K, name = ColumnNamePrefix + data_FIELDNAME)
+	@Column(length = JpaObject.length_32K, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
@@ -178,7 +178,7 @@ public class Statement extends SliceJpaObject {
 	@FieldDescribe("类型为script的执行脚本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_32K, name = ColumnNamePrefix + scriptText_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + scriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String scriptText;
 
@@ -186,7 +186,7 @@ public class Statement extends SliceJpaObject {
 	@FieldDescribe("jpql语句，用于查询总数.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_4K, name = ColumnNamePrefix + countData_FIELDNAME)
+	@Column(length = JpaObject.length_32K, name = ColumnNamePrefix + countData_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String countData;
 
@@ -194,7 +194,7 @@ public class Statement extends SliceJpaObject {
 	@FieldDescribe("类型为script的执行脚本，用于查询总数.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_32K, name = ColumnNamePrefix + countScriptText_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + countScriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String countScriptText;
 
@@ -202,7 +202,7 @@ public class Statement extends SliceJpaObject {
 	@FieldDescribe("展现视图.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_32K, name = ColumnNamePrefix + view_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + view_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String view;
 
