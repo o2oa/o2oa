@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.service;
 
 import java.util.List;
 
+import com.x.cms.core.entity.DocumentCommentInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -14,7 +15,7 @@ import com.x.cms.core.entity.DocumentCommend;
 
 class DocCommendService {
 
-	public List<String> listByDocAndPerson( EntityManagerContainer emc, String docId, String personName, Integer maxCount ) throws Exception {
+	public List<String> listByDocAndPerson( EntityManagerContainer emc, String docId, String personName, Integer maxCount, String type) throws Exception {
 		if( StringUtils.isEmpty( docId ) ){
 			return null;
 		}
@@ -22,23 +23,42 @@ class DocCommendService {
 			return null;
 		}
 		Business business = new Business( emc );
-		return business.documentCommendFactory().listByDocAndPerson(docId, personName, maxCount );
+		return business.documentCommendFactory().listByDocAndPerson(docId, personName, maxCount, type);
 	}
 
-	public List<String> listByDocument( EntityManagerContainer emc, String docId, Integer maxCount ) throws Exception {
+	public List<String> listByDocument( EntityManagerContainer emc, String docId, Integer maxCount, String type) throws Exception {
 		if( StringUtils.isEmpty( docId ) ){
 			return null;
 		}
 		Business business = new Business( emc );
-		return business.documentCommendFactory().listByDocument(docId, maxCount);
+		return business.documentCommendFactory().listByDocument(docId, maxCount, type);
 	}
 
-	public List<String> listWithPerson( EntityManagerContainer emc, String personName, Integer maxCount ) throws Exception {
+	public List<String> listByCommentAndPerson( EntityManagerContainer emc, String commentId, String personName, Integer maxCount) throws Exception {
+		if( StringUtils.isEmpty( commentId ) ){
+			return null;
+		}
 		if( StringUtils.isEmpty( personName ) ){
 			return null;
 		}
 		Business business = new Business( emc );
-		return business.documentCommendFactory().listWithPerson(personName, maxCount);
+		return business.documentCommendFactory().listByCommentAndPerson(commentId, personName, maxCount);
+	}
+
+	public List<String> listByComment( EntityManagerContainer emc, String commentId, Integer maxCount) throws Exception {
+		if( StringUtils.isEmpty( commentId ) ){
+			return null;
+		}
+		Business business = new Business( emc );
+		return business.documentCommendFactory().listByComment(commentId, maxCount);
+	}
+
+	public List<String> listWithPerson( EntityManagerContainer emc, String personName, Integer maxCount, String type) throws Exception {
+		if( StringUtils.isEmpty( personName ) ){
+			return null;
+		}
+		Business business = new Business( emc );
+		return business.documentCommendFactory().listWithPerson(personName, maxCount, type);
 	}
 
 	public DocumentCommend create( EntityManagerContainer emc, DocumentCommend wrapIn ) throws Exception {
@@ -48,19 +68,36 @@ class DocCommendService {
 		Business business = new Business( emc );
 		List<String> commendIds = null;
 		DocumentCommend documentCommend = null;
-		commendIds = business.documentCommendFactory().listByDocAndPerson( wrapIn.getDocumentId(), wrapIn.getCommendPerson(), 1 );
+		if(DocumentCommend.COMMEND_TYPE_COMMENT.equals(wrapIn.getType())){
+			commendIds = business.documentCommendFactory().listByCommentAndPerson(wrapIn.getCommentId(), wrapIn.getCommendPerson(), 1);
+		}else {
+			commendIds = business.documentCommendFactory().listByDocAndPerson(wrapIn.getDocumentId(), wrapIn.getCommendPerson(), 1, DocumentCommend.COMMEND_TYPE_DOCUMENT);
+		}
 		if( ListTools.isEmpty( commendIds ) ){
-			Document doc = emc.find( wrapIn.getDocumentId(), Document.class );
 			documentCommend = new DocumentCommend();
 			documentCommend.setId( DocumentCommend.createId() );
 			documentCommend.setCommendPerson( wrapIn.getCommendPerson() );
 			documentCommend.setDocumentId( wrapIn.getDocumentId() );
 			documentCommend.setTitle(wrapIn.getTitle());
+			documentCommend.setCreatorPerson(wrapIn.getCreatorPerson());
+			documentCommend.setType(wrapIn.getType());
+			documentCommend.setCommentId(wrapIn.getCommentId());
+			documentCommend.setCommentTitle(wrapIn.getCommentTitle());
 			emc.beginTransaction( DocumentCommend.class );
-			if( doc != null ) {
-				emc.beginTransaction( Document.class );
-				doc.addCommendCount(1);
-				emc.check( doc, CheckPersistType.all );
+			if(DocumentCommend.COMMEND_TYPE_COMMENT.equals(wrapIn.getType())){
+				DocumentCommentInfo doc = emc.find( wrapIn.getCommentId(), DocumentCommentInfo.class );
+				if( doc != null ) {
+					emc.beginTransaction( DocumentCommentInfo.class );
+					doc.addCommendCount(1);
+					emc.check( doc, CheckPersistType.all );
+				}
+			}else{
+				Document doc = emc.find( wrapIn.getDocumentId(), Document.class );
+				if( doc != null ) {
+					emc.beginTransaction( Document.class );
+					doc.addCommendCount(1);
+					emc.check( doc, CheckPersistType.all );
+				}
 			}
 			emc.persist( documentCommend, CheckPersistType.all );
 			emc.commit();
@@ -76,12 +113,21 @@ class DocCommendService {
 		}
 		DocumentCommend documentCommend = emc.find( id, DocumentCommend.class );
 		if( documentCommend != null ){
-			Document doc = emc.find( documentCommend.getDocumentId(), Document.class );
 			emc.beginTransaction( DocumentCommend.class );
-			if( doc != null ) {
-				emc.beginTransaction( Document.class );
-				doc.subCommendCount(1);
-				emc.check( doc, CheckPersistType.all );
+			if(DocumentCommend.COMMEND_TYPE_COMMENT.equals(documentCommend.getType())){
+				DocumentCommentInfo doc = emc.find( documentCommend.getCommentId(), DocumentCommentInfo.class );
+				if( doc != null ) {
+					emc.beginTransaction( DocumentCommentInfo.class );
+					doc.subCommendCount(1);
+					emc.check( doc, CheckPersistType.all );
+				}
+			}else{
+				Document doc = emc.find( documentCommend.getDocumentId(), Document.class );
+				if( doc != null ) {
+					emc.beginTransaction( Document.class );
+					doc.subCommendCount(1);
+					emc.check( doc, CheckPersistType.all );
+				}
 			}
 			emc.remove( documentCommend, CheckRemoveType.all );
 			emc.commit();
@@ -95,14 +141,22 @@ class DocCommendService {
 		}
 		List<DocumentCommend> documentCommends = emc.list( DocumentCommend.class, ids  );
 		if( ListTools.isNotEmpty( documentCommends )){
-			Document doc = null;
 			emc.beginTransaction( DocumentCommend.class );
+			emc.beginTransaction( DocumentCommentInfo.class );
 			emc.beginTransaction( Document.class );
 			for( DocumentCommend documentCommend : documentCommends ) {
-				doc = emc.find( documentCommend.getDocumentId(), Document.class );
-				if( doc != null ) {
-					doc.subCommendCount(1);
-					emc.check( doc, CheckPersistType.all );
+				if(DocumentCommend.COMMEND_TYPE_COMMENT.equals(documentCommend.getType())){
+					DocumentCommentInfo doc = emc.find( documentCommend.getCommentId(), DocumentCommentInfo.class );
+					if( doc != null ) {
+						doc.subCommendCount(1);
+						emc.check( doc, CheckPersistType.all );
+					}
+				}else{
+					Document doc = emc.find( documentCommend.getDocumentId(), Document.class );
+					if( doc != null ) {
+						doc.subCommendCount(1);
+						emc.check( doc, CheckPersistType.all );
+					}
 				}
 				emc.remove( documentCommend, CheckRemoveType.all );
 			}

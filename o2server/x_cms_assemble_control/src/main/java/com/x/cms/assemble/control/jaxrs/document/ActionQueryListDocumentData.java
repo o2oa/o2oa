@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author sword
+ */
 public class ActionQueryListDocumentData extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionQueryListDocumentData.class);
@@ -46,11 +49,7 @@ public class ActionQueryListDocumentData extends BaseAction {
 		List<Wo> wos = new ArrayList<>();
 		Wo wo = null;
 		List<Document> docs = documentQueryService.list(ids);
-		//先不考虑阅读权限的问题
-		/*List<String> unitNames = userManagerService.listUnitNamesWithPerson(effectivePerson.getDistinguishedName());
-		List<String> groupNames = userManagerService.listGroupNamesByPerson(effectivePerson.getDistinguishedName());*/
 		for (Document document : docs){
-			//if(this.hasReadPermission(business, document, unitNames, groupNames, effectivePerson, null)) {
 				Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), document.getId());
 				Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 				if (optional.isPresent()) {
