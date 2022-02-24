@@ -33,7 +33,7 @@ public class ActionPersistCommend extends BaseAction {
 			if (comment == null) {
 				throw new ExceptionEntityNotExist(id, DocumentCommentInfo.class);
 			}
-			document = emc.fetch(id, Document.class);
+			document = emc.fetch(comment.getDocumentId(), Document.class);
 			if (document == null) {
 				throw new ExceptionEntityNotExist(comment.getDocumentId(), Document.class);
 			}
