@@ -1,12 +1,26 @@
 MWF.xAction.RestActions.Action["x_organization_assemble_personal"] = new Class({
     Extends: MWF.xAction.RestActions.Action,
     changePassword: function(oldPassword, password, morePassword, success, failure, async){
-        var data = {
-            "oldPassword": oldPassword,
-            "newPassword": password,
-            "confirmPassword": morePassword
-        };
-        this.action.invoke({"name": "changePassword", "async": async, "data": data, "success": success, "failure": failure});
+        if (layout.config.publicKey){
+            o2.load("../o2_lib/jsencrypt/jsencrypt.js", function(){
+                var encrypt = new JSEncrypt();
+                encrypt.setPublicKey("-----BEGIN PUBLIC KEY-----"+layout.config.publicKey+"-----END PUBLIC KEY-----");
+                var data = {
+                    "oldPassword": encrypt.encrypt(oldPassword),
+                    "newPassword": encrypt.encrypt(password),
+                    "confirmPassword": encrypt.encrypt(morePassword),
+                    "isEncrypted": "y"
+                };
+                this.action.invoke({"name": "changePassword", "async": async, "data": data, "success": success, "failure": failure});
+            }.bind(this));
+        }else{
+            var data = {
+                "oldPassword": oldPassword,
+                "newPassword": password,
+                "confirmPassword": morePassword
+            };
+            this.action.invoke({"name": "changePassword", "async": async, "data": data, "success": success, "failure": failure});
+        }
     },
     getPersonIcon: function(id){
         var uri = "/jaxrs/person/icon";

@@ -1479,7 +1479,7 @@ MWFCalendar.EventTooltip = new Class({
         var end = endD.format(this.lp.dateFormatAll) + "（" + this.lp.weeks.arr[endD.get("day")] + "）";
 
         var html =
-            "<div style='font-size: 16px;color:#333;padding:10px 10px 10px 20px;'>"+ data.title +"</div>"+
+            "<div style='font-size: 16px;color:#333;padding:10px 10px 10px 20px;'>"+ o2.common.encodeHtml(data.title) +"</div>"+
             "<div style='height:1px;margin:0px 20px;border-bottom:1px solid #ccc;'></div>"+
             "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
             "<tr><td style='"+titleStyle+";' width='40'>"+this.lp.begin+":</td>" +
