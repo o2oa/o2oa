@@ -28,8 +28,8 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
     },
     _loadResource : function( callback ){
         if( !window.XLSX || !window.xlsxUtils ){
-            var uri = "../x_component_Template/framework/xlsx/xlsx.full.js";
-            var uri2 = "../x_component_Template/framework/xlsx/xlsxUtils.js";
+            var uri = "../x_component_Template/framework/xlsx-js-style/xlsx.full.js";
+            var uri2 = "../x_component_Template/framework/xlsx-js-style/xlsxUtils.js";
             COMMON.AjaxModule.load(uri, function(){
                 COMMON.AjaxModule.load(uri2, function(){
                     callback();
@@ -123,6 +123,7 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
             var data = window.xlsxUtils.format2Sheet(array, 0, 0, null);//偏移3行按keyMap顺序转换
             var wb = window.xlsxUtils.format2WB(data, "sheet1", undefined);
             var wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+            debugger;
             var dataInfo = wb.Sheets[wb.SheetNames[0]];
 
             var widthArray = [];
