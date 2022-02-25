@@ -17,7 +17,7 @@ public class Cache extends ConfigObject {
 	}
 
 	public Cache() {
-		this.type = TYPE_EHCACHE;
+		this.type = TYPE_GUAVA;
 		this.redis = Redis.defaultInstance();
 		this.ehcache = Ehcache.defaultInstance();
 		this.guava = Guava.defaultInstance();
