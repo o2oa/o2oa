@@ -2167,7 +2167,7 @@ if (!window.o2) {
                             }
                         }
                         if (token) {
-                            res.setHeader(o2.tokenName, token);
+                            //res.setHeader(o2.tokenName, token);
                             res.setHeader("Authorization", token);
                         }
                     }
