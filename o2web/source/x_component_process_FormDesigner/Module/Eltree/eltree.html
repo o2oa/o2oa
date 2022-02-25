@@ -1,14 +1,14 @@
 <div style="background-color: #FFF; overflow: hidden">
 	<div title="{{$.lp.base}}" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-		  <tr>
-		    <td class="editTableTitle">{{$.lp.id}}:</td>
-		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
-		  </tr>
-		  <tr>
-		    <td class="editTableTitle">{{$.lp.name}}:</td>
-		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
-		  </tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
 		</table>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
@@ -38,12 +38,10 @@
 					<input type="text" name="nodeKey" value="text{$.nodeKey}" class="editTableInput"/>
 				</td>
 			</tr>
-			<tr>
-				<td colspan="2">
-					<div class="MWFFormulaArea" name="currentNodeKey" title="{{$.lp.currentNodeKey}}"></div>
-				</td>
-			</tr>
 		</table>
+		<div>
+			<div class="MWFFormulaArea" name="currentNodeKey" title="{{$.lp.currentNodeKey}}"></div>
+		</div>
 
 		<div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.expand}}</div>
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
@@ -51,10 +49,10 @@
 				<td class="editTableTitle">{{$.lp.defaultExpandAll}}:</td>
 				<td class="editTableValue">
 					<input type="radio" name="defaultExpandAll" value="true" text{($.defaultExpandAll)?'checked':''}
-						onclick="if (this.checked){ $('text{$.pid}expandDetail').setStyle('display', 'none')}"
+					onclick="if (this.checked){ $('text{$.pid}expandDetail').setStyle('display', 'none')}"
 					/>{{$.lp.yes}}
 					<input type="radio" name="defaultExpandAll" value="false" text{(!$.defaultExpandAll)?'checked':''}
-						onclick="if (this.checked){ $('text{$.pid}expandDetail').setStyle('display', '')}"
+					onclick="if (this.checked){ $('text{$.pid}expandDetail').setStyle('display', '')}"
 					/>{{$.lp.no}}
 				</td>
 			</tr>
@@ -80,14 +78,10 @@
 				</td>
 			</tr>
 		</table>
-		<table id="text{$.pid}expandDetail" style="display: text{($.defaultExpandAll)?'none':''}; " width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-			<tr>
-				<td colspan="2">
-					<div>{{$.lp.defaultExpandedkeysNote}}</div>
-					<div class="MWFFormulaArea" name="defaultExpandedKeys" title="{{$.lp.defaultExpandedkeys}}"></div>
-				</td>
-			</tr>
-		</table>
+		<div id="text{$.pid}expandDetail" style="display: text{($.defaultExpandAll)?'none':''}; ">
+			<div>{{$.lp.defaultExpandedkeysNote}}</div>
+			<div class="MWFFormulaArea" name="defaultExpandedKeys" title="{{$.lp.defaultExpandedkeys}}"></div>
+		</div>
 
 
 		<div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.select}}</div>
@@ -96,59 +90,60 @@
 				<td class="editTableTitle">{{$.lp.showCheckbox}}:</td>
 				<td class="editTableValue">
 					<input type="radio" name="showCheckbox" value="true" text{($.showCheckbox)?'checked':''}
-						onclick="if (this.checked){ $('text{$.pid}checkboxDetail').setStyle('display', '')}"
+					onclick="if (this.checked){ $('text{$.pid}checkboxDetail').setStyle('display', '')}"
 					/>{{$.lp.yes}}
 					<input type="radio" name="showCheckbox" value="false" text{(!$.showCheckbox)?'checked':''}
-						onclick="if (this.checked){ $('text{$.pid}checkboxDetail').setStyle('display', 'none')}"
+					onclick="if (this.checked){ $('text{$.pid}checkboxDetail').setStyle('display', 'none')}"
 					/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
-		<table id="text{$.pid}checkboxDetail" style="display: text{($.showCheckbox)?'':'none'};" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-			<tr>
-				<td class="editTableTitle">{{$.lp.checkOnClickNode}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="checkOnClickNode" value="true" text{($.checkOnClickNode)?'checked':''}/>{{$.lp.clickNode}}
-					<input type="radio" name="checkOnClickNode" value="false" text{(!$.checkOnClickNode)?'checked':''}/>{{$.lp.clickCheckbox}}
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.checkStrictly}}:</td>
-				<td class="editTableValue">
-					<input type="radio" name="checkStrictly" value="true" text{($.checkStrictly)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="checkStrictly" value="false" text{(!$.checkStrictly)?'checked':''}/>{{$.lp.no}}
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">
-					<div>{{$.lp.defaultCheckedKeysNote}}</div>
-					<div class="MWFFormulaArea" name="defaultCheckedKeys" title="{{$.lp.defaultCheckedkeys}}"></div>
-				</td>
-			</tr>
-		</table>
 
-<!--		<div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.lazy}}</div>-->
-<!--		<table>-->
-<!--			<tr>-->
-<!--				<td class="editTableTitle">{{$.lp.lazy}}:</td>-->
-<!--				<td class="editTableValue">-->
-<!--					<input type="radio" name="lazy" value="true" text{($.lazy)?'checked':''}-->
-<!--						onclick="if (this.checked){ $('text{$.pid}lazyDetail').setStyle('display', '')}"-->
-<!--					/>{{$.lp.yes}}-->
-<!--					<input type="radio" name="lazy" value="false" text{(!$.lazy)?'checked':''}-->
-<!--						onclick="if (this.checked){ $('text{$.pid}lazyDetail').setStyle('display', 'none')}"-->
-<!--					/>{{$.lp.no}}-->
-<!--				</td>-->
-<!--			</tr>-->
-<!--		</table>-->
-<!--		<table id="text{$.pid}lazyDetail" style="display: text{($.lazy)?'':'none'};" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--			<tr>-->
-<!--				<td colspan="2">-->
-<!--					<div>{{$.lp.loadFunNote}}</div>-->
-<!--					<div class="MWFFormulaArea" name="loadFun" title="{{$.lp.loadFun}}"></div>-->
-<!--				</td>-->
-<!--			</tr>-->
-<!--		</table>-->
+		<div id="text{$.pid}checkboxDetail" style="display: text{($.showCheckbox)?'':'none'};">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.checkOnClickNode}}:</td>
+					<td class="editTableValue">
+						<input type="radio" name="checkOnClickNode" value="true" text{($.checkOnClickNode)?'checked':''}/>{{$.lp.clickNode}}
+						<input type="radio" name="checkOnClickNode" value="false" text{(!$.checkOnClickNode)?'checked':''}/>{{$.lp.clickCheckbox}}
+					</td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.checkStrictly}}:</td>
+					<td class="editTableValue">
+						<input type="radio" name="checkStrictly" value="true" text{($.checkStrictly)?'checked':''}/>{{$.lp.yes}}
+						<input type="radio" name="checkStrictly" value="false" text{(!$.checkStrictly)?'checked':''}/>{{$.lp.no}}
+					</td>
+				</tr>
+			</table>
+			<div>
+				<div>{{$.lp.defaultCheckedKeysNote}}</div>
+				<div class="MWFFormulaArea" name="defaultCheckedKeys" title="{{$.lp.defaultCheckedkeys}}"></div>
+			</div>
+		</div>
+
+		<!--		<div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.lazy}}</div>-->
+		<!--		<table>-->
+		<!--			<tr>-->
+		<!--				<td class="editTableTitle">{{$.lp.lazy}}:</td>-->
+		<!--				<td class="editTableValue">-->
+		<!--					<input type="radio" name="lazy" value="true" text{($.lazy)?'checked':''}-->
+		<!--						onclick="if (this.checked){ $('text{$.pid}lazyDetail').setStyle('display', '')}"-->
+		<!--					/>{{$.lp.yes}}-->
+		<!--					<input type="radio" name="lazy" value="false" text{(!$.lazy)?'checked':''}-->
+		<!--						onclick="if (this.checked){ $('text{$.pid}lazyDetail').setStyle('display', 'none')}"-->
+		<!--					/>{{$.lp.no}}-->
+		<!--				</td>-->
+		<!--			</tr>-->
+		<!--		</table>-->
+		<!--		<table id="text{$.pid}lazyDetail" style="display: text{($.lazy)?'':'none'};" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+		<!--			<tr>-->
+		<!--				<td colspan="2">-->
+		<!--					<div>{{$.lp.loadFunNote}}</div>-->
+		<!--					<div class="MWFFormulaArea" name="loadFun" title="{{$.lp.loadFun}}"></div>-->
+		<!--				</td>-->
+		<!--			</tr>-->
+		<!--		</table>-->
 
 		<div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;">{{$.lp.dragdrop}}</div>
 		<table>
@@ -164,41 +159,37 @@
 				</td>
 			</tr>
 		</table>
-		<table id="text{$.pid}dragDetail" style="display: text{($.draggable)?'':'none'};" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-			<tr>
-				<td colspan="2">
-					<div>{{$.lp.allowDragNote}}</div>
-					<div class="MWFFormulaArea" name="allowDrag" title="{{$.lp.allowDrag}}"></div>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">
-					<div>{{$.lp.allowDropNote}}</div>
-					<div class="MWFFormulaArea" name="allowDrop" title="{{$.lp.allowDrop}}"></div>
-				</td>
-			</tr>
-		</table>
+		<div id="text{$.pid}dragDetail" style="display: text{($.draggable)?'':'none'};" >
+			<div>
+				<div>{{$.lp.allowDragNote}}</div>
+				<div class="MWFFormulaArea" name="allowDrag" title="{{$.lp.allowDrag}}"></div>
+			</div>
+			<div>
+				<div>{{$.lp.allowDropNote}}</div>
+				<div class="MWFFormulaArea" name="allowDrop" title="{{$.lp.allowDrop}}"></div>
+			</div>
+		</div>
 
 
 		<div class="MWFMaplist" name="elStyles" title="{{$.lp.style}}"></div>
 		<div class="MWFMaplist" name="elProperties" title="{{$.lp.attribute}}"></div>
 
-<!--		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--			<tr>-->
-<!--				<td class="editTableTitle">{{$.lp.compute}}:</td>-->
-<!--				<td class="editTableValue">-->
-<!--					<input type="radio" name="compute" value="create" text{(!$.compute || $.compute=='create')?'checked':''}/>{{$.lp.create}}-->
-<!--					<input type="radio" name="compute" value="save" text{($.compute=='save')?'checked':''}/>{{$.lp.save}}-->
-<!--					<input type="radio" name="compute" value="show" text{($.compute=='show')?'checked':''}/>{{$.lp.show}}-->
-<!--				</td>-->
-<!--			</tr>-->
-<!--		</table>-->
+		<!--		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+		<!--			<tr>-->
+		<!--				<td class="editTableTitle">{{$.lp.compute}}:</td>-->
+		<!--				<td class="editTableValue">-->
+		<!--					<input type="radio" name="compute" value="create" text{(!$.compute || $.compute=='create')?'checked':''}/>{{$.lp.create}}-->
+		<!--					<input type="radio" name="compute" value="save" text{($.compute=='save')?'checked':''}/>{{$.lp.save}}-->
+		<!--					<input type="radio" name="compute" value="show" text{($.compute=='show')?'checked':''}/>{{$.lp.show}}-->
+		<!--				</td>-->
+		<!--			</tr>-->
+		<!--		</table>-->
 
-<!--		<div class="MWFScriptArea" name="defaultValue" title="{{$.lp.defaultValue}} (S)"></div>-->
+		<!--		<div class="MWFScriptArea" name="defaultValue" title="{{$.lp.defaultValue}} (S)"></div>-->
 
-<!--		<div class="MWFValidation" name="validationConfig"></div>-->
-<!--		<div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>-->
-		
+		<!--		<div class="MWFValidation" name="validationConfig"></div>-->
+		<!--		<div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>-->
+
 	</div>
 	<div title="{{$.lp.data}}"  class="MWFTab">
 		<table>
@@ -206,7 +197,7 @@
 				<td class="editTableTitle"></td>
 				<td class="editTableValue">
 					<input type="radio" name="dataType" value="json" text{($.dataType!=='script')?'checked':''}
-						onclick="if (this.checked){
+						   onclick="if (this.checked){
 							$('text{$.pid}dataJson').setStyle('display', '');
 							$('text{$.pid}dataScript').setStyle('display', 'none');
 						}"
@@ -247,35 +238,35 @@
 			<div class="MWFHtmlEditorArea" name="vueSlot" title="Input Slot (HTML)"></div>
 		</div>
 	</div>
-<!--	<div title="{{$.lp.section}}" class="MWFTab">-->
-<!--		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--			<tr>-->
-<!--				<td class="editTableTitle">{{$.lp.enableSection}}:</td>-->
-<!--				<td class="editTableValue">-->
-<!--					<input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'block')}" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>{{$.lp.yes}}-->
-<!--					<input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'none')}" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>{{$.lp.no}}-->
-<!--				</td>-->
-<!--			</tr>-->
-<!--		</table>-->
+	<!--	<div title="{{$.lp.section}}" class="MWFTab">-->
+	<!--		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+	<!--			<tr>-->
+	<!--				<td class="editTableTitle">{{$.lp.enableSection}}:</td>-->
+	<!--				<td class="editTableValue">-->
+	<!--					<input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'block')}" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>{{$.lp.yes}}-->
+	<!--					<input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'none')}" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>{{$.lp.no}}-->
+	<!--				</td>-->
+	<!--			</tr>-->
+	<!--		</table>-->
 
-<!--		<div id="text{$.pid}sectionByEditArea" style="display: text{($.section=='yes')?'block':'none'};">-->
-<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--				<tr>-->
-<!--					<td class="editTableTitle">{{$.lp.sectionBy}}:</td>-->
-<!--					<td class="editTableValue">-->
-<!--						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}" name="sectionBy" text{(($.sectionBy=='person') || ($.sectionBy!='unit' && $.sectionBy!='activity' && $.sectionBy!='script'))?'checked':''} type="radio" value="person"/>{{$.lp.handler}}<br/>-->
-<!--						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='unit')?'checked':''} type="radio" value="unit"/>{{$.lp.handlerUnit}}<br/>-->
-<!--						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='activity')?'checked':''} type="radio" value="activity"/>{{$.lp.activityId}}<br/>-->
-<!--						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='splitValue')?'checked':''} type="radio" value="splitValue"/>{{$.lp.splitValue}}<br/>-->
-<!--						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'block');}"  name="sectionBy" text{($.sectionBy=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}<br/>-->
-<!--					</td>-->
-<!--				</tr>-->
-<!--			</table>-->
-<!--			<div id="text{$.pid}sectionByScriptEditArea" style="display: text{($.sectionBy=='script')?'block':'none'};">-->
-<!--				<div class="MWFScriptArea" name="sectionByScript" title="{{$.lp.sectionBy}} (S)"></div>-->
-<!--			</div>-->
-<!--		</div>-->
-<!--	</div>-->
+	<!--		<div id="text{$.pid}sectionByEditArea" style="display: text{($.section=='yes')?'block':'none'};">-->
+	<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+	<!--				<tr>-->
+	<!--					<td class="editTableTitle">{{$.lp.sectionBy}}:</td>-->
+	<!--					<td class="editTableValue">-->
+	<!--						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}" name="sectionBy" text{(($.sectionBy=='person') || ($.sectionBy!='unit' && $.sectionBy!='activity' && $.sectionBy!='script'))?'checked':''} type="radio" value="person"/>{{$.lp.handler}}<br/>-->
+	<!--						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='unit')?'checked':''} type="radio" value="unit"/>{{$.lp.handlerUnit}}<br/>-->
+	<!--						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='activity')?'checked':''} type="radio" value="activity"/>{{$.lp.activityId}}<br/>-->
+	<!--						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='splitValue')?'checked':''} type="radio" value="splitValue"/>{{$.lp.splitValue}}<br/>-->
+	<!--						<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'block');}"  name="sectionBy" text{($.sectionBy=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}<br/>-->
+	<!--					</td>-->
+	<!--				</tr>-->
+	<!--			</table>-->
+	<!--			<div id="text{$.pid}sectionByScriptEditArea" style="display: text{($.sectionBy=='script')?'block':'none'};">-->
+	<!--				<div class="MWFScriptArea" name="sectionByScript" title="{{$.lp.sectionBy}} (S)"></div>-->
+	<!--			</div>-->
+	<!--		</div>-->
+	<!--	</div>-->
 	<div title="{{$.lp.event}}"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
