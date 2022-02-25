@@ -330,6 +330,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		} else {
 			this.expired = false;
 		}
+		this.latest = true;
 		this.duration = duration;
 		this.processingType = processingType;
 		/* 必须使用set方法,执行opinion的判断 */
