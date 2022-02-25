@@ -53,6 +53,8 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 				String address = Config.dingding().getOapiAddress()
 						+ "/topapi/message/corpconversation/asyncsend_v2?access_token="
 						+ Config.dingding().corpAccessToken();
+				logger.debug("钉钉发送消息url：" + address);
+				logger.debug("钉钉消息体：" + m.toString());
 				DingdingMessageResp resp = HttpConnection.postAsObject(address, null, m.toString(),
 						DingdingMessageResp.class);
 				if (resp.getErrcode() != 0) {
@@ -96,6 +98,11 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 			logger.info("o2oa workUrl："+workUrl);
 			o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + workUrl;
 			logger.info("o2oa 地址："+o2oaUrl);
+//			String talkUrl = "dingtalk://dingtalkclient/action/openapp?corpid="+Config.dingding().getCorpId()
+//					+"&container_type=work_platform&app_id=0_"
+//					+ Config.dingding().getAgentId() + "&redirect_type=jump&redirect_url="
+//					+ URLEncoder.encode(o2oaUrl, DefaultCharset.name);
+//			logger.info("dingtalk地址："+talkUrl);
 			return o2oaUrl;
 		}catch (Exception e) {
 			logger.error(e);
