@@ -2,6 +2,8 @@ package com.x.cms.assemble.control.service;
 
 import java.util.List;
 
+import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.DocumentCommentInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -18,36 +20,31 @@ public class DocCommendPersistService {
 
 	private DocCommendService docCommendService = new DocCommendService();
 
-	public DocumentCommend create( DocumentCommend documentCommend ) throws Exception {
-		if( documentCommend == null ){
-			throw new Exception("wrapIn document commend is null!");
-		}
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			return docCommendService.create(emc, documentCommend );
-		} catch ( Exception e ) {
-			throw e;
-		}
-	}
-
-	public DocumentCommend create( String personName, String docId, String title ) throws Exception {
-		if( StringUtils.isEmpty( docId ) ){
-			throw new Exception("docId can not empty!");
-		}
+	public DocumentCommend create( String personName, Document document, DocumentCommentInfo commentInfo) throws Exception {
 		if( StringUtils.isEmpty( personName ) ){
 			throw new Exception("personName can not empty!");
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			DocumentCommend documentCommend = new DocumentCommend();
 			documentCommend.setCommendPerson( personName );
-			documentCommend.setDocumentId( docId );
-			documentCommend.setTitle(title);
+			documentCommend.setDocumentId( document.getId() );
+			documentCommend.setTitle(document.getTitle());
+			documentCommend.setCreatorPerson(document.getCreatorPerson());
+			if(commentInfo== null) {
+				documentCommend.setType(DocumentCommend.COMMEND_TYPE_DOCUMENT);
+			}else{
+				documentCommend.setCreatorPerson(commentInfo.getCreatorName());
+				documentCommend.setType(DocumentCommend.COMMEND_TYPE_COMMENT);
+				documentCommend.setCommentId(commentInfo.getId());
+				documentCommend.setCommentTitle(commentInfo.getTitle());
+			}
 			return docCommendService.create(emc, documentCommend );
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
 
-	public List<String> delete( String docId, String personName ) throws Exception {
+	public List<String> delete( String docId, String personName, String type) throws Exception {
 		if( StringUtils.isEmpty( docId ) ){
 			throw new Exception("docId is empty!");
 		}
@@ -55,7 +52,12 @@ public class DocCommendPersistService {
 			throw new Exception("personName is empty!");
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			List<String> ids = docCommendService.listByDocAndPerson(emc, docId, personName, 99 );
+			List<String> ids;
+			if(DocumentCommend.COMMEND_TYPE_COMMENT.equals(type)){
+				ids = docCommendService.listByCommentAndPerson(emc, docId, personName, 0);
+			}else {
+				ids = docCommendService.listByDocAndPerson(emc, docId, personName, 0, type);
+			}
 			if( ListTools.isNotEmpty( ids ) ) {
 				return docCommendService.delete(emc, ids );
 			}else {

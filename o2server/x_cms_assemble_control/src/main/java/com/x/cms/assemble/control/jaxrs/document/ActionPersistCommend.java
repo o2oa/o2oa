@@ -12,6 +12,10 @@ import com.x.cms.core.entity.DocumentCommend;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 文档点赞
+ * @author sword
+ */
 public class ActionPersistCommend extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionPersistCommend.class);
@@ -41,7 +45,7 @@ public class ActionPersistCommend extends BaseAction {
 
 		if (check) {
 			try {
-				DocumentCommend documentCommend = docCommendPersistService.create( effectivePerson.getDistinguishedName(), id, document.getTitle() );
+				DocumentCommend documentCommend = docCommendPersistService.create( effectivePerson.getDistinguishedName(), document, null);
 				Wo wo = new Wo();
 				wo.setId( documentCommend.getId() );
 				result.setData( wo );
