@@ -8,6 +8,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.DocumentCommend;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -22,11 +23,11 @@ public class ActionPersistUnCommend extends BaseAction {
 		Boolean check = true;
 
 		if (check) {
-			try {				
-				List<String> ids = docCommendPersistService.delete( docId, effectivePerson.getDistinguishedName() );		
+			try {
+				List<String> ids = docCommendPersistService.delete( docId, effectivePerson.getDistinguishedName(), DocumentCommend.COMMEND_TYPE_DOCUMENT);
 				Wo wo = new Wo();
 				wo.setIds( ids );
-				result.setData( wo );				
+				result.setData( wo );
 			} catch (Exception e) {
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统根据个人和文档ID删除点赞信息时发生异常。docId:" + docId );
 				result.error(exception);
@@ -36,12 +37,12 @@ public class ActionPersistUnCommend extends BaseAction {
 		}
 
 		CacheManager.notify( Document.class );
-		
+
 		return result;
 	}
-	
+
 	public static class Wo extends GsonPropertyObject {
-		
+
 		private List<String> ids = null;
 
 		public List<String> getIds() {
@@ -51,7 +52,7 @@ public class ActionPersistUnCommend extends BaseAction {
 		public void setIds(List<String> ids) {
 			this.ids = ids;
 		}
-		
-		
+
+
 	}
 }

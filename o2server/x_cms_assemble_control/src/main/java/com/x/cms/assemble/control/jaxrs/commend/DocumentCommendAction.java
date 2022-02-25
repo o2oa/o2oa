@@ -20,6 +20,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
+/**
+ * @author sword
+ */
 @Path("commend")
 @JaxrsDescribe("点赞信息管理")
 public class DocumentCommendAction extends StandardJaxrsAction {

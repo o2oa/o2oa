@@ -8,6 +8,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.x.base.core.entity.AbstractPersistenceProperties;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.JpaObject;
@@ -17,7 +18,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
- * 文档点赞
+ * 文档、评论点赞
  *
  * @author O2LEE
  *
@@ -33,6 +34,9 @@ public class DocumentCommend extends SliceJpaObject {
 
 	private static final long serialVersionUID = 3856138316794473794L;
 	private static final String TABLE = PersistenceProperties.DocumentCommend.table;
+
+	public static final String COMMEND_TYPE_DOCUMENT = "document";
+	public static final String COMMEND_TYPE_COMMENT = "comment";
 
 	@Override
 	public String getId() {
@@ -69,9 +73,28 @@ public class DocumentCommend extends SliceJpaObject {
 	public static final String title_FIELDNAME = "title";
 	@FieldDescribe("文档标题")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + title_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String title;
+
+	public static final String commentId_FIELDNAME = "commentId";
+	@FieldDescribe("文档评论ID")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + commentId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + commentId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String commentId;
+
+	public static final String commentTitle_FIELDNAME = "commentTitle";
+	@FieldDescribe("文档评论标题")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + commentTitle_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String commentTitle;
+
+	public static final String creatorPerson_FIELDNAME = "creatorPerson";
+	@FieldDescribe("文档或评论创建人")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + creatorPerson_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + creatorPerson_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String creatorPerson;
 
 	public static final String commendPerson_FIELDNAME = "commendPerson";
 	@FieldDescribe("点赞者")
@@ -79,6 +102,12 @@ public class DocumentCommend extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	@Index(name = TABLE + IndexNameMiddle + commendPerson_FIELDNAME)
 	private String commendPerson;
+
+	public static final String type_FIELDNAME = "type";
+	@FieldDescribe("点赞类型：document(文档点赞，默认值)、comment(评论点赞)")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + type_FIELDNAME, columnDefinition = "varchar(64) DEFAULT 'document'")
+	@CheckPersist(allowEmpty = true)
+	private String type = COMMEND_TYPE_DOCUMENT;
 
 	public String getDocumentId() {
 		return documentId;
@@ -102,5 +131,37 @@ public class DocumentCommend extends SliceJpaObject {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getCommentId() {
+		return commentId;
+	}
+
+	public void setCommentId(String commentId) {
+		this.commentId = commentId;
+	}
+
+	public String getCommentTitle() {
+		return commentTitle;
+	}
+
+	public void setCommentTitle(String commentTitle) {
+		this.commentTitle = commentTitle;
+	}
+
+	public String getCreatorPerson() {
+		return creatorPerson;
+	}
+
+	public void setCreatorPerson(String creatorPerson) {
+		this.creatorPerson = creatorPerson;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

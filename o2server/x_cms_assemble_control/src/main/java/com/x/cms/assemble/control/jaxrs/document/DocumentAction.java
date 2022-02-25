@@ -984,6 +984,26 @@ public class DocumentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "列示文档.", action = ActionQueryListDocument.class)
+	@POST
+	@Path("list/document")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_listDocument(@Suspended final AsyncResponse asyncResponse,
+									   @Context HttpServletRequest request, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionQueryListDocument.Wo>> result = new ActionResult<>();
+
+		try {
+			result = new ActionQueryListDocument().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, jsonElement);
+		}
+
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "查看文档数据.", action = ActionQueryGetDocumentData.class)
 	@GET
 	@Path("{id}/document/data")
