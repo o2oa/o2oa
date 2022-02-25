@@ -45,4 +45,11 @@ public class NumberTools {
 		return value.doubleValue() < number.doubleValue();
 	}
 
+	public static boolean nullOrGreaterThan(Number value, Number number) {
+		if (value == null) {
+			return true;
+		}
+		return value.doubleValue() > number.doubleValue();
+	}
+
 }
