@@ -298,9 +298,9 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				new Element("div", {
 					"text" : "通过this.event可以获得当前条目的数据，最终返回图片资源地址文本。" +
 						"系统通用图片获取方法为o2.xDesktop.getImageSrc(imgId)；该方法可用于图片编辑器、html编辑上传的图片；附件、资源文件不可以用本方法。"
-				}).inject( td );
+				}).inject( tr );
 				MWF.require("MWF.widget.ScriptArea", function(){
-					this.srcScriptEditor = new MWF.widget.ScriptArea(td, {
+					this.srcScriptEditor = new MWF.widget.ScriptArea(tr, {
 						"title": "图片资源(src)脚本",
 						"mode": "javascript",
 						"maxObj": this.tree.editor.options.maxObj,
@@ -330,9 +330,9 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				this.textScriptTr = tr;
 				new Element("div", {
 					"text" : "通过this.event可以获得当前条目的数据，最终返回图片文本内容文本。"
-				}).inject( td );
+				}).inject( tr );
 				MWF.require("MWF.widget.ScriptArea", function(){
-					this.textScriptEditor = new MWF.widget.ScriptArea(td, {
+					this.textScriptEditor = new MWF.widget.ScriptArea(tr, {
 						"title": "文本内容脚本",
 						"mode": "javascript",
 						"maxObj": this.tree.editor.options.maxObj,
@@ -357,9 +357,9 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				var tr = new Element("div").inject(this.propertyArea);
 				new Element("div", {
 					"text" : "通过this.event[0]可以获得当前条目的数据,通过this.event[1]可获取Event对象。"
-				}).inject( td );
+				}).inject( tr );
 				MWF.require("MWF.widget.ScriptArea", function(){
-					this.clickScriptEditor = new MWF.widget.ScriptArea(td, {
+					this.clickScriptEditor = new MWF.widget.ScriptArea(tr, {
 						"title": "点击事件脚本",
 						"mode": "javascript",
 						"maxObj": this.tree.editor.options.maxObj,
