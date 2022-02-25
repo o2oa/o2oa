@@ -293,8 +293,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				}.bind(this));
 
 				//srcScript
-				var tr = new Element("tr").inject(this.propertyTable);
-				td = new Element("td", { "colspan": "2" }).inject(tr);
+				var tr = new Element("div").inject(this.propertyArea);
 				this.srcScriptTr = tr;
 				new Element("div", {
 					"text" : "通过this.event可以获得当前条目的数据，最终返回图片资源地址文本。" +
@@ -327,8 +326,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 					"code": "",
 					"html": ""
 				};
-				var tr = new Element("tr").inject(this.propertyTable);
-				td = new Element("td", { "colspan": "2" }).inject(tr);
+				var tr = new Element("div").inject(this.propertyArea);
 				this.textScriptTr = tr;
 				new Element("div", {
 					"text" : "通过this.event可以获得当前条目的数据，最终返回图片文本内容文本。"
@@ -356,8 +354,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				}
 
 				//clickScript
-				var tr = new Element("tr").inject(this.propertyTable);
-				td = new Element("td", { "colspan": "2" }).inject(tr);
+				var tr = new Element("div").inject(this.propertyArea);
 				new Element("div", {
 					"text" : "通过this.event[0]可以获得当前条目的数据,通过this.event[1]可获取Event对象。"
 				}).inject( td );
