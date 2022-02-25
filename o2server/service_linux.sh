@@ -24,6 +24,8 @@ echo "Wants=network-online.target" >>${servicePath}
 echo "After=network.target" >>${servicePath}
 echo "[Service]" >>${servicePath}
 echo "Type=simple" >>${servicePath}
+echo "StandardOutput=null" >>${servicePath}
+echo "StandardError=null" >>${servicePath}
 echo "ExecStart=${current_dir}/${scriptName}" >>${servicePath}
 echo "ExecReload=${current_dir}/restart_linux.sh" >>${servicePath}
 echo "ExecStop=${current_dir}/stop_linux.sh" >>${servicePath}
