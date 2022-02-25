@@ -266,6 +266,7 @@ MWF.xScript.Environment = function(ev){
         // *      "unitDn": "开发部@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //创建人组织全称,如果由系统创建。
         // *      "unit": "开发部",  //创建人组织名称
         // *      "department": "开发部",  //创建人组织名称，unit
+        // *      "customData": {},  //流程活动上配置的自定义属性
         // * }</code></pre>
 
         /**
