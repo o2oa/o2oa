@@ -39,7 +39,7 @@
 		"height": "",
 		"cursor": "pointer",
 		"line-height": "22px",
-		"overflow": "hidden",
+		"overflow": "auto",
 		"margin": "3px 3px",
 		"-webkit-user-select": "none",
 		"-moz-user-select": "none",
