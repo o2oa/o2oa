@@ -216,21 +216,27 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         }.bind(this));
         this.loadForm();
 
-        if (this.toolbarContentNode){
-            this.setScrollBar(this.toolbarContentNode, null, {
-                "V": {"x": 0, "y": 0},
-                "H": {"x": 0, "y": 0}
+        MWF.require("MWF.widget.ScrollBar", function(){
+            new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
+                "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
             });
-            //this.setScrollBar(this.propertyDomScrollArea, "form_property", {
-            //	"V": {"x": 0, "y": 0},
-            //	"H": {"x": 0, "y": 0}
-            //});
-            MWF.require("MWF.widget.ScrollBar", function(){
-                new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
-                    "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
-                });
-            }.bind(this));
-        }
+        }.bind(this));
+
+        // if (this.toolbarContentNode){
+        //     this.setScrollBar(this.toolbarContentNode, null, {
+        //         "V": {"x": 0, "y": 0},
+        //         "H": {"x": 0, "y": 0}
+        //     });
+        //     //this.setScrollBar(this.propertyDomScrollArea, "form_property", {
+        //     //	"V": {"x": 0, "y": 0},
+        //     //	"H": {"x": 0, "y": 0}
+        //     //});
+        //     MWF.require("MWF.widget.ScrollBar", function(){
+        //         new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
+        //             "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
+        //         });
+        //     }.bind(this));
+        // }
     },
     initOptions: function(){
         this.toolsData = null;
