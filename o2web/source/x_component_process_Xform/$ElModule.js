@@ -67,7 +67,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         this.node.appendHTML(this._createElementHtml(), "before");
         var input = this.node.getPrevious();
 
-        //this.node.destroy();
+        this.node.destroy();
         this.node = input;
         this.node.set({
             "id": this.json.id,
