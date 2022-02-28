@@ -16,9 +16,6 @@ MWF.xApplication.process.FormDesigner.Module.Elradio = MWF.FCElradio = new Class
 	},
 	_createElementHtml: function(){
 		var html = "<el-radio-group";
-		// if (this.json.textColor) html += " text-color=\""+this.json.textColor+"\"";
-		// if (this.json.fillColor) html += " fill=\""+this.json.fillColor+"\"";
-		// if (this.json.size && this.json.size!=="default") html += " size=\""+this.json.size+"\"";
 
 		html += " :text-color=\"textColor\"";
 		html += " :fill=\"fillColor\"";

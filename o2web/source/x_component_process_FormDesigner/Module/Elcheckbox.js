@@ -14,6 +14,11 @@ MWF.xApplication.process.FormDesigner.Module.Elcheckbox = MWF.FCElcheckbox = new
 		this.moduleType = "element";
 		this.moduleName = "elcheckbox";
 	},
+	_filterHtml: function(html){
+		var reg = /(?:@|v-on|:data)\S*(?:\=)\S*(?:\"|\'|\s)/g;
+		var v = html.replace(reg, "");
+		return v;
+	},
 	_createElementHtml: function(){
 		var html = "<el-checkbox-group v-model=\""+this.json.id+"\"";
 
@@ -45,10 +50,5 @@ MWF.xApplication.process.FormDesigner.Module.Elcheckbox = MWF.FCElcheckbox = new
 	},
 	setPropertyId: function(){
 		if (this.isPropertyLoaded) if (this.vm) this.resetElement();
-	},
-	// _createVueData: function(){
-	// 	var data = {};
-	// 	data[this.json.id] = [this.json.id];
-	// 	return data;
-	// },
+	}
 });
