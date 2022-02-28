@@ -1,5 +1,6 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -174,6 +175,12 @@ class ActionExecuteV2 extends BaseAction {
 		LOGGER.debug("jpql:{}.", jpql);
 		if (upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1) {
 			query = em.createNativeQuery(jpql);
+			if(runtime.getParameters().size() > 0){
+				List<Object> values = new ArrayList<>(runtime.getParameters().values());
+				for(int i=0;i<values.size();i++){
+					query.setParameter(i+1, values.get(i));
+				}
+			}
 		} else {
 			query = em.createQuery(jpql);
 		}
