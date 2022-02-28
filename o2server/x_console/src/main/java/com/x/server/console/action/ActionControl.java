@@ -42,6 +42,7 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_SC = "sc";
 	private static final String CMD_EN = "en";
 	private static final String CMD_DE = "de";
+	private static final String CMD_GC = "gc";
 
 	private static final int REPEAT_MAX = 100;
 	private static final int REPEAT_MIN = 1;
@@ -64,12 +65,8 @@ public class ActionControl extends ActionBase {
 				ec(cmd);
 			} else if (cmd.hasOption(CMD_DD)) {
 				dd(cmd);
-//			} else if (cmd.hasOption(CMD_DS)) {
-//				ds(cmd);
 			} else if (cmd.hasOption(CMD_RD)) {
 				rd(cmd);
-//			} else if (cmd.hasOption(CMD_RS)) {
-//				rs(cmd);
 			} else if (cmd.hasOption(CMD_CLH2)) {
 				clh2(cmd);
 			} else if (cmd.hasOption(CMD_UF)) {
@@ -84,6 +81,8 @@ public class ActionControl extends ActionBase {
 				en(cmd);
 			} else if (cmd.hasOption(CMD_DE)) {
 				de(cmd);
+			} else if (cmd.hasOption(CMD_GC)) {
+				gc();
 			} else {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("control command", displayOptions());
@@ -110,6 +109,7 @@ public class ActionControl extends ActionBase {
 		options.addOption(scOption());
 		options.addOption(enOption());
 		options.addOption(deOption());
+		options.addOption(gcOption());
 		return options;
 	}
 
@@ -129,6 +129,7 @@ public class ActionControl extends ActionBase {
 		displayOptions.addOption(rstOption());
 		displayOptions.addOption(scOption());
 		displayOptions.addOption(enOption());
+		displayOptions.addOption(gcOption());
 		return displayOptions;
 	}
 
@@ -200,6 +201,10 @@ public class ActionControl extends ActionBase {
 	private static Option deOption() {
 		return Option.builder(CMD_DE).longOpt("decrypt password text.").argName("text").numberOfArgs(1).hasArg()
 				.desc("密码文本解密.").hasArg().build();
+	}
+
+	private static Option gcOption() {
+		return Option.builder(CMD_GC).longOpt("jvm garbage collection").hasArg(false).desc("垃圾收集.").build();
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
@@ -321,6 +326,11 @@ public class ActionControl extends ActionBase {
 		String text = Objects.toString(cmd.getOptionValue(CMD_DE), "");
 		Decrypt en = new Decrypt();
 		en.execute(text);
+	}
+
+	private void gc() {
+		GarbageCollection garbageCollection = new GarbageCollection();
+		garbageCollection.execute();
 	}
 
 	private Integer getArgInteger(CommandLine cmd, String opt, Integer defaultValue) {
