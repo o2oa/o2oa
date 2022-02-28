@@ -125,6 +125,7 @@ class ActionExecuteV2 extends BaseAction {
 		jpql = this.joinSql(jpql, business);
 		Query query;
 		String upJpql = jpql.toUpperCase();
+		LOGGER.debug("script jpql:{}.", jpql);
 		if (upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1) {
 			query = em.createNativeQuery(jpql);
 		} else {
@@ -170,6 +171,7 @@ class ActionExecuteV2 extends BaseAction {
 		jpql = this.joinSql(jpql, business);
 		Query query;
 		String upJpql = jpql.toUpperCase();
+		LOGGER.debug("jpql:{}.", jpql);
 		if (upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1) {
 			query = em.createNativeQuery(jpql);
 		} else {
