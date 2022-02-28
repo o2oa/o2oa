@@ -52,7 +52,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         this.openTab();
         if (callback) callback();
 
-        if (!layout.userLayout.gotoWorkcenterConfirm) this.gotoWorkcenterComfirm();
+        if (layout.userLayout && !layout.userLayout.gotoWorkcenterConfirm && !layout.mobile) this.gotoWorkcenterComfirm();
     },
     gotoWorkcenterComfirm: function(){
         var _self = this;
