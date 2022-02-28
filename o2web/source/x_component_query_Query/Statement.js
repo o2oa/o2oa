@@ -165,7 +165,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             while( this.parameter[parameterName] ){
                 parameterName = pName + "_" + suffix;
                 suffix++;
-            };
+            }
 
             var value = d.value;
             // if( d.code && d.code.code ){
