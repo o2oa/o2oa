@@ -296,11 +296,11 @@ class ActionExecuteV2 extends BaseAction {
 				if (size > 1) {
 					list.add("(");
 				}
-				for(int i=0; i < size; i++){
+				for (int i = 0; i < size; i++) {
 					FilterEntry filterEntry = wi.getFilterList().get(i);
-					if(i > 0){
+					if (i > 0) {
 						String joinTag = filterEntry.logic;
-						if(StringUtils.isEmpty(joinTag) || !joinTag.equalsIgnoreCase(SQL_OR)){
+						if (StringUtils.isEmpty(joinTag) || !joinTag.equalsIgnoreCase(SQL_OR)) {
 							joinTag = SQL_AND;
 						}
 						list.add(joinTag.toUpperCase());
