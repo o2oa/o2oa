@@ -3183,6 +3183,7 @@ debugger;
                     if (name=="signer"){
                         var strs = [];
                         var strLength = 0;
+                        if (o2.typeOf(v)!=="array") v = [v];
                         v.each(function(value){
                             if (o2.typeOf(value)=="object" && value.distinguishedName){
                                 if (value.name.length>strLength) strLength = value.name.length;
