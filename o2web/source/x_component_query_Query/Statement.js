@@ -158,7 +158,15 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         debugger;
         this.filterList = [];
         (data.filterList || []).each(function (d) {
-            var parameterName = d.path.replace(/\./g, "_");
+            var pName = d.path.replace(/\./g, "_");
+
+            var parameterName = pName;
+            var suffix = 1;
+            while( this.parameter[parameterName] ){
+                parameterName = pName + "_" + suffix;
+                suffix++;
+            }
+
             var value = d.value;
             // if( d.code && d.code.code ){
             //     value = this.Macro.exec( d.code.code, this);
