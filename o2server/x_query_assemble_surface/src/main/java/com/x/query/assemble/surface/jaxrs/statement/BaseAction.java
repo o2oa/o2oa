@@ -1,6 +1,7 @@
 package com.x.query.assemble.surface.jaxrs.statement;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,11 +27,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			if (null == jsonElement || jsonElement.isJsonNull()) {
-				runtime.parameters = new HashMap<String, Object>();
+				runtime.parameters = new HashMap<>(16);
 			} else {
 				runtime.parameters = XGsonBuilder.instance().fromJson(jsonElement,
-						new TypeToken<Map<String, Object>>() {
-						}.getType());
+						new TypeToken<LinkedHashMap<String, Object>>() {}.getType());
 			}
 			runtime.page = this.adjustPage(page);
 			runtime.size = this.adjustSize2(size);
