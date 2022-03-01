@@ -248,7 +248,10 @@ MWF.xScript.Environment = function(ev){
          *      "resetRange": "department", //重置处理人范围
          *      "resetCount": 0,  //重置处理人数字
          *      "allowReset": true, //是否允许重置
-         *      "manualMode": "single" //处理方式 单人single, 并行parallel, 串行queue, grab抢办
+         *      "manualMode": "single", //处理方式 单人single, 并行parallel, 串行queue, grab抢办
+         *      "customData": { //节点上的自定义属性，如果没有设置，不输出该值
+         *
+         *      }
          * }</code></pre>
          * @o2syntax
          * var activity = this.workContext.getActivity();
