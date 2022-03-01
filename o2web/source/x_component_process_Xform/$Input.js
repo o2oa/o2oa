@@ -69,6 +69,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
 
     _loadNode: function(){
+        debugger
         if (this.isReadonly()){
             this._loadNodeRead();
         }else{
