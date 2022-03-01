@@ -101,7 +101,8 @@ class ActionCreate extends BaseAction {
 				if (compiledScript == null) {
 					String eval = Config.messageSendRuleScript();
 					if (StringUtils.isNotEmpty(eval)) {
-						compiledScript = ScriptingFactory.functionalizationCompile(func);
+						eval = eval + "\r\n return " + func + "();";
+						compiledScript = ScriptingFactory.functionalizationCompile(eval);
 						scriptMap.put(func, compiledScript);
 					}
 				}
