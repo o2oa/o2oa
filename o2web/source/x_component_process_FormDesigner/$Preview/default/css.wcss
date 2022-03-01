@@ -14,7 +14,8 @@
 	"formJsonNode": {
         "width": "100%",
         "border": "1px solid #999",
-        "display": "none"
+        "display": "none",
+        "overflow": "auto"
     },
 	"actionButton": {
 	    "width": "80px",
