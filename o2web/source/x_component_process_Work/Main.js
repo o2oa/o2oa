@@ -40,7 +40,7 @@ MWF.xApplication.process.Work.Main = new Class({
             this.options.jobId = this.status.jobId;
             this.options.draftId = this.status.draftId;
             this.options.priorityWork = this.status.priorityWork;
-            this.options.readonly = (this.status.readonly === "true");
+            this.options.readonly = (this.status.readonly === true || this.status.readonly === "true");
         }
         this.action = MWF.Actions.get("x_processplatform_assemble_surface");
 	},
