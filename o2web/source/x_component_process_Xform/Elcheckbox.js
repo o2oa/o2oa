@@ -71,6 +71,28 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
             this._loadNodeEdit();
         }
     },
+    _loadNodeRead: function(){
+        this.node.empty();
+        this.node.set({
+            "nodeId": this.json.id,
+            "MWFType": this.json.type
+        });
+        var radioValues = this.getOptions();
+        var value = this.getValue();
+        if (value){
+            var texts = [];
+            radioValues.each(function(item){
+                var tmps = item.split("|");
+                var t = tmps[0];
+                var v = tmps[1] || t;
+
+                if (value.indexOf(v)!=-1){
+                    texts.push(t);
+                }
+            });
+            this.node.set("text", texts.join(", "));
+        }
+    },
     _resetNodeEdit: function(){
         var div = new Element("div");
         div.inject(this.node, "after");
