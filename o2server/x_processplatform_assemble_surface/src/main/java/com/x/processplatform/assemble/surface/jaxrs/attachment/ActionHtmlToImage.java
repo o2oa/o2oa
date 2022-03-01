@@ -240,14 +240,11 @@ class ActionHtmlToImage extends BaseAction {
 				try (Browser browser = browserType.launch(options)) {
 					BrowserContext context = browser.newContext();
 					Page page = context.newPage();
-					page.navigate("file:///Users/chengjian/dev/tmp/html2Image.html");
-					//page.setContent("<html><body>测试一下</body></html>");
-					//Thread.sleep(1000);
+					page.navigate("file:///Users/chengjian/dev/temp/test.html");
 					Page.ScreenshotOptions screenshotOptions = new Page.ScreenshotOptions();
 					screenshotOptions.setFullPage(true);
-					screenshotOptions.setQuality(80);
 					//screenshotOptions.setQuality(2);
-					screenshotOptions.setPath(Paths.get("/Users/chengjian/dev/tmp/screenshot-" + browserType.name() + ".jpg"));
+					screenshotOptions.setPath(Paths.get("/Users/chengjian/dev/temp/screenshot-" + browserType.name() + ".png"));
 					page.screenshot(screenshotOptions);
 					break;
 				} catch (Exception e) {
