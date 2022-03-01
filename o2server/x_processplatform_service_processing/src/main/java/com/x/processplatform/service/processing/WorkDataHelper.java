@@ -1,6 +1,5 @@
 package com.x.processplatform.service.processing;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -52,12 +51,12 @@ public class WorkDataHelper {
 
 	public WorkDataHelper(EntityManagerContainer emc, WorkCompleted workCompleted) throws Exception {
 		if ((null == emc) || (null == workCompleted)) {
-			throw new Exception("create instance error.");
+			throw new IllegalStateException("create instance error.");
 		}
 		this.job = workCompleted.getJob();
 		this.distributeFactor = workCompleted.getDistributeFactor();
 		if (StringUtils.isEmpty(this.job)) {
-			throw new Exception("can not create DataHelper job is empty.");
+			throw new IllegalStateException("can not create DataHelper job is empty.");
 		}
 		this.emc = emc;
 		this.converter = new DataItemConverter<>(Item.class);
@@ -76,7 +75,7 @@ public class WorkDataHelper {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
-	public Data get() throws Exception {
+	public Data get() throws ExceptionDataConvert {
 		try {
 			if (this.items.isEmpty()) {
 				return new Data();
@@ -95,27 +94,8 @@ public class WorkDataHelper {
 	}
 
 	public boolean update(JsonElement jsonElement) throws Exception {
-		if (jsonElement.isJsonNull()) {
-			// 如果是空数据就不更新,避免数据被清空
+		if (skipUpdate(jsonElement)) {
 			return false;
-		}
-		if (jsonElement.isJsonPrimitive()) {
-			// 如果是空数据就不更新,避免数据被清空 */
-			return false;
-		}
-		if (jsonElement.isJsonObject()) {
-			if (jsonElement.getAsJsonObject().size() == 0) {
-				// throw new Exception("can not update data object size ==0.");
-				/** 如果是空数据就不更新,避免数据被清空 */
-				return false;
-			}
-		}
-		if (jsonElement.isJsonArray()) {
-			if (jsonElement.getAsJsonArray().size() == 0) {
-				// throw new Exception("can not update data array size ==0.");
-				/** 如果是空数据就不更新,避免数据被清空 */
-				return false;
-			}
 		}
 		List<Item> currents = converter.disassemble(jsonElement);
 		List<Item> removes = converter.subtract(items, currents);
@@ -136,8 +116,7 @@ public class WorkDataHelper {
 					emc.persist(o);
 				}
 			}
-			List<Item> list = new ArrayList<>();
-			list = converter.subtract(items, removes);
+			List<Item> list = converter.subtract(items, removes);
 			list.addAll(adds);
 			converter.sort(list);
 			items = list;
@@ -145,6 +124,23 @@ public class WorkDataHelper {
 		} else {
 			return false;
 		}
+	}
+
+	private boolean skipUpdate(JsonElement jsonElement) {
+		if (jsonElement.isJsonNull()) {
+			// 如果是空数据就不更新,避免数据被清空
+			return true;
+		}
+		if (jsonElement.isJsonPrimitive()) {
+			// 如果是空数据就不更新,避免数据被清空
+			return true;
+		}
+		if (jsonElement.isJsonObject() && (jsonElement.getAsJsonObject().size() == 0)) {
+			// 如果是空数据就不更新,避免数据被清空
+			return true;
+		}
+		// 如果是空数据就不更新,避免数据被清空
+		return (jsonElement.isJsonArray() && (jsonElement.getAsJsonArray().size() == 0));
 	}
 
 	public boolean update(Data data) throws Exception {
@@ -161,7 +157,7 @@ public class WorkDataHelper {
 		}
 	}
 
-	public void fill(Item o) throws Exception {
+	public void fill(Item o) {
 		o.setDistributeFactor(this.distributeFactor);
 		o.setBundle(this.job);
 		o.setItemCategory(ItemCategory.pp);
