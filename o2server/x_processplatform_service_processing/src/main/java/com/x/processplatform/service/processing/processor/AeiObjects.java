@@ -1321,7 +1321,13 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
-	private void commitData() throws Exception {
+	/**
+	 * 更新data对象,这个方法会在流程executingCommitted之后再次调用,实现可以在after事件中修改数据.
+	 * 
+	 * @return 是否有Item发生了更新
+	 * @throws Exception
+	 */
+	public boolean commitData() throws Exception {
 		List<Attachment> os = ListUtils.subtract(this.getAttachments(), this.getDeleteAttachments());
 		os = ListUtils.sum(os, this.getCreateAttachments());
 		Data dataToUpdate = this.getData().removeWork().removeAttachmentList().setAttachmentList(os);
@@ -1330,7 +1336,7 @@ public class AeiObjects extends GsonPropertyObject {
 		} else {
 			dataToUpdate.setWork(this.getWork());
 		}
-		this.getWorkDataHelper().update(dataToUpdate);
+		return this.getWorkDataHelper().update(dataToUpdate);
 	}
 
 	private void commitDynamicEntity() {
