@@ -216,5 +216,32 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         html += "</el-select>";
         return html;
     },
+    _afterLoaded: function(){
+        if (this.isReadonly()){
+            this.node.hide();
+            window.setTimeout(function(){
+                var text = "";
+                var nodes = this.node.getElements(".el-select__tags-text");
+                if (nodes && nodes.length){
+                    nodes.forEach(function(n){
+                        text += ((text) ? ", " : "")+n.get("text");
+                    });
+                }
+                var node = new Element("div").inject(this.node, "before");
+                this.node.destroy();
+                this.node = node;
+                this.node.set({
+                    "nodeId": this.json.id,
+                    "MWFType": this.json.type
+                });
+                this._loadDomEvents();
+                //this.node.removeEvents("click");
+                //this.node.empty();
+                this.node.set("text", text);
+                //this.node.show();
+            }.bind(this), 20);
+
+        }
+    },
     __setReadonly: function(data){}
 }); 
