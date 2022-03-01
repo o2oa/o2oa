@@ -17,6 +17,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 			public static final String table = "PP_C_DRAFT";
 		}
 
+		public static class DocSign {
+			public static final String table = "PP_C_DOC_SIGN";
+		}
+
 		public static class TaskCompleted {
 			public static final String table = "PP_C_TASKCOMPLETED";
 		}
