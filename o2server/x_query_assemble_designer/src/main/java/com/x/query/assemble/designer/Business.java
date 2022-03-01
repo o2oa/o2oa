@@ -303,9 +303,8 @@ public class Business {
 			fileManager.close();
 			this.enhance(target, resources);
 
-			File jar = new File(dir, DynamicEntity.JAR_PREFIX + query + DOT_JAR);
+			File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_PREFIX + query + DOT_JAR);
 			JarTools.jar(target, jar);
-			FileUtils.copyFileToDirectory(jar, Config.dir_dynamic_jars(true));
 		}
 		FileUtils.cleanDirectory(dir);
 		return result;
