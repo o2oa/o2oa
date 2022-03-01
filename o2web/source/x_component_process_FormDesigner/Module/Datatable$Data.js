@@ -22,7 +22,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 		    }
 		],
 		"allowModules": ["textfield", "number", "personfield", "orgfield", "org", "calendar", "textarea", "select", "radio", "checkbox", "combox", "image", "label",
-			"htmleditor", "tinymceeditor", "button","imageclipper", "address", "attachment", "elinput", "elcheckbox", "elselect"]
+			"htmleditor", "tinymceeditor", "button","imageclipper", "address", "attachment", "elinput", "elcheckbox", "elselect", "elautocomplete", "elnumber", "elradio", "elcascader",
+			"elswitch", "elslider", "eltime", "eldate", "eldatetime", "elrate"]
 	},
 	
 	initialize: function(form, options){
