@@ -44,7 +44,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 
 	public String arrive(String workId, ProcessingConfigurator processingConfigurator,
 			ProcessingAttributes processingAttributes) {
-		/* 返回值,如果返回值不为空,将继续循环 */
+		// 返回值,如果返回值不为空,将继续循环
 		try {
 			Work work = this.entityManagerContainer().find(workId, Work.class);
 			if (null == work) {
@@ -62,90 +62,78 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			}
 			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
 					processingAttributes);
-			/* 清空可能的Manual活动预期人员 */
-			this.arrive_cleanManualTaskIdentityList(aeiObjects);
-			/* 清空可能的Manual活动授权信息 */
-			this.arrive_cleanManualEmpowerMap(aeiObjects);
-//			/* 将强制路由标记进行修改 */
-//			work.setForceRouteArriveCurrentActivity(false);
-//			if (BooleanUtils.isTrue(work.getForceRoute())) {
-//				work.setForceRoute(false);
-//				work.setForceRouteArriveCurrentActivity(true);
-//			}
-			/* 计算是否经过人工节点 */
-			this.arrive_updateWorkThroughManual(aeiObjects);
-			/* 清空BeforeExecuted活动执行一次事件 */
+			// 清空可能的Manual活动预期人员
+			this.arriveCleanManualTaskIdentityList(aeiObjects);
+			// 清空可能的Manual活动授权信息
+			this.arriveCleanManualEmpowerMap(aeiObjects);
+			// 计算是否经过人工节点
+			this.arriveUpdateWorkThroughManual(aeiObjects);
+			// 清空BeforeExecuted活动执行一次事件
 			work.setBeforeExecuted(false);
 			aeiObjects.getUpdateWorks().add(work);
 			this.callBeforeArriveScript(aeiObjects);
 			this.arriveActivity(aeiObjects);
-			/* 创建待阅和参阅 */
+			// 创建待阅和参阅
 			aeiObjects.getCreateReads().addAll(this.concreteRead(aeiObjects));
 			aeiObjects.getCreateReviews().addAll(this.concreteReview(aeiObjects));
-			/*
-			 * 主方法,进行业务运行
-			 */
+			// 主方法,进行业务运行
 			work = this.arriveProcessing(aeiObjects);
-			/*
-			 * 主方法结束
-			 */
+			// 主方法结束
 			if (null == work) {
-				throw new Exception("arrvie return empty, work{id:" + workId + "}.");
+				throw new IllegalStateException("arrvie return empty, work{id:" + workId + "}.");
 			}
-			if (null != aeiObjects.getProcess()) {
-				if (StringUtils.equalsIgnoreCase(aeiObjects.getProcess().getSerialActivity(),
-						aeiObjects.getActivity().getId())
-						&& (!StringUtils.equals(aeiObjects.getProcess().getSerialPhase(),
-								Process.SERIALPHASE_INQUIRE))) {
-					if (StringUtils.isEmpty(work.getSerial())) {
-						SerialBuilder serialBuilder = new SerialBuilder(ThisApplication.context(),
-								this.entityManagerContainer(), work.getProcess(), work.getId());
-						String serial = serialBuilder.concrete(aeiObjects);
-						work.setSerial(serial);
-					}
-				}
+			if ((null != aeiObjects.getProcess())
+					&& StringUtils.equalsIgnoreCase(aeiObjects.getProcess().getSerialActivity(),
+							aeiObjects.getActivity().getId())
+					&& (!StringUtils.equals(aeiObjects.getProcess().getSerialPhase(), Process.SERIALPHASE_INQUIRE))
+					&& StringUtils.isEmpty(work.getSerial())) {
+				SerialBuilder serialBuilder = new SerialBuilder(ThisApplication.context(),
+						this.entityManagerContainer(), work.getProcess(), work.getId());
+				String serial = serialBuilder.concrete(aeiObjects);
+				work.setSerial(serial);
 			}
 			aeiObjects.commit();
 			this.arriveCommitted(aeiObjects);
-			/* 运行AfterArriveScript时间 */
+			// 运行AfterArriveScript时间
 			this.callAfterArriveScript(aeiObjects);
 			return work.getId();
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 			LOGGER.error(e);
 			return null;
 		}
 	}
 
-	private void arrive_cleanManualTaskIdentityList(AeiObjects aeiObjects) throws Exception {
-		aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<String>());
+	private void arriveCleanManualTaskIdentityList(AeiObjects aeiObjects) {
+		aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<>());
 	}
 
-	private void arrive_cleanManualEmpowerMap(AeiObjects aeiObjects) throws Exception {
-		aeiObjects.getWork().getProperties().setManualEmpowerMap(new LinkedHashMap<String, String>());
+	private void arriveCleanManualEmpowerMap(AeiObjects aeiObjects) {
+		aeiObjects.getWork().getProperties().setManualEmpowerMap(new LinkedHashMap<>());
 	}
 
-	private void arrive_updateWorkThroughManual(AeiObjects aeiObjects) throws Exception {
-		boolean value = aeiObjects.getWorkLogs().stream().filter(o -> {
-			return Objects.equals(ActivityType.manual, o.getArrivedActivityType())
-					&& BooleanUtils.isTrue(o.getConnected());
-		}).count() > 0;
+	private void arriveUpdateWorkThroughManual(AeiObjects aeiObjects) throws Exception {
+		boolean value = aeiObjects.getWorkLogs().stream()
+				.filter(o -> Objects.equals(ActivityType.manual, o.getArrivedActivityType())
+						&& BooleanUtils.isTrue(o.getConnected()))
+				.count() > 0;
 		aeiObjects.getWork().setWorkThroughManual(value);
 	}
 
 	private void callBeforeArriveScript(AeiObjects aeiObjects) throws Exception {
-		if (aeiObjects.getActivityProcessingConfigurator().getCallBeforeArriveScript()) {
-			if (this.hasBeforeArriveScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
-				CompiledScript cs = null;
-				if (this.hasBeforeArriveScript(aeiObjects.getProcess())) {
-					cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
-							aeiObjects.getProcess(), Business.EVENT_BEFOREARRIVE);
-					JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
-				}
-				if (this.hasBeforeArriveScript(aeiObjects.getActivity())) {
-					cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
-							aeiObjects.getActivity(), Business.EVENT_BEFOREARRIVE);
-					JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
-				}
+		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallBeforeArriveScript())
+				&& this.hasBeforeArriveScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
+			CompiledScript cs = null;
+			if (this.hasBeforeArriveScript(aeiObjects.getProcess())) {
+				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+						aeiObjects.getProcess(), Business.EVENT_BEFOREARRIVE);
+				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+			}
+			if (this.hasBeforeArriveScript(aeiObjects.getActivity())) {
+				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+						aeiObjects.getActivity(), Business.EVENT_BEFOREARRIVE);
+				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 			}
 		}
 	}
@@ -197,11 +185,6 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			if (null == work) {
 				throw new ExceptionWorkNotExist(workId);
 			}
-//			if (BooleanUtils.isTrue(work.getForceRoute())) {
-//				/** 如果是调度那么跳过运行 */
-//				results.add(work.getId());
-//				return results;
-//			}
 			ActivityType activityType = work.getActivityType();
 			if (null == activityType) {
 				throw new ExceptionEmptyActivityType(work.getTitle(), work.getId(), work.getActivityType());
@@ -215,13 +198,13 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
 					processingAttributes);
 			aeiObjects.getUpdateWorks().add(work);
-			/* 如果是调度路由,需要重新设置froceRoute */
+			// 如果是调度路由,需要重新设置froceRoute
 			if (BooleanUtils.isNotTrue(work.getBeforeExecuted())) {
-				/* 仅执行一次BeforeExecuteScript中的代码 */
+				// 仅执行一次BeforeExecuteScript中的代码
 				this.callBeforeExecuteScript(aeiObjects);
 				work.setBeforeExecuted(true);
 			}
-			/* 运行业务方法 */
+			// 运行业务方法
 			List<Work> works = this.executeProcessing(aeiObjects);
 
 			if (ListTools.isNotEmpty(works)) {
@@ -235,6 +218,9 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			if (ListTools.isNotEmpty(works)) {
 				/** 已经有返回的work将要离开当前环节,执行AfterExecuteScript中的代码 */
 				this.callAfterExecuteScript(aeiObjects);
+				if (aeiObjects.commitData()) {
+					aeiObjects.entityManagerContainer().commit();
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -297,11 +283,6 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
 					processingAttributes);
 			aeiObjects.getUpdateWorks().add(work);
-//			if (BooleanUtils.isTrue(work.getForceRoute())) {
-//				/** 如果是调度那么跳过运行 */
-//				results.add(work.getId());
-//				return results;
-//			}
 			/* 运行查询路由前脚本 */
 			this.callBeforeInquireScript(aeiObjects);
 			/*
@@ -313,7 +294,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			 */
 			aeiObjects.addSelectRoutes(selectRoutes);
 			if ((null == selectRoutes) || selectRoutes.isEmpty()) {
-				throw new Exception("inquire return empty routes");
+				throw new IllegalStateException("inquire return empty routes");
 			}
 			List<Work> works = new ArrayList<>();
 			/** 运行查询路由后脚本 */
@@ -322,28 +303,26 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			work.setDestinationRoute(selectRoutes.get(0).getId());
 			work.setDestinationRouteName(selectRoutes.get(0).getName());
 			works.add(work);
-			// }
 			for (Work o : works) {
 				results.add(o.getId());
 			}
-			if (null != aeiObjects.getProcess()) {
-				if (StringUtils.equalsIgnoreCase(aeiObjects.getProcess().getSerialActivity(),
-						aeiObjects.getActivity().getId())
-						&& (StringUtils.equals(aeiObjects.getProcess().getSerialPhase(),
-								Process.SERIALPHASE_INQUIRE))) {
-					if (StringUtils.isEmpty(work.getSerial())) {
-						SerialBuilder serialBuilder = new SerialBuilder(ThisApplication.context(),
-								this.entityManagerContainer(), work.getProcess(), work.getId());
-						String serial = serialBuilder.concrete(aeiObjects);
-						work.setSerial(serial);
-					}
-				}
+			if ((null != aeiObjects.getProcess())
+					&& StringUtils.equalsIgnoreCase(aeiObjects.getProcess().getSerialActivity(),
+							aeiObjects.getActivity().getId())
+					&& (StringUtils.equals(aeiObjects.getProcess().getSerialPhase(), Process.SERIALPHASE_INQUIRE))
+					&& StringUtils.isEmpty(work.getSerial())) {
+				SerialBuilder serialBuilder = new SerialBuilder(ThisApplication.context(),
+						this.entityManagerContainer(), work.getProcess(), work.getId());
+				String serial = serialBuilder.concrete(aeiObjects);
+				work.setSerial(serial);
 			}
 			aeiObjects.commit();
 			this.inquireCommitted(aeiObjects);
-			/** 运行 AfterInquireScript事件 */
+			// 运行 AfterInquireScript事件
 			this.callAfterInquireScript(aeiObjects);
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 			LOGGER.error(e);
 		}
 		return results;
