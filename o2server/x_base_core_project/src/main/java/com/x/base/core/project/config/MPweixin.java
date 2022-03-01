@@ -30,6 +30,8 @@ public class MPweixin extends ConfigObject  {
     private String encodingAesKey="";
     @FieldDescribe("微信公众号测试菜单的门户地址")
     private String portalId = "";
+    @FieldDescribe("接收到文本消息默认执行的服务脚本id")
+    private String scriptId = "";
 
     @FieldDescribe("是否启用公众号模版消息")
     private Boolean messageEnable;
@@ -59,6 +61,7 @@ public class MPweixin extends ConfigObject  {
         this.token = "";
         this.encodingAesKey = "";
         this.portalId = "";
+        this.scriptId = "";
         this.messageEnable = false;
         this.tempMessageId = "";
         this.fieldList = new ArrayList<>();
@@ -186,6 +189,14 @@ public class MPweixin extends ConfigObject  {
 
     public void setFieldList(List<MPweixinMessageTemp> fieldList) {
         this.fieldList = fieldList;
+    }
+
+    public String getScriptId() {
+        return scriptId;
+    }
+
+    public void setScriptId(String scriptId) {
+        this.scriptId = scriptId;
     }
 
     /**

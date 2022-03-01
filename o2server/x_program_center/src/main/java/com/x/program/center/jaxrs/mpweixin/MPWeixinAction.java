@@ -77,7 +77,7 @@ public class MPWeixinAction extends StandardJaxrsAction {
 	@Path("media/add/forever")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	public void androidPackStart(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void addMedia(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 								 @JaxrsParameterDescribe("类型： image、voice、video 、thumb") @FormDataParam("type") String type,
 								 @JaxrsParameterDescribe("视频标题 video的类型必须传") @FormDataParam("videoTitle") String videoTitle,
 								 @JaxrsParameterDescribe("视频介绍 video的类型必须传") @FormDataParam("videoIntroduction") String videoIntroduction,

@@ -13,7 +13,8 @@ import java.util.List;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-    public static final String WX_MSG_RECEIVE_TYPE_EVENT = "event"; //消息类型 事件
+    public static final String WX_MSG_RECEIVE_TYPE_EVENT = "event"; //公众号接收到的消息类型 事件 主要是菜单点击和订阅取消订阅
+    public static final String WX_MSG_RECEIVE_TYPE_TEXT = "text"; //公众号接收到的消息类型 文本
 
 
 
@@ -22,6 +23,12 @@ abstract class BaseAction extends StandardJaxrsAction {
     public static final String WX_MSG_RECEIVE_EVENT_LOCATION = "LOCATION"; //上报地理位置事件
     public static final String WX_MSG_RECEIVE_EVENT_CLICK = "CLICK"; //自定义菜单事件
     public static final String WX_MSG_RECEIVE_EVENT_VIEW = "VIEW"; //点击菜单跳转链接时的事件推送
+
+
+    public static final String WX_MSG_BACK_MEDIA_KEY_IMAGE = "media:image:";
+    public static final String WX_MSG_BACK_MEDIA_KEY_VIDEO = "media:video:";
+    public static final String WX_MSG_BACK_MEDIA_KEY_VOICE = "media:voice:";
+    public static final String WX_MSG_BACK_MEDIA_KEY_SCRIPT = "o2oa:script:";
 
 
 
