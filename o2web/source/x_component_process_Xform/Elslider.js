@@ -43,10 +43,10 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
      * //通过json对象操作Element组件
      * json.disabled = true;     //设置输入框为禁用
      */
-    _loadNode: function(){
-        if (this.isReadonly()) this.json.disabled = true;
-        this._loadNodeEdit();
-    },
+    // _loadNode: function(){
+    //     if (this.isReadonly()) this.json.disabled = true;
+    //     this._loadNodeEdit();
+    // },
     _appendVueData: function(){
         this.form.Macro.environment.data.check(this.json.id);
         this.json[this.json.id] = this._getBusinessData();
@@ -97,7 +97,7 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
     },
     _createElementHtml: function(){
         var html = "<el-slider";
-        html += " v-model=\""+this.json.id+"\"";
+        html += " v-model=\""+this.json.$id+"\"";
         html += " :max=\"max\"";
         html += " :min=\"min\"";
         html += " :step=\"step\"";
@@ -140,6 +140,8 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
         html += ">";
         html += "</el-slider>";
         return html;
-    },
-    __setReadonly: function(data){}
+    }
+    // __setReadonly: function(data){
+    //
+    // }
 }); 

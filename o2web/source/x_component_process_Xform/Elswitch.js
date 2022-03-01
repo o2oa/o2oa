@@ -38,11 +38,11 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
      * //通过json对象操作Element组件
      * json.disabled = true;     //设置输入框为禁用
      */
-    _loadNode: function(){
-        debugger;
-        if (this.isReadonly()) this.json.disabled = true;
-        this._loadNodeEdit();
-    },
+    // _loadNode: function(){
+    //     debugger;
+    //     if (this.isReadonly()) this.json.disabled = true;
+    //     this._loadNodeEdit();
+    // },
     _appendVueData: function(){
         debugger;
         this.form.Macro.environment.data.check(this.json.id);
@@ -94,7 +94,7 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
     // },
     _createElementHtml: function(){
         var html = "<el-switch";
-        html += " v-model=\""+this.json.id+"\"";
+        html += " v-model=\""+this.json.$id+"\"";
         html += " :width=\"width\"";
         html += " :active-text=\"activeText\"";
         html += " :inactive-text=\"inactiveText\"";
@@ -133,5 +133,13 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
         html += "</el-switch>";
         return html;
     },
-    __setReadonly: function(data){}
+    __setReadonly: function(data){
+        if (this.isReadonly()){
+            if (data==="" || data){
+                this.node.set("text", (this.json.activeText || "true"));
+            }else{
+                this.node.set("text", (this.json.inactiveText || "false"));
+            }
+        }
+    }
 }); 
