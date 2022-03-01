@@ -30,6 +30,20 @@ public class DocCommendQueryService {
 		}
 	}
 
+	public List<String> listByCommentAndPerson(String commentId, String personName, Integer maxCount) throws Exception {
+		if( StringUtils.isEmpty( commentId ) ){
+			return null;
+		}
+		if( StringUtils.isEmpty( personName ) ){
+			return null;
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return docCommendService.listByCommentAndPerson(emc, commentId, personName, maxCount);
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
 	public List<String> listByDocument( String docId, Integer maxCount, String type) throws Exception {
 		if( StringUtils.isEmpty( docId ) ){
 			return null;

@@ -22,6 +22,7 @@ public class BaseAction extends StandardJaxrsAction {
 	protected DocumentQueryService documentInfoServiceAdv = new DocumentQueryService();
 
 	protected CommentCommendPersistService commentCommendPersistService = new CommentCommendPersistService();
+	protected DocCommendQueryService docCommendQueryService = new DocCommendQueryService();
 
 	protected DocCommendPersistService docCommendPersistService = new DocCommendPersistService();
 }
