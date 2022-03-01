@@ -12,6 +12,7 @@ import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -25,10 +26,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.ThisApplication;
-import com.x.cms.core.entity.AppInfo;
-import com.x.cms.core.entity.CategoryInfo;
-import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.Log;
 import com.x.cms.core.entity.content.Data;
 import com.x.cms.core.entity.element.Form;
 
@@ -338,6 +335,10 @@ public class ActionQueryViewDocument extends BaseAction {
 			}
 		}
 
+		if(ListTools.isNotEmpty(docCommendQueryService.listByDocAndPerson(id, effectivePerson.getDistinguishedName(), 1, DocumentCommend.COMMEND_TYPE_DOCUMENT))){
+			wo.setIsCommend(true);
+		}
+
 		wo.setIsManager( isManager );
 		wo.setIsAppAdmin( isAppAdmin );
 		wo.setIsCategoryAdmin( isCategoryAdmin );
@@ -367,11 +368,15 @@ public class ActionQueryViewDocument extends BaseAction {
 		@FieldDescribe( "作为查看的CMS文档表单." )
 		private WoForm readForm;
 
+		@FieldDescribe( "文档是否已被当前用户点赞." )
+		private Boolean isCommend = false;
+
 		private Boolean isAppAdmin = false;
 		private Boolean isCategoryAdmin = false;
 		private Boolean isManager = false;
 		private Boolean isCreator = false;
 		private Boolean isEditor = false;
+
 
 		public WoDocument getDocument() {
 			return document;
@@ -380,14 +385,6 @@ public class ActionQueryViewDocument extends BaseAction {
 		public void setDocument( WoDocument document) {
 			this.document = document;
 		}
-
-//		public List<WoFileInfo> getAttachmentList() {
-//			return attachmentList;
-//		}
-//
-//		public void setAttachmentList(List<WoFileInfo> attachmentList) {
-//			this.attachmentList = attachmentList;
-//		}
 
 		public List<WoLog> getDocumentLogList() {
 			return documentLogList;
@@ -461,6 +458,13 @@ public class ActionQueryViewDocument extends BaseAction {
 			this.isCreator = isCreator;
 		}
 
+		public Boolean getIsCommend() {
+			return isCommend;
+		}
+
+		public void setIsCommend(Boolean isCommend) {
+			this.isCommend = isCommend;
+		}
 	}
 
 	public static class WoDocument extends Document {
