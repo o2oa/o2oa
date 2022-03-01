@@ -14,88 +14,86 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.DocumentCommentInfo;
 import com.x.cms.core.express.tools.filter.QueryFilter;
-import net.sf.ehcache.Element;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 文档评论分页查询
+ * @author sword
+ */
 public class ActionListPageWithFilter extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListPageWithFilter.class);
 
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, Integer pageNum, Integer count, JsonElement jsonElement ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		
+
 		List<Wo> wos = new ArrayList<>();
 		ResultObject resultObject = null;
-		Wi wrapIn = null;
-		Boolean check = true;
-		Element element = null;
-		QueryFilter queryFilter = null;
 
-		try {
-			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new ExceptionCommentQuery(e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
-		}
-		
-		if( check ) {
-			queryFilter = wrapIn.getQueryFilter();
-		}
+		Wi wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
 
-		if( check ) {
-			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(),
-					pageNum, count, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter.getContentSHA1() );
-			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+		QueryFilter queryFilter = wrapIn.getQueryFilter();
 
-			if (optional.isPresent()) {
-				resultObject = (ResultObject)optional.get();
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(),
+				pageNum, count, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter.getContentSHA1() );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			resultObject = (ResultObject)optional.get();
+			result.setCount( resultObject.getTotal() );
+			result.setData( resultObject.getWos() );
+		} else {
+			try {
+				Long total = documentCommentInfoQueryService.countWithFilter(effectivePerson, queryFilter );
+				List<DocumentCommentInfo> documentCommentInfoList = documentCommentInfoQueryService.listWithFilter( effectivePerson, count, pageNum, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter);
+
+				if( ListTools.isNotEmpty( documentCommentInfoList )) {
+					for( DocumentCommentInfo documentCommentInfo : documentCommentInfoList ) {
+						Wo wo = Wo.copier.copy(documentCommentInfo);
+						wo.setContent( documentCommentInfoQueryService.getCommentContent(documentCommentInfo.getId()));
+						if(ListTools.isNotEmpty(docCommendQueryService.listByCommentAndPerson(documentCommentInfo.getId(), effectivePerson.getDistinguishedName(), 1))){
+							wo.setIsCommend(true);
+						}else{
+							wo.setIsCommend(false);
+						}
+						wos.add( wo );
+					}
+				}
+
+				resultObject = new ResultObject( total, wos );
+				CacheManager.put(cacheCategory, cacheKey, resultObject );
 				result.setCount( resultObject.getTotal() );
 				result.setData( resultObject.getWos() );
-			} else {				
-				try {					
-					Long total = documentCommentInfoQueryService.countWithFilter(effectivePerson, queryFilter );
-					List<DocumentCommentInfo> documentCommentInfoList = documentCommentInfoQueryService.listWithFilter( effectivePerson, count, pageNum, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter);
-					
-					if( ListTools.isNotEmpty( documentCommentInfoList )) {
-						for( DocumentCommentInfo documentCommentInfo : documentCommentInfoList ) {
-							Wo wo = Wo.copier.copy(documentCommentInfo);
-							wo.setContent( documentCommentInfoQueryService.getCommentContent(documentCommentInfo.getId() ));
-							wos.add( wo );
-						}
-					}
-
-					resultObject = new ResultObject( total, wos );
-					CacheManager.put(cacheCategory, cacheKey, resultObject );
-					result.setCount( resultObject.getTotal() );
-					result.setData( resultObject.getWos() );
-				} catch (Exception e) {
-					check = false;
-					logger.warn("系统查询评论信息列表时发生异常!");
-					result.error(e);
-					logger.error(e, effectivePerson, request, null);
-				}
-			}		
+			} catch (Exception e) {
+				logger.warn("系统查询评论信息列表时发生异常!");
+				result.error(e);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
 		return result;
 	}
-	
+
 	public static class Wi extends WrapInQueryDocumentCommentInfo{
-		
+
 	}
 
 	public static class Wo extends DocumentCommentInfo {
-		
-		private Long rank;		
+		private static final long serialVersionUID = -5076990764713538973L;
+
+		static WrapCopier<DocumentCommentInfo, Wo> copier = WrapCopierFactory.wo( DocumentCommentInfo.class, Wo.class, null, ListTools.toList(JpaObject.FieldsInvisible));
+
+		private Long rank;
 
 		@FieldDescribe("内容")
 		private String content = "";
-		
+
+		@FieldDescribe( "评论是否已被当前用户点赞." )
+		private Boolean isCommend = false;
+
 		public String getContent() {
 			return content;
 		}
@@ -103,7 +101,7 @@ public class ActionListPageWithFilter extends BaseAction {
 		public void setContent(String content) {
 			this.content = content;
 		}
-		
+
 		public Long getRank() {
 			return rank;
 		}
@@ -112,22 +110,24 @@ public class ActionListPageWithFilter extends BaseAction {
 			this.rank = rank;
 		}
 
-		private static final long serialVersionUID = -5076990764713538973L;
+		public Boolean getIsCommend() {
+			return isCommend;
+		}
 
-		public static List<String> Excludes = new ArrayList<String>();
-
-		static WrapCopier<DocumentCommentInfo, Wo> copier = WrapCopierFactory.wo( DocumentCommentInfo.class, Wo.class, null, ListTools.toList(JpaObject.FieldsInvisible));
+		public void setIsCommend(Boolean isCommend) {
+			this.isCommend = isCommend;
+		}
 
 	}
-	
+
 	public static class ResultObject {
 
 		private Long total;
-		
+
 		private List<Wo> wos;
 
 		public ResultObject() {}
-		
+
 		public ResultObject(Long count, List<Wo> data) {
 			this.total = count;
 			this.wos = data;
