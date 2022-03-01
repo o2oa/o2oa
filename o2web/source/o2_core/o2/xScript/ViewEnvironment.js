@@ -1904,7 +1904,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|Object[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回职务数组
-         * @o2ActionOut x_organization_assemble_express.UnitDutyAction.listWithUnitObject|example=UnitDuty
+         * @o2ActionOut x_organization_assemble_express.UnitDutyAction.listWithUnitObject|example=Duty
          * @o2syntax
          * //同步执行，返回职务数组。
          * var dutyList = this.org.listUnitAllDuty( unit );
