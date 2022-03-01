@@ -57,10 +57,10 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
          */
         "elEvents": ["focus", "blur", "change", "visible-change", "remove-tag", "expand-change", "before-filter"]
     },
-    _loadNode: function(){
-        if (this.isReadonly()) this.json.disabled = true;
-        this._loadNodeEdit();
-    },
+    // _loadNode: function(){
+    //     if (this.isReadonly()) this.json.disabled = true;
+    //     this._loadNodeEdit();
+    // },
     _appendVueData: function(){
         this.form.Macro.environment.data.check(this.json.id);
         this.json[this.json.id] = this._getBusinessData();
@@ -90,7 +90,8 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
 
         this._loadOptions();
 
-        if (this.json.props.multiple===true) if (!this.json[this.json.id] || !this.json[this.json.id].length) this.json[this.json.id] = [];
+        //if (this.json.props.multiple===true) if (!this.json[this.json.id] || !this.json[this.json.id].length) this.json[this.json.id] = [];
+        if (this.json.props.multiple===true) if (!this.json[this.json.$id] || !this.json[this.json.$id].length) this.json[this.json.$id] = [];
     },
     appendVueMethods: function(methods){
         if (this.json.filterMethod && this.json.filterMethod.code){
@@ -144,7 +145,7 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         if (!this.json.props) this.json.props = {};
 
         var html = "<el-cascader ";
-        html += " v-model=\""+this.json.id+"\"";
+        html += " v-model=\""+this.json.$id+"\"";
         html += " :clearable=\"clearable\"";
         html += " :size=\"size\"";
         html += " :filterable=\"filterable\"";
@@ -182,8 +183,51 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         html += "</el-cascader >";
         return html;
     },
-    __setReadonly: function(data){},
+    //__setReadonly: function(data){},
     getCheckedNodes: function(leafOnly){
         return (this.vm) ? this.vm.getCheckedNodes(leafOnly) : null;
+    },
+    __setReadonly: function(data){
+        if (this.isReadonly()){
+            this._loadOptions();
+            Promise.resolve(this.json.options).then(function(options){
+                if (data){
+                    var text = this.__getOptionsText(options, data);
+                    this.node.set("text", text);
+                }
+            }.bind(this));
+        }
+    },
+    __getOptionsText: function(options, values){
+        debugger;
+        if (!!this.json.props.multiple){
+            var text = [];
+            values.forEach(function(v){
+                text = text.concat(this.__getOptionsTextValue(options, v));
+            }.bind(this));
+            return text.join(",")
+        }else{
+            return this.__getOptionsTextValue(options, values).join(",");
+        }
+    },
+    __getOptionsTextValue: function(options, values, prefix, prefixLabel){
+        var text = [];
+        var v = values.join("/");
+        options.forEach(function(op){
+            var opValue = (prefix) ? prefix + "/" + op[this.json.props.value] : op[this.json.props.value];
+            var opLabel = (prefixLabel) ? prefixLabel + "/" + op[this.json.props.label] : op[this.json.props.label];
+            if (opValue == v) {
+                text.push(opLabel);
+            }else if (v.startsWith(opValue) && op[this.json.props.children] && op[this.json.props.children].length){
+                text = text.concat(this.__getOptionsTextValue(op[this.json.props.children], values, opValue, opLabel));
+            }
+        }.bind(this));
+        if (!this.json.showAllLevels){
+            return text.map(function(t){
+                return t.substring(t.indexOf("/")+1, t.length);
+            });
+        }else{
+            return text;
+        }
     }
 }); 

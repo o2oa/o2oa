@@ -52,10 +52,10 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
          */
         "elEvents": ["focus", "blur", "change", "visible-change", "remove-tag", "clear"]
     },
-    _loadNode: function(){
-        if (this.isReadonly()) this.json.disabled = true;
-        this._loadNodeEdit();
-    },
+    // _loadNode: function(){
+    //     if (this.isReadonly()) this.json.disabled = true;
+    //     this._loadNodeEdit();
+    // },
     _appendVueData: function(){
         // this.form.Macro.environment.data.check(this.json.id);
         // this.json[this.json.id] = this._getBusinessData();
@@ -216,5 +216,52 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         html += "</el-select>";
         return html;
     },
-    __setReadonly: function(data){}
+    // _afterLoaded: function(){
+    //     if (this.isReadonly()){
+    //         this.node.hide();
+    //         window.setTimeout(function(){
+    //             var text = "";
+    //             var nodes = this.node.getElements(".el-select__tags-text");
+    //             if (nodes && nodes.length){
+    //                 nodes.forEach(function(n){
+    //                     text += ((text) ? ", " : "")+n.get("text");
+    //                 });
+    //             }
+    //             var node = new Element("div").inject(this.node, "before");
+    //             this.node.destroy();
+    //             this.node = node;
+    //             this.node.set({
+    //                 "nodeId": this.json.id,
+    //                 "MWFType": this.json.type
+    //             });
+    //             this._loadDomEvents();
+    //             //this.node.removeEvents("click");
+    //             //this.node.empty();
+    //             this.node.set("text", text);
+    //             //this.node.show();
+    //         }.bind(this), 20);
+    //
+    //     }
+    // },
+    __setReadonly: function(data){
+        if (this.isReadonly()){
+            this._loadOptions();
+            Promise.resolve(this.json.options).then(function(options){
+                var values = (o2.typeOf(data) !== "array") ? [data] : data;
+                var text = this.__getOptionsText(options, values);
+                this.node.set("text", text.join(","));
+            }.bind(this));
+        }
+    },
+    __getOptionsText: function(options, values){
+        var text = [];
+        options.forEach(function(op){
+            if (op.value){
+                if (values.indexOf(op.value)!=-1) text.push(op.label || op.value);
+            }else if (op.options && op.options.length){
+                text = text.concat(this.__getOptionsText(op.options, values));
+            }
+        }.bind(this));
+        return text;
+    }
 }); 

@@ -27,11 +27,11 @@ MWF.xApplication.process.Xform.Elrate = MWF.APPElrate =  new Class(
          */
         "elEvents": ["change"]
     },
-    _loadNode: function(){
-        debugger;
-        if (this.isReadonly()) this.json.disabled = true;
-        this._loadNodeEdit();
-    },
+    // _loadNode: function(){
+    //     debugger;
+    //     if (this.isReadonly()) this.json.disabled = true;
+    //     this._loadNodeEdit();
+    // },
     _appendVueData: function(){
         if (!this.json.max) this.json.max = "";
         if (!this.json.isReadonly) this.json.isReadonly = false;
