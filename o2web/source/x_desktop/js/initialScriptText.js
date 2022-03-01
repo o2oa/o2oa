@@ -1407,7 +1407,7 @@ bind.org = {
      * @static
      * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @return {Object[]} 返回职务数组
-     * @o2ActionOut x_organization_assemble_express.UnitDutyAction.listWithUnitObject|example=UnitDuty
+     * @o2ActionOut x_organization_assemble_express.UnitDutyAction.listWithUnitObject|example=Duty
      * @o2syntax
      * //返回职务数组。
      * var dutyList = this.org.listUnitAllDuty( unit );
