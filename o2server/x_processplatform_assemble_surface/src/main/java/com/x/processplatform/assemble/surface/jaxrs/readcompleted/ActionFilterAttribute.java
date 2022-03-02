@@ -279,10 +279,10 @@ class ActionFilterAttribute extends BaseAction {
 			NameValueCountPair o = new NameValueCountPair();
 			if (BooleanUtils.isTrue(value)) {
 				o.setValue(Boolean.TRUE);
-				o.setName("not completed");
+				o.setName("completed");
 			} else {
 				o.setValue(Boolean.FALSE);
-				o.setName("completed");
+				o.setName("not completed");
 			}
 			wos.add(o);
 		}
