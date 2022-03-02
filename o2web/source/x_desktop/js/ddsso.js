@@ -72,6 +72,7 @@ o2.addReady(function () {
                                                         var uri = redirect;
                                                         if (dd.pc) { // 判断是否是PC端，目前测试这个参数可用
                                                             uri = redirect.replace("workmobilewithaction.html", "work.html");
+                                                            uri = uri.replace("cmsdocMobile.html", "cmsdoc.html");
                                                         }
                                                         history.replaceState(null, "page", uri);
                                                         uri.toURI().go();
