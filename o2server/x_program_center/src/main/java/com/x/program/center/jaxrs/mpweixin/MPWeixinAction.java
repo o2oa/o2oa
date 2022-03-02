@@ -11,6 +11,9 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.program.center.jaxrs.apppack.ActionAndroidPack;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -66,6 +69,34 @@ public class MPWeixinAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	// ///////       media  素材  /////////////////////
+
+	@JaxrsMethodDescribe(value = "上传永久素材到微信服务器.", action = ActionUploadMediaForever.class)
+	@POST
+	@Path("media/add/forever")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void addMedia(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								 @JaxrsParameterDescribe("类型： image、voice、video 、thumb") @FormDataParam("type") String type,
+								 @JaxrsParameterDescribe("视频标题 video的类型必须传") @FormDataParam("videoTitle") String videoTitle,
+								 @JaxrsParameterDescribe("视频介绍 video的类型必须传") @FormDataParam("videoIntroduction") String videoIntroduction,
+								 @JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
+								 @JaxrsParameterDescribe("附件标识") @FormDataParam(FILE_FIELD) final byte[] bytes,
+								 @JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition){
+		ActionResult<ActionUploadMediaForever.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUploadMediaForever().execute(type, fileName, bytes, disposition, videoTitle, videoIntroduction);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+
+
 
 	// /menu/* 需要管理员权限
 
