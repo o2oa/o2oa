@@ -49,10 +49,12 @@ public class CategoryInfo extends SliceJpaObject {
 	private static final long serialVersionUID = 3856138316794473794L;
 	private static final String TABLE = PersistenceProperties.CategoryInfo.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -62,6 +64,7 @@ public class CategoryInfo extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
+	@Override
 	public void onPersist() throws Exception {
 	}
 	/*
@@ -279,15 +282,19 @@ public class CategoryInfo extends SliceJpaObject {
 	@FieldDescribe("是否允许匿名访问.")
 	@Column(name = ColumnNamePrefix + anonymousAble_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + anonymousAble_FIELDNAME)
 	private Boolean anonymousAble = true;
 
 	public static final String sendNotify_FIELDNAME = "sendNotify";
 	@FieldDescribe("发布文档后是否通知阅读者：true | false")
 	@Column(name = ColumnNamePrefix + sendNotify_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + sendNotify_FIELDNAME)
 	private Boolean sendNotify = true;
+
+	public static final String blankToAllNotify_FIELDNAME = "blankToAllNotify";
+	@FieldDescribe("文档发布范围为空时是否全员通知：true(默认)|false")
+	@Column(name = ColumnNamePrefix + blankToAllNotify_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean blankToAllNotify = true;
 
 	public static final String projection_FIELDNAME = "projection";
 	@FieldDescribe("字段映射配置.")
@@ -699,6 +706,14 @@ public class CategoryInfo extends SliceJpaObject {
 
 	public void setDocumentType(String documentType) {
 		this.documentType = documentType;
+	}
+
+	public Boolean getBlankToAllNotify() {
+		return blankToAllNotify;
+	}
+
+	public void setBlankToAllNotify(Boolean blankToAllNotify) {
+		this.blankToAllNotify = blankToAllNotify;
 	}
 
 	public List<String> getViewablePersonList() {
