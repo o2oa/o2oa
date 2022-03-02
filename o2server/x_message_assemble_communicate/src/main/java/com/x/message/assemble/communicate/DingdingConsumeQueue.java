@@ -2,6 +2,7 @@ package com.x.message.assemble.communicate;
 
 import java.net.URLEncoder;
 
+import com.x.base.core.project.message.MessageConnector;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonObject;
@@ -29,16 +30,26 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 				DingdingMessage m = new DingdingMessage();
 				m.setAgent_id(Long.parseLong(Config.dingding().getAgentId(), 10));
 				m.setUserid_list(business.organization().person().getObject(message.getPerson()).getDingdingId());
-
+				if (StringUtils.isEmpty(m.getUserid_list())) {
+					logger.info("没有接收钉钉消息的人员。。。。。。。。。。。。。");
+					return;
+				}
 				if (needTransferLink(message.getType())) {
-					String workUrl = getDingdingOpenWorkUrl(message.getBody());
-					if (StringUtils.isNotEmpty(workUrl)) {
-						logger.debug("工作url: "+workUrl);
+					String openUrl = "";
+					// cms 文档
+					if (MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType()) || MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType())) {
+						openUrl = getDingdingOpenCMSDocumentUrl(message.getBody());
+					} else { // 流程工作相关的
+						openUrl = getDingdingOpenWorkUrl(message.getBody());
+					}
+
+					if (StringUtils.isNotEmpty(openUrl)) {
+						logger.debug("openUrl: "+openUrl);
 						// dingtalk://dingtalkclient/action/openapp?corpid=免登企业corpId&container_type=work_platform&app_id=0_{应用agentid}&redirect_type=jump&redirect_url=跳转url
 						String dingtalkUrl = "dingtalk://dingtalkclient/action/openapp?corpid=" + Config.dingding().getCorpId() +
 							"&container_type=work_platform&app_id=0_" + Config.dingding().getAgentId() +
-								"&redirect_type=jump&redirect_url="+ URLEncoder.encode(workUrl, DefaultCharset.name);
-						logger.debug("钉钉pc 打开消息 url："+dingtalkUrl);
+								"&redirect_type=jump&redirect_url="+ URLEncoder.encode(openUrl, DefaultCharset.name);
+						logger.info("钉钉pc 打开消息 url："+dingtalkUrl);
 						m.getMsg().setMsgtype("markdown");
 						m.getMsg().getMarkdown().setTitle(message.getTitle());
 						m.getMsg().getMarkdown().setText("["+message.getTitle()+"]("+dingtalkUrl+")");
@@ -72,37 +83,63 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 		}
 	}
 
+	/**
+	 * 文档打开的url
+	 * @param messageBody
+	 * @return
+	 */
+	private String getDingdingOpenCMSDocumentUrl(String messageBody) {
+		try {
+			String openPage = getOpenPageUrl(messageBody);
+			String o2oaUrl = Config.dingding().getWorkUrl();
+			if (StringUtils.isEmpty(openPage)) {
+				String id = getCmsDocumentId(messageBody);
+				if (StringUtils.isEmpty(id)) {
+					return null;
+				}
+				String docUrl = "cmsdocMobile.html?id=" + id;
+				o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + docUrl;
+			} else {
+				o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + openPage;
+			}
+			logger.info("o2oa 地址：" + o2oaUrl);
+			return o2oaUrl;
+		}catch (Exception e) {
+			logger.error(e);
+		}
+		return null;
+	}
 
 	/**
-	 * 生成单点登录和打开工作的地址
+	 * 工作打开的url
 	 * @param messageBody
 	 * @return
 	 */
 	private String getDingdingOpenWorkUrl(String messageBody) {
 		try {
-			String work = getWorkIdFromBody(messageBody);
+			String openPage = getOpenPageUrl(messageBody);
 			String o2oaUrl = Config.dingding().getWorkUrl();
-			if (StringUtils.isEmpty(work) || StringUtils.isEmpty(o2oaUrl)) {
-				return null;
-			}
-			String workUrl = "workmobilewithaction.html?workid=" + work;
-			String messageRedirectPortal = Config.dingding().getMessageRedirectPortal();
-			if (messageRedirectPortal != null && !"".equals(messageRedirectPortal)) {
-				String portal = "portalmobile.html?id="+messageRedirectPortal;
-				// 2021-11-1 钉钉那边无法使用了 不能进行encode 否则签名不通过
+			if (StringUtils.isEmpty(openPage)) {
+				String work = getWorkIdFromBody(messageBody);
+				if (StringUtils.isEmpty(work) || StringUtils.isEmpty(o2oaUrl)) {
+					return null;
+				}
+				String workUrl = "workmobilewithaction.html?workid=" + work;
+				String messageRedirectPortal = Config.dingding().getMessageRedirectPortal();
+				if (messageRedirectPortal != null && !"".equals(messageRedirectPortal)) {
+					String portal = "portalmobile.html?id=" + messageRedirectPortal;
+					// 2021-11-1 钉钉那边无法使用了 不能进行encode 否则签名不通过
 //				portal = URLEncoder.encode(portal, DefaultCharset.name);
-				workUrl += "&redirectlink=" + portal;
-			}
-			// 2021-11-1 钉钉那边无法使用了 不能进行encode 否则签名不通过
+					workUrl += "&redirectlink=" + portal;
+				}
+				// 2021-11-1 钉钉那边无法使用了 不能进行encode 否则签名不通过
 //			workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
-			logger.info("o2oa workUrl："+workUrl);
-			o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + workUrl;
+				logger.debug("o2oa workUrl：" + workUrl);
+				o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + workUrl;
+			} else {
+				o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + openPage;
+			}
 			logger.info("o2oa 地址："+o2oaUrl);
-//			String talkUrl = "dingtalk://dingtalkclient/action/openapp?corpid="+Config.dingding().getCorpId()
-//					+"&container_type=work_platform&app_id=0_"
-//					+ Config.dingding().getAgentId() + "&redirect_type=jump&redirect_url="
-//					+ URLEncoder.encode(o2oaUrl, DefaultCharset.name);
-//			logger.info("dingtalk地址："+talkUrl);
 			return o2oaUrl;
 		}catch (Exception e) {
 			logger.error(e);
@@ -130,6 +167,42 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 		}
 		return null;
 	}
+
+	/**
+	 * 这个执行的前提是 MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType()) || MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType()) cms的消息
+	 * body获取文档id
+	 * @param messageBody
+	 * @return
+	 */
+	private String getCmsDocumentId(String messageBody) {
+		try {
+			JsonObject object =new JsonParser().parse(messageBody).getAsJsonObject();
+			if (object.get("id") != null) {
+				return object.get("id").getAsString();
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		return null;
+	}
+
+	/**
+	 * body里面是否有 openPageUrl 这个字段 有就用这个字段作为跳转页面
+	 * @param messageBody
+	 * @return
+	 */
+	private String getOpenPageUrl(String messageBody) {
+		try {
+			JsonObject object =new JsonParser().parse(messageBody).getAsJsonObject();
+			if (object.get("openPageUrl") != null) {
+				return object.get("openPageUrl").getAsString();
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		return null;
+	}
+
 
 	/**
 	 * 是否需要把钉钉消息转成markdown格式消息
