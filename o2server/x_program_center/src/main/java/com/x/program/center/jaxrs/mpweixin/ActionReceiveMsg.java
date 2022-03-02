@@ -6,6 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.x.base.core.project.Application;
+import com.x.base.core.project.config.CenterServer;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.x_jpush_assemble_control;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -38,7 +45,7 @@ public class ActionReceiveMsg  extends BaseAction {
             Map<String, String> map = xmlToMap(inputStream);
             String msgType = map.get("MsgType");
 
-            if (WX_MSG_RECEIVE_TYPE_EVENT.equals(msgType)) { //
+            if (WX_MSG_RECEIVE_TYPE_EVENT.equals(msgType)) { // 事件出发
                 String event = map.get("Event");
                 String eventKey = map.get("EventKey");
                 logger.info("接收到事件消息： event: {} , eventKey: {}", event, eventKey);
@@ -49,9 +56,46 @@ public class ActionReceiveMsg  extends BaseAction {
                         String content = menu.getContent();
                         String toUser = map.get("FromUserName");
                         String fromUser = map.get("ToUserName");
-                        String xml = txtMessageBack(toUser, fromUser, content);
-                        logger.info("回复点击菜单消息： {}", xml);
-                        wo.setText(xml);
+                        // 特殊消息处理 默认是回复文字消息 如果是媒体消息 需要配置特殊的头 media:image: 后面跟微信素材的mediaId
+                        if (content.startsWith(WX_MSG_BACK_MEDIA_KEY_IMAGE)) {
+                            String mediaId = content.substring(WX_MSG_BACK_MEDIA_KEY_IMAGE.length());
+                            String xml = imageMessageBack(toUser, fromUser, mediaId);
+                            logger.info("回复点击菜单消息： {}", xml);
+                            wo.setText(xml);
+                        } else if (content.startsWith(WX_MSG_BACK_MEDIA_KEY_VOICE)) {
+                            String mediaId = content.substring(WX_MSG_BACK_MEDIA_KEY_VOICE.length());
+                            String xml = voiceMessageBack(toUser, fromUser, mediaId);
+                            logger.info("回复点击菜单消息： {}", xml);
+                            wo.setText(xml);
+                        } else if (content.startsWith(WX_MSG_BACK_MEDIA_KEY_VIDEO)) {
+                            // 视频消息需要多两个字段 title和description 用｜分割  如： mediaId|title|description
+                            String videoContent = content.substring(WX_MSG_BACK_MEDIA_KEY_VIDEO.length());
+                            String xml = null;
+                            try {
+                                String[] arr = videoContent.split("\\|");
+                                xml = videoMessageBack(toUser, fromUser, arr[0], arr[1], arr[2]);
+                            } catch (Exception e) {
+                                logger.error(e);
+                                xml = txtMessageBack(toUser, fromUser, content);
+                            }
+                            logger.info("回复点击菜单消息： {}", xml);
+                            wo.setText(xml);
+                        } else if (content.startsWith(WX_MSG_BACK_MEDIA_KEY_SCRIPT)) {
+                            String scriptId = content.substring(WX_MSG_BACK_MEDIA_KEY_SCRIPT.length());
+                            if (StringUtils.isNotBlank(scriptId)) {
+                                ExecuteServiceScriptThread runner1 = new ExecuteServiceScriptThread(toUser, "", scriptId);
+                                Thread thread1 = new Thread(runner1);
+                                thread1.start();
+                            }
+                            //执行脚本了 不回复消息
+                            wo.setText("success");
+                            actionResult.setData(wo);
+                            return actionResult;
+                        }  else {
+                            String xml = txtMessageBack(toUser, fromUser, content);
+                            logger.info("回复点击菜单消息： {}", xml);
+                            wo.setText(xml);
+                        }
                         actionResult.setData(wo);
                         return actionResult;
                     } else {
@@ -72,6 +116,17 @@ public class ActionReceiveMsg  extends BaseAction {
                         logger.info("没有查询到对应的 eventKey：{}", eventKey);
                     }
                 }
+            } else if (WX_MSG_RECEIVE_TYPE_TEXT.equalsIgnoreCase(msgType)) { // 接收到文本消息
+                String text = map.get("Content");
+                String toUser = map.get("FromUserName");
+                logger.info("接收到文本消息： text: {} ", text);
+                //TODO 目前支持异步执行服务脚本，这里必须马上返回 否则会超时，脚本里面可以调用微信客服消息进行回复. 脚本id暂时先保存到配置文件
+                String id = Config.mPweixin().getScriptId();
+                if (StringUtils.isNotBlank(id)) {
+                    ExecuteServiceScriptThread runner1 = new ExecuteServiceScriptThread(toUser, text, id);
+                    Thread thread1 = new Thread(runner1);
+                    thread1.start();
+                }
             } else {
                 logger.info("未处理消息类型, MsgType: {}", msgType);
             }
@@ -84,6 +139,7 @@ public class ActionReceiveMsg  extends BaseAction {
     }
 
 
+    // 回复文本消息
     private String txtMessageBack(String toUser, String from, String content) {
         long time = new Date().getTime();
         String xml = "<xml>" +
@@ -96,8 +152,52 @@ public class ActionReceiveMsg  extends BaseAction {
         return xml;
     }
 
+    // 回复图片消息
+    private String imageMessageBack(String toUser, String from, String mediaId) {
+        long time = new Date().getTime();
+        String xml = "<xml>" +
+                "<ToUserName><![CDATA[" + toUser + "]]></ToUserName>" +
+                "<FromUserName><![CDATA[" + from + "]]></FromUserName>" +
+                "<CreateTime>" + time + "</CreateTime>" +
+                "<MsgType><![CDATA[image]]></MsgType>" +
+                "<Image><MediaId><![CDATA["+mediaId+"]]></MediaId></Image>" +
+                "</xml>";
+        return xml;
+    }
 
+    // 回复音频消息
+    private String voiceMessageBack(String toUser, String from, String mediaId) {
+        long time = new Date().getTime();
+        String xml = "<xml>" +
+                "<ToUserName><![CDATA[" + toUser + "]]></ToUserName>" +
+                "<FromUserName><![CDATA[" + from + "]]></FromUserName>" +
+                "<CreateTime>" + time + "</CreateTime>" +
+                "<MsgType><![CDATA[voice]]></MsgType>" +
+                "<Voice><MediaId><![CDATA["+mediaId+"]]></MediaId></Voice>" +
+                "</xml>";
+        return xml;
+    }
 
+    //回复视频消息
+    private String videoMessageBack(String toUser, String from, String mediaId, String title, String description) {
+        long time = new Date().getTime();
+        String xml = "<xml>" +
+                "<ToUserName><![CDATA[" + toUser + "]]></ToUserName>" +
+                "<FromUserName><![CDATA[" + from + "]]></FromUserName>" +
+                "<CreateTime>" + time + "</CreateTime>" +
+                "<MsgType><![CDATA[video]]></MsgType>" +
+                "<Video>"+
+                "<MediaId><![CDATA["+mediaId+"]]></MediaId>" +
+                "<Title><![CDATA["+title+"]]></Title>" +
+                "<Description><![CDATA["+description+"]]></Description>"  +
+                "</Video>" +
+                "</xml>";
+        return xml;
+    }
+
+    private void asyncPostServiceScript(String text) {
+
+    }
 
 
     /**
@@ -127,5 +227,63 @@ public class ActionReceiveMsg  extends BaseAction {
     }
 
     public static class Wo extends WoText {
+    }
+
+
+    public static class ExecuteServiceScriptThread implements Runnable {
+        String toUser;
+        String text;
+        String scriptId;
+        ExecuteServiceScriptThread(String toUser, String text, String scriptId) {
+            this.toUser = toUser;
+            this.text = text;
+            this.scriptId = scriptId;
+        }
+        @Override
+        public void run() {
+            evalRemote();
+        }
+
+        private void evalRemote() {
+            try {
+                if (StringUtils.isNotBlank(scriptId)) {
+                    ScriptExecuteBody body = new ScriptExecuteBody();
+                    body.setKeyword(text);
+                    body.setOpenId(toUser);
+                    ActionResponse result = CipherConnectionAction.post(false,
+                            Config.url_x_program_center_jaxrs("invoke",scriptId, "execute"), body);
+                    logger.info("执行脚本结果： " + result.toJson());
+                } else {
+                    logger.warn("没有配置服务脚本id");
+                }
+            } catch (Exception e) {
+                logger.error(e);
+            }
+        }
+    }
+
+    /**
+     * 脚本执行传入对象
+     */
+    public static class ScriptExecuteBody extends GsonPropertyObject {
+        // 微信公众号 用户的 openId
+        private String openId;
+        private String keyword;
+
+        public String getOpenId() {
+            return openId;
+        }
+
+        public void setOpenId(String openId) {
+            this.openId = openId;
+        }
+
+        public String getKeyword() {
+            return keyword;
+        }
+
+        public void setKeyword(String keyword) {
+            this.keyword = keyword;
+        }
     }
 }
