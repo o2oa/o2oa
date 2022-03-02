@@ -87,6 +87,10 @@ public class ActionReceiveMsg  extends BaseAction {
                                 Thread thread1 = new Thread(runner1);
                                 thread1.start();
                             }
+                            //执行脚本了 不回复消息
+                            wo.setText("success");
+                            actionResult.setData(wo);
+                            return actionResult;
                         }  else {
                             String xml = txtMessageBack(toUser, fromUser, content);
                             logger.info("回复点击菜单消息： {}", xml);
