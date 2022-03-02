@@ -94,8 +94,11 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			}
 			aeiObjects.commit();
 			this.arriveCommitted(aeiObjects);
-			// 运行AfterArriveScript时间
-			this.callAfterArriveScript(aeiObjects);
+			// 运行AfterArriveScript事件
+			if (this.callAfterArriveScript(aeiObjects) && aeiObjects.commitData()) {
+				// 执行AfterArriveScript中的代码可能修改了data数据.
+				aeiObjects.entityManagerContainer().commit();
+			}
 			return work.getId();
 		} catch (
 
@@ -138,7 +141,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 		}
 	}
 
-	private void callAfterArriveScript(AeiObjects aeiObjects) throws Exception {
+	private boolean callAfterArriveScript(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallAfterArriveScript())
 				&& this.hasAfterArriveScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
 			CompiledScript cs = null;
@@ -152,7 +155,9 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 						aeiObjects.getActivity(), Business.EVENT_AFTERARRIVE);
 				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 			}
+			return true;
 		}
+		return false;
 	}
 
 	private List<Read> concreteRead(AeiObjects aeiObjects) throws Exception {
@@ -213,14 +218,11 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				}
 			}
 			aeiObjects.commit();
+			// 发送在队列中的待办消息, 待办消息必须在数据提交后发送,否则会不到待办
 			this.executeCommitted(aeiObjects, works);
-			/** 发送在队列中的待办消息, 待办消息必须在数据提交后发送,否则会不到待办 */
-			if (ListTools.isNotEmpty(works)) {
-				/** 已经有返回的work将要离开当前环节,执行AfterExecuteScript中的代码 */
-				this.callAfterExecuteScript(aeiObjects);
-				if (aeiObjects.commitData()) {
-					aeiObjects.entityManagerContainer().commit();
-				}
+			if (ListTools.isNotEmpty(works) && callAfterExecuteScript(aeiObjects) && aeiObjects.commitData()) {
+				// 已经有返回的work将要离开当前环节,执行AfterExecuteScript中的代码可能修改了data数据.
+				aeiObjects.entityManagerContainer().commit();
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -245,7 +247,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 		}
 	}
 
-	private void callAfterExecuteScript(AeiObjects aeiObjects) throws Exception {
+	private boolean callAfterExecuteScript(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallAfterExecuteScript())
 				&& this.hasAfterExecuteScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
 			CompiledScript cs = null;
@@ -259,7 +261,9 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 						aeiObjects.getActivity(), Business.EVENT_AFTEREXECUTE);
 				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 			}
+			return true;
 		}
+		return false;
 	}
 
 	public List<String> inquire(String workId, ProcessingConfigurator processingConfigurator,
@@ -319,7 +323,10 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			aeiObjects.commit();
 			this.inquireCommitted(aeiObjects);
 			// 运行 AfterInquireScript事件
-			this.callAfterInquireScript(aeiObjects);
+			if (this.callAfterInquireScript(aeiObjects) && aeiObjects.commitData()) {
+				// 执行AfterInquireScript中的代码可能修改了data数据.
+				aeiObjects.entityManagerContainer().commit();
+			}
 		} catch (
 
 		Exception e) {
@@ -345,7 +352,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 		}
 	}
 
-	private void callAfterInquireScript(AeiObjects aeiObjects) throws Exception {
+	private boolean callAfterInquireScript(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallAfterInquireScript())
 				&& this.hasAfterInquireScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
 			CompiledScript cs = null;
@@ -359,7 +366,9 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 						aeiObjects.getActivity(), Business.EVENT_AFTERINQUIRE);
 				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
 			}
+			return true;
 		}
+		return false;
 	}
 
 	protected abstract Work arriveProcessing(AeiObjects aeiObjects) throws Exception;
