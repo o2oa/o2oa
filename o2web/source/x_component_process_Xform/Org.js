@@ -598,8 +598,17 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         this.fireEvent("loadSelector", [selector])
     },
     selectOnClose: function(){
-        v = this._getBusinessData();
+        var v = this._getBusinessData();
         if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
+    },
+    checkDescription: function(){
+        if (!this.descriptionNode)return;
+        var v = this._getBusinessData();
+        if (!v || !v.length){
+            this.descriptionNode.setStyle("display", "block");
+        }else{
+            this.descriptionNode.setStyle("display", "none");
+        }
     },
 
     /**
@@ -1313,6 +1322,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
 
         this.node.store("data", values);
         this._setBusinessData(values);
+
+        this.checkDescription();
 
         if (this.json.isInput){
 
