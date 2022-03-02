@@ -33,7 +33,8 @@ public class QueueSendDocumentNotify extends AbstractQueue<String> {
 	private static  Logger logger = LoggerFactory.getLogger( QueueSendDocumentNotify.class );
 	private UserManagerService userManagerService = new UserManagerService();
 
-	public void execute( String documentId ) throws Exception {
+	@Override
+	public void execute(String documentId ) throws Exception {
 		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>start QueueSendDocumentNotify:" + documentId );
 		if( StringUtils.isEmpty(documentId) ) {
 			logger.debug("can not send publish notify , document is NULL!" );
