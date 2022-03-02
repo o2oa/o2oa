@@ -54,8 +54,8 @@ public class DocumentPersistService {
 		}
 		if (ListTools.isNotEmpty(document.getPictureList())) {
 			document.setHasIndexPic(true);
-			if(document.getPictureList().size() > 3){
-				document.setIndexPics(StringUtils.join(document.getPictureList().subList(0, 2), ","));
+			if(document.getPictureList().size() > 4){
+				document.setIndexPics(StringUtils.join(document.getPictureList().subList(0, 3), ","));
 			}else{
 				document.setIndexPics(StringUtils.join(document.getPictureList(), ","));
 			}
