@@ -17,6 +17,7 @@ import com.x.cms.assemble.control.service.UserManagerService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -32,7 +33,8 @@ public class QueueSendDocumentNotify extends AbstractQueue<String> {
 	private static  Logger logger = LoggerFactory.getLogger( QueueSendDocumentNotify.class );
 	private UserManagerService userManagerService = new UserManagerService();
 
-	public void execute( String documentId ) throws Exception {
+	@Override
+	public void execute(String documentId ) throws Exception {
 		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>start QueueSendDocumentNotify:" + documentId );
 		if( StringUtils.isEmpty(documentId) ) {
 			logger.debug("can not send publish notify , document is NULL!" );
@@ -52,7 +54,7 @@ public class QueueSendDocumentNotify extends AbstractQueue<String> {
 					persons = reviewService.listPermissionPersons(appInfo, category, document);
 					if (ListTools.isNotEmpty(persons)) {
 						//有可能是*， 一般是所有的人员标识列表
-						if (persons.contains("*")) {
+						if (persons.contains("*") && !BooleanUtils.isFalse(category.getBlankToAllNotify())) {
 							String topUnitName = document.getCreatorTopUnitName();
 							logger.debug(">>>>>document.getCreatorTopUnitName()=" + topUnitName);
 							if (StringUtils.equalsAnyIgnoreCase("cipher", topUnitName) || StringUtils.equalsAnyIgnoreCase("xadmin", topUnitName)) {
