@@ -679,17 +679,25 @@ MWF.xScript.Environment = function(ev){
          * @summary 获取当前流程实例的附件对象列表。
          * @method getAttachmentList
          * @static
-         * @param {Function|boolean} [callback] 如果传入Funcation, 则作为正确获取附件对象数组的异步调用的回调；如果传入true，则发起同步请求获取附件列表；如果不传入参数，则直接返回本地缓存中的attachmentList对象。
+         * @param {Function|boolean} [callback] 如果传入Funcation, 则作为正确获取附件对象数组的异步调用的回调；
+         * 如果传入true，则发起异步请求获取附件列表，返回Promise对象；如果传入false, 则发起同步请求获取附件列表；
+         * 如果不传入参数，则直接返回本地缓存中的attachmentList对象。
          * @param {Function} [error] 获取附件对象数组出错时的回调。
          * @return {(Review[])} 当前流程实例的所有附件对象数组，异步请求时返回请求的Promise对象.
          * @return {WorkAttachmentData[]} 附件数据.
          * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment
          * @o2syntax
-         * //获取附件列表
+         * //从本地缓存获取附件列表
          * var attachmentList = this.workContext.getAttachmentList();
          *
          * //同步请求获取附件列表
-         * var attachmentList = this.workContext.getAttachmentList(true);
+         * var attachmentList = this.workContext.getAttachmentList(false);
+         *
+         * //异步请求获取附件列表
+         * var promise = this.workContext.getAttachmentList(true);
+         * promise.then(function(attachmentList){
+         *     //attachmentList 附件对象数组
+         * })
          *
          * //异步请求获取附件列表
          * this.workContext.getAttachmentList( function(attachmentList){
@@ -697,7 +705,9 @@ MWF.xScript.Environment = function(ev){
          * });
          */
         "getAttachmentList": function(callback, error){
-            if (!callback) return ev.attachmentList;
+            if (!callback && callback !== false) {
+                return ev.attachmentList;
+            }
 
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
