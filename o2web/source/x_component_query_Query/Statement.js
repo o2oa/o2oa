@@ -512,6 +512,55 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             this.searchCustomView();
         }
     },
+    searchView: function(){
+        debugger;
+        if (this.viewJson.customFilterList) {
+            var key = this.viewSearchInputNode.get("value");
+            if (key && key !== this.lp.searchKeywork) {
+                var filterData = [];
+                this.filterItems = [];
+                this.viewJson.customFilterList.each(function (entry) {
+                    if (entry.formatType === "textValue") {
+                        var d = {
+                            "path": entry.path,
+                            "value": key,
+                            "formatType": entry.formatType,
+                            "logic": "or",
+                            "comparison": "like"
+                        };
+                        filterData.push(d);
+                        this.filterItems.push({"data":d});
+                    }
+                    if (entry.formatType === "numberValue") {
+                        var v = key.toFloat();
+                        if (!isNaN(v)) {
+                            var d = {
+                                "path": entry.path,
+                                "value": v,
+                                "formatType": entry.formatType,
+                                "logic": "or",
+                                "comparison": "equals"
+                            };
+                            filterData.push(d);
+                            this.filterItems.push({"data":d});
+                        }
+                    }
+                }.bind(this));
+
+                if( this.json.filter ){
+                    this.json.filter.clone().each(function(f){
+                        filterData.push(f);
+                    })
+                }
+
+                this.createViewNode({"filterList": filterData});
+            }else{
+                this.filterItems = [];
+                var filterData = this.json.filter ? this.json.filter.clone() : [];
+                this.createViewNode( {"filterList": filterData} );
+            }
+        }
+    },
     //搜索相关结束
     getStatementInfor: function () {
         debugger;
@@ -737,14 +786,13 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
         //}
 
         //序号
+        var sequence = 1 + this.view.json.pageSize * (this.view.currentPage - 1) + this.idx;
+        this.data["$sequence"] = sequence;
         if (this.view.viewJson.isSequence === "yes") {
             this.sequenceTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
             this.sequenceTd.setStyle("width", "10px");
-            var s = 1 + this.view.json.pageSize * (this.view.currentPage - 1) + this.idx;
-            this.sequenceTd.set("text", s);
+            this.sequenceTd.set("text", sequence);
         }
-
-        debugger;
 
         Object.each(this.view.entries, function (c, k) {
             //if (cell){
