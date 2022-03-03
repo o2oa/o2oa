@@ -1,0 +1,78 @@
+.appContent {
+    text-align: center
+}
+
+@font-face {
+    font-family: 'o2SystemConfig';
+    src:
+            url('../x_component_systemconfig/$Main/default/fonts/o2SystemConfig.ttf?ma9ebp') format('truetype'),
+            url('../x_component_systemconfig/$Main/default/fonts/o2SystemConfig.woff?ma9ebp') format('woff'),
+            url('../x_component_systemconfig/$Main/default/fonts/o2SystemConfig.svg?ma9ebp#o2SystemConfig') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^="o2icon-"], [class*=" o2icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'o2SystemConfig' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.o2icon-webres:before {
+    content: "\e90c";
+}
+.o2icon-ui:before {
+    content: "\e90d";
+}
+.o2icon-service:before {
+    content: "\e90e";
+}
+.o2icon-component:before {
+    content: "\e90f";
+}
+.o2icon-forward:before {
+    content: "\e90b";
+}
+.o2icon-right:before {
+    content: "\e909";
+}
+.o2icon-down:before {
+    content: "\e90a";
+}
+.o2icon-web:before {
+    content: "\e900";
+}
+.o2icon-server:before {
+    content: "\e901";
+}
+.o2icon-security:before {
+    content: "\e902";
+}
+.o2icon-process:before {
+    content: "\e903";
+}
+.o2icon-mobile:before {
+    content: "\e904";
+}
+.o2icon-message:before {
+    content: "\e905";
+}
+.o2icon-database:before {
+    content: "\e906";
+}
+.o2icon-config:before {
+    content: "\e907";
+}
+.o2icon-cloud:before {
+    content: "\e908";
+}
