@@ -26,7 +26,7 @@ import Menu from './components/Menu.vue'
 }
 .menuArea{
   max-width: 300px;
-  min-width: 160px;
+  min-width: 180px;
   width: 15%;
   height: 100%;
   background: #FFFFFF;

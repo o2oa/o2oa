@@ -14,5 +14,33 @@ MWF.xApplication.systemconfig.LP = {
     "logConfig": "日志配置",
 
     "serverConfig": "服务配置",
-    ""
+    "centerServer": "中心服务",
+    "appServer": "应用服务",
+    "webServer": "Web服务",
+    "databaseServer": "数据库配置",
+    "storageServer": "存储配置",
+    "cacheConfig": "缓存配置",
+    "clusterConfig": "集群配置",
+    "orgConfig": "组织配置",
+    "processConfig": "流程配置",
+    "cloudConfig": "云服务配置",
+    "dumpConfig": "备份配置",
+
+    "messageConfig": "消息配置",
+    "msgTypeConfig": "类型配置",
+    "pushConfig": "消息推送",
+    "mailConfig": "邮件配置",
+    "smsConfig": "短信配置",
+    "mqConfig": "消息队列",
+    //communicate.json
+
+    "mobileConfig": "移动端配置",
+    "connectConfig": "连接配置",
+    "moduleConfig": "模块配置",
+    "iconConfig": "图标配置",
+    "ddConfig": "钉钉集成", //钉钉 政务钉钉 专属钉
+    "wechatConfig": "微信集成",  //微信公众号 企业微信
+    // "welinkConfig": "welink集成",
+    "appTools": "APP工具"
+
 }

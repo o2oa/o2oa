@@ -28,51 +28,120 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.o2icon-webres:before {
-    content: "\e90c";
+.o2icon-deploy:before {
+    content: "\e923";
 }
-.o2icon-ui:before {
-    content: "\e90d";
+.o2icon-apps:before {
+    content: "\e924";
 }
-.o2icon-service:before {
-    content: "\e90e";
+.o2icon-sso:before {
+    content: "\f2ba";
 }
-.o2icon-component:before {
-    content: "\e90f";
+.o2icon-password:before {
+    content: "\e91f";
 }
-.o2icon-forward:before {
-    content: "\e90b";
+.o2icon-icon:before {
+    content: "\e920";
 }
-.o2icon-right:before {
-    content: "\e909";
-}
-.o2icon-down:before {
-    content: "\e90a";
-}
-.o2icon-web:before {
+.o2icon-wechat:before {
     content: "\e900";
 }
-.o2icon-server:before {
+.o2icon-sms:before {
     content: "\e901";
 }
-.o2icon-security:before {
+.o2icon-signin:before {
     content: "\e902";
 }
-.o2icon-process:before {
+.o2icon-dump:before {
     content: "\e903";
 }
-.o2icon-mobile:before {
+.o2icon-push:before {
     content: "\e904";
 }
-.o2icon-message:before {
+.o2icon-org:before {
     content: "\e905";
 }
-.o2icon-database:before {
+.o2icon-center:before {
     content: "\e906";
 }
-.o2icon-config:before {
+.o2icon-tools:before {
     content: "\e907";
 }
-.o2icon-cloud:before {
+.o2icon-mail:before {
     content: "\e908";
+}
+.o2icon-pct75:before {
+    content: "\e909";
+}
+.o2icon-flow:before {
+    content: "\e90a";
+}
+.o2icon-connect:before {
+    content: "\e90b";
+}
+.o2icon-mq:before {
+    content: "\e90c";
+}
+.o2icon-cache:before {
+    content: "\e90d";
+}
+.o2icon-dingding:before {
+    content: "\e90e";
+}
+.o2icon-web:before {
+    content: "\e90f";
+}
+.o2icon-servers:before {
+    content: "\e910";
+}
+.o2icon-security:before {
+    content: "\e911";
+}
+.o2icon-process:before {
+    content: "\e912";
+}
+.o2icon-mobile:before {
+    content: "\e913";
+}
+.o2icon-message:before {
+    content: "\e914";
+}
+.o2icon-database:before {
+    content: "\e915";
+}
+.o2icon-config:before {
+    content: "\e916";
+}
+.o2icon-cloud:before {
+    content: "\e917";
+}
+.o2icon-right:before {
+    content: "\e918";
+}
+.o2icon-down:before {
+    content: "\e919";
+}
+.o2icon-forward:before {
+    content: "\e91a";
+}
+.o2icon-webres:before {
+    content: "\e91b";
+}
+.o2icon-ui:before {
+    content: "\e91c";
+}
+.o2icon-service:before {
+    content: "\e91d";
+}
+.o2icon-component:before {
+    content: "\e91e";
+}
+.o2icon-log:before {
+    content: "\e922";
+}
+.o2icon-download:before {
+    content: "\e95e";
+}
+.o2icon-upload:before {
+    content: "\e961";
 }

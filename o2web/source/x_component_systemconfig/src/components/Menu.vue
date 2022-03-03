@@ -1,85 +1,27 @@
 <template>
-  <div>
-    <div class="menu">
-      <div class="menuTitle">
-        <div class="menuTitleText">{{lp.title}}</div>
-      </div>
+  <div class="menu">
+    <div class="menuTitle">
+      <div class="menuTitleLogo" style="background-image: url('../x_component_systemconfig/$Main/default/setting.png');"></div>
+      <div class="menuTitleText">{{lp.title}}</div>
+    </div>
+    <div class="menuContent">
       <div v-for="menu in menuJson">
-        <div class="menuItem">
+        <div class="menuItem" @click="toggle">
+          <div class="menuItemIcon"><i :class="'o2icon-'+menu.icon"></i></div>
           <div class="menuItemText">{{menu.title}}</div>
         </div>
-        <div class="menuItemSubArea" v-for="item in menu.children">
-          <div class="menuItem subItem">
-            <div class="menuItemIcon"><icon :class="'o2icon-'+item.icon"></icon></div>
-            <div class="menuItemCount o2icon-forward"></div>
-            <div class="menuItemText subItemText">{{item.title}}</div>
-          </div>
+
+        <div class="menuItemSubArea">
+
+            <div class="menuItem subItem" v-for="item in menu.children">
+              <div class="menuItemIcon subItemIcon"><i :class="'o2icon-'+item.icon"></i></div>
+              <div class="menuItemCount o2icon-forward"></div>
+              <div class="menuItemText subItemText">{{item.title}}</div>
+            </div>
+
         </div>
+
       </div>
-
-
-<!--      <div class="menuItem">-->
-<!--        <div class="menuItemText">{{lp.baseConfig}}</div>-->
-<!--      </div>-->
-<!--      <div class="menuItemSubArea">-->
-<!--        <div class="menuItem subItem">-->
-<!--          <div class="menuItemIcon"><icon class="o2icon-config"></icon></div>-->
-<!--          <div class="menuItemCount o2icon-forward"></div>-->
-<!--          <div class="menuItemText subItemText">{{lp.systemInfor}}</div>-->
-<!--        </div>-->
-<!--        <div class="menuItem subItem">-->
-<!--          <div class="menuItemIcon"><icon class="o2icon-ui"></icon></div>-->
-<!--          <div class="menuItemCount o2icon-forward"></div>-->
-<!--          <div class="menuItemText subItemText">{{lp.uiConfig}}</div>-->
-<!--        </div>-->
-<!--        <div class="menuItem subItem">-->
-<!--          <div class="menuItemIcon"><icon class="o2icon-component"></icon></div>-->
-<!--          <div class="menuItemCount o2icon-forward"></div>-->
-<!--          <div class="menuItemText subItemText">{{lp.componentDeploy}}</div>-->
-<!--        </div>-->
-<!--        <div class="menuItem subItem">-->
-<!--          <div class="menuItemIcon"><icon class="o2icon-webres"></icon></div>-->
-<!--          <div class="menuItemCount o2icon-forward"></div>-->
-<!--          <div class="menuItemText subItemText">{{lp.resourceDeploy}}</div>-->
-<!--        </div>-->
-<!--        <div class="menuItem subItem">-->
-<!--          <div class="menuItemIcon"><icon class="o2icon-service"></icon></div>-->
-<!--          <div class="menuItemCount o2icon-forward"></div>-->
-<!--          <div class="menuItemText subItemText">{{lp.serviceDeploy}}</div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="menuItem">-->
-<!--        <div class="menuItemText">{{lp.securityConfig}}</div>-->
-<!--      </div>-->
-<!--      <div class="menuItemSubArea">-->
-<!--        <div class="menuItem subItem">-->
-<!--          <div class="menuItemIcon"><icon class="o2icon-config"></icon></div>-->
-<!--          <div class="menuItemCount o2icon-forward"></div>-->
-<!--          <div class="menuItemText subItemText">{{lp.systemInfor}}</div>-->
-<!--        </div>-->
-<!--        <div class="menuItem subItem">-->
-<!--          <div class="menuItemIcon"><icon class="o2icon-ui"></icon></div>-->
-<!--          <div class="menuItemCount o2icon-forward"></div>-->
-<!--          <div class="menuItemText subItemText">{{lp.uiConfig}}</div>-->
-<!--        </div>-->
-<!--        <div class="menuItem subItem">-->
-<!--          <div class="menuItemIcon"><icon class="o2icon-component"></icon></div>-->
-<!--          <div class="menuItemCount o2icon-forward"></div>-->
-<!--          <div class="menuItemText subItemText">{{lp.componentDeploy}}</div>-->
-<!--        </div>-->
-<!--        <div class="menuItem subItem">-->
-<!--          <div class="menuItemIcon"><icon class="o2icon-webres"></icon></div>-->
-<!--          <div class="menuItemCount o2icon-forward"></div>-->
-<!--          <div class="menuItemText subItemText">{{lp.resourceDeploy}}</div>-->
-<!--        </div>-->
-<!--        <div class="menuItem subItem">-->
-<!--          <div class="menuItemIcon"><icon class="o2icon-service"></icon></div>-->
-<!--          <div class="menuItemCount o2icon-forward"></div>-->
-<!--          <div class="menuItemText subItemText">{{lp.serviceDeploy}}</div>-->
-<!--        </div>-->
-<!--      </div>-->
-
-
     </div>
   </div>
 </template>
@@ -90,6 +32,16 @@ import {ref} from 'vue';
 import {o2, lp, component} from '@o2oa/component';
 
 const menuJson = getMenuJson();
+
+function toggle(e){
+  const subNode = e.currentTarget.getNext();
+  debugger;
+  if (subNode.getStyle("display") === "none"){
+    subNode.show();
+  }else{
+    subNode.hide();
+  }
+}
 
 // const taskList = ref([]);
 // o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2ListPaging(1, 5).then((json)=>{
@@ -117,34 +69,47 @@ const menuJson = getMenuJson();
 </script>
 
 <style scoped>
+.menuItemSubArea{
+  display: none;
+}
 .menu{
   margin: 0;
   user-select: none;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
-
 .menuTitle{
   margin: 0 20px;
-  height: 40px;
-  font-size: 16px;
+  height: 60px;
+  font-size: 18px;
   color: #333333;
-  line-height: 40px;
-  border-bottom: 1px solid #E6E6E6;
+  line-height: 60px;
+  border-bottom: 1px solid #cccccc;
+}
+.menuTitleLogo{
+  background-repeat: no-repeat;
+  background-size: 18px;
+  background-position: center;
+  background-color: #758790;
+  width: 32px;
+  height: 32px;
+  float: left;
+  border-radius: 20px;
+  margin-top: 14px;
+  margin-right: 10px;
 }
 .menuTitleText{
   float: left;
 }
-.menuTitleAction {
-  text-align: right;
-  width: 40px;
-  height: 40px;
-  float: right;
-  cursor: pointer;
-  color: #4A90E2;
+.menuContent{
+  height: inherit;
+  overflow: auto;
 }
 .menuItem{
-  height: 40px;
+  height: 50px;
   cursor: pointer;
-  line-height: 40px;
+  line-height: 50px;
   font-size: 16px;
 }
 .menuItem_current{
@@ -163,28 +128,32 @@ const menuJson = getMenuJson();
   color: #999999;
 }
 .menuItemText{
-  margin: 0 30px 0 20px;
-  color: #666666;
+  margin: 0 30px 0 46px;
+  color: #999999;
   text-align: left;
 }
 .menuItemCount{
   margin-right: 20px;
   float: right;
-  width: 30px;
+  width: 20px;
   font-size: 1px;
   color: #999999;
-  line-height: 30px!important;
+  line-height: 40px!important;
   text-align: right;
 }
 .subItem {
-  height: 30px;
-  line-height: 30px;
+  height: 40px;
+  line-height: 40px;
   padding-left: 10px;
   font-size: 14px;
 }
-.subItemText{
-  margin: 0 30px 0 38px;
+.subItemIcon {
+  margin-left: 20px;
   color: #666666;
+}
+.subItemText{
+  margin: 0 30px 0 40px;
+  color: #333333;
   text-align: left;
 }
 </style>
