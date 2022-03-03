@@ -1814,11 +1814,12 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         //}
 
         //序号
+        var sequence = 1+this.view.json.pageSize*(this.view.currentPage-1)+this.idx;
+        this.data["$sequence"] = sequence;
         if (this.view.viewJson.isSequence==="yes"){
             this.sequenceTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
             this.sequenceTd.setStyle("width", "10px");
-            var s= 1+this.view.json.pageSize*(this.view.currentPage-1)+this.idx;
-            this.sequenceTd.set("text", s);
+            this.sequenceTd.set("text", sequence);
         }
 
         Object.each(this.view.entries, function(c, k){
