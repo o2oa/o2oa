@@ -1,6 +1,7 @@
 MWF.require("MWF.widget.UUID", null, false);
 MWF.xDesktop.requireApp("Template", "MForm", null, false);
 MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
+MWF.xApplication.IMV2.options.multitask = true; //多窗口
 MWF.xApplication.IMV2.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
@@ -15,13 +16,13 @@ MWF.xApplication.IMV2.Main = new Class({
 		"isResize": true,
 		"isMax": true,
 		"title": MWF.xApplication.IMV2.LP.title,
-		"conversationId": ""
+		"conversationId": "", // 传入的当前会话id
+		"mode": "default" // 展现模式：default onlyChat 。 onlyChat的模式需要传入conversationId 会打开这个会话的聊天窗口并隐藏左边的会话列表
 	},
 	onQueryLoad: function () {
 		this.lp = MWF.xApplication.IMV2.LP;
 		this.app = this;
 		this.conversationNodeItemList = [];
-		this.conversationId = this.options.conversationId || "";
 		this.messageList = [];
 		this.emojiList = [];
 		//添加87个表情
@@ -32,7 +33,19 @@ MWF.xApplication.IMV2.Main = new Class({
 			};
 			this.emojiList.push(emoji);
 		}
+		
+		if (!this.status) {
+			this.conversationId = this.options.conversationId || "";
+			this.mode = this.options.mode || "default";
+		} else {
+			this.conversationId = this.status.conversationId || "";
+			this.mode = this.status.mode || "default";
+		}
 
+	},
+	// 刷新的时候缓存数据
+	recordStatus: function(){
+		return {"conversationId": this.conversationId, "mode": this.mode};
 	},
 	onQueryClose: function () {
 		this.closeListening();
@@ -65,6 +78,15 @@ MWF.xApplication.IMV2.Main = new Class({
 				this.app.content = this.o2ImMainNode;
 				//启动监听
 				this.startListening();
+				// 处理窗口模式
+				if (this.mode === "onlyChat" && this.conversationId != "") {
+					this.o2ConversationListNode.setStyle("display", "none");
+					this.chatNode.setStyle("margin-left", "2px");
+				} else {
+					this.o2ConversationListNode.setStyle("display", "flex");
+					this.chatNode.setStyle("margin-left", "259px");
+				}
+
 				//获取会话列表
 				this.conversationNodeItemList = [];
 				o2.Actions.load("x_message_assemble_communicate").ImAction.myConversationList(function (json) {
