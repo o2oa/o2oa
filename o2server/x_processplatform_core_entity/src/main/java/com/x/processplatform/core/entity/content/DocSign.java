@@ -15,6 +15,10 @@ import org.apache.openjpa.persistence.jdbc.Strategy;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * 签批信息
+ * @author sword
+ */
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.DocSign.table, uniqueConstraints = {
@@ -27,6 +31,10 @@ public class DocSign extends SliceJpaObject {
 	private static final long serialVersionUID = -6321354875403866277L;
 
 	private static final String TABLE = PersistenceProperties.Content.DocSign.table;
+
+	public static final Integer STATUS_1 = 1;
+	public static final Integer STATUS_2 = 3;
+	public static final Integer STATUS_3 = 3;
 
 	@Override
 	public String getId() {
@@ -71,7 +79,16 @@ public class DocSign extends SliceJpaObject {
 	}
 
 	public DocSign() {
-		// nothing
+	}
+
+	public DocSign(Task task) {
+		this.setTitle(task.getTitle());
+		this.application = task.getApplication();
+		this.process = task.getProcess();
+		this.job = task.getJob();
+		this.activity = task.getActivity();
+		this.activityName = task.getActivityName();
+		this.person = task.getPerson();
 	}
 
 	public DocSignProperties getProperties() {
@@ -88,7 +105,6 @@ public class DocSign extends SliceJpaObject {
 	public static final String title_FIELDNAME = "title";
 	@FieldDescribe("标题.")
 	@Column(length = length_255B, name = ColumnNamePrefix + title_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String title;
 
@@ -107,30 +123,28 @@ public class DocSign extends SliceJpaObject {
 	private String process;
 
 	public static final String job_FIELDNAME = "job";
-	@FieldDescribe("任务.")
+	@FieldDescribe("工单ID.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + job_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + job_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String job;
 
-	public static final String work_FIELDNAME = "work";
-	@FieldDescribe("工作ID.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + work_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + work_FIELDNAME)
+	public static final String taskId_FIELDNAME = "taskId";
+	@FieldDescribe("待办ID.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + taskId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + taskId_FIELDNAME, unique = true)
 	@CheckPersist(allowEmpty = false)
-	private String work;
+	private String taskId;
 
 	public static final String activity_FIELDNAME = "activity";
 	@FieldDescribe("活动ID.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + activity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + activity_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String activity;
 
 	public static final String activityName_FIELDNAME = "activityName";
 	@FieldDescribe("活动名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + activityName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + activityName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityName;
 
@@ -205,14 +219,6 @@ public class DocSign extends SliceJpaObject {
 		this.job = job;
 	}
 
-	public String getWork() {
-		return work;
-	}
-
-	public void setWork(String work) {
-		this.work = work;
-	}
-
 	public String getActivity() {
 		return activity;
 	}
@@ -235,5 +241,29 @@ public class DocSign extends SliceJpaObject {
 
 	public void setCommitTime(Date commitTime) {
 		this.commitTime = commitTime;
+	}
+
+	public String getSignPicAttId() {
+		return signPicAttId;
+	}
+
+	public void setSignPicAttId(String signPicAttId) {
+		this.signPicAttId = signPicAttId;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getTaskId() {
+		return taskId;
+	}
+
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
 	}
 }
