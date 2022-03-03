@@ -1,6 +1,7 @@
 package com.x.processplatform.core.entity.content;
 
 import com.x.base.core.entity.JsonProperties;
+import com.x.base.core.project.annotation.FieldDescribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,10 @@ public class DocSignProperties extends JsonProperties {
 
     private String title;
 
+    @FieldDescribe("输入框列表.")
     private List<String> inputList = new ArrayList<>();
 
+    @FieldDescribe("涂鸦列表.")
     private List<String> scrawlList = new ArrayList<>();
 
     public Data getData() {
