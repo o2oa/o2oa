@@ -20,6 +20,13 @@
 					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.el_disabled}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="disabled" value="true" text{($.disabled)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="disabled" value="false" text{(!$.disabled)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
 		</table>
 		<div style="text-align: center; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #ccc; border-top: 1px solid #999;font-weight:bold;">{{$.lp.options}}</div>
 		<div style="border-bottom: 1px solid #cccccc">
