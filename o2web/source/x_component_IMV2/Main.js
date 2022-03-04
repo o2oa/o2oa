@@ -434,6 +434,10 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		this.lp = this.main.lp;
 		this.path = this.main.path;
 		this.options = this.main.options;
+		this.pageSize = 20;
+		this.page = 1;
+		this.isLoading = false; // 正在加载
+		this.hasMoreMsgData = false; // 是否还有更多的消息 翻页
 		this.load();
 	},
 	// 创建聊天窗口
@@ -487,8 +491,8 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 					}
 				}
 				//获取聊天信息
-				this.messageList = [];
-				this.loadMsgListByConvId(1, 20, this.data.id);
+				this.page = 1;
+				this.loadMsgListByPage();
 				var scrollFx = new Fx.Scroll(this.chatContentNode);
 				scrollFx.toBottom();
 				// 绑定事件
@@ -503,6 +507,23 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 								this.sendMsg();
 							}
 							e.stopPropagation();
+						}
+					}.bind(this)
+				});
+				// 绑定时间
+				this.chatContentNode.addEvents({
+					"scroll": function(e) {
+							//滑到顶部时触发下次数据加载
+						if (this.chatContentNode.scrollTop == 0) {
+							if (this.hasMoreMsgData) { // 有更多数据
+								// 间隔1秒 防止频繁
+								setTimeout(() => {
+											//将scrollTop置为10以便下次滑到顶部
+											this.chatContentNode.scrollTop = 10;
+											//加载数据
+											this.loadMoreMsgList();
+								}, 1000);
+							}
 						}
 					}.bind(this)
 				});
@@ -544,17 +565,52 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		}
 	},
 
+	// 加载更多
+	loadMoreMsgList: function() {
+		this.page += 1;
+		this.loadMsgListByPage();
+	},
+
 	//分页获取会话的消息列表数据
-	loadMsgListByConvId: function (page, size, convId) {
-		var data = { "conversationId": convId };
-		o2.Actions.load("x_message_assemble_communicate").ImAction.msgListByPaging(page, size, data, function (json) {
+	loadMsgListByPage: function () {
+		if (this.isLoading) {
+			console.log("正在加载中。。。。。。");
+			return ;
+		}
+		var data = { "conversationId": this.conversationId };
+		this.isLoading = true;
+		if (this.page === 1) {
+			this.messageList = [];
+		}
+		o2.Actions.load("x_message_assemble_communicate").ImAction.msgListByPaging(this.page, this.pageSize, data, function (json) {
 			var list = json.data;
-			for (var i = 0; i < list.length; i++) {
-				this.messageList.push(list[i]);
-				this._buildMsgNode(list[i], true);
+			var size = 0;
+			if (list && list.length > 0) {
+				size = list.length;
+					for (var i = 0; i < list.length; i++) {
+						if (this.page == 1) {
+							this.messageList.push(list[i]);
+						} else {
+							this.messageList.unshift(list[i]);
+						}
+						this._buildMsgNode(list[i], true);
+					} 
+			}
+			this.isLoading = false;
+			if (size < this.pageSize) { // 没有更多数据了
+				this.noMoreDataNode = new Element("div", {"class": "chat-no-more-data"}).inject(this.chatContentNode, "top");
+				this.noMoreDataNode.set("text", this.lp.msgLoadNoMoreData);
+				this.hasMoreMsgData = false;
+			} else {
+				if (this.noMoreDataNode) {
+					this.noMoreDataNode.destroy();
+					this.noMoreDataNode = null;
+				}
+				this.hasMoreMsgData = true;
 			}
 		}.bind(this), function (error) {
 			console.log(error);
+			this.isLoading = false;
 		}.bind(this), false);
 	},
 

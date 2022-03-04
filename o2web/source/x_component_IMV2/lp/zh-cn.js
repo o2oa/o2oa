@@ -29,6 +29,7 @@ MWF.xApplication.IMV2.LP = {
 
 	"msgMenuItemRevokeMemberMsg": "撤回成员消息",
 	"msgMenuItemRevokeMsg": "撤回",
+	"msgLoadNoMoreData": "没有更多数据了！",
 	
 	
 	"settingsClearMsg": "是否开启聊天消息清除功能：",
