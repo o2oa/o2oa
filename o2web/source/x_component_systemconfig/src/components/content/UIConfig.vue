@@ -1,11 +1,10 @@
 <template>
   <div>
-   222222 {{lp.systemInfor}} fff
+    uiConfig {{lp.uiConfig}}
   </div>
 </template>
 
 <script setup>
-//import {inject, ref} from 'vue';
 import {o2, lp, component} from '@o2oa/component';
 </script>
 

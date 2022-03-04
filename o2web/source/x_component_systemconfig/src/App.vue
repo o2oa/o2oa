@@ -6,8 +6,7 @@
 
     <div class="contentArea">
       <div class="content">
-        <div is="vue:contentComponent"></div>
-<!--        <SystemInfor />-->
+        <div v-if="!!contentType" is="vue:contentComponent"></div>
       </div>
     </div>
   </div>
@@ -15,30 +14,20 @@
 
 <script setup>
 import Menu from './components/Menu.vue';
-import { provide, ref, defineAsyncComponent } from 'vue';
+import { ref, defineAsyncComponent, computed } from 'vue';
 
-let contentType = ref("SystemInfor");
+let contentType = ref("");
 function loadContent(type){
-  console.log('loadContent: ' + type);
   contentType.value = type;
 }
-function contentComponent() {
-  // const comp = defineAsyncComponent(() =>
-  //     import('./components/content/'+contentType.value+'.vue')
-  // );
-  // debugger;
-  // //component(contentType.value, comp)
-  console.log('./components/content/' + contentType.value + '.vue');
-  return contentType.value;
-  //return import('./components/content/SystemInfor.vue')
-};
-
-
-// function contentComponent() {
-//   // const module = await import('./components/content/' + contentType.value + '.vue');
-//   // return module;
-//   return contentType.value;
-// }
+const contentComponent = computed(() => {
+  console.log(contentType.value)
+  const compName = contentType.value;
+  return defineAsyncComponent(() => import('./components/content/'+compName+'.vue') );
+  // console.log('./components/content/' + contentType.value + '.vue');
+  // return comp;
+  //return await import('./components/content/' + contentType.value + '.vue');
+});
 
 </script>
 

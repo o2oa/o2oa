@@ -45,14 +45,16 @@ import {o2, lp, component} from '@o2oa/component';
 
 const menuJson = ref(getMenuJson());
 let currentItem = ref(menuJson.value[0].children[0]);
+
+const emit = defineEmits(['changeItem']);
+
+emit("changeItem", currentItem.value.component);
 // setContentType(currentItem.value.component);
 
 // function subItemClass(item){
 //   if (item.expand) currentItem=item;
 //   return {'menuItem_current mainColor_color' : item.expand};
 // }
-
-const emit = defineEmits(['changeItem']);
 
 function selectedItem(item){
   currentItem.value = item;
