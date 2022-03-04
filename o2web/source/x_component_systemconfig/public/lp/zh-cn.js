@@ -1,5 +1,8 @@
 MWF.xApplication.systemconfig.LP = {
     "title": "系统配置",
+    "searchkey": "搜索设置项",
+
+
     "baseConfig": "基础配置",
     "systemInfor": "系统信息",
     "uiConfig": "界面配置",

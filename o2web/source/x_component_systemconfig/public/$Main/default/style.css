@@ -28,20 +28,8 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.o2icon-deploy:before {
-    content: "\e923";
-}
-.o2icon-apps:before {
-    content: "\e924";
-}
-.o2icon-sso:before {
-    content: "\f2ba";
-}
-.o2icon-password:before {
-    content: "\e91f";
-}
-.o2icon-icon:before {
-    content: "\e920";
+.o2icon-search:before {
+    content: "\e921";
 }
 .o2icon-wechat:before {
     content: "\e900";
@@ -136,12 +124,27 @@
 .o2icon-component:before {
     content: "\e91e";
 }
+.o2icon-password:before {
+    content: "\e91f";
+}
+.o2icon-icon:before {
+    content: "\e920";
+}
 .o2icon-log:before {
     content: "\e922";
+}
+.o2icon-deploy:before {
+    content: "\e923";
+}
+.o2icon-apps:before {
+    content: "\e924";
 }
 .o2icon-download:before {
     content: "\e95e";
 }
 .o2icon-upload:before {
     content: "\e961";
+}
+.o2icon-sso:before {
+    content: "\f2ba";
 }

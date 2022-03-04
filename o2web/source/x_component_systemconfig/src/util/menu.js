@@ -5,9 +5,10 @@ function getMenuJson(){
         {
             'title': lp.baseConfig,
             "icon": "config",
+            "expand": true,
             'children': [
-                {'title': lp.systemInfor, 'component': '', 'icon': 'config'},
-                {'title': lp.uiConfig, 'component': '', 'icon': 'ui'},
+                {'title': lp.systemInfor, 'component': 'SystemInfor', 'icon': 'config', "expand": true},
+                {'title': lp.uiConfig, 'component': 'UIConfig', 'icon': 'ui'},
                 {'title': lp.componentDeploy, 'component': '', 'icon': 'component'},
                 {'title': lp.resourceDeploy, 'component': '', 'icon': 'upload' },
                 {'title': lp.serviceDeploy, 'component': '', 'icon': 'deploy' }
