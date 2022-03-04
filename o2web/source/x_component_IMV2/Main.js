@@ -414,6 +414,8 @@ MWF.xApplication.IMV2.Main = new Class({
 		return retTime;
 
 	},
+
+
 	//yyyy-MM-dd
 	_formatDate: function (date) {
 		var month = date.getMonth() + 1;
@@ -824,13 +826,18 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		}
 	},
 	/**
-	 * 消息发送体
+	 * 消息接收对象  
+	 * 这里的方法名错了两者互换了无需理会
 	 * @param  msgBody 消息体
 	 * @param createPerson 消息人员
 	 * @param isTop 是否放在顶部
 	 * @param msg 消息对象
 	 */
 	 _buildSender: function (msgBody, createPerson, isTop, msg) {
+		if (!isTop) { 
+			// 添加消息时间
+			this._buildMsgTime(isTop, msg);
+		}
 		var receiverBodyNode = new Element("div", { "class": "chat-sender", "id": msg.id}).inject(this.chatContentNode, isTop ? "top" : "bottom");
 		this._addContextMenuEvent(receiverBodyNode, msg);
 		var avatarNode = new Element("div").inject(receiverBodyNode);
@@ -879,20 +886,28 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		} else {//text
 			new Element("span", { "text": msgBody.body }).inject(lastNode);
 		}
-
+		if (isTop) {
+			// 添加消息时间
+			this._buildMsgTime(isTop, msg);
+		}
 		if (!isTop) {
 			var scrollFx = new Fx.Scroll(this.chatContentNode);
 			scrollFx.toBottom();
 		}
 	},
 	/**
-	 * 消息接收体
+	 * 消息发送对象
+	 * 这里的方法名错了两者互换了无需理会
 	 * @param  msgBody 
 	 * @param createPerson 消息人员
 	 * @param isTop 是否放在顶部
 	 * @param msg 消息对象
 	 */
 	_buildReceiver: function (msgBody, createPerson, isTop, msg) {
+		if (!isTop) { 
+			// 添加消息时间
+			this._buildMsgTime(isTop, msg);
+		}
 		var receiverBodyNode = new Element("div", { "class": "chat-receiver", "id": msg.id}).inject(this.chatContentNode, isTop ? "top" : "bottom");
 		this._addContextMenuEvent(receiverBodyNode, msg);
 	
@@ -942,14 +957,91 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		} else {//text
 			new Element("span", { "text": msgBody.body }).inject(lastNode);
 		}
-
+		if (isTop) {
+			// 添加消息时间
+			this._buildMsgTime(isTop, msg);
+		}
 		if (!isTop) {
 			var scrollFx = new Fx.Scroll(this.chatContentNode);
 			scrollFx.toBottom();
 		}
 	},
 
+	// 消息体上是否显示消息时间
+	_buildMsgTime: function(isTop, msg) {
+		// var flag = false;
+		// for (let index = 0; index < this.messageList.length; index++) {
+		// 	const element = this.messageList[index];
+		// 	if (element.id && element.id === msg.id) {
+		// 		if (index > 0) {
+		// 			const before = this.messageList[index-1];
+		// 			var thisTime = o2.common.toDate(msg.createTime);
+		// 			var beforeTime = o2.common.toDate(before.createTime);
+		// 			var minu = ( beforeTime.getTime() - thisTime.getTime() ) / 1000 / 60 ;
+		// 			if (minu > 1) { // 超过1分钟
+		// 				flag = true;
+		// 			}
+		// 		} else {
+		// 			flag = true;
+		// 		}
+		// 		break
+		// 	}
+		// }
+		// if (flag ){
+		// 	var timeNode = new Element("div", { "class": "chat-msg-time"}).inject(this.chatContentNode, isTop ? "top" : "bottom");
+		// 	timeNode.set("text", this._msgShowTime(o2.common.toDate(msg.createTime)))
+		// }
+		
+		var timeNode = new Element("div", { "class": "chat-msg-time"}).inject(this.chatContentNode, isTop ? "top" : "bottom");
+		timeNode.set("text", this._msgShowTime(o2.common.toDate(msg.createTime)))
+	},
 
+	// 消息时间
+	_msgShowTime: function (date) {
+		var day = date.getDate();
+		var monthIndex = date.getMonth();
+		var year = date.getFullYear();
+		var time = date.getTime();
+		var today = new Date();
+		var todayDay = today.getDate();
+		var todayMonthIndex = today.getMonth();
+		var todayYear = today.getFullYear();
+		var todayTime = today.getTime();
+
+		var retTime = "";
+		//同一天
+		if (day === todayDay && monthIndex === todayMonthIndex && year === todayYear) {
+			var hour =  date.getHours() > 9 ? ""+date.getHours() : "0" + date.getHours();
+			var minute =  date.getMinutes() > 9 ? ""+date.getMinutes() : "0" + date.getMinutes();
+			retTime = hour + ":" +minute;
+			return retTime;
+		}
+		var dates = parseInt(time / 86400000);
+		var todaydates = parseInt(todayTime / 86400000);
+		if (todaydates > dates) {
+			var days = (todaydates - dates);
+			if (days == 1) {
+				var hour =  date.getHours() > 9 ? ""+date.getHours() : "0" + date.getHours();
+				var minute =  date.getMinutes() > 9 ? ""+date.getMinutes() : "0" + date.getMinutes();
+				retTime = this.lp.yesterday + " " +  hour + ":" +minute;
+			} else if (days == 2) {
+				var hour =  date.getHours() > 9 ? ""+date.getHours() : "0" + date.getHours();
+				var minute =  date.getMinutes() > 9 ? ""+date.getMinutes() : "0" + date.getMinutes();
+				retTime = this.lp.beforeYesterday + " " +  hour + ":" +minute;
+			}else {
+				var month = date.getMonth() + 1;
+				var day = date.getDate();
+				month = (month.toString().length == 1) ? ("0" + month) : month;
+				day = (day.toString().length == 1) ? ("0" + day) : day;
+				var hour =  date.getHours() > 9 ? ""+date.getHours() : "0" + date.getHours();
+				var minute =  date.getMinutes() > 9 ? ""+date.getMinutes() : "0" + date.getMinutes();
+				retTime = month + '-' + day + " " +  hour + ":" +minute;
+			}
+		}
+
+		return retTime;
+
+	},
 	// 绑定右键事件
 	_addContextMenuEvent: function(receiverBodyNode, msg) {
 		receiverBodyNode.store("msg", msg);
