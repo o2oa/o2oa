@@ -134,7 +134,10 @@ MWF.xApplication.IMV2.Main = new Class({
 		//查询会话数据
 		this._checkConversationMessage();
 		//查询聊天数据
-		this._checkNewMessage();
+		if (this.chatNodeBox) {
+			this.chatNodeBox._checkNewMessage();
+		}
+		
 	},
 	//加载会话列表
 	loadConversationList: function (list) {
@@ -147,19 +150,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			}
 		}
 	},
-	//分页获取会话的消息列表数据
-	loadMsgListByConvId: function (page, size, convId) {
-		var data = { "conversationId": convId };
-		o2.Actions.load("x_message_assemble_communicate").ImAction.msgListByPaging(page, size, data, function (json) {
-			var list = json.data;
-			for (var i = 0; i < list.length; i++) {
-				this.messageList.push(list[i]);
-				this._buildMsgNode(list[i], true);
-			}
-		}.bind(this), function (error) {
-			console.log(error);
-		}.bind(this), false);
-	},
+	
 	// 点击设置按钮
 	tapOpenSettings: function() {
 		this.openSettingsDialog();
@@ -220,209 +211,11 @@ MWF.xApplication.IMV2.Main = new Class({
 	//点击会话
 	tapConv: function (conv) {
 		this._setCheckNode(conv);
-		var url = this.path + this.options.style + "/chat.html";
-		var data = { "convName": conv.title, "lp": this.lp };
-		this.conversationId = conv.id;
-		this.chatNode.empty();
-		if (this.emojiBoxNode) {
-			this.emojiBoxNode.destroy();
-			this.emojiBoxNode = null;
-		}
-		this.chatNode.loadHtml(url, { "bind": data, "module": this }, function () {
-			var me = layout.session.user.distinguishedName;
-			if (conv.type === "group" && me === conv.adminPerson) {
-				this.chatTitleMoreBtnNode.setStyle("display", "block");
-				this.chatTitleMoreBtnNode.addEvents({
-					"click": function (e) {
-						var display = this.chatTitleMoreMenuNode.getStyle("display");
-						if (display === "none") {
-							this.chatTitleMoreMenuNode.setStyle("display", "block");
-							this.chatTitleMoreMenuItem1Node.setStyle("display", "block");
-							this.chatTitleMoreMenuItem2Node.setStyle("display", "block");
-							if (this.imConfig.enableClearMsg) {
-								this.chatTitleMoreMenuItem3Node.setStyle("display", "block");
-							} else {
-								this.chatTitleMoreMenuItem3Node.setStyle("display", "none");
-							}
-						} else {
-							this.chatTitleMoreMenuNode.setStyle("display", "none");
-						}
-					}.bind(this)
-				});
-			} else if (conv.type !== "group") {
-				if (this.imConfig.enableClearMsg) {
-					this.chatTitleMoreBtnNode.setStyle("display", "block");
-					this.chatTitleMoreBtnNode.addEvents({
-						"click": function (e) {
-							var display = this.chatTitleMoreMenuNode.getStyle("display");
-							if (display === "none") {
-								this.chatTitleMoreMenuNode.setStyle("display", "block");
-								this.chatTitleMoreMenuItem1Node.setStyle("display", "none");
-								this.chatTitleMoreMenuItem2Node.setStyle("display", "none");
-								this.chatTitleMoreMenuItem3Node.setStyle("display", "block");
-							} else {
-								this.chatTitleMoreMenuNode.setStyle("display", "none");
-							}
-						}.bind(this)
-					});
-				} else {
-					this.chatTitleMoreBtnNode.setStyle("display", "none");
-				}
-			}
-			//获取聊天信息
-			this.messageList = [];
-			this.loadMsgListByConvId(1, 20, conv.id);
-			var scrollFx = new Fx.Scroll(this.chatContentNode);
-			scrollFx.toBottom();
-			// 绑定事件
-			this.chatBottomAreaTextareaNode.addEvents({
-				"keyup": function (e) {
-					// debugger;
-					if (e.code === 13) {
-						if (e.control === true) {
-							var text = this.chatBottomAreaTextareaNode.value;
-							this.chatBottomAreaTextareaNode.value = text + "\n";
-						} else {
-							this.sendMsg();
-						}
-						e.stopPropagation();
-					}
-				}.bind(this)
-			});
-		}.bind(this));
+
+		// new ChatNodeBox
+		this.chatNodeBox = new MWF.xApplication.IMV2.ChatNodeBox(conv, this);
 	},
-	//修改群名
-	tapUpdateConvTitle: function () {
-		this.chatTitleMoreMenuNode.setStyle("display", "none");
-		var title = "";
-		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
-			var c = this.conversationNodeItemList[i];
-			if (this.conversationId == c.data.id) {
-				title = c.data.title;
-			}
-		}
-		var form = new MWF.xApplication.IMV2.UpdateConvTitleForm(this, {}, {"defaultValue": title}, { app: this.app });
-		form.create();
-	},
-	//修改群成员
-	tapUpdateConvMembers: function () {
-		this.chatTitleMoreMenuNode.setStyle("display", "none");
-		var members = [];
-		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
-			var c = this.conversationNodeItemList[i];
-			if (this.conversationId == c.data.id) {
-				members = c.data.personList;
-			}
-		}
-		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": this.lp.modifyMember, "personCount": 0, "personSelected": members, "isUpdateMember": true }, { app: this.app });
-		form.create()
-	},
-	// 点击菜单 清空聊天记录
-	tapClearMsg: function(e) {
-		var _self = this;
-		MWF.xDesktop.confirm("info", this.chatTitleNode, this.lp.alert, this.lp.messageClearAllMsgAlert, 400, 150, function() {
-			o2.Actions.load("x_message_assemble_communicate").ImAction.clearConversationMsg(_self.conversationId, function (json) {
-				_self._reclickConv();
-			}, function (error) {
-				console.log(error);
-				_self.app.notice(error, "error", _self.app.content);
-			});
-			this.close();
-		}, function(){
-			this.close();
-		}, null, null, "o2");
-	},
-	_reclickConv: function() {
-		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
-			var c = this.conversationNodeItemList[i];
-			if (this.conversationId == c.data.id) {
-				this.tapConv(c.data);
-			}
-		}
-	},
-	//点击发送消息
-	sendMsg: function () {
-		var text = this.chatBottomAreaTextareaNode.value;
-		if (text) {
-			this.chatBottomAreaTextareaNode.value = "";
-			this._newAndSendTextMsg(text, "text");
-		} else {
-			console.log(this.lp.noMessage);
-			this.app.notice(this.lp.noMessage, "error", this.app.content);
-		}
-	},
-	//点击表情按钮
-	showEmojiBox: function () {
-		if (!this.emojiBoxNode) {
-			this.emojiBoxNode = new Element("div", { "class": "chat-emoji-box" }).inject(this.chatNode);
-			var _self = this;
-			for (var i = 0; i < this.emojiList.length; i++) {
-				var emoji = this.emojiList[i];
-				var emojiNode = new Element("img", { "src": emoji.path, "class": "chat-emoji-img" }).inject(this.emojiBoxNode);
-				emojiNode.addEvents({
-					"mousedown": function (ev) {
-						_self.sendEmojiMsg(this.emoji);
-						_self.hideEmojiBox();
-					}.bind({ emoji: emoji })
-				});
-			}
-		}
-		this.emojiBoxNode.setStyle("display", "block");
-		this.hideFun = this.hideEmojiBox.bind(this);
-		document.body.addEvent("mousedown", this.hideFun);
-	},
-	// 点击发送文件消息
-	showChooseFile: function () {
-		if (!this.uploadFileAreaNode) {
-			this.createUploadFileNode();
-		}
-		this.fileUploadNode.click();
-	},
-	//创建文件选择框
-	createUploadFileNode: function () {
-		this.uploadFileAreaNode = new Element("div");
-		var html = "<input name=\"file\" type=\"file\" multiple/>";
-		this.uploadFileAreaNode.set("html", html);
-		this.fileUploadNode = this.uploadFileAreaNode.getFirst();
-		this.fileUploadNode.addEvent("change", function () {
-			var files = this.fileUploadNode.files;
-			if (files.length) {
-				var file = files.item(0);
-				var formData = new FormData();
-				formData.append('file', file);
-				formData.append('fileName', file.name);
-				var fileExt = file.name.substring(file.name.lastIndexOf("."));
-				// 图片消息
-				var type = "file"
-				if (fileExt.toLowerCase() == ".bmp" || fileExt.toLowerCase() == ".jpeg"
-					|| fileExt.toLowerCase() == ".png" || fileExt.toLowerCase() == ".jpg") {
-					type = "image"
-				} else { // 文件消息
-					type = "file"
-				}
-				//上传文件
-				o2.Actions.load("x_message_assemble_communicate").ImAction.uploadFile(this.conversationId, type, formData, "{}", function (json) {
-					if (json.data) {
-						var fileId = json.data.id
-						var fileExtension = json.data.fileExtension
-						var fileName = json.data.fileName
-						this._newImageOrFileMsgAndSend(type, fileId, fileName, fileExtension)
-					}
-				}.bind(this), function (error) {
-					console.log(error);
-				}.bind(this))
-			}
-		}.bind(this));
-	},
-	hideEmojiBox: function () {
-		//关闭emojiBoxNode
-		this.emojiBoxNode.setStyle("display", "none");
-		document.body.removeEvent("mousedown", this.hideFun);
-	},
-	//发送表情消息
-	sendEmojiMsg: function (emoji) {
-		this._newAndSendTextMsg(emoji.key, "emoji");
-	},
+	
 	//点击创建单聊按钮
 	tapCreateSingleConv: function () {
 		// var form = new MWF.xApplication.IMV2.SingleForm(this, {}, {}, { app: this.app });
@@ -522,65 +315,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			}
 		}
 	},
-	//创建图片或文件消息
-	_newImageOrFileMsgAndSend: function (type, fileId, fileName, fileExt) {
-		var distinguishedName = layout.session.user.distinguishedName;
-		var time = this._currentTime();
-		var body = {
-			"body": this.lp.file,
-			"type": type,
-			"fileId": fileId,
-			"fileExtension": fileExt,
-			"fileName": fileName
-		};
-		var bodyJson = JSON.stringify(body);
-		var uuid = (new MWF.widget.UUID).toString();
-		var message = {
-			"id": uuid,
-			"conversationId": this.conversationId,
-			"body": bodyJson,
-			"createPerson": distinguishedName,
-			"createTime": time,
-			"sendStatus": 1
-		};
-		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(message,
-			function (json) {
-				console.log(this.lp.sendSuccess);
-			}.bind(this),
-			function (error) {
-				console.log(error);
-			}.bind(this));
-		this.messageList.push(message);
-		this._buildReceiver(body, distinguishedName, false, message);
-		this._refreshConvMessage(message);
-	},
-	//创建文本消息 并发送
-	_newAndSendTextMsg: function (text, type) {
-		var distinguishedName = layout.session.user.distinguishedName;
-		var time = this._currentTime();
-		var body = { "body": text, "type": type };
-		var bodyJson = JSON.stringify(body);
-		var uuid = (new MWF.widget.UUID).toString();
-		var textMessage = {
-			"id": uuid,
-			"conversationId": this.conversationId,
-			"body": bodyJson,
-			"createPerson": distinguishedName,
-			"createTime": time,
-			"sendStatus": 1
-		};
-		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(textMessage,
-			function (json) {
-				//data = json.data;
-				console.log(this.lp.sendSuccess);
-			}.bind(this),
-			function (error) {
-				console.log(error);
-			}.bind(this));
-		this.messageList.push(textMessage);
-		this._buildReceiver(body, distinguishedName, false, textMessage);
-		this._refreshConvMessage(textMessage);
-	},
+	
 	//刷新会话Item里面的最后消息内容
 	_refreshConvMessage: function (msg) {
 		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
@@ -620,6 +355,161 @@ MWF.xApplication.IMV2.Main = new Class({
 			}
 		}.bind(this));
 	},
+
+	//用户头像
+	_getIcon: function (id) {
+		var orgAction = MWF.Actions.get("x_organization_assemble_control")
+		var url = (id) ? orgAction.getPersonIcon(id) : "../x_component_IMV2/$Main/default/icons/group.png";
+		return url + "?" + (new Date().getTime());
+	},
+	
+	//输出特殊的时间格式
+	_friendlyTime: function (date) {
+		var day = date.getDate();
+		var monthIndex = date.getMonth();
+		var year = date.getFullYear();
+		var time = date.getTime();
+		var today = new Date();
+		var todayDay = today.getDate();
+		var todayMonthIndex = today.getMonth();
+		var todayYear = today.getFullYear();
+		var todayTime = today.getTime();
+
+		var retTime = "";
+		//同一天
+		if (day === todayDay && monthIndex === todayMonthIndex && year === todayYear) {
+			var hour = 0;
+			if (todayTime > time) {
+				hour = parseInt((todayTime - time) / 3600000);
+				if (hour == 0) {
+					retTime = Math.max(parseInt((todayTime - time) / 60000), 1) + this.lp.minutesBefore
+				} else {
+					retTime = hour + this.lp.hoursBefore
+				}
+
+			}
+			return retTime;
+		}
+		var dates = parseInt(time / 86400000);
+		var todaydates = parseInt(todayTime / 86400000);
+		if (todaydates > dates) {
+			var days = (todaydates - dates);
+			if (days == 1) {
+				retTime = this.lp.yesterday;
+			} else if (days == 2) {
+				retTime = this.lp.beforeYesterday;
+			} else if (days > 2 && days < 31) {
+				retTime = days + this.lp.daysBefore;
+			} else if (days >= 31 && days <= 2 * 31) {
+				retTime = this.lp.monthAgo;
+			} else if (days > 2 * 31 && days <= 3 * 31) {
+				retTime = this.lp.towMonthAgo;
+			} else if (days > 3 * 31 && days <= 4 * 31) {
+				retTime = this.lp.threeMonthAgo;
+			} else {
+				retTime = this._formatDate(date);
+			}
+		}
+
+		return retTime;
+
+	},
+	//yyyy-MM-dd
+	_formatDate: function (date) {
+		var month = date.getMonth() + 1;
+		var day = date.getDate();
+		month = (month.toString().length == 1) ? ("0" + month) : month;
+		day = (day.toString().length == 1) ? ("0" + day) : day;
+		return date.getFullYear() + '-' + month + '-' + day;
+	}
+
+});
+
+// 聊天窗口
+MWF.xApplication.IMV2.ChatNodeBox = new Class({
+	initialize: function (data, main) {
+		this.data = data;
+		this.main = main;
+		this.container = this.main.chatNode;
+		this.lp = this.main.lp;
+		this.path = this.main.path;
+		this.options = this.main.options;
+		this.load();
+	},
+	// 创建聊天窗口
+	load: function() {
+			var url = this.path + this.options.style + "/chat.html";
+			this.conversationId = this.data.id;
+			this.container.empty();
+			if (this.emojiBoxNode) {
+				this.emojiBoxNode.destroy();
+				this.emojiBoxNode = null;
+			}
+			this.container.loadHtml(url, { "bind": { "convName": this.data.title, "lp": this.lp }, "module": this }, function () {
+				var me = layout.session.user.distinguishedName;
+				if (this.data.type === "group" && me === this.data.adminPerson) {
+					this.chatTitleMoreBtnNode.setStyle("display", "block");
+					this.chatTitleMoreBtnNode.addEvents({
+						"click": function (e) {
+							var display = this.chatTitleMoreMenuNode.getStyle("display");
+							if (display === "none") {
+								this.chatTitleMoreMenuNode.setStyle("display", "block");
+								this.chatTitleMoreMenuItem1Node.setStyle("display", "block");
+								this.chatTitleMoreMenuItem2Node.setStyle("display", "block");
+								if (this.main.imConfig.enableClearMsg) {
+									this.chatTitleMoreMenuItem3Node.setStyle("display", "block");
+								} else {
+									this.chatTitleMoreMenuItem3Node.setStyle("display", "none");
+								}
+							} else {
+								this.chatTitleMoreMenuNode.setStyle("display", "none");
+							}
+						}.bind(this)
+					});
+				} else if (this.data.type !== "group") {
+					if (this.main.imConfig.enableClearMsg) {
+						this.chatTitleMoreBtnNode.setStyle("display", "block");
+						this.chatTitleMoreBtnNode.addEvents({
+							"click": function (e) {
+								var display = this.chatTitleMoreMenuNode.getStyle("display");
+								if (display === "none") {
+									this.chatTitleMoreMenuNode.setStyle("display", "block");
+									this.chatTitleMoreMenuItem1Node.setStyle("display", "none");
+									this.chatTitleMoreMenuItem2Node.setStyle("display", "none");
+									this.chatTitleMoreMenuItem3Node.setStyle("display", "block");
+								} else {
+									this.chatTitleMoreMenuNode.setStyle("display", "none");
+								}
+							}.bind(this)
+						});
+					} else {
+						this.chatTitleMoreBtnNode.setStyle("display", "none");
+					}
+				}
+				//获取聊天信息
+				this.messageList = [];
+				this.loadMsgListByConvId(1, 20, this.data.id);
+				var scrollFx = new Fx.Scroll(this.chatContentNode);
+				scrollFx.toBottom();
+				// 绑定事件
+				this.chatBottomAreaTextareaNode.addEvents({
+					"keyup": function (e) {
+						// debugger;
+						if (e.code === 13) {
+							if (e.control === true) {
+								var text = this.chatBottomAreaTextareaNode.value;
+								this.chatBottomAreaTextareaNode.value = text + "\n";
+							} else {
+								this.sendMsg();
+							}
+							e.stopPropagation();
+						}
+					}.bind(this)
+				});
+			}.bind(this));
+
+	},
+
 	//检查是否有新消息
 	_checkNewMessage: function () {
 		if (this.conversationId && this.conversationId != "") {//是否有会话窗口
@@ -652,6 +542,218 @@ MWF.xApplication.IMV2.Main = new Class({
 			}.bind(this), false);
 		}
 	},
+
+	//分页获取会话的消息列表数据
+	loadMsgListByConvId: function (page, size, convId) {
+		var data = { "conversationId": convId };
+		o2.Actions.load("x_message_assemble_communicate").ImAction.msgListByPaging(page, size, data, function (json) {
+			var list = json.data;
+			for (var i = 0; i < list.length; i++) {
+				this.messageList.push(list[i]);
+				this._buildMsgNode(list[i], true);
+			}
+		}.bind(this), function (error) {
+			console.log(error);
+		}.bind(this), false);
+	},
+
+
+	//修改群名
+	tapUpdateConvTitle: function () {
+		this.chatTitleMoreMenuNode.setStyle("display", "none");
+		var title = "";
+		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+			var c = this.conversationNodeItemList[i];
+			if (this.conversationId == c.data.id) {
+				title = c.data.title;
+			}
+		}
+		var form = new MWF.xApplication.IMV2.UpdateConvTitleForm(this.main, {}, {"defaultValue": title}, { app: this.main.app });
+		form.create();
+	},
+	//修改群成员
+	tapUpdateConvMembers: function () {
+		this.chatTitleMoreMenuNode.setStyle("display", "none");
+		var members = [];
+		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+			var c = this.conversationNodeItemList[i];
+			if (this.conversationId == c.data.id) {
+				members = c.data.personList;
+			}
+		}
+		var form = new MWF.xApplication.IMV2.CreateConversationForm(this.main, {}, { "title": this.lp.modifyMember, "personCount": 0, "personSelected": members, "isUpdateMember": true }, { app: this.main.app });
+		form.create()
+	},
+	// 点击菜单 清空聊天记录
+	tapClearMsg: function(e) {
+		var _self = this;
+		MWF.xDesktop.confirm("info", this.chatTitleNode, this.lp.alert, this.lp.messageClearAllMsgAlert, 400, 150, function() {
+			o2.Actions.load("x_message_assemble_communicate").ImAction.clearConversationMsg(_self.conversationId, function (json) {
+				_self._reclickConv();
+			}, function (error) {
+				console.log(error);
+				_self.app.notice(error, "error", _self.app.content);
+			});
+			this.close();
+		}, function(){
+			this.close();
+		}, null, null, "o2");
+	},
+
+		//点击表情按钮
+		showEmojiBox: function () {
+			if (!this.emojiBoxNode) {
+				this.emojiBoxNode = new Element("div", { "class": "chat-emoji-box" }).inject(this.chatNode);
+				var _self = this;
+				for (var i = 0; i < this.main.emojiList.length; i++) {
+					var emoji = this.main.emojiList[i];
+					var emojiNode = new Element("img", { "src": emoji.path, "class": "chat-emoji-img" }).inject(this.emojiBoxNode);
+					emojiNode.addEvents({
+						"mousedown": function (ev) {
+							_self.sendEmojiMsg(this.emoji);
+							_self.hideEmojiBox();
+						}.bind({ emoji: emoji })
+					});
+				}
+			}
+			this.emojiBoxNode.setStyle("display", "block");
+			this.hideFun = this.hideEmojiBox.bind(this);
+			document.body.addEvent("mousedown", this.hideFun);
+		},
+
+	_reclickConv: function() {
+		for (var i = 0; i < this.main.conversationNodeItemList.length; i++) {
+			var c = this.main.conversationNodeItemList[i];
+			if (this.conversationId == c.data.id) {
+				this.main.tapConv(c.data);
+			}
+		}
+	},
+
+	//创建图片或文件消息
+	_newImageOrFileMsgAndSend: function (type, fileId, fileName, fileExt) {
+		var distinguishedName = layout.session.user.distinguishedName;
+		var time = this._currentTime();
+		var body = {
+			"body": this.lp.file,
+			"type": type,
+			"fileId": fileId,
+			"fileExtension": fileExt,
+			"fileName": fileName
+		};
+		var bodyJson = JSON.stringify(body);
+		var uuid = (new MWF.widget.UUID).toString();
+		var message = {
+			"id": uuid,
+			"conversationId": this.conversationId,
+			"body": bodyJson,
+			"createPerson": distinguishedName,
+			"createTime": time,
+			"sendStatus": 1
+		};
+		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(message,
+			function (json) {
+				console.log(this.lp.sendSuccess);
+			}.bind(this),
+			function (error) {
+				console.log(error);
+			}.bind(this));
+		this.messageList.push(message);
+		this._buildReceiver(body, distinguishedName, false, message);
+		this.main._refreshConvMessage(message);
+	},
+	//创建文本消息 并发送
+	_newAndSendTextMsg: function (text, type) {
+		var distinguishedName = layout.session.user.distinguishedName;
+		var time = this._currentTime();
+		var body = { "body": text, "type": type };
+		var bodyJson = JSON.stringify(body);
+		var uuid = (new MWF.widget.UUID).toString();
+		var textMessage = {
+			"id": uuid,
+			"conversationId": this.conversationId,
+			"body": bodyJson,
+			"createPerson": distinguishedName,
+			"createTime": time,
+			"sendStatus": 1
+		};
+		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(textMessage,
+			function (json) {
+				//data = json.data;
+				console.log(this.lp.sendSuccess);
+			}.bind(this),
+			function (error) {
+				console.log(error);
+			}.bind(this));
+		this.messageList.push(textMessage);
+		this._buildReceiver(body, distinguishedName, false, textMessage);
+		this.main._refreshConvMessage(textMessage);
+	},
+	//点击发送消息
+	sendMsg: function () {
+		var text = this.chatBottomAreaTextareaNode.value;
+		if (text) {
+			this.chatBottomAreaTextareaNode.value = "";
+			this._newAndSendTextMsg(text, "text");
+		} else {
+			console.log(this.lp.noMessage);
+			this.app.notice(this.lp.noMessage, "error", this.app.content);
+		}
+	},
+
+	// 点击发送文件消息
+	showChooseFile: function () {
+		if (!this.uploadFileAreaNode) {
+			this.createUploadFileNode();
+		}
+		this.fileUploadNode.click();
+	},
+	//创建文件选择框
+	createUploadFileNode: function () {
+		this.uploadFileAreaNode = new Element("div");
+		var html = "<input name=\"file\" type=\"file\" multiple/>";
+		this.uploadFileAreaNode.set("html", html);
+		this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+		this.fileUploadNode.addEvent("change", function () {
+			var files = this.fileUploadNode.files;
+			if (files.length) {
+				var file = files.item(0);
+				var formData = new FormData();
+				formData.append('file', file);
+				formData.append('fileName', file.name);
+				var fileExt = file.name.substring(file.name.lastIndexOf("."));
+				// 图片消息
+				var type = "file"
+				if (fileExt.toLowerCase() == ".bmp" || fileExt.toLowerCase() == ".jpeg"
+					|| fileExt.toLowerCase() == ".png" || fileExt.toLowerCase() == ".jpg") {
+					type = "image"
+				} else { // 文件消息
+					type = "file"
+				}
+				//上传文件
+				o2.Actions.load("x_message_assemble_communicate").ImAction.uploadFile(this.conversationId, type, formData, "{}", function (json) {
+					if (json.data) {
+						var fileId = json.data.id
+						var fileExtension = json.data.fileExtension
+						var fileName = json.data.fileName
+						this._newImageOrFileMsgAndSend(type, fileId, fileName, fileExtension)
+					}
+				}.bind(this), function (error) {
+					console.log(error);
+				}.bind(this))
+			}
+		}.bind(this));
+	},
+	hideEmojiBox: function () {
+		//关闭emojiBoxNode
+		this.emojiBoxNode.setStyle("display", "none");
+		document.body.removeEvent("mousedown", this.hideFun);
+	},
+	//发送表情消息
+	sendEmojiMsg: function (emoji) {
+		this._newAndSendTextMsg(emoji.key, "emoji");
+	},
+
 	//创建消息html节点
 	_buildMsgNode: function (msg, isTop) {
 		var createPerson = msg.createPerson;
@@ -675,7 +777,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		var receiverBodyNode = new Element("div", { "class": "chat-sender", "id": msg.id}).inject(this.chatContentNode, isTop ? "top" : "bottom");
 		this._addContextMenuEvent(receiverBodyNode, msg);
 		var avatarNode = new Element("div").inject(receiverBodyNode);
-		var avatarUrl = this._getIcon(createPerson);
+		var avatarUrl = this.main._getIcon(createPerson);
 		var name = createPerson;
 		if (createPerson.indexOf("@") != -1) {
 			name = name.substring(0, createPerson.indexOf("@"));
@@ -687,9 +789,9 @@ MWF.xApplication.IMV2.Main = new Class({
 		//text
 		if (msgBody.type == "emoji") { // 表情
 			var img = "";
-			for (var i = 0; i < this.emojiList.length; i++) {
-				if (msgBody.body == this.emojiList[i].key) {
-					img = this.emojiList[i].path;
+			for (var i = 0; i < this.main.emojiList.length; i++) {
+				if (msgBody.body == this.main.emojiList[i].key) {
+					img = this.main.emojiList[i].path;
 				}
 			}
 			new Element("img", { "src": img, "class": "chat-content-emoji" }).inject(lastNode);
@@ -738,7 +840,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		this._addContextMenuEvent(receiverBodyNode, msg);
 	
 		var avatarNode = new Element("div").inject(receiverBodyNode);
-		var avatarUrl = this._getIcon(createPerson);
+		var avatarUrl = this.main._getIcon(createPerson);
 		var name = createPerson;
 		if (createPerson.indexOf("@") != -1) {
 			name = name.substring(0, createPerson.indexOf("@"));
@@ -750,9 +852,9 @@ MWF.xApplication.IMV2.Main = new Class({
 
 		if (msgBody.type == "emoji") { // 表情
 			var img = "";
-			for (var i = 0; i < this.emojiList.length; i++) {
-				if (msgBody.body == this.emojiList[i].key) {
-					img = this.emojiList[i].path;
+			for (var i = 0; i < this.main.emojiList.length; i++) {
+				if (msgBody.body == this.main.emojiList[i].key) {
+					img = this.main.emojiList[i].path;
 				}
 			}
 			new Element("img", { "src": img, "class": "chat-content-emoji" }).inject(lastNode);
@@ -789,6 +891,8 @@ MWF.xApplication.IMV2.Main = new Class({
 			scrollFx.toBottom();
 		}
 	},
+
+
 	// 绑定右键事件
 	_addContextMenuEvent: function(receiverBodyNode, msg) {
 		receiverBodyNode.store("msg", msg);
@@ -809,7 +913,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		var distinguishedName = layout.session.user.distinguishedName;
 		var list = []; // 菜单列表
 		
-		if (this.imConfig.enableRevokeMsg) { // 是否启用撤回消息
+		if (this.main.imConfig.enableRevokeMsg) { // 是否启用撤回消息
 			if (createPerson != distinguishedName) {
 				// 判断是否群主
 				var isGroupAdmin = false;
@@ -834,7 +938,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		}
 		if (list.length > 0) {
 			// 生成菜单
-			this.menuNode = new Element("ul", {"class": "chat-menulist", "styles": { "position": "fixed", "z-index": "9999", "top": menutop, "left": menuleft } }).inject(this.chatNode);
+			this.menuNode = new Element("ul", {"class": "chat-menulist", "styles": { "position": "fixed", "z-index": "9999", "top": menutop, "left": menuleft } }).inject(this.container);
 			for (let index = 0; index < list.length; index++) {
 				const element = list[index];
 				var menuItemNode = new Element("li", {"text": element.text}).inject(this.menuNode);
@@ -856,10 +960,10 @@ MWF.xApplication.IMV2.Main = new Class({
 					this.menuNode = null;
 				}
 				e.preventDefault();
-				if( this.closeMsgContextMenuFun )this.app.content.removeEvent( "click", this.closeMsgContextMenuFun );
+				if( this.closeMsgContextMenuFun )this.main.app.content.removeEvent( "click", this.closeMsgContextMenuFun );
 			}.bind(this);
 	
-			this.app.content.addEvents({
+			this.main.app.content.addEvents({
 				"click": this.closeMsgContextMenuFun
 			});
 		}
@@ -905,12 +1009,6 @@ MWF.xApplication.IMV2.Main = new Class({
 	_getBaiduMapUrl: function (lat, longt, address, content) {
 		var url = "https://api.map.baidu.com/marker?location=" + lat + "," + longt + "&title=" + address + "&content=" + content + "&output=html&src=net.o2oa.map";
 		return url;
-	},
-	//用户头像
-	_getIcon: function (id) {
-		var orgAction = MWF.Actions.get("x_organization_assemble_control")
-		var url = (id) ? orgAction.getPersonIcon(id) : "../x_component_IMV2/$Main/default/icons/group.png";
-		return url + "?" + (new Date().getTime());
 	},
 	// 文件类型icon图
 	_getFileIcon: function (ext) {
@@ -982,65 +1080,6 @@ MWF.xApplication.IMV2.Main = new Class({
 			return "icon_file_unkown.png";
 		}
 	},
-	//输出特殊的时间格式
-	_friendlyTime: function (date) {
-		var day = date.getDate();
-		var monthIndex = date.getMonth();
-		var year = date.getFullYear();
-		var time = date.getTime();
-		var today = new Date();
-		var todayDay = today.getDate();
-		var todayMonthIndex = today.getMonth();
-		var todayYear = today.getFullYear();
-		var todayTime = today.getTime();
-
-		var retTime = "";
-		//同一天
-		if (day === todayDay && monthIndex === todayMonthIndex && year === todayYear) {
-			var hour = 0;
-			if (todayTime > time) {
-				hour = parseInt((todayTime - time) / 3600000);
-				if (hour == 0) {
-					retTime = Math.max(parseInt((todayTime - time) / 60000), 1) + this.lp.minutesBefore
-				} else {
-					retTime = hour + this.lp.hoursBefore
-				}
-
-			}
-			return retTime;
-		}
-		var dates = parseInt(time / 86400000);
-		var todaydates = parseInt(todayTime / 86400000);
-		if (todaydates > dates) {
-			var days = (todaydates - dates);
-			if (days == 1) {
-				retTime = this.lp.yesterday;
-			} else if (days == 2) {
-				retTime = this.lp.beforeYesterday;
-			} else if (days > 2 && days < 31) {
-				retTime = days + this.lp.daysBefore;
-			} else if (days >= 31 && days <= 2 * 31) {
-				retTime = this.lp.monthAgo;
-			} else if (days > 2 * 31 && days <= 3 * 31) {
-				retTime = this.lp.towMonthAgo;
-			} else if (days > 3 * 31 && days <= 4 * 31) {
-				retTime = this.lp.threeMonthAgo;
-			} else {
-				retTime = this._formatDate(date);
-			}
-		}
-
-		return retTime;
-
-	},
-	//yyyy-MM-dd
-	_formatDate: function (date) {
-		var month = date.getMonth() + 1;
-		var day = date.getDate();
-		month = (month.toString().length == 1) ? ("0" + month) : month;
-		day = (day.toString().length == 1) ? ("0" + day) : day;
-		return date.getFullYear() + '-' + month + '-' + day;
-	},
 	//当前时间 yyyy-MM-dd HH:mm:ss
 	_currentTime: function () {
 		var today = new Date();
@@ -1059,10 +1098,9 @@ MWF.xApplication.IMV2.Main = new Class({
 		return year + "-" + month + "-" + date + " " + hour + ":" + minu + ":" + sec;
 	}
 
-
 });
 
-//会话对象
+// 会话对象
 MWF.xApplication.IMV2.ConversationItem = new Class({
 	initialize: function (data, main) {
 		this.data = data;
