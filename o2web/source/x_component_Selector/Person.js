@@ -495,6 +495,8 @@ MWF.xApplication.Selector.Person = new Class({
     },
     loadContent: function( contentNode, isHTML ){
 
+        this.selectedItemsMap = {};
+
         this.fireEvent("queryLoadContent",[this]);
 
         if( contentNode )this.contentNode = contentNode;

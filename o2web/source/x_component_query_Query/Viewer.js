@@ -1050,7 +1050,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                                 "value": v,
                                 "formatType": entry.formatType,
                                 "logic": "or",
-                                "comparison": "like"
+                                "comparison": "equals"
                             };
                             filterData.push(d);
                             this.filterItems.push({"data":d});
