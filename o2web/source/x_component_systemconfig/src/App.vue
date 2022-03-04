@@ -1,21 +1,44 @@
 <template>
   <div class="appNode">
     <div class="menuArea">
-      <Menu />
+      <Menu @changeItem="loadContent"/>
     </div>
 
     <div class="contentArea">
       <div class="content">
-
+        <div is="vue:contentComponent"></div>
+<!--        <SystemInfor />-->
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import Menu from './components/Menu.vue'
-//import {lp} from '@o2oa/component'
+import Menu from './components/Menu.vue';
+import { provide, ref, defineAsyncComponent } from 'vue';
 
+let contentType = ref("SystemInfor");
+function loadContent(type){
+  console.log('loadContent: ' + type);
+  contentType.value = type;
+}
+function contentComponent() {
+  // const comp = defineAsyncComponent(() =>
+  //     import('./components/content/'+contentType.value+'.vue')
+  // );
+  // debugger;
+  // //component(contentType.value, comp)
+  console.log('./components/content/' + contentType.value + '.vue');
+  return contentType.value;
+  //return import('./components/content/SystemInfor.vue')
+};
+
+
+// function contentComponent() {
+//   // const module = await import('./components/content/' + contentType.value + '.vue');
+//   // return module;
+//   return contentType.value;
+// }
 
 </script>
 
