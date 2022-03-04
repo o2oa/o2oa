@@ -470,6 +470,13 @@
   border-radius: 5px;
   padding: 5px 10px;
 }
+.chat-msg-time {
+  margin-top: 10px;
+  color: #999;
+  text-align: center;
+  font-size: 12px;
+  clear: both;
+}
 
 .chat-no-more-data {
   margin: 10px auto;
