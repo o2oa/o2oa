@@ -29,6 +29,7 @@ MWF.xApplication.IMV2.LP = {
 
 	"msgMenuItemRevokeMemberMsg": "Revoke member message",
 	"msgMenuItemRevokeMsg": "Revoke",
+	"msgLoadNoMoreData": "No more data!",
 
 		
 	"settingsClearMsg": "Enable Clearing msg: ",
