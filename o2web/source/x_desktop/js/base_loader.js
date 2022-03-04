@@ -323,6 +323,9 @@ if (!layout.isReady) {
             }
             layout.config = config;
             o2.tokenName = config.tokenName || "x-token";
+
+            document.title = layout.config.systemTitle || layout.config.title;
+
             configLoaded = true;
             if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () {
                 _load();
