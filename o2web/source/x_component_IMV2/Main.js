@@ -211,7 +211,7 @@ MWF.xApplication.IMV2.Main = new Class({
 	//点击会话
 	tapConv: function (conv) {
 		this._setCheckNode(conv);
-
+		this.conversationId = conv.id;
 		// new ChatNodeBox
 		this.chatNodeBox = new MWF.xApplication.IMV2.ChatNodeBox(conv, this);
 	},
@@ -510,6 +510,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 
 	},
 
+
 	//检查是否有新消息
 	_checkNewMessage: function () {
 		if (this.conversationId && this.conversationId != "") {//是否有会话窗口
@@ -562,8 +563,8 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 	tapUpdateConvTitle: function () {
 		this.chatTitleMoreMenuNode.setStyle("display", "none");
 		var title = "";
-		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
-			var c = this.conversationNodeItemList[i];
+		for (var i = 0; i < this.main.conversationNodeItemList.length; i++) {
+			var c = this.main.conversationNodeItemList[i];
 			if (this.conversationId == c.data.id) {
 				title = c.data.title;
 			}
@@ -575,8 +576,8 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 	tapUpdateConvMembers: function () {
 		this.chatTitleMoreMenuNode.setStyle("display", "none");
 		var members = [];
-		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
-			var c = this.conversationNodeItemList[i];
+		for (var i = 0; i < this.main.conversationNodeItemList.length; i++) {
+			var c = this.main.conversationNodeItemList[i];
 			if (this.conversationId == c.data.id) {
 				members = c.data.personList;
 			}
@@ -603,7 +604,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		//点击表情按钮
 		showEmojiBox: function () {
 			if (!this.emojiBoxNode) {
-				this.emojiBoxNode = new Element("div", { "class": "chat-emoji-box" }).inject(this.chatNode);
+				this.emojiBoxNode = new Element("div", { "class": "chat-emoji-box" }).inject(this.container);
 				var _self = this;
 				for (var i = 0; i < this.main.emojiList.length; i++) {
 					var emoji = this.main.emojiList[i];
@@ -917,8 +918,8 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			if (createPerson != distinguishedName) {
 				// 判断是否群主
 				var isGroupAdmin = false;
-				for (var i = 0; i < this.conversationNodeItemList.length; i++) {
-					var c = this.conversationNodeItemList[i];
+				for (var i = 0; i < this.main.conversationNodeItemList.length; i++) {
+					var c = this.main.conversationNodeItemList[i];
 					if (this.conversationId == c.data.id) {
 						if (c.data.type === "group" && distinguishedName === c.data.adminPerson) {
 							isGroupAdmin = true;
