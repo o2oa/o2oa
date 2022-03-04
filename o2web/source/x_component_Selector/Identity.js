@@ -27,7 +27,7 @@ MWF.xApplication.Selector.Identity = new Class({
     },
     loadSelectItems : function(){
         this.itemsMap = {};
-        this.selectedItemsMap = {}; //所有已选项按dn或id
+        // this.selectedItemsMap = {}; //所有已选项按dn或id
 
         if( this.options.disabled ){
             this.afterLoadSelectItem();
@@ -680,13 +680,13 @@ MWF.xApplication.Selector.Identity = new Class({
         }
     },
     addToSelectedItemsMap: function(data, selectedItem){
-        if(!this.selectedItemsMap)return;
+        if(!this.selectedItemsMap)this.selectedItemsMap = {};
         if( data.distinguishedName ){
             this.selectedItemsMap[data.distinguishedName] = selectedItem;
         }
     },
     deleteFromSelectedItemsMap: function(data){
-        if(!this.selectedItemsMap)return;
+        if(!this.selectedItemsMap)this.selectedItemsMap = {};
         if( data.distinguishedName && this.selectedItemsMap[data.distinguishedName] ){
             delete this.selectedItemsMap[data.distinguishedName];
         }
