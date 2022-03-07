@@ -1,6 +1,7 @@
 MWF.require("MWF.widget.UUID", null, false);
 MWF.xDesktop.requireApp("Template", "MForm", null, false);
 MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
+MWF.xApplication.IMV2 = MWF.xApplication.IMV2 || {};
 MWF.xApplication.IMV2.options.multitask = true; //多窗口
 MWF.xApplication.IMV2.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
@@ -225,7 +226,7 @@ MWF.xApplication.IMV2.Main = new Class({
 	},
 	//点击创建群聊按钮
 	tapCreateGroupConv: function () {
-		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": this.lp.createDroup, "personCount": 0, "personSelected": [] }, { app: this.app });
+		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": this.lp.createGroup, "personCount": 0, "personSelected": [] }, { app: this.app });
 		form.create()
 	},
 	//更新群名
