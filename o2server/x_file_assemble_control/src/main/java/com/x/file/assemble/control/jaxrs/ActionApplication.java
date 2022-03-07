@@ -11,6 +11,7 @@ import com.x.file.assemble.control.jaxrs.complex.ComplexAction;
 import com.x.file.assemble.control.jaxrs.config.ConfigAction;
 import com.x.file.assemble.control.jaxrs.editor.EditorAction;
 import com.x.file.assemble.control.jaxrs.file.FileAction;
+import com.x.file.assemble.control.jaxrs.file.FileAnonymousAction;
 import com.x.file.assemble.control.jaxrs.folder.FolderAction;
 import com.x.file.assemble.control.jaxrs.folder2.Folder2Action;
 import com.x.file.assemble.control.jaxrs.recycle.RecycleAction;
@@ -30,6 +31,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(EditorAction.class);
 		classes.add(FileAction.class);
 		classes.add(ConfigAction.class);
+		classes.add(FileAnonymousAction.class);
 		return classes;
 	}
 
