@@ -3,6 +3,7 @@ MWF.xApplication.IMV2.LP = {
 
 	"modifyMember": "Members",
 	"noMessage": "No Message!",
+	"createConversation": "Create a chat session",
 	"createSingle": "Single Chat",
 	"createGroup": "Group Chat",
 
@@ -30,6 +31,7 @@ MWF.xApplication.IMV2.LP = {
 	"msgMenuItemRevokeMemberMsg": "Revoke member message",
 	"msgMenuItemRevokeMsg": "Revoke",
 	"msgLoadNoMoreData": "No more data!",
+	"msgNoBusinessId": "No business ID!",
 
 		
 	"settingsClearMsg": "Enable Clearing msg: ",
