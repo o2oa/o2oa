@@ -19,7 +19,7 @@ public class Person extends ConfigObject {
 
 	private static final long serialVersionUID = 5190363566263723493L;
 
-	public static final Boolean DEFAULT_CAPTCHALOGIN = true;
+	public static final Boolean DEFAULT_CAPTCHALOGIN = false;
 	public static final Boolean DEFAULT_CODELOGIN = true;
 	public static final Boolean DEFAULT_BINDLOGIN = true;
 	public static final Boolean DEFAULT_FACELOGIN = true;
@@ -77,7 +77,7 @@ public class Person extends ConfigObject {
 
 	public static final Integer MAX_PASSWORDPERIOD = 365 * 10;
 
-	@FieldDescribe("是否启用验证码登录,默认值:true")
+	@FieldDescribe("是否启用验证码登录,默认值:false")
 	private Boolean captchaLogin;
 
 	@FieldDescribe("是否启用验证码登录,默认值:true")
