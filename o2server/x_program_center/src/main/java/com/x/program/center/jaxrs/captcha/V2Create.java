@@ -23,7 +23,7 @@ import javax.imageio.ImageIO;
 
 class V2Create extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2Create.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Create.class);
 
 	ActionResult<Wo> execute(Integer width, Integer height) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -90,9 +90,9 @@ class V2Create extends BaseAction {
 		properties.setProperty(Constants.KAPTCHA_IMAGE_HEIGHT, height.toString());
 		properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_CHAR_LENGTH, "4");
 		properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_FONT_SIZE, "40");
-		properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_FONT_NAMES, "宋体,楷体,微软雅黑");
 		properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_CHAR_STRING, "1234567890");
-		//properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_CHAR_SPACE, "5");
+//		properties.setProperty(Constants.KAPTCHA_WORDRENDERER_IMPL,
+//				"com.x.base.core.project.kaptcha.SimpleWordRenderer");
 		Config config = new Config(properties);
 		DefaultKaptcha defaultKaptcha = new DefaultKaptcha();
 		defaultKaptcha.setConfig(config);
