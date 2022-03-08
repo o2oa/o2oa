@@ -1115,7 +1115,7 @@ MWF.xApplication.Selector.Person = new Class({
                     var selecteditem = this._newItemSelected(v, this, null);
                     this.selectedItems.push(selecteditem);
                     if(this.addToSelectedItemsMap)this.addToSelectedItemsMap(v, selecteditem);
-                }else{
+                }else if( typeOf(v)==="string" ){
                     this._getItem(function(json){
                         if( !json || !json.data )return;
                         this.options.values[i] = json.data;
