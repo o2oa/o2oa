@@ -243,6 +243,7 @@ class ActionHtmlToImage extends BaseAction {
 					page.navigate("file:///Users/chengjian/dev/temp/test.html");
 					Page.ScreenshotOptions screenshotOptions = new Page.ScreenshotOptions();
 					screenshotOptions.setFullPage(true);
+					screenshotOptions.setClip(0,0, 800, 2310);
 					//screenshotOptions.setQuality(2);
 					screenshotOptions.setPath(Paths.get("/Users/chengjian/dev/temp/screenshot-" + browserType.name() + ".png"));
 					page.screenshot(screenshotOptions);
