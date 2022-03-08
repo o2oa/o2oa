@@ -32,10 +32,6 @@ public class DocSign extends SliceJpaObject {
 
 	private static final String TABLE = PersistenceProperties.Content.DocSign.table;
 
-	public static final Integer STATUS_1 = 1;
-	public static final Integer STATUS_2 = 3;
-	public static final Integer STATUS_3 = 3;
-
 	@Override
 	public String getId() {
 		return id;
@@ -89,6 +85,7 @@ public class DocSign extends SliceJpaObject {
 		this.activity = task.getActivity();
 		this.activityName = task.getActivityName();
 		this.person = task.getPerson();
+		this.taskId = task.getId();
 	}
 
 	public DocSignProperties getProperties() {
@@ -155,11 +152,11 @@ public class DocSign extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String person;
 
-	public static final String signPicAttId_FIELDNAME = "signPicAttId";
+	public static final String signScrawlId_FIELDNAME = "signScrawlId";
 	@FieldDescribe("正文签批转存为图片的ID.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + signPicAttId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + signScrawlId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String signPicAttId;
+	private String signScrawlId;
 
 	public static final String status_FIELDNAME = "status";
 	@FieldDescribe("状态：1(暂存)|2(签批正文不可以修改)|3(签批正文可以修改).")
@@ -243,12 +240,12 @@ public class DocSign extends SliceJpaObject {
 		this.commitTime = commitTime;
 	}
 
-	public String getSignPicAttId() {
-		return signPicAttId;
+	public String getSignScrawlId() {
+		return signScrawlId;
 	}
 
-	public void setSignPicAttId(String signPicAttId) {
-		this.signPicAttId = signPicAttId;
+	public void setSignScrawlId(String signScrawlId) {
+		this.signScrawlId = signScrawlId;
 	}
 
 	public Integer getStatus() {
