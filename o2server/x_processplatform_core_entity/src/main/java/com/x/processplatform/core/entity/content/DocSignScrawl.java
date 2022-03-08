@@ -1,18 +1,24 @@
 package com.x.processplatform.core.entity.content;
 
+import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
+import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.DateTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import javax.persistence.*;
 import java.util.Date;
 
 /**
- * 签批涂鸦列表
+ * 签批涂鸦信息
  * @author sword
  */
 @Entity
@@ -22,11 +28,17 @@ import java.util.Date;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class DocSignScrawl extends SliceJpaObject {
+public class DocSignScrawl extends StorageObject {
 
 	private static final long serialVersionUID = -8648872600208475747L;
 
 	private static final String TABLE = PersistenceProperties.Content.DocSignScrawl.table;
+
+	public static String SCRAWL_TYPE_PLACEHOLDER = "placeholder";
+
+	public static String SCRAWL_TYPE_BASE64 = "base64";
+
+	public static String SCRAWL_TYPE_IMAGE = "image";
 
 	@Override
 	public String getId() {
@@ -51,14 +63,132 @@ public class DocSignScrawl extends SliceJpaObject {
 		// nothing
 	}
 
-	public DocSignScrawl(DocSign docSign, String data) {
+	public DocSignScrawl(DocSign docSign, String data, String name) {
 		this.signId = docSign.getId();
 		this.job = docSign.getJob();
 		this.activity = docSign.getActivity();
 		this.activityName = docSign.getActivityName();
 		this.person = docSign.getPerson();
-		this.commitTime = new Date();
 		this.data = data;
+		this.type = SCRAWL_TYPE_PLACEHOLDER;
+		if(StringUtils.isNotBlank(name)){
+			this.lastUpdateTime = new Date();
+			this.name = name;
+			this.extension = StringUtils.lowerCase(FilenameUtils.getExtension(name));
+		}
+	}
+
+	@Override
+	public String path() {
+		String str = DateTools.format(this.getCreateTime(), DateTools.formatCompact_yyyyMMdd);
+		str += PATHSEPARATOR;
+		str += this.job;
+		str += PATHSEPARATOR;
+		str += this.id;
+		str += StringUtils.isEmpty(this.extension) ? "" : ("." + this.extension);
+		return str;
+	}
+
+	public static final String name_FIELDNAME = "name";
+	@FieldDescribe("文件名称,带扩展名的文件名.")
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ name_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
+	@CheckPersist(allowEmpty = true, fileNameString = true)
+	private String name;
+
+	public static final String extension_FIELDNAME = "extension";
+	@FieldDescribe("扩展名。")
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + extension_FIELDNAME)
+	@CheckPersist(allowEmpty = true, fileNameString = true)
+	private String extension;
+
+	public static final String storage_FIELDNAME = "storage";
+	@FieldDescribe("关联的存储名称.")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + storage_FIELDNAME)
+	@CheckPersist(allowEmpty = true, simplyString = true)
+	@Index(name = TABLE + IndexNameMiddle + storage_FIELDNAME)
+	private String storage;
+
+	public static final String length_FIELDNAME = "length";
+	@FieldDescribe("文件大小.")
+	@Column(name = ColumnNamePrefix + length_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + length_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Long length;
+
+	public static final String lastUpdateTime_FIELDNAME = "lastUpdateTime";
+	@FieldDescribe("最后更新时间")
+	@Column(name = ColumnNamePrefix + lastUpdateTime_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + lastUpdateTime_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date lastUpdateTime;
+
+	public static final String deepPath_FIELDNAME = "deepPath";
+	@FieldDescribe("是否使用更深的路径.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
+	private Boolean deepPath;
+
+	@Override
+	public String getStorage() {
+		return storage;
+	}
+
+	@Override
+	public void setStorage(String storage) {
+		this.storage = storage;
+	}
+
+	@Override
+	public Long getLength() {
+		return length;
+	}
+
+	@Override
+	public void setLength(Long length) {
+		this.length = length;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String getExtension() {
+		return extension;
+	}
+
+	@Override
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}
+
+	@Override
+	public Date getLastUpdateTime() {
+		return lastUpdateTime;
+	}
+
+	@Override
+	public void setLastUpdateTime(Date lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
+	}
+
+	@Override
+	public Boolean getDeepPath() {
+		return BooleanUtils.isTrue(this.deepPath);
+	}
+
+	@Override
+	public void setDeepPath(Boolean deepPath) {
+		this.deepPath = deepPath;
 	}
 
 	public static final String signId_FIELDNAME = "signId";
@@ -102,17 +232,17 @@ public class DocSignScrawl extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Date commitTime;
 
-	public static final String hasScrawlPic_FIELDNAME = "hasScrawlPic";
-	@FieldDescribe("是否有涂鸦图片")
-	@Column(name = ColumnNamePrefix + hasScrawlPic_FIELDNAME)
+	public static final String type_FIELDNAME = "type";
+	@FieldDescribe("涂鸦类型：placeholder(占位符)|base64(图片base64存储在data字段中)|image(图片存储在附件中)")
+	@Column(name = ColumnNamePrefix + type_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private Boolean hasScrawlPic = false;
+	private String type;
 
 	public static final String data_FIELDNAME = "data";
 	@FieldDescribe("涂鸦信息.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
+	@Column(length = JpaObject.length_20M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
@@ -168,12 +298,12 @@ public class DocSignScrawl extends SliceJpaObject {
 		this.signId = signId;
 	}
 
-	public Boolean getHasScrawlPic() {
-		return hasScrawlPic;
+	public String getType() {
+		return type;
 	}
 
-	public void setHasScrawlPic(Boolean hasScrawlPic) {
-		this.hasScrawlPic = hasScrawlPic;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getData() {
