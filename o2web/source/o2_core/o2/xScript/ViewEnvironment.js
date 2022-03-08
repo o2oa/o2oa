@@ -5011,7 +5011,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * var table = new this.Table("table1");
      *
      * //查询字段name等于zhangsan的数据，结果按updateTime倒序
-     * table.listRowSelect( "o.name='zhangsan", "o.updateTime desc", 20, function(data){
+     * table.listRowSelect( "o.name='zhangsan'", "o.updateTime desc", 20, function(data){
      *    //data 形如
      *    //{
      *    //    "type": "success",
