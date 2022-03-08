@@ -15,6 +15,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.content.Task", "com.x.processplatform.core.entity.content.Work",
 		"com.x.processplatform.core.entity.content.Read", "com.x.processplatform.core.entity.content.DocumentVersion",
 		"com.x.processplatform.core.entity.content.SerialNumber", "com.x.processplatform.core.entity.element.End",
+		"com.x.processplatform.core.entity.content.DocSign", "com.x.processplatform.core.entity.content.DocSignScrawl",
 		"com.x.processplatform.core.entity.element.Application",
 		"com.x.processplatform.core.entity.element.ApplicationDict",
 		"com.x.processplatform.core.entity.element.ApplicationDictItem",

@@ -1,9 +1,6 @@
 package com.x.processplatform.core.entity.content;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.SliceJpaObject;
-import com.x.base.core.entity.StorageObject;
+import com.x.base.core.entity.*;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -17,6 +14,8 @@ import org.apache.openjpa.persistence.jdbc.Index;
 import javax.persistence.*;
 import java.util.Date;
 
+import static com.x.base.core.entity.StorageType.processPlatform;
+
 /**
  * 签批涂鸦信息
  * @author sword
@@ -28,9 +27,10 @@ import java.util.Date;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Storage(type = processPlatform)
 public class DocSignScrawl extends StorageObject {
 
-	private static final long serialVersionUID = -8648872600208475747L;
+	private static final long serialVersionUID = 3335030367719974674L;
 
 	private static final String TABLE = PersistenceProperties.Content.DocSignScrawl.table;
 
@@ -57,30 +57,31 @@ public class DocSignScrawl extends StorageObject {
 
 	@Override
 	public void onPersist() throws Exception {
+		if(StringUtils.isNotBlank(this.name)){
+			if(this.lastUpdateTime == null){
+				this.lastUpdateTime = new Date();
+			}
+			this.extension = StringUtils.lowerCase(FilenameUtils.getExtension(name));
+		}
 	}
 
 	public DocSignScrawl() {
 		// nothing
 	}
 
-	public DocSignScrawl(DocSign docSign, String data, String name) {
+	public DocSignScrawl(DocSign docSign, String name) {
 		this.signId = docSign.getId();
 		this.job = docSign.getJob();
 		this.activity = docSign.getActivity();
 		this.activityName = docSign.getActivityName();
 		this.person = docSign.getPerson();
-		this.data = data;
 		this.type = SCRAWL_TYPE_PLACEHOLDER;
-		if(StringUtils.isNotBlank(name)){
-			this.lastUpdateTime = new Date();
-			this.name = name;
-			this.extension = StringUtils.lowerCase(FilenameUtils.getExtension(name));
-		}
+		this.name = name;
 	}
 
 	@Override
 	public String path() {
-		String str = DateTools.format(this.getCreateTime(), DateTools.formatCompact_yyyyMMdd);
+		String str = DateTools.format(new Date(), DateTools.formatCompact_yyyyMMdd);
 		str += PATHSEPARATOR;
 		str += this.job;
 		str += PATHSEPARATOR;
@@ -234,17 +235,21 @@ public class DocSignScrawl extends StorageObject {
 
 	public static final String type_FIELDNAME = "type";
 	@FieldDescribe("涂鸦类型：placeholder(占位符)|base64(图片base64存储在data字段中)|image(图片存储在附件中)")
-	@Column(name = ColumnNamePrefix + type_FIELDNAME)
+	@Column(length = length_64B, name = ColumnNamePrefix + type_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String type;
 
-	public static final String data_FIELDNAME = "data";
-	@FieldDescribe("涂鸦信息.")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_20M, name = ColumnNamePrefix + data_FIELDNAME)
+	public static final String width_FIELDNAME = "width";
+	@FieldDescribe("宽")
+	@Column(length = length_64B, name = ColumnNamePrefix + width_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String data;
+	private String width;
+
+	public static final String height_FIELDNAME = "height";
+	@FieldDescribe("高")
+	@Column(length = length_64B, name = ColumnNamePrefix + height_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String height;
 
 	public String getPerson() {
 		return person;
@@ -306,11 +311,19 @@ public class DocSignScrawl extends StorageObject {
 		this.type = type;
 	}
 
-	public String getData() {
-		return data;
+	public String getWidth() {
+		return width;
 	}
 
-	public void setData(String data) {
-		this.data = data;
+	public void setWidth(String width) {
+		this.width = width;
+	}
+
+	public String getHeight() {
+		return height;
+	}
+
+	public void setHeight(String height) {
+		this.height = height;
 	}
 }
