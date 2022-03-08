@@ -193,11 +193,7 @@
 		</dependency>
 		<dependency>
 			<groupId>fr.opensagres.xdocreport</groupId>
-			<artifactId>fr.opensagres.poi.xwpf.converter.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>fr.opensagres.xdocreport</groupId>
-			<artifactId>fr.opensagres.poi.xwpf.converter.xhtml</artifactId>
+			<artifactId>xdocreport</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tika</groupId>
@@ -413,7 +409,7 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -692,13 +688,8 @@
 			</dependency>
 			<dependency>
 				<groupId>fr.opensagres.xdocreport</groupId>
-				<artifactId>fr.opensagres.poi.xwpf.converter.core</artifactId>
-				<version>2.0.1</version>
-			</dependency>
-			<dependency>
-				<groupId>fr.opensagres.xdocreport</groupId>
-				<artifactId>fr.opensagres.poi.xwpf.converter.xhtml</artifactId>
-				<version>2.0.1</version>
+				<artifactId>xdocreport</artifactId>
+				<version>2.0.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.tika</groupId>
