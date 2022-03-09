@@ -31,9 +31,8 @@ class ActionListRowNext extends BaseAction {
 	ActionResult<List<JsonObject>> execute(EffectivePerson effectivePerson, String tableFlag, String id, Integer count)
 			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
+			logger.debug(effectivePerson.getDistinguishedName());
 			ActionResult<List<JsonObject>> result = new ActionResult<>();
-			logger.debug(effectivePerson, "table:{}, id:{}, count:{}.", tableFlag, id, count);
 			Business business = new Business(emc);
 			Table table = emc.flag(tableFlag, Table.class);
 			if (null == table) {
