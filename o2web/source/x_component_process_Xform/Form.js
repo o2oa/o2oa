@@ -4636,6 +4636,18 @@ debugger;
             }
         }.bind(this))
     },
+
+    // 打开工作关联聊天 
+    openIMChatStarter: function(jobId) {
+        MWF.xDesktop.requireApp("IMV2", "Starter", function () {
+            var starter = new MWF.xApplication.IMV2.Starter({}, this.app, {
+                "businessId":jobId,
+                "businessType": "process"
+            });
+            starter.load();
+        }.bind(this));
+    },
+
     //移动端页面 工作处理完成后 
     finishOnMobile: function () {
         var _self = this;
