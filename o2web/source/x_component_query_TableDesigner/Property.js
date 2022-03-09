@@ -328,6 +328,7 @@ MWF.xApplication.query.TableDesigner.Property = MWF.FTProperty = new Class({
 	},
     loadPersonInput: function(){
         var personIdentityNodes = this.propertyContent.getElements(".MWFPersonIdentity");
+        var personPersonNodes = this.propertyContent.getElements(".MWFPersonPerson");
         var personUnitNodes = this.propertyContent.getElements(".MWFPersonUnit");
         var dutyNodes = this.propertyContent.getElements(".MWFDutySelector");
         var dutyNameNodes = this.propertyContent.getElements(".MWFPersonDuty");
@@ -339,6 +340,14 @@ MWF.xApplication.query.TableDesigner.Property = MWF.FTProperty = new Class({
             personIdentityNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "identity",
+                    "names": this.data[node.get("name")],
+                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+
+            personPersonNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
+                    "type": "person",
                     "names": this.data[node.get("name")],
                     "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
                 });
