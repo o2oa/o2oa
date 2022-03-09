@@ -129,6 +129,26 @@ public class ImAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "根据业务id查询会话，当前用户在会话中.", action = ActionConversationFindByBusinessId.class)
+    @GET
+    @Path("conversation/business/{businessId}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void conversationFindByBusinessId(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                             @JaxrsParameterDescribe("业务id") @PathParam("businessId") String businessId) {
+        ActionResult<List<ActionConversationFindByBusinessId.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionConversationFindByBusinessId().execute( effectivePerson, businessId );
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+
 
     //conversation/{id}/read  阅读消息 PUT
     @JaxrsMethodDescribe(value = "会话阅读消息.", action = ActionConversationRead.class)

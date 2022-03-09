@@ -2930,6 +2930,20 @@ MWF.xScript.Environment = function(ev){
             }
         },
 
+        /**创建关联当前工作的聊天群。<b>（仅流程表单中可用）</b><br/>
+         * 根据当前工作的关联人员创建聊天群。<br/>
+         * @method startIM
+         * @static
+         * @param {String} [jobId] - 当前工作的jobId<br/>
+         *  
+         * @example
+         //带参数，启动创建界面
+         this.form.startIM("jobId");
+         */
+        "startIM": function(jobId){
+            _form.openIMChatStarter(jobId);
+        },
+
         /**弹出一个确认框，带确认和关闭按钮
          * @method confirm
          * @static

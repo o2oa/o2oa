@@ -3,6 +3,7 @@ MWF.xApplication.IMV2.LP = {
 
 	"modifyMember": "修改成员",
 	"noMessage": "没有消息内容！",
+	"createConversation": "创建聊天会话",
 	"createSingle": "创建单聊",
 	"createGroup": "创建群聊",
 
@@ -23,12 +24,28 @@ MWF.xApplication.IMV2.LP = {
 	"alert": "提示",
 	"setting": "设置",
 
+	"chooseConversation":"选择会话",
+	"chooseConversationExistConversation":"当前已存在关联的聊天会话：",
+	"chooseConversationCreateNew":"创建新的聊天",
+
+	"choosePerson":"选择人员",
+	"choosePersonCreate":"创建聊天",
+
+	"chooseBusinessWorkTitle":"关联工作",
+	"open": "打开",
+	"noTitle": "无标题",
+
 	"modifyGroupName": "修改群名",
 	"groupName": "群名",
 	"clearAllMsg": "清空聊天记录",
 
 	"msgMenuItemRevokeMemberMsg": "撤回成员消息",
 	"msgMenuItemRevokeMsg": "撤回",
+	"msgLoadNoMoreData": "没有更多数据了！",
+	"msgNoBusinessId": "没有业务ID！",
+	"msgNoBusinessPerson": "没有查询到业务相关的人员，无法创建聊天！",
+	"msgNotSupport": "暂不支持！",
+	"msgNeedChoosePerson": "请选择至少一个人员！",
 	
 	
 	"settingsClearMsg": "是否开启聊天消息清除功能：",

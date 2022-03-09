@@ -23,6 +23,25 @@ public class IMConversationFactory extends AbstractFactory {
 		super(business);
 	}
 
+
+	/**
+	 * 根据 businessId 获取会话列表 并且成员包含person
+	 * @param person
+	 * @param businessId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<IMConversation> listConversationWithPersonAndBusinessId(String person, String businessId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(IMConversation.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<IMConversation> cq = cb.createQuery(IMConversation.class);
+		Root<IMConversation> root = cq.from(IMConversation.class);
+		Predicate p = cb.isMember(person, root.get(IMConversation_.personList));
+		p = cb.and(p, cb.equal(root.get(IMConversation_.businessId), businessId));
+		cq.select(root).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 	/**
 	 * 获取成员包含person的会话id 列表
 	 * @param person
