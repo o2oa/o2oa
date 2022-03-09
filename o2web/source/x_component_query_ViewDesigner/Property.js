@@ -415,12 +415,23 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
     },
     loadPersonInput: function () {
         var identityNodes = this.propertyContent.getElements(".MWFPersonIdentity");
+        var personNodes = this.propertyContent.getElements(".MWFPersonPerson");
         var personUnitNodes = this.propertyContent.getElements(".MWFPersonUnit");
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function () {
             identityNodes.each(function (node) {
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "identity",
+                    "names": this.data[node.get("name")],
+                    "onChange": function (ids) {
+                        this.savePersonItem(node, ids);
+                    }.bind(this)
+                });
+            }.bind(this));
+
+            personNodes.each(function (node) {
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
+                    "type": "person",
                     "names": this.data[node.get("name")],
                     "onChange": function (ids) {
                         this.savePersonItem(node, ids);
