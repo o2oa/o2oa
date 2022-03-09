@@ -24,6 +24,14 @@ MWF.xApplication.IMV2.LP = {
 	"alert": "Tips",
 	"setting": "Setting",
 
+	"chooseConversation":"Select Conversation",
+	"chooseConversationExistConversation":"Currently there is an associated chat conversation:",
+	"chooseConversationCreateNew":"Create a new chat",
+
+	"choosePerson":"Select personnel",
+	"choosePersonCreate":"Create chat",
+
+
 	"modifyGroupName": "Modify Name",
 	"groupName": "Name",
 	"clearAllMsg": "Clear chat history",
@@ -32,6 +40,9 @@ MWF.xApplication.IMV2.LP = {
 	"msgMenuItemRevokeMsg": "Revoke",
 	"msgLoadNoMoreData": "No more data!",
 	"msgNoBusinessId": "No business ID!",
+	"msgNoBusinessPerson": "No business related personnel found, unable to create chat!",
+	"msgNotSupport": "Temporarily not supported!",
+	"msgNeedChoosePerson": "Please select at least one person!",
 
 		
 	"settingsClearMsg": "Enable Clearing msg: ",
