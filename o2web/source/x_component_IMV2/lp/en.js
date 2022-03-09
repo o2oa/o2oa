@@ -31,6 +31,9 @@ MWF.xApplication.IMV2.LP = {
 	"choosePerson":"Select personnel",
 	"choosePersonCreate":"Create chat",
 
+	"chooseBusinessWorkTitle":"Associated work",
+	"open": "open",
+	"noTitle": "Untitled",
 
 	"modifyGroupName": "Modify Name",
 	"groupName": "Name",

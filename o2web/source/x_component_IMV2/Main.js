@@ -530,10 +530,132 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 						}
 					}.bind(this)
 				});
+				// 显示业务图标
+				this.loadBusinessIcon();
 			}.bind(this));
 
 	},
+	// 如果有业务数据 头部展现应用图标 可以点击打开
+	loadBusinessIcon: function() {
+		if (this.data.businessId && this.data.businessBody) {
+			if (this.data.businessType && this.data.businessType === "process") {
+				var work = JSON.parse(this.data.businessBody);
+				var applicationId = work.application;
+				this.chatTitleBusinessBtnNode.setStyles({"background-image": "url(../x_component_process_ApplicationExplorer/$Main/default/icon/application.png)", "display":"block"});
+				this.chatTitleBusinessBtnNode.store("work", work);
+				this.chatTitleBusinessBtnNode.addEvent("click", function(e) {
+					this.loadProcessWork(e.target.retrieve("work"));
+					e.preventDefault();
+				}.bind(this));
+				o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.getIcon(applicationId, function(json) {
+					if (json.data && json.data.icon) {
+						this.chatTitleBusinessBtnNode.setStyles({"background-image": "url(data:image/png;base64," + json.data.icon + ")", "display":"block"});
+					}
+				}.bind(this));
+			}
+		}
+	},
+	// 获取工作对象
+	loadProcessWork(work) {
+		if (work && work.job) {
+			o2.Actions.load("x_processplatform_assemble_surface").JobAction.findWorkWorkCompleted(work.job, function(json){
+				if (json.data ) {
+					var workList = [];
+					if (json.data.workList && json.data.workList.length > 0) {
+						workList = json.data.workList
+					}
+					var workCompletedList = [];
+					if (json.data.workCompletedList && json.data.workCompletedList.length > 0) {
+						workCompletedList = json.data.workCompletedList
+					}
+					this.showProcessWorkDialog(workList, workCompletedList);
+				}
+			}.bind(this), function(error){
+				console.log(error);
+			}.bind(this));
+		}
+	},
+	// 打开关联工作
+	showProcessWorkDialog: function(workList, workCompletedList) {
+		if (workList.length > 0 || workCompletedList.length > 0) {
+			var url = this.path + this.options.style + "/chooseBusinessWork.html";
+			this.container.loadHtml(url, { "bind": { "lp": this.lp }, "module": this }, function(){
+				// 工作展现
+				if (workList.length > 0) {
+					for (let index = 0; index < workList.length; index++) {
+						const work = workList[index];
+						var workItemNode = new Element("div", {"class":"business-work-item"}).inject(this.businessWorkListNode);
+						var workProcessNameNode = new Element("div", {"style":"flex: 1;"}).inject(workItemNode);
+						var title = work.title
+						if (title === "") {
+							title = this.lp.noTitle
+						}
+						workProcessNameNode.set("text", "【"+work.processName+"】" + title);
+						var openBtnNode = new Element("div", {"class":"business-work-item-btn"}).inject(workItemNode);
+						openBtnNode.store("work", work);
+						openBtnNode.set("text", this.lp.open);
+						openBtnNode.addEvents({
+							"click": function(e) {
+								var thisWork = e.target.retrieve("work");
+								if (thisWork) {
+									var opotions = {
+										"workId": thisWork.id,
+									}
+									layout.openApplication(null, "process.Work", opotions);
+								}
+								this.closeProcessWorkDialog();
+								e.preventDefault();
+							}.bind(this)
+						})
+					}
+				}
+				if (workCompletedList.length > 0) {
+					for (let index = 0; index < workCompletedList.length; index++) {
+						const workCompleted = workCompletedList[index];
+						var workItemNode = new Element("div", {"class":"business-work-item"}).inject(this.businessWorkListNode);
+						var workProcessNameNode = new Element("div", {"style":"flex: 1;"}).inject(workItemNode);
+						var title = workCompleted.title
+						if (title === "") {
+							title = this.lp.noTitle
+						}
+						workProcessNameNode.set("text", "【"+workCompleted.processName+"】" + title);
+						var openBtnNode = new Element("div", {"class":"business-work-item-btn"}).inject(workItemNode);
+						openBtnNode.store("work", workCompleted);
+						openBtnNode.set("text", this.lp.open);
+						openBtnNode.addEvents({
+							"click": function(e) {
+								var thisWork = e.target.retrieve("work");
+								if (thisWork) {
+									var opotions = {
+										"workCompletedId": thisWork.id,
+									}
+									layout.openApplication(null, "process.Work", opotions);
+								}
+								this.closeProcessWorkDialog();
+								e.preventDefault();
+							}.bind(this)
+						})
+					}
+				}
+			
 
+				// 关闭
+				this.businessWorkChooseCloseBtnNode.addEvents({
+					"click": function(e) {
+						this.closeProcessWorkDialog();
+						e.preventDefault();
+					}.bind(this)
+				})
+			}.bind(this));
+		}
+	},
+	// 
+	closeProcessWorkDialog: function() {
+		if (this.businessWorkChooseDialogNode) {
+			this.businessWorkChooseDialogNode.destroy();
+			this.businessWorkChooseDialogNode = null;
+		}
+	},
 
 	//检查是否有新消息
 	_checkNewMessage: function () {
