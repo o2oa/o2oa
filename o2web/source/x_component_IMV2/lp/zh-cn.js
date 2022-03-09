@@ -31,6 +31,10 @@ MWF.xApplication.IMV2.LP = {
 	"choosePerson":"选择人员",
 	"choosePersonCreate":"创建聊天",
 
+	"chooseBusinessWorkTitle":"关联工作",
+	"open": "打开",
+	"noTitle": "无标题",
+
 	"modifyGroupName": "修改群名",
 	"groupName": "群名",
 	"clearAllMsg": "清空聊天记录",

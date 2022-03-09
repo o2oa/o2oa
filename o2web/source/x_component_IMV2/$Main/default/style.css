@@ -202,8 +202,21 @@
   background-position: center center;
   background-repeat: no-repeat;
   height: 30px;
-  width: 64px;
+  width: 48px;
+  margin-right: 10px;
   float: right;
+  cursor: pointer;
+  display: none;
+}
+.o2_im_chat_content_title_business_icon {
+  background-image: url(../x_component_process_ApplicationExplorer/$Main/default/icon/application.png);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 30px;
+  width: 30px;
+  float: right;
+  margin-right: 10px;
   cursor: pointer;
   display: none;
 }
@@ -621,6 +634,31 @@
   color: #FFFFFF;
   cursor: pointer;
   max-width: 200px;
+}
+
+.business-work-item {
+    height: 60px;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    border: 1px solid #E6E6E6;
+    margin: 10px 12px;
+    box-shadow: rgb(102 102 102) 3px 3px 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.business-work-item-btn {
+  height: 24px;
+  width: 64px;
+  line-height: 24px;
+  margin-right: 12px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 12px;
+  border: 1px solid #4A90E2;
+  background-color: #FFFFFF;
+  color: #4A90E2 !important;
+  text-align: center;
 }
 
 .conversation-outer {
