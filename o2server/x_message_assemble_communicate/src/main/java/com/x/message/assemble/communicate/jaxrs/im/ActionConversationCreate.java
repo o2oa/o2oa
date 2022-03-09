@@ -10,15 +10,20 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.Application;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_processplatform_assemble_surface;
 import com.x.message.assemble.communicate.Business;
+import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.IMConversation;
+import org.apache.commons.lang3.StringUtils;
 
 
 public class ActionConversationCreate extends BaseAction {
@@ -70,7 +75,7 @@ public class ActionConversationCreate extends BaseAction {
             }
 
             //处理标题
-            if (conversation.getTitle() == null || conversation.getTitle().isEmpty()) {
+            if (StringUtils.isEmpty(conversation.getTitle())) {
                 String title = "";
                 if (conversation.getType().equals(CONVERSATION_TYPE_SINGLE)) {
                     for (int i = 0; i < conversation.getPersonList().size(); i++) {
@@ -91,9 +96,40 @@ public class ActionConversationCreate extends BaseAction {
                             title += person.substring(0, person.indexOf("@")) + "、";
                         }
                     }
+                    if (title.endsWith("、")) {
+                        title = title.substring(0, title.length()-1);
+                    }
                 }
                 conversation.setTitle(title);
             }
+
+            // 处理业务对象
+            if (StringUtils.isNotEmpty(conversation.getBusinessId())) {
+                if (StringUtils.isEmpty(conversation.getBusinessType()) || !conversation.getBusinessType().equals(IMConversation.CONVERSATION_BUSINESS_TYPE_PROCESS)) {
+                    throw new ExceptionEmptyBusinessType();
+                }
+                //todo 当前只有流程
+                FindByJobIdWo jobIdWo = getProcessWork(conversation.getBusinessId());
+                if (jobIdWo == null) {
+                    throw new ExceptionEmptyBusinessObject(conversation.getBusinessId());
+                }
+                String businessBody = "";
+                if (jobIdWo.getWorkList() != null && !jobIdWo.getWorkList().isEmpty()) {
+                    WorkWo workWo = jobIdWo.getWorkList().get(0);
+                    businessBody = workWo.toString();
+                }
+                if (StringUtils.isEmpty(businessBody)) {
+                    if (jobIdWo.getWorkCompletedList() != null && !jobIdWo.getWorkCompletedList().isEmpty()) {
+                        WorkCompletedWo workWo = jobIdWo.getWorkCompletedList().get(0);
+                        businessBody = workWo.toString();
+                    }
+                }
+                if (StringUtils.isEmpty(businessBody)) {
+                    throw new ExceptionEmptyBusinessObject(conversation.getBusinessId());
+                }
+                conversation.setBusinessBody(businessBody);
+            }
+
             emc.beginTransaction(IMConversation.class);
             emc.persist(conversation, CheckPersistType.all);
             emc.commit();
@@ -107,6 +143,19 @@ public class ActionConversationCreate extends BaseAction {
 
 
 
+    /**
+     * 根据jobId查询工作
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    private FindByJobIdWo getProcessWork(String jobId) throws Exception {
+        Application process = ThisApplication.context().applications()
+                .randomWithWeight(x_processplatform_assemble_surface.class.getName());
+        return  ThisApplication.context().applications().getQuery(process, "job/" + jobId + "/find/work/workcompleted").getData(FindByJobIdWo.class);
+    }
+
+
     public static class Wo extends IMConversation {
 
         private static final long serialVersionUID = 3434938936805201380L;
@@ -115,4 +164,517 @@ public class ActionConversationCreate extends BaseAction {
     }
 
 
+    public static class FindByJobIdWo extends GsonPropertyObject {
+        private List<WorkWo> workList;
+        private List<WorkCompletedWo> workCompletedList;
+
+        public List<WorkWo> getWorkList() {
+            return workList;
+        }
+
+        public void setWorkList(List<WorkWo> workList) {
+            this.workList = workList;
+        }
+
+        public List<WorkCompletedWo> getWorkCompletedList() {
+            return workCompletedList;
+        }
+
+        public void setWorkCompletedList(List<WorkCompletedWo> workCompletedList) {
+            this.workCompletedList = workCompletedList;
+        }
+    }
+
+    public static class WorkWo extends GsonPropertyObject {
+
+        private String id;
+        private String job;
+        private String title;
+        private String startTime;
+        private String startTimeMonth;
+        private String creatorPerson;
+        private String creatorIdentity;
+        private String creatorUnit;
+        private String application;
+        private String applicationName;
+        private String applicationAlias;
+        private String process;
+        private String processName;
+        private String processAlias;
+        private String activity;
+        private String activityType;
+        private String activityName;
+        private String activityAlias;
+        private String activityDescription;
+        private String activityToken;
+        private String activityArrivedTime;
+        private String serial;
+        private boolean dataChanged;
+        private boolean workThroughManual;
+        private String workCreateType;
+        private String workStatus;
+        private boolean beforeExecuted;
+        private String manualTaskIdentityText;
+        private boolean splitting;
+        private String form;
+        private String destinationRoute;
+        private String destinationRouteName;
+        private String destinationActivityType;
+        private String destinationActivity;
+        private String createTime;
+        private String updateTime;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getJob() {
+            return job;
+        }
+
+        public void setJob(String job) {
+            this.job = job;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getStartTime() {
+            return startTime;
+        }
+
+        public void setStartTime(String startTime) {
+            this.startTime = startTime;
+        }
+
+        public String getStartTimeMonth() {
+            return startTimeMonth;
+        }
+
+        public void setStartTimeMonth(String startTimeMonth) {
+            this.startTimeMonth = startTimeMonth;
+        }
+
+        public String getCreatorPerson() {
+            return creatorPerson;
+        }
+
+        public void setCreatorPerson(String creatorPerson) {
+            this.creatorPerson = creatorPerson;
+        }
+
+        public String getCreatorIdentity() {
+            return creatorIdentity;
+        }
+
+        public void setCreatorIdentity(String creatorIdentity) {
+            this.creatorIdentity = creatorIdentity;
+        }
+
+        public String getCreatorUnit() {
+            return creatorUnit;
+        }
+
+        public void setCreatorUnit(String creatorUnit) {
+            this.creatorUnit = creatorUnit;
+        }
+
+        public String getApplication() {
+            return application;
+        }
+
+        public void setApplication(String application) {
+            this.application = application;
+        }
+
+        public String getApplicationName() {
+            return applicationName;
+        }
+
+        public void setApplicationName(String applicationName) {
+            this.applicationName = applicationName;
+        }
+
+        public String getApplicationAlias() {
+            return applicationAlias;
+        }
+
+        public void setApplicationAlias(String applicationAlias) {
+            this.applicationAlias = applicationAlias;
+        }
+
+        public String getProcess() {
+            return process;
+        }
+
+        public void setProcess(String process) {
+            this.process = process;
+        }
+
+        public String getProcessName() {
+            return processName;
+        }
+
+        public void setProcessName(String processName) {
+            this.processName = processName;
+        }
+
+        public String getProcessAlias() {
+            return processAlias;
+        }
+
+        public void setProcessAlias(String processAlias) {
+            this.processAlias = processAlias;
+        }
+
+        public String getActivity() {
+            return activity;
+        }
+
+        public void setActivity(String activity) {
+            this.activity = activity;
+        }
+
+        public String getActivityType() {
+            return activityType;
+        }
+
+        public void setActivityType(String activityType) {
+            this.activityType = activityType;
+        }
+
+        public String getActivityName() {
+            return activityName;
+        }
+
+        public void setActivityName(String activityName) {
+            this.activityName = activityName;
+        }
+
+        public String getActivityAlias() {
+            return activityAlias;
+        }
+
+        public void setActivityAlias(String activityAlias) {
+            this.activityAlias = activityAlias;
+        }
+
+        public String getActivityDescription() {
+            return activityDescription;
+        }
+
+        public void setActivityDescription(String activityDescription) {
+            this.activityDescription = activityDescription;
+        }
+
+        public String getActivityToken() {
+            return activityToken;
+        }
+
+        public void setActivityToken(String activityToken) {
+            this.activityToken = activityToken;
+        }
+
+        public String getActivityArrivedTime() {
+            return activityArrivedTime;
+        }
+
+        public void setActivityArrivedTime(String activityArrivedTime) {
+            this.activityArrivedTime = activityArrivedTime;
+        }
+
+        public String getSerial() {
+            return serial;
+        }
+
+        public void setSerial(String serial) {
+            this.serial = serial;
+        }
+
+        public boolean isDataChanged() {
+            return dataChanged;
+        }
+
+        public void setDataChanged(boolean dataChanged) {
+            this.dataChanged = dataChanged;
+        }
+
+        public boolean isWorkThroughManual() {
+            return workThroughManual;
+        }
+
+        public void setWorkThroughManual(boolean workThroughManual) {
+            this.workThroughManual = workThroughManual;
+        }
+
+        public String getWorkCreateType() {
+            return workCreateType;
+        }
+
+        public void setWorkCreateType(String workCreateType) {
+            this.workCreateType = workCreateType;
+        }
+
+        public String getWorkStatus() {
+            return workStatus;
+        }
+
+        public void setWorkStatus(String workStatus) {
+            this.workStatus = workStatus;
+        }
+
+        public boolean isBeforeExecuted() {
+            return beforeExecuted;
+        }
+
+        public void setBeforeExecuted(boolean beforeExecuted) {
+            this.beforeExecuted = beforeExecuted;
+        }
+
+        public String getManualTaskIdentityText() {
+            return manualTaskIdentityText;
+        }
+
+        public void setManualTaskIdentityText(String manualTaskIdentityText) {
+            this.manualTaskIdentityText = manualTaskIdentityText;
+        }
+
+        public boolean isSplitting() {
+            return splitting;
+        }
+
+        public void setSplitting(boolean splitting) {
+            this.splitting = splitting;
+        }
+
+        public String getForm() {
+            return form;
+        }
+
+        public void setForm(String form) {
+            this.form = form;
+        }
+
+        public String getDestinationRoute() {
+            return destinationRoute;
+        }
+
+        public void setDestinationRoute(String destinationRoute) {
+            this.destinationRoute = destinationRoute;
+        }
+
+        public String getDestinationRouteName() {
+            return destinationRouteName;
+        }
+
+        public void setDestinationRouteName(String destinationRouteName) {
+            this.destinationRouteName = destinationRouteName;
+        }
+
+        public String getDestinationActivityType() {
+            return destinationActivityType;
+        }
+
+        public void setDestinationActivityType(String destinationActivityType) {
+            this.destinationActivityType = destinationActivityType;
+        }
+
+        public String getDestinationActivity() {
+            return destinationActivity;
+        }
+
+        public void setDestinationActivity(String destinationActivity) {
+            this.destinationActivity = destinationActivity;
+        }
+
+        public String getCreateTime() {
+            return createTime;
+        }
+
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
+        }
+
+        public String getUpdateTime() {
+            return updateTime;
+        }
+
+        public void setUpdateTime(String updateTime) {
+            this.updateTime = updateTime;
+        }
+    }
+
+    public static class WorkCompletedWo extends GsonPropertyObject {
+        private String id;
+        private String job;
+        private String title;
+        private String startTime;
+        private String startTimeMonth;
+        private String creatorPerson;
+        private String creatorIdentity;
+        private String creatorUnit;
+        private String application;
+        private String applicationName;
+        private String applicationAlias;
+        private String process;
+        private String processName;
+        private String processAlias;
+        private String serial;
+        private String form;
+        private String createTime;
+        private String updateTime;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getJob() {
+            return job;
+        }
+
+        public void setJob(String job) {
+            this.job = job;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getStartTime() {
+            return startTime;
+        }
+
+        public void setStartTime(String startTime) {
+            this.startTime = startTime;
+        }
+
+        public String getStartTimeMonth() {
+            return startTimeMonth;
+        }
+
+        public void setStartTimeMonth(String startTimeMonth) {
+            this.startTimeMonth = startTimeMonth;
+        }
+
+        public String getCreatorPerson() {
+            return creatorPerson;
+        }
+
+        public void setCreatorPerson(String creatorPerson) {
+            this.creatorPerson = creatorPerson;
+        }
+
+        public String getCreatorIdentity() {
+            return creatorIdentity;
+        }
+
+        public void setCreatorIdentity(String creatorIdentity) {
+            this.creatorIdentity = creatorIdentity;
+        }
+
+        public String getCreatorUnit() {
+            return creatorUnit;
+        }
+
+        public void setCreatorUnit(String creatorUnit) {
+            this.creatorUnit = creatorUnit;
+        }
+
+        public String getApplication() {
+            return application;
+        }
+
+        public void setApplication(String application) {
+            this.application = application;
+        }
+
+        public String getApplicationName() {
+            return applicationName;
+        }
+
+        public void setApplicationName(String applicationName) {
+            this.applicationName = applicationName;
+        }
+
+        public String getApplicationAlias() {
+            return applicationAlias;
+        }
+
+        public void setApplicationAlias(String applicationAlias) {
+            this.applicationAlias = applicationAlias;
+        }
+
+        public String getProcess() {
+            return process;
+        }
+
+        public void setProcess(String process) {
+            this.process = process;
+        }
+
+        public String getProcessName() {
+            return processName;
+        }
+
+        public void setProcessName(String processName) {
+            this.processName = processName;
+        }
+
+        public String getProcessAlias() {
+            return processAlias;
+        }
+
+        public void setProcessAlias(String processAlias) {
+            this.processAlias = processAlias;
+        }
+
+        public String getSerial() {
+            return serial;
+        }
+
+        public void setSerial(String serial) {
+            this.serial = serial;
+        }
+
+        public String getForm() {
+            return form;
+        }
+
+        public void setForm(String form) {
+            this.form = form;
+        }
+
+        public String getCreateTime() {
+            return createTime;
+        }
+
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
+        }
+
+        public String getUpdateTime() {
+            return updateTime;
+        }
+
+        public void setUpdateTime(String updateTime) {
+            this.updateTime = updateTime;
+        }
+    }
 }
