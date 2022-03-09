@@ -16,6 +16,9 @@ import java.util.Date;
 import java.util.List;
 
 
+/**
+ * 聊天 会话对象
+ */
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.IMConversation.table, uniqueConstraints = {
@@ -97,6 +100,56 @@ public class IMConversation extends SliceJpaObject  {
     @CheckPersist(allowEmpty = true)
     private Date lastMessageTime;
 
+
+
+
+    public static final String businessId_FIELDNAME = "businessId";
+    @FieldDescribe("业务对象Id. （流程的jobId）")
+    @Column(length = length_128B, name = ColumnNamePrefix + businessId_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String businessId;
+
+    public static final String businessBody_FIELDNAME = "businessBody";
+    @FieldDescribe("业务对象内容.")
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(length = length_10M, name = ColumnNamePrefix + businessBody_FIELDNAME)
+    private String businessBody;
+
+    //业务类型 process 流程
+    public static final String CONVERSATION_BUSINESS_TYPE_PROCESS = "process";
+    public static final String CONVERSATION_BUSINESS_TYPE_CMS = "cms";
+
+    public static final String businessType_FIELDNAME = "businessType";
+    @FieldDescribe("业务类型. process")
+    @Column(length = length_16B, name = ColumnNamePrefix + businessType_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String businessType;
+
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
+
+    public String getBusinessBody() {
+        return businessBody;
+    }
+
+    public void setBusinessBody(String businessBody) {
+        this.businessBody = businessBody;
+    }
+
+    public String getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
+    }
 
     public String getType() {
         return type;
