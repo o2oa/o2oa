@@ -9,7 +9,9 @@ import org.apache.openjpa.persistence.jdbc.Index;
 
 import javax.persistence.*;
 
-
+/**
+ * 会话消息
+ */
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.IMMsg.table, uniqueConstraints = {
