@@ -689,5 +689,33 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
                 this._setBusinessData([]);
             }
         }
+    },
+    uploadAttachment: function (e, node, files) {
+        debugger;
+        if (window.o2android && window.o2android.uploadAttachmentForDatagrid) {
+            window.o2android.uploadAttachmentForDatagrid((this.json.site || this.json.id), this.json.id);
+        } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadAttachmentForDatagrid) {
+            window.webkit.messageHandlers.uploadAttachmentForDatagrid.postMessage({ "site": (this.json.site || this.json.id) , "param":this.json.id});
+        } else {
+            // if (!this.uploadFileAreaNode){
+            this.createUploadFileNode(files);
+            // }
+            // this.fileUploadNode.click();
+        }
+    },
+    replaceAttachment: function (e, node, attachment) {
+        if (window.o2android && window.o2android.replaceAttachmentForDatagrid) {
+            window.o2android.replaceAttachmentForDatagrid(attachment.data.id, (this.json.site || this.json.id), this.json.id);
+        } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.replaceAttachmentForDatagrid) {
+            window.webkit.messageHandlers.replaceAttachmentForDatagrid.postMessage({ "id": attachment.data.id, "site": (this.json.site || this.json.id) , "param":this.json.id});
+        } else {
+            var _self = this;
+            this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.replaceAttachmentTitle, MWF.xApplication.process.Xform.LP.replaceAttachment + "( " + attachment.data.name + " )", 350, 120, function () {
+                _self.replaceAttachmentFile(attachment);
+                this.close();
+            }, function () {
+                this.close();
+            }, null, null, this.form.json.confirmStyle);
+        }
     }
 });
