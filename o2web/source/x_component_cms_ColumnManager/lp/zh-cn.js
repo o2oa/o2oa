@@ -62,6 +62,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "nameLabel" : "分类名称",
         "aliasLabel" : "分类别名",
         "sendNotify" : "发布时是否发送消息",
+        "sendNotifyInfo": "具体消息策略在表单中配置",
         "blankToAllNotify": "发布范围为空时是否全员通知",
         "descriptionLabel" : "分类描述",
         "sortLabel" : "分类排序",
