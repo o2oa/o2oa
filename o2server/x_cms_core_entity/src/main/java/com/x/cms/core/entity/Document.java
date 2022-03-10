@@ -379,43 +379,6 @@ public class Document extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> authorGroupList;
 
-	public static final String remindPersonList_FIELDNAME = "remindPersonList";
-	@FieldDescribe("发布提醒人员")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ remindPersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + remindPersonList_FIELDNAME
-					+ JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ remindPersonList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + remindPersonList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> remindPersonList;
-
-	public static final String remindUnitList_FIELDNAME = "remindUnitList";
-	@FieldDescribe("发布提醒组织")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + remindUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + remindUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ remindUnitList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + remindUnitList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> remindUnitList;
-
-	public static final String remindGroupList_FIELDNAME = "remindGroupList";
-	@FieldDescribe("发布提醒群组")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + remindGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + remindGroupList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ remindGroupList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + remindGroupList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> remindGroupList;
-
 	public static final String managerList_FIELDNAME = "managerList";
 	@FieldDescribe("管理者")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -794,30 +757,6 @@ public class Document extends SliceJpaObject {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public List<String> getRemindPersonList() {
-		return remindPersonList;
-	}
-
-	public void setRemindPersonList(List<String> remindPersonList) {
-		this.remindPersonList = remindPersonList;
-	}
-
-	public List<String> getRemindUnitList() {
-		return remindUnitList;
-	}
-
-	public void setRemindUnitList(List<String> remindUnitList) {
-		this.remindUnitList = remindUnitList;
-	}
-
-	public List<String> getRemindGroupList() {
-		return remindGroupList;
-	}
-
-	public void setRemindGroupList(List<String> remindGroupList) {
-		this.remindGroupList = remindGroupList;
 	}
 
 	public Boolean getReviewed() {
