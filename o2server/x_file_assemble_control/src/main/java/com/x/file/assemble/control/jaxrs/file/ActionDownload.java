@@ -39,8 +39,9 @@ class ActionDownload extends StandardJaxrsAction {
 				try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 					file.readContent(mapping, os);
 					byte[] bs = os.toByteArray();
+					String fastETag = file.getId()+file.getUpdateTime().getTime();
 					wo = new Wo(bs, this.contentType(false, file.getName()),
-							this.contentDisposition(false, file.getName()));
+							this.contentDisposition(false, file.getName()), fastETag);
 					/**
 					 * 对10M以下的文件进行缓存
 					 */
@@ -56,8 +57,8 @@ class ActionDownload extends StandardJaxrsAction {
 
 	public static class Wo extends WoFile {
 
-		public Wo(byte[] bytes, String contentType, String contentDisposition) {
-			super(bytes, contentType, contentDisposition);
+		public Wo(byte[] bytes, String contentType, String contentDisposition, String fastETag) {
+			super(bytes, contentType, contentDisposition, fastETag);
 		}
 
 	}

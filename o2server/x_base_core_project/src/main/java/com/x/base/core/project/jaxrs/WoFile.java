@@ -27,11 +27,26 @@ public abstract class WoFile extends WoMaxAgeFastETag {
 		this.contentDisposition = contentDisposition;
 	}
 
+	public WoFile(byte[] bytes, String contentType, String contentDisposition, String fastETag) {
+		this.bytes = bytes;
+		this.contentType = contentType;
+		this.contentDisposition = contentDisposition;
+		this.setFastETag(fastETag);
+	}
+
 	public WoFile(StreamingOutput streamingOutput, String contentType, String contentDisposition, Long contentLength) {
 		this.streamingOutput = streamingOutput;
 		this.contentType = contentType;
 		this.contentDisposition = contentDisposition;
 		this.contentLength = contentLength;
+	}
+
+	public WoFile(StreamingOutput streamingOutput, String contentType, String contentDisposition, Long contentLength, String fastETag) {
+		this.streamingOutput = streamingOutput;
+		this.contentType = contentType;
+		this.contentDisposition = contentDisposition;
+		this.contentLength = contentLength;
+		this.setFastETag(fastETag);
 	}
 
 	public String getContentDisposition() {

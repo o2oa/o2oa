@@ -50,8 +50,10 @@ class ActionDownload extends BaseAction {
 					logger.warn("{}附件下载异常：{}", attachment.getName(), e.getMessage());
 				}
 			};
+			String fastETag = attachment.getId()+attachment.getUpdateTime().getTime();
 			wo = new Wo(streamingOutput, this.contentType(false, attachment.getName()),
-					this.contentDisposition(false, attachment.getName()), originFile.getLength());
+					this.contentDisposition(false, attachment.getName()),
+					originFile.getLength(), fastETag);
 			result.setData(wo);
 			return result;
 		}
@@ -59,8 +61,8 @@ class ActionDownload extends BaseAction {
 
 	public static class Wo extends WoFile {
 
-		public Wo(StreamingOutput streamingOutput, String contentType, String contentDisposition, Long contentLength) {
-			super(streamingOutput, contentType, contentDisposition, contentLength);
+		public Wo(StreamingOutput streamingOutput, String contentType, String contentDisposition, Long contentLength, String fastETag) {
+			super(streamingOutput, contentType, contentDisposition, contentLength, fastETag);
 		}
 
 	}
