@@ -1054,35 +1054,40 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             });
         }
         this.documentAction.publishDocumentComplex(documentData, function (json) {
-            this.businessData.data.isNew = false;
-            this.fireEvent("afterPublish", [this, json.data]);
-            if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterPublish",[this, json.data]);
-            // if (callback) callback(); // 传进来不是function
-            if (layout.mobile) {
-                this.app.content.unmask();
-                this.closeWindowOnMobile();
-            } else {
-                if (this.businessData.document.title) {
-                    this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished + ": “" + this.businessData.document.title + "”", "success");
-                } else {
-                    this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished, "success");
-                }
-                this.options.saveOnClose = false;
 
-                debugger;
-                if( layout.inBrowser ){
-                    try{
-                        if( window.opener && window.opener.o2RefreshCMSView ){
-                            window.opener.o2RefreshCMSView();
-                        }
-                    }catch (e) {}
-                    window.setTimeout(function () {
+            this.sendNotice(function () {
+
+                this.businessData.data.isNew = false;
+                this.fireEvent("afterPublish", [this, json.data]);
+                if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterPublish",[this, json.data]);
+                // if (callback) callback(); // 传进来不是function
+                if (layout.mobile) {
+                    this.app.content.unmask();
+                    this.closeWindowOnMobile();
+                } else {
+                    if (this.businessData.document.title) {
+                        this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished + ": “" + this.businessData.document.title + "”", "success");
+                    } else {
+                        this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished, "success");
+                    }
+                    this.options.saveOnClose = false;
+
+                    debugger;
+                    if( layout.inBrowser ){
+                        try{
+                            if( window.opener && window.opener.o2RefreshCMSView ){
+                                window.opener.o2RefreshCMSView();
+                            }
+                        }catch (e) {}
+                        window.setTimeout(function () {
+                            this.app.close();
+                        }.bind(this), 1500)
+                    }else{
                         this.app.close();
-                    }.bind(this), 1500)
-                }else{
-                    this.app.close();
+                    }
                 }
-            }
+
+            }.bind(this));
             
         }.bind(this));
 
@@ -1124,6 +1129,52 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
     //    }.bind(this), null, this.businessData.document.id, data);
     //},
 
+    sendNotice: function(){
+        if( this.json.noticeType === "custom" ){ //reader
+            var rangeList = [];
+            switch ( o2.typeOf( this.json.noticeSpecificList ) ) {
+                case "array":
+                    rangeList = this.json.noticeSpecificList;
+                    break;
+                case "string":
+                case "object":
+                    rangeList.push( this.json.noticeSpecificList );
+                    break;
+            }
+
+            rangeList = rangeList.concat((this.json.noticeFormFieldList || []).map(function (name) {
+                return this.all[name]  ? this.all[name].getData() : null;
+            }.bind(this)));
+
+            if( this.json.noticeScript && this.json.noticeScript.code ){
+                var range = this.Macro.exec(this.json.noticeScript.code, this);
+                switch ( o2.typeOf( range ) ) {
+                    case "array":
+                        rangeList = rangeList.concat( range );
+                        break;
+                    case "string":
+                    case "object":
+                        rangeList.push( range );
+                        break;
+                }
+            }
+
+            rangeList = rangeList.clean().map(function ( range ) {
+                return o2.typeOf(range) === "string" ? range : range.distinguishedName
+            })
+
+        }else{
+            var readers = [];
+            Object.each(this.forms, function (module, id) {
+                if (module.json.type == "Readerfield" || module.json.type == "Reader") {
+                    readers = readers.concat(module.getData());
+                }
+            });
+            if( readers.length === 0 ){
+                //blankToAllNotify
+            }
+        }
+    },
     deleteDocumentForMobile: function () {
         if (layout.mobile) {
             this.app.content.mask({
