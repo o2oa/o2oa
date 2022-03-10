@@ -22,11 +22,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Document正式发布后，向所有的阅读者推送消息通知
+ * Document正式发布后，向通知对象或者所有的阅读者推送消息通知
+ * @author sword
  */
 public class QueueSendDocumentNotify extends AbstractQueue<String> {
 
@@ -40,18 +41,17 @@ public class QueueSendDocumentNotify extends AbstractQueue<String> {
 			logger.debug("can not send publish notify , document is NULL!" );
 			return;
 		}
-		List<String> persons = null;
+		final List<String> persons = new ArrayList<>();
 		Document document = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			document = emc.find(documentId, Document.class);
 			if(document !=null && StringUtils.equals( "信息" , document.getDocumentType()) && Config.messages().get(MessageConnector.TYPE_CMS_PUBLISH)!=null) {
 				logger.debug("send publish notify for new document:" + document.getTitle() );
-				AppInfo appInfo = emc.find(document.getAppId(), AppInfo.class);
+						AppInfo appInfo = emc.find(document.getAppId(), AppInfo.class);
 				CategoryInfo category = emc.find(document.getCategoryId(), CategoryInfo.class);
-
 				if (appInfo != null && category != null) {
 					ReviewService reviewService = new ReviewService();
-					persons = reviewService.listPermissionPersons(appInfo, category, document);
+					persons.addAll(reviewService.listPermissionPersons(appInfo, category, document));
 					if (ListTools.isNotEmpty(persons)) {
 						//有可能是*， 一般是所有的人员标识列表
 						if (persons.contains("*") && !BooleanUtils.isFalse(category.getBlankToAllNotify())) {
@@ -69,33 +69,27 @@ public class QueueSendDocumentNotify extends AbstractQueue<String> {
 							}
 							if (StringUtils.isNotEmpty(topUnitName)) {
 								//取顶层组织的所有人
-								persons = listPersonWithUnit(topUnitName);
-							} else {
-								persons = new ArrayList<>();
+								persons.addAll(listPersonWithUnit(topUnitName));
 							}
 						}
 					}
-				} else {
-					logger.debug("can not send publish notify for document, category or  appinfo not exists! ID： " + document.getId());
 				}
 			}
 		}
 		if( ListTools.isNotEmpty( persons )) {
-			//去一下重复
-			HashSet<String> set = new HashSet<String>( persons );
+			List<String> personList = persons.stream().distinct().collect(Collectors.toList());
 			persons.clear();
-			persons.addAll(set);
 
 			MessageWo wo = MessageWo.copier.copy(document);
-			for( String person : persons ) {
+			for( String person : personList ) {
 				if( !StringUtils.equals( "*", person  )) {
 					MessageFactory.cms_publish(person, wo);
 				}
 			}
+			personList.clear();
 			logger.debug(documentId +" cms send total count:" + persons.size()  );
 		}
-		if(document!=null && StringUtils.equals( "信息" , document.getDocumentType())
-				&& StringUtils.isNotBlank(document.getCreatorPerson())){
+		if(document!=null && StringUtils.isNotBlank(document.getCreatorPerson())){
 			MessageWo wo = MessageWo.copier.copy(document);
 			MessageFactory.cms_publish_creator(wo);
 		}

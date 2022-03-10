@@ -613,12 +613,6 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		private List<String> authorGroupList;
 
-		private List<String> remindPersonList;
-
-		private List<String> remindUnitList;
-
-		private List<String> remindGroupList;
-
 		private List<String> managerList;
 
 		private List<String> pictureList;
@@ -958,30 +952,6 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		public void setAuthorGroupList(List<String> authorGroupList) {
 			this.authorGroupList = authorGroupList;
-		}
-
-		public List<String> getRemindPersonList() {
-			return remindPersonList;
-		}
-
-		public void setRemindPersonList(List<String> remindPersonList) {
-			this.remindPersonList = remindPersonList;
-		}
-
-		public List<String> getRemindUnitList() {
-			return remindUnitList;
-		}
-
-		public void setRemindUnitList(List<String> remindUnitList) {
-			this.remindUnitList = remindUnitList;
-		}
-
-		public List<String> getRemindGroupList() {
-			return remindGroupList;
-		}
-
-		public void setRemindGroupList(List<String> remindGroupList) {
-			this.remindGroupList = remindGroupList;
 		}
 
 		public List<String> getManagerList() {
