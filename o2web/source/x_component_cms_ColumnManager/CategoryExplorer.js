@@ -2672,7 +2672,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.category.excelImportView +"</td><td class='formValue'><div id='formImportViewId' style='cursor:pointer;width:90%;min-height:22px;overflow:hidden;border:1px solid #ccc;border-radius: 3px;'></div></td></td></tr>"; //(this.category.data.documentType || "" )+
         html += "<tr><td class='formTitle'>"+this.app.lp.category.sendNotify +"</td><td id='formCategorySendNotify' class='formValue'></td></tr>"; //"+this.category.data.categoryAlias+"
-        html += "<tr><td class='formTitle'>"+this.app.lp.category.blankToAllNotify +"</td><td id='formCategoryBlankToAllNotify' class='formValue'></td></tr>"; //"+this.category.data.categoryAlias+"
+        html += "<tr><td class='formTitle'></td><td style='color:#999;padding-left: 20px;font-size: 12px;'>"+this.app.lp.category.sendNotifyInfo+"</td></tr>";
+        // html += "<tr><td class='formTitle'>"+this.app.lp.category.blankToAllNotify +"</td><td id='formCategoryBlankToAllNotify' class='formValue'></td></tr>"; //"+this.category.data.categoryAlias+"
         html += "</table>";
         this.propertyContentNode.set("html", html);
         this.propertyContentNode.getElements("td.formTitle").setStyles(this.app.css.propertyBaseContentTdTitle);
@@ -2715,20 +2716,20 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         });
         this.sendNotify.load();
 
-        var blankToAllNotifyValue = o2.typeOf(this.category.data.blankToAllNotify) === "boolean" ? this.category.data.blankToAllNotify : true;
-        this.blankToAllNotify = new MDomItem( this.propertyContentNode.getElement("#formCategoryBlankToAllNotify"), {
-            type : "select",
-            style: this.app.css.processSelect,
-            value : blankToAllNotifyValue.toString(),
-            selectValue : lp.blankToAllNotifySelectValue,
-            selectText: lp.blankToAllNotifySelectText,
-            event : {
-                change : function( item ){
-                    this.category.setBlankToAllNotify( item.getValue() !== "false" );
-                }.bind(this)
-            }
-        });
-        this.blankToAllNotify.load();
+        // var blankToAllNotifyValue = o2.typeOf(this.category.data.blankToAllNotify) === "boolean" ? this.category.data.blankToAllNotify : true;
+        // this.blankToAllNotify = new MDomItem( this.propertyContentNode.getElement("#formCategoryBlankToAllNotify"), {
+        //     type : "select",
+        //     style: this.app.css.processSelect,
+        //     value : blankToAllNotifyValue.toString(),
+        //     selectValue : lp.blankToAllNotifySelectValue,
+        //     selectText: lp.blankToAllNotifySelectText,
+        //     event : {
+        //         change : function( item ){
+        //             this.category.setBlankToAllNotify( item.getValue() !== "false" );
+        //         }.bind(this)
+        //     }
+        // });
+        // this.blankToAllNotify.load();
 
 
         var value = this.category.data.importViewId ? [{
