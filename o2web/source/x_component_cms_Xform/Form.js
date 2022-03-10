@@ -1284,6 +1284,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
      */
     uploadedAttachment: function (site, id) {
         this.documentAction.getAttachment(id, this.businessData.document.id, function (json) {
+
+            var flag = this.businessData.attachmentList.some(function (attData) {
+                return json.data.id === attData.id;
+            }.bind(this));
+            if( !flag ){
+                this.businessData.attachmentList.push(json.data);
+            }
+
             var att = this.all[site];
             if (att) {
                 if (json.data) att.attachmentController.addAttachment(json.data);
@@ -1308,6 +1316,48 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 attachment.data = json.data;
                 attachment.reload();
                 attachmentController.checkActions();
+            }
+        }.bind(this))
+    },
+
+    uploadedAttachmentDatagrid: function (site, id, moduleId) {
+        this.documentAction.getAttachment(id, this.businessData.document.id, function (json) {
+
+            var flag = this.businessData.attachmentList.some(function (attData) {
+                return json.data.id === attData.id;
+            }.bind(this));
+            if( !flag ){
+                this.businessData.attachmentList.push(json.data);
+            }
+
+            var att = this.all[moduleId];
+            if (att) {
+                if (json.data) att.attachmentController.addAttachment(json.data);
+                att.setAttachmentBusinessData();
+                att.attachmentController.checkActions();
+                att.fireEvent("upload", [json.data]);
+                att.fireEvent("change", [json.data]);
+            }
+        }.bind(this));
+    },
+    replacedAttachmentDatagrid: function (site, id, moduleId) {
+        this.documentAction.getAttachment(id, this.businessData.document.id, function (json) {
+
+            var att = this.all[moduleId];
+            if (att) {
+                var attachmentController = att.attachmentController;
+                var attachment = null;
+                for (var i = 0; i < attachmentController.attachments.length; i++) {
+                    if (attachmentController.attachments[i].data.id === id) {
+                        attachment = attachmentController.attachments[i];
+                        break;
+                    }
+                }
+                attachment.data = json.data;
+                att.setAttachmentBusinessData();
+                attachment.reload();
+                attachmentController.checkActions();
+                att.fireEvent("change", [json.data]);
             }
         }.bind(this))
     },
