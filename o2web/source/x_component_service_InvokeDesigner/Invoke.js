@@ -241,7 +241,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
 
         if(this.page){
             this.designer.propertyRequireBodyNode.set("value", this.page.requireBody || "");
-            this.designer.propertyRunResultNode.set("html", this.page.executeResult || "");
+            this.designer.propertyRunResultNode.set("text", this.page.executeResult || "");
         }
 
         this.setButton()

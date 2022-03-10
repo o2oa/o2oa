@@ -666,33 +666,74 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             }catch(e) {
             }
 
-            if( id )o2.Actions.load("x_program_center").InvokeAction.execute( alias || name || id, bodyJson || body, function (json) {
-                var result;
-                try{
-                    result = JSON.stringify(json, null, 4);
-                }catch (e) {
-                    result = json;
-                }
-                if(this.currentPage){
-                    this.currentPage.executeResult = result;
-                }
-                this.propertyRunResultNode.set("html",result);
+            if( id ){
+                var address = o2.Actions.getHost("x_program_center");
+                var serviceName = o2.Actions.load("x_program_center").InvokeAction.action.serviceName;
+                var uri = o2.Actions.load("x_program_center").InvokeAction.action.actions.execute.uri;
+                var url = uri.replace("{flag}", alias || name || id);
+                var res = new Request({
+                    url: address + "/" + serviceName +  url,
+                    async: false,
+                    method: "POST",
+                    onSuccess: function(responseText, responseXML){
+                        var result;
+                        try{
+                            var json = JSON.parse( responseText );
+                            result = JSON.stringify(json, null, 4);
+                        }catch (e) {
+                            result = responseText;
+                        }
+                        if(this.currentPage){
+                            this.currentPage.executeResult = result;
+                        }
+                        this.propertyRunResultNode.set("text",result);
 
-                this.notice( this.lp.runSuccess, "success");
-            }.bind(this), function (xhr) {
-                var result;
-                try{
-                    result = JSON.stringify(xhr.responseText, null, 4);
-                }catch (e) {
-                    result = xhr.responseText;
-                }
-                if(this.currentPage){
-                    this.currentPage.executeResult = result;
-                }
-                this.propertyRunResultNode.set("html",result);
+                        this.notice( this.lp.runSuccess, "success");
+                    }.bind(this),
+                    onFailure: function(xhr){
+                        var result;
+                        try{
+                            result = JSON.stringify(xhr.responseText, null, 4);
+                        }catch (e) {
+                            result = xhr.responseText;
+                        }
+                        if(this.currentPage){
+                            this.currentPage.executeResult = result;
+                        }
+                        this.propertyRunResultNode.set("text",result);
+                    }.bind(this)
+                });
+                res.setHeader("Content-Type", "application/json; charset=utf-8");
+                res.setHeader("Accept", "text/html,application/json,*/*");
+                res.setHeader("Accept-Language", o2.languageName);
+                res.send( bodyJson || body );
+            }
 
-                // this.notice("request processToolbars error: "+xhr.responseText, "error");
-            }.bind(this));
+            // if( id )o2.Actions.load("x_program_center").InvokeAction.execute( alias || name || id, bodyJson || body, function (json) {
+            //     var result;
+            //     try{
+            //         result = JSON.stringify(json, null, 4);
+            //     }catch (e) {
+            //         result = json;
+            //     }
+            //     if(this.currentPage){
+            //         this.currentPage.executeResult = result;
+            //     }
+            //     this.propertyRunResultNode.set("html",result);
+            //
+            //     this.notice( this.lp.runSuccess, "success");
+            // }.bind(this), function (xhr) {
+            //     var result;
+            //     try{
+            //         result = JSON.stringify(xhr.responseText, null, 4);
+            //     }catch (e) {
+            //         result = xhr.responseText;
+            //     }
+            //     if(this.currentPage){
+            //         this.currentPage.executeResult = result;
+            //     }
+            //     this.propertyRunResultNode.set("html",result);
+            // }.bind(this));
         }.bind(this));
         this.propertyExecuteButton.setStyle("margin","0px");
 
