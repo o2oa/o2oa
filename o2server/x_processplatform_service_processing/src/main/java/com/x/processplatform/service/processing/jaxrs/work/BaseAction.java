@@ -6,20 +6,12 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.DocumentVersion;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.content.*;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.query.core.entity.Item;
+import org.apache.commons.lang3.StringUtils;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -49,6 +41,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			deleteDocumentVersion(business, work.getJob());
 			deleteRecord(business, work.getJob());
 			deleteWork(business, work);
+			deleteSignScrawl(business, work.getJob());
+			deleteSign(business, work.getJob());
 			return true;
 		}
 	}
@@ -170,6 +164,35 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (ListTools.isNotEmpty(ids)) {
 			business.entityManagerContainer().beginTransaction(Record.class);
 			business.entityManagerContainer().delete(Record.class, ids);
+		}
+	}
+
+	protected void deleteSign(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(DocSign.class, DocSign.job_FIELDNAME, job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(DocSign.class);
+			business.entityManagerContainer().delete(DocSign.class, ids);
+		}
+	}
+
+	protected void deleteSignScrawl(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(DocSignScrawl.class, DocSignScrawl.job_FIELDNAME, job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(DocSignScrawl.class);
+			DocSignScrawl obj;
+			for (String id : ids) {
+				obj = business.entityManagerContainer().find(id, DocSignScrawl.class);
+				if (null != obj) {
+					if(StringUtils.isNotBlank(obj.getStorage())) {
+						StorageMapping mapping = ThisApplication.context().storageMappings().get(DocSignScrawl.class,
+								obj.getStorage());
+						if (null != mapping) {
+							obj.deleteContent(mapping);
+						}
+					}
+					business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+				}
+			}
 		}
 	}
 
