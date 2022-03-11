@@ -62,6 +62,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "nameLabel": "Category Name",
         "aliasLabel": "Category Alias",
         "sendNotify": "Send Message",
+        "sendNotifyInfo": "The specific message policy is configured in the form",
         "blankToAllNotify": "Notify all when the release range is empty",
         "descriptionLabel": "Category description",
         "sortLabel": "Queue Number",

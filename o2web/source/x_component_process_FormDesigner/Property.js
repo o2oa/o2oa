@@ -125,6 +125,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadSmartBISelect();
 
                     this.loadHelp();
+
+                    if( this.postShow )this.postShow();
+
                     // this.loadScriptIncluder();
                     // this.loadDictionaryIncluder();
                     //this.testRestful();
@@ -1571,6 +1574,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
     },
     loadPersonInput: function(){
+        var personMultipleNodes = this.propertyContent.getElements(".MWFPersonMultiple");
         var personIdentityNodes = this.propertyContent.getElements(".MWFPersonIdentity");
         var personUnitNodes = this.propertyContent.getElements(".MWFPersonUnit");
         var dutyNodes = this.propertyContent.getElements(".MWFDutySelector");
@@ -1589,6 +1593,14 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
+            personMultipleNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "types": node.get("data-types").split(","),
+                    "names": this.data[node.get("name")],
+                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+
             personIdentityNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "identity",
