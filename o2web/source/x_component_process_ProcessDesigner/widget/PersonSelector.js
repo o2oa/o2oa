@@ -10,8 +10,10 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
     options: {
         "style": "default",
         "type": "identity",
+        "types": [],
         "count": 0,
-        "names": []
+        "names": [],
+        "selectorOptions": null
     },
     initialize: function(node, app, options){
         this.setOptions(options);
@@ -45,7 +47,9 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
     },
     loadIdentitys: function(){
         if (this.options.names){
-            if (this.options.type.toLowerCase()==="duty"){
+            if( this.options.types && this.options.types.length ){
+                this.loadOrgWidget( this.node );
+            }else if (this.options.type.toLowerCase()==="duty"){
                 var dutys = JSON.decode(this.options.names);
                 dutys.each(function(d){
                     var dutyItem = new MWF.widget.O2Duty(d, this.node, {
@@ -89,6 +93,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                             if (type==="application") this.identitys.push(new MWF.widget.O2Application(data, this.node));
                             if (type==="process") this.identitys.push(new MWF.widget.O2Process(data, this.node));
                             if (type==="formfield") this.identitys.push(new MWF.widget.O2FormField(data, this.node));
+                            if (type==="cmsformfield") this.identitys.push(new MWF.widget.O2FormField(data, this.node));
                             if (type==="view") this.identitys.push(new MWF.widget.O2View(data, this.node));
                             if (type==="cmsview") this.identitys.push(new MWF.widget.O2CMSView(data, this.node));
                             if (type==="queryview") this.identitys.push(new MWF.widget.O2QueryView(data, this.node));
@@ -113,6 +118,44 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
         }
 
     },
+    loadOrgWidget: function(node, items){
+        var disableInfor = false;
+
+        var names = items || this.options.names;
+        if( typeOf(names) === "string" ){
+            try{
+                names = JSON.parse( names );
+            }catch (e){
+                names = [names];
+            }
+        }
+
+        if (names && names.length){
+            names.each(function(name){
+                var data = (typeOf(name)==="string") ? {"name": name, "id": name}: name;
+                var distinguishedName = (typeOf(name)==="string") ? name : data.distinguishedName;
+                var flag = distinguishedName.split("@").getLast();
+                var widget;
+                switch (flag.toLowerCase()){
+                    case "i":
+                        widget = new MWF.widget.O2Identity(name, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        break;
+                    case "p":
+                        widget = new MWF.widget.O2Person(name, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        break;
+                    case "u":
+                        widget = new MWF.widget.O2Unit(name, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        break;
+                    case "g":
+                        widget = new MWF.widget.O2Group(name, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        break;
+                    default:
+                        widget = new MWF.widget.O2Other(name, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                }
+                this.identitys.push(widget);
+            }.bind(this));
+        }
+    },
     createAddNode: function(){
         this.addNode = new Element("div", {"styles": this.css.addPersonNode}).inject(this.node, "before");
         this.addNode.addEvent("click", function(e){
@@ -134,8 +177,11 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
 
             var selecteds = [];
             this.identitys.each(function(id){selecteds.push(id.data)});
+            var types = ( this.options.types && this.options.types.length ) ? this.options.types : "";
+            var type = ( this.options.types && this.options.types.length ) ? "" : ((this.options.type.toLowerCase()==="dutyname") ? "duty" : this.options.type)
             var options = {
-                "type": (this.options.type.toLowerCase()==="dutyname") ? "duty" : this.options.type,
+                "types": types,
+                "type": type,
                 "application": this.options.application,
                 "fieldType": this.options.fieldType,
                 "count": (this.options.type.toLowerCase()==="duty")? 1: this.options.count,
@@ -151,37 +197,44 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                     if (this.options.type.toLowerCase()!=="duty") this.node.empty();
                     var type = this.options.type.toLowerCase();
                     MWF.require("MWF.widget.O2Identity", function(){
-                        items.each(function(item){
-                            if (type==="identity") this.identitys.push(new MWF.widget.O2Identity(item.data, this.node));
-                            if (type==="person") this.identitys.push(new MWF.widget.O2Person(item.data, this.node));
-                            if (type==="unit") this.identitys.push(new MWF.widget.O2Unit(item.data, this.node));
-                            if (type==="group") this.identitys.push(new MWF.widget.O2Group(item.data, this.node));
-
-                            if (type==="application") this.identitys.push(new MWF.widget.O2Application(item.data, this.node));
-                            if (type==="process") this.identitys.push(new MWF.widget.O2Process(item.data, this.node));
-                            if (type==="cmsapplication") this.identitys.push(new MWF.widget.O2CMSApplication(item.data, this.node));
-                            if (type==="cmscategory") this.identitys.push(new MWF.widget.O2CMSCategory(item.data, this.node));
-
-                            if (type==="formfield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
-                            if (type==="view") this.identitys.push(new MWF.widget.O2View(item.data, this.node));
-                            if (type==="cmsview") this.identitys.push(new MWF.widget.O2CMSView(item.data, this.node));
-                            if (type==="queryview") this.identitys.push(new MWF.widget.O2QueryView(item.data, this.node));
-                            if (type==="querystatement") this.identitys.push(new MWF.widget.O2QueryStatement(item.data, this.node));
-                            if (type==="querystat") this.identitys.push(new MWF.widget.O2QueryStat(item.data, this.node));
-                            if (type==="querytable") this.identitys.push(new MWF.widget.O2QueryTable(item.data, this.node));
-                            if (type==="queryimportmodel") this.identitys.push(new MWF.widget.O2QueryImportModel(item.data, this.node));
-                            if (type==="dutyname") this.identitys.push(new MWF.widget.O2Duty(item.data, this.node));
-                            if (type==="portalfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
-                            if (type==="processfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
-
-                            if (type==="dictionary") this.identitys.push(new MWF.widget.O2Dictionary(item.data, this.node));
-                            if (type==="script") this.identitys.push(new MWF.widget.O2Script(item.data, this.node));
-                            if (type==="formstyle") this.identitys.push(new MWF.widget.O2FormStyle(item.data, this.node));
-                        }.bind(this));
-                        if (type==="duty") {
+                        if( types ){
+                            this.loadOrgWidget( this.node, items.map(function (item) {
+                                return item.data;
+                            }));
+                        }else{
                             items.each(function(item){
-                                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector.DutyInput(this, item.data, this.node, 20000);
+                                if (type==="identity") this.identitys.push(new MWF.widget.O2Identity(item.data, this.node));
+                                if (type==="person") this.identitys.push(new MWF.widget.O2Person(item.data, this.node));
+                                if (type==="unit") this.identitys.push(new MWF.widget.O2Unit(item.data, this.node));
+                                if (type==="group") this.identitys.push(new MWF.widget.O2Group(item.data, this.node));
+
+                                if (type==="application") this.identitys.push(new MWF.widget.O2Application(item.data, this.node));
+                                if (type==="process") this.identitys.push(new MWF.widget.O2Process(item.data, this.node));
+                                if (type==="cmsapplication") this.identitys.push(new MWF.widget.O2CMSApplication(item.data, this.node));
+                                if (type==="cmscategory") this.identitys.push(new MWF.widget.O2CMSCategory(item.data, this.node));
+
+                                if (type==="formfield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
+                                if (type==="cmsformfield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
+                                if (type==="view") this.identitys.push(new MWF.widget.O2View(item.data, this.node));
+                                if (type==="cmsview") this.identitys.push(new MWF.widget.O2CMSView(item.data, this.node));
+                                if (type==="queryview") this.identitys.push(new MWF.widget.O2QueryView(item.data, this.node));
+                                if (type==="querystatement") this.identitys.push(new MWF.widget.O2QueryStatement(item.data, this.node));
+                                if (type==="querystat") this.identitys.push(new MWF.widget.O2QueryStat(item.data, this.node));
+                                if (type==="querytable") this.identitys.push(new MWF.widget.O2QueryTable(item.data, this.node));
+                                if (type==="queryimportmodel") this.identitys.push(new MWF.widget.O2QueryImportModel(item.data, this.node));
+                                if (type==="dutyname") this.identitys.push(new MWF.widget.O2Duty(item.data, this.node));
+                                if (type==="portalfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
+                                if (type==="processfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
+
+                                if (type==="dictionary") this.identitys.push(new MWF.widget.O2Dictionary(item.data, this.node));
+                                if (type==="script") this.identitys.push(new MWF.widget.O2Script(item.data, this.node));
+                                if (type==="formstyle") this.identitys.push(new MWF.widget.O2FormStyle(item.data, this.node));
                             }.bind(this));
+                            if (type==="duty") {
+                                items.each(function(item){
+                                    new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector.DutyInput(this, item.data, this.node, 20000);
+                                }.bind(this));
+                            }
                         }
                         this.fireEvent("change", [this.identitys]);
                     }.bind(this));

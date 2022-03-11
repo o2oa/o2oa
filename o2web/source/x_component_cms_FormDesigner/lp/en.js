@@ -46,7 +46,18 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "format": "Format",
 
         "validationSave": "Save validation",
-        "validationPublish": "Publish Verification"
+        "validationPublish": "Publish Verification",
+
+        "notice" : "Message",
+        "noticeInfo": "Note: The general switch for message sending is set in the category configuration.",
+        "noticeRange": "Range",
+        "noticeByReader": "By reader (published range)",
+        "noticeByCustom": "Custom",
+        "notifyCreatePerson": "Notify creator",
+        "blankToAllNotify": "Notify the visible range when the reader (publishing range) is empty",
+        "blankNotToAllNotify": "Do not notify when the reader (publishing range) is empty",
+        "specificValue": "Specify",
+        "formField": "Form Field"
     },
     "actionBar": {
         "close":"Close",
