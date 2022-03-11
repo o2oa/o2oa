@@ -35,6 +35,8 @@ public class ActionDelete extends BaseAction {
 					deleteItem(business, job);
 					deleteDocumentVersion(business, job);
 					deleteRecord(business, job);
+					deleteSignScrawl(business, job);
+					deleteSign(business, job);
 					emc.beginTransaction(Work.class);
 					for (Work o : emc.listEqual(Work.class, Work.job_FIELDNAME, job)) {
 						emc.remove(o);
