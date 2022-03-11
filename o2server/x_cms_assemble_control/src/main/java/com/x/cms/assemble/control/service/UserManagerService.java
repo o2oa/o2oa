@@ -2,8 +2,13 @@ package com.x.cms.assemble.control.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.document.ActionPersistSaveDocument;
 import com.x.cms.core.entity.AppInfo;
+import com.x.organization.core.entity.PersistenceProperties;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -18,34 +23,28 @@ import com.x.cms.assemble.control.ThisApplication;
 
 /**
  * 组织人员角色相关信息的服务类
- * 
+ *
  * @author O2LEE
  */
 public class UserManagerService {
 
+	private static Logger logger = LoggerFactory.getLogger(UserManagerService.class);
+
 	/**
 	 * 根据人员名称获取人员
-	 * 
+	 *
 	 * @param personName
 	 * @return
 	 * @throws Exception
 	 */
 	public Person getPerson(String personName) throws Exception {
-		Business business = null;
 		Person person = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			business = new Business(emc);
+		try {
+			Business business = new Business(null);
+			if(personName.split("@").length == 2){
+				personName = personName.split("@")[0];
+			}
 			person = business.organization().person().getObject(personName);
-			if (person == null) {
-				if (personName.endsWith("@P") && personName.split("@P").length == 3) {
-					return business.organization().person().getObject(personName.split("@")[1]);
-				}
-			}
-			if (person == null) {
-				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
-					return business.organization().person().getObject(personName.split("@")[0]);
-				}
-			}
 		} catch (Exception e) {
 			throw e;
 		}
@@ -54,7 +53,7 @@ public class UserManagerService {
 
 	/**
 	 * 根据员工姓名获取组织名称 如果用户有多个身份，则取组织级别最大的组织名称
-	 * 
+	 *
 	 * @param personName
 	 * @return
 	 * @throws Exception
@@ -90,7 +89,7 @@ public class UserManagerService {
 
 	/**
 	 * 根据身份名称获取身份所属的组织名称
-	 * 
+	 *
 	 * @param identity
 	 * @return
 	 * @throws Exception
@@ -111,7 +110,7 @@ public class UserManagerService {
 
 	/**
 	 * 根据人员姓名获取人员所属的一级组织名称，如果人员有多个身份，则取组织等级最大的身份
-	 * 
+	 *
 	 * @param personName
 	 * @return
 	 * @throws Exception
@@ -142,15 +141,14 @@ public class UserManagerService {
 
 	/**
 	 * 根据身份名称获取身份所属的顶层组织名称
-	 * 
+	 *
 	 * @param identity
 	 * @return
 	 * @throws Exception
 	 */
 	public String getTopUnitNameByIdentity(String identity) throws Exception {
-		Business business = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			business = new Business(emc);
+		try {
+			Business business = new Business(null);
 			return business.organization().unit().getWithIdentityWithLevel(identity, 1);
 		} catch (NullPointerException e) {
 			return null;
@@ -161,7 +159,7 @@ public class UserManagerService {
 
 	/**
 	 * 根据个人姓名，根据个人姓名获取主身份
-	 * 
+	 *
 	 * @param personName
 	 * @return
 	 * @throws Exception
@@ -200,7 +198,7 @@ public class UserManagerService {
 
 	/**
 	 * 根据用户的身份查询用户的姓名
-	 * 
+	 *
 	 * @param identity
 	 * @return
 	 * @throws Exception
@@ -222,7 +220,7 @@ public class UserManagerService {
 
 	/**
 	 * 获取人员所属的所有组织名称列表
-	 * 
+	 *
 	 * @param personName
 	 * @return
 	 * @throws Exception
@@ -250,7 +248,7 @@ public class UserManagerService {
 
 	/**
 	 * 根据用户姓名查询用户所有的身份信息
-	 * 
+	 *
 	 * @param personName
 	 * @return
 	 * @throws Exception
@@ -279,7 +277,7 @@ public class UserManagerService {
 
 	/**
 	 * 列示人员所拥有的所有角色信息
-	 * 
+	 *
 	 * @param personName
 	 * @return
 	 * @throws Exception
@@ -311,7 +309,7 @@ public class UserManagerService {
 
 	/**
 	 * 列示人员所拥有的所有群组信息
-	 * 
+	 *
 	 * @param personName
 	 * @return
 	 * @throws Exception
@@ -343,7 +341,7 @@ public class UserManagerService {
 
 	/**
 	 * 判断用户是否有指定的平台角色，比如CMS系统管理员
-	 * 
+	 *
 	 * @param personName
 	 * @param roleName
 	 * @return
@@ -385,7 +383,7 @@ public class UserManagerService {
 
 	/**
 	 * 判断指定人员是否是管理员 1、xadmin 2、拥有manager角色 3、拥有CMSManager@CMSManagerSystemRole@R角色
-	 * 
+	 *
 	 * @param effectivePerson
 	 * @return
 	 * @throws Exception
@@ -446,6 +444,56 @@ public class UserManagerService {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 根据人员、组织、群组查询人员信息
+	 * 参数name必须为xx@xx@x格式
+	 * @param name
+	 * @return
+	 */
+	public List<String> listPersonWithName(String name) {
+		List<String> list = new ArrayList<>();
+		if (StringUtils.isEmpty( name ) || name.indexOf("@") == -1) {
+			return list;
+		}
+		Matcher matcher = PersistenceProperties.Person.distinguishedName_pattern.matcher(name);
+		if(matcher.find()){
+			list.add(name);
+			return list;
+		}
+		matcher = PersistenceProperties.Unit.distinguishedName_pattern.matcher(name);
+		if(matcher.find()) {
+			try {
+				Business business = new Business(null);
+				return business.organization().person().listWithUnitSubNested(name);
+			} catch (Exception e) {
+				logger.warn("根据组织【{}】查询人员异常：{}", name,e.getMessage());
+			}
+		}
+		matcher = PersistenceProperties.Identity.distinguishedName_pattern.matcher(name);
+		if(matcher.find()){
+			try {
+				Business business = new Business(null);
+				String person = business.organization().person().getWithIdentity(name);
+				if(StringUtils.isNotBlank(person)){
+					list.add(person);
+				}
+				return list;
+			} catch (Exception e) {
+				logger.warn("根据组织【{}】查询人员异常：{}", name,e.getMessage());
+			}
+		}
+		matcher = PersistenceProperties.Group.distinguishedName_pattern.matcher(name);
+		if(matcher.find()) {
+			try {
+				Business business = new Business(null);
+				return business.organization().person().listWithGroup( name );
+			} catch (Exception e) {
+				logger.warn("根据组织【{}】查询人员异常：{}", name,e.getMessage());
+			}
+		}
+		return list;
 	}
 
 	/**
@@ -543,7 +591,7 @@ public class UserManagerService {
 
 	/**
 	 * 查询系统内所有顶级组织的数量
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -562,7 +610,7 @@ public class UserManagerService {
 
 	/**
 	 * 判断指定组织是否是顶级组织
-	 * 
+	 *
 	 * @param unitName
 	 * @return
 	 * @throws Exception

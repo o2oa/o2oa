@@ -6,6 +6,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.DocumentCommend;
 import com.x.cms.core.entity.DocumentCommentContent;
 import com.x.cms.core.entity.DocumentCommentInfo;
 import com.x.cms.core.express.tools.filter.QueryFilter;
@@ -18,20 +19,20 @@ class DocumentCommentInfoService {
 	/**
 	 * 根据评论信息的标识查询评论信息的信息
 	 * @param emc
-	 * @param flag  主要是ID
+	 * @param id  主要是ID
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public DocumentCommentInfo get(EntityManagerContainer emc, String id) throws Exception {
 		Business business = new Business( emc );
 		return business.documentCommentInfoFactory().get( id );
 	}
-	
+
 	public DocumentCommentContent getContent(EntityManagerContainer emc, String id) throws Exception {
 		Business business = new Business( emc );
 		return business.documentCommentInfoFactory().getContent(id);
-	}	
-	
+	}
+
 	/**
 	 * 根据过滤条件查询符合要求的评论信息信息数量
 	 * @param emc
@@ -40,10 +41,10 @@ class DocumentCommentInfoService {
 	 * @throws Exception
 	 */
 	public Long countWithFilter( EntityManagerContainer emc, QueryFilter queryFilter ) throws Exception {
-		Business business = new Business( emc );	
+		Business business = new Business( emc );
 		return business.documentCommentInfoFactory().countWithFilter( queryFilter );
 	}
-	
+
 	/**
 	 * 根据过滤条件查询符合要求的评论信息信息列表
 	 * @param emc
@@ -58,7 +59,7 @@ class DocumentCommentInfoService {
 		Business business = new Business( emc );
 		return business.documentCommentInfoFactory().listWithFilter(maxCount, orderField, orderType, queryFilter);
 	}
-	
+
 	/**
 	 * 根据条件查询符合条件的评论信息信息ID，根据上一条的sequnce查询指定数量的信息
 	 * @param emc
@@ -78,9 +79,10 @@ class DocumentCommentInfoService {
 	/**
 	 * 向数据库持久化评论信息信息
 	 * @param emc
-	 * @param documentCommentInfo
+	 * @param object
+	 * @param content
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public DocumentCommentInfo save( EntityManagerContainer emc, DocumentCommentInfo object, String content ) throws Exception {
 		Document document = null;
@@ -89,17 +91,17 @@ class DocumentCommentInfoService {
 		if( StringUtils.isEmpty( object.getId() )  ){
 			object.setId( DocumentCommentInfo.createId() );
 		}
-		
-		Business business = new Business(emc);		
+
+		Business business = new Business(emc);
 		documentCommentInfo = emc.find( object.getId(), DocumentCommentInfo.class );
 		documentCommentContent = emc.find( object.getId(), DocumentCommentContent.class );
 		document = emc.find( object.getId(), Document.class );
-		
+
 		emc.beginTransaction( DocumentCommentContent.class );
 		emc.beginTransaction( DocumentCommentInfo.class );
-		
+
 		Integer maxOrder = 0;
-		
+
 		if( documentCommentInfo == null ){ // 保存一个新的对象
 			maxOrder = business.documentCommentInfoFactory().getMaxOrder( object.getDocumentId() );
 			if( maxOrder == null ) {
@@ -125,9 +127,9 @@ class DocumentCommentInfoService {
 			}
 			object.copyTo( documentCommentInfo, JpaObject.FieldsUnmodify  );
 			object.setOrderNumber(orderNumber);
-			emc.check( documentCommentInfo, CheckPersistType.all );	
+			emc.check( documentCommentInfo, CheckPersistType.all );
 		}
-		
+
 		if( documentCommentContent == null ){ // 保存一个新的评论内容对象
 			documentCommentContent = new DocumentCommentContent();
 			documentCommentContent.setId( documentCommentInfo.getId() );
@@ -135,9 +137,9 @@ class DocumentCommentInfoService {
 			emc.persist( documentCommentContent, CheckPersistType.all);
 		}else{ //对象已经存在，更新评论内容对象信息
 			documentCommentContent.setContent( content );
-			emc.check( documentCommentContent, CheckPersistType.all );	
+			emc.check( documentCommentContent, CheckPersistType.all );
 		}
-		
+
 		emc.commit();
 		return documentCommentInfo;
 	}
@@ -146,9 +148,9 @@ class DocumentCommentInfoService {
 	 * 根据评论信息标识删除评论信息信息
 	 * @param emc
 	 * @param id
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public void delete(EntityManagerContainer emc, String id ) throws Exception {		
+	public void delete(EntityManagerContainer emc, String id ) throws Exception {
 		DocumentCommentInfo documentCommentInfo = emc.find( id, DocumentCommentInfo.class );
 		DocumentCommentContent documentCommentConent = emc.find( id, DocumentCommentContent.class );
 		if( documentCommentInfo != null ) {
@@ -165,9 +167,12 @@ class DocumentCommentInfoService {
 			if( documentCommentConent != null ) {
 				emc.remove( documentCommentConent , CheckRemoveType.all );
 			}
+			Business business = new Business( emc );
+			List<String> commendIdList = business.documentCommendFactory().listByComment(documentCommentInfo.getId(), null);
+			emc.delete(DocumentCommend.class, commendIdList);
 			emc.commit();
 		}
 	}
 
-	
+
 }

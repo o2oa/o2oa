@@ -219,34 +219,6 @@ public class ActionPersistSaveDocument extends BaseAction {
 			}
 		}
 
-//		if (check) {
-//			if ( StringUtils.isNotEmpty(identity)) {
-//				document.setCreatorIdentity( identity );
-//				document.setCreatorPerson( userManagerService.getPersonNameWithIdentity( identity ) );
-//				document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
-//				document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( identity ) );
-//			} else {
-//				if ("xadmin".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
-//					document.setCreatorIdentity("xadmin");
-//					document.setCreatorPerson("xadmin");
-//					document.setCreatorUnitName("xadmin");
-//					document.setCreatorTopUnitName("xadmin");
-//				} else {
-//					//取第一个身份
-//					identity = userManagerService.getMajorIdentityWithPerson(effectivePerson.getDistinguishedName());
-//					if( StringUtils.isNotEmpty(identity) ) {
-//						document.setCreatorIdentity( identity );
-//						document.setCreatorPerson( effectivePerson.getDistinguishedName() );
-//						document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
-//						document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( identity ) );
-//					}else {
-//						Exception exception = new ExceptionPersonHasNoIdentity(effectivePerson.getDistinguishedName());
-//						result.error(exception);
-//					}
-//				}
-//			}
-//		}
-
 		if (check) {
 			if( StringUtils.equals( wi.getDocStatus(), "published")) {
 				if( document.getPublishTime() == null ) {
@@ -257,9 +229,6 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		if (check) {
 			if ( StringUtils.isEmpty(document.getTitle())) {
-//				check = false;
-//				Exception exception = new ExceptionDocumentTitleEmpty();
-//				result.error(exception);
 				document.setTitle( appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档" );
 			}
 		}
