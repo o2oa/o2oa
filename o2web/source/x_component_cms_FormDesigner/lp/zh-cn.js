@@ -48,7 +48,18 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "format": "格式",
 
         "validationSave": "保存校验",
-        "validationPublish": "发布校验"
+        "validationPublish": "发布校验",
+
+        "notice" : "消息",
+        "noticeInfo": "注：消息发送的总开关在分类配置中设置。",
+        "noticeRange": "范围",
+        "noticeByReader": "根据读者（发布范围）",
+        "noticeByCustom": "自定义",
+        "notifyCreatePerson": "通知创建人",
+        "blankToAllNotify": "读者（发布范围）为空时通知可见范围",
+        "blankNotToAllNotify": "读者（发布范围）为空时不通知",
+        "specificValue": "指定",
+        "formField": "表单字段"
     },
     "actionBar": {
         "close":"关闭",

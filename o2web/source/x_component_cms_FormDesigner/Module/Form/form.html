@@ -88,6 +88,64 @@
         <div style="padding: 5px;color:#999;">{{$.lp.noEventInfo}}</div>
 		<div class="MWFEventsArea" name="events"></div>
 	</div>
+    <div title="{{$.lp.notice}}" class="MWFTab">
+        <div style="height:24px; padding-left: 10px; line-height: 24px; background-color: #fff; border-top: 1px solid #999;color:#999999;font-size: 12px;">{{$.lp.noticeInfo}}</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.noticeRange}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" onclick="if (this.checked){
+                        $('text{$.pid}noticeByReaderArea').setStyle('display', '');
+                        $('text{$.pid}noticeByCustomArea').setStyle('display', 'none');
+                    }" name="noticeType" text{($.noticeType!=='custom')?'checked':''} type="radio" value="reader"/>{{$.lp.noticeByReader}} <br/>
+                    <input class="editTableRadio" onclick="if (this.checked){
+                        $('text{$.pid}noticeByReaderArea').setStyle('display', 'none');
+                        $('text{$.pid}noticeByCustomArea').setStyle('display', '');
+                    }" name="noticeType" text{($.noticeType==='custom')?'checked':''} type="radio" value="custom"/>{{$.lp.noticeByCustom}}
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}noticeByReaderArea" style="display: text{($.noticeType!=='custom')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableValue">
+                        <input type="radio" name="blankToAllNotify" value="yes" text{($.blankToAllNotify !=='no')?'checked':''}/>{{$.lp.blankToAllNotify}} <br/>
+                        <input type="radio" name="blankToAllNotify" value="no" text{($.blankToAllNotify ==='no')?'checked':''}/>{{$.lp.blankNotToAllNotify}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="text{$.pid}noticeByCustomArea" style="display: text{($.noticeType==='custom')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.specificValue}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFPersonMultiple" data-types="unit,group,identity" name="noticeSpecificList"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.formField}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFCMSFormFieldPerson" name="noticeFormFieldList"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptArea" title="{{$.lp.script}}" name="noticeScript"></div>
+        </div>
+
+        <div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.notifyCreatePerson}}:</td>
+                    <td class="editTableValue">
+                        <input type="radio" name="notifyCreatePerson" value="yes" text{($.notifyCreatePerson !=='no')?'checked':''}/>{{$.lp.yes}}
+                        <input type="radio" name="notifyCreatePerson" value="no" text{($.notifyCreatePerson ==='no')?'checked':''}/>{{$.lp.no}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
     <div title="HTML"  class="MWFTab">
         <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
     </div>
