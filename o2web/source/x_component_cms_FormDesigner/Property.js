@@ -4,7 +4,25 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
         "appType" : "cms"
     },
     Extends: MWF.FCProperty,
-
+    postShow: function(){
+        this.loadCMSFormFieldInput();
+    },
+    loadCMSFormFieldInput: function(){
+        var fieldNodes = this.propertyContent.getElements(".MWFCMSFormFieldPerson");
+        MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
+            fieldNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "CMSFormField",
+                    "selectorOptions":{
+                        "form": this.form.json.id,
+                        "fieldType": "person",
+                    },
+                    "names": this.data[node.get("name")],
+                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+        }.bind(this));
+    },
     loadScriptEditor: function(scriptAreas, style){
         scriptAreas.each(function(node){
             var title = node.get("title");
