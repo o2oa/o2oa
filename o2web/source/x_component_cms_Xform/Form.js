@@ -1159,15 +1159,23 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 sendOptions = {
                     documentId: this.businessData.document.id,
                     notifyPersonList: rangeList,
+                    notifyByDocumentReadPerson: true,
                     notifyCreatePerson: this.json.notifyCreatePerson !== "no"
                 };
             }
         }
-        if( sendOptions ){
-            o2.Actions.load("x_cms_assemble_control").DocumentAction.publishNotify( this.businessData.document.id, sendOptions, function () {
-                if(callback)callback();
+        if( !sendOptions && this.json.notifyCreatePerson !== "no" ){
+            sendOptions = {
+                documentId: this.businessData.document.id,
+                notifyByDocumentReadPerson: false,
+                notifyCreatePerson: true
+            };
+        }
+        if( sendOptions ) {
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.publishNotify(this.businessData.document.id, sendOptions, function () {
+                if (callback) callback();
             }, function () {
-                if(callback)callback();
+                if (callback) callback();
             })
         }else{
             if(callback)callback();
