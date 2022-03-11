@@ -5,10 +5,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.MessageFactory;
@@ -17,6 +15,7 @@ import com.x.cms.assemble.control.service.UserManagerService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.query.DocumentNotify;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,50 +28,61 @@ import java.util.stream.Collectors;
  * Document正式发布后，向通知对象或者所有的阅读者推送消息通知
  * @author sword
  */
-public class QueueSendDocumentNotify extends AbstractQueue<String> {
+public class QueueSendDocumentNotify extends AbstractQueue<DocumentNotify> {
 
 	private static  Logger logger = LoggerFactory.getLogger( QueueSendDocumentNotify.class );
 	private UserManagerService userManagerService = new UserManagerService();
 
 	@Override
-	public void execute(String documentId ) throws Exception {
-		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>start QueueSendDocumentNotify:" + documentId );
-		if( StringUtils.isEmpty(documentId) ) {
-			logger.debug("can not send publish notify , document is NULL!" );
+	public void execute(DocumentNotify documentNotify ) throws Exception {
+		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>start QueueSendDocumentNotify:{}", documentNotify);
+		if( StringUtils.isEmpty(documentNotify.getDocumentId()) ) {
 			return;
 		}
 		final List<String> persons = new ArrayList<>();
 		Document document = null;
+		AppInfo appInfo = null;
+		CategoryInfo category = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			document = emc.find(documentId, Document.class);
-			if(document !=null && StringUtils.equals( "信息" , document.getDocumentType()) && Config.messages().get(MessageConnector.TYPE_CMS_PUBLISH)!=null) {
-				logger.debug("send publish notify for new document:" + document.getTitle() );
-						AppInfo appInfo = emc.find(document.getAppId(), AppInfo.class);
-				CategoryInfo category = emc.find(document.getCategoryId(), CategoryInfo.class);
-				if (appInfo != null && category != null) {
-					ReviewService reviewService = new ReviewService();
-					persons.addAll(reviewService.listPermissionPersons(appInfo, category, document));
-					if (ListTools.isNotEmpty(persons)) {
-						//有可能是*， 一般是所有的人员标识列表
-						if (persons.contains("*") && !BooleanUtils.isFalse(category.getBlankToAllNotify())) {
-							String topUnitName = document.getCreatorTopUnitName();
-							logger.debug(">>>>>document.getCreatorTopUnitName()=" + topUnitName);
-							if (StringUtils.equalsAnyIgnoreCase("cipher", topUnitName) || StringUtils.equalsAnyIgnoreCase("xadmin", topUnitName)) {
-								//取发起人所有顶层组织
-								if (!StringUtils.equalsAnyIgnoreCase("cipher", document.getCreatorIdentity()) &&
-										!StringUtils.equalsAnyIgnoreCase("xadmin", document.getCreatorIdentity())) {
-									topUnitName = userManagerService.getTopUnitNameByIdentity(document.getCreatorIdentity());
-								} else if (!StringUtils.equalsAnyIgnoreCase("cipher", document.getCreatorPerson()) &&
-										!StringUtils.equalsAnyIgnoreCase("xadmin", document.getCreatorPerson())) {
-									topUnitName = userManagerService.getTopUnitNameWithPerson(document.getCreatorPerson());
-								}
-							}
-							if (StringUtils.isNotEmpty(topUnitName)) {
-								//取顶层组织的所有人
-								persons.addAll(listPersonWithUnit(topUnitName));
-							}
-						}
+			document = emc.find(documentNotify.getDocumentId(), Document.class);
+			if(document!=null){
+				appInfo = emc.find(document.getAppId(), AppInfo.class);
+				category = emc.find(document.getCategoryId(), CategoryInfo.class);
+				if(appInfo==null || category==null){
+					return;
+				}
+			}else{
+				return;
+			}
+		}
+		if(BooleanUtils.isFalse(category.getSendNotify())){
+			return;
+		}
+		if(ListTools.isNotEmpty(documentNotify.getNotifyPersonList())
+				&& !BooleanUtils.isTrue(documentNotify.getNotifyByDocumentReadPerson())){
+			documentNotify.getNotifyPersonList().stream().forEach(name -> {
+				persons.addAll(userManagerService.listPersonWithName(name));
+			});
+		}else{
+			ReviewService reviewService = new ReviewService();
+			persons.addAll(reviewService.listPermissionPersons(appInfo, category, document));
+			if(persons.contains("*")){
+				String topUnitName = document.getCreatorTopUnitName();
+				if (StringUtils.equalsAnyIgnoreCase("cipher", topUnitName) ||
+						StringUtils.equalsAnyIgnoreCase("xadmin", topUnitName)) {
+					//取发起人所有顶层组织
+					if (!StringUtils.equalsAnyIgnoreCase("cipher", document.getCreatorIdentity()) &&
+							!StringUtils.equalsAnyIgnoreCase("xadmin", document.getCreatorIdentity())) {
+						topUnitName = userManagerService.getTopUnitNameByIdentity(document.getCreatorIdentity());
+					} else if (!StringUtils.equalsAnyIgnoreCase("cipher", document.getCreatorPerson()) &&
+							!StringUtils.equalsAnyIgnoreCase("xadmin", document.getCreatorPerson())) {
+						topUnitName = userManagerService.getTopUnitNameWithPerson(document.getCreatorPerson());
 					}
+				}
+				if (StringUtils.isNotEmpty(topUnitName)) {
+					//取顶层组织的所有人
+					persons.clear();
+					persons.addAll(listPersonWithUnit(topUnitName));
 				}
 			}
 		}
@@ -87,13 +97,15 @@ public class QueueSendDocumentNotify extends AbstractQueue<String> {
 				}
 			}
 			personList.clear();
-			logger.debug(documentId +" cms send total count:" + persons.size()  );
+			logger.debug(documentNotify.getDocumentId() +" cms send total count:" + persons.size()  );
 		}
-		if(document!=null && StringUtils.isNotBlank(document.getCreatorPerson())){
+		boolean flag = document!=null && StringUtils.isNotBlank(document.getCreatorPerson()) &&
+				!BooleanUtils.isFalse(documentNotify.getNotifyCreatePerson());
+		if(flag){
 			MessageWo wo = MessageWo.copier.copy(document);
 			MessageFactory.cms_publish_creator(wo);
 		}
-		logger.debug(documentId + " QueueSendDocumentNotify cms send publish notify for new document completed! " );
+		logger.debug(documentNotify.getDocumentId() + " QueueSendDocumentNotify cms send publish notify for new document completed! " );
 	}
 
 	/**
@@ -102,7 +114,6 @@ public class QueueSendDocumentNotify extends AbstractQueue<String> {
 	 * @return
 	 */
 	private List<String> listPersonWithUnit(String unitName) {
-		UserManagerService  userManagerService = new UserManagerService();
 		List<String> persons = null;
 		try {
 			persons = userManagerService.listPersonWithUnit(unitName);
