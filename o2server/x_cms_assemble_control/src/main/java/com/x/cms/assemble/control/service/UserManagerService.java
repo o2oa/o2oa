@@ -38,21 +38,13 @@ public class UserManagerService {
 	 * @throws Exception
 	 */
 	public Person getPerson(String personName) throws Exception {
-		Business business = null;
 		Person person = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			business = new Business(emc);
+		try {
+			Business business = new Business(null);
+			if(personName.split("@").length == 2){
+				personName = personName.split("@")[0];
+			}
 			person = business.organization().person().getObject(personName);
-			if (person == null) {
-				if (personName.endsWith("@P") && personName.split("@P").length == 3) {
-					return business.organization().person().getObject(personName.split("@")[1]);
-				}
-			}
-			if (person == null) {
-				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
-					return business.organization().person().getObject(personName.split("@")[0]);
-				}
-			}
 		} catch (Exception e) {
 			throw e;
 		}
