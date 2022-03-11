@@ -48,6 +48,7 @@ public class Document extends SliceJpaObject {
 	private static final long serialVersionUID = 7668822947307502058L;
 	private static final String TABLE = PersistenceProperties.Document.table;
 	public static final int STRING_VALUE_MAX_LENGTH = JpaObject.length_255B;
+	public static final String DOC_STATUS_PUBLISH = "published";
 
 	/* 以上为 JpaObject 默认字段 */
 	@Override

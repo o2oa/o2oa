@@ -1050,4 +1050,23 @@ public class DocumentAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "已发布文档消息通知。", action = ActionNotify.class)
+	@POST
+	@Path("{id}/notify")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void publishNotify(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("文档ID") @PathParam("id") String id, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionNotify.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionNotify().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, jsonElement);
+		}
+
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

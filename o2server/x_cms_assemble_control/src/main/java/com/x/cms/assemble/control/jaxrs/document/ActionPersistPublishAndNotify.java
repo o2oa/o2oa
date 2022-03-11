@@ -16,7 +16,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.jaxrs.permission.element.PermissionInfo;
-import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 
@@ -25,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author sword
+ */
 public class ActionPersistPublishAndNotify extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionPersistPublishAndNotify.class);
@@ -65,8 +67,8 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 		}
 		if (check) {
 			try {
-				modifyDocStatus( id, "published", effectivePerson.getDistinguishedName() );
-				document.setDocStatus("published");
+				modifyDocStatus( id, Document.DOC_STATUS_PUBLISH, effectivePerson.getDistinguishedName() );
+				document.setDocStatus(Document.DOC_STATUS_PUBLISH);
 				document.setPublishTime(new Date());
 
 				document = documentPersistService.refreshDocInfoData( document );
@@ -177,40 +179,11 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 		//将读者以及作者信息持久化到数据库中
 		if( !wi.getSkipPermission() ) {
 			try {
-				document = documentPersistService.refreshDocumentPermission( id, wi.getReaderList(), wi.getAuthorList() );
+				documentPersistService.refreshDocumentPermission( id, wi.getReaderList(), wi.getAuthorList() );
 			} catch (Exception e) {
-				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在核对文档访问管理权限信息时发生异常！");
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
-			}
-		}
-
-		//判断是否需要发送通知消息
-		if (check) {
-			try {
-				CategoryInfo categoryInfo = categoryInfoServiceAdv.getWithFlag( document.getCategoryId() );
-				if( categoryInfo != null ){
-//					Boolean notify = false;
-//					if( categoryInfo.getSendNotify() == null ) {
-//						if( StringUtils.equals("信息", categoryInfo.getDocumentType()) ) {
-//							notify = true;
-//						}
-//					}else {
-//						if( categoryInfo.getSendNotify() ) {
-//							notify = true;
-//						}
-//					}
-					if( categoryInfo.getSendNotify() ){
-						logger.info("try to add notify object to queue for document:" + document.getTitle() );
-						ThisApplication.queueSendDocumentNotify.send( document.getId() );
-					}
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess( e, "根据ID查询分类信息对象时发生异常。Flag:" + document.getCategoryId()  );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
 			}
 		}
 
