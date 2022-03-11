@@ -48,6 +48,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	private static final long serialVersionUID = 3856138316794473794L;
 	private static final String TABLE = PersistenceProperties.CategoryInfo.table;
+	public static final String DOCUMENT_TYPE_DATA = "数据";
 
 	@Override
 	public String getId() {
