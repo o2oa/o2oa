@@ -29,7 +29,7 @@ class ActionListRowSelect extends BaseAction {
 			if (null == table) {
 				throw new ExceptionEntityNotExist(tableFlag, Table.class);
 			}
-			if (!business.editable(effectivePerson, table)) {
+			if (!business.readable(effectivePerson, table)) {
 				throw new ExceptionAccessDenied(effectivePerson, table);
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
