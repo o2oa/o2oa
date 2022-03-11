@@ -39,8 +39,9 @@ class ActionDownloadStream extends StandardJaxrsAction {
 				try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 					file.readContent(mapping, os);
 					byte[] bs = os.toByteArray();
+					String fastETag = file.getId()+file.getUpdateTime().getTime();
 					wo = new Wo(bs, this.contentType(true, file.getName()),
-							this.contentDisposition(true, file.getName()));
+							this.contentDisposition(true, file.getName()), fastETag);
 					/**
 					 * 对10M以下的文件进行缓存
 					 */
@@ -56,63 +57,10 @@ class ActionDownloadStream extends StandardJaxrsAction {
 
 	public static class Wo extends WoFile {
 
-		public Wo(byte[] bytes, String contentType, String contentDisposition) {
-			super(bytes, contentType, contentDisposition);
+		public Wo(byte[] bytes, String contentType, String contentDisposition, String fastETag) {
+			super(bytes, contentType, contentDisposition, fastETag);
 		}
 
 	}
-
-	// @HttpMethodDescribe(value =
-	// "获取File对象,url格式为:/servlet/file/download/{id}/stream.")
-	// protected void doGet(HttpServletRequest request, HttpServletResponse
-	// response)
-	// throws ServletException, IOException {
-	// try (EntityManagerContainer emc =
-	// EntityManagerContainerFactory.instance().create()) {
-	// request.setCharacterEncoding(DefaultCharset.name);
-	// String part = this.getURIPart(request.getRequestURI(), PART_DOWNLOAD);
-	// String id = StringUtils.substringBefore(part, "/");
-	// /** 确定是否要用application/octet-stream输出 */
-	// boolean streamContentType = StringUtils.endsWith(part, "/stream");
-	// if (StringUtils.isEmpty(id)) {
-	// throw new IdEmptyException();
-	// }
-	// File file = emc.find(id, File.class);
-	// if (null == file) {
-	// throw new FileNotExistedException(id);
-	// }
-	// this.setResponseHeader(response, file, streamContentType);
-	// String cacheKey = ApplicationCache.concreteCacheKey(id);
-	// Element element = cache.get(cacheKey);
-	// byte[] bs = null;
-	// if ((null != element) && (null != element.getObjectValue())) {
-	// bs = (byte[]) element.getObjectValue();
-	// } else {
-	// StorageMapping mapping =
-	// ThisApplication.context().storageMappings().get(File.class,
-	// file.getStorage());
-	// if (null == mapping) {
-	// throw new StorageMappingNotExistedException(file.getStorage());
-	// }
-	// try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-	// file.readContent(mapping, os);
-	// bs = os.toByteArray();
-	// /**
-	// * 对2M以下的文件进行缓存
-	// */
-	// if (bs.length < (1024 * 1024 * 2)) {
-	// cache.put(new Element(cacheKey, bs));
-	// }
-	// }
-	// }
-	// response.getOutputStream().write(bs);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// ActionResult<Object> result = new ActionResult<>();
-	// result.error(e);
-	// response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	// response.getWriter().print(result.toJson());
-	// }
-	// }
 
 }

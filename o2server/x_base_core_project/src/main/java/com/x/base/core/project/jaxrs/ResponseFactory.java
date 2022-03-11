@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Objects;
 import java.util.zip.CRC32;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
@@ -35,6 +36,7 @@ public class ResponseFactory {
 	public static final String Content_Type = "Content-Type";
 	public static final String Content_Length = "Content-Length";
 	public static final String Accept_Language = "Accept-Language";
+	private static final int TAG_MAX_FILE_SIZE = 1024 * 1024 * 5;
 
 	private static final Gson COMPACT_GSON = XGsonBuilder.compactInstance();
 
@@ -106,7 +108,10 @@ public class ResponseFactory {
 			if ((null != result.getData()) && (result.getData() instanceof WoFile)) {
 				// 附件,二进制流文件
 				WoFile wo = (WoFile) result.getData();
-				EntityTag tag = new EntityTag(StringTools.uniqueToken());
+				EntityTag tag = new EntityTag(etagWoFile(wo));
+				if (notModified(request, tag)) {
+					return Response.notModified().tag(tag).build();
+				}
 				if (wo.getStreamingOutput() != null){
 					return Response.ok(wo.getStreamingOutput()).header(Content_Disposition, wo.getContentDisposition())
 							.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getContentLength())
@@ -177,8 +182,10 @@ public class ResponseFactory {
 		CRC32 crc = new CRC32();
 		if (StringUtils.isNotEmpty(wo.getFastETag())) {
 			crc.update(wo.getFastETag().getBytes(DefaultCharset.charset_utf_8));
-		} else {
+		} else if(wo.getBytes()!=null && wo.getBytes().length < TAG_MAX_FILE_SIZE){
 			crc.update(wo.getBytes());
+		} else {
+			crc.update(StringTools.uniqueToken().getBytes(DefaultCharset.charset_utf_8));
 		}
 		return crc.getValue() + "";
 	}
