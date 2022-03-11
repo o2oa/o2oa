@@ -12,7 +12,6 @@ import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.processplatform.core.entity.content.Attachment;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -22,7 +21,6 @@ import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -417,37 +415,11 @@ public class ActionPersistPublishContent extends BaseAction {
 		if ( check && !wi.getSkipPermission() ) {
 			//将读者以及作者信息持久化到数据库中
 			try {
-				document = documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
+				documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
 			} catch (Exception e) {
-				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在核对文档访问管理权限信息时发生异常！");
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
-			}
-		}
-
-		//判断是否需要发送通知消息
-		if (check) {
-			try {
-				Boolean notify = false;
-				if( categoryInfo.getSendNotify() == null ) {
-					if( StringUtils.equals("信息", categoryInfo.getDocumentType()) ) {
-						notify = true;
-					}
-				}else {
-					if( categoryInfo.getSendNotify() ) {
-						notify = true;
-					}
-				}
-				if( notify && !BooleanUtils.isFalse(wi.getNotice())){
-					logger.debug("try to add notify object to queue for document:" + document.getTitle() );
-					ThisApplication.queueSendDocumentNotify.send( document.getId() );
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess( e, "根据ID查询分类信息对象时发生异常。Flag:" + document.getCategoryId()  );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
 			}
 		}
 
@@ -612,12 +584,6 @@ public class ActionPersistPublishContent extends BaseAction {
 		private List<String> authorUnitList;
 
 		private List<String> authorGroupList;
-
-		private List<String> remindPersonList;
-
-		private List<String> remindUnitList;
-
-		private List<String> remindGroupList;
 
 		private List<String> managerList;
 
@@ -958,30 +924,6 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		public void setAuthorGroupList(List<String> authorGroupList) {
 			this.authorGroupList = authorGroupList;
-		}
-
-		public List<String> getRemindPersonList() {
-			return remindPersonList;
-		}
-
-		public void setRemindPersonList(List<String> remindPersonList) {
-			this.remindPersonList = remindPersonList;
-		}
-
-		public List<String> getRemindUnitList() {
-			return remindUnitList;
-		}
-
-		public void setRemindUnitList(List<String> remindUnitList) {
-			this.remindUnitList = remindUnitList;
-		}
-
-		public List<String> getRemindGroupList() {
-			return remindGroupList;
-		}
-
-		public void setRemindGroupList(List<String> remindGroupList) {
-			this.remindGroupList = remindGroupList;
 		}
 
 		public List<String> getManagerList() {
