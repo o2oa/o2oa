@@ -53,7 +53,8 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "noticeRange": "Range",
         "noticeByReader": "By reader (published range)",
         "noticeByCustom": "Custom",
-        "blankToAllNotify": "Notify all members when the reader (publishing range) is empty",
+        "notifyCreatePerson": "Notify creator",
+        "blankToAllNotify": "Notify the visible range when the reader (publishing range) is empty",
         "blankNotToAllNotify": "Do not notify when the reader (publishing range) is empty",
         "specificValue": "Specify",
         "formField": "Form Field"

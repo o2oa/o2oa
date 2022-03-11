@@ -1053,6 +1053,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 module.save();
             });
         }
+
         this.documentAction.publishDocumentComplex(documentData, function (json) {
 
             this.sendNotice(function () {
@@ -1094,44 +1095,11 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         //}.bind(this))
         //}.bind(this), null, this.businessData.document.id, data);
     },
-    //publishDocument_bak: function(callback){
-    //    this.fireEvent("beforePublish");
-    //    this.app.content.mask({
-    //        "destroyOnHide": true,
-    //        "style": this.app.css.maskNode
-    //    });
-    //    if (!this.formValidation("publish")){
-    //        this.app.content.unmask();
-    //        if (callback) callback();
-    //        return false;
-    //    }
-    //
-    //    var data = this.getData();
-    //    var specialData = this.getSpecialData();
-    //    this.documentAction.saveData(function(json){
-    //        this.businessData.data.isNew = false;
-    //        var documentData = this.getDocumentData(data);
-    //        documentData.permissionList = specialData.readers;
-    //        documentData.pictureList = specialData.pictures;
-    //        documentData.summary = specialData.summary;
-    //        delete documentData.attachmentList;
-    //        this.documentAction.saveDocument(documentData, function(){
-    //            this.documentAction.publishDocument(documentData, function(json){
-    //                this.fireEvent("afterPublish");
-    //                this.fireEvent("postPublish");
-    //                if (callback) callback();
-    //                this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished+": “"+this.businessData.document.title+"”", "success");
-    //                this.options.saveOnClose = false;
-    //                this.app.close();
-    //                //this.close();
-    //            }.bind(this) );
-    //        }.bind(this))
-    //    }.bind(this), null, this.businessData.document.id, data);
-    //},
 
-    sendNotice: function(){
+    sendNotice: function( callback ){
+        var rangeList = [];
+        var sendOptions;
         if( this.json.noticeType === "custom" ){ //reader
-            var rangeList = [];
             switch ( o2.typeOf( this.json.noticeSpecificList ) ) {
                 case "array":
                     rangeList = this.json.noticeSpecificList;
@@ -1142,12 +1110,13 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     break;
             }
 
-            rangeList = rangeList.concat((this.json.noticeFormFieldList || []).map(function (name) {
-                return this.all[name]  ? this.all[name].getData() : null;
-            }.bind(this)));
+            (this.json.noticeFormFieldList || []).each(function (name) {
+                var range = this.all[name.id]  ? this.all[name.id].getData() : null;
+                if( range )rangeList = rangeList.concat( range );
+            }.bind(this));
 
             if( this.json.noticeScript && this.json.noticeScript.code ){
-                var range = this.Macro.exec(this.json.noticeScript.code, this);
+                range = this.Macro.exec(this.json.noticeScript.code, this);
                 switch ( o2.typeOf( range ) ) {
                     case "array":
                         rangeList = rangeList.concat( range );
@@ -1161,18 +1130,47 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
             rangeList = rangeList.clean().map(function ( range ) {
                 return o2.typeOf(range) === "string" ? range : range.distinguishedName
-            })
+            }).unique();
 
+            sendOptions = {
+                documentId: this.businessData.document.id,
+                notifyPersonList: rangeList,
+                notifyCreatePerson: this.json.notifyCreatePerson !== "no"
+            };
         }else{
             var readers = [];
             Object.each(this.forms, function (module, id) {
-                if (module.json.type == "Readerfield" || module.json.type == "Reader") {
+                if (module.json.type === "Readerfield" || module.json.type === "Reader") {
                     readers = readers.concat(module.getData());
                 }
             });
-            if( readers.length === 0 ){
-                //blankToAllNotify
+            rangeList = readers.clean().map(function ( range ) {
+                return o2.typeOf(range) === "string" ? range : range.distinguishedName
+            }).unique();
+            if( rangeList.length === 0 ){
+                if( this.json.blankToAllNotify !== "no" ){ //通知所有人
+                    sendOptions = {
+                        documentId: this.businessData.document.id,
+                        notifyByDocumentReadPerson: true,
+                        notifyCreatePerson: this.json.notifyCreatePerson !== "no"
+                    };
+                }
+            }else{
+                sendOptions = {
+                    documentId: this.businessData.document.id,
+                    notifyPersonList: rangeList,
+                    notifyCreatePerson: this.json.notifyCreatePerson !== "no"
+                };
             }
+        }
+        if( sendOptions ){
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.publishNotify( this.businessData.document.id, sendOptions, function () {
+                if(callback)callback();
+            }, function () {
+                if(callback)callback();
+            })
+        }else{
+            if(callback)callback();
         }
     },
     deleteDocumentForMobile: function () {

@@ -133,6 +133,18 @@
             </table>
             <div class="MWFScriptArea" title="{{$.lp.script}}" name="noticeScript"></div>
         </div>
+
+        <div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.notifyCreatePerson}}:</td>
+                    <td class="editTableValue">
+                        <input type="radio" name="notifyCreatePerson" value="yes" text{($.notifyCreatePerson !=='no')?'checked':''}/>{{$.lp.yes}}
+                        <input type="radio" name="notifyCreatePerson" value="no" text{($.notifyCreatePerson ==='no')?'checked':''}/>{{$.lp.no}}
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
     <div title="HTML"  class="MWFTab">
         <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
