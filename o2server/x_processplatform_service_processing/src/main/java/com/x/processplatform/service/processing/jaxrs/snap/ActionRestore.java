@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,18 +23,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.DocumentVersion;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Snap;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
@@ -64,6 +53,7 @@ class ActionRestore extends BaseAction {
 			this.id = id;
 		}
 
+		@Override
 		public ActionResult<Wo> call() throws Exception {
 			ActionResult<Wo> result = new ActionResult<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -79,7 +69,8 @@ class ActionRestore extends BaseAction {
 							deleteTaskCompleted(business, snap.getJob()), deleteRead(business, snap.getJob()),
 							deleteReadCompleted(business, snap.getJob()), deleteReview(business, snap.getJob()),
 							deleteWorkLog(business, snap.getJob()), deleteRecord(business, snap.getJob()),
-							deleteAttachment(business, snap.getJob()), deleteDocumentVersion(business, snap.getJob()))
+							deleteAttachment(business, snap.getJob()), deleteDocumentVersion(business, snap.getJob()),
+							deleteDocSign(business, snap.getJob()), deleteDocSignScrawl(business, snap.getJob()))
 							.get();
 				} else {
 					CompletableFuture.allOf(deleteItem(business, snap.getJob()), deleteWork(business, snap.getJob()),
@@ -87,7 +78,8 @@ class ActionRestore extends BaseAction {
 							deleteRead(business, snap.getJob()), deleteReadCompleted(business, snap.getJob()),
 							deleteReview(business, snap.getJob()), deleteWorkLog(business, snap.getJob()),
 							deleteRecord(business, snap.getJob()), deleteAttachment(business, snap.getJob()),
-							deleteDocumentVersion(business, snap.getJob())).get();
+							deleteDocumentVersion(business, snap.getJob()),
+							deleteDocSign(business, snap.getJob()), deleteDocSignScrawl(business, snap.getJob())).get();
 				}
 				emc.commit();
 				if (Objects.equals(Snap.TYPE_ABANDONEDWORKCOMPLETED, snap.getType())
@@ -120,6 +112,8 @@ class ActionRestore extends BaseAction {
 			emc.beginTransaction(DocumentVersion.class);
 			emc.beginTransaction(Item.class);
 			emc.beginTransaction(Attachment.class);
+			emc.beginTransaction(DocSign.class);
+			emc.beginTransaction(DocSignScrawl.class);
 			restoreTask(emc, snap);
 			restoreTaskCompleted(emc, snap);
 			restoreRead(emc, snap);
@@ -129,6 +123,8 @@ class ActionRestore extends BaseAction {
 			restoreRecord(emc, snap);
 			restoreDocumentVersion(emc, snap);
 			restoreAttachment(emc, snap);
+			restoreDocSign(emc, snap);
+			restoreDocSignScrawl(emc, snap);
 			if (ListTools.isNotEmpty(snap.getProperties().getWorkList())) {
 				WorkDataHelper workDataHelper = new WorkDataHelper(emc, snap.getProperties().getWorkList().get(0));
 				for (Work o : snap.getProperties().getWorkList()) {
@@ -150,6 +146,8 @@ class ActionRestore extends BaseAction {
 			emc.beginTransaction(Record.class);
 			emc.beginTransaction(Item.class);
 			emc.beginTransaction(Attachment.class);
+			emc.beginTransaction(DocSign.class);
+			emc.beginTransaction(DocSignScrawl.class);
 			restoreTaskCompleted(emc, snap);
 			restoreRead(emc, snap);
 			restoreReadCompleted(emc, snap);
@@ -157,6 +155,8 @@ class ActionRestore extends BaseAction {
 			restoreWorkLog(emc, snap);
 			restoreRecord(emc, snap);
 			restoreAttachment(emc, snap);
+			restoreDocSign(emc, snap);
+			restoreDocSignScrawl(emc, snap);
 			emc.persist(snap.getProperties().getWorkCompleted(), CheckPersistType.all);
 			if (BooleanUtils.isNotTrue(snap.getProperties().getWorkCompleted().getMerged())) {
 				WorkDataHelper workDataHelper = new WorkDataHelper(emc, snap.getProperties().getWorkCompleted());
@@ -233,6 +233,30 @@ class ActionRestore extends BaseAction {
 			for (ReadCompleted o : snap.getProperties().getReadCompletedList()) {
 				emc.persist(o, CheckPersistType.all);
 				MessageFactory.readCompleted_create(o);
+			}
+		}
+
+		private void restoreDocSign(EntityManagerContainer emc, Snap snap) throws Exception {
+			for (DocSign o : snap.getProperties().getDocSignList()) {
+				emc.persist(o, CheckPersistType.all);
+			}
+		}
+
+		private void restoreDocSignScrawl(EntityManagerContainer emc, Snap snap) throws Exception {
+			for (DocSignScrawl o : snap.getProperties().getDocSignScrawlList()) {
+				String content = snap.getProperties().getAttachmentContentMap().get(o.getId());
+				if (StringUtils.isNotEmpty(content)) {
+					StorageMapping mapping = ThisApplication.context().storageMappings().get(DocSignScrawl.class,
+							o.getStorage());
+					if (null == mapping) {
+						mapping = ThisApplication.context().storageMappings().random(DocSignScrawl.class);
+					}
+					if (null != mapping) {
+						byte[] bytes = Base64.decodeBase64(content);
+						o.updateContent(mapping, bytes);
+					}
+				}
+				emc.persist(o, CheckPersistType.all);
 			}
 		}
 	}
