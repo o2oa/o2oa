@@ -58,9 +58,6 @@ public class DocSignScrawl extends StorageObject {
 	@Override
 	public void onPersist() throws Exception {
 		if(StringUtils.isNotBlank(this.name)){
-			if(this.lastUpdateTime == null){
-				this.lastUpdateTime = new Date();
-			}
 			this.extension = StringUtils.lowerCase(FilenameUtils.getExtension(name));
 		}
 	}
@@ -77,11 +74,12 @@ public class DocSignScrawl extends StorageObject {
 		this.person = docSign.getPerson();
 		this.type = SCRAWL_TYPE_PLACEHOLDER;
 		this.name = name;
+		this.setCreateTime(new Date());
 	}
 
 	@Override
 	public String path() {
-		String str = DateTools.format(new Date(), DateTools.formatCompact_yyyyMMdd);
+		String str = DateTools.format(this.getCreateTime(), DateTools.formatCompact_yyyyMMdd);
 		str += PATHSEPARATOR;
 		str += this.job;
 		str += PATHSEPARATOR;
