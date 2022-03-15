@@ -301,8 +301,10 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
 
         var viewTitleCellNode = (viewStyles && viewStyles["titleTd"]) ? viewStyles["titleTd"] : this.css.viewTitleCellNode;
 
+        debugger;
+
         if (this.json.isTitle!=="no"){
-            this.viewTitleLine = new Element("tr", {
+            this.viewTitleLine = new Element("tr.viewTitleLine", {
                 "styles": (viewStyles && viewStyles["titleTr"]) ? viewStyles["titleTr"] : this.css.viewTitleLineNode
             }).inject(this.viewTable);
 
