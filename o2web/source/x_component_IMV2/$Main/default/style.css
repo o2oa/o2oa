@@ -358,22 +358,26 @@
   float: left;
   width: 75%;
 }
-
-.chat-sender div:nth-of-type(1) {
+.chat-sender-avatar {
   float: left;
 }
-
-.chat-sender div:nth-of-type(2) {
+/* .chat-sender div:nth-of-type(1) {
+  float: left;
+} */
+.chat-sender-name {
   margin: 0 50px 2px 50px;
   padding: 0px;
   color: #848484;
-  /* font-size: 70%; */
   text-align: left;
 }
-
-.chat-sender div:nth-of-type(3) {
+/* .chat-sender div:nth-of-type(2) {
+  margin: 0 50px 2px 50px;
+  padding: 0px;
+  color: #848484;
+  text-align: left;
+} */
+.chat-sender-box {
   background-color: white;
-  /*float: left;*/
   margin: 0 50px 10px 50px;
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
@@ -381,6 +385,22 @@
   word-wrap: break-word;
   white-space: pre-line;
 }
+/* 业务消息专用的外框 */
+.chat-sender-card-box {
+  background-color: white;
+  margin: 0 50px 10px 50px;
+  padding: 10px 10px 10px 10px;
+  border-radius: 7px;
+}
+/* .chat-sender div:nth-of-type(3) {
+  background-color: white;
+  margin: 0 50px 10px 50px;
+  padding: 10px 10px 10px 10px;
+  border-radius: 7px;
+  text-indent: -12px;
+  word-wrap: break-word;
+  white-space: pre-line;
+} */
 .chat-sender .img-chat {
   width: 192px;
   height: 144px;
@@ -400,18 +420,24 @@
   float: right;
   width: 75%;
 }
-
-.chat-receiver div:nth-of-type(1) {
+.chat-receiver-avatar {
   float: right;
 }
-
-.chat-receiver div:nth-of-type(2) {
+/* .chat-receiver div:nth-of-type(1) {
+  float: right;
+} */
+.chat-receiver-name {
   margin: 0px 50px 2px 50px;
   padding: 0px;
   color: #848484;
-  /* font-size: 70%; */
   text-align: right;
 }
+/* .chat-receiver div:nth-of-type(2) {
+  margin: 0px 50px 2px 50px;
+  padding: 0px;
+  color: #848484;
+  text-align: right;
+} */
 .chat-receiver .img-chat {
   width: 192px;
   height: 144px;
@@ -424,9 +450,7 @@
   display: block;
   margin: auto;
 }
-
-.chat-receiver div:nth-of-type(3) {
-  /*float:right;*/
+.chat-receiver-box {
   background-color: #b2e281;
   margin: 0px 50px 10px 50px;
   padding: 10px 10px 10px 10px;
@@ -434,12 +458,53 @@
   word-wrap: break-word;
   white-space: pre-line;
 }
+/* 业务消息专用的外框 */
+.chat-receiver-card-box {
+  background-color: #b2e281;
+  margin: 0px 50px 10px 50px;
+  padding: 10px 10px 10px 10px;
+  border-radius: 7px;
+}
+/* .chat-receiver div:nth-of-type(3) {
+  background-color: #b2e281;
+  margin: 0px 50px 10px 50px;
+  padding: 10px 10px 10px 10px;
+  border-radius: 7px;
+  word-wrap: break-word;
+  white-space: pre-line;
+} */
+/***** 业务消息 卡片样式 ******/
+.chat-card {
+  display: flex;
+  flex-direction: column;
+}
+.chat-card-type {
+  color: #333333;
+}
+.chat-card-body {
+  color: #666666;
+  margin-top: 10px;
+}
+.chat-card-bottom {
+  display: flex;
+  flex-direction: row;
+  padding-top: 5px;
+  margin-top: 10px;
+  border-top: 1px solid #dedede;
+}
+.chat-card-bottom-icon {
+  width: 24px;
+  height: 24px;
+}
+.chat-card-bottom-name {
+  color: #999999;
+  margin-left: 10px;
+}
 
-.chat-receiver div:first-child img,
-.chat-sender div:first-child img {
+.chat-receiver-avatar > img,
+.chat-sender-avatar > img {
   width: 40px;
   height: 40px;
-  /*border-radius: 10%;*/
 }
 
 .chat-left_triangle {
@@ -451,6 +516,7 @@
   position: relative;
   left: -22px;
   top: 3px;
+  float: left;
 }
 
 .chat-right_triangle {
@@ -462,6 +528,7 @@
   position: relative;
   right: -22px;
   top: 3px;
+  float: right;
 }
 .chat-content-emoji {
   width: 32px;
