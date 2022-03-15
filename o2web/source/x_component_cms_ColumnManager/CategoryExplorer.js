@@ -2202,7 +2202,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
                 }
             };
             this.explorer.app.desktop.openApplication(e, "cms.ViewDesigner", options);
-        }else if(this.data.viewType){  //数据中心
+        }else if(this.data.type === "queryview"){  //数据中心
             MWF.Actions.get("x_query_assemble_designer").getApplication( this.data.appName, function( json ){
                 var options = {
                     "onQueryLoad": function(){
