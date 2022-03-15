@@ -963,15 +963,15 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		}
 		var receiverBodyNode = new Element("div", { "class": "chat-sender", "id": msg.id}).inject(this.chatContentNode, isTop ? "top" : "bottom");
 		this._addContextMenuEvent(receiverBodyNode, msg);
-		var avatarNode = new Element("div").inject(receiverBodyNode);
+		var avatarNode = new Element("div", {"class": "chat-sender-avatar"}).inject(receiverBodyNode);
 		var avatarUrl = this.main._getIcon(createPerson);
 		var name = createPerson;
 		if (createPerson.indexOf("@") != -1) {
 			name = name.substring(0, createPerson.indexOf("@"));
 		}
 		var avatarImg = new Element("img", { "src": avatarUrl }).inject(avatarNode);
-		var nameNode = new Element("div", { "text": name }).inject(receiverBodyNode);
-		var lastNode = new Element("div").inject(receiverBodyNode);
+		var nameNode = new Element("div", { "text": name , "class": "chat-sender-name"}).inject(receiverBodyNode);
+		var lastNode = new Element("div", {"class": "chat-sender-box"}).inject(receiverBodyNode);
 		var lastFirstNode = new Element("div", { "class": "chat-left_triangle" }).inject(lastNode);
 		//text
 		if (msgBody.type == "emoji") { // 表情
@@ -1034,15 +1034,15 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		var receiverBodyNode = new Element("div", { "class": "chat-receiver", "id": msg.id}).inject(this.chatContentNode, isTop ? "top" : "bottom");
 		this._addContextMenuEvent(receiverBodyNode, msg);
 	
-		var avatarNode = new Element("div").inject(receiverBodyNode);
+		var avatarNode = new Element("div", {"class": "chat-receiver-avatar"}).inject(receiverBodyNode);
 		var avatarUrl = this.main._getIcon(createPerson);
 		var name = createPerson;
 		if (createPerson.indexOf("@") != -1) {
 			name = name.substring(0, createPerson.indexOf("@"));
 		}
 		var avatarImg = new Element("img", { "src": avatarUrl }).inject(avatarNode);
-		var nameNode = new Element("div", { "text": name }).inject(receiverBodyNode);
-		var lastNode = new Element("div").inject(receiverBodyNode);
+		var nameNode = new Element("div", { "text": name , "class": "chat-receiver-name"}).inject(receiverBodyNode);
+		var lastNode = new Element("div", {"class": "chat-receiver-box"}).inject(receiverBodyNode);
 		var lastFirstNode = new Element("div", { "class": "chat-right_triangle" }).inject(lastNode);
 
 		if (msgBody.type == "emoji") { // 表情
@@ -1092,29 +1092,6 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 
 	// 消息体上是否显示消息时间
 	_buildMsgTime: function(isTop, msg) {
-		// var flag = false;
-		// for (let index = 0; index < this.messageList.length; index++) {
-		// 	const element = this.messageList[index];
-		// 	if (element.id && element.id === msg.id) {
-		// 		if (index > 0) {
-		// 			const before = this.messageList[index-1];
-		// 			var thisTime = o2.common.toDate(msg.createTime);
-		// 			var beforeTime = o2.common.toDate(before.createTime);
-		// 			var minu = ( beforeTime.getTime() - thisTime.getTime() ) / 1000 / 60 ;
-		// 			if (minu > 1) { // 超过1分钟
-		// 				flag = true;
-		// 			}
-		// 		} else {
-		// 			flag = true;
-		// 		}
-		// 		break
-		// 	}
-		// }
-		// if (flag ){
-		// 	var timeNode = new Element("div", { "class": "chat-msg-time"}).inject(this.chatContentNode, isTop ? "top" : "bottom");
-		// 	timeNode.set("text", this._msgShowTime(o2.common.toDate(msg.createTime)))
-		// }
-		
 		var timeNode = new Element("div", { "class": "chat-msg-time"}).inject(this.chatContentNode, isTop ? "top" : "bottom");
 		timeNode.set("text", this._msgShowTime(o2.common.toDate(msg.createTime)))
 	},
