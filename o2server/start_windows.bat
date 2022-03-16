@@ -1,4 +1,5 @@
 @echo off
+cd "%~dp0"
 if exist "%~dp0local\update" (
 	for  %%D in (commons,config,configSample,local,localSample,jvm,servers,store) do (
 		if not exist "%~dp0%%D" (
