@@ -51,10 +51,12 @@ public class Attachment extends StorageObject {
 	private static final long serialVersionUID = -6564254194819206271L;
 	private static final String TABLE = PersistenceProperties.Content.Attachment.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -66,6 +68,7 @@ public class Attachment extends StorageObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		this.extension = StringUtils.trimToEmpty(this.extension);
 		this.site = StringUtils.trimToEmpty(this.site);

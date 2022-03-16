@@ -9,6 +9,7 @@ import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.query.core.entity.Item;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -117,6 +118,35 @@ abstract class BaseAction extends StandardJaxrsAction {
         if (ListTools.isNotEmpty(ids)) {
             business.entityManagerContainer().beginTransaction(Record.class);
             business.entityManagerContainer().delete(Record.class, ids);
+        }
+    }
+
+    protected void deleteSign(Business business, String job) throws Exception {
+        List<String> ids = business.entityManagerContainer().idsEqual(DocSign.class, DocSign.job_FIELDNAME, job);
+        if (ListTools.isNotEmpty(ids)) {
+            business.entityManagerContainer().beginTransaction(DocSign.class);
+            business.entityManagerContainer().delete(DocSign.class, ids);
+        }
+    }
+
+    protected void deleteSignScrawl(Business business, String job) throws Exception {
+        List<String> ids = business.entityManagerContainer().idsEqual(DocSignScrawl.class, DocSignScrawl.job_FIELDNAME, job);
+        if (ListTools.isNotEmpty(ids)) {
+            business.entityManagerContainer().beginTransaction(DocSignScrawl.class);
+            DocSignScrawl obj;
+            for (String id : ids) {
+                obj = business.entityManagerContainer().find(id, DocSignScrawl.class);
+                if (null != obj) {
+                    if(StringUtils.isNotBlank(obj.getStorage())) {
+                        StorageMapping mapping = ThisApplication.context().storageMappings().get(DocSignScrawl.class,
+                                obj.getStorage());
+                        if (null != mapping) {
+                            obj.deleteContent(mapping);
+                        }
+                    }
+                    business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+                }
+            }
         }
     }
 }
