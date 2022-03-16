@@ -152,6 +152,13 @@
   margin-left: 56px;
   margin-right: 14px;
 }
+.o2_im_chat_list .item .share_body {
+  height: 30px;
+  line-height: 30px;
+  margin-left: 56px;
+  margin-right: 14px;
+  margin-top: 14px;
+}
 .o2_im_chat_list .item .body_up .body_title {
   float: left;
   color: rgb(51, 51, 51);
@@ -218,6 +225,7 @@
   float: right;
   margin-right: 10px;
   cursor: pointer;
+  position: relative;
   display: none;
 }
 
@@ -477,6 +485,7 @@
 .chat-card {
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 .chat-card-type {
   color: #333333;
@@ -672,7 +681,7 @@
   color: #000;
   padding: 10px;
   background: #fff;
-  box-shadow: rgb(102 102 102) 3px 3px 15px;
+  box-shadow: #dedede 3px 3px 15px;
   border-radius: 6px;
   margin: 10px;
   cursor: pointer;
@@ -709,7 +718,7 @@
     background-color: #FFFFFF;
     border: 1px solid #E6E6E6;
     margin: 10px 12px;
-    box-shadow: rgb(102 102 102) 3px 3px 5px;
+    box-shadow: #dedede 3px 3px 5px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -814,7 +823,7 @@
   color: #000;
   padding: 10px;
   background: #fff;
-  box-shadow: rgb(102 102 102) 3px 3px 15px;
+  box-shadow: #dedede 3px 3px 15px;
   border-radius: 6px;
   margin: 10px;
   cursor: pointer;
@@ -839,4 +848,63 @@
   color: #FFFFFF;
   cursor: pointer;
   max-width: 200px;
+}
+
+/*分享的会话列表*/
+.share-conversation-out-box {
+  background-color: rgb(255, 255, 255);
+  color: rgb(102, 102, 102);
+  z-index: 30000;
+  box-shadow: rgb(102 102 102) 3px 3px 15px;
+  border-radius: 6px;
+  width: 300px;
+  height: 50%;
+  min-height: 300px;
+  max-height: 560px;
+  opacity: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.share-conversation-list {
+  border-top: 1px solid rgb(255, 255, 255);
+  width: 257px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.share-conversation-list > .item {
+  overflow: hidden;
+  height: 60px;
+  margin: 0px;
+  background-color: rgb(253, 253, 253);
+}
+.share-conversation-list > .item > .base {
+  height: 59px;
+  cursor: pointer;
+  margin-left: 16px;
+  border-bottom: 1px solid rgb(221, 221, 221);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.share-conversation-list > .item > .base > .avatar {
+  background-position: center center;
+  background-repeat: no-repeat;
+  height: 48px;
+  width: 48px;
+  border-radius: 24px;
+  background-color: rgb(255, 255, 255);
+}
+.share-conversation-list > .item > .base > .avatar > .img {
+  width: 48px;
+  height: 48px;
+  border: 0px;
+  border-radius: 24px;
+}
+.share-conversation-list > .item > .base > .body {
+  height: 30px;
+  line-height: 30px;
+  margin-left: 16px;
 }

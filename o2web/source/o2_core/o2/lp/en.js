@@ -225,7 +225,9 @@ o2.LP.desktop = {
 
 		"customMessageTitle": "Message: ",
 		"customMessage": "You received a message: ",
-		"emoji": "Emoji"
+		"emoji": "Emoji",
+		"processWork": "Work",
+		"cmsDoc": "Information",
 	},
 	"styleMenu": {
 		"default": "default",

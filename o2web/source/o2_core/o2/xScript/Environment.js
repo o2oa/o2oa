@@ -2943,6 +2943,18 @@ MWF.xScript.Environment = function(ev){
         "startIM": function(jobId){
             _form.openIMChatStarter(jobId);
         },
+         /**分享当前工作到IM聊天会话中。<b>（仅流程表单中可用）</b><br/>
+         * @method shareToIMChat
+         * @static
+         *  
+         * @example
+         //不带参数
+         this.form.shareToIMChat();
+         */
+        "shareToIMChat": function(){
+            _form.shareToIMChat();
+        },
+
 
         /**弹出一个确认框，带确认和关闭按钮
          * @method confirm

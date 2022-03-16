@@ -334,3 +334,167 @@ MWF.xApplication.IMV2.Starter.CreateConversationForm = new Class({
 		}
 	}
 });
+
+
+
+
+/**
+ * 分享消息、转发消息
+ */
+MWF.xApplication.IMV2.ShareToConversation = new Class({
+  Extends: MWF.widget.Common,
+  Implements: [Options, Events],
+  options: {
+    "style": "default",
+    "businessType" : "none", // 业务类型 :none, process, cms  。启动聊天 是否带业务类型
+    "businessId": null, // 业务ID 新创建为空
+    "includePersonList": [], // 在规定范围内的人员进行选择, 如果为空，则不限制
+    "conversationId": null, // 传入的会话id, 新创建为空
+		"mode": "default" // 展现模式：default onlyChat 。 onlyChat的模式需要传入conversationId 会打开这个会话的聊天窗口并隐藏左边的会话列表
+  },
+  initialize: function(data, app, options){
+    console.log("init   IMV2.Starter " );
+    this.setOptions(options);
+    this.path = "../x_component_IMV2/$Main/";
+    MWF.xDesktop.requireApp("IMV2", "lp."+o2.language, null, false);
+    this.lp = MWF.xApplication.IMV2.LP;
+    this.data = data; // msgBody 消息体
+    this.app = app;
+    
+  },
+  load: function(){
+    console.log("init   IMV2.ShareToConversation    " );
+    debugger;
+    if (this.data && this.data.msgBody) {
+      console.log(this.data.msgBody );
+      this.openConversationListDialog();
+    } else {
+      this.app.notice(this.lp.msgShareNoBody, "error");
+    }
+  },
+  // 打开窗口
+  openConversationListDialog: function() {
+    var cssPath = this.path + "default/style.css";
+      var choosePersonHtmlPath = this.path + "default/shareToConversation.html";
+      this.app.content.loadAll({
+        "css": [cssPath],
+        "html": choosePersonHtmlPath,
+      }, { "bind": { "lp": this.lp, "data": {} }, "module": this }, function() {
+        this.conversationChooseCloseBtnNode.addEvents({
+          "click": function(){this.closeConversationListDialog()}.bind(this)
+        });
+        this.loadConversationList();
+      }.bind(this));
+  },
+  // 关闭窗口
+  closeConversationListDialog: function() {
+    if (this.conversationChooseDialogNode) {
+      this.conversationChooseDialogNode.destroy();
+      this.conversationChooseDialogNode = null;
+    }
+    if (this.app.refreshAll) this.app.refreshAll();
+  },
+  // 加载会话列表
+  loadConversationList: function() {
+    o2.Actions.load("x_message_assemble_communicate").ImAction.myConversationList(function (json) {
+      this.conversationNodeItemList = [];
+			if (json.data && json.data instanceof Array) {
+        for (var i = 0; i < json.data.length; i++) {
+          var conversation = json.data[i];
+          var itemNode = this._createConvItemNode(conversation);
+          this.conversationNodeItemList.push(itemNode);
+        }
+			}
+		}.bind(this));
+  },
+  	//用户头像
+	_getIcon: function (id) {
+		var orgAction = MWF.Actions.get("x_organization_assemble_control")
+		var url = (id) ? orgAction.getPersonIcon(id) : "../x_component_IMV2/$Main/default/icons/group.png";
+		return url + "?" + (new Date().getTime());
+	},
+  // 创建会话Node
+  _createConvItemNode: function(conversation) {
+    var avatarDefault = this._getIcon();
+		var convData = {
+			"id": conversation.id,
+			"avatarUrl": avatarDefault,
+			"title": conversation.title,
+		};
+		var distinguishedName = layout.session.user.distinguishedName;
+		if (conversation.type && conversation.type === "single") {
+			var chatPerson = "";
+			if (conversation.personList && conversation.personList instanceof Array) {
+				for (var j = 0; j < conversation.personList.length; j++) {
+					var person = conversation.personList[j];
+					if (person !== distinguishedName) {
+						chatPerson = person;
+					}
+				}
+			}
+			convData.avatarUrl = this._getIcon(chatPerson);
+			var name = chatPerson;
+			if (chatPerson.indexOf("@") != -1) {
+				name = name.substring(0, chatPerson.indexOf("@"));
+			}
+			convData.title = name;
+		}
+    var itemNode = new Element("div", { "class": "item" }).inject(this.conversationListNode);
+    var nodeBaseItem = new Element("div", { "class": "base" }).inject(itemNode);
+		var avatarNode = new Element("div", { "class": "avatar" }).inject(nodeBaseItem);
+		new Element("img", { "src": convData.avatarUrl, "class": "img" }).inject(avatarNode);
+		new Element("div", { "class": "body" , "text": convData.title }).inject(nodeBaseItem);
+    itemNode.store("conversation", conversation);
+    itemNode.addEvents({
+      "click": function() {
+        this.clickConversationItem(conversation)
+      }.bind(this)
+    })
+    return itemNode;
+  },
+  // 点击会话
+  clickConversationItem: function(conversation) {
+    console.log(conversation)
+    var distinguishedName = layout.session.user.distinguishedName;
+		var time = this._currentTime();
+		var bodyJson = JSON.stringify(this.data.msgBody);
+		var uuid = (new MWF.widget.UUID).toString();
+		var textMessage = {
+			"id": uuid,
+			"conversationId": conversation.id,
+			"body": bodyJson,
+			"createPerson": distinguishedName,
+			"createTime": time,
+			"sendStatus": 1
+		};
+		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(textMessage,
+			function (json) {
+        var options = {
+          conversationId: conversation.id,
+          mode: this.options.mode || "default"
+        }
+        layout.openApplication(null, "IMV2", options);
+			}.bind(this),
+			function (error) {
+				console.log(error);
+        this.app.notice(this.lp.msgShareError, "error");
+			}.bind(this));
+		this.closeConversationListDialog();
+  },
+  _currentTime: function () {
+		var today = new Date();
+		var year = today.getFullYear(); //得到年份
+		var month = today.getMonth();//得到月份
+		var date = today.getDate();//得到日期
+		var hour = today.getHours();//得到小时
+		var minu = today.getMinutes();//得到分钟
+		var sec = today.getSeconds();//得到秒
+		month = month + 1;
+		if (month < 10) month = "0" + month;
+		if (date < 10) date = "0" + date;
+		if (hour < 10) hour = "0" + hour;
+		if (minu < 10) minu = "0" + minu;
+		if (sec < 10) sec = "0" + sec;
+		return year + "-" + month + "-" + date + " " + hour + ":" + minu + ":" + sec;
+	}
+});
