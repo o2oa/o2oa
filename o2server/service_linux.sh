@@ -2,6 +2,7 @@ current_dir="$(
     cd "$(dirname "$0")"
     pwd
 )"
+cd ${current_dir}
 if [ -z "$1" ]; then
     echo "usage: ./service_linux.sh name [start.sh default is start_linux.sh]"
     exit

@@ -1,6 +1,7 @@
 #!/bin/bash
 # Copyright (c) http://www.o2oa.net/
 current_dir="$(cd "$(dirname "$0")"; pwd)"
+cd ${current_dir}
 sudo date
 if [ -d ${current_dir}/local/update ]
 then

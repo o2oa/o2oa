@@ -1,4 +1,5 @@
 @echo off
+cd "%~dp0"
 if not "%1" == "install" ( if not "%1" == "uninstall"  ( if not "%1" == "start" ( if not "%1" == "stop" (
 echo     service_windows.bat install ^| uninstall ^| start ^| stop
 echo     depends on Microsoft.NET Framework 4
