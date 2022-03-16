@@ -1,4 +1,5 @@
 current_dir="$(cd "$(dirname "$0")"; pwd)"
+cd ${current_dir}
 echo "ready to stop o2server path: ${current_dir}"
 ${current_dir}/jvm/mips_java11/bin/java -javaagent:${current_dir}/console.jar -cp ${current_dir}/console.jar com.x.server.console.swapcommand.Exit
 sleep 10
