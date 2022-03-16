@@ -27,6 +27,7 @@ import com.x.processplatform.assemble.surface.jaxrs.route.RouteAction;
 import com.x.processplatform.assemble.surface.jaxrs.script.ScriptAction;
 import com.x.processplatform.assemble.surface.jaxrs.serialnumber.SerialNumberAction;
 import com.x.processplatform.assemble.surface.jaxrs.service.ServiceAction;
+import com.x.processplatform.assemble.surface.jaxrs.sign.SignAction;
 import com.x.processplatform.assemble.surface.jaxrs.snap.SnapAction;
 import com.x.processplatform.assemble.surface.jaxrs.task.TaskAction;
 import com.x.processplatform.assemble.surface.jaxrs.taskcompleted.TaskCompletedAction;
@@ -67,6 +68,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(DraftAction.class);
 		classes.add(SnapAction.class);
 		classes.add(AnonymousAction.class);
+		classes.add(SignAction.class);
 		return classes;
 	}
 }

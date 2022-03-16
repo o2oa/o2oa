@@ -54,6 +54,12 @@ public class SnapProperties extends JsonProperties {
 	@FieldDescribe("版式文件版本")
 	private List<DocumentVersion> documentVersionList = new ArrayList<DocumentVersion>();
 
+	@FieldDescribe("文档签批信息")
+	private List<DocSign> docSignList = new ArrayList<>();
+
+	@FieldDescribe("文档签批附件信息")
+	private List<DocSignScrawl> docSignScrawlList = new ArrayList<>();
+
 	private Map<String, String> attachmentContentMap = new HashMap<>();
 
 	public Data getData() {
@@ -206,4 +212,25 @@ public class SnapProperties extends JsonProperties {
 		this.attachmentContentMap = attachmentContentMap;
 	}
 
+	public List<DocSign> getDocSignList() {
+		if(docSignList == null){
+			docSignList = new ArrayList<>();
+		}
+		return docSignList;
+	}
+
+	public void setDocSignList(List<DocSign> docSignList) {
+		this.docSignList = docSignList;
+	}
+
+	public List<DocSignScrawl> getDocSignScrawlList() {
+		if(docSignScrawlList == null){
+			this.docSignScrawlList = new ArrayList<>();
+		}
+		return docSignScrawlList;
+	}
+
+	public void setDocSignScrawlList(List<DocSignScrawl> docSignScrawlList) {
+		this.docSignScrawlList = docSignScrawlList;
+	}
 }

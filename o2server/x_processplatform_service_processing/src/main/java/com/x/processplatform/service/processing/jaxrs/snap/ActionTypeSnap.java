@@ -16,17 +16,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.DocumentVersion;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Snap;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.content.*;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
 
@@ -54,6 +44,7 @@ class ActionTypeSnap extends BaseAction {
 			this.id = id;
 		}
 
+		@Override
 		public ActionResult<Wo> call() throws Exception {
 			ActionResult<Wo> result = new ActionResult<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -73,10 +64,12 @@ class ActionTypeSnap extends BaseAction {
 				List<Record> records = new ArrayList<>();
 				List<Attachment> attachments = new ArrayList<>();
 				List<DocumentVersion> documentVersions = new ArrayList<>();
+				List<DocSign> docSigns = new ArrayList<>();
+				List<DocSignScrawl> docSignScrawls = new ArrayList<>();
 				Snap snap = new Snap(work);
 				snap.setProperties(snap(business, work.getJob(), items, works, tasks, taskCompleteds, reads,
-						readCompleteds, reviews, workLogs, records, attachments, documentVersions));
-				
+						readCompleteds, reviews, workLogs, records, attachments, documentVersions, docSigns, docSignScrawls));
+
 				snap.setType(Snap.TYPE_SNAP);
 				emc.beginTransaction(Snap.class);
 				emc.persist(snap, CheckPersistType.all);

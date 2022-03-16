@@ -15,15 +15,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Snap;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.content.*;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
 
@@ -69,8 +61,10 @@ class ActionTypeSnapWorkCompleted extends BaseAction {
 				List<WorkLog> workLogs = new ArrayList<>();
 				List<Record> records = new ArrayList<>();
 				List<Attachment> attachments = new ArrayList<>();
+				List<DocSign> docSigns = new ArrayList<>();
+				List<DocSignScrawl> docSignScrawls = new ArrayList<>();
 				snap.setProperties(snap(business, workCompleted.getJob(), items, workCompleted, taskCompleteds, reads,
-						readCompleteds, reviews, workLogs, records, attachments));
+						readCompleteds, reviews, workLogs, records, attachments, docSigns, docSignScrawls));
 				snap.setType(Snap.TYPE_SNAPWORKCOMPLETED);
 				emc.beginTransaction(Snap.class);
 				emc.persist(snap, CheckPersistType.all);
