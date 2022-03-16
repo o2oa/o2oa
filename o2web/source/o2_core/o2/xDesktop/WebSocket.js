@@ -167,7 +167,6 @@ MWF.xDesktop.WebSocket = new Class({
                             case "custom_create":
                                 this.receiveCustomMessage(data);
                             case "im_create":
-                                console.log("im 消息来了！！！");
                                 this.receiveIMMessage(data);
                                 break;
                             case "cms_publish" :
@@ -354,6 +353,10 @@ MWF.xDesktop.WebSocket = new Class({
         var msgBody = body.body; //默认text 文本消息
         if (body.type && body.type == "emoji") { //表情 消息
             msgBody = "["+MWF.LP.desktop.messsage.emoji+"]";
+        } else if (body.type == "process") {
+            msgBody = "["+MWF.LP.desktop.messsage.processWork+"]";
+        } else if (body.type == "cms") {
+            msgBody = "["+MWF.LP.desktop.messsage.cmsDoc+"]";
         }
         var content = "<font style='color: #333; font-weight: bold'>"+data.title+"</font>: "+msgBody;
         var msg = {

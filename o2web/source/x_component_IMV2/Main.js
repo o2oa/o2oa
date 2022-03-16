@@ -543,10 +543,27 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 				var applicationId = work.application;
 				this.chatTitleBusinessBtnNode.setStyles({"background-image": "url(../x_component_process_ApplicationExplorer/$Main/default/icon/application.png)", "display":"block"});
 				this.chatTitleBusinessBtnNode.store("work", work);
-				this.chatTitleBusinessBtnNode.addEvent("click", function(e) {
-					this.loadProcessWork(e.target.retrieve("work"));
-					e.preventDefault();
-				}.bind(this));
+				this.chatTitleBusinessBtnNode.addEvents({
+					"click": function(e) {
+						this.loadProcessWork(e.target.retrieve("work"));
+						e.preventDefault();
+					}.bind(this),
+					"mouseover": function() {
+						if (this.businessTipsNode) {
+							this.businessTipsNode.setStyle("display", "block");
+						} else {
+							this.businessTipsNode = new Element("div", {
+								"style": "position: absolute;right: 0;top: 30px;width: 200px;border: 1px solid #dedede;border-radius: 5px;padding: 8px;background: #ffffff;color: #666;text-align: left;overflow:hidden;white-space: nowrap;text-overflow: ellipsis;"
+							}).inject(this.chatTitleBusinessBtnNode);
+							var work = this.chatTitleBusinessBtnNode.retrieve("work")
+							this.businessTipsNode.set("text", this.lp.chooseBusinessWorkTitle + "【"+work.processName+"】"+work.title);
+							this.businessTipsNode.setStyle("display", "block");
+						}
+					}.bind(this),
+					"mouseout": function() {
+						if (this.businessTipsNode) {this.businessTipsNode.setStyle("display", "none");}
+					}.bind(this)
+			});
 				o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.getIcon(applicationId, function(json) {
 					if (json.data && json.data.icon) {
 						this.chatTitleBusinessBtnNode.setStyles({"background-image": "url(data:image/png;base64," + json.data.icon + ")", "display":"block"});
@@ -971,7 +988,11 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		}
 		var avatarImg = new Element("img", { "src": avatarUrl }).inject(avatarNode);
 		var nameNode = new Element("div", { "text": name , "class": "chat-sender-name"}).inject(receiverBodyNode);
-		var lastNode = new Element("div", {"class": "chat-sender-box"}).inject(receiverBodyNode);
+		var lastNodeClass = "chat-sender-box"
+		if (msgBody.type == "process" || msgBody.type == "cms") {
+			lastNodeClass = "chat-sender-card-box"
+		}
+		var lastNode = new Element("div", {"class": lastNodeClass}).inject(receiverBodyNode);
 		var lastFirstNode = new Element("div", { "class": "chat-left_triangle" }).inject(lastNode);
 		//text
 		if (msgBody.type == "emoji") { // 表情
@@ -1006,7 +1027,35 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
 			var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
 			new Element("a", { "href": downloadUrl, "target": "_blank", "text": msgBody.fileName }).inject(mapBox);
-		} else {//text
+		} else if (msgBody.type == "process") {
+			var cardNode = new Element("div", {"class": "chat-card"}).inject(lastNode);
+			// 流程名称
+			new Element("div", {"class": "chat-card-type", "text": "【"+msgBody.processName+"】"}).inject(cardNode);
+			// 工作标题
+			var title = msgBody.title;
+			if (title == null || title == "") {
+				title = "【"+msgBody.processName+"】- " + this.lp.noTitle;
+			}
+			new Element("div", {"class": "chat-card-body", "text":title}).inject(cardNode);
+			var cardFooter = new Element("div", {"class": "chat-card-bottom"}).inject(cardNode);
+			var appIconNode = new Element("img", {"class": "chat-card-bottom-icon"}).inject(cardFooter);
+			this._loadProcessApplicationIcon(msgBody.application, function(appIcon) {
+				if (appIcon && appIcon.icon) {
+					appIconNode.set("src", "data:image/png;base64," + appIcon.icon);
+				} else {
+					console.log('没有找到应用图标');
+					appIconNode.set("src", "../x_component_process_ApplicationExplorer/$Main/default/icon/application.png");
+				}
+			})
+			new Element("div", { "class": "chat-card-bottom-name", "text": msgBody.applicationName }).inject(cardFooter);
+			cardNode.addEvents({
+				"click": function() {
+					layout.openApplication(null, "process.Work", {"workId": msgBody.work});
+				}
+			});
+		} else if (msgBody.type == "cms") {
+		
+		}  else {//text
 			new Element("span", { "text": msgBody.body }).inject(lastNode);
 		}
 		if (isTop) {
@@ -1042,7 +1091,11 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		}
 		var avatarImg = new Element("img", { "src": avatarUrl }).inject(avatarNode);
 		var nameNode = new Element("div", { "text": name , "class": "chat-receiver-name"}).inject(receiverBodyNode);
-		var lastNode = new Element("div", {"class": "chat-receiver-box"}).inject(receiverBodyNode);
+		var lastNodeClass = "chat-receiver-box"
+		if (msgBody.type == "process" || msgBody.type == "cms") {
+			lastNodeClass = "chat-receiver-card-box"
+		}
+		var lastNode = new Element("div", {"class": lastNodeClass}).inject(receiverBodyNode);
 		var lastFirstNode = new Element("div", { "class": "chat-right_triangle" }).inject(lastNode);
 
 		if (msgBody.type == "emoji") { // 表情
@@ -1077,6 +1130,34 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
 			var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
 			new Element("a", { "href": downloadUrl, "target": "_blank", "text": msgBody.fileName }).inject(mapBox);
+		} else if (msgBody.type == "process") {
+			var cardNode = new Element("div", {"class": "chat-card"}).inject(lastNode);
+			// 流程名称
+			new Element("div", {"class": "chat-card-type", "text": "【"+msgBody.processName+"】"}).inject(cardNode);
+			// 工作标题
+			var title = msgBody.title;
+			if (title == null || title == "") {
+				title = "【"+msgBody.processName+"】- " + this.lp.noTitle;
+			}
+			new Element("div", {"class": "chat-card-body", "text":title}).inject(cardNode);
+			var cardFooter = new Element("div", {"class": "chat-card-bottom"}).inject(cardNode);
+			var appIconNode = new Element("img", {"class": "chat-card-bottom-icon"}).inject(cardFooter);
+			this._loadProcessApplicationIcon(msgBody.application, function(appIcon) {
+				if (appIcon && appIcon.icon) {
+					appIconNode.set("src", "data:image/png;base64," + appIcon.icon);
+				} else {
+					console.log('没有找到应用图标');
+					appIconNode.set("src", "../x_component_process_ApplicationExplorer/$Main/default/icon/application.png");
+				}
+			})
+			new Element("div", { "class": "chat-card-bottom-name", "text": msgBody.applicationName }).inject(cardFooter);
+			cardNode.addEvents({
+				"click": function() {
+					layout.openApplication(null, "process.Work", {"workId": msgBody.work});
+				}
+			});
+		} else if (msgBody.type == "cms") {
+		
 		} else {//text
 			new Element("span", { "text": msgBody.body }).inject(lastNode);
 		}
@@ -1087,6 +1168,27 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		if (!isTop) {
 			var scrollFx = new Fx.Scroll(this.chatContentNode);
 			scrollFx.toBottom();
+		}
+	},
+	// 获取流程应用图标
+	_loadProcessApplicationIcon: function(appId, callback) {
+		if (!this.processApplications) {
+			this.processApplications = [];
+		}
+		if (this.processApplications[appId]) {
+			if (callback) callback(this.processApplications[appId]);
+		} else {
+			o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.	getIcon(appId, function (json) {
+				if(json && json.data) {
+					this.processApplications[appId] = json.data;
+					if (callback) callback(json.data);
+				} else {
+					if (callback) callback();
+				}
+			}.bind(this), function (error) {
+				console.log(error);
+				if (callback) callback();
+			}.bind(this))
 		}
 	},
 
@@ -1396,7 +1498,17 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 			}
 			if (mBody.type) {
 				convData.lastMessageType = mBody.type;
+				if (mBody.type == "process") {
+					var title = mBody.title;
+					if (title == null || title == "") {
+						title = "【" + mBody.processName + "】- " + this.lp.noTitle;
+					}
+					convData.lastMessage = title;
+				} else if (mBody.type == "cms") {
+					convData.lastMessage = mBody.title || "";
+				}
 			}
+
 		}
 		this.node = new Element("div", { "class": "item" }).inject(this.container);
 		this.nodeBaseItem = new Element("div", { "class": "base" }).inject(this.node);
