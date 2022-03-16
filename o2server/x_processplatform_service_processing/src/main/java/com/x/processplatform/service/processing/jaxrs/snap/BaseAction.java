@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -20,23 +21,13 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Data;
-import com.x.processplatform.core.entity.content.DocumentVersion;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.SnapProperties;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.query.core.entity.Item;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.print.Doc;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -45,7 +36,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected SnapProperties snap(Business business, String job, List<Item> items, List<Work> works, List<Task> tasks,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
 			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments,
-			List<DocumentVersion> documentVersions) throws InterruptedException, ExecutionException {
+			List<DocumentVersion> documentVersions, List<DocSign> docSigns, List<DocSignScrawl> docSignScrawls) throws InterruptedException, ExecutionException {
 		SnapProperties properties = new SnapProperties();
 		properties.setJob(job);
 		CompletableFuture.allOf(mergeItem(business, job, properties, items),
@@ -56,7 +47,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 				mergeReview(business, job, properties, reviews), mergeWorkLog(business, job, properties, workLogs),
 				mergeRecord(business, job, properties, records),
 				mergeAttachment(business, job, properties, attachments),
-				mergeDocumentVersion(business, job, properties, documentVersions)).get();
+				mergeDocumentVersion(business, job, properties, documentVersions),
+				mergeDocSign(business, job, properties, docSigns),
+				mergeDocSignScrawl(business, job, properties, docSignScrawls)).get();
 		if (ListTools.isNotEmpty(works)) {
 			properties.setTitle(works.get(0).getTitle());
 		}
@@ -65,7 +58,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected SnapProperties snap(Business business, String job, List<Item> items, WorkCompleted workCompleted,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
-			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments)
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments,
+								  List<DocSign> docSigns, List<DocSignScrawl> docSignScrawls)
 			throws InterruptedException, ExecutionException {
 		SnapProperties properties = new SnapProperties();
 		properties.setJob(job);
@@ -79,6 +73,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		futures.add(mergeWorkLog(business, job, properties, workLogs));
 		futures.add(mergeRecord(business, job, properties, records));
 		futures.add(mergeAttachment(business, job, properties, attachments));
+		futures.add(mergeDocSign(business, job, properties, docSigns));
+		futures.add(mergeDocSignScrawl(business, job, properties, docSignScrawls));
 		if (BooleanUtils.isNotTrue(workCompleted.getMerged())) {
 			futures.add(mergeItem(business, job, properties, items));
 		}
@@ -90,25 +86,29 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected void clean(Business business, List<Item> items, List<Work> works, List<Task> tasks,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
 			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments,
-			List<DocumentVersion> documentVersions) throws InterruptedException, ExecutionException {
+			List<DocumentVersion> documentVersions, List<DocSign> docSigns, List<DocSignScrawl> docSignScrawls)
+			throws InterruptedException, ExecutionException {
 		CompletableFuture
 				.allOf(deleteItem(business, items), deleteWork(business, works), deleteTask(business, tasks),
 						deleteTaskCompleted(business, taskCompleteds), deleteRead(business, reads),
 						deleteReadCompleted(business, readCompleteds), deleteReview(business, reviews),
 						deleteWorkLog(business, workLogs), deleteRecord(business, records),
-						deleteAttachment(business, attachments), deleteDocumentVersion(business, documentVersions))
+						deleteAttachment(business, attachments), deleteDocumentVersion(business, documentVersions),
+						deleteDocSign(business, docSigns), deleteDocSignScrawl(business, docSignScrawls))
 				.get();
 	}
 
 	protected void clean(Business business, List<Item> items, WorkCompleted workCompleted,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
-			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments)
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments,
+						 List<DocSign> docSigns, List<DocSignScrawl> docSignScrawls)
 			throws InterruptedException, ExecutionException {
 		CompletableFuture.allOf(deleteItem(business, items), deleteWork(business, workCompleted),
 				deleteTaskCompleted(business, taskCompleteds), deleteRead(business, reads),
 				deleteReadCompleted(business, readCompleteds), deleteReview(business, reviews),
 				deleteWorkLog(business, workLogs), deleteRecord(business, records),
-				deleteAttachment(business, attachments)).get();
+				deleteAttachment(business, attachments),
+				deleteDocSign(business, docSigns), deleteDocSignScrawl(business, docSignScrawls)).get();
 	}
 
 	private CompletableFuture<Void> mergeItem(Business business, String job, SnapProperties snapProperties,
@@ -296,6 +296,48 @@ abstract class BaseAction extends StandardJaxrsAction {
 		});
 	}
 
+	private CompletableFuture<Void> mergeDocSign(Business business, String job, SnapProperties snapProperties,
+												List<DocSign> docSigns) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				List<DocSign> os = business.entityManagerContainer().listEqual(DocSign.class, DocSign.job_FIELDNAME, job)
+						.stream().sorted(Comparator.comparing(DocSign::getCreateTime, Comparator.nullsLast(Date::compareTo)))
+						.collect(Collectors.toList());
+				snapProperties.setDocSignList(os);
+				docSigns.addAll(os);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private CompletableFuture<Void> mergeDocSignScrawl(Business business, String job, SnapProperties snapProperties,
+													List<DocSignScrawl> docSignScrawls) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				List<DocSignScrawl> os = business.entityManagerContainer()
+						.listEqual(DocSignScrawl.class, DocSignScrawl.job_FIELDNAME, job).stream()
+						.sorted(Comparator.comparing(DocSignScrawl::getCreateTime, Comparator.nullsLast(Date::compareTo)))
+						.collect(Collectors.toList());
+				snapProperties.setDocSignScrawlList(os);
+				docSignScrawls.addAll(os);
+				for (DocSignScrawl docSignScrawl : os) {
+					if(StringUtils.isNotBlank(docSignScrawl.getStorage())) {
+						StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+								docSignScrawl.getStorage());
+						if (null != mapping) {
+							byte[] bytes = docSignScrawl.readContent(mapping);
+							snapProperties.getAttachmentContentMap().put(docSignScrawl.getId(),
+									Base64.encodeBase64URLSafeString(bytes));
+						}
+					}
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
 	private CompletableFuture<Void> deleteItem(Business business, List<Item> items) {
 		return CompletableFuture.runAsync(() -> {
 			try {
@@ -454,6 +496,39 @@ abstract class BaseAction extends StandardJaxrsAction {
 			try {
 				business.entityManagerContainer().beginTransaction(DocumentVersion.class);
 				for (DocumentVersion o : documentVersions) {
+					business.entityManagerContainer().remove(o);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private CompletableFuture<Void> deleteDocSign(Business business, List<DocSign> docSigns) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				business.entityManagerContainer().beginTransaction(DocSign.class);
+				for (DocSign o : docSigns) {
+					business.entityManagerContainer().remove(o);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private CompletableFuture<Void> deleteDocSignScrawl(Business business, List<DocSignScrawl> docSignScrawls) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				business.entityManagerContainer().beginTransaction(DocSignScrawl.class);
+				for (DocSignScrawl o : docSignScrawls) {
+					if(StringUtils.isNotBlank(o.getStorage())) {
+						StorageMapping mapping = ThisApplication.context().storageMappings().get(DocSignScrawl.class,
+								o.getStorage());
+						if (null != mapping) {
+							o.deleteContent(mapping);
+						}
+					}
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
@@ -628,6 +703,41 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().beginTransaction(DocumentVersion.class);
 				for (DocumentVersion o : business.entityManagerContainer().listEqual(DocumentVersion.class,
 						DocumentVersion.job_FIELDNAME, job)) {
+					business.entityManagerContainer().remove(o);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	protected CompletableFuture<Void> deleteDocSign(Business business, String job) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				business.entityManagerContainer().beginTransaction(DocSign.class);
+				for (DocSign o : business.entityManagerContainer().listEqual(DocSign.class,
+						DocSign.job_FIELDNAME, job)) {
+					business.entityManagerContainer().remove(o);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	protected CompletableFuture<Void> deleteDocSignScrawl(Business business, String job) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				business.entityManagerContainer().beginTransaction(DocSignScrawl.class);
+				for (DocSignScrawl o : business.entityManagerContainer().listEqual(DocSignScrawl.class,
+						DocSignScrawl.job_FIELDNAME, job)) {
+					if(StringUtils.isNotBlank(o.getStorage())) {
+						StorageMapping mapping = ThisApplication.context().storageMappings().get(DocSignScrawl.class,
+								o.getStorage());
+						if (null != mapping) {
+							o.deleteContent(mapping);
+						}
+					}
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {

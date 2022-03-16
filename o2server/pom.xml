@@ -1043,13 +1043,18 @@
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
-				<artifactId>x_teamwork_core_entity</artifactId>
+				<artifactId>x_workschedu_core_entity</artifactId>
 				<version>${o2.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
-				<artifactId>x_workschedu_core_entity</artifactId>
-				<version>${o2.version}</version>
+				<groupId>net.lingala.zip4j</groupId>
+				<artifactId>zip4j</artifactId>
+				<version>2.3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.microsoft.playwright</groupId>
+				<artifactId>playwright</artifactId>
+				<version>1.17.1</version>
 			</dependency>
 			<dependency>
 				<groupId>net.lingala.zip4j</groupId>
