@@ -3,6 +3,7 @@
 	"name": "",
 	"type": "Documenteditor",
 	"description": "",
+	"canDoublePage": "n",
 	"events": {
 		"queryLoad": {
 			"code": "",
