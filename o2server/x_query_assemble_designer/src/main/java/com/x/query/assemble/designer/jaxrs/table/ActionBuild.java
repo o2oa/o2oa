@@ -12,7 +12,7 @@ import com.x.query.assemble.designer.Business;
 
 class ActionBuild extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionBuild.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBuild.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -24,7 +24,7 @@ class ActionBuild extends BaseAction {
 			}
 
 			wo.setValue(business.buildAllTable());
-			logger.print("build table complete!");
+			LOGGER.print("build table complete!");
 			result.setData(wo);
 
 			return result;

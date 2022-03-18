@@ -1,8 +1,12 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
+
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
+import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -12,17 +16,13 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.x_query_assemble_designer;
 import com.x.query.assemble.designer.Business;
 import com.x.query.assemble.designer.ThisApplication;
 import com.x.query.core.entity.Query;
-import com.x.query.core.entity.schema.Table;
-
-import java.util.List;
 
 class ActionBuildTableDispatch extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionBuildTableDispatch.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBuildTableDispatch.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String queryId) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -41,7 +41,7 @@ class ActionBuildTableDispatch extends BaseAction {
 		if (ListTools.isNotEmpty(apps)) {
 			apps.stream().forEach(o -> {
 				String url = o.getUrlJaxrsRoot() + "table/"+ queryId +"/build?tt="+System.currentTimeMillis();
-				logger.info("{} do dispatch build query {} table request to : {}", effectivePerson.getDistinguishedName(), queryId, url);
+				LOGGER.info("{} do dispatch build query {} table request to : {}.", effectivePerson.getDistinguishedName(), queryId, url);
 				try {
 					CipherConnectionAction.get(effectivePerson.getDebugger(), url);
 				} catch (Exception e) {

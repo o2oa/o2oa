@@ -1,6 +1,5 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
-import java.util.Date;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;

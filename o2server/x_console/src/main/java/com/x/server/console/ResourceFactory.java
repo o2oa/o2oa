@@ -72,14 +72,13 @@ public class ResourceFactory {
 	}
 
 	public static void init() throws Exception {
-		ClassLoader cl = ClassLoaderTools.urlClassLoader(true, false, true, true, true, unzipCustomWar());
+		ClassLoader cl = ClassLoaderTools.urlClassLoader(true, false, true, true, false, unzipCustomWar());
 		try (ScanResult sr = new ClassGraph().addClassLoader(cl).enableAnnotationInfo().scan()) {
 			node();
 			containerEntities(cl, sr);
 			containerEntityNames(sr);
 			stroageContainerEntityNames(sr);
 			disableDruidMysqlUsePingMethod();
-
 		}
 		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();

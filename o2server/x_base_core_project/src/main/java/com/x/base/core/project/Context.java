@@ -131,15 +131,6 @@ public class Context extends AbstractContext {
 
 	private AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue;
 
-//	@Override
-//	public AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue() {
-//		return this.clearCacheRequestQueue;
-//	}
-
-//	public ThreadFactory threadFactory() {
-//		return this.threadFactory;
-//	}
-
 	/* 队列 */
 	private List<AbstractQueue<?>> queues;
 
@@ -147,12 +138,14 @@ public class Context extends AbstractContext {
 		this.token = UUID.randomUUID().toString();
 		this.applications = new Applications();
 		this.queues = new ArrayList<>();
-//		this.scheduler = new StdSchedulerFactory(SchedulerFactoryProperties.concrete()).getScheduler();
-//		this.scheduler.getListenerManager().addJobListener(new JobReportListener(), EverythingMatcher.allJobs());
-//		this.scheduler.start();
+
 	}
 
 	public static Context concrete(ServletContextEvent servletContextEvent) throws Exception {
+		return concrete(servletContextEvent, false);
+	}
+
+	public static Context concrete(ServletContextEvent servletContextEvent, boolean loadDynamic) throws Exception {
 		// 强制忽略ssl服务器认证
 		SslTools.ignoreSsl();
 		ServletContext servletContext = servletContextEvent.getServletContext();
@@ -167,7 +160,7 @@ public class Context extends AbstractContext {
 		context.weight = Config.currentNode().getApplication().weight(context.clazz);
 		context.scheduleWeight = Config.currentNode().getApplication().scheduleWeight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
-		context.initDatas();
+		context.initDatas(loadDynamic);
 		servletContext.setAttribute(AbstractContext.class.getName(), context);
 		SchedulerFactoryProperties schedulerFactoryProperties = SchedulerFactoryProperties.concrete();
 		schedulerFactoryProperties.setProperty("org.quartz.scheduler.instanceName",
@@ -196,10 +189,6 @@ public class Context extends AbstractContext {
 		JsonElement jsonElement = XGsonBuilder.instance().toJsonTree(application);
 		// 将当前的application写入到servletContext
 		servletContext.setAttribute(SERVLETCONTEXT_ATTRIBUTE_APPLICATION, jsonElement.toString());
-		// 发送注册到本地的信号
-		// JsonObject registApplicationLocal = jsonElement.getAsJsonObject();
-		// registApplicationLocal.addProperty("type", "registApplicationLocal");
-		// Config.resource_node_eventQueue().put(registApplicationLocal);
 	}
 
 	public <T extends AbstractJob> void scheduleLocal(Class<T> cls, String cron) throws Exception {
@@ -284,7 +273,15 @@ public class Context extends AbstractContext {
 		if (ArrayUtils.isNotEmpty(this.module.containerEntities())) {
 			logger.info("{} loading datas, entity size:{}.", this.clazz.getName(),
 					this.module.containerEntities().length);
-			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()));
+			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), false);
+		}
+	}
+
+	private void initDatas(boolean loadDynamic) throws Exception {
+		if (ArrayUtils.isNotEmpty(this.module.containerEntities())) {
+			logger.info("{} loading datas, entity size:{}.", this.clazz.getName(),
+					this.module.containerEntities().length);
+			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), loadDynamic);
 		}
 	}
 
