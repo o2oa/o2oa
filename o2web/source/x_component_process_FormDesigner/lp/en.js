@@ -1391,6 +1391,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     "onlyoffice":{
         "nosetup":"please install onlyOffice APP first",
     },
+    "wpsoffice":{
+        "nosetup":"please install wpsOffice APP first",
+    },
     "actionBar": {
         "close":"Close",
         "closeTitle": "Close Document",
