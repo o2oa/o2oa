@@ -22,7 +22,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
          * @event MWF.xApplication.process.Xform.Documenteditor#loadPage
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["load", "queryLoad", "beforeLoad", "postLoad", "afterLoad", "loadPage", "fullScreen", "returnScreen"],
+        "moduleEvents": ["load", "queryLoad", "beforeLoad", "postLoad", "afterLoad", "loadPage", "fullScreen", "returnScreen", "pagePosition"],
         "docPageHeight": 850.4,
         "docPageFullWidth": 794,
         "pageShow": "single"
@@ -90,7 +90,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     // }else{
                     this._singlePage();
                     // }
-                    this._checkScale();
+                    // this.scaleTo(this.scale);
+                    // this._checkScale();
                 }.bind(this));
 
                 o2.UD.getDataJson("documenteditorScale", function(json){
@@ -1509,17 +1510,45 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
     _checkScale: function(offset){
         offset = 0;
+        this._contentNodeWitdh();
         if (this.pages.length){
             //var pageSize = this.pages[0].getSize();
-            var pageSize_x = this.options.docPageFullWidth
-            var contentSize = this.contentNode.getSize();
-            var contentWidth = (offset) ? contentSize.x-20-offset : contentSize.x-20;
-            if (contentWidth<pageSize_x){
+            var pageSize_x = this.options.docPageFullWidth;
+            // var contentSize = this.contentNode.getSize();
+            //var contentSize = this.node.getSize();
+            // var contentWidth = (offset) ? contentSize.x-20-offset : contentSize.x-20;
+            // if (contentWidth<pageSize_x){
+            //     this.isScale = true;
+            //     var scale = (contentWidth)/pageSize_x;
+            //     //this.scale = scale;
+            //     this.zoom(scale);
+            //     this.resetNodeSize();
+            // }
+
+
+            var contentSize_x = this.node.getSize().x;
+            //pageSize_x = this.scale;
+            // if (this.scale){
+            //     pageSize_x = this.scale*pageSize_x;
+            //     contentSize_x = this.scale*contentSize_x;
+            //     //offset = this.scale*(offset+20);
+            // }
+            var contentWidth = contentSize_x-offset-20;
+
+            console.log("pageSize_x: "+pageSize_x);
+            console.log("contentWidth: "+contentWidth);
+            var p = pageSize_x*(this.documenteditorScale || 1);
+            console.log("pageSize_x*this.scale =  "+p);
+
+            if (contentWidth<p){
                 this.isScale = true;
                 var scale = (contentWidth)/pageSize_x;
-                this.scale = scale;
-                this.zoom();
+                //this.scale = scale;
+                this.zoom(scale);
                 this.resetNodeSize();
+            }else if (this.documenteditorScale){
+               // p = pageSize_x*(this.documenteditorScale || 1);
+
             }
         }
     },
@@ -1549,6 +1578,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.filetextEditor && this.filetextEditor.element) {
             this.filetextEditor.element.$.store("scale", this.scale);
         }
+
+        this._pageMargin();
     },
 
     _switchReadOrEdit: function(){
@@ -2255,32 +2286,33 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * this.form.get("fieldId").scaleTo(0.5);
     */
     scaleTo: function(scale){
-        this._returnScale();
+        //this._returnScale();
+        this.isScale = false;
         this.scale = scale;
         this.zoom();
-        //var w = this.contentNode.getSize().x*this.scale;
-        var w = this.contentNode.offsetWidth*this.scale;
-        //if (layout.userLayout && layout.userLayout.scale) w = w*layout.userLayout.scale;
-        var count = 1;
-        var docPageFullWidth = (this.scale) ? this.scale*this.options.docPageFullWidth : this.options.docPageFullWidth;
-        //if (layout.userLayout && layout.userLayout.scale) docPageFullWidth = docPageFullWidth*layout.userLayout.scale;
-        var pageWidth = count * docPageFullWidth;
-        var margin = (w-pageWidth)/(count+1);
-        if (this.isScale){
-            margin = "10";
-        }
-        if (this.scale) margin = margin/this.scale;
-        if (margin < 10){
-            var offset = 10-margin;
-            margin = 10;
-            this.contentNode.scrollTo(offset, 0);
-        }
-        this.pages.each(function(page, i){
-            page.setStyles({
-                "float": "left",
-                "margin-left": ""+margin+"px"
-            });
-        });
+        // //var w = this.contentNode.getSize().x*this.scale;
+        // var w = this.contentNode.offsetWidth*this.scale;
+        // //if (layout.userLayout && layout.userLayout.scale) w = w*layout.userLayout.scale;
+        // var count = 1;
+        // var docPageFullWidth = (this.scale) ? this.scale*this.options.docPageFullWidth : this.options.docPageFullWidth;
+        // //if (layout.userLayout && layout.userLayout.scale) docPageFullWidth = docPageFullWidth*layout.userLayout.scale;
+        // var pageWidth = count * docPageFullWidth;
+        // var margin = (w-pageWidth)/(count+1);
+        // if (this.isScale){
+        //     margin = "10";
+        // }
+        // if (this.scale) margin = margin/this.scale;
+        // if (margin < 10){
+        //     var offset = 10-margin;
+        //     margin = 10;
+        //     this.contentNode.scrollTo(offset, 0);
+        // }
+        // this.pages.each(function(page, i){
+        //     page.setStyles({
+        //         "float": "left",
+        //         "margin-left": ""+margin+"px"
+        //     });
+        // });
         this.resetNodeSize();
     },
 
@@ -2300,30 +2332,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this._checkScale();
         }
     },
-    _singlePage: function(){
-        //if (this.editMode) this._readFiletext();
-
-        var scale = this.singlePageZoom || 1;
-        if( this.singlePageZoom && this.singlePageZoom.toInt() != 1 ){
-            this.isScale = true;
-            this.scale = this.singlePageZoom;
-            this.singlePageZoom = null;
-        }
-
-        this.zoom(scale);
-        this._checkScale();
+    _contentNodeWitdh: function(){
+        var w = this.node.getSize().x;
+        if (this.history && this.history.historyListAreaNode) w = w-this.history.historyListAreaNode.getComputedSize().totalWidth-2;
+        w = w/this.scale;
+        this.contentNode.setStyles({
+            "width": ""+w+"px"
+        });
+    },
+    _pageMargin: function(){
+        this._contentNodeWitdh();
 
         var w = this.contentNode.getSize().x;
+        w = (this.scale) ? this.scale*w : w;
         var count = 1;
         var docPageFullWidth = (this.scale) ? this.scale*this.options.docPageFullWidth : this.options.docPageFullWidth;
-        //var docPageFullWidth = this.options.docPageFullWidt;
-
         var pageWidth = count * docPageFullWidth;
         var margin = (w-pageWidth)/(count+1);
 
-        if (this.isScale){
-            margin = "10";
-        }
         if (this.scale) margin = margin/this.scale;
         this.pages.each(function(page, i){
             page.setStyles({
@@ -2331,6 +2357,43 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 "margin-left": ""+margin+"px"
             });
         });
+
+        this.fireEvent("pagePosition");
+    },
+    _singlePage: function(){
+        //if (this.editMode) this._readFiletext();
+
+        var scale = this.singlePageZoom;
+        if (!scale) scale = this.scale || 1;
+        if( this.singlePageZoom && this.singlePageZoom.toInt() != 1 ){
+            this.isScale = true;
+            this.scale = this.singlePageZoom;
+            this.singlePageZoom = null;
+        }
+
+        //this.zoom(scale);
+        this._checkScale();
+
+        this._pageMargin();
+
+        // var w = this.contentNode.getSize().x;
+        // var count = 1;
+        // var docPageFullWidth = (this.scale) ? this.scale*this.options.docPageFullWidth : this.options.docPageFullWidth;
+        // //var docPageFullWidth = this.options.docPageFullWidt;
+        //
+        // var pageWidth = count * docPageFullWidth;
+        // var margin = (w-pageWidth)/(count+1);
+        //
+        // if (this.isScale){
+        //     margin = "10";
+        // }
+        // if (this.scale) margin = margin/this.scale;
+        // this.pages.each(function(page, i){
+        //     page.setStyles({
+        //         "float": "left",
+        //         "margin-left": ""+margin+"px"
+        //     });
+        // });
 
         this.resetNodeSize();
         // this.pages.each(function(page){

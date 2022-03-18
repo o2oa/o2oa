@@ -3178,7 +3178,7 @@ if (!window.o2) {
             "getScaleOffsets": function () {
                 var hasGetBoundingClientRect = this.getBoundingClientRect;
 //<1.4compat>
-                hasGetBoundingClientRect = hasGetBoundingClientRect && !Browser.Platform.ios;
+                //hasGetBoundingClientRect = hasGetBoundingClientRect && !Browser.Platform.ios;
 //</1.4compat>
                 if (hasGetBoundingClientRect) {
                     var bound = this.getBoundingClientRect();
