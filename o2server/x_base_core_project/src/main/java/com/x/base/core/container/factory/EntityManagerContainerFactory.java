@@ -17,18 +17,19 @@ import com.x.base.core.entity.annotation.CheckRemove;
 
 public class EntityManagerContainerFactory extends SliceEntityManagerContainerFactory {
 
-	private volatile static EntityManagerContainerFactory instance;
+	private static EntityManagerContainerFactory instance;
 
-	public static void init(String webApplicationDirectory, List<String> entities) throws Exception {
+	public static void init(String webApplicationDirectory, List<String> entities, boolean loadDynamic)
+			throws Exception {
 		synchronized (EntityManagerContainerFactory.class) {
 			if (instance != null) {
 				EntityManagerContainerFactory.close();
 			}
-			instance = new EntityManagerContainerFactory(webApplicationDirectory, entities);
+			instance = new EntityManagerContainerFactory(webApplicationDirectory, entities, loadDynamic);
 		}
 	}
 
-	public static void init(String source) throws Exception {
+	public static void init(String source) {
 		synchronized (EntityManagerContainerFactory.class) {
 			if (instance != null) {
 				EntityManagerContainerFactory.close();
@@ -37,7 +38,7 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 		}
 	}
 
-	public static void init() throws Exception {
+	public static void init() {
 		synchronized (EntityManagerContainerFactory.class) {
 			if (instance != null) {
 				EntityManagerContainerFactory.close();
@@ -46,27 +47,27 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 		}
 	}
 
-	public static EntityManagerContainerFactory instance() throws Exception {
+	public static EntityManagerContainerFactory instance() {
 		if (instance == null) {
-			throw new Exception("get EntityManagerContainerFactory instance error, not initial.");
+			throw new IllegalStateException("get EntityManagerContainerFactory instance error, not initial.");
 		}
 		return instance;
 	}
 
 	private EntityManagerContainerFactory(String webApplicationDirectory, List<String> entities) throws Exception {
-		super(webApplicationDirectory, entities,false);
+		super(webApplicationDirectory, entities, false, false);
 	}
 
-	private EntityManagerContainerFactory(String webApplicationDirectory, List<String> entities,
-			boolean sliceFeatureEnable) throws Exception {
-		super(webApplicationDirectory, entities,sliceFeatureEnable);
+	private EntityManagerContainerFactory(String webApplicationDirectory, List<String> entities, boolean loadDynamic)
+			throws Exception {
+		super(webApplicationDirectory, entities, false, loadDynamic);
 	}
 
-	private EntityManagerContainerFactory(String source) throws Exception {
+	private EntityManagerContainerFactory(String source) {
 		super(source);
 	}
 
-	public static void close() throws Exception {
+	public static void close() {
 		try {
 			if (instance != null) {
 				for (EntityManagerFactory emf : instance.entityManagerFactoryMap.values()) {
@@ -87,42 +88,49 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 			/* 由于可能重新载入 */
 			instance = null;
 		} catch (Exception e) {
-			throw new Exception("close error.", e);
+			throw new IllegalStateException("close error.", e);
 		}
 	}
 
 	public EntityManagerContainer create() {
-		EntityManagerContainer container = new EntityManagerContainer(this);
-		return container;
+		return new EntityManagerContainer(this);
 	}
 
-	public <T extends JpaObject> EntityManager createEntityManager(Class<T> cls) throws Exception {
+	public <T extends JpaObject> EntityManager createEntityManager(Class<T> cls) {
 		try {
-			for (Class<?> clazz : entityManagerFactoryMap.keySet()) {
-				if (clazz.isAssignableFrom(cls)) {
-					return entityManagerFactoryMap.get(clazz).createEntityManager();
+			for (Map.Entry<Class<? extends JpaObject>, EntityManagerFactory> en : entityManagerFactoryMap.entrySet()) {
+				if (en.getKey().isAssignableFrom(cls)) {
+					return entityManagerFactoryMap.get(en.getKey()).createEntityManager();
 				}
 			}
-			throw new Exception("can not createEntityManager for class " + cls.getName()
+			throw new IllegalStateException("can not createEntityManager for class " + cls.getName()
 					+ ", not registed in EntityManagerContainerFactory.");
 		} catch (Exception e) {
-			throw new Exception("get entityManager for " + cls + " error.", e);
+			throw new IllegalStateException("get entityManager for " + cls + " error.", e);
 		}
 	}
 
-	public Map<Field, CheckPersist> getCheckPersistFields(Class<?> clazz) throws Exception {
+	public Map<Field, CheckPersist> getCheckPersistFields(Class<?> clazz) {
 		return checkPersistFieldMap.get(assignableFrom(clazz));
 	}
 
-	public Map<Field, CheckRemove> getCheckRemoveFields(Class<?> clazz) throws Exception {
+	public Map<Field, CheckRemove> getCheckRemoveFields(Class<?> clazz) {
 		return checkRemoveFieldMap.get(assignableFrom(clazz));
 	}
 
-	public List<Field> getFlagFields(Class<?> clazz) throws Exception {
+	public List<Field> getFlagFields(Class<?> clazz) {
 		return flagMap.get(assignableFrom(clazz));
 	}
 
-	public List<Field> getRestrictFlagFields(Class<?> clazz) throws Exception {
+	public List<Field> getRestrictFlagFields(Class<?> clazz) {
 		return restrictFlagMap.get(assignableFrom(clazz));
 	}
+
+	public static void refresh(String webApplicationDirectory, List<String> entities) throws Exception {
+		if (instance == null) {
+			throw new IllegalStateException("get EntityManagerContainerFactory instance error, not initial.");
+		}
+		instance.refreshDynamicEntity(webApplicationDirectory, entities);
+	}
+
 }

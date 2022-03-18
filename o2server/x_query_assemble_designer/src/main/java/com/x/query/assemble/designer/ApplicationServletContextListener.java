@@ -6,13 +6,19 @@ import javax.servlet.annotation.WebListener;
 
 import com.x.base.core.project.Context;
 
+/**
+ * web应用初始化
+ * 
+ * @author sword
+ */
 @WebListener
 public class ApplicationServletContextListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
 		try {
-			ThisApplication.context = Context.concrete(servletContextEvent);
+			Business.getClassLoader(true);
+			ThisApplication.setContext(Context.concrete(servletContextEvent, true));
 			ThisApplication.init();
 			ThisApplication.context().regist();
 		} catch (Exception e) {

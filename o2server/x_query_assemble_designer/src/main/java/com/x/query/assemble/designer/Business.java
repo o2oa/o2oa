@@ -2,6 +2,9 @@ package com.x.query.assemble.designer;
 
 import java.io.File;
 import java.io.StringWriter;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -19,10 +22,16 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.entity.dynamic.DynamicEntityBuilder;
@@ -56,13 +65,15 @@ import com.x.query.core.entity.schema.Table;
  */
 public class Business {
 
-	private static Logger logger = LoggerFactory.getLogger(Business.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Business.class);
 
 	public static final String DOT_JAR = ".jar";
 
+	private static ClassLoader classLoader = null;
+
 	private EntityManagerContainer emc;
 
-	public Business(EntityManagerContainer emc) throws Exception {
+	public Business(EntityManagerContainer emc) {
 		this.emc = emc;
 	}
 
@@ -70,9 +81,30 @@ public class Business {
 		return this.emc;
 	}
 
+	/**
+	 * 获取包含自定义jar包的ClassLoader
+	 * 
+	 * @param refresh
+	 * @return
+	 * @throws Exception
+	 */
+	public static synchronized ClassLoader getClassLoader(boolean refresh) throws Exception {
+		if (refresh || classLoader == null) {
+			List<URL> urlList = new ArrayList<>();
+			IOFileFilter filter = new WildcardFileFilter(DynamicEntity.JAR_PREFIX + "*" + DOT_JAR);
+			for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(true), filter, null)) {
+				urlList.add(o.toURI().toURL());
+			}
+			classLoader = URLClassLoader.newInstance(urlList.toArray(new URL[urlList.size()]),
+					Thread.currentThread().getContextClassLoader());
+			Thread.currentThread().setContextClassLoader(classLoader);
+		}
+		return classLoader;
+	}
+
 	private Organization organization;
 
-	public Organization organization() throws Exception {
+	public Organization organization() {
 		if (null == this.organization) {
 			this.organization = new Organization(ThisApplication.context());
 		}
@@ -153,7 +185,7 @@ public class Business {
 
 	public boolean controllable(EffectivePerson effectivePerson) throws Exception {
 		boolean result = false;
-		if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
+		if (effectivePerson.isManager() || BooleanUtils.isTrue(this.organization().person().hasRole(effectivePerson,
 				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))) {
 			result = true;
 		}
@@ -162,7 +194,7 @@ public class Business {
 
 	public boolean editable(EffectivePerson effectivePerson, Query o) throws Exception {
 		boolean result = false;
-		if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
+		if (effectivePerson.isManager() || BooleanUtils.isTrue(this.organization().person().hasRole(effectivePerson,
 				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))) {
 			result = true;
 		}
@@ -175,29 +207,27 @@ public class Business {
 	}
 
 	public boolean editable(EffectivePerson effectivePerson, Table o) throws Exception {
-		boolean result = false;
-		if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
+		if (effectivePerson.isManager() || BooleanUtils.isTrue(this.organization().person().hasRole(effectivePerson,
 				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))) {
-			result = true;
+			return true;
 		}
-		if (!result && (null != o)) {
+		if (null != o) {
 			if (ListTools.isEmpty(o.getEditPersonList()) && ListTools.isEmpty(o.getEditUnitList())) {
-				result = true;
-				if (!result) {
-					if (effectivePerson.isPerson(o.getEditPersonList())) {
-						result = true;
-					}
-					if (!result && ListTools.isNotEmpty(o.getEditUnitList())) {
-						List<String> units = this.organization().unit()
-								.listWithPerson(effectivePerson.getDistinguishedName());
-						if (ListTools.containsAny(units, o.getEditUnitList())) {
-							result = true;
-						}
+				return true;
+			} else {
+				if (ListTools.isNotEmpty(o.getEditPersonList()) && effectivePerson.isPerson(o.getEditPersonList())) {
+					return true;
+				}
+				if (ListTools.isNotEmpty(o.getEditUnitList())) {
+					List<String> units = this.organization().unit()
+							.listWithPerson(effectivePerson.getDistinguishedName());
+					if (ListTools.containsAny(units, o.getEditUnitList())) {
+						return true;
 					}
 				}
 			}
 		}
-		return result;
+		return false;
 	}
 
 	public boolean executable(EffectivePerson effectivePerson, Statement o) throws Exception {
@@ -208,8 +238,8 @@ public class Business {
 			}
 			if (!result) {
 				if (effectivePerson.isManager()
-						|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-								OrganizationDefinition.QueryManager))
+						|| BooleanUtils.isTrue(this.organization().person().hasRole(effectivePerson,
+								OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))
 						|| effectivePerson.isPerson(o.getExecutePersonList())) {
 					result = true;
 				}
@@ -228,19 +258,20 @@ public class Business {
 	public boolean buildAllTable() throws Exception {
 		File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_NAME + DOT_JAR);
 		List<Query> queryList = emc.fetchAll(Query.class);
-		for(Query query : queryList){
-			this.buildAllTable(query.getId());
+		for (Query q : queryList) {
+			this.buildAllTable(q.getId());
 		}
-		if(jar.exists()){
-			jar.delete();
+		if (jar.exists()) {
+			Files.delete(jar.toPath());
 		}
 		return true;
 	}
 
 	public boolean buildAllTable(String query) throws Exception {
 		boolean result = false;
-		List<Table> tables = emc.listEqualAndEqual(Table.class, Table.status_FIELDNAME, Table.STATUS_build, Table.query_FIELDNAME, query);
-		if(ListTools.isEmpty(tables)){
+		List<Table> tables = emc.listEqualAndEqual(Table.class, Table.status_FIELDNAME, Table.STATUS_build,
+				Table.query_FIELDNAME, query);
+		if (ListTools.isEmpty(tables)) {
 			return true;
 		}
 		File dir = new File(Config.dir_local_temp_dynamic(true), StringTools.uniqueToken());
@@ -265,7 +296,7 @@ public class Business {
 				t.setBuildSuccess(true);
 				emc.commit();
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 		if (!classNames.isEmpty()) {
@@ -289,10 +320,10 @@ public class Business {
 			Iterable<JavaFileObject> res = fileManager.list(StandardLocation.SOURCE_PATH, DynamicEntity.CLASS_PACKAGE,
 					EnumSet.of(JavaFileObject.Kind.SOURCE), true);
 
-			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 			StringWriter out = new StringWriter();
 
-			if (!compiler.getTask(out, fileManager, diagnostics, null, null, res).call()) {
+			if (BooleanUtils.isFalse(compiler.getTask(out, fileManager, diagnostics, null, null, res).call())) {
 				for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
 					out.append("Error on line " + diagnostic.getLineNumber() + " in " + diagnostic).append('\n');
 				}
@@ -305,6 +336,8 @@ public class Business {
 
 			File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_PREFIX + query + DOT_JAR);
 			JarTools.jar(target, jar);
+			LOGGER.info("build table reload jar:{}", jar.getName());
+			this.reloadClass(classNames);
 		}
 		FileUtils.cleanDirectory(dir);
 		return result;
@@ -323,7 +356,7 @@ public class Business {
 				+ StringUtils.join(paths, File.pathSeparator) + "\" " + Enhance.class.getName() + " \""
 				+ target.getAbsolutePath() + "\"";
 
-		logger.debug("enhance command:{}.", command);
+		LOGGER.debug("enhance command:{}.", () -> command);
 
 		ProcessBuilder processBuilder = new ProcessBuilder();
 
@@ -333,13 +366,37 @@ public class Business {
 			processBuilder.command("sh", "-c", command);
 		}
 
-		Process process = processBuilder.start();
+		Process p = processBuilder.start();
 
-		String resp = IOUtils.toString(process.getErrorStream(), DefaultCharset.charset_utf_8);
+		String resp = IOUtils.toString(p.getErrorStream(), DefaultCharset.charset_utf_8);
 
-		process.destroy();
+		p.destroy();
 
-		logger.info("enhance result:{}.", resp);
+		LOGGER.info("enhance result:{}.", () -> resp);
 
 	}
+
+	private void reloadClass(List<String> classNames) {
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("reloadClass");
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		try {
+			ClassLoader cl = getClassLoader(true);
+			@SuppressWarnings("unchecked")
+			List<String> entityList = (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES);
+			for (String className : classNames) {
+				Object jpaObject = cl.loadClass(className).getDeclaredConstructor().newInstance();
+				LOGGER.info("reload entity {} info:{}", className, gson.toJson(jpaObject));
+				if (!entityList.contains(className)) {
+					entityList.add(className);
+				}
+			}
+			EntityManagerContainerFactory.refresh(ThisApplication.context().path(),
+					ListTools.toList(ThisApplication.context().module().containerEntities()));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
 }

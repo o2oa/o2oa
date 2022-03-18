@@ -207,7 +207,7 @@ public class Context extends AbstractContext {
 
 	private void initDatas() throws Exception {
 		logger.print("{} loading datas, entity size:{}.", this.clazz.getName(), this.module.containerEntities().length);
-		EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()));
+		EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), false);
 	}
 
 	private void checkDefaultRole(EntityManagerContainer emc) throws Exception {

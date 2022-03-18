@@ -56,9 +56,9 @@ public class InstrumentationAgent {
 			if (Files.exists(base.resolve(CUSTOM_JARS))) {
 				load(base, CUSTOM_JARS);
 			}
-			if (Files.exists(base.resolve(DYNAMIC_JARS))) {
-				load(base, DYNAMIC_JARS);
-			}
+//			if (Files.exists(base.resolve(DYNAMIC_JARS))) {
+//				load(base, DYNAMIC_JARS);
+//			}
 			setLog4j2(base, args);
 			loadWithCfg(base, STORE_JARS);
 			loadWithCfg(base, ext());

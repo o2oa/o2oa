@@ -16,6 +16,7 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Table;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.List;
 
 class ActionBuildTable extends BaseAction {
@@ -34,13 +35,14 @@ class ActionBuildTable extends BaseAction {
 			if (null == curQuery) {
 				throw new ExceptionEntityNotExist(queryId, Query.class);
 			}
+			// 兼容老版本的jar,删除统一的一个jar
 			File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_NAME + Business.DOT_JAR);
 			if(jar.exists()){
 				List<Query> queryList = emc.fetchAll(Query.class);
 				for(Query query : queryList){
 					business.buildAllTable(query.getId());
 				}
-				jar.delete();
+				Files.delete(jar.toPath());
 				wo.setValue(true);
 			}else {
 				wo.setValue(business.buildAllTable(queryId));
