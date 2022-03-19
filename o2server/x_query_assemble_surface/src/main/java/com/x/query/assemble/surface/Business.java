@@ -1,16 +1,27 @@
 package com.x.query.assemble.surface;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.x.query.assemble.surface.factory.*;
 import com.x.query.core.entity.*;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
@@ -18,13 +29,47 @@ import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.cache.CacheManager;
 import java.util.Optional;
 
 public class Business {
 
-	private static CacheCategory cache = new CacheCategory(Query.class, View.class, Stat.class,
-			Reveal.class, Table.class, Statement.class, ImportModel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Business.class);
+
+	private static CacheCategory cache = new CacheCategory(Query.class, View.class, Stat.class, Reveal.class,
+			Table.class, Statement.class, ImportModel.class);
+
+	private static ClassLoader dynamicEntityClassLoader = null;
+
+	public static ClassLoader getDynamicEntityClassLoader() throws Exception {
+		if (null == dynamicEntityClassLoader) {
+			refreshDynamicEntityClassLoader();
+		}
+		return dynamicEntityClassLoader;
+	}
+
+	public static synchronized void refreshDynamicEntityClassLoader() throws Exception {
+		List<URL> urlList = new ArrayList<>();
+		IOFileFilter filter = new WildcardFileFilter(DynamicEntity.JAR_PREFIX + "*.jar");
+		for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(true), filter, null)) {
+			urlList.add(o.toURI().toURL());
+		}
+		URL[] urls = new URL[urlList.size()];
+		dynamicEntityClassLoader = URLClassLoader.newInstance(urlList.toArray(urls),
+				null != ThisApplication.context() ? ThisApplication.context().servletContext().getClassLoader()
+						: Thread.currentThread().getContextClassLoader());
+	}
+
+	public static void reloadClassLoader() {
+		try {
+			Business.refreshDynamicEntityClassLoader();
+			EntityManagerContainerFactory.close();
+			ThisApplication.context().initDatas(Business.getDynamicEntityClassLoader());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
 
 	public CacheCategory cache() {
 		return cache;
@@ -120,7 +165,6 @@ public class Business {
 		}
 	}
 
-
 	public boolean readable(EffectivePerson effectivePerson, Query query) throws Exception {
 		if (null == query) {
 			return false;
@@ -214,7 +258,7 @@ public class Business {
 		if (null == statement) {
 			return false;
 		}
-		if(BooleanUtils.isTrue(statement.getAnonymousAccessible())){
+		if (BooleanUtils.isTrue(statement.getAnonymousAccessible())) {
 			return true;
 		}
 		if (effectivePerson.isManager()) {
@@ -363,17 +407,17 @@ public class Business {
 	public boolean executable(EffectivePerson effectivePerson, Statement o) throws Exception {
 		boolean result = false;
 		if (null != o) {
-			if(BooleanUtils.isTrue(o.getAnonymousAccessible())){
+			if (BooleanUtils.isTrue(o.getAnonymousAccessible())) {
 				result = true;
-			}else {
+			} else {
 				if (!effectivePerson.isAnonymous()) {
 					if (ListTools.isEmpty(o.getExecutePersonList()) && ListTools.isEmpty(o.getExecuteUnitList())) {
 						result = true;
 					}
 					if (!result) {
 						if (effectivePerson.isManager()
-								|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-								OrganizationDefinition.QueryManager))
+								|| (this.organization().person().hasRole(effectivePerson,
+										OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))
 								|| effectivePerson.isPerson(o.getExecutePersonList())) {
 							result = true;
 						}

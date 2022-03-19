@@ -19,13 +19,22 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 
 	private static EntityManagerContainerFactory instance;
 
-	public static void init(String webApplicationDirectory, List<String> entities, boolean loadDynamic)
-			throws Exception {
+	public static void init(String webApplicationDirectory, List<String> entities) throws Exception {
 		synchronized (EntityManagerContainerFactory.class) {
 			if (instance != null) {
 				EntityManagerContainerFactory.close();
 			}
-			instance = new EntityManagerContainerFactory(webApplicationDirectory, entities, loadDynamic);
+			instance = new EntityManagerContainerFactory(webApplicationDirectory, entities, false, null);
+		}
+	}
+
+	public static void init(String webApplicationDirectory, List<String> entities, boolean loadDynamic,
+			ClassLoader classLoader) throws Exception {
+		synchronized (EntityManagerContainerFactory.class) {
+			if (instance != null) {
+				EntityManagerContainerFactory.close();
+			}
+			instance = new EntityManagerContainerFactory(webApplicationDirectory, entities, loadDynamic, classLoader);
 		}
 	}
 
@@ -54,13 +63,9 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 		return instance;
 	}
 
-	private EntityManagerContainerFactory(String webApplicationDirectory, List<String> entities) throws Exception {
-		super(webApplicationDirectory, entities, false, false);
-	}
-
-	private EntityManagerContainerFactory(String webApplicationDirectory, List<String> entities, boolean loadDynamic)
-			throws Exception {
-		super(webApplicationDirectory, entities, false, loadDynamic);
+	private EntityManagerContainerFactory(String webApplicationDirectory, List<String> entities, boolean loadDynamic,
+			ClassLoader classLoader) throws Exception {
+		super(webApplicationDirectory, entities, false, loadDynamic, classLoader);
 	}
 
 	private EntityManagerContainerFactory(String source) {
@@ -124,13 +129,6 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 
 	public List<Field> getRestrictFlagFields(Class<?> clazz) {
 		return restrictFlagMap.get(assignableFrom(clazz));
-	}
-
-	public static void refresh(String webApplicationDirectory, List<String> entities) throws Exception {
-		if (instance == null) {
-			throw new IllegalStateException("get EntityManagerContainerFactory instance error, not initial.");
-		}
-		instance.refreshDynamicEntity(webApplicationDirectory, entities);
 	}
 
 }

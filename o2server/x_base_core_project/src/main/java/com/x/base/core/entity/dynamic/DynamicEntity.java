@@ -61,11 +61,6 @@ public class DynamicEntity extends GsonPropertyObject {
 		return CLASS_PACKAGE + "." + name;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Class<? extends JpaObject> getObjectClass() throws Exception {
-		return (Class<? extends JpaObject>) Class.forName(this.className());
-	}
-
 	public DynamicEntity() {
 		this.fieldList = new ArrayList<>();
 	}

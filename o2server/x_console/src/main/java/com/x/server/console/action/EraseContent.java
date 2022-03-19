@@ -69,7 +69,7 @@ public abstract class EraseContent {
 				StorageMappings storageMappings = Config.storageMappings();
 				File persistence = new File(Config.dir_local_temp_classes(),
 						DateTools.compact(this.start) + "_eraseContent.xml");
-				PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames, false);
+				PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames, null);
 				for (int i = 0; i < classNames.size(); i++) {
 					Class<? extends JpaObject> cls = (Class<? extends JpaObject>) Thread.currentThread()
 							.getContextClassLoader().loadClass(classNames.get(i));

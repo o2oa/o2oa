@@ -1,5 +1,9 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dynamic.DynamicEntity;
@@ -13,17 +17,13 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
-import com.x.query.core.entity.schema.Table;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.util.List;
 
 class ActionBuildTable extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionBuildTable.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBuildTable.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String queryId) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
@@ -37,17 +37,17 @@ class ActionBuildTable extends BaseAction {
 			}
 			// 兼容老版本的jar,删除统一的一个jar
 			File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_NAME + Business.DOT_JAR);
-			if(jar.exists()){
+			if (jar.exists()) {
 				List<Query> queryList = emc.fetchAll(Query.class);
-				for(Query query : queryList){
+				for (Query query : queryList) {
 					business.buildAllTable(query.getId());
 				}
 				Files.delete(jar.toPath());
 				wo.setValue(true);
-			}else {
+			} else {
 				wo.setValue(business.buildAllTable(queryId));
 			}
-			logger.info("build query {} table complete!", queryId);
+			LOGGER.info("build query {} table complete!", queryId);
 			result.setData(wo);
 
 			return result;
@@ -55,6 +55,8 @@ class ActionBuildTable extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 4060403776149004018L;
 
 	}
 

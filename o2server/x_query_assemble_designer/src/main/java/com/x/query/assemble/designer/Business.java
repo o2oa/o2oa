@@ -28,8 +28,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.container.factory.PersistenceXmlHelper;
@@ -67,9 +65,28 @@ public class Business {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Business.class);
 
-	public static final String DOT_JAR = ".jar";
+	private static ClassLoader dynamicEntityClassLoader = null;
 
-	private static ClassLoader classLoader = null;
+	public static ClassLoader getDynamicEntityClassLoader() throws Exception {
+		if (null == dynamicEntityClassLoader) {
+			refreshDynamicEntityClassLoader();
+		}
+		return dynamicEntityClassLoader;
+	}
+
+	public static synchronized void refreshDynamicEntityClassLoader() throws Exception {
+		List<URL> urlList = new ArrayList<>();
+		IOFileFilter filter = new WildcardFileFilter(DynamicEntity.JAR_PREFIX + "*.jar");
+		for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(true), filter, null)) {
+			urlList.add(o.toURI().toURL());
+		}
+		URL[] urls = new URL[urlList.size()];
+		dynamicEntityClassLoader = URLClassLoader.newInstance(urlList.toArray(urls),
+				null != ThisApplication.context() ? ThisApplication.context().servletContext().getClassLoader()
+						: Thread.currentThread().getContextClassLoader());
+	}
+
+	public static final String DOT_JAR = ".jar";
 
 	private EntityManagerContainer emc;
 
@@ -88,19 +105,6 @@ public class Business {
 	 * @return
 	 * @throws Exception
 	 */
-	public static synchronized ClassLoader getClassLoader(boolean refresh) throws Exception {
-		if (refresh || classLoader == null) {
-			List<URL> urlList = new ArrayList<>();
-			IOFileFilter filter = new WildcardFileFilter(DynamicEntity.JAR_PREFIX + "*" + DOT_JAR);
-			for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(true), filter, null)) {
-				urlList.add(o.toURI().toURL());
-			}
-			classLoader = URLClassLoader.newInstance(urlList.toArray(new URL[urlList.size()]),
-					Thread.currentThread().getContextClassLoader());
-			Thread.currentThread().setContextClassLoader(classLoader);
-		}
-		return classLoader;
-	}
 
 	private Organization organization;
 
@@ -337,7 +341,7 @@ public class Business {
 			File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_PREFIX + query + DOT_JAR);
 			JarTools.jar(target, jar);
 			LOGGER.info("build table reload jar:{}", jar.getName());
-			this.reloadClass(classNames);
+			this.reloadClassLoader();
 		}
 		FileUtils.cleanDirectory(dir);
 		return result;
@@ -376,24 +380,11 @@ public class Business {
 
 	}
 
-	private void reloadClass(List<String> classNames) {
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println("reloadClass");
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		Gson gson = new GsonBuilder().serializeNulls().create();
+	private void reloadClassLoader() {
 		try {
-			ClassLoader cl = getClassLoader(true);
-			@SuppressWarnings("unchecked")
-			List<String> entityList = (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES);
-			for (String className : classNames) {
-				Object jpaObject = cl.loadClass(className).getDeclaredConstructor().newInstance();
-				LOGGER.info("reload entity {} info:{}", className, gson.toJson(jpaObject));
-				if (!entityList.contains(className)) {
-					entityList.add(className);
-				}
-			}
-			EntityManagerContainerFactory.refresh(ThisApplication.context().path(),
-					ListTools.toList(ThisApplication.context().module().containerEntities()));
+			Business.refreshDynamicEntityClassLoader();
+			EntityManagerContainerFactory.close();
+			ThisApplication.context().initDatas(Business.getDynamicEntityClassLoader());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

@@ -19,14 +19,14 @@ import com.x.query.core.entity.schema.Table;
 
 class ActionRowExport extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionRowExport.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionRowExport.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String tableFlag, Integer count)
-			throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String tableFlag, Integer count) throws Exception {
+		LOGGER.debug("table:{}, count:{}.", () -> tableFlag, () -> count);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
 			ActionResult<Wo> result = new ActionResult<>();
-			logger.debug(effectivePerson, "table:{}, id:{}, count:{}.", tableFlag, count);
 			Business business = new Business(emc);
 			Table table = emc.flag(tableFlag, Table.class);
 			if (null == table) {
@@ -34,19 +34,23 @@ class ActionRowExport extends BaseAction {
 			}
 			this.check(effectivePerson, business, table);
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			Class<? extends JpaObject> cls = dynamicEntity.getObjectClass();
+			@SuppressWarnings("unchecked")
+			Class<? extends JpaObject> cls = (Class<JpaObject>) classLoader.loadClass(dynamicEntity.className());
 			EntityManager em = emc.get(cls);
 			String sql = "select o from " + cls.getName() + " o";
 			Query query = em.createQuery(sql);
 			Object data = query.setMaxResults(Math.min(count, 2000)).getResultList();
-			Wo wo = new Wo(gson.toJson(data).getBytes(DefaultCharset.charset), this.contentType(true, table.getName() +".json"),
-					this.contentDisposition(true, table.getName() +".json"));
+			Wo wo = new Wo(gson.toJson(data).getBytes(DefaultCharset.charset),
+					this.contentType(true, table.getName() + ".json"),
+					this.contentDisposition(true, table.getName() + ".json"));
 			result.setData(wo);
 			return result;
 		}
 	}
 
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = 3739863790195069870L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);

@@ -15,6 +15,7 @@ class ActionBuild extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBuild.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
@@ -32,6 +33,8 @@ class ActionBuild extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -29157098803487513L;
 
 	}
 

@@ -16,11 +16,19 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapLong;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Table;
 
 class ActionRowDeleteAll extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionRowDeleteAll.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String tableFlag) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Table table = emc.flag(tableFlag, Table.class);
@@ -31,7 +39,7 @@ class ActionRowDeleteAll extends BaseAction {
 			this.check(effectivePerson, business, table);
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
-			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
+			Class<? extends JpaObject> cls = (Class<JpaObject>) classLoader.loadClass(dynamicEntity.className());
 
 			List<String> ids = null;
 			Long count = 0L;
@@ -55,9 +63,7 @@ class ActionRowDeleteAll extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<T> root = cq.from(cls);
-		List<String> os = em.createQuery(cq.select(root.get(JpaObject.id_FIELDNAME))).setMaxResults(2000)
-				.getResultList();
-		return os;
+		return em.createQuery(cq.select(root.get(JpaObject.id_FIELDNAME))).setMaxResults(2000).getResultList();
 	}
 
 	private <T extends JpaObject> Integer delete(Business business, Class<T> cls, List<String> ids) throws Exception {
@@ -68,6 +74,8 @@ class ActionRowDeleteAll extends BaseAction {
 	}
 
 	public static class Wo extends WrapLong {
+
+		private static final long serialVersionUID = -3697198277884949479L;
 
 	}
 
