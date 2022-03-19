@@ -99,9 +99,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         this.scaleTo(json.scale);
                         this.documenteditorScale = json.scale
                     }
-                    this.addEvent("loadPage", function(){
-                        if (this.documenteditorScale) this.scaleTo(this.documenteditorScale);
-                    }.bind(this));
+                    // if (this.documenteditorScale) this.scaleTo(this.documenteditorScale);
+                    // this.addEvent("loadPage", function(){
+                    //     if (this.documenteditorScale) this.scaleTo(this.documenteditorScale);
+                    // }.bind(this));
+                    this._checkScale();
 
                 }.bind(this));
 
@@ -1533,12 +1535,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             //     contentSize_x = this.scale*contentSize_x;
             //     //offset = this.scale*(offset+20);
             // }
+            if (this.history && this.history.historyListAreaNode) contentSize_x = contentSize_x-this.history.historyListAreaNode.getComputedSize().totalWidth-2;
             var contentWidth = contentSize_x-offset-20;
 
-            console.log("pageSize_x: "+pageSize_x);
-            console.log("contentWidth: "+contentWidth);
             var p = pageSize_x*(this.documenteditorScale || 1);
-            console.log("pageSize_x*this.scale =  "+p);
 
             if (contentWidth<p){
                 this.isScale = true;
@@ -1682,6 +1682,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this.getHistory(function(){
             //this.history.play();
+
+            //this._checkScale();
         }.bind(this));
         this.historyMode = true;
     },
@@ -2341,6 +2343,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         });
     },
     _pageMargin: function(){
+        debugger;
         this._contentNodeWitdh();
 
         var w = this.contentNode.getSize().x;
@@ -2351,12 +2354,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         var margin = (w-pageWidth)/(count+1);
 
         if (this.scale) margin = margin/this.scale;
+
+        if (margin<0) margin=0;
+
         this.pages.each(function(page, i){
             page.setStyles({
                 "float": "left",
                 "margin-left": ""+margin+"px"
             });
         });
+
+        if (margin==0){
+            var scrollLeft = (this.contentNode.scrollWidth - this.contentNode.offsetWidth)/2;
+            if (this.contentNode.scrollTo){
+                this.contentNode.scrollTo(scrollLeft, 0);
+            }else{
+                this.contentNode.scrollLeft = scrollLeft;
+            }
+        }
 
         this.fireEvent("pagePosition");
     },
