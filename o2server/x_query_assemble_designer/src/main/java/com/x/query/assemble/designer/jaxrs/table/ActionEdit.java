@@ -19,13 +19,19 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 
 class ActionEdit extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -41,9 +47,6 @@ class ActionEdit extends BaseAction {
 
 			DynamicEntity dynamicEntity = XGsonBuilder.instance().fromJson(wi.getDraftData(), DynamicEntity.class);
 
-			DynamicEntity existDynamicEntity = XGsonBuilder.instance().fromJson(table.getDraftData(),
-					DynamicEntity.class);
-
 			if (ListTools.isEmpty(dynamicEntity.getFieldList())) {
 				throw new ExceptionFieldEmpty();
 			}
@@ -58,9 +61,9 @@ class ActionEdit extends BaseAction {
 			emc.beginTransaction(Table.class);
 			table.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			table.setLastUpdateTime(new Date());
-			if(Table.STATUS_build.equals(table.getStatus())){
+			if (Table.STATUS_build.equals(table.getStatus())) {
 				table.setData(table.getDraftData());
-			}else{
+			} else {
 				table.setData("");
 				table.setAlias(wi.getAlias());
 				table.setName(wi.getName());
@@ -77,6 +80,8 @@ class ActionEdit extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 580689168809784572L;
 
 	}
 

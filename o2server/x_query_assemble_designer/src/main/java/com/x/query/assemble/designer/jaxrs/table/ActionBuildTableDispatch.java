@@ -1,6 +1,5 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
-
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -25,6 +24,7 @@ class ActionBuildTableDispatch extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBuildTableDispatch.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String queryId) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -40,8 +40,9 @@ class ActionBuildTableDispatch extends BaseAction {
 		List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_designer.class);
 		if (ListTools.isNotEmpty(apps)) {
 			apps.stream().forEach(o -> {
-				String url = o.getUrlJaxrsRoot() + "table/"+ queryId +"/build?tt="+System.currentTimeMillis();
-				LOGGER.info("{} do dispatch build query {} table request to : {}.", effectivePerson.getDistinguishedName(), queryId, url);
+				String url = o.getUrlJaxrsRoot() + "table/" + queryId + "/build?tt=" + System.currentTimeMillis();
+				LOGGER.info("{} do dispatch build query {} table request to : {}.",
+						effectivePerson.getDistinguishedName(), queryId, url);
 				try {
 					CipherConnectionAction.get(effectivePerson.getDebugger(), url);
 				} catch (Exception e) {
@@ -57,6 +58,8 @@ class ActionBuildTableDispatch extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -7885741023719404711L;
 
 	}
 

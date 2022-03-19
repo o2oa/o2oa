@@ -142,10 +142,11 @@ public class Context extends AbstractContext {
 	}
 
 	public static Context concrete(ServletContextEvent servletContextEvent) throws Exception {
-		return concrete(servletContextEvent, false);
+		return concrete(servletContextEvent, null);
 	}
 
-	public static Context concrete(ServletContextEvent servletContextEvent, boolean loadDynamic) throws Exception {
+	public static Context concrete(ServletContextEvent servletContextEvent, ClassLoader dynamicEntityClassLoader)
+			throws Exception {
 		// 强制忽略ssl服务器认证
 		SslTools.ignoreSsl();
 		ServletContext servletContext = servletContextEvent.getServletContext();
@@ -160,7 +161,7 @@ public class Context extends AbstractContext {
 		context.weight = Config.currentNode().getApplication().weight(context.clazz);
 		context.scheduleWeight = Config.currentNode().getApplication().scheduleWeight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
-		context.initDatas(loadDynamic);
+		context.initDatas(dynamicEntityClassLoader);
 		servletContext.setAttribute(AbstractContext.class.getName(), context);
 		SchedulerFactoryProperties schedulerFactoryProperties = SchedulerFactoryProperties.concrete();
 		schedulerFactoryProperties.setProperty("org.quartz.scheduler.instanceName",
@@ -273,15 +274,16 @@ public class Context extends AbstractContext {
 		if (ArrayUtils.isNotEmpty(this.module.containerEntities())) {
 			logger.info("{} loading datas, entity size:{}.", this.clazz.getName(),
 					this.module.containerEntities().length);
-			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), false);
+			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), false, null);
 		}
 	}
 
-	private void initDatas(boolean loadDynamic) throws Exception {
+	public void initDatas(ClassLoader classLoader) throws Exception {
 		if (ArrayUtils.isNotEmpty(this.module.containerEntities())) {
 			logger.info("{} loading datas, entity size:{}.", this.clazz.getName(),
 					this.module.containerEntities().length);
-			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), loadDynamic);
+			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()),
+					null != classLoader, classLoader);
 		}
 	}
 

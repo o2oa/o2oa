@@ -101,7 +101,7 @@ public class RestoreData {
 				logger.print("find: {} data to restore, path: {}.", classNames.size(), this.dir.toString());
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
 						DateTools.compact(start) + "_restore.xml");
-				PersistenceXmlHelper.write(xml.toString(), classNames, false);
+				PersistenceXmlHelper.write(xml.toString(), classNames, null);
 				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
 						? classNames.parallelStream()
 						: classNames.stream();
@@ -227,7 +227,7 @@ public class RestoreData {
 			Path path = sub.resolve(Paths.get(so.path()).getFileName());
 			if (!Files.exists(path)) {
 				logger.warn("file not exist: {}.", path.toString());
-			}else {
+			} else {
 				try (InputStream input = Files.newInputStream(path)) {
 					so.saveContent(mapping, input, so.getName());
 				}

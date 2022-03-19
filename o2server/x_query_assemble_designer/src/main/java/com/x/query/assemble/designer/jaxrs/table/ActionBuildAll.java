@@ -19,9 +19,10 @@ import com.x.query.assemble.designer.ThisApplication;
 
 class ActionBuildAll extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionBuildAll.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBuildAll.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
@@ -32,8 +33,9 @@ class ActionBuildAll extends BaseAction {
 			List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_designer.class);
 			if (ListTools.isNotEmpty(apps)) {
 				apps.stream().forEach(o -> {
-					String url = o.getUrlJaxrsRoot() + "table/build?tt="+System.currentTimeMillis();
-					logger.print("{} do dispatch build table request to : {}", effectivePerson.getDistinguishedName(), url);
+					String url = o.getUrlJaxrsRoot() + "table/build?timestamp=" + System.currentTimeMillis();
+					LOGGER.print("{} do dispatch build table request to : {}.", effectivePerson::getDistinguishedName,
+							() -> url);
 					try {
 						CipherConnectionAction.get(effectivePerson.getDebugger(), url);
 					} catch (Exception e) {
@@ -50,6 +52,8 @@ class ActionBuildAll extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 6119756561647798700L;
 
 	}
 

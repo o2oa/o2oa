@@ -1,5 +1,7 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
+import java.util.Date;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -12,16 +14,20 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 
-import java.util.Date;
-
 class ActionEditPermission extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEditPermission.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -57,6 +63,8 @@ class ActionEditPermission extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = 2706685216257429716L;
+
 	}
 
 	public static class Wi extends Table {
@@ -65,8 +73,8 @@ class ActionEditPermission extends BaseAction {
 
 		static WrapCopier<Wi, Table> copier = WrapCopierFactory.wi(Wi.class, Table.class,
 				ListTools.toList(Table.readPersonList_FIELDNAME, Table.readUnitList_FIELDNAME,
-						Table.readGroupList_FIELDNAME, Table.editPersonList_FIELDNAME,
-						Table.editUnitList_FIELDNAME, Table.editGroupList_FIELDNAME),
+						Table.readGroupList_FIELDNAME, Table.editPersonList_FIELDNAME, Table.editUnitList_FIELDNAME,
+						Table.editGroupList_FIELDNAME),
 				null);
 	}
 }

@@ -2,7 +2,9 @@ package com.x.base.core.container.factory;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -43,25 +45,18 @@ public class PersistenceXmlHelper {
 	public static List<String> directWrite(String path, List<String> classNames) throws Exception {
 		try {
 			Document document = DocumentHelper.createDocument();
-			Element persistence = document.addElement("persistence", "http://java.sun.com/xml/ns/persistence");
-			persistence.addAttribute(QName.get("schemaLocation", "xsi", "http://www.w3.org/2001/XMLSchema-instance"),
-					"http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd");
-			persistence.addAttribute("version", "2.0");
+			Element persistence = createPersistenceElement(document);
 			for (String className : classNames) {
 				Element unit = persistence.addElement("persistence-unit");
 				unit.addAttribute("name", className);
 				unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
-				Element provider = unit.addElement("provider");
-				provider.addText(PersistenceProviderImpl.class.getName());
-				Element mapped_element = unit.addElement("class");
-				mapped_element.addText(className);
-				Element sliceJpaObject_element = unit.addElement("class");
-				sliceJpaObject_element.addText("com.x.base.core.entity.SliceJpaObject");
-				Element jpaObject_element = unit.addElement("class");
-				jpaObject_element.addText("com.x.base.core.entity.JpaObject");
+				unit.addElement("provider").addText(PersistenceProviderImpl.class.getName());
+				unit.addElement("class").addText(className);
+				unit.addElement("class").addText("com.x.base.core.entity.SliceJpaObject");
+				unit.addElement("class").addText("com.x.base.core.entity.JpaObject");
 			}
 			OutputFormat format = OutputFormat.createPrettyPrint();
-			format.setEncoding("UTF-8");
+			format.setEncoding(StandardCharsets.UTF_8.name());
 			File file = new File(path);
 			FileUtils.touch(file);
 			XMLWriter writer = new XMLWriter(new FileWriter(file), format);
@@ -73,13 +68,19 @@ public class PersistenceXmlHelper {
 		}
 	}
 
+	private static Element createPersistenceElement(Document document) {
+		Element persistence = document.addElement("persistence", "http://java.sun.com/xml/ns/persistence");
+		persistence.addAttribute(QName.get("schemaLocation", "xsi", "http://www.w3.org/2001/XMLSchema-instance"),
+				"http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd");
+		persistence.addAttribute("version", "2.0");
+		return persistence;
+	}
+
+	@SuppressWarnings("unchecked")
 	public static void writeForDdl(String path) throws Exception {
 		try {
 			Document document = DocumentHelper.createDocument();
-			Element persistence = document.addElement("persistence", "http://java.sun.com/xml/ns/persistence");
-			persistence.addAttribute(QName.get("schemaLocation", "xsi", "http://www.w3.org/2001/XMLSchema-instance"),
-					"http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd");
-			persistence.addAttribute("version", "2.0");
+			Element persistence = createPersistenceElement(document);
 			Element unit = persistence.addElement("persistence-unit");
 			unit.addAttribute("name", "enhance");
 			unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
@@ -94,8 +95,7 @@ public class PersistenceXmlHelper {
 			}
 			entities = ListTools.trim(entities, true, true);
 			for (String className : entities) {
-				Element class_element = unit.addElement("class");
-				class_element.addText(className);
+				unit.addElement("class").addText(className);
 			}
 			Element properties = unit.addElement("properties");
 			if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
@@ -156,18 +156,15 @@ public class PersistenceXmlHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<String> write(String path, List<String> entities, boolean loadDynamic) {
+	public static List<String> write(String path, List<String> entities, boolean loadDynamic, ClassLoader classLoader) {
 		List<String> names = new ArrayList<>();
 		String name = "";
 		try {
 			names.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
 			names = ListTools.includesExcludesWildcard(names, entities, null);
 			Document document = DocumentHelper.createDocument();
-			Element persistence = document.addElement("persistence", "http://java.sun.com/xml/ns/persistence");
-			persistence.addAttribute(QName.get("schemaLocation", "xsi", "http://www.w3.org/2001/XMLSchema-instance"),
-					"http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd");
-			persistence.addAttribute("version", "2.0");
-			ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			Element persistence = createPersistenceElement(document);
+			ClassLoader cl = (null == classLoader) ? Thread.currentThread().getContextClassLoader() : classLoader;
 			for (String className : names) {
 				name = className;
 				Class<? extends JpaObject> clazz = (Class<JpaObject>) cl.loadClass(className);
@@ -181,30 +178,7 @@ public class PersistenceXmlHelper {
 				}
 			}
 			if (loadDynamic) {
-				addDynamicClass(persistence);
-//				for (String className : names) {
-//					if (className.startsWith(DynamicEntity.CLASS_PACKAGE)) {
-//						dyClasses.add(className);
-//					}
-//				}
-//				if (!dyClasses.isEmpty()) {
-//					String dyClassName = DynamicBaseEntity.class.getName();
-//					names.add(dyClassName);
-//
-//					Element unit = persistence.addElement("persistence-unit");
-//					unit.addAttribute("name", dyClassName);
-//					unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
-//					Element provider = unit.addElement("provider");
-//					provider.addText(PersistenceProviderImpl.class.getName());
-//					for (String dyClass : dyClasses) {
-//						unit.addElement("class").addText(dyClass);
-//					}
-//					for (Class<?> o : JpaObjectTools.scanMappedSuperclass(DynamicBaseEntity.class)) {
-//						if (!o.getName().equals(DynamicBaseEntity.class.getName())) {
-//							unit.addElement("class").addText(o.getName());
-//						}
-//					}
-//				}
+				names.addAll(addDynamicClassCreateCombineUnit(persistence, cl));
 			}
 			OutputFormat format = OutputFormat.createPrettyPrint();
 			format.setEncoding("UTF-8");
@@ -219,29 +193,43 @@ public class PersistenceXmlHelper {
 		}
 	}
 
-	private static void addDynamicClass(Element persistence) throws Exception {
+	private static Collection<String> addDynamicClassCreateCombineUnit(Element persistence, ClassLoader cl)
+			throws ClassNotFoundException {
 		Set<String> names = new TreeSet<>();
-		ClassLoader cl = ClassLoaderTools.urlClassLoader(true, false, false, false, true);
+		Set<String> combineNames = new TreeSet<>();
 		try (ScanResult sr = new ClassGraph().addClassLoader(cl).enableAnnotationInfo().scan()) {
 			for (ClassInfo info : sr.getClassesWithAnnotation(ContainerEntity.class.getName())) {
 				Class<?> cls = cl.loadClass(info.getName());
 				if (StringUtils.startsWith(cls.getName(), DynamicEntity.CLASS_PACKAGE)) {
 					names.add(cls.getName());
 					for (Class<?> o : JpaObjectTools.scanMappedSuperclass(cls)) {
-						names.add(o.getName());
+						combineNames.add(o.getName());
 					}
 				}
 			}
 		}
-		Element unit = persistence.addElement("persistence-unit");
-		unit.addAttribute("name", DynamicBaseEntity.class.getName());
-		unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
-		Element provider = unit.addElement("provider");
-		provider.addText(PersistenceProviderImpl.class.getName());
-		for (String name : names) {
-			unit.addElement("class").addText(name);
+		if (!names.isEmpty()) {
+			for (String className : names) {
+				@SuppressWarnings("unchecked")
+				Class<? extends JpaObject> clazz = (Class<JpaObject>) cl.loadClass(className);
+				Element unit = persistence.addElement("persistence-unit");
+				unit.addAttribute("name", className);
+				unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
+				Element provider = unit.addElement("provider");
+				provider.addText(PersistenceProviderImpl.class.getName());
+				for (Class<?> o : JpaObjectTools.scanMappedSuperclass(clazz)) {
+					unit.addElement("class").addText(o.getName());
+				}
+			}
+			Element unit = persistence.addElement("persistence-unit");
+			unit.addAttribute("name", DynamicBaseEntity.class.getName());
+			unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
+			unit.addElement("provider").addText(PersistenceProviderImpl.class.getName());
+			for (String name : combineNames) {
+				unit.addElement("class").addText(name);
+			}
 		}
-
+		return names;
 	}
 
 	public static Properties properties(String className, boolean sliceFeatureEnable) throws Exception {

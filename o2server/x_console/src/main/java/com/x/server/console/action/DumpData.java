@@ -88,7 +88,7 @@ public class DumpData {
 				logger.print("find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
 						DateTools.compact(start) + "_dump.xml");
-				PersistenceXmlHelper.write(xml.toString(), classNames, false);
+				PersistenceXmlHelper.write(xml.toString(), classNames, null);
 				StorageMappings storageMappings = Config.storageMappings();
 				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
 						? classNames.parallelStream()
@@ -138,7 +138,7 @@ public class DumpData {
 			List<String> list = new ArrayList<>();
 			if (StringUtils.equals(Config.dumpRestoreData().getMode(), DumpRestoreData.TYPE_FULL)) {
 				list.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
-			}else {
+			} else {
 				for (String str : (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES)) {
 					Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(str);
 					ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
