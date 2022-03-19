@@ -141,7 +141,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
     createHistoryListNode: function(){
         this.historyListAreaNode = new Element("div", {"styles": this.css.historyListAreaNode}).inject(this.documentEditor.contentNode, "before");
         this.documentEditor.contentNode.setStyle("width", "auto");
-        this.documentEditor.zoom(1);
+        //this.documentEditor.zoom(1);
         this.documentEditor._checkScale();
 
         // var size = this.documentEditor.node.getSize();
