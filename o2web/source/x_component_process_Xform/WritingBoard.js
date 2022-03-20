@@ -269,20 +269,24 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
             }
         },
         upload: function( callback ){
-            var image = this.tablet.getImage( null, true );
-            o2.xDesktop.uploadImageByScale(
-                this.form.businessData.work.job,
-                "processPlatformJob",
-                0, //maxSize
-                this.tablet.getFormData(image),
-                image,
-                function (json) {
-                    if(callback)callback(json);
-                }.bind(this),
-                function () {
+            var img = this.tablet.getImage( null, true );
+            if(img)Promise.resolve( img ).then(function( image ){
+                Promise.resolve( this.tablet.getFormData(image) ).then(function (formData) {
+                    o2.xDesktop.uploadImageByScale(
+                        this.form.businessData.work.job,
+                        "processPlatformJob",
+                        0, //maxSize
+                        formData,
+                        image,
+                        function (json) {
+                            if (callback) callback(json);
+                        }.bind(this),
+                        function () {
 
-                }.bind(this)
-            );
+                        }.bind(this)
+                    );
+                }.bind(this))
+            }.bind(this))
         },
         createErrorNode: function (text) {
             var node = new Element("div");
