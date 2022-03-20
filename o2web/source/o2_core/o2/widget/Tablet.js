@@ -1,5 +1,5 @@
 o2.widget = o2.widget || {};
-
+o2.xDesktop.requireApp("Template", "MSelector", null, false);
 o2.xDesktop.requireApp("Template", "widget.ColorPicker", null, false);
 o2.widget.Tablet = o2.Tablet = new Class({
     Implements: [Options, Events],
@@ -12,7 +12,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         "contentHeight" : 0, //绘图区域高度，不制定则基础 this.node的高度 - 操作条高度
 
         "lineWidth" : 1, //铅笔粗细
-        "eraserRadiusSize": 10, //橡皮大小
+        "eraserRadiusSize": 20, //橡皮大小
         "color" : "#000000", //画笔颜色
 
         tools : [
@@ -24,7 +24,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
             "pen", "|", //笔画
             "eraserRadius",
             "size",
-            "color", "|",
+            "color",
+            "fontSize", "|",
+            // "fontFamily",
             "image",
             "imageClipper", "|",
             "reset",
@@ -47,11 +49,15 @@ o2.widget.Tablet = o2.Tablet = new Class({
         "referenceType" : "", //使用公共图片服务上传时的参数, 目前支持 processPlatformJob, processPlatformForm, portalPage, cmsDocument, forumDocument
         "resultMaxSize" : 0, //使用 reference 时有效
 
-        "rotateWithMobile": true
+        "rotateWithMobile": true,
+        "toolsScale": 1
     },
     initialize: function(node, options, app){
         this.node = node;
         this.app = app;
+
+        this.fileName = "untitled.png";
+        this.fileType = "image/png";
 
         this.reset();
 
@@ -66,10 +72,14 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         if( !this.options.inputEnable ){
             this.options.toolHidden.push("input");
+            this.options.toolHidden.push("fontSize");
+            this.options.toolHidden.push("fontFamily");
         }
 
         this.path = this.options.path || (o2.session.path+"/widget/$Tablet/");
         this.cssPath = this.path + this.options.style+"/css.wcss";
+
+        this.inMobileDevice = COMMON && COMMON.Browser && COMMON.Browser.Platform.isMobile;
 
         this.lp = {
             "save" : o2.LP.widget.save,
@@ -78,6 +88,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
             "redo" : o2.LP.widget.redo,
             "eraser": o2.LP.widget.eraser,
             "input": o2.LP.widget.input,
+            "fontSize": o2.LP.widget.fontSize,
+            "fontFamily": o2.LP.widget.fontFamily,
             "pen": o2.LP.widget.pen,
             "eraserRadius": o2.LP.widget.eraserRadius,
             "size" : o2.LP.widget.thickness,
@@ -103,6 +115,10 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         this.mode = "writing"; //writing表示写状态，erasing表示擦除状态, inputing表示输入法
 
+        this.currentColor = this.options.color;
+        this.currentFontFamily = "宋体,SimSun";
+        this.currentFontSize = "16px";
+
         this.container = new Element("div.container", {
             styles :  this.css.container
         }).inject(this.node);
@@ -115,9 +131,11 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         this.contentNode = new Element("div.contentNode", { styles :  this.css.contentNode}).inject(this.container);
         this.contentNode.addEvent("selectstart", function(e){
-            e.preventDefault();
-            e.stopPropagation();
-        });
+            if( this.mode !== "inputing" ){
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }.bind(this));
 
         this.loadDescription();
 
@@ -233,15 +251,15 @@ o2.widget.Tablet = o2.Tablet = new Class({
             this.toolbar.load();
         }
     },
-    storeToPreArray : function(){
+    storeToPreArray : function(preData){
         //当前绘图表面状态
-        var preData= this.ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
+        if(!preData)preData= this.ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
         //当前绘图表面进栈
         this.preDrawAry.push(preData);
     },
-    storeToMiddleArray : function(){
+    storeToMiddleArray : function( preData ){
         //当前绘图表面状态
-        var preData= this.ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
+        if( !preData )preData= this.ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
         if( this.nextDrawAry.length==0){
             //当前绘图表面进栈
             this.middleAry.push(preData);
@@ -313,8 +331,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }.bind(this)
     },
     doInput: function(event){
+        var _self = this;
         if( !this.inputList )this.inputList = [];
-        debugger;
         var x,y;
         if(event.touches){
             var touch=event.touches[0];
@@ -332,15 +350,20 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.currentInput = new o2.widget.Tablet.Input( this, this.canvasWrap , {
             top: y,
             left: x,
-            onPostOk : function(){
-                // var coordinate =  mover.getCoordinage();
-                // this.storeToPreArray();
-                // this.ctx.drawImage(imageNode, coordinate.left, coordinate.top, coordinate.width, coordinate.height);
-                // this.storeToMiddleArray();
-                //
-                // if(this.globalCompositeOperation)this.ctx.globalCompositeOperation = this.globalCompositeOperation;
-                // this.globalCompositeOperation = null;
-            }.bind(this),
+            onPostDraw : function( image ){
+                Promise.resolve(image).then(function () {
+                    var input = this;
+                    var globalCompositeOperation = _self.ctx.globalCompositeOperation;
+                    _self.ctx.globalCompositeOperation = "source-over";
+
+                    var coordinate =  input.getCoordinates();
+                    _self.storeToPreArray();
+                    _self.ctx.drawImage(image, coordinate.left, coordinate.top, coordinate.width, coordinate.height);
+                    _self.storeToMiddleArray();
+
+                    if(globalCompositeOperation)_self.ctx.globalCompositeOperation = globalCompositeOperation;
+                }.bind(this));
+            },
             onPostCancel: function(){
                 // if(this.globalCompositeOperation)this.ctx.globalCompositeOperation = this.globalCompositeOperation;
                 // this.globalCompositeOperation = null;
@@ -349,9 +372,18 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.currentInput.load();
         this.inputList.push( this.currentInput );
     },
+    loadImage: function(url){
+        return new Promise(function(resolve, reject){
+            var img = new Element("img");
+            img.crossOrigin="anonymous";
+            img.addEvent('load', function(){ resolve(img)});
+            img.addEvent('error', function(err){ reject(err) });
+            img.src = url;
+        })
+    },
     doWritOrErase: function(ev){
         var _self = this;
-        var ev = ev || event;
+        ev = ev || event;
         var ctx = this.ctx;
         var canvas = this.canvas;
         var container = this.contentNode;
@@ -359,6 +391,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
         var doc = $(document);
 
         if( this.mode === "erasing" ) {
+            if(this.inputList)this.inputList.each(function (input) {
+                input.hide();
+            });
             ctx.lineCap = "round";　　//设置线条两端为圆弧
             ctx.lineJoin = "round";　　//设置线条转折为圆弧
             ctx.lineWidth = this.currentEraserRadius || this.options.eraserRadiusSize;
@@ -370,6 +405,21 @@ o2.widget.Tablet = o2.Tablet = new Class({
             ctx.lineCap = "butt";　　//设置线条两端为平直的边缘
             ctx.lineJoin = "miter";　　//设置线条转折为圆弧
             ctx.globalCompositeOperation = "source-over";
+        }
+
+        if( this.mode === "erasing" ){
+            var radius = this.currentEraserRadius || this.options.eraserRadiusSize;
+            var hRadius = radius / 2;
+            this.eraseIcon = new Element("div", {
+                styles: {
+                    "border": "1px solid #333",
+                    "height": radius,
+                    "width": radius,
+                    "border-radius": radius,
+                    "position": "absolute",
+                    "background": "#fff"
+                }
+            }).inject(this.canvasWrap);
         }
 
         ctx.beginPath();
@@ -388,6 +438,10 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         ctx.moveTo(x, y);
         if( this.mode === "erasing" ){
+            this.eraseIcon.setStyles({
+                "top": ( y - hRadius)+"px",
+                "left":( x - hRadius)+"px"
+            });
             ctx.arc(x, y, 1, 0, 2*Math.PI);
             ctx.fill();
         }
@@ -406,6 +460,12 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
             ctx.lineTo(mx, my);
             ctx.stroke();
+            if( _self.mode === "erasing" ) {
+                _self.eraseIcon.setStyles({
+                    "top": ( my - hRadius) + "px",
+                    "left": ( mx - hRadius) + "px"
+                });
+            }
         };
         doc.addEvent( "mousemove", mousemove );
         doc.addEvent( "touchmove", mousemove );
@@ -420,6 +480,13 @@ o2.widget.Tablet = o2.Tablet = new Class({
             this.storeToMiddleArray();
 
             ctx.closePath();
+            if(_self.eraseIcon)_self.eraseIcon.destroy();
+
+            if( _self.mode === "erasing" ) {
+                if (_self.inputList) _self.inputList.each(function (input) {
+                    input.show();
+                });
+            }
         }.bind(this);
         doc.addEvent("mouseup", mouseup);
         doc.addEvent("touchend", mouseup);
@@ -464,120 +531,128 @@ o2.widget.Tablet = o2.Tablet = new Class({
     },
     uploadImage: function(  success, failure  ){
         var image = this.getImage( null, true );
-        if( image ){
-            if( this.options.action ){
-                this.action = (typeOf(this.options.action)=="string") ? o2.Actions.get(action).action : this.options.action;
-                this.action.invoke({
-                    "name": this.options.method,
-                    "async": true,
-                    "data": this.getFormData( image ),
-                    "file": image,
-                    "parameter": this.options.parameter,
-                    "success": function(json){
-                        success(json)
-                    }.bind(this)
-                });
-            }else if( this.options.reference && this.options.referenceType ){
-                //公共图片上传服务
-                var maxSize = this.options.resultMaxSize;
-                o2.xDesktop.uploadImageByScale(
-                    this.options.reference,
-                    this.options.referenceType,
-                    maxSize,
-                    this.getFormData( image ),
-                    image,
-                    success,
-                    failure
-                );
+        Promise.resolve( image ).then(function(image){
+            if( image ){
+                if( this.options.action ){
+                    this.action = (typeOf(this.options.action)=="string") ? o2.Actions.get(action).action : this.options.action;
+                    this.action.invoke({
+                        "name": this.options.method,
+                        "async": true,
+                        "data": this.getFormData( image ),
+                        "file": image,
+                        "parameter": this.options.parameter,
+                        "success": function(json){
+                            success(json)
+                        }.bind(this)
+                    });
+                }else if( this.options.reference && this.options.referenceType ){
+                    //公共图片上传服务
+                    var maxSize = this.options.resultMaxSize;
+                    o2.xDesktop.uploadImageByScale(
+                        this.options.reference,
+                        this.options.referenceType,
+                        maxSize,
+                        this.getFormData( image ),
+                        image,
+                        success,
+                        failure
+                    );
+                }
+            }else{
             }
-        }else{
-        }
+        })
     },
     getFormData : function( image ){
         if( !image )image = this.getImage();
-        var formData = new FormData();
-        formData.append('file', image, this.fileName );
-        if( this.options.data ){
-            Object.each(this.options.data, function(v, k){
-                formData.append(k, v)
-            });
-        }
-        return formData;
+        return Promise.resolve( image ).then(function(){
+            var formData = new FormData();
+            formData.append('file', image, this.fileName );
+            if( this.options.data ){
+                Object.each(this.options.data, function(v, k){
+                    formData.append(k, v)
+                });
+            }
+            return formData;
+        }.bind(this));
     },
     getImage : function( base64Code, ignoreResultSize ){
         var src = base64Code || this.getBase64Code( ignoreResultSize);
-        src=window.atob(src);
+        return Promise.resolve( src ).then(function( src ){
+            src=window.atob(src);
 
-        var ia = new Uint8Array(src.length);
-        for (var i = 0; i < src.length; i++) {
-            ia[i] = src.charCodeAt(i);
-        }
+            var ia = new Uint8Array(src.length);
+            for (var i = 0; i < src.length; i++) {
+                ia[i] = src.charCodeAt(i);
+            }
 
-        return new Blob([ia], {type: this.fileType });
+            return new Blob([ia], {type: this.fileType });
+        }.bind(this));
     },
     getBase64Code : function( ignoreResultSize ){
-        var ctx = this.ctx;
-        var canvas = this.canvas;
-
-        this.drawInput();
-
-        //var container = this.contentNode;
-        //var size = this.options.size;
         if( !ignoreResultSize && this.options.resultMaxSize ){
+            return Promise.resolve( this.drawInput() ).then(function() {
+                var src = this.canvas.toDataURL(this.fileType);
+                src = src.split(',')[1];
+                return src = 'data:' + this.fileType + ';base64,' + src;
+            }.bind(this)).then( function( src ){
+                return this.loadImage( src );
+            }.bind(this)).then(function( tmpImageNode ){
+                var ctx = this.ctx;
+                var canvas = this.canvas;
+                var width, height;
+                width = Math.min(this.contentWidth, this.options.resultMaxSize);
+                height = (width / this.contentWidth) * this.contentHeight;
 
-            var width, height;
-            width = Math.min( this.contentWidth , this.options.resultMaxSize);
-            height = ( width / this.contentWidth) * this.contentHeight;
+                var tmpCanvas = new Element("canvas", {
+                    width : width,
+                    height : height
+                }).inject( this.contentNode );
+                var tmpCtx = tmpCanvas.getContext("2d");
 
-            var src=canvas.toDataURL( this.fileType );
-            src=src.split(',')[1];
-            src = 'data:'+ this.fileType +';base64,' + src;
+                tmpCtx.drawImage(tmpImageNode,0,0, this.contentWidth,this.contentHeight,0,0,width,height);
 
-            var tmpImageNode = new Element("img", {
-                width : this.contentWidth,
-                height : this.contentHeight,
-                src : src
-            });
-            var tmpCanvas = new Element("canvas", {
-                width : width,
-                height : height
-            }).inject( this.contentNode );
-            var tmpCtx = tmpCanvas.getContext("2d");
+                var tmpsrc= tmpCanvas.toDataURL( this.fileType );
+                tmpsrc=tmpsrc.split(',')[1];
 
-            tmpCtx.drawImage(tmpImageNode,0,0, this.contentWidth,this.contentHeight,0,0,width,height);
-
-            var tmpsrc= tmpCanvas.toDataURL( this.fileType );
-            tmpsrc=tmpsrc.split(',')[1];
-
-            tmpImageNode.destroy();
-            tmpCanvas.destroy();
-            tmpCtx = null;
-
-            if(!tmpsrc){
-                return "";
-            }else{
-                return tmpsrc
-            }
+                tmpImageNode.destroy();
+                tmpCanvas.destroy();
+                tmpCtx = null;
+                if(!tmpsrc){
+                    return "";
+                }else{
+                    return tmpsrc
+                }
+            }.bind(this));
         }else{
-            var src=canvas.toDataURL( this.fileType );
-            src=src.split(',')[1];
+            return Promise.resolve( this.drawInput() ).then(function(){
+                var src= this.canvas.toDataURL( this.fileType );
+                src=src.split(',')[1];
 
-            if(!src){
-                return "";
-            }else{
-                return src
-            }
+                if(!src){
+                    return "";
+                }else{
+                    return src
+                }
+            }.bind(this))
         }
+
     },
     getBase64Image: function( base64Code, ignoreResultSize ){
         if( !base64Code )base64Code = this.getBase64Code( ignoreResultSize );
-        if( !base64Code )return null;
-        return 'data:'+ this.fileType +';base64,' + base64Code;
+        return Promise.resolve( base64Code ).then(function( base64Code ){
+            if( !base64Code )return null;
+            return 'data:'+ this.fileType +';base64,' + base64Code;
+        }.bind(this));
     },
     drawInput: function(){
-        if( this.inputList )this.inputList.each(function (input) {
-            input.draw();
-        })
+        if( this.inputList ){
+            var list = this.inputList.map(function (input) {
+                return input.draw();
+            });
+            return Promise.all( list );
+        }else{
+            return "";
+        }
     },
     close : function(){
         if( this.inputList ){
@@ -610,10 +685,17 @@ o2.widget.Tablet = o2.Tablet = new Class({
         return canvas.toDataURL() == blank.toDataURL(); //比较值相等则为空
     },
     save : function(){
-        var base64code = this.getBase64Code();
-        var imageFile = this.getImage( base64code );
-        var base64Image = this.getBase64Image( base64code );
-        this.fireEvent("save", [ base64code, base64Image, imageFile]);
+        var _slef = this;
+        Promise.resolve( this.getBase64Code() ).then(function ( base64code ) {
+            _slef.getImage( base64code ).then(function( imageFile ){
+                _slef.getBase64Image( base64code ).then(function (base64Image) {
+                    _slef.fireEvent("save", [ base64code, base64Image, imageFile]);
+                });
+            })
+        })
+        // var imageFile = this.getImage( base64code );
+        // var base64Image = this.getBase64Image( base64code );
+        // this.fireEvent("save", [ base64code, base64Image, imageFile]);
     },
     reset : function( itemNode ){
         this.fileName = "untitled.png";
@@ -621,6 +703,12 @@ o2.widget.Tablet = o2.Tablet = new Class({
         if( this.ctx ){
             var canvas = this.canvas;
             this.ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
+        }
+        if( this.inputList ){
+            this.inputList.each(function (input) {
+                input.close();
+            })
+            this.currentInput = null;
         }
         this.fireEvent("reset");
     },
@@ -645,21 +733,98 @@ o2.widget.Tablet = o2.Tablet = new Class({
     },
     size : function( itemNode ){
         if( !this.sizeSelector ){
-            this.sizeSelector = new o2.widget.Tablet.SizePicker(this.container, itemNode, null, {}, {
+            var container = this.inMobileDevice ? $(document.body) : this.container;
+            this.sizeSelector = new o2.widget.Tablet.SizePicker(container, itemNode, null, {}, {
                 "onSelect": function (width) {
                     this.currentWidth = width;
-                }.bind(this)
+                }.bind(this),
+                "onHide": function () {
+                    itemNode.fireEvent("mouseout");
+                },
+                "event" : this.inMobileDevice ? "click" : "mouseenter",
+                "hasMask": false,
+                "zoom":  this.options.toolsScale || 1
+            });
+        }
+    },
+    eraserRadius : function( itemNode ){
+        if( !this.eraserRadiusSelector ){
+            var container = this.inMobileDevice ? $(document.body) : this.container;
+            this.eraserRadiusSelector = new o2.widget.Tablet.EraserRadiusPicker(container, itemNode, null, {}, {
+                "onSelect": function (width) {
+                    this.currentEraserRadius = width;
+                }.bind(this),
+                "onHide": function () {
+                    itemNode.fireEvent("mouseout");
+                },
+                "event" : this.inMobileDevice ? "click" : "mouseenter",
+                "hasMask": false,
+                "zoom":  this.options.toolsScale || 1
             });
         }
     },
     color : function( itemNode ){
         if( !this.colorSelector ){
-            this.colorSelector = new o2.xApplication.Template.widget.ColorPicker( this.container, itemNode, null, {}, {
+            var container = this.inMobileDevice ? $(document.body) : this.container;
+            this.colorSelector = new o2.xApplication.Template.widget.ColorPicker( container, itemNode, null, {}, {
                 "lineWidth" : 1,
                 "onSelect": function (color) {
                     this.currentColor = color;
-                }.bind(this)
+                    if( this.currentInput ){
+                        this.currentInput.setColor(color);
+                    }
+                }.bind(this),
+                "onHide": function () {
+                    itemNode.fireEvent("mouseout");
+                },
+                "event" : this.inMobileDevice ? "click" : "mouseenter",
+                "hasMask": false,
+                "zoom":  this.options.toolsScale || 1
             });
+        }
+    },
+    fontFamily: function (itemNode) {
+        if( !this.fontfamilySelector ){
+            var container = this.inMobileDevice ? $(document.body) : this.container;
+            this.fontfamilySelector = new o2.widget.Tablet.FontFamily(itemNode, {
+                "onSelectItem": function (node, d) {
+                    this.currentFontFamily = d.val;
+                    if( this.currentInput ){
+                        this.currentInput.setFontFamily(d.val);
+                    }
+                }.bind(this),
+                "tooltipsOptions": {
+                    "onHide": function () {
+                        itemNode.fireEvent("mouseout");
+                    },
+                    "event" : this.inMobileDevice ? "click" : "mouseenter", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
+                    "hasMask": false,
+                    "zoom":  this.options.toolsScale || 1
+                }
+            }, null, null, container);
+            this.fontfamilySelector.load();
+        }
+    },
+    fontSize: function (itemNode) {
+        if( !this.fontsizeSelector ){
+            var container = this.inMobileDevice ? $(document.body) : this.container;
+            this.fontsizeSelector = new o2.widget.Tablet.FontSize(itemNode, {
+                "onSelectItem": function (node, d) {
+                    this.currentFontSize = d.value +"px";
+                    if( this.currentInput ){
+                        this.currentInput.setFontSize(d.value+"px");
+                    }
+                }.bind(this),
+                "tooltipsOptions": {
+                    "onHide": function () {
+                        itemNode.fireEvent("mouseout");
+                    },
+                    "event" : this.inMobileDevice ? "click" : "mouseenter", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
+                    "hasMask": false,
+                    "zoom":  this.options.toolsScale || 1
+                }
+            }, null, null, container);
+            this.fontsizeSelector.load();
         }
     },
     getImageSize : function(naturalWidth, naturalHeight ){
@@ -763,7 +928,12 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.toolbar.activeItem("input");
         this.toolbar.hideItem("eraserRadius");
         this.toolbar.hideItem("size");
-        this.toolbar.hideItem("color");
+        this.toolbar.showItem("fontSize");
+        this.toolbar.showItem("fontFamily");
+        this.toolbar.showItem("color");
+    },
+    eraseInput: function(input){
+        this.inputList.erase(input);
     },
     eraser : function( itemNode ){
         this.mode = "erasing";
@@ -772,16 +942,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.toolbar.showItem("eraserRadius");
         this.toolbar.hideItem("size");
         this.toolbar.hideItem("color");
+        this.toolbar.hideItem("fontSize");
+        this.toolbar.hideItem("fontFamily");
         this.toolbar.enableItem("input");
-    },
-    eraserRadius : function( itemNode ){
-        if( !this.eraserRadiusSelector ){
-            this.eraserRadiusSelector = new o2.widget.Tablet.EraserRadiusPicker(this.container, itemNode, null, {}, {
-                "onSelect": function (width) {
-                    this.currentEraserRadius = width;
-                }.bind(this)
-            });
-        }
     },
     pen : function( itemNode ){
         this.mode = "writing";
@@ -789,6 +952,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.toolbar.enableItem("input");
         this.toolbar.enableItem("eraser");
         this.toolbar.hideItem("eraserRadius");
+        this.toolbar.hideItem("fontSize");
+        this.toolbar.hideItem("fontFamily");
         this.toolbar.showItem("size");
         this.toolbar.showItem("color");
     },
@@ -857,9 +1022,17 @@ o2.widget.Tablet.Toolbar = new Class({
                 enable : function(){ return true },
                 show : function(){ return this.tablet.mode === "writing" }.bind(this)
             },
+            fontSize : {
+                enable : function(){ return true },
+                show : function(){ return this.tablet.mode === "inputing" }.bind(this)
+            },
+            fontFamily : {
+                enable : function(){ return true },
+                show : function(){ return this.tablet.mode === "inputing" }.bind(this)
+            },
             color : {
                 enable : function(){ return true },
-                show : function(){ return this.tablet.mode === "writing" }.bind(this)
+                show : function(){ return this.tablet.mode === "writing" || this.tablet.mode === "inputing" }.bind(this)
             },
             image : {
                 enable : function(){ return true }
@@ -886,6 +1059,8 @@ o2.widget.Tablet.Toolbar = new Class({
                 "eraserRadius","|",
                 "size", "|",
                 "color", "|",
+                "fontSize", "|",
+                "fontFamily", "|",
                 "image", "|",
                 "imageClipper"
             ];
@@ -898,7 +1073,8 @@ o2.widget.Tablet.Toolbar = new Class({
             this.tablet.options.toolHidden.push("eraserRadius");
         }
         if( this.tablet.options.toolHidden.contains("input")){
-
+            this.tablet.options.toolHidden.push("fontSize");
+            this.tablet.options.toolHidden.push("fontFamily");
         }
 
 
@@ -950,6 +1126,12 @@ o2.widget.Tablet.Toolbar = new Class({
                 case "color" :
                     html +=  "<div item='color' styles='" + style + "'>"+ this.lp.color  +"</div>";
                     break;
+                case "fontSize" :
+                    html +=  "<div item='fontSize' style='float: left;margin-top:20px;margin-left: 5px;'></div>";
+                    break;
+                case "fontFamily" :
+                    html +=  "<div item='fontFamily' style='float: left;margin-top:20px;margin-left: 5px;'></div>";
+                    break;
                 case "image" :
                     html +=  "<div item='image' styles='" + style + "'>"+ this.lp.image  +"</div>";
                     break;
@@ -997,6 +1179,19 @@ o2.widget.Tablet.Toolbar = new Class({
                 }
             }
         }.bind(this));
+
+        var fontSizeItem = this.container.getElement("[item='fontSize']");
+        if(fontSizeItem){
+            this.items["fontSize"] = fontSizeItem;
+            this.tablet.fontSize(fontSizeItem);
+        }
+
+        var fontFamilyItem = this.container.getElement("[item='fontFamily']");
+        if(fontFamilyItem){
+            this.items["fontFamily"] = fontFamilyItem;
+            this.tablet.fontFamily(fontFamilyItem);
+        }
+
         this.setAllItemsStatus();
         this.setAllItemsShow();
         this.setAllItemsActive();
@@ -1062,28 +1257,48 @@ o2.widget.Tablet.Toolbar = new Class({
             this._setItemNodeActive(itemNode, itemName);
         }
     },
-    _setItemNodeDisable : function( itemNode ){
+    _setItemNodeDisable : function( itemNode, itemName ){
         var item = itemNode.get("item");
         if(item){
-            itemNode.setStyles( this.css.toolItem_disable );
-            itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_disable.png)");
+            if( ["fontSize","fontFamily"].contains( itemName ) ){
+                itemNode.hide();
+            }else{
+                itemNode.setStyles( this.css.toolItem_disable );
+                itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_disable.png)");
+            }
         }
     },
-    _setItemNodeActive: function( itemNode ){
+    _setItemNodeActive: function( itemNode, itemName ){
         if( itemNode.retrieve("status") == "disable" )return;
         var item = itemNode.get("item");
         if(item){
-            itemNode.setStyles( this.css.toolItem_over );
-            itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_active.png)");
+            if( ["fontSize","fontFamily"].contains( itemName ) ){
+                if( this.itemsEnableFun[itemName] && this.itemsEnableFun[itemName].show ){
+                    if( this.itemsEnableFun[item].show() ){
+                        itemNode.show();
+                    }
+                }
+            }else{
+                itemNode.setStyles( this.css.toolItem_over );
+                itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_active.png)");
+            }
         }
     },
-    _setItemNodeNormal: function( itemNode ){
+    _setItemNodeNormal: function( itemNode, itemName ){
         if( itemNode.retrieve("status") == "disable" )return;
         var item = itemNode.get("item");
         if(item){
-            var style = itemNode.get("styles");
-            itemNode.setStyles( this.css[style] );
-            itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_normal.png)");
+            if( ["fontSize","fontFamily"].contains( itemName ) ){
+                if( this.itemsEnableFun[itemName] && this.itemsEnableFun[itemName].show ){
+                    if( this.itemsEnableFun[item].show() ){
+                        itemNode.show();
+                    }
+                }
+            }else{
+                var style = itemNode.get("styles");
+                itemNode.setStyles( this.css[style] );
+                itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_normal.png)");
+            }
         }
     }
 
@@ -1283,7 +1498,7 @@ o2.widget.Tablet.SizePicker = new Class({
             range: this.range,
             initialStep: 10,
             onChange: function(value){
-               this.changeValue( value );
+                this.changeValue( value );
             }.bind(this)
         });
 
@@ -1342,7 +1557,7 @@ o2.widget.Tablet.SizePicker = new Class({
 
         ctx.moveTo( 1 , 15 );
 
-       ctx.lineTo( 200, 15  );
+        ctx.lineTo( 200, 15  );
         ctx.stroke();
     }
 });
@@ -1350,11 +1565,144 @@ o2.widget.Tablet.SizePicker = new Class({
 o2.widget.Tablet.EraserRadiusPicker = new Class({
     Extends: o2.widget.Tablet.SizePicker,
     options: {
-        lineWidth : 10
+        lineWidth : 10,
+        nodeStyles : {
+            "min-width" : "260px"
+        },
+    },
+    _loadContent: function(json){
+        this.rulerContainer = new Element("div",{
+            styles : {
+                "margin-left": " 23px",
+                "margin-right": " 1px",
+                "width" : "228px"
+            }
+        }).inject(this.node);
+
+
+        this.rulerTitleContainer = new Element("div",{
+            styles : { "overflow" : "hidden" }
+        }).inject( this.rulerContainer );
+        this.ruleList.each( function( rule ){
+            new Element("div", {
+                text : rule,
+                styles : {
+                    width : "24px",
+                    float : "left",
+                    "text-align" : "center"
+                }
+            }).inject( this.rulerTitleContainer )
+        }.bind(this));
+
+        this.rulerContentContainer = new Element("div",{
+            styles : { "overflow" : "hidden" }
+        }).inject( this.rulerContainer );
+        new Element("div", {
+            styles : {
+                width : "14px",
+                height : "10px",
+                "text-align" : "center",
+                float : "left",
+                "border-right" : "1px solid #aaa"
+            }
+        }).inject( this.rulerContentContainer );
+        this.ruleList.each( function( rule, i ){
+            if( i == this.ruleList.length - 1 )return;
+            new Element("div", {
+                styles : {
+                    width : "24px",
+                    height : "10px",
+                    "text-align" : "center",
+                    float : "left",
+                    "border-right" : "1px solid #aaa"
+                }
+            }).inject( this.rulerContentContainer )
+        }.bind(this));
+
+
+        this.silderContainer = new Element("div", {
+            "height" : "25px",
+            "line-height" : "25px",
+            "margin-top" : "4px"
+        }).inject( this.node );
+
+        this.sliderArea = new Element("div", {styles : {
+                "margin-top": "2px",
+                "margin-bottom": "10px",
+                "height": "10px",
+                "overflow": " hidden",
+                "margin-left": " 37px",
+                "margin-right": " 15px",
+                "border-top": "1px solid #999",
+                "border-left": "1px solid #999",
+                "border-bottom": "1px solid #E1E1E1",
+                "border-right": "1px solid #E1E1E1",
+                "background-color": "#EEE",
+                "width" : "200px"
+            }}).inject( this.silderContainer );
+        this.sliderKnob = new Element("div", {styles : {
+                "height": "8px",
+                "width": " 8px",
+                "background-color": "#999",
+                "z-index": " 99",
+                "border-top": "1px solid #DDD",
+                "border-left": "1px solid #DDD",
+                "border-bottom": "1px solid #777",
+                "border-right": "1px solid #777",
+                "cursor": "pointer"
+            } }).inject( this.sliderArea );
+
+        this.slider = new Slider(this.sliderArea, this.sliderKnob, {
+            range: this.range,
+            initialStep: 20,
+            onChange: function(value){
+                this.changeValue( value );
+            }.bind(this)
+        });
+
+        var previewContainer = new Element("div", {"style":"overflow:hidden;"}).inject(this.node);
+        new Element("div",{ text : o2.LP.widget.preview, styles : {
+                "float" : "left",
+                "margin-top" : "15px",
+                "width" : "30px"
+            }}).inject(this.silderContainer);
+        this.previewNode = new Element("div", {
+            styles : {
+                "float" : "left",
+                "margin" : "0px 0px 0px 37px",
+                "width" : "100px"
+            }
+        }).inject( this.node );
+        this.canvas = new Element("canvas", {
+            width : 200,
+            height : 60
+        }).inject( this.previewNode );
+        this.ctx = this.canvas.getContext("2d");
+        this.drawPreview();
+
+        new Element("button", {
+            text : o2.LP.widget.reset,
+            type : "button",
+            styles :{
+                "float" : "left",
+                "margin-top" : "10px",
+                "font-size" : "12px",
+                "border-radius" : "3px",
+                "cursor" : "pointer" ,
+                "border" : "1px solid #ccc",
+                "padding" : "5px 10px",
+                "background-color" : "#f7f7f7"
+            },
+            events : {
+                click : function(){
+                    this.reset();
+                }.bind(this)
+            }
+        }).inject( this.node );
     },
     _customNode : function( node ){
-        this.range = [1, 30];
-        this.ruleList = ["1","5","10", "15","20","25","30"];
+        this.range = [1, 40];
+        this.ruleList = ["1","5","10", "15","20","25","30","35","40"];
         o2.UD.getDataJson("eraserRadiusPicker", function(json) {
             this._loadContent(json);
         }.bind(this));
@@ -1388,7 +1736,7 @@ o2.widget.Tablet.EraserRadiusPicker = new Class({
 
         ctx.strokeStyle="#000000";
         ctx.beginPath();
-        ctx.lineTo( 28, 15  );
+        ctx.lineTo( 28, 25  );
         ctx.stroke();
 
     }
@@ -1488,25 +1836,14 @@ o2.widget.Tablet.ImageMover = new Class({
     initialize: function(tablet, imageNode, relativeNode, options){
         this.setOptions(options);
         this.tablet = tablet;
+        this.css = this.tablet.css;
         this.imageNode = imageNode;
         this.relativeNode = relativeNode;
         this.path = this.tablet.path + this.tablet.options.style + "/"
     },
     load: function(){
         this.maskNode = new Element("div.maskNode",{
-            styles : {
-                "width": "100%",
-                "height": "100%",
-                "opacity": 0.6,
-                "position": "absolute",
-                "background-color": "#CCC",
-                "top": "0px",
-                "left": "0px",
-                "z-index" : 1002,
-                "-webkit-user-select": "none",
-                "-moz-user-select": "none",
-                "user-select" : "none"
-            }
+            styles : this.css.imageMoveMaskNode
         }).inject($(document.body));
 
         var coordinates = this.relativeNode.getCoordinates();
@@ -1551,15 +1888,7 @@ o2.widget.Tablet.ImageMover = new Class({
         });
 
         this.okNode = new Element("div",{
-            styles : {
-                "background" : "url("+ this.path + "icon/ok.png) no-repeat",
-                "width" : "16px",
-                "height" : "16px",
-                "right" : "-20px",
-                "top" : "5px",
-                "position" : "absolute",
-                "cursor" : "pointer"
-            },
+            styles : this.css.imageMoveOkNode,
             events : {
                 click : function(){
                     this.ok();
@@ -1569,15 +1898,7 @@ o2.widget.Tablet.ImageMover = new Class({
         }).inject(this.dragNode);
 
         this.cancelNode = new Element("div",{
-            styles : {
-                "background" : "url("+ this.path + "icon/cancel.png) no-repeat",
-                "width" : "16px",
-                "height" : "16px",
-                "right" : "-20px",
-                "top" : "30px",
-                "position" : "absolute",
-                "cursor" : "pointer"
-            },
+            styles : this.css.imageMoveCancelNode,
             events : {
                 click : function(){
                     this.fireEvent("postCancel");
@@ -1592,15 +1913,9 @@ o2.widget.Tablet.ImageMover = new Class({
         });
 
 
-        this.resizeNode = new Element("div.resizeNode",{ styles :  {
-            "cursor" : "nw-resize",
-            "position": "absolute",
-            "bottom": "0px",
-            "right": "0px",
-            "border" : "2px solid #52a3f5",
-            "width" : "8px",
-            "height" : "8px"
-        }}).inject(this.dragNode);
+        this.resizeNode = new Element("div.resizeNode",{
+            styles : this.css.imageMoveResizeNode
+        }).inject(this.dragNode);
 
         this.docBody = window.document.body;
         this.resizeNode.addEvents({
@@ -1694,27 +2009,27 @@ o2.widget.Tablet.ImageMover = new Class({
             h;
 
         //if( ratio ){
-            if( Math.abs(x)/Math.abs(y) > ratio ){
-                if( x+coordinates.width+left>width ){
-                    return;
-                }else{
-                    w = x + coordinates.width;
-                    h = w / ratio;
-                    if( h+top > height ){
-                        return;
-                    }
-                }
+        if( Math.abs(x)/Math.abs(y) > ratio ){
+            if( x+coordinates.width+left>width ){
+                return;
             }else{
-                if(y+coordinates.height+top>height){
-                    return;
-                }else{
-                    h = y+ coordinates.height;
-                    w = h * ratio;
-                }
-                if( w+left > width ){
+                w = x + coordinates.width;
+                h = w / ratio;
+                if( h+top > height ){
                     return;
                 }
             }
+        }else{
+            if(y+coordinates.height+top>height){
+                return;
+            }else{
+                h = y+ coordinates.height;
+                w = h * ratio;
+            }
+            if( w+left > width ){
+                return;
+            }
+        }
         //}else{
         //    if( x+coordinates.width+left>width ){
         //        return;
@@ -1791,7 +2106,6 @@ o2.widget.Tablet.ImageMover = new Class({
     }
 });
 
-
 o2.widget.Tablet.Input = new Class({
     Implements: [Options, Events],
     options: {
@@ -1803,207 +2117,469 @@ o2.widget.Tablet.Input = new Class({
         left: 0,
         isEditing: true,
         editable: true,
-        text: ""
+        text: "",
+        scale: 1
     },
-    initialize: function (tablet, relativeNode, options) {
+    initialize: function (tablet, relativeNode, options, data) {
         this.setOptions(options);
         this.tablet = tablet;
+        this.css = this.tablet.css;
         this.relativeNode = relativeNode;
-        this.path = this.tablet.path + this.tablet.options.style + "/"
+        this.path = this.tablet.path + this.tablet.options.style + "/";
+        this.data = data || {};
+        var styles = this.data.styles || {};
+        this.color = styles.color || this.tablet.currentColor;
+        this.fontSize = styles["font-size"] || this.tablet.currentFontSize;
+        this.fontFamily = styles["font-family"] || this.tablet.currentFontFamily;
     },
     readMode: function(){
-        if( this.textarea && !this.textarea.get("value") ){
+        if( this.editarea && !this.editarea.get("html") ){
             this.close();
             return;
         }
         this.options.isEditing = false;
-        if(this.drag)this.drag.detach();
+        // if(this.drag)this.drag.detach();
         if( this.dragNode )this.dragNode.hide(); //.setStyle("cursor","none");
         if( this.resizeNode )this.resizeNode.hide(); //.setStyle("cursor", "none" );
         if( this.cancelNode )this.cancelNode.hide();
-        if( this.textareaWrap )this.textareaWrap.setStyle("border", "1px dashed transparent");
+        if( this.editareaWrap )this.editareaWrap.setStyle("border", "1px dashed transparent");
         this.node.setStyle("background" , "rgba(255,255,255,0)")
     },
     editMode: function(){
         if(this.tablet.currentInput)this.tablet.currentInput.readMode();
         this.tablet.currentInput = this;
         this.options.isEditing = true;
-        if(this.drag)this.drag.attach();
+        // if(this.drag)this.drag.attach();
         if( this.dragNode )this.dragNode.show(); //.setStyle("cursor","move");
         if( this.resizeNode )this.resizeNode.show(); //.setStyle("cursor", "nw-resize" );
-        if( this.textareaWrap )this.textareaWrap.setStyle("border", "1px dashed red");
+        if( this.editareaWrap )this.editareaWrap.setStyle("border", "1px dashed red");
         if( this.cancelNode )this.cancelNode.show();
         this.node.setStyle("background" , "rgba(255,255,255,0.5)")
     },
-    draw: function(){
-        debugger;
-        var text = this.textarea.get("value");
-        var coordinates = this.textarea.getCoordinates( this.relativeNode );
-        this.tablet.ctx.font = "14px \"Microsoft YaHei\", SimSun, 宋体, serif ";
-        this.tablet.ctx.fillText(text, coordinates.left + 5, coordinates.top+15, coordinates.width);
-        this.drawed = true;
+    scaleTo: function( scale ){
+        if( this.options.scale === scale )return;
+        this.options.scale = scale;
+        if( layout.mobile ){
+            var width = (24/this.options.scale);
+            if(this.cancelNode)this.cancelNode.setStyles({
+                "width" : width+"px",
+                "height" : width +"px",
+                "top": "-"+(width/2)+"px",
+                "right": "-"+(width/2)+"px",
+                "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
+            });
+            if(this.dragNode)this.dragNode.setStyles({
+                "width" : width+"px",
+                "height" : width +"px",
+                "top": "-"+(width/2)+"px",
+                "left": "-"+(width/2)+"px",
+                "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
+            });
+            if(this.resizeNode)this.resizeNode.setStyles({
+                "width" : width+"px",
+                "height" : width +"px",
+                "bottom": "-"+(width/2)+"px",
+                "right": "-"+(width/2)+"px",
+                "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
+            });
+        }
     },
+    getUrl: function ( id ) {
+        var address = o2.Actions.getHost("x_processplatform_assemble_surface");
+        var serviceName = o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.action.serviceName;
+        var u = o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.action.actions.downloadTransfer.uri;
+        var url = u.replace("{flag}", id);
+        url = address + "/" + serviceName +  url;
+
+        var uri = new URI( url );
+        uri.setData({"stream":"true"}, true);
+        if( !uri.getData( o2.tokenName ) ){
+            var token = {};
+            token[ o2.tokenName ] = this.getToken();
+            uri.setData(token, true);
+        }
+        return uri.toString();
+    },
+    getToken: function(){
+        var token = (layout.config && layout.config.sessionStorageEnable) ? sessionStorage.getItem("o2LayoutSessionToken") : "";
+        if (!token) {
+            if (layout.session && (layout.session.user || layout.session.token)) {
+                token = layout.session.token;
+                if (!token && layout.session.user && layout.session.user.token) token = layout.session.user.token;
+            }
+        }
+        return token;
+    },
+    draw: function( callback ){
+        var _self = this;
+        if( !this.editarea.offsetParent && this.image ){ //如果被隐藏了
+            return this.image || null;
+        }else {
+            var editareaSize = this.scaleSize(this.editarea.getSize());
+            var nodeSize = this.scaleSize(this.node.getSize());
+            var size = {
+                x : Math.max(editareaSize.x, nodeSize.x),
+                y: Math.max(editareaSize.y, nodeSize.y)
+            }
+            var div = new Element("div", {
+                "styles":{
+                    "padding": "0px",
+                    "margin": "0px",
+                    "width": size.x + "px",
+                    "height": size.y + "px",
+                },
+                "html": this.editarea.outerHTML
+            });
+            return o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.htmlToImage({
+                workHtml: div.outerHTML,
+                htmlWidth: size.x,
+                htmlHeight:size.y,
+                startX: 0,
+                startY: 0,
+                omitBackground: true
+            }).then(function (json) {
+                return _self.tablet.loadImage( _self.getUrl(json.data.id) );
+                // o2.Actions.load(x_processplatform_assemble_surface).AttachmentAction.downloadTransfer(json.data.id,function () {
+                //
+                // })
+            }).then(function (image) {
+                _self.image = image;
+                _self.fireEvent("postDraw", [image]);
+                return image;
+            });
+        }
+    },
+    // draw: function( callback ){
+    //     var _self = this;
+    //     if( !this.editarea.offsetParent && this.image ){ //如果被隐藏了
+    //         return this.image || null;
+    //     }else {
+    //         var opt = {
+    //             useCORS: true,
+    //             allowTaint: true,
+    //             backgroundColor: null
+    //         };
+    //         var scale = this.tablet.options.scale;
+    //         if( scale && scale !== 1 ){
+    //             opt.fontScale = scale;
+    //             //opt.scale = 1;
+    //         }
+    //         return window.html2canvas(this.editarea, opt).then(function (canvas) {
+    //             var src = canvas.toDataURL(_self.tablet.fileType);
+    //             src = src.split(',')[1];
+    //             src = 'data:' + _self.tablet.fileType + ';base64,' + src;
+    //             canvas.destroy();
+    //             return src
+    //         }).then(function (src) {
+    //             return _self.tablet.loadImage(src)
+    //         }).then(function (image) {
+    //             _self.image = image;
+    //             _self.fireEvent("postDraw", [image]);
+    //             return image;
+    //         });
+    //     }
+    // },
+    // load: function(){
+    //     o2.load("../o2_lib/html2canvas/html2canvas.js", function() {
+    //         this._load();
+    //     }.bind(this))
+    // },
     load: function(){
         // var coordinates = this.relativeNode.getCoordinates();
-
-        debugger;
-
-        this.relativeCoordinates = this.relativeNode.getCoordinates();
-        var top = this.options.top;
-        if( top + this.options.height > this.relativeCoordinates.height ){
-            top = this.relativeCoordinates.height - this.options.height;
-            this.options.top = top;
-        }
-        var left = this.options.left;
-        if( left + this.options.width > this.relativeCoordinates.width ){
-            left = this.relativeCoordinates.width - this.options.width;
-            this.options.left = left;
+        this.relativeCoordinates = this.scaleSize( this.relativeNode.getCoordinates() );
+        var top, left, width, height;
+        if( this.data.coordinates ){
+            top = this.data.coordinates.top;
+            left = this.data.coordinates.left;
+            width = this.data.coordinates.width;
+            height = this.data.coordinates.height;
+        }else{
+            var top = this.options.top;
+            if( top + this.options.height > this.relativeCoordinates.height ){
+                top = this.relativeCoordinates.height - this.options.height;
+                this.options.top = top;
+            }
+            var left = this.options.left;
+            if( left + this.options.width > this.relativeCoordinates.width ){
+                left = this.relativeCoordinates.width - this.options.width;
+                this.options.left = left;
+            }
+            width = this.options.width;
+            height = this.options.height;
         }
 
         this.node = new Element( "div", {
             styles : {
-                "width" : this.options.width+"px",
-                "height" : this.options.height+"px",
+                "width" : width+"px",
+                "min-height" : height+"px",
                 "position" : "absolute",
                 "top" : top+"px",
                 "left" : left+"px",
                 "background" : "rgba(255,255,255,0.5)",
-                "z-index" : 1003,
+                // "z-index" : 1003,
                 "-webkit-user-select": "none",
                 "-moz-user-select": "none",
                 "user-select" : "none"
+            },
+            events:{
+                "touchstart": function (ev) {
+                    if( !this.options.editable )return;
+                    if( !this.options.isEditing )this.editMode();
+                    if( this.tablet.mode !== "inputing" )this.tablet.input();
+                    ev.stopPropagation();
+                }.bind(this),
+                "mousedown": function (ev) {
+                    if( !this.options.editable )return;
+                    if( !this.options.isEditing )this.editMode();
+                    if( this.tablet.mode !== "inputing" )this.tablet.input();
+                    ev.stopPropagation();
+                }.bind(this)
             }
         }).inject(this.relativeNode);
 
+        this.editareaWrap = new Element("div", { styles: this.css.inputEditareaWrap }).inject(this.node);
 
-        this.dragNode = new Element("div",{
-            styles : {
-                "position": "absolute",
-                "background": "transparent",
-                "cursor" : "move",
-                "top": "-10px",
-                "right": "-10px",
-                "bottom": "-10px",
-                "left": "-10px",
-                "z-index": 1003
-            }
-        }).inject( this.node );
+        this.editarea = new Element("div", {
+            "contenteditable": true,
+            "styles": this.css.inputEditarea
+        }).inject( this.editareaWrap );
+        this.editarea.setStyles({
+            "color": this.color,
+            "font-family": this.fontFamily,
+            "font-size": this.fontSize
+        });
+        if( this.data.html )this.editarea.set("html", this.data.html);
+        if( this.options.editable ){
+            this.editarea.addEvent("blur", function(e){
+                this.checkPosition();
+            }.bind(this));
+        }
+        // if(Browser && Browser.name === "ie" ){
+        //     if( window.MutationObserver ){
+        //         var mo = new window.MutationObserver(function(e) {
+        //             this.checkPosition();
+        //         }.bind(this));
+        //         mo.observe(this.editarea, { childList: true, subtree: true, characterData: true });
+        //     }
+        // }else{
+        //     this.editarea.addEvent("input", function(e){
+        //         this.checkPosition();
+        //     }.bind(this));
+        // }
 
-        this.textareaWrap = new Element("div", {
-            styles: {
-                "position": "absolute",
-                "border": "1px dashed red",
-                "top": "0px",
-                "left": "0px",
-                "width": "calc( 100% - 2px )",
-                "height": "calc( 100% - 2px )",
-                "background": "transparent",
-                "z-index": 1003
+        if( this.options.editable ){
+            this.cancelNode = new Element("div",{
+                styles :  this.css[ layout.mobile? "inputCancelNode_mobile" : "inputCancelNode"],
+                events : {
+                    click : function(){
+                        this.fireEvent("postCancel");
+                        this.tablet.currentInput = null;
+                        this.close();
+                    }.bind(this)
+                }
+            }).inject(this.editareaWrap);
+            if( layout.mobile ){
+                var width = (24/this.options.scale);
+                this.cancelNode.setStyles({
+                    "width" : width+"px",
+                    "height" : width +"px",
+                    "top": "-"+(width/2)+"px",
+                    "right": "-"+(width/2)+"px",
+                    "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
+                });
             }
-        }).inject(this.node);
-        this.textarea = new Element("textarea", {
-            "styles": {
-                "border": "0px",
-                "width": "calc( 100% - 10px )",
-                "height": "calc( 100% - 10px )",
-                "vertical-align":"top",
-                "background": "transparent",
-                "resize": "none",
-                "padding":"5px"
-            },
-            events: {
-                focus: function () {
-                    if( !this.options.isEditing )this.editMode();
-                    this.tablet.input();
-                }.bind(this)
-            }
-        }).inject( this.textareaWrap );
 
-        this.drag = this.node.makeDraggable({
-            "container" : this.relativeNode,
-            "handle": this.dragNode
+            this.loadDragNode();
+
+            this.loadResizeNode();
+        }
+
+        if( this.options.isEditing ){
+            window.setTimeout(function () {
+                this.editarea.focus();
+            }.bind(this), 100)
+        }else{
+            this.readMode();
+        }
+    },
+    loadDragNode: function(){
+        this.dragNode = new Element("div.dragNode",{
+            styles : this.css[ layout.mobile? "inputDragNode_mobile" : "inputDragNode"]
+        }).inject(this.editareaWrap);
+        if( layout.mobile ){
+            var width = (24/this.options.scale);
+            this.dragNode.setStyles({
+                "width" : width+"px",
+                "height" : width +"px",
+                "top": "-"+(width/2)+"px",
+                "left": "-"+(width/2)+"px",
+                "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
+            });
+        }
+
+        this.dragBody = this.relativeNode; //window.document.body;
+
+        var startFun = function(ev){
+            if( !this.options.isEditing )return;
+            this.dragBody.setStyle("cursor", "move" );
+            this.relativeCoordinates = this.scaleSize( this.relativeNode.getCoordinates() );
+            this.dragMode = true;
+            this.fireEvent("dragStart");
+            ev.stopPropagation();
+        }.bind(this);
+        var moveFun = function(ev){
+            if( !this.dragMode )return;
+            var point = this.getLastPoint(ev);
+            this.drag( point );
+            this.fireEvent("drag");
+            ev.stopPropagation();
+        }.bind(this);
+        var endFun = function(ev){
+            this.dragBody.setStyle("cursor", "default" );
+            this.dragMode = false;
+            this.lastPoint=null;
+            this.fireEvent("dragComplete");
+            ev.stopPropagation();
+        }.bind(this);
+
+        this.dragNode.addEvents({
+            "touchstart" : startFun,
+            "mousedown" : startFun,
+            "touchmove" : moveFun,
+            "mousemove" : moveFun,
+            "touchend" : endFun,
+            "mouseup" : endFun
         });
 
-        this.cancelNode = new Element("div",{
-            styles : {
-                "background" : "url("+ this.path + "icon/cancel2.png) no-repeat",
-                "width" : "16px",
-                "height" : "16px",
-                "right" : "-8px",
-                "top" : "-8px",
-                "position" : "absolute",
-                "cursor" : "pointer"
-            },
-            events : {
-                click : function(){
-                    this.fireEvent("postCancel");
-                    this.tablet.currentInput = null;
-                    this.close();
-                }.bind(this)
-            }
-        }).inject(this.textareaWrap);
+        this.bodyDragMoveFun = this.bodyDragMove.bind(this);
+        this.dragBody.addEvent("touchmove", this.bodyDragMoveFun);
+        this.dragBody.addEvent("mousemove", this.bodyDragMoveFun);
+
+        this.bodyDragEndFun = this.bodyDragEnd.bind(this);
+        this.dragBody.addEvent("touchend", this.bodyDragEndFun);
+        this.dragBody.addEvent("mouseup", this.bodyDragEndFun);
+
+        // this.drag = this.node.makeDraggable({
+        //     "container" : this.relativeNode,
+        //     "handle": this.dragNode,
+        //     "onStart": function(el, e){
+        //         this.draging = true;
+        //         this.fireEvent("dragStart");
+        //     }.bind(this),
+        //     "onComplete": function(e){
+        //         this.draging = false;
+        //         this.fireEvent("dragComplete");
+        //     }.bind(this),
+        //     "onDrag": function(el, e) {
+        //         this.fireEvent("drag");
+        //     }.bind(this)
+        // });
+    },
+    bodyDragMove: function(ev){
+        if(!this.lastPoint)return;
+        if( this.dragMode ){
+            var point = this.getLastPoint(ev);
+            this.drag( point );
+        }
+    },
+    bodyDragEnd: function(ev){
+        this.lastPoint=null;
+        if( this.dragMode ){
+            this.docBody.setStyle("cursor", "default" );
+            this.dragMode = false;
+        }
+    },
+    drag : function(lastPoint){
+        var x=lastPoint.x;
+        var	y=lastPoint.y;
+
+        var nodeSize = this.scaleSize( this.node.getSize() );
+        var inputSize = this.scaleSize( this.editarea.getSize() );
+
+        // var	top=coordinates.top,
+        //     left=coordinates.left,
+
+        var lft,
+            tp,
+            size = {
+                x: Math.max( nodeSize.x, inputSize.x ),
+                y: Math.max( nodeSize.y, inputSize.y )
+            };
+
+        if( x < this.relativeCoordinates.left ){
+            lft = 0;
+        }else if( x + size.x > this.relativeCoordinates.right ){
+            lft = this.relativeCoordinates.width - size.x;
+        }else{
+            lft = x - this.relativeCoordinates.left;
+        }
+
+        if( y < this.relativeCoordinates.top ){
+            tp = 0;
+        }else if( y + size.y  > this.relativeCoordinates.bottom){
+            tp = this.relativeCoordinates.height - size.y
+        }else{
+            tp = y - this.relativeCoordinates.top;
+        }
+
+        this.node.setStyles({
+            "top":tp+'px',
+            "left":lft+'px'
+        });
+    },
 
 
-        this.resizeNode = new Element("div.resizeNode",{ styles :  {
-                "cursor" : "nw-resize",
-                "position": "absolute",
-                "bottom": "-5px",
-                "right": "-5px",
-                "background-color" : "#52a3f5",
-                "width" : "10px",
-                "height" : "10px"
-            }}).inject(this.textareaWrap);
+    loadResizeNode: function(){
+        this.resizeNode = new Element("div.resizeNode",{
+            styles :  this.css[ layout.mobile? "inputResizeNode_mobile" : "inputResizeNode"]
+        }).inject(this.editareaWrap);
+        if( layout.mobile ){
+            var width = (24/this.options.scale);
+            this.resizeNode.setStyles({
+                "width" : width+"px",
+                "height" : width +"px",
+                "bottom": "-"+(width/2)+"px",
+                "right": "-"+(width/2)+"px",
+                "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
+            });
+        }
 
         this.docBody = this.relativeNode; //window.document.body;
+
+        var startFun = function(ev){
+            if( !this.options.isEditing )return;
+            // this.drag.detach();
+            this.dragNode.setStyle("cursor", "nw-resize" );
+            this.docBody.setStyle("cursor", "nw-resize" );
+            this.relativeCoordinates = this.scaleSize( this.relativeNode.getCoordinates() );
+            this.resizeMode = true;
+            this.fireEvent("resizeStart");
+            ev.stopPropagation();
+        }.bind(this);
+        var moveFun = function(ev){
+            if( !this.resizeMode )return;
+            var point = this.getLastPoint(ev);
+            this.resize( point );
+            this.fireEvent("resizeMove");
+            ev.stopPropagation();
+        }.bind(this);
+        var endFun = function(ev){
+            // this.drag.attach();
+            this.dragNode.setStyle("cursor", "move" );
+            this.docBody.setStyle("cursor", "default" );
+            this.resizeMode = false;
+            this.lastPoint=null;
+            this.fireEvent("resizeEnd");
+            ev.stopPropagation();
+        }.bind(this);
+
         this.resizeNode.addEvents({
-            "touchstart" : function(ev){
-                if( !this.options.isEditing )return;
-                this.drag.detach();
-                this.dragNode.setStyle("cursor", "nw-resize" );
-                this.docBody.setStyle("cursor", "nw-resize" );
-                this.relativeCoordinates = this.relativeNode.getCoordinates();
-                this.resizeMode = true;
-                // this.getOffset(ev);
-                ev.stopPropagation();
-            }.bind(this),
-            "mousedown" : function(ev){
-                if( !this.options.isEditing )return;
-                this.drag.detach();
-                this.dragNode.setStyle("cursor", "nw-resize" );
-                this.docBody.setStyle("cursor", "nw-resize" );
-                this.relativeCoordinates = this.relativeNode.getCoordinates();
-                this.resizeMode = true;
-                // this.getOffset(ev);
-                ev.stopPropagation();
-            }.bind(this),
-            "touchmove" : function(ev){
-                if( !this.resizeMode )return;
-                var point = this.getLastPoint(ev);
-                this.resizeDragNode( point );
-                ev.stopPropagation();
-            }.bind(this),
-            "mousemove" : function(ev){
-                if( !this.resizeMode )return;
-                var point= this.getLastPoint(ev);
-                this.resizeDragNode( point );
-                ev.stopPropagation();
-            }.bind(this),
-            "touchend" : function(ev){
-                this.drag.attach();
-                this.dragNode.setStyle("cursor", "move" );
-                this.docBody.setStyle("cursor", "default" );
-                this.resizeMode = false;
-                this.lastPoint=null;
-                ev.stopPropagation();
-            }.bind(this),
-            "mouseup" : function(ev){
-                this.drag.attach();
-                this.dragNode.setStyle("cursor", "move" );
-                this.docBody.setStyle("cursor", "default" );
-                this.resizeMode = false;
-                this.lastPoint=null;
-                ev.stopPropagation();
-            }.bind(this)
+            "touchstart" : startFun,
+            "mousedown" : startFun,
+            "touchmove" : moveFun,
+            "mousemove" : moveFun,
+            "touchend" : endFun,
+            "mouseup" : endFun
         });
 
         this.bodyMouseMoveFun = this.bodyMouseMove.bind(this);
@@ -2013,61 +2589,60 @@ o2.widget.Tablet.Input = new Class({
         this.bodyMouseEndFun = this.bodyMouseEnd.bind(this);
         this.docBody.addEvent("touchend", this.bodyMouseEndFun);
         this.docBody.addEvent("mouseup", this.bodyMouseEndFun);
-
-        window.setTimeout(function () {
-            this.textarea.focus();
-        }.bind(this), 100)
     },
     bodyMouseMove: function(ev){
         if(!this.lastPoint)return;
         if( this.resizeMode ){
             var point = this.getLastPoint(ev);
-            this.resizeDragNode( point );
+            this.resize( point );
         }
     },
     bodyMouseEnd: function(ev){
         this.lastPoint=null;
         if( this.resizeMode ){
-            this.drag.attach();
+            // this.drag.attach();
             this.dragNode.setStyle("cursor", "move" );
             this.docBody.setStyle("cursor", "default" );
             this.resizeMode = false;
         }
     },
-    resizeDragNode : function(lastPoint){
-        debugger;
+    resize : function(lastPoint){
         var x=lastPoint.x;
         if( x == 0 )return;
 
         var	y=lastPoint.y;
         if( y == 0 )return;
 
-        var coordinates = this.node.getCoordinates();
+        var coordinates = this.scaleSize( this.node.getCoordinates() );
+        var inputSize = this.scaleSize( this.editarea.getSize()  );
 
         var	top=coordinates.top,
             left=coordinates.left,
             w,
             h;
 
-       if( x > this.relativeCoordinates.right ){
-           return;
-       }else{
-           w = x - left;
-       }
-       if( y  > this.relativeCoordinates.bottom){
-           return;
-       }else{
-           h = y - top;
-       }
+        if( x > this.relativeCoordinates.right ){
+            return;
+        }else{
+            w = x - left;
+        }
+        if( y  > this.relativeCoordinates.bottom){
+            return;
+        }else{
+            h = y - top;
+        }
+        if( inputSize.y > h ){
+            h = inputSize.y;
+        }
 
-        var minWidth = this.options.minWidth;
-        var minHeight = this.options.minHeight;
+        var minWidth = this.scaleSize( this.options.minWidth );
+        var minHeight = this.scaleSize( this.options.minHeight );
         w=w< minWidth ? minWidth:w;
         h=h< minHeight ? minHeight:h;
 
         this.node.setStyles({
-            width:w+'px',
-            height:h+'px'
+            "width":w+'px',
+            "min-height":h+'px'
         });
     },
     getLastPoint: function(event){
@@ -2081,20 +2656,57 @@ o2.widget.Tablet.Input = new Class({
             x=event.clientX;
             y=event.clientY;
         }
-        this.lastPoint={
+        this.lastPoint= this.scaleSize({
             x:x,
             y:y
-        };
+        });
         return this.lastPoint;
     },
-    getCoordinates : function(){
-        return this.node.getCoordinates( this.relativeNode );
+    checkPosition: function(){
+        var coordinates = this.scaleSize( this.editarea.getCoordinates( this.relativeNode ));
+        var containerSize = this.scaleSize( this.relativeNode.getSize() );
+        if( coordinates.height > containerSize.y ){
+            this.node.setStyle("top", "0px");
+        }else if( coordinates.bottom > containerSize.y ){
+            this.node.setStyle("top", containerSize.y - coordinates.height );
+        }
+        // if( this.isChecking )return;
+        // this.isChecking = true;
+        // window.setTimeout(function () {
+        //     var coordinates = this.editarea.getCoordinates( this.canvasWrap );
+        //     console.log(coordinates);
+        //     this.isChecking = false;
+        // }.bind(this), 100)
+    },
+    setColor: function( color ){
+        this.color = color;
+        this.editarea.setStyle("color", color);
+    },
+    setFontFamily: function( fontFamily ){
+        this.fontFamily = fontFamily;
+        this.editarea.setStyle("font-family", fontFamily);
+    },
+    setFontSize: function( fontSize ){
+        this.fontSize = fontSize;
+        this.editarea.setStyle("font-size", fontSize);
+    },
+    getCoordinates: function(){
+        return this.editarea.getCoordinates( this.relativeNode );
+    },
+    getDrawImageCoordinates : function(){
+        var size = this.scaleSize(this.editarea.getSize());
+        var coordinates = this.scaleSize(this.node.getCoordinates( this.relativeNode ));
+        coordinates.width  = Math.max(coordinates.width, size.x);
+        coordinates.height  = Math.max(coordinates.height, size.y);
+        coordinates.top = coordinates.top - 7; //后台服务的偏差
+        coordinates.left = coordinates.left - 7; //后台服务的偏差
+        return coordinates;
     },
     ok : function(){
         this.fireEvent("postOk")
     },
     close : function( flag ){
-        if(!flag)this.tablet.inputList.erase(this);
+        if(!flag)this.tablet.eraseInput(this);
 
         this.docBody.removeEvent("touchmove",this.bodyMouseMoveFun);
         this.docBody.removeEvent("mousemove",this.bodyMouseMoveFun);
@@ -2105,5 +2717,157 @@ o2.widget.Tablet.Input = new Class({
         this.node.destroy();
 
         delete this;
+    },
+    getData: function () {
+        // var coordinates;
+        // if( this.node.getBoundingClientRect ){
+        //     var size = this.node.getSize();
+        //     var rectOut = this.relativeNode.getBoundingClientRect();
+        //     var rectIn = this.node.getBoundingClientRect();
+        //     coordinates = {
+        //         "top": rectIn.top - rectOut.top,
+        //         "left": rectIn.left - rectOut.left,
+        //         "height": size.y,
+        //         "width": size.x
+        // }
+        // }else{
+        //     coordinates = this.node.getCoordinates( this.relativeNode );
+        // }
+        return {
+            coordinates : this.scaleSize( this.node.getCoordinates( this.relativeNode ) ), //coordinates
+            styles: {
+                "color": this.color,
+                "font-family": this.fontFamily,
+                "font-size": this.fontSize
+            },
+            html: this.editarea.get("html")
+        }
+    },
+    show: function () {
+        this.node.show();
+    },
+    hide: function () {
+        this.node.hide();
+    },
+    scaleSize: function (size) {
+        var s;
+        if( this.options.scale !== 1 ){
+            var t = o2.typeOf( size );
+            if( t === "number" ){
+                s = size/this.options.scale;
+            }else if( t === "object" ){
+                s = {};
+                for( var k in size ){
+                    s[k] = size[k]/this.options.scale;
+                }
+            }
+        }
+        return s || size;
     }
 })
+
+o2.widget.Tablet.FontFamily = new Class({
+    Extends: MSelector,
+    options : {
+        "containerIsTarget": false,
+        "style": "minderFont",
+        "width": "120px",
+        "height": "28px",
+        "defaultOptionLp" : "字体",
+        "textField" : "name",
+        "valueField" : "val",
+        "event" : "mouseenter",
+        "isSetSelectedValue" : true,
+        "isChangeOptionStyle" : true,
+        "emptyOptionEnable" : false,
+        "tooltipsOptions": {
+            "displayDelay" : 300,
+            "event": "mouseenter" //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
+        }
+    },
+    _selectItem : function( itemNode, itemData ){
+
+    },
+    _loadData : function( callback ){
+        var fontFamilyList = [{
+            name: '宋体',
+            val: '宋体,SimSun'
+        }, {
+            name: '微软雅黑',
+            val: '微软雅黑,Microsoft YaHei'
+        }, {
+            name: '楷体',
+            val: '楷体,楷体_GB2312,SimKai'
+        }, {
+            name: '黑体',
+            val: '黑体, SimHei'
+        }, {
+            name: '隶书',
+            val: '隶书, SimLi'
+        }, {
+            name: 'Andale Mono',
+            val: 'andale mono'
+        }, {
+            name: 'Arial',
+            val: 'arial,helvetica,sans-serif'
+        }, {
+            name: 'arialBlack',
+            val: 'arial black,avant garde'
+        }, {
+            name: 'Comic Sans Ms',
+            val: 'comic sans ms'
+        }, {
+            name: 'Impact',
+            val: 'impact,chicago'
+        }, {
+            name: 'TimesNewRoman',
+            val: 'times new roman'
+        }, {
+            name: 'Sans-Serif',
+            val: 'sans-serif'
+        }];
+        if(callback)callback( fontFamilyList );
+    },
+    _postCreateItem: function( itemNode, data ){
+        itemNode.setStyles( {
+            "font-family": data.val,
+            "font-size" : "13px",
+            "min-height" : "30px",
+            "line-height" : "30px"
+        } );
+    }
+});
+
+o2.widget.Tablet.FontSize = new Class({
+    Extends: MSelector,
+    options : {
+        "containerIsTarget": false,
+        "style": "minderFont",
+        "width": "60px",
+        "height": "28px",
+        "defaultOptionLp" : "16",
+        "defaultVaue": "16",
+        "isSetSelectedValue" : true,
+        "isChangeOptionStyle" : true,
+        "emptyOptionEnable" : false,
+        "event" : "mouseenter",
+        "tooltipsOptions": {
+            "displayDelay" : 300,
+            "event": "mouseenter" //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
+        }
+    },
+    _selectItem : function( itemNode, itemData ){
+
+    },
+    _loadData : function( callback ){
+        var fontSizeList = ["10", "12", "14", "16", "18", "24", "32", "48"];
+        if(callback)callback( fontSizeList );
+    },
+    _postCreateItem: function( itemNode, data ){
+        itemNode.setStyles( {
+            "font-size" :  "13px" //data.value +"px"
+            // "min-height" : ( parseInt(data.value) + 6) +"px",
+            // "line-height" : ( parseInt(data.value) + 6) +"px"
+        } );
+    }
+});
