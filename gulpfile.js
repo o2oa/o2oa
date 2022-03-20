@@ -509,6 +509,7 @@ function build_concat_xform(){
         'o2web/source/' + path + '/ViewSelector.js',
         'o2web/source/' + path + '/*.js',
         'o2web/source/x_component_process_Work/Processor.js',
+        '!o2web/source/' + path + '/Documenteditor.js ',
         '!o2web/source/' + path + '/Office.js'
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
