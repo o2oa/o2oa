@@ -26,7 +26,8 @@ var MTooltips = new Class({
         hasMask : true,
         hasCloseAction : false,
         hideByClickBody : false,
-        overflow : "hidden" //弹出框高宽超过container的时候怎么处理，hidden 表示超过的隐藏，scroll 表示超过的时候显示滚动条
+        overflow : "hidden", //弹出框高宽超过container的时候怎么处理，hidden 表示超过的隐藏，scroll 表示超过的时候显示滚动条
+        zoom: 1 //target有缩放的情况下,IOS的getCoordinates有问题
     },
     initialize : function( container, target, app, data, options, targetCoordinates ){
         //可以传入target 或者 targetCoordinates，两种选一
@@ -38,6 +39,7 @@ var MTooltips = new Class({
         this.container = container;
         this.target = target;
         this.targetCoordinates = targetCoordinates;
+        this.body = $(document.body);
         this.app = app;
         if(app)this.lp = app.lp;
         this.data = data;
@@ -50,20 +52,15 @@ var MTooltips = new Class({
         this.fireEvent("postInitialize",[this]);
     },
     setTargetEvents : function(){
-        if( this.options.event == "click" ){
+        if( this.options.event === "click" ){
             if( this.options.isAutoShow ){
                 this.targetClickFun = function( ev ){
-                    if( this.status === "display" ){
-                        this.hide();
-                    }else{
-                        this.load();
-                    }
+                    this.status === "display" ?  this.hide() : this.load();
                     ev.stopPropagation();
                 }.bind(this);
                 this.target.addEvents({
-                    "mousedown" : function(ev){
-                        ev.stopPropagation();
-                    },
+                    "mousedown" : function(ev){ ev.stopPropagation(); },
+                    // "touchstart": function(ev){ ev.stopPropagation(); },
                     "click": this.targetClickFun
                 });
             }
@@ -72,6 +69,7 @@ var MTooltips = new Class({
                 this.targetMouseenterFun = function(){
                     if( this.timer_hide ){
                         clearTimeout(this.timer_hide);
+                        this.timer_hide = null;
                     }
                 }.bind(this);
                 this.target.addEvents({
@@ -80,7 +78,7 @@ var MTooltips = new Class({
             }
             if( this.options.isAutoShow ){
                 this.targetMouseenterFun2 = function(){
-                    if( this.status != "display" ){
+                    if( this.status !== "display" ){
                         this.timer_show = setTimeout( this.load.bind(this),this.options.displayDelay );
                     }
                 }.bind(this);
@@ -93,6 +91,7 @@ var MTooltips = new Class({
                 this.targetMouseleaveFun = function(){
                     if( this.timer_show ){
                         clearTimeout(this.timer_show);
+                        this.timer_show = null;
                     }
                 }.bind(this);
                 this.target.addEvents({
@@ -101,7 +100,7 @@ var MTooltips = new Class({
             }
             if( this.options.isAutoHide ){
                 this.targetMouseleaveFun2 = function(){
-                    if( this.status == "display" ){
+                    if( this.status === "display" ){
                         this.timer_hide = setTimeout( this.hide.bind(this),this.options.hiddenDelay );
                     }
                 }.bind(this);
@@ -120,7 +119,7 @@ var MTooltips = new Class({
                 this.create();
             }
 
-            if( this.options.event == "click" ) {
+            if( this.options.event === "click" ) {
                 if( this.options.isAutoHide ){
                     if( !this.options.hasMask ){
                         this.containerMousedownFun = function(e){
@@ -130,22 +129,33 @@ var MTooltips = new Class({
                             e.stopPropagation();
                         }.bind(this);
                         this.container.addEvent("mousedown", this.containerMousedownFun );
-                        this.node.addEvent("mousedown", function (e) {
+                        this.container.addEvent("touchstart", this.containerMousedownFun );
+
+                        this.nodeMousedownFun = function (e) {
                             e.stopPropagation();
-                        })
+                        };
+                        this.node.addEvent("mousedown", this.nodeMousedownFun);
+                        this.node.addEvent("touchstart", this.nodeMousedownFun);
                     }
                 }
                 if( this.options.hideByClickBody ){
+                    if(!this.body)this.body = $(document.body);
                     this.bodyMousedownFun = function(e){
                         if( this.status === "display" ){
                             this.hide();
                         }
                         e.stopPropagation();
                     }.bind(this);
-                    $(document.body).addEvent("mousedown", this.bodyMousedownFun );
-                    this.node.addEvent("mousedown", function (e) {
-                        e.stopPropagation();
-                    })
+                    this.body.addEvent("mousedown", this.bodyMousedownFun );
+                    this.body.addEvent("touchstart", this.bodyMousedownFun );
+
+                    if( !this.nodeMousedownFun ){
+                        this.nodeMousedownFun = function (e) {
+                            e.stopPropagation();
+                        };
+                        this.node.addEvent("mousedown", this.nodeMousedownFun);
+                        this.node.addEvent("touchstart", this.nodeMousedownFun);
+                    }
                 }
             }
         }
@@ -161,7 +171,30 @@ var MTooltips = new Class({
 
             if( this.containerMousedownFun ){
                 this.container.removeEvent("mousedown", this.containerMousedownFun );
+                this.container.removeEvent("touchstart", this.containerMousedownFun );
                 this.containerMousedownFun = null;
+            }
+
+            if( this.bodyMousedownFun && this.body){
+                this.body.removeEvent("mousedown", this.bodyMousedownFun );
+                this.body.removeEvent("touchstart", this.bodyMousedownFun );
+                this.bodyMousedownFun = null;
+            }
+
+            if( this.nodeMousedownFun ){
+                this.node.removeEvent("mousedown", this.nodeMousedownFun );
+                this.node.removeEvent("touchstart", this.nodeMousedownFun );
+                this.nodeMousedownFun = null;
+            }
+
+            if( this.timer_hide ){
+                clearTimeout(this.timer_hide);
+                this.timer_hide = null;
+            }
+
+            if( this.timer_show ){
+                clearTimeout(this.timer_show);
+                this.timer_show = null;
             }
 
             this.fireEvent("hide",[this]);
@@ -346,6 +379,42 @@ var MTooltips = new Class({
     isEnable : function(){
         return !this.disable;
     },
+    isIOS: function() {
+        return [
+                'iPad Simulator',
+                'iPhone Simulator',
+                'iPod Simulator',
+                'iPad',
+                'iPhone',
+                'iPod'
+            ].includes(navigator.platform)
+            // iPad on iOS 13 detection
+            || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+    },
+    // isIOS : function(){
+    //
+    //     if( typeOf(window.ios) === "boolean" )return window.ios;
+    //
+    //     var iOS_1to12 = /iPad|iPhone|iPod/.test(navigator.platform);
+    //
+    //     var iOS13_iPad = (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    //     window.ios = !window.MSStream && (iOS_1to12 || iOS13_iPad ); //|| iOS1to12quirk());
+    //
+    //     return window.ios;
+    // },
+    setArrowStyle: function(){
+        if( this.css && this.css.arrowStyles ){
+            this.arrowStyles = this.css.arrowStyles
+        }else{
+            this.arrowStyles = {
+                "width": this.options.axis == "x" ? "9px" : "17px",
+                "height" : this.options.axis == "x" ? "17px" : "9px",
+                "position":"absolute",
+                "background" : "no-repeat url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAlCAYAAACgc9J8AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAP9JREFUeNq01oENhCAMBdCWuIgTuP8WOoGj9GhSDaeUfjiuCSEm+iKFVllESGNdVzrPk55xHIfewHnItm1MrVDMG/u+i0aeyWZp3R9CJRaBIWRB5YUHItAL80AEqmI1EIFcrAQ1rwjUxEoQgULsAue+2ayc/W83p5+z6RXggOO1WQGhrsFXP/Oip58tAaQTZ4QMbEbyEB2GCKEBdtpmru4NsC4aHg8PLJ/3lim2xDv02jYDz1kNQsGEQgiYeqAQBPuZQF1jFKqBYTn1RLK1D4+v3E3NGfgNkJlfdKi0XrUZgc1OWyt0Dwz/z37tGhA20s+WR4t+1iBbzTJyaD8CDAB7WgNSzh/AnwAAAABJRU5ErkJggg==)"
+            }
+        }
+        this.arrowNode.setStyles( this.arrowStyles );
+    },
     setCoondinates : function(){
         if( this.options.axis == "x" ){
             this.setCoondinates_x();
@@ -355,6 +424,10 @@ var MTooltips = new Class({
     },
     setCoondinates_x : function(){
         var targetCoondinates = this.target ? this.target.getCoordinates( this.container ) : this.targetCoordinates ;
+        // if( o2.typeOf( this.options.zoom ) === "number" && this.options.zoom !== 1 && this.isIOS() ){
+        //     targetCoondinates.top = targetCoondinates.top - ( 1 - this.options.zoom ) * targetCoondinates.top;
+        //     targetCoondinates.bottom = targetCoondinates.bottom - ( 1 - this.options.zoom ) * targetCoondinates.bottom;
+        // }
         var node = this.node;
         if( this.resetWidth ){
             node.setStyles({
@@ -572,6 +645,10 @@ var MTooltips = new Class({
     },
     setCoondinates_y : function(){
         var targetCoondinates = this.target ? this.target.getCoordinates( this.container ) : this.targetCoordinates ;
+        // if( o2.typeOf( this.options.zoom ) === "number" && this.options.zoom !== 1 && this.isIOS() ){
+        //     targetCoondinates.left = targetCoondinates.left - ( 1 - this.options.zoom ) * targetCoondinates.left;
+        //     targetCoondinates.right = targetCoondinates.right - ( 1 - this.options.zoom ) * targetCoondinates.right;
+        // }
         var node = this.node;
         if( this.resetHeight ){
             node.setStyles({
@@ -804,7 +881,7 @@ var MTooltips = new Class({
         offsetX += this.options.hasArrow ? 10 : 0;
         if( this.positionX === "left" ){
             left = targetCoondinates.left - nodeSize.x - offsetX;
-        }else if( this.positionX === "bottom" ){
+        }else if( this.positionX === "right" ){
             left = targetCoondinates.right + offsetX;
         }
 
