@@ -427,6 +427,8 @@ o2.LP.widget = {
     "color" : "颜色",
     "insertImage" : "插入图片",
     "imageClipper" : "裁剪图片",
+    "fontSize": "字体大小",
+    "fontFamily": "字体",
 
     "explorerNotSupportFeatures" : "您的浏览器不支持以下特性:"
 };
