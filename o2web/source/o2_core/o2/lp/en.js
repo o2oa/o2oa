@@ -421,6 +421,8 @@ o2.LP.widget = {
 	"color" : "Color",
 	"insertImage" : "Insert Image",
 	"imageClipper" : "Crop Image",
+	"fontSize": "Font Size",
+	"fontFamily": "Font Family",
 
 	"explorerNotSupportFeatures" : "Your browser does not support the following features:"
 };
