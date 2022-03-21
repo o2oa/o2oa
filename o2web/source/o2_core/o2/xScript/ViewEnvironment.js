@@ -4735,6 +4735,10 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *      此参数可以省略，如果省略，系统会自动弹出错误信息。
      *
      *      async : 方法同步或者异步执行，默认为true。
+     *      
+     *      urlEncode : 是否对url进行编码，默认为true。
+     *      
+     *      cache : 是否使用缓存，默认为true。
      *  @o2syntax
      *  <caption>
      *  处理返回的数据有两种方式，二选一即可：<br/>

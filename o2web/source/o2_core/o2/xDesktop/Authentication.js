@@ -983,7 +983,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 src: "data:image/png;base64," + json.data.image,
                 styles: this.css.verificationImage
             }).inject(captchaPic);
-        }.bind(this))
+        }.bind(this), null, true, null, false)
     },
     sendVerificationAction: function () {
         var flag = true;
