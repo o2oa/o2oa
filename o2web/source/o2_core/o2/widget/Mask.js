@@ -7,7 +7,8 @@ o2.widget.Mask = new Class({
 		"style": "default",
 		"zIndex": 100,
 		"loading": true,
-		"progress": false
+		"progress": false,
+		"html": ""
 	},
 	initialize: function(options){
 		this.setOptions(options);
@@ -40,7 +41,9 @@ o2.widget.Mask = new Class({
 		if (this.options.loading){
 			this.loadBar = new Element("div", {
 				"styles": this.css.loadingBar,
-				"html": "<table width=\"80%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr valign=\"middle\" height=\"30\"><td align=\"right\"><img src=\""+o2.session.path+"/widget/$Mask/"+this.options.style+"/loading.gif\" /></td><td align=\"center\">loading...</td></tr></table>"
+				"html": "<table width=\"80%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr valign=\"middle\" height=\"30\"><td align=\"right\"><img src=\""+o2.session.path+"/widget/$Mask/"+this.options.style+"/loading.gif\" /></td><td align=\"center\">"+
+					( this.options.html ? this.options.html : "loading..." ) +
+					"</td></tr></table>"
 			});
 			this.loadBar.setStyle("z-index", this.options.zIndex+2);
 			this.loadBar.inject(this.container);

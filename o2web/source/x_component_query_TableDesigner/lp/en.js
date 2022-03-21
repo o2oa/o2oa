@@ -67,8 +67,9 @@ MWF.xApplication.query.TableDesigner.LP = {
     "tableExplode_success": "Export successful",
 
     "buildCurrentAppTitle": "Compile the current application data table",
-    "buildCurrentAppInfor": "All data tables of the current application are about to be compiled, <span style='color: #FF0000;'>After compiling, please restart the server immediately, otherwise it may cause the JVM to crash</span>. Are you sure you want to perform this operation ?",
-    "buildCurrentApp_success": "All data tables of the current application have been compiled, please restart the server immediately!",
+    "buildCurrentAppInfor": "The data table for this app will be built: <br/>{tablelist}. Are you sure you want to do this?",
+    "buildCurrentApp_success": "All data tables of the current application have been compiled!",
+    "building": "Building...",
 
     "tableImplodeTitle": "Import Data",
     "tableImplodeInfo": "The imported data will be overwritten. Are you sure to import?",
@@ -83,7 +84,9 @@ MWF.xApplication.query.TableDesigner.LP = {
 
     "buildAllViewInfor": "All data tables will be compiled, including data tables in all data applications. <span style='color: #FF0000;'>After compiling, please restart the server immediately, otherwise it will cause the JVM to crash</span>. Are you sure you want to perform this operation?",
     "buildAllView_success": "All data tables have been compiled, please restart the server immediately!",
-    "tableHelp": "Data tables can automatically create real tables in the system database and generate java entity objects. You can use JPQL to manipulate data tables. Creating a data table requires the following steps: <br><br>1, create a data table, And create each column; <br>2, click the toolbar button to publish the data table to the compiled state; <br>3, click the toolbar button to execute the \"compile all data tables\" operation<br>4, restart the server, data The table is ready to use.",
+   // "tableHelp": "Data tables can automatically create real tables in the system database and generate java entity objects. You can use JPQL to manipulate data tables. Creating a data table requires the following steps: <br><br>1, create a data table, And create each column; <br>2, click the toolbar button to publish the data table to the compiled state; <br>3, click the toolbar button to execute the \"compile all data tables\" operation<br>4, restart the server, data The table is ready to use.",
+
+    "tableHelp": "The data table can automatically create a real table in the system database and generate java entity objects. You can use JPQL to operate the data table. The following steps are required to create a data table:<br><br>1. Create a data table, And create each column;<br>2. Click the toolbar button to publish the data table to the compilation state;<br>3. Click the toolbar button to execute the \"compile all data tables of the current application\" operation, after the success, the data table can be used.",
     "propertyTemplate": {
         "base": "Basic",
         "event": "Event",
