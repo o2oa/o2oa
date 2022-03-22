@@ -61,7 +61,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.cms.core.entity.element.Script", "com.x.portal.core.entity.Script" }, storeJars = {
 				"x_organization_core_entity", "x_organization_core_express", "x_processplatform_core_entity",
 				"x_processplatform_core_express", "x_query_core_entity", "x_cms_core_entity",
-				"x_portal_core_entity" }, dynamicJars = {}, storageTypes = { StorageType.processPlatform })
+				"x_portal_core_entity" }, storageTypes = { StorageType.processPlatform })
 public class x_processplatform_assemble_designer extends Deployable {
 
 }

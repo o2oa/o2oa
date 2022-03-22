@@ -53,51 +53,20 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "编译表（会编译平台所有自建表）,执行后需要立即重新启动，支持集群环境.", action = ActionBuildAll.class)
-	@GET
-	@Path("build/all")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public synchronized void buildAll(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<ActionBuildAll.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionBuildAll().execute(effectivePerson);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+	 
+ 
 
-	@JaxrsMethodDescribe(value = "编译表（会编译平台所有自建表）,执行后需要立即重新启动，仅对当前服务器.", action = ActionBuild.class)
-	@GET
-	@Path("build")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void build(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<ActionBuild.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionBuild().execute(effectivePerson);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "编译指定应用所有表,执行后需要立即重新启动，支持集群环境.", action = ActionBuildTableDispatch.class)
+	@JaxrsMethodDescribe(value = "编译指定应用所有表,执行后需要立即重新启动，支持集群环境.", action = ActionBuildQueryDispatch.class)
 	@GET
 	@Path("{query}/build/dispatch")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public synchronized void buildDispatch(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-										   @JaxrsParameterDescribe("应用标识") @PathParam("query") String query) {
-		ActionResult<ActionBuildTableDispatch.Wo> result = new ActionResult<>();
+	public synchronized void buildDispatch(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("应用标识") @PathParam("query") String query) {
+		ActionResult<ActionBuildQueryDispatch.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionBuildTableDispatch().execute(effectivePerson, query);
+			result = new ActionBuildQueryDispatch().execute(effectivePerson, query);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -105,17 +74,17 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "编译指定应用所有表,执行后需要立即重新启动，仅对当前服务器.", action = ActionBuildTable.class)
+	@JaxrsMethodDescribe(value = "编译指定应用所有表,执行后需要立即重新启动，仅对当前服务器.", action = ActionBuildQuery.class)
 	@GET
 	@Path("{query}/build")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void buildTable(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						   @JaxrsParameterDescribe("应用标识") @PathParam("query") String query) {
-		ActionResult<ActionBuildTable.Wo> result = new ActionResult<>();
+	public void buildQuery(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("应用标识") @PathParam("query") String query) {
+		ActionResult<ActionBuildQuery.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionBuildTable().execute(effectivePerson, query);
+			result = new ActionBuildQuery().execute(effectivePerson, query);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -218,7 +187,7 @@ public class TableAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updatePermission(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-								 @JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionEditPermission.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -442,8 +411,8 @@ public class TableAction extends StandardJaxrsAction {
 	@Path("export/{tableFlag}/count/{count}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void exportRow(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							@JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag,
-							@JaxrsParameterDescribe("数量(最大2000)") @PathParam("count") Integer count) {
+			@JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag,
+			@JaxrsParameterDescribe("数量(最大2000)") @PathParam("count") Integer count) {
 		ActionResult<ActionRowExport.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -455,23 +424,23 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-    @JaxrsMethodDescribe(value = "指定表中批量保存或更新数据.", action = ActionRowSave.class)
-    @POST
-    @Path("{tableFlag}/row/save")
-    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void rowSave(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                          @JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag, JsonElement jsonElement) {
-        ActionResult<ActionRowSave.Wo> result = new ActionResult<>();
-        EffectivePerson effectivePerson = this.effectivePerson(request);
-        try {
-            result = new ActionRowSave().execute(effectivePerson, tableFlag, jsonElement);
-        } catch (Exception e) {
-            logger.error(e, effectivePerson, request, jsonElement);
-            result.error(e);
-        }
-        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-    }
+	@JaxrsMethodDescribe(value = "指定表中批量保存或更新数据.", action = ActionRowSave.class)
+	@POST
+	@Path("{tableFlag}/row/save")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void rowSave(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag, JsonElement jsonElement) {
+		ActionResult<ActionRowSave.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionRowSave().execute(effectivePerson, tableFlag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 	@JaxrsMethodDescribe(value = "列示所有table对象.", action = ActionManageList.class)
 	@GET

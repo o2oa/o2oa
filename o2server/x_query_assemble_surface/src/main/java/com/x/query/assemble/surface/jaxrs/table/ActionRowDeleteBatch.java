@@ -19,13 +19,21 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapIdList;
 import com.x.base.core.project.jaxrs.WrapLong;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.schema.Table;
 
 class ActionRowDeleteBatch extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionRowDeleteBatch.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String tableFlag, JsonElement jsonElement)
 			throws Exception {
+		LOGGER.debug("execute:{}, table:{}.", effectivePerson::getDistinguishedName, () -> tableFlag);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Table table = emc.flag(tableFlag, Table.class);
@@ -38,7 +46,8 @@ class ActionRowDeleteBatch extends BaseAction {
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
-			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
+			Class<? extends JpaObject> cls = (Class<? extends JpaObject>) classLoader
+					.loadClass(dynamicEntity.className());
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Long count = 0L;
 			if (ListTools.isNotEmpty(wi.getIdList())) {
@@ -67,9 +76,13 @@ class ActionRowDeleteBatch extends BaseAction {
 
 	public static class Wi extends WrapIdList {
 
+		private static final long serialVersionUID = 1188354400787482687L;
+
 	}
 
 	public static class Wo extends WrapLong {
+
+		private static final long serialVersionUID = 1604094062416458276L;
 
 	}
 

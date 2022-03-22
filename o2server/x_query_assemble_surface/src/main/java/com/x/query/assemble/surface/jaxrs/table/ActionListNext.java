@@ -18,18 +18,18 @@ import com.x.query.core.entity.schema.Table;
 
 class ActionListNext extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListNext.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListNext.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count) throws Exception {
+		LOGGER.debug("execute:{}, id:{}, count:{}.", effectivePerson::getDistinguishedName, () -> id, () -> count);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug(effectivePerson, "id:{}, count:{}.", id, count);
 			Business business = new Business(emc);
 			if (!business.editable(effectivePerson, new Table())) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, null, null, null, null, null, null, null,
-					null, true, DESC);
+			result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, null, null, null, null,
+					null, null, null, null, true, DESC);
 			return result;
 		}
 	}

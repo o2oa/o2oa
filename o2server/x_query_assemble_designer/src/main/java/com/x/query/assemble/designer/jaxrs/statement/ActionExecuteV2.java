@@ -175,10 +175,10 @@ class ActionExecuteV2 extends BaseAction {
 		LOGGER.debug("jpql:{}.", jpql);
 		if (upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1) {
 			query = em.createNativeQuery(jpql);
-			if(runtime.getParameters().size() > 0){
+			if (runtime.getParameters().size() > 0) {
 				List<Object> values = new ArrayList<>(runtime.getParameters().values());
-				for(int i=0;i<values.size();i++){
-					query.setParameter(i+1, values.get(i));
+				for (int i = 0; i < values.size(); i++) {
+					query.setParameter(i + 1, values.get(i));
 				}
 			}
 		} else {
@@ -221,14 +221,16 @@ class ActionExecuteV2 extends BaseAction {
 		Class<? extends JpaObject> cls = null;
 		if (StringUtils.equals(Statement.ENTITYCATEGORY_OFFICIAL, statement.getEntityCategory())
 				|| StringUtils.equals(Statement.ENTITYCATEGORY_CUSTOM, statement.getEntityCategory())) {
-			cls = (Class<? extends JpaObject>) Class.forName(statement.getEntityClassName());
+			cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
+					.loadClass(statement.getEntityClassName());
 		} else {
 			Table table = business.entityManagerContainer().flag(statement.getTable(), Table.class);
 			if (null == table) {
 				throw new ExceptionEntityNotExist(statement.getTable(), Table.class);
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			cls = (Class<? extends JpaObject>) Class.forName(dynamicEntity.className());
+			cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
+					.loadClass(dynamicEntity.className());
 		}
 		return cls;
 	}

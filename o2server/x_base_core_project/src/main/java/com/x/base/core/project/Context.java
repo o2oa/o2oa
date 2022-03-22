@@ -152,7 +152,8 @@ public class Context extends AbstractContext {
 		ServletContext servletContext = servletContextEvent.getServletContext();
 		Context context = new Context();
 		context.contextPath = servletContext.getContextPath();
-		context.clazz = Class.forName(servletContext.getInitParameter(INITPARAMETER_PORJECT));
+		context.clazz = Thread.currentThread().getContextClassLoader()
+				.loadClass(servletContext.getInitParameter(INITPARAMETER_PORJECT));
 		context.module = context.clazz.getAnnotation(Module.class);
 		context.name = context.module.name();
 		context.path = servletContext.getRealPath("");
@@ -274,7 +275,7 @@ public class Context extends AbstractContext {
 		if (ArrayUtils.isNotEmpty(this.module.containerEntities())) {
 			logger.info("{} loading datas, entity size:{}.", this.clazz.getName(),
 					this.module.containerEntities().length);
-			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), false, null);
+			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), null);
 		}
 	}
 
@@ -282,8 +283,7 @@ public class Context extends AbstractContext {
 		if (ArrayUtils.isNotEmpty(this.module.containerEntities())) {
 			logger.info("{} loading datas, entity size:{}.", this.clazz.getName(),
 					this.module.containerEntities().length);
-			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()),
-					null != classLoader, classLoader);
+			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), classLoader);
 		}
 	}
 

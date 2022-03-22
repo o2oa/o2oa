@@ -52,10 +52,9 @@ public abstract class SliceEntityManagerContainerFactory {
 
 	@SuppressWarnings("unchecked")
 	protected SliceEntityManagerContainerFactory(String webApplicationDirectory, List<String> entities,
-			boolean sliceFeatureEnable, boolean loadDynamic, ClassLoader classLoader) throws Exception {
+			boolean sliceFeatureEnable, ClassLoader classLoader) throws Exception {
 		File path = new File(webApplicationDirectory + "/WEB-INF/classes/" + PERSISTENCE_XML_PATH);
-		List<String> classNames = PersistenceXmlHelper.write(path.getAbsolutePath(), entities, loadDynamic,
-				classLoader);
+		List<String> classNames = PersistenceXmlHelper.write(path.getAbsolutePath(), entities, classLoader);
 		ClassLoader cl = null == classLoader ? Thread.currentThread().getContextClassLoader() : classLoader;
 		Class<? extends JpaObject> clz;
 		for (String className : classNames) {
@@ -81,7 +80,7 @@ public abstract class SliceEntityManagerContainerFactory {
 			flagMap.put(clz, Collections.unmodifiableList(flagFields));
 			restrictFlagMap.put(clz, Collections.unmodifiableList(restrictFlagFields));
 		}
-		if (loadDynamic) {
+		if (null != classLoader) {
 			clz = (Class<? extends JpaObject>) cl.loadClass("com.x.base.core.entity.dynamic.DynamicBaseEntity");
 			checkPersistFieldMap.put(clz, new HashMap<>());
 			checkRemoveFieldMap.put(clz, new HashMap<>());
@@ -124,11 +123,6 @@ public abstract class SliceEntityManagerContainerFactory {
 				return (Class<T>) clazz;
 			}
 		}
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@");
-		for (Class<?> clazz : this.entityManagerFactoryMap.keySet()) {
-			System.out.println(clazz.getName());
-		}
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@");
 		throw new IllegalStateException("can not find jpa assignable class for " + cls + ".");
 	}
 
@@ -174,7 +168,7 @@ public abstract class SliceEntityManagerContainerFactory {
 			reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 			Document document = reader.read(file);
 			for (Element unit : document.getRootElement().elements("persistence-unit")) {
-				classes.add((Class<JpaObject>) Class.forName(unit.attribute("name").getValue()));
+				classes.add((Class<JpaObject>) Thread.currentThread().getContextClassLoader().loadClass(unit.attribute("name").getValue()));
 			}
 			return classes;
 		} catch (Exception e) {

@@ -44,8 +44,8 @@ class ActionCreate extends BaseAction {
 				}
 				statement.setTable(table.getId());
 			} else {
-				try {					
-				Class.forName(statement.getEntityClassName());
+				try {
+					Thread.currentThread().getContextClassLoader().loadClass(statement.getEntityClassName());
 				} catch (Exception e) {
 					throw new ExceptionEntityClass(statement.getEntityClassName());
 				}

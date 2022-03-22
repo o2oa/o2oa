@@ -21,18 +21,18 @@ import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 
 public abstract class EraseContent {
 
-	private static Logger logger = LoggerFactory.getLogger(EraseContent.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EraseContent.class);
 
 	private Date start;
 
@@ -42,60 +42,56 @@ public abstract class EraseContent {
 
 	private ItemCategory itemCategory;
 
-	public abstract boolean execute() throws Exception;
+	private ClassLoader classLoader;
+
+	public abstract boolean execute();
 
 	protected void addClass(Class<?> cls) {
 		this.classNames.add(cls.getName());
 	}
 
-	protected void addClass(String className) {
-		this.classNames.add(className);
-	}
-
-	protected void init(String name, ItemCategory itemCategory) throws Exception {
+	protected void init(String name, ItemCategory itemCategory, ClassLoader classLoader) {
 		this.name = name;
 		this.itemCategory = itemCategory;
 		this.start = new Date();
+		this.classLoader = classLoader;
 	}
 
-	protected void run() throws Exception {
-		new Thread(() -> {
-			try {
-				Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false, false, false, false,
-						false, Config.dir_local_temp_classes().toPath()));
-				logger.print("erase {} content data: start at {}.", name, DateTools.format(start));
-				this.classNames = ListUtils.intersection(this.classNames,
-						(List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
-				StorageMappings storageMappings = Config.storageMappings();
-				File persistence = new File(Config.dir_local_temp_classes(),
-						DateTools.compact(this.start) + "_eraseContent.xml");
-				PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames, null);
-				for (int i = 0; i < classNames.size(); i++) {
-					Class<? extends JpaObject> cls = (Class<? extends JpaObject>) Thread.currentThread()
-							.getContextClassLoader().loadClass(classNames.get(i));
-					EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-							persistence.getName(),
-							PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
-					EntityManager em = emf.createEntityManager();
-					if (DataItem.class.isAssignableFrom(cls)) {
-						Long total = this.estimateItemCount(em, cls);
-						logger.print("erase {} content data:{}, total {}.", name, cls.getName(), total);
-						this.eraseItem(cls, em, total);
-					} else {
-						Long total = this.estimateCount(em, cls);
-						logger.print("erase {} content data:{}, total {}.", name, cls.getName(), total);
-						this.erase(cls, em, storageMappings, total);
-					}
-					em.close();
-					emf.close();
+	@SuppressWarnings("unchecked")
+	protected void run() {
+		try {
+			LOGGER.print("erase {} content data: start at {}.", name, DateTools.format(start));
+			this.classNames = ListUtils.intersection(this.classNames,
+					new ArrayList<>(JpaObjectTools.scanContainerEntityNames(classLoader)));
+			StorageMappings storageMappings = Config.storageMappings();
+			File persistence = new File(Config.dir_local_temp_classes(),
+					DateTools.compact(this.start) + "_eraseContent.xml");
+			PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames, classLoader);
+			for (int i = 0; i < classNames.size(); i++) {
+				Class<? extends JpaObject> cls = (Class<? extends JpaObject>) Thread.currentThread()
+						.getContextClassLoader().loadClass(classNames.get(i));
+				EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
+						persistence.getName(),
+						PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
+				EntityManager em = emf.createEntityManager();
+				if (DataItem.class.isAssignableFrom(cls)) {
+					Long total = this.estimateItemCount(em, cls);
+					LOGGER.print("erase {} content data:{}, total {}.", name, cls.getName(), total);
+					this.eraseItem(cls, em, total);
+				} else {
+					Long total = this.estimateCount(em, cls);
+					LOGGER.print("erase {} content data:{}, total {}.", name, cls.getName(), total);
+					this.erase(cls, em, storageMappings, total);
 				}
-				Date end = new Date();
-				logger.print("erase {} content data: completed at {}, elapsed {} ms.", name, DateTools.format(end),
-						(end.getTime() - start.getTime()));
-			} catch (Exception e) {
-				logger.error(e);
+				em.close();
+				emf.close();
 			}
-		}, "eraseContentThread").start();
+			Date end = new Date();
+			LOGGER.print("erase {} content data: completed at {}, elapsed {} ms.", name, DateTools.format(end),
+					(end.getTime() - start.getTime()));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 	}
 
 	private <T extends JpaObject> long estimateCount(EntityManager em, Class<T> cls) {
@@ -122,37 +118,53 @@ public abstract class EraseContent {
 		ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
 		do {
 			if (ListTools.isNotEmpty(list)) {
-				em.getTransaction().begin();
-				for (T t : list) {
-					em.remove(t);
-				}
-				em.getTransaction().commit();
+				delete(em, list);
 				if (StorageObject.class.isAssignableFrom(cls)) {
-					for (T t : list) {
-						StorageObject storageObject = (StorageObject) t;
-						String storageName = storageObject.getStorage();
-						StorageMapping mapping = storageMappings.get(storageObject.getClass(), storageName);
-						if (null != mapping) {
-							storageObject.deleteContent(mapping);
-						} else {
-							logger.print("can not find storage mapping {}.", storageName);
-						}
-					}
+					deleteStorage(storageMappings, list);
 				}
-				count += list.size();
+				if (null != list) {
+					count += list.size();
+				}
 				em.clear();
-				logger.print("erase {} content data:{}, {}/{}.", name, cls.getName(), count, total);
+				LOGGER.print("erase {} content data:{}, {}/{}.", name, cls.getName(), count, total);
 			}
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<T> cq = cb.createQuery(cls);
-			Root<T> root = cq.from(cls);
-			cq.select(root);
-			list = em.createQuery(cq).setMaxResults(containerEntity.dumpSize()).getResultList();
+			list = list(cls, em, containerEntity);
 		} while (ListTools.isNotEmpty(list));
 		return count;
 	}
 
-	private <T> Long eraseItem(Class<T> cls, EntityManager em, Long total) throws Exception {
+	private <T> void deleteStorage(StorageMappings storageMappings, List<T> list) throws Exception {
+		for (T t : list) {
+			StorageObject storageObject = (StorageObject) t;
+			String storageName = storageObject.getStorage();
+			StorageMapping mapping = storageMappings.get(storageObject.getClass(), storageName);
+			if (null != mapping) {
+				storageObject.deleteContent(mapping);
+			} else {
+				LOGGER.print("can not find storage mapping {}.", storageName);
+			}
+		}
+	}
+
+	private <T> void delete(EntityManager em, List<T> list) {
+		em.getTransaction().begin();
+		for (T t : list) {
+			em.remove(t);
+		}
+		em.getTransaction().commit();
+	}
+
+	private <T> List<T> list(Class<T> cls, EntityManager em, ContainerEntity containerEntity) {
+		List<T> list;
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root);
+		list = em.createQuery(cq).setMaxResults(containerEntity.dumpSize()).getResultList();
+		return list;
+	}
+
+	private <T> Long eraseItem(Class<T> cls, EntityManager em, Long total) {
 		Long count = 0L;
 		List<T> list = null;
 		ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
@@ -163,9 +175,11 @@ public abstract class EraseContent {
 					em.remove(t);
 				}
 				em.getTransaction().commit();
-				count += list.size();
+				if (null != list) {
+					count += list.size();
+				}
 				em.clear();
-				logger.print("erase {} content data:{}, {}/{}.", name, cls.getName(), count, total);
+				LOGGER.print("erase {} content data:{}, {}/{}.", name, cls.getName(), count, total);
 			}
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<T> cq = cb.createQuery(cls);

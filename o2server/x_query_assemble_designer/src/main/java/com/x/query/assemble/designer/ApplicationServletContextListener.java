@@ -1,8 +1,13 @@
 package com.x.query.assemble.designer;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+
+import org.eclipse.jetty.webapp.WebAppClassLoader;
 
 import com.x.base.core.project.Context;
 

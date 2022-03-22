@@ -61,7 +61,8 @@ class ActionEdit extends BaseAction {
 			this.duplicate(business, mapping);
 
 			try {
-				Class.forName(DynamicEntity.CLASS_PACKAGE + "." + mapping.getTableName());
+				Thread.currentThread().getContextClassLoader()
+						.loadClass(DynamicEntity.CLASS_PACKAGE + "." + mapping.getTableName());
 			} catch (Exception e) {
 				throw new ExceptionDynamicClassNotExist(mapping.getTableName());
 			}

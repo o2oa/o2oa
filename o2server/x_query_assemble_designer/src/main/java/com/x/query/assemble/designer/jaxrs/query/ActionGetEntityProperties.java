@@ -27,7 +27,8 @@ import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 
 class ActionGetEntityProperties extends BaseAction {
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String entity, String entityCategory) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String entity, String entityCategory)
+			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -35,12 +36,12 @@ class ActionGetEntityProperties extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Class<? extends JpaObject> cls = this.clazz(business, entity, entityCategory);
-			result.setData(this.getEntityDes(cls,true,false));
+			result.setData(this.getEntityDes(cls, true, false));
 			return result;
 		}
 	}
 
-	private <T extends JpaObject> List<Wo> getEntityDes(Class<T> clz, Boolean excludeInvisible, Boolean excludeLob){
+	private <T extends JpaObject> List<Wo> getEntityDes(Class<T> clz, Boolean excludeInvisible, Boolean excludeLob) {
 		List<Wo> wos = new ArrayList<>();
 		Wo wo = null;
 		for (Field field : FieldUtils.getFieldsListWithAnnotation(clz, Column.class)) {
@@ -52,7 +53,8 @@ class ActionGetEntityProperties extends BaseAction {
 					continue;
 				} else {
 					Strategy strategy = field.getAnnotation(Strategy.class);
-					if ((null != strategy) && StringUtils.equals(JpaObject.JsonPropertiesValueHandler, strategy.value())) {
+					if ((null != strategy)
+							&& StringUtils.equals(JpaObject.JsonPropertiesValueHandler, strategy.value())) {
 						continue;
 					}
 				}
@@ -61,7 +63,7 @@ class ActionGetEntityProperties extends BaseAction {
 			wo.setName(field.getName());
 			wo.setType(field.getType().getSimpleName());
 			FieldDescribe fd = field.getAnnotation(FieldDescribe.class);
-			if(fd!=null){
+			if (fd != null) {
 				wo.setDescription(fd.value());
 			}
 			wos.add(wo);
@@ -69,12 +71,13 @@ class ActionGetEntityProperties extends BaseAction {
 		return wos;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Class<? extends JpaObject> clazz(Business business, String entity, String entityCategory) throws Exception {
 		Class<? extends JpaObject> cls = null;
 		if (StringUtils.equals(Statement.ENTITYCATEGORY_OFFICIAL, entityCategory)
 				|| StringUtils.equals(Statement.ENTITYCATEGORY_CUSTOM, entityCategory)) {
 			try {
-				cls = (Class<? extends JpaObject>) Class.forName(entity);
+				cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader().loadClass(entity);
 			} catch (Exception e) {
 				throw new ExceptionEntityNotExist(entity, entityCategory);
 			}
@@ -85,7 +88,8 @@ class ActionGetEntityProperties extends BaseAction {
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			try {
-				cls = (Class<? extends JpaObject>) Class.forName(dynamicEntity.className());
+				cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
+						.loadClass(dynamicEntity.className());
 			} catch (Exception e) {
 				throw new ExceptionEntityNotExist(entity, entityCategory);
 			}

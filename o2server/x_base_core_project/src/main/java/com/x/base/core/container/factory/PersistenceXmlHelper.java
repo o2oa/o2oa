@@ -29,7 +29,6 @@ import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Node;
-import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.ListTools;
 
 import io.github.classgraph.ClassGraph;
@@ -42,19 +41,19 @@ public class PersistenceXmlHelper {
 
 	}
 
-	public static List<String> directWrite(String path, List<String> classNames) throws Exception {
+	public static List<String> directWriteDynamicEnhance(String path, List<String> classNames) throws Exception {
 		try {
 			Document document = DocumentHelper.createDocument();
 			Element persistence = createPersistenceElement(document);
+			Element unit = persistence.addElement("persistence-unit");
+			unit.addAttribute("name", "dynamic");
+			unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
+			unit.addElement("provider").addText(PersistenceProviderImpl.class.getName());
 			for (String className : classNames) {
-				Element unit = persistence.addElement("persistence-unit");
-				unit.addAttribute("name", className);
-				unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
-				unit.addElement("provider").addText(PersistenceProviderImpl.class.getName());
 				unit.addElement("class").addText(className);
-				unit.addElement("class").addText("com.x.base.core.entity.SliceJpaObject");
-				unit.addElement("class").addText("com.x.base.core.entity.JpaObject");
 			}
+			unit.addElement("class").addText("com.x.base.core.entity.SliceJpaObject");
+			unit.addElement("class").addText("com.x.base.core.entity.JpaObject");
 			OutputFormat format = OutputFormat.createPrettyPrint();
 			format.setEncoding(StandardCharsets.UTF_8.name());
 			File file = new File(path);
@@ -88,7 +87,8 @@ public class PersistenceXmlHelper {
 			provider.addText(PersistenceProviderImpl.class.getName());
 			List<String> entities = new ArrayList<>();
 			for (String className : (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES)) {
-				Class<? extends JpaObject> clazz = (Class<JpaObject>) Class.forName(className);
+				Class<? extends JpaObject> clazz = (Class<JpaObject>) Thread.currentThread().getContextClassLoader()
+						.loadClass(className);
 				for (Class<?> o : JpaObjectTools.scanMappedSuperclass(clazz)) {
 					entities.add(o.getName());
 				}
@@ -156,7 +156,7 @@ public class PersistenceXmlHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<String> write(String path, List<String> entities, boolean loadDynamic, ClassLoader classLoader) {
+	public static List<String> write(String path, List<String> entities, ClassLoader classLoader) {
 		List<String> names = new ArrayList<>();
 		String name = "";
 		try {
@@ -177,7 +177,7 @@ public class PersistenceXmlHelper {
 					unit.addElement("class").addText(o.getName());
 				}
 			}
-			if (loadDynamic) {
+			if (null != classLoader) {
 				names.addAll(addDynamicClassCreateCombineUnit(persistence, cl));
 			}
 			OutputFormat format = OutputFormat.createPrettyPrint();

@@ -18,9 +18,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
 
-class ActionBuildTable extends BaseAction {
+class ActionBuildQuery extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBuildTable.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBuildQuery.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String queryId) throws Exception {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
@@ -40,12 +40,12 @@ class ActionBuildTable extends BaseAction {
 			if (jar.exists()) {
 				List<Query> queryList = emc.fetchAll(Query.class);
 				for (Query query : queryList) {
-					business.buildAllTable(query.getId());
+					business.buildQuery(query.getId());
 				}
 				Files.delete(jar.toPath());
 				wo.setValue(true);
 			} else {
-				wo.setValue(business.buildAllTable(queryId));
+				wo.setValue(business.buildQuery(queryId));
 			}
 			LOGGER.info("build query {} table complete!", queryId);
 			result.setData(wo);
