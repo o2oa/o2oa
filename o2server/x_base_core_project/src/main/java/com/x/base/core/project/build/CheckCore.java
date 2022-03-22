@@ -36,7 +36,7 @@ public class CheckCore {
 			List<ClassInfo> classInfos = sr.getClassesWithAnnotation(ContainerEntity.class.getName());
 			List<Class<?>> classes = new ArrayList<>();
 			for (ClassInfo info : classInfos) {
-				classes.add(Class.forName(info.getName()));
+				classes.add(Thread.currentThread().getContextClassLoader().loadClass(info.getName()));
 			}
 			checkColumnName(classes);
 			checkColumnLength(classes);
@@ -55,7 +55,7 @@ public class CheckCore {
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
 				if (StringUtils.equals(info.getSimpleName(), name)) {
-					Class<?> cls = Class.forName(info.getName());
+					Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
 					Module module = cls.getAnnotation(Module.class);
 					return module.packageName();
 				}

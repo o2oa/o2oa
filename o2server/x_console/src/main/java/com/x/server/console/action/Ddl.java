@@ -27,8 +27,8 @@ public class Ddl {
 
 		new Thread(() -> {
 			try {
-				ClassLoader cl = ClassLoaderTools.urlClassLoader(true, true, true, true, true,
-						Config.dir_local_temp_classes().toPath());
+				ClassLoader cl = ClassLoaderTools.urlClassLoader(ClassLoader.getSystemClassLoader(), true, true, true,
+						true, Config.dir_local_temp_classes().toPath());
 				Thread.currentThread().setContextClassLoader(cl);
 				String flag = "build";
 				if (StringUtils.equalsIgnoreCase(type, "createDB")) {

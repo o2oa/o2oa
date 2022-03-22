@@ -696,21 +696,6 @@ public class Main {
 		}
 		throw new IOException("can not define o2server base directory.");
 	}
-	// private static String getBasePath() throws Exception {
-//		String path = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-//		File file = new File(path);
-//		if (!file.isDirectory()) {
-//			file = file.getParentFile();
-//		}
-//		while (null != file) {
-//			File versionFile = new File(file, "version.o2");
-//			if (versionFile.exists()) {
-//				return file.getAbsolutePath();
-//			}
-//			file = file.getParentFile();
-//		}
-//		throw new Exception("can not define o2server base directory.");
-//	}
 
 	private static void cleanTempDir(String base) throws Exception {
 		File temp = new File(base, "local/temp");

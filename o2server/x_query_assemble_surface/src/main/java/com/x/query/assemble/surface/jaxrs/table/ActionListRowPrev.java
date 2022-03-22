@@ -27,14 +27,16 @@ import com.x.query.core.entity.schema.Table;
 
 class ActionListRowPrev extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListRowPrev.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListRowPrev.class);
 
 	ActionResult<List<JsonObject>> execute(EffectivePerson effectivePerson, String tableFlag, String id, Integer count)
 			throws Exception {
+		LOGGER.debug("execute:{}, table:{}, id:{}, count:{}.", effectivePerson::getDistinguishedName, () -> tableFlag,
+				() -> id, () -> count);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
 			ActionResult<List<JsonObject>> result = new ActionResult<>();
-			logger.debug(effectivePerson, "table:{}, id:{}, count:{}.", tableFlag, id, count);
 			Business business = new Business(emc);
 			Table table = emc.flag(tableFlag, Table.class);
 			if (null == table) {
@@ -44,7 +46,9 @@ class ActionListRowPrev extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			Class<? extends JpaObject> cls = dynamicEntity.getObjectClass();
+			@SuppressWarnings("unchecked")
+			Class<? extends JpaObject> cls = (Class<? extends JpaObject>) classLoader
+					.loadClass(dynamicEntity.className());
 			EntityManager em = emc.get(cls);
 			Object sequence = null;
 			if (!StringUtils.equals(EMPTY_SYMBOL, id)) {
@@ -63,32 +67,25 @@ class ActionListRowPrev extends BaseAction {
 			String sql = "select " + StringUtils.join(selects, ", ") + " from " + cls.getName() + " o";
 			Long rank = 0L;
 			List<JsonObject> wos = new ArrayList<>();
+			Query query;
 			if (null != sequence) {
 				sql += " where o." + JpaObject.sequence_FIELDNAME + " > ?1 order by o." + JpaObject.sequence_FIELDNAME
 						+ " ASC";
 				rank = emc.countGreaterThan(cls, JpaObject.sequence_FIELDNAME, sequence);
-				Query query = em.createQuery(sql, Object[].class);
+				query = em.createQuery(sql, Object[].class);
 				query.setParameter(1, sequence);
-				List<Object[]> list = query.setMaxResults(Math.max(Math.min(count, list_max), list_min))
-						.getResultList();
-				for (Object[] os : list) {
-					JsonObject jsonObject = XGsonBuilder.instance().toJsonTree(JpaObject.cast(cls, fields, os))
-							.getAsJsonObject();
-					jsonObject.getAsJsonObject().addProperty("rank", rank--);
-					wos.add(jsonObject);
-				}
 			} else {
 				sql += " order by o." + JpaObject.sequence_FIELDNAME + " ASC";
 				rank = result.getCount();
-				Query query = em.createQuery(sql, Object[].class);
-				List<Object[]> list = query.setMaxResults(Math.max(Math.min(count, list_max), list_min))
-						.getResultList();
-				for (Object[] os : list) {
-					JsonObject jsonObject = XGsonBuilder.instance().toJsonTree(JpaObject.cast(cls, fields, os))
-							.getAsJsonObject();
-					jsonObject.getAsJsonObject().addProperty("rank", rank--);
-					wos.add(jsonObject);
-				}
+				query = em.createQuery(sql, Object[].class);
+			}
+			@SuppressWarnings("unchecked")
+			List<Object[]> list = query.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
+			for (Object[] os : list) {
+				JsonObject jsonObject = XGsonBuilder.instance().toJsonTree(JpaObject.cast(cls, fields, os))
+						.getAsJsonObject();
+				jsonObject.getAsJsonObject().addProperty("rank", rank--);
+				wos.add(jsonObject);
 			}
 			Collections.reverse(wos);
 			result.setData(wos);

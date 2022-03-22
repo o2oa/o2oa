@@ -26,12 +26,14 @@ import com.x.query.core.entity.schema.Table;
 
 class ActionListRowNext extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListRowNext.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListRowNext.class);
 
 	ActionResult<List<JsonObject>> execute(EffectivePerson effectivePerson, String tableFlag, String id, Integer count)
 			throws Exception {
+		LOGGER.debug(effectivePerson.getDistinguishedName());
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug(effectivePerson.getDistinguishedName());
 			ActionResult<List<JsonObject>> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Table table = emc.flag(tableFlag, Table.class);
@@ -42,7 +44,9 @@ class ActionListRowNext extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			Class<? extends JpaObject> cls = dynamicEntity.getObjectClass();
+			@SuppressWarnings("unchecked")
+			Class<? extends JpaObject> cls = (Class<? extends JpaObject>) classLoader
+					.loadClass(dynamicEntity.className());
 			EntityManager em = emc.get(cls);
 			Object sequence = null;
 			if (!StringUtils.equals(EMPTY_SYMBOL, id)) {
@@ -68,6 +72,7 @@ class ActionListRowNext extends BaseAction {
 			if (null != sequence) {
 				query.setParameter(1, sequence);
 			}
+			@SuppressWarnings("unchecked")
 			List<Object[]> list = query.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
 			List<JsonObject> wos = new ArrayList<>();
 			result.setCount(emc.count(cls));

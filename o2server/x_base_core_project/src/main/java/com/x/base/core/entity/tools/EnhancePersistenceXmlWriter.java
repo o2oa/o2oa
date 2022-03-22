@@ -69,7 +69,7 @@ public class EnhancePersistenceXmlWriter {
 		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Entity.class.getName());
 			for (ClassInfo info : classInfos) {
-				list.add(Class.forName(info.getName()));
+				list.add(Thread.currentThread().getContextClassLoader().loadClass(info.getName()));
 			}
 			return list.stream().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
 		}

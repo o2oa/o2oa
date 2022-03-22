@@ -6,6 +6,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
 import com.x.base.core.project.x_query_assemble_designer;
+import com.x.base.core.project.x_query_assemble_surface;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -19,9 +20,9 @@ import com.x.query.assemble.designer.Business;
 import com.x.query.assemble.designer.ThisApplication;
 import com.x.query.core.entity.Query;
 
-class ActionBuildTableDispatch extends BaseAction {
+class ActionBuildQueryDispatch extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBuildTableDispatch.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBuildQueryDispatch.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String queryId) throws Exception {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
@@ -40,7 +41,8 @@ class ActionBuildTableDispatch extends BaseAction {
 		List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_designer.class);
 		if (ListTools.isNotEmpty(apps)) {
 			apps.stream().forEach(o -> {
-				String url = o.getUrlJaxrsRoot() + "table/" + queryId + "/build?tt=" + System.currentTimeMillis();
+				String url = o.getUrlJaxrsRoot() + "table/" + queryId + "/build?timestamp="
+						+ System.currentTimeMillis();
 				LOGGER.info("{} do dispatch build query {} table request to : {}.",
 						effectivePerson.getDistinguishedName(), queryId, url);
 				try {
@@ -50,11 +52,26 @@ class ActionBuildTableDispatch extends BaseAction {
 				}
 			});
 		}
+		refreshSurface();
 		wo.setValue(true);
 
 		result.setData(wo);
 
 		return result;
+	}
+
+	private void refreshSurface() throws Exception {
+		List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_surface.class);
+		if (ListTools.isNotEmpty(apps)) {
+			apps.stream().forEach(o -> {
+				String url = o.getUrlJaxrsRoot() + "table/reload/classloader";
+				try {
+					CipherConnectionAction.get(false, url);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
 	}
 
 	public static class Wo extends WrapBoolean {

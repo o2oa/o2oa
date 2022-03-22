@@ -15,12 +15,13 @@ class ActionExecute extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
 
+	@SuppressWarnings("unchecked")
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, @Context ServletContext servletContext, String className)
 			throws Exception {
-		logger.debug(effectivePerson, "execute:{}.", className);
+		logger.debug("execute:{}.", () -> className);
 		ActionResult<Wo> result = new ActionResult<>();
 		AbstractContext ctx = AbstractContext.fromServletContext(servletContext);
-		Class<?> clz = Class.forName(className);
+		Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(className);
 		ctx.fireScheduleOnLocal((Class<AbstractJob>) clz, 1);
 		Wo wo = new Wo();
 		wo.setValue(true);

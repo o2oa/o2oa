@@ -139,13 +139,15 @@ public class Context extends AbstractContext {
 		ServletContext servletContext = servletContextEvent.getServletContext();
 		Context context = new Context();
 		context.contextPath = servletContext.getContextPath();
-		context.clazz = Class.forName(servletContext.getInitParameter(INITPARAMETER_PORJECT));
+		context.clazz = Thread.currentThread().getContextClassLoader()
+				.loadClass(servletContext.getInitParameter(INITPARAMETER_PORJECT));
 		context.module = context.clazz.getAnnotation(Module.class);
 		context.name = context.module.name();
 		context.path = servletContext.getRealPath("");
 		context.servletContext = servletContext;
 		context.servletContextName = servletContext.getServletContextName();
-		context.clazz = Class.forName(servletContextEvent.getServletContext().getInitParameter(INITPARAMETER_PORJECT));
+		context.clazz = Thread.currentThread().getContextClassLoader()
+				.loadClass(servletContextEvent.getServletContext().getInitParameter(INITPARAMETER_PORJECT));
 		context.initDatas();
 		// context.threadFactory = new ThreadFactory(context);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

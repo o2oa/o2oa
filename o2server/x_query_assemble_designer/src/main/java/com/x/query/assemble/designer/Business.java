@@ -1,10 +1,11 @@
 package com.x.query.assemble.designer;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -67,14 +68,14 @@ public class Business {
 
 	private static ClassLoader dynamicEntityClassLoader = null;
 
-	public static ClassLoader getDynamicEntityClassLoader() throws Exception {
+	public static ClassLoader getDynamicEntityClassLoader() throws IOException, URISyntaxException {
 		if (null == dynamicEntityClassLoader) {
 			refreshDynamicEntityClassLoader();
 		}
 		return dynamicEntityClassLoader;
 	}
 
-	public static synchronized void refreshDynamicEntityClassLoader() throws Exception {
+	public static synchronized void refreshDynamicEntityClassLoader() throws IOException, URISyntaxException {
 		List<URL> urlList = new ArrayList<>();
 		IOFileFilter filter = new WildcardFileFilter(DynamicEntity.JAR_PREFIX + "*.jar");
 		for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(true), filter, null)) {
@@ -218,16 +219,14 @@ public class Business {
 		if (null != o) {
 			if (ListTools.isEmpty(o.getEditPersonList()) && ListTools.isEmpty(o.getEditUnitList())) {
 				return true;
-			} else {
-				if (ListTools.isNotEmpty(o.getEditPersonList()) && effectivePerson.isPerson(o.getEditPersonList())) {
+			}
+			if (ListTools.isNotEmpty(o.getEditPersonList()) && effectivePerson.isPerson(o.getEditPersonList())) {
+				return true;
+			}
+			if (ListTools.isNotEmpty(o.getEditUnitList())) {
+				List<String> units = this.organization().unit().listWithPerson(effectivePerson.getDistinguishedName());
+				if (ListTools.containsAny(units, o.getEditUnitList())) {
 					return true;
-				}
-				if (ListTools.isNotEmpty(o.getEditUnitList())) {
-					List<String> units = this.organization().unit()
-							.listWithPerson(effectivePerson.getDistinguishedName());
-					if (ListTools.containsAny(units, o.getEditUnitList())) {
-						return true;
-					}
 				}
 			}
 		}
@@ -235,43 +234,28 @@ public class Business {
 	}
 
 	public boolean executable(EffectivePerson effectivePerson, Statement o) throws Exception {
-		boolean result = false;
-		if (null != o) {
-			if (ListTools.isEmpty(o.getExecutePersonList()) && ListTools.isEmpty(o.getExecuteUnitList())) {
-				result = true;
-			}
-			if (!result) {
-				if (effectivePerson.isManager()
-						|| BooleanUtils.isTrue(this.organization().person().hasRole(effectivePerson,
-								OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))
-						|| effectivePerson.isPerson(o.getExecutePersonList())) {
-					result = true;
-				}
-				if ((!result) && ListTools.isNotEmpty(o.getExecuteUnitList())) {
-					List<String> units = this.organization().unit()
-							.listWithPerson(effectivePerson.getDistinguishedName());
-					if (ListTools.containsAny(units, o.getExecuteUnitList())) {
-						result = true;
-					}
-				}
+		if (null == o) {
+			return false;
+		}
+		if (ListTools.isEmpty(o.getExecutePersonList()) && ListTools.isEmpty(o.getExecuteUnitList())) {
+			return true;
+		}
+		if (effectivePerson.isManager()
+				|| BooleanUtils.isTrue(this.organization().person().hasRole(effectivePerson,
+						OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))
+				|| effectivePerson.isPerson(o.getExecutePersonList())) {
+			return true;
+		}
+		if (ListTools.isNotEmpty(o.getExecuteUnitList())) {
+			List<String> units = this.organization().unit().listWithPerson(effectivePerson.getDistinguishedName());
+			if (ListTools.containsAny(units, o.getExecuteUnitList())) {
+				return true;
 			}
 		}
-		return result;
+		return false;
 	}
 
-	public boolean buildAllTable() throws Exception {
-		File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_NAME + DOT_JAR);
-		List<Query> queryList = emc.fetchAll(Query.class);
-		for (Query q : queryList) {
-			this.buildAllTable(q.getId());
-		}
-		if (jar.exists()) {
-			Files.delete(jar.toPath());
-		}
-		return true;
-	}
-
-	public boolean buildAllTable(String query) throws Exception {
+	public boolean buildQuery(String query) throws Exception {
 		boolean result = false;
 		List<Table> tables = emc.listEqualAndEqual(Table.class, Table.status_FIELDNAME, Table.STATUS_build,
 				Table.query_FIELDNAME, query);
@@ -304,9 +288,8 @@ public class Business {
 			}
 		}
 		if (!classNames.isEmpty()) {
-			PersistenceXmlHelper.directWrite(new File(resources, "META-INF/persistence.xml").getAbsolutePath(),
-					classNames);
-
+			PersistenceXmlHelper.directWriteDynamicEnhance(
+					new File(resources, "META-INF/persistence.xml").getAbsolutePath(), classNames);
 			List<File> classPath = new ArrayList<>();
 			classPath.addAll(FileUtils.listFiles(Config.dir_commons_ext().toFile(),
 					FileFilterUtils.suffixFileFilter(DOT_JAR), DirectoryFileFilter.INSTANCE));
@@ -360,7 +343,7 @@ public class Business {
 				+ StringUtils.join(paths, File.pathSeparator) + "\" " + Enhance.class.getName() + " \""
 				+ target.getAbsolutePath() + "\"";
 
-		LOGGER.debug("enhance command:{}.", () -> command);
+		LOGGER.info("enhance command:{}.", () -> command);
 
 		ProcessBuilder processBuilder = new ProcessBuilder();
 
@@ -382,8 +365,8 @@ public class Business {
 
 	private void reloadClassLoader() {
 		try {
-			Business.refreshDynamicEntityClassLoader();
 			EntityManagerContainerFactory.close();
+			Business.refreshDynamicEntityClassLoader();
 			ThisApplication.context().initDatas(Business.getDynamicEntityClassLoader());
 		} catch (Exception e) {
 			LOGGER.error(e);

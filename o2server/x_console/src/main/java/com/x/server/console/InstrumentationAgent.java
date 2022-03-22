@@ -11,7 +11,6 @@ import java.util.Objects;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
-
 public class InstrumentationAgent {
 
 	private InstrumentationAgent() {
@@ -23,8 +22,9 @@ public class InstrumentationAgent {
 	private static final String CFG = "manifest.cfg";
 	private static final String GIT = ".gitignore";
 	private static final String CUSTOM_JARS = "custom/jars";
-	private static final String DYNAMIC_JARS = "dynamic/jars";
+	// private static final String DYNAMIC_JARS = "dynamic/jars";
 	private static final String STORE_JARS = "store/jars";
+	private static final String STORE_JARS_BASE_CORE_PROJECT = STORE_JARS + "/" + "x_base_core_project.jar";
 	private static final String COMMONS_EXT = "commons/ext";
 
 	public static String JAVAVERSION = "java8";
@@ -60,7 +60,9 @@ public class InstrumentationAgent {
 //				load(base, DYNAMIC_JARS);
 //			}
 			setLog4j2(base, args);
-			loadWithCfg(base, STORE_JARS);
+			checkStoreJarWithCfg(base);
+			loadBaseCoreProject(base);
+			// loadWithCfg(base, STORE_JARS);
 			loadWithCfg(base, ext());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -69,6 +71,40 @@ public class InstrumentationAgent {
 
 	public static String ext() {
 		return JAVAVERSION.equals(JAVAVERSION_JAVA8) ? COMMONS_EXT : COMMONS_EXT + "_" + JAVAVERSION;
+	}
+
+	private static void checkStoreJarWithCfg(Path base) throws IOException {
+		Path dir = base.resolve(STORE_JARS);
+		Path cfg = dir.resolve(CFG);
+		if (Files.exists(dir) && Files.isDirectory(dir) && Files.exists(cfg) && Files.isRegularFile(cfg)) {
+			List<String> names = Files.readAllLines(cfg);
+			if (names.isEmpty()) {
+				throw new IOException(String.format("%s manifest is empty.", STORE_JARS));
+			}
+			try (Stream<Path> stream = Files.list(dir)) {
+				stream.filter(o -> !(o.getFileName().toString().equalsIgnoreCase(CFG)
+						|| o.getFileName().toString().equalsIgnoreCase(GIT))).forEach(o -> {
+							try {
+								if (!names.remove(o.getFileName().toString())) {
+									Files.delete(o);
+									System.out.println(String.format("delete unnecessary file from %s: %s.", STORE_JARS,
+											o.getFileName().toString()));
+								}
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						});
+			}
+			for (String name : names) {
+				System.out.println(String.format("can not find jar from %s: %s", STORE_JARS, name));
+			}
+		} else {
+			throw new IOException(String.format("invalid directory: %s", STORE_JARS));
+		}
+	}
+
+	private static void loadBaseCoreProject(Path base) throws IOException {
+		INST.appendToSystemClassLoaderSearch(new JarFile(base.resolve(STORE_JARS_BASE_CORE_PROJECT).toString()));
 	}
 
 	private static void loadWithCfg(Path base, String sub) throws IOException {
@@ -90,6 +126,7 @@ public class InstrumentationAgent {
 									System.out.println(String.format("delete unnecessary file from %s: %s.", sub,
 											o.getFileName().toString()));
 								}
+
 							} catch (IOException e) {
 								e.printStackTrace();
 							}

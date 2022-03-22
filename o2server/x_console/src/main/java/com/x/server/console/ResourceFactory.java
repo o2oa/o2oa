@@ -58,7 +58,7 @@ import io.github.classgraph.ScanResult;
  */
 public class ResourceFactory {
 
-	private static final Logger logger = LoggerFactory.getLogger(ResourceFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceFactory.class);
 
 	private static final int TOKENTHRESHOLDSMAXSIZE = 2000;
 
@@ -72,7 +72,8 @@ public class ResourceFactory {
 	}
 
 	public static void init() throws Exception {
-		ClassLoader cl = ClassLoaderTools.urlClassLoader(true, false, true, true, false, unzipCustomWar());
+		ClassLoader cl = ClassLoaderTools.urlClassLoader(ClassLoader.getSystemClassLoader(), false, true, true, false,
+				unzipCustomWar());
 		try (ScanResult sr = new ClassGraph().addClassLoader(cl).enableAnnotationInfo().scan()) {
 			node();
 			containerEntities(cl, sr);

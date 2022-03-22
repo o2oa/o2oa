@@ -7,17 +7,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.criteria.Path;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.project.annotation.Module;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
+
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 
 public class JpaObjectTools {
 
@@ -107,6 +116,31 @@ public class JpaObjectTools {
 				em.detach(o);
 			}
 		}
+	}
+
+	public static Collection<String> scanContainerEntityNames(ClassLoader classLoader) throws ClassNotFoundException {
+		Set<String> set = new TreeSet<>();
+		try (ScanResult sr = new ClassGraph().addClassLoader(classLoader).enableAnnotationInfo().scan()) {
+			for (ClassInfo info : sr.getClassesWithAnnotation(ContainerEntity.class.getName())) {
+				@SuppressWarnings("unchecked")
+				Class<? extends JpaObject> cls = (Class<? extends JpaObject>) classLoader.loadClass(info.getName());
+				set.add(cls.getName());
+			}
+		}
+		return set;
+	}
+
+	public static Collection<Class<? extends JpaObject>> scanContainerEntities(ClassLoader classLoader)
+			throws ClassNotFoundException {
+		Set<Class<? extends JpaObject>> set = new TreeSet<>();
+		try (ScanResult sr = new ClassGraph().addClassLoader(classLoader).enableAnnotationInfo().scan()) {
+			for (ClassInfo info : sr.getClassesWithAnnotation(ContainerEntity.class.getName())) {
+				@SuppressWarnings("unchecked")
+				Class<? extends JpaObject> cls = (Class<? extends JpaObject>) classLoader.loadClass(info.getName());
+				set.add(cls);
+			}
+		}
+		return set;
 	}
 
 }

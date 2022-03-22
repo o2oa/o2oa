@@ -28,7 +28,7 @@ public class CheckAssemble {
 			}
 		}
 		for (ClassInfo info : list) {
-			Class<?> cls = Class.forName(info.getName());
+			Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
 			if (FieldUtils.getFieldsListWithAnnotation(cls, FieldDescribe.class).isEmpty()) {
 				System.err.println(String.format("%s not set FieldDescribe", info.getName()));
 			}
@@ -36,7 +36,7 @@ public class CheckAssemble {
 		try (ScanResult scanResult = new ClassGraph().disableJarScanning().enableAllInfo().scan()) {
 			ClassInfoList classInfoList = scanResult.getClassesWithAnnotation(WebFilter.class.getName());
 			for (ClassInfo info : classInfoList) {
-				Class cls = Class.forName(info.getName());
+				Class cls = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
 				WebFilter webFilter = (WebFilter) cls.getAnnotation(WebFilter.class);
 				if (webFilter.asyncSupported() == false) {
 					System.err.println("webFilter not set asyncSupported:" + info.getName());

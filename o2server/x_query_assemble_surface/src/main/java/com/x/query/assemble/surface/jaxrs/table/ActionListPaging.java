@@ -23,9 +23,10 @@ import com.x.query.core.entity.schema.Table;
 
 class ActionListPaging extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListPaging.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListPaging.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size) throws Exception {
+		LOGGER.debug("execute:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> page, () -> size);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -44,7 +45,7 @@ class ActionListPaging extends BaseAction {
 						wo.setQueryAlias(query.getAlias());
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			});
 			result.setData(wos);

@@ -39,8 +39,6 @@ public @interface Module {
 
 	public String[] customJars() default {};
 
-	public String[] dynamicJars() default {};
-
 	public StorageType[] storageTypes() default {};
 
 }

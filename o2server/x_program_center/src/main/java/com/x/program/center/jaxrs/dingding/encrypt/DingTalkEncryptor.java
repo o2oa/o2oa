@@ -190,7 +190,7 @@ public class DingTalkEncryptor {
 		Class clazz = null;
 
 		try {
-			clazz = Class.forName(className);
+			clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
 		} catch (Exception var3) {
 			var3.printStackTrace();
 		}
