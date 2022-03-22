@@ -79,11 +79,11 @@ public class PersistenceXmlWriter {
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
 				if (StringUtils.equals(info.getSimpleName(), project)) {
-					Class<?> cls = Class.forName(info.getName());
+					Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
 					Module moudle = cls.getAnnotation(Module.class);
 					for (String str : moudle.containerEntities()) {
 						if (StringUtils.isNotEmpty(str)) {
-							list.add(Class.forName(str));
+							list.add(Thread.currentThread().getContextClassLoader().loadClass(str));
 						}
 					}
 				}
@@ -91,25 +91,6 @@ public class PersistenceXmlWriter {
 			return list;
 		}
 	}
-
-//	@SuppressWarnings("unchecked")
-//	private static List<Class<?>> scanContainerEntity(String project) throws Exception {
-//		Set<Class<?>> ces = new HashSet<>();
-//		String className = "com.x.base.core.project." + project;
-//		Class<?> cls = Class.forName(className);
-//		for (String str : (List<String>) FieldUtils.readStaticField(cls, "containerEntities")) {
-//			if (StringUtils.isNotEmpty(str)) {
-//				ces.add(Class.forName(str));
-//			}
-//		}
-//		List<Class<?>> sortedList = new ArrayList<Class<?>>(ces);
-//		Collections.sort(sortedList, new Comparator<Class<?>>() {
-//			public int compare(Class<?> c1, Class<?> c2) {
-//				return c1.getCanonicalName().compareTo(c2.getCanonicalName());
-//			}
-//		});
-//		return sortedList;
-//	}
 
 	private static Set<Class<?>> scanMappedSuperclass(Class<?> clz) throws Exception {
 		Set<Class<?>> set = new HashSet<Class<?>>();

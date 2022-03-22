@@ -67,8 +67,9 @@ MWF.xApplication.query.TableDesigner.LP = {
     "tableExplode_success": "导出成功",
 
     "buildCurrentAppTitle": "编译当前应用数据表",
-    "buildCurrentAppInfor": "即将编译当前应用所有数据表，<span style='color: #FF0000;'>编译后您请马上重启服务器，否则可能造成JVM崩溃</span>。您确定要执行此操作吗？",
-    "buildCurrentApp_success": "已编译当前应用所有数据表，请马上重启服务器！",
+    "buildCurrentAppInfor": "即将编译本应用的所有数据表：<br/>{tablelist}您确定要执行此操作吗？",
+    "buildCurrentApp_success": "已编译当前应用所有数据表！",
+    "building": "正在编译...",
 
     "tableImplodeTitle": "导入数据",
     "tableImplodeInfo": "导入的数据会覆盖。确认是否导入？",
@@ -80,10 +81,12 @@ MWF.xApplication.query.TableDesigner.LP = {
     "tableClear_success": "清空成功",
     "exportExcelFileName" : "导出数据",
 
-
     "buildAllViewInfor": "即将编译所有数据表，包括所有数据应用中的数据表，<span style='color: #FF0000;'>编译后您请马上重启服务器，否则可能造成JVM崩溃</span>。您确定要执行此操作吗？",
     "buildAllView_success": "已编译所有数据表，请马上重启服务器！",
-    "tableHelp": "数据表能够在系统数据库中自动创建真实表，并生成java实体对象，您可以使用JPQL操作数据表。创建数据表需要以下步骤：<br><br>1、创建数据表，并创建每一列；<br>2、点击工具栏按钮，将数据表发布到编译状态；<br>3、点击工具栏按钮，执行“编译当前应用所有数据表”操作<br>4、马上重启服务器(否则可能造成JVM崩溃)，数据表就可使用了。",
+    // "tableHelp": "数据表能够在系统数据库中自动创建真实表，并生成java实体对象，您可以使用JPQL操作数据表。创建数据表需要以下步骤：<br><br>1、创建数据表，并创建每一列；<br>2、点击工具栏按钮，将数据表发布到编译状态；<br>3、点击工具栏按钮，执行“编译当前应用所有数据表”操作<br>4、马上重启服务器(否则可能造成JVM崩溃)，数据表就可使用了。",
+
+    "tableHelp": "数据表能够在系统数据库中自动创建真实表，并生成java实体对象，您可以使用JPQL操作数据表。创建数据表需要以下步骤：<br><br>1、创建数据表，并创建每一列；<br>2、点击工具栏按钮，将数据表发布到编译状态；<br>3、点击工具栏按钮，执行“编译当前应用所有数据表”操作，成功后数据表就可使用了。",
+
     "propertyTemplate": {
         "base": "基本",
         "event": "事件",

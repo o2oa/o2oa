@@ -37,8 +37,6 @@ public class CompactLocalH2 {
 			logger.print("data server is running, must stop data server first.");
 			return false;
 		}
-		/* 需要注入驱动程序 */
-		// Class.forName(SlicePropertiesBuilder.driver_h2).newInstance();
 		DriverManager.registerDriver(new org.h2.Driver());
 		logger.print("compact data start at {}.", DateTools.format(start));
 		String dir = StringUtils.replace(Config.base(), "\\", "/") + "/local/repository/data";

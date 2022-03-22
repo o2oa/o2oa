@@ -1,8 +1,12 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
+import com.x.base.core.project.x_query_assemble_designer;
+import com.x.base.core.project.x_query_assemble_surface;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -12,19 +16,16 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.x_query_assemble_designer;
 import com.x.query.assemble.designer.Business;
 import com.x.query.assemble.designer.ThisApplication;
 import com.x.query.core.entity.Query;
-import com.x.query.core.entity.schema.Table;
 
-import java.util.List;
+class ActionBuildQueryDispatch extends BaseAction {
 
-class ActionBuildTableDispatch extends BaseAction {
-
-	private static Logger logger = LoggerFactory.getLogger(ActionBuildTableDispatch.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBuildQueryDispatch.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String queryId) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -40,8 +41,10 @@ class ActionBuildTableDispatch extends BaseAction {
 		List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_designer.class);
 		if (ListTools.isNotEmpty(apps)) {
 			apps.stream().forEach(o -> {
-				String url = o.getUrlJaxrsRoot() + "table/"+ queryId +"/build?tt="+System.currentTimeMillis();
-				logger.info("{} do dispatch build query {} table request to : {}", effectivePerson.getDistinguishedName(), queryId, url);
+				String url = o.getUrlJaxrsRoot() + "table/" + queryId + "/build?timestamp="
+						+ System.currentTimeMillis();
+				LOGGER.info("{} do dispatch build query {} table request to : {}.",
+						effectivePerson.getDistinguishedName(), queryId, url);
 				try {
 					CipherConnectionAction.get(effectivePerson.getDebugger(), url);
 				} catch (Exception e) {
@@ -49,6 +52,7 @@ class ActionBuildTableDispatch extends BaseAction {
 				}
 			});
 		}
+		refreshSurface();
 		wo.setValue(true);
 
 		result.setData(wo);
@@ -56,7 +60,23 @@ class ActionBuildTableDispatch extends BaseAction {
 		return result;
 	}
 
+	private void refreshSurface() throws Exception {
+		List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_surface.class);
+		if (ListTools.isNotEmpty(apps)) {
+			apps.stream().forEach(o -> {
+				String url = o.getUrlJaxrsRoot() + "table/reload/classloader";
+				try {
+					CipherConnectionAction.get(false, url);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
+	}
+
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -7885741023719404711L;
 
 	}
 

@@ -20,10 +20,13 @@ import com.x.query.core.entity.schema.Table;
 
 class ActionRowSave extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionRowSave.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionRowSave.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String tableFlag, JsonElement jsonElement)
 			throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Table table = emc.flag(tableFlag, Table.class);
@@ -34,7 +37,7 @@ class ActionRowSave extends BaseAction {
 			this.check(effectivePerson, business, table);
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
-			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
+			Class<? extends JpaObject> cls = (Class<JpaObject>) classLoader.loadClass(dynamicEntity.className());
 			List<Object> os = new ArrayList<>();
 			if (jsonElement.isJsonArray()) {
 				jsonElement.getAsJsonArray().forEach(o -> {
@@ -77,6 +80,8 @@ class ActionRowSave extends BaseAction {
 	}
 
 	public static class Wo extends WrapStringList {
+
+		private static final long serialVersionUID = 6370333126842440871L;
 
 	}
 

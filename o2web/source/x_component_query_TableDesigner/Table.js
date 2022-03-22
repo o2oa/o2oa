@@ -512,21 +512,6 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             this.close();
         }, null);
     },
-    // buildAllView: function(e){
-    //     var _self = this;
-    //     if (!e) e = this.node;
-    //     this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildAllViewTitle, {
-    //         "html": MWF.APPDTBD.LP.buildAllViewInfor
-    //     }, 480, 120, function(){
-    //         _self.designer.actions.buildAllTable(function(json){
-    //             this.designer.notice(this.designer.lp.buildAllView_success, "success", this.node, {"x": "left", "y": "bottom"});
-    //         }.bind(_self));
-    //         this.close();
-    //     }, function(){
-    //         this.close();
-    //     }, null);
-    // },
-
     buildAllView: function(e){
         var _self = this;
         if (!e) e = this.node;
@@ -542,18 +527,38 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         }, null);
     },
     bulidCurrentApp: function(e){
+        MWF.require("MWF.widget.Mask", null, false);
         var _self = this;
         if (!e) e = this.node;
-        this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildCurrentAppTitle, {
-            "html": MWF.APPDTBD.LP.buildCurrentAppInfor
-        }, 480, 120, function(){
-            o2.Actions.load("x_query_assemble_designer").TableAction.buildDispatch( _self.data.application , function(json){
-                this.designer.notice(this.designer.lp.buildCurrentApp_success, "success", this.node, {"x": "left", "y": "bottom"});
-            }.bind(_self));
-            this.close();
-        }, function(){
-            this.close();
-        }, null);
+         var html = MWF.APPDTBD.LP.buildCurrentAppInfor;
+
+        this.designer.actions.listTable(this.designer.application.id, function (json) {
+            var listStr = "";
+            json.data.each(function(table){
+                listStr += "<div style='line-height: 24px;padding-left: 10px;'>" + table.name + "</div>"; //+ (table.alias ? ("  (" + table.alias + ")") : "")
+            }.bind(this));
+            var h = "<div style='min-height: 70px; max-height: 200px; width: 400px; overflow:auto; font-size: 12px;'>"+listStr+"</div>";
+            html = html.replace("{tablelist}", h);
+            this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildCurrentAppTitle, {
+                "html": html
+            }, 480, 120, function(){
+
+                _self.mask = new MWF.widget.Mask({"style": "desktop", "html": MWF.APPDTBD.LP.building});
+                _self.mask.loadNode(_self.designer.content);
+
+                this.close();
+
+                o2.Actions.load("x_query_assemble_designer").TableAction.buildDispatch( _self.data.application , function(json){
+
+                    _self.designer.notice(MWF.APPDTBD.LP.buildCurrentApp_success, "success", _self.node, {"x": "left", "y": "bottom"});
+                    _self.mask.hide();
+
+                    _self.designer.refresh();
+                });
+            }, function(){
+                this.close();
+            }, null);
+        }.bind(this));
     },
     tableClear: function(e){
         var _self = this;

@@ -16,15 +16,22 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 
 class ActionExecute extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecute.class);
+
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement)
 			throws Exception {
-
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
+		Thread.currentThread().setContextClassLoader(Business.getDynamicEntityClassLoader());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Object> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -36,8 +43,7 @@ class ActionExecute extends BaseAction {
 			this.check(effectivePerson, business, table);
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
-			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
-
+			Class<? extends JpaObject> cls = (Class<JpaObject>) classLoader.loadClass(dynamicEntity.className());
 			Object data = null;
 			if (StringUtils.equalsIgnoreCase(wi.getType(), Statement.TYPE_SELECT)) {
 				EntityManager em = emc.get(DynamicBaseEntity.class);
@@ -49,9 +55,9 @@ class ActionExecute extends BaseAction {
 					query.setFirstResult(wi.getFirstResult());
 				}
 				data = query.getResultList();
-				if(StringUtils.isNotBlank(wi.getCountData())){
+				if (StringUtils.isNotBlank(wi.getCountData())) {
 					query = em.createQuery(wi.getCountData());
-					result.setCount((Long)query.getSingleResult());
+					result.setCount((Long) query.getSingleResult());
 				}
 			} else {
 				EntityManager em = emc.get(cls);
@@ -66,6 +72,8 @@ class ActionExecute extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -6511081486196917840L;
 
 		@FieldDescribe("类型")
 		private String type;

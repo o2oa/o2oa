@@ -18,11 +18,11 @@ import com.x.query.core.entity.schema.Table;
 
 class ActionListPrev extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListPrev.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListPrev.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug(effectivePerson, "id:{}, count:{}.", id, count);
+			LOGGER.debug("execute:{}, id:{}, count:{}.", effectivePerson::getDistinguishedName, () -> id, () -> count);
 			Business business = new Business(emc);
 			if (!business.editable(effectivePerson, new Table())) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());

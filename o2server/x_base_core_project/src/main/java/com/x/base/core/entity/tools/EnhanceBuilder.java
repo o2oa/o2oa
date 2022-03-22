@@ -91,10 +91,10 @@ public class EnhanceBuilder {
 		List<Class<?>> list = new ArrayList<Class<?>>();
 		try (ScanResult sr = new ClassGraph().enableAnnotationInfo().disableJarScanning().scan()) {
 			for (ClassInfo info : sr.getClassesWithAnnotation(Entity.class.getName())) {
-				list.add(Class.forName(info.getName()));
+				list.add(Thread.currentThread().getContextClassLoader().loadClass(info.getName()));
 			}
 			for (ClassInfo info : sr.getClassesWithAnnotation(MappedSuperclass.class.getName())) {
-				list.add(Class.forName(info.getName()));
+				list.add(Thread.currentThread().getContextClassLoader().loadClass(info.getName()));
 			}
 			return list.stream().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
 		}

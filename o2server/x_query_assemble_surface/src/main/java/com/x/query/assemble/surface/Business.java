@@ -1,30 +1,84 @@
 package com.x.query.assemble.surface;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import com.x.query.assemble.surface.factory.*;
-import com.x.query.core.entity.*;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.organization.OrganizationDefinition;
-import com.x.base.core.project.tools.ListTools;
-import com.x.organization.core.express.Organization;
-import com.x.query.core.entity.schema.Statement;
-import com.x.query.core.entity.schema.Table;
+import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
-import java.util.Optional;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.ListTools;
+import com.x.organization.core.express.Organization;
+import com.x.query.assemble.surface.factory.ImportModelFactory;
+import com.x.query.assemble.surface.factory.ProcessFactory;
+import com.x.query.assemble.surface.factory.QueryFactory;
+import com.x.query.assemble.surface.factory.RevealFactory;
+import com.x.query.assemble.surface.factory.StatFactory;
+import com.x.query.assemble.surface.factory.ViewFactory;
+import com.x.query.core.entity.ImportModel;
+import com.x.query.core.entity.Query;
+import com.x.query.core.entity.Reveal;
+import com.x.query.core.entity.Stat;
+import com.x.query.core.entity.View;
+import com.x.query.core.entity.schema.Statement;
+import com.x.query.core.entity.schema.Table;
 
 public class Business {
 
-	private static CacheCategory cache = new CacheCategory(Query.class, View.class, Stat.class,
-			Reveal.class, Table.class, Statement.class, ImportModel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Business.class);
+
+	private static CacheCategory cache = new CacheCategory(Query.class, View.class, Stat.class, Reveal.class,
+			Table.class, Statement.class, ImportModel.class);
+
+	private static ClassLoader dynamicEntityClassLoader = null;
+
+	public static ClassLoader getDynamicEntityClassLoader() throws Exception {
+		if (null == dynamicEntityClassLoader) {
+			refreshDynamicEntityClassLoader();
+		}
+		return dynamicEntityClassLoader;
+	}
+
+	public static synchronized void refreshDynamicEntityClassLoader() throws Exception {
+		List<URL> urlList = new ArrayList<>();
+		IOFileFilter filter = new WildcardFileFilter(DynamicEntity.JAR_PREFIX + "*.jar");
+		for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(true), filter, null)) {
+			urlList.add(o.toURI().toURL());
+		}
+		URL[] urls = new URL[urlList.size()];
+		dynamicEntityClassLoader = URLClassLoader.newInstance(urlList.toArray(urls),
+				null != ThisApplication.context() ? ThisApplication.context().servletContext().getClassLoader()
+						: Thread.currentThread().getContextClassLoader());
+	}
+
+	public static void reloadClassLoader() {
+		try {
+			EntityManagerContainerFactory.close();
+			Business.refreshDynamicEntityClassLoader();
+			ThisApplication.context().initDatas(Business.getDynamicEntityClassLoader());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
 
 	public CacheCategory cache() {
 		return cache;
@@ -120,7 +174,6 @@ public class Business {
 		}
 	}
 
-
 	public boolean readable(EffectivePerson effectivePerson, Query query) throws Exception {
 		if (null == query) {
 			return false;
@@ -135,19 +188,16 @@ public class Business {
 		if (query.getAvailableIdentityList().isEmpty() && query.getAvailableUnitList().isEmpty()) {
 			return true;
 		}
-		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.QueryManager)) {
+		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.QueryManager))) {
 			return true;
 		}
 		if (CollectionUtils.containsAny(query.getAvailableIdentityList(),
 				organization().identity().listWithPerson(effectivePerson))) {
 			return true;
 		}
-		if (CollectionUtils.containsAny(query.getAvailableUnitList(),
-				organization().unit().listWithPersonSupNested(effectivePerson))) {
-			return true;
-		}
-		return false;
+		return CollectionUtils.containsAny(query.getAvailableUnitList(),
+				organization().unit().listWithPersonSupNested(effectivePerson));
 	}
 
 	public boolean readable(EffectivePerson effectivePerson, View view) throws Exception {
@@ -168,16 +218,13 @@ public class Business {
 				organization().unit().listWithPersonSupNested(effectivePerson))) {
 			return true;
 		}
-		Query query = this.entityManagerContainer().find(view.getQuery(), Query.class);
-		/** 在所属query的管理人员中 */
-		if (null != query && ListTools.contains(query.getControllerList(), effectivePerson.getDistinguishedName())) {
+		Query q = this.entityManagerContainer().find(view.getQuery(), Query.class);
+		// 在所属query的管理人员中
+		if (null != q && ListTools.contains(q.getControllerList(), effectivePerson.getDistinguishedName())) {
 			return true;
 		}
-		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.QueryManager)) {
-			return true;
-		}
-		return false;
+		return BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.QueryManager));
 	}
 
 	public boolean readable(EffectivePerson effectivePerson, Stat stat) throws Exception {
@@ -198,23 +245,20 @@ public class Business {
 				organization().unit().listWithPersonSupNested(effectivePerson))) {
 			return true;
 		}
-		Query query = this.entityManagerContainer().find(stat.getQuery(), Query.class);
-		/** 在所属query的管理人员中 */
-		if (null != query && ListTools.contains(query.getControllerList(), effectivePerson.getDistinguishedName())) {
+		Query q = this.entityManagerContainer().find(stat.getQuery(), Query.class);
+		// 在所属query的管理人员中
+		if (null != q && ListTools.contains(q.getControllerList(), effectivePerson.getDistinguishedName())) {
 			return true;
 		}
-		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.QueryManager)) {
-			return true;
-		}
-		return false;
+		return BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.QueryManager));
 	}
 
 	public boolean readable(EffectivePerson effectivePerson, Statement statement) throws Exception {
 		if (null == statement) {
 			return false;
 		}
-		if(BooleanUtils.isTrue(statement.getAnonymousAccessible())){
+		if (BooleanUtils.isTrue(statement.getAnonymousAccessible())) {
 			return true;
 		}
 		if (effectivePerson.isManager()) {
@@ -231,16 +275,13 @@ public class Business {
 				organization().unit().listWithPersonSupNested(effectivePerson))) {
 			return true;
 		}
-		Query query = this.entityManagerContainer().find(statement.getQuery(), Query.class);
-		/** 在所属query的管理人员中 */
-		if (null != query && ListTools.contains(query.getControllerList(), effectivePerson.getDistinguishedName())) {
+		Query q = this.entityManagerContainer().find(statement.getQuery(), Query.class);
+		// 在所属query的管理人员中
+		if (null != q && ListTools.contains(q.getControllerList(), effectivePerson.getDistinguishedName())) {
 			return true;
 		}
-		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.QueryManager)) {
-			return true;
-		}
-		return false;
+		return organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.QueryManager);
 	}
 
 	public boolean readable(EffectivePerson effectivePerson, Reveal reveal) throws Exception {
@@ -261,47 +302,37 @@ public class Business {
 				organization().unit().listWithPersonSupNested(effectivePerson))) {
 			return true;
 		}
-		Query query = this.entityManagerContainer().find(reveal.getQuery(), Query.class);
-		/** 在所属query的管理人员中 */
-		if (null != query && ListTools.contains(query.getControllerList(), effectivePerson.getDistinguishedName())) {
+		Query q = this.entityManagerContainer().find(reveal.getQuery(), Query.class);
+		// 在所属query的管理人员中
+		if (null != q && ListTools.contains(q.getControllerList(), effectivePerson.getDistinguishedName())) {
 			return true;
 		}
-		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.QueryManager)) {
-			return true;
-		}
-		return false;
+		return organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.QueryManager);
 	}
 
 	public boolean readable(EffectivePerson effectivePerson, Table o) throws Exception {
-		boolean result = false;
-		if (null != o) {
-			if (ListTools.isEmpty(o.getReadPersonList()) && ListTools.isEmpty(o.getReadUnitList())) {
-				result = true;
-			}
-			if (!result) {
-				if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
-						OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))) {
-					result = true;
-				}
-				if (!result) {
-					if (effectivePerson.isPerson(o.getEditPersonList())
-							|| effectivePerson.isPerson(o.getReadPersonList())) {
-						result = true;
-					}
-					if (!result && (ListTools.isNotEmpty(o.getEditUnitList())
-							|| ListTools.isNotEmpty(o.getReadUnitList()))) {
-						List<String> units = this.organization().unit()
-								.listWithPerson(effectivePerson.getDistinguishedName());
-						if (ListTools.containsAny(units, o.getEditUnitList())
-								|| ListTools.containsAny(units, o.getReadUnitList())) {
-							result = true;
-						}
-					}
-				}
+		if (null == o) {
+			return false;
+		}
+		if (ListTools.isEmpty(o.getReadPersonList()) && ListTools.isEmpty(o.getReadUnitList())) {
+			return true;
+		}
+		if (BooleanUtils.isTrue(effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
+				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager)))) {
+			return true;
+		}
+		if (effectivePerson.isPerson(o.getEditPersonList()) || effectivePerson.isPerson(o.getReadPersonList())) {
+			return true;
+		}
+		if (ListTools.isNotEmpty(o.getEditUnitList()) || ListTools.isNotEmpty(o.getReadUnitList())) {
+			List<String> units = this.organization().unit().listWithPerson(effectivePerson.getDistinguishedName());
+			if (ListTools.containsAny(units, o.getEditUnitList())
+					|| ListTools.containsAny(units, o.getReadUnitList())) {
+				return true;
 			}
 		}
-		return result;
+		return false;
 	}
 
 	public boolean readable(EffectivePerson effectivePerson, ImportModel model) throws Exception {
@@ -322,38 +353,30 @@ public class Business {
 				organization().unit().listWithPersonSupNested(effectivePerson))) {
 			return true;
 		}
-		Query query = this.entityManagerContainer().find(model.getQuery(), Query.class);
-		/** 在所属query的管理人员中 */
-		if (null != query && ListTools.contains(query.getControllerList(), effectivePerson.getDistinguishedName())) {
+		Query q = this.entityManagerContainer().find(model.getQuery(), Query.class);
+		// 在所属query的管理人员中
+		if (null != q && ListTools.contains(q.getControllerList(), effectivePerson.getDistinguishedName())) {
 			return true;
 		}
-		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.QueryManager)) {
-			return true;
-		}
-		return false;
+		return organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.QueryManager);
 	}
 
 	public boolean editable(EffectivePerson effectivePerson, Table o) throws Exception {
 		boolean result = false;
-		if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))) {
+		if (BooleanUtils.isTrue(effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
+				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager)))) {
 			result = true;
 		}
-		if (!result && (null != o)) {
+		if (!result) {
 			if (ListTools.isEmpty(o.getEditPersonList()) && ListTools.isEmpty(o.getEditUnitList())) {
 				result = true;
-				if (!result) {
-					if (effectivePerson.isPerson(o.getEditPersonList())) {
-						result = true;
-					}
-					if (!result && ListTools.isNotEmpty(o.getEditUnitList())) {
-						List<String> units = this.organization().unit()
-								.listWithPerson(effectivePerson.getDistinguishedName());
-						if (ListTools.containsAny(units, o.getEditUnitList())) {
-							result = true;
-						}
-					}
+			} else if (ListTools.isNotEmpty(o.getEditPersonList()) && effectivePerson.isPerson(o.getEditPersonList())) {
+				result = true;
+			} else if (ListTools.isNotEmpty(o.getEditUnitList())) {
+				List<String> units = this.organization().unit().listWithPerson(effectivePerson.getDistinguishedName());
+				if (ListTools.containsAny(units, o.getEditUnitList())) {
+					result = true;
 				}
 			}
 		}
@@ -361,42 +384,39 @@ public class Business {
 	}
 
 	public boolean executable(EffectivePerson effectivePerson, Statement o) throws Exception {
-		boolean result = false;
-		if (null != o) {
-			if(BooleanUtils.isTrue(o.getAnonymousAccessible())){
-				result = true;
-			}else {
-				if (!effectivePerson.isAnonymous()) {
-					if (ListTools.isEmpty(o.getExecutePersonList()) && ListTools.isEmpty(o.getExecuteUnitList())) {
-						result = true;
-					}
-					if (!result) {
-						if (effectivePerson.isManager()
-								|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+		if (null == o) {
+			return false;
+		}
+		if (BooleanUtils.isTrue(o.getAnonymousAccessible())) {
+			return true;
+		}
+		if ((!effectivePerson.isAnonymous()) && ListTools.isEmpty(o.getExecutePersonList())
+				&& ListTools.isEmpty(o.getExecuteUnitList())) {
+			return true;
+		}
+		if (BooleanUtils
+				.isTrue(effectivePerson.isManager()
+						|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
 								OrganizationDefinition.QueryManager))
-								|| effectivePerson.isPerson(o.getExecutePersonList())) {
-							result = true;
-						}
-						if ((!result) && ListTools.isNotEmpty(o.getExecuteUnitList())) {
-							List<String> units = this.organization().unit()
-									.listWithPerson(effectivePerson.getDistinguishedName());
-							if (ListTools.containsAny(units, o.getExecuteUnitList())) {
-								result = true;
-							}
-						}
-					}
-				}
+						|| effectivePerson.isPerson(o.getExecutePersonList()))) {
+			return true;
+		}
+		if (ListTools.isNotEmpty(o.getExecuteUnitList())) {
+			List<String> units = this.organization().unit().listWithPerson(effectivePerson.getDistinguishedName());
+			if (ListTools.containsAny(units, o.getExecuteUnitList())) {
+				return true;
 			}
 		}
-		return result;
+		return false;
 	}
 
 	public boolean controllable(EffectivePerson effectivePerson) throws Exception {
 		boolean result = false;
-		if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))) {
+		if (effectivePerson.isManager() || BooleanUtils.isTrue((this.organization().person().hasRole(effectivePerson,
+				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager)))) {
 			result = true;
 		}
 		return result;
 	}
+
 }

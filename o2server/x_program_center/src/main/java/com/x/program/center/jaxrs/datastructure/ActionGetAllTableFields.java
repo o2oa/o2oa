@@ -24,22 +24,22 @@ class ActionGetAllTableFields extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionGetAllTableFields.class);
 
 	/**
-     * 已经分析过的数据表
+	 * 已经分析过的数据表
 	 */
 	private List<String> analyzedEntityNames = new ArrayList<>();
 
-	ActionResult<List<Wo>> execute( EffectivePerson effectivePerson, HttpServletRequest request ) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, HttpServletRequest request) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		List<Wo> wos_newTables = null;
 		Wo wo = null;
 
-		//遍历所有的模块
-		for( String className : OFFICIAL_MODULE_SORTED_TEMPLATE ){
-			wos_newTables = getDataStructure( className );
-			wos.addAll( wos_newTables );
+		// 遍历所有的模块
+		for (String className : OFFICIAL_MODULE_SORTED_TEMPLATE) {
+			wos_newTables = getDataStructure(className);
+			wos.addAll(wos_newTables);
 		}
-		result.setData( wos );
+		result.setData(wos);
 		return result;
 	}
 
@@ -48,23 +48,24 @@ class ActionGetAllTableFields extends BaseAction {
 		List<Wo> wos_tableFiels = new ArrayList<>();
 		Wo wo = null;
 		try {
-			Class cls = Class.forName( className );
-			Class cls_annotation_moudle = Class.forName( "com.x.base.core.project.annotation.Module" );
+			Class cls = Thread.currentThread().getContextClassLoader().loadClass(className);
+			Class cls_annotation_moudle = Thread.currentThread().getContextClassLoader()
+					.loadClass("com.x.base.core.project.annotation.Module");
 			Method method_containerEntities = cls_annotation_moudle.getMethod("containerEntities");
 
 			Annotation annotation = cls.getAnnotation(cls_annotation_moudle);
 			Object result = null;
-			if( annotation != null ){
+			if (annotation != null) {
 				result = method_containerEntities.invoke(annotation);
-				if( result != null ){
-					String[] containerEntities = (String[])result;
-					if( containerEntities != null && containerEntities.length > 0 ){
-						for( String containerEntity : containerEntities ){
-							if( !analyzedEntityNames.contains( containerEntity ) ){
-								wos_tableFiels = getTableStructure( containerEntity );
-								if(ListTools.isNotEmpty( wos_tableFiels ) ){
-									wos.addAll( wos_tableFiels );
-									analyzedEntityNames.add( containerEntity );
+				if (result != null) {
+					String[] containerEntities = (String[]) result;
+					if (containerEntities != null && containerEntities.length > 0) {
+						for (String containerEntity : containerEntities) {
+							if (!analyzedEntityNames.contains(containerEntity)) {
+								wos_tableFiels = getTableStructure(containerEntity);
+								if (ListTools.isNotEmpty(wos_tableFiels)) {
+									wos.addAll(wos_tableFiels);
+									analyzedEntityNames.add(containerEntity);
 								}
 							}
 						}
@@ -81,33 +82,34 @@ class ActionGetAllTableFields extends BaseAction {
 		return wos;
 	}
 
-	private List<Wo> getTableStructure( String containerEntity ) {
+	private List<Wo> getTableStructure(String containerEntity) {
 		List<Wo> wos = new ArrayList<>();
 		Wo wo = null;
 		try {
-			Class cls_entity = Class.forName( containerEntity );
-			Class cls_annotation_table = Class.forName( "javax.persistence.Table" );
+			Class cls_entity = Thread.currentThread().getContextClassLoader().loadClass(containerEntity);
+			Class cls_annotation_table = Thread.currentThread().getContextClassLoader()
+					.loadClass("javax.persistence.Table");
 			Method cls_annotation_table_method_name = cls_annotation_table.getMethod("name");
 
 			Annotation annotation_table = cls_entity.getAnnotation(cls_annotation_table);
 			Object result = null;
-			if( annotation_table != null ){
-				//遍历所有的有@Column的属性
+			if (annotation_table != null) {
+				// 遍历所有的有@Column的属性
 				Field[] fileds = cls_entity.getDeclaredFields();
-				if( fileds != null && fileds.length > 0 ){
-					for( Field field : fileds ){
-						wo = getFieldStructure( new Wo(), field );
-						if( wo != null && StringUtils.isNotEmpty( wo.getFieldName() ) ) {
-							wo.setEntityName( containerEntity );
+				if (fileds != null && fileds.length > 0) {
+					for (Field field : fileds) {
+						wo = getFieldStructure(new Wo(), field);
+						if (wo != null && StringUtils.isNotEmpty(wo.getFieldName())) {
+							wo.setEntityName(containerEntity);
 							result = cls_annotation_table_method_name.invoke(annotation_table);
-							wo.setTableName( result.toString() );
-							wos.add( wo );
+							wo.setTableName(result.toString());
+							wos.add(wo);
 						}
 					}
 				}
 			}
 		} catch (ClassNotFoundException | NoSuchMethodException e) {
-			logger.info("无法解析实体类" + containerEntity + ",请检查类依赖情况。" );
+			logger.info("无法解析实体类" + containerEntity + ",请检查类依赖情况。");
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
@@ -117,11 +119,13 @@ class ActionGetAllTableFields extends BaseAction {
 		return wos;
 	}
 
-	private Wo getFieldStructure( Wo wo, Field field) {
+	private Wo getFieldStructure(Wo wo, Field field) {
 		Object result = null;
 		try {
-			Class cls_annotation_field_column = Class.forName("javax.persistence.Column");
-			Class cls_annotation_field_describe = Class.forName("com.x.base.core.project.annotation.FieldDescribe");
+			Class cls_annotation_field_column = Thread.currentThread().getContextClassLoader()
+					.loadClass("javax.persistence.Column");
+			Class cls_annotation_field_describe = Thread.currentThread().getContextClassLoader()
+					.loadClass("com.x.base.core.project.annotation.FieldDescribe");
 			Method cls_annotation_field_method_name = cls_annotation_field_describe.getMethod("value");
 			Method cls_annotation_field_column_legnth = cls_annotation_field_column.getMethod("length");
 			Method cls_annotation_field_column_name = cls_annotation_field_column.getMethod("name");
@@ -129,18 +133,18 @@ class ActionGetAllTableFields extends BaseAction {
 			Annotation annotation_field_column = field.getAnnotation(cls_annotation_field_column);
 			Annotation annotation_field_describe = null;
 
-			if (annotation_field_column != null) {//说明有@Column这个注解，是一个列，开始
+			if (annotation_field_column != null) {// 说明有@Column这个注解，是一个列，开始
 				annotation_field_describe = field.getAnnotation(cls_annotation_field_describe);
 				if (annotation_field_describe != null) {
 					result = cls_annotation_field_method_name.invoke(annotation_field_describe);
 					if (result != null) {
-						wo.setDescription( result.toString() );
-						wo.setFieldType( field.getType().getSimpleName() );
+						wo.setDescription(result.toString());
+						wo.setFieldType(field.getType().getSimpleName());
 					}
 
 					result = cls_annotation_field_column_legnth.invoke(annotation_field_column);
 					if (result != null) {
-						wo.setFieldLength( result.toString() );
+						wo.setFieldLength(result.toString());
 					}
 
 					result = cls_annotation_field_column_name.invoke(annotation_field_column);
@@ -229,4 +233,3 @@ class ActionGetAllTableFields extends BaseAction {
 
 	}
 }
-

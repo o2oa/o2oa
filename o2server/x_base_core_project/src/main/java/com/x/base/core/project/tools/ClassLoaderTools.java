@@ -27,12 +27,12 @@ public class ClassLoaderTools {
 	private static final String JAR = ".jar";
 	private static final String ZIP = ".zip";
 
-	public static URLClassLoader urlClassLoader(boolean systemParent, boolean ext, boolean store, boolean custom,
+	public static URLClassLoader urlClassLoader(ClassLoader parent, boolean ext, boolean store, boolean custom,
 			boolean dynamic, Path... paths) throws Exception {
-		return urlClassLoader(systemParent, ext, store, custom, dynamic, ListTools.toList(paths));
+		return urlClassLoader(parent, ext, store, custom, dynamic, ListTools.toList(paths));
 	}
 
-	public static URLClassLoader urlClassLoader(boolean systemParent, boolean ext, boolean store, boolean custom,
+	public static URLClassLoader urlClassLoader(ClassLoader parent, boolean ext, boolean store, boolean custom,
 			boolean dynamic, List<Path> paths) throws Exception {
 		Set<Path> set = new HashSet<>();
 		if (ext) {
@@ -48,8 +48,8 @@ public class ClassLoaderTools {
 			set.addAll(dir(Config.dir_dynamic_jars().toPath()));
 		}
 		set.addAll(paths);
-		if (systemParent) {
-			return URLClassLoader.newInstance(toURL(set), ClassLoader.getSystemClassLoader());
+		if (null != parent) {
+			return URLClassLoader.newInstance(toURL(set), parent);
 		} else {
 			return URLClassLoader.newInstance(toURL(set));
 		}

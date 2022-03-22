@@ -72,7 +72,7 @@ public class JsonPropertiesValueHandler extends AbstractValueHandler {
 			return null;
 		try {
 			String className = vm.getDeclaredType().getName();
-			Class<?> cls = Class.forName(className);
+			Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(className);
 			return gson.fromJson(val.toString(), cls);
 		} catch (ClassNotFoundException e) {
 			throw new InternalException(e);

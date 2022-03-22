@@ -25,14 +25,16 @@ import com.x.query.core.entity.schema.Table;
 
 class ActionListRowNext extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListRowNext.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListRowNext.class);
 
 	ActionResult<List<JsonObject>> execute(EffectivePerson effectivePerson, String tableFlag, String id, Integer count)
 			throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
 			ActionResult<List<JsonObject>> result = new ActionResult<>();
-			logger.debug(effectivePerson, "table:{}, id:{}, count:{}.", tableFlag, id, count);
+			LOGGER.debug("table:{}, id:{}, count:{}.", () -> tableFlag, () -> id, () -> count);
 			Business business = new Business(emc);
 			Table table = emc.flag(tableFlag, Table.class);
 			if (null == table) {
@@ -40,7 +42,9 @@ class ActionListRowNext extends BaseAction {
 			}
 			this.check(effectivePerson, business, table);
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			Class<? extends JpaObject> cls = dynamicEntity.getObjectClass();
+			@SuppressWarnings("unchecked")
+			Class<? extends JpaObject> cls = (Class<? extends JpaObject>) classLoader
+					.loadClass(dynamicEntity.className());
 			EntityManager em = emc.get(cls);
 			Object sequence = null;
 			if (!StringUtils.equals(EMPTY_SYMBOL, id)) {
@@ -66,6 +70,7 @@ class ActionListRowNext extends BaseAction {
 			if (null != sequence) {
 				q.setParameter(1, sequence);
 			}
+			@SuppressWarnings("unchecked")
 			List<Object[]> list = q.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
 			List<JsonObject> wos = new ArrayList<>();
 			result.setCount(emc.count(cls));
