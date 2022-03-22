@@ -243,7 +243,7 @@ public class Config {
 //		return new File(base(), DIR_COMMONS_EXT);
 //	}
 
-	public static Path dir_commons_ext() throws Exception {
+	public static Path dir_commons_ext() throws IOException, URISyntaxException {
 		if (SystemUtils.IS_JAVA_11) {
 			return Paths.get(base()).resolve(DIR_COMMONS_EXT + "_java11");
 		} else {
@@ -277,12 +277,10 @@ public class Config {
 		return new File(base(), DIR_CUSTOM_JARS);
 	}
 
-	public static File dir_custom_jars(Boolean force) throws Exception {
+	public static File dir_custom_jars(Boolean force) throws IOException, URISyntaxException {
 		File dir = new File(base(), DIR_CUSTOM_JARS);
-		if (force) {
-			if ((!dir.exists()) || dir.isFile()) {
-				FileUtils.forceMkdir(dir);
-			}
+		if (BooleanUtils.isTrue(force) && ((!dir.exists()) || dir.isFile())) {
+			FileUtils.forceMkdir(dir);
 		}
 		return dir;
 	}
@@ -295,12 +293,10 @@ public class Config {
 		return dir_dynamic_jars(false);
 	}
 
-	public static File dir_dynamic_jars(Boolean force) throws Exception {
+	public static File dir_dynamic_jars(Boolean force) throws IOException, URISyntaxException {
 		File dir = new File(base(), DIR_DYNAMIC_JARS);
-		if (force) {
-			if ((!dir.exists()) || dir.isFile()) {
-				FileUtils.forceMkdir(dir);
-			}
+		if (BooleanUtils.isTrue(force) && ((!dir.exists()) || dir.isFile())) {
+			FileUtils.forceMkdir(dir);
 		}
 		return dir;
 	}
@@ -354,7 +350,7 @@ public class Config {
 		return new File(base(), DIR_LOCAL_TEMP);
 	}
 
-	public static File dir_local_temp_classes() throws Exception {
+	public static File dir_local_temp_classes() throws IOException, URISyntaxException  {
 		return new File(base(), DIR_LOCAL_TEMP_CLASSES);
 	}
 
@@ -484,12 +480,10 @@ public class Config {
 		return new File(base(), DIR_STORE_JARS);
 	}
 
-	public static File dir_store_jars(Boolean force) throws Exception {
+	public static File dir_store_jars(Boolean force) throws IOException, URISyntaxException {
 		File dir = new File(base(), DIR_STORE_JARS);
-		if (force) {
-			if ((!dir.exists()) || dir.isFile()) {
-				FileUtils.forceMkdir(dir);
-			}
+		if (BooleanUtils.isTrue(force) && ((!dir.exists()) || dir.isFile())) {
+			FileUtils.forceMkdir(dir);
 		}
 		return dir;
 	}
@@ -555,7 +549,7 @@ public class Config {
 
 	private String base;
 
-	public static synchronized String base() throws Exception {
+	public static synchronized String base() throws IOException, URISyntaxException {
 		if (null == instance().base) {
 			instance().base = BaseTools.getBasePath();
 		}

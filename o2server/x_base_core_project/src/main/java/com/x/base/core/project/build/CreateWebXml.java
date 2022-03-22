@@ -35,7 +35,7 @@ public class CreateWebXml {
 	}
 
 	private static String metadataCompleteFalse(String project, String thisApplicationClassName) throws Exception {
-		Class<?> thisApplication = Class.forName(thisApplicationClassName);
+		Class<?> thisApplication = Thread.currentThread().getContextClassLoader().loadClass(thisApplicationClassName);
 		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo()
 				.whitelistPackages(thisApplication.getPackage().getName(), Compilable.class.getPackage().getName())
 				.scan()) {
@@ -71,7 +71,7 @@ public class CreateWebXml {
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
 				if (StringUtils.equals(info.getSimpleName(), project)) {
-					Class<?> cls = Class.forName(info.getName());
+					Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
 					Module module = cls.getAnnotation(Module.class);
 					return module.packageName() + ".ThisApplication";
 				}

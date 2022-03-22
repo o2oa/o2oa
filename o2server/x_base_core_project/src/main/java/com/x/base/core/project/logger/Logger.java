@@ -274,6 +274,10 @@ public class Logger {
 		System.out.println(format(message, os));
 	}
 
+	public void print(String message, Supplier<?>... suppliers) {
+		System.out.println(format(message, getAll(suppliers)));
+	}
+
 	private String requestToString(EffectivePerson effectivePerson, HttpServletRequest request, String headString,
 			String bodyString) {
 		return format(HTTPMESSAGEFORMAT, effectivePerson.getDistinguishedName(), request.getMethod(), this.url(request),

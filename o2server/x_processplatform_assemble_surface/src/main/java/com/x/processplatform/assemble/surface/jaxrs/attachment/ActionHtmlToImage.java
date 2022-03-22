@@ -225,8 +225,6 @@ class ActionHtmlToImage extends BaseAction {
 	}
 
 	public static void main(String[] args) throws Exception{
-		System.out.println(10);
-		System.out.println("!!!!!!!!");
 		try (Playwright playwright = Playwright.create()) {
 			List<BrowserType> browserTypes = Arrays.asList(
 					playwright.chromium(),

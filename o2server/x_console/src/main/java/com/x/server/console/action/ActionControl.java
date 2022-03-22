@@ -239,10 +239,7 @@ public class ActionControl extends ActionBase {
 				logger.print("unkown parameter:{}.", type);
 			} else {
 				EraseContentEntity eraseContentEntity = new EraseContentEntity();
-				for (String str : names) {
-					eraseContentEntity.addClass(str);
-				}
-				eraseContentEntity.execute();
+				eraseContentEntity.execute(names);
 			}
 			break;
 		}

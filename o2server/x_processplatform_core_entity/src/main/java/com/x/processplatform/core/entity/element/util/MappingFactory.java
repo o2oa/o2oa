@@ -24,22 +24,8 @@ import com.x.processplatform.core.entity.element.Mapping;
 
 public class MappingFactory {
 
-//	public static void mappingWorkCompleted(Mapping mapping, Data data, WorkCompleted workCompleted) throws Exception {
-//		mapping(mapping, data, workCompleted);
-//	}
-
 	public static void mapping(Mapping mapping, WorkCompleted workCompleted, Data data, JpaObject jpaObject)
 			throws Exception {
-
-//		if (BooleanUtils.isNotTrue(mapping.getEnable())) {
-//			return;
-//		}
-//
-//		try {
-//			Class.forName(DynamicEntity.CLASS_PACKAGE + "." + mapping.getTableName());
-//		} catch (Exception e) {
-//			throw new ExceptionDynamicClassNotExist(mapping.getTableName());
-//		}
 
 		List<Mapping.Item> items = XGsonBuilder.instance().fromJson(mapping.getData(),
 				new TypeToken<List<Mapping.Item>>() {

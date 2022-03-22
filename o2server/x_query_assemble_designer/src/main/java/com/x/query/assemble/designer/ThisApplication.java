@@ -15,6 +15,10 @@ public class ThisApplication {
 		return context;
 	}
 
+	protected static void setContext(Context context) {
+		ThisApplication.context = context;
+	}
+
 	public static void init() {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());

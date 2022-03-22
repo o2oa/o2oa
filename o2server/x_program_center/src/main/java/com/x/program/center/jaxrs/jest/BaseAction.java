@@ -170,15 +170,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 	@SuppressWarnings("unchecked")
 	private synchronized List<Class<?>> listAssemble() throws Exception {
 		if (null == assembles) {
-			try (ScanResult scanResult = new ClassGraph()
-					.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false, false, false))
+			try (ScanResult scanResult = new ClassGraph().addClassLoader(
+					ClassLoaderTools.urlClassLoader(ClassLoader.getSystemClassLoader(), false, false, false, false))
 					.enableAnnotationInfo().scan()) {
 				assembles = new CopyOnWriteArrayList<Class<?>>();
 				List<ClassInfo> list = new ArrayList<>();
 				list.addAll(scanResult.getClassesWithAnnotation(Module.class.getName()));
 				list = list.stream().sorted(Comparator.comparing(ClassInfo::getName)).collect(Collectors.toList());
 				for (ClassInfo info : list) {
-					Class<?> cls = Class.forName(info.getName());
+					Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
 					Module module = cls.getAnnotation(Module.class);
 					if (Objects.equal(module.type(), ModuleType.ASSEMBLE)) {
 						assembles.add(cls);

@@ -200,7 +200,7 @@ public class ApplicationServerTools extends JettySeverTools {
 				if (Files.exists(war)) {
 					modified(war, dir);
 					String className = contextParamProject(dir);
-					Class<?> cls = ClassLoaderTools.urlClassLoader(false, false, false, false, false,
+					Class<?> cls = ClassLoaderTools.urlClassLoader(null, false, false, false, false,
 							Paths.get(dir.toString(), PathTools.WEB_INF_CLASSES)).loadClass(className);
 					QuickStartWebApp webApp = new QuickStartWebApp();
 					webApp.setAutoPreconfigure(false);
@@ -249,7 +249,7 @@ public class ApplicationServerTools extends JettySeverTools {
 			List<ClassInfo> officialClassInfos) {
 		officialClassInfos.parallelStream().forEach(info -> {
 			try {
-				Class<?> clz = Class.forName(info.getName());
+				Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
 				Path war = Paths.get(Config.dir_store().toString(), info.getSimpleName() + PathTools.DOT_WAR);
 				Path dir = Paths.get(Config.dir_servers_applicationServer_work().toString(), info.getSimpleName());
 				if (Files.exists(war)) {
@@ -297,12 +297,13 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static List<ClassInfo> listOfficial() throws Exception {
 		try (ScanResult scanResult = new ClassGraph()
-				.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, true, false, false)).enableAnnotationInfo()
-				.scan()) {
+				.addClassLoader(
+						ClassLoaderTools.urlClassLoader(ClassLoader.getSystemClassLoader(), false, true, false, false))
+				.enableAnnotationInfo().scan()) {
 			List<ClassInfo> list = new ArrayList<>();
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
-				Class<?> clz = Class.forName(info.getName());
+				Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
 				Module module = clz.getAnnotation(Module.class);
 				if (Objects.equals(module.type(), ModuleType.ASSEMBLE)
 						|| Objects.equals(module.type(), ModuleType.SERVICE)) {
@@ -311,7 +312,7 @@ public class ApplicationServerTools extends JettySeverTools {
 			}
 			List<String> filters = new ArrayList<>();
 			for (ClassInfo info : list) {
-				Class<?> clz = Class.forName(info.getName());
+				Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
 				Module module = clz.getAnnotation(Module.class);
 				if (Objects.equals(ModuleCategory.OFFICIAL, module.category())) {
 					filters.add(info.getName());

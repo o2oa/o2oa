@@ -117,8 +117,7 @@ public class TableAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listRowSelect(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-								   @JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag,
-							  		JsonElement jsonElement) {
+			@JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag, JsonElement jsonElement) {
 		ActionResult<List<?>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -173,7 +172,7 @@ public class TableAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void rowInsertOne(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						  @JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag, JsonElement jsonElement) {
+			@JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag, JsonElement jsonElement) {
 		ActionResult<ActionRowInsertOne.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -209,9 +208,10 @@ public class TableAction extends StandardJaxrsAction {
 	@Path("{tableFlag}/row/{id}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void rowUpdateMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						  @JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag,
-						  @JaxrsParameterDescribe("行标识") @PathParam("id") String id, JsonElement jsonElement) {
+	public void rowUpdateMockPutToPost(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag,
+			@JaxrsParameterDescribe("行标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionRowUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -247,9 +247,10 @@ public class TableAction extends StandardJaxrsAction {
 	@Path("{tableFlag}/row/{id}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void rowDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						  @JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag,
-						  @JaxrsParameterDescribe("行标识") @PathParam("id") String id) {
+	public void rowDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag,
+			@JaxrsParameterDescribe("行标识") @PathParam("id") String id) {
 		ActionResult<ActionRowDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -284,8 +285,9 @@ public class TableAction extends StandardJaxrsAction {
 	@Path("{tableFlag}/row/delete/all/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void rowDeleteAllMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							 @JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag) {
+	public void rowDeleteAllMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag) {
 		ActionResult<ActionRowDeleteAll.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -343,7 +345,7 @@ public class TableAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					@JaxrsParameterDescribe("标识") @PathParam("flag") String flag) {
+			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -361,12 +363,29 @@ public class TableAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						   @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-						   @JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size) {
+			@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size) {
 		ActionResult<List<ActionListPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListPaging().execute(effectivePerson, page, size);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "在服务器重新编译dynamicEntity之后需要重新初始化EntityManagerContainerFactory.", action = ActionReloadClassLoader.class)
+	@GET
+	@Path("reload/classloader")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void reloadClassLoader(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionReloadClassLoader.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionReloadClassLoader().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

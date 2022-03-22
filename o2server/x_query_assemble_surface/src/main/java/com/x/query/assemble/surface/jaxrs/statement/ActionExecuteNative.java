@@ -97,7 +97,8 @@ class ActionExecuteNative extends BaseAction {
 		return compiledScript;
 	}
 
-	private Object script(EffectivePerson effectivePerson, Statement statement, Runtime runtime, Integer page, Integer size) throws Exception {
+	private Object script(EffectivePerson effectivePerson, Statement statement, Runtime runtime, Integer page,
+			Integer size) throws Exception {
 		Object data = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -119,7 +120,7 @@ class ActionExecuteNative extends BaseAction {
 				}
 			}
 			if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-				if (isPageSql(text) && page>=0 && size>=0) {
+				if (isPageSql(text) && page >= 0 && size >= 0) {
 					query.setFirstResult((runtime.page - 1) * runtime.size);
 					query.setMaxResults(runtime.size);
 				}
@@ -151,7 +152,7 @@ class ActionExecuteNative extends BaseAction {
 				}
 			}
 			if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-				if (isPageSql(statement.getData()) && page>=0 && size>=0) {
+				if (isPageSql(statement.getData()) && page >= 0 && size >= 0) {
 					query.setFirstResult((runtime.page - 1) * runtime.size);
 					query.setMaxResults(runtime.size);
 				}
@@ -178,14 +179,16 @@ class ActionExecuteNative extends BaseAction {
 		Class<? extends JpaObject> cls = null;
 		if (StringUtils.equals(Statement.ENTITYCATEGORY_OFFICIAL, statement.getEntityCategory())
 				|| StringUtils.equals(Statement.ENTITYCATEGORY_CUSTOM, statement.getEntityCategory())) {
-			cls = (Class<? extends JpaObject>) Class.forName(statement.getEntityClassName());
+			cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
+					.loadClass(statement.getEntityClassName());
 		} else {
 			Table table = business.entityManagerContainer().flag(statement.getTable(), Table.class);
 			if (null == table) {
 				throw new ExceptionEntityNotExist(statement.getTable(), Table.class);
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			cls = (Class<? extends JpaObject>) Class.forName(dynamicEntity.className());
+			cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
+					.loadClass(dynamicEntity.className());
 		}
 		return cls;
 	}

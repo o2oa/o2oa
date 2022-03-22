@@ -547,79 +547,6 @@ public class NodeAgent extends Thread {
 		FileUtils.cleanDirectory(tempFile);
 	}
 
-//	private List<ClassInfo> listModuleDependencyWith(String name) throws Exception {
-//		List<ClassInfo> list = new ArrayList<>();
-//		try (ScanResult scanResult = new ClassGraph()
-//				.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false, false, false))
-//				.enableAnnotationInfo().scan()) {
-//			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
-//			for (ClassInfo info : classInfos) {
-//				Class<?> cls = Class.forName(info.getName());
-//				Module module = cls.getAnnotation(Module.class);
-//				if (Objects.equals(module.type(), ModuleType.ASSEMBLE)
-//						|| Objects.equals(module.type(), ModuleType.SERVICE)
-//						|| Objects.equals(module.type(), ModuleType.CENTER)) {
-//					if (ArrayUtils.contains(module.storeJars(), name) || ArrayUtils.contains(module.customJars(), name)
-//							|| ArrayUtils.contains(module.dynamicJars(), name)) {
-//						list.add(info);
-//					}
-//				}
-//			}
-//		}
-//		return list;
-//	}
-
-//	private ClassInfo scanModuleClassInfo(String name) throws Exception {
-//		try (ScanResult scanResult = new ClassGraph()
-//				.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false, false, false))
-//				.enableAnnotationInfo().scan()) {
-//			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
-//			for (ClassInfo info : classInfos) {
-//				Class<?> clz = Class.forName(info.getName());
-//				if (StringUtils.equals(clz.getSimpleName(), name)) {
-//					return info;
-//				}
-//			}
-//			return null;
-//		}
-//	}
-
-//	private void modified(byte[] bytes, File war, File dir) throws Exception {
-//		File lastModified = new File(dir, "WEB-INF/lastModified");
-//		if ((!lastModified.exists()) || lastModified.isDirectory() || (war.lastModified() != NumberUtils
-//				.toLong(FileUtils.readFileToString(lastModified, DefaultCharset.charset_utf_8), 0))) {
-//			if (dir.exists()) {
-//				FileUtils.forceDelete(dir);
-//			}
-//			JarTools.unjar(bytes, "", dir, true);
-//			FileUtils.writeStringToFile(lastModified, war.lastModified() + "", DefaultCharset.charset_utf_8, false);
-//		}
-//	}
-
-//	private static void modified(File war, File dir) throws IOException {
-//		File lastModified = new File(dir, "WEB-INF/lastModified");
-//		if ((!lastModified.exists()) || lastModified.isDirectory() || (war.lastModified() != NumberUtils
-//				.toLong(FileUtils.readFileToString(lastModified, DefaultCharset.charset_utf_8), 0))) {
-//			if (dir.exists()) {
-//				FileUtils.forceDelete(dir);
-//			}
-//			JarTools.unjar(war, "", dir, true);
-//			FileUtils.writeStringToFile(lastModified, war.lastModified() + "", DefaultCharset.charset_utf_8, false);
-//		}
-//	}
-
-//	private static String contextParamProject(File dir) throws Exception {
-//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//		DocumentBuilder builder = factory.newDocumentBuilder();
-//		Document doc = builder
-//				.parse(new ByteArrayInputStream(FileUtils.readFileToByteArray(new File(dir, "WEB-INF/web.xml"))));
-//		XPathFactory xPathfactory = XPathFactory.newInstance();
-//		XPath xpath = xPathfactory.newXPath();
-//		XPathExpression expr = xpath.compile("web-app/context-param[param-name='project']/param-value");
-//		String str = expr.evaluate(doc, XPathConstants.STRING).toString();
-//		return StringUtils.trim(str);
-//	}
-
 	protected static String calculateExtraClassPath(Class<?> cls, Path... paths) throws Exception {
 		List<String> jars = new ArrayList<>();
 		jars.addAll(calculateExtraClassPathDefault());
@@ -632,12 +559,6 @@ public class NodeAgent extends Thread {
 		}
 		for (String str : module.customJars()) {
 			File file = new File(Config.dir_custom_jars(), str + ".jar");
-			if (file.exists()) {
-				jars.add(file.getAbsolutePath());
-			}
-		}
-		for (String str : module.dynamicJars()) {
-			File file = new File(Config.dir_dynamic_jars(), str + ".jar");
 			if (file.exists()) {
 				jars.add(file.getAbsolutePath());
 			}

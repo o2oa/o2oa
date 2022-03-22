@@ -5,6 +5,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class CompareQuery extends GsonPropertyObject {
 
+	private static final long serialVersionUID = 675001251642041128L;
+
 	@FieldDescribe("导入名称")
 	private String name;
 

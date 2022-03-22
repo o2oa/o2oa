@@ -1,6 +1,8 @@
 package com.x.server.console.action;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,7 +10,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -31,26 +32,23 @@ import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.entity.annotation.ContainerEntity.Reference;
 import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
-import com.x.query.core.entity.Item;
 
 public class DumpData {
 
 	private static Logger logger = LoggerFactory.getLogger(DumpData.class);
 
-	public boolean execute(String path) throws Exception {
+	public boolean execute(String path) throws IOException, URISyntaxException {
 		Path dir = null;
 		Date start = new Date();
 		if (StringUtils.isEmpty(path)) {
@@ -62,8 +60,10 @@ public class DumpData {
 				return false;
 			}
 		}
+		ClassLoader classLoader = EntityClassLoaderTools.concreteClassLoader();
 		Files.createDirectories(dir);
-		Thread thread = new Thread(new RunnableImpl(dir, start));
+		Thread thread = new Thread(new RunnableImpl(dir, start, classLoader));
+		thread.setContextClassLoader(classLoader);
 		thread.start();
 		return true;
 	}
@@ -74,37 +74,38 @@ public class DumpData {
 		private Date start;
 		private DumpRestoreDataCatalog catalog;
 		private Gson pureGsonDateFormated;
+		private ClassLoader classLoader;
 
-		public RunnableImpl(Path dir, Date start) {
+		public RunnableImpl(Path dir, Date start, ClassLoader classLoader) {
 			this.dir = dir;
 			this.start = start;
 			this.catalog = new DumpRestoreDataCatalog();
 			this.pureGsonDateFormated = XGsonBuilder.instance();
+			this.classLoader = classLoader;
+			Thread.currentThread().setContextClassLoader(classLoader);
 		}
 
-		private Thread dumpDataThread = new Thread(() -> {
+		public void run() {
 			try {
-				List<String> classNames = entities();
+				List<String> classNames = new ArrayList<>(JpaObjectTools.scanContainerEntityNames(classLoader));
 				logger.print("find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
 						DateTools.compact(start) + "_dump.xml");
-				PersistenceXmlHelper.write(xml.toString(), classNames, false);
+				PersistenceXmlHelper.write(xml.toString(), classNames, classLoader);
 				StorageMappings storageMappings = Config.storageMappings();
 				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
 						? classNames.parallelStream()
 						: classNames.stream();
 				AtomicInteger idx = new AtomicInteger(1);
 				stream.forEach(className -> {
+					Thread.currentThread().setContextClassLoader(classLoader);
 					String nameOfThread = Thread.currentThread().getName();
+					Thread.currentThread().setName(DumpData.class.getName() + ":" + className);
 					EntityManagerFactory emf = null;
 					EntityManager em = null;
 					try {
-						Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false, false,
-								false, false, false, Config.dir_local_temp_classes().toPath()));
-						Thread.currentThread().setName(DumpData.class.getName() + ":" + className);
 						@SuppressWarnings("unchecked")
-						Class<JpaObject> cls = (Class<JpaObject>) Thread.currentThread().getContextClassLoader()
-								.loadClass(className);
+						Class<JpaObject> cls = (Class<JpaObject>) classLoader.loadClass(className);
 						emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(), xml.getFileName().toString(),
 								PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 						em = emf.createEntityManager();
@@ -113,42 +114,26 @@ public class DumpData {
 								cls.getName(), estimateCount);
 						dump(cls, em, storageMappings, estimateCount);
 					} catch (Exception e) {
+						e.printStackTrace();
 						logger.error(new Exception(String.format("dump:%s error.", className), e));
 					} finally {
 						Thread.currentThread().setName(nameOfThread);
-						em.close();
-						emf.close();
+						if (null != em) {
+							em.close();
+						}
+						if (null != emf) {
+							emf.close();
+						}
 					}
 				});
 				Files.write(dir.resolve("catalog.json"),
 						pureGsonDateFormated.toJson(catalog).getBytes(StandardCharsets.UTF_8));
 				logger.print("dump data completed, directory: {}, count: {}, elapsed: {} minutes.", dir.toString(),
+
 						count(), (System.currentTimeMillis() - start.getTime()) / 1000 / 60);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}, "dumpDataThread");
-
-		public void run() {
-			dumpDataThread.start();
-		}
-
-		@SuppressWarnings("unchecked")
-		private List<String> entities() throws Exception {
-			List<String> list = new ArrayList<>();
-			if (StringUtils.equals(Config.dumpRestoreData().getMode(), DumpRestoreData.TYPE_FULL)) {
-				list.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
-			}else {
-				for (String str : (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES)) {
-					Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(str);
-					ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
-					if (Objects.equals(containerEntity.reference(), Reference.strong)) {
-						list.add(str);
-					}
-				}
-			}
-			return ListTools.includesExcludesWildcard(list, Config.dumpRestoreData().getIncludes(),
-					Config.dumpRestoreData().getExcludes());
 		}
 
 		private <T extends JpaObject> long estimateCount(EntityManager em, Class<T> cls) {
@@ -171,7 +156,8 @@ public class DumpData {
 			if (StringUtils.isNotEmpty(id)) {
 				p = cb.greaterThan(root.get(JpaObject.id_FIELDNAME), id);
 			}
-			if ((Item.class == cls) && (StringUtils.isNotBlank(Config.dumpRestoreData().getItemCategory()))) {
+			if (StringUtils.equals(cls.getName(), "com.x.query.core.entity.Item")
+					&& (StringUtils.isNotBlank(Config.dumpRestoreData().getItemCategory()))) {
 				p = cb.and(p, cb.equal(root.get(DataItem.itemCategory_FIELDNAME),
 						ItemCategory.valueOf(Config.dumpRestoreData().getItemCategory())));
 			}

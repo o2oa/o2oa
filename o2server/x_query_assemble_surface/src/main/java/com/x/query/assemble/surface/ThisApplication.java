@@ -12,7 +12,11 @@ public class ThisApplication {
 
 	protected static Context context;
 
-	public static QueueImportData queueImportData = new QueueImportData();
+	public static void setContext(Context context) {
+		ThisApplication.context = context;
+	}
+
+	public static final QueueImportData queueImportData = new QueueImportData();
 
 	public static Context context() {
 		return context;

@@ -488,8 +488,7 @@ public class DescribeWoBuilder {
 					typeName = ss[ss.length-1];
 					listParam = true;
 				}
-				//logger.print("Class.forName=" + typeName);
-				Class clz = Class.forName(typeName);
+				Class clz = Thread.currentThread().getContextClassLoader().loadClass(typeName);
 				if(!clz.isEnum()){
 					//不是枚举类型
 					List<Field> fields = FieldUtils.getAllFieldsList(clz);

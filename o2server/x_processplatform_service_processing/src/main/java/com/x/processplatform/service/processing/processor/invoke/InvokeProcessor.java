@@ -160,7 +160,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 
 	private boolean jaxrsInternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
 		ActionResponse resp = null;
-		Class<?> clz = Class.forName("com.x.base.core.project." + invoke.getInternalProject());
+		Class<?> clz = Thread.currentThread().getContextClassLoader()
+				.loadClass("com.x.base.core.project." + invoke.getInternalProject());
 		String uri = this.jaxrsUrl(aeiObjects, invoke);
 		switch (StringUtils.upperCase(invoke.getJaxrsMethod())) {
 		case ConnectionAction.METHOD_POST:

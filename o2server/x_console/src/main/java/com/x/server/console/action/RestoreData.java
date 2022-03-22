@@ -2,6 +2,7 @@ package com.x.server.console.action;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +37,7 @@ import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.StorageMapping;
@@ -43,36 +45,35 @@ import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
-import com.x.query.core.entity.Item;
 
 import net.sf.ehcache.hibernate.management.impl.BeanUtils;
 
 public class RestoreData {
 
-	private static Logger logger = LoggerFactory.getLogger(RestoreData.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RestoreData.class);
 
-	public boolean execute(String path) throws Exception {
+	public boolean execute(String path) throws IOException, URISyntaxException {
 		Date start = new Date();
 		Path dir;
 		if (StringUtils.isEmpty(path)) {
-			logger.warn("path is empty.");
+			LOGGER.warn("{}.", () -> "path is empty.");
 		}
+		ClassLoader classLoader = EntityClassLoaderTools.concreteClassLoader();
 		if (BooleanUtils.isTrue(DateTools.isCompactDateTime(path))) {
 			dir = Paths.get(Config.base(), "local", "dump", "dumpData_" + path);
 		} else {
 			dir = Paths.get(path);
 			if ((!Files.exists(dir)) || (!Files.isDirectory(dir))) {
-				logger.warn("directory not exist: {}.", path);
+				LOGGER.warn("directory not exist: {}.", path);
 				return false;
 			} else if (dir.startsWith(Paths.get(Config.base()))) {
-				logger.warn("path can not in base directory.");
+				LOGGER.warn("path can not in base directory.");
 				return false;
 			}
 		}
-		Thread thread = new Thread(new RunnableImpl(dir, start));
+		Thread thread = new Thread(new RunnableImpl(dir, start, classLoader));
 		thread.start();
 		return true;
 	}
@@ -83,10 +84,13 @@ public class RestoreData {
 		private Date start;
 		private DumpRestoreDataCatalog catalog;
 		private Gson gson;
+		private ClassLoader classLoader;
 
-		public RunnableImpl(Path dir, Date start) throws IOException {
+		public RunnableImpl(Path dir, Date start, ClassLoader classLoader) throws IOException {
 			this.dir = dir;
 			this.start = start;
+			this.classLoader = classLoader;
+			Thread.currentThread().setContextClassLoader(classLoader);
 			this.catalog = new DumpRestoreDataCatalog();
 			this.gson = XGsonBuilder.instance();
 			Path path = dir.resolve("catalog.json");
@@ -97,51 +101,35 @@ public class RestoreData {
 		@Override
 		public void run() {
 			try {
-				List<String> classNames = this.entities();
-				logger.print("find: {} data to restore, path: {}.", classNames.size(), this.dir.toString());
+				List<String> classNames = entities(catalog);
+				LOGGER.print("find: {} data to restore, path: {}.", classNames.size(), this.dir.toString());
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
 						DateTools.compact(start) + "_restore.xml");
-				PersistenceXmlHelper.write(xml.toString(), classNames, false);
+				PersistenceXmlHelper.write(xml.toString(), classNames, classLoader);
 				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
 						? classNames.parallelStream()
 						: classNames.stream();
 				AtomicInteger idx = new AtomicInteger(1);
 				AtomicLong total = new AtomicLong(0);
 				stream.forEach(className -> {
-					String nameOfThread = Thread.currentThread().getName();
+					Thread.currentThread().setContextClassLoader(classLoader);
 					try {
-						Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false, false,
-								false, false, false, Config.dir_local_temp_classes().toPath()));
-						Thread.currentThread().setName(RestoreData.class.getName() + ":" + className);
 						@SuppressWarnings("unchecked")
 						Class<JpaObject> cls = (Class<JpaObject>) Thread.currentThread().getContextClassLoader()
 								.loadClass(className);
-						logger.print("restore data({}/{}): {}.", idx.getAndAdd(1), classNames.size(), cls.getName());
+						LOGGER.print("restore data({}/{}): {}.", idx.getAndAdd(1), classNames.size(), cls.getName());
 						long size = restore(cls, xml);
 						total.getAndAdd(size);
 					} catch (Exception e) {
-						logger.error(new Exception(String.format("restore:%s error.", className), e));
-					} finally {
-						Thread.currentThread().setName(nameOfThread);
+						LOGGER.error(new Exception(String.format("restore:%s error.", className), e));
 					}
 				});
-				logger.print("restore data completed, directory: {}, count: {}, total: {}, elapsed: {} minutes.",
+				LOGGER.print("restore data completed, directory: {}, count: {}, total: {}, elapsed: {} minutes.",
 						dir.toString(), idx.get(), total.longValue(),
 						(System.currentTimeMillis() - start.getTime()) / 1000 / 60);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		}
-
-		@SuppressWarnings("unchecked")
-		private List<String> entities() throws Exception {
-			List<String> containerEntityNames = new ArrayList<>();
-			containerEntityNames.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
-			List<String> classNames = new ArrayList<>();
-			classNames.addAll(this.catalog.keySet());
-			classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreData().getIncludes(),
-					Config.dumpRestoreData().getExcludes());
-			return ListTools.includesExcludesWildcard(containerEntityNames, classNames, null);
 		}
 
 		private long restore(Class<?> cls, Path xml) throws Exception {
@@ -165,7 +153,7 @@ public class RestoreData {
 				}
 				List<Path> paths = this.list(directory);
 				paths.stream().forEach(o -> {
-					logger.print("restore {}/{} part of data:{}.", batch.getAndAdd(1), paths.size(), cls.getName());
+					LOGGER.print("restore {}/{} part of data:{}.", batch.getAndAdd(1), paths.size(), cls.getName());
 					try {
 						em.getTransaction().begin();
 						JsonArray raws = this.convert(o);
@@ -186,12 +174,12 @@ public class RestoreData {
 						em.getTransaction().commit();
 						em.clear();
 					} catch (Exception e) {
-						logger.error(new Exception(String.format("restore error with file:%s.", o.toString()), e));
+						LOGGER.error(new Exception(String.format("restore error with file:%s.", o.toString()), e));
 					}
 				});
-				logger.print("restore data: {} completed, count: {}.", cls.getName(), count.intValue());
+				LOGGER.print("restore data: {} completed, count: {}.", cls.getName(), count.intValue());
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			} finally {
 				em.close();
 				emf.close();
@@ -212,6 +200,16 @@ public class RestoreData {
 			return list;
 		}
 
+		private List<String> entities(DumpRestoreDataCatalog catalog) throws Exception {
+			List<String> containerEntityNames = new ArrayList<>();
+			containerEntityNames.addAll(JpaObjectTools.scanContainerEntityNames(classLoader));
+			List<String> classNames = new ArrayList<>();
+			classNames.addAll(catalog.keySet());
+			classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreData().getIncludes(),
+					Config.dumpRestoreData().getExcludes());
+			return ListTools.includesExcludesWildcard(containerEntityNames, classNames, null);
+		}
+
 		@SuppressWarnings("unchecked")
 		private void binary(Object o, Class<?> cls, Path sub, StorageMappings storageMappings) throws Exception {
 			StorageObject so = (StorageObject) o;
@@ -226,8 +224,8 @@ public class RestoreData {
 			}
 			Path path = sub.resolve(Paths.get(so.path()).getFileName());
 			if (!Files.exists(path)) {
-				logger.warn("file not exist: {}.", path.toString());
-			}else {
+				LOGGER.warn("file not exist: {}.", path.toString());
+			} else {
 				try (InputStream input = Files.newInputStream(path)) {
 					so.saveContent(mapping, input, so.getName());
 				}
@@ -260,17 +258,23 @@ public class RestoreData {
 					}
 					em.getTransaction().commit();
 				}
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<T> cq = cb.createQuery(cls);
-				Root<T> root = cq.from(cls);
-				Predicate p = cb.conjunction();
-				if ((Item.class == cls) && (StringUtils.isNotBlank(Config.dumpRestoreData().getItemCategory()))) {
-					p = cb.and(p, cb.equal(root.get(DataItem.itemCategory_FIELDNAME),
-							ItemCategory.valueOf(Config.dumpRestoreData().getItemCategory())));
-				}
-				list = em.createQuery(cq.select(root).where(p)).setMaxResults(containerEntity.dumpSize())
-						.getResultList();
+				list = list(cls, em, containerEntity);
 			} while (ListTools.isNotEmpty(list));
+		}
+
+		private <T> List<T> list(Class<T> cls, EntityManager em, ContainerEntity containerEntity) throws Exception {
+			List<T> list;
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<T> cq = cb.createQuery(cls);
+			Root<T> root = cq.from(cls);
+			Predicate p = cb.conjunction();
+			if (StringUtils.equals(cls.getName(), "com.x.query.core.entity.Item")
+					&& (StringUtils.isNotBlank(Config.dumpRestoreData().getItemCategory()))) {
+				p = cb.and(p, cb.equal(root.get(DataItem.itemCategory_FIELDNAME),
+						ItemCategory.valueOf(Config.dumpRestoreData().getItemCategory())));
+			}
+			list = em.createQuery(cq.select(root).where(p)).setMaxResults(containerEntity.dumpSize()).getResultList();
+			return list;
 		}
 	}
 }

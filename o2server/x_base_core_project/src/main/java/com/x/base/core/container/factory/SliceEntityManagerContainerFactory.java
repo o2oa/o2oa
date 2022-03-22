@@ -29,29 +29,36 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CheckRemove;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.entity.annotation.RestrictFlag;
+import com.x.base.core.entity.dynamic.DynamicBaseEntity;
+import com.x.base.core.entity.dynamic.DynamicEntity;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.ClassLoaderTools;
 
 public abstract class SliceEntityManagerContainerFactory {
 
-	protected static String META_INF = "META-INF";
-	protected static String PERSISTENCE_XML_PATH = META_INF + "/persistence.xml";
+	protected static final String META_INF = "META-INF";
+	protected static final String PERSISTENCE_XML_PATH = META_INF + "/persistence.xml";
 
 	/* class 与 entityManagerFactory 映射表 */
-	protected Map<Class<? extends JpaObject>, EntityManagerFactory> entityManagerFactoryMap = new ConcurrentHashMap<Class<? extends JpaObject>, EntityManagerFactory>();
+	protected Map<Class<? extends JpaObject>, EntityManagerFactory> entityManagerFactoryMap = new ConcurrentHashMap<>();
 	/* class 与 @Flag字段 映射表 */
-	protected Map<Class<? extends JpaObject>, List<Field>> flagMap = new ConcurrentHashMap<Class<? extends JpaObject>, List<Field>>();
+	protected Map<Class<? extends JpaObject>, List<Field>> flagMap = new ConcurrentHashMap<>();
 	/* class 与 entityManagerFactory 映射表 */
-	protected Map<Class<? extends JpaObject>, List<Field>> restrictFlagMap = new ConcurrentHashMap<Class<? extends JpaObject>, List<Field>>();
+	protected Map<Class<? extends JpaObject>, List<Field>> restrictFlagMap = new ConcurrentHashMap<>();
 	/* class 与 class 中需要检查 Persist 字段的对应表 */
-	protected Map<Class<? extends JpaObject>, Map<Field, CheckPersist>> checkPersistFieldMap = new ConcurrentHashMap<Class<? extends JpaObject>, Map<Field, CheckPersist>>();
+	protected Map<Class<? extends JpaObject>, Map<Field, CheckPersist>> checkPersistFieldMap = new ConcurrentHashMap<>();
 	/* class 与 class 中需要检查 Remove 字段的对应表 */
-	protected Map<Class<? extends JpaObject>, Map<Field, CheckRemove>> checkRemoveFieldMap = new ConcurrentHashMap<Class<? extends JpaObject>, Map<Field, CheckRemove>>();
+	protected Map<Class<? extends JpaObject>, Map<Field, CheckRemove>> checkRemoveFieldMap = new ConcurrentHashMap<>();
 
+	@SuppressWarnings("unchecked")
 	protected SliceEntityManagerContainerFactory(String webApplicationDirectory, List<String> entities,
-			boolean sliceFeatureEnable) throws Exception {
+			boolean sliceFeatureEnable, ClassLoader classLoader) throws Exception {
 		File path = new File(webApplicationDirectory + "/WEB-INF/classes/" + PERSISTENCE_XML_PATH);
-		List<String> classNames = PersistenceXmlHelper.write(path.getAbsolutePath(), entities, true);
+		List<String> classNames = PersistenceXmlHelper.write(path.getAbsolutePath(), entities, classLoader);
+		ClassLoader cl = null == classLoader ? Thread.currentThread().getContextClassLoader() : classLoader;
+		Class<? extends JpaObject> clz;
 		for (String className : classNames) {
-			Class<? extends JpaObject> clz = (Class<? extends JpaObject>) Class.forName(className);
+			clz = (Class<? extends JpaObject>) cl.loadClass(className);
 			checkPersistFieldMap.put(clz, this.loadCheckPersistField(clz));
 			checkRemoveFieldMap.put(clz, this.loadCheckRemoveField(clz));
 			Properties properties = PersistenceXmlHelper.properties(clz.getName(), sliceFeatureEnable);
@@ -73,9 +80,19 @@ public abstract class SliceEntityManagerContainerFactory {
 			flagMap.put(clz, Collections.unmodifiableList(flagFields));
 			restrictFlagMap.put(clz, Collections.unmodifiableList(restrictFlagFields));
 		}
+		if (null != classLoader) {
+			clz = (Class<? extends JpaObject>) cl.loadClass("com.x.base.core.entity.dynamic.DynamicBaseEntity");
+			checkPersistFieldMap.put(clz, new HashMap<>());
+			checkRemoveFieldMap.put(clz, new HashMap<>());
+			Properties properties = PersistenceXmlHelper.properties(clz.getName(), sliceFeatureEnable);
+			entityManagerFactoryMap.put(clz,
+					OpenJPAPersistence.createEntityManagerFactory(clz.getName(), PERSISTENCE_XML_PATH, properties));
+			flagMap.put(clz, new ArrayList<>());
+			restrictFlagMap.put(clz, new ArrayList<>());
+		}
 	}
 
-	protected SliceEntityManagerContainerFactory(String source) throws Exception {
+	protected SliceEntityManagerContainerFactory(String source) {
 		Set<Class<? extends JpaObject>> classes = this.listUnitClass(source);
 		for (Class<? extends JpaObject> clz : classes) {
 			checkPersistFieldMap.put(clz, this.loadCheckPersistField(clz));
@@ -100,17 +117,17 @@ public abstract class SliceEntityManagerContainerFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> Class<T> assignableFrom(Class<T> cls) throws Exception {
+	public <T> Class<T> assignableFrom(Class<T> cls) {
 		for (Class<?> clazz : this.entityManagerFactoryMap.keySet()) {
 			if (clazz.isAssignableFrom(cls)) {
 				return (Class<T>) clazz;
 			}
 		}
-		throw new Exception("can not find jpa assignable class for " + cls + ".");
+		throw new IllegalStateException("can not find jpa assignable class for " + cls + ".");
 	}
 
-	private <T extends JpaObject> Map<Field, CheckPersist> loadCheckPersistField(Class<T> cls) throws Exception {
-		Map<Field, CheckPersist> map = new HashMap<Field, CheckPersist>();
+	private <T extends JpaObject> Map<Field, CheckPersist> loadCheckPersistField(Class<T> cls) {
+		Map<Field, CheckPersist> map = new HashMap<>();
 		for (Field fld : cls.getDeclaredFields()) {
 			CheckPersist checkPersist = fld.getAnnotation(CheckPersist.class);
 			if (null != checkPersist) {
@@ -120,8 +137,8 @@ public abstract class SliceEntityManagerContainerFactory {
 		return map;
 	}
 
-	private <T extends JpaObject> Map<Field, CheckRemove> loadCheckRemoveField(Class<T> cls) throws Exception {
-		Map<Field, CheckRemove> map = new HashMap<Field, CheckRemove>();
+	private <T extends JpaObject> Map<Field, CheckRemove> loadCheckRemoveField(Class<T> cls) {
+		Map<Field, CheckRemove> map = new HashMap<>();
 		for (Field fld : cls.getDeclaredFields()) {
 			CheckRemove checkRemove = fld.getAnnotation(CheckRemove.class);
 			if (null != checkRemove) {
@@ -131,7 +148,8 @@ public abstract class SliceEntityManagerContainerFactory {
 		return map;
 	}
 
-	private Set<Class<? extends JpaObject>> listUnitClass(String source) throws Exception {
+	@SuppressWarnings("unchecked")
+	private Set<Class<? extends JpaObject>> listUnitClass(String source) {
 		try {
 			Set<Class<? extends JpaObject>> classes = new HashSet<>();
 			URL url;
@@ -141,19 +159,53 @@ public abstract class SliceEntityManagerContainerFactory {
 				url = this.getClass().getClassLoader().getResource(source);
 			}
 			if (null == url) {
-				throw new Exception("can not load resource: " + source + ".");
+				throw new IllegalStateException("can not load resource: " + source + ".");
 			}
 			File file = new File(url.toURI());
 			SAXReader reader = new SAXReader();
+			reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 			Document document = reader.read(file);
-			for (Object o : document.getRootElement().elements("persistence-unit")) {
-				Element unit = (Element) o;
-				classes.add((Class<JpaObject>) Class.forName(unit.attribute("name").getValue()));
+			for (Element unit : document.getRootElement().elements("persistence-unit")) {
+				classes.add((Class<JpaObject>) Thread.currentThread().getContextClassLoader().loadClass(unit.attribute("name").getValue()));
 			}
 			return classes;
 		} catch (Exception e) {
-			throw new Exception("list unit error:" + source, e);
+			throw new IllegalStateException("list unit error:" + source, e);
 		}
 	}
 
+//	public void refreshDynamicEntity(String webApplicationDirectory, List<String> entities) throws Exception {
+//		File path = new File(webApplicationDirectory + "/WEB-INF/classes/" + PERSISTENCE_XML_PATH);
+//		List<String> classNames = PersistenceXmlHelper.write(path.getAbsolutePath(), entities, true);
+//		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//		for (String className : classNames) {
+//			if (className.startsWith(DynamicEntity.CLASS_PACKAGE)
+//					|| className.equals(DynamicBaseEntity.class.getName())) {
+//				@SuppressWarnings("unchecked")
+//				Class<? extends JpaObject> clz = (Class<? extends JpaObject>) classLoader.loadClass(className);
+//				checkPersistFieldMap.put(clz, this.loadCheckPersistField(clz));
+//				checkRemoveFieldMap.put(clz, this.loadCheckRemoveField(clz));
+//				Properties properties = PersistenceXmlHelper.properties(clz.getName(), false);
+//				entityManagerFactoryMap.put(clz,
+//						OpenJPAPersistence.createEntityManagerFactory(clz.getName(), PERSISTENCE_XML_PATH, properties));
+//				List<Field> flagFields = new ArrayList<>();
+//				List<Field> restrictFlagFields = new ArrayList<>();
+//				for (Field o : FieldUtils.getFieldsListWithAnnotation(clz, Id.class)) {
+//					flagFields.add(o);
+//					restrictFlagFields.add(o);
+//				}
+//				for (Field o : FieldUtils.getFieldsListWithAnnotation(clz, Flag.class)) {
+//					flagFields.add(o);
+//					restrictFlagFields.add(o);
+//				}
+//				for (Field o : FieldUtils.getFieldsListWithAnnotation(clz, RestrictFlag.class)) {
+//					restrictFlagFields.add(o);
+//				}
+//				flagMap.put(clz, Collections.unmodifiableList(flagFields));
+//				restrictFlagMap.put(clz, Collections.unmodifiableList(restrictFlagFields));
+//			}
+//		}
+//	}
 }

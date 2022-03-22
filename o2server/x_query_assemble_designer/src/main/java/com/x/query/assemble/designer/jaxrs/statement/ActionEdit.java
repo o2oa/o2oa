@@ -58,7 +58,7 @@ class ActionEdit extends BaseAction {
 				statement.setTable(table.getId());
 			} else {
 				try {
-					Class.forName(statement.getEntityClassName());
+					Thread.currentThread().getContextClassLoader().loadClass(statement.getEntityClassName());
 				} catch (Exception e) {
 					throw new ExceptionEntityClass(statement.getEntityClassName());
 				}
