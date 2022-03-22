@@ -1348,7 +1348,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "html转图片工具类，转换后如果工作不为空通过downloadWithWork接口下载，为空downloadTransfer接口下载.", action = ActionHtmlToImage.class)
+	@JaxrsMethodDescribe(value = "html转图片工具类，通过微软playwright工具以截图方式生成图片，" +
+			"转换后如果工作不为空通过downloadWithWork接口下载，为空downloadTransfer接口下载.", action = ActionHtmlToImage.class)
 	@POST
 	@Path("html/to/image")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

@@ -78,11 +78,12 @@ class ActionHtmlToImage extends BaseAction {
 			workHtml = "无内容";
 		}
 		if (workHtml.toLowerCase().indexOf("<html") == -1) {
-			workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
+			workHtml = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>" +
+					"<body>" + workHtml + "</body></html>";
 		}
-		String name = StringUtils.split(effectivePerson.getDistinguishedName(),"@")[0] + DateTools.compact(new Date()) + ".jpg";
+		String name = StringUtils.split(effectivePerson.getDistinguishedName(),"@")[0] + DateTools.compact(new Date()) + ".png";
 		if (StringUtils.isNotEmpty(wi.getTitle())) {
-			name = wi.getTitle() + ".jpg";
+			name = wi.getTitle() + ".png";
 		}
 		byte[] bytes = null;
 		try (Playwright playwright = Playwright.create()) {
@@ -102,16 +103,16 @@ class ActionHtmlToImage extends BaseAction {
 					page.setContent(workHtml);
 					Page.ScreenshotOptions screenshotOptions = new Page.ScreenshotOptions();
 					screenshotOptions.setFullPage(true);
+					if (wi.getHtmlWidth() != null && wi.getHtmlHeight() != null) {
+						screenshotOptions.setClip(wi.getStartX(), wi.getStartY(), wi.getHtmlWidth(), wi.getHtmlHeight());
+					}
+					if(BooleanUtils.isTrue(wi.getOmitBackground())){
+						screenshotOptions.setOmitBackground(wi.getOmitBackground());
+					}
 					File tempDir = Config.dir_local_temp();
 					FileTools.forceMkdir(tempDir);
 					File file = new File(tempDir, name);
-					//screenshotOptions.setPath(Paths.get("/Users/chengjian/dev/tmp/screenshot-" + browserType.name() + ".png"));
 					screenshotOptions.setPath(file.toPath());
-					if(wi.getQuality()!=null && wi.getQuality()>20){
-						screenshotOptions.setQuality(wi.getQuality());
-					}else {
-						screenshotOptions.setQuality(80);
-					}
 					page.screenshot(screenshotOptions);
 					bytes = FileUtils.readFileToByteArray(file);
 					break;
@@ -173,8 +174,16 @@ class ActionHtmlToImage extends BaseAction {
 		private String workHtml;
 		@FieldDescribe("图片标题")
 		private String title;
-		@FieldDescribe("图片质量，默认80，值越大越清晰")
-		private Integer quality;
+		@FieldDescribe("html正文宽度，允许为空.")
+		private Double htmlWidth;
+		@FieldDescribe("html正文高度，允许为空.")
+		private Double htmlHeight;
+		@FieldDescribe("html的X轴开始位置，允许为空.")
+		private Double startX;
+		@FieldDescribe("html的Y轴开始位置，允许为空.")
+		private Double startY;
+		@FieldDescribe("背景是否透明，默认为false.")
+		private Boolean omitBackground;
 		@FieldDescribe("工作标识，把图片保存到工单的附件中，非必填")
 		private String workId;
 		@FieldDescribe("位置，工作标识不为空的时候必填")
@@ -212,12 +221,44 @@ class ActionHtmlToImage extends BaseAction {
 			this.site = site;
 		}
 
-		public Integer getQuality() {
-			return quality;
+		public Double getStartX() {
+			return startX == null ? 0D : startX;
 		}
 
-		public void setQuality(Integer quality) {
-			this.quality = quality;
+		public void setStartX(Double startX) {
+			this.startX = startX;
+		}
+
+		public Double getStartY() {
+			return startY == null ? 0D : startX;
+		}
+
+		public void setStartY(Double startY) {
+			this.startY = startY;
+		}
+
+		public Double getHtmlWidth() {
+			return htmlWidth;
+		}
+
+		public void setHtmlWidth(Double htmlWidth) {
+			this.htmlWidth = htmlWidth;
+		}
+
+		public Double getHtmlHeight() {
+			return htmlHeight;
+		}
+
+		public void setHtmlHeight(Double htmlHeight) {
+			this.htmlHeight = htmlHeight;
+		}
+
+		public Boolean getOmitBackground() {
+			return omitBackground;
+		}
+
+		public void setOmitBackground(Boolean omitBackground) {
+			this.omitBackground = omitBackground;
 		}
 	}
 
@@ -238,10 +279,11 @@ class ActionHtmlToImage extends BaseAction {
 				try (Browser browser = browserType.launch(options)) {
 					BrowserContext context = browser.newContext();
 					Page page = context.newPage();
-					page.navigate("file:///Users/chengjian/dev/temp/test.html");
+					page.navigate("file:///Users/chengjian/Downloads/test11.html");
 					Page.ScreenshotOptions screenshotOptions = new Page.ScreenshotOptions();
 					screenshotOptions.setFullPage(true);
 					screenshotOptions.setClip(0,0, 800, 2310);
+					screenshotOptions.setOmitBackground(true);
 					//screenshotOptions.setQuality(2);
 					screenshotOptions.setPath(Paths.get("/Users/chengjian/dev/temp/screenshot-" + browserType.name() + ".png"));
 					page.screenshot(screenshotOptions);
