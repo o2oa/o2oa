@@ -64,8 +64,8 @@ class ActionBuildQueryDispatch extends BaseAction {
 		List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_surface.class);
 		if (ListTools.isNotEmpty(apps)) {
 			apps.stream().forEach(o -> {
-				String url = o.getUrlJaxrsRoot() + "table/reload/classloader";
 				try {
+					String url = o.getUrlJaxrsRoot() + "table/reload/dynamic";
 					CipherConnectionAction.get(false, url);
 				} catch (Exception e) {
 					e.printStackTrace();
