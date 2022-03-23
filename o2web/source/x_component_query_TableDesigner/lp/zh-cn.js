@@ -66,6 +66,7 @@ MWF.xApplication.query.TableDesigner.LP = {
     "tableExplodeInfo": "默认最多导出2000行。确认是否导出？",
     "tableExplode_success": "导出成功",
 
+    "buildNoTableError": "当前应用还没有数据表，不需要编译。",
     "buildCurrentAppTitle": "编译当前应用数据表",
     "buildCurrentAppInfor": "下列数据表将被编译：</br>{buildlist}",
     "unbuildCurrentAppInfor":   "下列数据表不编译或取消编译：</br>{draftList}",
