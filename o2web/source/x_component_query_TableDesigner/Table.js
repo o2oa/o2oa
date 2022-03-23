@@ -532,29 +532,34 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         if (!e) e = this.node;
 
         this.designer.actions.listTable(this.designer.application.id, function (json) {
-            var bulidStr = "";
-            var draftStr = "";
-            debugger;
-            json.data.each(function(table){
-                if( table.status === "build" ){
-                    bulidStr += "<div style='line-height: 24px;padding-left: 10px;'>" + table.name + "</div>";
-                }else{
-                    draftStr += "<div style='line-height: 24px;padding-left: 10px;'>" + table.name + "</div>";
-                }
-            }.bind(this));
-
             var html = "";
-            if( bulidStr ){
-                var h1 = MWF.APPDTBD.LP.buildCurrentAppInfor;
-                var h2 = "<div style='min-height: 70px; max-height: 150px; width: 400px; overflow:auto; font-size: 12px;'>"+bulidStr+"</div>";
-                html += h1.replace("{buildlist}", h2);
+            if( json.data.length  === 0 ){
+                this.designer.notice(this.designer.lp.buildNoTableError, "info", this.node, {"x": "left", "y": "bottom"});
+                return;
+            }else{
+                var bulidStr = "";
+                var draftStr = "";
+                debugger;
+                json.data.each(function(table){
+                    if( table.status === "build" ){
+                        bulidStr += "<div style='line-height: 24px;padding-left: 10px;'>" + table.name + "</div>";
+                    }else{
+                        draftStr += "<div style='line-height: 24px;padding-left: 10px;'>" + table.name + "</div>";
+                    }
+                }.bind(this));
+
+                if( bulidStr ){
+                    var h1 = MWF.APPDTBD.LP.buildCurrentAppInfor;
+                    var h2 = "<div style='min-height: 70px; max-height: 150px; width: 400px; overflow:auto; font-size: 12px;'>"+bulidStr+"</div>";
+                    html += h1.replace("{buildlist}", h2);
+                }
+                if( draftStr ){
+                    var h3 = MWF.APPDTBD.LP.unbuildCurrentAppInfor;
+                    var h4 = "<div style='min-height: 70px; max-height: 150pxpx; width: 400px; overflow:auto; font-size: 12px;'>"+draftStr+"</div>";
+                    html += h3.replace("{draftList}", h4);
+                }
+                html += MWF.APPDTBD.LP.buildCurrentAppQuection;
             }
-            if( draftStr ){
-                var h3 = MWF.APPDTBD.LP.unbuildCurrentAppInfor;
-                var h4 = "<div style='min-height: 70px; max-height: 150pxpx; width: 400px; overflow:auto; font-size: 12px;'>"+draftStr+"</div>";
-                html += h3.replace("{draftList}", h4);
-            }
-            html += MWF.APPDTBD.LP.buildCurrentAppQuection;
 
             this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildCurrentAppTitle, {
                 "html": html
