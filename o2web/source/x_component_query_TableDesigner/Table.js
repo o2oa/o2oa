@@ -530,15 +530,32 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         MWF.require("MWF.widget.Mask", null, false);
         var _self = this;
         if (!e) e = this.node;
-         var html = MWF.APPDTBD.LP.buildCurrentAppInfor;
 
         this.designer.actions.listTable(this.designer.application.id, function (json) {
-            var listStr = "";
+            var bulidStr = "";
+            var draftStr = "";
+            debugger;
             json.data.each(function(table){
-                listStr += "<div style='line-height: 24px;padding-left: 10px;'>" + table.name + "</div>"; //+ (table.alias ? ("  (" + table.alias + ")") : "")
+                if( table.status === "build" ){
+                    bulidStr += "<div style='line-height: 24px;padding-left: 10px;'>" + table.name + "</div>";
+                }else{
+                    draftStr += "<div style='line-height: 24px;padding-left: 10px;'>" + table.name + "</div>";
+                }
             }.bind(this));
-            var h = "<div style='min-height: 70px; max-height: 200px; width: 400px; overflow:auto; font-size: 12px;'>"+listStr+"</div>";
-            html = html.replace("{tablelist}", h);
+
+            var html = "";
+            if( bulidStr ){
+                var h1 = MWF.APPDTBD.LP.buildCurrentAppInfor;
+                var h2 = "<div style='min-height: 70px; max-height: 150px; width: 400px; overflow:auto; font-size: 12px;'>"+bulidStr+"</div>";
+                html += h1.replace("{buildlist}", h2);
+            }
+            if( draftStr ){
+                var h3 = MWF.APPDTBD.LP.unbuildCurrentAppInfor;
+                var h4 = "<div style='min-height: 70px; max-height: 150pxpx; width: 400px; overflow:auto; font-size: 12px;'>"+draftStr+"</div>";
+                html += h3.replace("{draftList}", h4);
+            }
+            html += MWF.APPDTBD.LP.buildCurrentAppQuection;
+
             this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildCurrentAppTitle, {
                 "html": html
             }, 480, 120, function(){
