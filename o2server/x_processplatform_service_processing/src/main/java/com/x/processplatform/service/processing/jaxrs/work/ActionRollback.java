@@ -1,5 +1,6 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -19,10 +20,12 @@ import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -32,7 +35,6 @@ import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
@@ -44,7 +46,10 @@ import com.x.processplatform.service.processing.ThisApplication;
 
 class ActionRollback extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionRollback.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
@@ -107,7 +112,9 @@ class ActionRollback extends BaseAction {
 					emc.beginTransaction(ReadCompleted.class);
 					emc.beginTransaction(Review.class);
 
-					rollbackWork(business, work, workLog, activity);
+					rollbackWork(work, workLog);
+
+					rollbackForm(business, work, node, application);
 
 					disconnectWorkLog(work, workLog);
 
@@ -124,6 +131,8 @@ class ActionRollback extends BaseAction {
 
 					rollbackReview(business, nodes, emc.listEqual(Review.class, Review.job_FIELDNAME, work.getJob()));
 
+					rollbackRecord(business, nodes, emc.listEqual(Record.class, Record.job_FIELDNAME, work.getJob()));
+
 					rollbackWorkLog(business, work, nodes, workLogs);
 
 					emc.commit();
@@ -135,7 +144,8 @@ class ActionRollback extends BaseAction {
 			}
 		};
 
-		ActionResult<Wo> result = ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
+		ActionResult<Wo> result = ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300,
+				TimeUnit.SECONDS);
 
 		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 				Applications.joinQueryUri("work", workId, "processing"), null, job);
@@ -144,7 +154,7 @@ class ActionRollback extends BaseAction {
 
 	}
 
-	private void rollbackWork(Business business, Work work, WorkLog workLog, Activity activity) throws Exception {
+	private void rollbackWork(Work work, WorkLog workLog) {
 		work.setSplitting(false);
 		work.setActivityName(workLog.getFromActivityName());
 		work.setActivity(workLog.getFromActivity());
@@ -153,18 +163,40 @@ class ActionRollback extends BaseAction {
 		work.setActivityDescription("");
 		work.setActivityToken(workLog.getFromActivityToken());
 		work.setActivityType(workLog.getFromActivityType());
-		/* 清除掉当前的待办人准备重新生成 */
+		// 清除掉当前的待办人准备重新生成
 		work.getManualTaskIdentityList().clear();
-		String formId = PropertyTools.getOrElse(activity, Manual.form_FIELDNAME, String.class, "");
-		if (StringUtils.isNotEmpty(formId)) {
-			/* 默认流程导入的时候表单字段里面填写了不存在的值,所以这里要进行校验是否存在 */
-			Form form = business.element().get(formId, Form.class);
+		work.setWorkStatus(WorkStatus.processing);
+	}
+
+	private void rollbackForm(Business business, Work work, Node node, Application application) throws Exception {
+		String id = "";
+		List<Node> list = new ArrayList<>();
+		List<Node> temp = new ArrayList<>();
+		list.add(node);
+		do {
+			temp.clear();
+			for (Node n : list) {
+				Activity activity = business.element().getActivity(n.getWorkLog().getFromActivity());
+				id = activity.getForm();
+				if (StringUtils.isNotEmpty(id)) {
+					Form form = business.element().get(id, Form.class);
+					if (null != form) {
+						work.setForm(id);
+					}
+					return;
+				} else {
+					temp.addAll(node.parents());
+				}
+			}
+			list.clear();
+			list.addAll(temp);
+		} while (!list.isEmpty());
+		if (StringUtils.isNotEmpty(application.getDefaultForm())) {
+			Form form = business.element().get(application.getDefaultForm(), Form.class);
 			if (null != form) {
-				work.setForm(formId);
+				work.setForm(id);
 			}
 		}
-//		work.setErrorRetry(0);
-		work.setWorkStatus(WorkStatus.processing);
 	}
 
 	private void disconnectWorkLog(Work work, WorkLog workLog) {
@@ -249,6 +281,17 @@ class ActionRollback extends BaseAction {
 		}
 	}
 
+	private void rollbackRecord(Business business, Nodes nodes, List<Record> list) throws Exception {
+		Date date = nodes.latestArrivedTime();
+		if (null != date) {
+			for (Record o : list) {
+				if (null != o.getCreateTime() && o.getCreateTime().after(date)) {
+					business.entityManagerContainer().remove(o);
+				}
+			}
+		}
+	}
+
 	private void rollbackWorkLog(Business business, Work work, Nodes nodes, List<WorkLog> list) throws Exception {
 		for (WorkLog o : list) {
 			if (!nodes.containsWorkLog(o)) {
@@ -262,6 +305,8 @@ class ActionRollback extends BaseAction {
 	}
 
 	public static class Wi extends ProcessingAttributes {
+
+		private static final long serialVersionUID = -8317517462483674906L;
 
 		@FieldDescribe("工作日志标识")
 		private String workLog;
@@ -277,5 +322,7 @@ class ActionRollback extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 3836331836701686038L;
 	}
 }
