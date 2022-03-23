@@ -79,7 +79,7 @@ MWF.xApplication.query.ImporterDesigner.Main = new Class({
 
         listImporterItem.store("importer", importer);
         listImporterItem.addEvents({
-            "dblclick": function(e){_self.loadImporterByData(this, e);},
+            "click": function(e){_self.loadImporterByData(this, e);},
             "mouseover": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem_over);},
             "mouseout": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem);}
         });

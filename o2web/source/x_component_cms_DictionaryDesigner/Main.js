@@ -326,7 +326,7 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 
         listDictionaryItem.store("dictionary", dictionary);
         listDictionaryItem.addEvents({
-            "dblclick": function(e){_self.loadDictionaryByData(this, e);},
+            "click": function(e){_self.loadDictionaryByData(this, e);},
             "mouseover": function(){if (_self.currentListDictionaryItem!=this) this.setStyles(_self.css.listDictionaryItem_over);},
             "mouseout": function(){if (_self.currentListDictionaryItem!=this) this.setStyles(_self.css.listDictionaryItem);}
         });

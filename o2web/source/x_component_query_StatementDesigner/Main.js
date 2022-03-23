@@ -204,7 +204,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
 
         listStatementItem.store("statement", statement);
         listStatementItem.addEvents({
-            "dblclick": function(e){_self.loadStatementByData(this, e);},
+            "click": function(e){_self.loadStatementByData(this, e);},
             "mouseover": function(){if (_self.currentListStatementItem!=this) this.setStyles(_self.css.listStatementItem_over);},
             "mouseout": function(){if (_self.currentListStatementItem!=this) this.setStyles(_self.css.listStatementItem);}
         });
