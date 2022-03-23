@@ -175,7 +175,7 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
 
         listViewItem.store("view", view);
         listViewItem.addEvents({
-            "dblclick": function(e){_self.loadViewByData(this, e);},
+            "click": function(e){_self.loadViewByData(this, e);},
             "mouseover": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem_over);},
             "mouseout": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem);}
         });

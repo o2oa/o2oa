@@ -67,8 +67,10 @@ MWF.xApplication.query.TableDesigner.LP = {
     "tableExplode_success": "导出成功",
 
     "buildCurrentAppTitle": "编译当前应用数据表",
-    "buildCurrentAppInfor": "即将编译本应用的所有数据表：<br/>{tablelist}您确定要执行此操作吗？",
-    "buildCurrentApp_success": "已编译当前应用所有数据表！",
+    "buildCurrentAppInfor": "下列数据表将被编译：</br>{buildlist}",
+    "unbuildCurrentAppInfor":   "下列数据表不编译或取消编译：</br>{draftList}",
+    "buildCurrentAppQuection": "</br>您确定要执行此操作吗？",
+    "buildCurrentApp_success": "已编译当前应用数据表！",
     "building": "正在编译...",
 
     "tableImplodeTitle": "导入数据",

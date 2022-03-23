@@ -166,7 +166,7 @@ o2.xApplication.ConfigDesigner.Main = new Class({
 
         listScriptItem.store("script", {id:id,name:name});
         listScriptItem.addEvents({
-            "dblclick": function(e){_self.loadScriptByData(this, e);},
+            "click": function(e){_self.loadScriptByData(this, e);},
             "mouseover": function(){if (_self.currentListScriptItem!=this) this.setStyles(_self.css.listScriptItem_over);},
             "mouseout": function(){if (_self.currentListScriptItem!=this) this.setStyles(_self.css.listScriptItem);}
         });
