@@ -66,6 +66,7 @@ MWF.xApplication.query.TableDesigner.LP = {
     "tableExplodeInfo": "By default, up to 2000 rows can be exported. Are you sure you want to export?",
     "tableExplode_success": "Export successful",
 
+    "buildNoTableError": "The current application has no data table, no need to compile.",
     "buildCurrentAppTitle": "Build current application data table",
     "buildCurrentAppInfor": "The following data tables will be built:</br>{buildlist}",
     "unbuildCurrentAppInfor": "The following data tables are not compiled or uncompiled:</br>{draftList}",
