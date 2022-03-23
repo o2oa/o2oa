@@ -157,7 +157,7 @@ MWF.xApplication.service.AgentDesigner.Main = new Class({
 
         listAgentItem.store("agent", agent);
         listAgentItem.addEvents({
-            "dblclick": function(e){_self.loadAgentByData(this, e);},
+            "click": function(e){_self.loadAgentByData(this, e);},
             "mouseover": function(){if (_self.currentListAgentItem!=this) this.setStyles(_self.css.listAgentItem_over);},
             "mouseout": function(){if (_self.currentListAgentItem!=this) this.setStyles(_self.css.listAgentItem);}
         });

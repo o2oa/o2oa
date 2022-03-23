@@ -157,7 +157,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 
         listInvokeItem.store("invoke", invoke);
         listInvokeItem.addEvents({
-            "dblclick": function(e){_self.loadInvokeByData(this, e);},
+            "click": function(e){_self.loadInvokeByData(this, e);},
             "mouseover": function(){if (_self.currentListInvokeItem!=this) this.setStyles(_self.css.listInvokeItem_over);},
             "mouseout": function(){if (_self.currentListInvokeItem!=this) this.setStyles(_self.css.listInvokeItem);}
         });

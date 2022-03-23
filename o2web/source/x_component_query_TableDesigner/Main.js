@@ -79,7 +79,7 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
 
         listTableItem.store("table", table);
         listTableItem.addEvents({
-            "dblclick": function(e){_self.loadTableByData(this, e);},
+            "click": function(e){_self.loadTableByData(this, e);},
             "mouseover": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem_over);},
             "mouseout": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem);}
         });
