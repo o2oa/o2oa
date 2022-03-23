@@ -9,9 +9,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.surface.Business;
 
-class ActionReloadClassLoader extends BaseAction {
+class ActionReloadDynamic extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReloadClassLoader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReloadDynamic.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
