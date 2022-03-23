@@ -910,8 +910,9 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
         this._clearNoId(copy);
         var html = copy.outerHTML;
-		//this._clearNoDomModule();
 		copy.destroy();
+
+		this._clearNoDomModule();
 
 		this.data.json.mode = this.options.mode;
 		this.data.html = html;
