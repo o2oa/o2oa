@@ -406,6 +406,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "crossApplication": "CrossApplication",
         "computeSubmitAnnotation1": "application name, alias or id",
         "computeSubmitAnnotation2": "form name or id",
+        "computeWidgetAnnotation2": "widget name or id",
         "thisApplication": "Current Application",
         "submitFormScript": "Submit Form Script",
         "flowActionScript": "Submit Action Script",
@@ -1033,6 +1034,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "parameterScript": "Parameter Script (Return JSON Object)",
         "insertWidget": "Tnsert Widget",
         "selectWidget": "Select Widget",
+        "selectPortal": "Select Portal",
         "inDiv": "Wrapped in a div",
 
         "outerSideModuleId": "external related component ID",
