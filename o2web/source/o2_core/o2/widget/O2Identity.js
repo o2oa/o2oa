@@ -363,6 +363,18 @@ o2.widget.O2Application = new Class({
         }
     }
 });
+o2.widget.O2Portal = new Class({
+    Extends: o2.widget.O2Group,
+    getPersonData: function(){
+        if (!this.data.name){
+            this.action = new o2.xDesktop.Actions.RestActions("", "x_portal_assemble_surface", "");
+            this.action.actions = {"getPortal": {"uri": "/jaxrs/portal/{id}"}};
+            this.action.invoke({"name": "getPortal", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
+                    this.data = json.data;
+                }.bind(this)});
+        }
+    }
+});
 o2.widget.O2CMSApplication = new Class({
     Extends: o2.widget.O2Group,
     getPersonData: function(){

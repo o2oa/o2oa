@@ -507,10 +507,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }.bind(this))
     },
     _loadSubformSelect : function( node, formNodeName, appNodeName ){
-        var select;
+        var select = new Element("select").inject(node);
         this.getSubFormList(function(){
-            select = new Element("select").inject(node);
-
             select.addEvent("change", function(e){
                 var value = select.options[select.selectedIndex].value;
                 this.setValue(formNodeName, value, select);
@@ -601,26 +599,61 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     },
 
     loadWidgetSelect: function(){
-        var widgetNodes = this.propertyContent.getElements(".MWFWidgetSelect");
-        if (widgetNodes.length){
-            this.getWidgetList(function(){
-                widgetNodes.each(function(node){
-                    var select = new Element("select").inject(node);
-                    select.addEvent("change", function(e){
-                        var value = e.target.options[e.target.selectedIndex].value;
-                        this.setValue(e.target.getParent("div").get("name"), value, select);
-                    }.bind(this));
-                    this.setWidgetSelectOptions(node, select);
+        var wdigetContainers = this.propertyContent.getElements(".MWFWidgetSelectContainer");
+        if (wdigetContainers.length){
+            wdigetContainers.each( function( container ){
+                var appSelectNode = container.getElement(".MWFWidgetAppSelect");
+                var widgetSelectNode = container.getElement(".MWFWidgetSelect");
+                var widgetSelect;
 
-                    var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
-                    refreshNode.addEvent("click", function(e){
+                var appNodeName = appSelectNode.get("name");
+                var widgetNodeName = widgetSelectNode.get("name");
+
+                this.loadPortalApplictionSelect( appSelectNode, appNodeName, function( apps ){
+                    var oldValue = this.data[appNodeName] || "";
+                    this.data[appNodeName] = !apps.length ? "" : apps[0].data.id;
+                    if( oldValue !== this.data[appNodeName] ){
                         this.getWidgetList(function(){
-                            this.setWidgetSelectOptions(node, select);
-                        }.bind(this), true);
-                    }.bind(this));
+                            this.setWidgetSelectOptions(widgetSelectNode, widgetSelect);
+                            widgetSelect.fireEvent("change");
+                        }.bind(this), true, appNodeName);
+                    }
                 }.bind(this));
+                widgetSelect = this._loadWidgetSelect( widgetSelectNode, widgetNodeName,  appNodeName ) ;
             }.bind(this));
         }
+    },
+    loadPortalApplictionSelect : function( node, appNodeName, callback ){
+        var application = appNodeName ? this.data[appNodeName] : "";
+        MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function() {
+            new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                "title" : this.form.designer.lp.selectApplication,
+                "type": "portal",
+                "count" : 1,
+                "names": application ? [ {id : application} ] : [],
+                "onChange": function (apps) {
+                    callback(apps)
+                }.bind(this)
+            });
+        }.bind(this))
+    },
+    _loadWidgetSelect : function( node, widgetNodeName, appNodeName ){
+        var select = new Element("select").inject(node);
+        this.getWidgetList(function(){
+            select.addEvent("change", function(e){
+                var value = select.options[select.selectedIndex].value;
+                this.setValue(widgetNodeName, value, select);
+            }.bind(this));
+            this.setWidgetSelectOptions(node, select);
+
+            var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
+            refreshNode.addEvent("click", function(e){
+                this.getWidgetList(function(){
+                    this.setWidgetSelectOptions(node, select);
+                }.bind(this), true, appNodeName);
+            }.bind(this));
+        }.bind(this), false, appNodeName );
+        return select;
     },
     setWidgetSelectOptions: function(node, select){
         var name = node.get("name");
@@ -636,9 +669,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             }
         }.bind(this));
     },
-    getWidgetList: function(callback, refresh){
+    getWidgetList: function(callback, refresh, appNodeName){
+        var application = appNodeName ? this.data[appNodeName] : "";
         if (!this.widgets || refresh){
-            this.form.designer.actions.listWidget(this.form.designer.application.id, function(json){
+            this.form.designer.actions.listWidget(application || this.form.designer.application.id, function(json){
                 this.widgets = json.data;
                 if (callback) callback();
             }.bind(this));

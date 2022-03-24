@@ -79,22 +79,42 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
                     }
                 ],
                 "onPostShow": function(){
-
-                    var td = dlg.node.getElementById("MWFWidgetSelectTd");
-                    this.form.designer.actions.listWidget(this.form.designer.application.id, function(json){
-                        var select = this.widgetSelect = new Element("select").inject(td);
-                        var option = new Element("option", {"text": "none"}).inject(select);
-                        json.data.each(function(widget){
+                    o2.Actions.load("x_portal_assemble_designer").PortalAction.list(function (json) {
+                        var td = dlg.node.getElementById("MWFPortalSelectTd");
+                        var select = module.appSelect = new Element("select").inject(td);
+                        var option = new Element("option", {"text": ""}).inject(select);
+                        json.data.each(function(app){
                             var option = new Element("option", {
-                                "text": widget.name,
-                                "value": widget.id
+                                "text": app.name,
+                                "value": app.id
                             }).inject(select);
                         }.bind(this));
-                    }.bind(this));
+                        select.addEvent("change", function(){
+                            var appid = module.appSelect.options[module.appSelect.selectedIndex].value;
+                            module.setWidgetSelectOptions( appid );
+                        })
+                    });
+
+                    var td = dlg.node.getElementById("MWFWidgetSelectTd");
+                    module.widgetSelect = new Element("select").inject(td);
+                    module.setWidgetSelectOptions();
                 }.bind(this)
             });
 
             dlg.show();
+        }.bind(this));
+    },
+    setWidgetSelectOptions: function( aplication ){
+        var select = this.widgetSelect;
+        select.empty();
+        this.form.designer.actions.listWidget( aplication || this.form.designer.application.id, function(json){
+            var option = new Element("option", {"text": "none"}).inject(select);
+            json.data.each(function(widget){
+                var option = new Element("option", {
+                    "text": widget.name,
+                    "value": widget.id
+                }).inject(select);
+            }.bind(this));
         }.bind(this));
     },
     _dragComplete: function(relativeNode, position){
