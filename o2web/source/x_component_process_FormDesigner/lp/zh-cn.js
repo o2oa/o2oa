@@ -405,6 +405,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "crossApplication": "跨应用",
         "computeSubmitAnnotation1": "应用名称、别名、id",
         "computeSubmitAnnotation2": "表单名称、id",
+        "computeWidgetAnnotation2": "部件名称、id",
         "thisApplication": "本应用",
         "submitFormScript": "提交表单脚本",
         "flowActionScript": "提交（继续流转）操作脚本",
@@ -1038,6 +1039,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "parameterScript": "参数脚本 (返回对象)",
         "insertWidget": "插入部件元素",
         "selectWidget": "选择部件",
+        "selectPortal": "选择门户",
         "inDiv": "是否包裹div",
 
         "outerSideModuleId": "外部相关组件标识",

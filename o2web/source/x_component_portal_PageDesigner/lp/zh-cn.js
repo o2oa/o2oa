@@ -44,6 +44,7 @@ MWF.APPPOD.LP = {
 
         //"confiltNoPix" : "请填写前缀或后缀",
         "selectPage" : "请选择页面",
+        "selectPortal" : "请选择门户",
         "selectWidget" : "请选择部件",
         //"moduleConflitError" : "组件标识重复",
         //"moduleConflitErrorOnPix" : "添加了前缀或后缀后组件标识仍然重复"
