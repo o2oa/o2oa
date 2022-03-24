@@ -235,7 +235,7 @@
   "datatable": {
     "styles": {},
     "tableStyles": {
-      "border": "1px solid #cccccc",
+      "border-top": "1px solid #cccccc",
       "width": "calc(100% - 2px)"
     },
     "titleStyles": {
