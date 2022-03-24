@@ -27,8 +27,14 @@
 			</tr>
 		</table>
 
-		<div id="text{$.pid}selectWidget" style="display: text{($.widgetType!='script')?'block':'none'}">
+		<div id="text{$.pid}selectWidget" class="MWFWidgetSelectContainer" style="display: text{($.widgetType!='script')?'block':'none'}">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.application}}:</td>
+					<td class="editTableValue">
+						<div class="MWFWidgetAppSelect" name="widgetAppSelected"></div>
+					</td>
+				</tr>
 				<tr>
 					<td class="editTableTitle">{{$.lp.widget}}:</td>
 					<td class="editTableValue">
@@ -44,6 +50,10 @@
 			</table>
 		</div>
 		<div id="text{$.pid}scriptWidget" style="display: text{($.widgetType=='script')?'block':'none'}">
+		    <div style="padding: 5px;">{{$.lp.crossApplication}}：<br/>return { <br/>
+				&nbsp;&nbsp;"application" : "applicationName", //{{$.lp.computeSubmitAnnotation1}} <br/>
+				&nbsp;&nbsp;"widget" : "widgetName" //{{$.lp.computeWidgetAnnotation2}}<br/>
+				}; <br/> {{$.lp.thisApplication}}：<br/>return "widgetName"; </div>
 			<div class="MWFScriptArea" name="widgetScript" title="{{$.lp.widgetScript}} (S)"></div>
 		</div>
 

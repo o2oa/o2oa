@@ -104,6 +104,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                             if (type==="dutyname") this.identitys.push(new MWF.widget.O2Duty(data, this.node));
                             if (type==="cmsapplication") this.identitys.push(new MWF.widget.O2CMSApplication(data, this.node));
                             if (type==="cmscategory") this.identitys.push(new MWF.widget.O2CMSCategory(data, this.node));
+                            if (type==="portal") this.identitys.push(new MWF.widget.O2Portal(data, this.node));
 
                             if (type==="portalfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
                             if (type==="processfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
@@ -212,6 +213,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                                 if (type==="process") this.identitys.push(new MWF.widget.O2Process(item.data, this.node));
                                 if (type==="cmsapplication") this.identitys.push(new MWF.widget.O2CMSApplication(item.data, this.node));
                                 if (type==="cmscategory") this.identitys.push(new MWF.widget.O2CMSCategory(item.data, this.node));
+                                if (type==="portal") this.identitys.push(new MWF.widget.O2Portal(item.data, this.node));
 
                                 if (type==="formfield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
                                 if (type==="cmsformfield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
