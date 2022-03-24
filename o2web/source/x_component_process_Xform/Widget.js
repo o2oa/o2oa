@@ -192,7 +192,7 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                         widgetName = data;
                     } else {
                         if (data.application) app = data.application;
-                        if (data.subform) widgetName = data.subform;
+                        if (data.widget) widgetName = data.widget;
                     }
                     if (widgetName) {
                         if (!app)  app = this.form.businessData.pageInfor.portal;
