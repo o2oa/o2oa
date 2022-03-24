@@ -175,8 +175,11 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 								return;
 							}
 
+							var appname, appid = module.appSelect.options[module.appSelect.selectedIndex].value;
+							if(appid)appname = module.appSelect.options[module.appSelect.selectedIndex].text;
+
 							var flag = true;
-							o2.Actions.get("x_portal_assemble_designer").listWidget( module.page.designer.application.id, function( json ){
+							o2.Actions.get("x_portal_assemble_designer").listWidget( appid || module.page.designer.application.id, function( json ){
 								for( var i=0; i<json.data.length; i++ ){
 									if( json.data[i].name === widgetName ){
 										module.page.designer.notice(module.page.designer.lp.notice.widgetNameConflict, "error");
@@ -186,7 +189,7 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 								}
 							}.bind(this), null, false);
 							if( flag ){
-								module._makeWidget( widgetName );
+								module._makeWidget( widgetName, appid, appname );
 								this.close();
 							}
 						}
@@ -199,6 +202,17 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 					}
 				],
 				"onPostShow": function(){
+					o2.Actions.load("x_portal_assemble_designer").PortalAction.list(function (json) {
+						var td = dlg.node.getElementById("MWFPortalSelect");
+						var select = module.appSelect = new Element("select").inject(td);
+						var option = new Element("option", {"text": ""}).inject(select);
+						json.data.each(function(app){
+							var option = new Element("option", {
+								"text": app.name,
+								"value": app.id
+							}).inject(select);
+						}.bind(this));
+					});
 
 					this.widgetNameInput = dlg.node.getElementById("MWFNewWidgetName");
 
@@ -208,7 +222,7 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 			dlg.show();
 		}.bind(this));
 	},
-	_makeWidget : function( name ){
+	_makeWidget : function( name, appid, appname ){
 		//var pcData, mobileData;
 		//if (this.pcPage){
 		//	this.pcPage._getPageData();
@@ -243,6 +257,17 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 				pcData = data.pcData;
 				mobileData = obj.mobileData;
 				fieldList = this._getWidgetFieldList( pcData.json.moduleList );
+			}
+
+			if( appid ){
+				if(pcData && pcData.json){
+					pcData.json.application = appid;
+					pcData.json.applicationName = appname;
+				}
+				if(mobileData && mobileData.json){
+					mobileData.json.application = appid;
+					mobileData.json.applicationName = appname;
+				}
 			}
 
 

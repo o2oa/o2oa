@@ -185,13 +185,24 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
         var method = (this.form.options.mode !== "Mobile" && !layout.mobile) ? "getWidgetByName" : "getWidgetByNameMobile";
         if (this.json.widgetType==="script"){
             if (this.json.widgetScript && this.json.widgetScript.code){
-                var formNome = this.form.Macro.exec(this.json.widgetScript.code, this);
-                if (formNome){
-                    var app = this.form.businessData.pageInfor.portal;
-                    o2.Actions.get("x_portal_assemble_surface")[method](formNome, app, function(json){
-                        this.getWidgetData(json.data);
+                var data = this.form.Macro.exec(this.json.widgetScript.code, this);
+                if (data){
+                    var widgetName, app;
+                    if (typeOf(data) === "string") {
+                        widgetName = data;
+                    } else {
+                        if (data.application) app = data.application;
+                        if (data.widget) widgetName = data.widget;
+                    }
+                    if (widgetName) {
+                        if (!app)  app = this.form.businessData.pageInfor.portal;
+                        o2.Actions.get("x_portal_assemble_surface")[method](widgetName, app, function(json){
+                            this.getWidgetData(json.data);
+                            if (callback) callback();
+                        }.bind(this));
+                    }else{
                         if (callback) callback();
-                    }.bind(this));
+                    }
                 }else{
                     if (callback) callback();
                 }
@@ -205,7 +216,12 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                     if (callback) callback();
 
                 }else{
-                    var app = this.form.businessData.pageInfor.portal;
+                    var app;
+                    if (this.json.widgetAppSelected) {
+                        app = this.json.widgetAppSelected;
+                    } else {
+                        app = this.form.businessData.pageInfor.portal;
+                    }
                     o2.Actions.get("x_portal_assemble_surface")[method](this.json.widgetSelected, app, function(json){
                         this.getWidgetData(json.data);
                         if (callback) callback();
