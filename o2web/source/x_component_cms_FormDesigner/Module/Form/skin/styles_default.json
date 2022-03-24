@@ -434,7 +434,7 @@
   },
   "select": {
     "styles": {
-      "border": "1px solid #ccc",
+      "border": "0px solid #ccc",
       "margin-top": "0px",
       "height": "26px",
       "color": "#666",
