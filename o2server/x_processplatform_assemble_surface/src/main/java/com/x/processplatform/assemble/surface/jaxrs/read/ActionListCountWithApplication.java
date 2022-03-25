@@ -40,6 +40,7 @@ class ActionListCountWithApplication extends BaseAction {
 				wraps.add(o);
 			}
 			SortTools.asc(wraps, false, "name");
+			result.setData(wraps);
 			return result;
 		}
 	}
