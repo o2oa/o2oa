@@ -14,7 +14,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
 class ActionListNextWithProcess extends BaseAction {

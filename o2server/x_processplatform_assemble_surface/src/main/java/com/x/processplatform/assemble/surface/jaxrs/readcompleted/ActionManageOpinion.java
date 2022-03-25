@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.surface.jaxrs.readcompleted;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,8 +18,6 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-
-import org.apache.commons.lang3.BooleanUtils;
 
 public class ActionManageOpinion extends BaseAction {
 

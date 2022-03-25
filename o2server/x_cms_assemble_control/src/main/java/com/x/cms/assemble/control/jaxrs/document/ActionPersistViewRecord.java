@@ -1,5 +1,9 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.annotation.FieldTypeDescribe;
@@ -13,9 +17,6 @@ import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 public class ActionPersistViewRecord extends BaseAction {
 

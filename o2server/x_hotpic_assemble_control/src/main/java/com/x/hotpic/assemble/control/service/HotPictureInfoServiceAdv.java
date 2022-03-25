@@ -1,5 +1,7 @@
 package com.x.hotpic.assemble.control.service;
 
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -11,7 +13,6 @@ import com.x.hotpic.assemble.control.Business;
 import com.x.hotpic.assemble.control.ThisApplication;
 import com.x.hotpic.assemble.control.queueTask.queue.DocumentCheckQueue;
 import com.x.hotpic.entity.HotPictureInfo;
-import java.util.List;
 
 public class HotPictureInfoServiceAdv {
 	

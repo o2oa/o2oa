@@ -1,8 +1,8 @@
 package com.x.portal.assemble.surface.factory.process;
 
-import com.x.processplatform.core.entity.element.Script;
 import com.x.portal.assemble.surface.Business;
 import com.x.portal.assemble.surface.factory.ElementFactory;
+import com.x.processplatform.core.entity.element.Script;
 
 public class ScriptFactory extends ElementFactory {
 

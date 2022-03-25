@@ -23,6 +23,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Task;
@@ -34,7 +35,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListRollbackWithWorkOrWorkCompleted.class);
 
-	private final static String taskCompletedList_FIELDNAME = "taskCompletedList";
+	private static final String TASKCOMPLETEDLIST_FIELDNAME = "taskCompletedList";
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
@@ -53,17 +54,15 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 
 		final String workLogJob = job;
 
-		CompletableFuture<List<WoTaskCompleted>> future_taskCompleteds = CompletableFuture.supplyAsync(() -> {
-			return this.taskCompleteds(workLogJob);
-		});
+		CompletableFuture<List<WoTaskCompleted>> futureTaskCompleteds = CompletableFuture
+				.supplyAsync(() -> this.taskCompleteds(workLogJob), ThisApplication.threadPool());
 
-		CompletableFuture<List<Wo>> future_workLogs = CompletableFuture.supplyAsync(() -> {
-			return this.workLogs(workLogJob);
-		});
-		List<WoTaskCompleted> taskCompleteds = future_taskCompleteds.get();
-		List<Wo> wos = future_workLogs.get();
+		CompletableFuture<List<Wo>> futureWorkLogs = CompletableFuture.supplyAsync(() -> this.workLogs(workLogJob),
+				ThisApplication.threadPool());
+		List<WoTaskCompleted> taskCompleteds = futureTaskCompleteds.get();
+		List<Wo> wos = futureWorkLogs.get();
 		ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,
-				TaskCompleted.activityToken_FIELDNAME, taskCompletedList_FIELDNAME);
+				TaskCompleted.activityToken_FIELDNAME, TASKCOMPLETEDLIST_FIELDNAME);
 		result.setData(wos);
 		return result;
 	}
@@ -157,7 +156,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = -7243683008987722267L;
 
 		static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class,
-				ListTools.toList(Read.id_FIELDNAME, Read.person_FIELDNAME, Read.identity_FIELDNAME, Read.unit_FIELDNAME,
+				ListTools.toList(JpaObject.id_FIELDNAME, Read.person_FIELDNAME, Read.identity_FIELDNAME, Read.unit_FIELDNAME,
 						Read.opinion_FIELDNAME, Read.opinionLob_FIELDNAME, Read.startTime_FIELDNAME,
 						Read.activityName_FIELDNAME, Read.activityToken_FIELDNAME),
 				null);
@@ -182,7 +181,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = 293599148568443301L;
 
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
-				ListTools.toList(Task.id_FIELDNAME, Task.person_FIELDNAME, Task.identity_FIELDNAME, Task.unit_FIELDNAME,
+				ListTools.toList(JpaObject.id_FIELDNAME, Task.person_FIELDNAME, Task.identity_FIELDNAME, Task.unit_FIELDNAME,
 						Task.routeName_FIELDNAME, Task.opinion_FIELDNAME, Task.opinionLob_FIELDNAME,
 						Task.startTime_FIELDNAME, Task.activityName_FIELDNAME, Task.activityToken_FIELDNAME),
 				null);
@@ -194,7 +193,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 
 		static WrapCopier<TaskCompleted, WoTaskCompleted> copier = WrapCopierFactory.wo(TaskCompleted.class,
 				WoTaskCompleted.class,
-				ListTools.toList(TaskCompleted.id_FIELDNAME, TaskCompleted.person_FIELDNAME,
+				ListTools.toList(JpaObject.id_FIELDNAME, TaskCompleted.person_FIELDNAME,
 						TaskCompleted.activity_FIELDNAME, TaskCompleted.identity_FIELDNAME,
 						TaskCompleted.unit_FIELDNAME, TaskCompleted.routeName_FIELDNAME,
 						TaskCompleted.opinion_FIELDNAME, TaskCompleted.opinionLob_FIELDNAME,

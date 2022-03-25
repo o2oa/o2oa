@@ -75,7 +75,6 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 		if (StringUtils.isEmpty(fileName)) {
 			fileName = this.fileName(disposition);
 		}
-		// fileName = this.adjustFileName(business, work.getJob(), fileName);
 		this.verifyConstraint(bytes.length, fileName, null);
 		Attachment attachment = business.entityManagerContainer().firstEqualAndEqualAndEqual(Attachment.class,
 				Attachment.job_FIELDNAME, work.getJob(), Attachment.name_FIELDNAME, fileName, Attachment.site_FIELDNAME,
@@ -111,7 +110,6 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 		if (StringUtils.isEmpty(fileName)) {
 			fileName = this.fileName(disposition);
 		}
-		// fileName = this.adjustFileName(business, workCompleted.getJob(), fileName);
 		this.verifyConstraint(bytes.length, fileName, null);
 		Attachment attachment = business.entityManagerContainer().firstEqualAndEqualAndEqual(Attachment.class,
 				Attachment.job_FIELDNAME, workCompleted.getJob(), Attachment.name_FIELDNAME, fileName,
@@ -202,7 +200,7 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 				logger.error(e);
 			}
 			return value;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	public static class Wo extends WoId {

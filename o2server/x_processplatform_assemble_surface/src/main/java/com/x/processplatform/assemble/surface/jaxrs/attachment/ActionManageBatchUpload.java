@@ -1,5 +1,13 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -19,16 +27,8 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Process;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
-import java.util.Date;
-import java.util.List;
 
 class ActionManageBatchUpload extends BaseAction {
 

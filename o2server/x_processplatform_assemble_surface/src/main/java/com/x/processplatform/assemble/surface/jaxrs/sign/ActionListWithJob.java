@@ -21,6 +21,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.DocSign;
 import com.x.processplatform.core.entity.content.DocSignStatus;
 
@@ -61,8 +62,7 @@ class ActionListWithJob extends BaseAction {
 				logger.error(e);
 			}
 			return wos;
-		});
-
+		},ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Boolean> checkJobControlFuture(EffectivePerson effectivePerson, String job) {
@@ -75,7 +75,7 @@ class ActionListWithJob extends BaseAction {
 				logger.error(e);
 			}
 			return value;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	public static class Wo extends DocSign {

@@ -1,5 +1,13 @@
 package com.x.processplatform.assemble.designer.jaxrs.designer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,27 +28,39 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PropertyTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.assemble.designer.ThisApplication;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Agent;
+import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Begin;
+import com.x.processplatform.core.entity.element.Cancel;
+import com.x.processplatform.core.entity.element.Choice;
+import com.x.processplatform.core.entity.element.Delay;
+import com.x.processplatform.core.entity.element.Embed;
+import com.x.processplatform.core.entity.element.End;
+import com.x.processplatform.core.entity.element.Form;
+import com.x.processplatform.core.entity.element.Invoke;
+import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Merge;
+import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.wrap.*;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.*;
+import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.element.Script;
+import com.x.processplatform.core.entity.element.Service;
+import com.x.processplatform.core.entity.element.Split;
+import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 
 class ActionSearch extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionSearch.class);
-	private final static String DESIGN_PROCESS_ROUTE = "route";
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSearch.class);
+	private static final String DESIGN_PROCESS_ROUTE = "route";
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		if (!effectivePerson.isManager()) {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		logger.debug("{}开始流程平台设计搜索，关键字：{}", effectivePerson.getDistinguishedName(), wi.getKeyword());
+		LOGGER.debug("{}开始流程平台设计搜索，关键字：{}", effectivePerson.getDistinguishedName(), wi.getKeyword());
 		if (StringUtils.isBlank(wi.getKeyword())) {
 			throw new ExceptionFieldEmpty("keyword");
 		}
@@ -77,7 +97,7 @@ class ActionSearch extends BaseAction {
 
 	private CompletableFuture<List<Wo>> searchScript(final Wi wi, final List<String> appIdList,
 			final List<String> designerIdList) {
-		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
+		return CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<WoScript> woScripts;
@@ -110,16 +130,15 @@ class ActionSearch extends BaseAction {
 				woScripts.clear();
 				woScripts = null;
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return resWos;
-		});
-		return cf;
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<List<Wo>> searchForm(final Wi wi, final List<String> appIdList,
 			final List<String> designerIdList) {
-		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
+		return CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
@@ -128,14 +147,14 @@ class ActionSearch extends BaseAction {
 					formIds = business.form().listWithApplications(appIdList);
 				}
 				for (List<String> partFormIds : ListTools.batch(formIds, 100)) {
-					List<WoForm> woForms = emc.fetchIn(Form.class, WoForm.copier, Form.id_FIELDNAME, partFormIds);
+					List<WoForm> woForms = emc.fetchIn(Form.class, WoForm.copier, JpaObject.id_FIELDNAME, partFormIds);
 					for (WoForm woForm : woForms) {
 						Map<String, String> map = PropertyTools.fieldMatchKeyword(WoForm.copier.getCopyFields(), woForm,
 								wi.getKeyword(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 						if (!map.isEmpty()) {
 							Wo wo = new Wo();
 							Application app = emc.fetch(woForm.getApplication(), Application.class,
-									ListTools.toList(Application.id_FIELDNAME, Application.name_FIELDNAME));
+									ListTools.toList(JpaObject.id_FIELDNAME, Application.name_FIELDNAME));
 							if (app != null) {
 								wo.setAppId(app.getId());
 								wo.setAppName(app.getName());
@@ -153,11 +172,10 @@ class ActionSearch extends BaseAction {
 				}
 
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return resWos;
-		});
-		return cf;
+		}, ThisApplication.threadPool());
 	}
 
 	private List<Wo> searchProcess(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {
@@ -170,7 +188,7 @@ class ActionSearch extends BaseAction {
 			}
 			batchList = ListTools.batch(processIds, 20);
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		List<Wo> resWos = new ArrayList<>();
 		for (List<String> partProcessIds : batchList) {
@@ -178,19 +196,16 @@ class ActionSearch extends BaseAction {
 				Business business = new Business(emc);
 				List<Process> processList = emc.list(Process.class, partProcessIds);
 				for (Process process : processList) {
-					try {
-						Wo wo = doProcessSearch(business, process, wi);
-						if (wo != null) {
-							resWos.add(wo);
-						}
-					} catch (Exception e) {
-						logger.error(e);
+					Wo wo = doProcessSearch(business, process, wi);
+					if (wo != null) {
+						resWos.add(wo);
 					}
+
 				}
 				processList.clear();
 				processList = null;
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 		return resWos;
@@ -223,7 +238,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		agentList.clear();
-		agentList = null;
 
 		Begin begin = business.entityManagerContainer().find(business.begin().getWithProcess(process.getId()),
 				Begin.class);
@@ -247,7 +261,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		cancelList.clear();
-		cancelList = null;
 
 		List<Choice> choiceList = business.entityManagerContainer().list(Choice.class,
 				business.choice().listWithProcess(process.getId()));
@@ -261,7 +274,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		choiceList.clear();
-		choiceList = null;
 
 		List<Delay> delayList = business.entityManagerContainer().list(Delay.class,
 				business.delay().listWithProcess(process.getId()));
@@ -275,7 +287,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		delayList.clear();
-		delayList = null;
 
 		List<Embed> embedList = business.entityManagerContainer().list(Embed.class,
 				business.embed().listWithProcess(process.getId()));
@@ -289,7 +300,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		embedList.clear();
-		embedList = null;
 
 		List<End> endList = business.entityManagerContainer().list(End.class,
 				business.end().listWithProcess(process.getId()));
@@ -303,7 +313,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		endList.clear();
-		endList = null;
 
 		List<Invoke> invokeList = business.entityManagerContainer().list(Invoke.class,
 				business.invoke().listWithProcess(process.getId()));
@@ -317,7 +326,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		invokeList.clear();
-		invokeList = null;
 
 		List<Manual> manualList = business.entityManagerContainer().list(Manual.class,
 				business.manual().listWithProcess(process.getId()));
@@ -331,7 +339,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		manualList.clear();
-		manualList = null;
 
 		List<Merge> mergeList = business.entityManagerContainer().list(Merge.class,
 				business.merge().listWithProcess(process.getId()));
@@ -345,7 +352,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		mergeList.clear();
-		mergeList = null;
 
 		List<Parallel> parallelList = business.entityManagerContainer().list(Parallel.class,
 				business.parallel().listWithProcess(process.getId()));
@@ -359,7 +365,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		parallelList.clear();
-		parallelList = null;
 
 		List<Service> serviceList = business.entityManagerContainer().list(Service.class,
 				business.service().listWithProcess(process.getId()));
@@ -373,7 +378,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		serviceList.clear();
-		serviceList = null;
 
 		List<Split> splitList = business.entityManagerContainer().list(Split.class,
 				business.split().listWithProcess(process.getId()));
@@ -387,7 +391,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		splitList.clear();
-		splitList = null;
 
 		List<Route> routeList = business.entityManagerContainer().list(Route.class,
 				business.route().listWithProcess(process.getId()));
@@ -401,8 +404,6 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		routeList.clear();
-		routeList = null;
-
 		return wo;
 	}
 
@@ -423,13 +424,19 @@ class ActionSearch extends BaseAction {
 
 	public static class Wi extends WiDesigner {
 
+		private static final long serialVersionUID = -6768489740977800135L;
+
 	}
 
 	public static class Wo extends WrapDesigner {
 
+		private static final long serialVersionUID = 2683891172754271010L;
+
 	}
 
 	public static class WoScript extends Script {
+
+		private static final long serialVersionUID = -3937947631282171475L;
 
 		static WrapCopier<Script, WoScript> copier = WrapCopierFactory.wo(Script.class, WoScript.class,
 				JpaObject.singularAttributeField(Script.class, true, false), null);
@@ -437,6 +444,8 @@ class ActionSearch extends BaseAction {
 	}
 
 	public static class WoForm extends Form {
+
+		private static final long serialVersionUID = 4233799190302798407L;
 
 		static WrapCopier<Form, WoForm> copier = WrapCopierFactory.wo(Form.class, WoForm.class,
 				JpaObject.singularAttributeField(Form.class, true, false), null);

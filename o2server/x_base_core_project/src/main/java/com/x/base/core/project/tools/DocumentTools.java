@@ -6,18 +6,15 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Objects;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.ConnectionAction;
-import com.x.base.core.project.exception.ExceptionUnsupportedMediaType;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.WrapString;

@@ -12,6 +12,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.set.ListOrderedSet;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheCategory;
@@ -41,9 +44,6 @@ import com.x.organization.core.entity.Role_;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitAttribute;
 import com.x.organization.core.entity.UnitDuty;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.set.ListOrderedSet;
 
 public class Business {
 

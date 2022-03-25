@@ -1,8 +1,8 @@
 package com.x.query.service.processing.jaxrs.design;
 
-import com.x.base.core.project.gson.GsonPropertyObject;
-
 import java.util.Date;
+
+import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class WrapScript extends GsonPropertyObject {
     private static final long serialVersionUID = 2563902286060447795L;

@@ -2,8 +2,6 @@ package com.x.program.center.jaxrs.apppack;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 
 abstract class BaseAction extends StandardJaxrsAction {
 

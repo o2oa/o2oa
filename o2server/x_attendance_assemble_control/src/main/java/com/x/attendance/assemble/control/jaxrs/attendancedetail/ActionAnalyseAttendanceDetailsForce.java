@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.attendancedetail.ActionReciveSingleAttendance.Wi;
 import com.x.attendance.assemble.control.processor.monitor.StatusSystemImportOpt;
 import com.x.attendance.assemble.control.processor.sender.SenderForAnalyseData;
 import com.x.attendance.entity.AttendanceStatisticalCycle;

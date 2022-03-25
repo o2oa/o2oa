@@ -1,5 +1,11 @@
 package com.x.cms.assemble.control.jaxrs.script;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -13,11 +19,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.Script;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 class ActionLoad extends BaseAction {
 

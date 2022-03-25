@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -14,7 +13,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoCallback;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.tools.DefaultCharset;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;

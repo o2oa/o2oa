@@ -1,5 +1,15 @@
 package com.x.cms.assemble.control.jaxrs.form;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.zip.CRC32;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -11,19 +21,11 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.FormProperties;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.zip.CRC32;
 
 class V2LookupDocMobile extends BaseAction {
 
@@ -137,7 +139,7 @@ class V2LookupDocMobile extends BaseAction {
 				}
 			}
 			return list;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<List<String>> relatedScriptFuture(FormProperties properties) {
@@ -152,7 +154,7 @@ class V2LookupDocMobile extends BaseAction {
 				}
 			}
 			return list;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	public static class Wo extends AbstractWo {

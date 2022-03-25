@@ -1,11 +1,10 @@
 package com.x.jpush.assemble.control.jaxrs.message;
 
-import cn.jpush.api.push.PushResult;
-import cn.jpush.api.push.model.Options;
-import cn.jpush.api.push.model.Platform;
-import cn.jpush.api.push.model.PushPayload;
-import cn.jpush.api.push.model.audience.Audience;
-import cn.jpush.api.push.model.notification.Notification;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,9 +19,12 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.jpush.assemble.control.Business;
 import com.x.jpush.assemble.control.jaxrs.device.ActionListAll;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import cn.jpush.api.push.PushResult;
+import cn.jpush.api.push.model.Options;
+import cn.jpush.api.push.model.Platform;
+import cn.jpush.api.push.model.PushPayload;
+import cn.jpush.api.push.model.audience.Audience;
+import cn.jpush.api.push.model.notification.Notification;
 
 
 public class ActionSendMessageTest extends StandardJaxrsAction {

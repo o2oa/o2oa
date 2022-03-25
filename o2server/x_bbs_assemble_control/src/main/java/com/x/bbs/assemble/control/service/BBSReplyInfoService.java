@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -18,8 +20,6 @@ import com.x.bbs.entity.BBSReplyInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
 import com.x.bbs.entity.BBSUserInfo;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 论坛信息管理服务类

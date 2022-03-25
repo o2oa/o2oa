@@ -1,7 +1,14 @@
 package com.x.bbs.assemble.control.jaxrs.login;
 
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.bbs.assemble.control.service.*;
+import com.x.bbs.assemble.control.service.BBSConfigSettingService;
+import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
+import com.x.bbs.assemble.control.service.BBSOperationRecordService;
+import com.x.bbs.assemble.control.service.BBSPermissionInfoService;
+import com.x.bbs.assemble.control.service.BBSRoleInfoService;
+import com.x.bbs.assemble.control.service.BBSSectionInfoServiceAdv;
+import com.x.bbs.assemble.control.service.UserManagerService;
+import com.x.bbs.assemble.control.service.UserPermissionService;
 
 public class BaseAction extends StandardJaxrsAction{
 	

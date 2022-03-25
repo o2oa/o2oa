@@ -1,7 +1,11 @@
 package com.x.program.center.jaxrs.dingding;
 
-import com.google.gson.JsonElement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -11,8 +15,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.jaxrs.dingding.encrypt.DingTalkEncryptor;
 import com.x.program.center.jaxrs.dingding.encrypt.Utils;
-
-import java.util.*;
 
 
 /**

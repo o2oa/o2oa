@@ -5,9 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionFieldEmpty;
-import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
@@ -19,24 +16,29 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
 import com.x.file.assemble.control.Business;
+import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Share;
 
 /**
  * 分享文件
+ * 
  * @author sword
  */
 public class ActionCreate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger( ActionCreate.class );
+	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -55,12 +57,12 @@ public class ActionCreate extends BaseAction {
 			if (StringUtils.isEmpty(wi.getShareType())) {
 				throw new ExceptionFieldEmpty(Share.fileType_FIELDNAME);
 			}
-			Share share = business.share().getShareByFileId(wi.getFileId(),effectivePerson.getDistinguishedName());
+			Share share = business.share().getShareByFileId(wi.getFileId(), effectivePerson.getDistinguishedName());
 			boolean isExist = true;
-			if(share == null) {
+			if (share == null) {
 				share = Wi.copier.copy(wi);
 				isExist = false;
-			}else{
+			} else {
 				oldUserList.addAll(share.getShareUserList());
 				oldOrgList.addAll(share.getShareOrgList());
 				oldGroupList.addAll(share.getShareGroupList());
@@ -70,22 +72,22 @@ public class ActionCreate extends BaseAction {
 				share.setShareGroupList(wi.getShareGroupList());
 				share.setShareType(wi.getShareType());
 			}
-			if(Share.SHARE_TYPE_PASSWORD.equals(wi.getShareType())){
-				if(StringUtils.isBlank(share.getPassword())){
+			if (Share.SHARE_TYPE_PASSWORD.equals(wi.getShareType())) {
+				if (StringUtils.isBlank(share.getPassword())) {
 					throw new ExceptionFieldEmpty(Share.password_FIELDNAME);
 				}
-			}else{
+			} else {
 				boolean flag = ListTools.isEmpty(wi.getShareUserList()) && ListTools.isEmpty(wi.getShareOrgList())
 						&& ListTools.isEmpty(wi.getShareGroupList());
-				if(flag){
+				if (flag) {
 					throw new Exception("shareUserList or shareOrgList or getShareGroupList can not be empty.");
 				}
 			}
 			this.assembleShare(share, business, wi, effectivePerson);
 			emc.beginTransaction(Share.class);
-			if(isExist){
+			if (isExist) {
 				emc.check(share, CheckPersistType.all);
-			}else {
+			} else {
 				emc.persist(share, CheckPersistType.all);
 			}
 			emc.commit();
@@ -93,32 +95,34 @@ public class ActionCreate extends BaseAction {
 			wo.setId(share.getId());
 			share.copyTo(tempShare);
 		}
-		if(!Share.SHARE_TYPE_PASSWORD.equals(wi.getShareType())){
-			CompletableFuture.runAsync(() -> {
-				sendSms(business, tempShare, oldUserList, oldOrgList, oldGroupList);
-			});
+		if (!Share.SHARE_TYPE_PASSWORD.equals(wi.getShareType())) {
+			CompletableFuture.runAsync(() -> sendSms(business, tempShare, oldUserList, oldOrgList, oldGroupList),
+					ThisApplication.threadPool());
 		}
 
 		result.setData(wo);
 		return result;
 	}
 
-	private void assembleShare(Share share, Business business, Wi wi, EffectivePerson effectivePerson) throws Exception{
+	private void assembleShare(Share share, Business business, Wi wi, EffectivePerson effectivePerson)
+			throws Exception {
 		Attachment2 attachment = business.entityManagerContainer().find(wi.getFileId(), Attachment2.class);
-		if(attachment == null) {
+		if (attachment == null) {
 			Folder2 folder = business.entityManagerContainer().find(wi.getFileId(), Folder2.class);
-			if(folder==null){
+			if (folder == null) {
 				throw new ExceptionShareNotExist(wi.getFileId());
-			}else{
-				if (!business.controlAble(effectivePerson) && !StringUtils.equals(folder.getPerson(), effectivePerson.getDistinguishedName())) {
+			} else {
+				if (!business.controlAble(effectivePerson)
+						&& !StringUtils.equals(folder.getPerson(), effectivePerson.getDistinguishedName())) {
 					throw new ExceptionAccessDenied(effectivePerson, folder);
 				}
 				share.setFileType(Share.FILE_TYPE_FOLDER);
 				share.setName(folder.getName());
 				share.setPerson(folder.getPerson());
 			}
-		}else{
-			if (!business.controlAble(effectivePerson) && !StringUtils.equals(attachment.getPerson(), effectivePerson.getDistinguishedName())) {
+		} else {
+			if (!business.controlAble(effectivePerson)
+					&& !StringUtils.equals(attachment.getPerson(), effectivePerson.getDistinguishedName())) {
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 			share.setFileType(Share.FILE_TYPE_ATTACHMENT);
@@ -128,25 +132,26 @@ public class ActionCreate extends BaseAction {
 			share.setPerson(attachment.getPerson());
 		}
 		share.setLastUpdateTime(new Date());
-		if(share.getValidTime()==null){
-			share.setValidTime(DateTools.getDateAfterYearAdjust(new Date(),100,null,null));
+		if (share.getValidTime() == null) {
+			share.setValidTime(DateTools.getDateAfterYearAdjust(new Date(), 100, null, null));
 		}
 	}
 
-	private void sendSms(Business business, Share share, List<String> oldUserList, List<String> oldOrgList, List<String> oldGroupList){
+	private void sendSms(Business business, Share share, List<String> oldUserList, List<String> oldOrgList,
+			List<String> oldGroupList) {
 		try {
-			if(ListTools.isNotEmpty(oldOrgList)){
-				oldUserList.addAll(business.organization().person().listWithUnitSubNested( oldOrgList ));
+			if (ListTools.isNotEmpty(oldOrgList)) {
+				oldUserList.addAll(business.organization().person().listWithUnitSubNested(oldOrgList));
 			}
-			if(ListTools.isNotEmpty(oldGroupList)){
-				oldUserList.addAll(business.organization().person().listWithGroup( oldGroupList ));
+			if (ListTools.isNotEmpty(oldGroupList)) {
+				oldUserList.addAll(business.organization().person().listWithGroup(oldGroupList));
 			}
 			List<String> newUserList = new ArrayList<>(share.getShareUserList());
-			if(ListTools.isNotEmpty(share.getShareOrgList())){
-				newUserList.addAll(business.organization().person().listWithUnitSubNested( share.getShareOrgList() ));
+			if (ListTools.isNotEmpty(share.getShareOrgList())) {
+				newUserList.addAll(business.organization().person().listWithUnitSubNested(share.getShareOrgList()));
 			}
-			if(ListTools.isNotEmpty(share.getShareGroupList())){
-				newUserList.addAll(business.organization().person().listWithGroup( share.getShareGroupList() ));
+			if (ListTools.isNotEmpty(share.getShareGroupList())) {
+				newUserList.addAll(business.organization().person().listWithGroup(share.getShareGroupList()));
 			}
 			List<String> shareAdds = ListUtils.subtract(newUserList, oldOrgList);
 			oldUserList.clear();
@@ -173,6 +178,8 @@ public class ActionCreate extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -8225324228431176092L;
 
 	}
 

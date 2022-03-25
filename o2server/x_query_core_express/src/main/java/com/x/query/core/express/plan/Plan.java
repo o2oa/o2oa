@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -23,7 +24,6 @@ import javax.persistence.criteria.Root;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
-import javax.script.ScriptException;
 
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
@@ -45,8 +45,6 @@ import com.x.query.core.entity.Item_;
 
 public abstract class Plan extends GsonPropertyObject {
 
-	// private static Logger logger = LoggerFactory.getLogger(Plan.class);
-
 	public static final String SCOPE_WORK = "work";
 	public static final String SCOPE_CMS_INFO = "cms_info";
 	public static final String SCOPE_CMS_DATA = "cms_data";
@@ -57,7 +55,11 @@ public abstract class Plan extends GsonPropertyObject {
 	public static final String CALCULATE_AVERAGE = "average";
 	public static final String CALCULATE_COUNT = "count";
 
-	// protected static final int SQL_STATEMENT_IN_BATCH = 1000;
+	protected Plan(ExecutorService threadPool) {
+		this.threadPool = threadPool;
+	}
+
+	protected ExecutorService threadPool;
 
 	public Runtime runtime;
 
@@ -164,9 +166,8 @@ public abstract class Plan extends GsonPropertyObject {
 				return comp;
 			}
 		};
-		List<Row> list = new TreeList<>();
 		if ((null != table) && (!table.isEmpty()) && (!orderList.isEmpty())) {
-			list = table.stream().sorted(comparator).collect(Collectors.toList());
+			List<Row> list = table.stream().sorted(comparator).collect(Collectors.toList());
 			table.clear();
 			table.addAll(list);
 		}
@@ -174,16 +175,17 @@ public abstract class Plan extends GsonPropertyObject {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private GroupTable group(Table table) throws Exception {
+	private GroupTable group(Table table) {
 		final String orderType = (null == this.group) ? SelectEntry.ORDER_ORIGINAL : this.group.orderType;
 		Map<Object, List<Row>> map = table.stream().collect(Collectors.groupingBy(row -> row.find(this.group.column)));
 		List<GroupRow> groupRows = new GroupTable();
 		for (Entry<Object, List<Row>> en : map.entrySet()) {
 			Table o = new Table();
 			o.addAll(en.getValue());
-			o = order(o);
+			// o = order(o);
+			order(o);
 			GroupRow groupRow = new GroupRow();
-			if (this.group.isName) {
+			if (BooleanUtils.isTrue(this.group.isName)) {
 				groupRow.group = this.name(Objects.toString(en.getKey()));
 			} else {
 				groupRow.group = en.getKey();
@@ -191,7 +193,7 @@ public abstract class Plan extends GsonPropertyObject {
 			groupRow.list = o;
 			groupRows.add(groupRow);
 		}
-		/* 分类值再进行一次排序 */
+		// 分类值再进行一次排序
 		groupRows = groupRows.stream().sorted((r1, r2) -> {
 			Object o1 = r1.group;
 			Object o2 = r2.group;
@@ -220,9 +222,9 @@ public abstract class Plan extends GsonPropertyObject {
 
 	abstract List<String> listBundle() throws Exception;
 
+	// 先获取所有记录对应的job值作为返回的结果集
 	public void access() throws Exception {
-		/* 先获取所有记录对应的job值作为返回的结果集 */
-		/* 先进行字段调整 */
+		// 先进行字段调整
 		this.adjust();
 		this.group = this.findGroupSelectEntry();
 		this.orderList = this.listOrderSelectEntry();
@@ -233,11 +235,8 @@ public abstract class Plan extends GsonPropertyObject {
 			bundles = this.listBundle();
 		}
 
-		if ((null != this.runtime.count) && (this.runtime.count > 0)) {
-			/* runtime限制了数量 */
-			if (this.runtime.count < bundles.size()) {
-				bundles = bundles.subList(0, this.runtime.count);
-			}
+		if ((null != this.runtime.count) && (this.runtime.count > 0) && (this.runtime.count < bundles.size())) {
+			bundles = bundles.subList(0, this.runtime.count);
 		}
 
 		final Table fillTable = this.concreteTable(bundles);
@@ -250,7 +249,7 @@ public abstract class Plan extends GsonPropertyObject {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				});
+				}, threadPool);
 				futures.add(future);
 			}
 		}
@@ -258,9 +257,8 @@ public abstract class Plan extends GsonPropertyObject {
 			future.get(300, TimeUnit.SECONDS);
 		}
 		Table table = this.order(fillTable);
-		/* 新增测试 */
+		// 新增测试
 		if (BooleanUtils.isFalse(this.selectList.emptyColumnCode())) {
-			// ScriptEngine engine = this.getScriptEngine();
 			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("gird", table);
 			for (SelectEntry selectEntry : this.selectList) {
@@ -288,7 +286,6 @@ public abstract class Plan extends GsonPropertyObject {
 					text.append("}\n");
 					text.append("extractObject.setValue(executeScript.apply(o));\n");
 					text.append("}");
-					// engine.eval(text.toString());
 					CompiledScript cs = ScriptingFactory.compile(text.toString());
 					JsonScriptingExecutor.eval(cs, scriptContext);
 					for (ExtractObject extractObject : extractObjects) {
@@ -307,22 +304,22 @@ public abstract class Plan extends GsonPropertyObject {
 			}
 			this.groupGrid = groupTable;
 		}
-		/* 需要抽取单独的列 */
+		// 需要抽取单独的列
 		if (ListTools.isNotEmpty(this.columnList)) {
-			this.columnGrid = new TreeList<Object>();
+			this.columnGrid = new TreeList<>();
 			for (String column : this.columnList) {
 				List<Object> list = new TreeList<>();
 				SelectEntry selectEntry = this.selectList.column(column);
 				if (null != selectEntry) {
 					for (Row o : table) {
-						if (selectEntry.isName) {
+						if (BooleanUtils.isTrue(selectEntry.isName)) {
 							list.add(name(Objects.toString(o.find(column), "")));
 						} else {
 							list.add(o.find(column));
 						}
 					}
 				}
-				/* 只有一列的情况下直接输出List */
+				// 只有一列的情况下直接输出List
 				if (this.columnList.size() == 1) {
 					this.columnGrid = list;
 				} else {
@@ -337,42 +334,27 @@ public abstract class Plan extends GsonPropertyObject {
 			this.groupGrid = null;
 		}
 		if (null != this.grid) {
-			this.selectList.stream().filter(o -> {
-				return BooleanUtils.isTrue(o.isName);
-			}).forEach(o -> {
-				this.grid.forEach(row -> {
-					row.put(o.column, name(Objects.toString(row.find(o.column), "")));
-				});
-			});
+			this.selectList.stream().filter(o -> BooleanUtils.isTrue(o.isName)).forEach(
+					o -> this.grid.forEach(row -> row.put(o.column, name(Objects.toString(row.find(o.column), "")))));
 		}
 		if (null != this.groupGrid) {
-			if (this.group.isName) {
-				this.groupGrid.stream().forEach(o -> {
-					o.group = name(Objects.toString(o.group, ""));
-				});
+			if (BooleanUtils.isTrue(this.group.isName)) {
+				this.groupGrid.stream().forEach(o -> o.group = name(Objects.toString(o.group, "")));
 			}
-			this.selectList.stream().filter(o -> {
-				return BooleanUtils.isTrue(o.isName);
-			}).forEach(o -> {
-				this.grid.forEach(row -> {
-					row.put(o.column, name(Objects.toString(row.find(o.column), "")));
-				});
-			});
+			this.selectList.stream().filter(o -> BooleanUtils.isTrue(o.isName)).forEach(
+					o -> this.grid.forEach(row -> row.put(o.column, name(Objects.toString(row.find(o.column), "")))));
 		}
 	}
 
 	public List<String> fetchBundles() throws Exception {
-		/* 先获取所有记录对应的job值作为返回的结果集 */
+		// 先获取所有记录对应的job值作为返回的结果集
 		List<String> bundles = this.listBundle();
-		/* 先进行字段调整 */
+		// 先进行字段调整
 		this.adjust();
 		this.group = this.findGroupSelectEntry();
 		this.orderList = this.listOrderSelectEntry();
-		if ((null != this.runtime.count) && (this.runtime.count > 0)) {
-			/* runtime限制了数量 */
-			if (this.runtime.count < bundles.size()) {
-				bundles = bundles.subList(0, this.runtime.count);
-			}
+		if ((null != this.runtime.count) && (this.runtime.count > 0) && (this.runtime.count < bundles.size())) {
+			bundles = bundles.subList(0, this.runtime.count);
 		}
 		if (orderList.isEmpty()) {
 			return bundles;
@@ -388,7 +370,7 @@ public abstract class Plan extends GsonPropertyObject {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				});
+				}, threadPool);
 				futures.add(future);
 			}
 		}
@@ -419,9 +401,9 @@ public abstract class Plan extends GsonPropertyObject {
 	}
 
 	private SelectEntry findGroupSelectEntry() {
-		for (SelectEntry _o : this.selectList) {
-			if (BooleanUtils.isTrue(_o.groupEntry)) {
-				return _o;
+		for (SelectEntry o : this.selectList) {
+			if (BooleanUtils.isTrue(o.groupEntry)) {
+				return o;
 			}
 		}
 		return null;
@@ -429,27 +411,25 @@ public abstract class Plan extends GsonPropertyObject {
 
 	private List<SelectEntry> listOrderSelectEntry() {
 		List<SelectEntry> list = new TreeList<>();
-		SelectEntry _g = this.findGroupSelectEntry();
-		if (null != _g) {
-			if (_g.isOrderType()) {
-				list.add(_g);
-			}
+		SelectEntry g = this.findGroupSelectEntry();
+		if ((null != g) && (g.isOrderType())) {
+			list.add(g);
 		}
-		for (SelectEntry _o : this.selectList) {
-			if (_o.isOrderType()) {
-				list.add(_o);
+		for (SelectEntry o : this.selectList) {
+			if (o.isOrderType()) {
+				list.add(o);
 			}
 		}
 		return list;
 	}
 
-	private Table concreteTable(List<String> jobs) throws Exception {
+	private Table concreteTable(List<String> jobs) {
 		Table table = new Table();
 		for (String str : jobs) {
 			Row row = new Row(str);
 			for (SelectEntry entry : ListTools.trim(this.selectList, true, false)) {
-				if (entry.available()) {
-					/** 统一填充默认值 */
+				if (BooleanUtils.isTrue(entry.available())) {
+					// 统一填充默认值
 					row.put(entry.getColumn(), Objects.toString(entry.defaultValue, ""));
 				}
 			}
@@ -459,7 +439,7 @@ public abstract class Plan extends GsonPropertyObject {
 	}
 
 	private void fillSelectEntry(List<String> bundles, SelectEntry selectEntry, Table table) throws Exception {
-		/* oracle 将empty string 自动转换成null,需要判断 */
+		// oracle 将empty string 自动转换成null,需要判断
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			EntityManager em = emc.get(Item.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -467,7 +447,7 @@ public abstract class Plan extends GsonPropertyObject {
 			Root<Item> root = cq.from(Item.class);
 			Predicate p = cb.isMember(root.get(Item_.bundle), cb.literal(bundles));
 			String[] paths = StringUtils.split(selectEntry.path, ".");
-			List<Order> orderList = new ArrayList<>();
+			List<Order> ol = new ArrayList<>();
 			if ((paths.length > 0) && StringUtils.isNotEmpty(paths[0])) {
 				p = cb.and(p, cb.equal(root.get(Item_.path0), paths[0]));
 			} else {
@@ -477,7 +457,7 @@ public abstract class Plan extends GsonPropertyObject {
 				if (!FilterEntry.WILDCARD.equals(paths[1])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path1), paths[1]));
 				} else {
-					orderList.add(cb.asc(root.get(Item_.path1)));
+					ol.add(cb.asc(root.get(Item_.path1)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path1)), cb.equal(root.get(Item_.path1), "")));
@@ -486,7 +466,7 @@ public abstract class Plan extends GsonPropertyObject {
 				if (!FilterEntry.WILDCARD.equals(paths[2])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path2), paths[2]));
 				} else {
-					orderList.add(cb.asc(root.get(Item_.path2)));
+					ol.add(cb.asc(root.get(Item_.path2)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path2)), cb.equal(root.get(Item_.path2), "")));
@@ -495,7 +475,7 @@ public abstract class Plan extends GsonPropertyObject {
 				if (!FilterEntry.WILDCARD.equals(paths[3])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path3), paths[3]));
 				} else {
-					orderList.add(cb.asc(root.get(Item_.path3)));
+					ol.add(cb.asc(root.get(Item_.path3)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path3)), cb.equal(root.get(Item_.path3), "")));
@@ -504,7 +484,7 @@ public abstract class Plan extends GsonPropertyObject {
 				if (!FilterEntry.WILDCARD.equals(paths[4])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path4), paths[4]));
 				} else {
-					orderList.add(cb.asc(root.get(Item_.path4)));
+					ol.add(cb.asc(root.get(Item_.path4)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path4)), cb.equal(root.get(Item_.path4), "")));
@@ -513,7 +493,7 @@ public abstract class Plan extends GsonPropertyObject {
 				if (!FilterEntry.WILDCARD.equals(paths[5])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path5), paths[5]));
 				} else {
-					orderList.add(cb.asc(root.get(Item_.path5)));
+					ol.add(cb.asc(root.get(Item_.path5)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path5)), cb.equal(root.get(Item_.path5), "")));
@@ -522,7 +502,7 @@ public abstract class Plan extends GsonPropertyObject {
 				if (!FilterEntry.WILDCARD.equals(paths[6])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path6), paths[6]));
 				} else {
-					orderList.add(cb.asc(root.get(Item_.path6)));
+					ol.add(cb.asc(root.get(Item_.path6)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path6)), cb.equal(root.get(Item_.path6), "")));
@@ -531,7 +511,7 @@ public abstract class Plan extends GsonPropertyObject {
 				if (!FilterEntry.WILDCARD.equals(paths[7])) {
 					p = cb.and(p, cb.equal(root.get(Item_.path7), paths[7]));
 				} else {
-					orderList.add(cb.asc(root.get(Item_.path7)));
+					ol.add(cb.asc(root.get(Item_.path7)));
 				}
 			} else {
 				p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path7)), cb.equal(root.get(Item_.path7), "")));
@@ -541,9 +521,9 @@ public abstract class Plan extends GsonPropertyObject {
 					root.get(Item_.stringLongValue), root.get(Item_.dateValue), root.get(Item_.timeValue),
 					root.get(Item_.dateTimeValue), root.get(Item_.booleanValue), root.get(Item_.numberValue)).where(p);
 			boolean isList = false;
-			if (!orderList.isEmpty()) {
+			if (!ol.isEmpty()) {
 				isList = true;
-				cq.orderBy(orderList);
+				cq.orderBy(ol);
 			}
 			List<Tuple> list = em.createQuery(cq).getResultList();
 			Row row = null;
@@ -582,12 +562,12 @@ public abstract class Plan extends GsonPropertyObject {
 					break;
 				case b:
 					if (null != o.get(8)) {
-						row.put(selectEntry.getColumn(), (Boolean) o.get(8), isList);
+						row.put(selectEntry.getColumn(), o.get(8), isList);
 					}
 					break;
 				case n:
 					if (null != o.get(9)) {
-						row.put(selectEntry.getColumn(), (Number) o.get(9), isList);
+						row.put(selectEntry.getColumn(), o.get(9), isList);
 					}
 					break;
 				default:
@@ -597,8 +577,8 @@ public abstract class Plan extends GsonPropertyObject {
 		}
 	}
 
-	/* 有两个地方用到了 */
-	private ScriptEngine getScriptEngine() throws ScriptException, Exception {
+	// 有两个地方用到了
+	private ScriptEngine getScriptEngine() {
 		if (null == this.scriptEngine) {
 			scriptEngine = ScriptingFactory.newScriptEngine();
 		}

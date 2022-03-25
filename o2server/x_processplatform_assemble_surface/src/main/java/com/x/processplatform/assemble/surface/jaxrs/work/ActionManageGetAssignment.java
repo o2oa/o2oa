@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -21,6 +23,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -33,9 +36,12 @@ import com.x.processplatform.core.entity.element.Process;
 
 class ActionManageGetAssignment extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionManageGetAssignment.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageGetAssignment.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		Work work;
@@ -46,11 +52,11 @@ class ActionManageGetAssignment extends BaseAction {
 			if (null == work) {
 				throw new ExceptionWorkNotExist(id);
 			}
-			/* Process 也可能为空 */
+			// Process 也可能为空
 			Process process = business.process().pick(work.getProcess());
 			Application application = business.application().pick(work.getApplication());
 			// 需要对这个应用的管理权限
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
@@ -59,23 +65,23 @@ class ActionManageGetAssignment extends BaseAction {
 		}
 
 		final String job = work.getJob();
-		CompletableFuture<Void> future_task = CompletableFuture.runAsync(() -> {
+		CompletableFuture<Void> futureTask = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				emc.listEqual(Task.class, Task.work_FIELDNAME, id).stream().sorted(
-						Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
+				emc.listEqual(Task.class, Task.work_FIELDNAME, id).stream()
+						.sorted(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
 						.forEach(o -> {
 							try {
 								WoTask w = WoTask.copier.copy(o);
 								wo.getTaskList().add(w);
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						});
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		CompletableFuture<Void> future_taskCompleted = CompletableFuture.runAsync(() -> {
+		}, ThisApplication.threadPool());
+		CompletableFuture<Void> futureTaskCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(TaskCompleted.class, TaskCompleted.work_FIELDNAME, id).stream().sorted(
 						Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
@@ -84,14 +90,14 @@ class ActionManageGetAssignment extends BaseAction {
 								WoTaskCompleted w = WoTaskCompleted.copier.copy(o);
 								wo.getTaskCompletedList().add(w);
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						});
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
-		CompletableFuture<Void> future_read = CompletableFuture.runAsync(() -> {
+		CompletableFuture<Void> futureRead = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(Read.class, Read.work_FIELDNAME, id).stream()
 						.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
@@ -100,14 +106,14 @@ class ActionManageGetAssignment extends BaseAction {
 								WoRead w = WoRead.copier.copy(o);
 								wo.getReadList().add(w);
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						});
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		CompletableFuture<Void> future_readCompleted = CompletableFuture.runAsync(() -> {
+		}, ThisApplication.threadPool());
+		CompletableFuture<Void> futureReadCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(ReadCompleted.class, ReadCompleted.work_FIELDNAME, id).stream().sorted(
 						Comparator.comparing(ReadCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
@@ -116,14 +122,14 @@ class ActionManageGetAssignment extends BaseAction {
 								WoReadCompleted w = WoReadCompleted.copier.copy(o);
 								wo.getReadCompletedList().add(w);
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						});
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		CompletableFuture<Void> future_review = CompletableFuture.runAsync(() -> {
+		}, ThisApplication.threadPool());
+		CompletableFuture<Void> futureReview = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(Review.class, Review.job_FIELDNAME, job).stream()
 						.sorted(Comparator.comparing(Review::getStartTime, Comparator.nullsLast(Date::compareTo)))
@@ -132,38 +138,40 @@ class ActionManageGetAssignment extends BaseAction {
 								WoReview w = WoReview.copier.copy(o);
 								wo.getReviewList().add(w);
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						});
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		future_task.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
-		future_review.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
-		future_taskCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
-		future_read.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
-		future_readCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		}, ThisApplication.threadPool());
+		futureTask.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureReview.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureTaskCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureRead.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureReadCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		result.setData(wo);
 		return result;
 	}
 
 	public static class Wo extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -6847443228032059363L;
+
 		@FieldDescribe("待办对象")
 		private List<WoTask> taskList = new ArrayList<>();
 
 		@FieldDescribe("已办对象")
-		private List<WoTaskCompleted> taskCompletedList= new ArrayList<>();;
+		private List<WoTaskCompleted> taskCompletedList = new ArrayList<>();
 
 		@FieldDescribe("待阅对象")
-		private List<WoRead> readList= new ArrayList<>();;
+		private List<WoRead> readList = new ArrayList<>();
 
 		@FieldDescribe("已阅对象")
-		private List<WoReadCompleted> readCompletedList= new ArrayList<>();;
+		private List<WoReadCompleted> readCompletedList = new ArrayList<>();
 
 		@FieldDescribe("参阅对象")
-		private List<WoReview> reviewList= new ArrayList<>();;
+		private List<WoReview> reviewList = new ArrayList<>();
 
 		@FieldDescribe("权限")
 		private WoControl control;
@@ -364,6 +372,8 @@ class ActionManageGetAssignment extends BaseAction {
 	}
 
 	public static class WoControl extends WorkControl {
+
+		private static final long serialVersionUID = 2948539010433309335L;
 	}
 
 }

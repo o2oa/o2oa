@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.vfs2.util.DelegatingFileSystemOptionsBuilder;
 
 import com.x.base.core.project.Application;
 import com.x.base.core.project.Applications;

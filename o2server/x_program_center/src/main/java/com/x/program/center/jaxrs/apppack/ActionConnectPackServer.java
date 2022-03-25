@@ -1,6 +1,15 @@
 package com.x.program.center.jaxrs.apppack;
 
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Collect;
@@ -14,15 +23,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-
-import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * 打包服务器检测功能

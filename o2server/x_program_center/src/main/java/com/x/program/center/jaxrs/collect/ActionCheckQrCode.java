@@ -1,5 +1,17 @@
 package com.x.program.center.jaxrs.collect;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -13,16 +25,6 @@ import com.x.base.core.project.config.WebServer;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Map;
 
 /**
  * Created by fancyLou on 7/27/21.

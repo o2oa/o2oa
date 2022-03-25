@@ -3,7 +3,6 @@ package com.x.bbs.assemble.control.schedule;
 import java.util.List;
 
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;

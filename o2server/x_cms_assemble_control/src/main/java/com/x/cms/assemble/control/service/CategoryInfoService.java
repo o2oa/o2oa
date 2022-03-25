@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.x.cms.core.entity.element.Form;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -19,6 +18,7 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryExt;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
 import com.x.query.core.entity.Item;

@@ -2,8 +2,6 @@ package com.x.program.center.jaxrs.config;
 
 import java.util.Map.Entry;
 
-import com.x.program.center.ThisApplication;
-import com.x.program.center.schedule.CollectPerson;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
@@ -12,7 +10,9 @@ import com.x.base.core.project.config.Node;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.program.center.ThisApplication;
 import com.x.program.center.jaxrs.config.BaseAction.AbstractWoProxy.Application;
+import com.x.program.center.schedule.CollectPerson;
 
 class ActionSetProxy extends BaseAction {
 

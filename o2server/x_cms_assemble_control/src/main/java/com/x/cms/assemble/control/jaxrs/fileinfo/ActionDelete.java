@@ -1,5 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.AuditLog;
@@ -14,8 +16,6 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class ActionDelete extends BaseAction {
 

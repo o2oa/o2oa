@@ -1,5 +1,16 @@
 package com.x.cms.core.express.permission;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
@@ -8,15 +19,6 @@ import com.x.cms.core.entity.Review;
 import com.x.cms.core.entity.Review_;
 import com.x.cms.core.express.tools.CriteriaBuilderTools;
 import com.x.cms.core.express.tools.filter.QueryFilter;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 对CMS栏目、分类、文档进行权限过滤查询，在CMS应用中会直接引用

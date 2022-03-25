@@ -1,19 +1,12 @@
 package com.x.attendance.assemble.control.processor.thread;
 
 import java.util.List;
-import java.util.Map;
 
 import com.x.attendance.assemble.control.processor.EntityAnalyseData;
 import com.x.attendance.assemble.control.processor.monitor.StatusSystemImportOpt;
 import com.x.attendance.assemble.control.service.AttendanceDetailAnalyseServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceDetailServiceAdv;
-import com.x.attendance.assemble.control.service.AttendanceScheduleSettingServiceAdv;
-import com.x.attendance.assemble.control.service.AttendanceSelfHolidayServiceAdv;
 import com.x.attendance.entity.AttendanceDetail;
-import com.x.attendance.entity.AttendanceScheduleSetting;
-import com.x.attendance.entity.AttendanceSelfHoliday;
-import com.x.attendance.entity.AttendanceStatisticalCycle;
-import com.x.attendance.entity.AttendanceWorkDayConfig;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 

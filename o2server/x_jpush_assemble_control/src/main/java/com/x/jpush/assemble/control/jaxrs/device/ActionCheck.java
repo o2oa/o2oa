@@ -1,5 +1,9 @@
 package com.x.jpush.assemble.control.jaxrs.device;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -10,9 +14,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.jpush.assemble.control.Business;
 import com.x.jpush.assemble.control.jaxrs.sample.BaseAction;
 import com.x.jpush.assemble.control.jaxrs.sample.ExceptionSampleEntityClassFind;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class ActionCheck extends BaseAction {
 

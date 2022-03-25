@@ -15,7 +15,17 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.processplatform.core.entity.content.*;
+import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.DocSign;
+import com.x.processplatform.core.entity.content.DocSignScrawl;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Snap;
+import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
 

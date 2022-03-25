@@ -1,16 +1,17 @@
 package com.x.processplatform.assemble.designer.content.factory;
 
-import com.x.processplatform.assemble.designer.AbstractFactory;
-import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.content.Draft;
-import com.x.processplatform.core.entity.content.Draft_;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.List;
+
+import com.x.processplatform.assemble.designer.AbstractFactory;
+import com.x.processplatform.assemble.designer.Business;
+import com.x.processplatform.core.entity.content.Draft;
+import com.x.processplatform.core.entity.content.Draft_;
 
 public class DraftFactory extends AbstractFactory {
 

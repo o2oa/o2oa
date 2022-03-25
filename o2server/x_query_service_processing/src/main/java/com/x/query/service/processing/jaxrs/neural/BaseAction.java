@@ -1,10 +1,10 @@
 package com.x.query.service.processing.jaxrs.neural;
 
+import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.core.entity.neural.Model;
-import com.x.base.core.project.cache.Cache.CacheCategory;
 
 abstract class BaseAction extends StandardJaxrsAction {
 

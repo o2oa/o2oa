@@ -16,8 +16,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
-import com.x.mind.entity.MindFolderInfo;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindFolderQuery;
+import com.x.mind.entity.MindFolderInfo;
 
 /**
  * 查询用户的个人文件夹信息列表

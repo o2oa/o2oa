@@ -3,7 +3,6 @@ package com.x.base.core.project.exception;
 import java.util.Objects;
 
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.LanguageTools;
 
 public class ExceptionAccessDeniedOrEntityNotExist extends LanguagePromptException {
 

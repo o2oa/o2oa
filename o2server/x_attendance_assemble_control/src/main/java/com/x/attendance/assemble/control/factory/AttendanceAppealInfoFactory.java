@@ -7,20 +7,25 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
-import com.x.attendance.assemble.control.CriteriaQueryTools;
-import com.x.attendance.assemble.control.service.UserManagerService;
-import com.x.attendance.entity.*;
-import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.CriteriaQueryTools;
 import com.x.attendance.assemble.control.jaxrs.attendanceappealinfo.WrapInFilterAppeal;
-import com.x.base.core.project.bean.NameValueCountPair;
+import com.x.attendance.entity.AttendanceAdmin;
+import com.x.attendance.entity.AttendanceAdmin_;
+import com.x.attendance.entity.AttendanceAppealInfo;
+import com.x.attendance.entity.AttendanceAppealInfo_;
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
 /**
  * 系统配置信息表基础功能服务类
 

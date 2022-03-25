@@ -22,10 +22,6 @@ import org.dom4j.QName;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.SliceJpaObject;
-import com.x.base.core.entity.StorageObject;
-
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;

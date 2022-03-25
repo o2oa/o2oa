@@ -1,17 +1,28 @@
 package com.x.processplatform.service.processing.jaxrs.job;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.*;
+import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.DocSign;
+import com.x.processplatform.core.entity.content.DocSignScrawl;
+import com.x.processplatform.core.entity.content.DocumentVersion;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.query.core.entity.Item;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 abstract class BaseAction extends StandardJaxrsAction {
 

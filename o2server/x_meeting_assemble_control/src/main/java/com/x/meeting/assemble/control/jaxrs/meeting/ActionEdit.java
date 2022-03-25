@@ -1,6 +1,5 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

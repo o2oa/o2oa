@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -20,6 +22,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkCompletedControl;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -35,9 +38,12 @@ import com.x.processplatform.core.entity.element.Process;
  */
 class ActionManageGetAssignment extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionManageGetAssignment.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageGetAssignment.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		WorkCompleted workCompleted = null;
 		WoControl control = null;
 		Wo wo = new Wo();
@@ -48,85 +54,81 @@ class ActionManageGetAssignment extends BaseAction {
 			Process process = business.process().pick(workCompleted.getProcess());
 			Application application = business.application().pick(workCompleted.getApplication());
 			// 需要对这个应用的管理权限
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			control = business.getControl(effectivePerson, workCompleted, WoControl.class);
 			wo.setControl(control);
 		}
 		final String job = workCompleted.getJob();
-		CompletableFuture<Void> future_taskCompleted = CompletableFuture.runAsync(() -> {
+		CompletableFuture<Void> futureTaskCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, job).stream().sorted(
 						Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
 						.forEach(o -> {
 							try {
 								WoTaskCompleted w = WoTaskCompleted.copier.copy(o);
-								// w.setControl(control);
 								wo.getTaskCompletedList().add(w);
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						});
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		CompletableFuture<Void> future_read = CompletableFuture.runAsync(() -> {
+		}, ThisApplication.threadPool());
+		CompletableFuture<Void> futureRead = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(Read.class, Read.job_FIELDNAME, job).stream()
 						.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
 						.forEach(o -> {
 							try {
 								WoRead w = WoRead.copier.copy(o);
-								// w.setControl(control);
 								wo.getReadList().add(w);
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						});
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		CompletableFuture<Void> future_readCompleted = CompletableFuture.runAsync(() -> {
+		}, ThisApplication.threadPool());
+		CompletableFuture<Void> futureReadCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, job).stream().sorted(
 						Comparator.comparing(ReadCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
 						.forEach(o -> {
 							try {
 								WoReadCompleted w = WoReadCompleted.copier.copy(o);
-								// w.setControl(control);
 								wo.getReadCompletedList().add(w);
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						});
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		CompletableFuture<Void> future_review = CompletableFuture.runAsync(() -> {
+		}, ThisApplication.threadPool());
+		CompletableFuture<Void> futureReview = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(Review.class, Review.job_FIELDNAME, job).stream()
 						.sorted(Comparator.comparing(Review::getStartTime, Comparator.nullsLast(Date::compareTo)))
 						.forEach(o -> {
 							try {
 								WoReview w = WoReview.copier.copy(o);
-								// w.setControl(control);
 								wo.getReviewList().add(w);
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						});
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		future_taskCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
-		future_read.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
-		future_readCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
-		future_review.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		}, ThisApplication.threadPool());
+		futureTaskCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureRead.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureReadCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureReview.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		result.setData(wo);
 		return result;
 	}

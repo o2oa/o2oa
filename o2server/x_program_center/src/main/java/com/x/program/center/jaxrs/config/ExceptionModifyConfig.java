@@ -1,7 +1,6 @@
 package com.x.program.center.jaxrs.config;
 
 import com.x.base.core.project.exception.LanguagePromptException;
-import com.x.base.core.project.exception.PromptException;
 
 class ExceptionModifyConfig extends LanguagePromptException {
 

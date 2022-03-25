@@ -1,21 +1,39 @@
 package com.x.attendance.assemble.control.factory;
 
-import com.x.attendance.assemble.control.AbstractFactory;
-import com.x.attendance.assemble.control.Business;
-import com.x.attendance.entity.*;
-import com.x.base.core.project.tools.DateTools;
-import org.apache.commons.lang3.time.DateUtils;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.time.DateUtils;
+
+import com.x.attendance.assemble.control.AbstractFactory;
+import com.x.attendance.assemble.control.Business;
+import com.x.attendance.entity.AttendanceDingtalkDetail;
+import com.x.attendance.entity.AttendanceDingtalkDetail_;
+import com.x.attendance.entity.AttendanceQywxDetail;
+import com.x.attendance.entity.AttendanceQywxDetail_;
+import com.x.attendance.entity.DingdingQywxSyncRecord;
+import com.x.attendance.entity.DingdingQywxSyncRecord_;
+import com.x.attendance.entity.StatisticDingdingPersonForMonth;
+import com.x.attendance.entity.StatisticDingdingPersonForMonth_;
+import com.x.attendance.entity.StatisticDingdingUnitForDay;
+import com.x.attendance.entity.StatisticDingdingUnitForDay_;
+import com.x.attendance.entity.StatisticDingdingUnitForMonth;
+import com.x.attendance.entity.StatisticDingdingUnitForMonth_;
+import com.x.attendance.entity.StatisticQywxPersonForMonth;
+import com.x.attendance.entity.StatisticQywxPersonForMonth_;
+import com.x.attendance.entity.StatisticQywxUnitForDay;
+import com.x.attendance.entity.StatisticQywxUnitForDay_;
+import com.x.attendance.entity.StatisticQywxUnitForMonth;
+import com.x.attendance.entity.StatisticQywxUnitForMonth_;
+import com.x.base.core.project.tools.DateTools;
 
 public class DingdingAttendanceFactory extends AbstractFactory {
 

@@ -1,15 +1,12 @@
 package com.x.processplatform.assemble.surface.jaxrs.workcompleted;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
@@ -21,12 +18,8 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.organization.OrganizationDefinition;
-import com.x.base.core.project.organization.Unit;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;

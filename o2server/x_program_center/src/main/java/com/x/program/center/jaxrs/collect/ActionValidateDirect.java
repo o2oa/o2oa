@@ -1,16 +1,16 @@
 package com.x.program.center.jaxrs.collect;
 
-import com.x.base.core.project.config.Config;
-import com.x.program.center.ThisApplication;
-import com.x.program.center.schedule.CollectMarket;
-import com.x.program.center.schedule.CollectPerson;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.config.Collect;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.program.center.ThisApplication;
+import com.x.program.center.schedule.CollectMarket;
+import com.x.program.center.schedule.CollectPerson;
 
 class ActionValidateDirect extends BaseAction {
 

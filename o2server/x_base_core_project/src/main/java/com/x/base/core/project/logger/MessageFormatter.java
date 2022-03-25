@@ -1,5 +1,9 @@
 package com.x.base.core.project.logger;
 
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Copyright (c) 2004-2011 QOS.ch
  * All rights reserved.
@@ -26,10 +30,6 @@ package com.x.base.core.project.logger;
  */
 
 import org.apache.commons.lang3.StringUtils;
-
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
 
 // contributors: lizongbo: proposed special treatment of array parameter values
 // Joern Huxhorn: pointed out double[] omission, suggested deep array copy

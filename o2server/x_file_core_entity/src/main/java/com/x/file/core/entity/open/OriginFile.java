@@ -1,20 +1,30 @@
 package com.x.file.core.entity.open;
 
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.Storage;
-import com.x.base.core.entity.StorageObject;
-import com.x.base.core.entity.StorageType;
-import com.x.base.core.entity.annotation.*;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.DateTools;
-import com.x.file.core.entity.PersistenceProperties;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import javax.persistence.*;
-import java.util.Date;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.Storage;
+import com.x.base.core.entity.StorageObject;
+import com.x.base.core.entity.StorageType;
+import com.x.base.core.entity.annotation.CheckPersist;
+import com.x.base.core.entity.annotation.CitationNotExist;
+import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.DateTools;
+import com.x.file.core.entity.PersistenceProperties;
 
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity

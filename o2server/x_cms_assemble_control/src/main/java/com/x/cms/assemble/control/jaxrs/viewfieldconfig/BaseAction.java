@@ -5,8 +5,6 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
-import net.sf.ehcache.Ehcache;
-
 public class BaseAction extends StandardJaxrsAction {
 	
 	static Cache.CacheCategory cacheCategory = new Cache.CacheCategory( ViewFieldConfig.class);

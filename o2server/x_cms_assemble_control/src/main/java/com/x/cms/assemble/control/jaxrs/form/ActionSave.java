@@ -1,5 +1,12 @@
 package com.x.cms.assemble.control.jaxrs.form;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,12 +27,6 @@ import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
 import com.x.cms.core.entity.element.ViewFieldConfig;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 保存表单

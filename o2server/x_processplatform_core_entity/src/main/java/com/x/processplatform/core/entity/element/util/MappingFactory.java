@@ -13,7 +13,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;

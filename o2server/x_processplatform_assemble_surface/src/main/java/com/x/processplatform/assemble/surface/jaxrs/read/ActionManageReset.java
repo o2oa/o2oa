@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.read;
 
-import java.net.URLEncoder;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;

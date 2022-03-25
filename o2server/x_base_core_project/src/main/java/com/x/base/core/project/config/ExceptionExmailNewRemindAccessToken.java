@@ -1,7 +1,6 @@
 package com.x.base.core.project.config;
 
 import com.x.base.core.project.exception.PromptException;
-import com.x.base.core.project.http.EffectivePerson;
 
 class ExceptionExmailNewRemindAccessToken extends PromptException {
 

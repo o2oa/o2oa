@@ -8,7 +8,6 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.element.TemplateForm;
 

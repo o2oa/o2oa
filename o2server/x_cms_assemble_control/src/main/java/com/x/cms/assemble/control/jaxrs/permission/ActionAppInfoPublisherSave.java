@@ -1,5 +1,9 @@
 package com.x.cms.assemble.control.jaxrs.permission;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -13,9 +17,6 @@ import com.x.cms.assemble.control.service.CmsBatchOperationPersistService;
 import com.x.cms.assemble.control.service.CmsBatchOperationProcessService;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppInfo;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 public class ActionAppInfoPublisherSave extends BaseAction {
 

@@ -2,10 +2,6 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.io.ByteArrayOutputStream;
 
-import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.config.StorageMapping;
-import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -17,8 +13,10 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -27,6 +25,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.general.core.entity.GeneralFile;
+import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 
 class ActionHtmlToPdf extends BaseAction {
 

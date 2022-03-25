@@ -1,8 +1,6 @@
 package com.x.program.center.schedule;
 
 import com.x.base.core.project.exception.LanguagePromptException;
-import com.x.base.core.project.exception.PromptException;
-import com.x.base.core.project.http.EffectivePerson;
 
 class ExceptionZhengwuDingdingGetCallback extends LanguagePromptException {
 

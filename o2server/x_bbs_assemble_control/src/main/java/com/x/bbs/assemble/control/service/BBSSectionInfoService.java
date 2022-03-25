@@ -1,5 +1,10 @@
 package com.x.bbs.assemble.control.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -9,11 +14,12 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
-import com.x.bbs.entity.*;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.x.bbs.entity.BBSForumInfo;
+import com.x.bbs.entity.BBSPermissionInfo;
+import com.x.bbs.entity.BBSPermissionRole;
+import com.x.bbs.entity.BBSRoleInfo;
+import com.x.bbs.entity.BBSSectionInfo;
+import com.x.bbs.entity.BBSUserRole;
 
 /**
  * 论坛信息管理服务类

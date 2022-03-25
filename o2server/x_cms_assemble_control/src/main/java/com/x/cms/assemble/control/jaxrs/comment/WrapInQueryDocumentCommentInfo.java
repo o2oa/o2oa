@@ -1,12 +1,13 @@
 package com.x.cms.assemble.control.jaxrs.comment;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.cms.core.express.tools.filter.QueryFilter;
 import com.x.cms.core.express.tools.filter.term.EqualsTerm;
 import com.x.cms.core.express.tools.filter.term.IsFalseTerm;
 import com.x.cms.core.express.tools.filter.term.IsTrueTerm;
 import com.x.cms.core.express.tools.filter.term.LikeTerm;
-import org.apache.commons.lang3.StringUtils;
 
 public class WrapInQueryDocumentCommentInfo {
 	

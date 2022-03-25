@@ -5,13 +5,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -26,6 +23,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Task;
@@ -38,10 +36,6 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
-
-	private static ExecutorService executor = Executors.newCachedThreadPool(
-			new BasicThreadFactory.Builder().namingPattern(ActionListWithWorkOrWorkCompleted.class.getName() + "-%d")
-					.daemon(true).priority(Thread.NORM_PRIORITY).build());
 
 	private static final String TASKLIST_FIELDNAME = "taskList";
 	private static final String TASKCOMPLETEDLIST_FIELDNAME = "taskCompletedList";
@@ -58,21 +52,16 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 		final String workLogJob = job;
 
-		CompletableFuture<List<WoTask>> tasksFuture = CompletableFuture.supplyAsync(() -> {
-			return this.tasks(workLogJob);
-		}, executor);
-		CompletableFuture<List<WoTaskCompleted>> taskCompletedsFuture = CompletableFuture.supplyAsync(() -> {
-			return this.taskCompleteds(workLogJob);
-		}, executor);
-		CompletableFuture<List<WoRead>> readsFuture = CompletableFuture.supplyAsync(() -> {
-			return this.reads(workLogJob);
-		}, executor);
-		CompletableFuture<List<WoReadCompleted>> readCompletedsFuture = CompletableFuture.supplyAsync(() -> {
-			return this.readCompleteds(workLogJob);
-		}, executor);
-		CompletableFuture<List<WorkLog>> workLogsFuture = CompletableFuture.supplyAsync(() -> {
-			return this.workLogs(workLogJob);
-		}, executor);
+		CompletableFuture<List<WoTask>> tasksFuture = CompletableFuture.supplyAsync(() -> this.tasks(workLogJob),
+				ThisApplication.threadPool());
+		CompletableFuture<List<WoTaskCompleted>> taskCompletedsFuture = CompletableFuture
+				.supplyAsync(() -> this.taskCompleteds(workLogJob), ThisApplication.threadPool());
+		CompletableFuture<List<WoRead>> readsFuture = CompletableFuture.supplyAsync(() -> this.reads(workLogJob),
+				ThisApplication.threadPool());
+		CompletableFuture<List<WoReadCompleted>> readCompletedsFuture = CompletableFuture
+				.supplyAsync(() -> this.readCompleteds(workLogJob), ThisApplication.threadPool());
+		CompletableFuture<List<WorkLog>> workLogsFuture = CompletableFuture.supplyAsync(() -> this.workLogs(workLogJob),
+				ThisApplication.threadPool());
 		CompletableFuture<Boolean> controlFuture = CompletableFuture.supplyAsync(() -> {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -83,7 +72,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				logger.error(e);
 			}
 			return value;
-		}, executor);
+		}, ThisApplication.threadPool());
 
 		if (BooleanUtils.isFalse(controlFuture.get())) {
 			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
@@ -97,15 +86,13 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		if (!workLogs.isEmpty()) {
 			WorkLogTree tree = new WorkLogTree(workLogs);
 			List<Wo> wos = new ArrayList<>();
-//			for (WorkLog o : workLogs.stream().filter(o -> Objects.equals(ActivityType.manual, o.getFromActivityType()))
-//					.collect(Collectors.toList())) {
 			for (WorkLog o : workLogs) {
 				Wo wo = Wo.copier.copy(o);
 				Node node = tree.find(o);
 				if (null != node) {
 					Nodes nodes = node.downNextManual();
 					if (nodes.isEmpty()) {
-						/* 如果没有找到后面的人工节点,那么有多种可能,有一种是已经删除,工作合并到其他分支了,那么找其他分支的下一步 */
+						// 如果没有找到后面的人工节点,那么有多种可能,有一种是已经删除,工作合并到其他分支了,那么找其他分支的下一步
 						WorkLog otherWorkLog = workLogs.stream()
 								.filter(g -> (g != o)
 										&& StringUtils.equals(g.getArrivedActivity(), o.getArrivedActivity())
@@ -133,7 +120,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 						}
 					}
 				}
-				/* 下一环节处理人可能是重复处理导致重复的,去重 */
+				// 下一环节处理人可能是重复处理导致重复的,去重
 				wo.setNextTaskIdentityList(ListTools.trim(wo.getNextTaskIdentityList(), true, true));
 				wo.setNextTaskCompletedIdentityList(ListTools.trim(wo.getNextTaskCompletedIdentityList(), true, true));
 				wos.add(wo);

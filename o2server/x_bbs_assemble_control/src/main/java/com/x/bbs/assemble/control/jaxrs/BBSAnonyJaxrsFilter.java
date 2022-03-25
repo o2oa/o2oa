@@ -1,5 +1,7 @@
 package com.x.bbs.assemble.control.jaxrs;
 
+import java.io.IOException;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -8,6 +10,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.FilterTools;
@@ -15,9 +19,6 @@ import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.jaxrs.AnonymousCipherManagerUserJaxrsFilter;
 import com.x.bbs.assemble.control.ThisApplication;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
 
 @WebFilter(urlPatterns = { 
 		"/jaxrs/image/encode/*", 

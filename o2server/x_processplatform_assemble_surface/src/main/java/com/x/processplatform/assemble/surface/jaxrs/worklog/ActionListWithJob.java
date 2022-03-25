@@ -19,6 +19,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Task;
@@ -45,26 +46,21 @@ class ActionListWithJob extends BaseAction {
 			}
 		}
 
-		CompletableFuture<List<WoTask>> future_tasks = CompletableFuture.supplyAsync(() -> {
-			return this.tasks(job);
-		});
-		CompletableFuture<List<WoTaskCompleted>> future_taskCompleteds = CompletableFuture.supplyAsync(() -> {
-			return this.taskCompleteds(job);
-		});
-		CompletableFuture<List<WoRead>> future_reads = CompletableFuture.supplyAsync(() -> {
-			return this.reads(job);
-		});
-		CompletableFuture<List<WoReadCompleted>> future_readCompleteds = CompletableFuture.supplyAsync(() -> {
-			return this.readCompleteds(job);
-		});
-		CompletableFuture<List<Wo>> future_workLogs = CompletableFuture.supplyAsync(() -> {
-			return this.workLogs(job);
-		});
-		List<WoTask> tasks = future_tasks.get();
-		List<WoTaskCompleted> taskCompleteds = future_taskCompleteds.get();
-		List<WoRead> reads = future_reads.get();
-		List<WoReadCompleted> readCompleteds = future_readCompleteds.get();
-		List<Wo> wos = future_workLogs.get();
+		CompletableFuture<List<WoTask>> futureTasks = CompletableFuture.supplyAsync(() -> this.tasks(job),
+				ThisApplication.threadPool());
+		CompletableFuture<List<WoTaskCompleted>> futureTaskCompleteds = CompletableFuture
+				.supplyAsync(() -> this.taskCompleteds(job), ThisApplication.threadPool());
+		CompletableFuture<List<WoRead>> futureReads = CompletableFuture.supplyAsync(() -> this.reads(job),
+				ThisApplication.threadPool());
+		CompletableFuture<List<WoReadCompleted>> futureReadCompleteds = CompletableFuture
+				.supplyAsync(() -> this.readCompleteds(job), ThisApplication.threadPool());
+		CompletableFuture<List<Wo>> futureWorkLogs = CompletableFuture.supplyAsync(() -> this.workLogs(job),
+				ThisApplication.threadPool());
+		List<WoTask> tasks = futureTasks.get();
+		List<WoTaskCompleted> taskCompleteds = futureTaskCompleteds.get();
+		List<WoRead> reads = futureReads.get();
+		List<WoReadCompleted> readCompleteds = futureReadCompleteds.get();
+		List<Wo> wos = futureWorkLogs.get();
 		ListTools.groupStick(wos, tasks, WorkLog.fromActivityToken_FIELDNAME, Task.activityToken_FIELDNAME,
 				taskList_FIELDNAME);
 		ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,

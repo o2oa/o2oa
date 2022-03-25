@@ -7,10 +7,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.h2.tools.RunScript;
@@ -23,9 +19,13 @@ import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.Dingding;
 import com.x.base.core.project.config.Qiyeweixin;
 import com.x.base.core.project.config.Token;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 /**
  * config/token.json配置修改

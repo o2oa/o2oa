@@ -2,12 +2,6 @@ package com.x.processplatform.assemble.designer.jaxrs.process;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -19,7 +13,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Process_;
 
 class ActionListWithApplication extends BaseAction {
 

@@ -4,13 +4,11 @@ import java.net.URI;
 import java.util.Objects;
 import java.util.zip.CRC32;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
 
-import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.http.HttpHeader;
 
@@ -23,6 +21,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.StringTools;
 
 /**
  * @author sword

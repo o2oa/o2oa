@@ -1,8 +1,8 @@
 package com.x.mind.assemble.control.queue;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-
 import java.util.Date;
+
+import com.x.base.core.project.annotation.FieldDescribe;
 
 public class MessageWo {
 

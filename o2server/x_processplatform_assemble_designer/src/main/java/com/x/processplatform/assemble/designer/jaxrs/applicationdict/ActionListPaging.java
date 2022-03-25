@@ -1,5 +1,11 @@
 package com.x.processplatform.assemble.designer.jaxrs.applicationdict;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -13,11 +19,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.ApplicationDict;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import java.util.List;
 
 class ActionListPaging extends BaseAction {
 

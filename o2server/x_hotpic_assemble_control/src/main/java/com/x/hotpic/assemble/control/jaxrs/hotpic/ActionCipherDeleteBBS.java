@@ -1,14 +1,15 @@
 package com.x.hotpic.assemble.control.jaxrs.hotpic;
 
 import java.util.List;
+
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.CacheManager;
 
 public class ActionCipherDeleteBBS extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {

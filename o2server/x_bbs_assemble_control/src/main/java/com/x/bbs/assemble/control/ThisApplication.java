@@ -2,7 +2,6 @@ package com.x.bbs.assemble.control;
 
 import java.util.List;
 
-import com.x.bbs.assemble.control.queue.NickNameConsumeQueue;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.Context;
@@ -11,6 +10,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.tools.ListTools;
+import com.x.bbs.assemble.control.queue.NickNameConsumeQueue;
 import com.x.bbs.assemble.control.queue.QueueNewReplyNotify;
 import com.x.bbs.assemble.control.queue.QueueNewSubjectNotify;
 import com.x.bbs.assemble.control.schedule.SubjectReplyTotalStatisticTask;

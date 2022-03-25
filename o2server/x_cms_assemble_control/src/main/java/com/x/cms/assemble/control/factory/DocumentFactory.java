@@ -1,5 +1,23 @@
 package com.x.cms.assemble.control.factory;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
+import javax.persistence.criteria.Subquery;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -8,20 +26,13 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
-import com.x.cms.assemble.control.jaxrs.document.ActionQueryListWithFilterPagingAdmin;
-import com.x.cms.core.entity.*;
+import com.x.cms.core.entity.CmsBatchOperation_;
+import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.Document_;
+import com.x.cms.core.entity.Review;
+import com.x.cms.core.entity.Review_;
 import com.x.cms.core.express.tools.CriteriaBuilderTools;
 import com.x.cms.core.express.tools.filter.QueryFilter;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Tuple;
-import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 /**
  * 文档信息基础功能服务类
  *

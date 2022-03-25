@@ -1,5 +1,9 @@
 package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
@@ -13,9 +17,6 @@ import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.element.ViewCategory;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class ActionDelete extends BaseAction {
 

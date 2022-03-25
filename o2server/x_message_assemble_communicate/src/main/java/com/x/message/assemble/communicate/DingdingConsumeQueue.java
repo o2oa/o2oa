@@ -2,7 +2,6 @@ package com.x.message.assemble.communicate;
 
 import java.net.URLEncoder;
 
-import com.x.base.core.project.message.MessageConnector;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonObject;
@@ -14,6 +13,7 @@ import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.DingdingMessage;
+import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.message.core.entity.Message;

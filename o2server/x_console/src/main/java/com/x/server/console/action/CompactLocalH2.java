@@ -3,19 +3,19 @@ package com.x.server.console.action;
 import java.sql.DriverManager;
 import java.util.Date;
 
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.DataServer;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DateTools;
-import com.x.server.console.server.Servers;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.h2.store.fs.FileUtils;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.RunScript;
 import org.h2.tools.Script;
+
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.DataServer;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DateTools;
+import com.x.server.console.server.Servers;
 
 public class CompactLocalH2 {
 

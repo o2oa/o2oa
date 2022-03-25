@@ -1,5 +1,12 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import java.util.Date;
+import java.util.UUID;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -23,12 +30,6 @@ import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import com.x.processplatform.core.entity.content.Attachment;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-
-import java.util.Date;
-import java.util.UUID;
 
 public class ActionFileUploadWithUrl extends BaseAction {
 

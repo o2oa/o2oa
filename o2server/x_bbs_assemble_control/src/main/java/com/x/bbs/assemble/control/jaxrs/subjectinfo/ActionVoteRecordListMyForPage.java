@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
@@ -18,7 +20,6 @@ import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectFi
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectWrapOut;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionWrapInConvert;
 import com.x.bbs.entity.BBSVoteRecord;
-import org.apache.commons.lang3.StringUtils;
 
 public class ActionVoteRecordListMyForPage extends BaseAction {
 

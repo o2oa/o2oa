@@ -1,5 +1,8 @@
 package com.x.program.center.jaxrs.market;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.enums.CommonStatus;
@@ -12,9 +15,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.program.center.core.entity.Application;
 import com.x.program.center.core.entity.Attachment;
 import com.x.program.center.core.entity.InstallLog;
-
-import java.util.ArrayList;
-import java.util.List;
 
 class ActionGet extends BaseAction {
 

@@ -10,7 +10,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.x.attendance.assemble.control.jaxrs.ExceptionAttendanceProcess;
 import com.x.attendance.assemble.control.processor.monitor.StatusImportFileDetail;

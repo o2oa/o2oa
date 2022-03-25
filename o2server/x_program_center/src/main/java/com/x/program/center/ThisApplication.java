@@ -2,9 +2,16 @@ package com.x.program.center;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.program.center.schedule.Area;
@@ -23,12 +30,25 @@ import com.x.program.center.schedule.WeLinkSyncOrganization;
 import com.x.program.center.schedule.WeLinkSyncOrganizationTrigger;
 import com.x.program.center.schedule.ZhengwuDingdingSyncOrganization;
 import com.x.program.center.schedule.ZhengwuDingdingSyncOrganizationTrigger;
-import org.apache.commons.lang3.StringUtils;
 
 public class ThisApplication {
 
 	private ThisApplication() {
 		// nothing
+	}
+
+	private static ExecutorService threadPool;
+
+	public static ExecutorService threadPool() {
+		return threadPool;
+	}
+
+	private static void initThreadPool() {
+		int maximumPoolSize = Runtime.getRuntime().availableProcessors() + 1;
+		ThreadFactory threadFactory = new ThreadFactoryBuilder()
+				.setNameFormat(ThisApplication.class.getPackageName() + "-threadpool-%d").build();
+		threadPool = new ThreadPoolExecutor(0, maximumPoolSize, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<>(1000),
+				threadFactory);
 	}
 
 	protected static Context context;
@@ -51,6 +71,7 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
+			initThreadPool();
 			CacheManager.init(context.clazz().getSimpleName());
 			context().startQueue(centerQueue);
 			context().startQueue(logQueue);
@@ -64,7 +85,8 @@ public class ThisApplication {
 						Config.zhengwuDingding().getForceSyncCron());
 			}
 			/* 企业微信拉入同步 */
-			if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable()) && StringUtils.isNotBlank(Config.qiyeweixin().getForceSyncCron())) {
+			if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
+					&& StringUtils.isNotBlank(Config.qiyeweixin().getForceSyncCron())) {
 				/* 启动同步任务 */
 				context().scheduleLocal(QiyeweixinSyncOrganization.class, Config.qiyeweixin().getSyncCron());
 				/* 添加一个强制同步任务 */
@@ -72,22 +94,22 @@ public class ThisApplication {
 						Config.qiyeweixin().getForceSyncCron());
 			}
 			/* 钉钉同步 */
-			if (BooleanUtils.isTrue(Config.dingding().getEnable()) && StringUtils.isNotBlank(Config.dingding().getForceSyncCron())) {
+			if (BooleanUtils.isTrue(Config.dingding().getEnable())
+					&& StringUtils.isNotBlank(Config.dingding().getForceSyncCron())) {
 				/* 启动同步任务 */
 				context().scheduleLocal(DingdingSyncOrganization.class, Config.dingding().getSyncCron());
 				/* 添加一个强制同步任务 */
 				context().scheduleLocal(DingdingSyncOrganizationTrigger.class, Config.dingding().getForceSyncCron());
 			}
 			/* WeLink同步 */
-			if (BooleanUtils.isTrue(Config.weLink().getEnable()) && StringUtils.isNotBlank(Config.weLink().getForceSyncCron())) {
+			if (BooleanUtils.isTrue(Config.weLink().getEnable())
+					&& StringUtils.isNotBlank(Config.weLink().getForceSyncCron())) {
 				/* 启动同步任务 */
 				context().scheduleLocal(WeLinkSyncOrganization.class, Config.weLink().getSyncCron());
 				/* 添加一个强制同步任务 */
 				context().scheduleLocal(WeLinkSyncOrganizationTrigger.class, Config.weLink().getForceSyncCron());
 			}
 
-//			context().scheduleLocal(RefreshApplications.class, CenterQueue.REFRESHAPPLICATIONSINTERVAL,
-//					CenterQueue.REFRESHAPPLICATIONSINTERVAL);
 			// 运行间隔由300秒缩减到120秒
 			context().scheduleLocal(FireSchedule.class, 180, 120);
 			context().scheduleLocal(CleanupCode.class, 10, 60 * 30);

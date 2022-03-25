@@ -1,5 +1,17 @@
 package com.x.portal.assemble.surface.jaxrs.page;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache.CacheKey;
@@ -10,18 +22,12 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.portal.assemble.surface.Business;
-import com.x.portal.core.entity.*;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import com.x.portal.assemble.surface.ThisApplication;
+import com.x.portal.core.entity.Page;
+import com.x.portal.core.entity.PageProperties;
+import com.x.portal.core.entity.Portal;
+import com.x.portal.core.entity.Script;
+import com.x.portal.core.entity.Widget;
 
 class V2GetWithPortalMobile extends BaseAction {
 
@@ -74,17 +80,17 @@ class V2GetWithPortalMobile extends BaseAction {
 		final PageProperties properties = page.getProperties();
 		wo.setPage(new RelatedPage(page, page.getMobileDataOrData()));
 		final List<String> list = new CopyOnWriteArrayList<>();
-		CompletableFuture<Map<String, RelatedWidget>> _relatedWidget = CompletableFuture.supplyAsync(() -> {
+		CompletableFuture<Map<String, RelatedWidget>> relatedWidget = CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedWidget> map = new TreeMap<>();
 			if (ListTools.isNotEmpty(properties.getMobileRelatedWidgetList())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business bus = new Business(emc);
-					Widget _f;
-					for (String _id : properties.getMobileRelatedWidgetList()) {
-						_f = bus.widget().pick(_id);
-						if (null != _f) {
-							map.put(_id, new RelatedWidget(_f, _f.getMobileDataOrData()));
-							list.add(_f.getId() + _f.getUpdateTime().getTime());
+					Widget w;
+					for (String wid : properties.getMobileRelatedWidgetList()) {
+						w = bus.widget().pick(wid);
+						if (null != w) {
+							map.put(wid, new RelatedWidget(w, w.getMobileDataOrData()));
+							list.add(w.getId() + w.getUpdateTime().getTime());
 						}
 					}
 				} catch (Exception e) {
@@ -92,8 +98,8 @@ class V2GetWithPortalMobile extends BaseAction {
 				}
 			}
 			return map;
-		});
-		CompletableFuture<Map<String, RelatedScript>> _relatedScript = CompletableFuture.supplyAsync(() -> {
+		}, ThisApplication.threadPool());
+		CompletableFuture<Map<String, RelatedScript>> relatedScript = CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedScript> map = new TreeMap<>();
 			if ((null != properties.getMobileRelatedScriptMap())
 					&& (properties.getMobileRelatedScriptMap().size() > 0)) {
@@ -102,27 +108,28 @@ class V2GetWithPortalMobile extends BaseAction {
 					for (Entry<String, String> entry : properties.getMobileRelatedScriptMap().entrySet()) {
 						switch (entry.getValue()) {
 						case RelatedScript.TYPE_PROCESSPLATFORM:
-							com.x.processplatform.core.entity.element.Script _pp = bus.process().script().pick(entry.getKey());
-							if (null != _pp) {
-								map.put(entry.getKey(), new RelatedScript(_pp.getId(), _pp.getName(), _pp.getAlias(),
-										_pp.getText(), entry.getValue()));
-								list.add(_pp.getId() + _pp.getUpdateTime().getTime());
+							com.x.processplatform.core.entity.element.Script pp = bus.process().script()
+									.pick(entry.getKey());
+							if (null != pp) {
+								map.put(entry.getKey(), new RelatedScript(pp.getId(), pp.getName(), pp.getAlias(),
+										pp.getText(), entry.getValue()));
+								list.add(pp.getId() + pp.getUpdateTime().getTime());
 							}
 							break;
 						case RelatedScript.TYPE_CMS:
-							com.x.cms.core.entity.element.Script _cms = bus.cms().script().pick(entry.getKey());
-							if (null != _cms) {
-								map.put(entry.getKey(), new RelatedScript(_cms.getId(), _cms.getName(), _cms.getAlias(),
-										_cms.getText(), entry.getValue()));
-								list.add(_cms.getId() + _cms.getUpdateTime().getTime());
+							com.x.cms.core.entity.element.Script cms = bus.cms().script().pick(entry.getKey());
+							if (null != cms) {
+								map.put(entry.getKey(), new RelatedScript(cms.getId(), cms.getName(), cms.getAlias(),
+										cms.getText(), entry.getValue()));
+								list.add(cms.getId() + cms.getUpdateTime().getTime());
 							}
 							break;
 						case RelatedScript.TYPE_PORTAL:
-							Script _p = bus.script().pick(entry.getKey());
-							if (null != _p) {
-								map.put(entry.getKey(), new RelatedScript(_p.getId(), _p.getName(), _p.getAlias(),
-										_p.getText(), entry.getValue()));
-								list.add(_p.getId() + _p.getUpdateTime().getTime());
+							Script p = bus.script().pick(entry.getKey());
+							if (null != p) {
+								map.put(entry.getKey(), new RelatedScript(p.getId(), p.getName(), p.getAlias(),
+										p.getText(), entry.getValue()));
+								list.add(p.getId() + p.getUpdateTime().getTime());
 							}
 							break;
 						default:
@@ -134,9 +141,9 @@ class V2GetWithPortalMobile extends BaseAction {
 				}
 			}
 			return map;
-		});
-		wo.setRelatedWidgetMap(_relatedWidget.get(300, TimeUnit.SECONDS));
-		wo.setRelatedScriptMap(_relatedScript.get(300, TimeUnit.SECONDS));
+		}, ThisApplication.threadPool());
+		wo.setRelatedWidgetMap(relatedWidget.get(300, TimeUnit.SECONDS));
+		wo.setRelatedScriptMap(relatedScript.get(300, TimeUnit.SECONDS));
 		list.add(page.getId() + page.getUpdateTime().getTime());
 		List<String> sortList = list.stream().sorted().collect(Collectors.toList());
 		wo.setFastETag(StringUtils.join(sortList, "#"));
@@ -144,6 +151,8 @@ class V2GetWithPortalMobile extends BaseAction {
 	}
 
 	public static class Wo extends AbstractWo {
+
+		private static final long serialVersionUID = 2957315641879916891L;
 
 	}
 

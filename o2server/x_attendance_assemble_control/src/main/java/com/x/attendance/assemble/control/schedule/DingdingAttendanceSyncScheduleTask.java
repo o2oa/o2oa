@@ -1,5 +1,9 @@
 package com.x.attendance.assemble.control.schedule;
 
+import java.util.Date;
+
+import org.quartz.JobExecutionContext;
+
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.entity.DingdingQywxSyncRecord;
 import com.x.base.core.container.EntityManagerContainer;
@@ -8,9 +12,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.DateTools;
-import org.quartz.JobExecutionContext;
-
-import java.util.Date;
 
 /**
  * 钉钉考勤结果同步的定时器

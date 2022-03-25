@@ -14,10 +14,7 @@ import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.WrapOutString;
 import com.x.cms.core.entity.element.Script;
-
-import net.sf.ehcache.Element;
 
 class ActionGet extends BaseAction {
 

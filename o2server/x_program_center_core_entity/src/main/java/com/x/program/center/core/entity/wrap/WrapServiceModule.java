@@ -1,12 +1,12 @@
 package com.x.program.center.core.entity.wrap;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.ListTools;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WrapServiceModule extends GsonPropertyObject {
 

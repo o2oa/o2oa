@@ -1,10 +1,5 @@
 package com.x.program.center.jaxrs.dingding.encrypt;
 
-import org.apache.commons.codec.binary.Base64;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -15,6 +10,12 @@ import java.security.Security;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Created by fancyLou on 2020-10-26. Copyright © 2020 O2. All rights reserved.

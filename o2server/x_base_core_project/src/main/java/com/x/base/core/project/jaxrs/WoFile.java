@@ -1,8 +1,8 @@
 package com.x.base.core.project.jaxrs;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-
 import javax.ws.rs.core.StreamingOutput;
+
+import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
  * @author sword

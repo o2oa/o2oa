@@ -18,6 +18,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -27,11 +32,6 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 /**
  * 没有多值字段

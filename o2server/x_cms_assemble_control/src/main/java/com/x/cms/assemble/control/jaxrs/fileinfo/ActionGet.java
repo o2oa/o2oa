@@ -15,11 +15,8 @@ import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.cms.assemble.control.jaxrs.comment.ActionListPrevWithFilter;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
-
-import net.sf.ehcache.Element;
 
 public class ActionGet extends BaseAction {
 

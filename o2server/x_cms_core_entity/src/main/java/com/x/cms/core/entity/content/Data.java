@@ -1,5 +1,14 @@
 package com.x.cms.core.entity.content;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.map.ListOrderedMap;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -7,14 +16,6 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections4.map.ListOrderedMap;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 public class Data extends ListOrderedMap<String, Object> {
 

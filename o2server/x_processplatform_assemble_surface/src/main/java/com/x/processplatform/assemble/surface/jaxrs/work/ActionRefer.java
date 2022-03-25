@@ -17,6 +17,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -25,73 +26,77 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 
 class ActionRefer extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionRefer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionRefer.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId) throws Exception {
 
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
-		CompletableFuture<Void> future_task = CompletableFuture.runAsync(() -> {
+		CompletableFuture<Void> futureTask = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<Task> os = emc.listEqualAndEqual(Task.class, Task.work_FIELDNAME, workId, Task.person_FIELDNAME,
 						effectivePerson.getDistinguishedName());
 				wo.getTaskList().addAll(WoTask.copier.copy(os));
 				wo.setHasTask(!os.isEmpty());
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		CompletableFuture<Void> future_taskCompleted = CompletableFuture.runAsync(() -> {
+		}, ThisApplication.threadPool());
+		CompletableFuture<Void> futureTaskCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<TaskCompleted> os = emc.listEqualAndEqual(TaskCompleted.class, TaskCompleted.work_FIELDNAME,
 						workId, TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
 				wo.getTaskCompletedList().addAll(WoTaskCompleted.copier.copy(os));
 				wo.setHasTaskCompleted(!os.isEmpty());
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		CompletableFuture<Void> future_read = CompletableFuture.runAsync(() -> {
+		}, ThisApplication.threadPool());
+		CompletableFuture<Void> futureRead = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<Read> os = emc.listEqualAndEqual(Read.class, Read.work_FIELDNAME, workId, Read.person_FIELDNAME,
 						effectivePerson.getDistinguishedName());
 				wo.getReadList().addAll(WoRead.copier.copy(os));
 				wo.setHasRead(!os.isEmpty());
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		CompletableFuture<Void> future_readCompleted = CompletableFuture.runAsync(() -> {
+		}, ThisApplication.threadPool());
+		CompletableFuture<Void> futureReadCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<ReadCompleted> os = emc.listEqualAndEqual(ReadCompleted.class, ReadCompleted.work_FIELDNAME,
 						workId, ReadCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
 				wo.getReadCompletedList().addAll(WoReadCompleted.copier.copy(os));
 				wo.setHasReadCompleted(!os.isEmpty());
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
-		});
-		CompletableFuture<Void> future_review = CompletableFuture.runAsync(() -> {
+		}, ThisApplication.threadPool());
+		CompletableFuture<Void> futureReview = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<Review> os = emc.listEqualAndEqual(Review.class, Review.work_FIELDNAME, workId,
 						Review.person_FIELDNAME, effectivePerson.getDistinguishedName());
 				wo.getReviewList().addAll(WoReview.copier.copy(os));
 				wo.setHasReview(!os.isEmpty());
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
-		future_task.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
-		future_taskCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
-		future_read.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
-		future_readCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
-		future_review.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureTask.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureTaskCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureRead.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureReadCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+		futureReview.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		result.setData(wo);
 
 		return result;
 	}
 
 	public static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 6231785082740620916L;
 
 		@FieldDescribe("待办列表")
 		private List<WoTask> taskList = new ArrayList<>();

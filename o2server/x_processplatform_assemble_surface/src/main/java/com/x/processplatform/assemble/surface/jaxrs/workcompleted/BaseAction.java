@@ -348,7 +348,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 //		Activity activity = null;
 //		Long reviewCount = 0L;
 //
-//		CompletableFuture111111111111111111111111<Void> future_taskCompleteds = CompletableFuture111111111111111111111111.runAsync(() -> {
+//		CompletableFutureXXXXX111111111111111111111111<Void> future_taskCompleteds = CompletableFutureXXXXX111111111111111111111111.runAsync(() -> {
 //			try {
 //				List<TaskCompleted> os = business.entityManagerContainer()
 //						.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, workCompleted.getJob()).stream()
@@ -360,7 +360,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 //				logger.error(e);
 //			}
 //		});
-//		CompletableFuture111111111111111111111111<Void> future_reads = CompletableFuture111111111111111111111111.runAsync(() -> {
+//		CompletableFutureXXXXX111111111111111111111111<Void> future_reads = CompletableFutureXXXXX111111111111111111111111.runAsync(() -> {
 //			try {
 //				List<Read> os = business.entityManagerContainer()
 //						.listEqual(Read.class, Read.job_FIELDNAME, workCompleted.getJob()).stream()
@@ -379,7 +379,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 //				logger.error(e);
 //			}
 //		});
-//		CompletableFuture111111111111111111111111<Void> future_readCompleteds = CompletableFuture111111111111111111111111.runAsync(() -> {
+//		CompletableFutureXXXXX111111111111111111111111<Void> future_readCompleteds = CompletableFutureXXXXX111111111111111111111111.runAsync(() -> {
 //			try {
 //				List<ReadCompleted> os = business.entityManagerContainer()
 //						.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, workCompleted.getJob()).stream()
@@ -391,7 +391,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 //				logger.error(e);
 //			}
 //		});
-//		CompletableFuture111111111111111111111111<Void> future_attachments = CompletableFuture111111111111111111111111.runAsync(() -> {
+//		CompletableFutureXXXXX111111111111111111111111<Void> future_attachments = CompletableFutureXXXXX111111111111111111111111.runAsync(() -> {
 //			try {
 //				List<Attachment> os = business.entityManagerContainer()
 //						.listEqual(Attachment.class, Attachment.job_FIELDNAME, workCompleted.getJob()).stream()
@@ -402,7 +402,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 //				logger.error(e);
 //			}
 //		});
-//		CompletableFuture111111111111111111111111<Void> future_workLogs = CompletableFuture111111111111111111111111.runAsync(() -> {
+//		CompletableFutureXXXXX111111111111111111111111<Void> future_workLogs = CompletableFutureXXXXX111111111111111111111111.runAsync(() -> {
 //			try {
 //				List<WorkLog> os = business.entityManagerContainer()
 //						.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, workCompleted.getJob()).stream()
@@ -413,14 +413,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 //				logger.error(e);
 //			}
 //		});
-//		CompletableFuture111111111111111111111111<Void> future_data = CompletableFuture111111111111111111111111.runAsync(() -> {
+//		CompletableFutureXXXXX111111111111111111111111<Void> future_data = CompletableFutureXXXXX111111111111111111111111.runAsync(() -> {
 //			try {
 //				t.setData(this.loadData(business, workCompleted));
 //			} catch (Exception e) {
 //				logger.error(e);
 //			}
 //		});
-//		CompletableFuture111111111111111111111111<Application> future_application = CompletableFuture111111111111111111111111.supplyAsync(() -> {
+//		CompletableFutureXXXXX111111111111111111111111<Application> future_application = CompletableFutureXXXXX111111111111111111111111.supplyAsync(() -> {
 //			Application o = null;
 //			try {
 //				o = business.application().pick(workCompleted.getApplication());
@@ -429,7 +429,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 //			}
 //			return o;
 //		});
-//		CompletableFuture111111111111111111111111<Process> future_process = CompletableFuture111111111111111111111111.supplyAsync(() -> {
+//		CompletableFutureXXXXX111111111111111111111111<Process> future_process = CompletableFutureXXXXX111111111111111111111111.supplyAsync(() -> {
 //			Process o = null;
 //			try {
 //				o = business.process().pick(workCompleted.getProcess());
@@ -438,7 +438,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 //			}
 //			return o;
 //		});
-//		CompletableFuture111111111111111111111111<Long> future_reviewCount = CompletableFuture111111111111111111111111.supplyAsync(() -> {
+//		CompletableFutureXXXXX111111111111111111111111<Long> future_reviewCount = CompletableFutureXXXXX111111111111111111111111.supplyAsync(() -> {
 //			Long o = 0L;
 //			try {
 //				o = business.entityManagerContainer().countEqualAndEqual(Review.class, Review.person_FIELDNAME,
