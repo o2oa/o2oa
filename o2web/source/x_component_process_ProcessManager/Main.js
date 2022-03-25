@@ -1179,7 +1179,7 @@ MWF.xApplication.process.ProcessManager.Select = new Class({
         this.content.set("text", this.getText(this.value));
     },
     save: function(){
-        if (this.input) this.value = this.input.options[this.input.selectedIndex].get("value");
+        if (this.input) if (this.input.options.length)this.value = this.input.options[this.input.selectedIndex].get("value");
         return this.value;
     }
 });
