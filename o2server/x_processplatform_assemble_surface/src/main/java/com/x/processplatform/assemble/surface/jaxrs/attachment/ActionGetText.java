@@ -4,7 +4,6 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -21,10 +20,10 @@ import com.x.processplatform.core.entity.content.Work;
 
 class ActionGetText extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionGetText.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetText.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId) throws Exception {
+		LOGGER.debug("execute:{}, id:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> id, () -> workId);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -56,6 +55,8 @@ class ActionGetText extends BaseAction {
 	}
 
 	public static class WoControl extends WorkControl {
+
+		private static final long serialVersionUID = 8385522952859528010L;
 
 	}
 

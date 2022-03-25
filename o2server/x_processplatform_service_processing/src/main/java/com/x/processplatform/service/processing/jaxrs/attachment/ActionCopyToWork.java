@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -25,8 +27,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.ThisApplication;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -34,12 +34,11 @@ import org.apache.commons.lang3.StringUtils;
  */
 class ActionCopyToWork extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionCopyToWork.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCopyToWork.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement)
 			throws Exception {
-
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String executorSeed = null;
 
@@ -51,64 +50,78 @@ class ActionCopyToWork extends BaseAction {
 			executorSeed = work.getJob();
 		}
 
-		Callable<ActionResult<List<Wo>>> callable = new Callable<ActionResult<List<Wo>>>() {
-			public ActionResult<List<Wo>> call() throws Exception {
-				List<Wo> wos = new ArrayList<>();
-				ActionResult<List<Wo>> result = new ActionResult<>();
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Work work = emc.find(workId, Work.class);
-					if (null == work) {
-						throw new ExceptionEntityNotExist(workId, Work.class);
-					}
-					List<Attachment> adds = new ArrayList<>();
-					for (WiAttachment w : ListTools.trim(wi.getAttachmentList(), true, true)) {
-						Attachment o = emc.find(w.getId(), Attachment.class);
-						if (null == o) {
-							throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
-						}
-						StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
-						Attachment attachment = new Attachment(work, effectivePerson.getDistinguishedName(),
-								w.getSite());
-						if(BooleanUtils.isTrue(w.getSoftCopy())){
-							attachment.setName(o.getName());
-							attachment.setDeepPath(mapping.getDeepPath());
-							attachment.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(o.getName(), ".")));
-							attachment.setLength(o.getLength());
-							attachment.setStorage(mapping.getName());
-							attachment.setLastUpdateTime(new Date());
-							attachment.setFromJob(o.getJob());
-							attachment.setFromId(o.getId());
-							attachment.setFromPath(o.path());
-						}else {
-							StorageMapping fromStorageMapping = ThisApplication.context().storageMappings()
-									.get(Attachment.class, o.getStorage());
-							byte[] bs = o.readContent(fromStorageMapping);
-							attachment.saveContent(mapping, bs, w.getName());
-						}
-						adds.add(attachment);
-					}
-					if (!adds.isEmpty()) {
-						emc.beginTransaction(Attachment.class);
-						for (Attachment o : adds) {
-							emc.persist(o, CheckPersistType.all);
-							Wo wo = new Wo();
-							wo.setId(o.getId());
-							wos.add(wo);
-						}
-						emc.commit();
-					}
-				}
+		CallableImpl impl = new CallableImpl(effectivePerson, wi, workId);
 
-				result.setData(wos);
-				return result;
-			}
-		};
-
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(impl).get(300, TimeUnit.SECONDS);
 
 	}
 
+	private class CallableImpl implements Callable<ActionResult<List<Wo>>> {
+
+		private CallableImpl(EffectivePerson effectivePerson, Wi wi, String workId) {
+			this.effectivePerson = effectivePerson;
+			this.workId = workId;
+			this.wi = wi;
+		}
+
+		private String workId;
+		private EffectivePerson effectivePerson;
+		private Wi wi;
+
+		public ActionResult<List<Wo>> call() throws Exception {
+			List<Wo> wos = new ArrayList<>();
+			ActionResult<List<Wo>> result = new ActionResult<>();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Work work = emc.find(workId, Work.class);
+				if (null == work) {
+					throw new ExceptionEntityNotExist(workId, Work.class);
+				}
+				List<Attachment> adds = new ArrayList<>();
+				for (WiAttachment w : ListTools.trim(wi.getAttachmentList(), true, true)) {
+					Attachment o = emc.find(w.getId(), Attachment.class);
+					if (null == o) {
+						throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
+					}
+					StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
+					Attachment attachment = new Attachment(work, effectivePerson.getDistinguishedName(), w.getSite());
+					if (BooleanUtils.isTrue(w.getSoftCopy())) {
+						attachment.setName(o.getName());
+						attachment.setDeepPath(mapping.getDeepPath());
+						attachment
+								.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(o.getName(), ".")));
+						attachment.setLength(o.getLength());
+						attachment.setStorage(mapping.getName());
+						attachment.setLastUpdateTime(new Date());
+						attachment.setFromJob(o.getJob());
+						attachment.setFromId(o.getId());
+						attachment.setFromPath(o.path());
+					} else {
+						StorageMapping fromStorageMapping = ThisApplication.context().storageMappings()
+								.get(Attachment.class, o.getStorage());
+						byte[] bs = o.readContent(fromStorageMapping);
+						attachment.saveContent(mapping, bs, w.getName());
+					}
+					adds.add(attachment);
+				}
+				if (!adds.isEmpty()) {
+					emc.beginTransaction(Attachment.class);
+					for (Attachment o : adds) {
+						emc.persist(o, CheckPersistType.all);
+						Wo wo = new Wo();
+						wo.setId(o.getId());
+						wos.add(wo);
+					}
+					emc.commit();
+				}
+			}
+			result.setData(wos);
+			return result;
+		}
+	}
+
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 2282531964827996333L;
 
 		@FieldDescribe("附件对象")
 		private List<WiAttachment> attachmentList = new ArrayList<>();
@@ -140,6 +153,8 @@ class ActionCopyToWork extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -5625070539020321800L;
 
 	}
 

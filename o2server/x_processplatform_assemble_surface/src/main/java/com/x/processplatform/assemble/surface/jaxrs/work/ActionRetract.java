@@ -4,7 +4,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -26,7 +25,6 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
 class ActionRetract extends BaseAction {
 
-	@ActionLogger
 	private static Logger logger = LoggerFactory.getLogger(ActionRetract.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {

@@ -8,7 +8,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -22,11 +21,12 @@ import com.x.processplatform.service.processing.Business;
 
 class ActionUpdateWithWorkCompletedPath1 extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateWithWorkCompletedPath1.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateWithWorkCompletedPath1.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, String path1,
 			JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute:{}, id:{}, path0:{}, path1:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> path0, () -> path1);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String executorSeed = null;
@@ -67,6 +67,8 @@ class ActionUpdateWithWorkCompletedPath1 extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -4414969160437092799L;
 
 	}
 

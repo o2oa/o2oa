@@ -1,8 +1,8 @@
 package com.x.processplatform.service.processing.jaxrs.data;
 
-import com.x.base.core.project.exception.PromptException;
-
 import org.apache.commons.lang3.StringUtils;
+
+import com.x.base.core.project.exception.PromptException;
 
 class ExceptionDataNotExist extends PromptException {
 

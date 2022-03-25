@@ -168,7 +168,8 @@ public abstract class SliceEntityManagerContainerFactory {
 			reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 			Document document = reader.read(file);
 			for (Element unit : document.getRootElement().elements("persistence-unit")) {
-				classes.add((Class<JpaObject>) Thread.currentThread().getContextClassLoader().loadClass(unit.attribute("name").getValue()));
+				classes.add((Class<JpaObject>) Thread.currentThread().getContextClassLoader()
+						.loadClass(unit.attribute("name").getValue()));
 			}
 			return classes;
 		} catch (Exception e) {
