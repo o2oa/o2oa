@@ -11,6 +11,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -153,10 +154,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
-	protected CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag,
-			ClassLoader classLoader) {
+	protected CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
 		return CompletableFuture.supplyAsync(() -> {
-			Thread.currentThread().setContextClassLoader(classLoader);
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
@@ -166,7 +165,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				logger.error(e);
 			}
 			return value;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 }

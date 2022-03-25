@@ -3,9 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.control;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -19,6 +17,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -80,7 +79,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 				logger.error(e);
 			}
 			return wo;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private Wo workCompleted(Business business, EffectivePerson effectivePerson, WorkCompleted workCompleted)
