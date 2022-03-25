@@ -4696,6 +4696,42 @@ debugger;
             starter.load();
         }.bind(this));
     },
+    // 分享到IM聊天
+    shareToIMChat: function() {
+        var imJson = {}
+        if (this.businessData.workCompleted) {
+            imJson = {
+                type: "process",
+                title: this.businessData.workCompleted.title,
+                work: this.businessData.workCompleted.id,
+                process: this.businessData.workCompleted.process,
+                processName: this.businessData.workCompleted.processName,
+                application: this.businessData.workCompleted.application,
+                applicationName: this.businessData.workCompleted.applicationName,
+                job: this.businessData.workCompleted.job,
+            }
+        } else if (this.businessData.work) {
+            imJson = {
+                type: "process",
+                title: this.businessData.work.title,
+                work: this.businessData.work.id,
+                process: this.businessData.work.process,
+                processName: this.businessData.work.processName,
+                application: this.businessData.work.application,
+                applicationName: this.businessData.work.applicationName,
+                job: this.businessData.work.job,
+            }
+        } else {
+            this.app.notice(MWF.xApplication.process.Xform.LP.noPermissionOrWorkNotExisted, "error")
+            return
+        }
+        MWF.xDesktop.requireApp("IMV2", "Starter", function () {
+            var share = new MWF.xApplication.IMV2.ShareToConversation({
+                msgBody: imJson
+            }, this.app);
+            share.load();
+        }.bind(this));
+    },
 
     //移动端页面 工作处理完成后 
     finishOnMobile: function () {

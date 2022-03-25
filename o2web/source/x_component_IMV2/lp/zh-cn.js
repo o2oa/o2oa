@@ -31,6 +31,10 @@ MWF.xApplication.IMV2.LP = {
 	"choosePerson":"选择人员",
 	"choosePersonCreate":"创建聊天",
 
+
+	"chooseConveration":"选择会话",
+	"conversationCreate":"创建新的聊天",
+
 	"chooseBusinessWorkTitle":"关联工作",
 	"open": "打开",
 	"noTitle": "无标题",
@@ -46,6 +50,8 @@ MWF.xApplication.IMV2.LP = {
 	"msgNoBusinessPerson": "没有查询到业务相关的人员，无法创建聊天！",
 	"msgNotSupport": "暂不支持！",
 	"msgNeedChoosePerson": "请选择至少一个人员！",
+	"msgShareNoBody": "没有获取到消息，无法分享、转发！",
+	"msgShareError": "分享、转发消息失败！",
 	
 	
 	"settingsClearMsg": "是否开启聊天消息清除功能：",

@@ -152,6 +152,13 @@
   margin-left: 56px;
   margin-right: 14px;
 }
+.o2_im_chat_list .item .share_body {
+  height: 30px;
+  line-height: 30px;
+  margin-left: 56px;
+  margin-right: 14px;
+  margin-top: 14px;
+}
 .o2_im_chat_list .item .body_up .body_title {
   float: left;
   color: rgb(51, 51, 51);
@@ -218,6 +225,7 @@
   float: right;
   margin-right: 10px;
   cursor: pointer;
+  position: relative;
   display: none;
 }
 
@@ -358,22 +366,26 @@
   float: left;
   width: 75%;
 }
-
-.chat-sender div:nth-of-type(1) {
+.chat-sender-avatar {
   float: left;
 }
-
-.chat-sender div:nth-of-type(2) {
+/* .chat-sender div:nth-of-type(1) {
+  float: left;
+} */
+.chat-sender-name {
   margin: 0 50px 2px 50px;
   padding: 0px;
   color: #848484;
-  /* font-size: 70%; */
   text-align: left;
 }
-
-.chat-sender div:nth-of-type(3) {
+/* .chat-sender div:nth-of-type(2) {
+  margin: 0 50px 2px 50px;
+  padding: 0px;
+  color: #848484;
+  text-align: left;
+} */
+.chat-sender-box {
   background-color: white;
-  /*float: left;*/
   margin: 0 50px 10px 50px;
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
@@ -381,6 +393,22 @@
   word-wrap: break-word;
   white-space: pre-line;
 }
+/* 业务消息专用的外框 */
+.chat-sender-card-box {
+  background-color: white;
+  margin: 0 50px 10px 50px;
+  padding: 10px 10px 10px 10px;
+  border-radius: 7px;
+}
+/* .chat-sender div:nth-of-type(3) {
+  background-color: white;
+  margin: 0 50px 10px 50px;
+  padding: 10px 10px 10px 10px;
+  border-radius: 7px;
+  text-indent: -12px;
+  word-wrap: break-word;
+  white-space: pre-line;
+} */
 .chat-sender .img-chat {
   width: 192px;
   height: 144px;
@@ -400,18 +428,24 @@
   float: right;
   width: 75%;
 }
-
-.chat-receiver div:nth-of-type(1) {
+.chat-receiver-avatar {
   float: right;
 }
-
-.chat-receiver div:nth-of-type(2) {
+/* .chat-receiver div:nth-of-type(1) {
+  float: right;
+} */
+.chat-receiver-name {
   margin: 0px 50px 2px 50px;
   padding: 0px;
   color: #848484;
-  /* font-size: 70%; */
   text-align: right;
 }
+/* .chat-receiver div:nth-of-type(2) {
+  margin: 0px 50px 2px 50px;
+  padding: 0px;
+  color: #848484;
+  text-align: right;
+} */
 .chat-receiver .img-chat {
   width: 192px;
   height: 144px;
@@ -424,9 +458,7 @@
   display: block;
   margin: auto;
 }
-
-.chat-receiver div:nth-of-type(3) {
-  /*float:right;*/
+.chat-receiver-box {
   background-color: #b2e281;
   margin: 0px 50px 10px 50px;
   padding: 10px 10px 10px 10px;
@@ -434,12 +466,54 @@
   word-wrap: break-word;
   white-space: pre-line;
 }
+/* 业务消息专用的外框 */
+.chat-receiver-card-box {
+  background-color: #b2e281;
+  margin: 0px 50px 10px 50px;
+  padding: 10px 10px 10px 10px;
+  border-radius: 7px;
+}
+/* .chat-receiver div:nth-of-type(3) {
+  background-color: #b2e281;
+  margin: 0px 50px 10px 50px;
+  padding: 10px 10px 10px 10px;
+  border-radius: 7px;
+  word-wrap: break-word;
+  white-space: pre-line;
+} */
+/***** 业务消息 卡片样式 ******/
+.chat-card {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.chat-card-type {
+  color: #333333;
+}
+.chat-card-body {
+  color: #666666;
+  margin-top: 10px;
+}
+.chat-card-bottom {
+  display: flex;
+  flex-direction: row;
+  padding-top: 5px;
+  margin-top: 10px;
+  border-top: 1px solid #dedede;
+}
+.chat-card-bottom-icon {
+  width: 24px;
+  height: 24px;
+}
+.chat-card-bottom-name {
+  color: #999999;
+  margin-left: 10px;
+}
 
-.chat-receiver div:first-child img,
-.chat-sender div:first-child img {
+.chat-receiver-avatar > img,
+.chat-sender-avatar > img {
   width: 40px;
   height: 40px;
-  /*border-radius: 10%;*/
 }
 
 .chat-left_triangle {
@@ -451,6 +525,7 @@
   position: relative;
   left: -22px;
   top: 3px;
+  float: left;
 }
 
 .chat-right_triangle {
@@ -462,6 +537,7 @@
   position: relative;
   right: -22px;
   top: 3px;
+  float: right;
 }
 .chat-content-emoji {
   width: 32px;
@@ -605,7 +681,7 @@
   color: #000;
   padding: 10px;
   background: #fff;
-  box-shadow: rgb(102 102 102) 3px 3px 15px;
+  box-shadow: #dedede 3px 3px 15px;
   border-radius: 6px;
   margin: 10px;
   cursor: pointer;
@@ -642,7 +718,7 @@
     background-color: #FFFFFF;
     border: 1px solid #E6E6E6;
     margin: 10px 12px;
-    box-shadow: rgb(102 102 102) 3px 3px 5px;
+    box-shadow: #dedede 3px 3px 5px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -747,7 +823,7 @@
   color: #000;
   padding: 10px;
   background: #fff;
-  box-shadow: rgb(102 102 102) 3px 3px 15px;
+  box-shadow: #dedede 3px 3px 15px;
   border-radius: 6px;
   margin: 10px;
   cursor: pointer;
@@ -772,4 +848,63 @@
   color: #FFFFFF;
   cursor: pointer;
   max-width: 200px;
+}
+
+/*分享的会话列表*/
+.share-conversation-out-box {
+  background-color: rgb(255, 255, 255);
+  color: rgb(102, 102, 102);
+  z-index: 30000;
+  box-shadow: rgb(102 102 102) 3px 3px 15px;
+  border-radius: 6px;
+  width: 300px;
+  height: 50%;
+  min-height: 300px;
+  max-height: 560px;
+  opacity: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.share-conversation-list {
+  border-top: 1px solid rgb(255, 255, 255);
+  width: 257px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.share-conversation-list > .item {
+  overflow: hidden;
+  height: 60px;
+  margin: 0px;
+  background-color: rgb(253, 253, 253);
+}
+.share-conversation-list > .item > .base {
+  height: 59px;
+  cursor: pointer;
+  margin-left: 16px;
+  border-bottom: 1px solid rgb(221, 221, 221);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.share-conversation-list > .item > .base > .avatar {
+  background-position: center center;
+  background-repeat: no-repeat;
+  height: 48px;
+  width: 48px;
+  border-radius: 24px;
+  background-color: rgb(255, 255, 255);
+}
+.share-conversation-list > .item > .base > .avatar > .img {
+  width: 48px;
+  height: 48px;
+  border: 0px;
+  border-radius: 24px;
+}
+.share-conversation-list > .item > .base > .body {
+  height: 30px;
+  line-height: 30px;
+  margin-left: 16px;
 }
