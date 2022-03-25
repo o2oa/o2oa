@@ -34,7 +34,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 public class JsonPropertiesValueHandler extends AbstractValueHandler {
 
 	private static final long serialVersionUID = 1L;
-	private static final String PROXY_SUFFIX = "$proxy";
+	// private static final String PROXY_SUFFIX = "$proxy";
 
 	private Gson gson = XGsonBuilder.instance();
 
@@ -72,10 +72,6 @@ public class JsonPropertiesValueHandler extends AbstractValueHandler {
 			return null;
 		try {
 			String className = vm.getDeclaredType().getName();
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println(className + ":" + Thread.currentThread().getName() + ":"
-					+ Thread.currentThread().getContextClassLoader());
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(className);
 			return gson.fromJson(val.toString(), cls);
 		} catch (ClassNotFoundException e) {

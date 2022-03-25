@@ -249,10 +249,6 @@ public class ApplicationServerTools extends JettySeverTools {
 			List<ClassInfo> officialClassInfos) {
 		officialClassInfos.parallelStream().forEach(info -> {
 			try {
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@");
-				System.out.println(Thread.currentThread().getContextClassLoader());
-				System.out.println(Thread.currentThread().getId());
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@");
 				Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
 				Path war = Paths.get(Config.dir_store().toString(), info.getSimpleName() + PathTools.DOT_WAR);
 				Path dir = Paths.get(Config.dir_servers_applicationServer_work().toString(), info.getSimpleName());

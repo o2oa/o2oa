@@ -29,10 +29,6 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CheckRemove;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.entity.annotation.RestrictFlag;
-import com.x.base.core.entity.dynamic.DynamicBaseEntity;
-import com.x.base.core.entity.dynamic.DynamicEntity;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.ClassLoaderTools;
 
 public abstract class SliceEntityManagerContainerFactory {
 
@@ -177,36 +173,4 @@ public abstract class SliceEntityManagerContainerFactory {
 		}
 	}
 
-//	public void refreshDynamicEntity(String webApplicationDirectory, List<String> entities) throws Exception {
-//		File path = new File(webApplicationDirectory + "/WEB-INF/classes/" + PERSISTENCE_XML_PATH);
-//		List<String> classNames = PersistenceXmlHelper.write(path.getAbsolutePath(), entities, true);
-//		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-//		for (String className : classNames) {
-//			if (className.startsWith(DynamicEntity.CLASS_PACKAGE)
-//					|| className.equals(DynamicBaseEntity.class.getName())) {
-//				@SuppressWarnings("unchecked")
-//				Class<? extends JpaObject> clz = (Class<? extends JpaObject>) classLoader.loadClass(className);
-//				checkPersistFieldMap.put(clz, this.loadCheckPersistField(clz));
-//				checkRemoveFieldMap.put(clz, this.loadCheckRemoveField(clz));
-//				Properties properties = PersistenceXmlHelper.properties(clz.getName(), false);
-//				entityManagerFactoryMap.put(clz,
-//						OpenJPAPersistence.createEntityManagerFactory(clz.getName(), PERSISTENCE_XML_PATH, properties));
-//				List<Field> flagFields = new ArrayList<>();
-//				List<Field> restrictFlagFields = new ArrayList<>();
-//				for (Field o : FieldUtils.getFieldsListWithAnnotation(clz, Id.class)) {
-//					flagFields.add(o);
-//					restrictFlagFields.add(o);
-//				}
-//				for (Field o : FieldUtils.getFieldsListWithAnnotation(clz, Flag.class)) {
-//					flagFields.add(o);
-//					restrictFlagFields.add(o);
-//				}
-//				for (Field o : FieldUtils.getFieldsListWithAnnotation(clz, RestrictFlag.class)) {
-//					restrictFlagFields.add(o);
-//				}
-//				flagMap.put(clz, Collections.unmodifiableList(flagFields));
-//				restrictFlagMap.put(clz, Collections.unmodifiableList(restrictFlagFields));
-//			}
-//		}
-//	}
 }

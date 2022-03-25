@@ -113,10 +113,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag,
-			ClassLoader classLoader) {
+	protected CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
 		return CompletableFuture.supplyAsync(() -> {
-			Thread.currentThread().setContextClassLoader(classLoader);
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
