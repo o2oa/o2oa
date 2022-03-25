@@ -69,19 +69,19 @@ class V2Reroute extends BaseAction {
 				emc.beginTransaction(Read.class);
 				emc.beginTransaction(WorkLog.class);
 				// 重新设置表单
-				setForm(business, work, activity);
+				work.setForm(business.element().lookupSuitableForm(work.getProcess(), activity.getId()));
 				// 调度强制把这个标志设置为true,这样可以避免在拟稿状态就调度,系统认为是拟稿状态,默认不创建待办.
 				work.setWorkThroughManual(true);
 				work.setDestinationActivity(activity.getId());
 				work.setDestinationActivityType(activity.getActivityType());
 				work.setDestinationRoute("");
 				work.setDestinationRouteName("");
-				work.getProperties().setManualForceTaskIdentityList(new ArrayList<String>());
+				work.getProperties().setManualForceTaskIdentityList(new ArrayList<>());
 				if (ListTools.isNotEmpty(wi.getManualForceTaskIdentityList())) {
 					work.getProperties().setManualForceTaskIdentityList(wi.getManualForceTaskIdentityList());
 				}
 				if (BooleanUtils.isTrue(wi.getMergeWork())) {
-					/* 合并工作 */
+					// 合并工作
 					work.setSplitting(false);
 					work.setSplitToken("");
 					work.getSplitTokenList().clear();
@@ -105,25 +105,19 @@ class V2Reroute extends BaseAction {
 
 	}
 
-	private void setForm(Business business, Work work, Activity activity) throws Exception {
-		if (StringUtils.isNotEmpty(activity.getForm())) {
-			// 表单需要重新判断,如果是从模板或者复制过来的流程可能发生表单不存在的情况.
-			Form form = business.entityManagerContainer().find(activity.getForm(), Form.class);
-			if (null != form) {
-				work.setForm(form.getId());
-			}
-		}
-	}
-
 	public static class Wi extends V2RerouteWi {
+
+		private static final long serialVersionUID = 4131889338839380226L;
 
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 6797942626499506636L;
 	}
 
 	private void removeTask(Business business, Work work) throws Exception {
-		/* 删除可能的待办 */
+		// 删除可能的待办
 		List<Task> os = business.entityManagerContainer().listEqual(Task.class, Task.work_FIELDNAME, work.getId());
 		os.stream().forEach(o -> {
 			try {
