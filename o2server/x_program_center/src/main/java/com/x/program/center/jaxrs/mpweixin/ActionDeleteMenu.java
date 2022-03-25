@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.mpweixin;
 
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
@@ -8,8 +10,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.core.entity.MPWeixinMenu;
-
-import java.util.List;
 
 /**
  * Created by fancyLou on 3/12/21.

@@ -1,5 +1,11 @@
 package com.x.processplatform.assemble.designer.jaxrs.process;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -12,10 +18,11 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-
-import java.util.*;
+import com.x.processplatform.core.entity.element.Route;
 
 class ActionGetProcessElementList extends BaseAction {
 

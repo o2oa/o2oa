@@ -19,8 +19,6 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.Form;
 
-import net.sf.ehcache.Element;
-
 public class ActionGetWithAppInfo extends BaseAction {
 
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String appFlag, String formFlag ) throws Exception {

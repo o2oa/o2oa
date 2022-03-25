@@ -1,9 +1,9 @@
 package com.x.base.core.project.connection;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.StringTools;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class FilePart extends GsonPropertyObject {
 

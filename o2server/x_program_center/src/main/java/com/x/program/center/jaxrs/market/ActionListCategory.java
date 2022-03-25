@@ -1,5 +1,13 @@
 package com.x.program.center.jaxrs.market;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -7,13 +15,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.program.center.core.entity.Application;
 import com.x.program.center.core.entity.Application_;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import java.util.List;
-import java.util.stream.Collectors;
 
 class ActionListCategory extends BaseAction {
 

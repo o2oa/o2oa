@@ -1,5 +1,12 @@
 package com.x.program.center.jaxrs.apppack;
 
+import java.lang.reflect.Type;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.Collect;
@@ -11,12 +18,6 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
-import org.apache.commons.lang3.StringUtils;
-
-import java.lang.reflect.Type;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by fancyLou on 6/17/21.

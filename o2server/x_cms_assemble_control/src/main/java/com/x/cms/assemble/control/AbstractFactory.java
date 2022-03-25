@@ -2,8 +2,6 @@ package com.x.cms.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
 
-import java.util.List;
-
 public abstract class AbstractFactory {
 
 	private Business business;

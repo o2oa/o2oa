@@ -1,12 +1,12 @@
 package com.x.organization.core.express.group;
 
-import com.x.base.core.project.AbstractContext;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import com.x.base.core.project.AbstractContext;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 
 class ActionListWithIdentity extends BaseAction {
 

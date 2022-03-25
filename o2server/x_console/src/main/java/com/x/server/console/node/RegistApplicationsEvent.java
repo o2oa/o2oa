@@ -9,9 +9,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.google.gson.JsonElement;
-import com.x.base.core.project.connection.ActionResponse;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
@@ -29,6 +26,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.RunningException;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.jaxrs.WrapString;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -151,7 +149,7 @@ public class RegistApplicationsEvent implements Event {
 	}
 
 	private static class Inner {
-		private static final ExecutorService executorService = Executors.newFixedThreadPool(5,
+		private static final ExecutorService executorService = Executors.newFixedThreadPool(2,
 				new BasicThreadFactory.Builder().namingPattern("RegistApplicationsEvent-healthCheck-%d").daemon(true)
 						.build());
 	}

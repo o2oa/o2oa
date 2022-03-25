@@ -15,7 +15,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,7 +28,6 @@ import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.entity.annotation.NotEqual;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.tools.StringTools;
-import org.apache.commons.text.StringEscapeUtils;
 
 public class StringValuePersistChecker extends AbstractChecker {
 

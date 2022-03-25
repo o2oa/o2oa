@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
 import javax.servlet.http.HttpServletRequest;
+
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;

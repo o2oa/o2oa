@@ -20,8 +20,6 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.factory.FormFactory;
 import com.x.cms.core.entity.element.Form;
 
-import net.sf.ehcache.Element;
-
 public class ActionListByApp extends BaseAction {
 
 	@SuppressWarnings("unchecked")

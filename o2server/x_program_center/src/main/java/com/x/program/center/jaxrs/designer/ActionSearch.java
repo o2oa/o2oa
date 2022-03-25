@@ -1,5 +1,13 @@
 package com.x.program.center.jaxrs.designer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,27 +24,21 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PropertyTools;
+import com.x.program.center.ThisApplication;
 import com.x.program.center.core.entity.Agent;
 import com.x.program.center.core.entity.Invoke;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 class ActionSearch extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionSearch.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		if(!effectivePerson.isManager()){
+		if (!effectivePerson.isManager()) {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		logger.debug("{}开始服务管理设计搜索，关键字：{}", effectivePerson.getDistinguishedName(), wi.getKeyword());
-		if(StringUtils.isBlank(wi.getKeyword())){
+		if (StringUtils.isBlank(wi.getKeyword())) {
 			throw new ExceptionFieldEmpty("keyword");
 		}
 		ActionResult<List<Wo>> result = new ActionResult<>();
@@ -46,29 +48,29 @@ class ActionSearch extends BaseAction {
 		Map<String, List<String>> designerMap = wi.getAppDesigner();
 		List<String> appList = wi.getAppIdList();
 		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.script.toString()))
-				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.script.toString()))){
-			if(appList.isEmpty() || appList.contains("invoke")) {
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.script.toString()))) {
+			if (appList.isEmpty() || appList.contains("invoke")) {
 				list.add(searchInvoke(wi, designerMap.get(DesignerType.script.toString())));
 			}
-			if(appList.isEmpty() || appList.contains("agent")) {
+			if (appList.isEmpty() || appList.contains("agent")) {
 				list.add(searchAgent(wi, designerMap.get(DesignerType.script.toString())));
 			}
 		}
-		for (CompletableFuture<List<Wo>> cf : list){
-			if(resWos.size()<50) {
+		for (CompletableFuture<List<Wo>> cf : list) {
+			if (resWos.size() < 50) {
 				resWos.addAll(cf.get(60, TimeUnit.SECONDS));
 			}
 		}
-		if (resWos.size()>50){
+		if (resWos.size() > 50) {
 			resWos = resWos.subList(0, 50);
 		}
 		result.setData(resWos);
-		result.setCount((long)resWos.size());
+		result.setCount((long) resWos.size());
 		return result;
 	}
 
 	private CompletableFuture<List<Wo>> searchAgent(final Wi wi, final List<String> designerIdList) {
-		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
+		return CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<WoAgent> woAgents;
@@ -78,8 +80,8 @@ class ActionSearch extends BaseAction {
 					woAgents = emc.fetchAll(Agent.class, WoAgent.copier);
 				}
 				for (WoAgent woAgent : woAgents) {
-					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoAgent.copier.getCopyFields(), woAgent, wi.getKeyword(),
-							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
+					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoAgent.copier.getCopyFields(), woAgent,
+							wi.getKeyword(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
 						wo.setAppId("agent");
@@ -94,16 +96,15 @@ class ActionSearch extends BaseAction {
 				}
 				woAgents.clear();
 				woAgents = null;
-			}catch (Exception e){
+			} catch (Exception e) {
 				logger.error(e);
 			}
 			return resWos;
-		});
-		return cf;
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<List<Wo>> searchInvoke(final Wi wi, final List<String> designerIdList) {
-		CompletableFuture<List<Wo>> cf = CompletableFuture.supplyAsync(() -> {
+		return CompletableFuture.supplyAsync(() -> {
 			List<Wo> resWos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<WoInvoke> woInvokes;
@@ -113,8 +114,8 @@ class ActionSearch extends BaseAction {
 					woInvokes = emc.fetchAll(Invoke.class, WoInvoke.copier);
 				}
 				for (WoInvoke woInvoke : woInvokes) {
-					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoInvoke.copier.getCopyFields(), woInvoke, wi.getKeyword(),
-							wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
+					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoInvoke.copier.getCopyFields(), woInvoke,
+							wi.getKeyword(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
 					if (!map.isEmpty()) {
 						Wo wo = new Wo();
 						wo.setAppId("invoke");
@@ -129,36 +130,41 @@ class ActionSearch extends BaseAction {
 				}
 				woInvokes.clear();
 				woInvokes = null;
-			}catch (Exception e){
+			} catch (Exception e) {
 				logger.error(e);
 			}
 			return resWos;
-		});
-		return cf;
+		}, ThisApplication.threadPool());
 	}
-
 
 	public static class Wi extends WiDesigner {
 
+		private static final long serialVersionUID = -1206063330229635926L;
+
 	}
 
-	public static class Wo extends WrapDesigner{
+	public static class Wo extends WrapDesigner {
+
+		private static final long serialVersionUID = 5738927729610593161L;
 
 	}
 
 	public static class WoAgent extends Agent {
 
+		private static final long serialVersionUID = 4497344923080059542L;
+
 		static WrapCopier<Agent, WoAgent> copier = WrapCopierFactory.wo(Agent.class, WoAgent.class,
-				JpaObject.singularAttributeField(Agent.class, true, false),null);
+				JpaObject.singularAttributeField(Agent.class, true, false), null);
 
 	}
 
 	public static class WoInvoke extends Invoke {
 
+		private static final long serialVersionUID = 5373906156913140015L;
+
 		static WrapCopier<Invoke, WoInvoke> copier = WrapCopierFactory.wo(Invoke.class, WoInvoke.class,
-				JpaObject.singularAttributeField(Invoke.class, true, false),null);
+				JpaObject.singularAttributeField(Invoke.class, true, false), null);
 
 	}
-
 
 }

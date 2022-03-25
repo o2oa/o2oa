@@ -1,7 +1,8 @@
 package com.x.program.center.jaxrs.apppack;
 
-import com.x.base.core.project.exception.LanguagePromptException;
 import org.apache.commons.lang3.StringUtils;
+
+import com.x.base.core.project.exception.LanguagePromptException;
 
 /**
  * Created by fancyLou on 6/15/21.

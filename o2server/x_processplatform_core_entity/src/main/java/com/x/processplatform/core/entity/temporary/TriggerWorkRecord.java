@@ -1,7 +1,5 @@
 package com.x.processplatform.core.entity.temporary;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;

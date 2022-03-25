@@ -2,25 +2,27 @@ package com.x.cms.assemble.control.jaxrs.document;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.exception.ExceptionWhen;
-import com.x.processplatform.core.entity.content.Attachment;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -33,6 +35,7 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.element.Form;
+import com.x.processplatform.core.entity.content.Attachment;
 
 /**
  * 直接发布文档内容

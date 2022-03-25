@@ -1,8 +1,13 @@
 package com.x.bbs.assemble.control.queue;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
@@ -12,11 +17,6 @@ import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSReplyInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * Document正式发布后，向所有的阅读者推送消息通知

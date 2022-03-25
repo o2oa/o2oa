@@ -1,5 +1,9 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import java.util.Arrays;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.bean.WrapCopier;
@@ -14,9 +18,6 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 
 /**
  * 对附件的访问权限进行调整

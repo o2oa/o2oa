@@ -1,5 +1,13 @@
 package com.x.bbs.assemble.control.jaxrs.replyinfo;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -11,15 +19,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.SortTools;
 import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyInfoProcess;
 import com.x.bbs.entity.BBSReplyInfo;
-import net.sf.ehcache.Element;
-import org.apache.commons.lang3.StringUtils;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @apiNote 根据回复内容ID 查询 针对该回帖的回复内容的列表

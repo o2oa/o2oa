@@ -10,13 +10,13 @@ import java.util.Optional;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.project.cache.Cache;
-import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.binary.Base64;
 import org.imgscalr.Scalr;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -24,8 +24,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.bbs.assemble.control.jaxrs.image.exception.ExceptionURLEmpty;
 import com.x.bbs.assemble.control.jaxrs.image.exception.ExceptionWrapInConvert;
-
-import net.sf.ehcache.Element;
 
 public class ActionImageBase64 extends BaseAction {
 

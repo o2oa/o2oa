@@ -1,5 +1,9 @@
 package com.x.mind.assemble.control.jaxrs.folder;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.bean.WrapCopier;
@@ -14,9 +18,6 @@ import com.x.mind.assemble.control.jaxrs.exception.ExceptionEntityCanNotDelete;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionFolderPersist;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionFolderWrapInConvert;
 import com.x.mind.entity.MindFolderInfo;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 保存脑图文件夹信息

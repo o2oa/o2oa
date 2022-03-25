@@ -28,6 +28,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Task;
@@ -38,10 +39,13 @@ import com.x.query.core.entity.Item_;
 
 class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGetWithWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWithWorkOrWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 
+		LOGGER.debug("execute:{}, workOrWorkCompleted:{}.", effectivePerson::getDistinguishedName,
+				() -> workOrWorkCompleted);
+		
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		Work work = null;
@@ -106,10 +110,10 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 					}
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return null;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Data> dataFuture(WorkCompleted workCompleted) {
@@ -138,12 +142,11 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 						}
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			}
 			return null;
-		});
-
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<List<WoTask>> taskFuture(String job) {
@@ -152,10 +155,10 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				list = WoTask.copier.copy(emc.listEqual(Task.class, Task.work_FIELDNAME, job));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return list;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<List<WoRead>> readFuture(String job) {
@@ -164,10 +167,10 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				list = WoRead.copier.copy(emc.listEqual(Read.class, Read.job_FIELDNAME, job));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return list;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private void setCurrentTaskIndex(EffectivePerson effectivePerson, Wo wo) {

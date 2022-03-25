@@ -1,16 +1,12 @@
 package com.x.program.center.jaxrs.collect;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.Gson;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.tools.DefaultCharset;
-import org.apache.commons.lang3.BooleanUtils;
-
-import java.net.URLEncoder;
-import java.util.List;
 
 class ActionGetBbs extends BaseAction {
 

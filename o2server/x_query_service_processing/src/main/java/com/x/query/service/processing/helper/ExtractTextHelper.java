@@ -6,12 +6,6 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.ListTools;
-
 import org.apache.commons.collections4.list.UnmodifiableList;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.cos.COSDocument;
@@ -20,6 +14,12 @@ import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.tika.Tika;
+
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.ListTools;
 
 import net.sourceforge.tess4j.Tesseract;
 

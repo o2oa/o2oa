@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.exception.PromptException;
 import com.x.base.core.project.gson.XGsonBuilder;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class ActionResult<T> implements Serializable {
 

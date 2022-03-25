@@ -6,8 +6,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
-
 import com.x.base.core.project.tools.RedisTools;
+
 import redis.clients.jedis.Jedis;
 
 public class CacheRedisNotifyThread extends Thread {

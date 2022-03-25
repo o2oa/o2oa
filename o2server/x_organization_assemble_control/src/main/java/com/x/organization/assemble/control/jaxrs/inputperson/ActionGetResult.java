@@ -1,5 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.inputperson;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.StorageMapping;
@@ -10,12 +12,7 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.general.core.entity.GeneralFile;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 import com.x.organization.assemble.control.ThisApplication;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Optional;
 
 public class ActionGetResult extends BaseAction {
 

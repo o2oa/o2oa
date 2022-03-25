@@ -23,6 +23,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -37,7 +38,8 @@ class ActionListWithWorkOrWorkCompletedPaging extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 
 		CompletableFuture<List<Wo>> listFuture = this.listFuture(workOrWorkCompleted, page, size);
-		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, workOrWorkCompleted);
+		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson,
+				workOrWorkCompleted);
 
 		if (BooleanUtils
 				.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
@@ -75,14 +77,13 @@ class ActionListWithWorkOrWorkCompletedPaging extends BaseAction {
 
 				for (Task task : emc.listEqual(Task.class, Task.job_FIELDNAME, job).stream()
 						.sorted(Comparator.comparing(Task::getStartTime)).collect(Collectors.toList())) {
-					Record record = this.taskToRecord(task);
-					wos.add(Wo.copier.copy(record));
+					wos.add(Wo.copier.copy(this.taskToRecord(task)));
 				}
 			} catch (Exception e) {
 				logger.error(e);
 			}
 			return wos;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
@@ -96,7 +97,7 @@ class ActionListWithWorkOrWorkCompletedPaging extends BaseAction {
 				logger.error(e);
 			}
 			return value;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private Record taskToRecord(Task task) {

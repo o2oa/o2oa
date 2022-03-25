@@ -1,13 +1,34 @@
 package com.x.attendance.assemble.control;
 
-import com.x.attendance.assemble.control.factory.*;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.x.attendance.assemble.control.factory.AttendanceAdminFactory;
+import com.x.attendance.assemble.control.factory.AttendanceAppealInfoFactory;
+import com.x.attendance.assemble.control.factory.AttendanceDetailFactory;
+import com.x.attendance.assemble.control.factory.AttendanceDetailMobileFactory;
+import com.x.attendance.assemble.control.factory.AttendanceDetailStatisticFactory;
+import com.x.attendance.assemble.control.factory.AttendanceEmployeeConfigFactory;
+import com.x.attendance.assemble.control.factory.AttendanceImportFileInfoFactory;
+import com.x.attendance.assemble.control.factory.AttendanceScheduleSettingFactory;
+import com.x.attendance.assemble.control.factory.AttendanceSelfHolidayFactory;
+import com.x.attendance.assemble.control.factory.AttendanceSettingFactory;
+import com.x.attendance.assemble.control.factory.AttendanceStatisticRequireLogFactory;
+import com.x.attendance.assemble.control.factory.AttendanceStatisticalCycleFactory;
+import com.x.attendance.assemble.control.factory.AttendanceWorkDayConfigFactory;
+import com.x.attendance.assemble.control.factory.AttendanceWorkPlaceFactory;
+import com.x.attendance.assemble.control.factory.DingdingAttendanceFactory;
+import com.x.attendance.assemble.control.factory.StatisticPersonForMonthFactory;
+import com.x.attendance.assemble.control.factory.StatisticTopUnitForDayFactory;
+import com.x.attendance.assemble.control.factory.StatisticTopUnitForMonthFactory;
+import com.x.attendance.assemble.control.factory.StatisticUnitForDayFactory;
+import com.x.attendance.assemble.control.factory.StatisticUnitForMonthFactory;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.core.express.Organization;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 public class Business {
 

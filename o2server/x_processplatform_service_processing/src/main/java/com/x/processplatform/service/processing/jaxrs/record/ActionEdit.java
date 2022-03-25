@@ -21,8 +21,6 @@ import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
-import org.apache.commons.lang3.StringUtils;
-
 class ActionEdit extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);

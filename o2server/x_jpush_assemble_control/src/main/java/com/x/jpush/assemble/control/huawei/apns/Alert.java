@@ -15,13 +15,14 @@
  */
 package com.x.jpush.assemble.control.huawei.apns;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.annotations.SerializedName;
 import com.x.jpush.assemble.control.huawei.CollectionUtils;
 import com.x.jpush.assemble.control.huawei.ValidatorUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Alert {
     @SerializedName( "title")

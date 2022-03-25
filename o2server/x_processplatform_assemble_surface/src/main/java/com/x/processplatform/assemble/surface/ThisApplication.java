@@ -1,7 +1,7 @@
 package com.x.processplatform.assemble.surface;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +30,7 @@ public class ThisApplication {
 		int maximumPoolSize = Runtime.getRuntime().availableProcessors() + 1;
 		ThreadFactory threadFactory = new ThreadFactoryBuilder()
 				.setNameFormat(ThisApplication.class.getPackageName() + "-threadpool-%d").build();
-		threadPool = new ThreadPoolExecutor(0, maximumPoolSize, 120, TimeUnit.SECONDS, new SynchronousQueue<>(),
+		threadPool = new ThreadPoolExecutor(0, maximumPoolSize, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<>(1000),
 				threadFactory);
 	}
 

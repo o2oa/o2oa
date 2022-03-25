@@ -9,6 +9,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -30,8 +32,6 @@ import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.Unit_;
-
-import org.apache.commons.lang3.StringUtils;
 
 class ActionEdit extends BaseAction {
 

@@ -1,12 +1,13 @@
 package com.x.attendance.assemble.control;
 
-import org.apache.commons.lang3.StringUtils;
+import java.lang.reflect.Field;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.lang.reflect.Field;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class CriteriaQueryTools {
     public static Order setOrder(CriteriaBuilder cb, Root<?> root, Class<?> clazz_, String fieldName, String orderType) {

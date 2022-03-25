@@ -1,6 +1,5 @@
 package com.x.query.core.express.plan;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +57,7 @@ public class DateRangeEntry extends GsonPropertyObject {
 			if (StringUtils.isEmpty(year)) {
 				year = DateTools.format(now, DateTools.format_yyyy);
 			}
-			/*0表示当前季度*/
+			/* 0表示当前季度 */
 			if (null == season || season == 0) {
 				season = DateTools.season(now);
 			}
@@ -79,8 +78,8 @@ public class DateRangeEntry extends GsonPropertyObject {
 			if (StringUtils.isEmpty(year)) {
 				year = DateTools.format(now, DateTools.format_yyyy);
 			}
-			/*0表示当前周*/
-			if ((null == week) || (week ==0)) {
+			/* 0表示当前周 */
+			if ((null == week) || (week == 0)) {
 				week = DateTools.week(now);
 			}
 			this.start = DateTools.floorWeekOfYear(year, week, adjust);
@@ -100,29 +99,30 @@ public class DateRangeEntry extends GsonPropertyObject {
 			this.completed = DateTools.ceilDate(year, month, date, adjust);
 			break;
 		case DATERANGETYPE_RANGE:
-			//2019-07-17 O2LEE 优化：不能全部为空。但如果有一个为空，可能前推或者后延一年。
-			if (null == this.start  && null == this.completed) {
+			// 2019-07-17 O2LEE 优化：不能全部为空。但如果有一个为空，可能前推或者后延一年。
+			if (null == this.start && null == this.completed) {
 				throw new Exception("begin and end can not be all null when dateRangeEntry on type appoint.");
 			}
-			//2019-07-17 O2LEE 优化：如果开始时间不为空，结束时间为空，那么按开始时间后推一年为结束时间
-			if( null != this.start ) {
-				if( null == this.completed ) {
-					this.completed = DateTools.getDateAfterYearAdjust( this.start , 1, 0, 0);
+			// 2019-07-17 O2LEE 优化：如果开始时间不为空，结束时间为空，那么按开始时间后推一年为结束时间
+			if (null != this.start) {
+				if (null == this.completed) {
+					this.completed = DateTools.getDateAfterYearAdjust(this.start, 1, 0, 0);
 				}
 			}
-			//2019-07-17 O2LEE 优化：如果结束时间不为空，开始时间为空，那么按结束时间前推一年为开始时间
-			if( null != this.completed ) {
-				if( null == this.start ) {
-					this.start = DateTools.getDateAfterYearAdjust( this.completed , -1,0,0);
+			// 2019-07-17 O2LEE 优化：如果结束时间不为空，开始时间为空，那么按结束时间前推一年为开始时间
+			if (null != this.completed) {
+				if (null == this.start) {
+					this.start = DateTools.getDateAfterYearAdjust(this.completed, -1, 0, 0);
 				}
 			}
 			break;
 		case DATERANGETYPE_NONE:
 			this.completed = now;
 			this.start = null;
-			/*Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.YEAR, -1);
-			this.start = cal.getTime();*/
+			/*
+			 * Calendar cal = Calendar.getInstance(); cal.add(Calendar.YEAR, -1); this.start
+			 * = cal.getTime();
+			 */
 			break;
 		default:
 			break;

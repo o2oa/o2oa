@@ -15,8 +15,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.cms.core.entity.AppInfo;
 
-import net.sf.ehcache.Element;
-
 public class ActionListAll extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger( ActionListAll.class );

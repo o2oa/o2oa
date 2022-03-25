@@ -13,7 +13,6 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Unit;

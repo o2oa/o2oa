@@ -3,10 +3,10 @@ package com.x.base.core.container;
 import java.util.List;
 import java.util.Random;
 
-import com.x.base.core.entity.JpaObject;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.openjpa.slice.DistributionPolicy;
+
+import com.x.base.core.entity.JpaObject;
 
 public class FactorDistributionPolicy implements DistributionPolicy {
 

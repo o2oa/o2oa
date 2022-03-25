@@ -1,9 +1,10 @@
 package com.x.base.core.project.config;
 
-import com.x.base.core.project.annotation.FieldDescribe;
+import java.io.File;
+
 import org.apache.commons.lang3.BooleanUtils;
 
-import java.io.File;
+import com.x.base.core.project.annotation.FieldDescribe;
 
 public class JpushConfig extends ConfigObject {
 

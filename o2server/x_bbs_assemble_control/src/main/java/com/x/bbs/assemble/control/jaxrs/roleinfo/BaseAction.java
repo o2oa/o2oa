@@ -19,8 +19,6 @@ import com.x.bbs.assemble.control.service.BBSUserInfoService;
 import com.x.bbs.assemble.control.service.UserManagerService;
 import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
 
-import net.sf.ehcache.Ehcache;
-
 public class BaseAction extends StandardJaxrsAction {
 	private static  Logger logger = LoggerFactory.getLogger(BaseAction.class);
 	protected BBSRoleInfoService roleInfoService = new BBSRoleInfoService();

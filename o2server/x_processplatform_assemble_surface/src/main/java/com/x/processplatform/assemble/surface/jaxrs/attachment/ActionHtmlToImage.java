@@ -1,7 +1,22 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+
 import com.google.gson.JsonElement;
-import com.microsoft.playwright.*;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -24,17 +39,6 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
-import gui.ava.html.image.generator.HtmlImageGenerator;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 class ActionHtmlToImage extends BaseAction {
 

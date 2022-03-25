@@ -2,22 +2,16 @@ package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.entity.AttendanceDetail;
-import com.x.attendance.entity.AttendanceScheduleSetting;
-import com.x.attendance.entity.AttendanceSelfHoliday;
-import com.x.attendance.entity.AttendanceStatisticalCycle;
-import com.x.attendance.entity.AttendanceWorkDayConfig;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -25,9 +19,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
-import com.x.base.core.project.tools.ListTools;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class ActionReciveSingleAttendance extends BaseAction {
 	/*

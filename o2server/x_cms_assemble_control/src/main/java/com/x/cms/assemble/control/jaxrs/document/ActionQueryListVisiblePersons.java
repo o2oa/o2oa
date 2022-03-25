@@ -7,10 +7,10 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.project.cache.Cache;
-import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapStringList;
@@ -22,8 +22,6 @@ import com.x.cms.assemble.control.service.UserManagerService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
-
-import net.sf.ehcache.Element;
 
 public class ActionQueryListVisiblePersons extends BaseAction {
 

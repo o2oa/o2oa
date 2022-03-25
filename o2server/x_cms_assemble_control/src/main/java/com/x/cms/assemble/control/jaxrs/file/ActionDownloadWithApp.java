@@ -9,13 +9,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.cache.Cache;
-import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -25,9 +25,6 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.File_;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 
 class ActionDownloadWithApp extends StandardJaxrsAction {
 

@@ -16,10 +16,9 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-
-import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 

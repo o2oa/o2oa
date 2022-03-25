@@ -1,8 +1,16 @@
 package com.x.bbs.assemble.control.jaxrs.sectioninfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
@@ -12,14 +20,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.x_program_center;
 import com.x.bbs.assemble.control.ThisApplication;
 import com.x.bbs.entity.BBSSectionInfo;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActionSynApplicationsFromMarket extends BaseAction {
 	

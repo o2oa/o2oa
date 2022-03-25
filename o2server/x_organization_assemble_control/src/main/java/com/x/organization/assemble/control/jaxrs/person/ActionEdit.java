@@ -3,20 +3,22 @@ package com.x.organization.assemble.control.jaxrs.person;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -30,8 +32,6 @@ import com.x.organization.assemble.control.message.OrgMessage;
 import com.x.organization.assemble.control.message.OrgMessageFactory;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
-
-import org.apache.commons.lang3.StringUtils;
 
 class ActionEdit extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);

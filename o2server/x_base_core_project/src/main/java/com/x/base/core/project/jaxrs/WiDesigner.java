@@ -1,10 +1,16 @@
 package com.x.base.core.project.jaxrs;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class WiDesigner extends GsonPropertyObject {
 

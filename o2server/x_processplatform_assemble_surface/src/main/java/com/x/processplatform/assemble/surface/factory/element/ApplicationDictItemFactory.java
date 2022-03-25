@@ -9,12 +9,12 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.ApplicationDictItem;
 import com.x.processplatform.core.entity.element.ApplicationDictItem_;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class ApplicationDictItemFactory extends AbstractFactory {
 

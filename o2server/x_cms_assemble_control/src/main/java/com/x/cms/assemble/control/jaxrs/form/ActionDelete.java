@@ -1,5 +1,9 @@
 package com.x.cms.assemble.control.jaxrs.form;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
@@ -15,9 +19,6 @@ import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
 import com.x.cms.core.entity.element.ViewFieldConfig;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 public class ActionDelete extends BaseAction {
 

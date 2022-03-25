@@ -16,6 +16,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -23,8 +25,6 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.PersonAttribute;
 import com.x.organization.core.entity.PersonAttribute_;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 
 class ActionListWithPerson extends BaseAction {
 

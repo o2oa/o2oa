@@ -16,7 +16,6 @@ import org.apache.commons.collections4.list.SetUniqueList;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionWhen;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;

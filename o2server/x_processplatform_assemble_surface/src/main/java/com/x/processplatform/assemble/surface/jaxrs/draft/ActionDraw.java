@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.surface.jaxrs.draft;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,8 +22,6 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-
-import org.apache.commons.lang3.StringUtils;
 
 class ActionDraw extends BaseAction {
 

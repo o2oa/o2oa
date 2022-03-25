@@ -1,5 +1,12 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
@@ -12,12 +19,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DocumentTools;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.FileInfo;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 
 class ActionPreviewPdf extends BaseAction {

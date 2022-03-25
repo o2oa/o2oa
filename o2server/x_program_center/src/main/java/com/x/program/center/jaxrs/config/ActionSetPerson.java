@@ -1,5 +1,8 @@
 package com.x.program.center.jaxrs.config;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -9,9 +12,6 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * config/person.json配置修改

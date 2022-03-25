@@ -9,6 +9,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.tika.Tika;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -35,10 +39,6 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.tika.Tika;
 
 class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 

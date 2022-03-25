@@ -1,5 +1,12 @@
 package com.x.cms.assemble.control.queue;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.collections4.list.TreeList;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
@@ -14,28 +21,23 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.factory.ProjectionFactory;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Projection;
 import com.x.cms.core.entity.content.Data;
 import com.x.query.core.entity.Item;
-import org.apache.commons.collections4.list.TreeList;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public class ProjectionExecuteQueue extends AbstractQueue<String> {
 
-	private static Logger logger = LoggerFactory.getLogger(ProjectionExecuteQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProjectionExecuteQueue.class);
 
 	private DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
 
 	@Override
 	protected void execute(String id) throws Exception {
-		logger.info("开始执行分类文档数据映射category：{}", id);
+		LOGGER.debug("开始执行分类文档数据映射category:{}.", () -> id);
 		CategoryInfo categoryInfo = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			categoryInfo = emc.find(id, CategoryInfo.class);
@@ -43,11 +45,12 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 				throw new ExceptionEntityNotExist(id, CategoryInfo.class);
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		try {
-			if(categoryInfo!=null) {
-				if (StringUtils.isNotBlank(categoryInfo.getProjection()) && XGsonBuilder.isJsonArray(categoryInfo.getProjection())) {
+			if (categoryInfo != null) {
+				if (StringUtils.isNotBlank(categoryInfo.getProjection())
+						&& XGsonBuilder.isJsonArray(categoryInfo.getProjection())) {
 					List<Projection> projections = XGsonBuilder.instance().fromJson(categoryInfo.getProjection(),
 							new TypeToken<List<Projection>>() {
 							}.getType());
@@ -55,10 +58,10 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 				}
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 
-		logger.info("完成执行分类文档数据映射category：{}", id);
+		LOGGER.info("完成执行分类文档数据映射category：{}", id);
 	}
 
 	private void doProjection(CategoryInfo categoryInfo, final List<Projection> projections) throws Exception {
@@ -67,27 +70,27 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 			Business business = new Business(emc);
 			docIdList = business.getDocumentFactory().listByCategoryId(categoryInfo.getId(), null);
 		}
-		if(ListTools.isNotEmpty(docIdList)){
-			logger.info("需要执行文档数据映射个数：{}",docIdList.size());
+		if (ListTools.isNotEmpty(docIdList)) {
+			LOGGER.info("需要执行文档数据映射个数：{}", docIdList.size());
 			int limit = 10;
-			for (List<String> partJobs : ListTools.batch(docIdList, limit)){
+			for (List<String> partJobs : ListTools.batch(docIdList, limit)) {
 				List<CompletableFuture<Void>> futures = new TreeList<>();
-				for (String docId : partJobs){
+				for (String docId : partJobs) {
 					CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
 						try {
 							this.docProjection(docId, projections);
 						} catch (Exception e) {
-							logger.warn("文档{}数据映射异常：{}",docId, e.getMessage());
-							logger.error(e);
+							LOGGER.warn("文档{}数据映射异常：{}", docId, e.getMessage());
+							LOGGER.error(e);
 						}
-					});
+					}, ThisApplication.threadPool());
 					futures.add(future);
 				}
 				for (CompletableFuture<Void> future : futures) {
 					try {
 						future.get(300, TimeUnit.SECONDS);
 					} catch (Exception e) {
-						logger.warn("执行文档数据映射任务异常：{}",e.getMessage());
+						LOGGER.warn("执行文档数据映射任务异常：{}", e.getMessage());
 					}
 				}
 				futures.clear();
@@ -95,7 +98,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 		}
 	}
 
-	private void docProjection(String docId, List<Projection> projections) throws Exception{
+	private void docProjection(String docId, List<Projection> projections) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Data data = this.data(business, docId);

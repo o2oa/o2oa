@@ -1,5 +1,10 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
@@ -7,10 +12,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoFile;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.FileInfo;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class ActionFileDownload extends BaseAction {
 

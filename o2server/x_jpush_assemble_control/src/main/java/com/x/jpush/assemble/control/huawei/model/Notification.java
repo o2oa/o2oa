@@ -15,10 +15,10 @@
  */
 package com.x.jpush.assemble.control.huawei.model;
 
+import java.util.Locale;
+
 import com.google.gson.annotations.SerializedName;
 import com.x.jpush.assemble.control.huawei.ValidatorUtils;
-
-import java.util.Locale;
 
 public class Notification {
     @SerializedName("title")

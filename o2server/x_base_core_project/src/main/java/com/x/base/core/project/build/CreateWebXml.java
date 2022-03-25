@@ -1,11 +1,7 @@
 package com.x.base.core.project.build;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebServlet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.project.Compilable;
 import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.MainTools;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;

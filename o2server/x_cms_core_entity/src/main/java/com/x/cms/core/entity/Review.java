@@ -12,7 +12,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
-import com.x.query.core.entity.Item;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 

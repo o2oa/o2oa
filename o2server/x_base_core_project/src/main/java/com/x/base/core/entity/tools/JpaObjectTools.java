@@ -14,14 +14,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.criteria.Path;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.project.annotation.Module;
-import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 
 import io.github.classgraph.ClassGraph;

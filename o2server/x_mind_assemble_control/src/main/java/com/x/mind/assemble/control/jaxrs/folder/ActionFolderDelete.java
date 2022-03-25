@@ -1,5 +1,7 @@
 package com.x.mind.assemble.control.jaxrs.folder;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -10,8 +12,6 @@ import com.x.mind.assemble.control.jaxrs.exception.ExceptionFolderDelete;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionFolderNotExists;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindFolderQuery;
 import com.x.mind.entity.MindFolderInfo;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 删除文件夹信息

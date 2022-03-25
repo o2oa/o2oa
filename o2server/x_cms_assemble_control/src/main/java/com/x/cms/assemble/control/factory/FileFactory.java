@@ -12,15 +12,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.cache.Cache;
-import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.File_;
-
-import net.sf.ehcache.Element;
 
 public class FileFactory extends ElementFactory {
 

@@ -1,7 +1,5 @@
 package com.x.file.core.entity.personal;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;

@@ -3,21 +3,20 @@ package com.x.component.assemble.control.schedule;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.config.Components;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
 import com.x.component.core.entity.Component;
-
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 public class InitComponents extends AbstractJob {
 

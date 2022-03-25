@@ -1,17 +1,17 @@
 package com.x.base.core.project.config;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.bean.NameValuePair;
-import com.x.base.core.project.connection.HttpConnection;
-import com.x.base.core.project.gson.GsonPropertyObject;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.connection.HttpConnection;
+import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class HuaweiPushConfig extends ConfigObject {
 

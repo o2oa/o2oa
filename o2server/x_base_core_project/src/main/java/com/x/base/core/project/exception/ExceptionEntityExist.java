@@ -1,9 +1,10 @@
 package com.x.base.core.project.exception;
 
-import com.x.base.core.entity.JpaObject;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
+import com.x.base.core.entity.JpaObject;
 
 public class ExceptionEntityExist extends LanguagePromptException {
 

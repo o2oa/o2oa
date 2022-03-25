@@ -1,5 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
@@ -9,8 +11,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.DocumentCommend;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 文档点赞

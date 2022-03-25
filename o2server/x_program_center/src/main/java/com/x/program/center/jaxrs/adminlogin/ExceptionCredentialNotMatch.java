@@ -1,7 +1,6 @@
 package com.x.program.center.jaxrs.adminlogin;
 
 import com.x.base.core.project.exception.LanguagePromptException;
-import com.x.base.core.project.exception.PromptException;
 
 class ExceptionCredentialNotMatch extends LanguagePromptException {
 

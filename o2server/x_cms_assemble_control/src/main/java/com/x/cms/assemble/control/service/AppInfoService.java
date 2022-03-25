@@ -1,5 +1,9 @@
 package com.x.cms.assemble.control.service;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -8,10 +12,11 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.AppInfoConfig;
-import com.x.cms.core.entity.element.*;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
+import com.x.cms.core.entity.element.AppDict;
+import com.x.cms.core.entity.element.AppDictItem;
+import com.x.cms.core.entity.element.View;
+import com.x.cms.core.entity.element.ViewCategory;
+import com.x.cms.core.entity.element.ViewFieldConfig;
 
 public class AppInfoService {
 

@@ -1,5 +1,13 @@
 package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -15,13 +23,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
-import net.sf.ehcache.Element;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 public class ActionQueryGetControl extends BaseAction {
 

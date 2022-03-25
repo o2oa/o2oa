@@ -15,11 +15,11 @@
  */
 package com.x.jpush.assemble.control.huawei.apns;
 
-import com.google.gson.annotations.SerializedName;
-import com.x.jpush.assemble.control.huawei.CollectionUtils;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gson.annotations.SerializedName;
+import com.x.jpush.assemble.control.huawei.CollectionUtils;
 
 public class ApnsConfig {
     @SerializedName( "hms_options")

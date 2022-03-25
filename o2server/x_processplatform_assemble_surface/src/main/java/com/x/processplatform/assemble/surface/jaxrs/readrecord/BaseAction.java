@@ -1,11 +1,11 @@
 package com.x.processplatform.assemble.surface.jaxrs.readrecord;
 
+import java.util.Date;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.core.entity.element.ActivityType;
-
-import java.util.Date;
 
 abstract class BaseAction extends StandardJaxrsAction {
 

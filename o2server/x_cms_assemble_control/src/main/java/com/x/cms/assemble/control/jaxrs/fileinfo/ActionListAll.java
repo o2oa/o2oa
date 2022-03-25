@@ -15,13 +15,10 @@ import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.WrapOutString;
 import com.x.base.core.project.tools.SortTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.factory.FileInfoFactory;
 import com.x.cms.core.entity.FileInfo;
-
-import net.sf.ehcache.Element;
 
 public class ActionListAll extends BaseAction {
 

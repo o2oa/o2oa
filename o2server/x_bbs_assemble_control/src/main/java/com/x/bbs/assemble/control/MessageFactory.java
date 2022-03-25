@@ -1,12 +1,14 @@
 package com.x.bbs.assemble.control;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.queue.MessageWo;
-import org.apache.commons.lang3.StringUtils;
-import java.util.List;
 
 public class MessageFactory {
 

@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.time.DateUtils;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -11,10 +15,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.processplatform.core.entity.content.KeyLock;
-
-import org.apache.commons.lang3.time.DateUtils;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 public class CleanKeyLock extends AbstractJob {
 

@@ -1,5 +1,8 @@
 package com.x.attendance.assemble.control;
 
+import java.util.List;
+import java.util.Map;
+
 import com.x.attendance.assemble.control.service.AttendanceDetailAnalyseServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceDetailServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceStatisticalCycleServiceAdv;
@@ -10,8 +13,6 @@ import com.x.attendance.entity.AttendanceWorkDayConfig;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 对单个员工的打卡信息进行分析的队列

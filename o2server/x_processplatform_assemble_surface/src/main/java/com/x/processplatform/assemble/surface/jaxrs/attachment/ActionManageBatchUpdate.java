@@ -1,5 +1,8 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
@@ -11,14 +14,9 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
-import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
-import java.util.List;
 
 class ActionManageBatchUpdate extends BaseAction {
 

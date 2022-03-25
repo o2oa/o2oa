@@ -30,30 +30,23 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.hankcs.hanlp.HanLP;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ExtractTextTools;
-import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.segment.Entry;
 import com.x.query.core.entity.segment.Word;
 import com.x.query.service.processing.Business;
-import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.helper.LanguageProcessingHelper;
 
 class ActionCrawlWorkCompleted extends BaseAction {

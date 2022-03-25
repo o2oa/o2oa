@@ -1,19 +1,20 @@
 package com.x.message.core.entity;
 
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
-import org.apache.openjpa.persistence.jdbc.Index;
-
-import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
 
 
 /**

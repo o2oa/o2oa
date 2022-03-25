@@ -1,7 +1,6 @@
 package com.x.program.center.jaxrs.appstyle;
 
 import com.x.base.core.project.exception.LanguagePromptException;
-import com.x.base.core.project.exception.PromptException;
 
 class ExceptionNameExist extends LanguagePromptException {
 

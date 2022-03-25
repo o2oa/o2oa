@@ -10,9 +10,8 @@ import com.x.cms.assemble.control.service.QueryViewService;
 import com.x.cms.assemble.control.service.UserManagerService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
-
 import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.element.*;
+import com.x.cms.core.entity.element.ViewCategory;
 
 public class BaseAction extends StandardJaxrsAction {
 

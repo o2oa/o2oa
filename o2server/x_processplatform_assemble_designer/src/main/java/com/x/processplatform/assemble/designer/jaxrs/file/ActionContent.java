@@ -16,8 +16,6 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.File;
 
-import net.sf.ehcache.Element;
-
 class ActionContent extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
