@@ -126,6 +126,10 @@ public class ActionMsgCreate extends BaseAction {
             return "[位置]";
         }else if ("file".equals(body.getType())) {
             return "[文件]";
+        }else if ("process".equals(body.getType())) {
+            return "[工作]";
+        }else if ("cms".equals(body.getType())) {
+            return "[信息]";
         }else {
             return "[其它]";
         }
@@ -148,6 +152,9 @@ public class ActionMsgCreate extends BaseAction {
          *     audio
          *     location
          *     file
+         *     20220315新增
+         *     process
+         *     cms
          */
         private String type;
         private String body;
