@@ -236,6 +236,8 @@
     "styles": {},
     "tableStyles": {
       "border-top": "1px solid #cccccc",
+      "border-left": "1px solid #cccccc",
+      "border-right": "1px solid #cccccc",
       "width": "calc(100% - 2px)"
     },
     "titleStyles": {
