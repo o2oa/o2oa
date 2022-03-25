@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -113,7 +114,8 @@ class V2Rollback extends BaseAction {
 
 					for (TaskCompleted o : taskCompleteds) {
 						if (BooleanUtils.isTrue(o.getJoinInquire())) {
-							o.setProcessingType(TaskCompleted.PROCESSINGTYPE_ROLLBACK);
+							// o.setProcessingType(TaskCompleted.PROCESSINGTYPE_ROLLBACK);
+							emc.remove(o, CheckRemoveType.all);
 						}
 						manualTaskIdentityList.add(o.getIdentity());
 					}
@@ -161,6 +163,14 @@ class V2Rollback extends BaseAction {
 		work.setSplitValue(workLog.getSplitValue());
 		work.setForm(business.element().lookupSuitableForm(work.getProcess(), work.getActivity()));
 		workLog.setConnected(false);
+		workLog.setArrivedActivity("");
+		workLog.setArrivedActivityAlias("");
+		workLog.setArrivedActivityName("");
+		workLog.setArrivedActivityToken("");
+		workLog.setArrivedActivityType(null);
+		workLog.setArrivedGroup(null);
+		workLog.setArrivedOpinionGroup(null);
+		workLog.setArrivedTime(null);
 	}
 
 	private WorkLog getTargetWorkLog(List<WorkLog> list, String id) throws ExceptionEntityNotExist {
@@ -171,7 +181,7 @@ class V2Rollback extends BaseAction {
 		return workLog;
 	}
 
-	private List<String> activityTokenOfNodes(Nodes nodes) throws Exception {
+	private List<String> activityTokenOfNodes(Nodes nodes) {
 		List<String> list = new ArrayList<>();
 		for (Node o : nodes) {
 			list.add(o.getWorkLog().getFromActivityToken());
@@ -179,12 +189,12 @@ class V2Rollback extends BaseAction {
 		return ListTools.trim(list, true, true);
 	}
 
-	private List<String> workOfNodes(Nodes nodes) throws Exception {
-		List<String> list = new ArrayList<>();
+	private List<String> workOfNodes(Nodes nodes) {
+		List<String> os = new ArrayList<>();
 		for (Node o : nodes) {
-			list.add(o.getWorkLog().getWork());
+			os.add(o.getWorkLog().getWork());
 		}
-		return ListTools.trim(list, true, true);
+		return ListTools.trim(os, true, true);
 	}
 
 	private void deleteTasks(Business business, String job, List<String> activityTokens) throws Exception {
@@ -237,7 +247,7 @@ class V2Rollback extends BaseAction {
 
 	private void deleteWorks(Business business, String job, List<String> workIds) throws Exception {
 		List<Work> os = business.entityManagerContainer().listEqualAndIn(Work.class, Work.job_FIELDNAME, job,
-				Work.id_FIELDNAME, workIds);
+				JpaObject.id_FIELDNAME, workIds);
 		for (Work o : os) {
 			business.entityManagerContainer().remove(o, CheckRemoveType.all);
 		}
@@ -245,8 +255,12 @@ class V2Rollback extends BaseAction {
 
 	public static class Wi extends V2RollbackWi {
 
+		private static final long serialVersionUID = 1549664177644024435L;
+
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 7732547960719161607L;
 	}
 }
