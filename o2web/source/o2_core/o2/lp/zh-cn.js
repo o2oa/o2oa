@@ -230,7 +230,9 @@ o2.LP.desktop = {
 
         "customMessageTitle": "消息提醒：",
         "customMessage": "您收到一条消息",
-        "emoji": "表情"
+        "emoji": "表情",
+        "processWork": "工作",
+        "cmsDoc": "信息文档"
     },
     "styleMenu": {
         "default": "默认",

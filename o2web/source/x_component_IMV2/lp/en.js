@@ -31,6 +31,10 @@ MWF.xApplication.IMV2.LP = {
 	"choosePerson":"Select personnel",
 	"choosePersonCreate":"Create chat",
 
+
+	"chooseConveration":"Select Converation",
+	"conversationCreate":"Create a new chat",
+
 	"chooseBusinessWorkTitle":"Associated work",
 	"open": "open",
 	"noTitle": "Untitled",
@@ -46,6 +50,8 @@ MWF.xApplication.IMV2.LP = {
 	"msgNoBusinessPerson": "No business related personnel found, unable to create chat!",
 	"msgNotSupport": "Temporarily not supported!",
 	"msgNeedChoosePerson": "Please select at least one person!",
+	"msgShareNoBody": "No message was obtained, unable to share and forward!",
+	"msgShareError": "Failed to share and forward messages!",
 
 		
 	"settingsClearMsg": "Enable Clearing msg: ",
