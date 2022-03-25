@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -25,11 +24,11 @@ import com.x.processplatform.service.processing.ThisApplication;
  */
 class ActionDeleteWithWorkCompleted extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionDeleteWithWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDeleteWithWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workCompletedId) throws Exception {
-
+		LOGGER.debug("execute:{}, id:{}, workCompletedId:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> workCompletedId);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String executorSeed = null;
@@ -56,7 +55,7 @@ class ActionDeleteWithWorkCompleted extends BaseAction {
 					}
 					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 							attachment.getStorage());
-					/** 如果没有存储器,跳过 */
+					// 如果没有存储器,跳过
 					if (null != mapping) {
 						attachment.deleteContent(mapping);
 					}
@@ -76,6 +75,8 @@ class ActionDeleteWithWorkCompleted extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -5845076721741897493L;
 
 	}
 

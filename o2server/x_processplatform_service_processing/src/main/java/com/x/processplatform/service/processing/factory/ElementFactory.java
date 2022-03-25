@@ -15,6 +15,7 @@ import javax.persistence.criteria.Root;
 import javax.script.CompiledScript;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -28,12 +29,14 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Agent;
+import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Cancel;
 import com.x.processplatform.core.entity.element.Choice;
 import com.x.processplatform.core.entity.element.Delay;
 import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.End;
+import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Mapping;
@@ -751,4 +754,119 @@ public class ElementFactory extends AbstractFactory {
 		}
 		return compiledScript;
 	}
+
+	/**
+	 * 根据活动节点查找合适的显示表单.
+	 * 
+	 * @param actvityId
+	 * @return
+	 * @throws Exception
+	 */
+	public String lookupSuitableForm(String processId, String actvityId) throws Exception {
+		if (StringUtils.isEmpty(actvityId)) {
+			return null;
+		}
+		Process process = this.get(processId, Process.class);
+		if (null != process) {
+			String value = lookupSuitableFormFromActivity(processId, actvityId);
+			if (StringUtils.isNotEmpty(value)) {
+				return value;
+			}
+			Application application = this.get(process.getApplication(), Application.class);
+			if ((null != application) && (StringUtils.isNotEmpty(application.getDefaultForm()))) {
+				Form form = this.get(application.getDefaultForm(), Form.class);
+				if (null != form) {
+					return form.getId();
+				}
+			}
+		}
+		return null;
+	}
+
+	private String lookupSuitableFormFromActivity(String applicationId, String actvityId) throws Exception {
+		List<String> excludes = new ArrayList<>();
+		List<String> temp = new ArrayList<>();
+		List<String> list = new ArrayList<>();
+		list.add(actvityId);
+		Activity activity;
+		do {
+			temp.clear();
+			for (String id : list) {
+				activity = this.getActivity(id);
+				if (null != activity) {
+					String value = checkForm(activity);
+					if (StringUtils.isNotEmpty(value)) {
+						return value;
+					} else {
+						temp.addAll(this.listActivityCanRouteToActvity(applicationId, activity.getId()));
+					}
+				}
+			}
+			temp = ListUtils.subtract(temp, excludes);
+			list.clear();
+			list.addAll(temp);
+			excludes.addAll(temp);
+		} while (!list.isEmpty());
+		return null;
+	}
+
+	private String checkForm(Activity activity) throws Exception {
+		if (StringUtils.isEmpty(activity.getForm())) {
+			return null;
+		}
+		Form form = this.get(activity.getForm(), Form.class);
+		if (null != form) {
+			return form.getId();
+		}
+		return null;
+	}
+
+	private List<String> listActvityWithProcessWithRoute(String processId, String routeId) throws Exception {
+		List<String> list = new ArrayList<>();
+		list.addAll(this.entityManagerContainer().idsEqualAndEqual(Agent.class, Activity.process_FIELDNAME, processId,
+				Agent.route_FIELDNAME, routeId));
+
+		list.addAll(this.entityManagerContainer().idsEqualAndEqual(Begin.class, Activity.process_FIELDNAME, processId,
+				Begin.route_FIELDNAME, routeId));
+
+		list.addAll(this.entityManagerContainer().idsEqualAndIsMember(Choice.class, Activity.process_FIELDNAME,
+				processId, Choice.routeList_FIELDNAME, routeId));
+
+		list.addAll(this.entityManagerContainer().idsEqualAndEqual(Delay.class, Activity.process_FIELDNAME, processId,
+				Delay.route_FIELDNAME, routeId));
+
+		list.addAll(this.entityManagerContainer().idsEqualAndEqual(Embed.class, Activity.process_FIELDNAME, processId,
+				Embed.route_FIELDNAME, routeId));
+
+		list.addAll(this.entityManagerContainer().idsEqualAndEqual(Invoke.class, Activity.process_FIELDNAME, processId,
+				Invoke.route_FIELDNAME, routeId));
+
+		list.addAll(this.entityManagerContainer().idsEqualAndIsMember(Manual.class, Activity.process_FIELDNAME,
+				processId, Manual.routeList_FIELDNAME, routeId));
+
+		list.addAll(this.entityManagerContainer().idsEqualAndEqual(Merge.class, Activity.process_FIELDNAME, processId,
+				Merge.route_FIELDNAME, routeId));
+
+		list.addAll(this.entityManagerContainer().idsEqualAndIsMember(Parallel.class, Activity.process_FIELDNAME,
+				processId, Parallel.routeList_FIELDNAME, routeId));
+
+		list.addAll(this.entityManagerContainer().idsEqualAndEqual(Service.class, Activity.process_FIELDNAME, processId,
+				Service.route_FIELDNAME, routeId));
+
+		list.addAll(this.entityManagerContainer().idsEqualAndEqual(Split.class, Activity.process_FIELDNAME, processId,
+				Split.route_FIELDNAME, routeId));
+
+		return ListTools.trim(list, true, true);
+	}
+
+	private List<String> listActivityCanRouteToActvity(String processId, String activityId) throws Exception {
+		List<String> list = new ArrayList<>();
+		List<String> ids = this.entityManagerContainer().idsEqualAndEqual(Route.class, Route.process_FIELDNAME,
+				processId, Route.activity_FIELDNAME, activityId);
+		for (String s : ids) {
+			list.addAll(listActvityWithProcessWithRoute(processId, s));
+		}
+		return ListTools.trim(list, true, true);
+	}
+
 }

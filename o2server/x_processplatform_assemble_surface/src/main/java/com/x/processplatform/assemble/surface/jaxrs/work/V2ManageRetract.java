@@ -14,7 +14,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
@@ -49,7 +48,6 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.V2Retrac
 
 class V2ManageRetract extends BaseAction {
 
-	@ActionLogger
 	private static Logger logger = LoggerFactory.getLogger(V2ManageRetract.class);
 
 	private WorkLog workLog;

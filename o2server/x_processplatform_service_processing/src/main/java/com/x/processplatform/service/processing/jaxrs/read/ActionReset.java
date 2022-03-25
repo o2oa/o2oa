@@ -118,16 +118,18 @@ class ActionReset extends BaseAction {
 		}
 	}
 
-	private List<ReadCompleted> listExist(Business business, Read read) throws Exception {
-		return business.entityManagerContainer().listEqualAndEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME,
-				read.getJob(), ReadCompleted.person_FIELDNAME, read.getPerson());
-	}
+//	private List<ReadCompleted> listExist(Business business, Read read) throws Exception {
+//		return business.entityManagerContainer().listEqualAndEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME,
+//				read.getJob(), ReadCompleted.person_FIELDNAME, read.getPerson());
+//	}
 
 	public static class CallWrap {
 		String job;
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 3966536547959075002L;
 
 		@FieldDescribe("身份")
 		private List<String> identityList;
@@ -153,6 +155,8 @@ class ActionReset extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 2035801489227371292L;
 
 	}
 

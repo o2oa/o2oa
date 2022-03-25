@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -20,14 +19,11 @@ import com.x.processplatform.service.processing.Business;
 
 class ActionCreateWithWorkPath0 extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionCreateWithWorkPath0.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreateWithWorkPath0.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, JsonElement jsonElement)
 			throws Exception {
-
-		Wo wo = new Wo();
-		ActionResult<Wo> result = new ActionResult<>();
+		LOGGER.debug("execute:{}, id:{}, path0:{}.", effectivePerson::getDistinguishedName, () -> id, () -> path0);
 
 		String executorSeed = null;
 
@@ -39,28 +35,43 @@ class ActionCreateWithWorkPath0 extends BaseAction {
 			executorSeed = work.getJob();
 		}
 
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					Work work = emc.find(id, Work.class);
-					if (null == work) {
-						throw new ExceptionEntityNotExist(id, Work.class);
-					}
-					createData(business, work, jsonElement, path0);
-					wo.setId(work.getId());
+		CallableImpl impl = new CallableImpl(id, path0, jsonElement);
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(impl).get(300, TimeUnit.SECONDS);
+	}
+
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
+
+		private JsonElement jsonElement;
+		private String id;
+		private String path0;
+
+		private CallableImpl(String id, String path0, JsonElement jsonElement) {
+			this.id = id;
+			this.path0 = path0;
+			this.jsonElement = jsonElement;
+		}
+
+		@Override
+		public ActionResult<Wo> call() throws Exception {
+			ActionResult<Wo> result = new ActionResult<>();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				Work work = emc.find(id, Work.class);
+				if (null == work) {
+					throw new ExceptionEntityNotExist(id, Work.class);
 				}
-				return "";
+				createData(business, work, jsonElement, path0);
+				Wo wo = new Wo();
+				wo.setId(work.getId());
+				result.setData(wo);
 			}
-		};
-
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
-
-		result.setData(wo);
-		return result;
+			return result;
+		}
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 5105871346329462375L;
 
 	}
 

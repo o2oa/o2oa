@@ -23,7 +23,9 @@ class ActionUpdateWithJobPath4 extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job, String path0, String path1, String path2,
 			String path3, String path4, JsonElement jsonElement) throws Exception {
-		LOGGER.debug("{} access.", effectivePerson::getDistinguishedName);
+		LOGGER.debug("execute:{}, job:{}, path0:{}, path1:{}, path2:{}, path3:{}, path4:{}.",
+				effectivePerson::getDistinguishedName, () -> job, () -> path0, () -> path1, () -> path2, () -> path3,
+				() -> path4);
 		ActionResult<Wo> result = new ActionResult<>();
 
 		String executorSeed = null;

@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -25,11 +24,10 @@ import com.x.processplatform.service.processing.ThisApplication;
  */
 class ActionDelete extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 
@@ -52,7 +50,7 @@ class ActionDelete extends BaseAction {
 					}
 					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 							attachment.getStorage());
-					/* 如果没有存储器,跳过 */
+					// 如果没有存储器,跳过
 					if (null != mapping) {
 						attachment.deleteContent(mapping);
 					}
@@ -72,6 +70,8 @@ class ActionDelete extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -9052036152229599699L;
 
 	}
 

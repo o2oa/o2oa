@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -20,13 +19,17 @@ import com.x.processplatform.service.processing.Business;
 
 class ActionUpdateWithWorkPath7 extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateWithWorkPath7.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateWithWorkPath7.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, String path1, String path2,
 			String path3, String path4, String path5, String path6, String path7, JsonElement jsonElement)
 			throws Exception {
-		
+
+		LOGGER.debug(
+				"execute:{}, id:{}, path0:{}, path1:{}, path2:{}, path3:{}, path4:{}, path5:{}, path6:{}, path7:{}.",
+				effectivePerson::getDistinguishedName, () -> id, () -> path0, () -> path1, () -> path2, () -> path3,
+				() -> path4, () -> path5, () -> path6, () -> path7);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String executorSeed = null;
@@ -48,10 +51,10 @@ class ActionUpdateWithWorkPath7 extends BaseAction {
 						throw new ExceptionEntityNotExist(id, Work.class);
 					}
 					wo.setId(work.getId());
-					/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
+					// 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据.
 					updateTitleSerial(business, work, jsonElement);
 					updateData(business, work, jsonElement, path0, path1, path2, path3, path4, path5, path6, path7);
-					/* updateTitleSerial 和 updateData 方法内进行了提交 */
+					// updateTitleSerial 和 updateData 方法内进行了提交
 				}
 				return "";
 			}
@@ -64,6 +67,8 @@ class ActionUpdateWithWorkPath7 extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -2594663365276630082L;
 
 	}
 

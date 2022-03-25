@@ -8,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -23,11 +22,10 @@ import com.x.processplatform.core.entity.content.Attachment;
 
 class ActionEditText extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionEditText.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEditText.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Attachment attachment = null;
 		String executorSeed = null;
@@ -74,6 +72,8 @@ class ActionEditText extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 166373158402012448L;
 
 	}
 

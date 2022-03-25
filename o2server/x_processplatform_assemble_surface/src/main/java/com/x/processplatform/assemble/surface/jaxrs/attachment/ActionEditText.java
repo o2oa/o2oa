@@ -9,7 +9,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -29,12 +28,11 @@ import com.x.processplatform.core.entity.element.Process;
 
 class ActionEditText extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionEditText.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEditText.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, JsonElement jsonElement)
 			throws Exception {
-
+		LOGGER.debug("execute:{}, id:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> id, () -> workId);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Attachment attachment = null;
@@ -42,7 +40,6 @@ class ActionEditText extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Work work = emc.find(workId, Work.class);
-			/** 判断work是否存在 */
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
@@ -59,24 +56,6 @@ class ActionEditText extends BaseAction {
 			if (!business.controllerable(effectivePerson, application, process, attachment)) {
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
-//			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
-//			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-//				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-//						work.getId());
-//			}
-//			Application application = business.application().pick(work.getApplication());
-//			Process process = business.process().pick(work.getProcess());
-//			if (business.controllerable(business, effectivePerson, application, process, attachment)) {
-//				throw new ExceptionAccessDenied(effectivePerson, attachment);
-//			}
-//			emc.beginTransaction(Attachment.class);
-//			Wi.copier.copy(wi, attachment);
-//			emc.check(attachment, CheckPersistType.all);
-//			emc.commit();
-//			Wo wo = new Wo();
-//			wo.setId(attachment.getId());
-//			result.setData(wo);
-//			return result;
 		}
 
 		Wo wo = ThisApplication.context().applications()
@@ -98,9 +77,13 @@ class ActionEditText extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = 7972682306243403794L;
+
 	}
 
 	public static class WoControl extends WorkControl {
+
+		private static final long serialVersionUID = 6785812363805038434L;
 
 	}
 

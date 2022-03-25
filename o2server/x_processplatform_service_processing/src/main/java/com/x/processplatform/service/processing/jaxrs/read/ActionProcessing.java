@@ -10,7 +10,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -27,10 +26,11 @@ import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionProcessing extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionProcessing.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionProcessing.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -47,8 +47,6 @@ class ActionProcessing extends BaseAction {
 		Callable<String> callable = new Callable<String>() {
 			public String call() throws Exception {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					ActionResult<Wo> result = new ActionResult<>();
-					Wo wo = new Wo();
 					Business business = new Business(emc);
 					Read read = emc.find(id, Read.class);
 					if (null == read) {
@@ -85,6 +83,8 @@ class ActionProcessing extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 8647539327144668439L;
 	}
 
 	private List<ReadCompleted> listExist(Business business, Read read) throws Exception {
